@@ -27,6 +27,13 @@
     "leave": "Gruppe verlassen",
     "save": "Speichern",
     "you": "Du",
+    "avatar": {
+      "edit": "Foto ändern",
+      "cropTitle": "Foto zuschneiden",
+      "saving": "Wird gespeichert…",
+      "altLabel": "Beschreibung (optional)",
+      "altPlaceholder": "Beschreibe das Bild"
+    },
     "removeMemberAria": "{{name}} entfernen",
     "removeMemberConfirm": {
       "title": "Mitglied entfernen?",

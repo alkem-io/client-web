@@ -16,6 +16,8 @@ type GroupSettingsDialogProps = {
   members: GroupMember[];
   /** Integration-supplied avatar display / uploader. */
   avatarSlot?: ReactNode;
+  /** True when the avatar has an unsaved change (factored into the discard guard). */
+  avatarDirty?: boolean;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   searchResults: ShareUser[];
@@ -42,6 +44,7 @@ export function GroupSettingsDialog({
   displayName,
   members,
   avatarSlot,
+  avatarDirty,
   searchQuery,
   onSearchChange,
   searchResults,
@@ -64,7 +67,7 @@ export function GroupSettingsDialog({
     }
   }, [open, displayName]);
 
-  const isDirty = editedName.trim() !== displayName;
+  const isDirty = editedName.trim() !== displayName || Boolean(avatarDirty);
 
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
     isDirty,

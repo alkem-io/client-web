@@ -27,6 +27,13 @@
     "leave": "Groep verlaten",
     "save": "Opslaan",
     "you": "Jij",
+    "avatar": {
+      "edit": "Foto wijzigen",
+      "cropTitle": "Foto bijsnijden",
+      "saving": "Opslaan…",
+      "altLabel": "Beschrijving (optioneel)",
+      "altPlaceholder": "Beschrijf de afbeelding"
+    },
     "removeMemberAria": "{{name}} verwijderen",
     "removeMemberConfirm": {
       "title": "Lid verwijderen?",

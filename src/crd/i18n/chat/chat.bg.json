@@ -27,6 +27,13 @@
     "leave": "Напускане на групата",
     "save": "Запазване",
     "you": "Вие",
+    "avatar": {
+      "edit": "Промяна на снимката",
+      "cropTitle": "Изрязване на снимката",
+      "saving": "Запазване…",
+      "altLabel": "Описание (по желание)",
+      "altPlaceholder": "Опишете изображението"
+    },
     "removeMemberAria": "Премахване на {{name}}",
     "removeMemberConfirm": {
       "title": "Премахване на член?",

@@ -27,6 +27,13 @@
     "leave": "Leave group",
     "save": "Save",
     "you": "You",
+    "avatar": {
+      "edit": "Change photo",
+      "cropTitle": "Crop photo",
+      "saving": "Saving…",
+      "altLabel": "Description (optional)",
+      "altPlaceholder": "Describe the image"
+    },
     "removeMemberAria": "Remove {{name}}",
     "removeMemberConfirm": {
       "title": "Remove member?",

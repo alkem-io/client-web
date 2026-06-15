@@ -107,9 +107,11 @@ export function ChatConversationList({
                     <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                       <Bot aria-hidden="true" className="size-4" />
                     </span>
-                  ) : item.isGroup ? (
+                  ) : item.isGroup && !item.avatarUrl ? (
+                    // Group with no photo of its own → composite of member avatars.
                     <GroupAvatar members={item.memberAvatars ?? []} size="sm" />
                   ) : (
+                    // 1:1 chat, or a group that has its own photo.
                     <Avatar className="size-8 shrink-0">
                       {item.avatarUrl && <AvatarImage src={item.avatarUrl} alt="" />}
                       <AvatarFallback className="text-caption">{initials(item.displayName)}</AvatarFallback>

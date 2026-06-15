@@ -1,5 +1,5 @@
 import { formatDistanceToNowStrict } from 'date-fns';
-import { Info, Trash2, Users } from 'lucide-react';
+import { Info, Loader2, Trash2, Users } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
@@ -11,8 +11,10 @@ import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
 import { NewChatDialog } from '@/crd/components/chat/NewChatDialog';
 import type { ChatThreadHeader } from '@/crd/components/chat/types';
 import type { CommentAuthor } from '@/crd/components/comment/types';
+import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { Avatar, AvatarImage } from '@/crd/primitives/avatar';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationEventsSubscription } from '@/main/userMessaging/useConversationEventsSubscription';
@@ -74,7 +76,11 @@ export const UnifiedChatPanelConnector = () => {
     clearGuidance,
   } = useUnifiedConversationView(selectedConversation ?? null, rawMessages, currentUserId);
 
-  const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? []);
+  const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
+    displayName: selectedConversation?.roomDisplayName ?? '',
+    avatarUrl: selectedConversation?.avatarUri ?? '',
+  });
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const [infoOpen, setInfoOpen] = useState(false);
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
@@ -212,6 +218,46 @@ export const UnifiedChatPanelConnector = () => {
     handleBack();
   };
 
+  const groupAvatarSlot = (
+    <>
+      <button
+        type="button"
+        onClick={() => avatarInputRef.current?.click()}
+        aria-label={t('group.avatar.edit')}
+        className="flex items-center gap-3 rounded-md p-1 text-left hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {groupSettings.isUploadingAvatar ? (
+          <span className="flex size-12 items-center justify-center rounded-full bg-muted">
+            <Loader2 aria-hidden="true" className="size-5 animate-spin text-muted-foreground" />
+          </span>
+        ) : groupSettings.avatarUrl ? (
+          <Avatar className="size-12">
+            <AvatarImage src={groupSettings.avatarUrl} alt="" />
+          </Avatar>
+        ) : (
+          <GroupAvatar
+            members={groupMembers.map(m => ({ id: m.id, name: m.name, avatarUrl: m.avatarUrl }))}
+            size="lg"
+          />
+        )}
+        <span className="text-control text-muted-foreground">{t('group.avatar.edit')}</span>
+      </button>
+      <input
+        ref={avatarInputRef}
+        type="file"
+        accept={(groupSettings.visualConstraints?.allowedTypes ?? []).join(',')}
+        className="hidden"
+        onChange={event => {
+          const file = event.target.files?.[0];
+          if (file) {
+            groupSettings.onAvatarFileSelected(file);
+          }
+          event.target.value = '';
+        }}
+      />
+    </>
+  );
+
   return (
     <>
       <ChatPanel
@@ -266,14 +312,10 @@ export const UnifiedChatPanelConnector = () => {
       <GroupSettingsDialog
         open={groupSettings.open}
         onOpenChange={groupSettings.onOpenChange}
-        displayName={selectedConversation?.displayName ?? ''}
+        displayName={selectedConversation?.roomDisplayName ?? ''}
         members={groupMembers}
-        avatarSlot={
-          <GroupAvatar
-            members={groupMembers.map(m => ({ id: m.id, name: m.name, avatarUrl: m.avatarUrl }))}
-            size="lg"
-          />
-        }
+        avatarSlot={groupAvatarSlot}
+        avatarDirty={groupSettings.avatarDirty}
         searchQuery={groupSettings.searchQuery}
         onSearchChange={groupSettings.onSearchChange}
         searchResults={groupSettings.searchResults}
@@ -283,6 +325,19 @@ export const UnifiedChatPanelConnector = () => {
         onLeaveGroup={handleLeaveGroupConfirmed}
         onSave={groupSettings.onSave}
         saving={groupSettings.saving}
+      />
+      <ImageCropDialog
+        open={groupSettings.cropOpen}
+        file={groupSettings.cropFile}
+        config={groupSettings.visualConstraints ?? {}}
+        onSave={({ file }) => groupSettings.onCropSave(file)}
+        onCancel={groupSettings.onCropCancel}
+        title={t('group.avatar.cropTitle')}
+        saveLabel={t('group.save')}
+        savingLabel={t('group.avatar.saving')}
+        cancelLabel={t('actions.cancel')}
+        altTextLabel={t('group.avatar.altLabel')}
+        altTextPlaceholder={t('group.avatar.altPlaceholder')}
       />
       <GuidanceInfoDialog open={infoOpen} onOpenChange={setInfoOpen} />
       <ConfirmationDialog
