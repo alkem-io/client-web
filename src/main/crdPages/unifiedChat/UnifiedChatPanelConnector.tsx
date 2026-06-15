@@ -279,7 +279,7 @@ export const UnifiedChatPanelConnector = () => {
               if (isGuidanceThread) {
                 guidanceResponse.markSent();
               }
-              handleSendMessage(message);
+              return handleSendMessage(message);
             }}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}

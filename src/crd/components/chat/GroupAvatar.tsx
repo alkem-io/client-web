@@ -47,7 +47,7 @@ export function GroupAvatar({ members, size = 'md', className }: GroupAvatarProp
       {shown.map(member => (
         <Avatar key={member.id} className="size-full rounded-none">
           {member.avatarUrl && <AvatarImage src={member.avatarUrl} alt="" />}
-          <AvatarFallback className="rounded-none text-[8px]">{initials(member.name)}</AvatarFallback>
+          <AvatarFallback className="rounded-none text-badge">{initials(member.name)}</AvatarFallback>
         </Avatar>
       ))}
     </div>

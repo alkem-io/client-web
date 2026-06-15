@@ -144,8 +144,10 @@ export const mapMessageToChatMessage = (
 export const GUIDANCE_INTRO_ID = '__intro';
 
 /**
- * Prepends the synthetic Guidance intro message when the guidance thread has no
- * real history. The intro is never sent, read, or counted toward unread.
+ * Always prepends the synthetic Guidance intro message to the guidance thread
+ * (matching the legacy `useChatGuidanceCommunication` behavior): when there is no
+ * real history the intro is the only message, otherwise it sorts first via
+ * `timestampMs: 0`. The intro is never sent, read, or counted toward unread.
  */
 export const injectGuidanceIntro = (
   messages: ChatMessage[],

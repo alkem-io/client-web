@@ -94,6 +94,9 @@ export const useUnifiedConversations = () => {
     return sortUnifiedConversations(mapped, newlyCreatedConversationId);
   })();
 
+  // Per FR-033 the badge counts CONVERSATIONS that have unread messages, not the
+  // sum of unread messages — matching the legacy `useUserConversations` /
+  // `useUnreadConversationsCount`. (Name kept for parity with those hooks.)
   const totalUnreadCount = conversations.filter(conv => conv.unreadCount > 0).length;
 
   return {

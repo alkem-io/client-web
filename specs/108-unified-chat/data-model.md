@@ -81,7 +81,9 @@ Header model passed to `ChatThreadView`.
 | `mapMessageToChatMessage` | `ConversationMessage` (`models.ts`) + `currentUserId` | `ChatMessage` | `isOwn`, reactions via `mapMessageReactions`, sender via `mapMessageSender`, `timestampMs` |
 | `mapMemberToCommentAuthor` | conversation member | `CommentAuthor` | `isVirtualContributor` from `ActorType.VirtualContributor` |
 | `mapMembersToGroupMembers` | conversation members + `currentUserId` | `GroupMember[]` | sets `isCurrentUser` |
-| `injectGuidanceIntro` | mapped messages + guidance VC author + intro text | `ChatMessage[]` | prepends synthetic intro when guidance + empty history |
+| `injectGuidanceIntro` | mapped messages + guidance VC author + intro text | `ChatMessage[]` | **always** prepends the synthetic intro (intro-only when history is empty); never sent/read/counted |
+
+**Guidance identity predicate** (`isGuidanceConversation`, applied by `useUnifiedConversations` before `mapConversationToListItem`): a conversation is guidance **iff** `members.some(m => m.id === guidanceVcId) && members.length <= 2`. The `<= 2` bound excludes a 3+ member group that merely includes the VC — that stays a normal group, not the pinned guidance item. `pinned` is set equal to `isGuidance`.
 
 ## Derived state / sort
 
