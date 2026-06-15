@@ -277,7 +277,16 @@
       "authenticated": "Angemeldete Benutzer können dieses Pack über die Suche finden.",
       "account": "Nur Mitglieder des besitzenden Accounts können dieses Pack über die Suche finden."
     },
-    "save": "Änderungen speichern"
+    "save": "Änderungen speichern",
+    "crop": {
+      "title": "Avatar zuschneiden",
+      "description": "Passe den Bildausschnitt an, bevor du ihn zum Pack hinzufügst.",
+      "altLabel": "Alternativtext",
+      "altPlaceholder": "Beschreibe das Bild für Screenreader",
+      "save": "Übernehmen",
+      "saving": "Wird übernommen…",
+      "cancel": "Abbrechen"
+    }
   },
   "createPack": {
     "title": "Innovation Pack erstellen",

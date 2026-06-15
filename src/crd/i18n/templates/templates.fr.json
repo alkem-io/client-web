@@ -277,7 +277,16 @@
       "authenticated": "Les utilisateurs connectés peuvent trouver ce pack via la recherche.",
       "account": "Seuls les membres du compte propriétaire peuvent trouver ce pack via la recherche."
     },
-    "save": "Enregistrer les modifications"
+    "save": "Enregistrer les modifications",
+    "crop": {
+      "title": "Recadrer l’avatar",
+      "description": "Ajustez le cadrage de votre image avant de l’ajouter au pack.",
+      "altLabel": "Texte alternatif",
+      "altPlaceholder": "Décrivez l’image pour les lecteurs d’écran",
+      "save": "Appliquer",
+      "saving": "Application…",
+      "cancel": "Annuler"
+    }
   },
   "createPack": {
     "title": "Créer un Innovation Pack",

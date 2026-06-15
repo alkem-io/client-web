@@ -277,7 +277,16 @@
       "authenticated": "Los usuarios autenticados pueden encontrar este paquete mediante búsqueda.",
       "account": "Solo los miembros de la cuenta propietaria pueden encontrar este paquete mediante búsqueda."
     },
-    "save": "Guardar cambios"
+    "save": "Guardar cambios",
+    "crop": {
+      "title": "Recortar avatar",
+      "description": "Ajusta el encuadre de tu imagen antes de añadirla al pack.",
+      "altLabel": "Texto alternativo",
+      "altPlaceholder": "Describe la imagen para lectores de pantalla",
+      "save": "Aplicar",
+      "saving": "Aplicando…",
+      "cancel": "Cancelar"
+    }
   },
   "createPack": {
     "title": "Crear Innovation Pack",

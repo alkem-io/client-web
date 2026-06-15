@@ -277,7 +277,16 @@
       "authenticated": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
       "account": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
     },
-    "save": "Wijzigingen opslaan"
+    "save": "Wijzigingen opslaan",
+    "crop": {
+      "title": "Avatar bijsnijden",
+      "description": "Pas de uitsnede van je afbeelding aan voordat je deze aan de pack toevoegt.",
+      "altLabel": "Alternatieve tekst",
+      "altPlaceholder": "Beschrijf de afbeelding voor schermlezers",
+      "save": "Toepassen",
+      "saving": "Toepassen…",
+      "cancel": "Annuleren"
+    }
   },
   "createPack": {
     "title": "Innovation Pack maken",

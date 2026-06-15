@@ -277,7 +277,16 @@
       "authenticated": "Signed-in users can find this pack via search.",
       "account": "Only members of the owning account can find this pack via search."
     },
-    "save": "Save changes"
+    "save": "Save changes",
+    "crop": {
+      "title": "Crop avatar",
+      "description": "Adjust the framing of your image before adding it to the pack.",
+      "altLabel": "Alternative text",
+      "altPlaceholder": "Describe the image for screen readers",
+      "save": "Apply",
+      "saving": "Applying…",
+      "cancel": "Cancel"
+    }
   },
   "createPack": {
     "title": "Create Innovation Pack",
