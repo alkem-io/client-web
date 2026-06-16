@@ -13,6 +13,7 @@ import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
 import RedirectToWelcomeSite from '@/domain/platform/routes/RedirectToWelcomeSite';
 import { WithApmTransaction } from '@/domain/shared/components/WithApmTransaction/WithApmTransaction';
+import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { CrdRestrictedRoute } from '@/main/crdPages/error/CrdRestrictedRoute';
 import { useCrdEnabled } from '../crdPages/useCrdEnabled';
 import { CrdLayoutWrapper } from '../ui/layout/CrdLayoutWrapper';
@@ -414,9 +415,13 @@ export const TopLevelRoutes = () => {
                     path="*"
                     element={
                       <WithApmTransaction path="*">
-                        <TopLevelLayout>
-                          <Error404 />
-                        </TopLevelLayout>
+                        {crdEnabled ? (
+                          <CrdNotFoundBranch />
+                        ) : (
+                          <TopLevelLayout>
+                            <Error404 />
+                          </TopLevelLayout>
+                        )}
                       </WithApmTransaction>
                     }
                   />

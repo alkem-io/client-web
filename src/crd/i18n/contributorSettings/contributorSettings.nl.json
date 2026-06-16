@@ -1,4 +1,79 @@
 {
+  "wizard": {
+    "title": "Virtual Contributor aanmaken",
+    "close": "Sluiten",
+    "loading": "Bezig…",
+    "next": "Volgende",
+    "back": "Terug",
+    "create": "Aanmaken",
+    "initial": {
+      "intro": "Geef je Virtual Contributor een naam en kies waar de kennis vandaan komt.",
+      "uploadAvatar": "Avatar uploaden",
+      "name": "Naam",
+      "tagline": "Slogan",
+      "description": "Beschrijving",
+      "pathTitle": "Waar komt de kennis vandaan?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Geschreven kennis",
+          "subtitle": "Posts en documenten toevoegen"
+        },
+        "existingSpace": {
+          "title": "Bestaande Space",
+          "subtitle": "Gebruik een Space waartoe je toegang hebt"
+        },
+        "external": {
+          "title": "Externe AI",
+          "subtitle": "Verbind een externe aanbieder"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Welke kennis wil je dat je Virtual Contributor heeft? Schrijf het op in posts of upload het in documenten. Je kunt content later bijwerken, toevoegen en verwijderen.",
+      "postsTitle": "Posts",
+      "postTitle": "Titel",
+      "postDescription": "Inhoud",
+      "removePost": "Post verwijderen",
+      "addPost": "Post toevoegen",
+      "documentsTitle": "Documenten",
+      "documentName": "Naam",
+      "documentUrl": "URL",
+      "removeDocument": "Document verwijderen",
+      "addDocument": "Document toevoegen",
+      "exampleTitle": "Voorbeeld: Over Alkemio",
+      "exampleDescription": "Tip: Creëer een gestructureerde en specifieke tekst, bijvoorbeeld:\n\n<strong>Achtergrond</strong>\n\nAlkemio, opgericht in 2020, is ontstaan uit frustratie door langzame vooruitgang bij COVID-gerelateerde uitdagingen en een erkenning van de talrijke snel veranderende uitdagingen waar we dagelijks mee te maken hebben.\n\n<strong>Beleid</strong>\n\nOm het vertrouwen te behouden en onze langetermijnvisie te realiseren, hebben we Steward Ownership als kerngroepsstructuur aanvaard. Steward Ownership is...\n",
+      "initialDocuments": "Eerste Links en Documenten"
+    },
+    "existingSpace": {
+      "intro": "Kies een Space om als kennisbron te gebruiken.",
+      "empty": "Geen Spaces beschikbaar."
+    },
+    "external": {
+      "intro": "Verbind een externe AI-aanbieder.",
+      "engine": "Aanbieder",
+      "apiKey": "API-sleutel",
+      "assistantId": "Assistent-ID",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Voeg je Virtual Contributor toe aan een community, of sla dit voorlopig over.",
+      "skip": "Voorlopig overslaan",
+      "errorMessage": "Kon niet aan de community worden toegevoegd — probeer het opnieuw."
+    },
+    "tryVc": {
+      "title": "{{name}} is klaar!",
+      "description": "Je Virtual Contributor is aangemaakt.",
+      "view": "Profiel bekijken",
+      "done": "Klaar"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' succesvol gemaakt",
+      "errorMessage": "Kon de Virtual Contributor niet aanmaken — probeer het opnieuw."
+    }
+  },
   "breadcrumbs": {
     "settings": "Instellingen"
   },
@@ -501,6 +576,32 @@
     }
   },
   "vc": {
+    "promptGraph": {
+      "title": "Promptgrafiek",
+      "helper": "Bewerk de prompt-toestandsmachine. Systeemknooppunten zijn alleen-lezen; gebruikersknooppunten bieden een bewerkbare prompt en uitvoereigenschappen.",
+      "disabled": "Bewerken van de promptgrafiek is uitgeschakeld voor deze Virtual Contributor.",
+      "empty": "Deze Virtual Contributor heeft geen promptgrafiek.",
+      "editingEnabled": "Bewerken ingeschakeld",
+      "inputVariables": "Invoervariabelen",
+      "start": "Start",
+      "end": "Einde",
+      "prompt": "Prompt",
+      "reset": "Opnieuw instellen",
+      "resetConfirm": {
+        "title": "Promptgrafiek opnieuw instellen?",
+        "description": "Dit wist de volledige promptgrafiek en kan niet ongedaan worden gemaakt."
+      },
+      "properties": {
+        "title": "Uitvoereigenschappen",
+        "empty": "Geen uitvoereigenschappen.",
+        "name": "Naam",
+        "type": "Type",
+        "optional": "Optioneel",
+        "description": "Beschrijving",
+        "add": "Eigenschap toevoegen",
+        "remove": "Eigenschap verwijderen"
+      }
+    },
     "profile": {
       "pageTitle": "Instellingen",
       "identity": {

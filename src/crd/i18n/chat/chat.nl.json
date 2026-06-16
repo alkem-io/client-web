@@ -1,0 +1,78 @@
+{
+  "launcher": {
+    "open": "Chat openen",
+    "close": "Chat sluiten",
+    "unreadLabel": "Je hebt ongelezen berichten"
+  },
+  "panel": {
+    "title": "Chat"
+  },
+  "actions": {
+    "cancel": "Annuleren"
+  },
+  "newChat": {
+    "title": "Nieuw bericht",
+    "searchPlaceholder": "Mensen zoeken…",
+    "searchHint": "Begin te typen om mensen te zoeken",
+    "noResults": "Geen mensen gevonden",
+    "create": "Chat starten",
+    "removeAria": "{{name}} verwijderen"
+  },
+  "group": {
+    "settings": "Groepsinstellingen",
+    "nameLabel": "Groepsnaam",
+    "members": "Leden",
+    "addPlaceholder": "Mensen toevoegen…",
+    "noResults": "Geen mensen gevonden",
+    "leave": "Groep verlaten",
+    "save": "Opslaan",
+    "you": "Jij",
+    "avatar": {
+      "edit": "Foto wijzigen",
+      "cropTitle": "Foto bijsnijden",
+      "saving": "Opslaan…",
+      "altLabel": "Beschrijving (optioneel)",
+      "altPlaceholder": "Beschrijf de afbeelding"
+    },
+    "removeMemberAria": "{{name}} verwijderen",
+    "removeMemberConfirm": {
+      "title": "Lid verwijderen?",
+      "description": "Deze persoon uit de groep verwijderen?",
+      "confirm": "Verwijderen"
+    },
+    "leaveConfirm": {
+      "title": "Groep verlaten?",
+      "description": "Je ontvangt geen berichten meer van deze groep.",
+      "confirm": "Verlaten"
+    }
+  },
+  "list": {
+    "searchPlaceholder": "Gesprekken zoeken…",
+    "newMessage": "Nieuw bericht",
+    "empty": "Nog geen gesprekken",
+    "emptyHint": "Begin een nieuw bericht om te chatten.",
+    "noResults": "Geen gesprekken komen overeen met je zoekopdracht.",
+    "loading": "Gesprekken laden"
+  },
+  "guidance": {
+    "beta": "Bèta",
+    "intro": "Hoi! Ik help je graag op weg in Alkemio. Stel me gerust een vraag over Spaces, samenwerken of hoe dingen werken.",
+    "infoButton": "Over de assistent",
+    "clear": "Chat wissen",
+    "thinking": "De assistent denkt na…",
+    "infoDialog": {
+      "title": "Over de assistent",
+      "content": "Deze assistent is een AI-gids voor Alkemio en is momenteel in bèta. Hij kan je helpen functies te begrijpen en je weg te vinden. Antwoorden kunnen onvolledig zijn — controleer belangrijke informatie."
+    },
+    "clearConfirm": {
+      "title": "Dit gesprek wissen?",
+      "description": "Hiermee start je een nieuw gesprek met de assistent. Het huidige gesprek wordt gewist.",
+      "confirm": "Chat wissen"
+    }
+  },
+  "thread": {
+    "back": "Terug naar gesprekken",
+    "loading": "Berichten laden",
+    "addReaction": "Reactie toevoegen"
+  }
+}

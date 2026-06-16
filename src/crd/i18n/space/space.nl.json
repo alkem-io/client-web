@@ -791,7 +791,7 @@
     "settings.title": "Peilinginstellingen",
     "settings.votingOptions": "Stemopties",
     "settings.allowMultiple": "Meerdere antwoorden toestaan",
-    "settings.allowCustomOptions": "Bijdragers toestaan opties toe te voegen",
+    "settings.allowCustomOptions": "Deelnemers toestaan opties toe te voegen",
     "settings.displayOptions": "Weergaveopties",
     "settings.hideResultsUntilVoted": "Resultaten verbergen tot gebruiker heeft gestemd",
     "settings.showVoterAvatars": "Avatars van stemmers tonen",

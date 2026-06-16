@@ -84,6 +84,17 @@
           "confirm": "Phase löschen",
           "cancel": "Abbrechen"
         }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Im Menü ausblenden",
+        "showMenuLabel": "Im Menü anzeigen",
+        "hiddenBadge": "Ausgeblendet",
+        "confirm": {
+          "title": "Diese Phase ausblenden?",
+          "description": "Dies blendet die Phase nur im Menü aus. Der Zugriff auf ihre Inhalte wird nicht entfernt: Wer einen Link zur Phase oder zu einem Beitrag darin hat, kann sie weiterhin öffnen.",
+          "confirm": "Ausblenden",
+          "cancel": "Abbrechen"
+        }
       }
     },
     "addPhase": {
@@ -522,6 +533,15 @@
         "maxSmall": "Darf höchstens {{count}} Zeichen lang sein",
         "maxMarkdown": "Darf höchstens {{count}} Zeichen lang sein",
         "required": "Name ist erforderlich"
+      },
+      "crop": {
+        "title": "Bild zuschneiden",
+        "description": "Passe den Ausschnitt an, um dein Bild zu rahmen.",
+        "save": "Anwenden",
+        "saving": "Wird angewendet…",
+        "cancel": "Abbrechen",
+        "altLabel": "Alternativtext",
+        "altPlaceholder": "Beschreibe das Bild (optional)"
       }
     }
   },

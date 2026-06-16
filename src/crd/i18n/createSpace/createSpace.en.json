@@ -1,0 +1,99 @@
+{
+  "dialog": {
+    "title": "Create new Space",
+    "subtitle": "Set up a new top-level Space in your account.",
+    "subtitleForAccount": "Set up a new top-level Space in the {{account}} account."
+  },
+  "template": {
+    "label": "Template",
+    "hint": "Optional — pick a Space template to pre-fill structure and content.",
+    "choose": "Choose a template",
+    "change": "Change",
+    "clear": "Use blank",
+    "selectedLabel": "Selected template",
+    "loadingPreview": "Loading template preview…",
+    "overwriteConfirm": {
+      "title": "Replace form contents?",
+      "description": "Applying this template will overwrite the name, tagline, description and tags you've already entered.",
+      "confirm": "Apply template",
+      "cancel": "Keep my changes"
+    },
+    "invalidFlow": "This template can't be used to create a Space — it needs a 4-phase innovation flow."
+  },
+  "displayName": {
+    "label": "Name",
+    "hint": "The name of your Space, visible to everyone.",
+    "placeholder": "e.g. Climate Innovation Hub"
+  },
+  "slug": {
+    "label": "URL",
+    "prefix": "alkem.io/",
+    "placeholder": "space-url",
+    "hint": "The web address for your Space. Auto-filled from the name — you can edit it."
+  },
+  "tagline": {
+    "label": "Tagline",
+    "hint": "A short subtitle describing the Space.",
+    "placeholder": "A short tagline…"
+  },
+  "description": {
+    "label": "Description",
+    "hint": "Explain what this Space is about. Markdown supported.",
+    "placeholder": "What is this Space about?"
+  },
+  "tags": {
+    "label": "Tags",
+    "hint": "Tags help people find this Space.",
+    "placeholder": "Add a tag and press Enter"
+  },
+  "banner": {
+    "label": "Page banner",
+    "upload": "Upload page banner"
+  },
+  "cardBanner": {
+    "label": "Card banner",
+    "upload": "Upload card banner"
+  },
+  "visuals": {
+    "remove": "Remove image",
+    "resolutionHint": "Recommended: {{width}} × {{height}} px",
+    "tooSmall": "Image is too small. Minimum {{width}} × {{height}} px required.",
+    "loadFailed": "Failed to read image file."
+  },
+  "addTutorials": {
+    "header": "Tutorials",
+    "label": "Add Tutorials and example posts to this Space"
+  },
+  "terms": {
+    "checkboxLabel": "I accept the <terms>terms and conditions</terms> for creating a Space.",
+    "dialogTitle": "Terms and Conditions for creating a Space",
+    "dialogContent": "I understand that as a Host, I am responsible for all content within the Space.",
+    "fullTermsLink": "Click here to read more about the Terms & Conditions.",
+    "url": "https://welcome.alkem.io/terms"
+  },
+  "license": {
+    "noPlans": "No Available Plans. Please, contact support."
+  },
+  "createError": "Something went wrong while creating the Space. Please try again.",
+  "cancel": "Cancel",
+  "submit": "Create Space",
+  "creating": "Creating…",
+  "validation": {
+    "min3": "Must be at least 3 characters",
+    "maxSmall": "Must be {{count}} characters or fewer",
+    "maxMarkdown": "Must be {{count}} characters or fewer",
+    "required": "Name is required",
+    "slugRequired": "URL is required",
+    "slugInvalid": "Use only lowercase letters, numbers and hyphens",
+    "acceptedTerms": "You must accept the terms to create a Space"
+  },
+  "crop": {
+    "title": "Crop image",
+    "description": "Adjust the crop to frame your image.",
+    "save": "Apply",
+    "saving": "Applying…",
+    "cancel": "Cancel",
+    "altLabel": "Alt text",
+    "altPlaceholder": "Describe the image (optional)"
+  }
+}

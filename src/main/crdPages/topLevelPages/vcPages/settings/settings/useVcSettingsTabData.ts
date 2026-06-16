@@ -4,11 +4,18 @@ import {
   useRefreshBodyOfKnowledgeMutation,
   useUpdateAiPersonaMutation,
   useUpdateVirtualContributorMutation,
+  useUpdateVirtualContributorPlatformSettingsMutation,
   useUpdateVirtualContributorSettingsMutation,
   useVirtualContributorKnowledgeBaseLastUpdatedQuery,
   useVirtualContributorQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege, type UpdateAiPersonaInput } from '@/core/apollo/generated/graphql-schema';
 import { SAVED_FLASH_MS } from '@/crd/components/common/FieldFooter';
+import type {
+  VcPromptGraphCardProps,
+  VcPromptGraphNode,
+  VcPromptGraphProperty,
+} from '@/crd/components/virtualContributor/settings/VCPromptGraphCard.types';
 import type {
   SectionSaveStatus,
   VcBodyOfKnowledgeCardProps,
@@ -17,10 +24,13 @@ import type {
   VcSearchVisibility,
   VcVisibilityCardProps,
 } from '@/crd/components/virtualContributor/settings/VCSettingsTabView.types';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   computeEngineCardVisibility,
   mapBokTypeToView,
   mapEngineToView,
+  mapNodesToPromptGraph,
+  mapPromptGraphToNodes,
   mapSearchVisibilityToServer,
   mapSearchVisibilityToView,
   OPENAI_MODEL_OPTIONS,
@@ -38,6 +48,7 @@ type UseVcSettingsTabDataResult = {
   bodyOfKnowledge?: Omit<VcBodyOfKnowledgeCardProps, 'refreshLabel'>;
   prompt?: Omit<VcPromptCardProps, 'helpText'>;
   externalConfig?: VcExternalConfigCardProps;
+  promptGraph?: Omit<VcPromptGraphCardProps, 'labels'>;
 };
 
 /**
@@ -308,6 +319,86 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
     }
   };
 
+  // ────────────────── Prompt Graph (whole-section save + reset) ──────────────────
+  const { platformPrivilegeWrapper } = useCurrentUserContext();
+  const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
+  const editingEnabled = vc?.platformSettings?.promptGraphEditingEnabled ?? false;
+
+  const [updatePlatformSettings, { loading: togglingPlatformSetting }] =
+    useUpdateVirtualContributorPlatformSettingsMutation();
+
+  const [graphDraft, setGraphDraft] = useState<VcPromptGraphNode[] | null>(null);
+  const [graphStatus, setGraphStatus] = useState<SectionSaveStatus>({ kind: 'idle' });
+  const graphFlashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const serverGraphNodes = mapPromptGraphToNodes(aiPersona?.promptGraph);
+  const graphNodes = graphDraft ?? serverGraphNodes;
+  const graphDirty = graphDraft !== null && JSON.stringify(graphDraft) !== JSON.stringify(serverGraphNodes);
+
+  useEffect(
+    () => () => {
+      if (graphFlashTimer.current) clearTimeout(graphFlashTimer.current);
+    },
+    []
+  );
+
+  const flashGraphSaved = () => {
+    setGraphStatus({ kind: 'saved', at: Date.now() });
+    if (graphFlashTimer.current) clearTimeout(graphFlashTimer.current);
+    graphFlashTimer.current = setTimeout(() => setGraphStatus({ kind: 'idle' }), SAVED_FLASH_MS);
+  };
+
+  const onChangeNodePrompt = (nodeName: string, prompt: string) => {
+    setGraphDraft((graphDraft ?? serverGraphNodes).map(n => (n.name === nodeName ? { ...n, prompt } : n)));
+    if (graphStatus.kind === 'error') setGraphStatus({ kind: 'idle' });
+  };
+
+  const onChangeNodeProperties = (nodeName: string, outputProperties: VcPromptGraphProperty[]) => {
+    setGraphDraft((graphDraft ?? serverGraphNodes).map(n => (n.name === nodeName ? { ...n, outputProperties } : n)));
+    if (graphStatus.kind === 'error') setGraphStatus({ kind: 'idle' });
+  };
+
+  const onSaveGraph = async () => {
+    if (!aiPersona?.id || graphDraft === null) return;
+    setGraphStatus({ kind: 'saving' });
+    try {
+      await updateAiPersona({
+        variables: {
+          aiPersonaData: { ID: aiPersona.id, promptGraph: mapNodesToPromptGraph(graphDraft, aiPersona.promptGraph) },
+        },
+      });
+      setGraphDraft(null);
+      flashGraphSaved();
+    } catch (err) {
+      setGraphStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Save failed' });
+    }
+  };
+
+  const onResetGraph = async () => {
+    if (!aiPersona?.id) return;
+    setGraphStatus({ kind: 'saving' });
+    try {
+      // The server accepts `null` to reset the graph; codegen only types it as
+      // `T | undefined`, so the local cast is required (matches the legacy editor).
+      const resetData = { ID: aiPersona.id, promptGraph: null } as unknown as UpdateAiPersonaInput;
+      await updateAiPersona({ variables: { aiPersonaData: resetData } });
+      setGraphDraft(null);
+      flashGraphSaved();
+    } catch (err) {
+      setGraphStatus({ kind: 'error', message: err instanceof Error ? err.message : 'Reset failed' });
+    }
+  };
+
+  const onToggleEditingEnabled = async (next: boolean) => {
+    if (!vcId) return;
+    try {
+      await updatePlatformSettings({
+        variables: { settingsData: { virtualContributorID: vcId, settings: { promptGraphEditingEnabled: next } } },
+      });
+    } catch {
+      onCommitError?.();
+    }
+  };
+
   return {
     loading: vcLoading || aiPersonaLoading,
     visibility: {
@@ -352,6 +443,22 @@ export const useVcSettingsTabData = ({ vcId, onCommitError }: UseVcSettingsTabDa
             dirty: externalDirty,
             status: externalStatus,
             onSave: onSaveExternal,
+          }
+        : undefined,
+    promptGraph:
+      editingEnabled || isPlatformAdmin
+        ? {
+            nodes: graphNodes,
+            onChangeNodePrompt,
+            onChangeNodeProperties,
+            onSave: onSaveGraph,
+            onReset: onResetGraph,
+            dirty: graphDirty,
+            status: graphStatus,
+            editingEnabled,
+            canTogglePlatformSetting: isPlatformAdmin,
+            onToggleEditingEnabled,
+            toggleSaving: togglingPlatformSetting,
           }
         : undefined,
   };
