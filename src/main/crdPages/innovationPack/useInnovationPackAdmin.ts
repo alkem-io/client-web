@@ -7,6 +7,7 @@ import {
   useUpdateInnovationPackMutation,
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
   InnovationPackFormErrors,
   InnovationPackFormProps,
@@ -45,6 +46,12 @@ export type UseInnovationPackAdminResult = {
   tm: ReturnType<typeof useTemplatesManager>;
   /** Pack edit form (controlled). Render via `<InnovationPackForm {...form} />`. */
   form: InnovationPackFormProps;
+  /** Avatar crop dialog state — drives `<ImageCropDialog>` at the page level. `null` ⇒ closed. */
+  pendingAvatarCrop: { file: File; config: ImageCropConfig } | null;
+  /** Stage the cropped avatar (+ alt text) into the form; closes the crop dialog. Upload happens on Save. */
+  onAvatarCropComplete: (croppedFile: File, altText: string) => void;
+  /** Dismiss the crop dialog without staging anything. */
+  onAvatarCropCancel: () => void;
 };
 
 /**
@@ -122,6 +129,8 @@ export function useInnovationPackAdmin({
   const seededRef = useRef(false);
   const [submitting, startSubmitting] = useTransition();
   const [pendingSubmit, setPendingSubmit] = useState(false);
+  // Raw picked avatar awaiting crop; the cropped result is staged into `value.avatarFile`.
+  const [pendingAvatarCrop, setPendingAvatarCrop] = useState<{ file: File; config: ImageCropConfig } | null>(null);
 
   // Seed once when the query first resolves. After that, the local buffer wins
   // (the user can edit freely; saves go straight to the mutations).
@@ -189,10 +198,13 @@ export function useInnovationPackAdmin({
             await deleteReference({ variables: { input: { ID: ref.id ?? '' } } });
           }
 
-          // 4. Queued avatar upload.
+          // 4. Queued avatar upload (the file is already cropped; alt text comes from the crop dialog).
           if (v.avatarFile && detail.avatarVisualId) {
             await uploadVisual({
-              variables: { file: v.avatarFile, uploadData: { visualID: detail.avatarVisualId } },
+              variables: {
+                file: v.avatarFile,
+                uploadData: { visualID: detail.avatarVisualId, alternativeText: v.avatarAltText || undefined },
+              },
             });
           }
 
@@ -217,6 +229,28 @@ export function useInnovationPackAdmin({
     searchVisibility: 'account',
   };
 
+  // Avatar pick → open the crop dialog (config from the avatar visual's server constraints).
+  // The cropped result is staged into `value.avatarFile`; the actual upload happens on Save.
+  const onAvatarFileSelected = (file: File) => {
+    setPendingAvatarCrop({
+      file,
+      config: {
+        aspectRatio: detail?.avatarVisual?.aspectRatio ?? 1,
+        minWidth: detail?.avatarVisual?.minWidth,
+        maxWidth: detail?.avatarVisual?.maxWidth,
+        minHeight: detail?.avatarVisual?.minHeight,
+        maxHeight: detail?.avatarVisual?.maxHeight,
+      },
+    });
+  };
+
+  const onAvatarCropComplete = (croppedFile: File, altText: string) => {
+    onChange({ ...formValues, avatarFile: croppedFile, avatarAltText: altText });
+    setPendingAvatarCrop(null);
+  };
+
+  const onAvatarCropCancel = () => setPendingAvatarCrop(null);
+
   // Dirty = the live buffer differs from the last-seeded server snapshot.
   // While loading (`values` null) there's nothing to save, so it's pristine.
   const isDirty = values != null && detail != null && dirtySnapshot(values) !== dirtySnapshot(detail.formValues);
@@ -230,6 +264,7 @@ export function useInnovationPackAdmin({
     isDirty,
     providerName: detail?.providerName ?? '',
     avatarUrl: detail ? undefined : undefined,
+    onAvatarFileSelected,
     onReferenceFileUpload,
     referenceUploadAccept,
     // Pack admin only ever EDITS an existing pack → uploads go to the pack's
@@ -247,5 +282,16 @@ export function useInnovationPackAdmin({
   const loading = resolvingUrl || (Boolean(innovationPackId) && loadingPack);
   const notFound = !loading && Boolean(innovationPackId) && !gqlPack;
 
-  return { loading, notFound, innovationPackId, pack, detail, tm, form };
+  return {
+    loading,
+    notFound,
+    innovationPackId,
+    pack,
+    detail,
+    tm,
+    form,
+    pendingAvatarCrop,
+    onAvatarCropComplete,
+    onAvatarCropCancel,
+  };
 }

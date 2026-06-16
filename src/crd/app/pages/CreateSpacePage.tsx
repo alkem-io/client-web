@@ -4,8 +4,20 @@ import {
   type CreateSpaceFormValues,
   type CreateSpaceVisualConstraints,
 } from '@/crd/components/space/CreateSpaceDialog';
-import createNameId from '@/core/utils/nameId/createNameId';
 import { Button } from '@/crd/primitives/button';
+
+// Local mock slug derivation for the standalone preview only. The production flow uses
+// `@/core/utils/nameId/createNameId`, but the demo app is part of the design system and its
+// vite config only aliases `@/crd` — it cannot import from `@/core/**`. This self-contained
+// approximation is purely to demo the name → slug auto-fill.
+function toSlug(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 const EMPTY_VALUES: CreateSpaceFormValues = {
   displayName: '',
@@ -61,7 +73,7 @@ export function CreateSpacePage() {
     setValues(prev => {
       const next = { ...prev, ...patch };
       if ('displayName' in patch && !slugEdited) {
-        next.nameId = createNameId(patch.displayName ?? '');
+        next.nameId = toSlug(patch.displayName ?? '');
       }
       return next;
     });

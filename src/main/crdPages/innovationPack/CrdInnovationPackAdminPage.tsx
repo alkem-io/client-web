@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
+import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { InnovationPackAdminView } from '@/crd/components/innovationPack/InnovationPackAdminView';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
@@ -49,10 +50,11 @@ const CrdInnovationPackAdminPageInner = () => {
   // template bucket yet → temporary against the pack bucket — mirrors MUI.
   const mdEdit = useMarkdownEditorIntegration();
   const mdCreate = useMarkdownEditorIntegration({ temporaryLocation: true });
-  const { loading, notFound, pack, tm, form } = useInnovationPackAdmin({
-    templatesMarkdownUpload: { create: mdCreate, edit: mdEdit },
-    descriptionUpload: mdEdit,
-  });
+  const { loading, notFound, pack, tm, form, pendingAvatarCrop, onAvatarCropComplete, onAvatarCropCancel } =
+    useInnovationPackAdmin({
+      templatesMarkdownUpload: { create: mdCreate, edit: mdEdit },
+      descriptionUpload: mdEdit,
+    });
   // "[Pack Name] | Template Library | Alkemio" — mirrors the MUI InnovationPackProfileLayout.
   const pageTitle = pack?.displayName
     ? `${pack.displayName}${tDefault('pages.titles.separator')}${tDefault('pages.titles.templateLibrary')}`
@@ -95,6 +97,21 @@ const CrdInnovationPackAdminPageInner = () => {
       </header>
 
       <InnovationPackAdminView form={form} templatesManager={templatesManager} />
+
+      <ImageCropDialog
+        open={pendingAvatarCrop !== null}
+        file={pendingAvatarCrop?.file}
+        config={pendingAvatarCrop?.config ?? {}}
+        onSave={({ file, altText }) => onAvatarCropComplete(file, altText)}
+        onCancel={onAvatarCropCancel}
+        title={t('packForm.crop.title')}
+        description={t('packForm.crop.description')}
+        altTextLabel={t('packForm.crop.altLabel')}
+        altTextPlaceholder={t('packForm.crop.altPlaceholder')}
+        saveLabel={t('packForm.crop.save')}
+        savingLabel={t('packForm.crop.saving')}
+        cancelLabel={t('packForm.crop.cancel')}
+      />
 
       {tm.preview.header && (
         <TemplatePreviewDialog
