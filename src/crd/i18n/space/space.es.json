@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Añade una etiqueta y pulsa Enter",
     "tagsTooShort": "Cada etiqueta debe tener al menos {{min}} caracteres.",
     "framingType": "Añadir a la publicación",
+    "typeLockedHint": "La configuración de contenido adicional no se puede cambiar después de la creación",
     "visibility": "Visibilidad",
     "publishedLabel": "Publicado",
     "draftLabel": "Borrador",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Respuestas",
+    "typeLockedHint": "La configuración de contribuciones no se puede cambiar después de la creación",
     "types": {
       "link": "Enlaces y archivos",
       "post": "Publicaciones",

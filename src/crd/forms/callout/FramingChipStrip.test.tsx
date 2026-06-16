@@ -45,14 +45,31 @@ describe('FramingChipStrip', () => {
     expect(onChange).toHaveBeenCalledWith('document');
   });
 
-  test('locked mode: every chip click is a no-op — the framing type cannot be changed or cleared', async () => {
+  test('edit mode: clicking an inactive chip is a no-op — the framing type cannot be switched', async () => {
     const onChange = vi.fn();
-    render(<FramingChipStrip value="poll" onChange={onChange} locked={true} />);
+    render(<FramingChipStrip value="poll" onChange={onChange} editMode={true} />);
     const memo = screen.getByRole('radio', { name: /callout.memo/i });
     await userEvent.click(memo);
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  test('edit mode: clicking the active chip asks for confirmation before clearing to "none"', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="poll" onChange={onChange} editMode={true} />);
     const poll = screen.getByRole('radio', { name: /callout.poll/i });
     await userEvent.click(poll);
+    // No immediate change — the confirmation dialog gates the clear.
+    expect(onChange).not.toHaveBeenCalled();
+    const confirm = screen.getByRole('button', { name: 'dialogs.deleteFraming.confirm' });
+    await userEvent.click(confirm);
+    expect(onChange).toHaveBeenCalledWith('none');
+  });
+
+  test('edit mode: cancelling the confirmation leaves the framing unchanged', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="poll" onChange={onChange} editMode={true} />);
+    await userEvent.click(screen.getByRole('radio', { name: /callout.poll/i }));
+    await userEvent.click(screen.getByRole('button', { name: 'dialogs.deleteFraming.cancel' }));
     expect(onChange).not.toHaveBeenCalled();
   });
 

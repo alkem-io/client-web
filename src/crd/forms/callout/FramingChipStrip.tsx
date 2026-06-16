@@ -1,6 +1,7 @@
 import { FileText, Image as ImageIcon, Megaphone, Presentation, StickyNote, Vote, X } from 'lucide-react';
-import type { ComponentType, SVGProps } from 'react';
+import { type ComponentType, type SVGProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
 import { cn } from '@/crd/lib/utils';
 
 export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll';
@@ -28,11 +29,14 @@ export type FramingChipStripProps = {
   /** Called when the user activates a chip. Passing `'none'` means "deselect". */
   onChange: (next: FramingChipId | 'none') => void;
   /**
-   * Edit-mode lock: the framing type is fixed once the callout exists, so every
-   * chip click (active or not) is a no-op and the remove affordance is hidden.
-   * The old UI never allowed changing or removing a callout's framing type.
+   * Edit mode (existing callout / template): the framing *type* can no longer be
+   * switched — clicking an inactive chip is a no-op. The only permitted change is
+   * clearing the current framing back to `'none'` via the active chip's X, which
+   * is gated behind a confirmation dialog (CRD rule 9 — the framing content is
+   * lost). In create mode (`editMode` omitted) chips switch freely and the active
+   * chip deselects immediately with no confirmation.
    */
-  locked?: boolean;
+  editMode?: boolean;
   /**
    * Marks specific chips as non-interactive with an optional tooltip explaining
    * why. Used by the consumer to gate chips behind license entitlements (e.g.
@@ -52,20 +56,25 @@ export type FramingChipStripProps = {
 export function FramingChipStrip({
   value,
   onChange,
-  locked = false,
+  editMode = false,
   disabledChips,
   allowedChips,
   className,
 }: FramingChipStripProps) {
   const { t } = useTranslation('crd-space');
+  const [confirmClearOpen, setConfirmClearOpen] = useState(false);
 
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
 
   const handleClick = (chip: Chip) => {
     if (disabledChips?.[chip.id]) return;
-    // Edit-mode lock: the framing type is fixed once the callout exists — the
-    // old UI never allowed changing or removing it, so every click is a no-op.
-    if (locked) return;
+    if (editMode) {
+      // Existing callout / template: the framing type can't be switched — only
+      // the active chip can be cleared back to `'none'`, behind a confirmation
+      // (the framing content is destroyed). Inactive chips are inert.
+      if (chip.id === value) setConfirmClearOpen(true);
+      return;
+    }
     if (chip.id === value) {
       onChange('none');
     } else {
@@ -74,46 +83,59 @@ export function FramingChipStrip({
   };
 
   return (
-    <div className="space-y-3">
-      <span className="text-label text-muted-foreground uppercase">{t('forms.framingType')}</span>
-      <div
-        role="radiogroup"
-        aria-label={t('forms.framingType')}
-        className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
-      >
-        {chips.map(chip => {
-          const active = value === chip.id;
-          const disabledInfo = disabledChips?.[chip.id];
-          const isDisabled = Boolean(disabledInfo);
-          const isInert = isDisabled || (locked && !active);
-          return (
-            // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
-            <button
-              key={chip.id}
-              type="button"
-              role="radio"
-              aria-checked={active}
-              aria-disabled={isInert ? 'true' : undefined}
-              aria-label={t(chip.labelKey as 'callout.whiteboard')}
-              title={disabledInfo?.tooltip}
-              onClick={() => handleClick(chip)}
-              className={cn(
-                'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                active
-                  ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
-                  : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
-                locked && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
-              )}
-            >
-              <chip.icon className="w-4 h-4" aria-hidden="true" />
-              <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
-              {/* The X is a "remove" affordance — hide it when locked, since the type can't be cleared. */}
-              {active && !locked && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
-            </button>
-          );
-        })}
+    <>
+      <div className="space-y-3">
+        <span className="text-label text-muted-foreground uppercase">{t('forms.framingType')}</span>
+        <div
+          role="radiogroup"
+          aria-label={t('forms.framingType')}
+          className={cn('flex flex-wrap gap-2 overflow-x-auto', className)}
+        >
+          {chips.map(chip => {
+            const active = value === chip.id;
+            const disabledInfo = disabledChips?.[chip.id];
+            const isDisabled = Boolean(disabledInfo);
+            // In edit mode every inactive chip is inert — only the active one is
+            // clickable (to clear the framing); in create mode all chips are live.
+            const isInert = isDisabled || (editMode && !active);
+            return (
+              // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
+              <button
+                key={chip.id}
+                type="button"
+                role="radio"
+                aria-checked={active}
+                aria-disabled={isInert ? 'true' : undefined}
+                aria-label={t(chip.labelKey as 'callout.whiteboard')}
+                title={disabledInfo?.tooltip ?? (editMode && !active ? t('forms.typeLockedHint') : undefined)}
+                onClick={() => handleClick(chip)}
+                className={cn(
+                  'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  active
+                    ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                    : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+                  isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
+                  editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
+                )}
+              >
+                <chip.icon className="w-4 h-4" aria-hidden="true" />
+                <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
+                {/* The X is the "remove" affordance on the active chip; clicking it
+                    deselects (create) or asks to confirm clearing the framing (edit). */}
+                {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
+              </button>
+            );
+          })}
+        </div>
       </div>
-    </div>
+      <DeleteFramingDialog
+        open={confirmClearOpen}
+        onOpenChange={setConfirmClearOpen}
+        onConfirm={() => {
+          setConfirmClearOpen(false);
+          onChange('none');
+        }}
+      />
+    </>
   );
 }

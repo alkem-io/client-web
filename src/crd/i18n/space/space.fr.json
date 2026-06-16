@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Ajoutez une étiquette et appuyez sur Entrée",
     "tagsTooShort": "Chaque étiquette doit comporter au moins {{min}} caractères.",
     "framingType": "Ajouter à la publication",
+    "typeLockedHint": "Les paramètres de contenu supplémentaire ne peuvent pas être modifiés après la création",
     "visibility": "Visibilité",
     "publishedLabel": "Publié",
     "draftLabel": "Brouillon",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Réponses",
+    "typeLockedHint": "Les paramètres de contribution ne peuvent pas être modifiés après la création",
     "types": {
       "link": "Liens et fichiers",
       "post": "Publications",

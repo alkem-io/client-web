@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Schlagwort eingeben und Enter drücken",
     "tagsTooShort": "Jedes Schlagwort muss mindestens {{min}} Zeichen lang sein.",
     "framingType": "Zum Beitrag hinzufügen",
+    "typeLockedHint": "Einstellungen für zusätzliche Inhalte können nach dem Erstellen nicht mehr geändert werden",
     "visibility": "Sichtbarkeit",
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Antworten",
+    "typeLockedHint": "Beitragseinstellungen können nach dem Erstellen nicht mehr geändert werden",
     "types": {
       "link": "Links & Dateien",
       "post": "Beiträge",

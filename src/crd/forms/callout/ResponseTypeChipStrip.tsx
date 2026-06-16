@@ -83,7 +83,13 @@ export function ResponseTypeChipStrip({
               aria-checked={active}
               aria-disabled={isInert ? 'true' : undefined}
               aria-label={t(chip.labelKey as 'contributionSettings.types.link')}
-              title={chip.disabled ? t('framing.comingSoon') : undefined}
+              title={
+                chip.disabled
+                  ? t('framing.comingSoon')
+                  : locked && !active
+                    ? t('contributionSettings.typeLockedHint')
+                    : undefined
+              }
               onClick={() => handleClick(chip)}
               className={cn(
                 'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
