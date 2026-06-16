@@ -57,5 +57,13 @@
     "github": "GitHub",
     "apple": "Apple",
     "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "Du hast dein Whiteboard verlassen",
+    "description": "Deine Gastsitzung ist noch aktiv. Du kannst zu deinem Whiteboard zurückkehren oder entdecken, was Alkemio zu bieten hat.",
+    "backButton": "Zurück zum Whiteboard",
+    "websiteButton": "Zu unserer Website",
+    "contributeTitle": "Möchtest du mehr beitragen?",
+    "contributeDescription": "Registriere dich unten für ein Alkemio-Konto, um mit Teams zusammenzuarbeiten und auf erweiterte Tools zuzugreifen."
   }
 }

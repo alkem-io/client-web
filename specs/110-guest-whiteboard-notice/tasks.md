@@ -26,7 +26,7 @@ CRD presentational layer: `src/crd/`. Integration glue: `src/main/crdPages/auth/
 
 **Purpose**: Orientation; confirm conventions before editing.
 
-- [ ] T001 Review target files and CRD conventions before editing: peer components `src/crd/components/auth/SignUpCard.tsx` and `LoginCard.tsx` (card shell + props style), `src/crd/components/auth/AuthCard.tsx` (shadow/padding tokens), the six locale files in `src/crd/i18n/auth/`, the integration point `CrdSignUpPage` in `src/main/crdPages/auth/SignUpCrdRoute.tsx`, and the existing hook `src/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn.ts`. Confirm `crd-auth` is registered in `src/core/i18n/config.ts`.
+- [X] T001 Review target files and CRD conventions before editing: peer components `src/crd/components/auth/SignUpCard.tsx` and `LoginCard.tsx` (card shell + props style), `src/crd/components/auth/AuthCard.tsx` (shadow/padding tokens), the six locale files in `src/crd/i18n/auth/`, the integration point `CrdSignUpPage` in `src/main/crdPages/auth/SignUpCrdRoute.tsx`, and the existing hook `src/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn.ts`. Confirm `crd-auth` is registered in `src/core/i18n/config.ts`.
 
 ---
 
@@ -38,13 +38,13 @@ CRD presentational layer: `src/crd/`. Integration glue: `src/main/crdPages/auth/
 
 Keys to add under a new `guestReturn` group: `title`, `description`, `backButton`, `websiteButton`, `contributeTitle`, `contributeDescription`. Inline the word "whiteboard" (no `$t(common.whiteboard)` — `crd-auth` is self-contained). Rewrite the contribute copy direction-neutral (drop "on the right" → e.g. "create an account below"). Source text: legacy `pages.public.whiteboard.guestSessionNotification.*`.
 
-- [ ] T002 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.en.json` (English source copy).
-- [ ] T003 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.nl.json` (port existing Dutch from the legacy `translation.nl.json` values).
-- [ ] T004 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.es.json` (port existing Spanish from the legacy `translation.es.json` values).
-- [ ] T005 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.bg.json` (port existing Bulgarian from the legacy `translation.bg.json` values).
-- [ ] T006 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.de.json` (write fresh German — legacy `translation.de.json` left these in English).
-- [ ] T007 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.fr.json` (write fresh French — legacy `translation.fr.json` left these in English).
-- [ ] T008 Verify key parity: all six `src/crd/i18n/auth/auth.<lang>.json` files contain exactly the same `guestReturn.*` keys, no missing/extra keys (depends on T002–T007).
+- [X] T002 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.en.json` (English source copy).
+- [X] T003 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.nl.json` (port existing Dutch from the legacy `translation.nl.json` values).
+- [X] T004 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.es.json` (port existing Spanish from the legacy `translation.es.json` values).
+- [X] T005 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.bg.json` (port existing Bulgarian from the legacy `translation.bg.json` values).
+- [X] T006 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.de.json` (write fresh German — legacy `translation.de.json` left these in English).
+- [X] T007 [P] Add the `guestReturn` key group to `src/crd/i18n/auth/auth.fr.json` (write fresh French — legacy `translation.fr.json` left these in English).
+- [X] T008 Verify key parity: all six `src/crd/i18n/auth/auth.<lang>.json` files contain exactly the same `guestReturn.*` keys, no missing/extra keys (depends on T002–T007).
 
 **Checkpoint**: Translation keys exist in all six languages — component work can begin.
 
@@ -58,13 +58,13 @@ Keys to add under a new `guestReturn` group: `title`, `description`, `backButton
 
 ### Tests for User Story 1 ⚠️ (write first, ensure they FAIL before implementation)
 
-- [ ] T009 [P] [US1] Create `src/crd/components/auth/GuestReturnNotice.test.tsx`: rendering the component (with stub `onBackToWhiteboard`/`onGoToWebsite`) shows the title, description, both buttons (Back to whiteboard, Go to our website), and the contribute title + description from the `crd-auth` `guestReturn.*` keys; decorative icons carry `aria-hidden`.
+- [X] T009 [P] [US1] Create `src/crd/components/auth/GuestReturnNotice.test.tsx`: rendering the component (with stub `onBackToWhiteboard`/`onGoToWebsite`) shows the title, description, both buttons (Back to whiteboard, Go to our website), and the contribute title + description from the `crd-auth` `guestReturn.*` keys; decorative icons carry `aria-hidden`.
 
 ### Implementation for User Story 1
 
-- [ ] T010 [US1] Create `src/crd/components/auth/GuestReturnNotice.tsx` implementing `GuestReturnNoticeProps` from `contracts/GuestReturnNotice.contract.ts`: card shell (`rounded-lg bg-card px-9 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)]`), `useTranslation('crd-auth')`, semantic typography tokens, primary `Button` (default variant, `ArrowLeft` from `lucide-react`) calling `onBackToWhiteboard`, secondary `Button` (`outline` variant) calling `onGoToWebsite`, and a highlighted contribute block with `ArrowRight`. Accessible names from `t()`, decorative icons `aria-hidden`, visible `focus-visible:ring`. No `@mui/*`, no business-logic imports.
-- [ ] T011 [US1] Wire the notice into `CrdSignUpPage` in `src/main/crdPages/auth/SignUpCrdRoute.tsx`: call `useGuestSessionReturn()`, wrap the existing `<SignUpCard …/>` and the new notice in `<div className="flex flex-col gap-6">` inside `AuthShellWrapper`, and render `<GuestReturnNotice onBackToWhiteboard={handleBackToWhiteboard} onGoToWebsite={handleGoToWebsite} />` above the card, gated on `shouldShowNotification`. (This wires BOTH handlers — consumed/verified by US2 and US3.)
-- [ ] T012 [US1] Add an integration test alongside `src/main/crdPages/auth/SignUpCrdRoute` (e.g. `SignUpCrdRoute.test.tsx`): with both guest session keys set the notice renders above the form; with either/both keys missing the notice is absent and the sign-up form renders unchanged (FR-001, FR-008, partial-session edge case).
+- [X] T010 [US1] Create `src/crd/components/auth/GuestReturnNotice.tsx` implementing `GuestReturnNoticeProps` from `contracts/GuestReturnNotice.contract.ts`: card shell (`rounded-lg bg-card px-9 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)]`), `useTranslation('crd-auth')`, semantic typography tokens, primary `Button` (default variant, `ArrowLeft` from `lucide-react`) calling `onBackToWhiteboard`, secondary `Button` (`outline` variant) calling `onGoToWebsite`, and a highlighted contribute block with `ArrowRight`. Accessible names from `t()`, decorative icons `aria-hidden`, visible `focus-visible:ring`. No `@mui/*`, no business-logic imports.
+- [X] T011 [US1] Wire the notice into `CrdSignUpPage` in `src/main/crdPages/auth/SignUpCrdRoute.tsx`: call `useGuestSessionReturn()`, wrap the existing `<SignUpCard …/>` and the new notice in `<div className="flex flex-col gap-6">` inside `AuthShellWrapper`, and render `<GuestReturnNotice onBackToWhiteboard={handleBackToWhiteboard} onGoToWebsite={handleGoToWebsite} />` above the card, gated on `shouldShowNotification`. (This wires BOTH handlers — consumed/verified by US2 and US3.)
+- [X] T012 [US1] Add an integration test alongside `src/main/crdPages/auth/SignUpCrdRoute` (e.g. `SignUpCrdRoute.test.tsx`): with both guest session keys set the notice renders above the form; with either/both keys missing the notice is absent and the sign-up form renders unchanged (FR-001, FR-008, partial-session edge case).
 
 **Checkpoint**: The notice appears for guests and is invisible otherwise — MVP complete and independently testable.
 
@@ -76,8 +76,8 @@ Keys to add under a new `guestReturn` group: `title`, `description`, `backButton
 
 **Independent Test**: With a session seeded for a known whiteboard URL, render the page/component, click "Back to whiteboard", confirm navigation targets that URL and the session keys are NOT cleared.
 
-- [ ] T013 [P] [US2] Add a test to `src/crd/components/auth/GuestReturnNotice.test.tsx`: clicking the "Back to whiteboard" button invokes `onBackToWhiteboard` exactly once and does not invoke `onGoToWebsite`.
-- [ ] T014 [US2] Verify the back action end-to-end in the `SignUpCrdRoute` integration test: clicking "Back to whiteboard" routes to the stored `alkemio_guest_whiteboard_url`, and the session keys remain set afterward (FR-003, FR-006). Confirm `handleBackToWhiteboard` from `useGuestSessionReturn` is the wired handler (no new navigation code in the CRD component).
+- [X] T013 [P] [US2] Add a test to `src/crd/components/auth/GuestReturnNotice.test.tsx`: clicking the "Back to whiteboard" button invokes `onBackToWhiteboard` exactly once and does not invoke `onGoToWebsite`.
+- [X] T014 [US2] Verify the back action end-to-end in the `SignUpCrdRoute` integration test: clicking "Back to whiteboard" routes to the stored `alkemio_guest_whiteboard_url`, and the session keys remain set afterward (FR-003, FR-006). Confirm `handleBackToWhiteboard` from `useGuestSessionReturn` is the wired handler (no new navigation code in the CRD component).
 
 **Checkpoint**: Return path works and preserves the guest identity.
 
@@ -89,8 +89,8 @@ Keys to add under a new `guestReturn` group: `title`, `description`, `backButton
 
 **Independent Test**: Render the component/page, trigger "Go to our website", confirm it calls the website handler (which navigates to the public site).
 
-- [ ] T015 [P] [US3] Add a test to `src/crd/components/auth/GuestReturnNotice.test.tsx`: clicking the "Go to our website" button invokes `onGoToWebsite` exactly once and does not invoke `onBackToWhiteboard`.
-- [ ] T016 [US3] Confirm `CrdSignUpPage` passes `handleGoToWebsite` from `useGuestSessionReturn` to the notice (wired in T011) and that the session is not cleared by this action (FR-004, FR-006). No new website-URL constant is introduced (research D5).
+- [X] T015 [P] [US3] Add a test to `src/crd/components/auth/GuestReturnNotice.test.tsx`: clicking the "Go to our website" button invokes `onGoToWebsite` exactly once and does not invoke `onBackToWhiteboard`.
+- [X] T016 [US3] Confirm `CrdSignUpPage` passes `handleGoToWebsite` from `useGuestSessionReturn` to the notice (wired in T011) and that the session is not cleared by this action (FR-004, FR-006). No new website-URL constant is introduced (research D5).
 
 **Checkpoint**: Website exit path works.
 
@@ -102,7 +102,7 @@ Keys to add under a new `guestReturn` group: `title`, `description`, `backButton
 
 **Independent Test**: With session keys cleared (simulating post-auth `clearAllGuestSessionData`), open `/sign_up`, confirm the notice does not render.
 
-- [ ] T017 [US4] Confirm FR-007 is satisfied by the existing cleanup with NO new clearing code: verify `clearAllGuestSessionData` (in `src/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage.ts`) already runs on successful login/registration, and add/extend an assertion (in the `SignUpCrdRoute` integration test) that an empty/cleared session yields no notice. Ensure neither the CRD component nor T011's wiring calls `clearSession` (must not pre-empt FR-006).
+- [X] T017 [US4] Confirm FR-007 is satisfied by the existing cleanup with NO new clearing code: verify `clearAllGuestSessionData` (in `src/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage.ts`) already runs on successful login/registration, and add/extend an assertion (in the `SignUpCrdRoute` integration test) that an empty/cleared session yields no notice. Ensure neither the CRD component nor T011's wiring calls `clearSession` (must not pre-empt FR-006).
 
 **Checkpoint**: All four stories independently functional.
 
@@ -110,9 +110,11 @@ Keys to add under a new `guestReturn` group: `title`, `description`, `backButton
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T018 [P] Run `pnpm lint` (TypeScript + Biome + ESLint react-compiler rule) and fix any issues in the new/edited files.
-- [ ] T019 [P] Run `pnpm vitest run src/crd/components/auth/GuestReturnNotice.test.tsx src/main/crdPages/auth/SignUpCrdRoute.test.tsx --reporter=basic` and confirm green.
-- [ ] T020 Guard FR-013 + CRD purity: confirm `src/crd/components/auth/GuestReturnNotice.tsx` has zero `@mui/*`/`@emotion/*` and zero business-logic imports, and confirm the legacy MUI `src/core/auth/authentication/pages/SignUp.tsx` and `src/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification.tsx` were NOT modified or deleted (deferred to the separate MUI auth-cleanup pass).
+> Polish covers cross-cutting concerns: linting, the full test run, CRD-purity + FR-013 guards, manual quickstart, and responsive (FR-011) verification.
+
+- [X] T018 [P] Run `pnpm lint` (TypeScript + Biome + ESLint react-compiler rule) and fix any issues in the new/edited files.
+- [X] T019 [P] Run `pnpm vitest run src/crd/components/auth/GuestReturnNotice.test.tsx src/main/crdPages/auth/SignUpCrdRoute.test.tsx --reporter=basic` and confirm green.
+- [X] T020 Guard FR-013 + CRD purity: confirm `src/crd/components/auth/GuestReturnNotice.tsx` has zero `@mui/*`/`@emotion/*` and zero business-logic imports, and confirm the legacy MUI `src/core/auth/authentication/pages/SignUp.tsx` and `src/domain/collaboration/whiteboard/guestAccess/components/GuestSessionNotification.tsx` were NOT modified or deleted (deferred to the separate MUI auth-cleanup pass).
 - [ ] T021 Run the `quickstart.md` manual verification (seed session → see notice; clear → gone; click both actions; switch all six languages; keyboard-tab focus rings).
 - [ ] T022 Verify responsive usability (FR-011): with a guest session seeded, confirm at a narrow/mobile viewport (≤375px wide) and at desktop width that the stacked `GuestReturnNotice` + `SignUpCard` both remain fully readable and usable inside the `AuthShell` single-column slot — no clipping, horizontal scroll, button-label truncation, or overlap. Check both buttons remain tappable and text wraps cleanly in the longest-copy language (e.g. German/Bulgarian).
 
@@ -145,7 +147,7 @@ Keys to add under a new `guestReturn` group: `title`, `description`, `backButton
 - **Phase 2**: T002–T007 (six locale files) all run in parallel; T008 after.
 - **Phase 3**: T009 (test) authored in parallel with reading, but T010/T011/T012 are sequential (same files / dependency chain).
 - **Cross-story tests**: T013 [P] and T015 [P] touch the same `GuestReturnNotice.test.tsx` as T009 — treat them as appends to one file (run after T009 lands; not parallel with each other if editing the same file simultaneously).
-- **Phase 7**: T018 [P] and T019 [P] can run together.
+- **Phase 7**: T018 [P] and T019 [P] can run together. T020–T022 are manual/verification checks run after the implementation tasks land.
 
 ---
 
@@ -182,7 +184,7 @@ Task: "Verify key parity across all six auth.<lang>.json files"
 3. US2 → back-to-whiteboard verified + tested.
 4. US3 → go-to-website verified + tested.
 5. US4 → post-auth dismissal verified.
-6. Polish → lint, tests green, CRD-purity + FR-013 guard, quickstart pass.
+6. Polish → lint, tests green, CRD-purity + FR-013 guard, quickstart pass, responsive (FR-011) verification.
 
 ---
 

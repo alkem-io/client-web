@@ -71,7 +71,8 @@ src/crd/
         └── auth.fr.json                   # EDIT — add FR copy (legacy was EN-only)
 
 src/main/crdPages/auth/
-└── SignUpCrdRoute.tsx                      # EDIT — render GuestReturnNotice above SignUpCard
+├── SignUpCrdRoute.tsx                      # EDIT — render GuestReturnNotice above SignUpCard
+└── SignUpCrdRoute.test.tsx                 # NEW — integration test: conditional render off guest session
 
 # Reused unchanged (integration logic already exists):
 src/domain/collaboration/whiteboard/guestAccess/
