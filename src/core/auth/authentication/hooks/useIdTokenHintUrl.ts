@@ -8,8 +8,17 @@ import { useConfig } from '@/domain/platform/config/useConfig';
 export const useIdTokenHintUrl = (): string => {
   const config = useConfig();
 
-  const identityOrigin =
-    import.meta.env.MODE === 'development' ? undefined : config.authentication?.providers[0].config.issuer;
+  const issuer =
+    import.meta.env.MODE === 'development' ? undefined : config.authentication?.providers?.[0]?.config?.issuer;
+
+  let identityOrigin: string | undefined;
+  if (issuer) {
+    try {
+      identityOrigin = new URL(issuer).origin;
+    } catch {
+      identityOrigin = undefined;
+    }
+  }
 
   return identityOrigin ? `${identityOrigin}${OIDC_ID_TOKEN_HINT_PATH}` : OIDC_ID_TOKEN_HINT_PATH;
 };
