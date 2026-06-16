@@ -79,6 +79,8 @@ export function InnovationPackAdminPage() {
           isDirty: JSON.stringify(values) !== initialSnapshot.current,
           providerName: 'Google Ventures',
           avatarUrl: undefined,
+          // Preview only — stage the raw file directly (the real flow opens the CRD ImageCropDialog).
+          onAvatarFileSelected: file => setValues(prev => ({ ...prev, avatarFile: file })),
         }}
         templatesManager={{
           holderKind: 'innovationPack',

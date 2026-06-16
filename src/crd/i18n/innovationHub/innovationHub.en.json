@@ -137,5 +137,36 @@
         "submitError": "Something went wrong while adding the Space. Please try again."
       }
     }
+  },
+  "createHub": {
+    "title": "Create Innovation Hub",
+    "subtitleUser": "Create a new Innovation Hub in your account.",
+    "subtitleAccount": "Create a new Innovation Hub in the {{account}} account.",
+    "subdomain": "Subdomain",
+    "subdomainPlaceholder": "e.g. my-hub",
+    "subdomainHint": "Only lowercase letters, numbers and hyphens.",
+    "name": "Name",
+    "namePlaceholder": "e.g. My Innovation Hub",
+    "tagline": "Tagline",
+    "taglinePlaceholder": "A short, catchy strapline",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this Innovation Hub about?",
+    "saveForMoreDetails": "You can add tags and a banner after creating the hub.",
+    "create": "Create",
+    "cancel": "Cancel",
+    "creating": "Creating…",
+    "validation": {
+      "min3": "Must be at least 3 characters.",
+      "maxSmall": "Must be at most {{count}} characters.",
+      "maxMid": "Must be at most {{count}} characters.",
+      "maxMarkdown": "Must be at most {{count}} characters.",
+      "required": "This field is required.",
+      "subdomainRequired": "A subdomain is required.",
+      "subdomainFormat": "Only lowercase letters, numbers and hyphens are allowed.",
+      "subdomainMin": "Must be at least 3 characters.",
+      "subdomainMax": "Must be at most 25 characters."
+    },
+    "createError": "An error occurred while creating the Innovation Hub.",
+    "createSuccess": "The Innovation Hub was created successfully!"
   }
 }

@@ -35,6 +35,7 @@ export function InnovationPackForm({
   isDirty,
   providerName,
   avatarUrl,
+  onAvatarFileSelected,
   onReferenceFileUpload,
   referenceUploadAccept,
   onImageUpload,
@@ -90,11 +91,7 @@ export function InnovationPackForm({
       {/* Avatar */}
       <div className="space-y-1.5">
         <Label>{t('packForm.avatar')}</Label>
-        <AvatarUpload
-          currentUrl={avatarUrl}
-          stagedFile={value.avatarFile}
-          onPick={file => onChange({ ...value, avatarFile: file })}
-        />
+        <AvatarUpload currentUrl={avatarUrl} stagedFile={value.avatarFile} onPick={onAvatarFileSelected} />
         <p className="text-caption text-muted-foreground">{t('packForm.avatarHint')}</p>
       </div>
 

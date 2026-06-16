@@ -19,6 +19,8 @@ import {
   MOCK_PENDING_VC_INVITATIONS,
 } from './data/dashboard';
 import { CommunityGuidelinesPage } from './pages/CommunityGuidelinesPage';
+import { CreateInnovationHubPage } from './pages/CreateInnovationHubPage';
+import { CreateInnovationPackPage } from './pages/CreateInnovationPackPage';
 import { CreateSpacePage } from './pages/CreateSpacePage';
 import { DashboardPage } from './pages/DashboardPage';
 import { InnovationLibraryPage } from './pages/InnovationLibraryPage';
@@ -69,6 +71,8 @@ const MOCK_PLATFORM_NAVIGATION_ITEMS = [
   { icon: <ShieldCheck className="h-4 w-4" />, label: 'Community guidelines (preview)', href: '/community-guidelines' },
   { icon: <Tag className="h-4 w-4" />, label: 'Tags showcase', href: '/tags-showcase' },
   { icon: <Compass className="h-4 w-4" />, label: 'Create Space (preview)', href: '/create-space' },
+  { icon: <Package className="h-4 w-4" />, label: 'Create Innovation Pack (preview)', href: '/create-innovation-pack' },
+  { icon: <Package className="h-4 w-4" />, label: 'Create Innovation Hub (preview)', href: '/create-innovation-hub' },
   // Virtual Contributor migrated surfaces (106) — preview against mock data.
   { icon: <Bot className="h-4 w-4" />, label: 'VC creation wizard (preview)', href: '/vc/create' },
   { icon: <Bot className="h-4 w-4" />, label: 'VC knowledge base (preview)', href: '/vc/datasynth-bot/knowledge-base' },
@@ -145,6 +149,8 @@ export function CrdApp() {
           <Route path="/vc/datasynth-bot/settings" element={<VCAdminConfigDemoPage />} />
           <Route path="/tags-showcase" element={<TagsShowcasePage />} />
           <Route path="/create-space" element={<CreateSpacePage />} />
+          <Route path="/create-innovation-pack" element={<CreateInnovationPackPage />} />
+          <Route path="/create-innovation-hub" element={<CreateInnovationHubPage />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </CrdLayout>

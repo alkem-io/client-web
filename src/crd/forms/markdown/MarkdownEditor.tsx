@@ -27,6 +27,8 @@ export type MarkdownUploadProps = {
 type MarkdownEditorProps = MarkdownUploadProps & {
   value: string;
   onChange: (value: string) => void;
+  /** Applied to the editor's root element so a sibling `<label htmlFor>` can reference it. */
+  id?: string;
   placeholder?: string;
   maxLength?: number;
   disabled?: boolean;
@@ -49,6 +51,7 @@ export function MarkdownEditor(props: MarkdownEditorProps) {
 function MarkdownEditorLazy({
   value,
   onChange,
+  id,
   placeholder,
   maxLength,
   disabled,
@@ -82,6 +85,7 @@ function MarkdownEditorLazy({
 
   return (
     <div
+      id={id}
       className={cn(
         'crd-markdown-editor flex flex-col border border-border rounded-lg overflow-hidden bg-background transition-shadow focus-within:ring-2 focus-within:ring-primary/20',
         disabled && 'opacity-60',
