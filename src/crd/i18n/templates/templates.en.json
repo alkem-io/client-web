@@ -277,7 +277,16 @@
       "authenticated": "Signed-in users can find this pack via search.",
       "account": "Only members of the owning account can find this pack via search."
     },
-    "save": "Save changes"
+    "save": "Save changes",
+    "crop": {
+      "title": "Crop avatar",
+      "description": "Adjust the framing of your image before adding it to the pack.",
+      "altLabel": "Alternative text",
+      "altPlaceholder": "Describe the image for screen readers",
+      "save": "Apply",
+      "saving": "Applying…",
+      "cancel": "Cancel"
+    }
   },
   "createPack": {
     "title": "Create Innovation Pack",
@@ -287,7 +296,17 @@
     "description": "Description",
     "descriptionPlaceholder": "What is this Innovation Pack about?",
     "create": "Create",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "subtitleUser": "Create a new Innovation Pack in your account.",
+    "subtitleAccount": "Create a new Innovation Pack in the {{account}} account.",
+    "saveForMoreDetails": "You can add an avatar, tags, references and store visibility after creating the pack.",
+    "creating": "Creating…",
+    "validation": {
+      "min3": "Must be at least 3 characters.",
+      "maxSmall": "Must be at most {{count}} characters.",
+      "maxMarkdown": "Must be at most {{count}} characters.",
+      "required": "This field is required."
+    }
   },
   "deletePack": {
     "title": "Delete Innovation Pack?",

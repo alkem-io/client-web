@@ -10,6 +10,7 @@ import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceH
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
 import { getInitials } from '@/crd/lib/getInitials';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
+import { filterVisibleStates } from '@/domain/collaboration/InnovationFlow/utils/filterVisibleStates';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -118,9 +119,12 @@ export function useCrdSubspace(): CrdSubspacePageData {
   });
   const flow = flowData?.lookup.collaboration?.innovationFlow;
   const innovationFlowId = flow?.id;
-  const phases = mapInnovationFlowPhases(flow?.states);
-  const currentPhaseId = flow?.currentState?.id;
   const canEditFlow = permissions.canUpdate;
+  // Hidden phases are removed from the live tab strip for everyone, including admins; admins
+  // still manage/unhide them in Settings → Layout. UI-only: hidden phases stay reachable by URL.
+  // No-op until the server exposes per-phase `visible` (graceful degradation).
+  const phases = mapInnovationFlowPhases(filterVisibleStates(flow?.states ?? []));
+  const currentPhaseId = flow?.currentState?.id;
 
   // Parent's banner image — fetched via the same about-details query the parent
   // space already uses, so Apollo dedupes / serves from cache when navigating
@@ -170,6 +174,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const sidebar = mapSubspaceSidebar({
     description: subspaceProfile.description,
     leadUsers: subspace.about.membership?.leadUsers,
+    leadOrganizations: subspace.about.membership?.leadOrganizations,
     // Virtual contributor data isn't part of SubspaceContext today.
     // Plan D13: hide section when none — keep undefined here, surface follow-up.
     virtualContributor: undefined,

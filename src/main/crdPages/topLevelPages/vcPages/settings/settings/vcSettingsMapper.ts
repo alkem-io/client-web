@@ -1,14 +1,27 @@
 import {
   AiPersonaEngine,
   OpenAiModel,
+  type PromptGraph,
   SearchVisibility,
   VirtualContributorBodyOfKnowledgeType,
 } from '@/core/apollo/generated/graphql-schema';
+import type {
+  VcPromptGraphNode,
+  VcPromptGraphProperty,
+} from '@/crd/components/virtualContributor/settings/VCPromptGraphCard.types';
 import type {
   VcAiEngine,
   VcBodyOfKnowledgeType,
   VcSearchVisibility,
 } from '@/crd/components/virtualContributor/settings/VCSettingsTabView.types';
+import type {
+  FormNodeValue,
+  PromptGraphNode as LegacyPromptGraphNode,
+} from '@/domain/community/virtualContributorAdmin/components/promptGraph/types';
+import {
+  prepareGraph,
+  transformNodeToPromptGraphNode,
+} from '@/domain/community/virtualContributorAdmin/components/promptGraph/utils';
 
 /**
  * GraphQL → plain-string-union enum bridges for the VC Settings tab view.
@@ -96,3 +109,100 @@ export const computeEngineCardVisibility = (params: {
 
 /** Static model options sourced from the generated `OpenAiModel` enum. */
 export const OPENAI_MODEL_OPTIONS = Object.values(OpenAiModel).map(value => ({ value, label: value }));
+
+/** Variables always available at the START of the graph (matches the legacy editor). */
+const BASE_INPUT_VARIABLES = ['conversation', 'display_name', 'description'];
+
+/**
+ * Maps the server `PromptGraph` to the CRD card's ordered, editable node list.
+ * Uses the legacy `prepareGraph` traversal for START→END ordering. The terminal
+ * START/END markers are dropped (rendered as fixed Start/End bookends by the
+ * card and preserved verbatim on save), but their outputs still feed the
+ * accumulating `availableInputVariables` — the base START variables plus every
+ * upstream node's output properties, matching the legacy editor.
+ */
+export const mapPromptGraphToNodes = (promptGraph: PromptGraph | null | undefined): VcPromptGraphNode[] => {
+  if (!promptGraph?.nodes?.length) return [];
+
+  const byName = new Map<string, LegacyPromptGraphNode>();
+  for (const node of promptGraph.nodes) {
+    if (node.name) byName.set(node.name, node as unknown as LegacyPromptGraphNode);
+  }
+
+  const ordered = prepareGraph(promptGraph);
+  const seen = new Set<string>();
+  const result: VcPromptGraphNode[] = [];
+
+  const toViewNode = (name: string, real: LegacyPromptGraphNode, available: string[]): VcPromptGraphNode => ({
+    name,
+    system: real.system ?? false,
+    inputVariables: real.input_variables ?? [],
+    availableInputVariables: available,
+    prompt: real.prompt ?? '',
+    outputProperties: (real.output?.properties ?? []).map(
+      (p): VcPromptGraphProperty => ({
+        name: p.name,
+        type: p.type,
+        optional: p.optional,
+        description: p.description,
+      })
+    ),
+  });
+
+  // Walk the START→END path, accumulating each node's available variables.
+  let available: string[] = [...BASE_INPUT_VARIABLES];
+  for (const pathNode of ordered) {
+    const name = pathNode.name;
+    if (!name || seen.has(name)) continue;
+    const real = byName.get(name);
+    if (!real) continue;
+    seen.add(name);
+    if (name !== 'START' && name !== 'END') {
+      result.push(toViewNode(name, real, [...available]));
+    }
+    const outputProps = (real.output?.properties ?? []).map(p => p.name).filter(Boolean);
+    available = available.concat(outputProps);
+  }
+
+  // Fallback: nodes not reached by the path traversal (no upstream context).
+  for (const node of promptGraph.nodes) {
+    const name = node.name;
+    if (!name || seen.has(name) || name === 'START' || name === 'END') continue;
+    seen.add(name);
+    result.push(toViewNode(name, node as unknown as LegacyPromptGraphNode, []));
+  }
+
+  return result;
+};
+
+/**
+ * Rebuilds the server `promptGraph.nodes` array from the edited CRD nodes,
+ * merging edits back over the original array in place — mirroring the legacy MUI
+ * editor. Only editable user nodes are rebuilt; system nodes and the terminal
+ * START/END markers are preserved verbatim from the original graph (they are
+ * read-only in the editor and may carry fields the CRD shape doesn't model).
+ * Replacing the whole array (the previous behaviour) silently deleted START/END
+ * while the edges still referenced them, corrupting the graph topology.
+ */
+export const mapNodesToPromptGraph = (nodes: VcPromptGraphNode[], original: PromptGraph | null | undefined) => {
+  const edited: Record<string, FormNodeValue> = {};
+  for (const node of nodes) {
+    edited[node.name] = {
+      input_variables: node.inputVariables ?? [],
+      prompt: node.prompt ?? '',
+      output: { properties: node.outputProperties },
+      system: node.system,
+    };
+  }
+
+  const mergedNodes = (original?.nodes ?? []).map(node => {
+    const name = node.name;
+    const editable = Boolean(name && edited[name] && !node.system && name !== 'START' && name !== 'END');
+    return editable ? transformNodeToPromptGraphNode(name as string, edited[name as string]) : node;
+  });
+
+  return {
+    ...(original ?? { nodes: [], edges: [] }),
+    nodes: mergedNodes,
+  };
+};

@@ -226,6 +226,10 @@ export default function CrdSpaceSettingsPage() {
     onDeleteState: level !== 'L0' ? layout.onDeleteState : undefined,
     columnCount: layout.columns.length,
     minimumNumberOfStates: layout.minimumNumberOfStates,
+    // Hide/Show is available at every level (incl. L0 home tabs) — it never changes the flow
+    // structure, only what members see in the menu. The CRD column menu self-gates the entry
+    // on the column carrying a known `isHidden` (capability present).
+    onToggleVisibility: layout.onToggleVisibility,
   });
   // When the user picks a Callout template in the layout-tab picker, set it as the chosen flow state's default.
   const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
@@ -653,6 +657,20 @@ export default function CrdSpaceSettingsPage() {
         cancelLabel={t('subspaces.createDialog.template.overwriteConfirm.cancel')}
         onConfirm={createSubspace.onConfirmOverwriteTemplate}
         onCancel={createSubspace.onCancelOverwriteTemplate}
+      />
+      <ImageCropDialog
+        open={Boolean(createSubspace.pendingCrop)}
+        file={createSubspace.pendingCrop?.file}
+        config={createSubspace.pendingCrop?.config ?? {}}
+        onSave={({ file, altText }) => createSubspace.onCropComplete(file, altText)}
+        onCancel={createSubspace.onCropCancel}
+        title={t('subspaces.createDialog.crop.title')}
+        description={t('subspaces.createDialog.crop.description')}
+        saveLabel={t('subspaces.createDialog.crop.save')}
+        savingLabel={t('subspaces.createDialog.crop.saving')}
+        cancelLabel={t('subspaces.createDialog.crop.cancel')}
+        altTextLabel={t('subspaces.createDialog.crop.altLabel')}
+        altTextPlaceholder={t('subspaces.createDialog.crop.altPlaceholder')}
       />
 
       <ChangeDefaultSubspaceTemplateDialog

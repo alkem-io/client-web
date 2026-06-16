@@ -353,7 +353,7 @@ export function PostCard({
             {post.framingImageUrl ? (
               <img
                 src={post.framingImageUrl}
-                alt=""
+                alt={t('callout.whiteboard')}
                 className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
               />
             ) : (

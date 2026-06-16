@@ -137,5 +137,36 @@
         "submitError": "Нещо се обърка при добавянето на пространството. Опитайте отново."
       }
     }
+  },
+  "createHub": {
+    "title": "Създаване на Innovation Hub",
+    "subtitleUser": "Създайте нов Innovation Hub във вашия акаунт.",
+    "subtitleAccount": "Създайте нов Innovation Hub в акаунта на {{account}}.",
+    "subdomain": "Поддомейн",
+    "subdomainPlaceholder": "напр. moyat-hub",
+    "subdomainHint": "Само малки латински букви, цифри и тирета.",
+    "name": "Име",
+    "namePlaceholder": "напр. Моят Innovation Hub",
+    "tagline": "Слоган",
+    "taglinePlaceholder": "Кратък и запомнящ се слоган",
+    "description": "Описание",
+    "descriptionPlaceholder": "За какво е този Innovation Hub?",
+    "saveForMoreDetails": "Можете да добавите етикети и банер след създаването на хъба.",
+    "create": "Създаване",
+    "cancel": "Отказ",
+    "creating": "Създаване…",
+    "validation": {
+      "min3": "Трябва да е поне 3 знака.",
+      "maxSmall": "Трябва да е най-много {{count}} знака.",
+      "maxMid": "Трябва да е най-много {{count}} знака.",
+      "maxMarkdown": "Трябва да е най-много {{count}} знака.",
+      "required": "Това поле е задължително.",
+      "subdomainRequired": "Поддомейнът е задължителен.",
+      "subdomainFormat": "Разрешени са само малки латински букви, цифри и тирета.",
+      "subdomainMin": "Трябва да е поне 3 знака.",
+      "subdomainMax": "Трябва да е най-много 25 знака."
+    },
+    "createError": "Възникна грешка при създаването на Innovation Hub.",
+    "createSuccess": "Innovation Hub беше създаден успешно!"
   }
 }

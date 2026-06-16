@@ -277,7 +277,16 @@
       "authenticated": "Angemeldete Benutzer können dieses Pack über die Suche finden.",
       "account": "Nur Mitglieder des besitzenden Accounts können dieses Pack über die Suche finden."
     },
-    "save": "Änderungen speichern"
+    "save": "Änderungen speichern",
+    "crop": {
+      "title": "Avatar zuschneiden",
+      "description": "Passe den Bildausschnitt an, bevor du ihn zum Pack hinzufügst.",
+      "altLabel": "Alternativtext",
+      "altPlaceholder": "Beschreibe das Bild für Screenreader",
+      "save": "Übernehmen",
+      "saving": "Wird übernommen…",
+      "cancel": "Abbrechen"
+    }
   },
   "createPack": {
     "title": "Innovation Pack erstellen",
@@ -287,7 +296,17 @@
     "description": "Beschreibung",
     "descriptionPlaceholder": "Worum geht es in diesem Innovation Pack?",
     "create": "Erstellen",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "subtitleUser": "Erstelle ein neues Innovation Pack in deinem Konto.",
+    "subtitleAccount": "Erstelle ein neues Innovation Pack im Konto von {{account}}.",
+    "saveForMoreDetails": "Avatar, Tags, Referenzen und Store-Sichtbarkeit kannst du nach dem Erstellen des Packs hinzufügen.",
+    "creating": "Wird erstellt…",
+    "validation": {
+      "min3": "Muss mindestens 3 Zeichen lang sein.",
+      "maxSmall": "Darf höchstens {{count}} Zeichen lang sein.",
+      "maxMarkdown": "Darf höchstens {{count}} Zeichen lang sein.",
+      "required": "Dieses Feld ist erforderlich."
+    }
   },
   "deletePack": {
     "title": "Innovation Pack löschen?",

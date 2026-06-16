@@ -343,6 +343,7 @@ export const InnovationFlowStatesFragmentDoc = gql`
     sortOrder
     settings {
       allowNewCallouts
+      visible
     }
     defaultCalloutTemplate {
       id
@@ -972,6 +973,7 @@ export const ReactionDetailsFragmentDoc = gql`
 export const ContributorDetailsFragmentDoc = gql`
     fragment ContributorDetails on Actor {
   id
+  type
   profile {
     id
     displayName
@@ -7359,6 +7361,7 @@ export const UpdateInnovationFlowStateDocument = gql`
     description
     settings {
       allowNewCallouts
+      visible
     }
   }
 }
@@ -24996,6 +24999,7 @@ export const SpaceTabsDocument = gql`
             sortOrder
             settings {
               allowNewCallouts
+              visible
             }
           }
         }

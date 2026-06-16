@@ -6,7 +6,8 @@
     "title": "Iniciar sesión",
     "forgotPassword": "¿Olvidaste tu contraseña?",
     "noAccount": "¿No tienes cuenta?",
-    "signUp": "Regístrate"
+    "signUp": "Regístrate",
+    "preparing": "Preparando inicio de sesión seguro…"
   },
   "signUp": {
     "title": "Regístrate",
@@ -56,5 +57,13 @@
     "github": "GitHub",
     "apple": "Apple",
     "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "Has abandonado tu whiteboard",
+    "description": "Tu sesión de invitado sigue activa. Puedes volver a tu whiteboard, o explorar lo que Alkemio tiene para ofrecer.",
+    "backButton": "Volver a whiteboard",
+    "websiteButton": "Ir a nuestro sitio web",
+    "contributeTitle": "¿Quieres contribuir más?",
+    "contributeDescription": "Regístrate a continuación en una cuenta Alkemio para colaborar con equipos y acceder a herramientas avanzadas."
   }
 }

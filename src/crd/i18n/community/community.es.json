@@ -64,6 +64,12 @@
     "defaultWelcomeMessage": "Nos gustaría invitarte a contribuir a {{space}}.",
     "addedNotice": "Colaborador virtual añadido.",
     "invitedNotice": "Invitación enviada.",
-    "error": "Algo salió mal. Inténtalo de nuevo."
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "previewAriaLabel": "Vista previa de {{name}}",
+    "preview": {
+      "tagsLabel": "Etiquetas",
+      "hostedBy": "Alojado por {{name}}",
+      "noDescription": "No se proporcionó descripción."
+    }
   }
 }

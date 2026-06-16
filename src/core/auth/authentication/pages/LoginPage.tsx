@@ -8,6 +8,7 @@ import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUr
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import Loading from '@/core/ui/loading/Loading';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { ErrorDisplay } from '@/domain/shared/components/ErrorDisplay';
 import AuthPageContentContainer from '@/domain/shared/layout/AuthPageContentContainer';
 import AuthenticationLayout from '../AuthenticationLayout';
@@ -17,6 +18,7 @@ import KratosUI from '../components/KratosUI';
 import {
   AUTH_REMINDER_PATH,
   AUTH_RESET_PASSWORD_PATH,
+  OIDC_LOGIN_PATH,
   PARAM_NAME_RETURN_URL,
 } from '../constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '../hooks/useKratosFlow';
@@ -35,35 +37,59 @@ const isEmailNotVerified = (flow: LoginFlow) => {
   return (flow.ui?.messages ?? []).some(({ id }) => id === EMAIL_NOT_VERIFIED_MESSAGE_ID);
 };
 
-// See a TODO below
-// const EMAIL_FIELD_NAME = 'password_identifier';
-//
-// const getEmailAddress = (flow: LoginFlow): string | undefined => {
-//   const node = flow.ui.nodes.find((node ) => {
-//     const attributes = node.attributes as UiNodeInputAttributes;
-//     return attributes.name === EMAIL_FIELD_NAME;
-//   });
-//   return node && (node.attributes as UiNodeInputAttributes).value;
-// };
-
+// OIDC BFF entry: when this page is reached without a Kratos flow id, the user
+// is starting a fresh sign-in — hand off to alkemio-server's OIDC login route
+// (T045). When Kratos itself bounces the browser back here with `?flow=<id>`
+// during its self-service login UI render, render the Kratos form as before
+// (the flow id is opaque state Kratos owns).
 const LoginPage = ({ flow }: LoginPageProps) => {
-  const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);
-  const navigate = useNavigate();
-  const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const { t } = useTranslation();
-
-  // Set browser tab title to "Sign In | Alkemio"
   usePageTitle(t('pages.titles.signIn'));
 
   const params = useQueryParams();
-  const returnUrl = params.get(PARAM_NAME_RETURN_URL);
-  const { setReturnUrl } = useReturnUrl();
+  const returnUrlFromParam = params.get(PARAM_NAME_RETURN_URL) ?? undefined;
+  const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
+  const navigate = useNavigate();
+  const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
+  const platformOrigin = usePlatformOrigin();
+
+  const isOidcEntry = !flow;
+
+  useLayoutEffect(() => {
+    if (!isOidcEntry) return;
+    if (returnUrlFromParam) {
+      setReturnUrl(returnUrlFromParam);
+    }
+    const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
+    // FR-017a — server-side validator requires a same-origin path-only value.
+    // Legacy callers (buildReturnUrlParam) prepend window.location.origin for
+    // Kratos compatibility; strip it here when same-origin so the OIDC BFF
+    // accepts the value instead of warn-rejecting it back to '/'.
+    const returnTo = (() => {
+      try {
+        const u = new URL(raw, window.location.origin);
+        return u.origin === window.location.origin ? `${u.pathname}${u.search}${u.hash}` || '/' : '/';
+      } catch {
+        return raw.startsWith('/') ? raw : '/';
+      }
+    })();
+    // The OIDC BFF (/api/auth/oidc/*) is apex-only and called same-origin-relative.
+    // This page also renders on the identity subdomain (where recovery/registration
+    // live and link back to /login via a relative path); a relative replace there
+    // would land on identity.<domain>/api/auth/oidc/login, which is unrouted (404).
+    // Always hand off to the apex origin absolutely. platformOrigin is the apex
+    // (`https://<locations.domain>`); falls back to relative when unknown (single-host dev).
+    const base = platformOrigin ?? '';
+    window.location.replace(`${base}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
+  }, [isOidcEntry, returnUrlFromParam, platformOrigin]);
+
+  const { flow: loginFlow, loading, error } = useKratosFlow(FlowTypeName.Login, flow);
 
   const isLockedOut = params.get('lockout') === 'true';
   const retryAfterRaw = Number(params.get('retry_after'));
   const retryAfterSeconds = Number.isFinite(retryAfterRaw) ? Math.max(0, retryAfterRaw) : 0;
   const lockoutMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
-  // Ory 1.3.0: messages should be set on flow.ui.messages
+
   const loginUi =
     loginFlow &&
     (() => {
@@ -72,33 +98,27 @@ const LoginPage = ({ flow }: LoginPageProps) => {
         ui.messages = kratosErrors;
       }
       if (isLockedOut) {
-        const lockoutMessage = {
-          id: ACCOUNT_LOCKOUT_MESSAGE_ID,
-          type: 'error' as const,
-          text: t('authentication.lockout', { minutes: lockoutMinutes }),
-        };
-        ui.messages = [...(ui.messages ?? []), lockoutMessage];
+        ui.messages = [
+          ...(ui.messages ?? []),
+          {
+            id: ACCOUNT_LOCKOUT_MESSAGE_ID,
+            type: 'error' as const,
+            text: t('authentication.lockout', { minutes: lockoutMinutes }),
+          },
+        ];
       }
       return ui;
     })();
 
   useEffect(() => {
-    setReturnUrl(returnUrl);
-  }, [returnUrl]);
-
-  useLayoutEffect(() => {
     if (loginFlow && isEmailNotVerified(loginFlow)) {
-      // TODO When Kratos starts sending email value back, this snippet may be used
-      // to allow users request the verification email once again
-      // without having to input email manually.
-      // const email = getEmailAddress(loginFlow);
-      // const params = new URLSearchParams();
-      // if (email) {
-      //   params.set('email', email);
-      // }
       navigate(AUTH_REMINDER_PATH);
     }
   }, [loginFlow, navigate]);
+
+  if (isOidcEntry) {
+    return <Loading text={t('kratos.loading-flow')} />;
+  }
 
   if (loading || (!loginFlow && !error)) {
     return <Loading text={t('kratos.loading-flow')} />;

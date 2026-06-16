@@ -1,4 +1,12 @@
 {
+  "notFound": {
+    "title": "Seite nicht gefunden",
+    "description": "Die gesuchte Seite existiert nicht oder wurde möglicherweise verschoben.",
+    "actions": {
+      "goHome": "Zur Startseite",
+      "goBack": "Zurück"
+    }
+  },
   "forbidden": {
     "title": "Zugriff eingeschränkt",
     "description": "Die Seite, die Sie aufrufen möchten, ist für Sie nicht verfügbar.",
@@ -15,6 +23,26 @@
       "signIn": "Anmelden / Registrieren",
       "or": "Oder",
       "returnAsGuest": "Als Gast zurück zum Dashboard"
+    }
+  },
+  "genericError": {
+    "title": "Hoppla!",
+    "description": "Es sieht so aus, als wäre etwas schiefgelaufen: <italic>{{message}}</italic>",
+    "serverHint": "Bitte überprüfen Sie, ob Ihr Server ({{graphQLEndpoint}}) verfügbar ist, und laden Sie die Seite neu.",
+    "contactSupport": "Wenn der Fehler weiterhin besteht, <contact>kontaktieren Sie den Support</contact>.",
+    "code": "Fehlercode: {{code}}",
+    "actions": {
+      "reload": "Neu laden"
+    }
+  },
+  "chunkLoad": {
+    "title": "Hoppla!",
+    "messages": {
+      "lazyLoad": "Es ist ein Netzwerkfehler aufgetreten. Bitte laden Sie die Seite neu.",
+      "unknown": "Es ist ein unbekannter Fehler aufgetreten. Bitte laden Sie die Seite neu."
+    },
+    "actions": {
+      "reload": "Neu laden"
     }
   }
 }

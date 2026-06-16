@@ -1407,10 +1407,12 @@ export type CreateInnovationFlowStateDataFieldPolicy = {
 };
 export type CreateInnovationFlowStateSettingsDataKeySpecifier = (
   | 'allowNewCallouts'
+  | 'visible'
   | CreateInnovationFlowStateSettingsDataKeySpecifier
 )[];
 export type CreateInnovationFlowStateSettingsDataFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateLinkDataKeySpecifier = ('profile' | 'uri' | CreateLinkDataKeySpecifier)[];
 export type CreateLinkDataFieldPolicy = {
@@ -2032,9 +2034,14 @@ export type InnovationFlowStateFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InnovationFlowStateSettingsKeySpecifier = ('allowNewCallouts' | InnovationFlowStateSettingsKeySpecifier)[];
+export type InnovationFlowStateSettingsKeySpecifier = (
+  | 'allowNewCallouts'
+  | 'visible'
+  | InnovationFlowStateSettingsKeySpecifier
+)[];
 export type InnovationFlowStateSettingsFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationHubKeySpecifier = (
   | 'account'

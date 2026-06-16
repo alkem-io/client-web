@@ -8,29 +8,22 @@ import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 
 type AncestorRedirectDispatcherProps = {
   closestAncestor: ClosestAncestor;
-  /**
-   * Mirrors the boundary's `isNotAuthorized` flag. Only when this is true does
-   * the dispatcher consider rendering the CRD dialog — the underlying error
-   * page is the CRD forbidden page only on `NotAuthorizedError`. For
-   * `NotFoundError` (and anything else) the underlying page is the MUI
-   * `Error40X` and we keep the MUI dialog on top to preserve visual
-   * consistency.
-   */
-  isNotAuthorized?: boolean;
 };
 
 /**
  * Dispatches between the CRD-styled redirect dialog and the legacy MUI one
- * based on (a) the CRD toggle, (b) whether the current pathname is a
- * CRD-enabled route, and (c) whether the underlying error is `NotAuthorized`
- * (the only error class for which the CRD page renders below). When all three
- * hold, the CRD dialog is rendered; otherwise the existing MUI implementation
- * is preserved unchanged so the dialog visually matches the page beneath it.
+ * based on (a) the CRD toggle and (b) whether the current pathname is a
+ * CRD-enabled route. This dispatcher only renders when the boundary has a
+ * `closestAncestor`, which happens exclusively for `NotFoundError` and
+ * `NotAuthorizedError` — and both now render a CRD error page beneath
+ * (`CrdNotFoundPage` / `CrdForbiddenPage`) whenever `crdEnabled && isCrdRoute`.
+ * So the dialog must be CRD in both cases to match the page underneath;
+ * otherwise the existing MUI implementation is preserved unchanged.
  */
-export function AncestorRedirectDispatcher({ closestAncestor, isNotAuthorized }: AncestorRedirectDispatcherProps) {
+export function AncestorRedirectDispatcher({ closestAncestor }: AncestorRedirectDispatcherProps) {
   const crdEnabled = useCrdEnabled();
   const { pathname } = useLocation();
-  const useCrd = crdEnabled && isCrdRoute(pathname) && isNotAuthorized === true;
+  const useCrd = crdEnabled && isCrdRoute(pathname);
 
   if (useCrd) {
     return <CrdRedirectToAncestorDialog closestAncestor={closestAncestor} />;

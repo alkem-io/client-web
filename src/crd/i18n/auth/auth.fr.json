@@ -6,7 +6,8 @@
     "title": "Se connecter",
     "forgotPassword": "Mot de passe oublié ?",
     "noAccount": "Pas de compte ?",
-    "signUp": "S'inscrire"
+    "signUp": "S'inscrire",
+    "preparing": "Préparation de la connexion sécurisée…"
   },
   "signUp": {
     "title": "S'inscrire",
@@ -56,5 +57,13 @@
     "github": "GitHub",
     "apple": "Apple",
     "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "Vous avez quitté votre tableau blanc",
+    "description": "Votre session d'invité est toujours active. Vous pouvez revenir à votre tableau blanc ou découvrir ce qu'Alkemio a à offrir.",
+    "backButton": "Retour au tableau blanc",
+    "websiteButton": "Aller sur notre site web",
+    "contributeTitle": "Vous voulez contribuer davantage ?",
+    "contributeDescription": "Inscrivez-vous ci-dessous pour un compte Alkemio afin de collaborer avec des équipes et d'accéder à des outils avancés."
   }
 }

@@ -24,8 +24,9 @@ import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
+import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
+import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
-import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
 import {
   mapActivityToFeedItems,
   mapMembershipsToPanelItems,
@@ -57,7 +58,9 @@ export default function DashboardWithMemberships({
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
   const navigate = useNavigate();
-  const { platformRoles, accountEntitlements } = useCurrentUserContext();
+  const { platformRoles, accountEntitlements, accountId } = useCurrentUserContext();
+  const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
+  const [createVcOpen, setCreateVcOpen] = useState(false);
 
   // Activity view toggle — persisted in localStorage
   const [activityEnabled, setActivityEnabledState] = useState(() => {
@@ -107,6 +110,7 @@ export default function DashboardWithMemberships({
   const sidebarData = useDashboardSidebar({
     onInvitationsClick: onPendingMembershipsClick,
     onTipsAndTricksClick: dialogState.openTipsAndTricks,
+    onCreateSpaceClick: () => setCreateSpaceOpen(true),
     onMyActivityClick: activityEnabled ? undefined : dialogState.openMyActivity,
     onMySpaceActivityClick: activityEnabled ? undefined : dialogState.openMySpaceActivity,
   });
@@ -212,7 +216,6 @@ export default function DashboardWithMemberships({
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
-  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
 
   // Tips — from crd-dashboard namespace
   const tipsRaw = t('tips.items', { returnObjects: true });
@@ -250,7 +253,7 @@ export default function DashboardWithMemberships({
           onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
         />
 
-        {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
+        {showCampaign && <CampaignBanner onAction={() => setCreateVcOpen(true)} />}
 
         {activityEnabled && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -284,7 +287,9 @@ export default function DashboardWithMemberships({
           </div>
         )}
       </DashboardLayout>
-      {virtualContributorWizard}
+      {accountId && (
+        <CrdCreateSpaceDialog open={createSpaceOpen} accountId={accountId} onClose={() => setCreateSpaceOpen(false)} />
+      )}
 
       <TipsAndTricksDialog
         open={dialogState.openDialog === 'tips-and-tricks'}
@@ -350,6 +355,8 @@ export default function DashboardWithMemberships({
         }}
         browseAllHref={URL_SPACE_EXPLORER}
       />
+
+      {createVcOpen && <CrdVCCreationWizardDialog open={true} onClose={() => setCreateVcOpen(false)} />}
     </>
   );
 }
