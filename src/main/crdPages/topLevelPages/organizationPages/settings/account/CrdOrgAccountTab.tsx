@@ -15,12 +15,11 @@ import { ContributorAccountView } from '@/crd/components/contributor/settings/Co
 import type { AccountResourceGroupId } from '@/crd/components/contributor/settings/ContributorAccountView.types';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
-// TEMP fallback: open existing MUI dialogs until CRD parity ports land
-// (spec 097-crd-user-settings). Delete the remaining MUI imports below and the
-// corresponding JSX at the bottom of this file once those CRD dialogs are wired in.
-// Create Space is migrated — it uses the CRD dialog (spec 105-create-space-dialog).
-import CreateInnovationPackDialog from '@/domain/InnovationPack/CreateInnovationPackDialog/CreateInnovationPackDialog';
-import CreateInnovationHubDialog from '@/domain/innovationHub/CreateInnovationHub/CreateInnovationHubDialog';
+import { CrdCreateInnovationHubDialog } from '@/main/crdPages/innovationHub/CrdCreateInnovationHubDialog';
+import { CrdCreateInnovationPackDialog } from '@/main/crdPages/innovationPack/CrdCreateInnovationPackDialog';
+// TEMP fallback: the VC creation wizard still opens the existing flow until its
+// CRD port lands (spec 097-crd-user-settings). Create Space / Innovation Pack /
+// Innovation Hub are migrated to CRD dialogs (specs 105 + 109).
 import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
@@ -194,7 +193,6 @@ const CrdOrgAccountTab = () => {
         }}
         onCancel={() => setNoEntitlementResource(null)}
       />
-      {/* TEMP fallback — see top-of-file comment (spec 097, tasks T033a–T033f) */}
       {account?.id && (
         <>
           <CrdCreateSpaceDialog
@@ -203,29 +201,29 @@ const CrdOrgAccountTab = () => {
             open={createSpaceOpen}
             onClose={() => setCreateSpaceOpen(false)}
           />
-          <CreateInnovationPackDialog
+          <CrdCreateInnovationPackDialog
             accountId={account.id}
+            accountName={accountHostName}
             open={createPackOpen}
             onClose={() => setCreatePackOpen(false)}
           />
-          <CreateInnovationHubDialog
+          <CrdCreateInnovationHubDialog
             accountId={account.id}
+            accountName={accountHostName}
             open={createHubOpen}
             onClose={() => setCreateHubOpen(false)}
           />
+          {/* Cast: `AccountInformation` returns `about.membership.myPrivileges`, but
+            `UserAccountProps` expects the full `SpaceAboutLightModel` membership
+            shape. The wizard only reads `id`, `host`, `spaces[].id`, and
+            `spaces[].authorization?.myPrivileges` at runtime — all present. */}
+          <CrdVCCreationWizardDialog
+            open={createVcOpen}
+            onClose={() => setCreateVcOpen(false)}
+            account={account as UserAccountProps | undefined}
+            accountName={accountHostName}
+          />
         </>
-      )}
-      {/* Cast: `AccountInformation` returns `about.membership.myPrivileges`, but
-          `UserAccountProps` expects the full `SpaceAboutLightModel` membership
-          shape. The wizard only reads `id`, `host`, `spaces[].id`, and
-          `spaces[].authorization?.myPrivileges` at runtime — all present. */}
-      {createVcOpen && (
-        <CrdVCCreationWizardDialog
-          open={true}
-          onClose={() => setCreateVcOpen(false)}
-          account={account as UserAccountProps | undefined}
-          accountName={accountHostName}
-        />
       )}
     </>
   );

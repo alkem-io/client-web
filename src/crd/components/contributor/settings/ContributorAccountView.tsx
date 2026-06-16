@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Card, CardContent, CardHeader } from '@/crd/primitives/card';
+import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -207,7 +208,7 @@ function IconResourceCard({
         <ResourceCardKebab actions={item.actions} inline={true} />
       </CardHeader>
       <CardContent className="flex-grow p-5 pt-2">
-        {item.description ? <p className="text-body text-muted-foreground">{item.description}</p> : null}
+        {item.description ? <CroppedMarkdown content={item.description} maxHeight="6rem" /> : null}
       </CardContent>
     </Card>
   );
