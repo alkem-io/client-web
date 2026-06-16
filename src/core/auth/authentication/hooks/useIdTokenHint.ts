@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { OIDC_ID_TOKEN_HINT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { useIdTokenHintUrl } from '@/core/auth/authentication/hooks/useIdTokenHintUrl';
 
 type IdTokenHintResponse = {
   id_token: string;
@@ -16,12 +16,13 @@ export const useIdTokenHint = (): UseIdTokenHint => {
   const [idToken, setIdToken] = useState<string>();
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState<boolean>(false);
+  const idTokenHintUrl = useIdTokenHintUrl();
 
   const fetchIdTokenHint = async () => {
     setLoading(true);
     setError(undefined);
     try {
-      const response = await fetch(OIDC_ID_TOKEN_HINT_PATH, {
+      const response = await fetch(idTokenHintUrl, {
         credentials: 'include',
         cache: 'no-store',
         headers: { Accept: 'application/json' },
