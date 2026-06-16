@@ -91,7 +91,7 @@
       "org": {
         "profile": "Profiel",
         "account": "Account",
-        "community": "Gemeenschap",
+        "community": "Community",
         "authorization": "Autorisatie",
         "settings": "Instellingen"
       },
@@ -509,7 +509,7 @@
       }
     },
     "community": {
-      "pageTitle": "Gemeenschap",
+      "pageTitle": "Community",
       "title": "Geassocieerden",
       "description": "Beheer wie aan deze organisatie verbonden is. Voeg nieuwe geassocieerden toe uit de lijst met beschikbare gebruikers; het verwijderen van een geassocieerde trekt hun organisatierol in.",
       "currentAssociatesTitle": "Huidige geassocieerden",

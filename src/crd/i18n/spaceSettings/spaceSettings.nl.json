@@ -243,9 +243,8 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Sta leden van specifieke organisaties toe automatisch lid te worden.",
+      "description": "Overzicht van alle leden- en lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
       "add": "Organisatie toevoegen",
-      "hint": "Gebruikers van deze organisaties kunnen lid worden zonder goedkeuring van een admin.",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
         "changeRole": "Rol wijzigen",

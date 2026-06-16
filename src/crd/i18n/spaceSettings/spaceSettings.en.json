@@ -243,9 +243,8 @@
       "actions": "Actions",
       "empty": "No organisations.",
       "remove": "Remove organisation",
-      "description": "Allow members from specific organisations to join automatically.",
+      "description": "Overview of all member and lead organisations. To add an organisation, contact the Alkemio team at support@alkem.io.",
       "add": "Add Organisation",
-      "hint": "Users from these organisations can join without admin approval.",
       "dropdown": {
         "viewProfile": "View Profile",
         "changeRole": "Change Role",
