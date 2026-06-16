@@ -12,6 +12,7 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
 import { GuestReturnNotice } from '@/crd/components/auth/GuestReturnNotice';
 import { SignUpCard } from '@/crd/components/auth/SignUpCard';
+import { cn } from '@/crd/lib/utils';
 import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
@@ -89,25 +90,35 @@ function CrdSignUpPage() {
   }
 
   return (
-    <AuthShellWrapper>
-      <div className="flex flex-col gap-6">
+    <AuthShellWrapper wide={shouldShowNotification}>
+      {/* Single column on mobile/tablet; when the guest notice shows, lay the
+          notice and the sign-up card out as two columns from `lg` up. The shell
+          only widens its slot when `wide` is set, so the no-notice case and every
+          other auth screen are unchanged. */}
+      <div className={cn('flex flex-col gap-6', shouldShowNotification && 'lg:flex-row lg:items-center')}>
         {shouldShowNotification && (
-          <GuestReturnNotice onBackToWhiteboard={handleBackToWhiteboard} onGoToWebsite={handleGoToWebsite} />
+          <GuestReturnNotice
+            onBackToWhiteboard={handleBackToWhiteboard}
+            onGoToWebsite={handleGoToWebsite}
+            className="lg:flex-1 lg:basis-0"
+          />
         )}
-        <SignUpCard
-          descriptor={descriptor}
-          isLoading={loading}
-          signInHref={buildLoginUrl()}
-          termsOfUseHref={locations?.terms ?? '#'}
-          privacyPolicyHref={locations?.privacy ?? '#'}
-          hasAcceptedTerms={accepted}
-          onAcceptedTermsChange={handleAcceptedChange}
-          onPasskeyTrigger={trigger => {
-            invokePasskeyTrigger(trigger).catch(() => {
-              /* passkey errors are surfaced inline once passkey is wired for registration */
-            });
-          }}
-        />
+        <div className={cn(shouldShowNotification && 'lg:flex-1 lg:basis-0')}>
+          <SignUpCard
+            descriptor={descriptor}
+            isLoading={loading}
+            signInHref={buildLoginUrl()}
+            termsOfUseHref={locations?.terms ?? '#'}
+            privacyPolicyHref={locations?.privacy ?? '#'}
+            hasAcceptedTerms={accepted}
+            onAcceptedTermsChange={handleAcceptedChange}
+            onPasskeyTrigger={trigger => {
+              invokePasskeyTrigger(trigger).catch(() => {
+                /* passkey errors are surfaced inline once passkey is wired for registration */
+              });
+            }}
+          />
+        </div>
       </div>
     </AuthShellWrapper>
   );

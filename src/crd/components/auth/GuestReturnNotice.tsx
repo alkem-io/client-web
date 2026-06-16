@@ -22,12 +22,13 @@ export function GuestReturnNotice({ onBackToWhiteboard, onGoToWebsite, className
 
   return (
     <section
-      aria-labelledby="guest-return-title"
+      aria-label={t('guestReturn.title')}
       className={cn('rounded-lg bg-card px-9 py-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)]', className)}
     >
-      <h2 id="guest-return-title" className="text-section-title font-bold text-foreground">
-        {t('guestReturn.title')}
-      </h2>
+      {/* Styled as a non-heading: the notice sits above the SignUpCard's <h1>, so a
+          real heading here would put an h2 before the page's h1. The <section> is
+          named via aria-label instead, keeping a single, ordered heading hierarchy. */}
+      <p className="text-section-title font-bold text-foreground">{t('guestReturn.title')}</p>
       <p className="mt-3 text-body text-muted-foreground">{t('guestReturn.description')}</p>
 
       <div className="mt-6 flex flex-col gap-3">

@@ -13,7 +13,9 @@ describe('GuestReturnNotice', () => {
   test('[US1] renders title, description, both action buttons, and the contribute hint', () => {
     render(<GuestReturnNotice onBackToWhiteboard={vi.fn()} onGoToWebsite={vi.fn()} />);
 
-    expect(screen.getByRole('heading', { name: 'guestReturn.title' })).toBeInTheDocument();
+    // Title is intentionally non-heading text (it sits above the SignUpCard's <h1>),
+    // so assert by text rather than role="heading".
+    expect(screen.getByText('guestReturn.title')).toBeInTheDocument();
     expect(screen.getByText('guestReturn.description')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'guestReturn.backButton' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'guestReturn.websiteButton' })).toBeInTheDocument();
