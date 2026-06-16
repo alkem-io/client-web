@@ -55,7 +55,10 @@ import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/us
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import {
+  StorageConfigContextProvider,
+  useStorageConfigContext,
+} from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import {
   diffPollOptions,
@@ -65,6 +68,7 @@ import {
 } from '@/main/crdPages/space/hooks/useCrdCalloutPollOptionDiff';
 import { loadCalloutTemplateFormValues } from '@/main/crdPages/templates/loadCalloutTemplateFormValues';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
@@ -104,7 +108,34 @@ type CalloutFormConnectorProps = {
   onFindTemplate?: () => void;
 };
 
-export function CalloutFormConnector({
+/**
+ * Outer wrapper: scopes CREATE-mode uploads to the SPACE bucket.
+ *
+ * In create mode the callout has no bucket yet, so markdown-image + reference uploads go to
+ * `space.profile.storageBucket` with `temporaryLocation: true` (the server relocates them onto the new
+ * callout on save). We mount the space-scoped `StorageConfigContextProvider` here — once — so the five
+ * callout-list call sites don't each repeat it. `skip={!open}` means the auth-gated `space.profile` query
+ * only fires when a create-capable member actually opens the dialog: it is never requested on a plain space
+ * page load (anonymous visitors / non-members on private spaces would fail that field — see
+ * `SpaceStorageConfig`'s `@include(if: $includeSpaceProfile)`).
+ *
+ * `useUrlResolver().spaceId` resolves the current Space *or* Subspace id (whichever the URL points at), so
+ * this is correct at every level. EDIT mode is already wrapped by `CalloutEditConnector`
+ * (`locationType="callout"`) and needs no space scope, so we render the inner connector directly.
+ */
+export function CalloutFormConnector(props: CalloutFormConnectorProps) {
+  const { spaceId } = useUrlResolver();
+  if (props.mode !== 'edit' && spaceId) {
+    return (
+      <StorageConfigContextProvider locationType="space" spaceId={spaceId} temporaryLocation={true} skip={!props.open}>
+        <CalloutFormConnectorInner {...props} />
+      </StorageConfigContextProvider>
+    );
+  }
+  return <CalloutFormConnectorInner {...props} />;
+}
+
+function CalloutFormConnectorInner({
   open,
   onOpenChange,
   mode = 'create',
@@ -141,16 +172,14 @@ export function CalloutFormConnector({
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
-  // Image (markdown toolbar + paste/drop) and reference-file upload both work in CREATE and EDIT, and
-  // both follow the same `temporaryLocation` rule, keyed off `mode`:
-  //   • CREATE → `temporaryLocation: true`. The callout doesn't exist yet, so uploads go to the ambient
-  //     SPACE bucket's temporary area; the server relocates the file into the callout's bucket on save.
-  //     Temporary uploads are also what lets a regular member (no permanent FileUpload on the space
-  //     bucket) attach files while creating.
-  //   • EDIT → `temporaryLocation: false`. The ambient bucket is the callout's own (scoped by
-  //     `CalloutEditConnector`, `locationType="callout"`) and the editor can write to it directly.
-  // This mirrors the legacy MUI callout form (`temporaryLocation={!callout?.id}`) and the sibling
-  // `CrdPostContributionDialog`, and satisfies spec 042 callout-dialog FR-31 / FR-50.
+  // Image (markdown toolbar + paste/drop) and reference-file upload both read the ambient storage bucket,
+  // which differs by mode:
+  //   • CREATE → the SPACE bucket (`space.profile.storageBucket`), scoped by the outer wrapper above, with
+  //     `temporaryLocation: true`. The callout doesn't exist yet, so the server relocates the files onto its
+  //     bucket on save. A regular member has `FILE_UPLOAD` on the SPACE bucket (but not on ABOUT).
+  //   • EDIT → the callout's own bucket, scoped by `CalloutEditConnector` (`locationType="callout"`), with
+  //     `temporaryLocation: false` — the editor writes to it directly.
+  // satisfies spec 042 callout-dialog FR-31 / FR-50.
   const temporaryUpload = mode === 'create';
   const ambientStorageConfig = useStorageConfigContext();
   const markdownIntegration = useMarkdownEditorIntegration({ temporaryLocation: temporaryUpload });

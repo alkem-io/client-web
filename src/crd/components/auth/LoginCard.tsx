@@ -3,10 +3,9 @@ import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { AuthCardHeader } from '@/crd/components/auth/AuthCardHeader';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor, KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
-import { Skeleton } from '@/crd/primitives/skeleton';
 
 export type LoginCardProps = {
-  /** The adapted login flow. While `undefined` (or `isLoading`), a skeleton renders. */
+  /** The adapted login flow. While `undefined` (or `isLoading`), a centered loading state renders. */
   descriptor?: KratosFlowDescriptor;
   signUpHref: string;
   forgotPasswordHref: string;
@@ -37,10 +36,11 @@ export function LoginCard({
       }
     >
       {isLoading || !descriptor ? (
-        <output aria-label={t('loading')} className="flex w-full flex-col gap-5">
-          <Skeleton className="h-14 w-full" />
-          <Skeleton className="h-14 w-full" />
-          <Skeleton className="h-12 w-full" />
+        <output
+          aria-label={t('signIn.preparing')}
+          className="text-body flex min-h-48 w-full items-center justify-center text-center text-muted-foreground"
+        >
+          {t('signIn.preparing')}
         </output>
       ) : (
         <CrdKratosFlow
