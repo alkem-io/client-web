@@ -389,11 +389,11 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
-- 109-create-pack-hub-dialogs: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); CRD `MarkdownEditor` (`@/crd/forms/markdown/MarkdownEditor`); `yup` (on-submit validation, matching the CRD create-flow precedent); `lucide-react`; `react-i18next`. **No new runtime dependencies.**
-- 109-create-pack-hub-dialogs: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`. **No new runtime dependencies.**
+- 110-guest-whiteboard-notice: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`), `lucide-react` (icons), `react-i18next`. No new runtime dependencies.
 - 105-create-space-dialog: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `yup` (validation on submit, decoupled from Formik). **No new runtime dependencies.**
+- 103-innovation-library-pagination: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**.
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); CRD `MarkdownEditor` (`@/crd/forms/markdown/MarkdownEditor`); `yup` (on-submit validation, matching the CRD create-flow precedent); `lucide-react`; `react-i18next`. **No new runtime dependencies.** (109-create-pack-hub-dialogs)
-- N/A backend. Markdown-image uploads go through the existing `uploadFileOnStorageBucket` mutation via `useMarkdownEditorIntegration`, into the account-scoped bucket with `temporaryLocation: true` (cleaned up server-side if the form is abandoned). Resource creation via existing `createInnovationPack` / `createInnovationHub`. (109-create-pack-hub-dialogs)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`), `lucide-react` (icons), `react-i18next`. No new runtime dependencies. (110-guest-whiteboard-notice)
+- Browser `sessionStorage` (`alkemio_guest_name`, `alkemio_guest_whiteboard_url`) — existing keys, unchanged. No backend, no GraphQL. (110-guest-whiteboard-notice)
