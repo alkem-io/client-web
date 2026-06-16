@@ -532,6 +532,15 @@
         "maxSmall": "Doit comporter {{count}} caractères ou moins",
         "maxMarkdown": "Doit comporter {{count}} caractères ou moins",
         "required": "Le nom est obligatoire"
+      },
+      "crop": {
+        "title": "Recadrer l’image",
+        "description": "Ajustez le recadrage pour cadrer votre image.",
+        "save": "Appliquer",
+        "saving": "Application…",
+        "cancel": "Annuler",
+        "altLabel": "Texte alternatif",
+        "altPlaceholder": "Décrivez l’image (facultatif)"
       }
     }
   },

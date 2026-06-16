@@ -44,6 +44,16 @@ export type InnovationPackDetail = {
   templatesSetId: string | undefined;
   tagsetId: string | undefined;
   avatarVisualId: string | undefined;
+  /** Avatar visual crop constraints (server-defined) — drives the `ImageCropDialog` config. */
+  avatarVisual:
+    | {
+        aspectRatio: number | undefined;
+        minWidth: number | undefined;
+        maxWidth: number | undefined;
+        minHeight: number | undefined;
+        maxHeight: number | undefined;
+      }
+    | undefined;
   url: string;
   providerName: string;
   formValues: InnovationPackFormValues;
@@ -93,6 +103,15 @@ export function mapInnovationPackToDetail(pack: GqlAdminInnovationPack): Innovat
     templatesSetId: pack.templatesSet?.id,
     tagsetId: profile.tagset?.id,
     avatarVisualId: profile.avatar?.id,
+    avatarVisual: profile.avatar
+      ? {
+          aspectRatio: profile.avatar.aspectRatio,
+          minWidth: profile.avatar.minWidth,
+          maxWidth: profile.avatar.maxWidth,
+          minHeight: profile.avatar.minHeight,
+          maxHeight: profile.avatar.maxHeight,
+        }
+      : undefined,
     url: profile.url,
     providerName: pack.provider?.profile?.displayName ?? '',
     formValues,

@@ -48,7 +48,7 @@ export function WhiteboardGuestAccessSection({
   const urlId = useId();
 
   return (
-    <div className={cn('flex w-full flex-col gap-3', className)} data-testid="guest-access-section">
+    <div className={cn('flex w-full flex-col gap-3 mt-2 mb-3', className)} data-testid="guest-access-section">
       {canToggle && (
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col">

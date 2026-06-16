@@ -1,0 +1,78 @@
+{
+  "launcher": {
+    "open": "Ouvrir le chat",
+    "close": "Fermer le chat",
+    "unreadLabel": "Vous avez des messages non lus"
+  },
+  "panel": {
+    "title": "Chat"
+  },
+  "actions": {
+    "cancel": "Annuler"
+  },
+  "newChat": {
+    "title": "Nouveau message",
+    "searchPlaceholder": "Rechercher des personnes…",
+    "searchHint": "Commencez à taper pour rechercher des personnes",
+    "noResults": "Aucune personne trouvée",
+    "create": "Démarrer la discussion",
+    "removeAria": "Supprimer {{name}}"
+  },
+  "group": {
+    "settings": "Paramètres du groupe",
+    "nameLabel": "Nom du groupe",
+    "members": "Membres",
+    "addPlaceholder": "Ajouter des personnes…",
+    "noResults": "Aucune personne trouvée",
+    "leave": "Quitter le groupe",
+    "save": "Enregistrer",
+    "you": "Vous",
+    "avatar": {
+      "edit": "Changer la photo",
+      "cropTitle": "Recadrer la photo",
+      "saving": "Enregistrement…",
+      "altLabel": "Description (facultatif)",
+      "altPlaceholder": "Décrivez l'image"
+    },
+    "removeMemberAria": "Supprimer {{name}}",
+    "removeMemberConfirm": {
+      "title": "Retirer le membre ?",
+      "description": "Retirer cette personne du groupe ?",
+      "confirm": "Retirer"
+    },
+    "leaveConfirm": {
+      "title": "Quitter le groupe ?",
+      "description": "Vous ne recevrez plus de messages de ce groupe.",
+      "confirm": "Quitter"
+    }
+  },
+  "list": {
+    "searchPlaceholder": "Rechercher des conversations…",
+    "newMessage": "Nouveau message",
+    "empty": "Aucune conversation pour le moment",
+    "emptyHint": "Commencez un nouveau message pour discuter.",
+    "noResults": "Aucune conversation ne correspond à votre recherche.",
+    "loading": "Chargement des conversations"
+  },
+  "guidance": {
+    "beta": "Bêta",
+    "intro": "Bonjour ! Je suis là pour vous aider à vous repérer dans Alkemio. Posez-moi toutes vos questions sur les espaces, la collaboration ou le fonctionnement des choses.",
+    "infoButton": "À propos de l'assistant",
+    "clear": "Effacer la conversation",
+    "thinking": "L'assistant réfléchit…",
+    "infoDialog": {
+      "title": "À propos de l'assistant",
+      "content": "Cet assistant est un guide IA pour Alkemio, actuellement en version bêta. Il peut vous aider à comprendre les fonctionnalités et à vous repérer. Les réponses peuvent être imparfaites : veuillez vérifier les informations importantes."
+    },
+    "clearConfirm": {
+      "title": "Effacer cette conversation ?",
+      "description": "Cela démarre une nouvelle conversation avec l'assistant. La conversation actuelle sera effacée.",
+      "confirm": "Effacer la conversation"
+    }
+  },
+  "thread": {
+    "back": "Retour aux conversations",
+    "loading": "Chargement des messages",
+    "addReaction": "Ajouter une réaction"
+  }
+}
