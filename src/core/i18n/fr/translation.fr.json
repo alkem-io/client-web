@@ -2415,7 +2415,7 @@
     "feedback": "Vos commentaires",
     "support": "Assistance",
     "about": "À propos de",
-    "copyright": "© 2026 Alkemio B.V."
+    "copyright": "Platform © 2026 Alkemio B.V."
   },
   "innovationHub": {
     "selectedSpaces": "{{space}} $t(common.spaces)",
