@@ -337,7 +337,7 @@
     "metrics": "Belangrijke cijfers",
     "who": "Wie",
     "why": "Waarom",
-    "host": "Host",
+    "host": "Gastheer",
     "hostedBy": "Gehost door",
     "members": "leden",
     "editMembers": "Leden bewerken",
@@ -347,53 +347,53 @@
     "leadUsers": "Leidende gebruikers",
     "leadOrganizations": "Leidende organisaties",
     "guidelines": "Communityrichtlijnen",
-    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "guidelinesAdminsOnly": "Alleen beheerders kunnen deze sectie zien. Voeg communityrichtlijnen toe zodat leden weten wat ze kunnen verwachten.",
     "references": "Referenties",
-    "close": "Close",
-    "edit": "Edit",
-    "readMore": "Read more",
-    "lockTooltip": "You don't have access to this space.",
-    "learnWhy": "Learn how to apply",
+    "close": "Sluiten",
+    "edit": "Bewerken",
+    "readMore": "Meer lezen",
+    "lockTooltip": "Je hebt geen toegang tot deze Space.",
+    "learnWhy": "Lees hoe je toegang aanvraagt",
     "hostTooltip": "The host organization or person responsible for this space.",
-    "contactHost": "Contact host",
-    "apply": "Apply",
-    "join": "Join",
-    "member": "Member",
-    "applyPending": "Application pending",
-    "parentPending": "Parent application pending",
-    "applyDisabled": "Apply not available",
-    "acceptInvitation": "Accept invitation",
-    "signIn": "Sign in to apply",
-    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "contactHost": "Contact opnemen met de gastheer",
+    "apply": "Toegang aanvragen",
+    "join": "Lid worden",
+    "member": "Lid",
+    "applyPending": "Aanvraag in behandeling",
+    "parentPending": "Aanvraag voor bovenliggende Space in behandeling",
+    "applyDisabled": "Aanvragen niet beschikbaar",
+    "acceptInvitation": "Uitnodiging accepteren",
+    "signIn": "Log in om toegang aan te vragen",
+    "signInHelper": "Je wordt eerst doorgestuurd om in te loggen bij Alkemio.",
     "context": {
       "L0": {
-        "why": "Why are we here?",
-        "who": "Who is involved?"
+        "why": "Waarom zijn we hier?",
+        "who": "Wie is erbij betrokken?"
       },
       "L1": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Waarom deze subspace?",
+        "who": "Wie is erbij betrokken?"
       },
       "L2": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Waarom deze subspace?",
+        "who": "Wie is erbij betrokken?"
       }
     }
   },
   "apply": {
-    "apply": "Apply",
-    "join": "Join",
-    "cancel": "Cancel",
-    "processing": "Processing…",
-    "applyTitle": "Apply to {{name}}",
-    "joinTitle": "Join {{name}}",
-    "subheader": "Tell us a bit about why you want to join.",
-    "subheaderJoin": "You're about to join {{name}}.",
-    "required": "This field is required.",
-    "maxLength": "Maximum {{count}} characters.",
+    "apply": "Toegang aanvragen",
+    "join": "Lid worden",
+    "cancel": "Annuleren",
+    "processing": "Bezig…",
+    "applyTitle": "Toegang aanvragen tot {{name}}",
+    "joinTitle": "Lid worden van {{name}}",
+    "subheader": "Vertel ons kort waarom je lid wilt worden.",
+    "subheaderJoin": "Je staat op het punt lid te worden van {{name}}.",
+    "required": "Dit veld is verplicht.",
+    "maxLength": "Maximaal {{count}} tekens.",
     "submitted": {
-      "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "title": "Aanvraag ingediend",
+      "body": "Je aanvraag voor {{communityName}} is ingediend."
     }
   },
   "mobile": {
