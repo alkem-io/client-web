@@ -46,6 +46,7 @@ translators recognize what to avoid.
 | `layout`               | Layout                 | Indeling                               |
 | `virtualContributor`   | Virtual Contributor    | Virtuele bijdrager                     |
 | `virtualContributors`  | Virtual Contributors   | Virtuele bijdragers                    |
+| `host`                 | host *(lowercase)*     | Gastheer                               |
 
 ### Notes on individual terms
 
@@ -59,6 +60,9 @@ translators recognize what to avoid.
   dialog heading, a button), capitalize it: **"Template"**, **"Templates"**. Never "sjabloon".
 - **Layout** — never "Indeling".
 - **Virtual Contributor(s)** — never "Virtuele bijdrager(s)". Capitalized.
+- **host** — the organisation or person responsible for a Space. Keep in English; never
+  "Gastheer". Lowercase mid-sentence (e.g. "Contact opnemen met de host"); capitalize **"Host"**
+  when it stands alone as a label, heading, or button. Currently enforced for NL only.
 
 ## Inflection & compounds
 
@@ -108,4 +112,4 @@ only has to happen once.
   - Files touched: `common`, `dashboard`, `exploreSpaces`, `layout`, `profilePages`, `search`,
     `space`, `spaceSettings`, `subspace` (all `.nl.json`, plus `common.en.json`)
 - **Spec:** [`spec.md`](./spec.md) → "Initial Glossary Draft" section
-- **Consolidated data:** [`glossary.json`](./glossary.json) (13 terms; 11 locked, 2 preferred)
+- **Consolidated data:** [`glossary.json`](./glossary.json) (14 terms; 11 locked, 3 preferred)

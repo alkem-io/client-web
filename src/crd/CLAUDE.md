@@ -640,6 +640,7 @@ A set of Alkemio platform terms are **brand-specific English words** that must *
 | **template / templates** | "sjabloon" / "sjablonen" — lowercase mid-sentence (capitalize "Template" when standalone: tab/heading/button) |
 | **Layout** | "Indeling" |
 | **Virtual Contributor(s)** | "Virtuele bijdrager(s)" |
+| **host** | "Gastheer" — the org/person responsible for a Space; lowercase mid-sentence (capitalize "Host" when standalone: label/heading/button) |
 
 When a brand term combines with a translated word, keep the English term and hyphenate the Dutch grammar around it (e.g. `Space-leden`, `subspace-template`, `Post-index`). **Disambiguate carefully:** Dutch `Berichten` also means "Messages" (the messaging feature) — only keys whose English source uses "Post"/"Posts" get reverted; "Messages", "workspace" (`werkruimte`), "Call for whiteboards" (`Oproep`), etc. stay translated.
 
