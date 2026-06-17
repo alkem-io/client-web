@@ -101,3 +101,108 @@ imported by live CRD code) plus their transitive MUI leaves — these are remove
 in later increments by replacing each bridge primitive with a CRD equivalent. No
 live route renders a MUI page directly any more; the only MUI that reaches the
 user is via these bridge imports.
+
+## Increment 2a — layout & utility primitives (story #9885)
+
+Batch 2a targeted the highest-CRD-fan-in `src/core/ui` layout/utility primitives.
+After call-site analysis the actionable, non-entangling subset was a single file.
+`@mui/` source count **572 → 571**.
+
+**Severed via approach #2 (de-MUI in place, public API + import path unchanged):**
+
+- `src/core/ui/loading/Loading.tsx` — `Box` + `CircularProgress` + MUI `Caption`
+  → plain `div` + Tailwind utilities (`flex grow items-center justify-center
+  gap-4 h-full text-primary`) + `lucide-react` `Loader2` (`animate-spin`) + a
+  `<span>` for the uppercase/medium caption. `gap: 2` → `gap-4` (16px), spinner
+  `size-10` (~40px, MUI default), caption `text-xs` (12px) `font-medium`
+  `leading-none`, `primary.main` → CRD `text-primary` token. Props (`{ text? }`)
+  and import path identical → its **13** direct CRD importers unchanged.
+  Co-located `Loading.spec.tsx` rewritten from 3 `test.skip` (stale snapshot
+  tests) to 2 real passing assertions; stale `__snapshots__` removed.
+
+**Deferred (principle #3 — entangled with MUI theming / out-of-scope consumers):**
+
+- `grid/Gutters.tsx`, `grid/GuttersGrid.tsx`, `grid/GridContainer.tsx`,
+  `grid/constants.ts`, `grid/utils.ts` — `Gutters`/etc. `extends BoxProps`; ~90+
+  (mostly out-of-scope legacy MUI) callers pass MUI shorthands (`sx`,
+  `alignItems`, `gap`, `flexDirection`, `paddingX`, …) that only a MUI `Box`
+  accepts. `gutters()` returns a `(theme) => theme.spacing(...)` callback used by
+  **229** consumers incl. out-of-scope `PreviewStyles.ts`; `useScreenSize` /
+  `useGlobalGridColumns` wrap MUI `useMediaQuery` + theme breakpoints (50 / 9
+  consumers). **0** direct CRD importers of the grid components except `Gutters`
+  (2). De-MUI in place would break the out-of-scope `BoxProps`/callback contract.
+- `link/RouterLink.tsx` — `extends MuiLinkProps`; **27** callers use it as
+  `component={RouterLink}` inside MUI components, 15 pass `underline=`, 4 pass
+  `sx=`. **0** direct CRD importers.
+- `overflow/AutomaticOverflowGradient.tsx`, `overflow/OverflowGradient.tsx`,
+  `overflow/ScrollerWithGradient.tsx`, `overflow/utils.ts` — render `Box` with
+  `sx`/`BoxProps`, consume `gutters()` and `overflowBorderGradient()` (theme
+  palette gradient, also used by out-of-scope `PreviewStyles.ts`). **0** direct
+  CRD importers — sever no CRD→MUI edge yet.
+
+These unblock once the shared `BoxProps`/theme-callback contracts (`gutters()`,
+`overflowBorderGradient()`, `useScreenSize`) are themselves migrated, in a later
+increment.
+
+## Increment 2b — dead-code cascade sweep (story #9885)
+
+Pure deletion. After increment 1 removed the legacy MUI route tree and 2a
+de-MUI'd `Loading`, a reachability trace from the real app entry `src/index.tsx`
+(following static + dynamic + `vi.mock` + type imports, with **every `*.spec`/
+`*.test`/`*.stories` file, `setupTests.ts`, and `*.d.ts` treated as live roots**
+so nothing a test still exercises is mis-flagged) found a set of files reachable
+by **nothing** — dead. They were deleted as a cascade and revalidated; the cascade
+**converged in 1 round** (re-running the trace after the deletion found 0 new dead
+files). **50 files deleted: 27 MUI + 23 non-MUI** (the non-MUI files are co-located
+hooks/services/types/empty-stubs that only the dead MUI/CRD files dragged).
+
+`@mui/` source count **571 → 544** (−27).
+
+**Deleted by area (MUI / non-MUI):**
+
+| Area | MUI | non-MUI | Total |
+|------|-----|---------|-------|
+| `src/core/ui/*` | 23 | 9 | 32 |
+| `src/crd/components/*` | 0 | 12 | 12 |
+| `src/crd/forms/*` | 0 | 1 | 1 |
+| `src/dev/ui/plansTable/*` | 2 | 0 | 2 |
+| `src/domain/license/plans/*` | 1 | 1 | 2 |
+| `src/domain/community/organization/*` | 1 | 0 | 1 |
+| **Total** | **27** | **23** | **50** |
+
+Notable deletions: `core/ui` orphans — `Breadcrumbs`/`BreadcrumbsItem` (+ their
+type-only `Expandable.ts` and `flattenChildren.ts`), the `SettingsGroups`
+`Dual`/`Triple`SwitchSettingsGroup cluster (+ its now-orphaned
+`services/NotificationValidationService.ts`, `types/NotificationTypes.ts`,
+`components/NotificationSwitchTooltip.tsx`), `pageBanner`/`pageBannerCard`,
+`notifications/*` (`NotificationHandler`, `NotificationView`,
+`ErrorNotificationContent`), `card/CardFooter*`, `content/DashboardBanner`,
+`SeeMoreExpandable`, `LabeledCount`, `actions/ButtonNarrow`, `error/ErrorBlock`,
+`forms/FormikRadiosSwitch`, `forms/editMode.ts`, `list/SubspaceLinkList`,
+`typography/TextWithTooltip`, `utils/Overlay`, an empty
+`forms/MarkdownInput/CollaborativeMarkdownInput.tsx` stub, and a stale
+`markdown/html/Converter.test_.ts`. CRD dead set — never-wired demo/scaffold
+components (`DashboardSpaces` + its `SpaceHierarchyCard`, `ReleaseNotesBanner`,
+`ContributionPreview`/`ContributionCreateButton`, `SaveAsTemplateDialog`,
+`SetDefaultTemplateDialog`, `WhiteboardTemplateForm`, `SpaceSettingsShell`,
+`DeleteFramingDialog`, `ContentBlock`, `ExpandableDescription`,
+`ContributionFormLayout`). `dev/ui/plansTable/*` (dev-only) and the
+`domain/license` plans-table UI + its `getPlanTranslations.ts` (only consumer was
+the dead `PlansTableDialog`), and `domain/community` `OrganizationVerifiedStatus`.
+
+**Validation gate (all green):** `pnpm lint` exit 0 (348 pre-existing biome
+warnings, no errors), `pnpm vitest run` **164 files / 1468 tests passing**,
+`pnpm build` exit 0 (20283 modules transformed). No co-located test/snapshot/style
+siblings existed for any deleted file (none to remove). Emptied directories
+(`pageBanner`, `pageBannerCard`, `plansTable`, `SettingsGroups/{services,types,components}`)
+were pruned.
+
+**Kept despite looking dead (conservative holds):** files that the app entry does
+not reach but a **live test** still imports are NOT dead — deleting them would
+break that test. The reference app-entry-only trace flags 29 such MUI files; the
+test-aware trace narrows the truly-orphaned set to 27 because the difference is
+held alive by `*.spec`/`*.test` roots. Two `*.spec`/`*.test` files that themselves
+contain `@mui` imports (`guestContributionsWarningBadge.spec.tsx`,
+`crdContributorSettingsRoutes.test.ts`) are live test roots, not orphaned
+components, and were left untouched. Type-only-reachable live code (per the story
+constraint) was not touched in this increment.

@@ -184,3 +184,59 @@ also includes their non-MUI leaves (hooks, models, mappers, GraphQL-adjacent
 `.ts`, and co-located tests) plus the dropped Contributors / InnovationHubs route
 subtrees. Every deletion is validated unreachable by `tsc --noEmit`, the Vite
 production build, and the full vitest suite all passing.
+
+## 9. After increment 2a (story #9885 — sever CRD→MUI edge for `Loading`)
+
+First bridge-primitive de-MUI of the batch. `src/core/ui/loading/Loading.tsx`
+was rewritten MUI-free (plain `div` + Tailwind via global utility classes,
+`lucide-react` `Loader2` spinner) keeping its `{ text? }` API and import path
+identical, severing the 13 CRD→MUI import edges on it. `@mui`/`@emotion` stay
+installed (the rest of the bridge remains).
+
+| Metric | After increment 1 | After increment 2a | Delta |
+|--------|------|------|------|
+| Files matching bare string `@mui/` (headline) | **572** | **571** | **−1** |
+
+```bash
+grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src | wc -l   # 571 (was 572)
+```
+
+The other batch-2a candidates (`grid/*`, `link/RouterLink`, `overflow/*`) were
+**deferred** — they extend MUI `BoxProps`/`LinkProps` (consumed via `sx` and
+layout shorthands by ~90+ out-of-scope legacy MUI callers) and/or depend on the
+MUI theme-callback utilities `gutters()` / `overflowBorderGradient()` (also used
+by out-of-scope `PreviewStyles.ts`). De-MUI-ing them in place would change a
+public API surface that out-of-scope MUI consumers rely on — the principle-#3
+"entangled" stop condition. They also have **0** direct CRD importers, so they
+sever no CRD→MUI edge yet; they unblock once those props/util contracts are
+themselves migrated. See `mui-removal-inventory.md` "Increment 2a".
+
+## 10. After increment 2b (story #9885 — dead-code cascade sweep)
+
+Pure deletion of files reachable by nothing. A reachability trace from
+`src/index.tsx` (static + dynamic + `vi.mock` + type imports, with all
+`*.spec`/`*.test`/`*.stories`, `setupTests.ts`, and `*.d.ts` files held as live
+roots) found a fully-orphaned set; deleting it converged in **1 cascade round**.
+**50 files deleted — 27 MUI + 23 non-MUI** (the non-MUI ones are co-located
+hooks/services/types/empty-stubs the dead MUI/CRD files dragged).
+
+| Metric | After increment 2a | After increment 2b | Delta |
+|--------|------|------|------|
+| Files matching bare string `@mui/` (headline) | **571** | **544** | **−27** |
+| Total `.ts`/`.tsx` files under `src/` | 2311 | 2261 | −50 |
+| Total source files deleted this increment | — | **50** (27 MUI / 23 non-MUI) | — |
+
+```bash
+grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src | wc -l   # 544 (was 571)
+find src -name '*.ts' -o -name '*.tsx' | wc -l                     # 2261
+```
+
+By area: `src/core/ui` 32 (23 MUI + 9 non-MUI), `src/crd` 13 (non-MUI, dead
+demo/scaffold components), `src/dev/ui/plansTable` 2 (MUI), `src/domain/license`
+2 (1 MUI + 1 non-MUI), `src/domain/community` 1 (MUI). Validated green by
+`pnpm lint`, `pnpm vitest run` (164 files / 1468 tests), and `pnpm build`
+(20283 modules). Kept-not-deleted: MUI files the app entry can't reach but a
+**live test** still imports (29 app-entry-dead → only 27 truly orphaned; the gap
+is held alive by `*.spec`/`*.test` roots) and any type-only-reachable live code
+(later increment). See `mui-removal-inventory.md` "Increment 2b". `@mui`/`@emotion`
+stay installed; the remaining 544 are the live CRD→MUI bridge.
