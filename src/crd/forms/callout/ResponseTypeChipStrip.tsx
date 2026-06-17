@@ -28,6 +28,9 @@ export type ResponseTypeChipStripProps = {
    * Edit-mode lock: the response type is fixed once the callout exists, so
    * every chip click (active or not) is a no-op and the remove affordance is
    * hidden. The old UI never allowed changing or removing a callout's type.
+   * Every chip — including the active one — is marked `aria-disabled` and
+   * carries the lock-hint tooltip so the locked state is conveyed consistently
+   * to assistive tech (unlike framing, the response type can't even be cleared).
    */
   locked?: boolean;
   /**
@@ -73,7 +76,11 @@ export function ResponseTypeChipStrip({
       >
         {chips.map(chip => {
           const active = value === chip.id;
-          const isInert = chip.disabled || (locked && !active);
+          // When locked, every chip is inert — the active one too, since the
+          // response type can't be cleared (only fully fixed). Keep them all
+          // aria-disabled so assistive tech doesn't read the active chip as a
+          // live control that silently does nothing.
+          const isInert = chip.disabled || locked;
           return (
             // biome-ignore lint/a11y/useSemanticElements: styled <button>, not <input type="radio">
             <button
@@ -84,11 +91,7 @@ export function ResponseTypeChipStrip({
               aria-disabled={isInert ? 'true' : undefined}
               aria-label={t(chip.labelKey as 'contributionSettings.types.link')}
               title={
-                chip.disabled
-                  ? t('framing.comingSoon')
-                  : locked && !active
-                    ? t('contributionSettings.typeLockedHint')
-                    : undefined
+                chip.disabled ? t('framing.comingSoon') : locked ? t('contributionSettings.typeLockedHint') : undefined
               }
               onClick={() => handleClick(chip)}
               className={cn(
@@ -97,7 +100,10 @@ export function ResponseTypeChipStrip({
                   ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                   : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
                 chip.disabled && 'opacity-50 cursor-not-allowed pointer-events-none',
-                locked && !active && !chip.disabled && 'opacity-60 cursor-not-allowed'
+                locked && !active && !chip.disabled && 'opacity-60 cursor-not-allowed',
+                // The active locked chip keeps its selected (primary) styling so the
+                // current type stays obvious, but signals it can't be acted on.
+                locked && active && 'cursor-not-allowed'
               )}
             >
               <chip.icon className="w-4 h-4" aria-hidden="true" />

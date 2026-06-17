@@ -73,6 +73,27 @@ describe('FramingChipStrip', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
+  test('edit mode: the active chip stays clearable even when its type is entitlement-disabled', async () => {
+    // A `document` callout edited after the office-documents entitlement was
+    // revoked: the chip is disabled, but clearing the framing must still work.
+    const onChange = vi.fn();
+    render(
+      <FramingChipStrip
+        value="document"
+        onChange={onChange}
+        editMode={true}
+        disabledChips={{ document: { tooltip: 'Office documents not enabled' } }}
+      />
+    );
+    const doc = screen.getByRole('radio', { name: /callout.document/i });
+    expect(doc).not.toHaveAttribute('aria-disabled', 'true');
+    await userEvent.click(doc);
+    // Still gated by the confirmation dialog.
+    expect(onChange).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole('button', { name: 'dialogs.deleteFraming.confirm' }));
+    expect(onChange).toHaveBeenCalledWith('none');
+  });
+
   test('selected chip is aria-checked', () => {
     render(<FramingChipStrip value="whiteboard" onChange={vi.fn()} />);
     const whiteboard = screen.getByRole('radio', { name: /callout.whiteboard/i, checked: true });

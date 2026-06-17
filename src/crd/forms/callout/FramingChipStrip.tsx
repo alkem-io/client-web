@@ -31,10 +31,11 @@ export type FramingChipStripProps = {
   /**
    * Edit mode (existing callout / template): the framing *type* can no longer be
    * switched — clicking an inactive chip is a no-op. The only permitted change is
-   * clearing the current framing back to `'none'` via the active chip's X, which
-   * is gated behind a confirmation dialog (CRD rule 9 — the framing content is
-   * lost). In create mode (`editMode` omitted) chips switch freely and the active
-   * chip deselects immediately with no confirmation.
+   * clearing the current framing back to `'none'` by clicking the active chip
+   * (the X is just a visual remove affordance — the whole chip is the control),
+   * which is gated behind a confirmation dialog (CRD rule 9 — the framing content
+   * is lost). In create mode (`editMode` omitted) chips switch freely and the
+   * active chip deselects immediately with no confirmation.
    */
   editMode?: boolean;
   /**
@@ -67,14 +68,18 @@ export function FramingChipStrip({
   const chips = allowedChips ? CHIPS.filter(chip => allowedChips.includes(chip.id)) : CHIPS;
 
   const handleClick = (chip: Chip) => {
-    if (disabledChips?.[chip.id]) return;
     if (editMode) {
       // Existing callout / template: the framing type can't be switched — only
       // the active chip can be cleared back to `'none'`, behind a confirmation
-      // (the framing content is destroyed). Inactive chips are inert.
+      // (the framing content is destroyed). Inactive chips are inert. The active
+      // chip bypasses the `disabledChips` guard on purpose: a framing type that
+      // became entitlement-disabled after creation (e.g. `document` once the
+      // office-documents flag is revoked) must still be clearable — clearing only
+      // ever reduces capability.
       if (chip.id === value) setConfirmClearOpen(true);
       return;
     }
+    if (disabledChips?.[chip.id]) return;
     if (chip.id === value) {
       onChange('none');
     } else {
@@ -95,9 +100,12 @@ export function FramingChipStrip({
             const active = value === chip.id;
             const disabledInfo = disabledChips?.[chip.id];
             const isDisabled = Boolean(disabledInfo);
-            // In edit mode every inactive chip is inert — only the active one is
-            // clickable (to clear the framing); in create mode all chips are live.
-            const isInert = isDisabled || (editMode && !active);
+            // In edit mode the active chip is always interactive (to clear the
+            // framing) even if its type is otherwise entitlement-disabled —
+            // clearing only reduces capability. Every other inactive chip is
+            // inert; in create mode all chips are live.
+            const activeClearable = editMode && active;
+            const isInert = !activeClearable && (isDisabled || (editMode && !active));
             return (
               // biome-ignore lint/a11y/useSemanticElements: the chip is a styled <button>, not an <input type="radio">
               <button
@@ -114,13 +122,13 @@ export function FramingChipStrip({
                   active
                     ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                     : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                  isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
+                  isDisabled && !activeClearable && 'opacity-50 cursor-not-allowed pointer-events-none',
                   editMode && !active && !isDisabled && 'opacity-60 cursor-not-allowed'
                 )}
               >
                 <chip.icon className="w-4 h-4" aria-hidden="true" />
                 <span>{t(chip.labelKey as 'callout.whiteboard')}</span>
-                {/* The X is the "remove" affordance on the active chip; clicking it
+                {/* The X marks the active chip as removable; clicking the chip itself
                     deselects (create) or asks to confirm clearing the framing (edit). */}
                 {active && <X className="w-3 h-3 ml-0.5 opacity-70" aria-hidden="true" />}
               </button>
