@@ -245,7 +245,7 @@ const ConfirmationPartView = ({
 
 function partKey(messageId: string, part: MessagePart, index: number): string {
   if (part.type === 'tool-activity' || part.type === 'tool-result') {
-    return `${messageId}-${part.toolActionId}`;
+    return `${messageId}-${part.type}-${part.toolActionId}`;
   }
   if (part.type === 'confirmation') {
     return `${messageId}-${part.proposedWriteSetId}`;

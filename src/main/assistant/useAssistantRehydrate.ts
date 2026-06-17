@@ -65,7 +65,14 @@ export const useAssistantRehydrate = () => {
   isStreamingRef.current = state.isStreaming;
 
   useEffect(() => {
-    if (!isOpen || hasRehydratedRef.current) {
+    // Closing the panel clears the latch so the next open rehydrates afresh —
+    // important when the first open was canceled before its fetch settled,
+    // which would otherwise leave the panel permanently empty.
+    if (!isOpen) {
+      hasRehydratedRef.current = false;
+      return;
+    }
+    if (hasRehydratedRef.current) {
       return;
     }
     hasRehydratedRef.current = true;

@@ -100,19 +100,22 @@ export const mapAssistantCapabilities = (
 /**
  * Build the FULL `enabledCapabilities` payload for the mutation. We send an
  * explicit toggle for **every** enumerated capability (using the resolved
- * effective value with the one toggled override applied) so the persisted grant
- * is complete and a previously-defaulted capability is materialised the first
- * time the user touches the tab. This mirrors the notifications tab's
- * full-group-payload approach (no partial updates).
+ * effective value with ALL current optimistic overrides applied) so the
+ * persisted grant is complete and a previously-defaulted capability is
+ * materialised the first time the user touches the tab. This mirrors the
+ * notifications tab's full-group-payload approach (no partial updates).
+ *
+ * Passing the full `overrides` map (not just the single toggle) is what keeps
+ * rapid successive toggles from clobbering each other: if A is toggled and B is
+ * toggled again before the refetch settles, B's payload still carries A's
+ * pending change rather than reverting it to the stale stored value.
  */
 export const buildAssistantUpdatePayload = (
   capabilities: ReadonlyArray<PlatformCapability>,
   stored: ReadonlyArray<StoredCapabilityToggle>,
-  toggledName: string,
-  toggledValue: boolean
+  overrides: Map<string, boolean>
 ): StoredCapabilityToggle[] => {
   const storedByName = indexStoredToggles(stored);
-  const overrides = new Map<string, boolean>([[toggledName, toggledValue]]);
   return capabilities.map(capability => ({
     capability: capability.name,
     enabled: resolveCapabilityEnabled(capability, storedByName, overrides),

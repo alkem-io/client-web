@@ -26,7 +26,9 @@ export const AssistantToolActivity = ({ part }: { part: ToolActivityPart }) => {
   const text =
     part.status === ToolActivityStatus.Error
       ? t('assistant.toolActivity.error', { label: part.label })
-      : t('assistant.toolActivity.started', { label: part.label });
+      : part.status === ToolActivityStatus.Finished
+        ? t('assistant.toolActivity.finished', { label: part.label })
+        : t('assistant.toolActivity.started', { label: part.label });
 
   return (
     <Box display="flex" alignItems="center" gap={gutters(0.5)} role="status">

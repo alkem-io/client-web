@@ -27,6 +27,10 @@ export function mockSseResponse(
   payload: string,
   { chunkSize = 7, headers }: { chunkSize?: number; headers?: HeadersInit } = {}
 ): Response {
+  if (!Number.isInteger(chunkSize) || chunkSize <= 0) {
+    throw new Error('chunkSize must be a positive integer');
+  }
+
   const encoder = new TextEncoder();
   const bytes = encoder.encode(payload);
   let offset = 0;
@@ -43,8 +47,13 @@ export function mockSseResponse(
     },
   });
 
+  const mergedHeaders = new Headers(headers);
+  if (!mergedHeaders.has('Content-Type')) {
+    mergedHeaders.set('Content-Type', 'text/event-stream');
+  }
+
   return new Response(body, {
     status: 200,
-    headers: { 'Content-Type': 'text/event-stream', ...headers },
+    headers: mergedHeaders,
   });
 }

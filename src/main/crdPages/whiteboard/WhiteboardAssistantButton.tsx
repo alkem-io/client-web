@@ -44,7 +44,6 @@ export function WhiteboardAssistantButton({ whiteboard }: WhiteboardAssistantBut
           openForWhiteboard({ whiteboardId: whiteboard.id, displayName: whiteboard.profile?.displayName });
         }
       }}
-      aria-pressed={openHere}
       aria-expanded={openHere}
       aria-label={t('assistant.openInWhiteboard')}
       title={t('assistant.openInWhiteboard')}

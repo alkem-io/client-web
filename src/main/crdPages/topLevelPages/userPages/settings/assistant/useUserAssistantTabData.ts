@@ -42,14 +42,6 @@ export const useUserAssistantTabData = ({
   const [overrides, setOverrides] = useState<Map<string, boolean>>(() => new Map());
   const [updateUserAssistantSettings] = useUpdateUserAssistantSettingsMutation();
 
-  const setOverride = (name: string, value: boolean) => {
-    setOverrides(prev => {
-      const next = new Map(prev);
-      next.set(name, value);
-      return next;
-    });
-  };
-
   const clearOverride = (name: string) => {
     setOverrides(prev => {
       if (!prev.has(name)) return prev;
@@ -61,10 +53,19 @@ export const useUserAssistantTabData = ({
 
   const onToggle = async (capabilityName: string, next: boolean) => {
     if (!userId) return;
-    // 1) Optimistic flip.
-    setOverride(capabilityName, next);
+    // 1) Optimistic flip — and snapshot the full, up-to-date override map so the
+    // mutation payload reflects every pending toggle, not just this one. Building
+    // the payload from the freshest overrides (rather than the single toggle over
+    // the render-snapshot stored values) keeps rapid successive toggles from
+    // clobbering each other before the refetch settles.
+    let mergedOverrides = new Map<string, boolean>();
+    setOverrides(prev => {
+      mergedOverrides = new Map(prev);
+      mergedOverrides.set(capabilityName, next);
+      return mergedOverrides;
+    });
     try {
-      const enabledCapabilities = buildAssistantUpdatePayload(capabilities, storedToggles, capabilityName, next);
+      const enabledCapabilities = buildAssistantUpdatePayload(capabilities, storedToggles, mergedOverrides);
       await updateUserAssistantSettings({
         variables: {
           settingsData: {

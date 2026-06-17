@@ -220,28 +220,28 @@ const Root: FC = () => {
                                     <PushNotificationProvider>
                                       <UnifiedChatProvider>
                                         <FullscreenEditorProvider>
-                                        <AssistantProvider>
-                                          <NavigationHistoryTracker />
-                                          <ApmUserSetter />
-                                          <DesignVersionSyncMount />
-                                          <DesignVersionUpgradePromptMount />
-                                          <ScrollToTop />
-                                          <NotificationsGate />
-                                          <UnifiedChatGate />
-                                          <InAppNotificationCountSubscriber />
-                                          <LegacyMessagingDialogGate />
-                                          <Suspense fallback={null}>
-                                            <AssistantDialog />
-                                          </Suspense>
-                                          <VersionHandling />
-                                          <OnlineStatusNotification />
-                                          <Error40XBoundary
-                                            errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                          >
-                                            <TopLevelRoutes />
-                                            <GlobalErrorDialogGate />
-                                          </Error40XBoundary>
-                                        </AssistantProvider>
+                                          <AssistantProvider>
+                                            <NavigationHistoryTracker />
+                                            <ApmUserSetter />
+                                            <DesignVersionSyncMount />
+                                            <DesignVersionUpgradePromptMount />
+                                            <ScrollToTop />
+                                            <NotificationsGate />
+                                            <UnifiedChatGate />
+                                            <InAppNotificationCountSubscriber />
+                                            <LegacyMessagingDialogGate />
+                                            <Suspense fallback={null}>
+                                              <AssistantDialog />
+                                            </Suspense>
+                                            <VersionHandling />
+                                            <OnlineStatusNotification />
+                                            <Error40XBoundary
+                                              errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
+                                            >
+                                              <TopLevelRoutes />
+                                              <GlobalErrorDialogGate />
+                                            </Error40XBoundary>
+                                          </AssistantProvider>
                                         </FullscreenEditorProvider>
                                       </UnifiedChatProvider>
                                     </PushNotificationProvider>
