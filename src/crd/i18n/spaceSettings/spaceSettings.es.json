@@ -243,9 +243,8 @@
       "actions": "Acciones",
       "empty": "No hay organizaciones.",
       "remove": "Eliminar organización",
-      "description": "Permite que los miembros de organizaciones específicas se unan automáticamente.",
+      "description": "Resumen de todas las organizaciones miembro y lead. Para añadir una organización, contacta al equipo de Alkemio en support@alkem.io.",
       "add": "Añadir organización",
-      "hint": "Los usuarios de estas organizaciones pueden unirse sin aprobación del administrador.",
       "dropdown": {
         "viewProfile": "Ver perfil",
         "changeRole": "Cambiar rol",
@@ -533,6 +532,15 @@
         "maxSmall": "Debe tener {{count}} caracteres o menos",
         "maxMarkdown": "Debe tener {{count}} caracteres o menos",
         "required": "El nombre es obligatorio"
+      },
+      "crop": {
+        "title": "Recortar imagen",
+        "description": "Ajusta el recorte para encuadrar tu imagen.",
+        "save": "Aplicar",
+        "saving": "Aplicando…",
+        "cancel": "Cancelar",
+        "altLabel": "Texto alternativo",
+        "altPlaceholder": "Describe la imagen (opcional)"
       }
     }
   },

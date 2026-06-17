@@ -8,6 +8,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { VisualType } from '@/core/apollo/generated/graphql-schema';
 import { MARKDOWN_TEXT_LENGTH, SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
   CreateSubspaceFieldErrors,
   CreateSubspaceFormValues,
@@ -16,7 +17,7 @@ import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/component
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
 import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-import { resizeImageToConstraints, type VisualConstraints } from './resizeImageToConstraints';
+import type { VisualConstraints } from './resizeImageToConstraints';
 
 export type UseCreateSubspaceOptions = {
   /** The owning account id — enables the Account source section in the template picker. */
@@ -27,12 +28,23 @@ export type UseCreateSubspaceOptions = {
   defaultTemplateId?: string;
 };
 
+/** An avatar/card image awaiting crop in the ImageCropDialog. */
+export type CreateSubspacePendingCrop = {
+  key: 'avatarFile' | 'cardBannerFile';
+  file: File;
+  config: ImageCropConfig;
+};
+
 export type UseCreateSubspaceResult = {
   open: boolean;
   openDialog: () => void;
   closeDialog: () => void;
   values: CreateSubspaceFormValues;
   errors: CreateSubspaceFieldErrors;
+  /** Non-null while a picked avatar/card image is being cropped — drives the ImageCropDialog. */
+  pendingCrop: CreateSubspacePendingCrop | null;
+  onCropComplete: (file: File, altText: string) => void;
+  onCropCancel: () => void;
   /** Props for the shared `TemplatePicker` (`mode: 'select'`) — the consumer renders `<TemplatePicker {...picker} />`. */
   picker: TemplatePickerSelectProps;
   onOpenTemplatePicker: () => void;
@@ -86,6 +98,12 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
   const [appliedTemplateId, setAppliedTemplateId] = useState<string | null>(null);
   const [pendingTemplateId, setPendingTemplateId] = useState<string | null>(null);
   const [overwriteConfirmOpen, setOverwriteConfirmOpen] = useState(false);
+  const [pendingCrop, setPendingCrop] = useState<CreateSubspacePendingCrop | null>(null);
+  // Alt text entered in the crop dialog, kept per visual until submit.
+  const [visualAltText, setVisualAltText] = useState<Record<'avatarFile' | 'cardBannerFile', string>>({
+    avatarFile: '',
+    cardBannerFile: '',
+  });
 
   const { createSubspace, loading: submitting } = useSubspaceCreation({
     refetchQueries: [refetchSubspacesInSpaceQuery({ spaceId })],
@@ -256,26 +274,37 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     clearSelectedTemplate();
   };
 
-  const applyImageResize = async (
-    key: 'avatarFile' | 'cardBannerFile',
-    source: File,
-    constraints: VisualConstraints | null
-  ) => {
-    if (!constraints) return;
-    const result = await resizeImageToConstraints(source, constraints);
-    if (result.ok) {
-      setValues(prev => ({ ...prev, [key]: result.file }));
+  const toCropConfig = (c: VisualConstraints): ImageCropConfig => ({
+    aspectRatio: c.aspectRatio,
+    maxWidth: c.maxWidth,
+    maxHeight: c.maxHeight,
+    minWidth: c.minWidth,
+    minHeight: c.minHeight,
+  });
+
+  // A newly picked avatar/card image opens the ImageCropDialog instead of going
+  // straight into form state; the dialog crops + resizes to the constraints.
+  const openCropFor = (key: 'avatarFile' | 'cardBannerFile', file: File) => {
+    const constraints = key === 'avatarFile' ? avatarConstraints : cardBannerConstraints;
+    if (constraints) {
+      setErrors(prev => ({ ...prev, [key]: undefined }));
+      setPendingCrop({ key, file, config: toCropConfig(constraints) });
     } else {
-      const message =
-        result.reason === 'tooSmall'
-          ? t('subspaces.createDialog.visuals.tooSmall', { width: constraints.minWidth, height: constraints.minHeight })
-          : t('subspaces.createDialog.visuals.loadFailed');
-      setValues(prev => ({ ...prev, [key]: null }));
-      setErrors(prev => ({ ...prev, [key]: message }));
+      setValues(prev => ({ ...prev, [key]: file }));
     }
   };
 
   const onChange = (patch: Partial<CreateSubspaceFormValues>) => {
+    // Image patches always carry only the image key — route a fresh pick to the crop dialog.
+    if (patch.avatarFile instanceof File) {
+      openCropFor('avatarFile', patch.avatarFile);
+      return;
+    }
+    if (patch.cardBannerFile instanceof File) {
+      openCropFor('cardBannerFile', patch.cardBannerFile);
+      return;
+    }
+
     setValues(prev => ({ ...prev, ...patch }));
     // Clear only the errors for changed fields so the user sees updated state.
     setErrors(prev => {
@@ -285,18 +314,17 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
       }
       return next;
     });
-
-    // When a fresh image is picked, center-crop + resize it to match the backend's
-    // visual constraints before storing it. The optimistic `setValues` above puts
-    // the raw file in state so the preview renders immediately; this async swap
-    // replaces it with the resized version as soon as it's ready.
-    if ('avatarFile' in patch && patch.avatarFile instanceof File) {
-      void applyImageResize('avatarFile', patch.avatarFile, avatarConstraints);
-    }
-    if ('cardBannerFile' in patch && patch.cardBannerFile instanceof File) {
-      void applyImageResize('cardBannerFile', patch.cardBannerFile, cardBannerConstraints);
-    }
   };
+
+  const onCropComplete = (file: File, altText: string) => {
+    const crop = pendingCrop;
+    setPendingCrop(null);
+    if (!crop) return;
+    setValues(prev => ({ ...prev, [crop.key]: file }));
+    setVisualAltText(prev => ({ ...prev, [crop.key]: altText }));
+  };
+
+  const onCropCancel = () => setPendingCrop(null);
 
   const reset = () => {
     setValues(EMPTY_VALUES);
@@ -305,6 +333,8 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     setSelectedTemplateContent(undefined);
     setPendingTemplateId(null);
     setOverwriteConfirmOpen(false);
+    setPendingCrop(null);
+    setVisualAltText({ avatarFile: '', cardBannerFile: '' });
     templatePicker.clearSelection();
   };
 
@@ -340,8 +370,10 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
           description: values.description.trim() || undefined,
           tags: values.tags,
           visuals: {
-            avatar: values.avatarFile ? { file: values.avatarFile, altText: '' } : undefined,
-            cardBanner: values.cardBannerFile ? { file: values.cardBannerFile, altText: '' } : undefined,
+            avatar: values.avatarFile ? { file: values.avatarFile, altText: visualAltText.avatarFile } : undefined,
+            cardBanner: values.cardBannerFile
+              ? { file: values.cardBannerFile, altText: visualAltText.cardBannerFile }
+              : undefined,
           },
         },
       },
@@ -359,6 +391,9 @@ export function useCreateSubspace(spaceId: string, options: UseCreateSubspaceOpt
     closeDialog,
     values,
     errors,
+    pendingCrop,
+    onCropComplete,
+    onCropCancel,
     picker: templatePicker.pickerProps,
     onOpenTemplatePicker: templatePicker.openPicker,
     onClearTemplate,

@@ -274,17 +274,19 @@ export function CommentInput({
           )}
 
           <div className="flex shrink-0 items-center gap-0.5 pb-0.5">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-6 w-6 text-muted-foreground hover:text-foreground md:h-7 md:w-7"
-              disabled={disabled}
-              onClick={() => insertAtCursor('@')}
-              aria-label={t('comments.mention')}
-            >
-              <AtSign className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
-            </Button>
+            {mentionsEnabled && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 text-muted-foreground hover:text-foreground md:h-7 md:w-7"
+                disabled={disabled}
+                onClick={() => insertAtCursor('@')}
+                aria-label={t('comments.mention')}
+              >
+                <AtSign className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
+              </Button>
+            )}
             <EmojiPicker
               onSelect={insertAtCursor}
               trigger={

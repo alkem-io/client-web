@@ -71,6 +71,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/common/common.de.json'),
     fr: () => import('@/crd/i18n/common/common.fr.json'),
   },
+  'crd-chat': {
+    en: () => import('@/crd/i18n/chat/chat.en.json'),
+    es: () => import('@/crd/i18n/chat/chat.es.json'),
+    nl: () => import('@/crd/i18n/chat/chat.nl.json'),
+    bg: () => import('@/crd/i18n/chat/chat.bg.json'),
+    de: () => import('@/crd/i18n/chat/chat.de.json'),
+    fr: () => import('@/crd/i18n/chat/chat.fr.json'),
+  },
   'crd-exploreSpaces': {
     en: () => import('@/crd/i18n/exploreSpaces/exploreSpaces.en.json'),
     es: () => import('@/crd/i18n/exploreSpaces/exploreSpaces.es.json'),
@@ -158,6 +166,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     bg: () => import('@/crd/i18n/subspace/subspace.bg.json'),
     de: () => import('@/crd/i18n/subspace/subspace.de.json'),
     fr: () => import('@/crd/i18n/subspace/subspace.fr.json'),
+  },
+  'crd-createSpace': {
+    en: () => import('@/crd/i18n/createSpace/createSpace.en.json'),
+    es: () => import('@/crd/i18n/createSpace/createSpace.es.json'),
+    nl: () => import('@/crd/i18n/createSpace/createSpace.nl.json'),
+    bg: () => import('@/crd/i18n/createSpace/createSpace.bg.json'),
+    de: () => import('@/crd/i18n/createSpace/createSpace.de.json'),
+    fr: () => import('@/crd/i18n/createSpace/createSpace.fr.json'),
   },
   'crd-whiteboard': {
     en: () => import('@/crd/i18n/whiteboard/whiteboard.en.json'),

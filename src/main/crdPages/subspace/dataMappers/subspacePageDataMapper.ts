@@ -135,26 +135,34 @@ type VirtualContributorLike = {
   } | null;
 };
 
-export function mapSubspaceLeads(leadUsers: LeadUserLike[] | undefined): SubspaceLeadData[] {
-  if (!leadUsers) return [];
-  return leadUsers
+function mapLeadContributors(leads: LeadUserLike[] | undefined, type: SubspaceLeadData['type']): SubspaceLeadData[] {
+  if (!leads) return [];
+  return leads
     .filter(
-      (user): user is LeadUserLike & { id: string; profile: NonNullable<LeadUserLike['profile']> } =>
-        !!user.id && !!user.profile
+      (lead): lead is LeadUserLike & { id: string; profile: NonNullable<LeadUserLike['profile']> } =>
+        !!lead.id && !!lead.profile
     )
-    .map(user => {
-      const name = user.profile.displayName ?? '';
-      const cityCountry = [user.profile.location?.city, user.profile.location?.country].filter(Boolean).join(', ');
+    .map(lead => {
+      const name = lead.profile.displayName ?? '';
+      const cityCountry = [lead.profile.location?.city, lead.profile.location?.country].filter(Boolean).join(', ');
       return {
-        id: user.id,
+        id: lead.id,
         name,
-        avatarUrl: user.profile.avatar?.uri ?? undefined,
+        avatarUrl: lead.profile.avatar?.uri ?? undefined,
         initials: getInitials(name) || '??',
-        href: user.profile.url ?? '',
+        href: lead.profile.url ?? '',
         location: cityCountry || undefined,
-        type: 'person',
+        type,
       };
     });
+}
+
+export function mapSubspaceLeads(leadUsers: LeadUserLike[] | undefined): SubspaceLeadData[] {
+  return mapLeadContributors(leadUsers, 'person');
+}
+
+export function mapSubspaceLeadOrganizations(leadOrganizations: LeadUserLike[] | undefined): SubspaceLeadData[] {
+  return mapLeadContributors(leadOrganizations, 'org');
 }
 
 export function mapSubspaceVirtualContributor(
@@ -175,17 +183,21 @@ export function mapSubspaceVirtualContributor(
 export type SubspaceSidebarSource = {
   description?: string | null;
   leadUsers: LeadUserLike[] | undefined;
+  leadOrganizations: LeadUserLike[] | undefined;
   virtualContributor?: VirtualContributorLike;
 };
 
 export function mapSubspaceSidebar({
   description,
   leadUsers,
+  leadOrganizations,
   virtualContributor,
 }: SubspaceSidebarSource): SubspaceSidebarData {
   return {
     description: description ?? '',
-    leads: mapSubspaceLeads(leadUsers),
+    // Lead organisations are surfaced alongside lead users (matching the legacy
+    // dashboard), so the Subspace description shows the lead org(s) — issue #9864.
+    leads: [...mapSubspaceLeads(leadUsers), ...mapSubspaceLeadOrganizations(leadOrganizations)],
     virtualContributor: mapSubspaceVirtualContributor(virtualContributor),
   };
 }

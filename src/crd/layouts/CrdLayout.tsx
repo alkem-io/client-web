@@ -20,14 +20,12 @@ type CrdLayoutProps = {
   pendingInvitationsCount?: number;
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
-  unreadMessagesCount?: number;
   unreadNotificationsCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   breadcrumbs?: ReactNode;
   onLanguageChange: (code: string) => void;
   onLogout?: () => void;
-  onMessagesClick?: () => void;
   onNotificationsClick?: () => void;
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
@@ -50,14 +48,12 @@ export function CrdLayout({
   pendingInvitationsCount,
   platformNavigationItems,
   currentPath,
-  unreadMessagesCount,
   unreadNotificationsCount,
   languages,
   currentLanguage,
   breadcrumbs,
   onLanguageChange,
   onLogout,
-  onMessagesClick,
   onNotificationsClick,
   onSearchClick,
   onPendingMembershipsClick,
@@ -79,14 +75,12 @@ export function CrdLayout({
         pendingInvitationsCount={pendingInvitationsCount}
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
-        unreadMessagesCount={unreadMessagesCount}
         unreadNotificationsCount={unreadNotificationsCount}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbs}
         onLanguageChange={onLanguageChange}
         onLogout={onLogout}
-        onMessagesClick={onMessagesClick}
         onNotificationsClick={onNotificationsClick}
         onSearchClick={onSearchClick}
         onPendingMembershipsClick={onPendingMembershipsClick}

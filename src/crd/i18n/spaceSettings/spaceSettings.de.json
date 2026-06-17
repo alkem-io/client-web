@@ -243,9 +243,8 @@
       "actions": "Aktionen",
       "empty": "Keine Organisationen.",
       "remove": "Organisation entfernen",
-      "description": "Erlauben Sie Mitgliedern bestimmter Organisationen, automatisch beizutreten.",
+      "description": "Übersicht aller Mitglieds- und Lead-Organisationen. Um eine Organisation hinzuzufügen, wenden Sie sich an das Alkemio-Team unter support@alkem.io.",
       "add": "Organisation hinzufügen",
-      "hint": "Benutzer dieser Organisationen können ohne Admin-Genehmigung beitreten.",
       "dropdown": {
         "viewProfile": "Profil anzeigen",
         "changeRole": "Rolle ändern",
@@ -533,6 +532,15 @@
         "maxSmall": "Darf höchstens {{count}} Zeichen lang sein",
         "maxMarkdown": "Darf höchstens {{count}} Zeichen lang sein",
         "required": "Name ist erforderlich"
+      },
+      "crop": {
+        "title": "Bild zuschneiden",
+        "description": "Passe den Ausschnitt an, um dein Bild zu rahmen.",
+        "save": "Anwenden",
+        "saving": "Wird angewendet…",
+        "cancel": "Abbrechen",
+        "altLabel": "Alternativtext",
+        "altPlaceholder": "Beschreibe das Bild (optional)"
       }
     }
   },

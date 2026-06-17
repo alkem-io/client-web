@@ -9,6 +9,7 @@ import type {
   TemplatesManagerViewProps,
 } from '@/crd/components/templates/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+// MarkdownUploadProps is also spread into CreateInnovationPackDialogProps (markdown description editor).
 
 export type InnovationPackCardData = {
   id: string;
@@ -52,8 +53,10 @@ export type InnovationPackFormValues = {
   name: string;
   description: string;
   tags: string[];
-  /** Queued avatar file — uploaded on save; cleared after the upload succeeds. */
+  /** Queued avatar file (already cropped) — uploaded on save; cleared after the upload succeeds. */
   avatarFile?: File;
+  /** Alt text captured in the crop dialog alongside `avatarFile`; sent with the avatar upload. */
+  avatarAltText?: string;
   references: ReferenceRow[];
   listedInStore: boolean;
   searchVisibility: SearchVisibilityValue;
@@ -75,6 +78,12 @@ export type InnovationPackFormProps = {
   providerName: string;
   /** Existing avatar URL (if any) — used to preview the current image. The form does not upload directly; `avatarFile` is queued via `onChange`. */
   avatarUrl?: string;
+  /**
+   * Called when the user picks an avatar image. The host opens the CRD `ImageCropDialog`,
+   * and stages the cropped result back into `value.avatarFile` (+ `avatarAltText`) — the
+   * form never stages the raw file itself (mirrors the profile/space avatar-crop flow).
+   */
+  onAvatarFileSelected: (file: File) => void;
   /** Optional reference file-upload (paperclip). When provided, each reference row can attach a file whose URL fills `uri`. */
   onReferenceFileUpload?: (file: File) => Promise<string | null>;
   /** `accept` attribute for the reference file picker, derived from the storage bucket's allowed mime types. */
@@ -94,7 +103,16 @@ export type CreateInnovationPackDialogProps = {
   onChange: (next: CreateInnovationPackValues) => void;
   onCreate: () => void;
   creating: boolean;
-};
+  /**
+   * Whether the form is currently valid enough to submit. When provided, it (not the displayed
+   * `errors`) drives the Create button's disabled state — so the button can be disabled while the
+   * dialog shows no errors yet (errors are surfaced only once fields are touched). Falls back to
+   * `errors`-derived blocking when omitted (legacy MUI caller).
+   */
+  canSubmit?: boolean;
+  /** Account display name for the subtitle ("…in {accountName}" / "your account"). Omitted ⇒ user's own account. */
+  accountName?: string;
+} & MarkdownUploadProps;
 
 export type InnovationPackAdminViewProps = {
   /** Pack-details EDIT form props (incl. `providerName` read-only). */
