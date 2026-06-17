@@ -347,53 +347,53 @@
     "leadUsers": "Leitende Benutzer",
     "leadOrganizations": "Leitende Organisationen",
     "guidelines": "Gemeinschaftsrichtlinien",
-    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "guidelinesAdminsOnly": "Nur Administratoren können diesen Abschnitt sehen. Füge Gemeinschaftsrichtlinien hinzu, damit die Mitglieder wissen, was sie erwartet.",
     "references": "Referenzen",
-    "close": "Close",
-    "edit": "Edit",
-    "readMore": "Read more",
-    "lockTooltip": "You don't have access to this space.",
-    "learnWhy": "Learn how to apply",
+    "close": "Schließen",
+    "edit": "Bearbeiten",
+    "readMore": "Mehr lesen",
+    "lockTooltip": "Du hast keinen Zugriff auf diesen Bereich.",
+    "learnWhy": "Erfahre, wie du dich bewerben kannst",
     "hostTooltip": "The host organization or person responsible for this space.",
-    "contactHost": "Contact host",
-    "apply": "Apply",
-    "join": "Join",
-    "member": "Member",
-    "applyPending": "Application pending",
-    "parentPending": "Parent application pending",
-    "applyDisabled": "Apply not available",
-    "acceptInvitation": "Accept invitation",
-    "signIn": "Sign in to apply",
-    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "contactHost": "Gastgeber kontaktieren",
+    "apply": "Bewerben",
+    "join": "Beitreten",
+    "member": "Mitglied",
+    "applyPending": "Bewerbung ausstehend",
+    "parentPending": "Bewerbung für übergeordneten Bereich ausstehend",
+    "applyDisabled": "Bewerbung nicht verfügbar",
+    "acceptInvitation": "Einladung annehmen",
+    "signIn": "Anmelden, um sich zu bewerben",
+    "signInHelper": "Du wirst zuerst zur Anmeldung bei Alkemio weitergeleitet.",
     "context": {
       "L0": {
-        "why": "Why are we here?",
-        "who": "Who is involved?"
+        "why": "Warum sind wir hier?",
+        "who": "Wer ist beteiligt?"
       },
       "L1": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Warum dieser Unterbereich?",
+        "who": "Wer ist beteiligt?"
       },
       "L2": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Warum dieser Unterbereich?",
+        "who": "Wer ist beteiligt?"
       }
     }
   },
   "apply": {
-    "apply": "Apply",
-    "join": "Join",
-    "cancel": "Cancel",
-    "processing": "Processing…",
-    "applyTitle": "Apply to {{name}}",
-    "joinTitle": "Join {{name}}",
-    "subheader": "Tell us a bit about why you want to join.",
-    "subheaderJoin": "You're about to join {{name}}.",
-    "required": "This field is required.",
-    "maxLength": "Maximum {{count}} characters.",
+    "apply": "Bewerben",
+    "join": "Beitreten",
+    "cancel": "Abbrechen",
+    "processing": "Wird verarbeitet…",
+    "applyTitle": "Für {{name}} bewerben",
+    "joinTitle": "{{name}} beitreten",
+    "subheader": "Erzähl uns kurz, warum du beitreten möchtest.",
+    "subheaderJoin": "Du bist dabei, {{name}} beizutreten.",
+    "required": "Dieses Feld ist erforderlich.",
+    "maxLength": "Maximal {{count}} Zeichen.",
     "submitted": {
-      "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "title": "Bewerbung eingereicht",
+      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht."
     }
   },
   "mobile": {
