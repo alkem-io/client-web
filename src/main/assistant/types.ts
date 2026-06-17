@@ -106,6 +106,27 @@ export type AssistantConversation = {
   state?: AssistantConversationState;
 };
 
+/**
+ * Read-only monthly budget snapshot (D1 — contract §7 /
+ * assistant-access-and-budget.md). Surfaced by **assistant-service** at
+ * `GET /api/private/rest/assistant/budget`, NOT a server GraphQL field — asvc
+ * owns both numbers (`tokensPerMonth` from the §3 MCP budget resource it reads,
+ * `monthToDateUsed` from its own monthly counter). Same cookie-auth,
+ * privilege-gated edge as the rest of the assistant; read-only, no client
+ * enforcement.
+ *
+ * `tokensPerMonth: null` ⇒ no limit resolvable for the account (D3) — render
+ * "no limit configured", never a misleading "0 of 0" meter.
+ */
+export type AssistantBudget = {
+  /** Weighted-token monthly allowance, or `null` when none is configured (D3). */
+  tokensPerMonth: number | null;
+  /** Weighted tokens spent so far this UTC calendar month. */
+  monthToDateUsed: number;
+  /** When the monthly counter resets (ISO date / month-boundary wording source). */
+  resetsOn?: string;
+};
+
 // ---------------------------------------------------------------------------
 // SSE events — the wire frames the transport parses (event: / data: / id:).
 // ---------------------------------------------------------------------------

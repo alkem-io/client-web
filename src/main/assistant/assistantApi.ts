@@ -1,5 +1,5 @@
 import { assistantEndpoint } from '@/main/constants/endpoints';
-import type { AssistantConversation, AssistantMessage } from './types';
+import type { AssistantBudget, AssistantConversation, AssistantMessage } from './types';
 
 /**
  * REST client for the AI assistant JSON endpoints
@@ -28,6 +28,30 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   return (await response.json()) as T;
+}
+
+/**
+ * Read the signed-in user's monthly budget snapshot (D1 — meter source,
+ * assistant-access-and-budget.md §7). The endpoint is owned by
+ * **assistant-service** (asvc T056) and may not be deployed yet, so this MUST
+ * degrade gracefully: a 404 (endpoint absent / not yet rolled out) or any
+ * empty/204 body resolves to `null`, and the caller hides the meter. A real
+ * non-404 failure still rejects so it isn't silently masked. No client
+ * enforcement — purely informational.
+ */
+export async function getBudget(): Promise<AssistantBudget | null> {
+  const response = await fetch(`${assistantEndpoint}/budget`, {
+    credentials: 'include',
+    headers: jsonHeaders,
+  });
+  // Endpoint not deployed yet (asvc T056) or no budget for this user → hide.
+  if (response.status === 404 || response.status === 204) {
+    return null;
+  }
+  if (!response.ok) {
+    throw new Error(`Assistant budget request failed: ${response.status}`);
+  }
+  return (await response.json()) as AssistantBudget;
 }
 
 /** List the signed-in user's conversations, most-recent first (US3). */

@@ -30,10 +30,15 @@
       "userTurn": "Your message",
       "assistantTurn": "Assistant reply"
     },
+    "budget": {
+      "usage": "{{used}} of {{limit}} monthly tokens · resets on the 1st",
+      "noLimit": "No monthly token limit configured",
+      "a11y": "Monthly assistant usage: {{used}} of {{limit}} tokens"
+    },
     "errors": {
       "capability_unavailable": "A required capability is temporarily unavailable. Please try again shortly.",
-      "permission_denied": "You don't have permission to do that, or the capability is disabled in your settings.",
-      "usage_limit_reached": "You've reached your assistant usage limit for now. Please try again later.",
+      "permission_denied": "You don't have access to the assistant, or the capability is disabled in your settings.",
+      "usage_limit_reached": "You've reached your monthly assistant usage limit. Your allowance resets on the 1st of next month.",
       "session_invalid": "Your session ended. Please sign in again and re-ask.",
       "internal_error": "Something went wrong. Please try again.",
       "transport": "The connection was interrupted. Please try again."

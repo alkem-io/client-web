@@ -7,10 +7,12 @@ import { FocusScope } from '@radix-ui/react-focus-scope';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { gutters } from '@/core/ui/grid/utils';
+import AssistantBudgetMeter from './AssistantBudgetMeter';
 import { useAssistantContext } from './AssistantContext';
 import { AssistantConversationView } from './AssistantConversationView';
 import AssistantNewConversationButton from './AssistantNewConversationButton';
 import AssistantSettingsDialog from './AssistantSettingsDialog';
+import { useAssistantBudget } from './useAssistantBudget';
 import { useAssistantConversation } from './useAssistantConversation';
 import { useAssistantRehydrate } from './useAssistantRehydrate';
 
@@ -44,6 +46,10 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
   // Rehydrate the single rolling thread on open/reload (incl. a pending
   // confirmation) and reconnect an in-flight turn (US3 / FR-011).
   useAssistantRehydrate();
+
+  // Read-only monthly usage meter (D1 / T049). Fetched only while the panel is
+  // open; hides itself when the asvc budget endpoint is absent (404) or fails.
+  const { budget } = useAssistantBudget(isOpen);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   // Excalidraw aggressively reclaims focus when the panel opens over a whiteboard,
@@ -115,6 +121,8 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
           </IconButton>
         </Box>
       </Box>
+
+      <AssistantBudgetMeter budget={budget} />
 
       <AssistantConversationView />
 
