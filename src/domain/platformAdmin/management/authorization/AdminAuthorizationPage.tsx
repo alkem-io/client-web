@@ -55,7 +55,13 @@ const AdminAuthorizationPage = ({ selectedRole }: AdminAuthorizationPageProps) =
       {!loading && roleSetId && (
         <>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }} value={selectedRole ?? '_none'}>
+            <Tabs
+              variant="scrollable"
+              scrollButtons="auto"
+              allowScrollButtonsMobile
+              sx={{ '.MuiTabs-flexContainer': { gap: gutters() } }}
+              value={selectedRole ?? '_none'}
+            >
               <Tab value="_none" hidden={true} />
               {MANAGED_ROLES.map(tab => (
                 <Tab
