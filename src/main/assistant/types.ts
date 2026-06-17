@@ -158,6 +158,12 @@ export type MessageEvent = {
 export type DoneEvent = {
   messageId: string;
   tokenUsage?: { prompt: number; completion: number };
+  /**
+   * Post-debit month-to-date weighted-token usage, pushed by assistant-service at
+   * turn end so the budget meter updates live from the SSE stream (no refetch).
+   * Optional — absent if the asvc could not read its counter for this turn.
+   */
+  monthToDateUsed?: number;
 };
 
 export type ErrorEvent = {

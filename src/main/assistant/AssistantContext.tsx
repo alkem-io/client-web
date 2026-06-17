@@ -39,6 +39,13 @@ export type AssistantState = {
   lastEventId: string | null;
   /** A non-blocking turn error (the red error UI); cleared on the next turn. */
   error: AssistantError | null;
+  /**
+   * Live month-to-date weighted-token usage, pushed by assistant-service in the
+   * `done` event at turn end (B / D1). Null until the first turn pushes a value;
+   * the budget meter prefers it over the initial REST snapshot so it updates
+   * without a refetch.
+   */
+  monthToDateUsed: number | null;
 };
 
 const initialState: AssistantState = {
@@ -48,6 +55,7 @@ const initialState: AssistantState = {
   pendingConfirmationId: null,
   lastEventId: null,
   error: null,
+  monthToDateUsed: null,
 };
 
 export type AssistantAction =
@@ -171,7 +179,9 @@ function applyStreamEvent(state: AssistantState, event: AssistantStreamEvent): A
       );
       // A turn that terminates with `done` is no longer awaiting a confirmation
       // (a decline ends with `done`; an approve streams results then `done`).
-      return { ...state, messages, isStreaming: false, lastEventId, pendingConfirmationId: null };
+      // The meter updates live off the pushed month-to-date (B / D1).
+      const monthToDateUsed = event.data.monthToDateUsed ?? state.monthToDateUsed;
+      return { ...state, messages, isStreaming: false, lastEventId, pendingConfirmationId: null, monthToDateUsed };
     }
 
     case 'error': {

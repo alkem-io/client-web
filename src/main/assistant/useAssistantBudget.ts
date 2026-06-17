@@ -9,10 +9,13 @@ import type { AssistantBudget } from './types';
  * (asvc T056), reached through the same same-origin, cookie-authenticated edge
  * as the rest of the assistant — no Authorization header, no client enforcement.
  *
- * Graceful degradation is the contract: the endpoint may not be deployed yet
- * (asvc T056 ships in parallel), so a 404 / empty body resolves to `budget:
- * null` and the meter hides itself. Any other failure also leaves `budget`
- * null (the meter simply doesn't render) — the budget is informational, never a
+ * This is the INITIAL snapshot only (on panel open). The meter then stays live
+ * off the `monthToDateUsed` pushed in each `done` SSE event (B / D1) — see the
+ * reducer's `done` case + AssistantPanelContent — so no per-turn refetch.
+ *
+ * Graceful degradation is the contract: the endpoint may not be deployed yet, so
+ * a 404 / empty body resolves to `budget: null` and the meter hides itself. Any
+ * other failure also leaves `budget` null — the budget is informational, never a
  * gate, so a fetch failure must never block the panel.
  *
  * `enabled` lets the caller defer the fetch until the panel is actually open

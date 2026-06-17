@@ -38,7 +38,7 @@ type AssistantPanelContentProps = {
 
 const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) => {
   const { t } = useTranslation();
-  const { panelContext, clearPanelContext } = useAssistantContext();
+  const { state, panelContext, clearPanelContext } = useAssistantContext();
   const { sendMessage, cancel, isStreaming, startNewConversation } = useAssistantConversation();
   const [draft, setDraft] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -47,9 +47,14 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
   // confirmation) and reconnect an in-flight turn (US3 / FR-011).
   useAssistantRehydrate();
 
-  // Read-only monthly usage meter (D1 / T049). Fetched only while the panel is
-  // open; hides itself when the asvc budget endpoint is absent (404) or fails.
+  // Read-only monthly usage meter (D1 / T049). The initial snapshot is fetched
+  // while the panel is open; it then stays live off the `monthToDateUsed` pushed
+  // in each `done` SSE event (B), preferred over the initial fetch so the meter
+  // updates per turn without a refetch. Hides itself when the asvc endpoint is
+  // absent (404) or fails.
   const { budget } = useAssistantBudget(isOpen);
+  const liveBudget =
+    budget && state.monthToDateUsed !== null ? { ...budget, monthToDateUsed: state.monthToDateUsed } : budget;
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   // Excalidraw aggressively reclaims focus when the panel opens over a whiteboard,
@@ -122,7 +127,7 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
         </Box>
       </Box>
 
-      <AssistantBudgetMeter budget={budget} />
+      <AssistantBudgetMeter budget={liveBudget} />
 
       <AssistantConversationView />
 
