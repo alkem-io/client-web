@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { FloatingChatLauncher } from '@/crd/components/chat/FloatingChatLauncher';
+import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 import { UnifiedChatPanelConnector } from './UnifiedChatPanelConnector';
@@ -17,6 +18,7 @@ type UnifiedChatLauncherProps = {
 export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
   const { t } = useTranslation('crd-chat');
   const { isEnabled, isOpen, setIsOpen } = useUserMessagingContext();
+  const { isSmallScreen } = useScreenSize();
   const unreadCount = useUnreadConversationsCount();
 
   if (!isEnabled || hidden) {
@@ -28,6 +30,7 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
       <FloatingChatLauncher
         unreadCount={unreadCount}
         isOpen={isOpen}
+        hidden={isSmallScreen && isOpen}
         onClick={() => setIsOpen(!isOpen)}
         openLabel={t('launcher.open')}
         closeLabel={t('launcher.close')}
