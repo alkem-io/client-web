@@ -38,7 +38,7 @@ export function FloatingChatLauncher({
       aria-label={isOpen ? closeLabel : openLabel}
       aria-expanded={isOpen}
       className={cn(
-        'fixed bottom-4 right-4 z-50 flex size-12 items-center justify-center rounded-full',
+        'fixed bottom-20 right-4 z-50 flex size-12 items-center justify-center rounded-full lg:bottom-4',
         'bg-primary text-primary-foreground shadow-lg transition-colors hover:bg-primary/90',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
       )}
