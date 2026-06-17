@@ -4,6 +4,15 @@
 
 CRD (Client Re-Design) is the new design system replacing MUI. It's built on shadcn/ui + Tailwind CSS + Radix UI. **CRD is the only design system for new client-facing features** — every new feature is built in `src/crd/` with its integration glue in `src/main/crdPages/`. MUI is **frozen**: no new MUI view components are added; MUI is only ever removed as pages migrate. Migration of existing pages is incremental — MUI pages and CRD pages coexist, and the split happens at the route level.
 
+> **MUI removal tracking (epic #1888).** The current MUI footprint baseline and the
+> categorized removal inventory (what gets removed, and the precondition that
+> unblocks each removal) live at
+> [`specs/111-remove-mui-library/mui-footprint-baseline.md`](../../specs/111-remove-mui-library/mui-footprint-baseline.md)
+> and
+> [`specs/111-remove-mui-library/mui-removal-inventory.md`](../../specs/111-remove-mui-library/mui-removal-inventory.md).
+> The MUI runtime packages are uninstalled **last**, only once the source `@mui/*`
+> import count reaches zero.
+
 The prototype in `prototype/` (generated from Figma Make) is the design reference. CRD components are production-ready versions of prototype components, with i18n, accessibility, and real data instead of mocks.
 
 ## Architecture at a Glance
@@ -24,7 +33,7 @@ root.tsx
 
 CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched. Global dialogs (notifications) are handled at `root.tsx` level and work on all pages regardless of layout.
 
-During migration, CRD routes are gated behind a **per-user `UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD; default `1`). Deployed environments always render the old MUI pages until the user opts in. The **Design Version switch lives in the user menu of both shells** — `PlatformNavigationUserMenu` (MUI) and `UserMenu` (CRD) — so a user starting on MUI can flip to CRD from their avatar dropdown without leaving the app. Developers/QA can also seed the toggle from the browser console.
+During migration, the active route tree is gated behind a **per-user `UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD; **default `2` = CRD**). Anyone without an explicit preference (anonymous visitors, fresh devices, cleared LS, or an unset server record) lands on CRD; only users who explicitly opted into legacy (`1`) keep MUI. The **Design Version switch lives in the user menu of both shells** — `PlatformNavigationUserMenu` (MUI) and `UserMenu` (CRD) — so a user on legacy can flip to CRD (or back) from their avatar dropdown without leaving the app. Developers/QA can also seed the toggle from the browser console.
 
 ## Feature Toggle
 

@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
+Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`), the only design system for new features. The legacy **MUI + Emotion** design system (`src/core/ui/`) is **frozen and being removed page-by-page** as pages migrate to CRD (epic #1888); it still serves the not-yet-migrated routes and must only ever be removed, never extended. Apollo Client is the GraphQL data layer. The current MUI footprint and the removal plan are tracked in `specs/111-remove-mui-library/mui-footprint-baseline.md` and `specs/111-remove-mui-library/mui-removal-inventory.md`.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
 - Requires Node ≥24.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
@@ -389,6 +389,7 @@ Implementation surface:
 When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
 
 ## Recent Changes
+- 111-remove-mui-library: Documentation + SDD artifacts only (no runtime change). Established the MUI footprint baseline and the categorized removal inventory for epic #1888, and corrected MUI-policy wording. MUI/Emotion remain installed and in use (mid-migration); see `specs/111-remove-mui-library/mui-footprint-baseline.md` and `mui-removal-inventory.md`. No new runtime dependencies.
 - 110-guest-whiteboard-notice: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`), `lucide-react` (icons), `react-i18next`. No new runtime dependencies.
 - 105-create-space-dialog: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `yup` (validation on submit, decoupled from Formik). **No new runtime dependencies.**
 - 103-innovation-library-pagination: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**.
