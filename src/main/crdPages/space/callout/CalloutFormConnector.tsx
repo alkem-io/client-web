@@ -167,8 +167,9 @@ function CalloutFormConnectorInner({
       : undefined;
   const form = useCrdCalloutForm(restrictionOverrides);
 
-  // Chip allow-lists apply on create only — in edit mode the strips are locked
-  // and must stay unfiltered so an existing callout's type is never hidden.
+  // Chip allow-lists apply on create only — in edit mode the strips no longer
+  // switch type (framing can only be cleared to none; response is locked) and
+  // must stay unfiltered so an existing callout's type is never hidden.
   const framingAllowList = mode === 'create' ? restrictions?.allowedFramingChips : undefined;
   const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
   const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;
@@ -664,9 +665,9 @@ function CalloutFormConnectorInner({
                 value={values.framingChip}
                 allowedChips={framingAllowList}
                 onChange={chip => {
-                  // The strip is `locked` in edit mode, so this only fires while
-                  // creating a callout — the framing type can't be changed or
-                  // cleared once the callout exists (matches the old UI).
+                  // In edit mode the strip only ever emits `'none'` (clearing the
+                  // framing, after the confirmation dialog); type-switching is
+                  // disabled. In create mode any chip can fire.
                   // When switching framing AWAY from 'document', clear any staged
                   // upload so the file does not persist invisibly under another
                   // framing type (Edge Case in spec.md).
@@ -677,7 +678,7 @@ function CalloutFormConnectorInner({
                   }
                   setField('framingChip', chip);
                 }}
-                locked={mode === 'edit'}
+                editMode={mode === 'edit'}
                 disabledChips={disabledChips}
               />
               <FramingEditorConnector
