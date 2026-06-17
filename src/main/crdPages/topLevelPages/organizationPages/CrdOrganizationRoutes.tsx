@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import Loading from '@/core/ui/loading/Loading';
 import { OrganizationProvider } from '@/domain/community/organization/context/OrganizationProvider';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdOrganizationProfilePage from './publicProfile/CrdOrganizationProfilePage';
@@ -34,7 +34,7 @@ export const CrdOrganizationRoutes = () => (
       path="*"
       element={
         <CrdLayoutWrapper>
-          <Error404 />
+          <CrdNotFoundView />
         </CrdLayoutWrapper>
       }
     />

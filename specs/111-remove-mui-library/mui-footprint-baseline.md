@@ -240,3 +240,51 @@ demo/scaffold components), `src/dev/ui/plansTable` 2 (MUI), `src/domain/license`
 is held alive by `*.spec`/`*.test` roots) and any type-only-reachable live code
 (later increment). See `mui-removal-inventory.md` "Increment 2b". `@mui`/`@emotion`
 stay installed; the remaining 544 are the live CRD→MUI bridge.
+
+## 11. After increment 2c (story #9885 — sever direct CRD→MUI bridge edges)
+
+Edge-severance, not file-deletion. A strict scan of CRD code (`src/crd/**` +
+`src/main/crdPages/**`) found **19** MUI-coupled shared files imported *directly*
+by CRD — the entire remaining direct bridge. This increment severed **4** of
+those edges, shrinking the direct bridge **19 → 15**:
+
+- `core/pages/Errors/Error404.tsx` (×11 CRD importers) → repointed all 11 to a
+  new layout-less `main/crdPages/error/CrdNotFoundView.tsx` (wraps the existing
+  CRD `CrdNotFoundPage`); `CrdNotFoundBranch` now reuses it.
+- `core/ui/grid/constants.ts` (`useScreenSize`) → 3 whiteboard/memo CRD files
+  repointed to CRD `useMediaQuery('(max-width: 599.95px)')` (exact MUI `only('xs')`
+  equivalent).
+- `core/ui/button/FullscreenButton.tsx` → 3 CRD files repointed to a new
+  `crd/components/common/CrdFullscreenButton.tsx` (Tailwind + lucide, inlined
+  Fullscreen-API logic).
+- `domain/shared/components/SearchableList/SimpleSearchableTable.tsx` → the
+  `SearchableListItem`/`SearchableListProps` *types* were extracted to a new
+  MUI-free `SearchableListTypes.ts` (re-exported from the original for legacy);
+  the 2 CRD admin mappers now import the type module.
+
+| Metric | After increment 2b | After increment 2c | Delta |
+|--------|------|------|------|
+| Files matching bare string `@mui/` (headline) | **544** | **544** | **0** |
+| Direct CRD→MUI bridge files (strict scan) | 19 | **15** | **−4** |
+| Total `.ts`/`.tsx` files under `src/` | 2261 | 2264 | +3 (net-new MUI-free modules) |
+
+```bash
+grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src | wc -l   # 544 (unchanged)
+```
+
+**Why the headline count is unchanged.** Severing a *direct* CRD edge only deletes
+the target when it becomes wholly unreachable. All four severed targets remain
+**transitively** reachable from `src/index.tsx` via the *deferred* bridge files
+(e.g. `Error404` via legacy `Error403`/`Error40X`; `FullscreenButton` via the
+legacy whiteboard/memo dialogs). A test-aware reachability cascade
+(`src/index.tsx` + all `*.spec`/`*.test`/`*.stories`/`setupTests`/`*.d.ts` as live
+roots) confirmed **zero** newly-orphaned production files — the only index-dead MUI
+file is a `*.spec.tsx` test root (kept), and the only other index-dead file
+(`crd/components/callout/CalloutSidebarList.tsx`) is reachable from the standalone
+`crd/app/` preview root (kept). The count drops in a later increment once the
+deferred bridges (the heavy editors/dialogs, the Kratos auth UI, the two
+pending-membership/invitation dialog connectors) are migrated and the last path to
+each target is cut. Net-new files: `CrdNotFoundView.tsx`, `CrdFullscreenButton.tsx`
+(FLAG — visual review), `SearchableListTypes.ts` — all MUI-free. Validated green by
+`pnpm lint` (exit 0), `pnpm vitest run` (164 files / 1468 tests), `pnpm build`.
+See `mui-removal-inventory.md` "Increment 2c" for the per-file disposition of all 19.

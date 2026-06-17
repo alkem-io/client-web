@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import Loading from '@/core/ui/loading/Loading';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
@@ -53,7 +53,7 @@ export const CrdVCRoutes = () => (
         path="*"
         element={
           <CrdLayoutWrapper>
-            <Error404 />
+            <CrdNotFoundView />
           </CrdLayoutWrapper>
         }
       />

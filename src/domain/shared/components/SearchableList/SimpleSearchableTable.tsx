@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { times } from 'lodash-es';
 import type React from 'react';
-import { type ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Actions } from '@/core/ui/actions/Actions';
 import ContributorCardHorizontal from '@/core/ui/card/ContributorCardHorizontal';
@@ -24,34 +24,9 @@ import RouterLink from '@/core/ui/link/RouterLink';
 import { BlockTitle, CardTitle } from '@/core/ui/typography';
 import useLazyLoading from '@/domain/shared/pagination/useLazyLoading';
 import LoadingListItem from './LoadingListItem';
+import type { SearchableListItem, SearchableListProps } from './SearchableListTypes';
 
-export interface SearchableListProps<Item extends SearchableListItem> {
-  data: Item[] | undefined;
-  active?: number | string;
-  onDelete?: (item: Item) => void;
-  loading: boolean;
-  fetchMore: () => Promise<void>;
-  pageSize: number;
-  firstPageSize?: number;
-  searchTerm: string;
-  onSearchTermChange: (searchTerm: string) => void;
-  totalCount?: number;
-  hasMore: boolean | undefined;
-  itemActions?: (item: Item) => ReactNode;
-}
-
-export interface SearchableListItem {
-  id: string;
-  accountId?: string;
-  value: string;
-  url: string;
-  email?: string;
-  verified?: boolean;
-  activeLicensePlanIds?: string[];
-  avatar?: {
-    uri: string;
-  };
-}
+export type { SearchableListItem, SearchableListProps } from './SearchableListTypes';
 
 /**
  * @deprecated - use AdminSearchableTable instead

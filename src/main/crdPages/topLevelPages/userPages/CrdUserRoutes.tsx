@@ -2,10 +2,10 @@ import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import Loading from '@/core/ui/loading/Loading';
 import { MeUserProvider } from '@/domain/community/user/routing/MeUserContext';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdUserProfilePage from './publicProfile/CrdUserProfilePage';
@@ -26,12 +26,12 @@ const CrdMeUserRoute = () => {
     return <Loading text={t('pages.user-profile.loading')} />;
   }
 
-  // Safety net — NoIdentityRedirect should already redirect, but render Error404
+  // Safety net — NoIdentityRedirect should already redirect, but render the not-found view
   // if auth resolved with no current user so we never spin forever.
   if (!userModel) {
     return (
       <CrdLayoutWrapper>
-        <Error404 />
+        <CrdNotFoundView />
       </CrdLayoutWrapper>
     );
   }
@@ -61,7 +61,7 @@ export const CrdUserRoutes = () => (
       path="*"
       element={
         <CrdLayoutWrapper>
-          <Error404 />
+          <CrdNotFoundView />
         </CrdLayoutWrapper>
       }
     />

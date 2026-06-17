@@ -1,10 +1,10 @@
 import { lazy, type ReactNode, Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import Loading from '@/core/ui/loading/Loading';
 import { AdminSectionPlaceholder } from '@/crd/components/admin/AdminSectionPlaceholder';
 import NonPlatformAdminRedirect from '@/main/admin/NonPlatformAdminRedirect';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { ADMIN_SECTIONS, type AdminSectionId, DEFAULT_ADMIN_SECTION } from './adminSections';
 import CrdAdminShellPage from './CrdAdminShellPage';
 
@@ -59,7 +59,7 @@ export const CrdAdminRoutes = () => (
               }
             />
           ))}
-          <Route path="*" element={<Error404 />} />
+          <Route path="*" element={<CrdNotFoundView />} />
         </Route>
       </Routes>
     </NonPlatformAdminRedirect>

@@ -1,6 +1,5 @@
 import { User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
@@ -8,6 +7,7 @@ import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileVi
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
 import { normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
@@ -48,7 +48,7 @@ export const CrdUserProfilePage = () => {
   useSetBreadcrumbs(breadcrumbItems);
 
   if (!loading.route && !userModel) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   const profile = userModel?.profile;

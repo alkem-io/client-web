@@ -1,7 +1,6 @@
 import { Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
@@ -11,6 +10,7 @@ import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
 import { buildTagsetGroups, normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
@@ -47,7 +47,7 @@ export const CrdOrganizationProfilePage = () => {
   useSetBreadcrumbs(breadcrumbItems);
 
   if (!loading.context && !loading.provider && !organization) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   const heroLoading = loading.context || loading.provider || !organization;

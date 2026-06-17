@@ -83,5 +83,6 @@
       "confirm": "Remove",
       "unnamed": "this reference"
     }
-  }
+  },
+  "fullscreen": "Toggle full screen"
 }

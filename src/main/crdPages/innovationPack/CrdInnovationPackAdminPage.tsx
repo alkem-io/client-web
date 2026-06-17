@@ -1,6 +1,5 @@
 import { Library, Package, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
@@ -10,6 +9,7 @@ import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialo
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
 import type { TemplatesManagerViewProps, TemplateType } from '@/crd/components/templates/types';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -71,7 +71,7 @@ const CrdInnovationPackAdminPageInner = () => {
   useSetBreadcrumbs(breadcrumbItems);
 
   if (notFound) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   const templatesManager: TemplatesManagerViewProps = {

@@ -206,3 +206,54 @@ contain `@mui` imports (`guestContributionsWarningBadge.spec.tsx`,
 `crdContributorSettingsRoutes.test.ts`) are live test roots, not orphaned
 components, and were left untouched. Type-only-reachable live code (per the story
 constraint) was not touched in this increment.
+
+## Increment 2c — sever direct CRD→MUI bridge edges (story #9885)
+
+A strict scan of CRD code (`src/crd/**` + `src/main/crdPages/**`) found exactly
+**19** MUI-coupled shared files imported *directly* by CRD — the entire remaining
+direct bridge. This increment severed the safe ones and deferred the rest.
+
+**Severed: 4 edges (direct bridge 19 → 15). Files deleted by cascade: 0** (every
+severed target stays transitively reachable via a still-deferred bridge — see
+`mui-footprint-baseline.md` §11). **Net-new MUI-free modules: 3** — two are
+net-new CRD components flagged for visual review.
+
+| # | File (by CRD fan-in) | Disposition |
+|---|----------------------|-------------|
+| 1 | `core/pages/Errors/Error404.tsx` (×11) | **Severed #1** — repointed all 11 CRD importers to new layout-less `main/crdPages/error/CrdNotFoundView.tsx`, which wires the existing CRD `CrdNotFoundPage` (i18n + navigate + Sentry 404 log). `CrdNotFoundBranch` refactored to reuse it. Legacy `Error404.tsx` kept (still used by `Error403`/`Error40X`). |
+| 2 | `core/ui/button/FullscreenButton.tsx` (×3) | **Severed #1/#3** — created **net-new CRD `crd/components/common/CrdFullscreenButton.tsx`** (FLAG: visual review) — Tailwind ghost icon button, lucide `Maximize`/`Minimize`, Fullscreen-API logic inlined (no `@/core/ui` dep). Added `fullscreen` label to `crd-common` i18n (6 langs). 3 whiteboard/memo CRD files repointed. Legacy button kept for 2 legacy domain consumers. |
+| 3 | `core/ui/grid/constants.ts` (×3) | **Severed #1** — the only symbol CRD used was `useScreenSize().isSmallScreen`; 3 whiteboard/memo files repointed to CRD `useMediaQuery('(max-width: 599.95px)')` — the exact equivalent of MUI `breakpoints.only('xs')` (theme uses default 600px sm). |
+| 4 | `core/ui/grid/Gutters.tsx` (×2) | **DEFERRED** — both consumers (`CrdPendingMembershipsDialog`, `InvitationDetailConnector`) also import MUI `BlockSectionTitle`/`Caption`/`Text`, `References`, `WrapperMarkdown`. Severing `Gutters` alone doesn't drop the file's MUI coupling; needs a coordinated de-MUI of those two dialog connectors (fidelity-sensitive dialog bodies, not headlessly verifiable). |
+| 5 | `core/ui/grid/utils.ts` (×2) | **DEFERRED** — same two dialog connectors; `gutters()` returns a `theme => theme.spacing()` function consumed by MUI `BlockSectionTitle`. Gated on the same de-MUI. |
+| 6 | `domain/shared/components/References/References.tsx` (×2) | **DEFERRED** — same two dialog connectors. A CRD references treatment would still leave the hosts MUI-bound; defer with the connector cluster. |
+| 7 | `domain/shared/components/SearchableList/SimpleSearchableTable.tsx` (×2) | **Severed #2** — CRD only imported the *type* `SearchableListItem`. Extracted `SearchableListItem` + `SearchableListProps` to new MUI-free `SearchableListTypes.ts`, re-exported from the original (zero churn for ~6 legacy consumers); 2 CRD admin mappers repointed to the type module. |
+| 8 | `core/auth/authentication/components/Kratos/KratosForm.tsx` (×2) | **DEFERRED** — Ory Kratos settings-flow form wrapper. Would need a CRD equivalent of the dynamic Kratos UI-node renderer; auth-sensitive, not headlessly verifiable. The existing CRD `CrdKratosFlow` covers login/recovery/signup cards, not the password-change settings node renderer. |
+| 9 | `core/auth/authentication/components/KratosUI.tsx` (×2) | **DEFERRED** — renders dynamic Kratos `ui` flow nodes (Alert/inputs/buttons). Same reason as #8. |
+| 10 | `core/auth/authentication/components/Kratos/KratosConfirmPasswordField.tsx` (×1) | **DEFERRED** — MUI `TextField`+visibility-toggle field inside the deferred Kratos password flow. Migrate with #8/#9. |
+| 11 | `domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper.tsx` (×1) | **DEFERRED** — heavy third-party Excalidraw editor wrapper. |
+| 12 | `domain/common/whiteboard/excalidraw/ExcalidrawWrapper.tsx` (×1) | **DEFERRED** — heavy third-party Excalidraw editor wrapper. |
+| 13 | `domain/communication/messaging/DirectMessaging/DirectMessageDialog.tsx` (×1) | **DEFERRED** — large MUI messaging dialog; nontrivial new CRD component, fidelity-sensitive. |
+| 14 | `domain/templates/components/Dialogs/ApplySpaceTemplateDialog.tsx` (×1) | **DEFERRED** — template apply dialog; heavy MUI dialog. |
+| 15 | `domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog.tsx` (×1) | **DEFERRED** — template import dialog; heavy MUI dialog. |
+| 16 | `core/ui/markdown/WrapperMarkdown.tsx` (×1) | **DEFERRED** — only consumer is `InvitationDetailConnector` (the deferred dialog-connector cluster, #4–#6). Migrate with that cluster (CRD `MarkdownContent`/`InlineMarkdown` is the eventual target). |
+| 17 | `domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor.tsx` (×1) | **DEFERRED** — heavy third-party Collabora document editor wrapper. |
+| 18 | `main/ui/layout/TopLevelLayout.tsx` (×1) | **DEFERRED** — top-level MUI layout shell used by `CrdAwareErrorComponent`; layout migration, fidelity-sensitive. |
+| 19 | `core/40XErrorHandler/RedirectToAncestorDialog.tsx` (×1) | **DEFERRED** — the MUI branch of `AncestorRedirectDispatcher` is still reachable: `isCrdRoute` returns false for real non-CRD paths (`/documentation`, `/help`, `/about`, `/contact`, `/identity`, `/create-space`, `/profile`, `/`), so the MUI dialog is the live fallback for those. Severing needs `CrdRedirectToAncestorDialog` to cover all paths (or deleting the dispatcher's MUI branch) — error-flow UI, not headlessly verifiable. |
+
+**Cascade after severance.** Test-aware reachability trace from `src/index.tsx`
+(+ all `*.spec`/`*.test`/`*.stories`/`setupTests`/`*.d.ts` as live roots, plus the
+standalone `crd/app/` preview root) found **0** newly-orphaned production files.
+The four severed targets remain transitively reachable through the deferred
+bridges, so the headline `@mui/` count is unchanged at **544**; it drops when the
+deferred bridges are migrated and the last path to each target is cut.
+
+**Validation gate (all green):** `pnpm lint` exit 0; `pnpm vitest run`
+**164 files / 1468 tests passing**; `pnpm build` exit 0. Net-new files (all
+MUI-free): `main/crdPages/error/CrdNotFoundView.tsx`,
+`crd/components/common/CrdFullscreenButton.tsx` (**FLAG — visual review**),
+`domain/shared/components/SearchableList/SearchableListTypes.ts`.
+
+**Net-new CRD components to visually verify:** `CrdFullscreenButton` (ghost icon
+button toggling `Maximize`/`Minimize`, used in the whiteboard & memo dialog
+headers). `CrdNotFoundView` reuses the already-reviewed `CrdNotFoundPage`, so no
+new visual surface beyond removing the legacy MUI 404 layout.
