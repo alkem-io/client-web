@@ -106,6 +106,15 @@
       "rationale": "Plural product feature branding. Was being translated to 'Virtuele bijdragers' in NL.",
       "addedDate": "2026-05-27",
       "source": "commit:ed03141,spec:draft"
+    },
+    {
+      "term": "host",
+      "status": "preferred",
+      "translations": { "en": "host", "nl": "host", "de": "host" },
+      "rationale": "Platform role term — the organisation or person responsible for a Space. Keep in English; avoid localized alternatives like 'Gastheer' (NL), 'Gastgeber' (DE), 'Anfitrión' (ES), 'Hôte' (FR), 'Домакин' (BG). Currently enforced for NL only.",
+      "addedDate": "2026-06-17",
+      "source": "user-request",
+      "notes": "Lowercase mid-sentence (e.g. 'Contact opnemen met de host'); capitalize ('Host') when standalone as a label, heading, or button."
     }
   ]
 }
