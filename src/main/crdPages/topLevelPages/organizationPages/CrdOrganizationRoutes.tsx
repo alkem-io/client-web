@@ -4,23 +4,17 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { Error404 } from '@/core/pages/Errors/Error404';
 import Loading from '@/core/ui/loading/Loading';
 import { OrganizationProvider } from '@/domain/community/organization/context/OrganizationProvider';
-import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdOrganizationProfilePage from './publicProfile/CrdOrganizationProfilePage';
 
 const CrdOrgSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdOrgSettingsRoutes'));
 
-const MuiOrganizationAdminRoutes = lazyWithGlobalErrorHandler(
-  () => import('@/domain/community/organizationAdmin/OrganizationAdminRoutes')
+const OrgSettingsDispatch = () => (
+  <Suspense fallback={<Loading />}>
+    <CrdOrgSettingsRoutes />
+  </Suspense>
 );
-
-const OrgSettingsDispatch = () => {
-  const crdEnabled = useCrdEnabled();
-  return (
-    <Suspense fallback={<Loading />}>{crdEnabled ? <CrdOrgSettingsRoutes /> : <MuiOrganizationAdminRoutes />}</Suspense>
-  );
-};
 
 const CrdOrganizationProviderWithOutlet = () => (
   <OrganizationProvider>

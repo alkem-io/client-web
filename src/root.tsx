@@ -12,9 +12,7 @@ import { type FC, Suspense } from 'react';
 import { CookiesProvider } from 'react-cookie';
 import { BrowserRouter, useLocation } from 'react-router-dom';
 import { Error40XBoundary } from '@/core/40XErrorHandler/ErrorBoundary';
-import { useApmDesignVersionLabel } from '@/core/analytics/apm/useApmDesignVersionLabel';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { useSentryDesignVersionTag } from '@/core/logging/sentry/useSentryDesignVersionTag';
 import { NavigationHistoryTracker } from '@/core/routing/NavigationHistory';
 import ScrollToTop from '@/core/routing/ScrollToTop';
 import { GlobalStateProvider } from '@/core/state/GlobalStateProvider';
@@ -26,86 +24,55 @@ import { PendingMembershipsDialogProvider } from '@/domain/community/pendingMemb
 import { UserProvider } from '@/domain/community/userCurrent/CurrentUserProvider/CurrentUserProvider';
 import { ConfigProvider } from '@/domain/platform/config/ConfigProvider';
 import { privateGraphQLEndpoint, publicGraphQLEndpoint } from '@/main/constants/endpoints';
-import { DesignVersionUpgradePromptMount } from '@/main/crdPages/DesignVersionUpgradePromptMount';
 import { CrdAwareErrorComponent } from '@/main/crdPages/error/CrdAwareErrorComponent';
 import { UnifiedChatLauncher } from '@/main/crdPages/unifiedChat/UnifiedChatLauncher';
 import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProvider';
-import { useDesignVersionSync } from '@/main/crdPages/useDesignVersionSync';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
-import { useCrdEnabled } from './main/crdPages/useCrdEnabled';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
 import { VersionHandling } from './main/versionHandling';
 
-const GlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./core/lazyLoading/GlobalErrorDialog'));
 const CrdGlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./main/crdPages/error/CrdGlobalErrorDialog'));
-const InAppNotificationsDialog = lazyWithGlobalErrorHandler(
-  () => import('./main/inAppNotifications/InAppNotificationsDialog')
-);
-const UserMessagingDialog = lazyWithGlobalErrorHandler(() => import('./main/userMessaging/UserMessagingDialog'));
 
 const CrdNotificationsPanelConnector = lazyWithGlobalErrorHandler(
   () => import('./main/ui/layout/CrdNotificationsPanelConnector')
 );
 
-/** Renders either the CRD or MUI notifications dialog based on the design toggle. */
+/** Renders the CRD notifications panel. */
 function NotificationsGate() {
-  const crdEnabled = useCrdEnabled();
   return (
     <Suspense fallback={null}>
-      {crdEnabled ? <CrdNotificationsPanelConnector /> : <InAppNotificationsDialog />}
+      <CrdNotificationsPanelConnector />
     </Suspense>
   );
 }
 
-/** Renders either the CRD or MUI global (chunk-load) error dialog based on the design toggle. */
+/** Renders the CRD global (chunk-load) error dialog. */
 function GlobalErrorDialogGate() {
-  const crdEnabled = useCrdEnabled();
-  return <Suspense fallback={null}>{crdEnabled ? <CrdGlobalErrorDialog /> : <GlobalErrorDialog />}</Suspense>;
+  return (
+    <Suspense fallback={null}>
+      <CrdGlobalErrorDialog />
+    </Suspense>
+  );
 }
 
 /** Top-level path segments owned by the auth flow — the unified chat is hidden on all of them. */
 const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
 
 /**
- * Mounts the unified chat floating launcher on CRD pages. The unified surface is
- * the only messaging entry point on CRD, so (unlike the legacy guidance FAB) it is
- * NOT hidden on mobile — only on auth flows and immersive/fullscreen editors.
- * MUI shells continue to mount PlatformHelpButton + UserMessagingDialog per-layout.
+ * Mounts the unified chat floating launcher. The unified surface is the only
+ * messaging entry point, so it is NOT hidden on mobile — only on auth flows and
+ * immersive/fullscreen editors.
  */
 function UnifiedChatGate() {
-  const crdEnabled = useCrdEnabled();
   const { pathname } = useLocation();
   const { fullscreen } = useFullscreen();
   const isFullscreenEditorOpen = useIsFullscreenEditorOpen();
   const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
-  if (!crdEnabled) {
-    return null;
-  }
   return <UnifiedChatLauncher hidden={isAuthPage || fullscreen || isFullscreenEditorOpen} />;
-}
-
-/** The legacy MUI messaging dialog — only for MUI pages; CRD pages use the unified panel. */
-function LegacyMessagingDialogGate() {
-  const crdEnabled = useCrdEnabled();
-  if (crdEnabled) {
-    return null;
-  }
-  return (
-    <Suspense fallback={null}>
-      <UserMessagingDialog />
-    </Suspense>
-  );
-}
-
-function DesignVersionSyncMount() {
-  useDesignVersionSync();
-  useSentryDesignVersionTag();
-  useApmDesignVersionLabel();
-  return null;
 }
 
 // MARKDOWN_CLASS_NAME used in the styles below
@@ -209,13 +176,10 @@ const Root: FC = () => {
                                         <FullscreenEditorProvider>
                                           <NavigationHistoryTracker />
                                           <ApmUserSetter />
-                                          <DesignVersionSyncMount />
-                                          <DesignVersionUpgradePromptMount />
                                           <ScrollToTop />
                                           <NotificationsGate />
                                           <UnifiedChatGate />
                                           <InAppNotificationCountSubscriber />
-                                          <LegacyMessagingDialogGate />
                                           <VersionHandling />
                                           <OnlineStatusNotification />
                                           <Error40XBoundary

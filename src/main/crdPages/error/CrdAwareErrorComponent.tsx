@@ -10,7 +10,6 @@ import { CrdGenericErrorContent } from '@/main/crdPages/error/CrdGenericErrorCon
 import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { hasInAppHistory } from '@/main/crdPages/error/hasInAppHistory';
 import { isCrdRoute } from '@/main/crdPages/error/isCrdRoute';
-import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
@@ -24,18 +23,17 @@ export type CrdAwareErrorComponentProps = {
 };
 
 export function CrdAwareErrorComponent(props: CrdAwareErrorComponentProps) {
-  const crdEnabled = useCrdEnabled();
   const isCrd = isCrdRoute(props.pathname ?? '');
 
-  if (crdEnabled && isCrd && props.isNotAuthorized === true) {
+  if (isCrd && props.isNotAuthorized === true) {
     return <CrdForbiddenBranch />;
   }
 
-  if (crdEnabled && isCrd && props.isNotFound === true) {
+  if (isCrd && props.isNotFound === true) {
     return <CrdNotFoundBranch />;
   }
 
-  if (crdEnabled && isCrd && props.error && props.isNotFound !== true && props.isNotAuthorized !== true) {
+  if (isCrd && props.error && props.isNotFound !== true && props.isNotAuthorized !== true) {
     return <CrdGenericErrorBranch error={props.error} />;
   }
 

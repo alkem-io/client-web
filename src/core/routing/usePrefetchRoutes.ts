@@ -10,10 +10,9 @@ const usePrefetchRoutes = () => {
     const prefetch = () => {
       // Trigger dynamic imports for commonly visited routes.
       // These are fire-and-forget — we don't need the modules, just want the browser to cache the chunks.
-      import('@/main/topLevelPages/Home/HomePage').catch(() => {});
+      import('@/main/topLevelPages/Home/CrdHomePage').catch(() => {});
       import('@/main/crdPages/spaces/SpaceExplorerPage').catch(() => {});
-      import('@/domain/community/user/routing/UserRoute').catch(() => {});
-      import('@/domain/community/user/ContributorsPage').catch(() => {});
+      import('@/main/crdPages/topLevelPages/userPages/CrdUserRoutes').catch(() => {});
     };
 
     if ('requestIdleCallback' in window) {

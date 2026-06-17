@@ -1,7 +1,7 @@
 import { Check, CircleEllipsis, Globe, Grid3X3, HelpCircle, Home, LogOut, Settings, Shield, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useGridOverlay } from '@/crd/hooks/useGridOverlay';
-import type { CrdDesignVersionSwitch, CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
+import type { CrdLanguageOption, CrdNavigationHrefs, CrdUserInfo } from '@/crd/layouts/types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
@@ -17,7 +17,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/crd/primitives/dropdown-menu';
-import { Switch } from '@/crd/primitives/switch';
 
 type UserMenuProps = {
   user?: CrdUserInfo;
@@ -32,7 +31,6 @@ type UserMenuProps = {
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
-  designVersionSwitch?: CrdDesignVersionSwitch;
 };
 
 export function UserMenu({
@@ -48,7 +46,6 @@ export function UserMenu({
   onHelpClick,
   onLanguageChange,
   showGridToggle,
-  designVersionSwitch,
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
   const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
@@ -177,36 +174,7 @@ export function UserMenu({
           </DropdownMenuItem>
         )}
 
-        {/* Design version switch */}
-        {designVersionSwitch && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onSelect={e => {
-                e.preventDefault();
-                if (!designVersionSwitch.disabled) {
-                  designVersionSwitch.onChange(!designVersionSwitch.enabled);
-                }
-              }}
-              disabled={designVersionSwitch.disabled}
-              role="switch"
-              aria-checked={designVersionSwitch.enabled}
-              className="flex w-full items-center justify-between gap-2 cursor-pointer"
-            >
-              <span className="text-control">{t('header.designVersion.label')}</span>
-              <Switch
-                checked={designVersionSwitch.enabled}
-                disabled={designVersionSwitch.disabled}
-                tabIndex={-1}
-                aria-hidden="true"
-              />
-            </DropdownMenuItem>
-          </>
-        )}
-
-        {(isAdmin || onHelpClick || (languages && languages.length > 0) || designVersionSwitch) && (
-          <DropdownMenuSeparator />
-        )}
+        {(isAdmin || onHelpClick || (languages && languages.length > 0)) && <DropdownMenuSeparator />}
 
         {/* Logout */}
         <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={onLogout}>

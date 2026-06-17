@@ -5,7 +5,6 @@ import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
 import { UserMenu } from '@/crd/layouts/components/UserMenu';
 import type {
-  CrdDesignVersionSwitch,
   CrdLanguageOption,
   CrdNavigationHrefs,
   CrdPlatformNavigationItem,
@@ -73,7 +72,6 @@ type HeaderProps = {
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
-  designVersionSwitch?: CrdDesignVersionSwitch;
   /**
    * When true the header's inner content group fills all 12 grid columns
    * instead of the default `lg:col-start-2 lg:col-span-10` inset, keeping it
@@ -116,7 +114,6 @@ export function Header({
   onHelpClick,
   onLanguageChange,
   showGridToggle,
-  designVersionSwitch,
   fullWidth = false,
   overlayBanner = false,
   className,
@@ -229,7 +226,6 @@ export function Header({
                 onHelpClick={onHelpClick}
                 onLanguageChange={onLanguageChange}
                 showGridToggle={showGridToggle}
-                designVersionSwitch={designVersionSwitch}
               />
             </nav>
           </div>

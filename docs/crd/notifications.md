@@ -2,7 +2,7 @@
 
 CRD uses [sonner](https://sonner.emilkowal.ski/) for toast notifications. A single `<Toaster />` is mounted in `App.tsx` (via `CrdNotificationHandler`) and renders at `bottom-right` by default — individual toasts can override position, duration, and add action buttons.
 
-The MUI fallback (`NotificationHandler.tsx`) is still rendered when `useCrdEnabled()` is `false`. Anything you push through `useNotification()` works in both worlds.
+`App.tsx` now mounts `CrdNotificationHandler` unconditionally — CRD is the only runtime path, so the legacy MUI `NotificationHandler.tsx` is no longer rendered (it survives only as a not-yet-removed bridge file). Anything you push through `useNotification()` renders through the CRD toaster.
 
 ## The two ways to fire a toast
 
@@ -121,8 +121,8 @@ toast.promise(saveProfile(), {
 
 - **Primitive**: `src/crd/primitives/sonner.tsx` — wraps `<Sonner>` and bridges sonner's `--normal-bg` / `--normal-text` / `--normal-border` vars to CRD's `--popover` / `--popover-foreground` / `--border`.
 - **Global handler**: `src/core/ui/notifications/CrdNotificationHandler.tsx` — subscribes to the same notifications store as the MUI handler, fans each entry out to `toast.<severity>()`, dispatches `CLEAR_NOTIFICATION` on auto-close/dismiss, and mounts the global `<Toaster position="bottom-right" />`.
-- **MUI fallback**: `src/core/ui/notifications/NotificationHandler.tsx` — unchanged; rendered when CRD is off.
-- **Gate**: `src/main/ui/layout/topLevelWrappers/App.tsx` — `{crdEnabled ? <CrdNotificationHandler /> : <NotificationHandler />}`.
+- **Legacy MUI handler**: `src/core/ui/notifications/NotificationHandler.tsx` — no longer rendered (CRD is the only path); kept only as a not-yet-removed bridge file.
+- **Mount**: `src/main/ui/layout/topLevelWrappers/App.tsx` — renders `<CrdNotificationHandler />` unconditionally.
 
 ## Migrating existing MUI snackbars
 
@@ -132,4 +132,3 @@ toast.promise(saveProfile(), {
 2. Use `duration: Infinity` (no auto-hide) and `position: 'top-center'` (version) / `'top-right'` (offline).
 3. Use sonner's `action: { label, onClick }` instead of MUI's `SnackbarContent.action`.
 4. Keep the returned id in a ref so you can `toast.dismiss(id)` when the condition clears.
-5. Gate via `useCrdEnabled()` if you want to keep the MUI behaviour for non-CRD users in the meantime.

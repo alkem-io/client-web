@@ -15,51 +15,33 @@ CRD (Client Re-Design) is the new design system replacing MUI. It's built on sha
 
 The prototype in `prototype/` (generated from Figma Make) is the design reference. CRD components are production-ready versions of prototype components, with i18n, accessibility, and real data instead of mocks.
 
+> **⚠️ The design-version toggle is GONE (story #9885).** CRD is now the **only**
+> runtime path — every route renders its `Crd*` page unconditionally. There is no
+> `useCrdEnabled()`, no `UserSettings.designVersion` read on the client, no
+> Design-Version switch, and no `alkemio-design-version` localStorage key. The
+> sections below that still describe a toggle-gated MUI/CRD coexistence are
+> **historical** — they document how migration *used* to be staged. Today you do
+> not add a "CRD branch behind a toggle"; you replace the MUI implementation
+> outright (the remaining MUI is the CRD→MUI **bridge** layer, chiefly
+> `src/core/ui/*`, removed primitive-by-primitive in later increments). See
+> CLAUDE.md → "CRD is the only runtime path".
+
 ## Architecture at a Glance
 
 ```
 root.tsx
-  ├── NotificationsGate (global)
-  │   ├── CRD enabled  → CrdNotificationsPanelConnector (shadcn dialog)
-  │   └── CRD disabled → InAppNotificationsDialog (MUI dialog)
+  ├── NotificationsGate (global) → CrdNotificationsPanelConnector (shadcn dialog)
   │
   └── TopLevelRoutes.tsx
-      ├── MUI routes  → TopLevelLayout (existing MUI header/footer)
-      └── CRD routes  → CrdLayoutWrapper → CrdLayout (CRD header/footer)
-           (gated by       └── <Outlet /> → Your page
-            UserSettings
-            .designVersion)
+      └── every route → CrdLayoutWrapper → CrdLayout (CRD header/footer)
+                              └── <Outlet /> → Your CRD page
 ```
 
-CRD pages get a completely different shell — CRD header, CRD footer, Tailwind styling. MUI pages are untouched. Global dialogs (notifications) are handled at `root.tsx` level and work on all pages regardless of layout.
-
-During migration, the active route tree is gated behind a **per-user `UserSettings.designVersion`** preference on the server (`1` = MUI, `2` = CRD; **default `2` = CRD**). Anyone without an explicit preference (anonymous visitors, fresh devices, cleared LS, or an unset server record) lands on CRD; only users who explicitly opted into legacy (`1`) keep MUI. The **Design Version switch lives in the user menu of both shells** — `PlatformNavigationUserMenu` (MUI) and `UserMenu` (CRD) — so a user on legacy can flip to CRD (or back) from their avatar dropdown without leaving the app. Developers/QA can also seed the toggle from the browser console.
-
-## Feature Toggle
-
-The toggle is read at boot from `localStorage('alkemio-design-version')` in `src/main/crdPages/useCrdEnabled.ts` and consumed by route dispatchers (`TopLevelRoutes.tsx`). The localStorage value is kept in sync with the server-side `UserSettings.designVersion` by `useDesignVersionSync.ts`; the user-menu switch (`useDesignVersionToggle.ts`) writes both the server preference and the localStorage mirror, then hard-reloads so the boot path picks up the new shell.
-
-**Enable CRD pages via the UI:**
-Click your avatar in the top-right header (available in both the MUI and CRD shells) → flip the **Design Version** switch. The page reloads and the preference persists to your account.
-
-**Enable via browser console** (dev / QA seed):
-```js
-localStorage.setItem('alkemio-design-version', '2');
-location.reload();
-```
-
-**Disable CRD pages** (back to MUI):
-Toggle the switch in the user menu, or via console:
-```js
-localStorage.setItem('alkemio-design-version', '1');
-location.reload();
-```
-
-The legacy `alkemio-crd-enabled` key is auto-migrated to `alkemio-design-version` on first load — no manual cleanup needed.
-
-Both page versions are lazy-loaded — the unused chunk is never fetched, so there is no bundle penalty.
-
-When migration is complete and all CRD pages are validated, remove the toggle: delete `useCrdEnabled.ts` + `useDesignVersionToggle.ts` + `useDesignVersionSync.ts`, remove conditional routing in `TopLevelRoutes.tsx`, remove `NotificationsGate` from `root.tsx`, delete old MUI page files from `src/main/topLevelPages/`.
+Every page renders in the CRD shell — CRD header, CRD footer, Tailwind styling.
+Global dialogs (notifications) are handled at `root.tsx` level and work on all
+pages. (Historically the route tree was split MUI-vs-CRD behind a
+`UserSettings.designVersion` toggle; that toggle and the MUI route siblings were
+removed in #9885.)
 
 ## The Three Layers
 

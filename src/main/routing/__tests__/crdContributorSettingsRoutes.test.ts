@@ -16,20 +16,11 @@ import { describe, expect, it } from 'vitest';
  * this test file does: it asynchronously imports every lazy-loaded chunk
  * referenced by `CrdUserSettingsRoutes` and `CrdOrgSettingsRoutes` and
  * asserts each export is callable.
- *
- * The CRD-OFF parity smoke (the other half of T089/T090) is enforced at
- * route-config build time: `TopLevelRoutes.tsx` and
- * `CrdOrganizationRoutes.tsx` lazy-load *both* the MUI and CRD route
- * trees, so a typecheck failure on either path would already be caught by
- * `pnpm tsc --noEmit`. The full end-to-end MUI-on / CRD-on parity check
- * is a manual smoke (T092 — handled by the user against `localhost:3001`
- * per the per-tab smoke checklist in `quickstart.md`).
  */
-// MUI fallbacks have a much larger import graph (full @mui/material + emotion
-// + the entire MUI domain tree) so a per-test timeout buffer is required when
-// the suite runs in parallel under jsdom. The TEMP MUI fallback in
-// `CrdUserAccountTab` / `CrdOrgAccountTab` (spec 097, T033a–T033f) puts those
-// two CRD tests in the same bucket until the CRD parity dialogs land.
+// Some CRD tabs eagerly import MUI creation dialogs as a TEMP fallback
+// (`CrdUserAccountTab` / `CrdOrgAccountTab`, spec 097, T033a–T033f), so their
+// module-load graph pulls in @mui/material + emotion and needs a larger
+// per-test timeout buffer when the suite runs in parallel under jsdom.
 const MUI_LOAD_TIMEOUT_MS = 30_000;
 
 describe('CRD User Settings — lazy chunks load without throwing', () => {
@@ -127,24 +118,4 @@ describe('CRD Org Settings — lazy chunks load without throwing', () => {
     const mod = await import('@/main/crdPages/topLevelPages/organizationPages/settings/settings/CrdOrgSettingsTab');
     expect(typeof mod.default).toBe('function');
   });
-});
-
-describe('CRD-OFF parity — MUI fallback module-load smoke', () => {
-  it(
-    'UserAdminRoute (MUI fallback) loads without throwing',
-    async () => {
-      const mod = await import('@/domain/community/userAdmin/routing/UserAdminRoute');
-      expect(typeof mod.default).toBe('function');
-    },
-    MUI_LOAD_TIMEOUT_MS
-  );
-
-  it(
-    'OrganizationAdminRoutes (MUI fallback) loads without throwing',
-    async () => {
-      const mod = await import('@/domain/community/organizationAdmin/OrganizationAdminRoutes');
-      expect(typeof mod.default).toBe('function');
-    },
-    MUI_LOAD_TIMEOUT_MS
-  );
 });

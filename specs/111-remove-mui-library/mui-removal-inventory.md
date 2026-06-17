@@ -1,15 +1,40 @@
 # MUI Removal Inventory
 
 The authoritative, categorized map of every MUI surface in `client-web` and the
-precondition that unblocks each removal. Produced by story #9885; **executed
-incrementally by epic #1888's per-page migration stories** — this story removes
-nothing from runtime. See `contracts/removal-inventory.contract.md` for the
-required shape and `mui-footprint-baseline.md` for the "before" numbers.
+precondition that unblocks each removal. See
+`contracts/removal-inventory.contract.md` for the required shape and
+`mui-footprint-baseline.md` for the "before"/"after-increment-1" numbers.
 
-> **Removal ordering (read first):** MUI is removed **page by page** as each page
-> migrates to CRD. The runtime packages are uninstalled **last**, only once the
-> source `@mui/*` import count reaches **0**. Removing earlier breaks live routes
-> and any user still on `designVersion=1` (legacy/MUI).
+> **The verified removal model (read first — supersedes the old "per-page
+> migration of 435 domain views" framing).** Removal is driven at the **route
+> level**, not by rewriting every domain view:
+>
+> 1. **CRD is the default and only runtime path.** `TopLevelRoutes` previously
+>    swapped each top-level route between a `Crd*` and a MUI sibling off
+>    `useCrdEnabled()`. Story #9885 **removed the `designVersion` toggle and forced
+>    CRD for everyone** — the MUI route siblings are no longer rendered, so the
+>    whole legacy route tree became unreachable.
+> 2. **Legacy-only deletion (done in this PR).** Once the toggle was gone, every
+>    file reachable *only* through the legacy MUI route tree was dead and was
+>    deleted (443 source files; `@mui/` source count 786 → 572). Validated
+>    unreachable by `tsc`, the production build, and the full vitest suite.
+> 3. **The remaining work is the CRD→MUI bridge.** ~**229 MUI files are imported
+>    directly by CRD code** ("bridge edges"), dominated by **67 `src/core/ui/*`
+>    primitives** (Gutters, PageContentBlock, Avatar, RouterLink, Loading,
+>    Breadcrumbs, cards, forms…) plus ~160 domain dialogs/components. **These are
+>    NOT yet removable** — CRD still depends on them. They are the gating work
+>    before `@mui`/`@emotion` can be uninstalled, and the focus of later
+>    increments (replace each bridge primitive with a CRD equivalent, then delete
+>    the MUI one). The runtime packages are uninstalled **last**, only once the
+>    source `@mui/*` import count reaches **0**.
+> 4. **Three non-toggled routes were product-dropped.** `Contributors`
+>    (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) rendered MUI
+>    even on CRD and had no CRD inbound links — their routes + page subtrees were
+>    removed outright. `InnovationPacks` (`/innovation-packs/*`) was *kept*: unlike
+>    the other two it has a live CRD branch (`CrdInnovationPackProfilePage` /
+>    `CrdInnovationPackAdminPage`) that CRD navigation links into, so its route was
+>    forced to CRD and only the MUI branch (`InnovationPackProfilePage`,
+>    `AdminInnovationPackPage`) was deleted.
 
 ## Category: `runtime-library`
 
@@ -31,9 +56,9 @@ required shape and `mui-footprint-baseline.md` for the "before" numbers.
 
 | Surface | Count | Unblocking precondition | Removal owner | Notes |
 |---------|-------|-------------------------|---------------|-------|
-| `src/main/crdPages/useCrdEnabled.ts`, `useDesignVersionToggle.ts`, `useDesignVersionSync.ts` (+ their tests) — the `designVersion` (MUI vs CRD) toggle | ~3 + tests | **Every** page migrated to CRD and the toggle retired | Final cleanup PR | Server-side `UserSettings.designVersion`; LS mirror `alkemio-design-version`. Toggle UI in the user menu also removed. |
-| `src/main/routing/TopLevelRoutes.tsx` — selection between MUI and CRD route trees off `useCrdEnabled()` | 1 | Same as above (toggle retired) | Final cleanup PR | After removal, CRD routes are the only routes. |
-| `src/root.tsx` + `src/core/ui/themes/RootThemeProvider.tsx` — MUI `ThemeProvider` wrapping the whole app | 2 | No descendant route needs MUI theming | Final cleanup PR | CRD never calls `useTheme()`; removable once all MUI views are gone. |
+| ~~`useCrdEnabled.ts`, `useDesignVersionToggle.ts`, `useDesignVersionSync.ts` (+ tests), `DesignVersionUpgradePromptMount`, `DesignVersionUpgradeDialog`, the user-menu switch, and the Sentry/APM `designVersion` tag hooks~~ | — | **DONE (#9885)** | — | ✅ Removed. The `designVersion` toggle machinery and all client read-paths that drove routing are gone. Server-side `UserSettings.designVersion` GraphQL field is intentionally left in place (just no longer read on the client). |
+| ~~`src/main/routing/TopLevelRoutes.tsx` — MUI-vs-CRD selection off `useCrdEnabled()`~~ | — | **DONE (#9885)** | — | ✅ Forced CRD. Every top-level route now renders its `Crd*` branch unconditionally; the MUI siblings and their lazy imports were removed. |
+| `src/root.tsx` + `src/core/ui/themes/RootThemeProvider.tsx` — MUI `ThemeProvider` wrapping the whole app | 2 | No descendant route needs MUI theming (i.e. the 229 bridge files are gone) | Final cleanup PR | CRD never calls `useTheme()`; removable once all bridge MUI views are gone. **Stays for now.** |
 
 ## Category: `coupled-business-logic`
 
@@ -55,26 +80,24 @@ required shape and `mui-footprint-baseline.md` for the "before" numbers.
 
 ## Coverage assertion (FR-007 / SC-003)
 
-The four code categories above — `view-component` (216 + 435 + 27 + 94 + 6 across
-`src/core/ui`, `src/domain`, `src/core/auth`, `src/main`, `src/dev`),
-`route-dialog-condition`, `coupled-business-logic`, and `mui-test` — together
-account for **every** `.ts`/`.tsx` file matching the baseline source-import grep.
-`runtime-library` covers packages (not files) and `legacy-translation` covers
-`.json` files (not counted in the `.ts`/`.tsx` import metric), so neither adds to
-the file total.
+The category tables above are the original **786-file baseline** taxonomy (the
+"before" snapshot). After increment 1 the live MUI surface is **572** files (786
+− 214); the deleted 214 came out of `view-component` (legacy-only domain/main/auth
+pages + the dropped Contributors/InnovationHubs/InnovationPacks-MUI subtrees) and
+`route-dialog-condition` (the toggle machinery). `src/core/ui/*` (216, the
+bridge) is **unchanged** — it is the bulk of the remaining 572.
 
-Reproduce / re-validate the file coverage:
+Reproduce / re-validate the current count:
 
 ```bash
-# Total MUI-importing .ts/.tsx files (must equal the sum classified above)
-grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src | wc -l        # 786
-# By area (cross-check the per-row counts)
+grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src | wc -l        # 572 (was 786)
+# By area
 grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src \
   | sed 's#^src/##' | cut -d/ -f1 | sort | uniq -c | sort -rn
 ```
 
-The per-area counts reconcile to the 786 headline:
-`src/domain` 435 + `src/core` 250 + `src/main` 94 + `src/dev` 6 + `src/root.tsx`
-1 = **786**. (`src/core` 250 = `src/core/ui` 216 + `src/core/auth` 27 + 7 other
-core; `src/root.tsx` is the MUI `ThemeProvider` host, classified under
-`route-dialog-condition`.) No MUI-importing source file is left unclassified.
+The remaining 572 are dominated by the **229 CRD→MUI bridge files** (still
+imported by live CRD code) plus their transitive MUI leaves — these are removed
+in later increments by replacing each bridge primitive with a CRD equivalent. No
+live route renders a MUI page directly any more; the only MUI that reaches the
+user is via these bridge imports.

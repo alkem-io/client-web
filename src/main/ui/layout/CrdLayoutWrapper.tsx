@@ -12,7 +12,6 @@ import {
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useDesignVersionToggle } from '@/main/crdPages/useDesignVersionToggle';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
@@ -53,14 +52,6 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   // Full-width is owned per-space by the space page; the global header reads
   // the live value here only so its top bar stays aligned with the body.
   const headerFullWidth = useSpaceFullWidthActive();
-  const designVersionToggle = useDesignVersionToggle();
-  const designVersionSwitch = designVersionToggle.isVisible
-    ? {
-        enabled: designVersionToggle.enabled,
-        onChange: designVersionToggle.onChange,
-        disabled: designVersionToggle.isPending,
-      }
-    : undefined;
 
   const handleLogout = () => {
     navigate(AUTH_LOGOUT_PATH);
@@ -105,7 +96,6 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         onHelpClick={() => setIsHelpDialogOpen(true)}
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
-        designVersionSwitch={designVersionSwitch}
       >
         {children ?? <Outlet />}
       </CrdLayout>

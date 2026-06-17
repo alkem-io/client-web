@@ -10,11 +10,6 @@ vi.mock('react-router-dom', () => ({
   useLocation: () => useLocationMock(),
 }));
 
-const useCrdEnabledMock = vi.fn();
-vi.mock('@/main/crdPages/useCrdEnabled', () => ({
-  useCrdEnabled: () => useCrdEnabledMock(),
-}));
-
 vi.mock('@/main/crdPages/error/isCrdRoute', () => ({
   isCrdRoute: (pathname: string) => {
     if (!pathname) return false;
@@ -42,15 +37,13 @@ const ancestor: ClosestAncestor = {
 describe('AncestorRedirectDispatcher', () => {
   beforeEach(() => {
     useLocationMock.mockReset();
-    useCrdEnabledMock.mockReset();
   });
 
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  test('renders CRD dialog when toggle is on and route is CRD (NotAuthorized / 403)', () => {
-    useCrdEnabledMock.mockReturnValue(true);
+  test('renders CRD dialog on a CRD route (NotAuthorized / 403)', () => {
     useLocationMock.mockReturnValue({ pathname: '/welcome-space/some-private-resource' });
 
     render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);
@@ -63,7 +56,6 @@ describe('AncestorRedirectDispatcher', () => {
     // A private subspace resolves to NotFoundError({ closestAncestor }); the page
     // beneath is now the CRD 404 page, so the redirect dialog must also be CRD —
     // never the MUI dialog on top of a CRD page.
-    useCrdEnabledMock.mockReturnValue(true);
     useLocationMock.mockReturnValue({ pathname: '/welcome-space' });
 
     render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);
@@ -72,18 +64,7 @@ describe('AncestorRedirectDispatcher', () => {
     expect(screen.queryByTestId('mui-redirect-dialog')).not.toBeInTheDocument();
   });
 
-  test('renders MUI dialog when CRD toggle is off', () => {
-    useCrdEnabledMock.mockReturnValue(false);
-    useLocationMock.mockReturnValue({ pathname: '/welcome-space' });
-
-    render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);
-
-    expect(screen.getByTestId('mui-redirect-dialog')).toBeInTheDocument();
-    expect(screen.queryByTestId('crd-redirect-dialog')).not.toBeInTheDocument();
-  });
-
   test('renders MUI dialog when current pathname is NOT a CRD route', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     useLocationMock.mockReturnValue({ pathname: '/admin/users' });
 
     render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);

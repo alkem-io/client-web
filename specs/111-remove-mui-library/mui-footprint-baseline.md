@@ -147,3 +147,40 @@ pnpm analyze && open build/stats.html                                       # bu
 A future migration PR is "footprint-positive" when the source count and the
 bundle figure both decrease (never increase). The 8 packages may be uninstalled
 only once the source MUI import count reaches **0**.
+
+## 8. After increment 1 (story #9885 — retire designVersion toggle + delete legacy-only tree)
+
+First real code-removal increment of epic #1888. CRD is now the only runtime
+path (the `designVersion` toggle and its MUI route siblings are gone); the
+unreachable legacy tree was deleted. `@mui`/`@emotion` remain installed and the
+CRD→MUI bridge files (dominated by `src/core/ui/*`) are untouched — those are
+later increments.
+
+| Metric | Before (commit `8e1dbcfd0`) | After increment 1 | Delta |
+|--------|------|------|------|
+| Files matching bare string `@mui/` (headline) | **786** | **572** | **−214** |
+| Files importing `@emotion/*` directly | 1 | 1 | 0 |
+| Total `.ts`/`.tsx` files under `src/` | 2754 | 2311 | −443 |
+| Total source files deleted this PR | — | **443** | — |
+| `src/core/ui/*` MUI files (bridge — untouched) | 216 | 216 | 0 |
+
+Commands (same as §7):
+
+```bash
+grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src | wc -l   # 572
+find src -name '*.ts' -o -name '*.tsx' | wc -l                     # 2311
+```
+
+**Bundle:** the dedicated MUI vendor chunks are essentially unchanged
+(`vendor-mui-core` ≈420 kB, `vendor-mui-extended` ≈462 kB, plus a split-out
+`vendor-mui-icons` ≈48 kB). Expected: this increment removes legacy-only
+*routes/pages* (already lazy, largely tree-shaken from the eager graph) and does
+not yet touch the `src/core/ui/*` primitives that dominate the shared MUI chunks.
+Bundle reduction lands when the bridge layer is removed.
+
+**Why 443 deleted ≫ the 167 "legacy-only" estimate:** the 167/98 figures counted
+only files *reachable solely via the legacy route tree*; the full dead subtree
+also includes their non-MUI leaves (hooks, models, mappers, GraphQL-adjacent
+`.ts`, and co-located tests) plus the dropped Contributors / InnovationHubs route
+subtrees. Every deletion is validated unreachable by `tsc --noEmit`, the Vite
+production build, and the full vitest suite all passing.

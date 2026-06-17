@@ -5,19 +5,15 @@ import { Outlet } from 'react-router-dom';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationHandler';
-import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
-import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
-import SwitchToNewDesignBanner from './SwitchToNewDesignBanner';
 
 const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
   const { userModel } = useCurrentUserContext();
-  const crdEnabled = useCrdEnabled();
 
   useUserScope(userModel);
 
@@ -47,7 +43,6 @@ const App = () => {
         flexDirection="column"
         flexGrow={1}
       >
-        {!crdEnabled && <SwitchToNewDesignBanner />}
         {/* position: relative so the space layout's absolutely-positioned navigation bar
             anchors below the banner instead of overlapping it at the viewport top. */}
         <Box position="relative" display="flex" flexDirection="column" flexGrow={1}>
@@ -59,7 +54,7 @@ const App = () => {
           <CookieConsent ref={cookieConsentRef} />
         </Suspense>
       )}
-      {crdEnabled ? <CrdNotificationHandler /> : <NotificationHandler />}
+      <CrdNotificationHandler />
     </>
   );
 };

@@ -50,11 +50,6 @@ vi.mock('@/core/routing/usePageTitle', () => ({
   usePageTitle: (title: string | undefined) => usePageTitleMock(title),
 }));
 
-const useCrdEnabledMock = vi.fn();
-vi.mock('@/main/crdPages/useCrdEnabled', () => ({
-  useCrdEnabled: () => useCrdEnabledMock(),
-}));
-
 const hasInAppHistoryMock = vi.fn();
 vi.mock('@/main/crdPages/error/hasInAppHistory', () => ({
   hasInAppHistory: () => hasInAppHistoryMock(),
@@ -133,7 +128,6 @@ describe('CrdAwareErrorComponent', () => {
   beforeEach(() => {
     navigateMock.mockReset();
     usePageTitleMock.mockReset();
-    useCrdEnabledMock.mockReset();
     hasInAppHistoryMock.mockReset();
     sentryErrorMock.mockReset();
   });
@@ -143,7 +137,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('renders CRD page when toggle is on, route is CRD, and isNotAuthorized=true', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotAuthorized={true} hasError={true} />);
@@ -155,7 +148,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('renders MUI fallback when current pathname is NOT a CRD route (e.g. /admin), even with toggle on', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/admin" isNotAuthorized={true} hasError={true} />);
@@ -165,18 +157,7 @@ describe('CrdAwareErrorComponent', () => {
     expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-authorized', 'true');
   });
 
-  test('renders MUI fallback when CRD toggle is off, even on a CRD route', () => {
-    useCrdEnabledMock.mockReturnValue(false);
-    hasInAppHistoryMock.mockReturnValue(true);
-
-    render(<CrdAwareErrorComponent pathname="/welcome-space" isNotAuthorized={true} hasError={true} />);
-
-    expect(screen.queryByTestId('crd-forbidden-page')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
-  });
-
-  test('renders CRD 404 when toggle is on, route is CRD, and isNotFound=true', () => {
-    useCrdEnabledMock.mockReturnValue(true);
+  test('renders CRD 404 on a CRD route when isNotFound=true', () => {
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotFound={true} hasError={true} />);
@@ -187,7 +168,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('renders MUI fallback for isNotFound when current pathname is NOT a CRD route (e.g. /admin)', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/admin" isNotFound={true} hasError={true} />);
@@ -197,19 +177,7 @@ describe('CrdAwareErrorComponent', () => {
     expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-found', 'true');
   });
 
-  test('renders MUI fallback for isNotFound when CRD toggle is off, even on a CRD route', () => {
-    useCrdEnabledMock.mockReturnValue(false);
-    hasInAppHistoryMock.mockReturnValue(true);
-
-    render(<CrdAwareErrorComponent pathname="/welcome-space" isNotFound={true} hasError={true} />);
-
-    expect(screen.queryByTestId('crd-not-found-branch')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
-    expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-found', 'true');
-  });
-
   test('renders MUI fallback for isNotFound when pathname is undefined', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent isNotFound={true} hasError={true} />);
@@ -220,7 +188,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('does not crash when pathname is undefined; falls back to MUI', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent isNotAuthorized={true} hasError={true} />);
@@ -230,7 +197,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('hides "Go back" button when hasInAppHistory returns false', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotAuthorized={true} hasError={true} />);
@@ -240,7 +206,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('shows "Go back" button when hasInAppHistory returns true', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotAuthorized={true} hasError={true} />);
@@ -249,7 +214,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('sets the document title via usePageTitle', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotAuthorized={true} hasError={true} />);
@@ -258,7 +222,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('clicking "Go to Home" navigates to /home', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotAuthorized={true} hasError={true} />);
@@ -268,7 +231,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('clicking "Go back" navigates(-1)', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotAuthorized={true} hasError={true} />);
@@ -278,7 +240,6 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('renders CRD generic error page for a generic error on a CRD route when toggle is on', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent pathname="/welcome-space" error={new Error('boom')} hasError={true} />);
@@ -292,20 +253,9 @@ describe('CrdAwareErrorComponent', () => {
   });
 
   test('renders MUI fallback for a generic error when current pathname is NOT a CRD route', () => {
-    useCrdEnabledMock.mockReturnValue(true);
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent pathname="/admin" error={new Error('boom')} hasError={true} />);
-
-    expect(screen.queryByTestId('crd-error-page')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
-  });
-
-  test('renders MUI fallback for a generic error when CRD toggle is off', () => {
-    useCrdEnabledMock.mockReturnValue(false);
-    hasInAppHistoryMock.mockReturnValue(false);
-
-    render(<CrdAwareErrorComponent pathname="/welcome-space" error={new Error('boom')} hasError={true} />);
 
     expect(screen.queryByTestId('crd-error-page')).not.toBeInTheDocument();
     expect(screen.getByTestId('mui-layout')).toBeInTheDocument();

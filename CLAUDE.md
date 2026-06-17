@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`), the only design system for new features. The legacy **MUI + Emotion** design system (`src/core/ui/`) is **frozen and being removed page-by-page** as pages migrate to CRD (epic #1888); it still serves the not-yet-migrated routes and must only ever be removed, never extended. Apollo Client is the GraphQL data layer. The current MUI footprint and the removal plan are tracked in `specs/111-remove-mui-library/mui-footprint-baseline.md` and `specs/111-remove-mui-library/mui-removal-inventory.md`.
+Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`), the only design system for new features. **CRD is the only runtime path** — every route renders its CRD page; there is no MUI/CRD toggle (removed by story #9885). The legacy **MUI + Emotion** design system (`src/core/ui/`) is **frozen and being removed** (epic #1888) and must only ever be removed, never extended. It is no longer reached via any route directly; what remains live is a set of **CRD→MUI "bridge" files** (≈229, dominated by `src/core/ui/*` primitives) still imported by CRD code. `@mui`/`@emotion` stay installed until that bridge is gone. Apollo Client is the GraphQL data layer. The current MUI footprint and the removal plan are tracked in `specs/111-remove-mui-library/mui-footprint-baseline.md` and `specs/111-remove-mui-library/mui-removal-inventory.md`.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
 - Requires Node ≥24.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
@@ -362,33 +362,38 @@ Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` v
 
 **The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
 
-## CRD Feature Toggle
+## CRD is the only runtime path (the design-version toggle was removed)
 
-The CRD design system is gated by a per-user **`UserSettings.designVersion`** preference on the server (`1` = MUI/legacy, `2` = CRD/new). **Default is `2` (CRD)** — anyone without an explicit preference (anonymous visitors, fresh devices, users whose LS was cleared, or whose server record is unset) lands on CRD; users who previously opted into legacy (`1`) keep it. Authenticated users flip it via the **Design Version switch in the user menu** (top-right of the CRD header). The chosen version persists to that user's account and is mirrored into `localStorage('alkemio-design-version')` so the boot path picks the right shell without waiting for the user query.
+There is **no MUI/CRD toggle**. Story #9885 (epic #1888) removed the
+`designVersion` machinery and forced CRD for everyone — `TopLevelRoutes` renders
+the `Crd*` branch of every top-level route unconditionally. There is no way (UI,
+localStorage, or otherwise) to render the legacy MUI app; the entire legacy MUI
+route tree was deleted.
 
-For developers / QA who want to seed the toggle without going through the UI:
+What was removed in #9885:
+- `useCrdEnabled.ts`, `useDesignVersionToggle.ts`, `useDesignVersionSync.ts`
+  (+ tests), `DesignVersionUpgradePromptMount`, the CRD `DesignVersionUpgradeDialog`,
+  the **Design Version switch** in the user menu, and the Sentry/APM `designVersion`
+  tag/label hooks.
+- The `alkemio-design-version` / `alkemio-crd-enabled` localStorage keys are no
+  longer read or written.
+- The `crdEnabled ? <Crd…/> : <Mui…/>` ternaries in `TopLevelRoutes.tsx` and the
+  in-route dispatchers (`CrdUserRoutes`, `CrdVCRoutes`, `CrdOrganizationRoutes`,
+  `InnovationPackRoute`, the error/redirect dispatchers) — all forced to CRD.
 
-```js
-// Enable CRD (new design):
-localStorage.setItem('alkemio-design-version', '2');
-location.reload();
+What was intentionally **left**: the server-side `UserSettings.designVersion`
+GraphQL field still exists (the client just no longer reads it for routing), and
+`src/root.tsx`'s MUI `ThemeProvider` stays (the ≈229 CRD→MUI bridge files still
+need it). Both go in later increments.
 
-// Back to MUI (old design):
-localStorage.setItem('alkemio-design-version', '1');
-location.reload();
-```
-
-The legacy `alkemio-crd-enabled` key is auto-migrated to `alkemio-design-version` on first load (see `useCrdEnabled.ts`).
-
-Implementation surface:
-- `src/main/crdPages/useCrdEnabled.ts` — boot-time read of `localStorage('alkemio-design-version')`; the `useCrdEnabled()` hook is consumed by route dispatchers.
-- `src/main/crdPages/useDesignVersionToggle.ts` — user-menu switch: writes `UserSettings.designVersion` via `updateUserSettings`, mirrors to localStorage, hard-reloads.
-- `src/main/crdPages/useDesignVersionSync.ts` — reconciles server state with localStorage on auth.
-- `TopLevelRoutes.tsx` — picks MUI vs CRD route trees off `useCrdEnabled()`.
-
-When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
+Three previously non-toggled MUI routes were product-dropped: `Contributors`
+(`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) entirely;
+`InnovationPacks` (`/innovation-packs/*`) was kept but forced to its CRD branch
+(its CRD profile/admin pages are linked from CRD navigation) with only the MUI
+branch deleted.
 
 ## Recent Changes
+- 111-remove-mui-library / story #9885 (increment 1): **Retired the designVersion toggle and forced CRD as the only runtime path.** Deleted the toggle machinery + the now-unreachable legacy MUI route tree (443 source files; `@mui/` source count 786 → 572). Dropped the Contributors and InnovationHubs routes; forced the InnovationPacks route to CRD. `@mui`/`@emotion` remain installed — the ≈229 CRD→MUI bridge files (dominated by `src/core/ui/*`) are the next increments. `src/core/ui/*` and `src/root.tsx`'s MUI ThemeProvider are untouched. No new runtime dependencies. See `specs/111-remove-mui-library/mui-footprint-baseline.md` §8 and `mui-removal-inventory.md`.
 - 111-remove-mui-library: Documentation + SDD artifacts only (no runtime change). Established the MUI footprint baseline and the categorized removal inventory for epic #1888, and corrected MUI-policy wording. MUI/Emotion remain installed and in use (mid-migration); see `specs/111-remove-mui-library/mui-footprint-baseline.md` and `mui-removal-inventory.md`. No new runtime dependencies.
 - 110-guest-whiteboard-notice: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`), `lucide-react` (icons), `react-i18next`. No new runtime dependencies.
 - 105-create-space-dialog: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `yup` (validation on submit, decoupled from Formik). **No new runtime dependencies.**
