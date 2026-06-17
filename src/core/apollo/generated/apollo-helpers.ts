@@ -3390,6 +3390,7 @@ export type PlatformKeySpecifier = (
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
+  | 'virtualAssistantAccess'
   | 'wellKnownVirtualContributors'
   | PlatformKeySpecifier
 )[];
@@ -3410,6 +3411,7 @@ export type PlatformFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualAssistantAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   wellKnownVirtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformAccessRoleKeySpecifier = ('grantedPrivileges' | 'roleName' | PlatformAccessRoleKeySpecifier)[];
@@ -3444,6 +3446,7 @@ export type PlatformAdminQueryResultsKeySpecifier = (
   | 'spaces'
   | 'userEmailChangeAuditEntries'
   | 'users'
+  | 'virtualAssistant'
   | 'virtualContributors'
   | PlatformAdminQueryResultsKeySpecifier
 )[];
@@ -3458,6 +3461,7 @@ export type PlatformAdminQueryResultsFieldPolicy = {
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   userEmailChangeAuditEntries?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualAssistant?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeatureFlagKeySpecifier)[];

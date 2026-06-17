@@ -626,7 +626,8 @@
       "GLOBAL_COMMUNITY_READER": "crwdns40716:0$t(common.Community)crwdne40716:0",
       "GLOBAL_SPACES_READER": "crwdns40718:0$t(common.spaces)crwdne40718:0",
       "PLATFORM_BETA_TESTER": "crwdns18124:0crwdne18124:0",
-      "PLATFORM_VC_CAMPAIGN": "crwdns18126:0crwdne18126:0"
+      "PLATFORM_VC_CAMPAIGN": "crwdns18126:0crwdne18126:0",
+      "PLATFORM_ASSISTANT_ACCESS": "crwdns18126:0crwdne18126:0"
     },
     "time": {
       "short": {

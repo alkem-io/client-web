@@ -868,6 +868,7 @@ export type AuthorizationHasPrivilegeArgs = {
 
 export enum AuthorizationCredential {
   AccountAdmin = 'ACCOUNT_ADMIN',
+  AssistantAccess = 'ASSISTANT_ACCESS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
@@ -976,6 +977,7 @@ export enum AuthorizationPolicyType {
 
 export enum AuthorizationPrivilege {
   AccessInteractiveGuidance = 'ACCESS_INTERACTIVE_GUIDANCE',
+  AccessVirtualAssistant = 'ACCESS_VIRTUAL_ASSISTANT',
   AccountLicenseManage = 'ACCOUNT_LICENSE_MANAGE',
   AuthorizationReset = 'AUTHORIZATION_RESET',
   CommunityAssignVcFromAccount = 'COMMUNITY_ASSIGN_VC_FROM_ACCOUNT',
@@ -2674,6 +2676,7 @@ export type CredentialDefinition = {
 export enum CredentialType {
   AccountAdmin = 'ACCOUNT_ADMIN',
   AccountLicensePlus = 'ACCOUNT_LICENSE_PLUS',
+  AssistantAccess = 'ASSISTANT_ACCESS',
   BetaTester = 'BETA_TESTER',
   GlobalAdmin = 'GLOBAL_ADMIN',
   GlobalAnonymous = 'GLOBAL_ANONYMOUS',
@@ -6286,6 +6289,8 @@ export type Platform = {
   templatesManager?: Maybe<TemplatesManager>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** Whether the current user may use the web AI assistant (the ACCESS_VIRTUAL_ASSISTANT privilege, 004-web-ai-assistant). client-web reads this to gate every assistant UI cue. */
+  virtualAssistantAccess: Scalars['Boolean']['output'];
   /** The mappings of well-known Virtual Contributors to their UUIDs. */
   wellKnownVirtualContributors: PlatformWellKnownVirtualContributors;
 };
@@ -6347,6 +6352,8 @@ export type PlatformAdminQueryResults = {
   userEmailChangeAuditEntries: UserEmailChangeAuditEntries;
   /** Retrieve all Users on the Platform. This is only available to Platform Admins. */
   users: PaginatedUsers;
+  /** The singleton virtual-assistant actor, including its current admin capability grant and ID. This is only available to Platform Admins, and is the discovery path for updateAssistantActorCapabilities. */
+  virtualAssistant: VirtualAssistant;
   /** Retrieve all Virtual Contributors on the Platform. This is only available to Platform Admins. */
   virtualContributors: Array<VirtualContributor>;
 };
@@ -7389,6 +7396,7 @@ export enum RoleName {
   Lead = 'LEAD',
   Member = 'MEMBER',
   Owner = 'OWNER',
+  PlatformAssistantAccess = 'PLATFORM_ASSISTANT_ACCESS',
   PlatformBetaTester = 'PLATFORM_BETA_TESTER',
   PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
   Registered = 'REGISTERED',
@@ -8921,8 +8929,8 @@ export type UpdateInnovationFlowStateInput = {
 };
 
 export type UpdateInnovationFlowStateSettingsInput = {
-  /** The flag to set. */
-  allowNewCallouts: Scalars['Boolean']['input'];
+  /** Optional. Sets whether new callouts can be added to this State; omission leaves the stored value unchanged. */
+  allowNewCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional. Sets whether the phase is shown in member-facing navigation; omission leaves the stored value unchanged. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -35339,6 +35347,13 @@ export type AuthorizationPrivilegesForUserQuery = {
     __typename?: 'LookupQueryResults';
     authorizationPrivilegesForUser?: Array<AuthorizationPrivilege> | undefined;
   };
+};
+
+export type PlatformAssistantAccessQueryVariables = Exact<{ [key: string]: never }>;
+
+export type PlatformAssistantAccessQuery = {
+  __typename?: 'Query';
+  platform: { __typename?: 'Platform'; id: string; virtualAssistantAccess: boolean };
 };
 
 export type PlatformCapabilitiesQueryVariables = Exact<{ [key: string]: never }>;

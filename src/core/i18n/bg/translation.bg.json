@@ -626,7 +626,8 @@
       "GLOBAL_COMMUNITY_READER": "Мениджър на $t(common.community)",
       "GLOBAL_SPACES_READER": "Читател на $t(common.spaces)",
       "PLATFORM_BETA_TESTER": "Бета тестер",
-      "PLATFORM_VC_CAMPAIGN": "Ранен достъп до VC"
+      "PLATFORM_VC_CAMPAIGN": "Ранен достъп до VC",
+      "PLATFORM_ASSISTANT_ACCESS": "Достъп до AI асистента"
     },
     "time": {
       "short": {

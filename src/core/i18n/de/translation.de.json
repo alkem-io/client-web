@@ -626,7 +626,8 @@
       "GLOBAL_COMMUNITY_READER": "$t(common.Community) Manager",
       "GLOBAL_SPACES_READER": "$t(common.spaces) Reader",
       "PLATFORM_BETA_TESTER": "Beta Tester",
-      "PLATFORM_VC_CAMPAIGN": "VC Early Access"
+      "PLATFORM_VC_CAMPAIGN": "VC Early Access",
+      "PLATFORM_ASSISTANT_ACCESS": "KI-Assistent-Zugang"
     },
     "time": {
       "short": {

@@ -29280,6 +29280,78 @@ export function refetchAuthorizationPrivilegesForUserQuery(
 ) {
   return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
 }
+export const PlatformAssistantAccessDocument = gql`
+    query PlatformAssistantAccess {
+  platform {
+    id
+    virtualAssistantAccess
+  }
+}
+    `;
+
+/**
+ * __usePlatformAssistantAccessQuery__
+ *
+ * To run a query within a React component, call `usePlatformAssistantAccessQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAssistantAccessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformAssistantAccessQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformAssistantAccessQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformAssistantAccessQuery, SchemaTypes.PlatformAssistantAccessQueryVariables>(
+    PlatformAssistantAccessDocument,
+    options
+  );
+}
+export function usePlatformAssistantAccessLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >(PlatformAssistantAccessDocument, options);
+}
+export function usePlatformAssistantAccessSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformAssistantAccessQuery,
+        SchemaTypes.PlatformAssistantAccessQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >(PlatformAssistantAccessDocument, options);
+}
+export type PlatformAssistantAccessQueryHookResult = ReturnType<typeof usePlatformAssistantAccessQuery>;
+export type PlatformAssistantAccessLazyQueryHookResult = ReturnType<typeof usePlatformAssistantAccessLazyQuery>;
+export type PlatformAssistantAccessSuspenseQueryHookResult = ReturnType<typeof usePlatformAssistantAccessSuspenseQuery>;
+export type PlatformAssistantAccessQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAssistantAccessQuery,
+  SchemaTypes.PlatformAssistantAccessQueryVariables
+>;
+export function refetchPlatformAssistantAccessQuery(variables?: SchemaTypes.PlatformAssistantAccessQueryVariables) {
+  return { query: PlatformAssistantAccessDocument, variables: variables };
+}
 export const PlatformCapabilitiesDocument = gql`
     query PlatformCapabilities {
   platformCapabilities {
