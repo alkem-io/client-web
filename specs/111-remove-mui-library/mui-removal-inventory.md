@@ -5,6 +5,16 @@ precondition that unblocks each removal. See
 `contracts/removal-inventory.contract.md` for the required shape and
 `mui-footprint-baseline.md` for the "before"/"after-increment-1" numbers.
 
+> **Final result (epic #1888 / story #9885 — COMPLETE).** Every category below is
+> now resolved: the `runtime-library` row (8 packages) is **uninstalled**, all
+> `view-component` surfaces (`src/core/ui/**` MUI design system, `src/domain/**`
+> MUI views, `src/core/auth/**` MUI auth UI, `src/main/**` MUI shells, `src/dev/**`
+> MUI demos) are **removed or de-MUI'd**, the `route-dialog-condition` toggle +
+> MUI `ThemeProvider` are **deleted**, and `coupled-business-logic` was extracted
+> MUI-free. The source `@mui/*` import count is **0** and no source file imports
+> `@emotion/*`. CRD is the sole design system. The category tables and increment
+> notes below are the historical removal record.
+
 > **The verified removal model (read first — supersedes the old "per-page
 > migration of 435 domain views" framing).** Removal is driven at the **route
 > level**, not by rewriting every domain view:

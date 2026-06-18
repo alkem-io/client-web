@@ -2,6 +2,12 @@
 
 **Date:** 2026-05-26
 **Scope:** Whole `client-web` repo, static analysis only. **No code was modified.**
+
+> **Update (post story #9885):** MUI was fully removed after this audit. The two
+> MUI render sites this audit examined (the MUI `WhiteboardDialog` /
+> `SingleUserWhiteboardDialog`) no longer exist; only the CRD whiteboard dialogs
+> remain. The Suspense-teardown findings and the reference pattern below still
+> hold for the CRD code — read the MUI rows as historical context.
 **Trigger:** The CRD public-whiteboard "blank canvas until a remote edit" bug
 (`WhiteboardTemplatePickerButton` suspending late and tearing down the live Excalidraw).
 This audit hunts for *other* instances of the same anti-pattern.

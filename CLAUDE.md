@@ -10,7 +10,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`), the only design system for new features. **CRD is the only runtime path** — every route renders its CRD page; there is no MUI/CRD toggle (removed by story #9885). The legacy **MUI + Emotion** design system (`src/core/ui/`) is **frozen and being removed** (epic #1888) and must only ever be removed, never extended. It is no longer reached via any route directly; what remains live is a set of **CRD→MUI "bridge" files** (≈229, dominated by `src/core/ui/*` primitives) still imported by CRD code. `@mui`/`@emotion` stay installed until that bridge is gone. Apollo Client is the GraphQL data layer. The current MUI footprint and the removal plan are tracked in `specs/111-remove-mui-library/mui-footprint-baseline.md` and `specs/111-remove-mui-library/mui-removal-inventory.md`.
+Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`) — the **sole** design system. **CRD is the only runtime path** — every route renders its CRD page. **MUI and Emotion have been fully removed** (epic #1888, story #9885): the `@mui/*` and `@emotion/*` packages are uninstalled, no source file imports them, the legacy `src/core/ui/` MUI design system is deleted, and the `designVersion` toggle is gone. Global styles live in `src/index.css`. Apollo Client is the GraphQL data layer.
+
+> **Hard rule — never reintroduce MUI/Emotion.** Do not add `@mui/*` or `@emotion/*` (or `material-ui`) imports or dependencies anywhere. They are removed; CRD (`src/crd/`) is the only design system. New client-facing features are built in `src/crd/` with their integration glue in `src/main/crdPages/`.
+
+The completed MUI removal is recorded in `specs/111-remove-mui-library/mui-footprint-baseline.md` and `specs/111-remove-mui-library/mui-removal-inventory.md`.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
 - Requires Node ≥24.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
@@ -82,9 +86,9 @@ pnpm serve:dev
   - `ui/`: App-specific layouts (footer, navigation, `CrdLayoutWrapper`)
   - `constants/`: Environment helpers and constants
 
-- **`src/main/crdPages`**: Page-level integration for CRD-migrated pages
+- **`src/main/crdPages`**: Page-level integration for CRD pages
   - Contains page components, data mappers, hooks, and GraphQL queries for pages using the CRD design system
-  - Imports from `@/crd/`, `@/domain/`, `@/core/` — **MUST NOT import from `@mui/*` or `@emotion/*`**
+  - Imports from `@/crd/`, `@/domain/`, `@/core/` — never `@mui/*` or `@emotion/*` (removed)
   - Organized as `topLevelPages/<pageName>/` mirroring `src/main/topLevelPages/` structure
   - The "glue" layer: wires CRD presentational components to business logic and data
 
@@ -171,11 +175,11 @@ If there is genuinely no schema field to discriminate on and `__typename` is the
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
 - **New strings go to CRD** — every new user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
-- **Core is frozen for new keys** — `src/core/i18n/en/translation.en.json` is FROZEN for new keys; it and its sibling locale files serve only the not-yet-migrated MUI app. **Crowdin is no longer used.** Legacy core translations are now maintained directly in-repo: for upkeep of existing keys, edit `translation.en.json` **and** the non-English `translation.<lang>.json` files in the same PR (preserving key parity). New strings still go to CRD, never here.
+- **Core is frozen for new keys** — `src/core/i18n/en/translation.en.json` and its sibling locale files form the legacy default `translation` namespace and are FROZEN for new keys. **Crowdin is no longer used.** Legacy core translations are maintained directly in-repo: for upkeep of existing keys, edit `translation.en.json` **and** the non-English `translation.<lang>.json` files in the same PR (preserving key parity). New strings always go to CRD, never here.
 
 ### Namespaces
 
-- **`translation`** (default): Main app strings in `src/core/i18n/en/translation.en.json`. Used by all components outside `src/crd/`.
+- **`translation`** (default): Legacy strings in `src/core/i18n/en/translation.en.json`, frozen for new keys. Used by components outside `src/crd/`.
 - **`crd-layout`**: Layout UI strings (header/footer) in `src/crd/i18n/layout/`. Eagerly loaded for English. Used by `src/crd/layouts/` via `useTranslation('crd-layout')`.
 - **`crd-exploreSpaces`**: Space explorer UI strings in `src/crd/i18n/exploreSpaces/`. Lazy-loaded on demand. Used by `src/crd/components/space/` via `useTranslation('crd-exploreSpaces')`.
 - **`crd-<feature>`**: Future feature namespaces follow the same pattern: `src/crd/i18n/<feature>/<feature>.<lang>.json`, lazy-loaded, used via `useTranslation('crd-<feature>')`.
@@ -224,7 +228,7 @@ For more details, see `specs/023-react-compiler-adoption/react-compiler.md`.
 
 - Takes ~20s, outputs to `build/`
 - Warns about large chunks (known, non-blocking)
-- Generates extensive code splitting for vendor libraries (Apollo, MUI, Tiptap, etc.)
+- Generates extensive code splitting for vendor libraries (Apollo, Tiptap, Excalidraw, etc.)
 
 ### Bundle Analysis
 
@@ -326,9 +330,9 @@ The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modif
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
-`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`.
+`src/crd/` is the presentational UI layer. Full conventions are in `src/crd/CLAUDE.md`.
 
-**CRD is the only design system for new features.** All new client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI (`src/core/ui/`, `@mui/*`, `@emotion/*`) is **frozen** — no new MUI view/presentational components may be added; MUI is only ever *removed* as pages are migrated. `@mui/*`/`@emotion/*` imports are acceptable only inside already-existing MUI files until they are migrated.
+**CRD is the only design system.** All client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI/Emotion were fully removed (story #9885) — `@mui/*` and `@emotion/*` are uninstalled and must **never** be reintroduced.
 
 The critical rules:
 
@@ -351,50 +355,20 @@ The critical rules:
 
 Consumers in `src/main/crdPages/`, `src/domain/`, and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
 
-## CSS Isolation Strategy
+## CSS Strategy
 
-Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
+Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`; other global styles live in `src/index.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
 
-**Isolation mechanisms:**
-- `.crd-root` class scopes Tailwind preflight/resets to CRD pages only — MUI pages outside `.crd-root` are unaffected
-- MUI `ThemeProvider` wraps the entire app (including CRD routes) but is unused by CRD components — they never call `useTheme()` or import MUI
-- `src/main/crdPages/` pages **MUST NOT** import from `@mui/*` — ensuring no MUI code is loaded for CRD routes
+There is no second design system to isolate from: MUI/Emotion are removed, so there is no MUI `ThemeProvider`, no `useTheme()`, and no MUI CSS. The `.crd-root` class (which historically scoped Tailwind preflight/resets away from MUI pages) wraps the app; with MUI gone it is just the app root.
 
-**The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
+## CRD is the only runtime path
 
-## CRD is the only runtime path (the design-version toggle was removed)
+Every top-level route renders its `Crd*` page unconditionally — there is no toggle and no legacy MUI route tree. Story #9885 (epic #1888) removed the `designVersion` toggle machinery (`useCrdEnabled`, the design-version sync/upgrade hooks, the user-menu Design Version switch, the Sentry/APM `designVersion` tags) and deleted the entire legacy MUI app, then removed `@mui/*`/`@emotion/*` themselves. The only remaining trace is the server-side `UserSettings.designVersion` GraphQL field, which the client no longer reads.
 
-There is **no MUI/CRD toggle**. Story #9885 (epic #1888) removed the
-`designVersion` machinery and forced CRD for everyone — `TopLevelRoutes` renders
-the `Crd*` branch of every top-level route unconditionally. There is no way (UI,
-localStorage, or otherwise) to render the legacy MUI app; the entire legacy MUI
-route tree was deleted.
-
-What was removed in #9885:
-- `useCrdEnabled.ts`, `useDesignVersionToggle.ts`, `useDesignVersionSync.ts`
-  (+ tests), `DesignVersionUpgradePromptMount`, the CRD `DesignVersionUpgradeDialog`,
-  the **Design Version switch** in the user menu, and the Sentry/APM `designVersion`
-  tag/label hooks.
-- The `alkemio-design-version` / `alkemio-crd-enabled` localStorage keys are no
-  longer read or written.
-- The `crdEnabled ? <Crd…/> : <Mui…/>` ternaries in `TopLevelRoutes.tsx` and the
-  in-route dispatchers (`CrdUserRoutes`, `CrdVCRoutes`, `CrdOrganizationRoutes`,
-  `InnovationPackRoute`, the error/redirect dispatchers) — all forced to CRD.
-
-What was intentionally **left**: the server-side `UserSettings.designVersion`
-GraphQL field still exists (the client just no longer reads it for routing), and
-`src/root.tsx`'s MUI `ThemeProvider` stays (the ≈229 CRD→MUI bridge files still
-need it). Both go in later increments.
-
-Three previously non-toggled MUI routes were product-dropped: `Contributors`
-(`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) entirely;
-`InnovationPacks` (`/innovation-packs/*`) was kept but forced to its CRD branch
-(its CRD profile/admin pages are linked from CRD navigation) with only the MUI
-branch deleted.
+The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) routes were product-dropped during the removal; `InnovationPacks` (`/innovation-packs/*`) was kept on its CRD pages.
 
 ## Recent Changes
-- 111-remove-mui-library / story #9885 (increment 1): **Retired the designVersion toggle and forced CRD as the only runtime path.** Deleted the toggle machinery + the now-unreachable legacy MUI route tree (443 source files; `@mui/` source count 786 → 572). Dropped the Contributors and InnovationHubs routes; forced the InnovationPacks route to CRD. `@mui`/`@emotion` remain installed — the ≈229 CRD→MUI bridge files (dominated by `src/core/ui/*`) are the next increments. `src/core/ui/*` and `src/root.tsx`'s MUI ThemeProvider are untouched. No new runtime dependencies. See `specs/111-remove-mui-library/mui-footprint-baseline.md` §8 and `mui-removal-inventory.md`.
-- 111-remove-mui-library: Documentation + SDD artifacts only (no runtime change). Established the MUI footprint baseline and the categorized removal inventory for epic #1888, and corrected MUI-policy wording. MUI/Emotion remain installed and in use (mid-migration); see `specs/111-remove-mui-library/mui-footprint-baseline.md` and `mui-removal-inventory.md`. No new runtime dependencies.
+- 111-remove-mui-library / story #9885: **MUI and Emotion fully removed (epic #1888 complete).** The `@mui/*` and `@emotion/*` packages are uninstalled, zero source files import them, the legacy `src/core/ui/` MUI design system and the `designVersion` toggle are deleted, and CRD (shadcn/ui + Tailwind) is the sole design system. Global styles consolidated into `src/index.css`. See `specs/111-remove-mui-library/mui-footprint-baseline.md` and `mui-removal-inventory.md`.
 - 110-guest-whiteboard-notice: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`), `lucide-react` (icons), `react-i18next`. No new runtime dependencies.
 - 105-create-space-dialog: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `yup` (validation on submit, decoupled from Formik). **No new runtime dependencies.**
 - 103-innovation-library-pagination: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**.

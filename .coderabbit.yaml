@@ -22,7 +22,7 @@ reviews:
     - path: "**/*"
       instructions: |
         Repository overview:
-        - React 19 + TypeScript single-page app for the Alkemio platform. Uses Vite 5, Apollo Client 3, Vitest. MUI 7 + Emotion are LEGACY and FROZEN — the app is migrating to the CRD design system (shadcn/ui + Tailwind CSS, `src/crd/`). New client-facing features are built in CRD only.
+        - React 19 + TypeScript single-page app for the Alkemio platform. Uses Vite 5, Apollo Client 3, Vitest. CRD (shadcn/ui + Tailwind, `src/crd/`) is the only design system. MUI/Emotion were fully removed (story #9885) and must never be reintroduced.
         - Large surface (production build transforms ~18k modules). Core implementation lives in src/core, src/domain, and src/main; generated GraphQL hooks reside in src/core/apollo/generated.
         - Authoritative docs: README.md, docs/development-setup.md, .specify/memory/constitution.md, agents.md, .github/copilot-instructions.md.
 
@@ -51,7 +51,7 @@ reviews:
         - Follow the hierarchy: constitution → agents.md → .github/copilot-instructions.md.
         - Require `pnpm codegen` and schema diff summaries when `*.graphql` changes; prohibit ad-hoc `useQuery` usage.
         - Enforce React 19 concurrency hygiene, WCAG 2.1 AA accessibility, and localization via `react-i18next` (no hard-coded copy).
-        - **Material UI is frozen (warning, non-blocking)**: MUI is legacy and may only be removed, never newly introduced. For any NEWLY ADDED file that imports from `@mui/*` or `@emotion/*`, leave a non-blocking comment suggesting it be built in the CRD design system (`src/crd/`) instead. Do NOT block the PR and do NOT flag `@mui/*`/`@emotion/*` imports in pre-existing files that are merely being edited — only newly added files.
+        - **MUI/Emotion are removed**: MUI and Emotion were fully removed (story #9885); the packages are uninstalled. Flag ANY `@mui/*` or `@emotion/*` import in any file as a BLOCKING issue — they must never be reintroduced; use the CRD design system (`src/crd/`) instead.
         - **i18n — new strings go to CRD**: Every new user-facing string belongs in the CRD per-feature namespaces under `src/crd/i18n/<feature>/`. The legacy core file `src/core/i18n/en/translation.en.json` is FROZEN for new keys — flag (non-blocking) any PR that ADDS a new key to it and suggest moving the string to CRD. Edits to existing core keys (legacy upkeep) are fine.
         - **i18n (all translations now edited in-repo)**: Crowdin has been retired. Translation files under `src/core/i18n/` are now maintained directly in the repository, in the same PR — both `src/core/i18n/en/translation.en.json` and the non-English `translation.<lang>.json` files. Do NOT reject or flag edits to non-English files under `src/core/i18n/` as Crowdin-compliance violations. The legacy core directory stays FROZEN for NEW keys (see the rule above); only edits to existing keys/values are expected here, and key parity across languages should be preserved.
         - **i18n/CRD (manual translations + parity)**: Translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`; changes to any CRD locale file — including non-English ones — are expected and must pass review without Crowdin-compliance objections. All six supported languages (en, nl, es, bg, de, fr) are edited in the same PR. Enforce KEY PARITY: any key added or removed MUST be mirrored across all six language files — flag a missing or orphaned key in any locale as a blocking issue.
@@ -71,7 +71,7 @@ reviews:
         Rely on global error handling and logging; only flag missing local try/catch or logging when additional mitigation is required.
         Non-null assertions are discouraged except when paired with skip guards on GraphQL queries (see existing patterns).
         Watch for security issues (XSS, CSRF, sensitive data exposure) and TypeScript typing violations.
-        Material UI is frozen: new client-facing features must be built in the CRD design system (`src/crd/`), not MUI. If a NEWLY ADDED file imports from `@mui/*` or `@emotion/*`, leave a non-blocking comment suggesting CRD instead — MUI may only be removed, never newly introduced. Do not flag `@mui/*`/`@emotion/*` imports in pre-existing files that are only being edited.
+        MUI/Emotion are removed (story #9885) and the packages are uninstalled. All client-facing UI is built in the CRD design system (`src/crd/`). Flag ANY `@mui/*` or `@emotion/*` import in any file as a BLOCKING issue — they must never be reintroduced; use CRD instead.
     - path: "src/**/*.{graphql,gql}"
       instructions: |
         Ensure documents follow generated fragment conventions, stay in sync with server schema, and include matching codegen artifacts. Flag missing schema diffs or cache update plans.
@@ -80,7 +80,7 @@ reviews:
         Validate structure, schema compliance, and absence of secrets. Keep localization payloads consistent.
     - path: "src/core/i18n/**/*.json"
       instructions: |
-        Legacy translations for the not-yet-migrated MUI app, now maintained directly in-repo (Crowdin retired). All locale files here — `en` and every non-English `translation.<lang>.json` — may be edited directly; do NOT flag non-English edits as Crowdin policy violations. The directory is FROZEN for NEW keys — flag (non-blocking) any PR that ADDS a new key and suggest the string be added to the CRD per-feature namespaces under `src/crd/i18n/` instead; edits to existing keys (legacy upkeep) are fine. Keep localization payloads consistent across languages (key parity).
+        Legacy default `translation` namespace, maintained directly in-repo (Crowdin retired). All locale files here — `en` and every non-English `translation.<lang>.json` — may be edited directly; do NOT flag non-English edits as Crowdin policy violations. The directory is FROZEN for NEW keys — flag (non-blocking) any PR that ADDS a new key and suggest the string be added to the CRD per-feature namespaces under `src/crd/i18n/` instead; edits to existing keys (legacy upkeep) are fine. Keep localization payloads consistent across languages (key parity).
     - path: "src/crd/i18n/**/*.json"
       instructions: |
         Manual (AI-assisted) translations per `src/crd/CLAUDE.md`. NOT managed by Crowdin. All six supported languages (en, nl, es, bg, de, fr) are edited in the same PR. Do NOT raise Crowdin-compliance objections against edits to non-English CRD locale files — that policy applies only to `src/core/i18n/`. ENFORCE KEY PARITY: every key added or removed in one `<feature>.<lang>.json` MUST be added or removed in all six language files for that feature — flag any key that is present in some locales but missing from others (a missing translation) as a blocking issue. Validate JSON structure and absence of secrets.

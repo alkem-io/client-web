@@ -5,6 +5,22 @@ in any later checkout to compute the "after" delta. See `quickstart.md` for the
 full command reference and `contracts/footprint-baseline.contract.md` for the
 required shape.
 
+> **Final result (epic #1888 / story #9885 — COMPLETE).** MUI and Emotion are now
+> **fully removed**. The headline source-import metric (`@mui/*`) is **0**, the
+> direct `@emotion/*` import count is **0**, and all **8** MUI/Emotion runtime
+> packages are **uninstalled** from `package.json` (the `pnpm.overrides` Emotion
+> pin is gone too). The legacy `src/core/ui/` MUI design system, the `designVersion`
+> toggle, and the MUI `ThemeProvider` are deleted; the `vendor-mui-*` bundle chunks
+> no longer exist. CRD (shadcn/ui + Tailwind) is the sole design system. The §1–§7
+> figures below are the historical "before" baseline; §8–§11 record the
+> increments; this note records the end state (source count 0, packages 0).
+
+```bash
+grep -rlE "@mui/" --include='*.ts' --include='*.tsx' src | wc -l       # 0
+grep -rlE "@emotion/" --include='*.ts' --include='*.tsx' src | wc -l   # 0
+grep -iE "@mui|@emotion" package.json                                 # (no matches)
+```
+
 ## Provenance
 
 | Field | Value |
