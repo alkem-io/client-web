@@ -120,146 +120,21 @@
     }
   },
   "buttons": {
-    "accept": "Accept",
-    "accept-all-cookies": "Accepter tous les Cookies",
-    "add": "Add",
-    "addSubject": "Ajouter {{subject}}",
     "apply": "Appliquer",
-    "approveApplication": "Approve application",
-    "archive": "Archiver",
-    "back": "Précédent",
-    "cancel": "Annuler",
-    "cancel-project": "Annulation De Projets",
-    "change": "Modifier",
-    "change-field": "Changer {{field}}",
-    "change-template": "Change $t(common.template)",
-    "changeLanguage": "Changer la langue",
     "close": "Fermer",
-    "collapse": "Collapse",
-    "collapseEntity": "Collapse {{entity}}",
-    "confirm": "Confirmer",
-    "confirm-choice": "Confirmer votre choix",
-    "contactLeads": "Contact the {{contact}}",
-    "continue": "Continuer",
-    "create": "Créer",
-    "create-project": "Créer un projet",
-    "createOwnSpace": "...or click here to create your own $t(common.space)",
     "delete": "Supprimer",
-    "details": "Détails",
-    "download": "Download",
-    "edit": "Éditer",
-    "edit-members": "Edit $t(common.members)",
-    "edit-photo": "Modifier la photo",
-    "ellipsisReadMore": "... Read more",
-    "expand": "Expand",
-    "expandEntity": "Expand {{entity}}",
-    "expandWindow": "Expand Window",
-    "explore": "Contribuer",
-    "explore-and-connect": "Explorer et se connecter",
     "find-template": "Find $t(common.template)",
-    "fullscreen": "Basculer en mode plein écran",
-    "getHelp": "Get help",
-    "go-to-entity": "Aller à {{entity}}",
-    "home": "Ma page d'accueil",
-    "import": "Importer",
-    "importing": "Import...",
-    "insert": "Insérer",
-    "invite": "Inviter",
-    "learn-more": "Plus d'info",
-    "leave": "Partir",
-    "load-count-more": "Charger {{ count }} de plus",
-    "load-more": "Charger d'avantage",
-    "member": "$t(common.Member), $t(common.subspaces) & $t(common.opportunties)",
-    "messages": "Messages Button",
-    "moveDown": "Déplacer vers le bas",
-    "moveToBottom": "Placer à la fin",
-    "moveToTop": "Placer en premier",
-    "moveUp": "Déplacer vers le haut",
-    "my-profile": "My $t(common.profile)",
-    "new": "Nouveau",
-    "next": "Suivant",
-    "no": "Non",
-    "notifications": "$t(common.Notifications) Button",
-    "ok": "Ok",
-    "open": "Ouvrir",
-    "post": "Publication",
-    "preview": "Prévisualiser",
-    "processing": "Traitement en cours...",
-    "profile": "Profil",
-    "publish": "Publier",
-    "readMore": "Pour en savoir plus",
-    "rejectApplication": "Reject application",
-    "remove": "Retirer",
-    "reply": "Réponse",
-    "reset": "Reset",
-    "retry": "Try again",
-    "returnToDashboard": "Return to $t(common.dashboard)",
-    "returnToDashboardAsGuest": "Return to $t(common.dashboard) as guest",
-    "save": "Enregistrer",
-    "saveAsTemplate": "Save as $t(common.template)",
-    "saveDraft": "Enregistrer comme brouillon",
-    "scrollToTop": "Scroll to top",
-    "see-all": "Plus de {{subject}}",
-    "see-more": "Voir plus",
-    "select": "Sélectionner",
     "send": "Envoyer",
-    "send-message": "Envoyez le message",
-    "share": "Partager",
-    "showAll": "Show all",
-    "showLess": "Show less",
-    "sign-out": "Se déconnecter",
-    "skipLink": "Skip to next block",
-    "submit": "Envoyer",
-    "take-me-home": "Me ramener à l'accueil",
-    "takeMeHome": "Retourner sur la page d’accueil",
-    "toggle": "Toggle {{entity}}",
-    "toolPosition": "Position of tool",
-    "toolsMenu": "Tools Menu",
-    "unpublish": "Annuler la publication",
-    "upload": "Télécharger",
-    "uploadMedia": "Upload Media",
-    "use": "Utiliser",
-    "userMenu": "User Menu",
-    "view": "Voir",
-    "view-profile": "View $t(common.Profile)",
-    "visit": "Visit",
-    "yes": "Oui",
-    "yesCancel": "Yes, cancel",
-    "yesClose": "Oui, fermer",
-    "yesContinue": "Oui, continuer",
-    "yesDelete": "Oui, supprimer",
-    "yesDiscard": "Oui, jeter",
-    "yesReplace": "Oui, remplacer",
-    "yesStop": "Oui, arrêter"
+    "visit": "Visit"
   },
   "calendar": {
-    "add-event": "Ajouter un événement",
     "addToCalendar": {
-      "button": "Add to calendar",
       "exportAll": "Export all future events to calendar",
       "google": "Google Calendar",
-      "iCal": "Apple calendar & Other apps",
       "outlook": "Outlook"
     },
-    "adminsOnly": "Since there are no events, this block is only visible for $t(common.admins) and $t(common.leads)",
-    "defaultEventDescription": "",
-    "delete-confirmation": "Are you sure you want to delete event: '{{title}}' from the {{entity}}?",
-    "delete-event": "Supprimer l'événement",
-    "edit-event": "Modifier l'évènement",
     "event": {
-      "multiple-days": "{{days}} jours",
-      "type": "Type d'Événement",
-      "visibleOnParentCalendar": "Also visible on the parent $t(common.space) calendar",
       "whole-day": "All Day"
-    },
-    "no-data": "Aucun événement trouvé",
-    "no-upcoming-events": "Actuellement, il n'y a aucun événement à venir à afficher",
-    "past-events": "Événements passés",
-    "show-calendar": "Afficher le calendrier",
-    "validation": {
-      "durationMinutes": {
-        "positive": "L'heure de fin de l'événement ne peut pas être avant l'heure de début de l'événement"
-      }
     }
   },
   "callout": {
@@ -711,45 +586,21 @@
     },
     "leads": "Référents",
     "pendingMembership": {
-      "applicationsSectionTitle": "Applications ouvertes",
-      "empty": "You don't have any open invitations or applications at the moment.",
       "invitationCardTitle": "{{user}} invited {{invitedEntity}} to <spaceicon /> {{space}}",
       "invitationDialog": {
-        "actions": {
-          "accept": "Joindre",
-          "hide": "Masquer ce bouton",
-          "join": "Rejoindre",
-          "reject": "Refuser"
-        },
         "title": "My Pending $t(common.Membership): {{space}}",
         "vc": {
           "title": "Pending $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
-      "invitationTitle": "{{time}} {{user}} vous a invité à <spaceicon /> {{space}}",
-      "invitationsSectionTitle": "Invitations",
-      "pendingMemberships": "My Pending $t(common.Memberships)",
-      "pendingMembershipsWithCount": "My Pending $t(common.Memberships) ({{count}})",
       "vc": "your $t(common.virtualContributor)",
-      "virtualInvitationsSectionTitle": "Invitations for my $t(common.virtualContributor)",
       "you": "vous"
     }
   },
   "components": {
     "activityLogView": {
       "description": {
-        "CALENDAR_EVENT_CREATED": "{{subject}}",
-        "CALLOUT_LINK_CREATED": "{{subject}}",
-        "CALLOUT_MEMO_CREATED": "{{subject}}",
-        "CALLOUT_POST_COMMENT": "{{subject}}",
-        "CALLOUT_POST_CREATED": "{{subject}}",
-        "CALLOUT_PUBLISHED": "{{subject}}",
-        "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
-        "DISCUSSION_COMMENT": "{{subject}}",
-        "MEMBER_JOINED": "{{subject}} joined",
-        "SUBSPACE_CREATED": "{{subject}}",
-        "UPDATE_SENT": "{{subject}}"
+        "MEMBER_JOINED": "{{subject}} joined"
       },
       "detailedDescription": {
         "parentLink": " en <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -804,25 +655,12 @@
       "parent-pending": "Demande de tutorat en cours"
     },
     "card": {
-      "parentSpace": "in: {{space}}",
       "privacy": {
-        "member": "$t(common.Member), $t(common.subspaces) & $t(common.opportunties)",
-        "private": "Private {{entity}}",
-        "public": "Public {{entity}}"
+        "private": "Private {{entity}}"
       }
     },
     "discussion": {
-      "cant-post": "Vous ne pouvez pas répondre à cette discussion",
-      "comment": "{{count}} $t(common.Comment)",
-      "comment_plural": "{{count}} $t(common.Comments)",
-      "contributed": "{{count}} Personne a contribué",
-      "contributed_plural": "{{count}} Personne a contribué",
-      "delete-comment": "Delete $t(common.comment)?",
-      "delete-discussion": "Supprimer la discussion ?",
-      "initiate": "Lancer la discussion",
-      "posted": "{{name}} initiated on {{- date}} - {{count}} $t(common.comment)",
-      "posted_plural": "{{name}} initiated on {{- date}} - {{count}} $t(common.comments)",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })"
+      "delete-discussion": "Supprimer la discussion ?"
     },
     "file-upload": {
       "file-size-error": "La taille du fichier dépasse la limite de {{limit}}Mo",
@@ -831,19 +669,12 @@
       "uploadFile": "Télécharger un fichier"
     },
     "inAppNotifications": {
-      "action": {
-        "delete": "Delete $t(common.Notification)",
-        "read": "Marquer comme lu",
-        "unread": "Marquer comme non lu"
-      },
-      "emptyInbox": "No pending $t(common.notifications)",
       "filters": {
         "all": "Tous",
         "messagesAndReplies": "Messages & Replies",
         "platform": "Platform notifications",
         "space": "Space notifications"
       },
-      "markAllAsRead": "Mark all as read",
       "type": {
         "ORGANIZATION_ADMIN_MENTIONED": {
           "description": "{{message}}",
@@ -989,25 +820,14 @@
           "description": "",
           "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)"
         }
-      },
-      "unknownOrganization": "Unknown $t(common.organization)",
-      "unknownUser": "Unknown $t(common.user)"
+      }
     },
     "profile": {
       "fields": {
-        "bio": {
-          "title": "Bio"
-        },
         "bodyOfKnowledge": {
           "privateBokTooltip": "This Body of Knowledge is private",
           "spaceBokDescription": "Answers {{vcName}} gives are based on the body of knowledge coming from:",
           "title": "Update Knowledge"
-        },
-        "capabilities": {
-          "title": "Capacités"
-        },
-        "description": {
-          "title": "Description"
         },
         "engines": {
           "external": "OpenAI Generic",
@@ -1017,32 +837,11 @@
         "keywords": {
           "title": "Mots-clés"
         },
-        "links": {
-          "title": "Lien"
-        },
-        "location": {
-          "title": "Emplacement"
-        },
-        "mobile": {
-          "title": "Mobitelefon"
-        },
-        "phone": {
-          "title": "Téléphone"
-        },
         "references": {
           "title": "Références"
         },
         "skills": {
           "title": "Possibilité"
-        },
-        "tagline": {
-          "title": "Slogan"
-        },
-        "telephone": {
-          "title": "Téléphone"
-        },
-        "website": {
-          "title": "Site Web"
         }
       }
     },
@@ -1074,23 +873,6 @@
       "entityCreatedErrorUploading": "The {{entity}} was created, but there was an error uploading some images. Please try again."
     },
     "wysiwyg-editor": {
-      "embed": {
-        "dialogTitle": "Embed Video or other Media",
-        "embedCodeTextAreaAriaLabel": "Zone de texte vide",
-        "iframeAria": "{{title}}",
-        "invalidOrUnsupportedEmbed": "Unfortunately, this code is either not valid or not supported. Please check the code carefully or contact support@alkem.io",
-        "pasteEmbedCode": "Paste the embed/iframe code here"
-      },
-      "generic": {
-        "add": "$t(common.add)",
-        "cancel": "$t(buttons.cancel)"
-      },
-      "image": {
-        "dialogHeader": "Insérer image"
-      },
-      "link": {
-        "dialogHeader": "Convertir la sélection en lien hypertexte"
-      },
       "toolbar": {
         "blocktype": {},
         "embed": {},
@@ -1120,11 +902,7 @@
   },
   "forms": {
     "validations": {
-      "acceptedTerms": "Vous devez accepter les conditions générales",
       "alphaNumeric": "{{field}} ne peut contenir que des caractères latins minuscules, des chiffres et des traits d'union",
-      "atLeastOne": "Au moins un {{item}} doit être sélectionné.",
-      "duplicateEmail": "Dupliquer l'adresse e-mail",
-      "elementMustBeValidUrl": "{{name}} must be a valid URL",
       "field": "Champ",
       "fieldNotPresent": "{{fieldName}} is not present",
       "invalidEmail": "Adresse e-mail invalide",
@@ -1132,20 +910,14 @@
       "maxLength": "Vous avez atteint la limite de {{max}} caractères",
       "minLength": "{{field}} devrait contenir au moins {{min}} symboles",
       "nonBlank": "{{field}} ne doit pas être composé d'espaces simples",
-      "pollMaxResponsesWithinOptions": "Maximum choices allowed per vote must be less than or equal to the number of options.",
-      "pollMinResponsesWithinMaxResponses": "Minimum choices needed to vote must be less than or equal to maximum choices allowed per vote.",
-      "pollMinResponsesWithinOptions": "Minimum choices needed to vote must be less than or equal to the number of options.",
       "required": "Ce champ est obligatoire!",
-      "requiredField": "{{field}} is required!",
       "reservedTopLevelRoute": "This URL is reserved for the platform. Please choose another one."
     }
   },
   "fullscreen": "Basculer en mode plein écran",
   "innovationHub": {
     "outsideOfSpace": {
-      "contributors": "Here you can find all people and $t(common.organizations) that are contributing on Alkemio, also in $t(common.spaces) that are not selected by <strong>{{space}}. Enjoy connecting!</strong>",
-      "forum": "This is the general Alkemio $t(common.forum), outside of the <strong>{{space}}</strong> $t(common.space). You are very much invited to explore and contribute!",
-      "subspaces": "Here you can find all $t(common.subspaces) that are hosted on Alkemio, also the ones that are not selected by <strong>{{space}}. Enjoy exploring!</strong>"
+      "forum": "This is the general Alkemio $t(common.forum), outside of the <strong>{{space}}</strong> $t(common.space). You are very much invited to explore and contribute!"
     }
   },
   "kratos": {
@@ -1172,8 +944,6 @@
       "Submit": "Envoyer",
       "Verify code": "Vérifier le code"
     },
-    "loading-error": "Erreur lors du chargement",
-    "loading-flow": "Chargement du flux",
     "messages": {
       "account-disabled": "This account is disabled.",
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
@@ -1213,7 +983,6 @@
     "message": "Message",
     "successfully-sent": "Message envoyé avec succès"
   },
-  "noResults": "Aucun résultat trouvé",
   "ok": "OK",
   "pages": {
     "admin": {
@@ -1225,20 +994,10 @@
         }
       },
       "innovation-packs": {
-        "back-button": "$t(common.innovation-packs)",
-        "create": "Create $t(common.innovationPack)",
-        "fields": {
-          "listedInStore": "Listed in Store",
-          "provider": "Provider $t(common.organization)",
-          "searchVisibility": "Search Visibility"
-        },
         "notifications": {
           "pack-created": "$t(common.innovationPack) created successfully.",
-          "pack-error": "An error occurred while creating the $t(common.innovationPack).",
-          "pack-removed": "$t(common.innovationPack) '{{name}}' removed successfully."
-        },
-        "save-new-for-details": "Save the new $t(common.innovationPack) to edit the rest of the details",
-        "saved-successfully": "Enregistrement réussi "
+          "pack-error": "An error occurred while creating the $t(common.innovationPack)."
+        }
       },
       "innovationHub": {
         "notifications": {
@@ -1256,97 +1015,8 @@
         }
       },
       "space": {
-        "aria": {
-          "tabs": "$t(common.space) tabs"
-        },
-        "authorization": {
-          "preferences": {
-            "subtitle": "Cette section vous permet de modifier les préférences d'autorisation $t(common.space)"
-          }
-        },
-        "community": {
-          "preferences": {
-            "subtitle": "This section allows you to modify the $t(common.space) $t(common.membership) preferences",
-            "title": "$t(common.Membership), $t(common.subspaces) & $t(common.opportunties)"
-          }
-        },
         "notifications": {
-          "errorCreatingSpace": "An error occurred while creating the $t(common.space).",
-          "space-created": "$t(common.space) created successfully.",
           "space-removed": "$t(common.space) removed successfully."
-        },
-        "sections": {
-          "subspaces": {
-            "defaultSettings": {
-              "defaultSpaceTemplate": {
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library.",
-                "selectDifferentTemplate": "Change Default $t(common.template)",
-                "title": "Change Default $t(common.subspace) $t(common.template)"
-              },
-              "description": "Choose the default $t(common.settings) that will apply when creating a new $t(common.subspace) within this $t(common.space). These $t(common.settings) can be modified during the creation process or at a later time.",
-              "title": "Default $t(common.subspace) $t(common.template)"
-            },
-            "description": "Here you can edit the $t(common.subspaces) in this $t(common.space).",
-            "pinSpace": "Pin Space",
-            "reorderSubspaces": "Reorder $t(common.subspaces)",
-            "sortBy": "Sort By:",
-            "sortMode": {
-              "alphabetical": "Alphabetical",
-              "custom": "Custom"
-            },
-            "unpinSpace": "Unpin Space"
-          }
-        },
-        "settings": {
-          "account": {
-            "vc-create-button": "Create $t(common.virtualContributor)",
-            "vc-section-title": "$t(common.virtualContributors) created from this $t(common.space)"
-          },
-          "copySpace": {
-            "createTemplate": "Create $t(common.template)",
-            "createTemplateTooltip": "To create a $t(common.template) from this $t(common.subspace), you need $t(common.space) $t(common.admin) permissions.",
-            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
-            "duplicate": "Duplicate",
-            "title": "Copy $t(common.subspace)"
-          },
-          "license-features": {
-            "features": {
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Create $t(common.template) from $t(common.callout)",
-              "VIRTUAL_CONTRIBUTORS": "Interact with $t(common.virtualContributors)",
-              "WHITEBOARD_MULTI_USER": "Multi-user $t(common.Whiteboards)"
-            },
-            "title": "$t(common.space) Features"
-          },
-          "memberActions": {
-            "createBlocks": "<b>Create $t(common.posts)</b>: Allow $t(common.members) to create $t(common.posts). If you deactivate this, $t(common.members) will still be able to contribute to existing $t(common.posts), but will not be able to create new $t(common.posts).",
-            "createSubspaces": "<b>Create $t(common.subspaces)</b>: Allow $t(common.members) to create $t(common.subspaces) in this $t(common.space). If you deactivate this, you can still create $t(common.subspaces) yourself and add other people as an $t(common.admin) inside the $t(common.subspace).",
-            "eventsFromSubspaces": "<b>$t(common.subspace) events</b>: Allow events from $t(common.subspaces) to be visible on this $t(common.space) calendar as well.",
-            "guestContributions": "<b>Guest Contributions</b>: Allow $t(common.whiteboards) in this $t(common.space) to be shared with guest users (non-members) for collaborative contributions.",
-            "inheritRights": "Allow $t(common.members) of the parent $t(common.community) to contribute without needing to join first.",
-            "supportAsAdmin": "<b>Alkemio Support</b>: Allow the Alkemio Support team to act as an $t(common.admin) in this $t(common.space).",
-            "title": "Actions de membre",
-            "videoCall": "<b>Video Call</b>: Show video call button in the tab menu. All members of this Space can use this button to start a Jitsi video conference. Read more about Jitsi <jitsiInfoLink>here</jitsiInfoLink>."
-          },
-          "membership": {
-            "allowSubspaceAdminsToInviteMembers": "<b>$t(common.space) invitations</b>: Allow $t(common.admins) of $t(common.subspaces) to invite users to their $t(common.subspace). Users who were not yet a $t(common.member) of this $t(common.space), will become so when they accept the $t(common.subspace) invitation.",
-            "allowSubspaceAdminsToInviteMembersSubspace": "<b>$t(common.space) invitations</b>: Allow $t(common.admins) of $t(common.subspaces) within this $t(common.subspace) to invite users directly to their own $t(common.subspace). If a user is not yet a $t(common.member) of this $t(common.subspace), they will automatically become one upon accepting the invitation. <b>Note: </b>Only users who are already $t(common.members) of the $t(common.space) can be invited this way.",
-            "applications": "<b>Application required:</b> If people want to become a $t(common.member), they have to fill in the application form. You receive their applications (<community>see $t(common.community) tab here</community>) and can choose to accept these or not. If you want, you can choose to leave the form empty.",
-            "hostOrganizationJoin": "<b>Host $t(common.organization):</b> Allow people who are associated with <i>{{host}}</i> to directly join, without having to apply or be invited.",
-            "invitations": "<b>Invitation only:</b> Users can only become a $t(common.member) after you’ve invited them (<community>which you can do from the $t(common.community) tab here</community>) or if they are added manually. There is no Apply or Join button for others to click.",
-            "open": "<b>No Application required:</b> All $t(common.space) $t(common.members) can directly join, without you having to review their application.",
-            "title": "$t(common.Membership), $t(common.subspaces) & $t(common.opportunties)",
-            "trustedApplicants": "Demandes de confiance"
-          },
-          "savedSuccessfully": "$t(common.Settings) saved successfully",
-          "updateFailed": "An error occurred while updating the $t(common.settings). Please try again later.",
-          "visibility": {
-            "membershipWarning": "<b>Please note that users can join this {{entity}} without explicit approval. You can change this in the membership settings below.</b>",
-            "private": "<b>Private:</b> This $t(common.space) is visible to everyone on the platform, but the content is only visible to $t(common.members). Please note that both the information in the $t(common.profile) and the context are publicly visible.",
-            "privateSubspace": "<b>Private:</b> This $t(common.subspace) is visible to all $t(common.members) of the $t(common.space), but its contents are restricted and can only be accessed by $t(common.members) of the $t(common.subspace).",
-            "public": "<b>Public:</b> This $t(common.space) and its contents are visible for everyone on the platform. Users can only contribute if they are a $t(common.member).",
-            "publicSubspace": "<b>Public:</b> This $t(common.subspace) and all its contents are visible to everyone who has access to the $t(common.space) it belongs to. If the $t(common.space) itself is public, this $t(common.subspace) and its contents will be visible to all users, including those outside the $t(common.space).",
-            "title": "Visibilité"
-          }
         }
       },
       "spaceConversion": {
@@ -1419,40 +1089,9 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
-        "calloutInfo": "$t(common.post) Info",
-        "calloutUrl": "$t(common.post) URL",
-        "calloutUrlPlaceholder": "Paste $t(common.post) URL or path",
-        "calloutsSetId": "CalloutsSet ID",
-        "close": "Close",
-        "confirmButton": "Transfer",
-        "confirmTitle": "Are you sure?",
-        "confirmWarning1": "Ensure the same Innovation State (e.g., Home) exists in the space you are transferring the $t(common.post) to.",
-        "confirmWarning2": "Note that any existing links to this $t(common.post) in activity or notifications may become broken.",
-        "confirmWarning3": "If the $t(common.post) contains Virtual Contributions and the particular Virtual Contributor is not part of the target space, the $t(common.post) will be broken.",
-        "confirmWarning4": "The executing user becomes the new $t(common.post) creator. Non-default tagsets will be deleted and classification values will be reset to the target defaults.",
-        "contributions": "Contributions",
-        "contributionsSummary": "{{posts}} posts, {{whiteboards}} whiteboards, {{links}} links, {{memos}} memos",
-        "createdBy": "Created By",
-        "description": "Description",
-        "level": "Level",
-        "lookup": "Lookup",
-        "missingTransferAccept": "Missing TransferResourceAccept privilege on target calloutsSet",
-        "missingTransferOffer": "Missing TransferResourceOffer privilege on source calloutsSet",
-        "sectionDescription": "Move a $t(common.post) to a different space. Contributions are preserved, but the creator will change to you and non-default tagsets will be removed.",
-        "sectionTitle": "Transfer $t(common.post)",
-        "successMessage": "$t(common.post) \"{{calloutName}}\" has been transferred to \"{{spaceName}}\".",
-        "successTitle": "Transfer Successful",
-        "targetSpaceInfo": "Target Space Info",
-        "targetSpaceUrl": "Target Space URL",
-        "targetSpaceUrlPlaceholder": "Paste space URL or path",
-        "transferButton": "Transfer $t(common.post)",
-        "transferFailed": "Failed to transfer $t(common.post)",
-        "transferring": "Transferring...",
-        "unknown": "Unknown",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
-        "urlNotSpace": "URL does not resolve to a space",
-        "urlRequired": "URL is required"
+        "urlNotSpace": "URL does not resolve to a space"
       },
       "transferHub": {
         "confirmTitle": "Transfer $t(common.customHomepage)?",
@@ -1489,37 +1128,10 @@
         "urlRequired": "URL is required"
       },
       "transferSpace": {
-        "accountId": "Account ID",
-        "accountOwnerType": "Account Owner Type",
-        "accountOwnerTypeOrganization": "Organization",
-        "accountOwnerTypeUser": "User",
-        "close": "Close",
-        "confirmButton": "Transfer",
-        "confirmTitle": "Are you sure?",
-        "confirmWarning1": "After the transfer, ensure the new owner (or organization Admins) are added as admins in the community.",
-        "description": "Description",
-        "level": "Level",
-        "lookup": "Lookup",
-        "missingTransferAccept": "Missing TransferResourceAccept privilege on the target account",
-        "missingTransferOffer": "Missing TransferResourceOffer privilege on the space's account",
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
-        "sectionDescription": "Transfer an L0 space to a different account. Community members, content, and structure remain unchanged — only the account ownership is updated.",
-        "sectionTitle": "Transfer Space",
-        "spaceInfo": "Space Info",
-        "spaceUrl": "Space URL",
-        "spaceUrlPlaceholder": "Paste L0 space URL or path",
-        "successMessage": "Space \"{{spaceName}}\" has been transferred to \"{{accountOwnerName}}\".",
-        "successTitle": "Transfer Successful",
-        "targetAccountInfo": "Target Account Info",
-        "targetAccountUrl": "Target Account Owner URL",
-        "targetAccountUrlPlaceholder": "Paste user or organization URL",
-        "transferButton": "Transfer Space",
-        "transferFailed": "Failed to transfer space",
-        "transferring": "Transferring...",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
-        "urlRequired": "URL is required"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1541,29 +1153,8 @@
       },
       "users": {
         "emailChange": {
-          "dialog": {
-            "approvalSection": "Reason & approval",
-            "approverNameLabel": "Approved by",
-            "approverOrganizationLabel": "Approver's organization (optional)",
-            "approverRoleLabel": "Approver's role",
-            "confirmEmailLabel": "Confirm new login email",
-            "currentEmailLabel": "Current login email",
-            "newEmailLabel": "New login email",
-            "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
-            "reasonLabel": "Reason for change",
-            "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
-            "submit": "Change email",
-            "title": "Change login email"
-          },
           "drift": {
-            "banner": "This user's last email change was only partially applied. Resolve it to return the account to a consistent state.",
-            "newEmailChoice": "New address — {{email}}",
-            "oldEmailChoice": "Previous address — {{email}}",
-            "resolveAction": "Resolve",
-            "resolveDescription": "Choose which address should be this user's canonical login email.",
-            "resolveSubmit": "Resolve",
-            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}.",
-            "resolveTitle": "Resolve email drift"
+            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}."
           },
           "errors": {
             "alkemioWriteFailed": "The change could not be completed. No changes were made — you can try again.",
@@ -1580,20 +1171,6 @@
             "validation": "Enter a valid email address."
           },
           "history": {
-            "empty": "This user has no email-change history.",
-            "fields": {
-              "approver": "Approved by",
-              "failureReason": "Failure reason",
-              "initiator": "Initiated by",
-              "newEmail": "New email",
-              "oldEmail": "Old email",
-              "outcome": "Outcome",
-              "reason": "Reason for change",
-              "timestamp": "When"
-            },
-            "linkLabel": "View change history",
-            "loadMore": "Load more",
-            "title": "Email-change history",
             "unknownInitiator": "—"
           },
           "outcomes": {
@@ -1611,16 +1188,7 @@
             "spaceAdminNotificationFailed": "Committed — space admin notification not sent",
             "unknown": "Unknown outcome"
           },
-          "rowAction": {
-            "disabledTooltip": "Only platform administrators can change a user's login email.",
-            "label": "Change login email",
-            "tooltip": "Change this user's login email"
-          },
-          "success": "Login email changed to {{email}}. The user has been notified by email.",
-          "validation": {
-            "mismatch": "The email addresses do not match.",
-            "unchanged": "The new email must be different from the current login email."
-          }
+          "success": "Login email changed to {{email}}. The user has been notified by email."
         },
         "notifications": {
           "user-removed": "Utilisateur retiré avec succès."
@@ -1698,8 +1266,7 @@
       "resendEmail": "Resend verification email"
     },
     "verification-required": {
-      "header": "La vérification de l'e-mail est en cours.",
-      "message": "Vous êtes presque là... Une dernière étape est de vérifier votre e-mail. <br />Veuillez consulter votre boîte de réception pour obtenir des instructions.<br /><br /><again>Si vous n'avez pas reçu d'e-mail, cliquez sur ce lien pour envoyer à nouveau</again>."
+      "header": "La vérification de l'e-mail est en cours."
     },
     "virtualContributorProfile": {
       "bokIngestStarted": "Body of Knowledge ingestion started. It may take a few minutes to complete."
@@ -1715,12 +1282,6 @@
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard)."
       },
       "previewSettings": {
-        "cropDialog": {
-          "cancel": "$t(buttons.cancel)",
-          "confirm": "Confirm Selection",
-          "previewArea": "Crop preview area",
-          "reset": "$t(buttons.reset), $t(common.subspaces) & $t(common.opportunties)"
-        },
         "errorGeneratingPreview": "Error generating preview for this $t(common.whiteboard).",
         "modes": {
           "AUTO": {
@@ -1735,17 +1296,13 @@
             "description": "Take a screenshot of your $t(common.whiteboard) to use as preview. This screenshot will not update as you update your board.",
             "title": "Fixed Selection"
           }
-        },
-        "subtitle": "Choose how your $t(common.whiteboard) preview appears in posts and $t(common.spaces).",
-        "title": "Preview Settings"
+        }
       },
       "unsuccessful-save": "<p><strong>{{warningMessage}} Unable to save changes. Last saved: {{datetime}}.</strong></p> <p>If this issue persists, please contact the team. To avoid losing progress, click the menu in the top-left corner to save your $t(common.whiteboard) to your local disk.</p>",
       "whiteboardDisconnected": {
         "lastSaved": "The content of this $t(common.whiteboard) was last saved {{lastSaved}}.",
         "message": "Apologies for the inconvenience! The $t(common.whiteboard) isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the $t(common.whiteboard) or refreshing the page. If the issue persists, reach out to your $t(common.space) $t(common.admin) for assistance.",
         "offline": "You are currently offline. The $t(common.whiteboard) will try to reconnect when you are back online.",
-        "reconnect": "Reconnect",
-        "reconnectCountdown": "({{seconds}}s)",
         "title": "$t(common.Whiteboards) connection lost"
       }
     }
@@ -1772,7 +1329,6 @@
     "uriLabel": "URL",
     "uriPlaceholder": "https://"
   },
-  "save": "Enregistrer",
   "send-message-dialog": {
     "community-message-title": "Envoyer un message à {{contact}}(s)"
   },
@@ -1835,19 +1391,6 @@
   },
   "virtualContributor": "Virtual Contributor",
   "virtualContributorSpaceSettings": {
-    "bodyOfKnowledge": "Body Of Knowledge",
-    "confirmDeletion": {
-      "description": "Do you want to delete this {{entity}}? This action is irreversible. All $t(common.profile) information will be removed and people will no longer be able to interact with the {{entity}} "
-    },
-    "create": {
-      "title": "Create a $t(common.virtualContributor)"
-    },
-    "edit": {
-      "title": "Edit $t(common.virtualContributor) $t(common.Profile)"
-    },
-    "infoTextBoK": "Select the $t(common.subspace) you want as a body of knowledge for this $t(common.virtualContributor)",
-    "name": "Nom",
-    "noSubspacesInfo": "Create a $t(common.subspace) first, and populate it with the relevant information for your $t(common.virtualContributor).",
     "placeholder": "This $t(common.virtualContributor) is based on its own curated $t(common.collection) of documents, text, and links."
   },
   "visibility": {

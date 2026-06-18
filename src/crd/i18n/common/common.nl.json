@@ -120,146 +120,21 @@
     }
   },
   "buttons": {
-    "accept": "Accepteer",
-    "accept-all-cookies": "Accepteer Alle Cookies",
-    "add": "Toevoegen",
-    "addSubject": "Voeg {{subject}} toe",
     "apply": "Schrijf in",
-    "approveApplication": "Aanmelding goedkeuren",
-    "archive": "Archiveren",
-    "back": "Terug",
-    "cancel": "Annuleer",
-    "cancel-project": "Annuleer Project",
-    "change": "Verander",
-    "change-field": "{{field}} wijzigen",
-    "change-template": "Bewerk $t(common.template)",
-    "changeLanguage": "Taal wijzigen",
     "close": "Sluit",
-    "collapse": "Inklappen",
-    "collapseEntity": "{{entity}} inklappen",
-    "confirm": "Bevestig",
-    "confirm-choice": "Bevestig keuze",
-    "contactLeads": "Contacteer de {{contact}}",
-    "continue": "Doorgaan",
-    "create": "Maak aan",
-    "create-project": "Maak Project aan",
-    "createOwnSpace": "...of klik hier om je eigen $t(common.space) te maken",
     "delete": "Verwijder",
-    "details": "Details",
-    "download": "Download",
-    "edit": "Pas aan",
-    "edit-members": "Bewerk $t(common.members)",
-    "edit-photo": "Pas foto aan",
-    "ellipsisReadMore": "... Meer lezen",
-    "expand": "Uitklappen",
-    "expandEntity": "{{entity}} uitvouwen",
-    "expandWindow": "Venster vergroten",
-    "explore": "Bijdragen",
-    "explore-and-connect": "Verken en verbind",
     "find-template": "Zoek $t(common.template)",
-    "fullscreen": "Volledig scherm in-/uitschakelen",
-    "getHelp": "Krijg hulp",
-    "go-to-entity": "Ga naar {{entity}}",
-    "home": "Startpagina",
-    "import": "Importeer",
-    "importing": "Importeren...",
-    "insert": "Invoegen",
-    "invite": "Nodig uit",
-    "learn-more": "Meer leren",
-    "leave": "Verlaat",
-    "load-count-more": "Laad {{count}} meer",
-    "load-more": "Laad meer",
-    "member": "$t(common.Member)",
-    "messages": "Berichten knop",
-    "moveDown": "Omlaag verplaatsen",
-    "moveToBottom": "Onderaan zetten",
-    "moveToTop": "Bovenaan zetten",
-    "moveUp": "Omhoog verplaatsen",
-    "my-profile": "Mijn $t(common.profile)",
-    "new": "Nieuw",
-    "next": "Volgende",
-    "no": "Nee",
-    "notifications": "$t(common.Notifications) Knop",
-    "ok": "Oké",
-    "open": "Openen",
-    "post": "Post",
-    "preview": "Voorbeeld",
-    "processing": "Verwerken...",
-    "profile": "Profiel",
-    "publish": "Publiceer",
-    "readMore": "Meer lezen",
-    "rejectApplication": "Aanmelding afwijzen",
-    "remove": "Verwijder",
-    "reply": "Reageren",
-    "reset": "Reset",
-    "retry": "Probeer het opnieuw",
-    "returnToDashboard": "Terug naar $t(common.dashboard)",
-    "returnToDashboardAsGuest": "Terug naar $t(common.dashboard) als gast",
-    "save": "Opslaan",
-    "saveAsTemplate": "Opslaan als $t(common.template)",
-    "saveDraft": "Opslaan als concept",
-    "scrollToTop": "Scroll naar boven",
-    "see-all": "Meer {{subject}}",
-    "see-more": "Lees verder",
-    "select": "Selecteer",
     "send": "Verzenden",
-    "send-message": "Verstuur bericht",
-    "share": "Delen",
-    "showAll": "Toon alles",
-    "showLess": "Minder weergeven",
-    "sign-out": "Log uit",
-    "skipLink": "Ga door naar het volgende blok",
-    "submit": "Verstuur",
-    "take-me-home": "Terug naar startpagina",
-    "takeMeHome": "Terug naar homepage",
-    "toggle": "{{entity}} aan/uitzetten",
-    "toolPosition": "Positie van de tool",
-    "toolsMenu": "Tools menu",
-    "unpublish": "Depubliceer",
-    "upload": "Upload",
-    "uploadMedia": "Media Uploaden",
-    "use": "Gebruik",
-    "userMenu": "Gebruikersmenu",
-    "view": "Bekijk",
-    "view-profile": "Bekijk $t(common.profile)",
-    "visit": "Bezoek",
-    "yes": "Ja",
-    "yesCancel": "Ja, annuleren",
-    "yesClose": "Ja, sluiten",
-    "yesContinue": "Ja, doorgaan",
-    "yesDelete": "Ja, verwijderen",
-    "yesDiscard": "Ja, verwijderen",
-    "yesReplace": "Ja, vervang",
-    "yesStop": "Ja, stop"
+    "visit": "Bezoek"
   },
   "calendar": {
-    "add-event": "Voeg evenement toe",
     "addToCalendar": {
-      "button": "Voeg toe aan agenda",
       "exportAll": "Alle toekomstige afspraken exporteren naar agenda",
       "google": "Google Agenda",
-      "iCal": "Apple agenda & andere apps",
       "outlook": "Outlook"
     },
-    "adminsOnly": "Aangezien er geen evenementen zijn, is dit blok alleen zichtbaar voor $t(common.admins) en $t(common.leads)",
-    "defaultEventDescription": "",
-    "delete-confirmation": "Weet je zeker dat je het evenement '{{title}}' wilt verwijderen uit de {{entity}}?",
-    "delete-event": "Verwijder evenement",
-    "edit-event": "Evenement wijzigen",
     "event": {
-      "multiple-days": "{{days}} dagen",
-      "type": "Type evenement",
-      "visibleOnParentCalendar": "Ook zichtbaar op de bovenliggende $t(common.space) kalender",
       "whole-day": "Hele dag"
-    },
-    "no-data": "Geen evenementen gevonden",
-    "no-upcoming-events": "Er zijn momenteel geen evenementen om weer te geven",
-    "past-events": "Afgelopen evenementen",
-    "show-calendar": "Toon Kalender",
-    "validation": {
-      "durationMinutes": {
-        "positive": "Evenement eindtijd kan niet voor de starttijd van evenement zijn"
-      }
     }
   },
   "callout": {
@@ -711,45 +586,21 @@
     },
     "leads": "Leads",
     "pendingMembership": {
-      "applicationsSectionTitle": "Open aanmeldingen",
-      "empty": "Je hebt momenteel geen open uitnodigingen of aanmeldingen.",
       "invitationCardTitle": "{{user}} uitgenodigd {{invitedEntity}} voor <spaceicon /> {{space}}",
       "invitationDialog": {
-        "actions": {
-          "accept": "Word lid",
-          "hide": "Verberg deze uitnodiging",
-          "join": "Deelnemen",
-          "reject": "Weigeren"
-        },
         "title": "Mijn openstaande $t(common.membership): {{space}}",
         "vc": {
           "title": "Openstaande $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
-      "invitationTitle": "{{time}} {{user}} heeft {{invitedEntity}} uitgenodigd voor <spaceicon /> {{space}}",
-      "invitationsSectionTitle": "Uitnodigingen",
-      "pendingMemberships": "Mijn open $t(common.memberships)",
-      "pendingMembershipsWithCount": "Mijn open $t(common.memberships) ({{count}})",
       "vc": "jouw $t(common.virtualContributor)",
-      "virtualInvitationsSectionTitle": "Uitnodigingen voor mijn $t(common.virtualContributor)",
       "you": "jij"
     }
   },
   "components": {
     "activityLogView": {
       "description": {
-        "CALENDAR_EVENT_CREATED": "{{subject}}",
-        "CALLOUT_LINK_CREATED": "{{subject}}",
-        "CALLOUT_MEMO_CREATED": "{{subject}}",
-        "CALLOUT_POST_COMMENT": "{{subject}}",
-        "CALLOUT_POST_CREATED": "{{subject}}",
-        "CALLOUT_PUBLISHED": "{{subject}}",
-        "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
-        "DISCUSSION_COMMENT": "{{subject}}",
-        "MEMBER_JOINED": "{{subject}} is lid geworden",
-        "SUBSPACE_CREATED": "{{subject}}",
-        "UPDATE_SENT": "{{subject}}"
+        "MEMBER_JOINED": "{{subject}} is lid geworden"
       },
       "detailedDescription": {
         "parentLink": " in <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -804,25 +655,12 @@
       "parent-pending": "Inschrijving van bovenliggende groep loopt"
     },
     "card": {
-      "parentSpace": "in: {{space}}",
       "privacy": {
-        "member": "$t(common.Member)",
-        "private": "Besloten {{entity}}",
-        "public": "Openbare {{entity}}"
+        "private": "Besloten {{entity}}"
       }
     },
     "discussion": {
-      "cant-post": "Je kan niet reageren op deze discussie",
-      "comment": "{{count}} $t(common.Comment)",
-      "comment_plural": "{{count}} $t(common.Comments)",
-      "contributed": "{{count}} Persoon heeft bijgedragen",
-      "contributed_plural": "{{count}} Personen hebben bijgedragen",
-      "delete-comment": "$t(common.Comment) verwijderen?",
-      "delete-discussion": "Discussie verwijderen?",
-      "initiate": "Nieuwe Discussie starten",
-      "posted": "{{name}} is gestart op {{- date}} - {{count}} $t(common.comment)",
-      "posted_plural": "{{name}} is gestart op {{- date}} - {{count}} $t(common.comments)",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })"
+      "delete-discussion": "Discussie verwijderen?"
     },
     "file-upload": {
       "file-size-error": "Bestandsgrootte overschrijdt de limiet van {{limit}}MB",
@@ -831,19 +669,12 @@
       "uploadFile": "Bestand uploaden"
     },
     "inAppNotifications": {
-      "action": {
-        "delete": "$t(common.Notification) verwijderen",
-        "read": "Markeren als gelezen",
-        "unread": "Markeren als ongelezen"
-      },
-      "emptyInbox": "Geen openstaande $t(common.notifications)",
       "filters": {
         "all": "Alles",
         "messagesAndReplies": "Berichten & Antwoorden",
         "platform": "Platform meldingen",
         "space": "Space meldingen"
       },
-      "markAllAsRead": "Alles markeren als gelezen",
       "type": {
         "ORGANIZATION_ADMIN_MENTIONED": {
           "description": "{{message}}",
@@ -989,25 +820,14 @@
           "description": "",
           "subject": "{{triggeredByName}} heeft {{contributorName}} uitgenodigd voor {{spaceName}}, waarvan je een $t(common.admin) bent"
         }
-      },
-      "unknownOrganization": "Onbekende $t(common.organization)",
-      "unknownUser": "Onbekende $t(common.user)"
+      }
     },
     "profile": {
       "fields": {
-        "bio": {
-          "title": "Over mij"
-        },
         "bodyOfKnowledge": {
           "privateBokTooltip": "Deze Kennisbank is privé",
           "spaceBokDescription": "De antwoorden die {{vcName}} geeft zijn gebaseerd op de kennisbank uit:",
           "title": "Kennisbank"
-        },
-        "capabilities": {
-          "title": "Competenties"
-        },
-        "description": {
-          "title": "Omschrijving"
         },
         "engines": {
           "external": "OpenAI Generiek",
@@ -1017,32 +837,11 @@
         "keywords": {
           "title": "Trefwoorden"
         },
-        "links": {
-          "title": "Links"
-        },
-        "location": {
-          "title": "Locatie"
-        },
-        "mobile": {
-          "title": "Mobiel"
-        },
-        "phone": {
-          "title": "Telefoon"
-        },
         "references": {
           "title": "Referenties"
         },
         "skills": {
           "title": "Vaardigheden"
-        },
-        "tagline": {
-          "title": "Tagline"
-        },
-        "telephone": {
-          "title": "Telefoon"
-        },
-        "website": {
-          "title": "Website"
         }
       }
     },
@@ -1074,23 +873,6 @@
       "entityCreatedErrorUploading": "De {{entity}} is aangemaakt, maar er is een fout opgetreden bij het uploaden van sommige afbeeldingen. Probeer het opnieuw."
     },
     "wysiwyg-editor": {
-      "embed": {
-        "dialogTitle": "Video of andere Media insluiten",
-        "embedCodeTextAreaAriaLabel": "Textruimte legen",
-        "iframeAria": "{{title}}",
-        "invalidOrUnsupportedEmbed": "Deze code wordt helaas niet ondersteund of is niet geldig. Controleer de code zorgvuldig of neem contact op met support@alkem.io",
-        "pasteEmbedCode": "Plak de code voor insluiten/iframe hier"
-      },
-      "generic": {
-        "add": "$t(common.add)",
-        "cancel": "$t(buttons.cancel)"
-      },
-      "image": {
-        "dialogHeader": "Afbeelding invoegen"
-      },
-      "link": {
-        "dialogHeader": "Selectie omzetten naar Hyperlink"
-      },
       "toolbar": {
         "blocktype": {},
         "embed": {},
@@ -1120,11 +902,7 @@
   },
   "forms": {
     "validations": {
-      "acceptedTerms": "Je moet de algemene voorwaarden accepteren",
       "alphaNumeric": "{{field}} kan alleen bestaan uit kleine letters, nummers of koppeltekens",
-      "atLeastOne": "Selecteer ten minste één item.",
-      "duplicateEmail": "E-mailadres is al ingevoerd",
-      "elementMustBeValidUrl": "{{name}} moet een geldige URL zijn",
       "field": "Veld",
       "fieldNotPresent": "{{fieldName}} is niet aanwezig",
       "invalidEmail": "Ongeldig e-mailadres",
@@ -1132,20 +910,14 @@
       "maxLength": "Limiet van {{max}} karakters overschreden",
       "minLength": "{{field}} moet tenminste {{min}} karakters lang zijn",
       "nonBlank": "{{field}} kan niet slechts uit spaties bestaan",
-      "pollMaxResponsesWithinOptions": "Maximaal aantal keuzes per stem moet kleiner of gelijk zijn aan het aantal opties.",
-      "pollMinResponsesWithinMaxResponses": "Minimale keuzes die nodig zijn om te stemmen moeten lager zijn dan of gelijk zijn aan de maximum toegestane per stemming.",
-      "pollMinResponsesWithinOptions": "Minimaal aantal keuzes die nodig zijn om te stemmen moeten minder dan of gelijk zijn aan het aantal opties.",
       "required": "Dit veld is vereist!",
-      "requiredField": "{{field}} is vereist!",
       "reservedTopLevelRoute": "Deze URL is gereserveerd voor het platform. Kies alstublieft een andere."
     }
   },
   "fullscreen": "Volledig scherm in-/uitschakelen",
   "innovationHub": {
     "outsideOfSpace": {
-      "contributors": "Hier vind je alle $t(common.organizations) die bijddragen op Alkemio, ook in $t(common.spaces) die niet onderdeel zijn van <strong>{{space}}. Neem een kijkje!</strong>",
-      "forum": "Dit is het algemene Alkemio $t(common.forum), los van de <strong>{{space}}</strong> $t(common.space). Neem een kijkje bij de bestaande discussies of start een eigen discussie!",
-      "subspaces": "Hier vind je alle $t(common.subspaces) op Alkemio, ook degenen die geen onderdeel zijn van <strong>{{space}}. Neem een kijkje!</strong>"
+      "forum": "Dit is het algemene Alkemio $t(common.forum), los van de <strong>{{space}}</strong> $t(common.space). Neem een kijkje bij de bestaande discussies of start een eigen discussie!"
     }
   },
   "kratos": {
@@ -1172,8 +944,6 @@
       "Submit": "Verstuur",
       "Verify code": "Code verifiëren"
     },
-    "loading-error": "Fout bij laden",
-    "loading-flow": "Laden van de Flow",
     "messages": {
       "account-disabled": "Dit account is uitgeschakeld.",
       "claim-missing": "U heeft uw Cleverbase identiteit nog niet geverifieerd. Controleer uw identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
@@ -1213,7 +983,6 @@
     "message": "Bericht",
     "successfully-sent": "Bericht succesvol verstuurd"
   },
-  "noResults": "Geen resultaten gevonden",
   "ok": "OK",
   "pages": {
     "admin": {
@@ -1225,20 +994,10 @@
         }
       },
       "innovation-packs": {
-        "back-button": "Alle $t(common.innovation-packs)",
-        "create": "$t(common.innovationPack) aanmaken",
-        "fields": {
-          "listedInStore": "Laat zien in de platform template bibliotheek",
-          "provider": "Aanbiedende $t(common.organization)",
-          "searchVisibility": "Zoek zichtbaarheid"
-        },
         "notifications": {
           "pack-created": "$t(common.innovationPack) succesvol aangemaakt.",
-          "pack-error": "Er is een fout opgetreden tijdens het aanmaken van $t(common.innovationPack).",
-          "pack-removed": "$t(common.innovationPack) '{{name}}' succesvol verwijderd."
-        },
-        "save-new-for-details": "Sla de nieuwe $t(common.innovationPack) op om de rest van de details te bewerken",
-        "saved-successfully": "Succesvol opgeslagen"
+          "pack-error": "Er is een fout opgetreden tijdens het aanmaken van $t(common.innovationPack)."
+        }
       },
       "innovationHub": {
         "notifications": {
@@ -1256,97 +1015,8 @@
         }
       },
       "space": {
-        "aria": {
-          "tabs": "$t(common.space) tabs"
-        },
-        "authorization": {
-          "preferences": {
-            "subtitle": "Hier kan je de $t(common.space) authorisatie voorkeuren aanpassen"
-          }
-        },
-        "community": {
-          "preferences": {
-            "subtitle": "Hier kun je de $t(common.space) $t(common.membership) voorkeuren aanpassen",
-            "title": "$t(common.Membership)"
-          }
-        },
         "notifications": {
-          "errorCreatingSpace": "Er is een fout opgetreden tijdens het aanmaken van $t(common.space).",
-          "space-created": "$t(common.space) succesvol aangemaakt.",
           "space-removed": "$t(common.space) succesvol verwijderd."
-        },
-        "sections": {
-          "subspaces": {
-            "defaultSettings": {
-              "defaultSpaceTemplate": {
-                "description": "Pas de standaard $t(common.template) aan voor nieuw aangemaakte $t(common.subspaces).<br/><br/>Hieronder kun je kiezen tussen de $t(common.templates) die zijn verzameld in de $t(common.space) $t(common.templateLibrary). Als je nieuwe $t(common.templates) wilt maken of extra $t(common.templates) wilt verkennen, klik dan <library>hier</library> om deze bibliotheek te openen.",
-                "selectDifferentTemplate": "Wijzig standaard $t(common.template)",
-                "title": "Wijzig standaard $t(common.subspace) $t(common.template)"
-              },
-              "description": "Kies de standaard $t(common.settings) die van toepassing zijn bij het aanmaken van een nieuwe $t(common.subspace) binnen deze $t(common.space). Deze $t(common.settings) kunnen worden gewijzigd tijdens het creëren of op een later tijdstip.",
-              "title": "Standaard $t(common.subspace) $t(common.template)"
-            },
-            "description": "Je kunt hier $t(common.subspaces) bewerken voor deze $t(common.space).",
-            "pinSpace": "Space vastpinnen",
-            "reorderSubspaces": "$t(common.subspaces) bewerken",
-            "sortBy": "Sorteren op:",
-            "sortMode": {
-              "alphabetical": "Alfabetisch",
-              "custom": "Aangepast"
-            },
-            "unpinSpace": "Space ontpinnen"
-          }
-        },
-        "settings": {
-          "account": {
-            "vc-create-button": "$t(common.virtualContributor) aanmaken",
-            "vc-section-title": "$t(common.virtualContributors) gemaakt van deze $t(common.space)"
-          },
-          "copySpace": {
-            "createTemplate": "Template maken",
-            "createTemplateTooltip": "Om een $t(common.template) van deze $t(common.subspace) aan te maken, heb je $t(common.space) $t(common.admin) rechten nodig.",
-            "description": "Om deze $t(common.subspace) setup te gebruiken, kun je deze dupliceren binnen dezelfde $t(common.space) of opslaan als een $t(common.template) voor gebruik op het hele platform. In beide scenario's zullen de $t(common.innovation-flow) en alle $t(common.posts) worden gekopieerd. Houd er rekening mee dat $t(common.comments) of bijdragen aan een tool niet in de $t(common.template) of gekopieerde $t(common.subspace) zullen worden opgenomen.",
-            "duplicate": "Dupliceer",
-            "title": "Kopieer $t(common.subspace)"
-          },
-          "license-features": {
-            "features": {
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Template maken van $t(common.callout)",
-              "VIRTUAL_CONTRIBUTORS": "Interactie aangaan met $t(common.virtualContributors)",
-              "WHITEBOARD_MULTI_USER": "Multi-user $t(common.Whiteboards)"
-            },
-            "title": "$t(common.space) functies"
-          },
-          "memberActions": {
-            "createBlocks": "<b>$t(common.Posts) aanmaken</b>: Toestaan dat $t(common.members) $t(common.posts) kunnen maken. Als je dit deactiveert zullen $t(common.members) nog steeds kunnen bijdragen aan bestaande $t(common.posts), maar zullen ze niet in staat zijn om nieuwe $t(common.posts) te maken.",
-            "createSubspaces": "<b>$t(common.subspaces) maken</b>: Toestaan dat $t(common.members) $t(common.subspaces) maken in deze $t(common.space). Als je dit deactiveert, kun je nog steeds zelf $t(common.subspaces) maken en andere mensen toevoegen als $t(common.admin) in de $t(common.subspace).",
-            "eventsFromSubspaces": "<b>$t(common.subspace) evenementen</b>: Toestaan dat evenementen uit $t(common.subspaces) ook zichtbaar zijn op deze $t(common.space) kalender.",
-            "guestContributions": "<b>Gast bijdragen</b>: Sta toe dat $t(common.whiteboards) in deze $t(common.space) worden gedeeld met gastgebruikers (niet-leden) voor gezamenlijke bijdragen.",
-            "inheritRights": "Sta $t(common.members) van de bovenliggende $t(common.community) toe om bij te dragen zonder eerst lid te hoeven worden.",
-            "supportAsAdmin": "<b>Alkemio Support</b>: Sta het Alkemio Support team toe om wijzigingen aan te brengen als $t(common.admin) in deze $t(common.space).",
-            "title": "Toegestane acties voor leden",
-            "videoCall": "<b>Video Call</b>: Toon video call knop in het tabblad menu. Alle leden van deze ruimte kunnen deze knop gebruiken om een Jitsi video conferentie te starten. Lees meer over Jitsi <jitsiInfoLink>hier</jitsiInfoLink>."
-          },
-          "membership": {
-            "allowSubspaceAdminsToInviteMembers": "<b>$t(common.space) uitnodigingen</b>: Sta $t(common.admins) van $t(common.subspaces) toe om gebruikers uit te nodigen voor hun $t(common.subspace). Gebruikers die nog geen $t(common.member) waren van deze $t(common.space), zullen ook van deze $t(common.space) $t(common.member) worden wanneer ze de uitnodiging voor $t(common.subspace) accepteren.",
-            "allowSubspaceAdminsToInviteMembersSubspace": "<b>$t(common.space) uitnodigingen</b>: $t(common.Admins) van $t(common.subspaces) binnen deze $t(common.subspace) toestaan om gebruikers direct uit te nodigen voor hun eigen $t(common.subspace). Als een gebruiker nog geen $t(common.member) is van deze $t(common.subspace), zal hij automatisch $t(common.member) worden bij het accepteren van de uitnodiging. <b>Opmerking: </b>Alleen gebruikers die al $t(common.members) zijn van de $t(common.space) kunnen op deze manier worden uitgenodigd.",
-            "applications": "<b>Aanmelding vereist:</b> Als mensen $t(common.member) willen worden, moeten ze het aanvraagformulier invullen. Je ontvangt hun aanmeldingen (<community>zie tabblad $t(common.community) hier</community>) en kan ervoor kiezen deze te accepteren of niet. Als je wilt, kun je kiezen om het formulier leeg te laten.",
-            "hostOrganizationJoin": "<b>Host $t(common.organization):</b> Sta mensen die geassocieerd zijn met <i>{{host}}</i> direct toe om lid te worden, zonder dat ze zich hoeven aan te melden of uitgenodigd moeten worden.",
-            "invitations": "<b>Alleen op uitnodiging:</b> Gebruikers kunnen alleen $t(common.member) worden nadat je ze hebt uitgenodigd (<community>wat je kunt doen vanaf het tabblad $t(common.community) hier</community>) of als ze handmatig worden toegevoegd. Er is geen knop waarop andere gebruikers kunnen klikken om zich aan te melden.",
-            "open": "<b>Geen aanmelding vereist:</b> Alle $t(common.space) $t(common.members) kunnen direct lid worden zonder dat je hun aanmelding hoeft te beoordelen.",
-            "title": "$t(common.Membership)",
-            "trustedApplicants": "Vertrouwde aanmeldingen"
-          },
-          "savedSuccessfully": "$t(common.Settings) succesvol opgeslagen",
-          "updateFailed": "Er is een fout opgetreden tijdens het bijwerken van de $t(common.settings). Probeer het later opnieuw.",
-          "visibility": {
-            "membershipWarning": "<b>Houd er rekening mee dat gebruikers kunnen toetreden tot deze {{entity}} zonder expliciete goedkeuring. U kunt dit wijzigen in de onderstaande lidmaatschapsinstellingen.</b>",
-            "private": "<b>Privé:</b> Deze $t(common.space) is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor $t(common.members). Houd er rekening mee dat zowel de informatie in het $t(common.profile) als de context openbaar zichtbaar zijn.",
-            "privateSubspace": "<b>Privé:</b> Deze $t(common.subspace) is zichtbaar voor alle $t(common.members) van de $t(common.space), maar de inhoud is beperkt en kan alleen worden geopend door $t(common.members) van de $t(common.subspace).",
-            "public": "<b>Openbaar:</b> deze $t(common.space) en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Alleen $t(common.members) kunnen bijdragen.",
-            "publicSubspace": "<b>Publiek:</b> Deze $t(common.subspace) en alle bijbehorende inhoud zijn zichtbaar voor iedereen die toegang heeft tot de $t(common.space) waartoe hij behoort. Als de $t(common.space) zelf openbaar is, zal deze $t(common.subspace) en de inhoud ervan zichtbaar zijn voor alle gebruikers, inclusief degenen buiten de $t(common.space).",
-            "title": "Zichtbaarheid"
-          }
         }
       },
       "spaceConversion": {
@@ -1419,40 +1089,9 @@
         "urlRequired": "URL is vereist"
       },
       "transferCallout": {
-        "calloutInfo": "$t(common.post) Info",
-        "calloutUrl": "$t(common.post) URL",
-        "calloutUrlPlaceholder": "Plak $t(common.post) URL of pad",
-        "calloutsSetId": "CalloutsSet ID",
-        "close": "Sluit",
-        "confirmButton": "Transfer",
-        "confirmTitle": "Weet je het zeker?",
-        "confirmWarning1": "Zorg ervoor dat dezelfde Innovation State (bijv. Home) bestaat in de space waarnaar je de $t(common.post) overzet.",
-        "confirmWarning2": "Houd er rekening mee dat bestaande links naar deze $t(common.post) in activiteit of meldingen mogelijk niet meer werken.",
-        "confirmWarning3": "Als de $t(common.post) Virtual Contributions bevat en de betreffende Virtual Contributor geen onderdeel is van de doelspace, zal de $t(common.post) niet meer werken.",
-        "confirmWarning4": "De uitvoerende gebruiker wordt de nieuwe maker van de $t(common.post). Niet-standaard tagsets worden verwijderd en classificatiewaarden worden teruggezet naar de standaardinstellingen van de target space.",
-        "contributions": "Bijdragen",
-        "contributionsSummary": "{{posts}} posts, {{whiteboards}} whiteboards, {{links}} links, {{memos}} memos",
-        "createdBy": "Gemaakt door",
-        "description": "Beschrijving",
-        "level": "Level",
-        "lookup": "Opzoeken",
-        "missingTransferAccept": "Ontbrekende TransferResourceAccepteer privilege op doel-calloutsSet",
-        "missingTransferOffer": "Ontbrekende TransferResourceOffer privilege bij source calloutsSet",
-        "sectionDescription": "Verplaats een $t(common.post) naar een andere space. Bijdragen worden behouden, maar de maker zal veranderen naar jou en niet-standaard tagsets worden verwijderd.",
-        "sectionTitle": "Transfer $t(common.post)",
-        "successMessage": "$t(common.post) \"{{calloutName}}\" is overgeplaatst naar \"{{spaceName}}\".",
-        "successTitle": "Overdracht voltooid",
-        "targetSpaceInfo": "Target Space Info",
-        "targetSpaceUrl": "Target Space URL",
-        "targetSpaceUrlPlaceholder": "Plak space URL of pad",
-        "transferButton": "Transfer $t(common.post)",
-        "transferFailed": "Transfer naar $t(common.post) mislukt",
-        "transferring": "Overdragen...",
-        "unknown": "Onbekend",
         "urlNotCallout": "De URL verwijst niet naar een $t(common.post)",
         "urlNotFound": "URL niet gevonden",
-        "urlNotSpace": "URL leidt niet naar een space",
-        "urlRequired": "URL is vereist."
+        "urlNotSpace": "URL leidt niet naar een space"
       },
       "transferHub": {
         "confirmTitle": "Transfer $t(common.customHomepage)?",
@@ -1489,37 +1128,10 @@
         "urlRequired": "URL is vereist"
       },
       "transferSpace": {
-        "accountId": "Account ID",
-        "accountOwnerType": "Account eigenaar type",
-        "accountOwnerTypeOrganization": "Organisatie",
-        "accountOwnerTypeUser": "Gebruiker",
-        "close": "Sluit",
-        "confirmButton": "Transfer",
-        "confirmTitle": "Weet je het zeker?",
-        "confirmWarning1": "Na de overdracht zorg ervoor dat de nieuwe eigenaar (of organisatiebeheerders) worden toegevoegd als admins in de community.",
-        "description": "Beschrijving",
-        "level": "Level",
-        "lookup": "Opzoeken",
-        "missingTransferAccept": "Ontbrekende TransferResourceOffer privilege op het target account",
-        "missingTransferOffer": "Ontbrekende TransferResourceOffer privilege op het Space account",
         "notL0Space": "Alleen L0 (hoogste niveau) spaces kunnen worden getransferd",
-        "sectionDescription": "Verplaats een L0 space naar een ander account. Communityleden, content en structuur blijven ongewijzigd — alleen het eigenaarschap van het account wordt aangepast.",
-        "sectionTitle": "Transfer Space",
-        "spaceInfo": "Space Info",
-        "spaceUrl": "Space URL",
-        "spaceUrlPlaceholder": "Plak L0 space URL of pad",
-        "successMessage": "Callout \"{{spaceName}}\" is getransferd naar \"{{accountOwnerName}}\".",
-        "successTitle": "Transfer succesvol",
-        "targetAccountInfo": "Target Account Info",
-        "targetAccountUrl": "Target Account eigenaar URL",
-        "targetAccountUrlPlaceholder": "Plak gebruikers- of organisatie-URL",
-        "transferButton": "Transfer Space",
-        "transferFailed": "Mislukt om Space over te dragen",
-        "transferring": "Transferring...",
         "urlNotFound": "URL niet gevonden",
         "urlNotSpace": "URL leidt niet naar een space",
-        "urlNotUserOrOrg": "URL leidt niet naar een gebruiker of organisatie",
-        "urlRequired": "URL is vereist"
+        "urlNotUserOrOrg": "URL leidt niet naar een gebruiker of organisatie"
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1541,29 +1153,8 @@
       },
       "users": {
         "emailChange": {
-          "dialog": {
-            "approvalSection": "Reason & approval",
-            "approverNameLabel": "Approved by",
-            "approverOrganizationLabel": "Approver's organization (optional)",
-            "approverRoleLabel": "Approver's role",
-            "confirmEmailLabel": "Confirm new login email",
-            "currentEmailLabel": "Current login email",
-            "newEmailLabel": "New login email",
-            "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
-            "reasonLabel": "Reason for change",
-            "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
-            "submit": "Change email",
-            "title": "Change login email"
-          },
           "drift": {
-            "banner": "This user's last email change was only partially applied. Resolve it to return the account to a consistent state.",
-            "newEmailChoice": "New address — {{email}}",
-            "oldEmailChoice": "Previous address — {{email}}",
-            "resolveAction": "Resolve",
-            "resolveDescription": "Choose which address should be this user's canonical login email.",
-            "resolveSubmit": "Resolve",
-            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}.",
-            "resolveTitle": "Resolve email drift"
+            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}."
           },
           "errors": {
             "alkemioWriteFailed": "The change could not be completed. No changes were made — you can try again.",
@@ -1580,20 +1171,6 @@
             "validation": "Enter a valid email address."
           },
           "history": {
-            "empty": "This user has no email-change history.",
-            "fields": {
-              "approver": "Approved by",
-              "failureReason": "Failure reason",
-              "initiator": "Initiated by",
-              "newEmail": "New email",
-              "oldEmail": "Old email",
-              "outcome": "Outcome",
-              "reason": "Reason for change",
-              "timestamp": "When"
-            },
-            "linkLabel": "View change history",
-            "loadMore": "Load more",
-            "title": "Email-change history",
             "unknownInitiator": "—"
           },
           "outcomes": {
@@ -1611,16 +1188,7 @@
             "spaceAdminNotificationFailed": "Committed — space admin notification not sent",
             "unknown": "Unknown outcome"
           },
-          "rowAction": {
-            "disabledTooltip": "Only platform administrators can change a user's login email.",
-            "label": "Change login email",
-            "tooltip": "Change this user's login email"
-          },
-          "success": "Login email changed to {{email}}. The user has been notified by email.",
-          "validation": {
-            "mismatch": "The email addresses do not match.",
-            "unchanged": "The new email must be different from the current login email."
-          }
+          "success": "Login email changed to {{email}}. The user has been notified by email."
         },
         "notifications": {
           "user-removed": "Gebruiker succesvol verwijderd."
@@ -1698,8 +1266,7 @@
       "resendEmail": "Resend verification email"
     },
     "verification-required": {
-      "header": "Email validatie is nog open.",
-      "message": "Je bent er bijna... De laatste stap is het verifiëren van je e-mailadres. <br />Controleer je inbox voor een e-mail met instructies.<br /><br /><again>Als je geen e-mail hebt ontvangen, klik dan op deze link om opnieuw te verzenden</again>."
+      "header": "Email validatie is nog open."
     },
     "virtualContributorProfile": {
       "bokIngestStarted": "Bijwerken van kennisbank gestart. Het kan een paar minuten duren om te voltooien."
@@ -1715,12 +1282,6 @@
         "errorGeneratingPreview": "Fout bij het genereren van voorvertoning voor deze $$t(common.whiteboard)."
       },
       "previewSettings": {
-        "cropDialog": {
-          "cancel": "$t(buttons.cancel)",
-          "confirm": "Bevestig keuze",
-          "previewArea": "Voorvertoning bijsnijden",
-          "reset": "$t(buttons.reset)"
-        },
         "errorGeneratingPreview": "Fout bij het genereren van voorvertoning voor deze $$t(common.whiteboard).",
         "modes": {
           "AUTO": {
@@ -1735,17 +1296,13 @@
             "description": "Maak een screenshot van je $t(common.whiteboard) om als voorvertoning te gebruiken. Deze screenshot wordt niet bijgewerkt wanneer je je bord bijwerkt.",
             "title": "Vaste Selectie"
           }
-        },
-        "subtitle": "Kies hoe je $t(common.whiteboard) voorvertoning wordt weergegeven in posts en $t(common.spaces).",
-        "title": "Voorvertoning instellingen"
+        }
       },
       "unsuccessful-save": "<p><strong>{{warningMessage}} Kan wijzigingen niet opslaan. Laatst opgeslagen: {{datetime}}.</strong></p>\n<p>Als dit probleem aanhoudt, neem dan contact op met het Alkemio team. Om te voorkomen dat je voortgang verliest, klik je op het menu in de linkerbovenhoek om je $t(common.whiteboard) op te slaan op je lokale schijf.</p>",
       "whiteboardDisconnected": {
         "lastSaved": "De inhoud van dit $t(common.whiteboard) is voor het laatst opgeslagen op {{lastSaved}}.",
         "message": "Excuses voor het ongemak! Je kunt het $t(common.whiteboard) nu niet bewerken, mogelijk door een netwerkfout of geen toegang. Sluit en open het $t(common.whiteboard) opnieuw of ververs de pagina. Blijft het fout gaan? Vraag dan de $t(common.admin) van deze $t(common.space) om hulp.",
         "offline": "Je bent momenteel offline. Het $t(common.whiteboard) zal proberen opnieuw verbinding te maken als je weer online bent.",
-        "reconnect": "Reconnect",
-        "reconnectCountdown": "({{seconds}}s)",
         "title": "Verbinding verloren"
       }
     }
@@ -1772,7 +1329,6 @@
     "uriLabel": "URL",
     "uriPlaceholder": "https://"
   },
-  "save": "Opslaan",
   "send-message-dialog": {
     "community-message-title": "Stuur een bericht naar {{contact}}(s)"
   },
@@ -1835,19 +1391,6 @@
   },
   "virtualContributor": "Virtual Contributor",
   "virtualContributorSpaceSettings": {
-    "bodyOfKnowledge": "Kennisbank",
-    "confirmDeletion": {
-      "description": "Weet je zeker dat je {{entity}} wilt verwijderen? Houd er rekening mee dat deze actie onomkeerbaar is. Alle $t(common.profile) informatie zal worden verwijderd en mensen zullen niet langer kunnen communiceren met de {{entity}}. "
-    },
-    "create": {
-      "title": "Maak een $t(common.virtualContributor)"
-    },
-    "edit": {
-      "title": "Bewerk $t(common.virtualContributor) $t(common.Profile)"
-    },
-    "infoTextBoK": "Selecteer de Space of $t(common.subspace) die je wilt gebruiken als kennisbank voor deze $t(common.virtualContributor)",
-    "name": "Naam",
-    "noSubspacesInfo": "Maak eerst een $t(common.subspace) en vul deze met de relevante informatie voor jouw $t(common.virtualContributor).",
     "placeholder": "Deze $t(common.virtualContributor) is gebaseerd op zijn eigen $t(common.collection) documenten, tekst en links."
   },
   "visibility": {

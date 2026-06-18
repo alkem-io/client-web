@@ -120,146 +120,21 @@
     }
   },
   "buttons": {
-    "accept": "Accept",
-    "accept-all-cookies": "Приеми всички бисквитки",
-    "add": "Add",
-    "addSubject": "Добави {{subject}}",
     "apply": "Приложи",
-    "approveApplication": "Одобри заявката",
-    "archive": "Архивирай",
-    "back": "Назад",
-    "cancel": "Отмени",
-    "cancel-project": "Отмени проект",
-    "change": "Промени",
-    "change-field": "Промени {{field}}",
-    "change-template": "Промени $t(common.template)",
-    "changeLanguage": "Смени език",
     "close": "Затвори",
-    "collapse": "Свий",
-    "collapseEntity": "Свий {{entity}}",
-    "confirm": "Потвърди",
-    "confirm-choice": "Потвърди избора",
-    "contactLeads": "Свържи се с {{contact}}",
-    "continue": "Продължи",
-    "create": "Създай",
-    "create-project": "Създай проект",
-    "createOwnSpace": "...или кликнете тук, за да създадете собствено $t(common.space)",
     "delete": "Изтрий",
-    "details": "Детайли",
-    "download": "Download",
-    "edit": "Редактирай",
-    "edit-members": "Редактирай $t(common.members)",
-    "edit-photo": "Редактирай снимка",
-    "ellipsisReadMore": "... Read more",
-    "expand": "Разшири",
-    "expandEntity": "Разшири {{entity}}",
-    "expandWindow": "Разшири прозореца",
-    "explore": "Приноси",
-    "explore-and-connect": "Разгледай и свържи се",
     "find-template": "Намери $t(common.template)",
-    "fullscreen": "Превключи на цял екран",
-    "getHelp": "Получи помощ",
-    "go-to-entity": "Отиди към {{entity}}",
-    "home": "Начало",
-    "import": "Импортирай",
-    "importing": "Импортиране...",
-    "insert": "Вмъкни",
-    "invite": "Покани",
-    "learn-more": "Научете повече",
-    "leave": "Напусни",
-    "load-count-more": "Зареди още {{count}}",
-    "load-more": "Зареди още",
-    "member": "$t(common.Member)",
-    "messages": "Бутон за съобщения",
-    "moveDown": "Премести надолу",
-    "moveToBottom": "Премести най-отдолу",
-    "moveToTop": "Премести най-отгоре",
-    "moveUp": "Премести нагоре",
-    "my-profile": "Моят $t(common.profile)",
-    "new": "Нов",
-    "next": "Напред",
-    "no": "Не",
-    "notifications": "Бутон $t(common.Notifications)",
-    "ok": "Добре",
-    "open": "Отвори",
-    "post": "Публикация",
-    "preview": "Преглед",
-    "processing": "Обработва се...",
-    "profile": "$t(common.profile)",
-    "publish": "Публикувай",
-    "readMore": "Прочети повече",
-    "rejectApplication": "Отхвърли заявката",
-    "remove": "Премахни",
-    "reply": "Отговори",
-    "reset": "Начално състояние",
-    "retry": "Опитайте отново",
-    "returnToDashboard": "Върни се към $t(common.dashboard)",
-    "returnToDashboardAsGuest": "Върни се към $t(common.dashboard) като гост",
-    "save": "Запази",
-    "saveAsTemplate": "Запази като $t(common.template)",
-    "saveDraft": "Запази като чернова",
-    "scrollToTop": "Превърти нагоре",
-    "see-all": "Още {{subject}}",
-    "see-more": "Виж още",
-    "select": "Избери",
     "send": "Изпрати",
-    "send-message": "Изпрати съобщение",
-    "share": "Сподели",
-    "showAll": "Покажи всички",
-    "showLess": "Покажи по-малко",
-    "sign-out": "Изход",
-    "skipLink": "Премини към следващия блок",
-    "submit": "Изпрати",
-    "take-me-home": "Върни ме в началото",
-    "takeMeHome": "Върни ме вкъщи",
-    "toggle": "Превключи {{entity}}",
-    "toolPosition": "Позиция на инструмента",
-    "toolsMenu": "Меню с инструменти",
-    "unpublish": "Премахни публикацията",
-    "upload": "Качи",
-    "uploadMedia": "Upload Media",
-    "use": "Използвай",
-    "userMenu": "Потребителско меню",
-    "view": "Прегледай",
-    "view-profile": "Прегледай $t(common.Profile)",
-    "visit": "Посети",
-    "yes": "Да",
-    "yesCancel": "Да, откажи",
-    "yesClose": "Да, затвори",
-    "yesContinue": "Да, продължи",
-    "yesDelete": "Да, изтрий",
-    "yesDiscard": "Да, откажи",
-    "yesReplace": "Да, замени",
-    "yesStop": "Да, спри"
+    "visit": "Посети"
   },
   "calendar": {
-    "add-event": "Добави събитие",
     "addToCalendar": {
-      "button": "Add to calendar",
       "exportAll": "Export all future events to calendar",
       "google": "Google Calendar",
-      "iCal": "Apple calendar & Other apps",
       "outlook": "Outlook"
     },
-    "adminsOnly": "Тъй като няма събития, този блок е видим само за $t(common.admins) и $t(common.leads)",
-    "defaultEventDescription": "",
-    "delete-confirmation": "Сигурни ли сте, че искате да изтриете събитието: '{{title}}' от {{entity}}?",
-    "delete-event": "Изтрий събитие",
-    "edit-event": "Редактирай събитие",
     "event": {
-      "multiple-days": "{{days}} дни",
-      "type": "Тип на събитието",
-      "visibleOnParentCalendar": "Видимо и в календара на родителското $t(common.space)",
       "whole-day": "Цял ден"
-    },
-    "no-data": "Не са намерени събития",
-    "no-upcoming-events": "В момента няма предстоящи събития за показване",
-    "past-events": "Минали събития",
-    "show-calendar": "Покажи календара",
-    "validation": {
-      "durationMinutes": {
-        "positive": "Крайното време на събитието не може да е преди началното време"
-      }
     }
   },
   "callout": {
@@ -711,45 +586,21 @@
     },
     "leads": "$t(common.leads)",
     "pendingMembership": {
-      "applicationsSectionTitle": "Отворени заявки",
-      "empty": "You don't have any open invitations or applications at the moment.",
       "invitationCardTitle": "{{user}} покани {{invitedEntity}} в <spaceicon /> {{space}}",
       "invitationDialog": {
-        "actions": {
-          "accept": "Приеми",
-          "hide": "Скрий тази покана",
-          "join": "Присъедини се",
-          "reject": "Откажи"
-        },
         "title": "Моето чакащо $t(common.Membership): {{space}}",
         "vc": {
           "title": "Чакащо $t(common.virtualContributor) $t(common.membership): {{space}}"
         }
       },
-      "invitationTitle": "{{time}} {{user}} покани {{invitedEntity}} в <spaceicon /> {{space}}",
-      "invitationsSectionTitle": "Покани",
-      "pendingMemberships": "Моите чакащи $t(common.Memberships)",
-      "pendingMembershipsWithCount": "Моите чакащи $t(common.Memberships) ({{count}})",
       "vc": "Вашия $t(common.virtualContributor)",
-      "virtualInvitationsSectionTitle": "Покани за моя $t(common.virtualContributor)",
       "you": "Вие"
     }
   },
   "components": {
     "activityLogView": {
       "description": {
-        "CALENDAR_EVENT_CREATED": "{{subject}}",
-        "CALLOUT_LINK_CREATED": "{{subject}}",
-        "CALLOUT_MEMO_CREATED": "{{subject}}",
-        "CALLOUT_POST_COMMENT": "{{subject}}",
-        "CALLOUT_POST_CREATED": "{{subject}}",
-        "CALLOUT_PUBLISHED": "{{subject}}",
-        "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "{{subject}}",
-        "CALLOUT_WHITEBOARD_CREATED": "{{subject}}",
-        "DISCUSSION_COMMENT": "{{subject}}",
-        "MEMBER_JOINED": "{{subject}} се присъедини",
-        "SUBSPACE_CREATED": "{{subject}}",
-        "UPDATE_SENT": "{{subject}}"
+        "MEMBER_JOINED": "{{subject}} се присъедини"
       },
       "detailedDescription": {
         "parentLink": " в <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
@@ -804,25 +655,12 @@
       "parent-pending": "Кандидатстването към родителя е в процес на обработка"
     },
     "card": {
-      "parentSpace": "в: {{space}}",
       "privacy": {
-        "member": "$t(common.Member)",
-        "private": "Частен/а {{entity}}",
-        "public": "Публичен/а {{entity}}"
+        "private": "Частен/а {{entity}}"
       }
     },
     "discussion": {
-      "cant-post": "Не можете да отговорите на тази дискусия",
-      "comment": "{{count}} $t(common.Comment)",
-      "comment_plural": "{{count}} $t(common.Comments)",
-      "contributed": "{{count}} човек е допринесъл",
-      "contributed_plural": "{{count}} души са допринесли",
-      "delete-comment": "Изтриване на $t(common.comment)?",
-      "delete-discussion": "Изтриване на дискусия?",
-      "initiate": "Инициирай дискусия",
-      "posted": "{{name}} инициира на {{- date}} - {{count}} $t(common.comment)",
-      "posted_plural": "{{name}} инициира на {{- date}} - {{count}} $t(common.comments)",
-      "summary": "$t(components.discussion.comment, {\"count\": {{comment}} })"
+      "delete-discussion": "Изтриване на дискусия?"
     },
     "file-upload": {
       "file-size-error": "Размерът на файла надвишава лимита от {{limit}}MB",
@@ -831,19 +669,12 @@
       "uploadFile": "Качи файл"
     },
     "inAppNotifications": {
-      "action": {
-        "delete": "Изтрий $t(common.Notification)",
-        "read": "Маркирай като прочетено",
-        "unread": "Маркирай като непрочетено"
-      },
-      "emptyInbox": "Няма чакащи $t(common.notifications)",
       "filters": {
         "all": "Всички",
         "messagesAndReplies": "Съобщения и отговори",
         "platform": "Известия за платформата",
         "space": "Известия за $t(common.space)"
       },
-      "markAllAsRead": "Маркирай всички като прочетени",
       "type": {
         "ORGANIZATION_ADMIN_MENTIONED": {
           "description": "{{message}}",
@@ -989,25 +820,14 @@
           "description": "",
           "subject": "{{triggeredByName}} е поканил {{contributorName}} към {{spaceName}}, за което Вие сте $t(common.admin)"
         }
-      },
-      "unknownOrganization": "Неизвестен $t(common.organization)",
-      "unknownUser": "Неизвестен $t(common.user)"
+      }
     },
     "profile": {
       "fields": {
-        "bio": {
-          "title": "Биография"
-        },
         "bodyOfKnowledge": {
           "privateBokTooltip": "Тази База знания е частна",
           "spaceBokDescription": "Отговорите, които {{vcName}} дава, са базирани на базата знания, идваща от:",
           "title": "База знания"
-        },
-        "capabilities": {
-          "title": "Възможности"
-        },
-        "description": {
-          "title": "Описание"
         },
         "engines": {
           "external": "OpenAI Generic",
@@ -1017,32 +837,11 @@
         "keywords": {
           "title": "Ключови думи"
         },
-        "links": {
-          "title": "Връзки"
-        },
-        "location": {
-          "title": "Местоположение"
-        },
-        "mobile": {
-          "title": "Мобилен"
-        },
-        "phone": {
-          "title": "Телефон"
-        },
         "references": {
           "title": "Референции"
         },
         "skills": {
           "title": "Умения"
-        },
-        "tagline": {
-          "title": "Слоган"
-        },
-        "telephone": {
-          "title": "Телефон"
-        },
-        "website": {
-          "title": "Уебсайт"
         }
       }
     },
@@ -1074,23 +873,6 @@
       "entityCreatedErrorUploading": "{{entity}} е създаден, но възникна грешка при качването на някои изображения. Моля, опитайте отново."
     },
     "wysiwyg-editor": {
-      "embed": {
-        "dialogTitle": "Вгради видео или друг медиен файл",
-        "embedCodeTextAreaAriaLabel": "Празно текстово поле",
-        "iframeAria": "{{title}}",
-        "invalidOrUnsupportedEmbed": "За съжаление, този код или не е валиден, или не се поддържа. Моля, проверете кода внимателно или се свържете с support@alkem.io",
-        "pasteEmbedCode": "Поставете кода за вграждане/iframe тук"
-      },
-      "generic": {
-        "add": "$t(common.add)",
-        "cancel": "$t(buttons.cancel)"
-      },
-      "image": {
-        "dialogHeader": "Вмъкни изображение"
-      },
-      "link": {
-        "dialogHeader": "Преобразувай избраното в хипервръзка"
-      },
       "toolbar": {
         "blocktype": {},
         "embed": {},
@@ -1120,11 +902,7 @@
   },
   "forms": {
     "validations": {
-      "acceptedTerms": "Трябва да приемете общите условия",
       "alphaNumeric": "{{field}} може да съдържа само малки латински букви, цифри и тирета",
-      "atLeastOne": "Трябва да изберете поне един {{item}}.",
-      "duplicateEmail": "Повтарящ се имейл адрес",
-      "elementMustBeValidUrl": "{{name}} трябва да е валиден URL",
       "field": "Поле",
       "fieldNotPresent": "{{fieldName}} не е налично",
       "invalidEmail": "Невалиден имейл адрес",
@@ -1132,20 +910,14 @@
       "maxLength": "Надвишихте лимита от {{max}} символа",
       "minLength": "{{field}} трябва да съдържа поне {{min}} символа",
       "nonBlank": "{{field}} не може да се състои само от интервали",
-      "pollMaxResponsesWithinOptions": "Maximum choices allowed per vote must be less than or equal to the number of options.",
-      "pollMinResponsesWithinMaxResponses": "Minimum choices needed to vote must be less than or equal to maximum choices allowed per vote.",
-      "pollMinResponsesWithinOptions": "Minimum choices needed to vote must be less than or equal to the number of options.",
       "required": "Това поле е задължително!",
-      "requiredField": "{{field}} е задължително!",
       "reservedTopLevelRoute": "Този URL е запазен за платформата. Моля, изберете друг."
     }
   },
   "fullscreen": "Превключи на цял екран",
   "innovationHub": {
     "outsideOfSpace": {
-      "contributors": "Тук можете да намерите всички хора и $t(common.organizations), които допринасят в Alkemio, включително и в $t(common.spaces), които не са избрани от <strong>{{space}}</strong>. Насладете се на свързването!",
-      "forum": "Това е общият форум на Alkemio, извън <strong>{{space}}</strong> $t(common.space). Поканени сте да изследвате и да допринесете!",
-      "subspaces": "Тук можете да намерите всички $t(common.subspaces), хоствани в Alkemio, включително и тези, които не са избрани от <strong>{{space}}</strong>. Насладете се на изследването!"
+      "forum": "Това е общият форум на Alkemio, извън <strong>{{space}}</strong> $t(common.space). Поканени сте да изследвате и да допринесете!"
     }
   },
   "kratos": {
@@ -1172,8 +944,6 @@
       "Submit": "Изпрати",
       "Verify code": "Потвърдете кода"
     },
-    "loading-error": "Грешка при зареждане",
-    "loading-flow": "Зареждане на процеса",
     "messages": {
       "account-disabled": "This account is disabled.",
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
@@ -1213,7 +983,6 @@
     "message": "Съобщение",
     "successfully-sent": "Съобщението е изпратено успешно"
   },
-  "noResults": "Няма намерени резултати",
   "ok": "OK",
   "pages": {
     "admin": {
@@ -1225,20 +994,10 @@
         }
       },
       "innovation-packs": {
-        "back-button": "Всички $t(common.innovation-packs)",
-        "create": "Създай $t(common.innovationPack)",
-        "fields": {
-          "listedInStore": "Публикувано в магазина",
-          "provider": "Доставчик $t(common.organization)",
-          "searchVisibility": "Видимост в търсенето"
-        },
         "notifications": {
           "pack-created": "$t(common.innovationPack) е създаден успешно.",
-          "pack-error": "Възникна грешка при създаването на $t(common.innovationPack).",
-          "pack-removed": "$t(common.innovationPack) '{{name}}' е премахнат успешно."
-        },
-        "save-new-for-details": "Запазете новия $t(common.innovationPack), за да редактирате останалите детайли",
-        "saved-successfully": "Запазено успешно"
+          "pack-error": "Възникна грешка при създаването на $t(common.innovationPack)."
+        }
       },
       "innovationHub": {
         "notifications": {
@@ -1256,97 +1015,8 @@
         }
       },
       "space": {
-        "aria": {
-          "tabs": "$t(common.space) раздели"
-        },
-        "authorization": {
-          "preferences": {
-            "subtitle": "Този раздел ви позволява да модифицирате настройките за авторизация на $t(common.space)"
-          }
-        },
-        "community": {
-          "preferences": {
-            "subtitle": "Този раздел ви позволява да модифицирате настройките за $t(common.membership) на $t(common.space)",
-            "title": "$t(common.Membership)"
-          }
-        },
         "notifications": {
-          "errorCreatingSpace": "Възникна грешка при създаването на $t(common.space).",
-          "space-created": "$t(common.space) е създаден успешно.",
           "space-removed": "$t(common.space) е премахнат успешно."
-        },
-        "sections": {
-          "subspaces": {
-            "defaultSettings": {
-              "defaultSpaceTemplate": {
-                "description": "Customize the default $t(common.template) for newly created $t(common.subspaces).<br/><br/>Below you can choose between the $t(common.templates) collected in the $t(common.space) $t(common.templateLibrary). If you're looking to create new $t(common.templates) or explore additional $t(common.templates), <library>click here</library> to access this library.",
-                "selectDifferentTemplate": "Променете шаблона по подразбиране",
-                "title": "Променете шаблона по подразбиране за $t(common.subspace)"
-              },
-              "description": "Изберете настройките по подразбиране, които ще се прилагат при създаване на нов $t(common.subspace) в този $t(common.space). Тези $t(common.settings) могат да бъдат модифицирани по време на процеса на създаване или по-късно.",
-              "title": "Шаблон по подразбиране за $t(common.subspace)"
-            },
-            "description": "Тук можете да редактирате $t(common.subspaces) в този $t(common.space).",
-            "pinSpace": "Pin Space",
-            "reorderSubspaces": "Reorder $t(common.subspaces)",
-            "sortBy": "Sort By:",
-            "sortMode": {
-              "alphabetical": "Alphabetical",
-              "custom": "Custom"
-            },
-            "unpinSpace": "Unpin Space"
-          }
-        },
-        "settings": {
-          "account": {
-            "vc-create-button": "Създай $t(common.virtualContributor)",
-            "vc-section-title": "$t(common.virtualContributors), създадени от този $t(common.space)"
-          },
-          "copySpace": {
-            "createTemplate": "Създай $t(common.template)",
-            "createTemplateTooltip": "За да създадете $t(common.template) от този $t(common.subspace), ви са необходими $t(common.space) $t(common.admin) права.",
-            "description": "To utilize this $t(common.subspace) setup, you can either duplicate it within the same $t(common.space) or save it as a $t(common.template) for use across the platform. In both scenarios, the $t(common.innovation-flow) and all $t(common.posts) will be replicated. Please note that $t(common.comments) or contributions to a tool will not be included in the $t(common.template) or duplicated $t(common.subspace).",
-            "duplicate": "Дублирай",
-            "title": "Копиране на $t(common.subspace)"
-          },
-          "license-features": {
-            "features": {
-              "CALLOUT_TO_CALLOUT_TEMPLATE": "Създаване на $t(common.template) от $t(common.callout)",
-              "VIRTUAL_CONTRIBUTORS": "Взаимодействие с $t(common.virtualContributors)",
-              "WHITEBOARD_MULTI_USER": "Мултипотребителски $t(common.Whiteboards)"
-            },
-            "title": "$t(common.space) Функции"
-          },
-          "memberActions": {
-            "createBlocks": "<b>Създаване на $t(common.posts)</b>: Разрешете на $t(common.members) да създават $t(common.posts). Ако деактивирате това, $t(common.members) все още ще могат да допринасят към съществуващи $t(common.posts), но няма да могат да създават нови $t(common.posts).",
-            "createSubspaces": "<b>Създаване на $t(common.subspaces)</b>: Разрешете на $t(common.members) да създават $t(common.subspaces) в този $t(common.space). Ако деактивирате това, все още можете да създавате $t(common.subspaces) и да добавяте други хора като $t(common.admin) в $t(common.subspace).",
-            "eventsFromSubspaces": "<b>Събития от $t(common.subspaces)</b>: Разрешете събития от $t(common.subspaces) да бъдат видими и в календара на този $t(common.space).",
-            "guestContributions": "<b>Приноси на гости</b>: Позволете $t(common.whiteboards) в това $t(common.space) да се споделят с гост потребители (нечленове) за съвместни приноси.",
-            "inheritRights": "Разрешете на $t(common.members) на родителската $t(common.community) да допринасят, без да е необходимо първо да се присъединят.",
-            "supportAsAdmin": "<b>Поддръжка на Alkemio</b>: Разрешете на екипа за поддръжка на Alkemio да действа като $t(common.admin) в този $t(common.space).",
-            "title": "Разрешени действия",
-            "videoCall": "<b>Видео разговор</b>: Показване на бутон за видео разговор в менюто с раздели. Всички членове на това Пространство могат да използват този бутон, за да стартират Jitsi видео конференция. Прочетете повече за Jitsi <jitsiInfoLink>тук</jitsiInfoLink>."
-          },
-          "membership": {
-            "allowSubspaceAdminsToInviteMembers": "<b>$t(common.space) покани:</b> Разрешете на $t(common.admins) на $t(common.subspaces) да канят потребители в техния $t(common.subspace). Потребители, които все още не са $t(common.member) на този $t(common.space), ще станат такива, когато приемат поканата за $t(common.subspace).",
-            "allowSubspaceAdminsToInviteMembersSubspace": "<b>$t(common.space) покани:</b> Разрешете на $t(common.admins) на $t(common.subspaces) в този $t(common.subspace) да канят потребители директно в техния собствен $t(common.subspace). Ако потребител все още не е $t(common.member) на този $t(common.subspace), той автоматично ще стане такъв след приемане на поканата. <b>Забележка:</b> Могат да бъдат канени само потребители, които вече са $t(common.members) на $t(common.space).",
-            "applications": "<b>Необходимо е кандидатстване:</b> Ако хора искат да станат $t(common.member), те трябва да попълнят формуляра за кандидатстване. Вие получавате техните кандидатства (<community>вижте раздела $t(common.community) тук</community>) и можете да изберете дали да ги приемете или не. Ако желаете, можете да изберете да оставите формуляра празен.",
-            "hostOrganizationJoin": "<b>Домакин $t(common.organization):</b> Разрешете на хора, асоциирани с <i>{{host}}</i>, да се присъединят директно, без да е необходимо да кандидатстват или да бъдат поканени.",
-            "invitations": "<b>Само по покана:</b> Потребителите могат да станат $t(common.member) само след като сте ги поканили (<community>което можете да направите от раздела $t(common.community) тук</community>) или ако са добавени ръчно. Няма бутон за кандидатстване или присъединяване за другите.",
-            "open": "<b>Не е необходимо кандидатстване:</b> Всички $t(common.space) $t(common.members) могат директно да се присъединят, без да е необходимо да преглеждате тяхното кандидатстване.",
-            "title": "$t(common.Membership)",
-            "trustedApplicants": "Доверени кандидатстващи"
-          },
-          "savedSuccessfully": "$t(common.Settings) са запазени успешно",
-          "updateFailed": "Възникна грешка при актуализиране на $t(common.settings). Моля, опитайте по-късно.",
-          "visibility": {
-            "membershipWarning": "<b>Please note that users can join this {{entity}} without explicit approval. You can change this in the membership settings below.</b>",
-            "private": "<b>Частно:</b> Този $t(common.space) е видим за всички в платформата, но съдържанието е видимо само за $t(common.members). Имайте предвид, че и информацията в $t(common.profile), и контекстът са публично видими.",
-            "privateSubspace": "<b>Частно:</b> Това $t(common.subspace) е видимо за всички $t(common.members) на $t(common.space), но съдържанието му е ограничено и може да бъде достъпено само от $t(common.members) на $t(common.subspace).",
-            "public": "<b>Публично:</b> Този $t(common.space) и съдържанието му са видими за всички в платформата. Потребителите могат да допринасят само ако са $t(common.member).",
-            "publicSubspace": "<b>Публично:</b> Този $t(common.subspace) и цялото му съдържание са видими за всички, които имат достъп до $t(common.space), към който принадлежи. Ако $t(common.space) е публичен, този $t(common.subspace) и съдържанието му ще бъдат видими за всички потребители, включително и тези извън $t(common.space).",
-            "title": "Видимост"
-          }
         }
       },
       "spaceConversion": {
@@ -1419,40 +1089,9 @@
         "urlRequired": "URL is required"
       },
       "transferCallout": {
-        "calloutInfo": "$t(common.post) Info",
-        "calloutUrl": "$t(common.post) URL",
-        "calloutUrlPlaceholder": "Paste $t(common.post) URL or path",
-        "calloutsSetId": "CalloutsSet ID",
-        "close": "Close",
-        "confirmButton": "Transfer",
-        "confirmTitle": "Are you sure?",
-        "confirmWarning1": "Ensure the same Innovation State (e.g., Home) exists in the space you are transferring the $t(common.post) to.",
-        "confirmWarning2": "Note that any existing links to this $t(common.post) in activity or notifications may become broken.",
-        "confirmWarning3": "If the $t(common.post) contains Virtual Contributions and the particular Virtual Contributor is not part of the target space, the $t(common.post) will be broken.",
-        "confirmWarning4": "The executing user becomes the new $t(common.post) creator. Non-default tagsets will be deleted and classification values will be reset to the target defaults.",
-        "contributions": "Contributions",
-        "contributionsSummary": "{{posts}} posts, {{whiteboards}} whiteboards, {{links}} links, {{memos}} memos",
-        "createdBy": "Created By",
-        "description": "Description",
-        "level": "Level",
-        "lookup": "Lookup",
-        "missingTransferAccept": "Missing TransferResourceAccept privilege on target calloutsSet",
-        "missingTransferOffer": "Missing TransferResourceOffer privilege on source calloutsSet",
-        "sectionDescription": "Move a $t(common.post) to a different space. Contributions are preserved, but the creator will change to you and non-default tagsets will be removed.",
-        "sectionTitle": "Transfer $t(common.post)",
-        "successMessage": "$t(common.post) \"{{calloutName}}\" has been transferred to \"{{spaceName}}\".",
-        "successTitle": "Transfer Successful",
-        "targetSpaceInfo": "Target Space Info",
-        "targetSpaceUrl": "Target Space URL",
-        "targetSpaceUrlPlaceholder": "Paste space URL or path",
-        "transferButton": "Transfer $t(common.post)",
-        "transferFailed": "Failed to transfer $t(common.post)",
-        "transferring": "Transferring...",
-        "unknown": "Unknown",
         "urlNotCallout": "URL does not resolve to a $t(common.post)",
         "urlNotFound": "URL not found",
-        "urlNotSpace": "URL does not resolve to a space",
-        "urlRequired": "URL is required"
+        "urlNotSpace": "URL does not resolve to a space"
       },
       "transferHub": {
         "confirmTitle": "Transfer $t(common.customHomepage)?",
@@ -1489,37 +1128,10 @@
         "urlRequired": "URL is required"
       },
       "transferSpace": {
-        "accountId": "Account ID",
-        "accountOwnerType": "Account Owner Type",
-        "accountOwnerTypeOrganization": "Organization",
-        "accountOwnerTypeUser": "User",
-        "close": "Close",
-        "confirmButton": "Transfer",
-        "confirmTitle": "Are you sure?",
-        "confirmWarning1": "After the transfer, ensure the new owner (or organization Admins) are added as admins in the community.",
-        "description": "Description",
-        "level": "Level",
-        "lookup": "Lookup",
-        "missingTransferAccept": "Missing TransferResourceAccept privilege on the target account",
-        "missingTransferOffer": "Missing TransferResourceOffer privilege on the space's account",
         "notL0Space": "Only L0 (top-level) spaces can be transferred",
-        "sectionDescription": "Transfer an L0 space to a different account. Community members, content, and structure remain unchanged — only the account ownership is updated.",
-        "sectionTitle": "Transfer Space",
-        "spaceInfo": "Space Info",
-        "spaceUrl": "Space URL",
-        "spaceUrlPlaceholder": "Paste L0 space URL or path",
-        "successMessage": "Space \"{{spaceName}}\" has been transferred to \"{{accountOwnerName}}\".",
-        "successTitle": "Transfer Successful",
-        "targetAccountInfo": "Target Account Info",
-        "targetAccountUrl": "Target Account Owner URL",
-        "targetAccountUrlPlaceholder": "Paste user or organization URL",
-        "transferButton": "Transfer Space",
-        "transferFailed": "Failed to transfer space",
-        "transferring": "Transferring...",
         "urlNotFound": "URL not found",
         "urlNotSpace": "URL does not resolve to a space",
-        "urlNotUserOrOrg": "URL does not resolve to a user or organization",
-        "urlRequired": "URL is required"
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
       },
       "transferVc": {
         "confirmButton": "Transfer",
@@ -1541,29 +1153,8 @@
       },
       "users": {
         "emailChange": {
-          "dialog": {
-            "approvalSection": "Reason & approval",
-            "approverNameLabel": "Approved by",
-            "approverOrganizationLabel": "Approver's organization (optional)",
-            "approverRoleLabel": "Approver's role",
-            "confirmEmailLabel": "Confirm new login email",
-            "currentEmailLabel": "Current login email",
-            "newEmailLabel": "New login email",
-            "reasonHelp": "Justification for this change, e.g. a support-ticket reference. Recorded in the audit trail.",
-            "reasonLabel": "Reason for change",
-            "sessionWarning": "This is an administrative change. It ends the user's active sessions — they must sign in with the new email address afterwards.",
-            "submit": "Change email",
-            "title": "Change login email"
-          },
           "drift": {
-            "banner": "This user's last email change was only partially applied. Resolve it to return the account to a consistent state.",
-            "newEmailChoice": "New address — {{email}}",
-            "oldEmailChoice": "Previous address — {{email}}",
-            "resolveAction": "Resolve",
-            "resolveDescription": "Choose which address should be this user's canonical login email.",
-            "resolveSubmit": "Resolve",
-            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}.",
-            "resolveTitle": "Resolve email drift"
+            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}."
           },
           "errors": {
             "alkemioWriteFailed": "The change could not be completed. No changes were made — you can try again.",
@@ -1580,20 +1171,6 @@
             "validation": "Enter a valid email address."
           },
           "history": {
-            "empty": "This user has no email-change history.",
-            "fields": {
-              "approver": "Approved by",
-              "failureReason": "Failure reason",
-              "initiator": "Initiated by",
-              "newEmail": "New email",
-              "oldEmail": "Old email",
-              "outcome": "Outcome",
-              "reason": "Reason for change",
-              "timestamp": "When"
-            },
-            "linkLabel": "View change history",
-            "loadMore": "Load more",
-            "title": "Email-change history",
             "unknownInitiator": "—"
           },
           "outcomes": {
@@ -1611,16 +1188,7 @@
             "spaceAdminNotificationFailed": "Committed — space admin notification not sent",
             "unknown": "Unknown outcome"
           },
-          "rowAction": {
-            "disabledTooltip": "Only platform administrators can change a user's login email.",
-            "label": "Change login email",
-            "tooltip": "Change this user's login email"
-          },
-          "success": "Login email changed to {{email}}. The user has been notified by email.",
-          "validation": {
-            "mismatch": "The email addresses do not match.",
-            "unchanged": "The new email must be different from the current login email."
-          }
+          "success": "Login email changed to {{email}}. The user has been notified by email."
         },
         "notifications": {
           "user-removed": "Потребителят е премахнат успешно."
@@ -1698,8 +1266,7 @@
       "resendEmail": "Resend verification email"
     },
     "verification-required": {
-      "header": "Потвърждението на имейла ви е в процес.",
-      "message": "Почти стигнахте... Последната стъпка е да потвърдите вашия имейл. <br />Моля, проверете вашата пощенска кутия за имейл с инструкции.<br /><br /><again>Ако не сте получили имейл, кликнете върху тази връзка, за да го изпратите отново</again>."
+      "header": "Потвърждението на имейла ви е в процес."
     },
     "virtualContributorProfile": {
       "bokIngestStarted": "Поглъщането на тялото на знанията започна. Може да отнеме няколко минути, за да привърши."
@@ -1715,12 +1282,6 @@
         "errorGeneratingPreview": "Грешка при генериране на преглед за тази $t(common.whiteboard)."
       },
       "previewSettings": {
-        "cropDialog": {
-          "cancel": "$t(buttons.cancel)",
-          "confirm": "Потвърдете избора",
-          "previewArea": "Изрежете областта за преглед",
-          "reset": "$t(buttons.reset)"
-        },
         "errorGeneratingPreview": "Грешка при генериране на преглед за тази $t(common.whiteboard).",
         "modes": {
           "AUTO": {
@@ -1735,17 +1296,13 @@
             "description": "Направете екранна снимка на вашия $t(common.whiteboard), за да я използвате като визуализация. Тази екранна снимка няма да се актуализира, докато обновявате $t(common.whiteboard).",
             "title": "Фиксиран избор"
           }
-        },
-        "subtitle": "Изберете как ще се показва визуализацията на вашия $t(common.whiteboard) в публикации и $t(common.spaces).",
-        "title": "Настройки за преглед"
+        }
       },
       "unsuccessful-save": "<p><strong>{{warningMessage}} Неуспешно запазване на промените. Последно запазване: {{datetime}}.</strong></p> <p>Ако проблемът продължава, моля свържете се с екипа. За да избегнете загуба на прогрес, кликнете менюто в горния ляв ъгъл, за да запазите вашия $t(common.whiteboard) на локален диск.</p>",
       "whiteboardDisconnected": {
         "lastSaved": "Съдържанието на този $t(common.whiteboard) е запазено за последно {{lastSaved}}.",
         "message": "Съжаляваме за неудобството! $t(common.whiteboard) не е достъпен за редактиране в момента, вероятно поради проблем с мрежата или загуба на достъп. Моля, опитайте да затворите и отново отворите $t(common.whiteboard) или да презаредите страницата. Ако проблемът продължава, свържете се с вашия $t(common.space) $t(common.admin) за помощ.",
         "offline": "В момента сте офлайн. $t(common.whiteboard) ще се опита да се свърже отново, когато отново сте онлайн.",
-        "reconnect": "Reconnect",
-        "reconnectCountdown": "({{seconds}}s)",
         "title": "$t(common.Whiteboards) връзката е прекъсната"
       }
     }
@@ -1772,7 +1329,6 @@
     "uriLabel": "URL",
     "uriPlaceholder": "https://"
   },
-  "save": "Запази",
   "send-message-dialog": {
     "community-message-title": "Изпрати съобщение до {{contact}}"
   },
@@ -1835,19 +1391,6 @@
   },
   "virtualContributor": "Virtual Contributor",
   "virtualContributorSpaceSettings": {
-    "bodyOfKnowledge": "Тяло на знанията",
-    "confirmDeletion": {
-      "description": "Искате ли да изтриете този {{entity}}? Това действие е необратимо. Всяка информация от $t(common.profile) ще бъде премахната и хората няма да могат да взаимодействат с {{entity}}"
-    },
-    "create": {
-      "title": "Създай $t(common.virtualContributor)"
-    },
-    "edit": {
-      "title": "Редактирай $t(common.virtualContributor) $t(common.Profile)"
-    },
-    "infoTextBoK": "Изберете $t(common.subspace), който искате да използвате като тяло на знания за този $t(common.virtualContributor)",
-    "name": "Име",
-    "noSubspacesInfo": "Първо създайте $t(common.subspace) и го попълнете с релевантната информация за вашия $t(common.virtualContributor).",
     "placeholder": "Този $t(common.virtualContributor) се базира на собствена подбрана $t(common.collection) от документи, текстове и връзки."
   },
   "visibility": {
