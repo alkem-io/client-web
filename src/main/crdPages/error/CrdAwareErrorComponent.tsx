@@ -2,14 +2,12 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { error as sentryError, TagCategoryValues } from '@/core/logging/sentry/log';
-import { Error40X } from '@/core/pages/Errors/Error40X';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { CrdForbiddenPage } from '@/crd/components/error/CrdForbiddenPage';
 import { CrdGenericErrorContent } from '@/main/crdPages/error/CrdGenericErrorContent';
 import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { hasInAppHistory } from '@/main/crdPages/error/hasInAppHistory';
-import { isCrdRoute } from '@/main/crdPages/error/isCrdRoute';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 
@@ -22,25 +20,19 @@ export type CrdAwareErrorComponentProps = {
 };
 
 export function CrdAwareErrorComponent(props: CrdAwareErrorComponentProps) {
-  const isCrd = isCrdRoute(props.pathname ?? '');
-
-  if (isCrd && props.isNotAuthorized === true) {
+  if (props.isNotAuthorized === true) {
     return <CrdForbiddenBranch />;
   }
 
-  if (isCrd && props.isNotFound === true) {
+  if (props.isNotFound === true) {
     return <CrdNotFoundBranch />;
   }
 
-  if (isCrd && props.error && props.isNotFound !== true && props.isNotAuthorized !== true) {
+  if (props.error) {
     return <CrdGenericErrorBranch error={props.error} />;
   }
 
-  return (
-    <CrdLayoutWrapper>
-      <Error40X {...props} />
-    </CrdLayoutWrapper>
-  );
+  return <CrdNotFoundBranch />;
 }
 
 function CrdForbiddenBranch() {

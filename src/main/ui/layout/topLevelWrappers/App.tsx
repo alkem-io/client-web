@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router-dom';
@@ -37,18 +36,16 @@ const App = () => {
 
   return (
     <>
-      <Box
-        paddingBottom={cookieConsentHeight && `${cookieConsentHeight}px`}
-        display="flex"
-        flexDirection="column"
-        flexGrow={1}
+      <div
+        className="flex flex-col flex-grow"
+        style={cookieConsentHeight ? { paddingBottom: `${cookieConsentHeight}px` } : undefined}
       >
         {/* position: relative so the space layout's absolutely-positioned navigation bar
             anchors below the banner instead of overlapping it at the viewport top. */}
-        <Box position="relative" display="flex" flexDirection="column" flexGrow={1}>
+        <div className="relative flex flex-col flex-grow">
           <Outlet />
-        </Box>
-      </Box>
+        </div>
+      </div>
       {!cookies.accepted_cookies && (
         <Suspense fallback={null}>
           <CookieConsent ref={cookieConsentRef} />
