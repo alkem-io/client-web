@@ -274,6 +274,11 @@
         "tooLarge": "Deze afbeelding is te groot. Maximale grootte is {{maxSize}}.",
         "unsupportedType": "Dit afbeeldingsformaat wordt niet ondersteund. Gebruik {{formats}}.",
         "uploadFailed": "Kan de afbeelding niet uploaden. Probeer het nogmaals."
+      },
+      "export": {
+        "title": "Opslaan in Alkemio",
+        "description": "Sla de scène op in Alkemio en deel deze met anderen.",
+        "save": "Opslaan in Alkemio"
       }
     }
   },

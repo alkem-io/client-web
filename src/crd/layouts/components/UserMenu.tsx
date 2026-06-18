@@ -174,7 +174,9 @@ export function UserMenu({
           </DropdownMenuItem>
         )}
 
-        {(isAdmin || onHelpClick || (languages && languages.length > 0)) && <DropdownMenuSeparator />}
+        {(isAdmin || onHelpClick || showGridToggle || (languages && languages.length > 0 && onLanguageChange)) && (
+          <DropdownMenuSeparator />
+        )}
 
         {/* Logout */}
         <DropdownMenuItem className="text-destructive focus:text-destructive cursor-pointer" onClick={onLogout}>

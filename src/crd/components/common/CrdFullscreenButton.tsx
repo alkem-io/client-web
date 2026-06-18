@@ -26,38 +26,36 @@ export function CrdFullscreenButton({ element, onChange, forceExit = false, labe
   const [fullscreen, setFullscreenState] = useState(() => Boolean(document.fullscreenElement));
 
   useEffect(() => {
-    const handleChange = () => setFullscreenState(Boolean(document.fullscreenElement));
+    const handleChange = () => {
+      const next = Boolean(document.fullscreenElement);
+      setFullscreenState(next);
+      onChange?.(next);
+    };
     document.addEventListener('fullscreenchange', handleChange);
     return () => document.removeEventListener('fullscreenchange', handleChange);
-  }, []);
+  }, [onChange]);
 
-  const setFullscreen = (next: boolean) => {
+  const setFullscreen = async (next: boolean) => {
     const target = element ?? document.documentElement;
     if (next) {
       try {
-        target.requestFullscreen?.();
+        await target.requestFullscreen?.();
       } catch (_error) {}
     } else if (document.fullscreenElement) {
       try {
-        document.exitFullscreen?.();
+        await document.exitFullscreen?.();
       } catch (_error) {}
     }
   };
 
   useEffect(() => {
     if (forceExit && fullscreen) {
-      if (document.fullscreenElement) {
-        try {
-          document.exitFullscreen?.();
-        } catch (_error) {}
-      }
-      onChange?.(false);
+      void setFullscreen(false);
     }
-  }, [forceExit, fullscreen, onChange]);
+  }, [forceExit, fullscreen, element]);
 
   const handleClick = () => {
-    setFullscreen(!fullscreen);
-    onChange?.(!fullscreen);
+    void setFullscreen(!fullscreen);
   };
 
   return (

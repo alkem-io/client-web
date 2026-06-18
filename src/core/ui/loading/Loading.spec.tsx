@@ -18,11 +18,11 @@ describe('Loading component', () => {
     expect(screen.getByText(message)).toBeInTheDocument();
   });
 
-  test('renders the default loading text', () => {
+  test('renders the localized default loading text', () => {
     // act
     render(<Loading />);
 
-    // assert
-    expect(screen.getByText('Loading')).toBeInTheDocument();
+    // assert — falls back to the `common.loading` i18n key, not a hardcoded string
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 });

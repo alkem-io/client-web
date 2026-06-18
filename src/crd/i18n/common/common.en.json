@@ -274,6 +274,11 @@
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "uploadFailed": "Couldn't upload the image. Please try again."
+      },
+      "export": {
+        "title": "Save to Alkemio",
+        "description": "Save the scene in Alkemio and share it with others.",
+        "save": "Save to Alkemio"
       }
     }
   },

@@ -152,12 +152,12 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
       <div className="Card-icon" style={{ background: '#172d3b' }}>
         <CloudUpload />
       </div>
-      <h2>Save to the Alkemio</h2>
-      <div className="Card-details">Save the scene in Alkemio and share it with others.</div>
+      <h2>{t('callout.whiteboard.export.title')}</h2>
+      <div className="Card-details">{t('callout.whiteboard.export.description')}</div>
       <button
         className="ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon"
-        title="Save to Alkemio"
-        aria-label="Save to Alkemio"
+        title={t('callout.whiteboard.export.save')}
+        aria-label={t('callout.whiteboard.export.save')}
         type="button"
         onClick={async () => {
           if (actions.onUpdate) {
@@ -167,7 +167,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
           }
         }}
       >
-        <div className="ToolIcon__label">Save to Alkemio</div>
+        <div className="ToolIcon__label">{t('callout.whiteboard.export.save')}</div>
       </button>
     </div>
   );
