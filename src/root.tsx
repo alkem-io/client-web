@@ -227,7 +227,6 @@ const Root: FC = () => {
                                             <DesignVersionUpgradePromptMount />
                                             <ScrollToTop />
                                             <NotificationsGate />
-                                            <UnifiedChatGate />
                                             <InAppNotificationCountSubscriber />
                                             <LegacyMessagingDialogGate />
                                             <Suspense fallback={null}>
@@ -241,6 +240,9 @@ const Root: FC = () => {
                                               <TopLevelRoutes />
                                               <GlobalErrorDialogGate />
                                             </Error40XBoundary>
+                                            {/* Rendered after TopLevelRoutes so the full-screen mobile chat
+                                                panel (z-50) paints above the app header (also z-50). */}
+                                            <UnifiedChatGate />
                                           </AssistantProvider>
                                         </FullscreenEditorProvider>
                                       </UnifiedChatProvider>

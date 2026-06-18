@@ -227,7 +227,7 @@
       "errorSaving": "Could not save your design preference. Please try again."
     },
     "switchBanner": {
-      "message": "Switch to the new Alkemio UI from <switch>here</switch>. The current design retires soon. Missing something? Email <email>support@alkem.io</email>."
+      "message": "Schakel over naar de nieuwe Alkemio-UI via <switch>hier</switch>. Dit ontwerp blijft beschikbaar tot 24 juni 2026. Mist u iets? Mail <email>support@alkem.io</email>."
     }
   },
   "authentication": {

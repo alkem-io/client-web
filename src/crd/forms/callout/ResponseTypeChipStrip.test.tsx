@@ -51,6 +51,19 @@ describe('ResponseTypeChipStrip', () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 
+  test('locked mode: the active chip is also aria-disabled and shows the lock hint', () => {
+    render(<ResponseTypeChipStrip value="post" onChange={vi.fn()} locked={true} />);
+    // The active chip can't be cleared either, so it must read as disabled to AT
+    // (not as a live control that silently no-ops) and explain why on hover.
+    const post = screen.getByRole('radio', { name: /contributionSettings.types.post/i });
+    expect(post).toHaveAttribute('aria-disabled', 'true');
+    expect(post).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
+    // Inactive chips stay disabled with the same hint.
+    const memo = screen.getByRole('radio', { name: /contributionSettings.types.memo/i });
+    expect(memo).toHaveAttribute('aria-disabled', 'true');
+    expect(memo).toHaveAttribute('title', 'contributionSettings.typeLockedHint');
+  });
+
   test('allowedChips limits the strip to the listed response types (VC KB: post + link)', () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} allowedChips={['post', 'link']} />);
     const chips = screen.getAllByRole('radio');

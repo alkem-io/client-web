@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
     "tagsTooShort": "Elke tag moet minimaal {{min}} tekens lang zijn.",
     "framingType": "Toevoegen aan post",
+    "typeLockedHint": "Instellingen voor aanvullende inhoud kunnen na het aanmaken niet meer worden gewijzigd",
     "visibility": "Zichtbaarheid",
     "publishedLabel": "Gepubliceerd",
     "draftLabel": "Concept",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Reacties",
+    "typeLockedHint": "Bijdrage-instellingen kunnen na het aanmaken niet meer worden gewijzigd",
     "types": {
       "link": "Links & bestanden",
       "post": "Posts",

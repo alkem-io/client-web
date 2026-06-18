@@ -166,7 +166,7 @@ A user types a title, then clicks the X or outside the dialog, or presses Escape
 A user clicks **Edit** in the callout context menu. The same `AddPostModal` opens, pre-filled with the callout's current data fetched via `useCalloutContentQuery`.
 
 - The framing chips are locked (visually inactive, aria-disabled) — the user may change the currently-active framing to "None" only, via a confirmation ("Delete framing?"), which sets `framing.type = None` on save. No other framing switches are possible.
-- The response type chips are locked with the same rules — only switching to "None" is allowed (with confirmation). Per-actor switches, comments switches, and defaults are all editable.
+- The response type chips are **fully locked** (every chip, including the active one, is visually inactive and `aria-disabled`, with a "settings can't be changed after creation" hint) — the response type can be neither switched nor cleared. (This is stricter than framing: clearing a response type would orphan existing contributions, so unlike framing there is no clear-to-"None" path. Amended 2026-06-17 per PR #9883 to match the implementation, which never offered response-type clearing.) Per-actor switches, comments switches, and defaults are all editable.
 - **The pre-populate-links editor (`LinksPrePopulateRows`) is hidden in edit mode.** Existing link contributions are managed via the callout detail dialog, not the edit form.
 - Framing content **is** editable: memo body (via **Open memo** → `CrdMemoDialog` collaborative), whiteboard (via **Edit whiteboard** → `CrdWhiteboardDialog` collaborative), link fields, media-gallery visuals, poll question + options.
 - Poll options save incrementally via `addPollOption`, `removePollOption`, `updatePollOption`, `reorderPollOptions` (ported from the MUI `savePollOptionChanges` diff routine).
@@ -323,7 +323,7 @@ A user clicks **Find Template** in the dialog header. The existing MUI `ImportTe
 
 - **FR-110** `useCalloutContentQuery` is the single source for edit pre-fill.
 - **FR-111** Framing chip strip: only the currently-active framing chip is interactive; clicking it deselects (= switch to None, with confirmation).
-- **FR-112** Response chip strip: only the currently-active response type is interactive; clicking it deselects (= None, with confirmation). All actor switches / comments / defaults remain editable.
+- **FR-112** Response chip strip: in edit mode the whole strip is locked — no chip is interactive, including the active one (the response type can be neither switched nor cleared, since clearing would orphan existing contributions). Every chip is `aria-disabled` with the lock-hint tooltip. All actor switches / comments / defaults remain editable. (Amended 2026-06-17 per PR #9883; the original "clicking the active chip clears to None with confirmation" was never implemented for the response type.)
 - **FR-113** Poll-option diff: the connector computes `added` / `removed` / `updated` sets from the initial option set vs current, then calls:
   1. `addPollOption` for each new option (before removals so the option count never drops below 2),
   2. `removePollOption` for each removed id,
