@@ -115,7 +115,31 @@
     "replaceFlow": {
       "button": "Replace innovation flow",
       "loading": "Loading new flow…",
-      "error": "Replacing the innovation flow failed. The flow is unchanged — please try again."
+      "error": "Replacing the innovation flow failed. The flow is unchanged — please try again.",
+      "applyDialog": {
+        "title": "Apply new template",
+        "description": "You are about to apply a new template. This action will permanently delete your current innovation flow. However, the existing Posts linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+        "option1": {
+          "label": "Replace with new flow",
+          "description": "This will delete your current innovation flow with all existing Posts and replace it with the new flow including the template Posts."
+        },
+        "option2": {
+          "label": "Replace and add template Posts to existing ones",
+          "description": "This will include the new Posts from the template in addition to your existing ones."
+        },
+        "option3": {
+          "label": "Replace flow without adding template Posts",
+          "description": "Only replace innovation flow without adding template Posts."
+        },
+        "apply": "Apply",
+        "cancel": "Cancel",
+        "confirmDelete": {
+          "title": "Confirm Deletion",
+          "description": "This action will <strong>permanently delete all existing Posts</strong> and replace them with Posts from the template. This <strong>cannot be undone</strong>. Are you sure you want to proceed?",
+          "confirm": "Confirm",
+          "cancel": "Cancel"
+        }
+      }
     },
     "row": {
       "drag": "Drag to reorder",

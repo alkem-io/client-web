@@ -14,9 +14,11 @@ import ConfirmationDialog from '@/core/ui/dialogs/ConfirmationDialog';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
+import { WhiteboardDisconnectedDialog } from '@/crd/components/whiteboard/WhiteboardDisconnectedDialog';
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import WhiteboardDialogTemplatesLibrary from '@/domain/templates/components/WhiteboardDialog/WhiteboardDialogTemplatesLibrary';
 import type { WhiteboardTemplateContent } from '@/domain/templates/models/WhiteboardTemplate';
@@ -306,6 +308,37 @@ const WhiteboardDialog = ({ entities, actions, options, state, lastSuccessfulSav
           },
           onSceneInitChange: setSceneInitialized,
         }}
+        renderDisconnectNotice={({
+          open,
+          isOnline,
+          connecting,
+          autoReconnectSeconds,
+          lastSuccessfulSavedDate: lastSaved,
+          onReconnect,
+          onClose: onCloseNotice,
+        }) => (
+          <WhiteboardDisconnectedDialog
+            open={open}
+            onClose={onCloseNotice}
+            title={t('pages.whiteboard.whiteboardDisconnected.title')}
+            message={t(
+              isOnline
+                ? 'pages.whiteboard.whiteboardDisconnected.message'
+                : 'pages.whiteboard.whiteboardDisconnected.offline'
+            )}
+            lastSavedText={
+              lastSaved
+                ? t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
+                    lastSaved: formatTimeElapsed(lastSaved, t, 'long'),
+                  })
+                : undefined
+            }
+            canReconnect={isOnline}
+            reconnecting={connecting}
+            countdownSeconds={autoReconnectSeconds}
+            onReconnect={onReconnect}
+          />
+        )}
       >
         {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly }) => {
           return (

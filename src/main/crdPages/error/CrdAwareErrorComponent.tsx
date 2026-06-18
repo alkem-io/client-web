@@ -12,7 +12,6 @@ import { hasInAppHistory } from '@/main/crdPages/error/hasInAppHistory';
 import { isCrdRoute } from '@/main/crdPages/error/isCrdRoute';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
-import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 
 export type CrdAwareErrorComponentProps = {
   hasError?: boolean;
@@ -38,9 +37,9 @@ export function CrdAwareErrorComponent(props: CrdAwareErrorComponentProps) {
   }
 
   return (
-    <TopLevelLayout>
+    <CrdLayoutWrapper>
       <Error40X {...props} />
-    </TopLevelLayout>
+    </CrdLayoutWrapper>
   );
 }
 

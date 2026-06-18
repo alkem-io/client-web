@@ -106,10 +106,6 @@ vi.mock('@/main/ui/layout/CrdLayoutWrapper', () => ({
   ),
 }));
 
-vi.mock('@/main/ui/layout/TopLevelLayout', () => ({
-  default: ({ children }: { children?: React.ReactNode }) => <div data-testid="mui-layout">{children}</div>,
-}));
-
 vi.mock('@/core/pages/Errors/Error40X', () => ({
   Error40X: (props: { isNotAuthorized?: boolean; isNotFound?: boolean }) => (
     <div
@@ -144,16 +140,16 @@ describe('CrdAwareErrorComponent', () => {
     expect(screen.getByTestId('crd-layout-wrapper')).toBeInTheDocument();
     expect(screen.getByTestId('crd-forbidden-page')).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('forbidden.title');
-    expect(screen.queryByTestId('mui-layout')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('mui-error40x')).not.toBeInTheDocument();
   });
 
-  test('renders MUI fallback when current pathname is NOT a CRD route (e.g. /admin), even with toggle on', () => {
+  test('renders Error40X fallback when current pathname is NOT a CRD route (e.g. /admin), even with toggle on', () => {
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/admin" isNotAuthorized={true} hasError={true} />);
 
     expect(screen.queryByTestId('crd-forbidden-page')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('crd-layout-wrapper')).toBeInTheDocument();
     expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-authorized', 'true');
   });
 
@@ -163,37 +159,37 @@ describe('CrdAwareErrorComponent', () => {
     render(<CrdAwareErrorComponent pathname="/welcome-space" isNotFound={true} hasError={true} />);
 
     expect(screen.getByTestId('crd-not-found-branch')).toBeInTheDocument();
-    expect(screen.queryByTestId('mui-layout')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('mui-error40x')).not.toBeInTheDocument();
     expect(screen.queryByTestId('crd-forbidden-page')).not.toBeInTheDocument();
   });
 
-  test('renders MUI fallback for isNotFound when current pathname is NOT a CRD route (e.g. /admin)', () => {
+  test('renders Error40X fallback for isNotFound when current pathname is NOT a CRD route (e.g. /admin)', () => {
     hasInAppHistoryMock.mockReturnValue(true);
 
     render(<CrdAwareErrorComponent pathname="/admin" isNotFound={true} hasError={true} />);
 
     expect(screen.queryByTestId('crd-not-found-branch')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('crd-layout-wrapper')).toBeInTheDocument();
     expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-found', 'true');
   });
 
-  test('renders MUI fallback for isNotFound when pathname is undefined', () => {
+  test('renders Error40X fallback for isNotFound when pathname is undefined', () => {
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent isNotFound={true} hasError={true} />);
 
     expect(screen.queryByTestId('crd-not-found-branch')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('crd-layout-wrapper')).toBeInTheDocument();
     expect(screen.getByTestId('mui-error40x')).toHaveAttribute('data-not-found', 'true');
   });
 
-  test('does not crash when pathname is undefined; falls back to MUI', () => {
+  test('does not crash when pathname is undefined; falls back to Error40X', () => {
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent isNotAuthorized={true} hasError={true} />);
 
     expect(screen.queryByTestId('crd-forbidden-page')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('mui-error40x')).toBeInTheDocument();
   });
 
   test('hides "Go back" button when hasInAppHistory returns false', () => {
@@ -249,15 +245,15 @@ describe('CrdAwareErrorComponent', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('genericError.title');
     expect(usePageTitleMock).toHaveBeenCalledWith('genericError.title');
     expect(sentryErrorMock).toHaveBeenCalledTimes(1);
-    expect(screen.queryByTestId('mui-layout')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('mui-error40x')).not.toBeInTheDocument();
   });
 
-  test('renders MUI fallback for a generic error when current pathname is NOT a CRD route', () => {
+  test('renders Error40X fallback for a generic error when current pathname is NOT a CRD route', () => {
     hasInAppHistoryMock.mockReturnValue(false);
 
     render(<CrdAwareErrorComponent pathname="/admin" error={new Error('boom')} hasError={true} />);
 
     expect(screen.queryByTestId('crd-error-page')).not.toBeInTheDocument();
-    expect(screen.getByTestId('mui-layout')).toBeInTheDocument();
+    expect(screen.getByTestId('mui-error40x')).toBeInTheDocument();
   });
 });
