@@ -22,7 +22,7 @@ import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceCommunityPage() {
-  const { t } = useTranslation(['translation', 'crd-space']);
+  const { t } = useTranslation(['crd-common', 'crd-space']);
   const { space, permissions } = useSpace();
   const navigate = useNavigate();
   const {

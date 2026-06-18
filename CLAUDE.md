@@ -174,12 +174,12 @@ If there is genuinely no schema field to discriminate on and `__typename` is the
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- **New strings go to CRD** — every new user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
-- **Core is frozen for new keys** — `src/core/i18n/en/translation.en.json` and its sibling locale files form the legacy default `translation` namespace and are FROZEN for new keys. **Crowdin is no longer used.** Legacy core translations are maintained directly in-repo: for upkeep of existing keys, edit `translation.en.json` **and** the non-English `translation.<lang>.json` files in the same PR (preserving key parity). New strings always go to CRD, never here.
+- **All strings live in CRD** — every user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
+- **The legacy core `translation` namespace was removed** (story #9885) — `src/core/i18n/<lang>/translation.<lang>.json` no longer exists. The default namespace is now **`crd-common`** (`src/crd/i18n/common/`), so a `useTranslation()` call with no namespace argument resolves against `crd-common`. **Crowdin is no longer used.** Never reintroduce a `translation` namespace or a `src/core/i18n` locale file.
 
 ### Namespaces
 
-- **`translation`** (default): Legacy strings in `src/core/i18n/en/translation.en.json`, frozen for new keys. Used by components outside `src/crd/`.
+- **`crd-common`** (default): The default namespace, in `src/crd/i18n/common/`. Eagerly loaded for English. Resolved by every `useTranslation()` call that omits a namespace argument (and the `{ ns: 'crd-common' }` form). Replaced the removed legacy `translation` namespace in story #9885.
 - **`crd-layout`**: Layout UI strings (header/footer) in `src/crd/i18n/layout/`. Eagerly loaded for English. Used by `src/crd/layouts/` via `useTranslation('crd-layout')`.
 - **`crd-exploreSpaces`**: Space explorer UI strings in `src/crd/i18n/exploreSpaces/`. Lazy-loaded on demand. Used by `src/crd/components/space/` via `useTranslation('crd-exploreSpaces')`.
 - **`crd-<feature>`**: Future feature namespaces follow the same pattern: `src/crd/i18n/<feature>/<feature>.<lang>.json`, lazy-loaded, used via `useTranslation('crd-<feature>')`.

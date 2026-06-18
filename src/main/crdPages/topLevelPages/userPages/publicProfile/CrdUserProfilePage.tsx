@@ -99,8 +99,8 @@ export const CrdUserProfilePage = () => {
       sidebar={{
         bio: profile?.description ?? null,
         tagsets: buildUserProfileTagsets(profile?.tagsets, {
-          keywords: t('components.profile.fields.keywords.title', { ns: 'translation' }),
-          skills: t('components.profile.fields.skills.title', { ns: 'translation' }),
+          keywords: t('components.profile.fields.keywords.title', { ns: 'crd-common' }),
+          skills: t('components.profile.fields.skills.title', { ns: 'crd-common' }),
         }),
         organizationsSlot,
         organizationsEmpty: safeOrgIds.length === 0,
@@ -130,8 +130,8 @@ export const CrdUserProfilePage = () => {
         labels: {
           spacesSubsection: t('userProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('userProfile.sections.virtualContributorsSubsection'),
-          templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
-          customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
+          templatePacksSubsection: t('common.innovation-packs', { ns: 'crd-common' }),
+          customHomepagesSubsection: t('common.customHomepages', { ns: 'crd-common' }),
           spacesLeading: t('userProfile.sections.spacesLeading'),
           memberOf: t('userProfile.sections.memberOf'),
           emptyResourcesHosted: t('userProfile.empty.resourcesHosted'),

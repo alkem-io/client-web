@@ -555,15 +555,18 @@ CRD uses **per-feature i18next namespaces** with atomic translation files in `sr
 
 | Namespace | File pattern | Contents | Loading |
 |-----------|-------------|----------|---------|
+| `crd-common` (**default**) | `common.<lang>.json` | Shared keys resolved by any `useTranslation()` with no namespace arg | **Eager** (EN), lazy (other langs) |
 | `crd-layout` | `layout.<lang>.json` | `header.*` + `footer.*` keys | **Eager** (EN), lazy (other langs) |
 | `crd-exploreSpaces` | `exploreSpaces.<lang>.json` | `spaces.*` keys | **Lazy** (all langs) |
 | `crd-<feature>` | `<feature>.<lang>.json` | Feature-specific keys | **Lazy** (all langs) |
+
+`crd-common` is the **default namespace** (`defaultNS` in `src/core/i18n/config.ts`); it replaced the legacy `translation` namespace, which was removed in story #9885. A component that calls `useTranslation()` with no argument resolves its keys against `crd-common`.
 
 **Supported languages:** `en`, `nl`, `es`, `bg`, `de`, `fr` — must match `supportedLngs` in `src/core/i18n/config.ts`
 
 ### How it works
 
-- **Main app** (`src/core/i18n/config.ts`): eagerly imports `layout.en.json` as the `'crd-layout'` namespace. Feature namespaces (e.g., `'crd-exploreSpaces'`) are lazy-loaded on demand when a component calls `useTranslation('crd-exploreSpaces')`. Non-English languages are always lazy-loaded via the `crdNamespaceImports` registry.
+- **Main app** (`src/core/i18n/config.ts`): eagerly imports `common.en.json` (the default `crd-common` namespace) and `layout.en.json` (`'crd-layout'`). Feature namespaces (e.g., `'crd-exploreSpaces'`) are lazy-loaded on demand when a component calls `useTranslation('crd-exploreSpaces')`. Non-English languages — including `crd-common` — are always lazy-loaded via the `crdNamespaceImports` registry.
 - **Standalone app** (`src/crd/app/main.tsx`): eagerly imports all namespace files (dev tool, no lazy loading needed)
 - **CRD components**: call `useTranslation('crd-<feature>')` for their specific namespace. Keys are prefixless within the namespace: `t('spaces.filters')`, `t('header.search')`
 - **Language switching**: When the user changes language via `i18n.changeLanguage()`, all loaded namespaces are fetched for the new language. The lazy backend handles this automatically.
@@ -619,7 +622,7 @@ const { t } = useTranslation('crd-exploreSpaces');
 
 CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Every new user-facing string lives here: all six supported languages (en, nl, es, bg, de, fr) are added or removed in the **same PR**, and **key parity across all languages is required** — a key present in one locale file MUST exist in all of them. This parity is enforced in review (CodeRabbit), not by Crowdin.
 
-The legacy default `translation` namespace (`src/core/i18n/`) is **frozen for new keys**. Do not add new strings there. **Crowdin has been retired**, so its non-English locale files (`translation.<lang>.json`) are now edited directly in-repo for legacy upkeep — in the same PR, with key parity preserved — rather than generated.
+The legacy default `translation` namespace (`src/core/i18n/<lang>/translation.<lang>.json`) was **removed** in story #9885: its still-used keys were migrated into the default `crd-common` namespace and the locale files were deleted. **Crowdin has been retired.** All translations now live under `src/crd/i18n/` and are edited directly in-repo across all six languages in the same PR, with key parity preserved.
 
 ### Do-not-translate platform terms (glossary)
 
@@ -642,7 +645,7 @@ Full term list, rationale, per-language localized forms, and the validation appr
 ### Critical rules
 
 - Never access `i18n` directly (e.g. `i18n.language`, `i18n.changeLanguage()`) — these are application-level APIs. Read language state from props, call language-change callbacks via props.
-- Never import from the default `'translation'` namespace inside CRD components.
+- The legacy `'translation'` namespace no longer exists — never reintroduce it or a `src/core/i18n` locale file. Design-system-shared strings go in `crd-common` (the default namespace); feature strings go in `crd-<feature>`.
 - All user-visible strings in JSX must use `t()` — including sr-only text, badge labels, and other seemingly minor text.
 - Page-level text (titles, subtitles) lives in the feature's CRD namespace alongside its design-system labels.
 
@@ -662,7 +665,7 @@ pnpm crd:build  # Production build
 ### Architecture
 
 - `app/main.tsx` — entry point: initializes i18next with CRD translations, renders `CrdApp`
-- `app/CrdApp.tsx` — root: BrowserRouter + CrdLayout with mock user/auth/language props (languages are hardcoded here since the standalone app doesn't have the main translation namespace)
+- `app/CrdApp.tsx` — root: BrowserRouter + CrdLayout with mock user/auth/language props (languages are hardcoded here since the standalone app doesn't wire the main app's i18n config)
 - `app/pages/` — mock pages (e.g., `SpacesPage.tsx` with hardcoded space data)
 - `app/data/` — mock data sets (reused from the prototype)
 - `app/vite.config.ts` — standalone Vite config (port 5200, path alias `@/crd` → `src/crd/`)
