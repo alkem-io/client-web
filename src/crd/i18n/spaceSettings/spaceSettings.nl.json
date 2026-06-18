@@ -115,7 +115,31 @@
     "replaceFlow": {
       "button": "Innovatieflow vervangen",
       "loading": "Nieuwe flow laden…",
-      "error": "Het vervangen van de innovatieflow is mislukt. De flow is ongewijzigd — probeer het opnieuw."
+      "error": "Het vervangen van de innovatieflow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
+      "applyDialog": {
+        "title": "Nieuwe template toepassen",
+        "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovatieflow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
+        "option1": {
+          "label": "Vervangen door nieuwe flow",
+          "description": "Hiermee wordt je huidige innovatieflow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."
+        },
+        "option2": {
+          "label": "Vervangen en template-Posts aan bestaande toevoegen",
+          "description": "Hiermee worden de nieuwe Posts uit de template toegevoegd aan je bestaande Posts."
+        },
+        "option3": {
+          "label": "Flow vervangen zonder template-Posts toe te voegen",
+          "description": "Vervang alleen de innovatieflow zonder template-Posts toe te voegen."
+        },
+        "apply": "Toepassen",
+        "cancel": "Annuleren",
+        "confirmDelete": {
+          "title": "Verwijdering bevestigen",
+          "description": "Deze actie verwijdert permanent alle bestaande Posts en vervangt ze door Posts uit de template. Dit kan niet ongedaan worden gemaakt. Weet je zeker dat je wilt doorgaan?",
+          "confirm": "Bevestigen",
+          "cancel": "Annuleren"
+        }
+      }
     },
     "row": {
       "drag": "Sleep om te herordenen",

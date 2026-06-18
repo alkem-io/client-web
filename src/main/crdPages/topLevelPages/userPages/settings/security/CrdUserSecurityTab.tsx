@@ -1,50 +1,17 @@
 import { useEffect } from 'react';
 import { useUserSecurityAuthenticationMethodsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
-import type { KratosRemovedFieldAttributes } from '@/core/auth/authentication/components/Kratos/constants';
-import KratosForm from '@/core/auth/authentication/components/Kratos/KratosForm';
-import KratosUI from '@/core/auth/authentication/components/KratosUI';
+import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import useNavigate from '@/core/routing/useNavigate';
+import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import { UserSecurityTabView, type UserSecurityViewState } from '@/crd/components/user/settings/UserSecurityTabView';
+import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
+import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import PasswordChangeForm from './PasswordChangeForm';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
-
-/**
- * Field filter for the password card — keep `password` / `password_identifier`
- * inputs and the `password` submit; strip everything else (profile traits,
- * WebAuthn nodes, OIDC link/unlink).
- */
-const PASSWORD_REMOVED_FIELDS: ReadonlyArray<KratosRemovedFieldAttributes> = [
-  { name: 'traits.name.first' },
-  { name: 'traits.name.last' },
-  { name: 'traits.email' },
-  { name: 'traits.accepted_terms' },
-  { name: 'traits.picture' },
-  { type: 'submit', value: 'profile' },
-  { name: 'link' },
-  { name: 'unlink' },
-];
-
-/**
- * Field filter for the WebAuthn / Passkey card — mirrors the existing MUI
- * `UserSecuritySettingsPage` filter: strip password, profile, OIDC.
- */
-const WEBAUTHN_REMOVED_FIELDS: ReadonlyArray<KratosRemovedFieldAttributes> = [
-  { name: 'password' },
-  { name: 'password_identifier' },
-  { name: 'traits.name.first' },
-  { name: 'traits.name.last' },
-  { name: 'traits.email' },
-  { name: 'traits.accepted_terms' },
-  { name: 'traits.picture' },
-  { type: 'submit', value: 'profile' },
-  { type: 'submit', value: 'password' },
-  { name: 'link' },
-  { name: 'unlink' },
-];
 
 /**
  * Integration page for the User Security tab.
@@ -92,6 +59,12 @@ const CrdUserSecurityTab = () => {
 const OwnerSecurityTabContent = () => {
   const flowResult = useUserSecuritySettingsFlow();
 
+  // Load the Ory passkey script so the WebAuthn registration button can run
+  // its ceremony (the script injects the `window.__oryPasskey*` globals that
+  // `invokePasskeyTrigger` calls). Mirrors the MUI security page's usage.
+  const flowNodes = flowResult.kind === 'ready' ? flowResult.flow.ui?.nodes : undefined;
+  usePasskeyScript(flowNodes);
+
   // Whether the account actually has a password credential is answered
   // authoritatively by the server — `User.authentication.methods` includes
   // EMAIL iff a Kratos password credential exists. We intentionally do NOT
@@ -109,15 +82,24 @@ const OwnerSecurityTabContent = () => {
         : { kind: 'ready', hasPassword: hasPasswordCredential, hasWebauthn: flowResult.hasWebauthn };
 
   const passwordForm =
-    flowResult.kind === 'ready' && hasPasswordCredential ? (
-      <PasswordChangeForm flow={flowResult.flow} removedFields={PASSWORD_REMOVED_FIELDS} />
-    ) : null;
+    flowResult.kind === 'ready' && hasPasswordCredential ? <PasswordChangeForm flow={flowResult.flow} /> : null;
 
+  // The WebAuthn / Passkey card renders the same Kratos Settings flow through
+  // the MUI-free `CrdKratosFlow`. `keepPasskeys` keeps the passkey-registration
+  // node (otherwise stripped for the recovery-completion settings flow), and the
+  // adapter already drops the password/profile/oidc nodes for settings flows, so
+  // only the passkey registration button surfaces here.
   const webauthnForm =
     flowResult.kind === 'ready' && flowResult.hasWebauthn ? (
-      <KratosForm ui={flowResult.flow.ui}>
-        <KratosUI ui={flowResult.flow.ui} removedFields={WEBAUTHN_REMOVED_FIELDS} flowType="settings" />
-      </KratosForm>
+      <CrdKratosFlow
+        descriptor={flowDescriptorAdapter(flowResult.flow, 'settings', {
+          keepPasskeys: true,
+          dropPasswordMethod: true,
+        })}
+        onPasskeyTrigger={trigger => {
+          invokePasskeyTrigger(trigger).catch(() => undefined);
+        }}
+      />
     ) : null;
 
   return <UserSecurityTabView state={state} passwordForm={passwordForm} webauthnForm={webauthnForm} />;

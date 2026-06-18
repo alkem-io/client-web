@@ -145,7 +145,28 @@ function toPasskeyNode(node: InputNode, trigger: KratosPasskeyTrigger): KratosPa
  * render. Buckets every `flow.ui.nodes` entry by its semantic group, mirroring
  * the MUI `KratosUI` grouping. The `@ory/kratos-client` dependency stops here.
  */
-export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowType): KratosFlowDescriptor {
+type FlowDescriptorOptions = {
+  /**
+   * Settings flow only. When `true`, the passkey / WebAuthn registration nodes
+   * are kept (so the User Security tab's Passkeys card can render its register
+   * button); they remain stripped by default, since the recovery-completion
+   * settings flow renders only the new-password fields.
+   */
+  keepPasskeys?: boolean;
+  /**
+   * Settings flow only. When `true`, the password method's input + submit are
+   * stripped — used by the User Security tab's Passkeys card, which shares the
+   * same flow as the (separate) password card and must not re-render the
+   * password fields. Defaults to keeping them (recovery-completion).
+   */
+  dropPasswordMethod?: boolean;
+};
+
+export function flowDescriptorAdapter(
+  flow: AnyKratosFlow,
+  flowType: KratosFlowType,
+  options: FlowDescriptorOptions = {}
+): KratosFlowDescriptor {
   const groups: KratosFlowDescriptor['groups'] = {
     hidden: [],
     default: [],
@@ -173,7 +194,10 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
       // context for a recovery-completion page, and the link buttons
       // (name="link", not "provider") trip CrdKratosFlow's validation gate.
       // Strip them so only the new-password fields remain.
-      if (node.group === 'oidc' || node.group === 'passkey' || node.group === 'webauthn') {
+      if (node.group === 'oidc') {
+        continue;
+      }
+      if (!options.keepPasskeys && (node.group === 'passkey' || node.group === 'webauthn')) {
         continue;
       }
       // Drop the profile method's inputs and its dedicated submit button —
@@ -184,6 +208,16 @@ export function flowDescriptorAdapter(flow: AnyKratosFlow, flowType: KratosFlowT
         }
         if (isSubmitButton(node) && node.attributes.value === 'profile') {
           continue;
+        }
+        // Passkeys card: drop the password input and its `method=password`
+        // submit so the shared settings flow renders only the passkey method.
+        if (options.dropPasswordMethod) {
+          if (node.attributes.name === 'password' || node.attributes.name === 'password_identifier') {
+            continue;
+          }
+          if (isSubmitButton(node) && node.attributes.value === 'password') {
+            continue;
+          }
         }
       }
     }

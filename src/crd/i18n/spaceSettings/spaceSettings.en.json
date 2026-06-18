@@ -135,7 +135,7 @@
         "cancel": "Cancel",
         "confirmDelete": {
           "title": "Confirm Deletion",
-          "description": "This action will <strong>permanently delete all existing Posts</strong> and replace them with Posts from the template. This <strong>cannot be undone</strong>. Are you sure you want to proceed?",
+          "description": "This action will permanently delete all existing Posts and replace them with Posts from the template. This cannot be undone. Are you sure you want to proceed?",
           "confirm": "Confirm",
           "cancel": "Cancel"
         }
