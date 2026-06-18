@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 import { isApolloForbiddenError, isApolloNotFoundError } from '@/core/apollo/hooks/useApolloErrorHandler';
 import { Error404 } from '@/core/pages/Errors/Error404';
-import type { NavigationState } from '@/core/routing/ScrollToTop';
 import useNavigate from '@/core/routing/useNavigate';
 import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
@@ -16,7 +15,6 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import TopLevelLayout from '@/main/ui/layout/TopLevelLayout';
 import type { CalloutRestrictions } from '../callout/CalloutRestrictionsTypes';
 import CalloutView from '../callout/CalloutView/CalloutView';
-import type { CalloutDetailsModelExtended } from '../callout/models/CalloutDetailsModel';
 import useCalloutDetails from '../callout/useCalloutDetails/useCalloutDetails';
 import { useCalloutManager } from '../callout/utils/useCalloutManager';
 
@@ -32,12 +30,9 @@ export interface CalloutPageProps {
   children?: (props: CalloutLocation) => ReactNode;
 }
 
-export const LocationStateKeyCachedCallout = 'LocationStateKeyCachedCallout';
-const SEARCH_PARAM_TAB = 'tab';
+export { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from './locationState';
 
-export interface LocationStateCachedCallout extends NavigationState {
-  [LocationStateKeyCachedCallout]?: CalloutDetailsModelExtended;
-}
+const SEARCH_PARAM_TAB = 'tab';
 
 /**
  *

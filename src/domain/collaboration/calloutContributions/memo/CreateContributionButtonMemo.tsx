@@ -8,7 +8,7 @@ import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { normalizeLink } from '@/core/utils/links';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
-import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { LocationStateKeyCachedCallout } from '../../CalloutPage/locationState';
 import CreateContributionButton from '../CreateContributionButton';
 import type { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 

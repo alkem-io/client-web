@@ -15,7 +15,7 @@ import CommentsComponent from '@/domain/communication/room/Comments/CommentsComp
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
-import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/locationState';
 import type CalloutContributionModel from '../../calloutContributions/CalloutContributionModel';
 import CalloutContributionsBlock from '../../calloutContributions/CalloutContributionsBlock';
 import CalloutContributionsHorizontalPager from '../../calloutContributions/CalloutContributionsHorizontalPager';

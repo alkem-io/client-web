@@ -3,7 +3,7 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
 import { formatDate } from '@/core/utils/time/utils';
-import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
+import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/locationState';
 import MemoPreview from '@/domain/collaboration/memo/MemoPreview/MemoPreview';
 import type { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 

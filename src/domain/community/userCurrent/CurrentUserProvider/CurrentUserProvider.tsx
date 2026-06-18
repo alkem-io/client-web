@@ -1,7 +1,7 @@
 import { createContext, type PropsWithChildren } from 'react';
 import { useCurrentUserLightQuery, usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
+import { CrdTopLevelErrorPage } from '@/main/crdPages/error/CrdTopLevelErrorPage';
 import type { CurrentUserModel } from '../model/CurrentUserModel';
 import { toPlatformPrivilegeWrapper } from './usePlatformPrivilegeWrapper';
 
@@ -62,7 +62,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   };
 
   return userProviderError ? (
-    <ErrorPage error={userProviderError} />
+    <CrdTopLevelErrorPage error={userProviderError} />
   ) : (
     <CurrentUserContext value={providedValue}>{children}</CurrentUserContext>
   );

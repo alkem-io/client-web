@@ -7,7 +7,7 @@ import ContributeCard from '@/core/ui/card/ContributeCard';
 import { Caption } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import { formatDate } from '@/core/utils/time/utils';
-import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
+import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/locationState';
 import type { Visual } from '@/domain/common/visual/Visual';
 import type { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 

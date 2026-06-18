@@ -1,9 +1,7 @@
 import { useMediaQuery } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 
-export const GUTTER_PX = 20;
-
-export const GUTTER_MUI = 2;
+export { GUTTER_MUI, GUTTER_PX } from './gutter.constants';
 
 export const MAX_CONTENT_WIDTH_WITH_GUTTER_PX = 1400;
 export const MAX_CONTENT_WIDTH_GUTTERS = 70;

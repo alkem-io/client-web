@@ -1,6 +1,6 @@
 import type { Theme } from '@mui/material/styles';
-import { GUTTER_MUI, GUTTER_PX } from './constants';
 import { useColumns } from './GridContext';
+import { GUTTER_MUI, GUTTER_PX } from './gutter.constants';
 
 export const getColumnsWidth = (itemColumns: number, gridColumns: number) => {
   const columns = Math.min(itemColumns, gridColumns);

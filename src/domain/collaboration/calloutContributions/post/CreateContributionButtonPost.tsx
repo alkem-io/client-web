@@ -4,7 +4,7 @@ import { CalloutContributionType, type CreatePostInput } from '@/core/apollo/gen
 import useNavigate from '@/core/routing/useNavigate';
 import { normalizeLink } from '@/core/utils/links';
 import PostCreationDialog from '@/domain/collaboration/post/PostCreationDialog/PostCreationDialog';
-import { LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { LocationStateKeyCachedCallout } from '../../CalloutPage/locationState';
 import CreateContributionButton from '../CreateContributionButton';
 import type { CalloutContributionCreateButtonProps } from '../interfaces/CalloutContributionCreateButtonProps';
 

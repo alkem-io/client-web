@@ -4,7 +4,7 @@ import CardHeader from '@/core/ui/card/CardHeader';
 import ContributeCard from '@/core/ui/card/ContributeCard';
 import { Caption } from '@/core/ui/typography';
 import { formatDate } from '@/core/utils/time/utils';
-import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/CalloutPage';
+import { LocationStateKeyCachedCallout } from '@/domain/collaboration/CalloutPage/locationState';
 import { getCollaboraDocumentIcon } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraDocumentIcons';
 import type { CalloutContributionCardComponentProps } from '../interfaces/CalloutContributionCardComponentProps';
 
