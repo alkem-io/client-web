@@ -5,7 +5,6 @@ import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useR
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import NoIdentityRedirect from '@/core/routing/NoIdentityRedirect';
 import Loading from '@/core/ui/loading/Loading';
-import devRoute from '@/dev/routes';
 import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import NonIdentity from '@/domain/platform/routes/NonIdentity';
 import RedirectToLanding from '@/domain/platform/routes/RedirectToLanding';
@@ -69,7 +68,6 @@ export const TopLevelRoutes = () => {
           }
         />
         {IdentityRoute()}
-        {devRoute()}
         {/* Dashboard page. The CrdHomePage dispatcher shows the innovation-hub home page on a
             hub subdomain, else the CRD dashboard; the CrdLayoutWrapper decision lives inside
             the dispatcher because the hub page carries its own layout. */}

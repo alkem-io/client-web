@@ -1,8 +1,10 @@
-import { Box, type BoxProps } from '@mui/material';
-import React from 'react';
+import React, { type HTMLAttributes } from 'react';
 
 // Permanent React Compiler exception: React requires class components for error boundaries (no hook equivalent).
-export default class LinesFitterErrorBoundary extends React.Component<BoxProps, { hasError: boolean }> {
+export default class LinesFitterErrorBoundary extends React.Component<
+  HTMLAttributes<HTMLDivElement>,
+  { hasError: boolean }
+> {
   constructor(props) {
     super(props);
     this.state = { hasError: false };
@@ -16,7 +18,7 @@ export default class LinesFitterErrorBoundary extends React.Component<BoxProps, 
     const { children, ...wrapperProps } = this.props;
 
     if (this.state.hasError) {
-      return <Box {...wrapperProps} />;
+      return <div {...wrapperProps} />;
     }
 
     return children;

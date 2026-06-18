@@ -1,10 +1,15 @@
-import { Box, type BoxProps } from '@mui/material';
+import type { ReactNode } from 'react';
 import { gutters } from '../grid/utils';
 import { Caption } from '../typography';
 
-const PageContentRibbon = ({ sx, children, ...props }: BoxProps) => (
-  <Box
-    component={Caption}
+type PageContentRibbonProps = {
+  sx?: any;
+  children?: ReactNode;
+  [key: string]: any;
+};
+
+const PageContentRibbon = ({ sx, children, ...props }: PageContentRibbonProps) => (
+  <Caption
     sx={{ color: 'background.paper', backgroundColor: 'primary.main', ...sx }}
     display="flex"
     gap={gutters(0.5)}
@@ -14,7 +19,7 @@ const PageContentRibbon = ({ sx, children, ...props }: BoxProps) => (
     {...props}
   >
     <Caption>{children}</Caption>
-  </Box>
+  </Caption>
 );
 
 export default PageContentRibbon;

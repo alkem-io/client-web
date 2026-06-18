@@ -1,5 +1,5 @@
-import { lighten, Typography, type TypographyProps } from '@mui/material';
 import provideStaticProps from '@/core/utils/provideStaticProps';
+import Typography, { type TypographyProps } from './Typography';
 
 export const PageTitle = provideStaticProps<TypographyProps, HTMLHeadingElement>(Typography, {
   variant: 'h2',
@@ -19,7 +19,7 @@ export const BlockSectionTitle = provideStaticProps<TypographyProps, HTMLHeading
 export const Tagline = provideStaticProps<TypographyProps, HTMLHeadingElement>(Typography, {
   variant: 'subtitle1',
   component: 'h4',
-} as TypographyProps) as typeof Typography;
+}) as typeof Typography;
 
 export const Text = provideStaticProps<TypographyProps, HTMLParagraphElement>(Typography, {
   variant: 'body1',
@@ -32,7 +32,8 @@ export const CardTitle = provideStaticProps<TypographyProps, HTMLHeadingElement>
 export const CardText = provideStaticProps<TypographyProps, HTMLDivElement>(Typography, {
   variant: 'body2',
   component: 'div',
-  sx: { color: theme => lighten(theme.palette.text.primary, 0.4) },
+  // MUI: lighten(theme.palette.text.primary /* #181828 */, 0.4)
+  color: '#747486',
 }) as typeof Typography;
 
 export const RibbonText = provideStaticProps<TypographyProps, HTMLParagraphElement>(Typography, {

@@ -23,6 +23,25 @@ if (!('ResizeObserver' in globalThis)) {
   };
 }
 
+// jsdom does not implement window.matchMedia, but components that read responsive
+// breakpoints (e.g. core/ui/grid useScreenSize → crd/hooks/useMediaQuery, and CRD
+// components) call it in a state initializer. Without this stub the call throws
+// mid-render. Defaults to non-matching, which is the safe mobile-first base used
+// elsewhere in the codebase.
+if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
+  window.matchMedia = (query: string): MediaQueryList =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }) as unknown as MediaQueryList;
+}
+
 // Apollo Client 3.14 removes support for the canonizeResults flag on cache.diff.
 // MockedProvider still passes the flag in tests, so strip it to silence warnings.
 const originalDiff = InMemoryCache.prototype.diff;

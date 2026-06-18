@@ -1,5 +1,4 @@
-import { Box, type BoxProps } from '@mui/material';
-import { type ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
+import { type HTMLAttributes, type ReactNode, useLayoutEffect, useReducer, useRef } from 'react';
 import { useResizeObserver } from '@/core/ui/hooks/useResizeObserver';
 import LinesFitterErrorBoundary from './LinesFitterErrorBoundary';
 
@@ -87,7 +86,7 @@ const getInitialState = (expectedHeight?: number): LinesFitterState => ({
   expectedHeight: expectedHeight ?? 0,
 });
 
-export interface LinesFitterProps<Item> extends BoxProps {
+export interface LinesFitterProps<Item> extends HTMLAttributes<HTMLDivElement> {
   items: Item[];
   renderItem: (item: Item, index: number) => ReactNode;
   renderMore?: (remainingItems: Item[]) => ReactNode;
@@ -189,11 +188,17 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
 
   const hasFixedHeight = state.stage === Stage.MEASURING_EXPECTED_HEIGHT || state.stage === Stage.FINISHED;
 
+  const { style, ...restWrapperProps } = wrapperProps;
+
   return (
-    <Box ref={wrapperElementRef} {...wrapperProps} maxHeight={hasFixedHeight ? height : undefined}>
+    <div
+      ref={wrapperElementRef}
+      {...restWrapperProps}
+      style={{ ...style, maxHeight: hasFixedHeight ? height : undefined }}
+    >
       {visibleItems.map(renderItem)}
       {showMore && renderMore?.(getRemainingItems())}
-    </Box>
+    </div>
   );
 };
 
@@ -203,7 +208,7 @@ const LinesFitter = <Item,>({ items, renderItem, renderMore, height, ...wrapperP
  * In order not to destroy user experience in production, in case of exception an empty container is returned.
  */
 const SilentLinesFitter = <Item,>(props: LinesFitterProps<Item>) => {
-  const { items, renderItem, renderMore, ref, ...wrapperProps } = props;
+  const { items, renderItem, renderMore, height, ...wrapperProps } = props;
 
   return (
     <LinesFitterErrorBoundary {...wrapperProps}>

@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import Loading from '@/core/ui/loading/Loading';
+import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 
@@ -51,7 +51,7 @@ const InnovationPackRoute = () => (
         }
       />
     </Route>
-    <Route path="*" element={<Error404 />} />
+    <Route path="*" element={<CrdNotFoundBranch />} />
   </Routes>
 );
 export default InnovationPackRoute;

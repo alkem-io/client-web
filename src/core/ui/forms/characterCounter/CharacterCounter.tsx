@@ -1,14 +1,13 @@
-import { Box, type TypographyProps } from '@mui/material';
-import type { DistributiveOmit } from '@mui/types';
 import type { PropsWithChildren } from 'react';
-import { gutters } from '@/core/ui/grid/utils';
 import { Caption } from '@/core/ui/typography';
+import { cn } from '@/crd/lib/utils';
 
-type CharacterCounterProps = DistributiveOmit<TypographyProps, 'variant'> & {
+type CharacterCounterProps = {
   count?: number;
   separator?: string;
   maxLength?: number;
   disabled?: boolean;
+  flexWrap?: 'wrap' | 'nowrap';
 };
 
 const getText = (count: number, separator: string, maxLength?: number) =>
@@ -21,27 +20,29 @@ export const CharacterCounter = ({
   maxLength,
   flexWrap,
   children,
-  ...rest
 }: PropsWithChildren<CharacterCounterProps>) => {
-  const color = maxLength && count > maxLength ? 'negative.main' : undefined;
-  const visibility = !maxLength || maxLength - count > 10 ? 'hidden' : 'visible';
+  const isOverLimit = Boolean(maxLength && count > maxLength);
+  const isHidden = !maxLength || maxLength - count > 10;
 
   return (
-    <Box
-      display="flex"
-      justifyContent={children ? 'space-between' : 'end'}
-      gap={gutters()}
-      rowGap={0}
-      alignItems="start"
-      flexWrap={flexWrap}
+    <div
+      className={cn(
+        'flex items-start gap-4 gap-y-0',
+        children ? 'justify-between' : 'justify-end',
+        flexWrap === 'wrap' && 'flex-wrap',
+        flexWrap === 'nowrap' && 'flex-nowrap'
+      )}
     >
       {children}
       {!disabled && (
-        <Caption color={color} visibility={visibility} {...rest}>
+        <Caption
+          className={isOverLimit ? 'text-destructive' : undefined}
+          sx={{ visibility: isHidden ? 'hidden' : 'visible' }}
+        >
           {getText(count, separator, maxLength)}
         </Caption>
       )}
-    </Box>
+    </div>
   );
 };
 

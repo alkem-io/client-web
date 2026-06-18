@@ -1,16 +1,32 @@
-import { Button } from '@mui/material';
-import type { SxProps, Theme } from '@mui/material/styles';
-import type { PropsWithChildren } from 'react';
+import type { CSSProperties, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
-import visibleOnFocus from './visibleOnFocus';
-
-const SKIP_LINK_Z_INDEX = 1;
+import { cn } from '@/crd/lib/utils';
+import { resolveColor, resolveSx } from '../typography/sx';
 
 type SkipLinkProps = {
-  sx?: SxProps<Theme>;
+  sx?: any;
   anchor?: Element | null | (() => Element | null);
 };
 
+// MUI `Button variant="contained" color="primary"` look, reproduced inline.
+const CONTAINED_PRIMARY: CSSProperties = {
+  backgroundColor: resolveColor('primary.main'),
+  color: resolveColor('primary.contrastText'),
+  border: 'none',
+  borderRadius: '5px',
+  padding: '4px 10px',
+  fontSize: '0.8125rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  zIndex: 1,
+};
+
+/**
+ * Accessibility skip-link. MUI-free replacement for the previous `Button`-based
+ * version: visually hidden until focused (`sr-only` / `focus:not-sr-only`,
+ * matching the old `visibleOnFocus` behaviour), then shown as a contained
+ * primary button.
+ */
 const SkipLink = ({ anchor, sx, children }: PropsWithChildren<SkipLinkProps>) => {
   const { t } = useTranslation();
 
@@ -26,15 +42,14 @@ const SkipLink = ({ anchor, sx, children }: PropsWithChildren<SkipLinkProps>) =>
   };
 
   return (
-    <Button
-      color="primary"
-      variant="contained"
-      size="small"
+    <button
+      type="button"
       onClick={handleClick}
-      sx={visibleOnFocus()({ zIndex: SKIP_LINK_Z_INDEX, textTransform: 'none', ...sx })}
+      className={cn('sr-only focus:not-sr-only focus:fixed')}
+      style={{ ...CONTAINED_PRIMARY, textTransform: 'none', ...resolveSx(sx) }}
     >
       {children ?? t('buttons.skipLink')}
-    </Button>
+    </button>
   );
 };
 

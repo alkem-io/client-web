@@ -1,44 +1,47 @@
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { Box, type BoxProps, ClickAwayListener, Tooltip, useTheme } from '@mui/material';
-import Chip, { type ChipProps } from '@mui/material/Chip';
-import Skeleton from '@mui/material/Skeleton';
-import type { Theme } from '@mui/material/styles';
 import { times } from 'lodash-es';
-import { useState } from 'react';
+import { ChevronUp } from 'lucide-react';
+import { type CSSProperties, type HTMLAttributes, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CardText } from '@/core/ui/typography';
+import { cn } from '@/crd/lib/utils';
+import { Skeleton } from '@/crd/primitives/skeleton';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import LinesFitter from '../LinesFitter/LinesFitter';
 
-export interface TagsComponentProps extends BoxProps {
+export type TagsComponentColor = 'primary' | 'default';
+export type TagsComponentVariant = 'filled' | 'outlined';
+
+export type TagsComponentProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
   tags: string[];
   count?: number;
   loading?: boolean;
-  height?: number | string | ((theme: Theme) => number | string);
-  color?: ChipProps['color'];
-  size?: ChipProps['size'];
-  variant?: ChipProps['variant'];
-  selectedVariant?: ChipProps['variant'];
+  /** Fixed container height (px). Enables the overflow "+N" line fitter. */
+  height?: number;
+  color?: TagsComponentColor;
+  variant?: TagsComponentVariant;
+  selectedVariant?: TagsComponentVariant;
   selectedIndexes?: number[];
   canShowAll?: boolean;
   hideNoTagsMessage?: boolean;
   onClickTag?: (tag: string, index: number) => void;
-}
+};
 
-const getDefaultTagsContainerProps = (hasHeight?: boolean): Partial<BoxProps> => ({
-  display: 'flex',
-  gap: theme => theme.spacing(0.4),
-  rowGap: theme => theme.spacing(1),
-  flexWrap: 'wrap',
-  // TODO this is left for compatibility with older components that don't specify height on TagsComponent
-  minHeight: hasHeight ? undefined : (theme: Theme) => theme.spacing(4),
-});
+// Mirrors MUI <Chip size="small">: ~24px tall, fully rounded, 13px label, ellipsised.
+const tagPillBase =
+  'inline-flex h-6 max-w-full items-center rounded-full px-3 text-[0.8125rem] leading-none ' +
+  'whitespace-nowrap overflow-hidden text-ellipsis transition-colors';
+
+const tagPillClasses = (color: TagsComponentColor | undefined, variant: TagsComponentVariant, clickable: boolean) => {
+  const filled = color === 'primary' ? 'bg-[#065ba3] text-white' : 'bg-[rgba(0,0,0,0.08)] text-[#181828]';
+  const outlined =
+    color === 'primary' ? 'border border-[#065ba3] text-[#065ba3]' : 'border border-[rgba(0,0,0,0.23)] text-[#181828]';
+  return cn(tagPillBase, variant === 'filled' ? filled : outlined, clickable && 'cursor-pointer hover:opacity-90');
+};
 
 const TagsComponent = ({
   tags,
   count = 3,
   loading,
   color,
-  size = 'small',
   variant = 'outlined',
   selectedVariant = 'filled',
   height,
@@ -46,94 +49,111 @@ const TagsComponent = ({
   selectedIndexes = [],
   hideNoTagsMessage = false,
   onClickTag,
+  className,
+  style,
   ...tagsContainerProps
 }: TagsComponentProps) => {
   const { t } = useTranslation();
   const [isExpanded, setExpanded] = useState(false);
-
-  const theme = useTheme();
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const getMoreTagsTooltipTitle = (moreTags: string[]) => moreTags.join(', ');
 
-  const renderTag = (item: string, i: number) => (
-    <Tooltip key={i} title={item} arrow={true} placement="bottom">
-      <Chip
-        label={item}
-        color={color}
-        size={size}
-        variant={selectedIndexes.includes(i) ? selectedVariant : variant}
-        sx={{ maxWidth: '100%' }}
-        onClick={onClickTag ? () => onClickTag(item, i) : undefined}
-      />
+  const containerClassName = cn('flex flex-wrap gap-x-[3px] gap-y-2', !height && 'min-h-8', className);
+
+  const renderTag = (item: string, i: number) => {
+    const itemVariant = selectedIndexes.includes(i) ? selectedVariant : variant;
+    return (
+      <Tooltip key={i}>
+        <TooltipTrigger asChild={true}>
+          {onClickTag ? (
+            <button
+              type="button"
+              className={tagPillClasses(color, itemVariant, true)}
+              onClick={() => onClickTag(item, i)}
+            >
+              {item}
+            </button>
+          ) : (
+            <span className={tagPillClasses(color, itemVariant, false)}>{item}</span>
+          )}
+        </TooltipTrigger>
+        <TooltipContent>{item}</TooltipContent>
+      </Tooltip>
+    );
+  };
+
+  const renderMore = (remainingTags: string[]) => (
+    <Tooltip open={tooltipOpen} onOpenChange={setTooltipOpen}>
+      <TooltipTrigger asChild={true}>
+        <button
+          type="button"
+          className={tagPillClasses(undefined, 'filled', true)}
+          onClick={event => {
+            event.preventDefault();
+            if (canShowAll) {
+              setExpanded(true);
+            } else {
+              setTooltipOpen(open => !open);
+            }
+          }}
+        >
+          {`+${remainingTags.length}`}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{getMoreTagsTooltipTitle(remainingTags)}</TooltipContent>
     </Tooltip>
   );
 
-  const [tooltipOpen, setTooltipOpen] = useState(false);
-  const renderMore = (remainingTags: string[]) => (
-    <ClickAwayListener onClickAway={() => setTooltipOpen(false)}>
-      <Tooltip
-        title={getMoreTagsTooltipTitle(remainingTags)}
-        arrow={true}
-        placement="bottom"
-        open={tooltipOpen}
-        onOpen={() => setTooltipOpen(true)}
-        onClose={() => setTooltipOpen(false)}
-      >
-        <Chip
-          label={`+${remainingTags.length}`}
-          size={size}
-          onClick={event => {
-            event.preventDefault();
-            canShowAll ? setExpanded(true) : setTooltipOpen(true);
-          }}
-        />
-      </Tooltip>
-    </ClickAwayListener>
-  );
-
   const renderShowLess = () => (
-    <ExpandLessIcon sx={{ cursor: 'pointer' }} fontSize="small" onClick={() => setExpanded(false)} />
+    <button
+      type="button"
+      className="inline-flex cursor-pointer items-center"
+      aria-label={t('buttons.collapse')}
+      onClick={() => setExpanded(false)}
+    >
+      <ChevronUp className="size-5" aria-hidden={true} />
+    </button>
   );
 
   if (loading) {
     return (
-      <Box {...tagsContainerProps}>
+      <div className={containerClassName} style={style} {...tagsContainerProps}>
         {times(count, i => (
-          <Skeleton key={i} width={`${100 / count}%`}>
-            <Chip variant="outlined" color="primary" sx={{ borderColor: 'primary.main' }} size="small" />
-          </Skeleton>
+          <Skeleton key={i} className="h-6 rounded-full" style={{ width: `${100 / count}%` }} />
         ))}
-      </Box>
+      </div>
     );
   }
 
   if (tags.length === 0 && !hideNoTagsMessage) {
     return (
-      <Box {...tagsContainerProps}>
-        <CardText color="neutral.main">{t('components.tags-component.no-tags')}</CardText>
-      </Box>
+      <div className={containerClassName} style={style} {...tagsContainerProps}>
+        <span className="text-[0.875rem] text-[#747486]">{t('components.tags-component.no-tags')}</span>
+      </div>
     );
   }
 
   if (canShowAll && isExpanded) {
     return (
-      <Box {...getDefaultTagsContainerProps(false)} {...tagsContainerProps}>
+      <div className={containerClassName} style={style} {...tagsContainerProps}>
         {tags.map((tag, index) => renderTag(tag, index))}
         {renderShowLess()}
-      </Box>
+      </div>
     );
   }
 
-  const computedHeight = typeof height === 'function' ? height(theme) : height;
+  const wrapperStyle: CSSProperties | undefined = height ? { ...style, maxHeight: undefined } : style;
 
   return (
     <LinesFitter
       items={tags}
       renderItem={renderTag}
       renderMore={renderMore}
-      {...getDefaultTagsContainerProps(typeof height !== 'undefined')}
+      className={containerClassName}
+      style={wrapperStyle}
+      height={height}
       {...tagsContainerProps}
-      height={computedHeight}
     />
   );
 };

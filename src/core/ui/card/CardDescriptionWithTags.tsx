@@ -19,7 +19,7 @@ export const CardDescriptionWithTags = ({
   return (
     <>
       <CardDescription heightGutters={descriptionHeight} {...props} />
-      <CardTags tags={tags} marginY={1} hideIfEmpty={true} {...tagsContainerProps} />
+      <CardTags tags={tags} className="my-2" hideIfEmpty={true} {...tagsContainerProps} />
     </>
   );
 };

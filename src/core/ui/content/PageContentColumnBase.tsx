@@ -1,30 +1,42 @@
-import { Box, type BoxProps } from '@mui/material';
+import type { ComponentPropsWithoutRef, Ref } from 'react';
+import { cn } from '@/crd/lib/utils';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { GUTTER_MUI } from '../grid/constants';
 import GridProvider from '../grid/GridProvider';
 import { BlockAnchorProvider, NextBlockAnchor } from '../keyboardNavigation/NextBlockAnchor';
 import SkipLink from '../keyboardNavigation/SkipLink';
+import { extractSystemProps, resolveSx, type Sx } from '../typography/sx';
 
-export interface PageContentColumnBaseProps extends BoxProps {
+export type PageContentColumnBaseProps = ComponentPropsWithoutRef<'div'> & {
   columns: number;
-}
+  sx?: Sx;
+  ref?: Ref<HTMLDivElement>;
+  [key: string]: any;
+};
 
 /**
  * Grid container for page content blocks.
  * @constructor
  */
+// gap = GUTTER_MUI (2) → MUI spacing 2 = 20px → Tailwind gap-5
 const PageContentColumnBase = ({
   ref,
   columns,
   children,
+  className,
+  style,
+  sx,
   ...props
-}: PageContentColumnBaseProps & {
-  ref?: React.Ref<HTMLDivElement>;
-}) => {
+}: PageContentColumnBaseProps) => {
   const combinedRef = useCombinedRefs<HTMLDivElement | null>(null, ref);
+  const { style: systemStyle, rest: domProps } = extractSystemProps(props);
 
   return (
-    <Box ref={combinedRef} display="flex" flexWrap="wrap" alignContent="start" gap={GUTTER_MUI} {...props}>
+    <div
+      ref={combinedRef}
+      className={cn('flex flex-wrap content-start gap-5', className)}
+      style={{ ...systemStyle, ...resolveSx(sx), ...style }}
+      {...domProps}
+    >
       <GridProvider columns={columns}>
         <BlockAnchorProvider blockRef={combinedRef}>
           {children}
@@ -33,7 +45,7 @@ const PageContentColumnBase = ({
           </NextBlockAnchor>
         </BlockAnchorProvider>
       </GridProvider>
-    </Box>
+    </div>
   );
 };
 PageContentColumnBase.displayName = 'PageContentColumnBase';

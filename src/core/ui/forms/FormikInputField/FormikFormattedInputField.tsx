@@ -25,7 +25,7 @@ const FormikFormattedInputField = ({ name, valueFormatter, valueParser, ...rest 
   const handleFocus = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setIsFocused(true);
     setTouched(true);
-    rest.InputProps?.onFocus?.(event);
+    rest.onFocus?.(event);
   };
 
   const handleBlur = (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
