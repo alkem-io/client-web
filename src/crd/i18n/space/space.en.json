@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Add a tag and press Enter",
     "tagsTooShort": "Each tag must be at least {{min}} characters.",
     "framingType": "Add to post",
+    "typeLockedHint": "Additional content settings cannot be changed after creation",
     "visibility": "Visibility",
     "publishedLabel": "Published",
     "draftLabel": "Draft",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Responses",
+    "typeLockedHint": "Contribution settings cannot be changed after creation",
     "types": {
       "link": "Links & Files",
       "post": "Posts",
