@@ -64,6 +64,12 @@
     "defaultWelcomeMessage": "We willen je graag uitnodigen om bij te dragen aan {{space}}.",
     "addedNotice": "Virtual Contributor toegevoegd.",
     "invitedNotice": "Uitnodiging verzonden.",
-    "error": "Er ging iets mis. Probeer het opnieuw."
+    "error": "Er ging iets mis. Probeer het opnieuw.",
+    "previewAriaLabel": "Voorbeeld van {{name}}",
+    "preview": {
+      "tagsLabel": "Tags",
+      "hostedBy": "Gehost door {{name}}",
+      "noDescription": "Geen beschrijving opgegeven."
+    }
   }
 }

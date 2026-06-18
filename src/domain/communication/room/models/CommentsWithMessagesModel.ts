@@ -1,9 +1,10 @@
-import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import type { ActorType, AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
 import type { VisualModel } from '@/domain/common/visual/model/VisualModel';
 
 type ContributorModel = {
-  __typename?: string; // 'Organization' | 'User' | 'VirtualContributor';
+  /** The kind of actor that sent the message (User / VirtualContributor / …). */
+  type?: ActorType;
   id: string;
   profile?: {
     id: string;

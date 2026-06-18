@@ -14,11 +14,13 @@
   "private": "Privé",
   "public": "Public",
   "member": "Membre",
+  "virtualContributor": "Virtual Contributor",
   "visibility": {
     "demo": "Démo",
     "inactive": "Inactif",
     "archived": "Archivé"
   },
+  "lead": "Responsable",
   "leads": "Responsables",
   "loadMore": "Charger plus",
   "pinned": "Épinglé",

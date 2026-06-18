@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { OIDC_ID_TOKEN_HINT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
+import { useIdTokenHintUrl } from '@/core/auth/authentication/hooks/useIdTokenHintUrl';
 
 // Probes the BFF for an active OIDC (alkemio_session) session by hitting
 // the id-token-hint endpoint. Status 200 implies a live session; 401 means
@@ -9,12 +9,13 @@ import { OIDC_ID_TOKEN_HINT_PATH } from '@/core/auth/authentication/constants/au
 export const useOidcSessionStatus = () => {
   const [active, setActive] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const idTokenHintUrl = useIdTokenHintUrl();
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const response = await fetch(OIDC_ID_TOKEN_HINT_PATH, {
+        const response = await fetch(idTokenHintUrl, {
           credentials: 'include',
           cache: 'no-store',
           headers: { Accept: 'application/json' },
@@ -35,7 +36,7 @@ export const useOidcSessionStatus = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [idTokenHintUrl]);
 
   return { active, loading };
 };

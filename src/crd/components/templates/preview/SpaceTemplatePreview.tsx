@@ -80,7 +80,7 @@ export function SpaceTemplatePreview({ content }: { content: SpaceContent }) {
               const Icon = FRAMING_ICON[callout.framingKind];
               const value = `${callout.name}-${i}`;
               return (
-                <AccordionItem key={value} value={value} className="border rounded-lg bg-card px-4">
+                <AccordionItem key={value} value={value} className="border rounded-lg bg-card px-4 last:border-b">
                   <AccordionTrigger className="hover:no-underline py-3">
                     <span className="flex items-center gap-2 text-control text-left">
                       <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">

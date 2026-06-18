@@ -14,17 +14,19 @@
   "private": "Private",
   "public": "Public",
   "member": "Member",
+  "virtualContributor": "Virtual Contributor",
   "visibility": {
     "demo": "Demo",
     "inactive": "Inactive",
     "archived": "Archived"
   },
+  "lead": "Lead",
   "leads": "Leads",
   "loadMore": "Load More",
   "pinned": "Pinned",
   "leadType": {
     "person": "Person",
-    "org": "Organization"
+    "org": "Organisation"
   },
   "tags": {
     "moreAria": "Show {{count}} more"

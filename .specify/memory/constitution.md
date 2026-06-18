@@ -93,8 +93,9 @@ safeguards ensure sustainable delivery.
    per-feature namespaces under `src/crd/i18n/<feature>/`, with all six supported languages
    (en, nl, es, bg, de, fr) edited in the same PR; key parity across languages is required. The
    legacy core source file (`src/core/i18n/en/translation.en.json`) is FROZEN for new keys — it and
-   its Crowdin-generated locales serve only the not-yet-migrated MUI app. The non-English core locale
-   files are generated downstream and MUST remain untouched in this repository.
+   its sibling locale files serve only the not-yet-migrated MUI app. Crowdin is no longer used; for
+   upkeep of existing keys, the non-English core locale files are now edited directly in-repo (same
+   PR, key parity preserved) rather than generated downstream.
 4. Build artifacts remain deterministic: Vite config changes require documenting their impact on
    chunking, env exposure, and React Server Component compatibility.
 5. Import transparency requires explicit module paths. Barrel exports via `index.ts` files are

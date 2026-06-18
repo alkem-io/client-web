@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { WhiteboardGuestAccessSection } from '@/crd/components/whiteboard/WhiteboardGuestAccessSection';
-import { Separator } from '@/crd/primitives/separator';
 import type { UseWhiteboardGuestAccessResult } from '@/domain/collaboration/whiteboard/hooks/useWhiteboardGuestAccess';
 
 type CrdWhiteboardGuestAccessControlsProps = {
@@ -52,25 +51,22 @@ export function CrdWhiteboardGuestAccessControls({ whiteboard, guestAccess }: Cr
   };
 
   return (
-    <>
-      <Separator />
-      <WhiteboardGuestAccessSection
-        canToggle={guestAccess.canToggle}
-        enabled={guestAccess.enabled}
-        guestLink={guestAccess.guestLink}
-        isUpdating={guestAccess.isUpdating}
-        hasError={guestAccess.hasError}
-        label={t('share-dialog.guest-access.label')}
-        toggleDescription={t('share-dialog.guest-access.toggle-description')}
-        toggleAriaLabel={t('share-dialog.guest-access.toggle-label')}
-        urlLabel={t('share-dialog.guest-access.url-label')}
-        copyAriaLabel={t('share-dialog.guest-access.copy-url')}
-        errorMessage={t('share-dialog.guest-access.errors.UNKNOWN')}
-        errorDismissAriaLabel={t('buttons.close')}
-        onToggle={handleToggle}
-        onResetError={guestAccess.resetError}
-        onCopy={handleCopy}
-      />
-    </>
+    <WhiteboardGuestAccessSection
+      canToggle={guestAccess.canToggle}
+      enabled={guestAccess.enabled}
+      guestLink={guestAccess.guestLink}
+      isUpdating={guestAccess.isUpdating}
+      hasError={guestAccess.hasError}
+      label={t('share-dialog.guest-access.label')}
+      toggleDescription={t('share-dialog.guest-access.toggle-description')}
+      toggleAriaLabel={t('share-dialog.guest-access.toggle-label')}
+      urlLabel={t('share-dialog.guest-access.url-label')}
+      copyAriaLabel={t('share-dialog.guest-access.copy-url')}
+      errorMessage={t('share-dialog.guest-access.errors.UNKNOWN')}
+      errorDismissAriaLabel={t('buttons.close')}
+      onToggle={handleToggle}
+      onResetError={guestAccess.resetError}
+      onCopy={handleCopy}
+    />
   );
 }

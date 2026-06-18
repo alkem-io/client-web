@@ -1,0 +1,78 @@
+{
+  "launcher": {
+    "open": "Chat öffnen",
+    "close": "Chat schließen",
+    "unreadLabel": "Sie haben ungelesene Nachrichten"
+  },
+  "panel": {
+    "title": "Chat"
+  },
+  "actions": {
+    "cancel": "Abbrechen"
+  },
+  "newChat": {
+    "title": "Neue Nachricht",
+    "searchPlaceholder": "Personen suchen…",
+    "searchHint": "Tippen, um Personen zu suchen",
+    "noResults": "Keine Personen gefunden",
+    "create": "Chat starten",
+    "removeAria": "{{name}} entfernen"
+  },
+  "group": {
+    "settings": "Gruppeneinstellungen",
+    "nameLabel": "Gruppenname",
+    "members": "Mitglieder",
+    "addPlaceholder": "Personen hinzufügen…",
+    "noResults": "Keine Personen gefunden",
+    "leave": "Gruppe verlassen",
+    "save": "Speichern",
+    "you": "Du",
+    "avatar": {
+      "edit": "Foto ändern",
+      "cropTitle": "Foto zuschneiden",
+      "saving": "Wird gespeichert…",
+      "altLabel": "Beschreibung (optional)",
+      "altPlaceholder": "Beschreibe das Bild"
+    },
+    "removeMemberAria": "{{name}} entfernen",
+    "removeMemberConfirm": {
+      "title": "Mitglied entfernen?",
+      "description": "Diese Person aus der Gruppe entfernen?",
+      "confirm": "Entfernen"
+    },
+    "leaveConfirm": {
+      "title": "Gruppe verlassen?",
+      "description": "Du erhältst keine Nachrichten mehr von dieser Gruppe.",
+      "confirm": "Verlassen"
+    }
+  },
+  "list": {
+    "searchPlaceholder": "Unterhaltungen suchen…",
+    "newMessage": "Neue Nachricht",
+    "empty": "Noch keine Unterhaltungen",
+    "emptyHint": "Beginnen Sie eine neue Nachricht, um zu chatten.",
+    "noResults": "Keine Unterhaltungen entsprechen Ihrer Suche.",
+    "loading": "Unterhaltungen werden geladen"
+  },
+  "guidance": {
+    "beta": "Beta",
+    "intro": "Hallo! Ich helfe dir, dich in Alkemio zurechtzufinden. Frag mich alles über Spaces, Zusammenarbeit oder wie die Dinge funktionieren.",
+    "infoButton": "Über den Assistenten",
+    "clear": "Chat löschen",
+    "thinking": "Der Assistent denkt nach…",
+    "infoDialog": {
+      "title": "Über den Assistenten",
+      "content": "Dieser Assistent ist ein KI-Leitfaden für Alkemio und befindet sich derzeit in der Beta-Phase. Er kann dir helfen, Funktionen zu verstehen und dich zurechtzufinden. Antworten sind möglicherweise nicht perfekt – bitte überprüfe wichtige Informationen."
+    },
+    "clearConfirm": {
+      "title": "Diese Unterhaltung löschen?",
+      "description": "Dadurch wird eine neue Unterhaltung mit dem Assistenten gestartet. Die aktuelle Unterhaltung wird gelöscht.",
+      "confirm": "Chat löschen"
+    }
+  },
+  "thread": {
+    "back": "Zurück zu den Unterhaltungen",
+    "loading": "Nachrichten werden geladen",
+    "addReaction": "Reaktion hinzufügen"
+  }
+}

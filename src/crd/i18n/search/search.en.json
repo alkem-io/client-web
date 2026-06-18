@@ -2,7 +2,7 @@
   "search": {
     "placeholder": "Search\u2026",
     "emptyTitle": "Type a search term and press Enter",
-    "emptyDescription": "Search across Spaces, Posts, Responses, Users, and Organizations.",
+    "emptyDescription": "Search across Spaces, Posts, Responses, Users, and Organisations.",
     "noResultsTitle": "No results found for {{terms}}",
     "noResultsSuggestion": "Try different keywords or broaden your search.",
     "searchAllSpaces": "Search the entire platform instead",
@@ -16,7 +16,7 @@
       "posts": "Posts",
       "responses": "Responses",
       "users": "Users",
-      "organizations": "Organizations"
+      "organizations": "Organisations"
     },
     "filters": {
       "all": "All",
@@ -35,7 +35,7 @@
     "spaceContext": "in: {{spaceName}}",
     "fallback": {
       "unknown": "Unknown",
-      "organization": "Organization"
+      "organization": "Organisation"
     },
     "a11y": {
       "searchInput": "Search input",

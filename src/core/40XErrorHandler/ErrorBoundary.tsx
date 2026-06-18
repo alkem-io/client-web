@@ -89,12 +89,7 @@ class Error40XBoundaryInternal extends React.Component<InternalProps, State> {
       return (
         <>
           {this.props.errorComponent(this.state)}
-          {this.state.closestAncestor && (
-            <AncestorRedirectDispatcher
-              closestAncestor={this.state.closestAncestor}
-              isNotAuthorized={this.state.isNotAuthorized}
-            />
-          )}
+          {this.state.closestAncestor && <AncestorRedirectDispatcher closestAncestor={this.state.closestAncestor} />}
         </>
       );
     }

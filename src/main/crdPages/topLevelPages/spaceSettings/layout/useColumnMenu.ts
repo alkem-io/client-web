@@ -32,6 +32,13 @@ export type UseColumnMenuOptions = {
   /** Current column count and min-states, used to compute whether delete is allowed. */
   columnCount?: number;
   minimumNumberOfStates?: number;
+  /**
+   * Visibility toggle from the layout data hook (immediate-save, UI-only). Passed straight
+   * through to `ColumnMenuActions.onToggleVisibility`. The data hook owns the optimistic
+   * snapshot update + the persist mutation; this hook only forwards it. The CRD column menu
+   * still gates the entry on the column carrying a known `isHidden` (capability present).
+   */
+  onToggleVisibility?: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
 };
 
 export function useColumnMenu({
@@ -44,6 +51,7 @@ export function useColumnMenu({
   onDeleteState,
   columnCount,
   minimumNumberOfStates,
+  onToggleVisibility,
 }: UseColumnMenuOptions): ColumnMenuActions {
   const [updateCurrentState] = useUpdateInnovationFlowCurrentStateMutation();
   const [setDefaultTemplate] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
@@ -143,5 +151,6 @@ export function useColumnMenu({
     onOpenDefaultCalloutTemplatePicker,
     onSaveColumnDetails,
     onDeletePhase,
+    onToggleVisibility,
   };
 }

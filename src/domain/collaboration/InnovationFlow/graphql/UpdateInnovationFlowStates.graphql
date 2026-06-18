@@ -45,6 +45,7 @@ mutation UpdateInnovationFlowState(
     description
     settings {
       allowNewCallouts
+      visible
     }
   }
 }

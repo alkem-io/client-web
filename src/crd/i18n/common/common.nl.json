@@ -14,12 +14,14 @@
   "private": "Privé",
   "public": "Openbaar",
   "member": "Lid",
+  "virtualContributor": "Virtual Contributor",
   "visibility": {
     "demo": "Demo",
     "inactive": "Inactief",
     "archived": "Gearchiveerd"
   },
-  "leads": "Leiders",
+  "lead": "Lead",
+  "leads": "Leads",
   "loadMore": "Meer laden",
   "pinned": "Vastgezet",
   "leadType": {
