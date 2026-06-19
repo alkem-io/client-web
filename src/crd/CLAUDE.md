@@ -383,7 +383,7 @@ Standard shadcn/ui components. These are the atoms — the smallest UI building 
 - Use `React.forwardRef` or direct prop forwarding
 - Zero application knowledge — these are generic UI atoms
 
-**Source:** Ported from `prototype/src/app/components/ui/`. The prototype has 47 primitives; port them as needed.
+**Source:** Ported from `src/app/components/ui/` in the external prototype repo (https://github.com/alkem-io/client-web-prototype). The prototype has 47 primitives; port them as needed.
 
 **Examples:** `button.tsx`, `card.tsx`, `dialog.tsx`, `tabs.tsx`, `avatar.tsx`, `input.tsx`, `badge.tsx`, `skeleton.tsx`
 
@@ -537,10 +537,10 @@ The mapping from GraphQL types to component props happens in the consumer, never
 
 ## Porting From the Prototype
 
-The prototype at `/prototype/src/` is the design reference. When porting:
+The prototype lives in its own repo — **https://github.com/alkem-io/client-web-prototype** (paths below are relative to that repo's `src/`) — and is the design reference. When porting:
 
-1. **Primitives** — copy from `prototype/src/app/components/ui/` and update imports to use `@/crd/lib/utils`
-2. **Components** — copy from `prototype/src/app/components/space/` etc., remove any mock data, extract props interfaces
+1. **Primitives** — copy from `src/app/components/ui/` and update imports to use `@/crd/lib/utils`
+2. **Components** — copy from `src/app/components/space/` etc., remove any mock data, extract props interfaces
 3. **Styles** — the prototype's `styles/theme.css` is the source of truth for design tokens
 4. **Always check** that the ported component has zero forbidden imports before committing
 5. **Convert inline styles to Tailwind** — the prototype uses inline styles in many places; convert them using the [Tailwind Conversion Reference](#tailwind-conversion-reference)

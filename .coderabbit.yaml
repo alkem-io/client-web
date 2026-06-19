@@ -16,7 +16,6 @@ reviews:
     - "!**/public/**"        # Exclude public assets
     - "!**/node_modules/**"  # Exclude dependencies
     - "!**/dist/**"          # Exclude build files
-    - "!prototype/**"        # Read-only design reference — never modified
     - "!src/crd/app/**"      # Standalone CRD preview app with mock data
   path_instructions:
     - path: "**/*"
@@ -92,8 +91,9 @@ reviews:
     - path: "**/*.py"
       instructions: |
         This is a JavaScript/TypeScript repository — Python files do not belong here, anywhere.
-        The upstream `prototype/` design reference ships helper scripts under `prototype/utils/*.py`
-        (font merging, corruption fixes) that leak in when the prototype folder is synced.
+        The prototype design reference ships helper scripts under `utils/*.py` (font merging,
+        corruption fixes), but those live only in the external `alkem-io/client-web-prototype`
+        repo and must never appear here.
         Flag EVERY added or modified `.py` file as a blocking issue and request its removal before merge.
         Do not review the script's logic — the only acceptable resolution is deleting the file.
 chat:

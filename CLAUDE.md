@@ -322,11 +322,11 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
-## prototype/ — Read-Only Reference (DO NOT MODIFY)
+## Prototype — External Design Reference
 
-The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. Both `biome.json` and `eslint.config.mjs` exclude `prototype/` from linting. See `prototype/CLAUDE.md` for full details.
+The prototype (Jeroen's design prototype) **is no longer part of this repo** — it lives in its own repository: **https://github.com/alkem-io/client-web-prototype**. It is the design reference for building `src/crd/` components; consult it there, not in this tree. Any `prototype/` folder appearing locally is stale and should not be committed.
 
-**No Python — anywhere.** This is a JavaScript/TypeScript repo; `.py` files must never be committed or merged into it. The upstream prototype ships helper scripts under `prototype/utils/*.py` (font merging, corruption fixes) that leak in when the `prototype/` folder is synced. When syncing the prototype or resolving a merge, **strip every `*.py` file** before committing. `.coderabbit.yaml` re-includes `**/*.py` (despite the `prototype/**` review exclusion) and flags any added/modified `.py` as a blocking issue so a stray script gets caught in review.
+**No Python — anywhere.** This is a JavaScript/TypeScript repo; `.py` files must never be committed or merged into it. The prototype ships helper scripts under `utils/*.py` (font merging, corruption fixes), but those now live only in the external `alkem-io/client-web-prototype` repo and must never appear here. `.coderabbit.yaml` flags any added/modified `.py` as a blocking issue so a stray script gets caught in review.
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
@@ -345,11 +345,11 @@ The critical rules:
 - **State is visual only** — `useState` for open/close, expanded, active tab. Nothing else.
 
 **Structure:**
-- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `prototype/src/app/components/ui/`
+- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `src/app/components/ui/` in the external `alkem-io/client-web-prototype` repo
 - `components/` — composites of primitives (PostCard, SpaceCard), organized by feature area
 - `forms/` — form UI (inputs with labels/validation display), no form state libraries
 - `layouts/` — page shells (PageLayout, TwoColumnLayout, ContentBlock)
-- `styles/` — CSS tokens (`theme.css` from prototype) + Tailwind entry (`crd.css`)
+- `styles/` — CSS tokens (`theme.css` from the external prototype repo) + Tailwind entry (`crd.css`)
 - `lib/` — `cn()` utility
 - `hooks/` — UI-only hooks (`useMediaQuery`)
 
