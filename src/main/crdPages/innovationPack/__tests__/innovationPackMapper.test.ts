@@ -135,6 +135,7 @@ describe('formValuesToUpdateInnovationPackInput', () => {
     templatesSetId: 'set-1',
     tagsetId: 'tagset-1',
     avatarVisualId: 'visual-1',
+    avatarVisual: undefined,
     url: '/pack-1',
     providerName: 'Acme Org',
     formValues: {} as InnovationPackFormValues,

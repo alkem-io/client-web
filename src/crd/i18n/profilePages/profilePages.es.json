@@ -174,5 +174,30 @@
       "heading": "Supervisión por Alkemio",
       "body": "Dado que Alkemio facilita la interacción con el proveedor externo, asume una responsabilidad operativa de supervisar el servicio. Como el resto de datos e interacciones de la plataforma, esto se rige por nuestros <a>Términos y Condiciones</a>."
     }
+  },
+  "knowledgeBase": {
+    "title": "Base de conocimiento",
+    "loading": "Cargando base de conocimiento",
+    "refresh": "Actualizar",
+    "addCallout": "Añadir",
+    "lastUpdated": "Última actualización:",
+    "never": "Nunca",
+    "description": {
+      "edit": "Editar descripción",
+      "empty": "Este Virtual Contributor se basa en su propia colección curada de documentos, texto y enlaces.",
+      "placeholder": "Describe lo que sabe este Virtual Contributor…",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saving": "Guardando…",
+      "saveError": "No se pudo guardar la descripción — inténtalo de nuevo."
+    },
+    "empty": {
+      "title": "Aún no hay conocimiento",
+      "description": "La base de conocimiento de este Virtual Contributor está vacía."
+    },
+    "noAccess": {
+      "title": "Sin acceso",
+      "description": "No tienes acceso a esta base de conocimiento."
+    }
   }
 }

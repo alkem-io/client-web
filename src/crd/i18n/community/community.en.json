@@ -64,6 +64,12 @@
     "defaultWelcomeMessage": "We'd like to invite you to contribute to {{space}}.",
     "addedNotice": "Virtual Contributor added.",
     "invitedNotice": "Invitation sent.",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "previewAriaLabel": "Preview {{name}}",
+    "preview": {
+      "tagsLabel": "Tags",
+      "hostedBy": "Hosted by {{name}}",
+      "noDescription": "No description provided."
+    }
   }
 }

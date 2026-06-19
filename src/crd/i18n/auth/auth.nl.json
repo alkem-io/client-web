@@ -57,5 +57,13 @@
     "github": "GitHub",
     "apple": "Apple",
     "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "Je hebt je whiteboard verlaten",
+    "description": "Je gastsessie is nog steeds actief. Je kunt terugkeren naar je whiteboard of verkennen wat Alkemio te bieden heeft.",
+    "backButton": "Terug naar whiteboard",
+    "websiteButton": "Ga naar onze website",
+    "contributeTitle": "Wil je meer bijdragen?",
+    "contributeDescription": "Meld je hieronder aan voor een Alkemio account om samen te werken met teams en toegang te krijgen tot geavanceerde hulpmiddelen."
   }
 }

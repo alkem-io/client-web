@@ -890,6 +890,7 @@ export function useTemplateForms({
           form={calloutForm}
           spaceId={spaceId}
           disabled={submitting}
+          editMode={intent === 'edit'}
           onReferenceFileUpload={referenceUpload?.onFileUpload}
           referenceUploadAccept={referenceUpload?.accept}
           {...markdownUploadProps}

@@ -13,7 +13,10 @@
  *    (`collaboraDocumentType` only); the file-upload zone is create-callout-only.
  *  - No publish/draft visibility, no "notify members" switch, no pre-populate link contributions —
  *    those are properties of a concrete callout, not of a template.
- *  - Framing/response chips stay unlocked (a template is always "fresh").
+ *  - Creating a template: framing/response chips are fully editable. Editing an existing template
+ *    (`editMode`): both strips are locked like a live callout. The framing type can only be cleared
+ *    back to "none" (with a confirmation); the response type is fully fixed — it can't be switched or
+ *    cleared. This mirrors `CalloutFormConnector`'s edit mode.
  */
 import { Hash } from 'lucide-react';
 import { useState } from 'react';
@@ -33,6 +36,11 @@ import { referenceRowErrors, type UseCrdCalloutFormResult } from '@/main/crdPage
 export type CalloutTemplateFormProps = {
   /** The `useCrdCalloutForm` instance owned by `useTemplateForms` (controlled). */
   form: UseCrdCalloutFormResult;
+  /**
+   * Editing an existing template (vs. creating a new one). When true the framing type is locked —
+   * it can only be cleared to "none" via the active chip's X (with a confirmation), never switched.
+   */
+  editMode?: boolean;
   /** Parent space id — passed to `ResponseDefaultsConnector` so its "apply a content template" picker can load. */
   spaceId?: string;
   /** Disable every control while the template create/update mutation is in flight. */
@@ -51,6 +59,7 @@ export function CalloutTemplateForm({
   form,
   spaceId,
   disabled,
+  editMode,
   onReferenceFileUpload,
   referenceUploadAccept,
   onImageUpload,
@@ -98,7 +107,11 @@ export function CalloutTemplateForm({
 
       {/* Zone 1 — framing */}
       <div className="space-y-4">
-        <FramingChipStrip value={values.framingChip} onChange={chip => setField('framingChip', chip)} />
+        <FramingChipStrip
+          value={values.framingChip}
+          onChange={chip => setField('framingChip', chip)}
+          editMode={editMode}
+        />
         <FramingEditorConnector
           mode="create"
           framingType={values.framingChip}
@@ -146,7 +159,11 @@ export function CalloutTemplateForm({
 
       {/* Zone 2 — responses */}
       <div className="space-y-4">
-        <ResponseTypeChipStrip value={values.responseType} onChange={type => setField('responseType', type)} />
+        <ResponseTypeChipStrip
+          value={values.responseType}
+          onChange={type => setField('responseType', type)}
+          locked={editMode}
+        />
         <ResponsePanel
           type={values.responseType}
           allowedActors={values.allowedActors}

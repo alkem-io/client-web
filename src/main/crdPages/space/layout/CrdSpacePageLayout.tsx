@@ -84,7 +84,7 @@ export default function CrdSpacePageLayout() {
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
-  const { tabs, defaultTabIndex, showSettings } = useCrdSpaceTabs({
+  const { tabs, defaultTabIndex, sectionCount, showSettings } = useCrdSpaceTabs({
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
@@ -103,9 +103,11 @@ export default function CrdSpacePageLayout() {
     return <LoadingSpinner />;
   }
 
-  // Parse section index from URL (1-indexed) and clamp to valid tab range
+  // Parse section index from URL (1-indexed) and clamp to valid tab range. Bound by the full
+  // section count (hidden tabs keep their original index, so `tabs.length` would under-count and
+  // clamp away valid high indices — e.g. Knowledge base when an earlier tab is hidden).
   const sectionParam = searchParams.get(TabbedLayoutParams.Section);
-  const maxTabIndex = Math.max(tabs.length - 1, 0);
+  const maxTabIndex = Math.max(sectionCount - 1, 0);
   let activeTabIndex = 0;
   if (sectionParam) {
     const parsed = parseInt(sectionParam, 10);
@@ -151,7 +153,7 @@ export default function CrdSpacePageLayout() {
     // For non-L0 spaces (subspaces), just render the outlet
     return (
       <Suspense fallback={<LoadingSpinner />}>
-        <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
+        <Outlet context={{ activeTabIndex, totalTabs: sectionCount }} />
       </Suspense>
     );
   }
@@ -222,7 +224,7 @@ export default function CrdSpacePageLayout() {
           }
         >
           <Suspense fallback={<LoadingSpinner />}>
-            <Outlet context={{ activeTabIndex, totalTabs: tabs.length }} />
+            <Outlet context={{ activeTabIndex, totalTabs: sectionCount }} />
           </Suspense>
         </SpaceShell>
 

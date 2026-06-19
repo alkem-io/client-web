@@ -1,6 +1,8 @@
 import { ArrowLeft, Bot, Loader2, Plus, Search, Send } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { VirtualContributorPreview } from '@/crd/components/virtualContributor/community/VirtualContributorPreview';
+import type { VcPreviewData } from '@/crd/components/virtualContributor/community/VirtualContributorPreview.types';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
@@ -36,6 +38,14 @@ export type VirtualContributorInviteDialogProps = {
    * "Invite External Virtual Contributor" entry — account VCs are added via a
    * separate button there). */
   libraryOnly?: boolean;
+  /** Detail data for the currently-previewed VC (set after `onPreview`). */
+  previewData?: VcPreviewData;
+  /** True while the preview detail is being fetched. */
+  previewLoading?: boolean;
+  /** Called when the user opens a VC's detail preview from the list. */
+  onPreview?: (id: string) => void;
+  /** Called when the user leaves the preview back to the list. */
+  onClosePreview?: () => void;
   className?: string;
 };
 
@@ -58,23 +68,52 @@ export function VirtualContributorInviteDialog({
   busyId,
   defaultWelcomeMessage = '',
   libraryOnly = false,
+  previewData,
+  previewLoading = false,
+  onPreview,
+  onClosePreview,
   className,
 }: VirtualContributorInviteDialogProps) {
   const { t } = useTranslation('crd-community');
   const [messageVc, setMessageVc] = useState<VcInviteItem | null>(null);
   const [welcomeMessage, setWelcomeMessage] = useState('');
+  // When set, the dialog shows the detail preview for a VC selected from the
+  // given section; the action button adds (account) or opens the message step (library).
+  const [previewSource, setPreviewSource] = useState<'account' | 'library' | null>(null);
 
-  // Reset the sub-view + message whenever the dialog closes.
+  // Reset every sub-view whenever the dialog closes.
   useEffect(() => {
     if (!open) {
       setMessageVc(null);
       setWelcomeMessage('');
+      setPreviewSource(null);
     }
   }, [open]);
 
   const openMessageStep = (vc: VcInviteItem) => {
     setMessageVc(vc);
     setWelcomeMessage(defaultWelcomeMessage);
+  };
+
+  const openPreview = (id: string, source: 'account' | 'library') => {
+    setPreviewSource(source);
+    onPreview?.(id);
+  };
+
+  const closePreview = () => {
+    setPreviewSource(null);
+    onClosePreview?.();
+  };
+
+  const onPreviewAction = () => {
+    if (!previewData) return;
+    if (previewSource === 'account') {
+      onAddAccountVc(previewData.id);
+      return;
+    }
+    // library → go to the welcome-message step
+    setPreviewSource(null);
+    openMessageStep({ id: previewData.id, displayName: previewData.displayName, avatarUrl: previewData.avatarUrl });
   };
 
   const messageEmpty = welcomeMessage.trim().length === 0;
@@ -141,6 +180,15 @@ export function VirtualContributorInviteDialog({
               </Button>
             </div>
           </div>
+        ) : previewSource ? (
+          <VirtualContributorPreview
+            data={previewData}
+            loading={previewLoading}
+            onBack={closePreview}
+            onAction={onPreviewAction}
+            actionLabel={previewSource === 'account' ? t('inviteVc.add') : t('inviteVc.invite')}
+            actionBusy={Boolean(previewData) && busyId === previewData?.id}
+          />
         ) : (
           <div className="flex flex-col flex-1 min-h-0">
             <div className="relative shrink-0 py-2">
@@ -173,6 +221,8 @@ export function VirtualContributorInviteDialog({
                       actionIcon="add"
                       busyId={busyId}
                       onAction={onAddAccountVc}
+                      onPreview={id => openPreview(id, 'account')}
+                      previewAriaLabel={name => t('inviteVc.previewAriaLabel', { name })}
                       addAriaLabel={name => t('inviteVc.addAriaLabel', { name })}
                     />
                   )}
@@ -187,6 +237,8 @@ export function VirtualContributorInviteDialog({
                       const vc = libraryVcs.find(v => v.id === id);
                       if (vc) openMessageStep(vc);
                     }}
+                    onPreview={id => openPreview(id, 'library')}
+                    previewAriaLabel={name => t('inviteVc.previewAriaLabel', { name })}
                     addAriaLabel={name => t('inviteVc.inviteAriaLabel', { name })}
                   />
                 </>
@@ -221,6 +273,8 @@ function VcSection({
   actionIcon,
   busyId,
   onAction,
+  onPreview,
+  previewAriaLabel,
   addAriaLabel,
 }: {
   title: string;
@@ -230,6 +284,8 @@ function VcSection({
   actionIcon: 'add' | 'invite';
   busyId?: string | null;
   onAction: (id: string) => void;
+  onPreview: (id: string) => void;
+  previewAriaLabel: (name: string) => string;
   addAriaLabel: (name: string) => string;
 }) {
   return (
@@ -243,7 +299,12 @@ function VcSection({
             const busy = busyId === vc.id;
             return (
               <li key={vc.id} className="flex items-center justify-between gap-3 p-3">
-                <div className="flex items-center gap-3 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => onPreview(vc.id)}
+                  aria-label={previewAriaLabel(vc.displayName)}
+                  className="flex items-center gap-3 min-w-0 rounded text-left outline-none hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring/50"
+                >
                   <VcAvatar vc={vc} />
                   <div className="min-w-0">
                     <span className="block text-body-emphasis truncate">{vc.displayName}</span>
@@ -251,7 +312,7 @@ function VcSection({
                       <span className="block text-caption text-muted-foreground truncate">{vc.subtitle}</span>
                     )}
                   </div>
-                </div>
+                </button>
                 <Button
                   type="button"
                   variant="outline"

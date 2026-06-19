@@ -127,3 +127,6 @@ textarea.text-control {
 .text-control .font-normal {
   text-transform: none;
 }
+.text-control.lowercase {
+  text-transform: lowercase;
+}

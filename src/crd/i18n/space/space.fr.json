@@ -347,53 +347,53 @@
     "leadUsers": "Utilisateurs responsables",
     "leadOrganizations": "Organisations responsables",
     "guidelines": "Directives de la communauté",
-    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "guidelinesAdminsOnly": "Seuls les administrateurs peuvent voir cette section. Ajoutez des directives de la communauté pour que les membres sachent à quoi s'attendre.",
     "references": "Références",
-    "close": "Close",
-    "edit": "Edit",
-    "readMore": "Read more",
-    "lockTooltip": "You don't have access to this space.",
-    "learnWhy": "Learn how to apply",
+    "close": "Fermer",
+    "edit": "Modifier",
+    "readMore": "Lire la suite",
+    "lockTooltip": "Vous n'avez pas accès à cet Espace.",
+    "learnWhy": "Découvrir comment postuler",
     "hostTooltip": "The host organization or person responsible for this space.",
-    "contactHost": "Contact host",
-    "apply": "Apply",
-    "join": "Join",
-    "member": "Member",
-    "applyPending": "Application pending",
-    "parentPending": "Parent application pending",
-    "applyDisabled": "Apply not available",
-    "acceptInvitation": "Accept invitation",
-    "signIn": "Sign in to apply",
-    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "contactHost": "Contacter l'hôte",
+    "apply": "Postuler",
+    "join": "Rejoindre",
+    "member": "Membre",
+    "applyPending": "Candidature en attente",
+    "parentPending": "Candidature à l'Espace parent en attente",
+    "applyDisabled": "Candidature indisponible",
+    "acceptInvitation": "Accepter l'invitation",
+    "signIn": "Connectez-vous pour postuler",
+    "signInHelper": "Vous serez d'abord redirigé pour vous connecter à Alkemio.",
     "context": {
       "L0": {
-        "why": "Why are we here?",
-        "who": "Who is involved?"
+        "why": "Pourquoi sommes-nous ici ?",
+        "who": "Qui est impliqué ?"
       },
       "L1": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Pourquoi ce sous-espace ?",
+        "who": "Qui est impliqué ?"
       },
       "L2": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Pourquoi ce sous-espace ?",
+        "who": "Qui est impliqué ?"
       }
     }
   },
   "apply": {
-    "apply": "Apply",
-    "join": "Join",
-    "cancel": "Cancel",
-    "processing": "Processing…",
-    "applyTitle": "Apply to {{name}}",
-    "joinTitle": "Join {{name}}",
-    "subheader": "Tell us a bit about why you want to join.",
-    "subheaderJoin": "You're about to join {{name}}.",
-    "required": "This field is required.",
-    "maxLength": "Maximum {{count}} characters.",
+    "apply": "Postuler",
+    "join": "Rejoindre",
+    "cancel": "Annuler",
+    "processing": "Traitement…",
+    "applyTitle": "Postuler à {{name}}",
+    "joinTitle": "Rejoindre {{name}}",
+    "subheader": "Dites-nous brièvement pourquoi vous souhaitez nous rejoindre.",
+    "subheaderJoin": "Vous êtes sur le point de rejoindre {{name}}.",
+    "required": "Ce champ est obligatoire.",
+    "maxLength": "Maximum {{count}} caractères.",
     "submitted": {
-      "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "title": "Candidature envoyée",
+      "body": "Votre candidature à {{communityName}} a été envoyée."
     }
   },
   "mobile": {
@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Ajoutez une étiquette et appuyez sur Entrée",
     "tagsTooShort": "Chaque étiquette doit comporter au moins {{min}} caractères.",
     "framingType": "Ajouter à la publication",
+    "typeLockedHint": "Les paramètres de contenu supplémentaire ne peuvent pas être modifiés après la création",
     "visibility": "Visibilité",
     "publishedLabel": "Publié",
     "draftLabel": "Brouillon",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Réponses",
+    "typeLockedHint": "Les paramètres de contribution ne peuvent pas être modifiés après la création",
     "types": {
       "link": "Liens et fichiers",
       "post": "Publications",

@@ -347,53 +347,53 @@
     "leadUsers": "Водещи потребители",
     "leadOrganizations": "Водещи организации",
     "guidelines": "Насоки на общността",
-    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "guidelinesAdminsOnly": "Само администраторите могат да виждат този раздел. Добави насоки на общността, за да знаят членовете какво да очакват.",
     "references": "Референции",
-    "close": "Close",
-    "edit": "Edit",
-    "readMore": "Read more",
-    "lockTooltip": "You don't have access to this space.",
-    "learnWhy": "Learn how to apply",
+    "close": "Затвори",
+    "edit": "Редактирай",
+    "readMore": "Прочети повече",
+    "lockTooltip": "Нямаш достъп до това пространство.",
+    "learnWhy": "Научи как да кандидатстваш",
     "hostTooltip": "The host organization or person responsible for this space.",
-    "contactHost": "Contact host",
-    "apply": "Apply",
-    "join": "Join",
-    "member": "Member",
-    "applyPending": "Application pending",
-    "parentPending": "Parent application pending",
-    "applyDisabled": "Apply not available",
-    "acceptInvitation": "Accept invitation",
-    "signIn": "Sign in to apply",
-    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "contactHost": "Свържи се с домакина",
+    "apply": "Кандидатствай",
+    "join": "Присъедини се",
+    "member": "Член",
+    "applyPending": "Чакаща кандидатура",
+    "parentPending": "Чакаща кандидатура за основното пространство",
+    "applyDisabled": "Кандидатстването не е достъпно",
+    "acceptInvitation": "Приеми поканата",
+    "signIn": "Влез, за да кандидатстваш",
+    "signInHelper": "Първо ще бъдеш пренасочен да влезеш в Alkemio.",
     "context": {
       "L0": {
-        "why": "Why are we here?",
-        "who": "Who is involved?"
+        "why": "Защо сме тук?",
+        "who": "Кой участва?"
       },
       "L1": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Защо това подпространство?",
+        "who": "Кой участва?"
       },
       "L2": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "Защо това подпространство?",
+        "who": "Кой участва?"
       }
     }
   },
   "apply": {
-    "apply": "Apply",
-    "join": "Join",
-    "cancel": "Cancel",
-    "processing": "Processing…",
-    "applyTitle": "Apply to {{name}}",
-    "joinTitle": "Join {{name}}",
-    "subheader": "Tell us a bit about why you want to join.",
-    "subheaderJoin": "You're about to join {{name}}.",
-    "required": "This field is required.",
-    "maxLength": "Maximum {{count}} characters.",
+    "apply": "Кандидатствай",
+    "join": "Присъедини се",
+    "cancel": "Отказ",
+    "processing": "Обработва се…",
+    "applyTitle": "Кандидатствай за {{name}}",
+    "joinTitle": "Присъедини се към {{name}}",
+    "subheader": "Разкажи ни малко защо искаш да се присъединиш.",
+    "subheaderJoin": "На път си да се присъединиш към {{name}}.",
+    "required": "Това поле е задължително.",
+    "maxLength": "Максимум {{count}} символа.",
     "submitted": {
-      "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "title": "Кандидатурата е изпратена",
+      "body": "Кандидатурата ти за {{communityName}} беше изпратена."
     }
   },
   "mobile": {
@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Добави етикет и натисни Enter",
     "tagsTooShort": "Всеки етикет трябва да е поне {{min}} знака.",
     "framingType": "Добавяне към публикация",
+    "typeLockedHint": "Настройките за допълнително съдържание не могат да се променят след създаването",
     "visibility": "Видимост",
     "publishedLabel": "Публикувано",
     "draftLabel": "Чернова",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Отговори",
+    "typeLockedHint": "Настройките за приноси не могат да се променят след създаването",
     "types": {
       "link": "Връзки и файлове",
       "post": "Публикации",

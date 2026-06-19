@@ -14,11 +14,13 @@
   "private": "Частно",
   "public": "Публично",
   "member": "Член",
+  "virtualContributor": "Virtual Contributor",
   "visibility": {
     "demo": "Демо",
     "inactive": "Неактивно",
     "archived": "Архивирано"
   },
+  "lead": "Лидер",
   "leads": "Лидери",
   "loadMore": "Зареди още",
   "pinned": "Закрепено",

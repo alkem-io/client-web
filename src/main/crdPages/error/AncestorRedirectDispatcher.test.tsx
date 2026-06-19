@@ -49,21 +49,34 @@ describe('AncestorRedirectDispatcher', () => {
     vi.clearAllMocks();
   });
 
-  test('renders CRD dialog when toggle is on, route is CRD, and isNotAuthorized=true', () => {
+  test('renders CRD dialog when toggle is on and route is CRD (NotAuthorized / 403)', () => {
     useCrdEnabledMock.mockReturnValue(true);
     useLocationMock.mockReturnValue({ pathname: '/welcome-space/some-private-resource' });
 
-    render(<AncestorRedirectDispatcher closestAncestor={ancestor} isNotAuthorized={true} />);
+    render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);
 
     expect(screen.getByTestId('crd-redirect-dialog')).toBeInTheDocument();
     expect(screen.queryByTestId('mui-redirect-dialog')).not.toBeInTheDocument();
   });
 
-  test('renders MUI dialog when CRD toggle is off (even with all other flags right)', () => {
+  test('renders CRD dialog on a CRD route for NotFound + closestAncestor (private subspace redirect)', () => {
+    // A private subspace resolves to NotFoundError({ closestAncestor }); the page
+    // beneath is now the CRD 404 page, so the redirect dialog must also be CRD —
+    // never the MUI dialog on top of a CRD page.
+    useCrdEnabledMock.mockReturnValue(true);
+    useLocationMock.mockReturnValue({ pathname: '/welcome-space' });
+
+    render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);
+
+    expect(screen.getByTestId('crd-redirect-dialog')).toBeInTheDocument();
+    expect(screen.queryByTestId('mui-redirect-dialog')).not.toBeInTheDocument();
+  });
+
+  test('renders MUI dialog when CRD toggle is off', () => {
     useCrdEnabledMock.mockReturnValue(false);
     useLocationMock.mockReturnValue({ pathname: '/welcome-space' });
 
-    render(<AncestorRedirectDispatcher closestAncestor={ancestor} isNotAuthorized={true} />);
+    render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);
 
     expect(screen.getByTestId('mui-redirect-dialog')).toBeInTheDocument();
     expect(screen.queryByTestId('crd-redirect-dialog')).not.toBeInTheDocument();
@@ -72,28 +85,6 @@ describe('AncestorRedirectDispatcher', () => {
   test('renders MUI dialog when current pathname is NOT a CRD route', () => {
     useCrdEnabledMock.mockReturnValue(true);
     useLocationMock.mockReturnValue({ pathname: '/admin/users' });
-
-    render(<AncestorRedirectDispatcher closestAncestor={ancestor} isNotAuthorized={true} />);
-
-    expect(screen.getByTestId('mui-redirect-dialog')).toBeInTheDocument();
-    expect(screen.queryByTestId('crd-redirect-dialog')).not.toBeInTheDocument();
-  });
-
-  test('renders MUI dialog when isNotAuthorized is false (e.g. NotFoundError)', () => {
-    useCrdEnabledMock.mockReturnValue(true);
-    useLocationMock.mockReturnValue({ pathname: '/welcome-space' });
-
-    // Underlying error page is MUI Error404 (CRD 404 is out of scope), so the
-    // dialog must also be MUI to keep the page+dialog visually consistent.
-    render(<AncestorRedirectDispatcher closestAncestor={ancestor} isNotAuthorized={false} />);
-
-    expect(screen.getByTestId('mui-redirect-dialog')).toBeInTheDocument();
-    expect(screen.queryByTestId('crd-redirect-dialog')).not.toBeInTheDocument();
-  });
-
-  test('renders MUI dialog when isNotAuthorized is undefined (defensive default)', () => {
-    useCrdEnabledMock.mockReturnValue(true);
-    useLocationMock.mockReturnValue({ pathname: '/welcome-space' });
 
     render(<AncestorRedirectDispatcher closestAncestor={ancestor} />);
 

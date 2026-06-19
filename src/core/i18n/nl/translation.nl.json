@@ -227,7 +227,7 @@
       "errorSaving": "Could not save your design preference. Please try again."
     },
     "switchBanner": {
-      "message": "Switch to the new Alkemio UI from <switch>here</switch>. The current design retires soon. Missing something? Email <email>support@alkem.io</email>."
+      "message": "Schakel over naar de nieuwe Alkemio-UI via <switch>hier</switch>. Dit ontwerp blijft beschikbaar tot 24 juni 2026. Mist u iets? Mail <email>support@alkem.io</email>."
     }
   },
   "authentication": {
@@ -379,7 +379,7 @@
     "entities": "{{entityType}}",
     "spaceSubspaces": "(Sub)Spaces",
     "entitiesWithCount": "{{entityType}} ({{count}})",
-    "contributors": "Bijdragers",
+    "contributors": "Deelnemers",
     "Organization": "Organisatie",
     "Organizations": "Organisaties",
     "organization": "organisatie",
@@ -764,7 +764,7 @@
             "INVITED_TO_ROLE_SET": "Uitgenodigd om lid te worden van de $t(common.community)"
           },
           "validationErrors": {
-            "required": "Voeg ten minste één bijdrager toe om uit te nodigen",
+            "required": "Voeg ten minste één deelnemer toe om uit te nodigen",
             "invalidAddress": "Verwijder ongeldige invoer om verder te gaan"
           }
         },
@@ -2201,7 +2201,7 @@
         },
         "USER_SPACE_COMMUNITY_JOINED": {
           "subject": "{{spaceName}} - Welkom bij de $t(common.community)!",
-          "description": "Bedankt voor het deelnemen aan {{spaceName}}<br /> Je kunt nu beginnen bij te dragen aan de verschillende $t(common.posts) en $t(common.whiteboards), je kennis over dit onderwerp verder verdiepen en contact opnemen met andere Bijdragers."
+          "description": "Bedankt voor het deelnemen aan {{spaceName}}<br /> Je kunt nu beginnen bij te dragen aan de verschillende $t(common.posts) en $t(common.whiteboards), je kennis over dit onderwerp verder verdiepen en contact opnemen met andere Deelnemers."
         },
         "USER_COMMENT_REPLY": {
           "subject": "{{triggeredByName}} heeft gereageerd op je $t(common.comment) {{parentName}}",
@@ -2524,7 +2524,7 @@
       "separator": " | ",
       "forum": "Forum",
       "spaces": "Spaces",
-      "contributors": "Bijdragers",
+      "contributors": "Deelnemers",
       "templateLibrary": "Template Bibliotheek",
       "globalAdmin": "Globale Administratie",
       "admin": "Administratie",
@@ -2545,7 +2545,7 @@
           "description": "Hier kun je de context en $t(common.community) vinden van deze {{entity}}."
         },
         "community": {
-          "leading-contributors": "Leading bijdragers",
+          "leading-contributors": "Leidende deelnemers",
           "contributors": "Wie is erbij betrokken",
           "switchMode": "Verander Weergave"
         },
@@ -2969,7 +2969,7 @@
             "allowOtherUsersToSendMessages": "Andere gebruikers toestaan mij een bericht te sturen."
           },
           "privacy": {
-            "contributorRolesVisible": "Toon bijdrager rollen aan alle geregistreerde gebruikers"
+            "contributorRolesVisible": "Toon deelnemerrollen aan alle geregistreerde gebruikers"
           },
           "designSystem": {
             "title": "Ontwerp",
@@ -3007,7 +3007,7 @@
           "privacy": {
             "title": "Privacy",
             "subtitle": "In deze sectie kun je de $t(common.organization) privacy $t(common.settings) wijzigen",
-            "contributorRolesVisible": "Toon bijdrager rollen aan alle geregistreerde gebruikers"
+            "contributorRolesVisible": "Toon deelnemerrollen aan alle geregistreerde gebruikers"
           }
         },
         "notifications": {
@@ -3361,9 +3361,9 @@
       }
     },
     "contributors": {
-      "fullName": "Bijdragers vinden",
+      "fullName": "Deelnemers vinden",
       "shortName": "$t(common.contributors)",
-      "unauthorized": "Log in om de bijdragers van deze $t(common.space) te zien.",
+      "unauthorized": "Log in om de deelnemers van deze $t(common.space) te zien.",
       "search": {
         "title": "Vind talent en expertise!",
         "subtitle": "Zoek naar andere mensen en $t(common.organizations) die kunnen helpen met jouw $t(common.space), bijvoorbeeld vanwege hun vaardigheden of interesses.",
@@ -3382,7 +3382,7 @@
     },
     "search": {
       "title": "Zoek",
-      "subtitle": "Vind de $t(common.spaces), bijdragers, $t(common.subspaces), en inhoud van de openbare $t(common.spaces) hieronder",
+      "subtitle": "Vind de $t(common.spaces), deelnemers, $t(common.subspaces), en inhoud van de openbare $t(common.spaces) hieronder",
       "placeholder": "Zoek...",
       "results-disclaimer": "Hier zie je de eerste 8 resultaten. Als je je zoektermen verder specificeert zul je meer resultaten vinden.",
       "max-tags-reached": "U heeft de limiet van {{max}} tekens bereikt",
@@ -3392,7 +3392,7 @@
           "space": "$t(common.space) type",
           "framing": "$t(common.framing) type",
           "contribution": "Type bijdrage",
-          "contributor": "Type bijdrager"
+          "contributor": "Type deelnemer"
         },
         "key": {
           "all": "Alles",
@@ -3927,7 +3927,7 @@
     },
     "registration": {
       "header": "Maak een $t(common.account) aan om Alkemio te gebruiken",
-      "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction": "<p>Welkom op Alkemio! Alkemio zorgt ervoor dat je effectief kan samenwerken rodom de belangrijkste maatschappelijke uitdagingen. Individuen en organisaties, van waar dan ook, kunnen op het platform bijdragen aan mogelijke oplossingen. De uitdaging staat centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "introduction-short": "<p>Alkemio is ontworpen ten goede van de samenleving. Lees en accepteer de <terms>gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> voordat u verder gaat.</p>",
       "terms": "Ik accepteer de <terms>Gebruikersvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
       "login": "Heb je een $t(common.account)?",
@@ -3935,7 +3935,7 @@
       "logo-subtitle": "$t(common.spaces) voor Samenwerking"
     },
     "accept-terms": {
-      "introduction": "<p>Alkemio maakt het makkelijk om $t(common.subspaces) te managen en bijdragers van van waar dan ook samen te laten werken aan oplossingen. $t(common.subspaces) staan centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy>accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
+      "introduction": "<p>Alkemio maakt het makkelijk om $t(common.subspaces) te managen en deelnemers van waar dan ook samen te laten werken aan oplossingen. $t(common.subspaces) staan centraal. De focus is de bestemming.</p><p>Om het platform veilig, open en constructief te houden, moet iedere gebruiker de <terms>Gebruiksvoorwaarden</terms> en <privacy>Privacybeleid</privacy> accepteren. Lees de onderstaande documenten en accepteer ze voordat je verder gaat.</p>",
       "greeting": "Hallo {{user}}, welkom op Alkemio!",
       "continue": "Doorgaan naar het platform",
       "next": "Volgende",
@@ -4499,7 +4499,7 @@
     "edit": "Bewerk $t(common.innovation-flow)"
   },
   "contributors-section": {
-    "title": "Bijdragers"
+    "title": "Deelnemers"
   },
   "contributions-view": {
     "no-data": "Geen $t(common.memberships) gevonden"
@@ -4511,7 +4511,7 @@
     "no-data": "Geen {{name, lowercase}} beschikbaar"
   },
   "dashboard-contributors-section": {
-    "dialog-title": "Bijdragers",
+    "dialog-title": "Deelnemers",
     "more": "...plus {{count}} meer"
   },
   "associates-view": {
@@ -4581,7 +4581,7 @@
     "outline": "Overzicht",
     "index": "Index",
     "subspaces": "$t(common.subspaces)",
-    "contributors": "Bijdragers",
+    "contributors": "Deelnemers",
     "videoCall": "Video oproep",
     "activity": "Activiteit",
     "calendar": "Kalender",
@@ -4798,7 +4798,7 @@
       "title": "🎉 Probeer het uit!",
       "subTitle": "Om de interactie te starten, typ @{{vcName}} in een $t(common.comment). Probeer het in het voorbeeld hieronder.",
       "postTitle": "Voorbeeld $t(common.post)",
-      "postDescription": "Bij Alkemio gebruiken we $t(common.posts) om samenwerking met AI te vergemakkelijken. In tegenstelling tot privégesprekken kunnen andere $t(common.members) in een $t(common.space) van deze interactie leren en bijdragen aan deze interactie. Vergelijkbaar met het vermelden van een menselijke bijdrager, kun je het \"@\" symbool gebruiken, gevolgd door de naam van de $t(common.virtualContributor).",
+      "postDescription": "Bij Alkemio gebruiken we $t(common.posts) om samenwerking met AI te vergemakkelijken. In tegenstelling tot privégesprekken kunnen andere $t(common.members) in een $t(common.space) van deze interactie leren en bijdragen aan deze interactie. Vergelijkbaar met het vermelden van een menselijke deelnemer, kun je het \"@\" symbool gebruiken, gevolgd door de naam van de $t(common.virtualContributor).",
       "continueButton": "Bezoek $t(common.space)"
     },
     "tryInfoSection": {

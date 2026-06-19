@@ -463,7 +463,6 @@ export function SpaceSettingsCommunityView({
               <Plus aria-hidden="true" className="size-4" />
               {t('community.organizations.add')}
             </Button>
-            <p className="mt-2 text-caption text-muted-foreground">{t('community.organizations.hint')}</p>
           </div>
         )}
       </SectionCard>

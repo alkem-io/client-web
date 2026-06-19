@@ -16,6 +16,7 @@ query SpaceTabs($spaceId: UUID!) {
             sortOrder
             settings {
               allowNewCallouts
+              visible
             }
           }
         }

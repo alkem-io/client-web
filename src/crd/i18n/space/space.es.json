@@ -347,53 +347,53 @@
     "leadUsers": "Usuarios líderes",
     "leadOrganizations": "Organizaciones líderes",
     "guidelines": "Directrices de la comunidad",
-    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "guidelinesAdminsOnly": "Solo los administradores pueden ver esta sección. Añade directrices de la comunidad para que los miembros sepan qué esperar.",
     "references": "Referencias",
-    "close": "Close",
-    "edit": "Edit",
-    "readMore": "Read more",
-    "lockTooltip": "You don't have access to this space.",
-    "learnWhy": "Learn how to apply",
+    "close": "Cerrar",
+    "edit": "Editar",
+    "readMore": "Leer más",
+    "lockTooltip": "No tienes acceso a este espacio.",
+    "learnWhy": "Aprende cómo solicitar acceso",
     "hostTooltip": "The host organization or person responsible for this space.",
-    "contactHost": "Contact host",
-    "apply": "Apply",
-    "join": "Join",
-    "member": "Member",
-    "applyPending": "Application pending",
-    "parentPending": "Parent application pending",
-    "applyDisabled": "Apply not available",
-    "acceptInvitation": "Accept invitation",
-    "signIn": "Sign in to apply",
-    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "contactHost": "Contactar al anfitrión",
+    "apply": "Solicitar acceso",
+    "join": "Unirse",
+    "member": "Miembro",
+    "applyPending": "Solicitud pendiente",
+    "parentPending": "Solicitud al espacio principal pendiente",
+    "applyDisabled": "Solicitud no disponible",
+    "acceptInvitation": "Aceptar invitación",
+    "signIn": "Inicia sesión para solicitar acceso",
+    "signInHelper": "Primero se te redirigirá para iniciar sesión en Alkemio.",
     "context": {
       "L0": {
-        "why": "Why are we here?",
-        "who": "Who is involved?"
+        "why": "¿Por qué estamos aquí?",
+        "who": "¿Quién participa?"
       },
       "L1": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "¿Por qué este subespacio?",
+        "who": "¿Quién participa?"
       },
       "L2": {
-        "why": "Why this subspace?",
-        "who": "Who is involved?"
+        "why": "¿Por qué este subespacio?",
+        "who": "¿Quién participa?"
       }
     }
   },
   "apply": {
-    "apply": "Apply",
-    "join": "Join",
-    "cancel": "Cancel",
-    "processing": "Processing…",
-    "applyTitle": "Apply to {{name}}",
-    "joinTitle": "Join {{name}}",
-    "subheader": "Tell us a bit about why you want to join.",
-    "subheaderJoin": "You're about to join {{name}}.",
-    "required": "This field is required.",
-    "maxLength": "Maximum {{count}} characters.",
+    "apply": "Solicitar acceso",
+    "join": "Unirse",
+    "cancel": "Cancelar",
+    "processing": "Procesando…",
+    "applyTitle": "Solicitar acceso a {{name}}",
+    "joinTitle": "Unirse a {{name}}",
+    "subheader": "Cuéntanos un poco por qué quieres unirte.",
+    "subheaderJoin": "Estás a punto de unirte a {{name}}.",
+    "required": "Este campo es obligatorio.",
+    "maxLength": "Máximo {{count}} caracteres.",
     "submitted": {
-      "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "title": "Solicitud enviada",
+      "body": "Tu solicitud a {{communityName}} ha sido enviada."
     }
   },
   "mobile": {
@@ -486,6 +486,7 @@
     "tagsPlaceholder": "Añade una etiqueta y pulsa Enter",
     "tagsTooShort": "Cada etiqueta debe tener al menos {{min}} caracteres.",
     "framingType": "Añadir a la publicación",
+    "typeLockedHint": "La configuración de contenido adicional no se puede cambiar después de la creación",
     "visibility": "Visibilidad",
     "publishedLabel": "Publicado",
     "draftLabel": "Borrador",
@@ -511,6 +512,7 @@
   },
   "contributionSettings": {
     "heading": "Respuestas",
+    "typeLockedHint": "La configuración de contribuciones no se puede cambiar después de la creación",
     "types": {
       "link": "Enlaces y archivos",
       "post": "Publicaciones",
