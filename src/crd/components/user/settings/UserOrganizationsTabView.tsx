@@ -50,7 +50,7 @@ export type UserOrganizationsTabViewProps = {
 
 /**
  * User Organizations tab — presentational view. Card grid mirroring
- * `prototype/src/app/pages/UserOrganizationsPage.tsx`. Each card has a
+ * `client-web-prototype/src/app/pages/UserOrganizationsPage.tsx`. Each card has a
  * banner area (deterministic gradient — orgs don't have banner images),
  * org logo + Verified badge bottom-left, kebab top-right (View Profile +
  * Disassociate), title + role + location header, tagline body, Associates
