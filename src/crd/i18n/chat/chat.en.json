@@ -74,5 +74,28 @@
     "back": "Back to conversations",
     "loading": "Loading messages",
     "addReaction": "Add reaction"
+  },
+  "sendConfirmation": {
+    "title": "Message sent",
+    "description": "Your message has been sent as a private chat.",
+    "partialDescription": "Your message was sent, but some people could not be reached.",
+    "notReachedTitle": "Not reached",
+    "openChat": "Open chat",
+    "close": "Close"
+  },
+  "contactLeads": {
+    "title": "Contact the leads",
+    "explanation": "This message will be sent to each lead individually. To contact a specific lead, visit their profile directly.",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Write your message…",
+    "recipientsLabel": "Recipients",
+    "send": "Send",
+    "cancel": "Cancel",
+    "sending": "Sending…",
+    "errors": {
+      "messageRequired": "Message cannot be empty.",
+      "messageTooLong": "Message must be {{max}} characters or fewer.",
+      "sendFailed": "Could not send the message. Please try again."
+    }
   }
 }

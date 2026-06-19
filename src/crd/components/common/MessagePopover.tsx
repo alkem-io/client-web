@@ -1,4 +1,4 @@
-import { Mail } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -21,6 +21,12 @@ export type MessagePopoverProps = {
    */
   triggerVariant?: 'default' | 'secondary' | 'outline' | 'ghost';
   className?: string;
+  /** Override the popover heading (defaults to the private-message copy). */
+  title?: string;
+  /** Override the helper notice under the textarea. */
+  notice?: string;
+  /** Override the textarea placeholder. */
+  placeholder?: string;
 };
 
 export function MessagePopover({
@@ -28,6 +34,9 @@ export function MessagePopover({
   triggerLabel,
   triggerVariant = 'default',
   className,
+  title,
+  notice,
+  placeholder,
 }: MessagePopoverProps) {
   const { t } = useTranslation('crd-profilePages');
   const [open, setOpen] = useState(false);
@@ -68,12 +77,12 @@ export function MessagePopover({
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild={true}>
         <Button variant={triggerVariant} className={cn('gap-2 shadow-sm', className)} aria-haspopup="dialog">
-          <Mail className="w-4 h-4" aria-hidden="true" />
+          <MessageSquare className="w-4 h-4" aria-hidden="true" />
           {triggerLabel}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80 p-3" align="end" aria-label={t('common.messagePopover.ariaLabel')}>
-        <p className="text-body-emphasis mb-2">{t('common.messagePopover.emailTitle')}</p>
+        <p className="text-body-emphasis mb-2">{title ?? t('common.messagePopover.title')}</p>
         <Textarea
           value={draft}
           onChange={e => setDraft(e.target.value)}
@@ -87,12 +96,12 @@ export function MessagePopover({
               handleSend();
             }
           }}
-          placeholder={t('common.messagePopover.placeholder')}
+          placeholder={placeholder ?? t('common.messagePopover.placeholder')}
           className="min-h-24"
           disabled={sending}
           aria-label={t('common.messagePopover.ariaLabel')}
         />
-        <p className="text-caption text-muted-foreground mt-2">{t('common.messagePopover.emailNotice')}</p>
+        <p className="text-caption text-muted-foreground mt-2">{notice ?? t('common.messagePopover.notice')}</p>
         {error ? (
           <p role="alert" className="text-caption text-destructive mt-2">
             {error}

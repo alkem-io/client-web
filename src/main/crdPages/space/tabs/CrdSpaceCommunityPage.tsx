@@ -3,20 +3,17 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
 import { Button } from '@/crd/primitives/button';
-import {
-  DirectMessageDialog,
-  type MessageReceiverChipData,
-} from '@/domain/communication/messaging/DirectMessaging/DirectMessageDialog';
-import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
+import { ContactLeadsDialogConnector } from '../dialogs/ContactLeadsDialogConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
@@ -62,15 +59,13 @@ export default function CrdSpaceCommunityPage() {
   const sidebarLeads: LeadItem[] = [...leadUsers, ...leadOrganizations];
   const canContactLeads = leadUsers.length > 0 && Boolean(communityId);
 
-  // Build DirectMessageDialog receiver chips from lead users only — lead
-  // organizations are not direct-message targets.
-  const messageReceivers: MessageReceiverChipData[] = leadUsers.map(lead => ({
+  // Build chat recipients from lead users only — lead organizations are not
+  // direct-message targets (org contact stays email, FR-009).
+  const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
     id: lead.id,
     displayName: lead.name,
-    avatarUri: lead.avatarUrl,
+    avatarUrl: lead.avatarUrl,
   }));
-
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
 
   const guidelinesSlot = guidelines.id ? (
     <CommunityGuidelinesBlock
@@ -166,13 +161,7 @@ export default function CrdSpaceCommunityPage() {
       )}
 
       {canContactLeads && (
-        <DirectMessageDialog
-          title={t('send-message-dialog.community-message-title', { contact: t('community.leads') })}
-          open={contactOpen}
-          onClose={() => setContactOpen(false)}
-          onSendMessage={sendMessageToCommunityLeads}
-          messageReceivers={messageReceivers}
-        />
+        <ContactLeadsDialogConnector open={contactOpen} onOpenChange={setContactOpen} recipients={leadRecipients} />
       )}
     </>
   );

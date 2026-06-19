@@ -54,9 +54,8 @@
       "noResults": "No se encontraron usuarios",
       "removeUser": "Quitar a {{name}}",
       "messageLabel": "Mensaje",
-      "warning": "Los destinatarios verán tu nombre como remitente.",
+      "notice": "Cada destinatario lo recibe como un mensaje privado en su chat.",
       "send": "Enviar",
-      "sent": "Mensaje enviado con éxito.",
       "errors": {
         "atLeastOneUser": "Selecciona al menos un usuario.",
         "messageRequired": "El mensaje no puede estar vacío.",

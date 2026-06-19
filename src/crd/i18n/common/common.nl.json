@@ -54,9 +54,8 @@
       "noResults": "Geen gebruikers gevonden",
       "removeUser": "{{name}} verwijderen",
       "messageLabel": "Bericht",
-      "warning": "Ontvangers zien jouw naam als afzender.",
+      "notice": "Elke ontvanger krijgt dit als een privébericht in hun chat.",
       "send": "Verzenden",
-      "sent": "Bericht succesvol verzonden.",
       "errors": {
         "atLeastOneUser": "Selecteer ten minste één gebruiker.",
         "messageRequired": "Bericht mag niet leeg zijn.",

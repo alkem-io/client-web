@@ -258,6 +258,8 @@
         "title": "Communicatie en privacy",
         "allowMessagesLabel": "Andere gebruikers mogen mij directe berichten sturen",
         "allowMessagesDescription": "Wanneer uitgeschakeld, kunnen andere gebruikers geen direct-bericht-gesprek met je starten.",
+        "allowEmailContactLabel": "Sta anderen toe mij via e-mail te contacteren",
+        "allowEmailContactDescription": "Wanneer ingeschakeld, kunnen mensen die je niet via chat kunnen bereiken je een e-mail sturen op je accountadres. Je adres wordt nooit aan hen getoond.",
         "error": "Voorkeur niet opgeslagen — probeer opnieuw"
       },
       "designSystem": {

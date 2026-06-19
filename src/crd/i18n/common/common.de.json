@@ -54,9 +54,8 @@
       "noResults": "Keine Nutzer gefunden",
       "removeUser": "{{name}} entfernen",
       "messageLabel": "Nachricht",
-      "warning": "Die Empfänger sehen deinen Namen als Absender.",
+      "notice": "Jeder Empfänger erhält dies als private Nachricht in seinem Chat.",
       "send": "Senden",
-      "sent": "Nachricht erfolgreich gesendet.",
       "errors": {
         "atLeastOneUser": "Wähle mindestens einen Nutzer aus.",
         "messageRequired": "Nachricht darf nicht leer sein.",

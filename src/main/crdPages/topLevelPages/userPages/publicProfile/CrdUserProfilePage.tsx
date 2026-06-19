@@ -11,7 +11,10 @@ import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMem
 import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
 import { normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
-import { useSendMessageToUserHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
+import {
+  useSendEmailToUserHandler,
+  useSendMessageToUserHandler,
+} from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
 import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
@@ -20,12 +23,23 @@ import { useCrdUserProfilePageData } from './useCrdUserProfilePageData';
 export const CrdUserProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const data = useCrdUserProfilePageData();
-  const { userId, userModel, currentUserId, accountResources, contributions, organizationIds, loading } = data;
+  const {
+    userId,
+    userModel,
+    currentUserId,
+    isContactable,
+    isContactableViaEmail,
+    accountResources,
+    contributions,
+    organizationIds,
+    loading,
+  } = data;
   usePageTitle(userModel?.profile?.displayName);
 
   const { activeTab, onSelectTab } = useResourceTabs();
 
-  const { onSendMessage } = useSendMessageToUserHandler({ recipientUserId: userId });
+  const { onSendMessage: onSendChatMessage } = useSendMessageToUserHandler({ recipientUserId: userId });
+  const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
 
   const tabs = [
     { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
@@ -69,7 +83,16 @@ export const CrdUserProfilePage = () => {
   const isOwnProfile = Boolean(currentUserId && userModel?.id && currentUserId === userModel.id);
 
   const showSettingsIcon = data.canEditSettings;
-  const showMessageButton = Boolean(currentUserId) && !isOwnProfile;
+
+  // FR-011: chat is the default route; offer the email fallback only when the
+  // recipient has chat off AND has opted in to email contact. Neither → the
+  // user cannot be reached and we explain rather than offer a route.
+  const viewerCanContact = Boolean(currentUserId) && !isOwnProfile;
+  const emailFallbackOnly = !isContactable && isContactableViaEmail;
+  const showMessageButton = viewerCanContact && (isContactable || emailFallbackOnly);
+  const showCannotBeReached = viewerCanContact && !isContactable && !isContactableViaEmail;
+
+  const onSendMessage = emailFallbackOnly ? onSendEmailMessage : onSendChatMessage;
 
   const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
 
@@ -95,6 +118,10 @@ export const CrdUserProfilePage = () => {
         settingsHref,
         showMessageButton,
         onSendMessage: showMessageButton ? onSendMessage : undefined,
+        messageTitle: emailFallbackOnly ? t('common.messagePopover.emailTitle') : undefined,
+        messageNotice: emailFallbackOnly ? t('common.messagePopover.emailNotice') : undefined,
+        messagePlaceholder: emailFallbackOnly ? t('common.messagePopover.emailPlaceholder') : undefined,
+        cannotBeReachedLabel: showCannotBeReached ? t('common.messagePopover.cannotBeReached') : undefined,
       }}
       sidebar={{
         bio: profile?.description ?? null,

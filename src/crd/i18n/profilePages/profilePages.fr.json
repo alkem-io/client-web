@@ -4,15 +4,20 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Écrire un e-mail…",
+      "placeholder": "Écrire un message…",
       "send": "Envoyer",
       "cancel": "Annuler",
       "sending": "Envoi…",
       "errorTitle": "Impossible d'envoyer le message",
       "ariaLabel": "Composer un message",
+      "title": "Envoyer un message privé",
+      "notice": "Démarre une discussion privée que vous pourrez poursuivre.",
+      "successToast": "Votre message a été envoyé.",
       "emailTitle": "Envoyer un e-mail",
-      "emailNotice": "Livré dans leur boîte de réception.",
-      "successToast": "Votre e-mail a été envoyé."
+      "emailNotice": "Cette personne a désactivé la messagerie mais accepte les e-mails. Envoyé à l'adresse de son compte.",
+      "emailPlaceholder": "Écrire un e-mail…",
+      "emailSuccessToast": "Votre e-mail a été envoyé.",
+      "cannotBeReached": "Cette personne ne peut pas être contactée."
     },
     "resourceTabsAriaLabel": "Sections de ressources",
     "loading": {
@@ -67,6 +72,9 @@
       "settingsTooltip": "Paramètres de l'organisation",
       "settingsAriaLabel": "Ouvrir les paramètres de l'organisation",
       "messageButton": "Message",
+      "messageEmailTitle": "Envoyer un e-mail",
+      "messageEmailNotice": "Remis aux administrateurs de l'organisation.",
+      "messageEmailPlaceholder": "Écrire un e-mail…",
       "verifiedBadge": "Vérifiée",
       "verifiedTooltip": "Cette organisation a été vérifiée par Alkemio."
     },

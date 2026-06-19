@@ -16,6 +16,15 @@ export type UserPageHeroProps = {
   settingsHref?: string;
   showMessageButton: boolean;
   onSendMessage?: (messageText: string) => Promise<void>;
+  /** Optional copy overrides for the message popover (e.g. the email-fallback route). */
+  messageTitle?: string;
+  messageNotice?: string;
+  messagePlaceholder?: string;
+  /**
+   * Shown instead of the message button when the viewer may contact the user
+   * but the user has both chat and email contact disabled (FR-011).
+   */
+  cannotBeReachedLabel?: string;
 };
 
 export function UserPageHero({
@@ -27,6 +36,10 @@ export function UserPageHero({
   settingsHref,
   showMessageButton,
   onSendMessage,
+  messageTitle,
+  messageNotice,
+  messagePlaceholder,
+  cannotBeReachedLabel,
 }: UserPageHeroProps) {
   const { t } = useTranslation('crd-profilePages');
 
@@ -54,7 +67,15 @@ export function UserPageHero({
 
             <div className="flex gap-3 shrink-0">
               {showMessageButton && onSendMessage ? (
-                <MessagePopover triggerLabel={t('userProfile.hero.messageButton')} onSendMessage={onSendMessage} />
+                <MessagePopover
+                  triggerLabel={t('userProfile.hero.messageButton')}
+                  onSendMessage={onSendMessage}
+                  title={messageTitle}
+                  notice={messageNotice}
+                  placeholder={messagePlaceholder}
+                />
+              ) : cannotBeReachedLabel ? (
+                <p className="text-caption text-muted-foreground self-center">{cannotBeReachedLabel}</p>
               ) : null}
               {showSettingsIcon && settingsHref ? (
                 <Button

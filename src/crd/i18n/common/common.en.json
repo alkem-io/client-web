@@ -54,9 +54,8 @@
       "noResults": "No users found",
       "removeUser": "Remove {{name}}",
       "messageLabel": "Message",
-      "warning": "Recipients will see your name as the sender.",
+      "notice": "Each recipient receives this as a private message in their chat.",
       "send": "Send",
-      "sent": "Message sent successfully.",
       "errors": {
         "atLeastOneUser": "Select at least one user.",
         "messageRequired": "Message cannot be empty.",

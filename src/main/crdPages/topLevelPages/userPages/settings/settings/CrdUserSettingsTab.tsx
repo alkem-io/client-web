@@ -5,6 +5,7 @@ import {
   useUpdateUserSettingsMutation,
   useUserSettingsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { UpdateUserSettingsCommunicationInput } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { UserSettingsTabView } from '@/crd/components/user/settings/UserSettingsTabView';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
@@ -22,41 +23,53 @@ const CrdUserSettingsTab = () => {
   const mapped = mapUserSettings(data);
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
-  const [communicationOverride, setCommunicationOverride] = useState<boolean | null>(null);
+  const [messagesOverride, setMessagesOverride] = useState<boolean | null>(null);
+  const [emailContactOverride, setEmailContactOverride] = useState<boolean | null>(null);
   const [communicationSaving, setCommunicationSaving] = useState(false);
 
-  const allowMessages = communicationOverride ?? mapped.allowOtherUsersToSendMessages;
+  const allowMessages = messagesOverride ?? mapped.allowOtherUsersToSendMessages;
+  const allowEmailContact = emailContactOverride ?? mapped.allowOtherUsersToContactViaEmail;
 
-  const onToggleAllowMessages = async (next: boolean) => {
+  const persistCommunication = async (communication: UpdateUserSettingsCommunicationInput, rollback: () => void) => {
     if (!userId) return;
-    setCommunicationOverride(next);
     setCommunicationSaving(true);
     try {
       await updateUserSettings({
         variables: {
           settingsData: {
             userID: userId,
-            settings: { communication: { allowOtherUsersToSendMessages: next } },
+            settings: { communication },
           },
         },
         refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
         awaitRefetchQueries: true,
       });
-      setCommunicationOverride(null);
     } catch {
-      setCommunicationOverride(null);
       notify(t('user.settings.communication.error'), 'error');
     } finally {
+      rollback();
       setCommunicationSaving(false);
     }
+  };
+
+  const onToggleAllowMessages = async (next: boolean) => {
+    setMessagesOverride(next);
+    await persistCommunication({ allowOtherUsersToSendMessages: next }, () => setMessagesOverride(null));
+  };
+
+  const onToggleAllowEmailContact = async (next: boolean) => {
+    setEmailContactOverride(next);
+    await persistCommunication({ allowOtherUsersToContactViaEmail: next }, () => setEmailContactOverride(null));
   };
 
   return (
     <UserSettingsTabView
       loading={loading && !data}
       allowOtherUsersToSendMessages={allowMessages}
+      allowOtherUsersToContactViaEmail={allowEmailContact}
       communicationSaving={communicationSaving}
       onToggleAllowMessages={onToggleAllowMessages}
+      onToggleAllowEmailContact={onToggleAllowEmailContact}
     />
   );
 };

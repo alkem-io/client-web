@@ -74,5 +74,28 @@
     "back": "Zurück zu den Unterhaltungen",
     "loading": "Nachrichten werden geladen",
     "addReaction": "Reaktion hinzufügen"
+  },
+  "sendConfirmation": {
+    "title": "Nachricht gesendet",
+    "description": "Deine Nachricht wurde als privater Chat gesendet.",
+    "partialDescription": "Deine Nachricht wurde gesendet, aber einige Personen konnten nicht erreicht werden.",
+    "notReachedTitle": "Nicht erreicht",
+    "openChat": "Chat öffnen",
+    "close": "Schließen"
+  },
+  "contactLeads": {
+    "title": "Die Leads kontaktieren",
+    "explanation": "Diese Nachricht wird an jeden Lead einzeln gesendet. Um einen bestimmten Lead zu kontaktieren, besuche direkt dessen Profil.",
+    "messageLabel": "Nachricht",
+    "messagePlaceholder": "Schreibe deine Nachricht…",
+    "recipientsLabel": "Empfänger",
+    "send": "Senden",
+    "cancel": "Abbrechen",
+    "sending": "Wird gesendet…",
+    "errors": {
+      "messageRequired": "Die Nachricht darf nicht leer sein.",
+      "messageTooLong": "Die Nachricht darf höchstens {{max}} Zeichen lang sein.",
+      "sendFailed": "Die Nachricht konnte nicht gesendet werden. Bitte versuche es erneut."
+    }
   }
 }

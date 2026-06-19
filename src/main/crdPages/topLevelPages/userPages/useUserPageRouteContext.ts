@@ -4,7 +4,7 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 
 const useUserPageRouteContext = () => {
   const { userId, loading: routeLoading, getProfileUrl } = useUserRouteContext();
-  const { userModel, loading: userLoading } = useUserProvider(userId);
+  const { userModel, isContactable, isContactableViaEmail, loading: userLoading } = useUserProvider(userId);
   const { userModel: currentUser, loading: currentUserLoading } = useCurrentUserContext();
 
   const profileUrl = userModel?.profile?.url ?? '';
@@ -12,6 +12,8 @@ const useUserPageRouteContext = () => {
   return {
     userId,
     userModel,
+    isContactable,
+    isContactableViaEmail,
     profileUrl: getProfileUrl(profileUrl),
     currentUserId: currentUser?.id ?? null,
     loading: routeLoading || userLoading || currentUserLoading,

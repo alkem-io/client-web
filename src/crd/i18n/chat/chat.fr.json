@@ -74,5 +74,28 @@
     "back": "Retour aux conversations",
     "loading": "Chargement des messages",
     "addReaction": "Ajouter une réaction"
+  },
+  "sendConfirmation": {
+    "title": "Message envoyé",
+    "description": "Votre message a été envoyé sous forme de discussion privée.",
+    "partialDescription": "Votre message a été envoyé, mais certaines personnes n'ont pas pu être contactées.",
+    "notReachedTitle": "Non contactées",
+    "openChat": "Ouvrir la discussion",
+    "close": "Fermer"
+  },
+  "contactLeads": {
+    "title": "Contacter les responsables",
+    "explanation": "Ce message sera envoyé à chaque responsable individuellement. Pour contacter un responsable en particulier, consultez directement son profil.",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Rédigez votre message…",
+    "recipientsLabel": "Destinataires",
+    "send": "Envoyer",
+    "cancel": "Annuler",
+    "sending": "Envoi…",
+    "errors": {
+      "messageRequired": "Le message ne peut pas être vide.",
+      "messageTooLong": "Le message doit comporter au maximum {{max}} caractères.",
+      "sendFailed": "Impossible d'envoyer le message. Veuillez réessayer."
+    }
   }
 }

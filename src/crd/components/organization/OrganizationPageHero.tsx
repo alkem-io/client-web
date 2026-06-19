@@ -69,7 +69,13 @@ export function OrganizationPageHero({
 
             <div className="flex gap-3 shrink-0">
               {onSendMessage ? (
-                <MessagePopover triggerLabel={t('orgProfile.hero.messageButton')} onSendMessage={onSendMessage} />
+                <MessagePopover
+                  triggerLabel={t('orgProfile.hero.messageButton')}
+                  onSendMessage={onSendMessage}
+                  title={t('orgProfile.hero.messageEmailTitle')}
+                  notice={t('orgProfile.hero.messageEmailNotice')}
+                  placeholder={t('orgProfile.hero.messageEmailPlaceholder')}
+                />
               ) : null}
               {settingsHref ? (
                 <Button

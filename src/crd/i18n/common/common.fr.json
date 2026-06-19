@@ -54,9 +54,8 @@
       "noResults": "Aucun utilisateur trouvé",
       "removeUser": "Retirer {{name}}",
       "messageLabel": "Message",
-      "warning": "Les destinataires verront votre nom comme expéditeur.",
+      "notice": "Chaque destinataire le reçoit comme un message privé dans sa discussion.",
       "send": "Envoyer",
-      "sent": "Message envoyé avec succès.",
       "errors": {
         "atLeastOneUser": "Sélectionnez au moins un utilisateur.",
         "messageRequired": "Le message ne peut pas être vide.",
