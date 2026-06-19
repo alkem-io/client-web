@@ -1,7 +1,8 @@
 ### SVG / icons organization in the codebase
 
-The project is using the MUI Icons.
-However, we have cusom SVG icons as well.
+**CRD code uses `lucide-react` icons.** MUI Icons (`@mui/icons-material`) were
+removed along with the rest of MUI (epic #1888, story #9885) — never reintroduce
+them. We also have custom SVG icons.
 
 The prefered way of adding an SVGs is:
 

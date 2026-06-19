@@ -3,9 +3,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import Gutters from '@/core/ui/grid/Gutters';
-import { gutters } from '@/core/ui/grid/utils';
-import { BlockSectionTitle, Caption, Text } from '@/core/ui/typography';
+import { ReferencesAndTagsStrip } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { InvitationDetailDialog } from '@/crd/components/dashboard/InvitationDetailDialog';
 import { PendingApplicationCard } from '@/crd/components/dashboard/PendingApplicationCard';
@@ -26,7 +24,6 @@ import {
 import type { PendingApplicationItem } from '@/domain/community/user/models/PendingApplicationItem';
 import type { PendingInvitationItem } from '@/domain/community/user/models/PendingInvitationItem';
 import DetailedActivityDescription from '@/domain/shared/components/ActivityDescription/DetailedActivityDescription';
-import References from '@/domain/shared/components/References/References';
 import {
   mapHydratedApplicationToCardData,
   mapHydratedInvitationToCardData,
@@ -134,7 +131,7 @@ const InvitationDetailContainer = ({
   const detailData = mapHydratedInvitationToDetailData(hydrated, i18n.language);
 
   const descriptionSlot = (
-    <Caption>
+    <div className="text-caption text-muted-foreground">
       <DetailedActivityDescription
         i18nKey="community.pendingMembership.invitationCardTitle"
         spaceDisplayName={hydrated.space.about.profile.displayName}
@@ -144,22 +141,22 @@ const InvitationDetailContainer = ({
         author={{ displayName: hydrated.userDisplayName }}
         type={hydrated.invitation.actor?.type}
       />
-    </Caption>
+    </div>
   );
 
   const welcomeMessageSlot = hydrated.invitation.welcomeMessage ? (
-    <Text>{hydrated.invitation.welcomeMessage}</Text>
+    <p className="text-body">{hydrated.invitation.welcomeMessage}</p>
   ) : undefined;
 
   const guidelinesSlot = communityGuidelines ? (
     <>
-      <BlockSectionTitle paddingTop={gutters()}>{communityGuidelines.profile.displayName}</BlockSectionTitle>
-      <Gutters disablePadding={true}>
-        <div style={{ wordWrap: 'break-word' }}>
+      <h3 className="text-card-title pt-2">{communityGuidelines.profile.displayName}</h3>
+      <div className="flex flex-col gap-2">
+        <div className="break-words">
           <MarkdownContent content={communityGuidelines.profile.description ?? ''} />
         </div>
-        <References compact={true} references={communityGuidelines.profile.references} />
-      </Gutters>
+        <ReferencesAndTagsStrip references={communityGuidelines.profile.references} />
+      </div>
     </>
   ) : undefined;
 

@@ -1,9 +1,9 @@
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import Loading from '@/core/ui/loading/Loading';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { nameOfUrl } from '@/main/routing/urlParams';
 
 const CrdInnovationHubHomePage = lazyWithGlobalErrorHandler(
@@ -41,7 +41,7 @@ const CrdHubRoute = () => (
           </Suspense>
         }
       />
-      <Route path="*" element={<Error404 />} />
+      <Route path="*" element={<CrdNotFoundView />} />
     </Routes>
   </StorageConfigContextProvider>
 );
