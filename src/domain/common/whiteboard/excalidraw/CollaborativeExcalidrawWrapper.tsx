@@ -24,7 +24,8 @@ import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/util
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
+import { useWhiteboardCollab } from './collab/unified/useWhiteboardCollab';
+import type { CollabAPI, CollabState } from './collab/useCollab';
 import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
 import { useAutoReconnect } from './useAutoReconnect';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
@@ -195,29 +196,71 @@ const CollaborativeExcalidrawWrapper = ({
 
   const mergedUIOptions = merge(UIOptions, externalUIOptions);
 
-  const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason, isReadOnly }] = useCollab({
-    username,
-    filesManager,
+  const isOnline = useOnlineStatus();
+
+  const restartCollaboration = () => {
+    setCollaborationStartTime(Date.now());
+  };
+
+  // Unified collaboration (WS-D): the per-property Yjs scene binding over the
+  // unified collaboration-service, replacing the legacy socket.io Collab/Portal.
+  // `collaborationStartTime` keys the whiteboard id so a restart mounts a fresh
+  // provider + Y.Doc (the reconnect path the disconnect notice drives).
+  const collabWhiteboardId = whiteboard?.id && collaborationStartTime !== null ? whiteboard.id : undefined;
+
+  const [whiteboardCollab, collabState] = useWhiteboardCollab({
+    whiteboardId: collabWhiteboardId,
+    user: { id: userModel?.id, username, color: undefined, avatarUrl: userModel?.profile?.avatar?.uri },
+    guestName: getGuestName() ?? undefined,
     onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
       setSceneInitialized(false);
       // The auto-reconnect countdown is driven by `useAutoReconnect` off the notice-open + connecting
       // state below — no need to schedule anything from here.
-      // event if it's duplicated by the httpLink and Portal handlers, let's log this closeConnection one
-      // with additional info here #7492
       logError('WB Connection Closed', {
         category: TagCategoryValues.WHITEBOARD,
         label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Online: ${isOnline}`,
       });
     },
-    onSceneInitChange: (initialized: boolean) => {
-      setSceneInitialized(initialized);
-      actions.onSceneInitChange?.(initialized);
-    },
-    onIncomingEmojiReaction: excalidrawApi?.dispatchIncomingEmojiReaction,
-    onIncomingCountdownTimer: excalidrawApi?.dispatchIncomingCountdownTimer,
   });
+
+  // Adapt the unified hook state to the wrapper's existing CollabState surface
+  // (consumed by WhiteboardDialog's render-prop + headerActions, unchanged).
+  const connecting = collabState.status === 'connecting';
+  const collaborating = collabState.status === 'connected' && collabState.synced;
+  const mode: CollabState['mode'] = collabState.mode;
+  const modeReason: CollabState['modeReason'] = null;
+  const isReadOnly = collabState.isReadOnly;
+
+  // The binding owns scene↔doc sync internally (it subscribes to the editor's
+  // onChange). Once the scene has loaded via the y-protocols sync handshake, mark
+  // it initialized so the loading overlay clears.
+  useEffect(() => {
+    const initialized = collaborating;
+    setSceneInitialized(initialized);
+    actions.onSceneInitChange?.(initialized);
+  }, [collaborating]);
+
+  // CollabAPI shim for combinedCollabApiRef (WhiteboardDialog calls isCollaborating()).
+  // Scene propagation is now owned by the Yjs binding, so `syncScene` is a no-op;
+  // cursor presence routes through the binding's awareness via the unified hook.
+  // Depends on the hook's stable callbacks, not the per-render `whiteboardCollab`.
+  const { onPointerUpdate, broadcastEmojiReaction, broadcastCountdownTimer } = whiteboardCollab;
+  const collabApi: CollabAPI = useMemo(
+    () =>
+      ({
+        onPointerUpdate: (payload: {
+          pointer: { x: number; y: number; tool?: 'pointer' | 'laser' };
+          button: 'down' | 'up';
+        }) => onPointerUpdate({ pointer: payload.pointer, button: payload.button }),
+        syncScene: async () => {},
+        isCollaborating: () => collaborating,
+        broadcastEmojiReaction,
+        broadcastCountdownTimer,
+      }) as unknown as CollabAPI,
+    [onPointerUpdate, broadcastEmojiReaction, broadcastCountdownTimer, collaborating]
+  );
 
   useEffect(() => {
     // eslint-disable-next-line react-compiler/react-compiler -- ref mutation from useCombinedRefs; compiler cannot infer mutability
@@ -234,19 +277,13 @@ const CollaborativeExcalidrawWrapper = ({
     return collabApi?.broadcastCountdownTimer?.(remainingSeconds, startedBy, active);
   };
 
-  const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+  // The Yjs binding propagates element changes; the wrapper's onChange only needs
+  // to upload any new local files so the binding can sync their descriptors.
+  const onChange = async (_elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
     if (isReadOnly) {
-      collabApi?.syncScene(elements, files);
       return;
     }
-    const uploadedFiles = await filesManager.getUploadedFiles(files);
-    collabApi?.syncScene(elements, uploadedFiles);
-  };
-
-  const isOnline = useOnlineStatus();
-
-  const restartCollaboration = () => {
-    setCollaborationStartTime(Date.now());
+    await filesManager.getUploadedFiles(files);
   };
 
   // Single source of truth for the reconnect countdown + backoff (5s → 10s → 30s → 60s…). It counts
@@ -265,14 +302,21 @@ const CollaborativeExcalidrawWrapper = ({
     }
   }, [connecting, collaborating]);
 
+  // Wire the Excalidraw imperative API into the unified collab binding (and tear
+  // it down on unmount via the null call). Effect-driven so the binding is created
+  // once the API + a live provider exist, and disposed on whiteboard change. Depends
+  // on the stable `onExcalidrawAPI` callback (it changes only when the provider/doc
+  // does), not the whole `whiteboardCollab` object (rebuilt every render).
+  const bindExcalidrawApi = whiteboardCollab.onExcalidrawAPI;
   useEffect(() => {
-    if (excalidrawApi && whiteboard?.id && collaborationStartTime !== null) {
-      return initializeCollab({
-        excalidrawApi,
-        roomId: whiteboard.id,
-      });
+    if (!excalidrawApi) {
+      return;
     }
-  }, [excalidrawApi, whiteboard?.id, collaborationStartTime]);
+    bindExcalidrawApi(excalidrawApi);
+    return () => {
+      bindExcalidrawApi(null);
+    };
+  }, [excalidrawApi, bindExcalidrawApi]);
 
   const handleInitializeApi = (excalidrawApi: ExcalidrawImperativeAPI) => {
     setExcalidrawApi(excalidrawApi);

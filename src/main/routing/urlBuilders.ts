@@ -34,8 +34,15 @@ export const buildSettingsCommunityUrl = (entityUrl: string) => {
 
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
-export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
-  const fullReturnUrl = isAbsoluteUrl(returnUrl) ? returnUrl : `${origin}${returnUrl}`;
+export const buildReturnUrlParam = (
+  returnUrl: string | null | undefined = ROUTE_HOME,
+  origin = window.location.origin
+) => {
+  // Coalesce a null/empty returnUrl to the home route — a default param only
+  // applies to `undefined`, but callers (e.g. a whiteboard with no profile URL)
+  // can pass `null`, which would otherwise crash isAbsoluteUrl(null).
+  const safeReturnUrl = returnUrl || ROUTE_HOME;
+  const fullReturnUrl = isAbsoluteUrl(safeReturnUrl) ? safeReturnUrl : `${origin}${safeReturnUrl}`;
   return `?returnUrl=${encodeURI(fullReturnUrl)}`;
 };
 

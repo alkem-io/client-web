@@ -9,7 +9,14 @@
     // Paths & modules
     "baseUrl": "src",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      // `@alkemio/excalidraw-yjs-binding`'s published `.d.ts` references internal
+      // Excalidraw monorepo type packages that are not published standalone. Map
+      // them onto the published `@alkemio/excalidraw` type declarations (identical
+      // shapes). The runtime equivalents are wired via pnpm.overrides — see
+      // vendor/excalidraw-element-shim/README.md.
+      "@excalidraw/excalidraw/types": ["../node_modules/@alkemio/excalidraw/dist/types/excalidraw/types"],
+      "@excalidraw/element/types": ["../node_modules/@alkemio/excalidraw/dist/types/element/src/types"]
     },
     "moduleResolution": "Node",
     "resolveJsonModule": true,

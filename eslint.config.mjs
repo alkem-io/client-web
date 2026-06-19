@@ -3,7 +3,18 @@ import reactCompilerPlugin from 'eslint-plugin-react-compiler';
 
 export default [
   {
-    ignores: ['node_modules/', 'build/', 'dist/', 'coverage/', '**/*.test_.ts', 'prototype/', 'src/crd/app/**'],
+    ignores: [
+      'node_modules/',
+      'build/',
+      'dist/',
+      'coverage/',
+      '**/*.test_.ts',
+      'prototype/',
+      'src/crd/app/**',
+      // Local dependency-resolution shim (see vendor/excalidraw-element-shim/README.md);
+      // build-time glue, not application source, and outside the tsconfig project.
+      'vendor/',
+    ],
   },
   {
     files: ['**/*.ts', '**/*.tsx'],

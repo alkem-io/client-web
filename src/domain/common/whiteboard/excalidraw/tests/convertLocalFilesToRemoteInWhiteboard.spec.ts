@@ -297,7 +297,7 @@ describe('convertLocalFilesToRemoteInWhiteboard implementation', () => {
 
       const file = createMockFile('file-1', { url: 'https://example.com/1.png' });
       const whiteboard: ExtendedWhiteboard = {
-        files: { 'file-1': file } as Record<string, BinaryFileDataWithOptionalUrl>,
+        files: { 'file-1': file } as unknown as Record<string, BinaryFileDataWithOptionalUrl>,
         appState: { zoom: 1.5, scrollX: 100, scrollY: 200 },
         elements: [{ id: 'elem-1', type: 'rectangle' }],
         customProp: 'preserved',
