@@ -1,8 +1,9 @@
 import { BookOpen, Bot, CloudDownload, Library, Loader2, Plus, Trash2, Upload } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type ImageCropConfig, ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
+import { RowAttachFileButton } from '@/crd/forms/references/RowAttachFileButton';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -250,11 +251,40 @@ function InitialStep(props: VCCreationWizardViewProps) {
 
 function AddKnowledgeStep(props: VCCreationWizardViewProps) {
   const { t } = useTranslation('crd-contributorSettings');
+  const [uploadingDocs, setUploadingDocs] = useState<Record<number, boolean>>({});
+  // Mirror of `documents` for post-await reads: a file upload takes seconds, and
+  // if the user edits any row meanwhile the closure-captured `props.documents`
+  // is stale by the time `await onDocumentUpload` resolves. Reading from the ref
+  // avoids reverting concurrent keystrokes.
+  const documentsRef = useRef(props.documents);
+  useEffect(() => {
+    documentsRef.current = props.documents;
+  }, [props.documents]);
 
   const updatePost = (i: number, patch: Partial<VcWizardPost>) =>
     props.onChangePosts(props.posts.map((p, idx) => (idx === i ? { ...p, ...patch } : p)));
   const updateDoc = (i: number, patch: Partial<VcWizardDocument>) =>
     props.onChangeDocuments(props.documents.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
+
+  const handleDocFile = async (i: number, file: File | undefined) => {
+    if (!file || !props.onDocumentUpload) return;
+    setUploadingDocs(prev => ({ ...prev, [i]: true }));
+    try {
+      const url = await props.onDocumentUpload(file);
+      if (!url) return;
+      const current = documentsRef.current[i];
+      const filenameBase = file.name.replace(/\.[^./\\]+$/, '').trim();
+      const patch: Partial<VcWizardDocument> = { url };
+      if (!current?.name.trim() && filenameBase) patch.name = filenameBase;
+      props.onChangeDocuments(documentsRef.current.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
+    } finally {
+      setUploadingDocs(prev => {
+        const next = { ...prev };
+        delete next[i];
+        return next;
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -324,6 +354,14 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
               aria-label={t('wizard.addKnowledge.documentUrl')}
               className="flex-1"
             />
+            {props.onDocumentUpload && (
+              <RowAttachFileButton
+                accept={props.documentUploadAccept}
+                uploading={Boolean(uploadingDocs[i])}
+                ariaLabel={t('wizard.addKnowledge.attachDocument')}
+                onFile={file => handleDocFile(i, file)}
+              />
+            )}
             <Button
               type="button"
               variant="ghost"
