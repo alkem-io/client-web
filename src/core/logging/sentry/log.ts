@@ -12,6 +12,7 @@ export enum TagCategoryValues {
   WS = 'WS',
   VC = 'VC',
   NOTIFICATIONS = 'NOTIFICATIONS',
+  CHAT = 'CHAT',
 }
 
 interface Tags {
