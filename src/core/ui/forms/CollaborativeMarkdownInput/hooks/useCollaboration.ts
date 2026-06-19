@@ -1,9 +1,10 @@
-import { type onStatelessParameters, TiptapCollabProvider, TiptapCollabProviderWebsocket } from '@hocuspocus/provider';
 import type { Extensions } from '@tiptap/core';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCaret from '@tiptap/extension-collaboration-caret';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as Y from 'yjs';
+import { type ControlMessage, readOnlyReasonToCode } from '@/core/collab/controlMessage';
+import { UnifiedCollabProvider } from '@/core/collab/UnifiedCollabProvider';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import type { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
@@ -14,12 +15,6 @@ import {
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import { env } from '@/main/env';
 import { useNotification } from '../../../notifications/useNotification';
-import {
-  isStatelessReadOnlyStateMessage,
-  isStatelessSaveErrorMessage,
-  isStatelessSaveMessage,
-} from '../stateless-messaging';
-import { decodeStatelessMessage } from '../stateless-messaging/util';
 import useUserCursor from '../useUserCursor';
 
 interface UseCollaborationProps {
@@ -64,21 +59,17 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
 
   // Create provider without auto-connecting; connection is started in useEffect
   const provider = useMemo(() => {
-    const MEMO_SERVICE_URL = getCollaborationServiceUrl();
+    const COLLAB_SERVICE_URL = getCollaborationServiceUrl();
 
-    if (!collaborationId || !MEMO_SERVICE_URL) {
+    if (!collaborationId || !COLLAB_SERVICE_URL) {
       return null;
     }
 
-    const websocketProvider = new TiptapCollabProviderWebsocket({
-      baseUrl: MEMO_SERVICE_URL,
-      connect: false,
-    });
-
-    return new TiptapCollabProvider({
-      websocketProvider,
-      name: collaborationId,
-      document: ydoc,
+    return new UnifiedCollabProvider({
+      url: COLLAB_SERVICE_URL,
+      documentId: collaborationId,
+      contentType: 'memo',
+      doc: ydoc,
     });
   }, [collaborationId, ydoc]);
 
@@ -86,8 +77,8 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   useEffect(() => {
     if (!provider) return;
 
-    const syncHandler = (event: { state: string }) => {
-      setSynced(!!event.state);
+    const syncHandler = (state: boolean) => {
+      setSynced(!!state);
     };
 
     const statusHandler = (event: { status: string }) => {
@@ -98,39 +89,50 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       }
     };
 
-    const statelessEventHandler = ({ payload }: onStatelessParameters) => {
-      const decodedMessage = decodeStatelessMessage(payload);
-      if (!decodedMessage) {
-        return;
-      }
-
-      if (isStatelessSaveMessage(decodedMessage)) {
-        if (isStatelessSaveErrorMessage(decodedMessage)) {
-          notifyRef.current('Unable to save changes', 'warning');
-        } else {
+    // The type-3 control channel replaces Hocuspocus "stateless" messages: saved /
+    // save-error → save indicator + warning; read-only-state (+optional reason) →
+    // editor lock + footer reason. Unknown kinds are ignored by the decoder.
+    const controlHandler = (msg: ControlMessage) => {
+      switch (msg.kind) {
+        case 'saved':
           setLastSaveTime(new Date());
-        }
-      } else if (isStatelessReadOnlyStateMessage(decodedMessage)) {
-        setReadOnlyState({
-          readOnly: decodedMessage.readOnly,
-          readOnlyCode: decodedMessage.readOnlyCode,
-        });
+          break;
+        case 'save-error':
+          notifyRef.current('Unable to save changes', 'warning');
+          break;
+        case 'read-only-state':
+          setReadOnlyState({
+            readOnly: !!msg.readOnly,
+            // OPEN-1: the server-side `reason` (collab) maps back to the existing
+            // ReadOnlyCode so the footer's read-only reason UX is preserved. When the
+            // server omits it (OPEN-1 not yet landed), the footer falls back to its
+            // generic policy reason — the capacity/multi-user granularity is lost.
+            readOnlyCode: readOnlyReasonToCode(msg.reason),
+          });
+          break;
+        default:
+          // room-user-change / room-closed and forward-compat kinds: no memo UX impact today.
+          break;
       }
     };
 
-    const authenticationFailedHandler = () => {
+    // A handshake 401 (or any auth-rejecting close) drops sync, mirroring the old
+    // Hocuspocus `authenticationFailed` behaviour.
+    const connectionCloseHandler = () => {
       setSynced(false);
     };
 
     provider.on('status', statusHandler);
     provider.on('synced', syncHandler);
-    provider.on('authenticationFailed', authenticationFailedHandler);
-    provider.on('stateless', statelessEventHandler);
+    provider.on('connection-close', connectionCloseHandler);
+    provider.on('connection-error', connectionCloseHandler);
+    const unsubscribeControl = provider.onControl(controlHandler);
 
     // Start the WebSocket connection now that event listeners are in place
     provider.connect();
 
     return () => {
+      unsubscribeControl();
       provider.destroy();
     };
   }, [provider]);

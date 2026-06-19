@@ -139,6 +139,7 @@
     "i18next": "^25.5.2",
     "i18next-browser-languagedetector": "7.2.2",
     "jsdom": "^26.0.0",
+    "lib0": "^0.2.117",
     "lodash-es": "^4.17.23",
     "lucide-react": "^1.7.0",
     "markdown-it": "^14.1.0",
@@ -180,6 +181,8 @@
     "use-deep-compare-effect": "^1.8.1",
     "uuid": "^11.1.0",
     "y-prosemirror": "^1.3.6",
+    "y-protocols": "^1.0.6",
+    "y-websocket": "^3.0.0",
     "yjs": "^13.6.27",
     "yup": "^1.6.1"
   },
