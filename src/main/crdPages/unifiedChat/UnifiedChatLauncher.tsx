@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { FloatingChatLauncher } from '@/crd/components/chat/FloatingChatLauncher';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
@@ -31,7 +32,10 @@ export const UnifiedChatLauncher = ({ hidden }: UnifiedChatLauncherProps) => {
         unreadCount={unreadCount}
         isOpen={isOpen}
         hidden={isSmallScreen && isOpen}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (!isOpen) trackChatOpen('floatingButton');
+          setIsOpen(!isOpen);
+        }}
         openLabel={t('launcher.open')}
         closeLabel={t('launcher.close')}
         unreadLabel={t('launcher.unreadLabel')}

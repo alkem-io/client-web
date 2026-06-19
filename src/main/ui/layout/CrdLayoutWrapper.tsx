@@ -1,5 +1,6 @@
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
@@ -21,6 +22,8 @@ import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/Banner
 import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
+import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
 const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/dashboard/CrdPendingMembershipsDialog')
@@ -43,6 +46,8 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 
   const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
+  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
+  const unreadMessagesCount = useUnreadConversationsCount();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
@@ -93,6 +98,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
         unreadNotificationsCount={notificationsUnreadCount}
+        unreadMessagesCount={unreadMessagesCount}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
@@ -100,6 +106,10 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         fullWidth={headerFullWidth}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
+        onMessagesClick={() => {
+          trackChatOpen('headerIcon');
+          setMessagingOpen(true);
+        }}
         onNotificationsClick={() => setNotificationsOpen(true)}
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
