@@ -1,4 +1,4 @@
-import { Bell, LayoutGrid, Search } from 'lucide-react';
+import { Bell, LayoutGrid, MessageCircle, Search } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
@@ -62,10 +62,12 @@ type HeaderProps = {
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
   unreadNotificationsCount?: number;
+  unreadMessagesCount?: number;
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
   breadcrumbs?: ReactNode;
   onLogout?: () => void;
+  onMessagesClick?: () => void;
   onNotificationsClick?: () => void;
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
@@ -104,10 +106,12 @@ export function Header({
   platformNavigationItems,
   currentPath,
   unreadNotificationsCount,
+  unreadMessagesCount,
   languages,
   currentLanguage,
   breadcrumbs,
   onLogout,
+  onMessagesClick,
   onNotificationsClick,
   onSearchClick,
   onPendingMembershipsClick,
@@ -175,6 +179,22 @@ export function Header({
                 ariaLabel={t('header.search')}
                 icon={<Search aria-hidden="true" className="w-5 h-5" />}
               />
+
+              {authenticated && (
+                <HeaderIconButton
+                  onClick={onMessagesClick}
+                  ariaLabel={t('header.messages')}
+                  icon={<MessageCircle aria-hidden="true" className="w-5 h-5" />}
+                  badge={
+                    typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
+                      <>
+                        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                        <span className="sr-only">{t('header.unreadMessages', { count: unreadMessagesCount })}</span>
+                      </>
+                    ) : undefined
+                  }
+                />
+              )}
 
               {authenticated && (
                 <HeaderIconButton

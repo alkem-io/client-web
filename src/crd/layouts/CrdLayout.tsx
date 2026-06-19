@@ -20,11 +20,13 @@ type CrdLayoutProps = {
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
   unreadNotificationsCount?: number;
+  unreadMessagesCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   breadcrumbs?: ReactNode;
   onLanguageChange: (code: string) => void;
   onLogout?: () => void;
+  onMessagesClick?: () => void;
   onNotificationsClick?: () => void;
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
@@ -47,11 +49,13 @@ export function CrdLayout({
   platformNavigationItems,
   currentPath,
   unreadNotificationsCount,
+  unreadMessagesCount,
   languages,
   currentLanguage,
   breadcrumbs,
   onLanguageChange,
   onLogout,
+  onMessagesClick,
   onNotificationsClick,
   onSearchClick,
   onPendingMembershipsClick,
@@ -73,11 +77,13 @@ export function CrdLayout({
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
         unreadNotificationsCount={unreadNotificationsCount}
+        unreadMessagesCount={unreadMessagesCount}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbs}
         onLanguageChange={onLanguageChange}
         onLogout={onLogout}
+        onMessagesClick={onMessagesClick}
         onNotificationsClick={onNotificationsClick}
         onSearchClick={onSearchClick}
         onPendingMembershipsClick={onPendingMembershipsClick}
