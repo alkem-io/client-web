@@ -58,14 +58,12 @@
       "glob-parent": "^5.1.2",
       "got": "11.8.5",
       "nth-check": "^2.0.1",
-      "chokidar": "^3.5.3",
-      "@excalidraw/element@0.18.0": "file:./vendor/excalidraw-element-shim",
-      "@excalidraw/fractional-indexing@3.3.0": "npm:fractional-indexing@3.2.0"
+      "chokidar": "^3.5.3"
     }
   },
   "dependencies": {
     "@alkemio/excalidraw": "0.18.0-864353b-alkemio-16",
-    "@alkemio/excalidraw-yjs-binding": "https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@32",
+    "@alkemio/excalidraw-yjs-binding": "https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@e30b32c",
     "@apollo/client": "^3.10.8",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",

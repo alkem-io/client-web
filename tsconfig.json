@@ -10,13 +10,11 @@
     "baseUrl": "src",
     "paths": {
       "@/*": ["./*"],
-      // `@alkemio/excalidraw-yjs-binding`'s published `.d.ts` references internal
-      // Excalidraw monorepo type packages that are not published standalone. Map
-      // them onto the published `@alkemio/excalidraw` type declarations (identical
-      // shapes). The runtime equivalents are wired via pnpm.overrides — see
-      // vendor/excalidraw-element-shim/README.md.
-      "@excalidraw/excalidraw/types": ["../node_modules/@alkemio/excalidraw/dist/types/excalidraw/types"],
-      "@excalidraw/element/types": ["../node_modules/@alkemio/excalidraw/dist/types/element/src/types"]
+      // `@alkemio/excalidraw-yjs-binding`'s published `.d.ts` imports the type-only
+      // subpath `@excalidraw/excalidraw/types`, which classic Node resolution can't
+      // read through the `@alkemio/excalidraw` peer dep's `exports` map. Map it onto
+      // the published `@alkemio/excalidraw` declarations (identical shapes).
+      "@excalidraw/excalidraw/types": ["../node_modules/@alkemio/excalidraw/dist/types/excalidraw/types"]
     },
     "moduleResolution": "Node",
     "resolveJsonModule": true,

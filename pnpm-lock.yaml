@@ -12,8 +12,6 @@ overrides:
   got: 11.8.5
   nth-check: ^2.0.1
   chokidar: ^3.5.3
-  '@excalidraw/element@0.18.0': file:./vendor/excalidraw-element-shim
-  '@excalidraw/fractional-indexing@3.3.0': npm:fractional-indexing@3.2.0
 
 importers:
 
@@ -23,8 +21,8 @@ importers:
         specifier: 0.18.0-864353b-alkemio-16
         version: 0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@alkemio/excalidraw-yjs-binding':
-        specifier: https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@32
-        version: https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@32(@alkemio/excalidraw@0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))
+        specifier: https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@e30b32c
+        version: https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@e30b32c(@alkemio/excalidraw@0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))
       '@apollo/client':
         specifier: ^3.10.8
         version: 3.14.0(@types/react@19.1.8)(graphql-ws@5.16.2(graphql@16.11.0))(graphql@16.11.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
@@ -507,13 +505,8 @@ packages:
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
 
-  '@alkemio/excalidraw-element-shim@file:vendor/excalidraw-element-shim':
-    resolution: {directory: vendor/excalidraw-element-shim, type: directory}
-    peerDependencies:
-      '@alkemio/excalidraw': '>=0.18.0'
-
-  '@alkemio/excalidraw-yjs-binding@https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@32':
-    resolution: {tarball: https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@32}
+  '@alkemio/excalidraw-yjs-binding@https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@e30b32c':
+    resolution: {tarball: https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@e30b32c}
     version: 0.18.0
     peerDependencies:
       '@alkemio/excalidraw': '>=0.18.0'
@@ -7999,15 +7992,10 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@alkemio/excalidraw-element-shim@file:vendor/excalidraw-element-shim(@alkemio/excalidraw@0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))':
+  '@alkemio/excalidraw-yjs-binding@https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@e30b32c(@alkemio/excalidraw@0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))':
     dependencies:
       '@alkemio/excalidraw': 0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-
-  '@alkemio/excalidraw-yjs-binding@https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@32(@alkemio/excalidraw@0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))':
-    dependencies:
-      '@alkemio/excalidraw': 0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      '@excalidraw/element': '@alkemio/excalidraw-element-shim@file:vendor/excalidraw-element-shim(@alkemio/excalidraw@0.18.0-864353b-alkemio-16(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))'
-      '@excalidraw/fractional-indexing': fractional-indexing@3.2.0
+      fractional-indexing: 3.2.0
       y-protocols: 1.0.6(yjs@13.6.27)
       yjs: 13.6.27
 
