@@ -27,7 +27,7 @@ OPEN clarifications are answered and the binding package ships**.
 
 - [x] CHK012 No conflicting requirements across spec/plan/research/data-model/tasks (cross-checked in the self-analyze pass at the end of tasks.md).
 - [x] CHK013 Each FR is singular and verifiable (no compound obligation hiding a second untested one).
-- [x] CHK014 Nothing is marked implemented — this is SPEC/DESIGN only; tasks are all unchecked and gated.
+- [x] CHK014 *(design-phase gate, now superseded)* At authoring time nothing was marked implemented (SPEC/DESIGN only, tasks all gated). **As built**: US2 memo (`479a11703`) + US1 whiteboard (`cb1e70a`) are implemented; tasks.md now carries the as-built `[x]`/deferred ledger with deviations annotated. The FRs/SCs themselves are unchanged.
 - [x] CHK015 The big-bang-cutover gating + legacy-warm rollback is stated as a rollout requirement (FR-008/plan Rollout/T006.3), so the client never runs mixed old/new on one live document.
 
 ## Ambiguities & Open Decisions
@@ -39,7 +39,7 @@ OPEN clarifications are answered and the binding package ships**.
 
 ## Feature Readiness
 
-- [x] CHK020 The blocking dependency (`@alkemio/excalidraw-yjs-binding` unpublished) is called out in spec Assumptions, plan R1, tasks T003.0, and the report — the whiteboard half cannot start until it ships.
+- [x] CHK020 *(resolved)* The (former) blocking dependency `@alkemio/excalidraw-yjs-binding` was called out in spec Assumptions, plan R1, and tasks T003.0; it has since **published `@32`** (pkg.pr.new) and the whiteboard half shipped. Residual called out across spec/plan/research: the artifact is not self-contained (interim overrides/shim/paths) and the `@alkemio/excalidraw` consumable bump + prop rename are deferred.
 - [x] CHK021 The packaging/sequencing (binding publish → `@alkemio/excalidraw` bump → prop rename, atomic) is consistent across plan, research D5, and tasks T003.1/T003.2.
 - [x] CHK022 Memo (unblocked) and whiteboard (blocked) are cleanly separable into two PRs; the plan + tasks order them so memo can land first.
 - [x] CHK023 The client's e2e-harness contribution (FR-011/SC-006) is an explicit deliverable (T006.2), not assumed.
@@ -47,6 +47,5 @@ OPEN clarifications are answered and the binding package ships**.
 
 ## Notes
 
-- The single residual UX risk is OPEN-1 (read-only **reason** / collaborator-mode parity): the unified `ControlMessage` is narrower than today's `readOnlyCode`/`collaborator-mode reason`. Recommended fix is a small additive server `reason` field; the documented fallback is a generic reason with flagged lost granularity.
-- OPEN-2 recommendation (adopt `y-websocket` + register type-2/3 handlers) should be verified against the chosen `y-websocket` version's `messageHandlers` API before T000.3.
-- Re-run `/speckit-analyze` after OPEN-1..4 are answered and before implementation, to re-baseline coverage honestly.
+- **As built**: the single residual UX risk remains OPEN-1 (read-only **reason** / collaborator-mode parity) — the client now decodes the additive `reason` (`readOnlyReasonToCode`) but the server does not yet emit it, so the live behaviour is the generic-reason fallback (capacity/multi-user/inactivity granularity lost). OPEN-2 resolved (adopted `y-websocket@3.0.0`); OPEN-3 partially resolved (binding published `@32`; bump+rename deferred, T003.1/T003.2); OPEN-4 resolved (only the reason bridge depends on OPEN-1).
+- `/speckit-analyze` was re-run post-implementation to re-baseline coverage honestly; see the as-built ledger in tasks.md and the residual follow-ups (Phase 3 cleanup/cutover T005/T006, OPEN-1 server `reason`, live e2e T006.2).

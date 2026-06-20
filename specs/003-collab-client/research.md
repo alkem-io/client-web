@@ -37,10 +37,10 @@ realization and client-only choices.
 | `@tiptap/extension-collaboration-caret` | `3.11.0` | keep (unchanged) |
 | `y-prosemirror` | `^1.3.6` | keep (unchanged) |
 | `yjs` | `^13.6.27` | keep |
-| `@alkemio/excalidraw` | `0.18.0-864353b-alkemio-16` | **bump** (T003, with `onExcalidrawAPI`) |
-| `y-protocols` | — (absent) | **add** |
-| `y-websocket` | — (absent) | **add** (if OPEN-2 confirms) |
-| `@alkemio/excalidraw-yjs-binding` | — (absent, **unpublished**) | **add** when published (BLOCKING) |
+| `@alkemio/excalidraw` | `0.18.0-864353b-alkemio-16` | **NOT bumped** — `@32` un-consumable; rename deferred (D5 as-built) |
+| `y-protocols` | `^1.0.6` (**added**) | keep |
+| `y-websocket` | `^3.0.0` (**added**, OPEN-2 → adopt) | keep |
+| `@alkemio/excalidraw-yjs-binding` | `pkg.pr.new @32` (**added**) | keep; interim overrides/shim until self-contained publish (D5 as-built) |
 
 ## Decisions
 
@@ -68,6 +68,7 @@ realization and client-only choices.
 - **Decision**: `excalidrawAPI`→`onExcalidrawAPI` (F-W7) lands in the same change as the `@alkemio/excalidraw` version bump that introduces the renamed prop; both whiteboard render sites updated together.
 - **Rationale**: the prop name is owned by the published component; renaming before the bump (or bumping before the rename) is a red build.
 - **Alternatives**: a compat shim accepting both props — rejected (no-legacy; we control the bump timing).
+- **As built (`cb1e70a`) — packaging gap + deferred rename.** The binding shipped via **pkg.pr.new `@32`** (not a registry release) and is **not self-contained**: its published `.d.ts` references unpublished internal Excalidraw monorepo packages (`@excalidraw/element`, `@excalidraw/fractional-indexing`). To consume it today the build pins `pnpm.overrides` (`@excalidraw/element@0.18.0` → local `vendor/excalidraw-element-shim/` with a minimal `CaptureUpdateAction` shim; `@excalidraw/fractional-indexing@3.3.0` → `npm:fractional-indexing@3.2.0`) + `tsconfig.json` `paths` for the binding's internal type imports. The companion `@alkemio/excalidraw` `@32` build is equally un-consumable, so **`@alkemio/excalidraw` was NOT bumped** (kept `0.18.0-864353b-alkemio-16`) and the **`excalidrawAPI`→`onExcalidrawAPI` rename was deferred** — the binding only needs the imperative API the existing `excalidrawAPI` callback already delivers, so US1 does not require the rename. The overrides/shim/paths are an **interim** workaround removed once a self-contained excalidraw-fork publish lands (a fix is in flight); the atomic bump+rename (D5) applies then. Tracked: tasks T003.1 (PARTIAL) / T003.2 (DEFERRED), plan.md Implementation note + R4'.
 
 ### D6 — Config consolidation
 - **Decision**: collapse `VITE_APP_COLLAB_DOC_URL`/`_PATH` (memo) and `VITE_APP_COLLAB_URL`/`_PATH` (whiteboard) into one unified collab base URL/path at cutover (T006), both pointing at `collaboration-service`.
@@ -75,7 +76,7 @@ realization and client-only choices.
 
 ## Open items (full text in spec.md `Clarifications → OPEN`)
 
-- **OPEN-1** control/ephemeral message parity (read-only reason, collaborator-mode, inactivity) — recommend additive server `reason`.
-- **OPEN-2** thin custom provider vs. fork/adopt `y-websocket` — recommend **adopt** + register type-2/3 handlers.
-- **OPEN-3** binding publish + version-bump sequencing — recommend publish binding + `@alkemio/excalidraw` (with `onExcalidrawAPI`) → bump both → implement T003 atomically.
-- **OPEN-4** memo UX signals to re-map — only the read-only **reason** needs bridging (folds into OPEN-1); the rest map cleanly.
+- **OPEN-1** control/ephemeral message parity (read-only reason, collaborator-mode, inactivity) — recommend additive server `reason`. **STILL OPEN** server-side: the client decodes `msg.reason` (`readOnlyReasonToCode`) and falls back to a generic reason while the server omits it (capacity/multi-user/inactivity granularity lost).
+- **OPEN-2** thin custom provider vs. fork/adopt `y-websocket` — recommend **adopt** + register type-2/3 handlers. **RESOLVED**: adopted `y-websocket@3.0.0` (D2 / T000.1).
+- **OPEN-3** binding publish + version-bump sequencing — recommend publish binding + `@alkemio/excalidraw` (with `onExcalidrawAPI`) → bump both → implement T003 atomically. **PARTIALLY RESOLVED**: binding published `@32` and consumed; `@alkemio/excalidraw` bump + prop rename **deferred** (the `@32` build is un-consumable, and US1 does not need the rename) — see D5 as-built.
+- **OPEN-4** memo UX signals to re-map — only the read-only **reason** needs bridging (folds into OPEN-1); the rest map cleanly. **As built**: the rest mapped cleanly; the reason bridge is wired but still depends on OPEN-1 server-side.

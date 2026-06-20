@@ -2,7 +2,7 @@
 
 **Feature Branch**: `feat/003-unify-collab-yjs`
 **Created**: 2026-06-19
-**Status**: Draft (SPEC/DESIGN only — implementation blocked on Clarifications + the binding package)
+**Status**: Implemented — US2 memo (`479a11703`) + US1 whiteboard (`cb1e70a`) on PR #9912; Phase 3 cleanup/cutover (T005/T006) + the OPEN-1 server `reason` + the live e2e (T006.2) remain open follow-ups. Requirements below are unchanged from the original design; see `tasks.md` for the as-built ledger and deviations.
 **Repo**: `alkem-io/client-web` · **Integration branch**: `develop`
 **Workspace epic**: [`agents-hq/specs/003-unify-collab-yjs/`](../../../agents-hq/specs/003-unify-collab-yjs/spec.md) · Backlog story [alkem-io/alkemio#1909](https://github.com/alkem-io/alkemio/issues/1909)
 **Slice ID**: `workspace#003-unify-collab-yjs` → WS-D (client integration), epic `tasks/client-web.md` T001–T006
@@ -135,7 +135,7 @@ converged, on every session, with no full-page reload required.
 - **Room closed / disconnect**: the unified service emits `room-closed` (idle release or owner delete); the client must handle it (stop sending, optionally reconnect) — today neither client has an exact equivalent (whiteboard has `reconnection: false`).
 - **Mixed-version clients during cutover**: an old (socket.io / Hocuspocus) client and a new (unified) client must not share a live document — this is enforced by the **big-bang cutover** (epic WS-E), not by the client; the client only ships behind the cutover flip.
 - **Guest / public whiteboard**: the optional `guestName` auth path (`Portal.ts`) must be re-expressed in the unified provider's handshake (query param or header) — confirm with WS-C's handshake auth (OPEN-1/handshake).
-- **Binding package absent**: `@alkemio/excalidraw-yjs-binding` is **not yet published** (excalidraw-fork PR #31). The whiteboard half (US1, T003/T004) is **blocked** until it ships — see the blocking dependency note.
+- **Binding package** *(resolved)*: `@alkemio/excalidraw-yjs-binding` shipped via **pkg.pr.new `@32`** (excalidraw-fork PR #31/#32) and the whiteboard half (US1, T003/T004) is implemented (`cb1e70a`). The published artifact is **not self-contained** (it imports unpublished internal Excalidraw packages), so it is consumed via an interim `pnpm.overrides` + `vendor/` shim + tsconfig `paths` workaround, and the `@alkemio/excalidraw` bump + prop rename were deferred — see tasks.md T003.1/T003.2, plan.md Implementation note + R4', research.md D5.
 
 ## Requirements *(mandatory)*
 
@@ -181,7 +181,7 @@ converged, on every session, with no full-page reload required.
 ## Assumptions & Dependencies
 
 - **Frozen contracts consumed**: epic `contracts/ws-protocol.md` (the wire) and `data-model.md` (memo `Y.XmlFragment`, whiteboard id-keyed `Y.Map`); the Wave-1 server impl (`collaboration-service/internal/adapter/inbound/ws/` + `domain/service/{sync,room}.go`) as the canonical behaviour the provider must interoperate with.
-- **Blocking dependency (hard)**: `@alkemio/excalidraw-yjs-binding` must be **published as a package** (from excalidraw-fork PR #31) before the whiteboard half (T003/T004, US1) can be implemented. The memo half (T001/T002, US2) is **not** blocked on it.
+- **Binding dependency (resolved)**: `@alkemio/excalidraw-yjs-binding` was **published** (pkg.pr.new `@32`, from excalidraw-fork PR #31/#32) and the whiteboard half (T003/T004, US1) is implemented (`cb1e70a`); the memo half (T001/T002, US2) was never blocked on it and shipped first (`479a11703`). Residual: the artifact is not self-contained (interim overrides/shim/paths) and the registry release + `@alkemio/excalidraw` consumable bump are still pending.
 - **Sequencing dependency**: the `excalidrawAPI`→`onExcalidrawAPI` rename (T003) is coupled to the `@alkemio/excalidraw` version bump that introduces the renamed prop; they land in one change.
 - **Rollout dependency**: the client ships behind the epic's **big-bang cutover** (WS-E) — the unified provider goes live when the server cuts over, with the legacy services kept warm for the rollback window. No mixed old/new client on one live document.
 - **Provider library decision (OPEN-2)**: write a thin custom provider class vs. adopt/fork `y-websocket` — recommendation below, pending confirmation.

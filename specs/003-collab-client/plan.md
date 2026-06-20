@@ -89,9 +89,38 @@ legacy clients at cutover.
 ### Packaging / sequencing (the critical path)
 
 1. **Memo (T001/T002)** — unblocked. Add `y-protocols` (+ `y-websocket` if OPEN-2 confirms); build `UnifiedCollabProvider`; swap it into `useCollaboration.ts`; map control → footer/save UX. Keep `@hocuspocus/provider` installed until cleanup so the swap is reviewable in isolation.
-2. **Binding publish (external, BLOCKING)** — `@alkemio/excalidraw-yjs-binding` ships from excalidraw-fork PR #31, alongside the `@alkemio/excalidraw` release carrying the `onExcalidrawAPI` prop (OPEN-3).
+2. **Binding publish (external)** — **DONE**: `@alkemio/excalidraw-yjs-binding` shipped from excalidraw-fork (PR #31/#32) via **pkg.pr.new `@32`** (OPEN-3). The artifact is not self-contained and the companion `@alkemio/excalidraw` build is un-consumable — so the `onExcalidrawAPI` bump+rename did **not** land with it (deferred; see Implementation note below + R4').
 3. **Whiteboard (T003/T004)** — bump `@alkemio/excalidraw` + add `@alkemio/excalidraw-yjs-binding`; rename `excalidrawAPI`→`onExcalidrawAPI` at `ExcalidrawWrapper.tsx:202` (+ `CollaborativeExcalidrawWrapper.tsx:289`) **in the same change as the bump**; wire the binding + ephemerals to the unified provider.
 4. **Cleanup (T005/T006)** — remove `@hocuspocus/provider`, `socket.io-client`, `Collab.ts`, `Portal.ts`, `stateless-messaging/`, dead socket constants/env; finalize error handling on the unified control messages.
+
+> **Implementation note (as built, `cb1e70a`).** Step 3 shipped with two
+> deviations from the plan above, both documented and bounded:
+> 1. **Packaging-gap workaround.** `@alkemio/excalidraw-yjs-binding` was consumed
+>    from **pkg.pr.new `@32`**, not a registry release, and that artifact is **not
+>    self-contained**: its published `.d.ts` references unpublished internal
+>    Excalidraw monorepo packages (`@excalidraw/element`,
+>    `@excalidraw/fractional-indexing`). To make it consumable today, the build
+>    pins `pnpm.overrides` (`@excalidraw/element@0.18.0` → a local
+>    `vendor/excalidraw-element-shim/` carrying a minimal `CaptureUpdateAction`
+>    shim; `@excalidraw/fractional-indexing@3.3.0` → `npm:fractional-indexing@3.2.0`)
+>    plus `tsconfig.json` `paths` mapping the binding's internal type imports. This
+>    is an **interim** measure; a self-contained-publish fix is in flight in
+>    excalidraw-fork, after which the overrides/shim/paths are removed (folds into
+>    Phase 3 cleanup). See research.md D5.
+> 2. **`@alkemio/excalidraw` not bumped, prop rename deferred (FR-007/D5).** The
+>    `@32` companion `@alkemio/excalidraw` build is equally un-consumable, so the
+>    dependency stayed at `0.18.0-864353b-alkemio-16` and the
+>    `excalidrawAPI`→`onExcalidrawAPI` render-site rename was **deferred** — the
+>    binding only needs the imperative API the existing `excalidrawAPI` callback
+>    already delivers, so the rename is not required for US1 and lands with the
+>    eventual consumable bump.
+>
+> **Open follow-ups after US1/US2:** (a) Phase 3 cleanup/cutover (T005/T006) —
+> incl. removing the now-dead socket.io `Collab.ts`/`Portal.ts`/`useCollab.ts`
+> (T005.2) once cutover lands; (b) the **OPEN-1 read-only `reason`** server-side
+> field — the client is already wired for it (`readOnlyReasonToCode(msg.reason)`)
+> and falls back to a generic reason while the server omits it; (c) the **live
+> two-client e2e** in test-suites (T006.2) — unit suites use a mocked WS today.
 
 ### Rollout
 
@@ -106,10 +135,11 @@ legacy clients at cutover.
 
 ## Risks
 
-- **R1 — Binding not published** (blocking): whiteboard half cannot start. Mitigation: ship memo independently; track PR #31. (Blocking dependency, called out in spec + report.)
-- **R2 — Control-message parity gap** (OPEN-1): a UX regression on read-only reason / inactivity if the server contract is not extended. Mitigation: small additive server change, else generic-reason fallback.
-- **R3 — `y-websocket` extension-point fit** (OPEN-2): if its `messageHandlers` cannot host types 2/3 cleanly, fall back to a custom provider (still byte-exact via `y-protocols`/`lib0`).
-- **R4 — Prop-rename/build coupling** (OPEN-3): if the rename and binding ship in different `@alkemio/excalidraw` tags, the bump sequencing must serialize to avoid a red build. Mitigation: land rename+bump atomically (FR-007).
+- **R1 — Binding not published** (blocking): whiteboard half cannot start. Mitigation: ship memo independently; track PR #31. **RESOLVED** — binding published `@32` (pkg.pr.new); whiteboard shipped on `cb1e70a`. Residual: the artifact is not self-contained (see R4'), and the registry release is still pending.
+- **R2 — Control-message parity gap** (OPEN-1): a UX regression on read-only reason / inactivity if the server contract is not extended. Mitigation: small additive server change, else generic-reason fallback. **STILL OPEN** — the client wired the additive `reason` (`readOnlyReasonToCode`); server-side `reason` not yet shipped, so the generic-reason fallback is the live behaviour (capacity/multi-user/inactivity granularity lost).
+- **R3 — `y-websocket` extension-point fit** (OPEN-2): if its `messageHandlers` cannot host types 2/3 cleanly, fall back to a custom provider (still byte-exact via `y-protocols`/`lib0`). **RESOLVED** — `y-websocket@3.0.0` adopted; its per-instance `messageHandlers` host types 2/3 with `disableBc: true` (research.md D2 / T000.1).
+- **R4 — Prop-rename/build coupling** (OPEN-3): if the rename and binding ship in different `@alkemio/excalidraw` tags, the bump sequencing must serialize to avoid a red build. Mitigation: land rename+bump atomically (FR-007). **RESOLVED by deferral** — the `@alkemio/excalidraw` bump was not consumable, so the dep stayed pinned and the rename was deferred (not required for US1); no red build. The atomic bump+rename still applies when a consumable release lands (T003.1/T003.2).
+- **R4' — Binding artifact not self-contained** (new, observed at build): the `@32` binding's `.d.ts` references unpublished internal Excalidraw packages. Mitigation (interim, as built): `pnpm.overrides` + `vendor/excalidraw-element-shim/` + tsconfig `paths`; removed once excalidraw-fork ships a self-contained publish (see Implementation note above).
 - **R5 — Guest auth path**: `guestName` must survive the handshake re-expression. Mitigation: confirm WS-C handshake auth shape (OPEN-1/handshake).
 
 ## Phase outputs

@@ -3,11 +3,15 @@
 **Repo**: `alkem-io/client-web` · **Branch**: `feat/003-unify-collab-yjs`
 **Spec**: [spec.md](./spec.md) · **Plan**: [plan.md](./plan.md)
 **Maps to** epic `agents-hq/specs/003-unify-collab-yjs/tasks/client-web.md` T001–T006.
-**Depends on**: WS-B binding (`@alkemio/excalidraw-yjs-binding`, **unpublished — BLOCKING**) + WS-C ws-protocol (**frozen**).
+**Depends on**: WS-B binding (`@alkemio/excalidraw-yjs-binding`, **published @32 via pkg.pr.new** — see implementation note in plan.md/research.md) + WS-C ws-protocol (**frozen**).
 
-> **Status: SPEC/DESIGN only.** No task below is implemented. Phase 2 (whiteboard)
-> is **blocked** on the binding publish; Phase 0/1 (memo) is unblocked once OPEN-1/2
-> are answered. Tasks are fine-grained under each epic task id.
+> **Status: Phase 0/1 (memo, US2) + Phase 2 (whiteboard, US1) IMPLEMENTED** — memo
+> on `479a11703`, whiteboard on `cb1e70a` (PR #9912). Phase 3 (cleanup/cutover,
+> T005/T006) is still pending; several T003/T004 sub-items shipped with documented
+> deviations (see `— DEFERRED:` / `— PARTIAL:` annotations). Tasks are fine-grained
+> under each epic task id; `[x]` = done, `[ ]` + annotation = deferred/partial with
+> the residual called out. The OPEN-1 read-only **reason** parity is still open
+> server-side (client wired for it, falls back to a generic reason).
 
 ## Phase 0: Provider foundation (shared) — gated on OPEN-2
 
@@ -27,23 +31,23 @@
 - [x] **T002.2** [US2] Read-only **reason** gap (OPEN-1/OPEN-4): the server `reason` (`not-authenticated`/`no-update-access`/`room-capacity-reached`/`multi-user-not-allowed`) maps 1:1 to the existing `ReadOnlyCode` via `readOnlyReasonToCode`, preserving the footer reason. When the server omits `reason` (OPEN-1 not yet landed), the code is `undefined` → footer falls back to its generic policy reason. **Flagged**: capacity/multi-user granularity is lost until the collab OPEN-1 `reason` ships.
 - [~] **T002.3** [US2] Tests added: control decode + reason mapping (`controlMessage.test.ts`), provider control/ephemeral dispatch, framing, status, offline `Y.Doc` survival (`UnifiedCollabProvider.test.ts`). **Deferred to the e2e harness (T006.2 / WS-F)**: full two-client memo convergence + live footer/presence parity against a running collaboration-service.
 
-## Phase 2: [US1] Whiteboard client (epic T003/T004) — BLOCKED on binding publish (OPEN-3)
+## Phase 2: [US1] Whiteboard client (epic T003/T004) — IMPLEMENTED (`cb1e70a`), with documented deviations
 
-- [ ] **T003.0** [US1] **BLOCKER**: wait for `@alkemio/excalidraw-yjs-binding` publish + the `@alkemio/excalidraw` release carrying `onExcalidrawAPI` (excalidraw-fork PR #31, OPEN-3).
-- [ ] **T003.1** [US1] Bump `@alkemio/excalidraw` and add `@alkemio/excalidraw-yjs-binding` in `package.json` (one commit, FR-007/D5).
-- [ ] **T003.2** [US1] Rename prop `excalidrawAPI`→`onExcalidrawAPI` at `ExcalidrawWrapper.tsx:202` **and** `CollaborativeExcalidrawWrapper.tsx:289`, in the same change as T003.1; typecheck/build green (SC-005).
-- [ ] **T003.3** [US1] Wire `@alkemio/excalidraw-yjs-binding` (scene id-keyed `Y.Map`) to the `UnifiedCollabProvider`'s `Y.Doc` + `Awareness`, replacing the `Collab`/`Portal` scene sync. Establish the session via `documentId = whiteboard.id`, `contentType: 'whiteboard'`.
-- [ ] **T004.1** [US1] Route ephemerals (D4): cursor (`MOUSE_LOCATION`) + idle + selection → **awareness** (type 1); `EMOJI_REACTION`, `COUNTDOWN_TIMER`, `USER_VISIBLE_SCENE_BOUNDS`, `USER_FOLLOW` → **ephemeral** (type 2) via `sendEphemeral`/`onEphemeral`. Bridge Excalidraw's `onPointerUpdate`/`onRequestBroadcastEmojiReaction`/`onRequestBroadcastCountdownTimer` (`CollaborativeExcalidrawWrapper.tsx`) to these.
-- [ ] **T004.2** [US1] Map control → whiteboard UX: `saved`/`save-error`→`onRemoteSave`; `read-only-state`→read/write mode (mode→bool today; reason via OPEN-1); `room-user-change`→presence count; `room-closed`→teardown.
-- [ ] **T004.3** [US1] Preserve custom features (emoji, countdown, element lock) — lock is persisted scene state (binding), the rest ephemeral. Tests: two-client per-property merge; ephemerals; custom features; reconnect (US1/US5).
+- [x] **T003.0** [US1] **BLOCKER cleared**: `@alkemio/excalidraw-yjs-binding` published `@32` (pkg.pr.new, excalidraw-fork PR #31). The companion `@alkemio/excalidraw` release carrying `onExcalidrawAPI` did **not** ship a consumable artifact (see T003.1/T003.2), so the rename was decoupled.
+- [ ] **T003.1** [US1] Bump `@alkemio/excalidraw` and add `@alkemio/excalidraw-yjs-binding` in `package.json` (one commit, FR-007/D5). — **PARTIAL**: binding added (`@alkemio/excalidraw-yjs-binding` via `https://pkg.pr.new/...@32`), but `@alkemio/excalidraw` **NOT bumped** — kept `0.18.0-864353b-alkemio-16`. The `@32` build is not self-contained: its published `.d.ts` references unpublished internal Excalidraw monorepo packages (`@excalidraw/element`, `@excalidraw/fractional-indexing`), satisfied via `pnpm.overrides` + a local `vendor/excalidraw-element-shim/` (`CaptureUpdateAction` shim) + tsconfig `paths`. The packaging-gap workaround is an interim measure; a self-contained-publish fix is in flight in excalidraw-fork (see plan.md implementation note + research.md D5).
+- [ ] **T003.2** [US1] Rename prop `excalidrawAPI`→`onExcalidrawAPI` at `ExcalidrawWrapper.tsx:202` **and** `CollaborativeExcalidrawWrapper.tsx:289`, in the same change as T003.1; typecheck/build green (SC-005). — **DEFERRED**: not required for US1 — the binding only consumes the imperative API the existing `excalidrawAPI` callback already delivers; the render sites still pass `excalidrawAPI`. The rename is coupled to a consumable `@alkemio/excalidraw` bump (T003.1) and lands with it. (The `onExcalidrawAPI` name that appears in `CollaborativeExcalidrawWrapper.tsx` is the unified hook's own binding callback, not the Excalidraw component prop.)
+- [x] **T003.3** [US1] Wire `@alkemio/excalidraw-yjs-binding` (scene id-keyed `Y.Map`) to the `UnifiedCollabProvider`'s `Y.Doc` + `Awareness`, replacing the `Collab`/`Portal` scene sync. Establish the session via `documentId = whiteboard.id`, `contentType: 'whiteboard'`. → `collab/unified/useWhiteboardCollab.ts` (one `UnifiedCollabProvider`, `type=whiteboard` + whiteboard id, driving the per-property `WhiteboardBinding`); `CollaborativeExcalidrawWrapper.tsx` swaps `useCollab` (socket.io) for the unified hook.
+- [x] **T004.1** [US1] Route ephemerals (D4): cursor (`MOUSE_LOCATION`) + idle + selection → **awareness** (type 1); `EMOJI_REACTION`, `COUNTDOWN_TIMER`, `USER_VISIBLE_SCENE_BOUNDS`, `USER_FOLLOW` → **ephemeral** (type 2) via `sendEphemeral`/`onEphemeral`. Bridge Excalidraw's `onPointerUpdate`/`onRequestBroadcastEmojiReaction`/`onRequestBroadcastCountdownTimer` (`CollaborativeExcalidrawWrapper.tsx`) to these. → cursors/selection/idle via the binding's `AwarenessRouter`; emoji/countdown/bounds via the `EphemeralChannel` adapter (`collab/unified/ephemeralChannel.ts`) bridged to the provider's type-2 wire.
+- [x] **T004.2** [US1] Map control → whiteboard UX: `saved`/`save-error`→`onRemoteSave`; `read-only-state`→read/write mode (mode→bool today; reason via OPEN-1); `room-user-change`→presence count; `room-closed`→teardown. → mapped in `useWhiteboardCollab.ts`. **Note (OPEN-1 still open)**: the client reads `msg.reason` (`readOnlyReasonToCode`) and is wired for the proposed additive server `reason`; when the server omits it, the read-only code is `undefined` → generic read-only treatment (capacity/multi-user granularity lost). OPEN-1 server-side `reason` not yet landed.
+- [x] **T004.3** [US1] Preserve custom features (emoji, countdown, element lock) — lock is persisted scene state (binding), the rest ephemeral. Tests: two-client per-property merge; ephemerals; custom features; reconnect (US1/US5). → 27 unit tests (`useWhiteboardCollab.test.ts` 19 + `ephemeralChannel.test.ts` 8) against a mocked WS provider. **PARTIAL**: live two-client convergence is the e2e harness scope — see T006.2.
 
 ## Phase 3: Cleanup & cutover (epic T005/T006)
 
 - [ ] **T005.1** Remove the memo Hocuspocus client: `@hocuspocus/provider` dep, `TiptapCollabProviderWebsocket`/`TiptapCollabProvider` usage, `stateless-messaging/` (after T002 is proven).
-- [ ] **T005.2** Remove the whiteboard socket.io client: `socket.io-client` dep, `collab/Collab.ts`, `collab/Portal.ts`, the socket constants/types in `excalidrawAppConstants.ts`/`collab/data/index.ts` (after T003/T004 are proven).
+- [ ] **T005.2** Remove the whiteboard socket.io client: `socket.io-client` dep, `collab/Collab.ts`, `collab/Portal.ts`, the socket constants/types in `excalidrawAppConstants.ts`/`collab/data/index.ts` (after T003/T004 are proven). — **DEFERRED** (follow-up): `Collab.ts`/`Portal.ts`/`useCollab.ts` are now **dead code** — `CollaborativeExcalidrawWrapper.tsx` no longer wires them and there is no live caller. Full removal (files + `socket.io-client` dep + socket constants/env) is the big-bang-cutover cleanup, batched with T005.1 to keep the swap reviewable in isolation.
 - [ ] **T005.3** Consolidate env (D6): `VITE_APP_COLLAB_DOC_*` + `VITE_APP_COLLAB_*` → one unified collab base URL/path; update `.env.example` + docs.
 - [ ] **T006.1** Finalize error handling on the unified control messages (FR-009): `save-error`, `read-only-state`, `room-closed`, handshake-401 — remove the old `authenticationFailed`/`connect_error`/`room-not-saved` paths.
-- [ ] **T006.2** Contribute the client e2e scenarios to the epic harness (WS-F / SC-009): two-client memo + whiteboard convergence, presence, reconnect — headless, CI-gating.
+- [ ] **T006.2** Contribute the client e2e scenarios to the epic harness (WS-F / SC-009): two-client memo + whiteboard convergence, presence, reconnect — headless, CI-gating. — **DEFERRED** (follow-up): memo + whiteboard unit suites use a **mocked WS provider** (T002.3, T004.3); the live two-client convergence/presence/reconnect e2e against a running `collaboration-service` in test-suites is a separate, explicitly-tracked follow-up (not done here). SC-006 stays open until it lands.
 - [ ] **T006.3** Feature-flag/branch-gate both halves off until the epic big-bang cutover (WS-E); verify a revert restores the legacy providers (legacy warm window).
 
 ## Dependency / ordering
@@ -55,7 +59,7 @@ binding published (OPEN-3) ─► Phase 2 whiteboard (T003/T004) ─────
                                                   (whiteboard blocked until publish)
 ```
 
-- Memo ships as its own PR first (unblocked). Whiteboard is a second PR after the binding lands. Both cross-reference `workspace#003-unify-collab-yjs`, both gated off until cutover.
+- Memo shipped first (`479a11703`); whiteboard followed (`cb1e70a`) once the binding landed (`@32`). Both cross-reference `workspace#003-unify-collab-yjs` on PR #9912, both gated off until cutover. Remaining: Phase 3 cleanup/cutover (T005/T006) + the OPEN-1 server `reason` + the live e2e (T006.2).
 
 ## Self-analyze (consistency pass)
 
@@ -64,4 +68,4 @@ binding published (OPEN-3) ─► Phase 2 whiteboard (T003/T004) ─────
 - **Story↔task**: US2→Phase 1; US1→Phase 2; US5→T000.6 + T002.3 + T004.3 (reconnect proven per content).
 - **OPEN↔task gating**: OPEN-1→T002.2/T004.2; OPEN-2→T000.1; OPEN-3→T003.0; OPEN-4→T002.2.
 - **No orphan tasks**: T000.* is justified — the epic's T001 ("via the raw-WS + y-protocols client") presumes a provider; we make it an explicit shared foundation. No conflicting requirements found across spec/plan/tasks.
-- **Honest gaps**: the read-only **reason** parity (OPEN-1) is the one place the unified contract is *narrower* than today; flagged in spec edge-cases, data-model mapping, and T002.2/T004.2. The binding-publish blocker (OPEN-3) gates all of Phase 2.
+- **Honest gaps (as built)**: the read-only **reason** parity (OPEN-1) is the one place the unified contract is *narrower* than today — the client is wired for the additive server `reason` but it is not shipped server-side, so the live behaviour is the generic-reason fallback; flagged in spec edge-cases, data-model mapping, and T002.2/T004.2. The OPEN-3 binding-publish blocker is **cleared** (`@32`), but consumed via an interim packaging workaround (pnpm overrides + vendor shim + tsconfig paths) pending a self-contained excalidraw-fork publish; the `@alkemio/excalidraw` bump + prop rename (T003.1/T003.2) are deferred with it. Phase 3 cleanup/cutover (T005/T006) and the live e2e (T006.2) are open follow-ups.
