@@ -1,28 +1,31 @@
-import { useEffect, useRef, useState } from 'react';
-import Collab, { type CollabProps, type OnIncomingEmojiReactionCallback } from './Collab';
-import type { CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { WhiteboardBinding } from '@alkemio/excalidraw-yjs-binding';
+import { useRef, useState } from 'react';
+import {
+  type ControlMessage,
+  UnifiedCollabProvider,
+} from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+import { type CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
-type CollabInstance = InstanceType<typeof Collab>;
+/** Payload Excalidraw hands to `onPointerUpdate`; routed to awareness by the binding. */
+type PointerUpdatePayload = {
+  pointer: { x: number; y: number; tool?: 'pointer' | 'laser' } | null;
+  button: 'up' | 'down';
+  pointersMap?: Map<number, { x: number; y: number }>;
+};
 
 export interface CollabAPI {
-  /** function so that we can access the latest value from stale callbacks */
-  onPointerUpdate: CollabInstance['onPointerUpdate'];
-  syncScene: CollabInstance['syncScene'];
+  /** Local pointer move → awareness (the binding owns cursor presence). */
+  onPointerUpdate: (payload: PointerUpdatePayload) => void;
+  /**
+   * No-op: the `WhiteboardBinding` owns the scene→Y.Doc write path (per-property
+   * CRDT). Retained so the wrapper's call site stays stable. Kept synchronous.
+   */
+  syncScene: () => void;
   isCollaborating: () => boolean;
-  /** Broadcast ephemeral floating emoji to other collaborators */
-  broadcastEmojiReaction: CollabInstance['broadcastEmojiReaction'];
-  broadcastCountdownTimer: CollabInstance['broadcastCountdownTimer'];
-}
-
-type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => void, CollabState];
-
-interface UseCollabProps extends Omit<CollabProps, 'excalidrawApi' | 'onCollaboratorModeChange'> {
-  onInitialize?: (collabApi: CollabAPI) => void;
-  onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
-}
-
-interface InitProps extends Pick<CollabProps, 'excalidrawApi'> {
-  roomId: string;
+  /** Broadcast an ephemeral floating emoji to other collaborators (never persisted). */
+  broadcastEmojiReaction: (emoji: string, x: number, y: number) => void;
+  broadcastCountdownTimer: (remainingSeconds: number, startedBy: string, active: boolean) => void;
 }
 
 export interface CollabState {
@@ -33,97 +36,148 @@ export interface CollabState {
   isReadOnly: boolean;
 }
 
-const useCollab = ({
-  onInitialize,
-  onCloseConnection,
-  onRemoteSave,
-  onSceneInitChange,
-  ...collabProps
-}: UseCollabProps): UseCollabProvided => {
-  const collabRef = useRef<Collab | null>(null);
+type UseCollabProps = {
+  username: string;
+  onRemoteSave?: (error?: string) => void;
+  onCloseConnection: () => void;
+  onSceneInitChange?: (initialized: boolean) => void;
+};
 
+type InitProps = {
+  excalidrawApi: ExcalidrawImperativeAPI;
+  roomId: string;
+};
+
+type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => () => void, CollabState];
+
+/** Map a server collaborator-mode reason to the client enum (1:1 with control.go). */
+function toModeReason(reason: string | undefined): CollaboratorModeReasons | null {
+  switch (reason) {
+    case 'room-capacity-reached':
+      return CollaboratorModeReasons.ROOM_CAPACITY_REACHED;
+    case 'multi-user-not-allowed':
+      return CollaboratorModeReasons.MULTI_USER_NOT_ALLOWED;
+    case 'inactivity':
+      return CollaboratorModeReasons.INACTIVITY;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Whiteboard real-time collaboration on the unified collaboration service
+ * (`/collab/<roomId>?type=whiteboard`) via `UnifiedCollabProvider` +
+ * `WhiteboardBinding`. The binding owns the Excalidraw scene ↔ `Y.Doc` loop
+ * (per-property CRDT merge), routes cursors/selection/idle to y-protocols
+ * awareness, and routes emoji/countdown to the provider's ephemeral channel —
+ * replacing the legacy Socket.IO `Collab`/`Portal` element-broadcast path.
+ *
+ * Returns the same `[CollabAPI, initialize, CollabState]` shape the wrapper
+ * consumed before, so the editor wiring is unchanged at the call site.
+ */
+const useCollab = ({
+  username,
+  onRemoteSave,
+  onCloseConnection,
+  onSceneInitChange,
+}: UseCollabProps): UseCollabProvided => {
+  const providerRef = useRef<UnifiedCollabProvider | null>(null);
   const collabApiRef = useRef<CollabAPI | null>(null);
 
   const [isConnecting, setIsConnecting] = useState(false);
-
   const [isCollaborating, setIsCollaborating] = useState(false);
-
   const [isSceneInitialized, setIsSceneInitialized] = useState(false);
-
   const [collaboratorMode, setCollaboratorMode] = useState<CollaboratorMode | null>(null);
-
   const [collaboratorModeReason, setCollaboratorModeReason] = useState<CollaboratorModeReasons | null>(null);
 
-  const handleCloseConnection = () => {
-    try {
-      onCloseConnection();
-    } finally {
-      setIsCollaborating(false);
-    }
-  };
+  const initialize = ({ excalidrawApi, roomId }: InitProps): (() => void) => {
+    const provider = new UnifiedCollabProvider({
+      documentId: roomId,
+      type: 'whiteboard',
+      connect: false,
+    });
+    providerRef.current = provider;
 
-  const handleRemoteSave = (error?: string) => {
-    onRemoteSave?.(error);
-  };
+    // Announce identity so peers render this collaborator's cursor.
+    provider.awareness.setLocalStateField('user', { name: username });
 
-  const handleSceneInitChange = (initialized: boolean) => {
-    setIsSceneInitialized(initialized);
-    onSceneInitChange?.(initialized);
-  };
-
-  const initialize = ({ excalidrawApi, roomId }: InitProps) => {
-    collabRef.current = new Collab({
-      ...collabProps,
-      excalidrawApi,
-      onRemoteSave: handleRemoteSave,
-      onCloseConnection: handleCloseConnection,
-      onCollaboratorModeChange: ({ mode, reason }) => {
-        setCollaboratorMode(mode);
-        setCollaboratorModeReason(reason);
-      },
-      onSceneInitChange: handleSceneInitChange,
+    const binding = new WhiteboardBinding(provider.doc, excalidrawApi, {
+      awareness: provider.awareness,
+      ephemeral: provider.ephemeralChannel,
     });
 
-    collabRef.current.init();
+    const handleStatus = (status: 'connecting' | 'connected' | 'disconnected') => {
+      setIsConnecting(status === 'connecting');
+      if (status === 'connected') {
+        setIsCollaborating(true);
+      } else if (status === 'disconnected') {
+        setIsCollaborating(false);
+        onCloseConnection();
+      }
+    };
+
+    const handleSynced = (synced: boolean) => {
+      setIsSceneInitialized(synced);
+      onSceneInitChange?.(synced);
+    };
+
+    const handleControl = (message: ControlMessage) => {
+      switch (message.kind) {
+        case 'saved':
+          onRemoteSave?.();
+          break;
+        case 'save-error':
+          onRemoteSave?.(message.error ?? 'save-error');
+          break;
+        case 'collaborator-mode':
+          setCollaboratorMode(message.mode === 'write' ? 'write' : 'read');
+          setCollaboratorModeReason(toModeReason(message.reason));
+          break;
+        case 'read-only-state':
+          // A read-only downgrade also rides on read-only-state; reflect it as the
+          // collaborator mode so the editor toggles view-mode.
+          setCollaboratorMode(message.readOnly ? 'read' : 'write');
+          if (message.reason) setCollaboratorModeReason(toModeReason(message.reason));
+          break;
+        default:
+          break;
+      }
+    };
+
+    provider.on('status', handleStatus);
+    provider.on('synced', handleSynced);
+    provider.on('control', handleControl);
+    provider.connect();
+    setIsConnecting(true);
 
     const collabApi: CollabAPI = {
-      onPointerUpdate: collabRef.current.onPointerUpdate,
-      syncScene: collabRef.current.syncScene,
-      isCollaborating: collabRef.current.isCollaborating,
-      broadcastEmojiReaction: collabRef.current.broadcastEmojiReaction,
-      broadcastCountdownTimer: collabRef.current.broadcastCountdownTimer,
+      onPointerUpdate: payload => binding.awarenessRouter?.onPointerUpdate(payload),
+      syncScene: () => {},
+      isCollaborating: () => providerRef.current?.status === 'connected',
+      broadcastEmojiReaction: (emoji, x, y) => {
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        binding.awarenessRouter?.broadcastEmojiReaction({ id, emoji, x, y });
+      },
+      broadcastCountdownTimer: (remainingSeconds, startedBy, active) => {
+        binding.awarenessRouter?.broadcastCountdownTimer({ remainingSeconds, startedBy, active });
+      },
     };
-
-    (async () => {
-      setIsConnecting(true);
-      try {
-        await collabRef.current?.startCollaboration({ roomId });
-        setIsCollaborating(true);
-      } finally {
-        setIsConnecting(false);
-      }
-    })();
-
     collabApiRef.current = collabApi;
 
-    onInitialize?.(collabApi);
-
     return () => {
-      collabRef.current?.stopCollaboration();
-      collabRef.current?.destroy();
+      provider.off('status', handleStatus);
+      provider.off('synced', handleSynced);
+      provider.off('control', handleControl);
+      binding.destroy();
+      provider.destroy();
+      providerRef.current = null;
       collabApiRef.current = null;
+      setIsCollaborating(false);
+      setIsSceneInitialized(false);
+      setCollaboratorMode(null);
+      setCollaboratorModeReason(null);
     };
   };
-
-  // Keep incoming-event callbacks in sync with the Collab instance.
-  // excalidrawApi may be null at construction time; this ensures the Collab
-  // picks up the real dispatcher once the API becomes available.
-  useEffect(() => {
-    collabRef.current?.updateIncomingCallbacks({
-      onIncomingEmojiReaction: collabProps.onIncomingEmojiReaction,
-      onIncomingCountdownTimer: collabProps.onIncomingCountdownTimer,
-    });
-  }, [collabProps.onIncomingEmojiReaction, collabProps.onIncomingCountdownTimer]);
 
   return [
     collabApiRef.current,

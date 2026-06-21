@@ -99,7 +99,7 @@ function createImagePasteHandler(onImageUpload: (file: File) => Promise<string>,
  * Collaborative mode disables StarterKit's undo/redo (Yjs owns history) and
  * appends Collaboration + CollaborationCaret. The `ydoc` and `provider` are
  * opaque from CRD's perspective (see collabProviderTypes.ts) — the `as never`
- * casts bridge CRD's opaque shapes to Tiptap's concrete Yjs/Hocuspocus types
+ * casts bridge CRD's opaque shapes to Tiptap's concrete Yjs/provider types
  * at the single point where both sides meet.
  */
 export function buildCrdMarkdownExtensions(config: BuildConfig): Partial<EditorOptions> {
@@ -121,7 +121,7 @@ export function buildCrdMarkdownExtensions(config: BuildConfig): Partial<EditorO
   ];
 
   if (collaborative) {
-    // Opaque → concrete boundary: CRD never imports `yjs` or `@hocuspocus/provider`.
+    // Opaque → concrete boundary: CRD never imports `yjs` or the collab provider.
     extensions.push(
       Collaboration.configure({ document: config.ydoc as never }),
       CollaborationCaret.configure({

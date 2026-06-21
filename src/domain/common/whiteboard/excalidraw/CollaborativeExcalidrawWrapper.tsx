@@ -190,7 +190,6 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason, isReadOnly }] = useCollab({
     username,
-    filesManager,
     onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
     onCloseConnection: () => {
       setCollaborationStoppedNoticeOpen(true);
@@ -208,8 +207,6 @@ const CollaborativeExcalidrawWrapper = ({
       setSceneInitialized(initialized);
       actions.onSceneInitChange?.(initialized);
     },
-    onIncomingEmojiReaction: excalidrawApi?.dispatchIncomingEmojiReaction,
-    onIncomingCountdownTimer: excalidrawApi?.dispatchIncomingCountdownTimer,
   });
 
   useEffect(() => {
@@ -227,13 +224,14 @@ const CollaborativeExcalidrawWrapper = ({
     return collabApi?.broadcastCountdownTimer?.(remainingSeconds, startedBy, active);
   };
 
-  const onChange = async (elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    if (isReadOnly) {
-      collabApi?.syncScene(elements, files);
-      return;
-    }
-    const uploadedFiles = await filesManager.getUploadedFiles(files);
-    collabApi?.syncScene(elements, uploadedFiles);
+  const onChange = async (_elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
+    // The WhiteboardBinding owns the scene → Y.Doc write path (per-property CRDT);
+    // it subscribes to the imperative API's onChange independently. This prop
+    // handler only drives the file-upload side effect: local file blobs are
+    // uploaded to the document's storage bucket and their URLs back-filled, so the
+    // persisted snapshot references stored media rather than inline data URLs.
+    if (isReadOnly) return;
+    await filesManager.getUploadedFiles(files);
   };
 
   const isOnline = useOnlineStatus();
