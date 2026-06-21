@@ -5,6 +5,9 @@ import {
   type ControlMessage,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
+import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { type CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
 /** Payload Excalidraw hands to `onPointerUpdate`; routed to awareness by the binding. */
@@ -50,6 +53,19 @@ type InitProps = {
 
 type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => () => void, CollabState];
 
+/**
+ * On the public guest-share route, resolve the validated guest display name so the
+ * provider sends it as `?guestName=` on the handshake (the unified service's
+ * anonymous-identity path). Off that route, an authenticated session cookie is
+ * used instead, so this returns undefined. Mirrors the legacy Portal.ts guard.
+ */
+function resolveGuestName(): string | undefined {
+  if (!globalThis.window?.location.pathname.startsWith(GUEST_SHARE_PATH)) return undefined;
+  const name = getGuestName();
+  if (name && validateGuestName(name).valid) return name;
+  return undefined;
+}
+
 /** Map a server collaborator-mode reason to the client enum (1:1 with control.go). */
 function toModeReason(reason: string | undefined): CollaboratorModeReasons | null {
   switch (reason) {
@@ -94,6 +110,7 @@ const useCollab = ({
     const provider = new UnifiedCollabProvider({
       documentId: roomId,
       type: 'whiteboard',
+      guestName: resolveGuestName(),
       connect: false,
     });
     providerRef.current = provider;

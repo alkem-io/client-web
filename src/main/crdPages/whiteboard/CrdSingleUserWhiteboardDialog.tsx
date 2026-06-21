@@ -1,13 +1,12 @@
-import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
 import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { exportSceneJSON, hashDocState } from '@alkemio/excalidraw-yjs-binding';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type * as Y from 'yjs';
 import type { AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -19,7 +18,6 @@ import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { WhiteboardSaveFooter } from '@/crd/components/whiteboard/WhiteboardSaveFooter';
-import isWhiteboardContentEqual from '@/domain/collaboration/whiteboard/utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema from '@/domain/collaboration/whiteboard/validation/whiteboardFormSchema';
 import {
@@ -36,11 +34,8 @@ import type {
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { hashWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
-
-type ExcalidrawUtils = {
-  serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
-};
 
 export interface WhiteboardWithContent {
   id: string;
@@ -98,8 +93,6 @@ type CrdSingleUserWhiteboardDialogProps = {
   };
 };
 
-type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
-
 const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: CrdSingleUserWhiteboardDialogProps) => {
   const { t } = useTranslation();
   const { t: tWb } = useTranslation('crd-whiteboard');
@@ -107,6 +100,9 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const { whiteboard } = entities;
   useRegisterFullscreenEditor(options.show);
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  // The local Y.Doc backing the editor (handed up by ExcalidrawWrapper); the single
+  // in-memory representation read on save via exportSceneJSON + dirty-checked via hashDocState.
+  const localDocRef = useRef<Y.Doc | null>(null);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
   const [pendingClose, setPendingClose] = useState<{ resolve: (discard: boolean) => void } | null>(null);
   const [selectedPreviewMode, setSelectedPreviewMode] = useState<WhiteboardPreviewMode>(
@@ -159,20 +155,15 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     }
   }, [options.previewSettingsDialogOpen, whiteboard.previewSettings.mode]);
 
-  const getExcalidrawState = () => {
-    if (!excalidrawAPI) return undefined;
-    return {
-      appState: excalidrawAPI.getAppState(),
-      elements: excalidrawAPI.getSceneElements(),
-      files: excalidrawAPI.getFiles(),
-    };
-  };
-
-  const handleUpdate = async (wb: WhiteboardWithContent, excState: RelevantExcalidrawState | undefined) => {
-    if (!excState) return;
-    const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
-    const { whiteboard: convertedState, unrecoverableFiles } =
-      await filesManager.convertLocalFilesToRemoteInWhiteboard(excState);
+  const handleUpdate = async (wb: WhiteboardWithContent) => {
+    const doc = localDocRef.current;
+    if (!doc) return;
+    // The local Y.Doc is the single in-memory representation; read it back to a
+    // scene at the storage boundary (no serializeAsJSON), then re-home embedded
+    // local file blobs into the document's bucket before persisting.
+    const scene = exportSceneJSON(doc);
+    const { whiteboard: convertedScene, unrecoverableFiles } =
+      await filesManager.convertLocalFilesToRemoteInWhiteboard(scene);
 
     if (unrecoverableFiles.length > 0) {
       logWarn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved`, {
@@ -180,30 +171,24 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
       });
     }
 
-    const { appState, elements, files } = convertedState;
     const previewImages = await generateWhiteboardVisuals(wb, true, options.previewImagesSettings);
-    const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
+    const content = JSON.stringify(convertedScene);
 
     return actions.onUpdate({ ...wb, content }, previewImages);
   };
 
   const handleSave = async () => {
     formikRef.current?.setTouched({ profile: { displayName: true } }, true);
-    const excState = getExcalidrawState();
-    await handleUpdate(whiteboard, excState);
+    await handleUpdate(whiteboard);
   };
 
   const onClose = async () => {
-    if (excalidrawAPI && options.canEdit) {
-      const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
-        () => import('@alkemio/excalidraw')
-      );
-      const elements = excalidrawAPI.getSceneElements();
-      const appState = excalidrawAPI.getAppState();
-      const files = excalidrawAPI.getFiles();
-      const content = serializeAsJSON(elements, appState, files, 'local');
-
-      if (!isWhiteboardContentEqual(whiteboard.content, content) || formikRef.current?.dirty) {
+    const doc = localDocRef.current;
+    if (doc && options.canEdit) {
+      // Yjs-native dirty-check: compare the live doc's content hash to the stored
+      // content's hash (replaces the legacy JSON deep-compare).
+      const dirty = hashDocState(doc) !== hashWhiteboardContent(whiteboard.content);
+      if (dirty || formikRef.current?.dirty) {
         const discard = await new Promise<boolean>(resolve => {
           setPendingClose({ resolve });
         });
@@ -278,8 +263,11 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
                   },
                 }}
                 actions={{
-                  onUpdate: excState => handleUpdate(whiteboard, excState),
+                  onUpdate: () => handleUpdate(whiteboard),
                   onInitApi: setExcalidrawAPI,
+                  onInitDoc: doc => {
+                    localDocRef.current = doc;
+                  },
                 }}
               />
             )}

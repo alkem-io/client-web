@@ -4,8 +4,11 @@ import type {
 } from '@alkemio/excalidraw/dist/types/element/src';
 import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
 import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import { exportSceneJSON, populateYDoc } from '@alkemio/excalidraw-yjs-binding';
 import { v4 as uuidv4 } from 'uuid';
+import * as Y from 'yjs';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import { parseWhiteboardContentToScene } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 
 const ANIMATION_SPEED = 2000;
 const ANIMATION_ZOOM_FACTOR = 0.75;
@@ -135,16 +138,24 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     () => import('@alkemio/excalidraw')
   );
 
-  let parsedWhiteboard: unknown;
-  try {
-    parsedWhiteboard = JSON.parse(whiteboardContent);
-  } catch (err) {
-    throw new WhiteboardMergeError(`Unable to parse whiteboard content: ${err}`);
-  }
+  // Parse the template through the Yjs boundary: seed a throwaway local Y.Doc from
+  // the template scene JSON, then read it back. This routes the template through
+  // the single content representation (populateYDoc repairs indices / normalizes)
+  // and keeps no raw JSON scene as state — only the materialized elements are
+  // merged into the live scene below (the live binding then captures the merge).
+  const tempDoc = new Y.Doc();
+  populateYDoc(parseWhiteboardContentToScene(whiteboardContent), tempDoc);
+  const templateScene = exportSceneJSON(tempDoc);
+  tempDoc.destroy();
 
-  if (!isWhiteboardLike(parsedWhiteboard)) {
+  if (!isWhiteboardLike({ type: 'excalidraw', version: 2, ...templateScene })) {
     throw new WhiteboardMergeError('Whiteboard verification failed');
   }
+
+  const parsedWhiteboard = {
+    elements: templateScene.elements as unknown as ExcalidrawElement[],
+    files: templateScene.files as Record<BinaryFileData['id'], BinaryFileData>,
+  };
 
   try {
     // Insert missing files into current whiteboard:
