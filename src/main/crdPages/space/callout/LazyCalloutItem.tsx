@@ -160,8 +160,8 @@ function LazyCalloutItemContent({
   };
 
   // Mirror CalloutDetailDialogConnector.handleFramingMemoClose: refresh the
-  // framing memo's markdown after Hocuspocus has had a chance to persist
-  // (~2.5s), so the feed preview reflects the latest content.
+  // framing memo's markdown after the collab room has had a chance to persist
+  // its snapshot (~2.5s), so the feed preview reflects the latest content.
   const handleFramingMemoClose = () => {
     const fmId = callout.framing.memo?.id;
     if (framingRefreshRef.current) {
