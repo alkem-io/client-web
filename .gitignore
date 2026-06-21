@@ -51,3 +51,9 @@ public/*config.js
 
 # Claude Code
 .claude/settings.local.json
+
+# Playwright e2e (006 acceptance matrix)
+/playwright-report
+/test-results
+/e2e/.tmp
+/.auth
