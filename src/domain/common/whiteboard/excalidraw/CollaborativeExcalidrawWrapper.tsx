@@ -227,11 +227,18 @@ const CollaborativeExcalidrawWrapper = ({
   const onChange = async (_elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
     // The WhiteboardBinding owns the scene → Y.Doc write path (per-property CRDT);
     // it subscribes to the imperative API's onChange independently. This prop
-    // handler only drives the file-upload side effect: local file blobs are
-    // uploaded to the document's storage bucket and their URLs back-filled, so the
-    // persisted snapshot references stored media rather than inline data URLs.
+    // handler drives the file-upload side effect: local file blobs are uploaded to
+    // the document's storage bucket, then the URL-bearing files are pushed back into
+    // Excalidraw so the binding's next onChange writes files that carry the bucket
+    // `url` into the shared/persisted snapshot (a peer can fetch via URL, not only
+    // the inline dataURL). Replaces the legacy Portal's upload+broadcast of
+    // url-bearing files.
     if (isReadOnly) return;
-    await filesManager.getUploadedFiles(files);
+    const uploaded = await filesManager.getUploadedFiles(files);
+    const hasNewUrls = Object.values(uploaded).some(file => 'url' in file && file.url);
+    if (hasNewUrls) {
+      await filesManager.pushFilesToExcalidraw();
+    }
   };
 
   const isOnline = useOnlineStatus();

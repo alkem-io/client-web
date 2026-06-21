@@ -53,6 +53,30 @@ type InitProps = {
 
 type UseCollabProvided = [CollabAPI | null, (initProps: InitProps) => () => void, CollabState];
 
+/** Cursor palette (mirrors the memo useUserCursor colours) for a stable per-user hue. */
+const CURSOR_COLORS = [
+  '#958DF1',
+  '#F98181',
+  '#FBBC88',
+  '#70CFF8',
+  '#94FADB',
+  '#B9F18D',
+  '#EEC759',
+  '#9BB8CD',
+  '#FF90BC',
+  '#DC8686',
+  '#7ED7C1',
+];
+
+/** Deterministic cursor colour from a display name, so a user's cursor hue is stable. */
+function cursorColorFor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = (hash * 31 + name.charCodeAt(i)) | 0;
+  }
+  return CURSOR_COLORS[Math.abs(hash) % CURSOR_COLORS.length];
+}
+
 /**
  * On the public guest-share route, resolve the validated guest display name so the
  * provider sends it as `?guestName=` on the handshake (the unified service's
@@ -115,8 +139,10 @@ const useCollab = ({
     });
     providerRef.current = provider;
 
-    // Announce identity so peers render this collaborator's cursor.
-    provider.awareness.setLocalStateField('user', { name: username });
+    // Announce identity so peers render this collaborator's cursor. The binding's
+    // AwarenessRouter reads `user.username` / `user.color` (NOT `user.name`) to
+    // build the Excalidraw collaborator, so the field shape must match.
+    provider.awareness.setLocalStateField('user', { username, color: cursorColorFor(username) });
 
     const binding = new WhiteboardBinding(provider.doc, excalidrawApi, {
       awareness: provider.awareness,
