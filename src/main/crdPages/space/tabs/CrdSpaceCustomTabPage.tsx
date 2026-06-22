@@ -76,7 +76,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const isSearching = searchTerms.length > 0;
 
   const search = useFlowStateSearch({
-    calloutsSetID: calloutsSetId,
     flowStateID: flowStateId,
     terms: searchTerms,
     // Until the scoped server search is exercised (deploy gate: re-ingest), the

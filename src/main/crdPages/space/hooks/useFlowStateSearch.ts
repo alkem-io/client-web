@@ -11,9 +11,11 @@ type CalloutResults = FlowStateSearchQuery['search']['calloutResults'];
 type CalloutResultItems = CalloutResults['results'];
 
 export type UseFlowStateSearchParams = {
-  /** The current Collaboration's CalloutsSet UUID — outer scope (FR-012). */
-  calloutsSetID: string | undefined;
-  /** The viewed InnovationFlowState UUID — inner scope (FR-008/012). */
+  /**
+   * The viewed InnovationFlowState UUID — the sole scope (FR-008/012). Its
+   * globally-unique UUID transitively pins the Collaboration, so no separate
+   * CalloutsSet scope is needed.
+   */
   flowStateID: string | undefined;
   /**
    * The active query terms: the submitted free-text term split into words PLUS
@@ -42,26 +44,21 @@ const concat = (a: CalloutResultItems = [], b: CalloutResultItems = []): Callout
 
 /**
  * Generic per-flow-state scoped search (007-knowledge-base-search). Not
- * KB-specific — any flow state on any L0 tab drives it via the two scope UUID
- * props (FR-011). Mirrors the global-search paging machinery (FR-016):
+ * KB-specific — any flow state on any L0 tab drives it via the flow-state UUID
+ * prop (FR-011). Mirrors the global-search paging machinery (FR-016):
  * `fetchPolicy: 'no-cache'`, `fetchMore` with a manual `updateQuery` concat
  * merge, end-of-results driven off cursor presence (never a count — `total` is
  * always -1), and a fresh page-1 reset that discards in-flight pages of a prior
  * term/tag set (FR-022, latest-wins).
  */
-export function useFlowStateSearch({
-  calloutsSetID,
-  flowStateID,
-  terms,
-  skip,
-}: UseFlowStateSearchParams): UseFlowStateSearchResult {
-  const shouldSkip = skip || !calloutsSetID || !flowStateID;
+export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSearchParams): UseFlowStateSearchResult {
+  const shouldSkip = skip || !flowStateID;
 
   // A stable signature for the current term/tag set. When it changes, the query
   // variables change, Apollo issues a fresh page-1 query, and any in-flight
   // fetchMore from the previous signature is invalidated by `requestKeyRef`
   // (latest-wins, FR-022).
-  const requestKey = `${calloutsSetID ?? ''}|${flowStateID ?? ''}|${terms.join(' ')}`;
+  const requestKey = `${flowStateID ?? ''}|${terms.join(' ')}`;
   const requestKeyRef = useRef(requestKey);
   // Sync the latest-wins signature inside an effect (never during render).
   useEffect(() => {
@@ -74,7 +71,6 @@ export function useFlowStateSearch({
     variables: {
       searchData: {
         terms,
-        searchInCalloutsSetFilter: calloutsSetID,
         searchInFlowStateFilter: flowStateID,
         filters: [
           {
@@ -132,7 +128,6 @@ export function useFlowStateSearch({
       variables: {
         searchData: {
           terms,
-          searchInCalloutsSetFilter: calloutsSetID,
           searchInFlowStateFilter: flowStateID,
           filters: [
             {
@@ -169,7 +164,7 @@ export function useFlowStateSearch({
           setAppending(false);
         }
       });
-  }, [inView, shouldSkip, cursor, appending, loading, terms, calloutsSetID, flowStateID, fetchMore]);
+  }, [inView, shouldSkip, cursor, appending, loading, terms, flowStateID, fetchMore]);
 
   const retry = () => {
     void refetch();

@@ -1,12 +1,12 @@
 # Scoped per-flow-state search (007-knowledge-base-search).
 #
-# Reuses the existing global-search `search(searchData:)` query, adding the two
-# additive scope filters the server now exposes:
-#   - searchInCalloutsSetFilter: the current Collaboration's CalloutsSet UUID
-#   - searchInFlowStateFilter:   the viewed InnovationFlowState UUID
+# Reuses the existing global-search `search(searchData:)` query, adding the one
+# additive scope filter the server now exposes:
+#   - searchInFlowStateFilter: the viewed InnovationFlowState UUID (globally
+#     unique → transitively pins the Collaboration; no separate CalloutsSet scope)
 #
 # Tags are NOT a server field — the client appends each selected tag pill to
-# `terms` (FR-004), so this op carries only `terms` + the two scope UUIDs.
+# `terms` (FR-004), so this op carries only `terms` + the flow-state UUID.
 #
 # Only `calloutResults` (server-folded, callout-level, deduped) is read.
 # `total` is always -1 (server#3700) and is deliberately NOT selected — the

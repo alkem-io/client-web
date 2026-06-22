@@ -26,7 +26,6 @@ type QueryArgs = {
   variables: {
     searchData: {
       terms: string[];
-      searchInCalloutsSetFilter?: string;
       searchInFlowStateFilter?: string;
       filters: Array<{ cursor?: string; size: number; category: string }>;
     };
@@ -34,7 +33,6 @@ type QueryArgs = {
   skip?: boolean;
 };
 
-const CALLOUTS_SET = 'callouts-set-uuid';
 const FLOW_STATE = 'flow-state-uuid';
 
 const calloutResult = (id: string) => ({ id, type: 'CALLOUT', score: 1, terms: [] });
@@ -49,9 +47,9 @@ afterEach(() => {
 });
 
 describe('useFlowStateSearch', () => {
-  // FR-007/FR-012: both scope UUIDs ride every request; page 1 has no cursor;
+  // FR-007/FR-012: the flow-state UUID rides every request; page 1 has no cursor;
   // page size is 10.
-  test('issues a scoped page-1 request with both scope UUIDs (FR-012)', () => {
+  test('issues a scoped page-1 request with the flow-state UUID (FR-012)', () => {
     useFlowStateSearchQueryMock.mockReturnValue({
       data: undefined,
       loading: true,
@@ -60,12 +58,9 @@ describe('useFlowStateSearch', () => {
       refetch: vi.fn(),
     });
 
-    renderHook(() =>
-      useFlowStateSearch({ calloutsSetID: CALLOUTS_SET, flowStateID: FLOW_STATE, terms: ['governance'] })
-    );
+    renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: ['governance'] }));
 
     const args = useFlowStateSearchQueryMock.mock.calls.at(-1)?.[0] as QueryArgs;
-    expect(args.variables.searchData.searchInCalloutsSetFilter).toBe(CALLOUTS_SET);
     expect(args.variables.searchData.searchInFlowStateFilter).toBe(FLOW_STATE);
     expect(args.variables.searchData.terms).toEqual(['governance']);
     expect(args.variables.searchData.filters[0].cursor).toBeUndefined();
@@ -85,8 +80,7 @@ describe('useFlowStateSearch', () => {
     });
 
     const { rerender } = renderHook(
-      (props: { terms: string[] }) =>
-        useFlowStateSearch({ calloutsSetID: CALLOUTS_SET, flowStateID: FLOW_STATE, terms: props.terms }),
+      (props: { terms: string[] }) => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: props.terms }),
       { initialProps: { terms: ['governance'] } }
     );
 
@@ -125,8 +119,7 @@ describe('useFlowStateSearch', () => {
     // Sentinel in view → the infinite-scroll effect fires fetchMore (page 2).
     mockInView = true;
     const { rerender } = renderHook(
-      (props: { terms: string[] }) =>
-        useFlowStateSearch({ calloutsSetID: CALLOUTS_SET, flowStateID: FLOW_STATE, terms: props.terms }),
+      (props: { terms: string[] }) => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: props.terms }),
       { initialProps: { terms: ['governance'] } }
     );
 
@@ -162,9 +155,7 @@ describe('useFlowStateSearch', () => {
       refetch: vi.fn(),
     });
 
-    const { result } = renderHook(() =>
-      useFlowStateSearch({ calloutsSetID: CALLOUTS_SET, flowStateID: FLOW_STATE, terms: ['governance'] })
-    );
+    const { result } = renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: ['governance'] }));
 
     expect(result.current.hasMore).toBe(false);
     expect(result.current.status).toBe('results');
@@ -182,7 +173,7 @@ describe('useFlowStateSearch', () => {
     });
 
     const { result, rerender } = renderHook(() =>
-      useFlowStateSearch({ calloutsSetID: CALLOUTS_SET, flowStateID: FLOW_STATE, terms: ['governance'] })
+      useFlowStateSearch({ flowStateID: FLOW_STATE, terms: ['governance'] })
     );
     expect(result.current.status).toBe('error');
 

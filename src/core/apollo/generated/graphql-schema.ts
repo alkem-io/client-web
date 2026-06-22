@@ -7720,9 +7720,7 @@ export type SearchFilterInput = {
 export type SearchInput = {
   /** Return results that satisfy these conditions. */
   filters?: InputMaybe<Array<SearchFilterInput>>;
-  /** Restrict the search to a single Collaboration's CalloutsSet, identified by its UUID. Default is all CalloutsSets. */
-  searchInCalloutsSetFilter?: InputMaybe<Scalars['UUID']['input']>;
-  /** Restrict the search to a single flow state within a CalloutsSet, identified by the InnovationFlowState UUID. Default is all flow states. */
+  /** Restrict the search to a single flow state, identified by the InnovationFlowState UUID. The state UUID is globally unique and transitively identifies its Collaboration, so no separate CalloutsSet filter is needed. Default is all flow states. */
   searchInFlowStateFilter?: InputMaybe<Scalars['UUID']['input']>;
   /** Restrict the search to only the specified Space. Default is all Spaces. */
   searchInSpaceFilter?: InputMaybe<Scalars['UUID']['input']>;
