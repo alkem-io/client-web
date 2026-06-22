@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
@@ -83,6 +84,15 @@ export function AddPhaseDialog({
   const collidesByName = trimmed.length > 0 && existingPhaseNames.some(n => n.toLowerCase() === trimmed.toLowerCase());
   const canSubmit = trimmed.length >= 2 && !collidesByName && !submitting;
 
+  // Guard the close affordances (Esc / overlay click / X / Cancel): if the admin
+  // has typed a name or description, confirm via DiscardChangesDialog before
+  // discarding it. `blockClose` keeps the dialog open while a create is in flight.
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty: trimmed.length > 0 || description.trim().length > 0,
+    onClose: () => onOpenChange(false),
+    blockClose: submitting,
+  });
+
   const handleSubmit = async () => {
     if (!canSubmit) return;
     setSubmitting(true);
@@ -97,50 +107,53 @@ export function AddPhaseDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={open => (!submitting ? onOpenChange(open) : undefined)}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
-        <DialogHeader className="shrink-0">
-          <DialogTitle>{t(keys.title)}</DialogTitle>
-          <DialogDescription>{t(keys.description)}</DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4 flex-1 min-h-0 overflow-y-auto">
-          <div className="space-y-2">
-            <Label htmlFor="phase-name">{t(keys.nameLabel)}</Label>
-            <Input
-              id="phase-name"
-              value={displayName}
-              onChange={e => setDisplayName(e.target.value)}
-              placeholder={t(keys.namePlaceholder)}
-              autoFocus={true}
-              disabled={submitting}
-              maxLength={80}
-            />
-            {collidesByName && <p className="text-caption text-destructive">{t(keys.duplicate)}</p>}
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="shrink-0">
+            <DialogTitle>{t(keys.title)}</DialogTitle>
+            <DialogDescription>{t(keys.description)}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 flex-1 min-h-0 overflow-y-auto">
+            <div className="space-y-2">
+              <Label htmlFor="phase-name">{t(keys.nameLabel)}</Label>
+              <Input
+                id="phase-name"
+                value={displayName}
+                onChange={e => setDisplayName(e.target.value)}
+                placeholder={t(keys.namePlaceholder)}
+                autoFocus={true}
+                disabled={submitting}
+                maxLength={80}
+              />
+              {collidesByName && <p className="text-caption text-destructive">{t(keys.duplicate)}</p>}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phase-description">{t(keys.descriptionLabel)}</Label>
+              <Textarea
+                id="phase-description"
+                value={description}
+                onChange={e => setDescription(e.target.value)}
+                placeholder={t(keys.descriptionPlaceholder)}
+                rows={3}
+                disabled={submitting}
+                maxLength={400}
+              />
+            </div>
+            {error && <p className="text-caption text-destructive">{error}</p>}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="phase-description">{t(keys.descriptionLabel)}</Label>
-            <Textarea
-              id="phase-description"
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-              placeholder={t(keys.descriptionPlaceholder)}
-              rows={3}
-              disabled={submitting}
-              maxLength={400}
-            />
-          </div>
-          {error && <p className="text-caption text-destructive">{error}</p>}
-        </div>
-        <DialogFooter className="shrink-0">
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>
-            {t(keys.cancel)}
-          </Button>
-          <Button type="button" disabled={!canSubmit} onClick={() => void handleSubmit()} aria-busy={submitting}>
-            {submitting && <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />}
-            {t(keys.confirm)}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter className="shrink-0">
+            <Button type="button" variant="outline" onClick={requestClose} disabled={submitting}>
+              {t(keys.cancel)}
+            </Button>
+            <Button type="button" disabled={!canSubmit} onClick={() => void handleSubmit()} aria-busy={submitting}>
+              {submitting && <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />}
+              {t(keys.confirm)}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {guardElement}
+    </>
   );
 }

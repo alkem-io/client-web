@@ -17,11 +17,12 @@ export type LayoutPoolColumn = {
   isHidden?: boolean;
   /**
    * Whether this column may be deleted. The per-column Delete affordance is shown only when the
-   * delete capability is present AND this is not `false`. Left `undefined` for subspace columns
-   * (their deletability is governed by the flow's min-states limit), so existing behaviour is
-   * unchanged. Set to `false` for the four built-in L0 tabs (indices 0–3) to protect them.
+   * delete capability is present AND this is not `false`. The mapper sets `false` for the four
+   * built-in L0 tabs (indices 0–3) to protect them, and `true` for every other column (all
+   * subspace phases, and admin-added L0 tabs at index ≥ 4); for subspaces the flow's min-states
+   * limit, not position, ultimately governs removal.
    */
-  isDeletable?: boolean;          // ← NEW (opt-out: undefined ⇒ deletable as before)
+  isDeletable?: boolean;          // ← NEW (optional: undefined ⇒ deletable as before)
   callouts: LayoutCallout[];
 };
 ```
@@ -50,7 +51,7 @@ export type SpaceSettingsLayoutViewProps = {
 ```
 
 Behavioural contract:
-- `canManagePhases := canManageTabs ?? (level !== 'L0')` and `&& !!onCreatePhase`.
+- `canManagePhases := (canManageTabs ?? (level !== 'L0')) && !!onCreatePhase`.
 - `canAddPhase := canManagePhases && columns.length < maximumNumberOfStates && !isStructureMutating && !isReplacingFlow` (unchanged formula; now reachable on L0).
 - `canReorderColumns := level !== 'L0' && !!onReorderColumns` (**unchanged** — reorder stays off on L0, FR-016 out of scope).
 - The `AddPhaseDialog` renders when `canManagePhases && onCreatePhase`; on L0 it shows tab-worded labels (below).

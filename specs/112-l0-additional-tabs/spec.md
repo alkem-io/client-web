@@ -48,7 +48,7 @@ A Space admin deletes a tab they previously added. Any posts that were in the de
 
 ### User Story 3 - Manage additional L0 tabs consistently with subspaces (Priority: P2)
 
-The other tab-management affordances already available on subspaces — renaming a tab, editing its description, toggling its member-facing visibility, and (where applicable) reordering — behave the same way on L0 additional tabs, and Space templates capture all tabs (built-in plus additional) so a templated Space reproduces them.
+The other tab-management affordances already available on subspaces — renaming a tab, editing its description, and toggling its member-facing visibility — behave the same way on L0 additional tabs, and Space templates capture all tabs (built-in plus additional) so a templated Space reproduces them. (Drag-reorder is out of scope for this slice — see FR-016.)
 
 **Why this priority**: The story explicitly asks to "follow the same logic as Subspaces" and that "Templates: include all tabs". This consistency is required for the feature to feel complete, but the add/delete core (P1) already delivers the headline value, so this is P2.
 
@@ -59,7 +59,7 @@ The other tab-management affordances already available on subspaces — renaming
 1. **Given** an admin-added L0 tab, **When** the admin renames it or edits its description, **Then** the change persists and the tab bar reflects the new name, identical to subspace behaviour.
 2. **Given** an admin-added L0 tab, **When** the admin toggles its visibility off, **Then** it is hidden from members in the tab bar while remaining reachable by admins, identical to subspace behaviour.
 3. **Given** an L0 Space with additional tabs, **When** the Space is saved as a template, **Then** the template content includes every tab (the four built-in plus all additional tabs).
-4. **Given** the four built-in L0 tabs, **When** an admin manages tabs, **Then** built-in tabs may be renamed/hidden where that already exists, but never deleted, and reordering must not move an admin-added tab ahead of the four built-in tabs.
+4. **Given** the four built-in L0 tabs, **When** an admin manages tabs, **Then** built-in tabs may be renamed/hidden where that already exists, but never deleted.
 
 ---
 
