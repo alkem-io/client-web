@@ -14,6 +14,13 @@ type WhiteboardEditorShellProps = {
   children: ReactNode;
   footer?: ReactNode;
   className?: string;
+  /**
+   * Optional Escape-key interceptor. Radix invokes this during the capture phase, before the
+   * dialog content (e.g. Excalidraw) processes the key. Return `true` to consume the Escape and
+   * keep the dialog open (letting the inner content act on it); return `false`/`undefined` to let
+   * the dialog close as usual.
+   */
+  onEscapeKeyDown?: (event: KeyboardEvent) => boolean;
 };
 
 export function WhiteboardEditorShell({
@@ -26,6 +33,7 @@ export function WhiteboardEditorShell({
   children,
   footer,
   className,
+  onEscapeKeyDown,
 }: WhiteboardEditorShellProps) {
   const { t } = useTranslation('crd-whiteboard');
   const titleId = useId();
@@ -44,7 +52,12 @@ export function WhiteboardEditorShell({
           onInteractOutside={e => e.preventDefault()}
           onPointerDownOutside={e => e.preventDefault()}
           onEscapeKeyDown={e => {
+            // Always prevent Radix's built-in dismiss; closing is routed through `onClose`.
             e.preventDefault();
+            // Give the content a chance to consume the Escape (e.g. Excalidraw deselecting).
+            if (onEscapeKeyDown?.(e)) {
+              return;
+            }
             onClose();
           }}
           className={cn(
