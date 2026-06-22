@@ -32,9 +32,7 @@
       "errorDescription": "Une erreur s'est produite lors de la recherche. Veuillez réessayer.",
       "retry": "Réessayer",
       "loadingLabel": "Chargement des résultats de recherche",
-      "appendingLabel": "Chargement de résultats supplémentaires",
-      "resultsLabel": "Résultats de recherche",
-      "unknownAuthor": "Inconnu"
+      "appendingLabel": "Chargement de résultats supplémentaires"
     },
     "viewGrid": "Vue en cartes",
     "viewList": "Vue en liste",

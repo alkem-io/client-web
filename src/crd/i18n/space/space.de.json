@@ -32,9 +32,7 @@
       "errorDescription": "Bei der Suche ist ein Fehler aufgetreten. Bitte versuche es erneut.",
       "retry": "Erneut versuchen",
       "loadingLabel": "Suchergebnisse werden geladen",
-      "appendingLabel": "Weitere Ergebnisse werden geladen",
-      "resultsLabel": "Suchergebnisse",
-      "unknownAuthor": "Unbekannt"
+      "appendingLabel": "Weitere Ergebnisse werden geladen"
     },
     "viewGrid": "Kartenansicht",
     "viewList": "Listenansicht",

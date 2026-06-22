@@ -14,7 +14,8 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { mapCalloutsToListItems } from '@/main/crdPages/space/dataMappers/calloutDataMapper';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
-import { mapFlowStateSearchResults } from '../dataMappers/flowStateSearchDataMapper';
+import { LazyCalloutItem } from '../callout/LazyCalloutItem';
+import { mapFlowStateSearchCalloutIds } from '../dataMappers/flowStateSearchDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
@@ -84,7 +85,9 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     skip: !isSearching,
   });
 
-  const searchResults = mapFlowStateSearchResults(search.results, t('knowledge.search.unknownAuthor'));
+  // The matched callouts, in the server's relevance order (FR-019). Rendered
+  // through the default callout feed below (FR-016) — not a bespoke search card.
+  const searchCalloutIds = mapFlowStateSearchCalloutIds(search.results);
 
   // The sidebar knowledge index reflects the browse list (unchanged); during an
   // active search the feed is replaced by the scoped results below.
@@ -97,8 +100,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
       navigate(href);
     }
   };
-
-  const handleResultClick = (href: string) => navigate(href);
 
   const handleClearFilters = () => {
     setSubmittedTerm('');
@@ -113,7 +114,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     retry: t('knowledge.search.retry'),
     loadingLabel: t('knowledge.search.loadingLabel'),
     appendingLabel: t('knowledge.search.appendingLabel'),
-    resultsLabel: t('knowledge.search.resultsLabel'),
   };
 
   return (
@@ -162,14 +162,27 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
         {isSearching ? (
           <FlowStateSearchResults
             status={search.status}
-            results={searchResults}
             appending={search.appending}
             hasMore={search.hasMore}
             sentinelRef={search.sentinelRef}
-            onResultClick={handleResultClick}
             onRetry={search.retry}
             labels={searchLabels}
-          />
+          >
+            {/* Render matches through the default callout feed (FR-016): each
+                LazyCalloutItem self-fetches and shows the same PostCard as browse.
+                Reorder is suppressed — search results are relevance-ordered, not
+                user-sortable. Descriptions start compact ("Read more") so a long
+                result list stays scannable. */}
+            {searchCalloutIds.map(id => (
+              <LazyCalloutItem
+                key={id}
+                calloutId={id}
+                calloutsSetId={calloutsSetId}
+                canReorder={false}
+                forceDescriptionCollapsed={true}
+              />
+            ))}
+          </FlowStateSearchResults>
         ) : (
           <CalloutListConnector
             callouts={callouts}

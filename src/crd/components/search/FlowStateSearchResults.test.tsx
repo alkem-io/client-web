@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
 import { type FlowStateSearchLabels, FlowStateSearchResults } from './FlowStateSearchResults';
-import type { PostResultCardData } from './PostResultCard';
 
 // CRD components resolve text via the crd namespaces; for a pure-state render
 // test we stub i18n so the labels we assert on are deterministic.
@@ -17,25 +16,11 @@ const labels: FlowStateSearchLabels = {
   retry: 'RETRY',
   loadingLabel: 'LOADING',
   appendingLabel: 'APPENDING',
-  resultsLabel: 'RESULTS',
 };
 
-const result = (id: string): PostResultCardData => ({
-  id,
-  title: `Callout ${id}`,
-  snippet: '',
-  type: 'post',
-  author: { name: 'Author' },
-  date: '',
-  spaceName: 'Space',
-  href: `/callout/${id}`,
-});
-
 const baseProps = {
-  results: [] as PostResultCardData[],
   appending: false,
   hasMore: false,
-  onResultClick: vi.fn(),
   onRetry: vi.fn(),
   labels,
 };
@@ -72,15 +57,32 @@ describe('FlowStateSearchResults', () => {
     render(<FlowStateSearchResults {...baseProps} status="loading" />);
 
     expect(screen.getByLabelText('LOADING')).toBeInTheDocument();
-    // No results card and no empty/error in the skeleton state.
+    // No empty/error chrome in the skeleton state.
     expect(screen.queryByText('EMPTY_TITLE')).not.toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  // FR-016: in the results state the consumer-supplied feed (the default callout
+  // presentation) is rendered as children.
+  test('results state renders the supplied feed children', () => {
+    render(
+      <FlowStateSearchResults {...baseProps} status="results">
+        <div>Callout a</div>
+        <div>Callout b</div>
+      </FlowStateSearchResults>
+    );
+
+    expect(screen.getByText('Callout a')).toBeInTheDocument();
+    expect(screen.getByText('Callout b')).toBeInTheDocument();
   });
 
   // FR-023: footer spinner while appending, with prior results still visible.
   test('appending shows the footer spinner while keeping prior results (FR-023)', () => {
     render(
-      <FlowStateSearchResults {...baseProps} status="results" results={[result('a'), result('b')]} appending={true} />
+      <FlowStateSearchResults {...baseProps} status="results" appending={true}>
+        <div>Callout a</div>
+        <div>Callout b</div>
+      </FlowStateSearchResults>
     );
 
     // Prior results remain on screen during the append.

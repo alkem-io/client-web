@@ -32,9 +32,7 @@
       "errorDescription": "Something went wrong while searching. Please try again.",
       "retry": "Try again",
       "loadingLabel": "Loading search results",
-      "appendingLabel": "Loading more results",
-      "resultsLabel": "Search results",
-      "unknownAuthor": "Unknown"
+      "appendingLabel": "Loading more results"
     },
     "viewGrid": "Card view",
     "viewList": "List view",

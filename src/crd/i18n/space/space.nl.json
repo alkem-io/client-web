@@ -32,9 +32,7 @@
       "errorDescription": "Er is iets misgegaan tijdens het zoeken. Probeer het opnieuw.",
       "retry": "Opnieuw proberen",
       "loadingLabel": "Zoekresultaten laden",
-      "appendingLabel": "Meer resultaten laden",
-      "resultsLabel": "Zoekresultaten",
-      "unknownAuthor": "Onbekend"
+      "appendingLabel": "Meer resultaten laden"
     },
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",
