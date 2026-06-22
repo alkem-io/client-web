@@ -5,16 +5,19 @@ import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
 import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
+import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { SearchField } from '@/crd/forms/SearchField';
+import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { mapCalloutsToListItems } from '@/main/crdPages/space/dataMappers/calloutDataMapper';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
+import { mapFlowStateSearchResults } from '../dataMappers/flowStateSearchDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
+import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
@@ -28,7 +31,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const navigate = useNavigate();
   const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  // The free-text term, submitted on Enter (FR-010) — not live keystrokes.
+  const [submittedTerm, setSubmittedTerm] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
 
   const {
@@ -42,7 +46,12 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     loading,
   } = useCrdCalloutList({ tabPosition: sectionIndex });
 
-  // Fetch tags via the same GraphQL query the MUI version uses
+  // The current tab IS a flow state; its UUID scopes the search (FR-008/012).
+  // Generic to any L0 flow-state tab — no KB-specific branch (FR-011).
+  const flowStateId = flowStateForNewCallouts?.id;
+
+  // Faceted tag source: the flow state's already-loaded tag universe (T017 / FR-004).
+  // No new endpoint — the same query the board uses for its tag filter.
   const { data: tagsData } = useCalloutsSetTagsQuery({
     variables: {
       // biome-ignore lint/style/noNonNullAssertion: ensured by skip
@@ -51,36 +60,37 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     },
     skip: !calloutsSetId,
   });
-  // The `CalloutsSetTags` query returns the full tag universe for the calloutsSet — chips stay
-  // stable when selected and don't disappear as the callout list filters down.
   const allTags = tagsData?.lookup.calloutsSet?.tags ?? [];
 
   const handleToggleTag = (tag: string) => {
     setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
   };
 
-  // Client-side filtering — search + tags, mirroring the Subspaces tab. Tags
-  // use AND (every selected tag must be present); search matches the title,
-  // description and tags case-insensitively. The feed and the left-sidebar
-  // index both render this filtered set, so they stay in sync.
-  const trimmedQuery = searchQuery.trim().toLowerCase();
-  const visibleCallouts = callouts.filter(callout => {
-    const profile = callout.framing.profile;
-    const calloutTags = profile.tagset?.tags ?? [];
-    if (!tagsFilter.every(tag => calloutTags.includes(tag))) {
-      return false;
-    }
-    if (!trimmedQuery) {
-      return true;
-    }
-    const haystack = [profile.displayName, profile.description ?? '', ...calloutTags].join(' ').toLowerCase();
-    return haystack.includes(trimmedQuery);
+  // Active search = a submitted term or one+ selected tag pills. Selecting a tag
+  // is an active search, not browse (FR-018). Tag pills ride the `terms` array
+  // (FR-004): each selected pill is appended; multi-tag OR comes from term
+  // semantics. The free-text term is split into words and appended too.
+  const termWords = submittedTerm.trim().length > 0 ? submittedTerm.trim().split(/\s+/) : [];
+  const searchTerms = [...termWords, ...tagsFilter];
+  const isSearching = searchTerms.length > 0;
+
+  const search = useFlowStateSearch({
+    calloutsSetID: calloutsSetId,
+    flowStateID: flowStateId,
+    terms: searchTerms,
+    // Until the scoped server search is exercised (deploy gate: re-ingest), the
+    // default browse view keeps the existing feed; the scoped query runs only
+    // when the user actively searches/filters (the binding SC-002 outcome).
+    skip: !isSearching,
   });
 
-  const indexEntries = mapCalloutsToListItems(visibleCallouts, sectionIndex + 1, t);
+  const searchResults = mapFlowStateSearchResults(search.results, t('knowledge.search.unknownAuthor'));
 
-  // SPA-navigate to the callout (opens the detail dialog over this tab) rather
-  // than letting the native <a> do a full-page load that resets the tab.
+  // The sidebar knowledge index reflects the browse list (unchanged); during an
+  // active search the feed is replaced by the scoped results below.
+  const indexEntries = mapCalloutsToListItems(callouts, sectionIndex + 1, t);
+
+  // SPA-navigate to the callout (opens the detail dialog over this tab).
   const handleEntryClick = (id: string) => {
     const href = indexEntries.find(entry => entry.id === id)?.href;
     if (href) {
@@ -88,9 +98,22 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     }
   };
 
+  const handleResultClick = (href: string) => navigate(href);
+
   const handleClearFilters = () => {
-    setSearchQuery('');
+    setSubmittedTerm('');
     setTagsFilter([]);
+  };
+
+  const searchLabels = {
+    emptyTitle: t('knowledge.search.emptyTitle'),
+    emptyDescription: t('knowledge.search.emptyDescription'),
+    errorTitle: t('knowledge.search.errorTitle'),
+    errorDescription: t('knowledge.search.errorDescription'),
+    retry: t('knowledge.search.retry'),
+    loadingLabel: t('knowledge.search.loadingLabel'),
+    appendingLabel: t('knowledge.search.appendingLabel'),
+    resultsLabel: t('knowledge.search.resultsLabel'),
   };
 
   return (
@@ -119,12 +142,14 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           }
         />
 
-        {/* Search filters the feed and the sidebar index; tags live behind the
-            filter button rather than on the board. */}
+        {/* Scoped server search (FR-014): the term submits on Enter (FR-010) and
+            tag pills ride the terms (FR-004). Replaces the old client-side,
+            title-only filter so the tab no longer bulk-downloads post content to
+            enable search. */}
         <div className="flex items-center gap-2">
-          <SearchField
-            value={searchQuery}
-            onValueChange={setSearchQuery}
+          <FlowStateSearchField
+            defaultValue={submittedTerm}
+            onSubmit={setSubmittedTerm}
             placeholder={t('knowledge.searchPlaceholder')}
             ariaLabel={t('knowledge.searchLabel')}
             className="flex-1"
@@ -132,13 +157,22 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
         </div>
 
-        <FilterResultsSummary searchTerm={searchQuery} tags={tagsFilter} onClear={handleClearFilters} />
+        <FilterResultsSummary searchTerm={submittedTerm} tags={tagsFilter} onClear={handleClearFilters} />
 
-        {(trimmedQuery || tagsFilter.length > 0) && visibleCallouts.length === 0 ? (
-          <p className="text-body text-muted-foreground">{t('knowledge.noResults')}</p>
+        {isSearching ? (
+          <FlowStateSearchResults
+            status={search.status}
+            results={searchResults}
+            appending={search.appending}
+            hasMore={search.hasMore}
+            sentinelRef={search.sentinelRef}
+            onResultClick={handleResultClick}
+            onRetry={search.retry}
+            labels={searchLabels}
+          />
         ) : (
           <CalloutListConnector
-            callouts={visibleCallouts}
+            callouts={callouts}
             calloutsSetId={calloutsSetId}
             canReorder={canReorderCallouts}
             loading={loading}

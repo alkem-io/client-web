@@ -29525,6 +29525,79 @@ export function refetchInnovationLibraryTemplatesPaginatedQuery(
 ) {
   return { query: InnovationLibraryTemplatesPaginatedDocument, variables: variables };
 }
+export const FlowStateSearchDocument = gql`
+    query FlowStateSearch($searchData: SearchInput!) {
+  search(searchData: $searchData) {
+    calloutResults {
+      cursor
+      results {
+        id
+        type
+        score
+        terms
+        ...SearchResultCallout
+      }
+    }
+  }
+}
+    ${SearchResultCalloutFragmentDoc}`;
+
+/**
+ * __useFlowStateSearchQuery__
+ *
+ * To run a query within a React component, call `useFlowStateSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFlowStateSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFlowStateSearchQuery({
+ *   variables: {
+ *      searchData: // value for 'searchData'
+ *   },
+ * });
+ */
+export function useFlowStateSearchQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.FlowStateSearchQuery, SchemaTypes.FlowStateSearchQueryVariables> &
+    ({ variables: SchemaTypes.FlowStateSearchQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.FlowStateSearchQuery, SchemaTypes.FlowStateSearchQueryVariables>(
+    FlowStateSearchDocument,
+    options
+  );
+}
+export function useFlowStateSearchLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.FlowStateSearchQuery, SchemaTypes.FlowStateSearchQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.FlowStateSearchQuery, SchemaTypes.FlowStateSearchQueryVariables>(
+    FlowStateSearchDocument,
+    options
+  );
+}
+export function useFlowStateSearchSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.FlowStateSearchQuery, SchemaTypes.FlowStateSearchQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.FlowStateSearchQuery, SchemaTypes.FlowStateSearchQueryVariables>(
+    FlowStateSearchDocument,
+    options
+  );
+}
+export type FlowStateSearchQueryHookResult = ReturnType<typeof useFlowStateSearchQuery>;
+export type FlowStateSearchLazyQueryHookResult = ReturnType<typeof useFlowStateSearchLazyQuery>;
+export type FlowStateSearchSuspenseQueryHookResult = ReturnType<typeof useFlowStateSearchSuspenseQuery>;
+export type FlowStateSearchQueryResult = Apollo.QueryResult<
+  SchemaTypes.FlowStateSearchQuery,
+  SchemaTypes.FlowStateSearchQueryVariables
+>;
+export function refetchFlowStateSearchQuery(variables: SchemaTypes.FlowStateSearchQueryVariables) {
+  return { query: FlowStateSearchDocument, variables: variables };
+}
 export const MySpacesExplorerPageDocument = gql`
     query MySpacesExplorerPage {
   me {

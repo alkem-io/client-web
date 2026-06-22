@@ -25,6 +25,17 @@
     "searchPlaceholder": "Zoek in de kennisbank...",
     "searchLabel": "Zoek in de kennisbank",
     "noResults": "Geen resultaten",
+    "search": {
+      "emptyTitle": "Geen resultaten",
+      "emptyDescription": "Geen inhoud in deze sectie komt overeen met je zoekopdracht.",
+      "errorTitle": "Zoeken is niet beschikbaar",
+      "errorDescription": "Er is iets misgegaan tijdens het zoeken. Probeer het opnieuw.",
+      "retry": "Opnieuw proberen",
+      "loadingLabel": "Zoekresultaten laden",
+      "appendingLabel": "Meer resultaten laden",
+      "resultsLabel": "Zoekresultaten",
+      "unknownAuthor": "Onbekend"
+    },
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",
     "count": {

@@ -25,6 +25,17 @@
     "searchPlaceholder": "Wissensdatenbank durchsuchen...",
     "searchLabel": "Wissensdatenbank durchsuchen",
     "noResults": "Keine Treffer",
+    "search": {
+      "emptyTitle": "Keine Treffer",
+      "emptyDescription": "Kein Inhalt in diesem Bereich entspricht deiner Suche.",
+      "errorTitle": "Suche nicht verfügbar",
+      "errorDescription": "Bei der Suche ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "retry": "Erneut versuchen",
+      "loadingLabel": "Suchergebnisse werden geladen",
+      "appendingLabel": "Weitere Ergebnisse werden geladen",
+      "resultsLabel": "Suchergebnisse",
+      "unknownAuthor": "Unbekannt"
+    },
     "viewGrid": "Kartenansicht",
     "viewList": "Listenansicht",
     "count": {

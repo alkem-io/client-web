@@ -25,6 +25,17 @@
     "searchPlaceholder": "Search the knowledge base...",
     "searchLabel": "Search the knowledge base",
     "noResults": "No matches",
+    "search": {
+      "emptyTitle": "No matches",
+      "emptyDescription": "No content in this section matches your search.",
+      "errorTitle": "Search is unavailable",
+      "errorDescription": "Something went wrong while searching. Please try again.",
+      "retry": "Try again",
+      "loadingLabel": "Loading search results",
+      "appendingLabel": "Loading more results",
+      "resultsLabel": "Search results",
+      "unknownAuthor": "Unknown"
+    },
     "viewGrid": "Card view",
     "viewList": "List view",
     "count": {
