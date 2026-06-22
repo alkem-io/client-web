@@ -17,7 +17,8 @@
       "emailNotice": "Diese Person hat den Chat deaktiviert, akzeptiert aber E-Mails. Wird an ihre Kontoadresse gesendet.",
       "emailPlaceholder": "E-Mail schreiben…",
       "emailSuccessToast": "Deine E-Mail wurde gesendet.",
-      "cannotBeReached": "Diese Person kann nicht kontaktiert werden."
+      "cannotBeReached": "Diese Person kann nicht kontaktiert werden.",
+      "openChatError": "Der Chat konnte nicht geöffnet werden. Bitte versuche es erneut."
     },
     "resourceTabsAriaLabel": "Ressourcenbereiche",
     "loading": {

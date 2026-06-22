@@ -18,6 +18,12 @@ const SEARCH_PAGE_SIZE = 20;
 type CalloutShareOnAlkemioFormProps = {
   url: string;
   entityLabel: string;
+  /**
+   * Closes the surrounding Share dialog. Called when the user acts on the
+   * confirmation (dismiss or "open chat") so the confirmation — layered above
+   * the Share dialog — does not leave that dialog open behind it (FR-005).
+   */
+  onClose?: () => void;
 };
 
 type SearchedUser = {
@@ -40,7 +46,7 @@ function mapToShareUser(user: SearchedUser): ShareUser | null {
   };
 }
 
-export function CalloutShareOnAlkemioForm({ url, entityLabel }: CalloutShareOnAlkemioFormProps) {
+export function CalloutShareOnAlkemioForm({ url, entityLabel, onClose }: CalloutShareOnAlkemioFormProps) {
   const { t } = useTranslation('crd-common');
   const notify = useNotification();
   const { userModel: currentUser } = useCurrentUserContext();
@@ -54,7 +60,7 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel }: CalloutShareOnAl
   const [showErrors, setShowErrors] = useState(false);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [notReached, setNotReached] = useState<string[]>([]);
-  const [openChatConversationId, setOpenChatConversationId] = useState<string | null>(null);
+  const [sentConversationIds, setSentConversationIds] = useState<string[]>([]);
 
   const trimmedQuery = searchQuery.trim();
   const { data: searchData, loading: searching } = useUserSelectorQuery({
@@ -116,13 +122,15 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel }: CalloutShareOnAl
         .filter(u => byReceiver.get(u.id)?.status !== DirectMessageDeliveryStatus.Sent)
         .map(u => u.displayName);
 
-      // Offer "open chat" for the first successfully created/reused conversation.
-      const firstSent = results.find(
-        result => result.status === DirectMessageDeliveryStatus.Sent && result.conversationID
-      );
+      // Collect every successfully created/reused conversation so "open chat"
+      // can focus the single one (if there was just one recipient) or fall back
+      // to the conversation list when several were messaged (FR-005).
+      const sentIds = results
+        .filter(result => result.status === DirectMessageDeliveryStatus.Sent && result.conversationID)
+        .map(result => result.conversationID as string);
 
       setNotReached(failedNames);
-      setOpenChatConversationId(firstSent?.conversationID ?? null);
+      setSentConversationIds(sentIds);
       setConfirmationOpen(true);
 
       setSelectedUsers([]);
@@ -134,12 +142,19 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel }: CalloutShareOnAl
     }
   };
 
+  const handleConfirmationOpenChange = (next: boolean) => {
+    setConfirmationOpen(next);
+    // Dismissing the confirmation also closes the Share dialog underneath it.
+    if (!next) onClose?.();
+  };
+
   const handleOpenChat = () => {
-    if (openChatConversationId) {
-      setSelectedConversationId(openChatConversationId);
-      setIsOpen(true);
-    }
+    // Several recipients were messaged individually → open the conversation list
+    // (null selection); focus the single conversation only when there was one.
+    setSelectedConversationId(sentConversationIds.length === 1 ? sentConversationIds[0] : null);
+    setIsOpen(true);
     setConfirmationOpen(false);
+    onClose?.();
   };
 
   return (
@@ -195,9 +210,9 @@ export function CalloutShareOnAlkemioForm({ url, entityLabel }: CalloutShareOnAl
 
       <SendConfirmationDialog
         open={confirmationOpen}
-        onOpenChange={setConfirmationOpen}
+        onOpenChange={handleConfirmationOpenChange}
         notReached={notReached}
-        onOpenChat={openChatConversationId ? handleOpenChat : undefined}
+        onOpenChat={sentConversationIds.length > 0 ? handleOpenChat : undefined}
       />
     </div>
   );

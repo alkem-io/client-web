@@ -16,6 +16,7 @@
     "searchHint": "Start typing to search people",
     "noResults": "No people found",
     "create": "Start chat",
+    "createGroup": "Start group chat",
     "removeAria": "Remove {{name}}"
   },
   "group": {

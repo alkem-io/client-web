@@ -1,4 +1,5 @@
-import { MapPin, Settings } from 'lucide-react';
+import { MapPin, MessageSquare, Settings } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
@@ -15,8 +16,17 @@ export type UserPageHeroProps = {
   showSettingsIcon: boolean;
   settingsHref?: string;
   showMessageButton: boolean;
+  /**
+   * Chat route (FR-001): clicking Message opens/focuses the 1:1 chat panel
+   * directly — no compose popover. Takes precedence over `onSendMessage`.
+   */
+  onMessageClick?: () => Promise<void> | void;
+  /**
+   * Email-fallback route (FR-011): a one-off send, so it keeps the compose
+   * popover. Used only when `onMessageClick` is not provided.
+   */
   onSendMessage?: (messageText: string) => Promise<void>;
-  /** Optional copy overrides for the message popover (e.g. the email-fallback route). */
+  /** Optional copy overrides for the message popover (the email-fallback route). */
   messageTitle?: string;
   messageNotice?: string;
   messagePlaceholder?: string;
@@ -35,6 +45,7 @@ export function UserPageHero({
   showSettingsIcon,
   settingsHref,
   showMessageButton,
+  onMessageClick,
   onSendMessage,
   messageTitle,
   messageNotice,
@@ -42,6 +53,17 @@ export function UserPageHero({
   cannotBeReachedLabel,
 }: UserPageHeroProps) {
   const { t } = useTranslation('crd-profilePages');
+  const [openingChat, setOpeningChat] = useState(false);
+
+  const handleMessageClick = async () => {
+    if (!onMessageClick || openingChat) return;
+    setOpeningChat(true);
+    try {
+      await onMessageClick();
+    } finally {
+      setOpeningChat(false);
+    }
+  };
 
   return (
     <div>
@@ -66,7 +88,17 @@ export function UserPageHero({
             </div>
 
             <div className="flex gap-3 shrink-0">
-              {showMessageButton && onSendMessage ? (
+              {showMessageButton && onMessageClick ? (
+                <Button
+                  className="gap-2 shadow-sm"
+                  onClick={handleMessageClick}
+                  disabled={openingChat}
+                  aria-busy={openingChat}
+                >
+                  <MessageSquare className="w-4 h-4" aria-hidden="true" />
+                  {t('userProfile.hero.messageButton')}
+                </Button>
+              ) : showMessageButton && onSendMessage ? (
                 <MessagePopover
                   triggerLabel={t('userProfile.hero.messageButton')}
                   onSendMessage={onSendMessage}

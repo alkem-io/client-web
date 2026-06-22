@@ -17,7 +17,8 @@
       "emailNotice": "This person has chat turned off but accepts email. Sent to their account address.",
       "emailPlaceholder": "Write an email…",
       "emailSuccessToast": "Your email has been sent.",
-      "cannotBeReached": "This person cannot be contacted."
+      "cannotBeReached": "This person cannot be contacted.",
+      "openChatError": "We couldn't open the chat. Please try again."
     },
     "resourceTabsAriaLabel": "Resource sections",
     "loading": {

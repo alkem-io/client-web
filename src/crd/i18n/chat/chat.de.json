@@ -16,6 +16,7 @@
     "searchHint": "Tippen, um Personen zu suchen",
     "noResults": "Keine Personen gefunden",
     "create": "Chat starten",
+    "createGroup": "Gruppenchat starten",
     "removeAria": "{{name}} entfernen"
   },
   "group": {

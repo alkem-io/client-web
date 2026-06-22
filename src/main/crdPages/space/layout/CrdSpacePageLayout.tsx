@@ -275,6 +275,7 @@ export default function CrdSpacePageLayout() {
                 key={spaceUrl}
                 url={spaceUrl}
                 entityLabel={t('common.space', { ns: 'crd-common' }).toLowerCase()}
+                onClose={() => setShareDialogOpen(false)}
               />
             ) : undefined
           }

@@ -10,10 +10,10 @@ vi.mock('@/main/crdPages/unifiedChat/useStartDirectChat', () => ({
   }),
 }));
 
-const sendMessageToRoomMock = vi.fn();
+const sendMessageToUsersMock = vi.fn();
 const sendMessageToOrganizationMock = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  useSendMessageToRoomMutation: () => [sendMessageToRoomMock, { loading: false }],
+  useSendMessageToUsersMutation: () => [sendMessageToUsersMock, { loading: false }],
   useSendMessageToOrganizationMutation: () => [sendMessageToOrganizationMock, { loading: false }],
 }));
 
@@ -21,46 +21,49 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-vi.mock('sonner', () => ({ toast: { success: vi.fn() } }));
+const toastErrorMock = vi.fn();
+vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: (...args: unknown[]) => toastErrorMock(...args) } }));
 
-import { useSendMessageToUserHandler } from './useSendMessageHandler';
+import { useOpenDirectChatHandler } from './useSendMessageHandler';
 
-describe('useSendMessageToUserHandler (US1 — profile message → 1:1 chat)', () => {
+describe('useOpenDirectChatHandler (US1 — profile Message → open 1:1 chat)', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  test('opens/creates the direct chat and sends the message into its room', async () => {
+  test('opens/focuses the direct chat WITHOUT sending a message (FR-001)', async () => {
     startDirectChatMock.mockResolvedValue({ conversationId: 'conv-1', roomId: 'room-1' });
-    sendMessageToRoomMock.mockResolvedValue({});
 
-    const { result } = renderHook(() => useSendMessageToUserHandler({ recipientUserId: 'user-2' }));
-    await result.current.onSendMessage('hello there');
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: 'user-2' }));
+    await result.current.onOpenChat();
 
     expect(startDirectChatMock).toHaveBeenCalledWith('user-2');
-    expect(sendMessageToRoomMock).toHaveBeenCalledWith({
-      variables: { messageData: { roomID: 'room-1', message: 'hello there' } },
-    });
+    expect(sendMessageToUsersMock).not.toHaveBeenCalled();
   });
 
-  test('reuses an existing conversation (dedup) — sends into the returned room without a second create', async () => {
+  test('reuses an existing conversation (dedup) — startDirectChat is the single seam', async () => {
     // startDirectChat dedups server-side; the handler always routes through it
-    // and sends into whatever room it returns (existing or new).
+    // and opens/focuses whatever conversation it returns (existing or new).
     startDirectChatMock.mockResolvedValue({ conversationId: 'existing-conv', roomId: 'existing-room' });
-    sendMessageToRoomMock.mockResolvedValue({});
 
-    const { result } = renderHook(() => useSendMessageToUserHandler({ recipientUserId: 'user-2' }));
-    await result.current.onSendMessage('hi again');
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: 'user-2' }));
+    await result.current.onOpenChat();
 
     expect(startDirectChatMock).toHaveBeenCalledTimes(1);
-    expect(sendMessageToRoomMock).toHaveBeenCalledWith({
-      variables: { messageData: { roomID: 'existing-room', message: 'hi again' } },
-    });
+  });
+
+  test('surfaces an error toast when the chat cannot be opened', async () => {
+    startDirectChatMock.mockRejectedValue(new Error('boom'));
+
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: 'user-2' }));
+    await result.current.onOpenChat();
+
+    expect(toastErrorMock).toHaveBeenCalledWith('common.messagePopover.openChatError');
   });
 
   test('throws when no recipient is loaded', async () => {
-    const { result } = renderHook(() => useSendMessageToUserHandler({ recipientUserId: undefined }));
-    await expect(result.current.onSendMessage('hello')).rejects.toThrow('Recipient user not loaded.');
+    const { result } = renderHook(() => useOpenDirectChatHandler({ recipientUserId: undefined }));
+    await expect(result.current.onOpenChat()).rejects.toThrow('Recipient user not loaded.');
     expect(startDirectChatMock).not.toHaveBeenCalled();
   });
 });

@@ -12,8 +12,8 @@ import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/Me
 import { normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import {
+  useOpenDirectChatHandler,
   useSendEmailToUserHandler,
-  useSendMessageToUserHandler,
 } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
@@ -38,7 +38,7 @@ export const CrdUserProfilePage = () => {
 
   const { activeTab, onSelectTab } = useResourceTabs();
 
-  const { onSendMessage: onSendChatMessage } = useSendMessageToUserHandler({ recipientUserId: userId });
+  const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: userId });
   const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
 
   const tabs = [
@@ -92,8 +92,6 @@ export const CrdUserProfilePage = () => {
   const showMessageButton = viewerCanContact && (isContactable || emailFallbackOnly);
   const showCannotBeReached = viewerCanContact && !isContactable && !isContactableViaEmail;
 
-  const onSendMessage = emailFallbackOnly ? onSendEmailMessage : onSendChatMessage;
-
   const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
 
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
@@ -117,7 +115,8 @@ export const CrdUserProfilePage = () => {
         showSettingsIcon,
         settingsHref,
         showMessageButton,
-        onSendMessage: showMessageButton ? onSendMessage : undefined,
+        onMessageClick: showMessageButton && !emailFallbackOnly ? onOpenChat : undefined,
+        onSendMessage: showMessageButton && emailFallbackOnly ? onSendEmailMessage : undefined,
         messageTitle: emailFallbackOnly ? t('common.messagePopover.emailTitle') : undefined,
         messageNotice: emailFallbackOnly ? t('common.messagePopover.emailNotice') : undefined,
         messagePlaceholder: emailFallbackOnly ? t('common.messagePopover.emailPlaceholder') : undefined,

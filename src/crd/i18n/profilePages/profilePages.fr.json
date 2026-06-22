@@ -17,7 +17,8 @@
       "emailNotice": "Cette personne a désactivé la messagerie mais accepte les e-mails. Envoyé à l'adresse de son compte.",
       "emailPlaceholder": "Écrire un e-mail…",
       "emailSuccessToast": "Votre e-mail a été envoyé.",
-      "cannotBeReached": "Cette personne ne peut pas être contactée."
+      "cannotBeReached": "Cette personne ne peut pas être contactée.",
+      "openChatError": "Impossible d'ouvrir la discussion. Veuillez réessayer."
     },
     "resourceTabsAriaLabel": "Sections de ressources",
     "loading": {

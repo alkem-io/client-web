@@ -16,6 +16,7 @@
     "searchHint": "Empieza a escribir para buscar personas",
     "noResults": "No se encontraron personas",
     "create": "Iniciar chat",
+    "createGroup": "Iniciar chat grupal",
     "removeAria": "Quitar a {{name}}"
   },
   "group": {

@@ -67,6 +67,45 @@ describe('ContactLeadsDialog (US3 — Contact the leads → individual chats)', 
     expect(sendDirectMessageMock.mock.calls[0][0].variables.messageData.message).toBe('hello leads');
   });
 
+  test('open chat after messaging multiple leads opens the conversation list, not a single thread', async () => {
+    sendDirectMessageMock.mockResolvedValue({
+      data: {
+        sendDirectMessageToUsers: [
+          { receiverID: 'l1', status: 'SENT', conversationID: 'c1' },
+          { receiverID: 'l2', status: 'SENT', conversationID: 'c2' },
+        ],
+      },
+    });
+
+    render(<ContactLeadsDialogConnector open={true} onOpenChange={vi.fn()} recipients={recipients} />);
+
+    fireEvent.change(screen.getByLabelText('contactLeads.messageLabel'), { target: { value: 'hi' } });
+    fireEvent.click(screen.getByText('contactLeads.send'));
+
+    await vi.waitFor(() => expect(screen.getByText('sendConfirmation.openChat')).toBeTruthy());
+    fireEvent.click(screen.getByText('sendConfirmation.openChat'));
+
+    expect(setSelectedConversationIdMock).toHaveBeenCalledWith(null);
+    expect(setIsOpenMock).toHaveBeenCalledWith(true);
+  });
+
+  test('open chat after messaging a single lead focuses that conversation', async () => {
+    sendDirectMessageMock.mockResolvedValue({
+      data: { sendDirectMessageToUsers: [{ receiverID: 'l1', status: 'SENT', conversationID: 'c1' }] },
+    });
+
+    render(<ContactLeadsDialogConnector open={true} onOpenChange={vi.fn()} recipients={[recipients[0]]} />);
+
+    fireEvent.change(screen.getByLabelText('contactLeads.messageLabel'), { target: { value: 'hi' } });
+    fireEvent.click(screen.getByText('contactLeads.send'));
+
+    await vi.waitFor(() => expect(screen.getByText('sendConfirmation.openChat')).toBeTruthy());
+    fireEvent.click(screen.getByText('sendConfirmation.openChat'));
+
+    expect(setSelectedConversationIdMock).toHaveBeenCalledWith('c1');
+    expect(setIsOpenMock).toHaveBeenCalledWith(true);
+  });
+
   test('shows confirmation listing not-reached leads on partial failure', async () => {
     sendDirectMessageMock.mockResolvedValue({
       data: {

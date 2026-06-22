@@ -16,6 +16,7 @@
     "searchHint": "Commencez à taper pour rechercher des personnes",
     "noResults": "Aucune personne trouvée",
     "create": "Démarrer la discussion",
+    "createGroup": "Démarrer la discussion de groupe",
     "removeAria": "Supprimer {{name}}"
   },
   "group": {

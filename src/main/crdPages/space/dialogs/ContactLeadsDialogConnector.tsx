@@ -27,7 +27,7 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
   const [sendDirectMessage, { loading: sending }] = useSendDirectMessageToUsersMutation();
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [notReached, setNotReached] = useState<string[]>([]);
-  const [openChatConversationId, setOpenChatConversationId] = useState<string | null>(null);
+  const [sentConversationIds, setSentConversationIds] = useState<string[]>([]);
 
   const handleSend = async (message: string) => {
     const { data } = await sendDirectMessage({
@@ -46,12 +46,12 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
       .filter(r => byReceiver.get(r.id)?.status !== DirectMessageDeliveryStatus.Sent)
       .map(r => r.displayName);
 
-    const firstSent = results.find(
-      result => result.status === DirectMessageDeliveryStatus.Sent && result.conversationID
-    );
+    const sentIds = results
+      .filter(result => result.status === DirectMessageDeliveryStatus.Sent && result.conversationID)
+      .map(result => result.conversationID as string);
 
     setNotReached(failedNames);
-    setOpenChatConversationId(firstSent?.conversationID ?? null);
+    setSentConversationIds(sentIds);
     onOpenChange(false);
     setConfirmationOpen(true);
   };
@@ -67,10 +67,11 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
   };
 
   const handleOpenChat = () => {
-    if (openChatConversationId) {
-      setSelectedConversationId(openChatConversationId);
-      setIsOpen(true);
-    }
+    // Multiple leads were messaged individually, so there is no single thread to
+    // land in — open the chat panel on the conversation list (null selection).
+    // Only when exactly one lead was reached do we focus that conversation.
+    setSelectedConversationId(sentConversationIds.length === 1 ? sentConversationIds[0] : null);
+    setIsOpen(true);
     setConfirmationOpen(false);
   };
 
@@ -88,7 +89,7 @@ export const ContactLeadsDialogConnector = ({ open, onOpenChange, recipients }: 
         open={confirmationOpen}
         onOpenChange={setConfirmationOpen}
         notReached={notReached}
-        onOpenChat={openChatConversationId ? handleOpenChat : undefined}
+        onOpenChat={sentConversationIds.length > 0 ? handleOpenChat : undefined}
       />
     </>
   );

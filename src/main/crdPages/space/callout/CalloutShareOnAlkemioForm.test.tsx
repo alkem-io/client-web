@@ -59,8 +59,30 @@ vi.mock('@/crd/forms/UserSelector', () => ({
 }));
 
 vi.mock('@/crd/components/chat/SendConfirmationDialog', () => ({
-  SendConfirmationDialog: ({ open, notReached }: { open: boolean; notReached?: string[] }) =>
-    open ? <div data-testid="confirmation">notReached:{(notReached ?? []).join(',')}</div> : null,
+  SendConfirmationDialog: ({
+    open,
+    notReached,
+    onOpenChat,
+    onOpenChange,
+  }: {
+    open: boolean;
+    notReached?: string[];
+    onOpenChat?: () => void;
+    onOpenChange: (open: boolean) => void;
+  }) =>
+    open ? (
+      <div data-testid="confirmation">
+        notReached:{(notReached ?? []).join(',')}
+        {onOpenChat ? (
+          <button type="button" onClick={onOpenChat}>
+            open-chat
+          </button>
+        ) : null}
+        <button type="button" onClick={() => onOpenChange(false)}>
+          dismiss-confirmation
+        </button>
+      </div>
+    ) : null,
 }));
 
 import { CalloutShareOnAlkemioForm } from './CalloutShareOnAlkemioForm';
@@ -93,7 +115,9 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     expect(callArg.variables.messageData.receiverIDs).toEqual(['u1', 'u2']);
 
     await vi.waitFor(() => expect(screen.getByTestId('confirmation')).toBeTruthy());
-    expect(screen.getByTestId('confirmation').textContent).toBe('notReached:');
+    expect(screen.getByTestId('confirmation').textContent).toContain('notReached:');
+    expect(screen.getByTestId('confirmation').textContent).not.toContain('Alice');
+    expect(screen.getByTestId('confirmation').textContent).not.toContain('Bob');
   });
 
   test('partial failure lists the not-reached recipients', async () => {
@@ -113,6 +137,50 @@ describe('CalloutShareOnAlkemioForm (US2 — Share on Alkemio → individual cha
     fireEvent.click(screen.getByText('share.alkemio.send'));
 
     await vi.waitFor(() => expect(screen.getByTestId('confirmation')).toBeTruthy());
-    expect(screen.getByTestId('confirmation').textContent).toBe('notReached:Bob');
+    expect(screen.getByTestId('confirmation').textContent).toContain('notReached:Bob');
+  });
+
+  test('open chat after multiple recipients opens the conversation list and closes the share dialog', async () => {
+    sendDirectMessageMock.mockResolvedValue({
+      data: {
+        sendDirectMessageToUsers: [
+          { receiverID: 'u1', status: 'SENT', conversationID: 'c1' },
+          { receiverID: 'u2', status: 'SENT', conversationID: 'c2' },
+        ],
+      },
+    });
+    const onClose = vi.fn();
+
+    render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" onClose={onClose} />);
+
+    fireEvent.click(screen.getByText('add-alice'));
+    fireEvent.click(screen.getByText('add-bob'));
+    fireEvent.click(screen.getByText('share.alkemio.send'));
+
+    await vi.waitFor(() => expect(screen.getByText('open-chat')).toBeTruthy());
+    fireEvent.click(screen.getByText('open-chat'));
+
+    expect(setSelectedConversationIdMock).toHaveBeenCalledWith(null);
+    expect(setIsOpenMock).toHaveBeenCalledWith(true);
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  test('dismissing the confirmation closes the share dialog', async () => {
+    sendDirectMessageMock.mockResolvedValue({
+      data: { sendDirectMessageToUsers: [{ receiverID: 'u1', status: 'SENT', conversationID: 'c1' }] },
+    });
+    const onClose = vi.fn();
+
+    render(<CalloutShareOnAlkemioForm url="https://alkem.io/x" entityLabel="post" onClose={onClose} />);
+
+    fireEvent.click(screen.getByText('add-alice'));
+    fireEvent.click(screen.getByText('share.alkemio.send'));
+
+    await vi.waitFor(() => expect(screen.getByText('dismiss-confirmation')).toBeTruthy());
+    fireEvent.click(screen.getByText('dismiss-confirmation'));
+
+    // Single recipient → that conversation is focused; share dialog closes.
+    expect(setSelectedConversationIdMock).not.toHaveBeenCalledWith(null);
+    expect(onClose).toHaveBeenCalled();
   });
 });

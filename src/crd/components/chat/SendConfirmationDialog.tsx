@@ -31,7 +31,9 @@ export function SendConfirmationDialog({ open, onOpenChange, notReached, onOpenC
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent closeLabel={t('actions.cancel')}>
+      {/* z-[90] is the reserved confirm level — keeps this above the Share dialog
+          (z-[70]) so it is never occluded behind it when shown from that flow. */}
+      <DialogContent closeLabel={t('actions.cancel')} className="z-[90]" overlayClassName="z-[90]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <CheckCircle2 className="size-5 text-primary" aria-hidden="true" />
