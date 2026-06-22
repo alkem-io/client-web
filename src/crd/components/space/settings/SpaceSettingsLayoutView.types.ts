@@ -27,6 +27,14 @@ export type LayoutPoolColumn = {
    * which case the Hide/Show affordance is suppressed (graceful degradation).
    */
   isHidden?: boolean;
+  /**
+   * Whether this column (tab/phase) may be deleted. The per-column Delete affordance is shown
+   * only when the delete capability is present AND this is not `false`. Opt-out: left `undefined`
+   * for subspace columns (their deletability is governed by the flow's min-states limit), so
+   * existing behaviour is unchanged. Set to `false` for the four built-in L0 tabs (indices 0–3)
+   * to protect them from deletion.
+   */
+  isDeletable?: boolean;
   callouts: LayoutCallout[];
 };
 

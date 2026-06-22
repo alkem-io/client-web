@@ -85,6 +85,15 @@
           "cancel": "Cancel"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Delete tab",
+        "confirm": {
+          "title": "Delete this tab?",
+          "description": "Posts in this tab will move to the first tab. This action cannot be undone.",
+          "confirm": "Delete tab",
+          "cancel": "Cancel"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Hide from menu",
         "showMenuLabel": "Show in menu",
@@ -110,6 +119,21 @@
         "errorGeneric": "Could not create the phase. Please try again.",
         "cancel": "Cancel",
         "confirm": "Add phase"
+      }
+    },
+    "addTab": {
+      "button": "Add tab",
+      "dialog": {
+        "title": "Add a new tab",
+        "description": "Create a new tab on this Space. You can rename or remove it later.",
+        "nameLabel": "Tab name",
+        "namePlaceholder": "e.g. Archive",
+        "descriptionLabel": "Description (optional)",
+        "descriptionPlaceholder": "What is this tab for?",
+        "duplicate": "A tab with this name already exists.",
+        "errorGeneric": "Could not create the tab. Please try again.",
+        "cancel": "Cancel",
+        "confirm": "Add tab"
       }
     },
     "replaceFlow": {
