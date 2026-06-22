@@ -39,6 +39,7 @@
     "hero": {
       "settingsTooltip": "Configuración de usuario",
       "messageButton": "Mensaje",
+      "emailButton": "Correo",
       "settingsAriaLabel": "Abrir configuración de usuario"
     },
     "tabs": {

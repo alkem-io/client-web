@@ -1,4 +1,4 @@
-import { MapPin, MessageSquare, Settings } from 'lucide-react';
+import { Mail, MapPin, MessageSquare, Settings } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
@@ -15,23 +15,21 @@ export type UserPageHeroProps = {
   location: string | null;
   showSettingsIcon: boolean;
   settingsHref?: string;
-  showMessageButton: boolean;
   /**
-   * Chat route (FR-001): clicking Message opens/focuses the 1:1 chat panel
-   * directly — no compose popover. Takes precedence over `onSendMessage`.
+   * Chat route (FR-001): when provided, a Message button opens/focuses the 1:1
+   * chat panel directly — no compose popover. Provided when the recipient has
+   * chat enabled (`isContactable`).
    */
   onMessageClick?: () => Promise<void> | void;
   /**
-   * Email-fallback route (FR-011): a one-off send, so it keeps the compose
-   * popover. Used only when `onMessageClick` is not provided.
+   * Email route (FR-011): when provided, an Email button opens a compose popover
+   * (a one-off send). Provided when the recipient has email contact enabled
+   * (`isContactableViaEmail`) — independently of chat, so it can appear
+   * alongside the Message button.
    */
-  onSendMessage?: (messageText: string) => Promise<void>;
-  /** Optional copy overrides for the message popover (the email-fallback route). */
-  messageTitle?: string;
-  messageNotice?: string;
-  messagePlaceholder?: string;
+  onSendEmail?: (messageText: string) => Promise<void>;
   /**
-   * Shown instead of the message button when the viewer may contact the user
+   * Shown instead of the contact buttons when the viewer may contact the user
    * but the user has both chat and email contact disabled (FR-011).
    */
   cannotBeReachedLabel?: string;
@@ -44,12 +42,8 @@ export function UserPageHero({
   location,
   showSettingsIcon,
   settingsHref,
-  showMessageButton,
   onMessageClick,
-  onSendMessage,
-  messageTitle,
-  messageNotice,
-  messagePlaceholder,
+  onSendEmail,
   cannotBeReachedLabel,
 }: UserPageHeroProps) {
   const { t } = useTranslation('crd-profilePages');
@@ -88,7 +82,7 @@ export function UserPageHero({
             </div>
 
             <div className="flex gap-3 shrink-0">
-              {showMessageButton && onMessageClick ? (
+              {onMessageClick ? (
                 <Button
                   className="gap-2 shadow-sm"
                   onClick={handleMessageClick}
@@ -98,15 +92,19 @@ export function UserPageHero({
                   <MessageSquare className="w-4 h-4" aria-hidden="true" />
                   {t('userProfile.hero.messageButton')}
                 </Button>
-              ) : showMessageButton && onSendMessage ? (
+              ) : null}
+              {onSendEmail ? (
                 <MessagePopover
-                  triggerLabel={t('userProfile.hero.messageButton')}
-                  onSendMessage={onSendMessage}
-                  title={messageTitle}
-                  notice={messageNotice}
-                  placeholder={messagePlaceholder}
+                  triggerLabel={t('userProfile.hero.emailButton')}
+                  triggerVariant={onMessageClick ? 'secondary' : 'default'}
+                  triggerIcon={<Mail className="w-4 h-4" aria-hidden="true" />}
+                  onSendMessage={onSendEmail}
+                  title={t('common.messagePopover.emailTitle')}
+                  notice={t('common.messagePopover.emailNotice')}
+                  placeholder={t('common.messagePopover.emailPlaceholder')}
                 />
-              ) : cannotBeReachedLabel ? (
+              ) : null}
+              {!onMessageClick && !onSendEmail && cannotBeReachedLabel ? (
                 <p className="text-caption text-muted-foreground self-center">{cannotBeReachedLabel}</p>
               ) : null}
               {showSettingsIcon && settingsHref ? (

@@ -77,8 +77,8 @@ export function UserProfileOtherDemoPage() {
       hero={{
         ...alex.hero,
         showSettingsIcon: false,
-        showMessageButton: true,
-        onSendMessage: handleSendMessage,
+        onMessageClick: () => handleSendMessage('open chat'),
+        onSendEmail: handleSendMessage,
       }}
       sidebar={{
         bio: alex.bio,

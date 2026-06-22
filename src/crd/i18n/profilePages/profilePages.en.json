@@ -39,6 +39,7 @@
     "hero": {
       "settingsTooltip": "User settings",
       "messageButton": "Message",
+      "emailButton": "Email",
       "settingsAriaLabel": "Open user settings"
     },
     "tabs": {

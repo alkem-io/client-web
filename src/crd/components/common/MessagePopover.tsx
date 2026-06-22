@@ -1,5 +1,5 @@
 import { MessageSquare } from 'lucide-react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -20,6 +20,8 @@ export type MessagePopoverProps = {
    * with a Mail icon and `triggerLabel` is rendered.
    */
   triggerVariant?: 'default' | 'secondary' | 'outline' | 'ghost';
+  /** Trigger icon; defaults to a chat-bubble. Pass a `<Mail />` for the email route. */
+  triggerIcon?: ReactNode;
   className?: string;
   /** Override the popover heading (defaults to the private-message copy). */
   title?: string;
@@ -33,6 +35,7 @@ export function MessagePopover({
   onSendMessage,
   triggerLabel,
   triggerVariant = 'default',
+  triggerIcon,
   className,
   title,
   notice,
@@ -77,7 +80,7 @@ export function MessagePopover({
     <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild={true}>
         <Button variant={triggerVariant} className={cn('gap-2 shadow-sm', className)} aria-haspopup="dialog">
-          <MessageSquare className="w-4 h-4" aria-hidden="true" />
+          {triggerIcon ?? <MessageSquare className="w-4 h-4" aria-hidden="true" />}
           {triggerLabel}
         </Button>
       </PopoverTrigger>

@@ -84,12 +84,12 @@ export const CrdUserProfilePage = () => {
 
   const showSettingsIcon = data.canEditSettings;
 
-  // FR-011: chat is the default route; offer the email fallback only when the
-  // recipient has chat off AND has opted in to email contact. Neither → the
-  // user cannot be reached and we explain rather than offer a route.
+  // FR-011: chat and email are independent routes. Offer chat when the recipient
+  // has chat on, and email when they have email contact on — both may show
+  // together. When neither is on, the user cannot be reached and we explain.
   const viewerCanContact = Boolean(currentUserId) && !isOwnProfile;
-  const emailFallbackOnly = !isContactable && isContactableViaEmail;
-  const showMessageButton = viewerCanContact && (isContactable || emailFallbackOnly);
+  const showChat = viewerCanContact && isContactable;
+  const showEmail = viewerCanContact && isContactableViaEmail;
   const showCannotBeReached = viewerCanContact && !isContactable && !isContactableViaEmail;
 
   const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
@@ -114,12 +114,8 @@ export const CrdUserProfilePage = () => {
         location,
         showSettingsIcon,
         settingsHref,
-        showMessageButton,
-        onMessageClick: showMessageButton && !emailFallbackOnly ? onOpenChat : undefined,
-        onSendMessage: showMessageButton && emailFallbackOnly ? onSendEmailMessage : undefined,
-        messageTitle: emailFallbackOnly ? t('common.messagePopover.emailTitle') : undefined,
-        messageNotice: emailFallbackOnly ? t('common.messagePopover.emailNotice') : undefined,
-        messagePlaceholder: emailFallbackOnly ? t('common.messagePopover.emailPlaceholder') : undefined,
+        onMessageClick: showChat ? onOpenChat : undefined,
+        onSendEmail: showEmail ? onSendEmailMessage : undefined,
         cannotBeReachedLabel: showCannotBeReached ? t('common.messagePopover.cannotBeReached') : undefined,
       }}
       sidebar={{
