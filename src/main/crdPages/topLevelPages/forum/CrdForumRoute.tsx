@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Error404 } from '@/core/pages/Errors/Error404';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import CrdDiscussionPage from '@/main/crdPages/topLevelPages/forum/CrdDiscussionPage';
 import CrdForumPage from '@/main/crdPages/topLevelPages/forum/CrdForumPage';
 import CrdLatestReleaseRedirect from '@/main/crdPages/topLevelPages/forum/CrdLatestReleaseRedirect';
@@ -17,7 +17,7 @@ const CrdForumRoute = () => (
       <Route path={`discussion/:${nameOfUrl.discussionNameId}`} element={<CrdDiscussionPage />} />
       <Route path=":categorySlug" element={<CrdForumPage />} />
     </Route>
-    <Route path="*" element={<Error404 />} />
+    <Route path="*" element={<CrdNotFoundView />} />
   </Routes>
 );
 

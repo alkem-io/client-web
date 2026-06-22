@@ -1,7 +1,7 @@
 /**
  * Mock data for the standalone demo pages of the new CRD profile components
  * (User, Organization, VC). Pulls Alex Rivera from the prototype's
- * `prototype/src/app/pages/UserProfilePage.tsx` and adds matching demos for
+ * `client-web-prototype/src/app/pages/UserProfilePage.tsx` and adds matching demos for
  * Organization + VC so designers can see all three profile types side by side.
  *
  * NB: These are plain TypeScript values shaped to match the corresponding CRD

@@ -1,7 +1,6 @@
 import { Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { OrganizationVerificationEnum } from '@/core/apollo/generated/graphql-schema';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import type { ProfileResourceTab, ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
@@ -11,6 +10,7 @@ import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
 import { MetricType } from '@/domain/platform/metrics/MetricType';
 import getMetricCount from '@/domain/platform/metrics/utils/getMetricCount';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
 import { buildTagsetGroups, normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
@@ -47,7 +47,7 @@ export const CrdOrganizationProfilePage = () => {
   useSetBreadcrumbs(breadcrumbItems);
 
   if (!loading.context && !loading.provider && !organization) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   const heroLoading = loading.context || loading.provider || !organization;
@@ -121,9 +121,9 @@ export const CrdOrganizationProfilePage = () => {
           referencesTitle: t('orgProfile.sidebar.referencesTitle'),
           referencesEmpty: t('orgProfile.sidebar.referencesEmpty'),
           associatesTitle: count => t('orgProfile.sidebar.associatesCount', { count }),
-          associatesSignInCta: t('associates-view.sign-in', { ns: 'translation' }),
-          associatesShowMore: count => t('associates-view.more', { ns: 'translation', count }),
-          associatesShowLess: t('associates-view.less', { ns: 'translation' }),
+          associatesSignInCta: t('associates-view.sign-in', { ns: 'crd-common' }),
+          associatesShowMore: count => t('associates-view.more', { ns: 'crd-common', count }),
+          associatesShowLess: t('associates-view.less', { ns: 'crd-common' }),
           socialLinksTitle: t('orgProfile.sidebar.socialLinksTitle'),
         },
       }}
@@ -144,13 +144,13 @@ export const CrdOrganizationProfilePage = () => {
         labels: {
           spacesSubsection: t('orgProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('orgProfile.sections.virtualContributorsSubsection'),
-          templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
-          customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
+          templatePacksSubsection: t('common.innovation-packs', { ns: 'crd-common' }),
+          customHomepagesSubsection: t('common.customHomepages', { ns: 'crd-common' }),
           spacesLeading: t('orgProfile.sections.spacesLeading'),
           memberOf: t('orgProfile.sections.memberOf'),
           emptyResourcesHosted: t('orgProfile.empty.resourcesHosted'),
           emptyLeading: t('orgProfile.empty.leading'),
-          emptyMembership: t('pages.user-profile.communities.noMembership', { ns: 'translation' }),
+          emptyMembership: t('pages.user-profile.communities.noMembership', { ns: 'crd-common' }),
           spacePrivacy: {
             privacyPrivate: t('common.spacePrivacy.private'),
             privacyPublic: t('common.spacePrivacy.public'),

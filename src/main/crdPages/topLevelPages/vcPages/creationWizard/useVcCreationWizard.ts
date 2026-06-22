@@ -21,6 +21,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type {
   VcWizardCreatedVc,
+  VcWizardDocument,
   VcWizardEngine,
   VcWizardSelectableSpace,
   VcWizardStep,
@@ -67,7 +68,7 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
       description: t('wizard.addKnowledge.exampleDescription'),
     },
   ]);
-  const [documents, setDocuments] = useState<{ name: string; url: string }[]>([]);
+  const [documents, setDocuments] = useState<VcWizardDocument[]>([]);
   const [externalConfig, setExternalConfig] = useState<{
     engine: VcWizardEngine;
     apiKey: string;

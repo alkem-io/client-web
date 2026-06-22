@@ -13,7 +13,7 @@ import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManage
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import type { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
+import type { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare.model';
 import { useOrganizationContext } from '../hooks/useOrganizationContext';
 
 export interface UseOrganizationProvided {

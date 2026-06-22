@@ -21,7 +21,7 @@ type SettingsTabStripProps<TTabId extends string> = {
  * Actor-agnostic horizontal underlined tab strip for contributor settings
  * shells (User: 7 tabs; Org: 5 tabs).
  *
- * Mirrors `prototype/src/app/pages/UserAccountPage.tsx` — tabs are bare
+ * Mirrors `client-web-prototype/src/app/pages/UserAccountPage.tsx` — tabs are bare
  * `<button>` elements with bottom-border underlines, `gap-6` apart, no
  * per-tab horizontal padding. Active state uses `border-primary text-primary`;
  * inactive uses muted text + transparent border with hover lifts.

@@ -1,6 +1,5 @@
 import 'i18next';
 import { defaultNS } from '@/core/i18n/config';
-import type enTranslation from '@/core/i18n/en/translation.en.json';
 import type crdLayoutTranslation from '@/crd/i18n/layout/layout.en.json';
 import type crdCommonTranslation from '@/crd/i18n/common/common.en.json';
 import type crdChatTranslation from '@/crd/i18n/chat/chat.en.json';
@@ -30,7 +29,6 @@ declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: typeof defaultNS;
     resources: {
-      translation: typeof enTranslation;
       'crd-layout': typeof crdLayoutTranslation;
       'crd-common': typeof crdCommonTranslation;
       'crd-chat': typeof crdChatTranslation;

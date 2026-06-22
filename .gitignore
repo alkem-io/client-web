@@ -4,7 +4,6 @@ build-crd
 npm-debug.log
 .idea
 .DS_Store
-prototype/dist/
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies

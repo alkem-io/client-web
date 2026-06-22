@@ -8,7 +8,7 @@ import type { ClassificationTagsetWithAllowedValuesModel } from '../../calloutsS
 import type { MediaGalleryModel } from '../../mediaGallery/MediaGalleryModel';
 import type { MemoModel } from '../../memo/model/MemoModel';
 import type { PollDetailsModel } from '../../poll/models/PollModels';
-import type { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog';
+import type { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/WhiteboardDialog.model';
 import type { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
 import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import type { ContributionDefaultsModel } from './ContributionDefaultsModel';

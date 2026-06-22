@@ -4,7 +4,7 @@ import { useDeepCompareMemoize } from 'use-deep-compare-effect';
 import { useCalloutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
 import useSpacePermissionsAndEntitlements from '@/domain/space/hooks/useSpacePermissionsAndEntitlements';
-import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/CalloutPage';
+import { type LocationStateCachedCallout, LocationStateKeyCachedCallout } from '../../CalloutPage/locationState';
 import { useCalloutsSetAuthorization } from '../../calloutsSet/authorization/useCalloutsSetAuthorization';
 import type { CalloutDetailsModelExtended } from '../models/CalloutDetailsModel';
 import type { CalloutModelExtension } from '../models/CalloutModelLight';

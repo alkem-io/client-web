@@ -5,6 +5,7 @@ import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { EntityPageSection } from '@/domain/shared/layout/EntityPageSection';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import NonSpaceAdminRedirect from '@/domain/spaceAdmin/routing/NonSpaceAdminRedirect';
+import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { nameOfUrl } from '@/main/routing/urlParams';
 import CrdSubspacePageLayout from '../layout/CrdSubspacePageLayout';
 import CrdSubspaceCalloutsPage from '../tabs/CrdSubspaceCalloutsPage';
@@ -15,7 +16,6 @@ const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage')
 );
 const CrdSubspaceCalloutPage = lazyWithGlobalErrorHandler(() => import('../CrdSubspaceCalloutPage'));
-const LegacySubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoutes'));
 
 /**
  * Wraps the subspace settings page with the same admin-redirect gate the
@@ -118,15 +118,8 @@ export default function CrdSubspaceRoutes() {
         </Route>
       </Route>
 
-      {/* Fall-through: legacy MUI subspace routes (calendar, callout details). */}
-      <Route
-        path="*"
-        element={
-          <Suspense fallback={<LoadingSpinner />}>
-            <LegacySubspaceRoutes />
-          </Suspense>
-        }
-      />
+      {/* Fall-through: unmatched subspace paths render the CRD 404. */}
+      <Route path="*" element={<CrdNotFoundBranch />} />
     </Routes>
   );
 }

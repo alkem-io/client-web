@@ -5,9 +5,8 @@ import type {
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import BackupIcon from '@mui/icons-material/Backup';
-import { Box } from '@mui/material';
 import { compact, debounce, merge } from 'lodash-es';
+import { CloudUpload } from 'lucide-react';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -149,16 +148,16 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   }, [handleScroll]);
 
   const renderCustomUI = (exportedElements, appState) => (
-    <Box className="Card">
-      <Box className="Card-icon" sx={{ background: theme => theme.palette.primary.dark }}>
-        <BackupIcon />
-      </Box>
-      <h2>Save to the Alkemio</h2>
-      <Box className="Card-details">Save the scene in Alkemio and share it with others.</Box>
+    <div className="Card">
+      <div className="Card-icon" style={{ background: '#172d3b' }}>
+        <CloudUpload />
+      </div>
+      <h2>{t('callout.whiteboard.export.title')}</h2>
+      <div className="Card-details">{t('callout.whiteboard.export.description')}</div>
       <button
         className="ToolIcon_type_button ToolIcon_size_m Card-button ToolIcon_type_button--show ToolIcon"
-        title="Save to Alkemio"
-        aria-label="Save to Alkemio"
+        title={t('callout.whiteboard.export.save')}
+        aria-label={t('callout.whiteboard.export.save')}
         type="button"
         onClick={async () => {
           if (actions.onUpdate) {
@@ -168,9 +167,9 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
           }
         }}
       >
-        <div className="ToolIcon__label">Save to Alkemio</div>
+        <div className="ToolIcon__label">{t('callout.whiteboard.export.save')}</div>
       </button>
-    </Box>
+    </div>
   );
 
   // This needs to be removed in case it crashes the export window
@@ -194,7 +193,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   };
 
   return (
-    <Box sx={{ height: 1, flexGrow: 1 }}>
+    <div style={{ height: '100%', flexGrow: 1 }}>
       {whiteboard && (
         <Suspense fallback={<Loading />}>
           <Excalidraw
@@ -210,7 +209,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
           />
         </Suspense>
       )}
-    </Box>
+    </div>
   );
 };
 

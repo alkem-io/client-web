@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Loader2 } from 'lucide-react';
 import { type Ref, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
@@ -66,29 +66,19 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef }: CollaboraDo
 
   if (loading && !editorUrl) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>{t('collaboraDocument.editor.loading')}</Typography>
-      </Box>
+      <div className="flex h-full items-center justify-center gap-4">
+        <Loader2 className="size-10 animate-spin text-primary" aria-hidden="true" />
+        <span>{t('collaboraDocument.editor.loading')}</span>
+      </div>
     );
   }
 
   if (errorMessage && !editorUrl) {
     return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        height="100%"
-        p={4}
-        gap={2}
-      >
-        <Typography color="error">{t('collaboraDocument.editor.error.unavailable')}</Typography>
-        <Typography variant="body2" color="text.secondary">
-          {errorMessage}
-        </Typography>
-      </Box>
+      <div className="flex h-full flex-col items-center justify-center gap-4 p-8">
+        <span className="text-destructive">{t('collaboraDocument.editor.error.unavailable')}</span>
+        <span className="text-sm text-muted-foreground">{errorMessage}</span>
+      </div>
     );
   }
 

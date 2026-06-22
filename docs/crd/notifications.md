@@ -2,13 +2,13 @@
 
 CRD uses [sonner](https://sonner.emilkowal.ski/) for toast notifications. A single `<Toaster />` is mounted in `App.tsx` (via `CrdNotificationHandler`) and renders at `bottom-right` by default — individual toasts can override position, duration, and add action buttons.
 
-The MUI fallback (`NotificationHandler.tsx`) is still rendered when `useCrdEnabled()` is `false`. Anything you push through `useNotification()` works in both worlds.
+`App.tsx` mounts `CrdNotificationHandler` — CRD is the only runtime path and the only notification handler. Anything you push through `useNotification()` renders through the CRD toaster.
 
 ## The two ways to fire a toast
 
 ### 1. `useNotification()` — for the 90% case
 
-Use this for app-state feedback: success after save, validation errors, "copied to clipboard". It writes to the global notifications store and is picked up by whichever handler is mounted (MUI or CRD), so the same call works in both.
+Use this for app-state feedback: success after save, validation errors, "copied to clipboard". It writes to the global notifications store, which `CrdNotificationHandler` picks up and renders through sonner.
 
 ```tsx
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -120,16 +120,14 @@ toast.promise(saveProfile(), {
 ## Where the pieces live
 
 - **Primitive**: `src/crd/primitives/sonner.tsx` — wraps `<Sonner>` and bridges sonner's `--normal-bg` / `--normal-text` / `--normal-border` vars to CRD's `--popover` / `--popover-foreground` / `--border`.
-- **Global handler**: `src/core/ui/notifications/CrdNotificationHandler.tsx` — subscribes to the same notifications store as the MUI handler, fans each entry out to `toast.<severity>()`, dispatches `CLEAR_NOTIFICATION` on auto-close/dismiss, and mounts the global `<Toaster position="bottom-right" />`.
-- **MUI fallback**: `src/core/ui/notifications/NotificationHandler.tsx` — unchanged; rendered when CRD is off.
-- **Gate**: `src/main/ui/layout/topLevelWrappers/App.tsx` — `{crdEnabled ? <CrdNotificationHandler /> : <NotificationHandler />}`.
+- **Global handler**: `src/core/ui/notifications/CrdNotificationHandler.tsx` — subscribes to the global notifications store, fans each entry out to `toast.<severity>()`, dispatches `CLEAR_NOTIFICATION` on auto-close/dismiss, and mounts the global `<Toaster position="bottom-right" />`.
+- **Mount**: `src/main/ui/layout/topLevelWrappers/App.tsx` — renders `<CrdNotificationHandler />` unconditionally.
 
-## Migrating existing MUI snackbars
+## Version-update & offline banners
 
-`src/main/versionHandling.tsx` and `src/main/onlineStatus/OnlineStatusNotification.tsx` still mount their own MUI `Snackbar`s. To move them to sonner:
-
-1. Replace `<Snackbar><SnackbarContent action={…} /></Snackbar>` with a `toast(...)` call when the trigger fires.
-2. Use `duration: Infinity` (no auto-hide) and `position: 'top-center'` (version) / `'top-right'` (offline).
-3. Use sonner's `action: { label, onClick }` instead of MUI's `SnackbarContent.action`.
-4. Keep the returned id in a ref so you can `toast.dismiss(id)` when the condition clears.
-5. Gate via `useCrdEnabled()` if you want to keep the MUI behaviour for non-CRD users in the meantime.
+The version-update and offline indicators are CRD banner components, not toasts:
+`src/main/versionHandling.tsx` renders `@/crd/components/common/AppVersionBanner`
+and `src/main/onlineStatus/OnlineStatusNotification.tsx` renders
+`@/crd/components/common/OnlineStatusBanner`. (There are no MUI `Snackbar`s left
+anywhere — MUI was fully removed.) Use these banner components for sticky,
+platform-level indicators; use sonner (above) for transient app feedback.

@@ -43,7 +43,7 @@ export type UserNotificationsTabViewProps = {
 
 /**
  * User Notifications tab — presentational view. Visual structure mirrors
- * `prototype/src/app/pages/UserNotificationsPage.tsx` plus a Push master
+ * `client-web-prototype/src/app/pages/UserNotificationsPage.tsx` plus a Push master
  * card on top (the prototype only models inApp + email; Alkemio adds push
  * which we surface only when available).
  *

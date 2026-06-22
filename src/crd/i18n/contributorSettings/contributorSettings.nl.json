@@ -38,6 +38,7 @@
       "documentsTitle": "Documenten",
       "documentName": "Naam",
       "documentUrl": "URL",
+      "attachDocument": "Bestand bijvoegen",
       "removeDocument": "Document verwijderen",
       "addDocument": "Document toevoegen",
       "exampleTitle": "Voorbeeld: Over Alkemio",

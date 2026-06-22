@@ -1,6 +1,6 @@
-import type { SvgIconProps } from '@mui/material';
 import type { ComponentType } from 'react';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { SvgIconProps } from '@/core/ui/icon/SvgIcon';
 import { SpaceL0Icon } from '@/domain/space/icons/SpaceL0Icon';
 import { SpaceL1Icon } from '@/domain/space/icons/SpaceL1Icon';
 import { SpaceL2Icon } from '@/domain/space/icons/SpaceL2Icon';

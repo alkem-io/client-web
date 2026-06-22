@@ -38,6 +38,7 @@
       "documentsTitle": "Documents",
       "documentName": "Name",
       "documentUrl": "URL",
+      "attachDocument": "Attach file",
       "removeDocument": "Remove document",
       "addDocument": "Add document",
       "exampleTitle": "Example: About Alkemio",

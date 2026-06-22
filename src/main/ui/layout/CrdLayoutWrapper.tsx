@@ -1,5 +1,6 @@
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { trackChatOpen } from '@/core/analytics/events/unifiedChat';
 import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
@@ -12,7 +13,6 @@ import {
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { useDesignVersionToggle } from '@/main/crdPages/useDesignVersionToggle';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
 import { SearchProvider, useSearch } from '@/main/search/SearchContext';
@@ -21,6 +21,8 @@ import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/Banner
 import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
+import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
+import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
 const CrdPendingMembershipsDialog = lazyWithGlobalErrorHandler(
   () => import('@/main/crdPages/dashboard/CrdPendingMembershipsDialog')
@@ -43,6 +45,8 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 
   const { setIsOpen: setNotificationsOpen } = useInAppNotificationsContext();
   const { unreadCount: notificationsUnreadCount } = useInAppNotifications();
+  const { setIsOpen: setMessagingOpen } = useUserMessagingContext();
+  const unreadMessagesCount = useUnreadConversationsCount();
   const { setOpenDialog } = usePendingMembershipsDialog();
   const { count: pendingInvitationsCount } = usePendingInvitationsCount();
   const { openSearch } = useSearch();
@@ -53,14 +57,6 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   // Full-width is owned per-space by the space page; the global header reads
   // the live value here only so its top bar stays aligned with the body.
   const headerFullWidth = useSpaceFullWidthActive();
-  const designVersionToggle = useDesignVersionToggle();
-  const designVersionSwitch = designVersionToggle.isVisible
-    ? {
-        enabled: designVersionToggle.enabled,
-        onChange: designVersionToggle.onChange,
-        disabled: designVersionToggle.isPending,
-      }
-    : undefined;
 
   const handleLogout = () => {
     navigate(AUTH_LOGOUT_PATH);
@@ -93,6 +89,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
         unreadNotificationsCount={notificationsUnreadCount}
+        unreadMessagesCount={unreadMessagesCount}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
@@ -100,12 +97,15 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         fullWidth={headerFullWidth}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
+        onMessagesClick={() => {
+          trackChatOpen('headerIcon');
+          setMessagingOpen(true);
+        }}
         onNotificationsClick={() => setNotificationsOpen(true)}
         onPendingMembershipsClick={isAuthenticated ? handlePendingMembershipsClick : undefined}
         onHelpClick={() => setIsHelpDialogOpen(true)}
         onSearchClick={() => openSearch()}
         footerLinks={footerLinks}
-        designVersionSwitch={designVersionSwitch}
       >
         {children ?? <Outlet />}
       </CrdLayout>

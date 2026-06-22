@@ -1,24 +1,16 @@
 import { reservedTopLevelRoutePaths, TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 
 /**
- * Reserved top-level segments whose pages render in the CRD shell when the design
- * toggle is on (see the `crdEnabled ? <Crd…> : <Mui…>` dispatch in
- * `TopLevelRoutes.tsx`, and the in-route toggles such as `InnovationPackRoute`).
+ * Reserved top-level segments whose pages render in the CRD shell (see the route
+ * tree in `TopLevelRoutes.tsx`).
  *
  * `isCrdRoute` must return `true` for these so the error / redirect surfaces use
- * CRD chrome too — otherwise a CRD user hitting a private VC, innovation pack,
- * organization, etc. drops into MUI chrome (a CRD page beneath a MUI error/dialog).
+ * CRD chrome too — otherwise a user hitting a private VC, organization, etc.
+ * drops into MUI chrome (a CRD page beneath a MUI error/dialog).
  *
- * MUST be kept in sync with the CRD dispatch in `TopLevelRoutes.tsx`. Segments that
- * still render MUI when the toggle is on are intentionally absent:
- *   - `contributors` → `ContributorsPage` (MUI, no CRD branch)
- *   - `innovation-hubs` → `InnovationHubsRoutes` (MUI, no CRD branch)
- *   - redirect/legacy-only segments (`documentation`, `help`, `about`, `contact`,
- *     `landing`, `identity`, `create-space`, `profile`).
- *
- * Note: the `/vc/:id/knowledge-base` sub-route is still a MUI island, but the VC
- * section's dominant chrome is CRD and the 40X error is thrown at URL-resolution
- * time (before the MUI page renders), so CRD error chrome is the consistent choice.
+ * MUST be kept in sync with the route tree in `TopLevelRoutes.tsx`. Redirect /
+ * legacy-only segments are intentionally absent (`documentation`, `help`,
+ * `about`, `contact`, `landing`, `identity`, `create-space`, `profile`).
  */
 const crdMigratedTopLevelSegments = new Set<string>([
   TopLevelRoutePath.Home,
