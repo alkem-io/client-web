@@ -26,6 +26,9 @@ export type VcWizardPost = {
 };
 
 export type VcWizardDocument = {
+  /** Stable client-side row identity (never persisted) — keeps an async upload's
+   *  write-back targeting the right row if the list changes mid-upload. */
+  id: string;
   name: string;
   url: string;
 };

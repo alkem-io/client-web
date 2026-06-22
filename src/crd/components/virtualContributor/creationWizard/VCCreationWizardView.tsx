@@ -249,9 +249,18 @@ function InitialStep(props: VCCreationWizardViewProps) {
   );
 }
 
+// Monotonic counter for new document-row ids. Module-level so it survives this
+// step component unmounting/remounting across wizard navigation (a per-component
+// ref would reset and could collide). The id is client-only — never persisted.
+let nextDocumentRowId = 0;
+const newDocumentRowId = () => {
+  nextDocumentRowId += 1;
+  return `doc-${nextDocumentRowId}`;
+};
+
 function AddKnowledgeStep(props: VCCreationWizardViewProps) {
   const { t } = useTranslation('crd-contributorSettings');
-  const [uploadingDocs, setUploadingDocs] = useState<Record<number, boolean>>({});
+  const [uploadingDocs, setUploadingDocs] = useState<Record<string, boolean>>({});
   // Mirror of `documents` for post-await reads: a file upload takes seconds, and
   // if the user edits any row meanwhile the closure-captured `props.documents`
   // is stale by the time `await onDocumentUpload` resolves. Reading from the ref
@@ -266,21 +275,24 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
   const updateDoc = (i: number, patch: Partial<VcWizardDocument>) =>
     props.onChangeDocuments(props.documents.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
 
-  const handleDocFile = async (i: number, file: File | undefined) => {
+  const handleDocFile = async (docId: string, file: File | undefined) => {
     if (!file || !props.onDocumentUpload) return;
-    setUploadingDocs(prev => ({ ...prev, [i]: true }));
+    setUploadingDocs(prev => ({ ...prev, [docId]: true }));
     try {
       const url = await props.onDocumentUpload(file);
       if (!url) return;
-      const current = documentsRef.current[i];
+      // Target by stable id, not array index: the upload takes seconds, and the
+      // row may have moved (or another row been removed) by the time it resolves.
+      const current = documentsRef.current.find(d => d.id === docId);
+      if (!current) return;
       const filenameBase = file.name.replace(/\.[^./\\]+$/, '').trim();
       const patch: Partial<VcWizardDocument> = { url };
-      if (!current?.name.trim() && filenameBase) patch.name = filenameBase;
-      props.onChangeDocuments(documentsRef.current.map((d, idx) => (idx === i ? { ...d, ...patch } : d)));
+      if (!current.name.trim() && filenameBase) patch.name = filenameBase;
+      props.onChangeDocuments(documentsRef.current.map(d => (d.id === docId ? { ...d, ...patch } : d)));
     } finally {
       setUploadingDocs(prev => {
         const next = { ...prev };
-        delete next[i];
+        delete next[docId];
         return next;
       });
     }
@@ -338,8 +350,7 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
       <section className="flex flex-col gap-2">
         <span className="text-body-emphasis">{t('wizard.addKnowledge.documentsTitle')}</span>
         {props.documents.map((doc, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: list rows have no stable id
-          <div key={i} className="flex items-center gap-2 rounded-lg border bg-card p-3">
+          <div key={doc.id} className="flex items-center gap-2 rounded-lg border bg-card p-3">
             <Input
               value={doc.name}
               onChange={e => updateDoc(i, { name: e.target.value })}
@@ -357,9 +368,9 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
             {props.onDocumentUpload && (
               <RowAttachFileButton
                 accept={props.documentUploadAccept}
-                uploading={Boolean(uploadingDocs[i])}
+                uploading={Boolean(uploadingDocs[doc.id])}
                 ariaLabel={t('wizard.addKnowledge.attachDocument')}
-                onFile={file => handleDocFile(i, file)}
+                onFile={file => handleDocFile(doc.id, file)}
               />
             )}
             <Button
@@ -378,7 +389,7 @@ function AddKnowledgeStep(props: VCCreationWizardViewProps) {
           variant="outline"
           size="sm"
           className="self-start"
-          onClick={() => props.onChangeDocuments([...props.documents, { name: '', url: '' }])}
+          onClick={() => props.onChangeDocuments([...props.documents, { id: newDocumentRowId(), name: '', url: '' }])}
         >
           <Plus aria-hidden="true" className="mr-1.5 size-4" />
           {t('wizard.addKnowledge.addDocument')}
