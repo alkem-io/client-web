@@ -95,7 +95,7 @@ export default function CrdSpaceSettingsPage() {
   // guard still sees `isDirty=true` at the moment of a tab switch.
   const navigate = useNavigate();
   const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
-  const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '');
+  const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '', level);
   const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
@@ -223,7 +223,10 @@ export default function CrdSpaceSettingsPage() {
       layout.markColumnSaved(columnId, title, description);
     },
     onActivePhaseChanged: layout.markCurrentPhaseChanged,
-    onDeleteState: level !== 'L0' ? layout.onDeleteState : undefined,
+    // Delete is offered at every level now, including L0. Positional protection of the four
+    // built-in L0 tabs is enforced per-column via `column.isDeletable` (set in the layout mapper),
+    // so the menu entry never appears on those columns even though the handler is present here.
+    onDeleteState: layout.onDeleteState,
     columnCount: layout.columns.length,
     minimumNumberOfStates: layout.minimumNumberOfStates,
     // Hide/Show is available at every level (incl. L0 home tabs) — it never changes the flow
@@ -404,6 +407,12 @@ export default function CrdSpaceSettingsPage() {
             {activeTab === 'layout' && (
               <SpaceSettingsLayoutView
                 level={level}
+                // The Layout tab is only reachable by users with space-settings access, so reaching
+                // it implies the manage-tabs privilege — the same implicit gating subspaces rely on.
+                // Enables add/delete of additional tabs on L0; the four built-in tabs stay protected
+                // per-column via `column.isDeletable`.
+                canManageTabs={true}
+                entityNoun={level === 'L0' ? 'tab' : 'phase'}
                 columns={layout.columns}
                 postDescriptionDisplay={layout.postDescriptionDisplay}
                 saveBar={layout.saveBar}
@@ -431,7 +440,7 @@ export default function CrdSpaceSettingsPage() {
                 onSave={layout.onSave}
                 onDiscardChanges={() => setLayoutDiscardOpen(true)}
                 columnMenuActions={columnMenu}
-                onCreatePhase={level !== 'L0' ? layout.onCreateState : undefined}
+                onCreatePhase={layout.onCreateState}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
                 isReplacingFlow={isReplacingFlow}
