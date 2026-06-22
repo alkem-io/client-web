@@ -135,7 +135,7 @@ export function mapNotificationToItemData(
       // biome-ignore lint/suspicious/noExplicitAny: i18n key is built dynamically from notification type
       <Trans i18nKey={descriptionKey as any} values={values} components={TRANS_COMPONENTS} />
     ) : undefined,
-    comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} /> : undefined,
+    comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} className="text-body" /> : undefined,
     avatarUrl: notification.triggeredBy.profile.visual?.uri,
     avatarFallback: getInitials(notification.triggeredBy.profile.displayName),
     timestamp: formatTimeElapsed(notification.triggeredAt, t),
