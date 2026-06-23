@@ -1,8 +1,8 @@
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
+import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { useThrottledValue } from './useThrottledValue';
 
 /**
- * Markdown re-parse cadence while streaming (T032). `WrapperMarkdown` re-parses
+ * Markdown re-parse cadence while streaming (T032). `MarkdownContent` re-parses
  * the *whole* accumulated buffer on every change, so a per-token re-parse is
  * O(n²) over a turn. ~75ms (~13fps) is the tuned sweet spot: visibly smooth
  * progressive text without thrashing the parser under fast token streams. The
@@ -22,5 +22,5 @@ const STREAMING_REPARSE_MS = 75;
 export const AssistantTextPart = ({ text, streaming }: { text: string; streaming?: boolean }) => {
   // Only throttle while actively streaming; settled turns render immediately.
   const throttledText = useThrottledValue(text, streaming ? STREAMING_REPARSE_MS : 0);
-  return <WrapperMarkdown>{throttledText}</WrapperMarkdown>;
+  return <MarkdownContent content={throttledText} />;
 };

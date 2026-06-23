@@ -274,7 +274,7 @@ export default function CrdSpacePageLayout() {
               <CalloutShareOnAlkemioForm
                 key={spaceUrl}
                 url={spaceUrl}
-                entityLabel={t('common.space', { ns: 'translation' }).toLowerCase()}
+                entityLabel={t('common.space', { ns: 'crd-common' }).toLowerCase()}
               />
             ) : undefined
           }

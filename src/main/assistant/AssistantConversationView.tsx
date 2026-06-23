@@ -1,8 +1,7 @@
-import { Alert, Box, Link, Typography } from '@mui/material';
 import type React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { gutters } from '@/core/ui/grid/utils';
+import { cn } from '@/crd/lib/utils';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { AssistantConfirmation } from './AssistantConfirmation';
@@ -74,12 +73,8 @@ export const AssistantConversationView = () => {
   };
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap={gutters(1)}
-      padding={gutters(1)}
-      sx={{ overflowY: 'auto', flexGrow: 1 }}
+    <div
+      className="flex flex-grow flex-col gap-4 overflow-y-auto p-4"
       onClickCapture={handleLinkClickCapture}
       // A conversation log: announce only newly-added content (not the whole
       // growing buffer on every token), and flag busy while a turn streams (T031).
@@ -89,11 +84,7 @@ export const AssistantConversationView = () => {
       aria-relevant="additions"
       aria-busy={state.isStreaming}
     >
-      {state.messages.length === 0 && (
-        <Typography variant="body2" color="text.secondary">
-          {t('assistant.intro')}
-        </Typography>
-      )}
+      {state.messages.length === 0 && <p className="text-body text-muted-foreground">{t('assistant.intro')}</p>}
 
       {state.messages.map(message => (
         <AssistantMessageView
@@ -106,17 +97,16 @@ export const AssistantConversationView = () => {
       ))}
 
       {state.isStreaming && state.messages.length > 0 && (
-        <Typography variant="caption" color="text.secondary" role="status">
-          {t('assistant.thinking')}
-        </Typography>
+        // <output> carries an implicit role="status" so assistive tech announces the streaming state.
+        <output className="text-caption text-muted-foreground">{t('assistant.thinking')}</output>
       )}
 
       {state.error && (
-        <Box role="alert">
+        <div role="alert">
           <AssistantErrorAlert code={state.error.code} message={state.error.message} />
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 
@@ -133,16 +123,14 @@ const AssistantErrorAlert = ({ code, message }: { code: AssistantErrorCode; mess
   const settingsUrl = buildSettingsTabUrl(userModel?.profile?.url, 'assistant');
 
   return (
-    <Alert severity="error" variant="outlined">
-      <Box display="flex" flexDirection="column" gap={gutters(0.25)}>
-        <Typography variant="body2">{message || t(`assistant.errors.${code}` as const)}</Typography>
-        {code === AssistantErrorCode.PermissionDenied && settingsUrl && (
-          <Link component={RouterLink} to={settingsUrl} variant="caption">
-            {t('assistant.confirmation.enableCapabilityLink')}
-          </Link>
-        )}
-      </Box>
-    </Alert>
+    <div className="flex flex-col gap-1 rounded-lg border border-destructive/50 bg-destructive/5 p-3 text-destructive">
+      <span className="text-body">{message || t(`assistant.errors.${code}` as const)}</span>
+      {code === AssistantErrorCode.PermissionDenied && settingsUrl && (
+        <RouterLink to={settingsUrl} className="text-caption text-primary underline-offset-4 hover:underline">
+          {t('assistant.confirmation.enableCapabilityLink')}
+        </RouterLink>
+      )}
+    </div>
   );
 };
 
@@ -160,17 +148,12 @@ const AssistantMessageView = ({
   const { t } = useTranslation();
   const isUser = message.role === 'user';
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap={gutters(0.5)}
-      // Announce who authored the turn (T031) without a visual label.
+    // Announce who authored the turn (T031) without a visual label.
+    // biome-ignore lint/a11y/useSemanticElements: a labelled conversation turn is a generic grouping; <fieldset> is for form-control grouping and is not a valid substitute.
+    <div
+      className={cn('flex max-w-[85%] flex-col gap-2', isUser ? 'self-end' : 'self-start')}
       role="group"
       aria-label={isUser ? t('assistant.a11y.userTurn') : t('assistant.a11y.assistantTurn')}
-      sx={{
-        alignSelf: isUser ? 'flex-end' : 'flex-start',
-        maxWidth: '85%',
-      }}
     >
       {message.parts.map((part, index) => (
         <AssistantPartView
@@ -181,7 +164,7 @@ const AssistantMessageView = ({
           onDecision={onDecision}
         />
       ))}
-    </Box>
+    </div>
   );
 };
 
@@ -202,11 +185,7 @@ const AssistantPartView = ({
     case 'tool-activity':
       return <AssistantToolActivity part={part} />;
     case 'tool-result':
-      return (
-        <Typography variant="caption" color="text.secondary">
-          {part.summary}
-        </Typography>
-      );
+      return <span className="text-caption text-muted-foreground">{part.summary}</span>;
     case 'confirmation':
       return (
         <ConfirmationPartView

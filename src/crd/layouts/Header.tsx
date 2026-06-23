@@ -1,11 +1,10 @@
-import { Bell, LayoutGrid, Search } from 'lucide-react';
+import { Bell, LayoutGrid, MessageCircle, Search } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { PlatformNavigationMenu } from '@/crd/layouts/components/PlatformNavigationMenu';
 import { UserMenu } from '@/crd/layouts/components/UserMenu';
 import type {
-  CrdDesignVersionSwitch,
   CrdLanguageOption,
   CrdNavigationHrefs,
   CrdPlatformNavigationItem,
@@ -63,17 +62,18 @@ type HeaderProps = {
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
   unreadNotificationsCount?: number;
+  unreadMessagesCount?: number;
   languages?: CrdLanguageOption[];
   currentLanguage?: string;
   breadcrumbs?: ReactNode;
   onLogout?: () => void;
+  onMessagesClick?: () => void;
   onNotificationsClick?: () => void;
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
-  designVersionSwitch?: CrdDesignVersionSwitch;
   /**
    * When true the header's inner content group fills all 12 grid columns
    * instead of the default `lg:col-start-2 lg:col-span-10` inset, keeping it
@@ -106,17 +106,18 @@ export function Header({
   platformNavigationItems,
   currentPath,
   unreadNotificationsCount,
+  unreadMessagesCount,
   languages,
   currentLanguage,
   breadcrumbs,
   onLogout,
+  onMessagesClick,
   onNotificationsClick,
   onSearchClick,
   onPendingMembershipsClick,
   onHelpClick,
   onLanguageChange,
   showGridToggle,
-  designVersionSwitch,
   fullWidth = false,
   overlayBanner = false,
   className,
@@ -181,6 +182,22 @@ export function Header({
 
               {authenticated && (
                 <HeaderIconButton
+                  onClick={onMessagesClick}
+                  ariaLabel={t('header.messages')}
+                  icon={<MessageCircle aria-hidden="true" className="w-5 h-5" />}
+                  badge={
+                    typeof unreadMessagesCount === 'number' && unreadMessagesCount > 0 ? (
+                      <>
+                        <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive border border-background" />
+                        <span className="sr-only">{t('header.unreadMessages', { count: unreadMessagesCount })}</span>
+                      </>
+                    ) : undefined
+                  }
+                />
+              )}
+
+              {authenticated && (
+                <HeaderIconButton
                   onClick={onNotificationsClick}
                   href={navigationHrefs.notifications}
                   ariaLabel={t('header.notifications')}
@@ -229,7 +246,6 @@ export function Header({
                 onHelpClick={onHelpClick}
                 onLanguageChange={onLanguageChange}
                 showGridToggle={showGridToggle}
-                designVersionSwitch={designVersionSwitch}
               />
             </nav>
           </div>

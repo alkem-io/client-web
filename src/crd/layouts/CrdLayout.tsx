@@ -4,7 +4,6 @@ import { GridOverlay } from '@/crd/layouts/components/GridOverlay';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
 import type {
-  CrdDesignVersionSwitch,
   CrdFooterLinks,
   CrdLanguageOption,
   CrdNavigationHrefs,
@@ -21,18 +20,19 @@ type CrdLayoutProps = {
   platformNavigationItems?: CrdPlatformNavigationItem[];
   currentPath?: string;
   unreadNotificationsCount?: number;
+  unreadMessagesCount?: number;
   languages: CrdLanguageOption[];
   currentLanguage: string;
   breadcrumbs?: ReactNode;
   onLanguageChange: (code: string) => void;
   onLogout?: () => void;
+  onMessagesClick?: () => void;
   onNotificationsClick?: () => void;
   onSearchClick?: () => void;
   onPendingMembershipsClick?: () => void;
   onHelpClick?: () => void;
   footerLinks?: CrdFooterLinks;
   showGridToggle?: boolean;
-  designVersionSwitch?: CrdDesignVersionSwitch;
   /** When true the header's inner content fills all 12 grid columns (full-width space pages). */
   fullWidth?: boolean;
   /** When true the header renders transparently over a hero banner below it. */
@@ -49,18 +49,19 @@ export function CrdLayout({
   platformNavigationItems,
   currentPath,
   unreadNotificationsCount,
+  unreadMessagesCount,
   languages,
   currentLanguage,
   breadcrumbs,
   onLanguageChange,
   onLogout,
+  onMessagesClick,
   onNotificationsClick,
   onSearchClick,
   onPendingMembershipsClick,
   onHelpClick,
   footerLinks,
   showGridToggle,
-  designVersionSwitch,
   fullWidth,
   overlayBanner,
   children,
@@ -76,17 +77,18 @@ export function CrdLayout({
         platformNavigationItems={platformNavigationItems}
         currentPath={currentPath}
         unreadNotificationsCount={unreadNotificationsCount}
+        unreadMessagesCount={unreadMessagesCount}
         languages={languages}
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbs}
         onLanguageChange={onLanguageChange}
         onLogout={onLogout}
+        onMessagesClick={onMessagesClick}
         onNotificationsClick={onNotificationsClick}
         onSearchClick={onSearchClick}
         onPendingMembershipsClick={onPendingMembershipsClick}
         onHelpClick={onHelpClick}
         showGridToggle={showGridToggle}
-        designVersionSwitch={designVersionSwitch}
         fullWidth={fullWidth}
         overlayBanner={overlayBanner}
       />

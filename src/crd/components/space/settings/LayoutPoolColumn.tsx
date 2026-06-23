@@ -29,6 +29,24 @@ import type {
   LayoutPoolColumn as LayoutPoolColumnData,
 } from './SpaceSettingsLayoutView.types';
 
+// Full literal i18n keys for the per-column Delete affordance, one set per user-facing noun.
+// Declared as constants (rather than template-built strings) so the typed `t()` accepts them.
+const DELETE_PHASE_KEYS = {
+  menuLabel: 'layout.column.deletePhase.menuLabel',
+  title: 'layout.column.deletePhase.confirm.title',
+  description: 'layout.column.deletePhase.confirm.description',
+  confirm: 'layout.column.deletePhase.confirm.confirm',
+  cancel: 'layout.column.deletePhase.confirm.cancel',
+} as const;
+const DELETE_TAB_KEYS = {
+  menuLabel: 'layout.column.deleteTab.menuLabel',
+  title: 'layout.column.deleteTab.confirm.title',
+  description: 'layout.column.deleteTab.confirm.description',
+  confirm: 'layout.column.deleteTab.confirm.confirm',
+  cancel: 'layout.column.deleteTab.confirm.cancel',
+} as const;
+type DeleteKeySet = typeof DELETE_PHASE_KEYS | typeof DELETE_TAB_KEYS;
+
 type LayoutPoolColumnProps = {
   column: LayoutPoolColumnData;
   otherColumns: ReadonlyArray<Pick<LayoutPoolColumnData, 'id' | 'title'>>;
@@ -37,6 +55,8 @@ type LayoutPoolColumnProps = {
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   columnMenuActions: ColumnMenuActions;
+  /** User-facing noun for this column: 'tab' on L0, 'phase' on subspaces. Drives Delete wording. */
+  entityNoun?: 'tab' | 'phase';
   /** Enables the column drag handle + sortable behaviour (off at L0). */
   draggable?: boolean;
   className?: string;
@@ -50,6 +70,7 @@ export function LayoutPoolColumn({
   onMoveToColumn,
   onViewPost,
   columnMenuActions,
+  entityNoun = 'phase',
   draggable = false,
   className,
   onImageUpload,
@@ -57,6 +78,9 @@ export function LayoutPoolColumn({
   onError,
 }: LayoutPoolColumnProps) {
   const { t } = useTranslation('crd-spaceSettings');
+  // Full literal i18n keys per entity noun — kept as a const map (not a template-built string) so
+  // the typed `t()` accepts them. 'tab' → deleteTab.* (L0), 'phase' → deletePhase.* (subspaces).
+  const deleteKeys = entityNoun === 'tab' ? DELETE_TAB_KEYS : DELETE_PHASE_KEYS;
   const calloutIds = column.callouts.map(c => c.id);
   // Drop target for cross-column callout moves — keeps `column.id` as the
   // droppable id so the view's `resolveTargetColumn` continues to work unchanged.
@@ -125,6 +149,7 @@ export function LayoutPoolColumn({
             <ColumnOverflowMenu
               column={column}
               actions={columnMenuActions}
+              deleteKeys={deleteKeys}
               onEditDetails={() => setEditDetailsOpen(true)}
               onRequestDeletePhase={() => setPendingPhaseDelete(true)}
               onRequestHidePhase={() => setPendingPhaseHide(true)}
@@ -196,10 +221,10 @@ export function LayoutPoolColumn({
           if (!open) setPendingPhaseDelete(false);
         }}
         variant="destructive"
-        title={t('layout.column.deletePhase.confirm.title')}
-        description={t('layout.column.deletePhase.confirm.description')}
-        confirmLabel={t('layout.column.deletePhase.confirm.confirm')}
-        cancelLabel={t('layout.column.deletePhase.confirm.cancel')}
+        title={t(deleteKeys.title)}
+        description={t(deleteKeys.description)}
+        confirmLabel={t(deleteKeys.confirm)}
+        cancelLabel={t(deleteKeys.cancel)}
         onConfirm={() => {
           void columnMenuActions.onDeletePhase?.(column.id);
           setPendingPhaseDelete(false);
@@ -233,6 +258,8 @@ export function LayoutPoolColumn({
 type ColumnOverflowMenuProps = {
   column: LayoutPoolColumnData;
   actions: ColumnMenuActions;
+  /** Literal i18n keys for the Delete entry — the tab set (L0) or the phase set (subspaces). */
+  deleteKeys: DeleteKeySet;
   onEditDetails: () => void;
   onRequestDeletePhase: () => void;
   onRequestHidePhase: () => void;
@@ -242,6 +269,7 @@ type ColumnOverflowMenuProps = {
 function ColumnOverflowMenu({
   column,
   actions,
+  deleteKeys,
   onEditDetails,
   onRequestDeletePhase,
   onRequestHidePhase,
@@ -302,12 +330,12 @@ function ColumnOverflowMenu({
             </DropdownMenuItem>
           </>
         )}
-        {actions.onDeletePhase && (
+        {actions.onDeletePhase && column.isDeletable !== false && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={onRequestDeletePhase}>
               <Trash2 aria-hidden="true" className="mr-2 size-3.5" />
-              {t('layout.column.deletePhase.menuLabel')}
+              {t(deleteKeys.menuLabel)}
             </DropdownMenuItem>
           </>
         )}

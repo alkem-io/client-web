@@ -4,6 +4,7 @@ import {
   useStorageConfigContext,
 } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import { useVcCreationWizard } from './useVcCreationWizard';
 
@@ -68,11 +69,28 @@ const VCCreationWizardWithUpload = ({
   onClose: () => void;
   loading: boolean;
 }) => {
-  const canUpload = useStorageConfigContext()?.canUpload ?? false;
+  const storageConfig = useStorageConfigContext();
+  const canUpload = storageConfig?.canUpload ?? false;
   const markdownUpload = useMarkdownEditorIntegration({ temporaryLocation: true });
   const uploadProps = canUpload ? markdownUpload : undefined;
 
-  return <VCCreationWizardView {...wizard} {...uploadProps} open={open} onClose={onClose} loading={loading} />;
+  // Document-row paperclip (FR-025): uploads into the same account bucket as the
+  // markdown images, as a temporary file relocated to the VC on creation. The
+  // hook returns an undefined callback when the viewer can't upload, so the row
+  // stays link-only — matching the markdown image-upload gating above.
+  const { onFileUpload: onDocumentUpload, accept: documentUploadAccept } = useReferenceFileUpload(storageConfig);
+
+  return (
+    <VCCreationWizardView
+      {...wizard}
+      {...uploadProps}
+      onDocumentUpload={onDocumentUpload}
+      documentUploadAccept={documentUploadAccept}
+      open={open}
+      onClose={onClose}
+      loading={loading}
+    />
+  );
 };
 
 export default CrdVCCreationWizardDialog;

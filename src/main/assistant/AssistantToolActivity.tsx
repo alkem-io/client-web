@@ -1,8 +1,5 @@
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { CircleCheck, CircleX, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '@/core/ui/grid/utils';
 import { type ToolActivityPart, ToolActivityStatus } from './types';
 
 /**
@@ -16,11 +13,11 @@ export const AssistantToolActivity = ({ part }: { part: ToolActivityPart }) => {
 
   const icon =
     part.status === ToolActivityStatus.Finished ? (
-      <CheckCircleOutlineIcon fontSize="small" color="success" aria-hidden={true} />
+      <CircleCheck className="size-4 shrink-0 text-green-600" aria-hidden={true} />
     ) : part.status === ToolActivityStatus.Error ? (
-      <ErrorOutlineIcon fontSize="small" color="error" aria-hidden={true} />
+      <CircleX className="size-4 shrink-0 text-destructive" aria-hidden={true} />
     ) : (
-      <CircularProgress size={14} aria-hidden={true} />
+      <Loader2 className="size-3.5 shrink-0 animate-spin" aria-hidden={true} />
     );
 
   const text =
@@ -31,11 +28,10 @@ export const AssistantToolActivity = ({ part }: { part: ToolActivityPart }) => {
         : t('assistant.toolActivity.started', { label: part.label });
 
   return (
-    <Box display="flex" alignItems="center" gap={gutters(0.5)} role="status">
+    // <output> carries an implicit role="status" so assistive tech announces the tool step.
+    <output className="flex items-center gap-2">
       {icon}
-      <Typography variant="caption" color="text.secondary">
-        {text}
-      </Typography>
-    </Box>
+      <span className="text-caption text-muted-foreground">{text}</span>
+    </output>
   );
 };

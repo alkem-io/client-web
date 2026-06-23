@@ -1,5 +1,5 @@
-import { DialogContent } from '@mui/material';
-import DialogWithGrid from '@/core/ui/dialog/DialogWithGrid';
+import { useTranslation } from 'react-i18next';
+import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal, DialogTitle } from '@/crd/primitives/dialog';
 import { useAssistantContext } from './AssistantContext';
 import AssistantPanelContent from './AssistantPanelContent';
 import { useAssistantEnabled } from './useAssistantEnabled';
@@ -16,6 +16,7 @@ import { useAssistantEnabled } from './useAssistantEnabled';
  * exactly one panel body (one conversation store) is mounted at a time.
  */
 const AssistantDialog = () => {
+  const { t } = useTranslation();
   const isEnabled = useAssistantEnabled();
   const { isOpen, setIsOpen, panelContext } = useAssistantContext();
 
@@ -26,22 +27,21 @@ const AssistantDialog = () => {
   const open = isOpen && panelContext === null;
 
   return (
-    <DialogWithGrid
-      open={open}
-      columns={6}
-      fullHeight={true}
-      maxWidth={false}
-      onClose={() => setIsOpen(false)}
-      aria-labelledby="assistant-dialog-title"
-      sx={{
-        '.MuiDialog-container': { alignItems: 'stretch' },
-        '.MuiDialog-paper': { height: '100%' },
-      }}
-    >
-      <DialogContent sx={{ padding: 0, display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <AssistantPanelContent isOpen={open} onClose={() => setIsOpen(false)} />
-      </DialogContent>
-    </DialogWithGrid>
+    <Dialog open={open} onOpenChange={next => setIsOpen(next)}>
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogContentRaw
+          aria-labelledby="assistant-dialog-title"
+          // The panel renders its own header (with title + close); the title is
+          // labelled via `assistant-dialog-title`, so keep the Radix-required
+          // DialogTitle visually hidden to satisfy the a11y contract.
+          className="bg-background fixed top-[50%] left-[50%] z-50 flex h-full max-h-[calc(100%-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col overflow-hidden rounded-lg border shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 sm:max-w-2xl"
+        >
+          <DialogTitle className="sr-only">{t('assistant.title')}</DialogTitle>
+          <AssistantPanelContent isOpen={open} onClose={() => setIsOpen(false)} />
+        </DialogContentRaw>
+      </DialogPortal>
+    </Dialog>
   );
 };
 

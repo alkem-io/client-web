@@ -1,10 +1,10 @@
-import CloseIcon from '@mui/icons-material/Close';
-import { Box, Dialog, DialogContent, IconButton, Typography } from '@mui/material';
+import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { usePlatformCapabilitiesQuery, useUserAssistantSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { gutters } from '@/core/ui/grid/utils';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { UserAssistantTabView } from '@/crd/components/user/settings/UserAssistantTabView';
+import { Button } from '@/crd/primitives/button';
+import { Dialog, DialogContentRaw, DialogOverlay, DialogTitle } from '@/crd/primitives/dialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import {
   isWhiteboardCapability,
@@ -79,44 +79,32 @@ const AssistantSettingsDialog = ({
   const { t } = useTranslation();
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth={true}
-      maxWidth="sm"
-      // Render IN PLACE (no portal) so the dialog stays inside the same focus
-      // containers as its host: the panel's FocusScope and, in a whiteboard, the
-      // whiteboard editor's Radix modal. A portaled dialog escapes those containers,
-      // so the whiteboard's focus trap reclaims the keyboard and the toggles can't
-      // be operated. Containment is exactly how the docked rail input works.
-      disablePortal={true}
-      aria-labelledby="assistant-settings-title"
-    >
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        padding={gutters(0.5)}
-        sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
+    <Dialog open={open} onOpenChange={next => !next && onClose()}>
+      {/* Render IN PLACE (no DialogPortal) so the dialog stays inside the same
+          focus containers as its host: the panel's FocusScope and, in a
+          whiteboard, the whiteboard editor's Radix modal. A portaled dialog
+          escapes those containers, so the whiteboard's focus trap reclaims the
+          keyboard and the toggles can't be operated. */}
+      <DialogOverlay />
+      <DialogContentRaw
+        aria-labelledby="assistant-settings-title"
+        className="bg-background fixed top-[50%] left-[50%] z-50 flex max-h-[calc(100%-2rem)] w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] flex-col overflow-hidden rounded-lg border shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 sm:max-w-lg"
       >
-        <Box>
-          <Typography id="assistant-settings-title" variant="h6">
-            {t('assistant.settings')}
-          </Typography>
-          {scope === 'whiteboard' && (
-            <Typography variant="caption" color="text.secondary">
-              {t('assistant.settingsWhiteboardScope')}
-            </Typography>
-          )}
-        </Box>
-        <IconButton onClick={onClose} aria-label={t('assistant.closeButton')}>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-      <DialogContent>
-        {/* CRD content inside a MUI dialog → scope it so Tailwind preflight/tokens apply. */}
-        <div className="crd-root">{open ? <AssistantSettingsContent scope={scope} /> : null}</div>
-      </DialogContent>
+        <div className="flex items-center justify-between border-b border-border p-2">
+          <div>
+            <DialogTitle id="assistant-settings-title" className="text-section-title">
+              {t('assistant.settings')}
+            </DialogTitle>
+            {scope === 'whiteboard' && (
+              <span className="text-caption text-muted-foreground">{t('assistant.settingsWhiteboardScope')}</span>
+            )}
+          </div>
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label={t('assistant.closeButton')}>
+            <X aria-hidden={true} />
+          </Button>
+        </div>
+        <div className="overflow-y-auto p-4">{open ? <AssistantSettingsContent scope={scope} /> : null}</div>
+      </DialogContentRaw>
     </Dialog>
   );
 };

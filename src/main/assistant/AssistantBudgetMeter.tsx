@@ -1,6 +1,4 @@
-import { Box, LinearProgress, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '@/core/ui/grid/utils';
 import type { AssistantBudget } from './types';
 
 /**
@@ -26,11 +24,9 @@ const AssistantBudgetMeter = ({ budget }: { budget: AssistantBudget | null }) =>
   // D3: no resolvable allowance → informational caption, never a 0-limit meter.
   if (tokensPerMonth === null || tokensPerMonth === undefined) {
     return (
-      <Box paddingX={gutters(0.5)} paddingBottom={gutters(0.25)}>
-        <Typography variant="caption" color="text.secondary">
-          {t('assistant.budget.noLimit')}
-        </Typography>
-      </Box>
+      <div className="px-2 pb-1">
+        <span className="text-caption text-muted-foreground">{t('assistant.budget.noLimit')}</span>
+      </div>
     );
   }
 
@@ -39,28 +35,27 @@ const AssistantBudgetMeter = ({ budget }: { budget: AssistantBudget | null }) =>
   const percent = Math.round(fraction * 100);
 
   return (
-    <Box
-      paddingX={gutters(0.5)}
-      paddingBottom={gutters(0.25)}
-      display="flex"
-      flexDirection="column"
-      gap={gutters(0.25)}
-    >
-      <Typography variant="caption" color="text.secondary">
+    <div className="flex flex-col gap-1 px-2 pb-1">
+      <span className="text-caption text-muted-foreground">
         {t('assistant.budget.usage', {
           used: used.toLocaleString(),
           limit: tokensPerMonth.toLocaleString(),
         })}
-      </Typography>
-      <LinearProgress
-        variant="determinate"
-        value={percent}
+      </span>
+      <div
+        role="progressbar"
+        aria-valuenow={percent}
+        aria-valuemin={0}
+        aria-valuemax={100}
         aria-label={t('assistant.budget.a11y', {
           used: used.toLocaleString(),
           limit: tokensPerMonth.toLocaleString(),
         })}
-      />
-    </Box>
+        className="relative h-2 w-full overflow-hidden rounded-full bg-primary/20"
+      >
+        <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${percent}%` }} />
+      </div>
+    </div>
   );
 };
 

@@ -1,8 +1,6 @@
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { Box, Button, Paper, Typography } from '@mui/material';
+import { CirclePlus, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '@/core/ui/grid/utils';
+import { Button } from '@/crd/primitives/button';
 import { type ConfirmationPart, ProposedWriteKind } from './types';
 
 /**
@@ -33,62 +31,44 @@ export const AssistantConfirmation = ({
   const { t } = useTranslation();
 
   return (
-    <Paper
-      variant="outlined"
-      sx={{ padding: gutters(0.75), borderColor: 'warning.main' }}
+    // biome-ignore lint/a11y/useSemanticElements: a labelled write-proposal is a generic grouping; <fieldset> is for form-control grouping and is not a valid substitute.
+    <div
+      className="flex flex-col gap-2 rounded-lg border border-amber-500 p-3"
       role="group"
       aria-label={t('assistant.confirmation.title')}
     >
-      <Box display="flex" flexDirection="column" gap={gutters(0.5)}>
-        <Typography variant="subtitle2">{t('assistant.confirmation.title')}</Typography>
-        <Typography variant="caption" color="text.secondary">
-          {t('assistant.confirmation.description')}
-        </Typography>
+      <span className="text-body-emphasis">{t('assistant.confirmation.title')}</span>
+      <span className="text-caption text-muted-foreground">{t('assistant.confirmation.description')}</span>
 
-        <Box
-          component="ul"
-          sx={{ listStyle: 'none', margin: 0, padding: 0 }}
-          display="flex"
-          flexDirection="column"
-          gap={gutters(0.5)}
-        >
-          {part.items.map((item, index) => {
-            const isDestructive = item.kind === ProposedWriteKind.WriteDestructive;
-            return (
-              <Box
-                component="li"
-                key={`${item.toolName}-${index}`}
-                display="flex"
-                alignItems="flex-start"
-                gap={gutters(0.5)}
-              >
-                {isDestructive ? (
-                  <WarningAmberIcon fontSize="small" color="warning" aria-hidden={true} />
-                ) : (
-                  <AddCircleOutlineIcon fontSize="small" color="action" aria-hidden={true} />
+      <ul className="m-0 flex list-none flex-col gap-2 p-0">
+        {part.items.map((item, index) => {
+          const isDestructive = item.kind === ProposedWriteKind.WriteDestructive;
+          return (
+            <li key={`${item.toolName}-${index}`} className="flex items-start gap-2">
+              {isDestructive ? (
+                <TriangleAlert className="mt-0.5 size-4 shrink-0 text-amber-600" aria-hidden={true} />
+              ) : (
+                <CirclePlus className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden={true} />
+              )}
+              <div className="flex flex-col">
+                <span className="text-body">{item.summary}</span>
+                {isDestructive && (
+                  <span className="text-caption text-amber-600">{t('assistant.confirmation.destructiveItem')}</span>
                 )}
-                <Box display="flex" flexDirection="column">
-                  <Typography variant="body2">{item.summary}</Typography>
-                  {isDestructive && (
-                    <Typography variant="caption" color="warning.main">
-                      {t('assistant.confirmation.destructiveItem')}
-                    </Typography>
-                  )}
-                </Box>
-              </Box>
-            );
-          })}
-        </Box>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
 
-        <Box display="flex" gap={gutters(0.5)} justifyContent="flex-end" marginTop={gutters(0.25)}>
-          <Button onClick={onDecline} disabled={disabled} color="inherit" size="small">
-            {t('assistant.confirmation.decline')}
-          </Button>
-          <Button onClick={onApprove} disabled={disabled} variant="contained" size="small">
-            {t('assistant.confirmation.approve')}
-          </Button>
-        </Box>
-      </Box>
-    </Paper>
+      <div className="mt-1 flex justify-end gap-2">
+        <Button variant="ghost" size="sm" onClick={onDecline} disabled={disabled}>
+          {t('assistant.confirmation.decline')}
+        </Button>
+        <Button size="sm" onClick={onApprove} disabled={disabled}>
+          {t('assistant.confirmation.approve')}
+        </Button>
+      </div>
+    </div>
   );
 };

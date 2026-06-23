@@ -18,7 +18,7 @@ import type {
   LayoutSaveBarState,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
-import { mapCollaborationToLayoutColumns } from './layoutMapper';
+import { mapCollaborationToLayoutColumns, type SpaceLevelTag } from './layoutMapper';
 
 export type {
   LayoutPoolColumn,
@@ -119,7 +119,7 @@ function columnsEqual(a: LayoutPoolColumn[], b: LayoutPoolColumn[]): boolean {
   return true;
 }
 
-export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
+export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayoutTabDataResult {
   // We need both the collaboration (for innovationFlow + callouts) and the
   // space settings (for calloutDescriptionDisplayMode). The collaboration id
   // is on space.collaboration.id, which we fetch via the settings query to
@@ -172,13 +172,13 @@ export function useLayoutTabData(spaceId: string): UseLayoutTabDataResult {
     const collaboration = flowData?.lookup.collaboration;
     const layoutMode = settingsData?.lookup.space?.settings.layout.calloutDescriptionDisplayMode;
     if (!collaboration || !layoutMode) return;
-    const nextColumns = mapCollaborationToLayoutColumns(collaboration);
+    const nextColumns = mapCollaborationToLayoutColumns(collaboration, level);
     const nextDisplay: LayoutPostDescriptionDisplay =
       layoutMode === CalloutDescriptionDisplayMode.Collapsed ? 'collapsed' : 'expanded';
     snapshotRef.current = toSnapshot(nextColumns, nextDisplay);
     setColumns(nextColumns);
     setPostDescriptionDisplay(nextDisplay);
-  }, [flowData, settingsData, reseedToken]);
+  }, [flowData, settingsData, reseedToken, level]);
 
   // Dirty flag — tracks whether the buffer differs from the snapshot.
   // Using state (not useMemo on a ref) so it updates when onSave/onReset clear it.

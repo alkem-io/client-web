@@ -111,7 +111,7 @@ defaults to **`false`** in `useStorageConfig` — consumers set `true` explicitl
 | Flow | `temporaryLocation` | Bucket used | Why |
 |---|---|---|---|
 | **Edit** (entity exists) | `false` | the entity's own `profile.storageBucket` | Permanent home; the editor/owner has `FileUpload` there. |
-| **Create** (entity not saved yet) | `true` | an **existing parent** bucket (e.g. the space) | The entity has no bucket yet. The doc is uploaded as *temporary* into a bucket the user can write to; the **server relocates** it to the new entity's bucket when the entity is saved. Mirrors the legacy MUI `temporaryLocation={!callout?.id}` rule (`src/domain/collaboration/callout/CalloutForm/CalloutForm.tsx`). |
+| **Create** (entity not saved yet) | `true` | an **existing parent** bucket (e.g. the space) | The entity has no bucket yet. The doc is uploaded as *temporary* into a bucket the user can write to; the **server relocates** it to the new entity's bucket when the entity is saved (the `temporaryLocation={!entity?.id}` rule). |
 
 ### Why an upload fails (debugging checklist)
 
@@ -129,7 +129,7 @@ defaults to **`false`** in `useStorageConfig` — consumers set `true` explicitl
 ### Intentional omission (not a bug)
 
 `CalloutFormConnector.tsx` passes `onImageUpload: undefined` **on create** so the description editor
-offers only "add image by link" — matching legacy MUI, because the callout (and its bucket) doesn't
+offers only "add image by link", because the callout (and its bucket) doesn't
 exist yet during creation. Upload returns on **edit**, scoped to the callout's own bucket via
 `CalloutEditConnector` (`locationType="callout"`). Memo image upload targets the memo's own bucket via
 an explicit `storageBucketId` override (`CrdMemoDialog.tsx`).

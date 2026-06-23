@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import '@/crd/styles/crd.css';
+import './index.css';
 import Root from './root';
 import { register as registerServiceWorker, unregister as unregisterServiceWorker } from './serviceWorker';
 

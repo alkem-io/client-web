@@ -1,5 +1,13 @@
-import { theme } from '@/core/ui/themes/default/Theme';
 import { WhiteboardPreviewVisualDimensions } from './WhiteboardVisualsDimensions';
+
+// Theme palette tokens used for the fallback canvas, inlined to avoid value-
+// importing the MUI theme (which pulls `createTheme` into the bundle). Mirrors
+// src/core/ui/palette/palette.ts: background.default, divider, neutral.light.
+const FALLBACK_COLORS = {
+  background: '#F1F4F5',
+  divider: '#D3D3D3',
+  text: '#646464',
+} as const;
 
 /**
  * Fallback image generation in case of error
@@ -16,16 +24,16 @@ const createFallbackWhiteboardPreview = async (): Promise<HTMLCanvasElement> => 
 
     if (ctx) {
       // Fill background with theme background color
-      ctx.fillStyle = theme.palette.background.default;
+      ctx.fillStyle = FALLBACK_COLORS.background;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Draw border with theme divider color
-      ctx.strokeStyle = theme.palette.divider;
+      ctx.strokeStyle = FALLBACK_COLORS.divider;
       ctx.lineWidth = 2;
       ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
 
       // Draw text with theme neutral color
-      ctx.fillStyle = theme.palette.neutral.light;
+      ctx.fillStyle = FALLBACK_COLORS.text;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.font = '16px Arial, sans-serif';

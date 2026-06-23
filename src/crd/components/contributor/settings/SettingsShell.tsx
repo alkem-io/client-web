@@ -29,7 +29,7 @@ type SettingsShellProps<TTabId extends string> = {
  * horizontal tab strip + body slot. Both User (7 tabs) and Organization (5
  * tabs) consume this primitive (research §9 / FR-013).
  *
- * Visual structure mirrors `prototype/src/app/pages/UserAccountPage.tsx`:
+ * Visual structure mirrors `client-web-prototype/src/app/pages/UserAccountPage.tsx`:
  * - Sticky header band (`sticky top-16 z-20`) sits below the CRD app header
  *   (which is `h-16 z-50`); solid `bg-card` with bottom border.
  * - Body and header content centered via 12-col grid (`col-start-2

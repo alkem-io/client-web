@@ -16,7 +16,7 @@ import type {
 } from '@/crd/components/templates/types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
-// ─── Banner images (from prototype/src/app/data/template-data.ts) ─────────────
+// ─── Banner images (from client-web-prototype/src/app/data/template-data.ts) ──
 
 const PACK_BANNERS = [
   'https://images.unsplash.com/photo-1554103210-26d928978fb5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * Throttle a fast-changing value so downstream re-parsing (e.g. WrapperMarkdown
+ * Throttle a fast-changing value so downstream re-parsing (e.g. MarkdownContent
  * re-parses the whole buffer per token) runs at most once per `intervalMs`.
  * The latest value always lands once the stream settles.
  */

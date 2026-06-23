@@ -45,9 +45,9 @@ Implements constitution & agents.md. Does not introduce new governance.
 | External calls   | Via approved MCP tools only      | Raw HTTP to non-approved domains       |
 | Governance edits | Draft PRs referencing this file  | Directly modify constitution/agents.md |
 
-### Excluded Paths
+### Prototype Design Reference
 
-- **`prototype/`** — Read-only design reference. Do not modify, review, lint, or flag any file under this directory. See `prototype/CLAUDE.md` for details.
+- The prototype design reference now lives in its own repository, **https://github.com/alkem-io/client-web-prototype** — it is no longer part of this repo. Consult it there when building `src/crd/` components.
 
 ---
 

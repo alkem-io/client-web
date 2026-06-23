@@ -1,12 +1,11 @@
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
-import { IconButton, Paper } from '@mui/material';
+import { Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@/crd/primitives/button';
 import { useAssistantContext } from './AssistantContext';
 import { useAssistantEnabled } from './useAssistantEnabled';
 
 /**
- * Entry point that opens the AI assistant panel. Rendered in both nav variants
- * (the MUI PlatformNavigationBar and, via a floating connector, the CRD layout).
+ * Entry point that opens the AI assistant panel. Rendered in the nav.
  * Renders nothing unless the user is authenticated and the feature flag is on
  * (useAssistantEnabled).
  */
@@ -20,8 +19,9 @@ export const AssistantButton = () => {
   }
 
   return (
-    <Paper
-      component={IconButton}
+    <Button
+      variant="ghost"
+      size="icon"
       // Drop any stale whiteboard scope so the global panel always opens as the
       // dialog (its gate requires `panelContext === null`), never suppressed by a
       // board that was closed without collapsing its rail.
@@ -29,18 +29,10 @@ export const AssistantButton = () => {
         clearPanelContext();
         setIsOpen(true);
       }}
-      color="primary"
       aria-label={t('assistant.openButton')}
-      sx={{
-        position: 'relative',
-        overflow: 'visible',
-        '&:hover': {
-          background: theme => theme.palette.background.paper,
-          opacity: 0.9,
-        },
-      }}
+      className="text-primary"
     >
-      <AutoAwesomeOutlinedIcon />
-    </Paper>
+      <Sparkles aria-hidden={true} />
+    </Button>
   );
 };

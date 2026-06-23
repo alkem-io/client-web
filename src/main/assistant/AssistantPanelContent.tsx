@@ -1,12 +1,9 @@
-import CloseIcon from '@mui/icons-material/Close';
-import SendIcon from '@mui/icons-material/Send';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import StopIcon from '@mui/icons-material/Stop';
-import { Box, IconButton, TextField, Typography } from '@mui/material';
 import { FocusScope } from '@radix-ui/react-focus-scope';
+import { Send, Settings, Square, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { gutters } from '@/core/ui/grid/utils';
+import { Button } from '@/crd/primitives/button';
+import { Textarea } from '@/crd/primitives/textarea';
 import AssistantBudgetMeter from './AssistantBudgetMeter';
 import { useAssistantContext } from './AssistantContext';
 import { AssistantConversationView } from './AssistantConversationView';
@@ -18,7 +15,7 @@ import { useAssistantRehydrate } from './useAssistantRehydrate';
 
 /**
  * The assistant panel body (header + conversation + composer + settings), shared
- * by the two shells that host it: the global MUI dialog (AssistantDialog) and the
+ * by the two shells that host it: the global dialog (AssistantDialog) and the
  * whiteboard-docked rail (WhiteboardAssistantRailConnector → AssistantRailFrame).
  *
  * It owns the conversation transport hooks (useAssistantConversation /
@@ -28,8 +25,7 @@ import { useAssistantRehydrate } from './useAssistantRehydrate';
  * teardown (abort the in-flight turn + drop the per-turn whiteboard scope) lives
  * here so both shells share it.
  *
- * Default-exported so the CRD whiteboard layer can `React.lazy()` it — that keeps
- * MUI out of the CRD whiteboard route chunk (loaded only when the rail opens).
+ * Default-exported so the CRD whiteboard layer can `React.lazy()` it.
  */
 type AssistantPanelContentProps = {
   isOpen: boolean;
@@ -58,8 +54,8 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   // Excalidraw aggressively reclaims focus when the panel opens over a whiteboard,
-  // so MUI's autoFocus alone doesn't stick. Nudge focus to the input once the
-  // panel has mounted/animated so the user can type immediately.
+  // so autoFocus alone doesn't stick. Nudge focus to the input once the panel has
+  // mounted/animated so the user can type immediately.
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -100,47 +96,40 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
       onMountAutoFocus={event => event.preventDefault()}
       style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, height: '100%' }}
     >
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        padding={gutters(0.5)}
-        sx={{ borderBottom: theme => `1px solid ${theme.palette.divider}` }}
-      >
-        <Box>
-          <Typography id="assistant-dialog-title" variant="h6">
+      <div className="flex items-center justify-between border-b border-border p-2">
+        <div>
+          <h2 id="assistant-dialog-title" className="text-section-title">
             {t('assistant.title')}
-          </Typography>
+          </h2>
           {panelContext?.displayName && (
-            <Typography variant="caption" color="text.secondary">
+            <span className="text-caption text-muted-foreground">
               {t('assistant.scopedTo', { name: panelContext.displayName })}
-            </Typography>
+            </span>
           )}
-        </Box>
-        <Box display="flex" alignItems="center">
-          <IconButton onClick={() => setSettingsOpen(true)} aria-label={t('assistant.settings')}>
-            <SettingsOutlinedIcon />
-          </IconButton>
-          <IconButton onClick={handleClose} aria-label={t('assistant.closeButton')}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </Box>
+        </div>
+        <div className="flex items-center">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setSettingsOpen(true)}
+            aria-label={t('assistant.settings')}
+          >
+            <Settings aria-hidden={true} />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={handleClose} aria-label={t('assistant.closeButton')}>
+            <X aria-hidden={true} />
+          </Button>
+        </div>
+      </div>
 
       <AssistantBudgetMeter budget={liveBudget} />
 
       <AssistantConversationView />
 
-      <Box
-        display="flex"
-        alignItems="center"
-        gap={gutters(0.5)}
-        padding={gutters(0.5)}
-        sx={{ borderTop: theme => `1px solid ${theme.palette.divider}` }}
-      >
+      <div className="flex items-center gap-2 border-t border-border p-2">
         <AssistantNewConversationButton onClick={() => void startNewConversation()} />
-        <TextField
-          inputRef={inputRef}
+        <Textarea
+          ref={inputRef}
           autoFocus={true}
           value={draft}
           onChange={event => setDraft(event.target.value)}
@@ -152,21 +141,32 @@ const AssistantPanelContent = ({ isOpen, onClose }: AssistantPanelContentProps) 
           }}
           placeholder={t('assistant.inputPlaceholder')}
           aria-label={t('assistant.inputPlaceholder')}
-          fullWidth={true}
-          multiline={true}
-          maxRows={6}
-          size="small"
+          rows={1}
+          className="max-h-36 min-h-9 flex-1"
         />
         {isStreaming ? (
-          <IconButton onClick={cancel} aria-label={t('assistant.stop')} color="primary">
-            <StopIcon />
-          </IconButton>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={cancel}
+            aria-label={t('assistant.stop')}
+            className="text-primary"
+          >
+            <Square aria-hidden={true} />
+          </Button>
         ) : (
-          <IconButton onClick={handleSend} aria-label={t('assistant.send')} color="primary" disabled={!draft.trim()}>
-            <SendIcon />
-          </IconButton>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleSend}
+            aria-label={t('assistant.send')}
+            disabled={!draft.trim()}
+            className="text-primary"
+          >
+            <Send aria-hidden={true} />
+          </Button>
         )}
-      </Box>
+      </div>
 
       <AssistantSettingsDialog
         open={settingsOpen}

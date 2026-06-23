@@ -1,10 +1,10 @@
 import { Library, Package } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { InnovationPackProfileView } from '@/crd/components/innovationPack/InnovationPackProfileView';
 import { TemplatePreviewDialog } from '@/crd/components/templates/TemplatePreviewDialog';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useInnovationPackProfile } from './useInnovationPackProfile';
@@ -40,7 +40,7 @@ export const CrdInnovationPackProfilePage = () => {
   useSetBreadcrumbs(breadcrumbItems);
 
   if (notFound) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   // Until the pack resolves we render a minimal placeholder rather than mounting the View

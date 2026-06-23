@@ -2,13 +2,13 @@ import { type FC, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useCurrentUserLightQuery } from '@/core/apollo/generated/apollo-hooks';
-import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { JoinWhiteboardDialog } from '@/crd/components/whiteboard/JoinWhiteboardDialog';
 import { WhiteboardErrorState } from '@/crd/components/whiteboard/WhiteboardErrorState';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { GuestSessionProvider } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 import { useGuestAnalytics } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestAnalytics';
 import { useGuestSession } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSession';
@@ -27,6 +27,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
   const location = useLocation();
   const { guestName, isDerived, setGuestName } = useGuestSession();
   const { t } = useTranslation('crd-whiteboard');
+  const { t: tCommon } = useTranslation('crd-common');
 
   const { data: currentUser, loading: userLoading } = useCurrentUserLightQuery({
     errorPolicy: 'ignore',
@@ -45,7 +46,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
   const [guestNameInput, setGuestNameInput] = useState('');
   const [guestNameError, setGuestNameError] = useState<string | undefined>();
   const [guestNameTouched, setGuestNameTouched] = useState(false);
-  const { isSmallScreen } = useScreenSize();
+  const isSmallScreen = useMediaQuery('(max-width: 599.95px)');
   const { fullscreen, setFullscreen } = useFullscreen();
   const isFullscreen = fullscreen || isSmallScreen;
 
@@ -220,7 +221,7 @@ const CrdPublicWhiteboardPageContent: FC = () => {
             headerActions: () => (
               <>
                 <ShareButton url={computedGuestShareUrl} disabled={!computedGuestShareUrl} />
-                {!isSmallScreen && <FullscreenButton />}
+                {!isSmallScreen && <CrdFullscreenButton label={tCommon('fullscreen')} />}
                 <CrdWhiteboardSaveStatus isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
               </>
             ),
