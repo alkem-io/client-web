@@ -35,11 +35,26 @@ import type {
 
 export type SpaceSettingsLayoutViewProps = {
   /**
-   * Space hierarchy level. Drives both phase-add visibility and column-DnD:
-   * - L0: phase add/delete + column reorder hidden — the home flow is fixed.
+   * Space hierarchy level. Drives column-DnD (reorder stays L1/L2-only) and the user-facing
+   * wording (tab vs phase):
+   * - L0: admins may add/delete additional tabs (the four built-in tabs stay protected via each
+   *   column's `isDeletable` flag); column reorder is hidden — the built-in tabs keep their order.
    * - L1/L2: admins can add/remove phases and drag columns to reorder them.
    */
   level: 'L0' | 'L1' | 'L2';
+  /**
+   * Whether the admin may add/delete tabs. When omitted, falls back to the prior `level !== 'L0'`
+   * behaviour so existing subspace callers are unaffected. The L0 settings page passes `true` for
+   * admins to enable additional-tab management; the four built-in L0 tabs remain protected via each
+   * column's `isDeletable` flag, not via this prop.
+   */
+  canManageTabs?: boolean;
+  /**
+   * User-facing noun for a column: 'tab' on L0 Spaces, 'phase' on subspaces. Drives the Add
+   * button label, the Add dialog wording, and the per-column Delete wording. Defaults to 'phase'
+   * so existing subspace callers are unchanged.
+   */
+  entityNoun?: 'tab' | 'phase';
   columns: LayoutPoolColumnData[];
   postDescriptionDisplay: LayoutPostDescriptionDisplay;
   saveBar: LayoutSaveBarState;
@@ -88,6 +103,8 @@ export type SpaceSettingsLayoutViewProps = {
  */
 export function SpaceSettingsLayoutView({
   level,
+  canManageTabs,
+  entityNoun = 'phase',
   columns,
   postDescriptionDisplay,
   saveBar,
@@ -117,7 +134,11 @@ export function SpaceSettingsLayoutView({
   );
   const [activeCallout, setActiveCallout] = useState<LayoutCallout | null>(null);
   const [addPhaseOpen, setAddPhaseOpen] = useState(false);
-  const canManagePhases = level !== 'L0' && !!onCreatePhase;
+  // Capability admits L0 when the consumer passes `canManageTabs`. When omitted, fall back to the
+  // prior `level !== 'L0'` behaviour so existing subspace callers are unchanged. The four built-in
+  // L0 tabs stay protected per-column via `column.isDeletable`, not via this gate.
+  const canManagePhases = (canManageTabs ?? level !== 'L0') && !!onCreatePhase;
+  const addButtonLabel = entityNoun === 'tab' ? t('layout.addTab.button') : t('layout.addPhase.button');
   // `isReplacingFlow` also locks structural actions: starting a create-state
   // mutation while the replace-flow mutation + refetch are in flight would race
   // two structural changes against the same innovation flow, and the reseed
@@ -235,7 +256,7 @@ export function SpaceSettingsLayoutView({
               onClick={() => setAddPhaseOpen(true)}
             >
               <Plus aria-hidden="true" className="size-4" />
-              {t('layout.addPhase.button')}
+              {addButtonLabel}
             </Button>
           )}
         </div>
@@ -274,6 +295,7 @@ export function SpaceSettingsLayoutView({
                     onMoveToColumn={onMoveToColumn}
                     onViewPost={onViewPost}
                     columnMenuActions={columnMenuActions}
+                    entityNoun={entityNoun}
                     draggable={canReorderColumns}
                     onImageUpload={onImageUpload}
                     iframeAllowedUrls={iframeAllowedUrls}
@@ -325,6 +347,7 @@ export function SpaceSettingsLayoutView({
           onOpenChange={setAddPhaseOpen}
           onSubmit={onCreatePhase}
           existingPhaseNames={columns.map(c => c.title)}
+          entityNoun={entityNoun}
         />
       )}
     </div>

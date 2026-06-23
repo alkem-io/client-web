@@ -1,8 +1,8 @@
 # src/crd — Alkemio Design System
 
-This folder is a **client-agnostic, reusable design system** built with **shadcn/ui + Tailwind CSS v4 + Radix UI**. It replaces the MUI-based `src/core/ui/` layer.
+This folder is a **client-agnostic, reusable design system** built with **shadcn/ui + Tailwind CSS v4 + Radix UI**. It is the **sole** design system: MUI was fully removed (story #9885), so `src/crd/` is the only presentational layer.
 
-> **CRD is the default and only layer for new features.** Every new client-facing feature is built here (with integration glue in `src/main/crdPages/`). The MUI layer (`src/core/ui/`) is **frozen** — it is only ever removed as pages migrate, never extended. No new MUI view/presentational components.
+> **CRD is the only layer for client-facing features.** Every client-facing feature is built here (with integration glue in `src/main/crdPages/`). MUI/Emotion were fully removed — `@mui/*` and `@emotion/*` are uninstalled and must never be reintroduced.
 
 > **Planned rename**: `src/crd/` will be renamed to `src/design-system/` in a future phase. The `@/crd/` path alias will change to `@/design-system/`. All internal documentation and imports will be updated at that time. Until then, use `@/crd/` for all references.
 
@@ -21,16 +21,9 @@ This is a **design system, not an app layer**. Every component must be reusable 
 
 ### 1. NO Material UI
 
-**Zero tolerance.** Nothing in `src/crd/` may import from:
-- `@mui/material`
-- `@mui/icons-material`
-- `@mui/system`
-- `@mui/x-data-grid`
-- `@mui/x-date-pickers`
-- `@emotion/react`
-- `@emotion/styled`
+**Zero tolerance.** MUI/Emotion were fully removed (story #9885) and the packages are uninstalled. Nothing anywhere — least of all `src/crd/` — may import from `@mui/*` (`@mui/material`, `@mui/icons-material`, `@mui/system`, `@mui/x-data-grid`, `@mui/x-date-pickers`) or `@emotion/*` (`@emotion/react`, `@emotion/styled`). They must never be reintroduced.
 
-If you need a component that only exists in MUI today, build it with Radix UI + Tailwind or find a shadcn equivalent.
+If you need a component, build it with Radix UI + Tailwind or find a shadcn equivalent.
 
 ### 2. NO Business Logic
 
@@ -322,7 +315,7 @@ Any string that can contain markdown, HTML tags, or `<Trans>`-style placeholders
 - [ ] Are you about to render a block-producing component (`<div>` from `InlineMarkdown`) inside `<p>`? If yes → change the wrapper to `<div>` to avoid invalid HTML.
 - [ ] Provide a plain-text equivalent for `aria-label` and other accessibility attributes when the rendered content is not pure text (see `ActivityItemData.titlePlain`).
 
-**Reference:** the legacy MUI stack uses `<Trans>` + `WrapperMarkdown plain={true}` for exactly these cases (see `src/main/inAppNotifications/views/InAppNotificationBaseView.tsx` and `src/domain/collaboration/activity/ActivityLog/views/ActivitySubjectMarkdown.tsx`). CRD's `InlineMarkdown` is the equivalent of `WrapperMarkdown plain={true}`.
+**Reference:** use `<Trans components={...} />` for tagged translation strings and `InlineMarkdown` (truncated previews) / `MarkdownContent` (full rendering) for backend markdown.
 
 > **Editing markdown (the `MarkdownEditor`) + image upload:** for the editor components, how
 > `onImageUpload` is wired, and the storage / `temporaryLocation` rules that decide whether an upload
@@ -390,7 +383,7 @@ Standard shadcn/ui components. These are the atoms — the smallest UI building 
 - Use `React.forwardRef` or direct prop forwarding
 - Zero application knowledge — these are generic UI atoms
 
-**Source:** Ported from `prototype/src/app/components/ui/`. The prototype has 47 primitives; port them as needed.
+**Source:** Ported from `src/app/components/ui/` in the external prototype repo (https://github.com/alkem-io/client-web-prototype). The prototype has 47 primitives; port them as needed.
 
 **Examples:** `button.tsx`, `card.tsx`, `dialog.tsx`, `tabs.tsx`, `avatar.tsx`, `input.tsx`, `badge.tsx`, `skeleton.tsx`
 
@@ -510,8 +503,8 @@ const languages = supportedLngs
   currentLanguage={i18n.language}
   onLanguageChange={code => i18n.changeLanguage(code)}  // switches BOTH namespaces
   onLogout={handleLogout}
-  onMessagesClick={() => setMessagingOpen(true)}       // opens MUI dialog directly
-  onNotificationsClick={() => setNotificationsOpen(true)} // opens MUI dialog directly
+  onMessagesClick={() => setMessagingOpen(true)}       // opens the messaging dialog
+  onNotificationsClick={() => setNotificationsOpen(true)} // opens the notifications panel
 >
   <Outlet />
 </CrdLayout>
@@ -544,10 +537,10 @@ The mapping from GraphQL types to component props happens in the consumer, never
 
 ## Porting From the Prototype
 
-The prototype at `/prototype/src/` is the design reference. When porting:
+The prototype lives in its own repo — **https://github.com/alkem-io/client-web-prototype** (paths below are relative to that repo's `src/`) — and is the design reference. When porting:
 
-1. **Primitives** — copy from `prototype/src/app/components/ui/` and update imports to use `@/crd/lib/utils`
-2. **Components** — copy from `prototype/src/app/components/space/` etc., remove any mock data, extract props interfaces
+1. **Primitives** — copy from `src/app/components/ui/` and update imports to use `@/crd/lib/utils`
+2. **Components** — copy from `src/app/components/space/` etc., remove any mock data, extract props interfaces
 3. **Styles** — the prototype's `styles/theme.css` is the source of truth for design tokens
 4. **Always check** that the ported component has zero forbidden imports before committing
 5. **Convert inline styles to Tailwind** — the prototype uses inline styles in many places; convert them using the [Tailwind Conversion Reference](#tailwind-conversion-reference)
@@ -562,15 +555,18 @@ CRD uses **per-feature i18next namespaces** with atomic translation files in `sr
 
 | Namespace | File pattern | Contents | Loading |
 |-----------|-------------|----------|---------|
+| `crd-common` (**default**) | `common.<lang>.json` | Shared keys resolved by any `useTranslation()` with no namespace arg | **Eager** (EN), lazy (other langs) |
 | `crd-layout` | `layout.<lang>.json` | `header.*` + `footer.*` keys | **Eager** (EN), lazy (other langs) |
 | `crd-exploreSpaces` | `exploreSpaces.<lang>.json` | `spaces.*` keys | **Lazy** (all langs) |
 | `crd-<feature>` | `<feature>.<lang>.json` | Feature-specific keys | **Lazy** (all langs) |
+
+`crd-common` is the **default namespace** (`defaultNS` in `src/core/i18n/config.ts`); it replaced the legacy `translation` namespace, which was removed in story #9885. A component that calls `useTranslation()` with no argument resolves its keys against `crd-common`.
 
 **Supported languages:** `en`, `nl`, `es`, `bg`, `de`, `fr` — must match `supportedLngs` in `src/core/i18n/config.ts`
 
 ### How it works
 
-- **Main app** (`src/core/i18n/config.ts`): eagerly imports `layout.en.json` as the `'crd-layout'` namespace. Feature namespaces (e.g., `'crd-exploreSpaces'`) are lazy-loaded on demand when a component calls `useTranslation('crd-exploreSpaces')`. Non-English languages are always lazy-loaded via the `crdNamespaceImports` registry.
+- **Main app** (`src/core/i18n/config.ts`): eagerly imports `common.en.json` (the default `crd-common` namespace) and `layout.en.json` (`'crd-layout'`). Feature namespaces (e.g., `'crd-exploreSpaces'`) are lazy-loaded on demand when a component calls `useTranslation('crd-exploreSpaces')`. Non-English languages — including `crd-common` — are always lazy-loaded via the `crdNamespaceImports` registry.
 - **Standalone app** (`src/crd/app/main.tsx`): eagerly imports all namespace files (dev tool, no lazy loading needed)
 - **CRD components**: call `useTranslation('crd-<feature>')` for their specific namespace. Keys are prefixless within the namespace: `t('spaces.filters')`, `t('header.search')`
 - **Language switching**: When the user changes language via `i18n.changeLanguage()`, all loaded namespaces are fetched for the new language. The lazy backend handles this automatically.
@@ -626,7 +622,7 @@ const { t } = useTranslation('crd-exploreSpaces');
 
 CRD translations are managed manually with AI-assisted translations — **not via Crowdin**. Every new user-facing string lives here: all six supported languages (en, nl, es, bg, de, fr) are added or removed in the **same PR**, and **key parity across all languages is required** — a key present in one locale file MUST exist in all of them. This parity is enforced in review (CodeRabbit), not by Crowdin.
 
-The legacy `translation` namespace (`src/core/i18n/`) is **frozen for new keys** — it serves the not-yet-migrated MUI app only. Do not add new strings there. **Crowdin has been retired**, so its non-English locale files (`translation.<lang>.json`) are now edited directly in-repo for legacy upkeep — in the same PR, with key parity preserved — rather than generated.
+The legacy default `translation` namespace (`src/core/i18n/<lang>/translation.<lang>.json`) was **removed** in story #9885: its still-used keys were migrated into the default `crd-common` namespace and the locale files were deleted. **Crowdin has been retired.** All translations now live under `src/crd/i18n/` and are edited directly in-repo across all six languages in the same PR, with key parity preserved.
 
 ### Do-not-translate platform terms (glossary)
 
@@ -649,7 +645,7 @@ Full term list, rationale, per-language localized forms, and the validation appr
 ### Critical rules
 
 - Never access `i18n` directly (e.g. `i18n.language`, `i18n.changeLanguage()`) — these are application-level APIs. Read language state from props, call language-change callbacks via props.
-- Never import from the default `'translation'` namespace inside CRD components.
+- The legacy `'translation'` namespace no longer exists — never reintroduce it or a `src/core/i18n` locale file. Design-system-shared strings go in `crd-common` (the default namespace); feature strings go in `crd-<feature>`.
 - All user-visible strings in JSX must use `t()` — including sr-only text, badge labels, and other seemingly minor text.
 - Page-level text (titles, subtitles) lives in the feature's CRD namespace alongside its design-system labels.
 
@@ -669,7 +665,7 @@ pnpm crd:build  # Production build
 ### Architecture
 
 - `app/main.tsx` — entry point: initializes i18next with CRD translations, renders `CrdApp`
-- `app/CrdApp.tsx` — root: BrowserRouter + CrdLayout with mock user/auth/language props (languages are hardcoded here since the standalone app doesn't have the main translation namespace)
+- `app/CrdApp.tsx` — root: BrowserRouter + CrdLayout with mock user/auth/language props (languages are hardcoded here since the standalone app doesn't wire the main app's i18n config)
 - `app/pages/` — mock pages (e.g., `SpacesPage.tsx` with hardcoded space data)
 - `app/data/` — mock data sets (reused from the prototype)
 - `app/vite.config.ts` — standalone Vite config (port 5200, path alias `@/crd` → `src/crd/`)
@@ -891,7 +887,3 @@ When you add a new `Foo` sub-view to a CRD dialog:
 #### `UserSelector` (form layer)
 
 `src/crd/forms/UserSelector.tsx` — multi-select picker. Inline result list (no popover, no `cmdk`) absolutely positioned over the input wrapper so it overlays content below without resizing the dialog. Plain TS prop type `ShareUser = { id; displayName; avatarUrl?; city?; country? }`. All labels (`placeholder`, `noResultsLabel`, `loadingLabel`, `removeAriaLabel(name)`, `searchAriaLabel`) come from props — the consumer i18n's. Filters already-selected users from results client-side. When you need a user picker for a non-Share context, this is the building block.
-
-#### MUI coexistence
-
-The MUI `ShareDialog` at `src/domain/shared/components/ShareDialog/ShareDialog.tsx` still ships and is used by 7+ MUI-page callsites (memo, calendar, discussion, community updates, etc.). They keep using it. They migrate to the CRD dialog when their host page migrates. Don't pre-migrate ahead of the host.

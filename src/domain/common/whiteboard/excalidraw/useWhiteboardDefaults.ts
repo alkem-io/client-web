@@ -1,25 +1,24 @@
 import type { AppState } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { useTheme } from '@mui/material';
+import { WHITEBOARD_DEFAULTS } from './whiteboardDefaults';
 
 const useWhiteboardDefaults = (): {
   appState: Partial<AppState>;
 } => {
-  const theme = useTheme();
   return {
     appState: {
-      currentItemStrokeColor: theme.whiteboards.defaultStrokeColor,
-      currentItemStrokeStyle: theme.whiteboards.defaultStrokeStyle,
-      currentItemStrokeWidth: theme.whiteboards.defaultStrokeWidth,
-      currentItemBackgroundColor: theme.whiteboards.defaultBackgroundColor,
-      currentItemFillStyle: theme.whiteboards.defaultFillStyle,
-      currentItemFontFamily: theme.whiteboards.defaultFontFamily,
-      currentItemFontSize: theme.whiteboards.defaultFontSize,
-      currentItemTextAlign: theme.whiteboards.defaultTextAlign,
-      currentItemRoughness: theme.whiteboards.defaultRoughness,
-      currentItemRoundness: theme.whiteboards.defaultRoundness,
-      currentItemOpacity: theme.whiteboards.defaultOpacity,
-      currentItemEndArrowhead: theme.whiteboards.defaultEndArrowhead,
-      currentChartType: theme.whiteboards.defaultChartType,
+      currentItemStrokeColor: WHITEBOARD_DEFAULTS.defaultStrokeColor,
+      currentItemStrokeStyle: WHITEBOARD_DEFAULTS.defaultStrokeStyle,
+      currentItemStrokeWidth: WHITEBOARD_DEFAULTS.defaultStrokeWidth,
+      currentItemBackgroundColor: WHITEBOARD_DEFAULTS.defaultBackgroundColor,
+      currentItemFillStyle: WHITEBOARD_DEFAULTS.defaultFillStyle,
+      currentItemFontFamily: WHITEBOARD_DEFAULTS.defaultFontFamily,
+      currentItemFontSize: WHITEBOARD_DEFAULTS.defaultFontSize,
+      currentItemTextAlign: WHITEBOARD_DEFAULTS.defaultTextAlign,
+      currentItemRoughness: WHITEBOARD_DEFAULTS.defaultRoughness,
+      currentItemRoundness: WHITEBOARD_DEFAULTS.defaultRoundness,
+      currentItemOpacity: WHITEBOARD_DEFAULTS.defaultOpacity,
+      currentItemEndArrowhead: WHITEBOARD_DEFAULTS.defaultEndArrowhead,
+      currentChartType: WHITEBOARD_DEFAULTS.defaultChartType,
     },
   };
 };

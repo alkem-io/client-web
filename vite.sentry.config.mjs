@@ -48,9 +48,6 @@ export default defineConfig({
           // DO NOT manually chunk react/react-dom/scheduler — Rollup must
           // place them to avoid circular cross-chunk dependencies.
 
-          if (pkg === '@mui/icons-material') return 'vendor-mui-icons';
-          if (pkg === '@mui/x-data-grid' || pkg === '@mui/x-date-pickers') return 'vendor-mui-extended';
-          if (pkg.startsWith('@mui/') || pkg.startsWith('@emotion/')) return 'vendor-mui-core';
           if (pkg === '@apollo/client' || pkg === 'apollo-upload-client') return 'vendor-apollo';
           if (pkg.startsWith('@tiptap/')) return 'vendor-tiptap';
           if (pkg === 'yjs' || pkg === 'y-prosemirror' || pkg === 'socket.io-client') return 'vendor-realtime';

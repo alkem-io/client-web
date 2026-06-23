@@ -12,7 +12,7 @@ import {
 import { LicensingCredentialBasedPlanType } from '@/core/apollo/generated/graphql-schema';
 import clearCacheForQuery from '@/core/apollo/utils/clearCacheForQuery';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SearchableListTypes';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import type { ContributorLicensePlan } from '../../types/ContributorLicensePlan';
 

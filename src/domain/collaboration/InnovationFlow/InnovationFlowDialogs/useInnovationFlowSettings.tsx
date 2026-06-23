@@ -22,7 +22,7 @@ import {
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { sortBySortOrder } from '@/core/utils/sortBySortOrder';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
-import type { InnovationFlowStateFormValues } from '../InnovationFlowDragNDropEditor/InnovationFlowStateForm';
+import type { InnovationFlowStateFormValues } from '../InnovationFlowDragNDropEditor/InnovationFlowStateForm.model';
 import { sortCallouts } from '../utils/sortCallouts';
 
 export interface ImportFlowOptions {

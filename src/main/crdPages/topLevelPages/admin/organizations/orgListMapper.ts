@@ -1,5 +1,5 @@
 import type { AdminTableRow } from '@/crd/components/admin/AdminSearchableTable';
-import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SearchableListTypes';
 
 export type AdminOrganizationRow = AdminTableRow & {
   verified: boolean;

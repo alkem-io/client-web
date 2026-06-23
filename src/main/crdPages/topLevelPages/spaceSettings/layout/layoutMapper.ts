@@ -28,7 +28,15 @@ function calloutToLayoutCallout(callout: RawCallout): LayoutCallout | null {
   };
 }
 
-export function mapCollaborationToLayoutColumns(collaboration: LayoutCollaboration): LayoutPoolColumn[] {
+export type SpaceLevelTag = 'L0' | 'L1' | 'L2';
+
+/** The number of fixed, built-in tabs on an L0 Space (Dashboard, Community, Subspaces, Knowledge Base). */
+const L0_PROTECTED_TAB_COUNT = 4;
+
+export function mapCollaborationToLayoutColumns(
+  collaboration: LayoutCollaboration,
+  level: SpaceLevelTag
+): LayoutPoolColumn[] {
   const { innovationFlow, calloutsSet } = collaboration;
   const states = [...innovationFlow.states].sort((a, b) => a.sortOrder - b.sortOrder);
   const currentStateId = innovationFlow.currentState?.id ?? null;
@@ -54,16 +62,34 @@ export function mapCollaborationToLayoutColumns(collaboration: LayoutCollaborati
     );
   }
 
-  return states.map(state => mapStateToColumn(state, sortedByState.get(state.displayName) ?? [], currentStateId));
+  return states.map((state, index) =>
+    mapStateToColumn(state, sortedByState.get(state.displayName) ?? [], currentStateId, isDeletableTab(level, index))
+  );
 }
 
-function mapStateToColumn(state: RawState, callouts: LayoutCallout[], currentStateId: string | null): LayoutPoolColumn {
+/**
+ * On an L0 Space the first four tabs (Dashboard, Community, Subspaces, Knowledge Base — indices
+ * 0–3 by sort order) are built-in and protected from deletion; tabs at index ≥ 4 are admin-added
+ * and deletable. On subspaces (L1/L2) every phase is deletable (the flow's min-states limit, not
+ * position, governs removal), so we return `true` for them.
+ */
+function isDeletableTab(level: SpaceLevelTag, index: number): boolean {
+  return level === 'L0' ? index >= L0_PROTECTED_TAB_COUNT : true;
+}
+
+function mapStateToColumn(
+  state: RawState,
+  callouts: LayoutCallout[],
+  currentStateId: string | null,
+  isDeletable: boolean
+): LayoutPoolColumn {
   return {
     id: state.id,
     title: state.displayName,
     description: state.description ?? '',
     isCurrentPhase: state.id === currentStateId,
     isHidden: readIsHidden(state),
+    isDeletable,
     callouts,
   };
 }

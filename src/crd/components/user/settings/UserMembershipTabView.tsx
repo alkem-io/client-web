@@ -79,7 +79,7 @@ export type UserMembershipTabViewProps = {
  * User Membership tab — presentational view. Three stacked sections:
  * 1. **Home Space** — single-select + Auto-redirect checkbox.
  * 2. **My Memberships** — search input + Spaces/Subspaces filter +
- *    responsive card grid (matches `prototype/src/app/pages/UserMembershipPage.tsx`).
+ *    responsive card grid (matches `client-web-prototype/src/app/pages/UserMembershipPage.tsx`).
  *    Per-card kebab: View Details + Leave (parent owns the dialog).
  * 3. **Pending Applications** — read-only compact card list.
  *

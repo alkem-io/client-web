@@ -2,6 +2,9 @@ import i18n from 'i18next';
 import 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
+// CRD common namespace — the default namespace. Eagerly loaded (EN) because it is
+// resolved by every component that calls useTranslation() without a namespace arg.
+import crdCommonEN from '@/crd/i18n/common/common.en.json';
 // CRD error namespace — eagerly loaded so the top-level (above-router) error
 // boundary can render a CRD error page even when a crash happens at boot,
 // before the lazy backend has a chance to fetch it.
@@ -9,10 +12,8 @@ import crdErrorEN from '@/crd/i18n/error/error.en.json';
 // CRD layout namespace — eagerly loaded (renders on every CRD page)
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
 import { env } from '@/main/env';
-// Eagerly import default English translation to bundle it with main chunk
-import translationEN from './en/translation.en.json';
 
-export const defaultNS = 'translation';
+export const defaultNS = 'crd-common';
 
 const defaultLang = 'en';
 type SupportedLang = 'en' | 'nl' | 'es' | 'bg' | 'de' | 'fr';
@@ -21,35 +22,6 @@ export const supportedLngs: (SupportedLang | 'inContextTool')[] = [defaultLang, 
 if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');
 }
-
-// Lazy loading function for translations using dynamic imports
-// English is eagerly loaded above for better initial page performance
-const loadTranslation = async (lng: string) => {
-  try {
-    switch (lng) {
-      case 'es':
-        return (await import('./es/translation.es.json')).default;
-      case 'nl':
-        return (await import('./nl/translation.nl.json')).default;
-      case 'bg':
-        return (await import('./bg/translation.bg.json')).default;
-      case 'de':
-        return (await import('./de/translation.de.json')).default;
-      case 'fr':
-        return (await import('./fr/translation.fr.json')).default;
-      // case 'pt':
-      //    return (await import('./pt/translation.pt.json')).default;
-      case 'inContextTool':
-        return (await import('./ach/translation.ach.json')).default;
-      default:
-        // Return eagerly loaded English translation
-        return translationEN;
-    }
-  } catch (_error) {
-    // Fallback to English
-    return translationEN;
-  }
-};
 
 // Registry of CRD namespace imports for lazy loading
 // Each namespace maps language codes to dynamic import functions.
@@ -252,7 +224,7 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
 // Cache for loaded translations
 const translationCache = new Map<string, Record<string, unknown>>();
 // Pre-populate cache with eagerly loaded English translations
-translationCache.set(`${defaultLang}-${defaultNS}`, translationEN);
+translationCache.set(`${defaultLang}-${defaultNS}`, crdCommonEN);
 translationCache.set(`${defaultLang}-crd-layout`, crdLayoutEN);
 translationCache.set(`${defaultLang}-crd-error`, crdErrorEN);
 
@@ -275,9 +247,7 @@ const lazyBackend = {
     try {
       let translation: Record<string, unknown>;
 
-      if (namespace === 'translation') {
-        translation = await loadTranslation(language);
-      } else if (crdNamespaceImports[namespace]) {
+      if (crdNamespaceImports[namespace]) {
         const langImports = crdNamespaceImports[namespace];
         if (langImports[language]) {
           translation = (await langImports[language]()).default;
@@ -312,7 +282,7 @@ i18n
     // Add English translations as initial resources for instant availability
     resources: {
       en: {
-        translation: translationEN,
+        'crd-common': crdCommonEN,
         'crd-layout': crdLayoutEN,
         'crd-error': crdErrorEN,
       },

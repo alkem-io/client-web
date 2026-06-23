@@ -1,7 +1,7 @@
 import { type PropsWithChildren, useLayoutEffect } from 'react';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import Loading from '@/core/ui/loading/Loading';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { useConfig } from '../config/useConfig';
 import usePlatformOrigin from './usePlatformOrigin';
 
@@ -38,7 +38,7 @@ const NonIdentity = ({ children }: PropsWithChildren) => {
   }
 
   if (isIdentityOrigin) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   return <>{children}</>;

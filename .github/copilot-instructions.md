@@ -66,9 +66,9 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
   - `build-release-docker-hub.yml` publishes images to DockerHub on tagged releases.
 - CI effectively enforces: successful Docker build, passing TypeScript + ESLint, and working Vite build. Matching local steps (lint, vitest, build) before PR keeps pipelines green. Husky pre-commit mirrors lint-staged formatting, so run `pnpm lint` and `pnpm vitest run --reporter=basic` prior to staging changes.
 
-## Excluded Paths
+## Prototype Design Reference
 
-- **`prototype/`** — Read-only design reference (verbatim copy of Jeroen's prototype). Do not modify, review, lint, or flag any file under this directory. It is excluded from CodeRabbit, ESLint, and Biome. See `prototype/CLAUDE.md`.
+- The prototype (Jeroen's design prototype) now lives in its own repository, **https://github.com/alkem-io/client-web-prototype** — it is no longer part of this repo. Consult it there when building `src/crd/` components.
 
 ## Practical Tips & Gotchas
 

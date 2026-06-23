@@ -12,12 +12,12 @@
  * with the viewport — they do not need responsive breakpoint composition.
  *
  * Source of truth: specs/042-crd-space-page/typography/fonts.md
- * Mirrored from: prototype/src/styles/typography.css
+ * Mirrored from: client-web-prototype/src/styles/typography.css
  *
  * IMPORTANT: When adding or updating tokens here, also update:
  *   - src/crd/CLAUDE.md (Golden Rule #8 — token table + migration table)
  *   - docs/crd/migration-guide.md (Typography section — token table + migration table)
- *   - prototype/src/styles/typography.css (keep in lockstep until prototype is retired)
+ *   - client-web-prototype/src/styles/typography.css (keep in lockstep until prototype is retired)
  */
 
 @theme inline {

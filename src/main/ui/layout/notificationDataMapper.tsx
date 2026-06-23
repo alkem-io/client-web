@@ -2,9 +2,8 @@
  * Maps InAppNotificationModel → CrdNotificationItemData for the CRD NotificationsPanel.
  *
  * Translation keys: notification type strings (subject/description templates) live in the
- * main 'translation' namespace at `components.inAppNotifications.type.<TYPE>` in
- * src/core/i18n/en/translation.en.json. They are shared with the MUI InAppNotificationsDialog.
- * TODO: Move to 'crd-notifications' namespace once the MUI dialog is removed.
+ * default 'crd-common' namespace at `components.inAppNotifications.type.<TYPE>` in
+ * src/crd/i18n/common/common.<lang>.json.
  *
  * Rich-text rendering:
  * - subject/description templates contain HTML tags (`<b>`, `<br />`, `<i>`, `<pre>`) that
@@ -34,7 +33,7 @@ const TRANS_COMPONENTS = {
  * Builds the interpolation values for notification i18n keys.
  * Each notification type uses a subset of these values in its translation template.
  *
- * Values must match the placeholders in src/core/i18n/en/translation.en.json
+ * Values must match the placeholders in src/crd/i18n/common/common.<lang>.json
  * under `components.inAppNotifications.type.<TYPE>.{subject,description}`.
  */
 function buildTranslationValues(
@@ -136,7 +135,7 @@ export function mapNotificationToItemData(
       // biome-ignore lint/suspicious/noExplicitAny: i18n key is built dynamically from notification type
       <Trans i18nKey={descriptionKey as any} values={values} components={TRANS_COMPONENTS} />
     ) : undefined,
-    comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} /> : undefined,
+    comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} className="text-body" /> : undefined,
     avatarUrl: notification.triggeredBy.profile.visual?.uri,
     avatarFallback: getInitials(notification.triggeredBy.profile.displayName),
     timestamp: formatTimeElapsed(notification.triggeredAt, t),

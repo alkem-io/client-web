@@ -24,9 +24,11 @@ export type UseColumnMenuOptions = {
    */
   onActivePhaseChanged?: (columnId: LayoutColumnId) => void;
   /**
-   * Phase-delete handler from the layout data hook. Provided only at L1/L2;
-   * passed through to `ColumnMenuActions.onDeletePhase` when defined and the
-   * removal would not violate the flow's min-states limit.
+   * Tab/phase-delete handler from the layout data hook. Provided at every level now, including L0.
+   * Passed through to `ColumnMenuActions.onDeletePhase` when defined and the removal would not
+   * violate the flow's min-states limit. The positional protection of the four built-in L0 tabs is
+   * enforced upstream by each column's `isDeletable` flag (the menu hides Delete for protected
+   * columns), so this hook needs no level/position knowledge.
    */
   onDeleteState?: (stateId: string) => Promise<void>;
   /** Current column count and min-states, used to compute whether delete is allowed. */

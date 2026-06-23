@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import { Route } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
-import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
 
 const LoginCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
   import('@/main/crdPages/auth/LoginCrdRoute').then(m => ({ default: m.LoginCrdRoute }))
@@ -28,7 +27,6 @@ const ErrorCrdRoute = lazyWithGlobalErrorHandler<object>(() =>
 const CrdAuthRequiredRoute = lazyWithGlobalErrorHandler<object>(() =>
   import('@/main/crdPages/error/CrdAuthRequiredRoute').then(m => ({ default: m.CrdAuthRequiredRoute }))
 );
-const AuthRequiredPage = lazyWithGlobalErrorHandler(() => import('../pages/AuthRequiredPage'));
 const LogoutRoute = lazyWithGlobalErrorHandler(() => import('./LogoutRoute'));
 
 export enum IdentityRoutes {
@@ -44,7 +42,6 @@ export enum IdentityRoutes {
 }
 
 export const IdentityRoute = () => {
-  const crdEnabled = useCrdEnabled();
   return (
     <>
       {/* Auth screens are un-gated: the CRD screens render for every visitor (see spec 101). */}
@@ -90,7 +87,11 @@ export const IdentityRoute = () => {
       />
       <Route
         path={`${IdentityRoutes.Required}`}
-        element={<Suspense fallback={null}>{crdEnabled ? <CrdAuthRequiredRoute /> : <AuthRequiredPage />}</Suspense>}
+        element={
+          <Suspense fallback={null}>
+            <CrdAuthRequiredRoute />
+          </Suspense>
+        }
       />
       <Route
         path={`${IdentityRoutes.Error}`}

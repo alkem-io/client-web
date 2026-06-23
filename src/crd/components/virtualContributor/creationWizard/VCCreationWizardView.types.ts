@@ -26,6 +26,9 @@ export type VcWizardPost = {
 };
 
 export type VcWizardDocument = {
+  /** Stable client-side row identity (never persisted) — keeps an async upload's
+   *  write-back targeting the right row if the list changes mid-upload. */
+  id: string;
   name: string;
   url: string;
 };
@@ -83,6 +86,16 @@ export type VCCreationWizardViewProps = {
   onChangePosts: (posts: VcWizardPost[]) => void;
   onChangeDocuments: (documents: VcWizardDocument[]) => void;
   onSubmitKnowledge: () => void;
+  /**
+   * Upload a document file directly from a document row (the paperclip). Resolves
+   * to the uploaded file URL (written into the row), or `null` on failure. Absent
+   * when the viewer lacks upload privilege on the account bucket — the row then
+   * stays link-only. The connector targets the owning account's storage bucket as
+   * a temporary file; the server relocates it to the VC on creation.
+   */
+  onDocumentUpload?: (file: File) => Promise<string | null>;
+  /** `accept` attribute for the document file picker (extension list). */
+  documentUploadAccept?: string;
 
   // ── existing-space step ──
   availableSpaces: VcWizardSelectableSpace[];

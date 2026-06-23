@@ -1,9 +1,9 @@
 import { Bot } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { VCPublicProfileView } from '@/crd/components/virtualContributor/VCPublicProfileView';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useCrdVCProfilePageData } from './useCrdVCProfilePageData';
@@ -43,7 +43,7 @@ export const CrdVCProfilePage = () => {
   useSetBreadcrumbs(breadcrumbItems);
 
   if (isNotFoundError) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   const profile = vc.profile;
