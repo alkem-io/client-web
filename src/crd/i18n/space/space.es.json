@@ -32,7 +32,8 @@
       "errorDescription": "Algo salió mal durante la búsqueda. Inténtalo de nuevo.",
       "retry": "Reintentar",
       "loadingLabel": "Cargando resultados de búsqueda",
-      "appendingLabel": "Cargando más resultados"
+      "appendingLabel": "Cargando más resultados",
+      "removeTerm": "Eliminar término {{term}}"
     },
     "viewGrid": "Vista de tarjetas",
     "viewList": "Vista de lista",

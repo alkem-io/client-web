@@ -32,7 +32,8 @@
       "errorDescription": "Er is iets misgegaan tijdens het zoeken. Probeer het opnieuw.",
       "retry": "Opnieuw proberen",
       "loadingLabel": "Zoekresultaten laden",
-      "appendingLabel": "Meer resultaten laden"
+      "appendingLabel": "Meer resultaten laden",
+      "removeTerm": "Term {{term}} verwijderen"
     },
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",

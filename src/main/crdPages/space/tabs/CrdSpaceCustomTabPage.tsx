@@ -32,8 +32,8 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   const navigate = useNavigate();
   const sidebarLeads = useCrdSpaceLeads(space.id);
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  // The free-text term, submitted on Enter (FR-010) — not live keystrokes.
-  const [submittedTerm, setSubmittedTerm] = useState('');
+  // Free-text terms, each formed into a pill on Enter (FR-010) — not live keystrokes.
+  const [termPills, setTermPills] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
 
   const {
@@ -67,11 +67,12 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
   };
 
-  // Active search = a submitted term or one+ selected tag pills. Selecting a tag
+  // Active search = one+ term pills or one+ selected tag pills. Selecting a tag
   // is an active search, not browse (FR-018). Tag pills ride the `terms` array
   // (FR-004): each selected pill is appended; multi-tag OR comes from term
-  // semantics. The free-text term is split into words and appended too.
-  const termWords = submittedTerm.trim().length > 0 ? submittedTerm.trim().split(/\s+/) : [];
+  // semantics. Each free-text pill is split into words and appended too, so the
+  // server `terms` contract is unchanged by the pill UI.
+  const termWords = termPills.flatMap(pill => pill.trim().split(/\s+/)).filter(Boolean);
   const searchTerms = [...termWords, ...tagsFilter];
   const isSearching = searchTerms.length > 0;
 
@@ -100,8 +101,16 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     }
   };
 
+  const handleTermAdd = (term: string) => {
+    setTermPills(prev => [...prev, term]);
+  };
+
+  const handleTermRemove = (index: number) => {
+    setTermPills(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleClearFilters = () => {
-    setSubmittedTerm('');
+    setTermPills([]);
     setTagsFilter([]);
   };
 
@@ -145,18 +154,22 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
             tag pills ride the terms (FR-004). Replaces the old client-side,
             title-only filter so the tab no longer bulk-downloads post content to
             enable search. */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-start gap-2">
           <FlowStateSearchField
-            defaultValue={submittedTerm}
-            onSubmit={setSubmittedTerm}
+            terms={termPills}
+            onTermAdd={handleTermAdd}
+            onTermRemove={handleTermRemove}
             placeholder={t('knowledge.searchPlaceholder')}
             ariaLabel={t('knowledge.searchLabel')}
+            removeTermAriaLabel={term => t('knowledge.search.removeTerm', { term })}
             className="flex-1"
           />
           <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
         </div>
 
-        <FilterResultsSummary searchTerm={submittedTerm} tags={tagsFilter} onClear={handleClearFilters} />
+        {/* Term pills live in the field itself; the summary only reflects active
+            tag filters and provides the clear-all affordance. */}
+        <FilterResultsSummary tags={tagsFilter} onClear={handleClearFilters} />
 
         {isSearching ? (
           <FlowStateSearchResults

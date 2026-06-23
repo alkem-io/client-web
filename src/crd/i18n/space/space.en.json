@@ -32,7 +32,8 @@
       "errorDescription": "Something went wrong while searching. Please try again.",
       "retry": "Try again",
       "loadingLabel": "Loading search results",
-      "appendingLabel": "Loading more results"
+      "appendingLabel": "Loading more results",
+      "removeTerm": "Remove term {{term}}"
     },
     "viewGrid": "Card view",
     "viewList": "List view",

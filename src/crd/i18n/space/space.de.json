@@ -32,7 +32,8 @@
       "errorDescription": "Bei der Suche ist ein Fehler aufgetreten. Bitte versuche es erneut.",
       "retry": "Erneut versuchen",
       "loadingLabel": "Suchergebnisse werden geladen",
-      "appendingLabel": "Weitere Ergebnisse werden geladen"
+      "appendingLabel": "Weitere Ergebnisse werden geladen",
+      "removeTerm": "Begriff {{term}} entfernen"
     },
     "viewGrid": "Kartenansicht",
     "viewList": "Listenansicht",
