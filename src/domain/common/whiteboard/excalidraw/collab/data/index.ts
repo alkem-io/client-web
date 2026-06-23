@@ -54,6 +54,13 @@ export type SocketUpdateDataSource = {
       files: BinaryFilesWithOptionalUrl;
     };
   };
+  SCENE_RELOAD: {
+    type: WS_SCENE_EVENT_TYPES.SCENE_RELOAD;
+    payload: {
+      elements: readonly ExcalidrawElement[];
+      files: BinaryFilesWithOptionalUrl;
+    };
+  };
   MOUSE_LOCATION: {
     type: WS_SCENE_EVENT_TYPES.MOUSE_LOCATION;
     payload: {

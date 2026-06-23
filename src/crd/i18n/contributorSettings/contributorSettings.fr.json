@@ -86,6 +86,7 @@
         "membership": "Adhésion",
         "organizations": "Organisations",
         "notifications": "Notifications",
+        "assistant": "Assistant",
         "settings": "Paramètres",
         "security": "Sécurité"
       },
@@ -422,6 +423,24 @@
         "description": "Ceci supprimera définitivement « {{name}} ». Cette action est irréversible.",
         "confirm": "Supprimer"
       }
+    },
+    "assistant": {
+      "pageTitle": "Assistant",
+      "helpBanner": "Choisissez ce que l'assistant peut faire en votre nom. Les capacités de lecture sont activées par défaut ; les capacités qui modifient du contenu sont désactivées jusqu'à ce que vous les activiez. L'assistant ne peut jamais faire plus que vous-même.",
+      "empty": "Aucune capacité de l'assistant n'est disponible pour le moment.",
+      "destructiveBadge": "Peut modifier du contenu existant",
+      "toggleAria": "Activer ou désactiver la capacité « {{capability}} »",
+      "toggleError": "Nous n'avons pas pu enregistrer cette modification. Veuillez réessayer.",
+      "groups": {
+        "read": {
+          "title": "Lecture",
+          "description": "Laissez l'assistant trouver et résumer le contenu auquel vous avez déjà accès."
+        },
+        "write": {
+          "title": "Modifier le contenu",
+          "description": "Laissez l'assistant créer ou modifier du contenu pour vous. Vous confirmerez toujours avant qu'un changement ne soit appliqué."
+        }
+      }
     }
   },
   "org": {
@@ -434,12 +453,21 @@
           "hint": "Comment votre organisation apparaît sur Alkemio.",
           "required": "Le nom d'affichage est requis"
         },
-        "nameID": { "label": "Name ID", "caption": "Non modifiable après la création." },
-        "tagline": { "label": "Slogan", "hint": "Une courte phrase à côté du nom de votre organisation." }
+        "nameID": {
+          "label": "Name ID",
+          "caption": "Non modifiable après la création."
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Une courte phrase à côté du nom de votre organisation."
+        }
       },
       "about": {
         "title": "À propos",
-        "description": { "label": "Description", "hint": "Markdown supporté." },
+        "description": {
+          "label": "Description",
+          "hint": "Markdown supporté."
+        },
         "location": {
           "title": "Emplacement",
           "city": "Ville",
@@ -464,8 +492,14 @@
           "hint": "E-mail public de contact pour l'organisation.",
           "invalidFormat": "Entrez une adresse e-mail valide"
         },
-        "domain": { "label": "Domaine", "hint": "Le domaine web de votre organisation (sans protocole)." },
-        "legalEntityName": { "label": "Raison sociale", "hint": "Le nom officiellement enregistré." },
+        "domain": {
+          "label": "Domaine",
+          "hint": "Le domaine web de votre organisation (sans protocole)."
+        },
+        "legalEntityName": {
+          "label": "Raison sociale",
+          "hint": "Le nom officiellement enregistré."
+        },
         "website": {
           "label": "Site web",
           "hint": "URL complète, y compris https://",
@@ -494,16 +528,37 @@
         "helperText": "Recommandé : 400×400 px. JPG, PNG ou GIF.",
         "uploading": "Téléversement…"
       },
-      "verification": { "verified": "Vérifiée", "pending": "Vérification en attente", "notVerified": "Non vérifiée" }
+      "verification": {
+        "verified": "Vérifiée",
+        "pending": "Vérification en attente",
+        "notVerified": "Non vérifiée"
+      }
     },
     "account": {
       "pageTitle": "Compte",
       "helpBanner": "Vous pouvez voir les ressources actives de votre organisation et gérer les limites d'allocation.",
-      "spaces": { "title": "Spaces hébergés", "createButton": "Créer un Space" },
-      "virtualContributors": { "title": "Contributeurs virtuels", "createButton": "Ajouter un contributeur" },
-      "innovationPacks": { "title": "Packs de modèles", "createButton": "Nouveau pack" },
-      "innovationHubs": { "title": "Pages d'accueil personnalisées", "createButton": "Nouvelle page" },
-      "actions": { "view": "Voir", "manage": "Gérer", "transfer": "Transférer", "delete": "Supprimer" },
+      "spaces": {
+        "title": "Spaces hébergés",
+        "createButton": "Créer un Space"
+      },
+      "virtualContributors": {
+        "title": "Contributeurs virtuels",
+        "createButton": "Ajouter un contributeur"
+      },
+      "innovationPacks": {
+        "title": "Packs de modèles",
+        "createButton": "Nouveau pack"
+      },
+      "innovationHubs": {
+        "title": "Pages d'accueil personnalisées",
+        "createButton": "Nouvelle page"
+      },
+      "actions": {
+        "view": "Voir",
+        "manage": "Gérer",
+        "transfer": "Transférer",
+        "delete": "Supprimer"
+      },
       "deleteDialog": {
         "title": "Supprimer cette ressource ?",
         "description": "Ceci supprimera définitivement « {{name}} ». Cette action est irréversible.",

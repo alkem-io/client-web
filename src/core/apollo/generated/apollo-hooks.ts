@@ -3158,6 +3158,14 @@ export const CalendarEventDetailsFragmentDoc = gql`
     ${CalendarEventInfoFragmentDoc}
 ${TagsetDetailsFragmentDoc}
 ${CommentsWithMessagesFragmentDoc}`;
+export const UserSettingsAssistantFragmentDoc = gql`
+    fragment UserSettingsAssistant on UserSettingsAssistant {
+  enabledCapabilities {
+    capability
+    enabled
+  }
+}
+    `;
 export const SpaceExplorerSpaceFragmentDoc = gql`
     fragment SpaceExplorerSpace on Space {
   id
@@ -29272,6 +29280,285 @@ export function refetchAuthorizationPrivilegesForUserQuery(
 ) {
   return { query: AuthorizationPrivilegesForUserDocument, variables: variables };
 }
+export const PlatformAssistantAccessDocument = gql`
+    query PlatformAssistantAccess {
+  platform {
+    id
+    virtualAssistantAccess
+  }
+}
+    `;
+
+/**
+ * __usePlatformAssistantAccessQuery__
+ *
+ * To run a query within a React component, call `usePlatformAssistantAccessQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformAssistantAccessQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformAssistantAccessQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformAssistantAccessQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformAssistantAccessQuery, SchemaTypes.PlatformAssistantAccessQueryVariables>(
+    PlatformAssistantAccessDocument,
+    options
+  );
+}
+export function usePlatformAssistantAccessLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >(PlatformAssistantAccessDocument, options);
+}
+export function usePlatformAssistantAccessSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformAssistantAccessQuery,
+        SchemaTypes.PlatformAssistantAccessQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.PlatformAssistantAccessQuery,
+    SchemaTypes.PlatformAssistantAccessQueryVariables
+  >(PlatformAssistantAccessDocument, options);
+}
+export type PlatformAssistantAccessQueryHookResult = ReturnType<typeof usePlatformAssistantAccessQuery>;
+export type PlatformAssistantAccessLazyQueryHookResult = ReturnType<typeof usePlatformAssistantAccessLazyQuery>;
+export type PlatformAssistantAccessSuspenseQueryHookResult = ReturnType<typeof usePlatformAssistantAccessSuspenseQuery>;
+export type PlatformAssistantAccessQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformAssistantAccessQuery,
+  SchemaTypes.PlatformAssistantAccessQueryVariables
+>;
+export function refetchPlatformAssistantAccessQuery(variables?: SchemaTypes.PlatformAssistantAccessQueryVariables) {
+  return { query: PlatformAssistantAccessDocument, variables: variables };
+}
+export const PlatformCapabilitiesDocument = gql`
+    query PlatformCapabilities {
+  platformCapabilities {
+    name
+    displayName
+    description
+    kind
+  }
+}
+    `;
+
+/**
+ * __usePlatformCapabilitiesQuery__
+ *
+ * To run a query within a React component, call `usePlatformCapabilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlatformCapabilitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlatformCapabilitiesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlatformCapabilitiesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.PlatformCapabilitiesQuery,
+    SchemaTypes.PlatformCapabilitiesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.PlatformCapabilitiesQuery, SchemaTypes.PlatformCapabilitiesQueryVariables>(
+    PlatformCapabilitiesDocument,
+    options
+  );
+}
+export function usePlatformCapabilitiesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.PlatformCapabilitiesQuery,
+    SchemaTypes.PlatformCapabilitiesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.PlatformCapabilitiesQuery, SchemaTypes.PlatformCapabilitiesQueryVariables>(
+    PlatformCapabilitiesDocument,
+    options
+  );
+}
+export function usePlatformCapabilitiesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.PlatformCapabilitiesQuery,
+        SchemaTypes.PlatformCapabilitiesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.PlatformCapabilitiesQuery, SchemaTypes.PlatformCapabilitiesQueryVariables>(
+    PlatformCapabilitiesDocument,
+    options
+  );
+}
+export type PlatformCapabilitiesQueryHookResult = ReturnType<typeof usePlatformCapabilitiesQuery>;
+export type PlatformCapabilitiesLazyQueryHookResult = ReturnType<typeof usePlatformCapabilitiesLazyQuery>;
+export type PlatformCapabilitiesSuspenseQueryHookResult = ReturnType<typeof usePlatformCapabilitiesSuspenseQuery>;
+export type PlatformCapabilitiesQueryResult = Apollo.QueryResult<
+  SchemaTypes.PlatformCapabilitiesQuery,
+  SchemaTypes.PlatformCapabilitiesQueryVariables
+>;
+export function refetchPlatformCapabilitiesQuery(variables?: SchemaTypes.PlatformCapabilitiesQueryVariables) {
+  return { query: PlatformCapabilitiesDocument, variables: variables };
+}
+export const UserAssistantSettingsDocument = gql`
+    query UserAssistantSettings($userId: UUID!) {
+  user(ID: $userId) {
+    id
+    settings {
+      id
+      assistant {
+        ...UserSettingsAssistant
+      }
+    }
+  }
+}
+    ${UserSettingsAssistantFragmentDoc}`;
+
+/**
+ * __useUserAssistantSettingsQuery__
+ *
+ * To run a query within a React component, call `useUserAssistantSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserAssistantSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserAssistantSettingsQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useUserAssistantSettingsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.UserAssistantSettingsQuery,
+    SchemaTypes.UserAssistantSettingsQueryVariables
+  > &
+    ({ variables: SchemaTypes.UserAssistantSettingsQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.UserAssistantSettingsQuery, SchemaTypes.UserAssistantSettingsQueryVariables>(
+    UserAssistantSettingsDocument,
+    options
+  );
+}
+export function useUserAssistantSettingsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.UserAssistantSettingsQuery,
+    SchemaTypes.UserAssistantSettingsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.UserAssistantSettingsQuery, SchemaTypes.UserAssistantSettingsQueryVariables>(
+    UserAssistantSettingsDocument,
+    options
+  );
+}
+export function useUserAssistantSettingsSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.UserAssistantSettingsQuery,
+        SchemaTypes.UserAssistantSettingsQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.UserAssistantSettingsQuery,
+    SchemaTypes.UserAssistantSettingsQueryVariables
+  >(UserAssistantSettingsDocument, options);
+}
+export type UserAssistantSettingsQueryHookResult = ReturnType<typeof useUserAssistantSettingsQuery>;
+export type UserAssistantSettingsLazyQueryHookResult = ReturnType<typeof useUserAssistantSettingsLazyQuery>;
+export type UserAssistantSettingsSuspenseQueryHookResult = ReturnType<typeof useUserAssistantSettingsSuspenseQuery>;
+export type UserAssistantSettingsQueryResult = Apollo.QueryResult<
+  SchemaTypes.UserAssistantSettingsQuery,
+  SchemaTypes.UserAssistantSettingsQueryVariables
+>;
+export function refetchUserAssistantSettingsQuery(variables: SchemaTypes.UserAssistantSettingsQueryVariables) {
+  return { query: UserAssistantSettingsDocument, variables: variables };
+}
+export const UpdateUserAssistantSettingsDocument = gql`
+    mutation UpdateUserAssistantSettings($settingsData: UpdateUserSettingsInput!) {
+  updateUserSettings(settingsData: $settingsData) {
+    id
+    settings {
+      id
+      assistant {
+        ...UserSettingsAssistant
+      }
+    }
+  }
+}
+    ${UserSettingsAssistantFragmentDoc}`;
+export type UpdateUserAssistantSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateUserAssistantSettingsMutation,
+  SchemaTypes.UpdateUserAssistantSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateUserAssistantSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserAssistantSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserAssistantSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserAssistantSettingsMutation, { data, loading, error }] = useUpdateUserAssistantSettingsMutation({
+ *   variables: {
+ *      settingsData: // value for 'settingsData'
+ *   },
+ * });
+ */
+export function useUpdateUserAssistantSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateUserAssistantSettingsMutation,
+    SchemaTypes.UpdateUserAssistantSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateUserAssistantSettingsMutation,
+    SchemaTypes.UpdateUserAssistantSettingsMutationVariables
+  >(UpdateUserAssistantSettingsDocument, options);
+}
+export type UpdateUserAssistantSettingsMutationHookResult = ReturnType<typeof useUpdateUserAssistantSettingsMutation>;
+export type UpdateUserAssistantSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateUserAssistantSettingsMutation>;
+export type UpdateUserAssistantSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateUserAssistantSettingsMutation,
+  SchemaTypes.UpdateUserAssistantSettingsMutationVariables
+>;
 export const InnovationLibraryPacksPaginatedDocument = gql`
     query InnovationLibraryPacksPaginated($first: Int!, $after: UUID, $filter: LibraryInnovationPacksFilterInput) {
   platform {
