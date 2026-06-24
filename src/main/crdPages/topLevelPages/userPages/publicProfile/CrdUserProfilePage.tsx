@@ -13,7 +13,9 @@ import { normaliseReferences } from '@/main/crdPages/topLevelPages/common/profil
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
 import {
   useOpenDirectChatHandler,
-  useSendEmailToUserHandler,
+  // Email-to-user contact route temporarily disabled client-side (chat-only):
+  // handler intentionally not imported. See the deactivation notes below.
+  // useSendEmailToUserHandler,
 } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
@@ -28,7 +30,8 @@ export const CrdUserProfilePage = () => {
     userModel,
     currentUserId,
     isContactable,
-    isContactableViaEmail,
+    // Email-to-user contact route temporarily disabled client-side (chat-only).
+    // isContactableViaEmail,
     accountResources,
     contributions,
     organizationIds,
@@ -39,7 +42,11 @@ export const CrdUserProfilePage = () => {
   const { activeTab, onSelectTab } = useResourceTabs();
 
   const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: userId });
-  const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
+  // Email-to-user contact route temporarily DISABLED client-side — chat only.
+  // To re-enable: restore the `useSendEmailToUserHandler` import, this handler,
+  // the `isContactableViaEmail` destructure, `showEmail`, and the `onSendEmail`
+  // wiring below. The server transport/setting are unchanged.
+  // const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
 
   const tabs = [
     { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
@@ -84,13 +91,15 @@ export const CrdUserProfilePage = () => {
 
   const showSettingsIcon = data.canEditSettings;
 
-  // FR-011: chat and email are independent routes. Offer chat when the recipient
-  // has chat on, and email when they have email contact on — both may show
-  // together. When neither is on, the user cannot be reached and we explain.
+  // FR-011: chat and email are independent routes. The email-to-user route is
+  // temporarily DISABLED client-side, so only the chat route is offered, and a
+  // user with chat disabled is treated as not reachable regardless of their
+  // email preference. To re-enable email, restore `showEmail` and the email
+  // branch of `showCannotBeReached` (`&& !isContactableViaEmail`).
   const viewerCanContact = Boolean(currentUserId) && !isOwnProfile;
   const showChat = viewerCanContact && isContactable;
-  const showEmail = viewerCanContact && isContactableViaEmail;
-  const showCannotBeReached = viewerCanContact && !isContactable && !isContactableViaEmail;
+  // const showEmail = viewerCanContact && isContactableViaEmail;
+  const showCannotBeReached = viewerCanContact && !isContactable;
 
   const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
 
@@ -115,7 +124,9 @@ export const CrdUserProfilePage = () => {
         showSettingsIcon,
         settingsHref,
         onMessageClick: showChat ? onOpenChat : undefined,
-        onSendEmail: showEmail ? onSendEmailMessage : undefined,
+        // Email-to-user contact route temporarily disabled client-side (chat-only).
+        // onSendEmail: showEmail ? onSendEmailMessage : undefined,
+        onSendEmail: undefined,
         cannotBeReachedLabel: showCannotBeReached ? t('common.messagePopover.cannotBeReached') : undefined,
       }}
       sidebar={{

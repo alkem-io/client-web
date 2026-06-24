@@ -36,10 +36,13 @@ const settingsData = (allowMessages: boolean, allowEmail: boolean) => ({
   },
 });
 
+// Email-contact toggle temporarily DISABLED client-side (chat-only): these
+// tests are skipped while the toggle is not rendered. Re-enable them together
+// with the toggle in CrdUserSettingsTab.tsx / UserSettingsTabView.tsx.
 describe('CrdUserSettingsTab (US4 — email-contact toggle)', () => {
   afterEach(() => vi.clearAllMocks());
 
-  test('email-contact toggle defaults to off and persists via updateUserSettings', async () => {
+  test.skip('email-contact toggle defaults to off and persists via updateUserSettings', async () => {
     useUserSettingsQueryMock.mockReturnValue({ data: settingsData(true, false), loading: false });
     updateUserSettingsMock.mockResolvedValue({});
 
@@ -58,7 +61,7 @@ describe('CrdUserSettingsTab (US4 — email-contact toggle)', () => {
     });
   });
 
-  test('reflects an enabled email-contact preference', () => {
+  test.skip('reflects an enabled email-contact preference', () => {
     useUserSettingsQueryMock.mockReturnValue({ data: settingsData(true, true), loading: false });
     render(<CrdUserSettingsTab />);
     const emailSwitch = screen.getByLabelText('user.settings.communication.allowEmailContactLabel');

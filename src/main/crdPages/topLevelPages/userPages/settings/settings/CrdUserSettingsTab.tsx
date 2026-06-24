@@ -24,11 +24,12 @@ const CrdUserSettingsTab = () => {
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
   const [messagesOverride, setMessagesOverride] = useState<boolean | null>(null);
-  const [emailContactOverride, setEmailContactOverride] = useState<boolean | null>(null);
+  // Email-contact toggle temporarily disabled client-side (chat-only).
+  // const [emailContactOverride, setEmailContactOverride] = useState<boolean | null>(null);
   const [communicationSaving, setCommunicationSaving] = useState(false);
 
   const allowMessages = messagesOverride ?? mapped.allowOtherUsersToSendMessages;
-  const allowEmailContact = emailContactOverride ?? mapped.allowOtherUsersToContactViaEmail;
+  // const allowEmailContact = emailContactOverride ?? mapped.allowOtherUsersToContactViaEmail;
 
   const persistCommunication = async (communication: UpdateUserSettingsCommunicationInput, rollback: () => void) => {
     if (!userId) return;
@@ -57,19 +58,22 @@ const CrdUserSettingsTab = () => {
     await persistCommunication({ allowOtherUsersToSendMessages: next }, () => setMessagesOverride(null));
   };
 
-  const onToggleAllowEmailContact = async (next: boolean) => {
-    setEmailContactOverride(next);
-    await persistCommunication({ allowOtherUsersToContactViaEmail: next }, () => setEmailContactOverride(null));
-  };
+  // Email-contact toggle temporarily disabled client-side (chat-only).
+  // const onToggleAllowEmailContact = async (next: boolean) => {
+  //   setEmailContactOverride(next);
+  //   await persistCommunication({ allowOtherUsersToContactViaEmail: next }, () => setEmailContactOverride(null));
+  // };
 
+  // The `allowOtherUsersToContactViaEmail` / `onToggleAllowEmailContact` props
+  // are intentionally not passed while the email-contact route is disabled.
+  // Server settings/storage are unchanged; restore the commented code above to
+  // re-enable.
   return (
     <UserSettingsTabView
       loading={loading && !data}
       allowOtherUsersToSendMessages={allowMessages}
-      allowOtherUsersToContactViaEmail={allowEmailContact}
       communicationSaving={communicationSaving}
       onToggleAllowMessages={onToggleAllowMessages}
-      onToggleAllowEmailContact={onToggleAllowEmailContact}
     />
   );
 };

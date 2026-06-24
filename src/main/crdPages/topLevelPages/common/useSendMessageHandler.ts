@@ -48,6 +48,10 @@ export const useOpenDirectChatHandler = (params: {
  * disabled but has opted in to email contact (`!isContactable &&
  * isContactableViaEmail`). Routes to the retained `sendMessageToUsers` email
  * transport; the sender never sees the recipient's address.
+ *
+ * NOTE: temporarily UNUSED — the user email-contact route is disabled
+ * client-side (see CrdUserProfilePage.tsx and the user settings tab). Kept in
+ * place so the route can be re-enabled without re-implementing it.
  */
 export const useSendEmailToUserHandler = (params: {
   recipientUserId: string | undefined;
