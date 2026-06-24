@@ -6,7 +6,20 @@
     "spacesSection": {
       "title": "{{hubName}} Spaces",
       "empty": "Er zijn nog geen Spaces aan deze hub toegevoegd.",
-      "loading": "Spaces laden…"
+      "loading": "Spaces laden…",
+      "searchPlaceholder": "Spaces zoeken…",
+      "showingCount": "{{visible}} van {{total}} Spaces weergegeven",
+      "spacesLabel": "Spaces",
+      "noResultsTitle": "Geen Spaces gevonden",
+      "noResultsMessage": "Probeer een andere zoekterm.",
+      "clearSearch": "Zoekopdracht wissen",
+      "filters": "Filters",
+      "filterPrivacy": "Privacy",
+      "filterAll": "Alle",
+      "filterPublicOnly": "Alleen openbaar",
+      "filterPrivateOnly": "Alleen privé",
+      "clearFilters": "Alle filters wissen",
+      "removeFilter": "filter verwijderen"
     },
     "allSpacesCta": "Bekijk alle Spaces op Alkemio"
   },
