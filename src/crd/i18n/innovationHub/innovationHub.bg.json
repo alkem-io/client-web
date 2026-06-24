@@ -12,7 +12,14 @@
       "spacesLabel": "пространства",
       "noResultsTitle": "Няма намерени пространства",
       "noResultsMessage": "Опитайте с друг термин за търсене.",
-      "clearSearch": "Изчисти търсенето"
+      "clearSearch": "Изчисти търсенето",
+      "filters": "Филтри",
+      "filterPrivacy": "Поверителност",
+      "filterAll": "Всички",
+      "filterPublicOnly": "Само публични",
+      "filterPrivateOnly": "Само частни",
+      "clearFilters": "Изчисти всички филтри",
+      "removeFilter": "премахни филтър"
     },
     "allSpacesCta": "Разгледайте всички пространства в Alkemio"
   },

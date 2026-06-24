@@ -12,7 +12,14 @@
       "spacesLabel": "espacios",
       "noResultsTitle": "No se encontraron espacios",
       "noResultsMessage": "Prueba con otro término de búsqueda.",
-      "clearSearch": "Borrar búsqueda"
+      "clearSearch": "Borrar búsqueda",
+      "filters": "Filtros",
+      "filterPrivacy": "Privacidad",
+      "filterAll": "Todos",
+      "filterPublicOnly": "Solo públicos",
+      "filterPrivateOnly": "Solo privados",
+      "clearFilters": "Borrar todos los filtros",
+      "removeFilter": "eliminar filtro"
     },
     "allSpacesCta": "Explorar todos los espacios en Alkemio"
   },

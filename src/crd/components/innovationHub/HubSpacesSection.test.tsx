@@ -144,6 +144,105 @@ describe('HubSpacesSection — search (US2)', () => {
   });
 });
 
+describe('HubSpacesSection — privacy filter (Public / Private)', () => {
+  const openFilters = async (user: ReturnType<typeof userEvent.setup>) => {
+    await user.click(screen.getByRole('button', { name: 'home.spacesSection.filters' }));
+  };
+
+  const selectOption = async (user: ReturnType<typeof userEvent.setup>, name: string) => {
+    await user.click(await screen.findByRole('menuitemcheckbox', { name }));
+  };
+
+  test('selecting "Public only" shows only public spaces', async () => {
+    const user = userEvent.setup();
+    const spaces = [
+      makeSpace(1, { isPrivate: false }),
+      makeSpace(2, { isPrivate: true }),
+      makeSpace(3, { isPrivate: false }),
+    ];
+    render(<HubSpacesSection spaces={spaces} hubName="VNG" />);
+    expect(countCards()).toBe(3);
+
+    await openFilters(user);
+    await selectOption(user, 'home.spacesSection.filterPublicOnly');
+    expect(countCards()).toBe(2);
+  });
+
+  test('selecting "Private only" shows only private spaces', async () => {
+    const user = userEvent.setup();
+    const spaces = [
+      makeSpace(1, { isPrivate: false }),
+      makeSpace(2, { isPrivate: true }),
+      makeSpace(3, { isPrivate: false }),
+    ];
+    render(<HubSpacesSection spaces={spaces} hubName="VNG" />);
+
+    await openFilters(user);
+    await selectOption(user, 'home.spacesSection.filterPrivateOnly');
+    expect(countCards()).toBe(1);
+  });
+
+  test('clearing the filter chip restores all spaces', async () => {
+    const user = userEvent.setup();
+    const spaces = [makeSpace(1, { isPrivate: false }), makeSpace(2, { isPrivate: true })];
+    render(<HubSpacesSection spaces={spaces} hubName="VNG" />);
+
+    await openFilters(user);
+    await selectOption(user, 'home.spacesSection.filterPrivateOnly');
+    expect(countCards()).toBe(1);
+
+    // The removable filter chip carries the sr-only "remove filter" text.
+    await user.click(screen.getByRole('button', { name: /removeFilter/i }));
+    expect(countCards()).toBe(2);
+  });
+
+  test('privacy filter and search combine', async () => {
+    const user = userEvent.setup();
+    const spaces = [
+      makeSpace(1, { name: 'Climate Action', isPrivate: false }),
+      makeSpace(2, { name: 'Climate Finance', isPrivate: true }),
+      makeSpace(3, { name: 'Health Equity', isPrivate: false }),
+    ];
+    render(<HubSpacesSection spaces={spaces} hubName="VNG" />);
+
+    await user.type(screen.getByRole('searchbox'), 'climate');
+    expect(countCards()).toBe(2);
+
+    await openFilters(user);
+    await selectOption(user, 'home.spacesSection.filterPublicOnly');
+    // Only "Climate Action" is both public AND matches "climate".
+    expect(countCards()).toBe(1);
+    expect(screen.getByText('Climate Action')).toBeInTheDocument();
+  });
+
+  test('changing the filter resets the visible batch to the first batch', async () => {
+    const user = userEvent.setup();
+    // 20 public spaces; load more then apply a (matching) public filter → resets to 12.
+    render(<HubSpacesSection spaces={makeSpaces(20)} hubName="VNG" />);
+    await user.click(screen.getByRole('button', { name: /loadMore/i }));
+    expect(countCards()).toBe(20);
+
+    await openFilters(user);
+    await selectOption(user, 'home.spacesSection.filterPublicOnly');
+    expect(countCards()).toBe(12);
+    expect(screen.getByRole('button', { name: /loadMore/i })).toBeInTheDocument();
+  });
+
+  test('no-match privacy filter shows the no-results state, and Clear resets it', async () => {
+    const user = userEvent.setup();
+    // All public; filtering to Private yields nothing.
+    render(<HubSpacesSection spaces={makeSpaces(5)} hubName="VNG" />);
+
+    await openFilters(user);
+    await selectOption(user, 'home.spacesSection.filterPrivateOnly');
+    expect(countCards()).toBe(0);
+    expect(screen.getByText('home.spacesSection.noResultsTitle')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /clearSearch/i }));
+    expect(countCards()).toBe(5);
+  });
+});
+
 describe('snapToFullRows — largest multiple ≤ visibleCount', () => {
   test('snaps to whole rows while more cards remain to load', () => {
     // 5 columns, want 12 visible, 25 total → largest multiple of 5 ≤ 12 = 10.

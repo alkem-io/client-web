@@ -12,7 +12,14 @@
       "spacesLabel": "Spaces",
       "noResultsTitle": "Keine Spaces gefunden",
       "noResultsMessage": "Versuche einen anderen Suchbegriff.",
-      "clearSearch": "Suche zurücksetzen"
+      "clearSearch": "Suche zurücksetzen",
+      "filters": "Filter",
+      "filterPrivacy": "Datenschutz",
+      "filterAll": "Alle",
+      "filterPublicOnly": "Nur öffentliche",
+      "filterPrivateOnly": "Nur private",
+      "clearFilters": "Alle Filter zurücksetzen",
+      "removeFilter": "Filter entfernen"
     },
     "allSpacesCta": "Alle Spaces auf Alkemio durchsuchen"
   },
