@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import type { ReferenceLink, TagsetGroup } from '@/crd/components/common/profileTypes';
-import { excludeSocialReferences, hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
+import { ReferencesList } from '@/crd/components/common/ReferencesList';
+import { hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -35,7 +36,6 @@ export type OrganizationProfileSidebarProps = {
     bioTitle: string;
     bioEmpty: string;
     referencesTitle: string;
-    referencesEmpty: string;
     associatesTitle: (count: number) => string;
     associatesSignInCta: string;
     associatesShowMore: (count: number) => string;
@@ -53,7 +53,6 @@ export function OrganizationProfileSidebar({
   associates,
   labels,
 }: OrganizationProfileSidebarProps) {
-  const nonSocialReferences = excludeSocialReferences(references);
   return (
     <div className="space-y-8">
       <section>
@@ -76,30 +75,7 @@ export function OrganizationProfileSidebar({
         </section>
       ) : null}
 
-      <section>
-        <h2 className="text-section-title mb-4">{labels.referencesTitle}</h2>
-        {nonSocialReferences.length === 0 ? (
-          <p className="text-body text-muted-foreground">{labels.referencesEmpty}</p>
-        ) : (
-          /* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */
-          /* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */
-          <ul role="list" className="space-y-2">
-            {nonSocialReferences.map(ref => (
-              <li key={ref.id}>
-                <a
-                  href={ref.uri}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-body-emphasis text-primary hover:underline rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                >
-                  {ref.name}
-                </a>
-                {ref.description ? <p className="text-caption text-muted-foreground">{ref.description}</p> : null}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <ReferencesList title={labels.referencesTitle} references={references} />
 
       {hasSocialReferences(references) ? (
         <section>

@@ -8,7 +8,6 @@ const SIDEBAR_LABELS = {
   bioTitle: 'Bio',
   bioEmpty: 'No bio yet.',
   referencesTitle: 'Links',
-  referencesEmpty: 'No links yet.',
   associatesTitle: (count: number) => `${count} associates`,
   associatesSignInCta: 'Sign in to view associates.',
   associatesShowMore: (count: number) => `Show more (${count})`,

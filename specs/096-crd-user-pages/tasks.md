@@ -432,6 +432,33 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 ---
 
+## Phase 12: User + Organization profile — tagline & references (FR-010 / FR-010b / FR-023 / FR-046 — Session 2026-06-24)
+
+> Post-implementation correction. The User hero was missing the tagline and the User sidebar was missing the non-social references; the inline references markup on the User and Org sidebars was duplicated and rendered an empty-state caption. MUI and the `useCrdEnabled` toggle have since been removed (story #9885) — there is no longer a "toggle off" path to verify.
+
+### User hero — tagline (FR-010)
+
+- [X] T098 [US1] Add a `tagline: string | null` prop to `UserPageHero` (`src/crd/components/user/UserPageHero.tsx`) and render it as a muted `text-body-emphasis text-muted-foreground` line directly under the display name `<h1>` and above the location line; render nothing when `null`. Update `UserPageHero.test.tsx` base props with `tagline: null`.
+- [X] T099 [US1] In `CrdUserProfilePage.tsx`, pass `tagline: profile?.tagline?.trim() || null` into the hero props. (`profile.tagline` is already selected by `useUserProvider` → `UserDetails` fragment / `UserModel`; no GraphQL change.)
+
+### Shared ReferencesList + User "Links" section (FR-010b / FR-046)
+
+- [X] T100 [P] Implement the shared `ReferencesList` component at `src/crd/components/common/ReferencesList.tsx`: owns the `<section>` + `text-section-title` heading + `role="list"` URL-chip list (each chip an `<a target="_blank" rel="noreferrer">` with the optional `description` as a `text-caption` line). Returns `null` when there are no items. Accepts `title`, `references: ReferenceLink[]`, and `excludeSocial?: boolean` (default `true`, filters via `excludeSocialReferences` from `SocialLinks.tsx`).
+- [X] T101 [US1] Refactor `UserProfileSidebar` to render `<ReferencesList title={labels.referencesTitle} references={refs} />` between the Tagsets block and the Social block. Add `referencesTitle` to the sidebar `labels` type; remove the now-dead inline references markup. Wire `referencesTitle: t('userProfile.sidebar.referencesTitle')` in `CrdUserProfilePage.tsx`.
+- [X] T102 Add `userProfile.sidebar.referencesTitle` ("Links") to all six `profilePages.<lang>.json` files (en/nl/es/bg/de/fr). No `referencesEmpty` key (omit-when-empty).
+
+### Organization sidebar — omit-when-empty + shared component (FR-023)
+
+- [X] T103 [US2] Refactor `OrganizationProfileSidebar` to render `<ReferencesList title={labels.referencesTitle} references={references} />` in place of its inline References section. Remove `referencesEmpty` from the sidebar `labels` type, the page wiring in `CrdOrganizationProfilePage.tsx`, and the `orgProfile.sidebar.referencesEmpty` key in all six `profilePages.<lang>.json` files.
+
+### Standalone preview demos
+
+- [X] T104 [P] Update `src/crd/app/data/profiles.ts` (add `tagline` to the Alex + Sam hero mocks) and the demo pages (`UserProfileSelfDemoPage.tsx`, `UserProfileOtherDemoPage.tsx`, `OrganizationProfileDemoPage.tsx`) — add `referencesTitle` to their `SIDEBAR_LABELS` and drop `referencesEmpty`.
+
+**Verification:** `npx tsc --noEmit` clean; `pnpm vitest run` green (User + Org profile suites pass); `keyParity.test.ts` (T005) confirms six-language parity after the key add/remove. `pnpm crd:dev` shows the User demo hero with a tagline under the name and a "Links" section in the sidebar (between Tagsets and Social) that disappears entirely when the profile has no non-social references — same on the Org demo. The VC sidebar is intentionally unchanged (still inline, still shows its "No references" empty-state; migrating it to `ReferencesList` with `excludeSocial={false}` is a deferred follow-up).
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

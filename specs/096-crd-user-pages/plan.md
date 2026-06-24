@@ -13,7 +13,7 @@ Migrate the three public profile pages — **User** (`/user/:userSlug`), **Organ
 - **Organization profile** — parity restyle of current MUI `OrganizationPageView` + `AssociatesView`. No prototype exists. Sidebar gets a Social sub-block (post-implementation correction F2). Right column adopts the User profile's 3-tab layout (revised vs. earlier stacked-blocks draft).
 - **VC profile** — redesign per the **updated** `prototype/src/app/pages/VCProfilePage.tsx` (2026-05-06; research §15). Hero gains a "Virtual Contributor" type badge + Keywords skill-tag chip row. Right column rebuilt into three card-grid sections: **Functionality** (3 cards — Capabilities / Data Access / Role Requirements driven by `modelCard.spaceUsage[]`), **AI Engine: <name>** (6 transparency cards driven by `modelCard.aiEngine.*`), **Monitoring by Alkemio** (separator + paragraph). Sidebar largely parity-restyle with two narrow tweaks (sticky on `lg+`; flat References list of all entries instead of MUI's silent split-and-discard of social refs). The data-extraction logic of the existing MUI hook `useTemporaryHardCodedVCProfilePageData(modelCard)` is reused (re-implemented in plain TypeScript inside the CRD data mapper); all hard-coded English copy moves to `crd-profilePages` i18n keys; the MUI `dangerouslySetInnerHTML` calls are replaced by `<Trans>`. The MUI source files are NOT modified.
 
-**Technical approach**: One CRD page integration per actor under `src/main/crdPages/topLevelPages/<vertical>/publicProfile/`, three new presentational sub-components for the VC right column under `src/crd/components/virtualContributor/`, two shared CRD primitives (`CompactContributorCard`, `MessagePopover`, `SocialLinks`) under `src/crd/components/common/`, one new i18n namespace `crd-profilePages`, three new lazy-loaded chunks (one per actor's `Crd<Actor>Routes`). Total bundle delta budget: ≤ +35 KB gzipped (SC-005).
+**Technical approach**: One CRD page integration per actor under `src/main/crdPages/topLevelPages/<vertical>/publicProfile/`, three new presentational sub-components for the VC right column under `src/crd/components/virtualContributor/`, four shared CRD components (`CompactContributorCard`, `MessagePopover`, `SocialLinks`, and `ReferencesList` — the last added 2026-06-24 to share the non-social "Links" list across the User and Org sidebars) under `src/crd/components/common/`, one new i18n namespace `crd-profilePages`, three new lazy-loaded chunks (one per actor's `Crd<Actor>Routes`). Total bundle delta budget: ≤ +35 KB gzipped (SC-005).
 
 ## Technical Context
 
@@ -81,12 +81,13 @@ src/crd/
 │   ├── common/
 │   │   ├── CompactContributorCard.tsx       # NEW (shared: User Orgs sidebar + VC Host)
 │   │   ├── MessagePopover.tsx               # NEW (shared: User + Org heroes)
-│   │   └── SocialLinks.tsx                  # NEW (shared: User + Org sidebars only — VC dropped per 2026-05-06)
+│   │   ├── SocialLinks.tsx                  # NEW (shared: User + Org sidebars only — VC dropped per 2026-05-06)
+│   │   └── ReferencesList.tsx               # NEW 2026-06-24 (shared non-social "Links" list: User + Org sidebars; omit-when-empty)
 │   ├── user/
-│   │   ├── UserPageHero.tsx                 # NEW
+│   │   ├── UserPageHero.tsx                 # NEW (renders avatar + name + tagline + location — tagline added 2026-06-24)
 │   │   ├── UserResourceTabStrip.tsx         # NEW
 │   │   ├── UserResourceSections.tsx         # NEW
-│   │   ├── UserProfileSidebar.tsx           # NEW
+│   │   ├── UserProfileSidebar.tsx           # NEW (About + Tagsets + Links + Social + Organizations — Links via ReferencesList, added 2026-06-24)
 │   │   └── UserPublicProfileView.tsx        # NEW
 │   ├── organization/
 │   │   ├── OrganizationPageHero.tsx         # NEW

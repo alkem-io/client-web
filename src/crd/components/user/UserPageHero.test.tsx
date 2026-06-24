@@ -11,6 +11,7 @@ const baseProps = {
   avatarImageUrl: null,
   color: '#42a5f5',
   displayName: 'Jane Doe',
+  tagline: null,
   location: null,
   showSettingsIcon: false,
 };
