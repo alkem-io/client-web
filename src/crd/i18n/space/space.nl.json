@@ -50,6 +50,11 @@
       "document_other": "{{count}} documenten"
     }
   },
+  "postIndexDialog": {
+    "close": "Sluiten",
+    "loadingLabel": "Post-index laden",
+    "empty": "Nog geen posts"
+  },
   "sidebar": {
     "aboutSpace": "Over deze Space",
     "subspaces": "Subspaces",

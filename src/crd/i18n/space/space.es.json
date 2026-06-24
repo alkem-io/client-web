@@ -50,6 +50,11 @@
       "document_other": "{{count}} documentos"
     }
   },
+  "postIndexDialog": {
+    "close": "Cerrar",
+    "loadingLabel": "Cargando índice de publicaciones",
+    "empty": "Aún no hay publicaciones"
+  },
   "sidebar": {
     "aboutSpace": "Acerca de este Espacio",
     "subspaces": "Subespacios",

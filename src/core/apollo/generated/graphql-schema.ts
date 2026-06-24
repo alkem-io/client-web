@@ -16294,6 +16294,62 @@ export type CalloutsSetTagsQuery = {
   };
 };
 
+export type CalloutsListForFeedQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsListForFeedQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutsIndexListQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsIndexListQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            sortOrder: number;
+            activity: number;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              type: CalloutFramingType;
+              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+            };
+            settings: {
+              __typename?: 'CalloutSettings';
+              contribution: {
+                __typename?: 'CalloutSettingsContribution';
+                allowedTypes: Array<CalloutContributionType>;
+              };
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type CreateCalloutMutationVariables = Exact<{
   calloutData: CreateCalloutOnCalloutsSetInput;
   file?: InputMaybe<Scalars['Upload']['input']>;

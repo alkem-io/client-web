@@ -50,6 +50,11 @@
       "document_other": "{{count}} Dokumente"
     }
   },
+  "postIndexDialog": {
+    "close": "Schließen",
+    "loadingLabel": "Beitragsverzeichnis wird geladen",
+    "empty": "Noch keine Beiträge"
+  },
   "sidebar": {
     "aboutSpace": "Über diesen Bereich",
     "subspaces": "Unterbereiche",

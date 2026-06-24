@@ -50,6 +50,11 @@
       "document_other": "{{count}} документа"
     }
   },
+  "postIndexDialog": {
+    "close": "Затвори",
+    "loadingLabel": "Зареждане на индекса на публикациите",
+    "empty": "Все още няма публикации"
+  },
   "sidebar": {
     "aboutSpace": "За това пространство",
     "subspaces": "Подпространства",

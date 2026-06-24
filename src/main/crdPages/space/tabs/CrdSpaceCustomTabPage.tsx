@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react';
+import { List, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -11,10 +11,10 @@ import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { mapCalloutsToListItems } from '@/main/crdPages/space/dataMappers/calloutDataMapper';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { LazyCalloutItem } from '../callout/LazyCalloutItem';
+import { PostIndexDialogConnector } from '../callout/PostIndexDialogConnector';
 import { mapFlowStateSearchCalloutIds } from '../dataMappers/flowStateSearchDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
@@ -35,6 +35,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   // Free-text terms, each formed into a pill on Enter (FR-010) — not live keystrokes.
   const [termPills, setTermPills] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
+  const [indexOpen, setIndexOpen] = useState(false);
 
   const {
     callouts,
@@ -89,18 +90,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
   // through the default callout feed below (FR-016) — not a bespoke search card.
   const searchCalloutIds = mapFlowStateSearchCalloutIds(search.results);
 
-  // The sidebar knowledge index reflects the browse list (unchanged); during an
-  // active search the feed is replaced by the scoped results below.
-  const indexEntries = mapCalloutsToListItems(callouts, sectionIndex + 1, t);
-
-  // SPA-navigate to the callout (opens the detail dialog over this tab).
-  const handleEntryClick = (id: string) => {
-    const href = indexEntries.find(entry => entry.id === id)?.href;
-    if (href) {
-      navigate(href);
-    }
-  };
-
   const handleTermAdd = (term: string) => {
     setTermPills(prev => [...prev, term]);
   };
@@ -132,9 +121,18 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
           onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
-          knowledgeEntries={indexEntries}
-          onKnowledgeEntryClick={handleEntryClick}
-        />
+        >
+          {/* The full post index is now behind this button — the heavy list query
+              fires only when the dialog opens (feature 007). */}
+          <Button
+            variant="outline"
+            className="w-full uppercase gap-2 font-medium px-2"
+            onClick={() => setIndexOpen(true)}
+          >
+            <List className="w-4 h-4 shrink-0" aria-hidden="true" />
+            <span className="truncate text-body-emphasis">{t('sidebar.postIndex')}</span>
+          </Button>
+        </SpaceSidebar>
       </SpaceSidebarPortal>
 
       <div className="space-y-6">
@@ -214,6 +212,14 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
+
+      <PostIndexDialogConnector
+        open={indexOpen}
+        onOpenChange={setIndexOpen}
+        calloutsSetId={calloutsSetId}
+        classificationTagsets={classificationTagsets}
+        tabSectionNumber={sectionIndex + 1}
+      />
     </>
   );
 }

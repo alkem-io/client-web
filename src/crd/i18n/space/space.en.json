@@ -50,6 +50,11 @@
       "document_other": "{{count}} documents"
     }
   },
+  "postIndexDialog": {
+    "close": "Close",
+    "loadingLabel": "Loading Post Index",
+    "empty": "No posts yet"
+  },
   "sidebar": {
     "aboutSpace": "About this Space",
     "subspaces": "Subspaces",
