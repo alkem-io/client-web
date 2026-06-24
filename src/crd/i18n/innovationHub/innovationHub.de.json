@@ -8,7 +8,7 @@
       "empty": "Diesem Hub wurden noch keine Spaces hinzugefügt.",
       "loading": "Spaces werden geladen…",
       "searchPlaceholder": "Spaces suchen…",
-      "showing": "Zeige",
+      "showingCount": "{{visible}} von {{total}} Spaces werden angezeigt",
       "spacesLabel": "Spaces",
       "noResultsTitle": "Keine Spaces gefunden",
       "noResultsMessage": "Versuche einen anderen Suchbegriff.",

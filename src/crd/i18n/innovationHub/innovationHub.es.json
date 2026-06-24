@@ -8,7 +8,7 @@
       "empty": "Aún no se han añadido espacios a este hub.",
       "loading": "Cargando espacios…",
       "searchPlaceholder": "Buscar espacios…",
-      "showing": "Mostrando",
+      "showingCount": "Mostrando {{visible}} de {{total}} espacios",
       "spacesLabel": "espacios",
       "noResultsTitle": "No se encontraron espacios",
       "noResultsMessage": "Prueba con otro término de búsqueda.",

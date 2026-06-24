@@ -227,9 +227,7 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
           {displayed.length > 0 && (
             <div className="mb-4">
               <p className="text-body text-muted-foreground">
-                {t('home.spacesSection.showing')}{' '}
-                <span className="text-body-emphasis text-foreground">{filtered.length}</span>{' '}
-                {t('home.spacesSection.spacesLabel')}
+                {t('home.spacesSection.showingCount', { visible: displayed.length, total: filtered.length })}
               </p>
             </div>
           )}

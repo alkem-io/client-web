@@ -5,11 +5,30 @@ import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { snapToFullRows } from '@/crd/hooks/useGridColumnCount';
 import { HubSpacesSection } from './HubSpacesSection';
 
+// The real `t` interpolates {{visible}}/{{total}} into the showingCount string.
+// We can't see the translated copy here, so the mock appends the interpolation
+// values to the key, letting tests assert on the actual numbers the component
+// passed (e.g. "home.spacesSection.showingCount visible=12 total=25").
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
+    t: (key: string, options?: Record<string, unknown>) => {
+      if (!options) return key;
+      const params = Object.entries(options)
+        .map(([name, value]) => `${name}=${String(value)}`)
+        .join(' ');
+      return params ? `${key} ${params}` : key;
+    },
   }),
 }));
+
+// Reads the "Showing X of Y" results counter and returns [visible, total].
+const showingCount = (): [number, number] => {
+  const node = screen.getByText(/home\.spacesSection\.showingCount/);
+  const text = node.textContent ?? '';
+  const visible = Number(/visible=(\d+)/.exec(text)?.[1]);
+  const total = Number(/total=(\d+)/.exec(text)?.[1]);
+  return [visible, total];
+};
 
 const makeSpace = (n: number, overrides: Partial<SpaceCardData> = {}): SpaceCardData => ({
   id: `space-${n}`,
@@ -51,6 +70,25 @@ describe('HubSpacesSection — smaller cards + lazy load (US1)', () => {
     await user.click(screen.getByRole('button', { name: /loadMore/i }));
     expect(countCards()).toBe(25);
     expect(screen.queryByRole('button', { name: /loadMore/i })).not.toBeInTheDocument();
+  });
+
+  test('the results counter shows the visible batch out of the filtered total', () => {
+    render(<HubSpacesSection spaces={makeSpaces(25)} hubName="VNG" />);
+    // 12 rendered out of 25 filtered → "Showing 12 of 25".
+    expect(countCards()).toBe(12);
+    expect(showingCount()).toEqual([12, 25]);
+  });
+
+  test('after loading everything the counter shows total of total', async () => {
+    const user = userEvent.setup();
+    render(<HubSpacesSection spaces={makeSpaces(25)} hubName="VNG" />);
+    expect(showingCount()).toEqual([12, 25]);
+
+    await user.click(screen.getByRole('button', { name: /loadMore/i }));
+    await user.click(screen.getByRole('button', { name: /loadMore/i }));
+
+    expect(countCards()).toBe(25);
+    expect(showingCount()).toEqual([25, 25]);
   });
 
   test('a hub with exactly the batch size shows all cards and no Load more', () => {
@@ -129,6 +167,18 @@ describe('HubSpacesSection — search (US2)', () => {
 
     await user.click(clearButtons[clearButtons.length - 1]);
     expect(countCards()).toBe(5);
+  });
+
+  test('the results counter total reflects the filtered set, not the hub total', async () => {
+    const user = userEvent.setup();
+    // 25 spaces; "Space 1" matches Space 1 plus Space 10-19 → 11 of 11 filtered.
+    render(<HubSpacesSection spaces={makeSpaces(25)} hubName="VNG" />);
+    expect(showingCount()).toEqual([12, 25]);
+
+    await user.type(screen.getByRole('searchbox'), 'Space 1');
+    expect(countCards()).toBe(11);
+    // Total is the filtered count (11), not the hub total (25).
+    expect(showingCount()).toEqual([11, 11]);
   });
 
   test('the inline clear button empties the query and restores all Spaces', async () => {

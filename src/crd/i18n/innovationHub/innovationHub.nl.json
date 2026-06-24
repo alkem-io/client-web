@@ -8,7 +8,7 @@
       "empty": "Er zijn nog geen Spaces aan deze hub toegevoegd.",
       "loading": "Spaces laden…",
       "searchPlaceholder": "Spaces zoeken…",
-      "showing": "Toont",
+      "showingCount": "{{visible}} van {{total}} Spaces weergegeven",
       "spacesLabel": "Spaces",
       "noResultsTitle": "Geen Spaces gevonden",
       "noResultsMessage": "Probeer een andere zoekterm.",
