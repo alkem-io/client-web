@@ -122,7 +122,6 @@ mutation UpdateTemplate(
     }
     whiteboard {
       id
-      content
     }
   }
 }
@@ -149,7 +148,6 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
       type
       whiteboard {
         id
-        content
         nameID # Used to set an altImage to the visual
         profile {
           id

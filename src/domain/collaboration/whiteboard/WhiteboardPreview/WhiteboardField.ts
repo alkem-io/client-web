@@ -4,6 +4,14 @@ import type { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPrev
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;
+  /**
+   * #29 — seed the new whiteboard from an existing whiteboard's stored content on the SERVER
+   * (`CreateWhiteboardInput.sourceWhiteboardID`). A live whiteboard's content is WS-only since
+   * 006-collab-content-unification, so the "Save as Template" / Duplicate flows can no longer read
+   * the source scene on the client and copy it into `content`; instead they pass the source
+   * whiteboard's id and the server copies its snapshot. Takes precedence over `content` server-side.
+   */
+  sourceWhiteboardID?: string;
   profile: {
     displayName: string;
     visuals?: {

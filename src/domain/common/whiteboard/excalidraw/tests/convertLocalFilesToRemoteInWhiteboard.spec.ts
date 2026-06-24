@@ -1,4 +1,4 @@
-import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { DataURL } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   type ConversionLogger,

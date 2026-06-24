@@ -1,5 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { WhiteboardBinding } from '@alkemio/excalidraw-yjs-binding';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { useRef, useState } from 'react';
 import {
   type ControlMessage,
@@ -8,6 +7,7 @@ import {
 import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
 import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { AwarenessRouter } from './awarenessRouter';
 import { type CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
 /** Payload Excalidraw hands to `onPointerUpdate`; routed to awareness by the binding. */
@@ -21,8 +21,8 @@ export interface CollabAPI {
   /** Local pointer move → awareness (the binding owns cursor presence). */
   onPointerUpdate: (payload: PointerUpdatePayload) => void;
   /**
-   * No-op: the `WhiteboardBinding` owns the scene→Y.Doc write path (per-property
-   * CRDT). Retained so the wrapper's call site stays stable. Kept synchronous.
+   * No-op: the native editor writes straight to `Scene.doc` (the editor's element
+   * store IS the Y.Doc). Retained so the wrapper's call site stays stable.
    */
   syncScene: () => void;
   isCollaborating: () => boolean;
@@ -131,21 +131,29 @@ const useCollab = ({
   const [collaboratorModeReason, setCollaboratorModeReason] = useState<CollaboratorModeReasons | null>(null);
 
   const initialize = ({ excalidrawApi, roomId }: InitProps): (() => void) => {
+    // Native-Yjs core: the editor's `Scene` IS the `Y.Doc`. Reuse it as the
+    // provider's doc (the provider no longer mints its own, and there is no
+    // binding to bridge a scene into it) — the editor syncs straight off this doc.
+    const doc = excalidrawApi.getSceneDoc();
     const provider = new UnifiedCollabProvider({
       documentId: roomId,
       type: 'whiteboard',
+      doc,
       guestName: resolveGuestName(),
       connect: false,
     });
     providerRef.current = provider;
 
-    // Announce identity so peers render this collaborator's cursor. The binding's
+    // Announce identity so peers render this collaborator's cursor. The
     // AwarenessRouter reads `user.username` / `user.color` (NOT `user.name`) to
     // build the Excalidraw collaborator, so the field shape must match.
     provider.awareness.setLocalStateField('user', { username, color: cursorColorFor(username) });
 
-    const binding = new WhiteboardBinding(provider.doc, excalidrawApi, {
+    // Presence (cursors/selection/emoji/countdown) is off-doc on awareness + the
+    // ephemeral channel — the editor-agnostic router ported from the deleted binding.
+    const awarenessRouter = new AwarenessRouter({
       awareness: provider.awareness,
+      api: excalidrawApi,
       ephemeral: provider.ephemeralChannel,
     });
 
@@ -194,15 +202,15 @@ const useCollab = ({
     setIsConnecting(true);
 
     const collabApi: CollabAPI = {
-      onPointerUpdate: payload => binding.awarenessRouter?.onPointerUpdate(payload),
+      onPointerUpdate: payload => awarenessRouter.onPointerUpdate(payload),
       syncScene: () => {},
       isCollaborating: () => providerRef.current?.status === 'connected',
       broadcastEmojiReaction: (emoji, x, y) => {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-        binding.awarenessRouter?.broadcastEmojiReaction({ id, emoji, x, y });
+        awarenessRouter.broadcastEmojiReaction({ id, emoji, x, y });
       },
       broadcastCountdownTimer: (remainingSeconds, startedBy, active) => {
-        binding.awarenessRouter?.broadcastCountdownTimer({ remainingSeconds, startedBy, active });
+        awarenessRouter.broadcastCountdownTimer({ remainingSeconds, startedBy, active });
       },
     };
     collabApiRef.current = collabApi;
@@ -211,7 +219,7 @@ const useCollab = ({
       provider.off('status', handleStatus);
       provider.off('synced', handleSynced);
       provider.off('control', handleControl);
-      binding.destroy();
+      awarenessRouter.destroy();
       provider.destroy();
       providerRef.current = null;
       collabApiRef.current = null;

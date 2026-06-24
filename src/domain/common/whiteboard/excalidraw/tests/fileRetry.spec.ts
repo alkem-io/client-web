@@ -1,5 +1,5 @@
-import type { FileId } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { FileId } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
+import type { DataURL } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { type DownloadFailure, FileDownloader } from '../fileStore/FileDownloader';
 import { FileUploader, type UploadFailure } from '../fileStore/FileUploader';

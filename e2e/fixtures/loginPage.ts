@@ -20,7 +20,7 @@ export class LoginPage {
 
   async acceptCookies(): Promise<void> {
     const cookieButton = this.page.getByRole('button', { name: /Accept (all|All) Cookies/i });
-    if (await cookieButton.isVisible({ timeout: 2_000 }).catch(() => false)) {
+    if (await cookieButton.isVisible({ timeout: 8_000 }).catch(() => false)) {
       await cookieButton.click();
     }
   }
@@ -30,9 +30,19 @@ export class LoginPage {
     password: string = DEFAULT_PASSWORD
   ): Promise<void> {
     await this.goto();
+    // The CRD SPA renders its header (with the Log in link) after initial load; give it
+    // a beat, dismiss cookies (a modal that otherwise keeps the header out of the a11y
+    // tree), then settle before locating the link. Mirrors the working smoke sequence.
+    await this.page.waitForTimeout(2500);
     await this.acceptCookies();
-    await this.page.getByTestId('PersonIcon').click();
-    await this.page.getByRole('menuitem', { name: /Log In \| Sign Up/i }).click();
+    await this.page.waitForTimeout(1000);
+    const loginLink = this.page.getByRole('link', { name: /log ?in|sign ?in/i }).first();
+    if (await loginLink.isVisible({ timeout: 20_000 }).catch(() => false)) {
+      await loginLink.click();
+    } else {
+      await this.page.getByTestId('PersonIcon').click();
+      await this.page.getByRole('menuitem', { name: /Log In \| Sign Up/i }).click();
+    }
     await this.page.waitForURL(/.*login.*/);
     await this.page.getByRole('textbox', { name: /E-Mail/i }).fill(email);
     await this.page.getByRole('textbox', { name: /Password/i }).fill(password);

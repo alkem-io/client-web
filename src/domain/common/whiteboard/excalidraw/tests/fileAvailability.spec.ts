@@ -1,4 +1,4 @@
-import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { DataURL } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { describe, expect, test } from 'vitest';
 import {
   isFileRenderable,

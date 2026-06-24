@@ -1,4 +1,4 @@
-import type { AppState } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { AppState } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { WHITEBOARD_DEFAULTS } from './whiteboardDefaults';
 
 const useWhiteboardDefaults = (): {
@@ -18,7 +18,6 @@ const useWhiteboardDefaults = (): {
       currentItemRoundness: WHITEBOARD_DEFAULTS.defaultRoundness,
       currentItemOpacity: WHITEBOARD_DEFAULTS.defaultOpacity,
       currentItemEndArrowhead: WHITEBOARD_DEFAULTS.defaultEndArrowhead,
-      currentChartType: WHITEBOARD_DEFAULTS.defaultChartType,
     },
   };
 };

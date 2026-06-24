@@ -1,16 +1,16 @@
-import type { ImportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
+import type { WhiteboardSnapshot } from '@excalidraw-yjs/element';
+import { serializeWhiteboardContent } from './excalidraw/whiteboardContent';
 
-const EmptyWhiteboard: ImportedDataState = {
-  type: 'excalidraw',
-  version: 2,
-  source: 'https://excalidraw.com',
+/** An empty whiteboard snapshot (`{ elements, files, appState }`). */
+export const EmptyWhiteboardSnapshot: WhiteboardSnapshot = {
   elements: [],
-  appState: {
-    gridSize: 0,
-    viewBackgroundColor: '#ffffff',
-  },
   files: {},
+  appState: { viewBackgroundColor: '#ffffff' },
 };
-export const EmptyWhiteboardString = JSON.stringify(EmptyWhiteboard);
 
-export default EmptyWhiteboard;
+/**
+ * The default whiteboard `content` for a new callout / template / response default:
+ * a base64-encoded Yjs-V2 snapshot of an empty scene (006 boundary — content is a
+ * Yjs-V2 snapshot, NOT Excalidraw JSON; the server rejects JSON with error 12101).
+ */
+export const EmptyWhiteboardString: string = serializeWhiteboardContent(EmptyWhiteboardSnapshot);

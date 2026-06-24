@@ -164,8 +164,8 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     const { data } = await fetchCalloutContent({ variables: { calloutId: callout.id } });
     const loaded = data?.lookup.callout;
     const body: Partial<CalloutFormValues> = mapCalloutDetailsToFormValues(data);
-    if (loaded?.framing.whiteboard?.content) body.whiteboardContent = loaded.framing.whiteboard.content;
-    else if (body.whiteboardConfigured) body.whiteboardContent = EmptyWhiteboardString;
+    // #29: live whiteboard content is WS-only; the server copies it into the template on create.
+    if (body.whiteboardConfigured) body.whiteboardContent = EmptyWhiteboardString;
     body.memoMarkdown = loaded?.framing.memo?.markdown ?? '';
     // Seed the source whiteboard's server-rendered preview as a blob so the post-create upload step
     // (uploadCalloutWhiteboardPreview) persists it onto the new template whiteboard's WHITEBOARD_PREVIEW

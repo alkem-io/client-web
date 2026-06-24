@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { useUpdateWhiteboardPreviewSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { WhiteboardPreviewMode, type WhiteboardPreviewSettings } from '@/core/apollo/generated/graphql-schema';
 import useEnsurePresence from '@/core/utils/ensurePresence';

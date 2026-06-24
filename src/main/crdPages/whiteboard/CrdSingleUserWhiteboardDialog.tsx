@@ -1,10 +1,10 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { exportSceneJSON, hashDocState } from '@alkemio/excalidraw-yjs-binding';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
+import { toBase64 } from 'lib0/buffer';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type * as Y from 'yjs';
+import * as Y from 'yjs';
 import type { AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -32,9 +32,10 @@ import type {
   WhiteboardPreviewImage,
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
+import { SEED_ORIGIN } from '@/domain/common/whiteboard/excalidraw/collab/seedOrigin';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
+import type { BinaryFileDataWithOptionalUrl } from '@/domain/common/whiteboard/excalidraw/types';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
-import { hashWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 
 export interface WhiteboardWithContent {
@@ -100,9 +101,23 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const { whiteboard } = entities;
   useRegisterFullscreenEditor(options.show);
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
-  // The local Y.Doc backing the editor (handed up by ExcalidrawWrapper); the single
-  // in-memory representation read on save via exportSceneJSON + dirty-checked via hashDocState.
+  // The editor's live `Scene.doc` (handed up by ExcalidrawWrapper via getSceneDoc) is
+  // the single in-memory representation; on save it is encoded straight to a Yjs-V2
+  // update (no snapshot/object materialization).
   const localDocRef = useRef<Y.Doc | null>(null);
+  // Native-Yjs dirty flag: flipped by any doc `update` whose origin is NOT the load
+  // seed (`SEED_ORIGIN`) — i.e. a genuine user edit. Replaces the snapshot-hash compare;
+  // the doc never has to be materialized to decide dirtiness.
+  const dirtyRef = useRef(false);
+  // Detacher for the doc `update` listener attached in `onInitDoc`, run on unmount.
+  const detachDirtyListenerRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      detachDirtyListenerRef.current?.();
+      detachDirtyListenerRef.current = null;
+    };
+  }, []);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
   const [pendingClose, setPendingClose] = useState<{ resolve: (discard: boolean) => void } | null>(null);
   const [selectedPreviewMode, setSelectedPreviewMode] = useState<WhiteboardPreviewMode>(
@@ -157,13 +172,24 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
 
   const handleUpdate = async (wb: WhiteboardWithContent) => {
     const doc = localDocRef.current;
-    if (!doc) return;
-    // The local Y.Doc is the single in-memory representation; read it back to a
-    // scene at the storage boundary (no serializeAsJSON), then re-home embedded
-    // local file blobs into the document's bucket before persisting.
-    const scene = exportSceneJSON(doc);
-    const { whiteboard: convertedScene, unrecoverableFiles } =
-      await filesManager.convertLocalFilesToRemoteInWhiteboard(scene);
+    if (!doc || !excalidrawAPI) return;
+    // Native-Yjs save: the editor's live `Scene.doc` IS the content — the element
+    // model is NEVER materialized into a scene object. Before encoding, re-home only
+    // the embedded local file BLOBS: read the editor's files (`getFiles()`), run the
+    // files-only local→remote conversion (which UPLOADS each local blob to the
+    // document's storage bucket and returns the records, consuming ONLY `.files`,
+    // never elements), and push the re-homed records back via `addFiles`. The files
+    // map is full `BinaryFileData` at runtime; the element package types it loosely,
+    // so coerce at the boundary.
+    const files = excalidrawAPI.getFiles() as unknown as Record<string, BinaryFileDataWithOptionalUrl>;
+    const {
+      whiteboard: { files: rehomedFiles },
+      unrecoverableFiles,
+    } = await filesManager.convertLocalFilesToRemoteInWhiteboard({ files });
+
+    if (rehomedFiles && Object.keys(rehomedFiles).length > 0) {
+      excalidrawAPI.addFiles(Object.values(rehomedFiles));
+    }
 
     if (unrecoverableFiles.length > 0) {
       logWarn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved`, {
@@ -172,7 +198,10 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     }
 
     const previewImages = await generateWhiteboardVisuals(wb, true, options.previewImagesSettings);
-    const content = JSON.stringify(convertedScene);
+    // 006 boundary: store the content as a base64-encoded Yjs-V2 update of the live
+    // doc (NOT Excalidraw JSON — the server rejects JSON with error 12101). The element
+    // model never materializes into an object on the way out.
+    const content = toBase64(Y.encodeStateAsUpdateV2(doc));
 
     return actions.onUpdate({ ...wb, content }, previewImages);
   };
@@ -183,12 +212,10 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   };
 
   const onClose = async () => {
-    const doc = localDocRef.current;
-    if (doc && options.canEdit) {
-      // Yjs-native dirty-check: compare the live doc's content hash to the stored
-      // content's hash (replaces the legacy JSON deep-compare).
-      const dirty = hashDocState(doc) !== hashWhiteboardContent(whiteboard.content);
-      if (dirty || formikRef.current?.dirty) {
+    if (options.canEdit) {
+      // Native-Yjs dirty-check: `dirtyRef` was flipped by any doc `update` not carrying
+      // the load `SEED_ORIGIN` (a genuine edit) — no doc materialization, no hashing.
+      if (dirtyRef.current || formikRef.current?.dirty) {
         const discard = await new Promise<boolean>(resolve => {
           setPendingClose({ resolve });
         });
@@ -267,6 +294,18 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
                   onInitApi: setExcalidrawAPI,
                   onInitDoc: doc => {
                     localDocRef.current = doc;
+                    // Detach any prior listener (e.g. a remount), reset, then track edits.
+                    // The load seed applies with `SEED_ORIGIN`, so it does NOT mark dirty;
+                    // only user-originated updates do.
+                    detachDirtyListenerRef.current?.();
+                    dirtyRef.current = false;
+                    const onDocUpdate = (_update: Uint8Array, origin: unknown) => {
+                      if (origin !== SEED_ORIGIN) {
+                        dirtyRef.current = true;
+                      }
+                    };
+                    doc.on('update', onDocUpdate);
+                    detachDirtyListenerRef.current = () => doc.off('update', onDocUpdate);
                   },
                 }}
               />

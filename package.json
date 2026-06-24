@@ -63,12 +63,12 @@
     }
   },
   "dependencies": {
-    "@alkemio/excalidraw": "0.18.0-864353b-alkemio-16",
-    "@alkemio/excalidraw-yjs-binding": "https://pkg.pr.new/@alkemio/excalidraw-yjs-binding@33",
     "@apollo/client": "^3.10.8",
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@elastic/apm-rum": "^5.12.0",
+    "@excalidraw-yjs/element": "https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@34c34210f3267b80cbadb4d83169157721603c7d",
+    "@excalidraw-yjs/excalidraw": "https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@34c34210f3267b80cbadb4d83169157721603c7d",
     "@ory/kratos-client": "26.2.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

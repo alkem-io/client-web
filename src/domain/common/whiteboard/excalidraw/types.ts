@@ -1,4 +1,4 @@
-import type { BinaryFileData } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { BinaryFileData } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 
 export type BinaryFileDataWithOptionalUrl = BinaryFileData & { url?: string };
 export type BinaryFileDataWithUrl = BinaryFileData & { url: string };

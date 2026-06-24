@@ -2563,6 +2563,8 @@ export type CreateWhiteboardData = {
   /** The preview settings for the whiteboard. */
   previewSettings?: Maybe<CreateWhiteboardPreviewSettingsData>;
   profile?: Maybe<CreateProfileData>;
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Takes precedence over `content` when set and resolvable. */
+  sourceWhiteboardID?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -2572,6 +2574,8 @@ export type CreateWhiteboardInput = {
   /** The preview settings for the whiteboard. */
   previewSettings?: InputMaybe<CreateWhiteboardPreviewSettingsInput>;
   profile?: InputMaybe<CreateProfileInput>;
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Takes precedence over `content` when set and resolvable. */
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateWhiteboardPreviewSettingsData = {
@@ -8860,8 +8864,8 @@ export type UpdateInnovationFlowStateInput = {
 };
 
 export type UpdateInnovationFlowStateSettingsInput = {
-  /** The flag to set. */
-  allowNewCallouts: Scalars['Boolean']['input'];
+  /** Optional. Sets whether new callouts can be added to this State; omission leaves the stored value unchanged. */
+  allowNewCallouts?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional. Sets whether the phase is shown in member-facing navigation; omission leaves the stored value unchanged. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -9238,7 +9242,7 @@ export type UpdateUserSettingsCommunicationInput = {
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
-  /** Update the user's design version. Any integer accepted (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
+  /** Update the user's design version. Any integer accepted (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
@@ -9743,7 +9747,7 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The design version this User has selected (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
+  /** The design version this User has selected (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion: Scalars['Int']['output'];
   /** The home space settings for this User. */
   homeSpace: UserSettingsHomeSpace;
@@ -10138,8 +10142,6 @@ export type Whiteboard = {
   __typename?: 'Whiteboard';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The visual content of the Whiteboard. */
-  content: Scalars['WhiteboardContent']['output'];
   /** The policy governing who can update the Whiteboard content. */
   contentUpdatePolicy: ContentUpdatePolicy;
   /** The user that created this Whiteboard */
@@ -13844,7 +13846,6 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'Whiteboard';
                   id: string;
-                  content: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -18961,8 +18962,6 @@ export type WhiteboardDetailsFragment = {
   };
 };
 
-export type WhiteboardContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
-
 export type CollaborationWithWhiteboardDetailsFragment = {
   __typename?: 'Collaboration';
   id: string;
@@ -19387,7 +19386,6 @@ export type GetPublicWhiteboardQuery = {
       | {
           __typename?: 'Whiteboard';
           id: string;
-          content: string;
           guestContributionsAllowed: boolean;
           createdDate: Date;
           updatedDate: Date;
@@ -19412,7 +19410,6 @@ export type GetPublicWhiteboardQuery = {
 export type PublicWhiteboardFragmentFragment = {
   __typename?: 'Whiteboard';
   id: string;
-  content: string;
   guestContributionsAllowed: boolean;
   createdDate: Date;
   updatedDate: Date;
@@ -32316,7 +32313,6 @@ export type TemplateContentQuery = {
                   whiteboard?:
                     | {
                         __typename?: 'Whiteboard';
-                        content: string;
                         id: string;
                         nameID: string;
                         createdDate: Date;
@@ -32579,7 +32575,6 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Whiteboard';
                 id: string;
-                content: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -33060,7 +33055,6 @@ export type CalloutTemplateContentFragment = {
     whiteboard?:
       | {
           __typename?: 'Whiteboard';
-          content: string;
           id: string;
           nameID: string;
           createdDate: Date;
@@ -33614,7 +33608,6 @@ export type SpaceTemplateContent_SubspacesFragment = {
 export type WhiteboardTemplateContentFragment = {
   __typename?: 'Whiteboard';
   id: string;
-  content: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -33952,7 +33945,7 @@ export type UpdateTemplateMutation = {
       cardVisual?: { __typename?: 'Visual'; id: string } | undefined;
       previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
     };
-    whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
+    whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
   };
 };
 
@@ -33990,7 +33983,6 @@ export type UpdateCalloutTemplateMutation = {
         | {
             __typename?: 'Whiteboard';
             id: string;
-            content: string;
             nameID: string;
             profile: {
               __typename?: 'Profile';

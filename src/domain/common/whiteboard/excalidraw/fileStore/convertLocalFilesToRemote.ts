@@ -1,4 +1,4 @@
-import type { BinaryFileData } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { BinaryFileData } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import type { BinaryFileDataWithUrl, WhiteboardWithFiles } from '../types';
 
 export interface ConversionResult<W> {

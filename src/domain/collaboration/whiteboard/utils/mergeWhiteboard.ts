@@ -1,12 +1,11 @@
+import { decodeSnapshot, encodeSnapshot } from '@excalidraw-yjs/element';
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   hashElementsVersion as ExcalidrawHashElementsVersion,
-} from '@alkemio/excalidraw/dist/types/element/src';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { exportSceneJSON, populateYDoc } from '@alkemio/excalidraw-yjs-binding';
+} from '@excalidraw-yjs/excalidraw/dist/types/element/src';
+import type { ExcalidrawElement } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
-import * as Y from 'yjs';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { parseWhiteboardContentToScene } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 
@@ -135,18 +134,17 @@ const displaceElements = (displacement: { x: number; y: number }) => (element: E
 
 const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
   const { hashElementsVersion, CaptureUpdateAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
-    () => import('@alkemio/excalidraw')
+    () => import('@excalidraw-yjs/excalidraw')
   );
 
-  // Parse the template through the Yjs boundary: seed a throwaway local Y.Doc from
-  // the template scene JSON, then read it back. This routes the template through
-  // the single content representation (populateYDoc repairs indices / normalizes)
+  // Normalize the template through the native snapshot round-trip: encode the
+  // parsed template scene into a throwaway Yjs doc and decode it straight back.
+  // This routes the template through the single content representation (the doc
+  // re-orders by fractional index and strips per-peer reconciliation metadata)
   // and keeps no raw JSON scene as state — only the materialized elements are
-  // merged into the live scene below (the live binding then captures the merge).
-  const tempDoc = new Y.Doc();
-  populateYDoc(parseWhiteboardContentToScene(whiteboardContent), tempDoc);
-  const templateScene = exportSceneJSON(tempDoc);
-  tempDoc.destroy();
+  // merged into the live scene below (the editor's own Scene.doc captures the
+  // merge via updateScene).
+  const templateScene = decodeSnapshot(encodeSnapshot(parseWhiteboardContentToScene(whiteboardContent)));
 
   if (!isWhiteboardLike({ type: 'excalidraw', version: 2, ...templateScene })) {
     throw new WhiteboardMergeError('Whiteboard verification failed');

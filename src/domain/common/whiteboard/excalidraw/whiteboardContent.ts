@@ -1,54 +1,37 @@
-import { hashDocState, populateYDoc, type SceneJSON } from '@alkemio/excalidraw-yjs-binding';
-import * as Y from 'yjs';
+import { decodeSnapshot, encodeSnapshot, type WhiteboardSnapshot } from '@excalidraw-yjs/element';
+import { fromBase64, toBase64 } from 'lib0/buffer';
 
 /** An empty scene — the editor seed for a brand-new / empty / unreadable whiteboard. */
-const EMPTY_SCENE: SceneJSON = { elements: [], files: {}, appState: {} };
+const EMPTY_SCENE: WhiteboardSnapshot = { elements: [], files: {}, appState: {} };
 
 /**
- * Parse the stored whiteboard `content` (an Excalidraw scene JSON string — the
- * boundary representation, R1) into the binding's `SceneJSON` shape so it can seed
- * a local `Y.Doc` via `populateYDoc`. Empty / non-JSON / structurally-absent
- * content (`elements` missing) yields an empty scene rather than throwing, so an
- * empty-on-create whiteboard opens empty and editable (FR-010). Mirrors the
- * server's `parseScene` (whiteboard.scene.to.yjs.v2.state.ts) so client + server
- * seed identical docs from the same content.
+ * Parse the stored whiteboard `content` (the 006 boundary: a base64-encoded Yjs-V2
+ * snapshot) into the native core's `WhiteboardSnapshot` ({@link WhiteboardSnapshot} =
+ * `{ elements, files, appState }`) — the seed the editor adopts as its `Scene.doc`.
+ * Native Yjs ONLY — there is no legacy/JSON conversion here: dev-host legacy
+ * whiteboards are throwaway, and production legacy→Yjs migration is a separate
+ * server-side job. Empty or non-Yjs content yields an empty scene (FR-010). The
+ * server decodes the identical format (`Buffer.from(content, 'base64')` →
+ * `Y.applyUpdateV2`) so client + server seed identical docs.
  */
-export function parseWhiteboardContentToScene(content: string | undefined): SceneJSON {
+export function parseWhiteboardContentToScene(content: string | undefined): WhiteboardSnapshot {
   if (!content || content.trim() === '') {
     return EMPTY_SCENE;
   }
-  let parsed: unknown;
   try {
-    parsed = JSON.parse(content);
+    return decodeSnapshot(fromBase64(content));
   } catch {
     return EMPTY_SCENE;
   }
-  if (!parsed || typeof parsed !== 'object' || !Array.isArray((parsed as { elements?: unknown }).elements)) {
-    return EMPTY_SCENE;
-  }
-  const scene = parsed as {
-    elements: SceneJSON['elements'];
-    files?: SceneJSON['files'];
-    appState?: SceneJSON['appState'];
-  };
-  return {
-    elements: scene.elements,
-    files: scene.files ?? {},
-    appState: scene.appState ?? {},
-  };
 }
 
 /**
- * Content-addressed hash of a stored whiteboard `content` string, computed by
- * seeding a throwaway local `Y.Doc` from the scene and hashing its state — the
- * Yjs-native dirty-check (replacing the legacy JSON deep-compare). Two contents
- * that converge to the same scene hash identically; insertion order / per-peer
- * reconciliation metadata are invariant (binding `hashDocState`).
+ * Serialize a snapshot to the stored whiteboard `content` (the 006 boundary): a
+ * base64-encoded Yjs-V2 update over the native element schema — the format the
+ * server stores and the collaboration-service seeds a room from (NOT Excalidraw
+ * JSON; the server rejects JSON with error 12101). Inverse of
+ * {@link parseWhiteboardContentToScene}.
  */
-export function hashWhiteboardContent(content: string | undefined): string {
-  const doc = new Y.Doc();
-  populateYDoc(parseWhiteboardContentToScene(content), doc);
-  const hash = hashDocState(doc);
-  doc.destroy();
-  return hash;
+export function serializeWhiteboardContent(snapshot: WhiteboardSnapshot): string {
+  return toBase64(encodeSnapshot(snapshot));
 }

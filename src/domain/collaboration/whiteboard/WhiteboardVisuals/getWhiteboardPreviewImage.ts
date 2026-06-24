@@ -1,5 +1,5 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type { exportToCanvas as ExcalidrawExportToCanvas } from '@alkemio/excalidraw/dist/types/utils/src/export';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { exportToCanvas as ExcalidrawExportToCanvas } from '@excalidraw-yjs/excalidraw/dist/types/utils/src/export';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
 import { padImage } from '@/core/utils/images/padImage';
@@ -106,7 +106,9 @@ const getWhiteboardPreviewImage = async (
     };
   };
 
-  const { exportToCanvas } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
+  const { exportToCanvas } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
+    () => import('@excalidraw-yjs/excalidraw')
+  );
   let errorGenerating = false;
 
   const canvas = await exportToCanvas({

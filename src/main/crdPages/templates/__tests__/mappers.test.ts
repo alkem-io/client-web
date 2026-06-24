@@ -199,7 +199,6 @@ describe('templateContentMapper', () => {
           type: CalloutFramingType.Whiteboard,
           profile: { displayName: 'Roadmap WB', description: 'workshop' },
           whiteboard: {
-            content: '{"elements":[]}',
             profile: { preview: { uri: 'https://cdn.alkem.io/wb/preview.png' } },
           },
         },
@@ -214,7 +213,10 @@ describe('templateContentMapper', () => {
     expect(content).toMatchObject({
       type: 'callout',
       framingKind: 'whiteboard',
-      framingWhiteboardContent: '{"elements":[]}',
+      // #29: a live whiteboard's content is WS-only and no longer carried on the client — the server
+      // copies it from the source whiteboard's blob into the template on create. Only the
+      // server-rendered preview image is surfaced here (for read-only preview surfaces).
+      framingWhiteboardContent: undefined,
       framingWhiteboardPreviewImageUrl: 'https://cdn.alkem.io/wb/preview.png',
     });
   });

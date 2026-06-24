@@ -67,12 +67,50 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
     );
   });
 
-  it('carries the whiteboard drawing for whiteboard framing', () => {
+  it('carries the drawn whiteboard content (opaque base64 Yjs-V2, never JSON) for whiteboard framing', () => {
+    // Content is a base64 Yjs-V2 snapshot the mapper passes through verbatim — not Excalidraw JSON.
+    const drawnContent = 'AQEBAGRyYXdu'; // opaque base64-shaped placeholder, distinct from the empty one
     const input = calloutFormValuesToCreateCalloutInput(
-      values({ framingChip: 'whiteboard', whiteboardContent: '{"elements":[]}' }),
+      values({ framingChip: 'whiteboard', whiteboardContent: drawnContent }),
       fallbacks
     );
-    expect(input.framing.whiteboard?.content).toBe('{"elements":[]}');
+    expect(input.framing.whiteboard?.content).toBe(drawnContent);
+  });
+
+  // #29 — a whiteboard-framed source's live content is WS-only and unreadable on the client, so the
+  // Save-as-Template / Duplicate flows pass the source whiteboard's id and the server copies its stored
+  // snapshot into the new template whiteboard.
+  it('sends sourceWhiteboardID for whiteboard framing when the source has a whiteboard and content is the empty placeholder (#29)', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({
+        framingChip: 'whiteboard',
+        whiteboardContent: EmptyWhiteboardString,
+        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
+      }),
+      fallbacks
+    );
+    expect(input.framing.whiteboard?.sourceWhiteboardID).toBe('source-wb-1');
+  });
+
+  it('does NOT send sourceWhiteboardID when the user drew fresh content (the real drawing is sent instead)', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({
+        framingChip: 'whiteboard',
+        whiteboardContent: 'cmVhbC1mcmVzaC1jb250ZW50', // base64-ish, not the empty placeholder
+        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
+      }),
+      fallbacks
+    );
+    expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
+    expect(input.framing.whiteboard?.content).toBe('cmVhbC1mcmVzaC1jb250ZW50');
+  });
+
+  it('does NOT send sourceWhiteboardID for a from-scratch whiteboard template (no source whiteboard id)', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({ framingChip: 'whiteboard', whiteboardContent: EmptyWhiteboardString }),
+      fallbacks
+    );
+    expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
   });
 
   it('carries the poll definition for poll framing', () => {
@@ -105,11 +143,12 @@ describe('calloutFormValuesToUpdateCalloutEntityInput', () => {
   });
 
   it('adds the whiteboard body + preview settings for whiteboard framing (unlike the live-callout mapper)', () => {
+    const wbContent = 'AQEBAGVkaXQ='; // opaque base64 Yjs-V2 content, passed through verbatim (not JSON)
     const input = calloutFormValuesToUpdateCalloutEntityInput(
-      values({ framingChip: 'whiteboard', whiteboardContent: '{"elements":[1]}' }),
+      values({ framingChip: 'whiteboard', whiteboardContent: wbContent }),
       'c1'
     );
-    expect(input.framing?.whiteboardContent).toBe('{"elements":[1]}');
+    expect(input.framing?.whiteboardContent).toBe(wbContent);
     expect(input.framing?.whiteboardPreviewSettings).toBeDefined();
   });
 
@@ -208,13 +247,12 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.editMeta?.framingProfileTagsetId).toBe('ts-1');
   });
 
-  it('copies the whiteboard drawing (unlike the live-callout edit prefill)', () => {
+  it('seeds an empty whiteboard placeholder — the server copies the real drawing on create (#29)', () => {
     const v = calloutTemplateContentToFormValues(
       baseFragment({
         type: CalloutFramingType.Whiteboard,
         whiteboard: {
           __typename: 'Whiteboard',
-          content: '{"elements":[42]}',
           id: 'wb-1',
           nameID: 'wb-1',
           createdDate: new Date(),
@@ -242,7 +280,8 @@ describe('calloutTemplateContentToFormValues', () => {
       })
     );
     expect(v.framingChip).toBe('whiteboard');
-    expect(v.whiteboardContent).toBe('{"elements":[42]}');
+    // #29: the client seeds an empty placeholder; the server copies the source whiteboard's content on create.
+    expect(v.whiteboardContent).toBe(EmptyWhiteboardString);
     expect(v.whiteboardConfigured).toBe(true);
     // D16 (2026-05-18): server preview URL is undefined when the loaded whiteboard has no Visual.
     expect(v.whiteboardPreviewServerUrl).toBeUndefined();
@@ -258,7 +297,6 @@ describe('calloutTemplateContentToFormValues', () => {
         type: CalloutFramingType.Whiteboard,
         whiteboard: {
           __typename: 'Whiteboard',
-          content: '{"elements":[]}',
           id: 'wb-1',
           nameID: 'wb-1',
           createdDate: new Date(),

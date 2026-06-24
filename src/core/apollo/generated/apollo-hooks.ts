@@ -1203,12 +1203,6 @@ export const WhiteboardGuestAccessFieldsFragmentDoc = gql`
   }
 }
     `;
-export const WhiteboardContentFragmentDoc = gql`
-    fragment WhiteboardContent on Whiteboard {
-  id
-  content
-}
-    `;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
     fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
@@ -1239,7 +1233,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
 export const PublicWhiteboardFragmentFragmentDoc = gql`
     fragment PublicWhiteboardFragment on Whiteboard {
   id
-  content
   guestContributionsAllowed
   profile {
     id
@@ -2743,7 +2736,6 @@ export const CalloutTemplateContentFragmentDoc = gql`
     type
     whiteboard {
       ...WhiteboardDetails
-      content
     }
     link {
       ...LinkDetails
@@ -2942,7 +2934,6 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
       uri
     }
   }
-  content
   previewSettings {
     ...whiteboardPreviewSettings
   }
@@ -7687,7 +7678,6 @@ export const CalloutContentDocument = gql`
               uri
             }
           }
-          content
           previewSettings {
             ...whiteboardPreviewSettings
           }
@@ -28358,7 +28348,6 @@ export const UpdateTemplateDocument = gql`
     }
     whiteboard {
       id
-      content
     }
   }
 }
@@ -28429,7 +28418,6 @@ export const UpdateCalloutTemplateDocument = gql`
       type
       whiteboard {
         id
-        content
         nameID
         profile {
           id

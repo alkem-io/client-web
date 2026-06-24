@@ -1,10 +1,10 @@
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
+import type { OrderedExcalidrawElement } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
 import type {
   AppState,
   BinaryFiles,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
-} from '@alkemio/excalidraw/dist/types/excalidraw/types';
+} from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
 import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
@@ -28,8 +28,8 @@ const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
 
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
-  const { Excalidraw } = await import('@alkemio/excalidraw');
-  await import('@alkemio/excalidraw/index.css');
+  const { Excalidraw } = await import('@excalidraw-yjs/excalidraw');
+  await import('@excalidraw-yjs/excalidraw/index.css');
   await import('./styles/excalidraw-overrides.css');
   return { default: Excalidraw };
 });
@@ -225,14 +225,14 @@ const CollaborativeExcalidrawWrapper = ({
   };
 
   const onChange = async (_elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    // The WhiteboardBinding owns the scene → Y.Doc write path (per-property CRDT);
-    // it subscribes to the imperative API's onChange independently. This prop
-    // handler drives the file-upload side effect: local file blobs are uploaded to
-    // the document's storage bucket, then the URL-bearing files are pushed back into
-    // Excalidraw so the binding's next onChange writes files that carry the bucket
-    // `url` into the shared/persisted snapshot (a peer can fetch via URL, not only
-    // the inline dataURL). Replaces the legacy Portal's upload+broadcast of
-    // url-bearing files.
+    // The native-Yjs core owns the scene → Y.Doc write path: the editor's `Scene`
+    // IS the `Y.Doc` (per-property CRDT), and the attached provider syncs it. This
+    // prop handler drives the file-upload side effect: local file blobs are uploaded
+    // to the document's storage bucket, then the URL-bearing files are pushed back
+    // into Excalidraw so the next scene write stores files that carry the bucket
+    // `url` into the shared/persisted doc (a peer can fetch via URL, not only the
+    // inline dataURL). Replaces the legacy Portal's upload+broadcast of url-bearing
+    // files.
     if (isReadOnly) return;
     const uploaded = await filesManager.getUploadedFiles(files);
     const hasNewUrls = Object.values(uploaded).some(file => 'url' in file && file.url);
@@ -272,7 +272,8 @@ const CollaborativeExcalidrawWrapper = ({
     }
   }, [excalidrawApi, whiteboard?.id, collaborationStartTime]);
 
-  const handleInitializeApi = (excalidrawApi: ExcalidrawImperativeAPI) => {
+  const handleInitializeApi = (excalidrawApi: ExcalidrawImperativeAPI | null) => {
+    if (!excalidrawApi) return;
     setExcalidrawApi(excalidrawApi);
     actions.onInitApi?.(excalidrawApi);
   };
@@ -284,7 +285,7 @@ const CollaborativeExcalidrawWrapper = ({
         {whiteboard && (
           <Excalidraw
             key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
-            excalidrawAPI={handleInitializeApi}
+            onExcalidrawAPI={handleInitializeApi}
             initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}

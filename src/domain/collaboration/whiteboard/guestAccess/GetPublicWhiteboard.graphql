@@ -8,7 +8,6 @@ query GetPublicWhiteboard($whiteboardId: UUID!) {
 
 fragment PublicWhiteboardFragment on Whiteboard {
   id
-  content
   guestContributionsAllowed
   profile {
     id

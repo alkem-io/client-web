@@ -21,6 +21,7 @@ import type {
   TemplateFormValues,
   TemplateType,
 } from '@/crd/components/templates/types';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */
 export type TemplateContentTemplate = NonNullable<TemplateContentQuery['lookup']['template']>;
@@ -75,7 +76,10 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
     framingKind,
     framingTitle: framing.profile.displayName,
     framingDescription: framing.profile.description ?? '',
-    framingWhiteboardContent: framingKind === 'whiteboard' ? framing.whiteboard?.content : undefined,
+    // #29: a live whiteboard's content is WS-only now (no GraphQL field). The server copies it from
+    // the source whiteboard's file-service blob into the template on create, so the client no longer
+    // seeds it here. The server-rendered preview image below is still captured for read-only surfaces.
+    framingWhiteboardContent: undefined,
     // Server-rendered whiteboard preview image — D16, 2026-05-18. The Preview dialog (and any
     // read-only preview surface) renders an `<img>` of this when present; falls back to the
     // placeholder text only when the visual is genuinely missing on the server.
@@ -124,7 +128,8 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
 function mapWhiteboardContent(whiteboard: WhiteboardContentGql): Extract<TemplateContent, { type: 'whiteboard' }> {
   return {
     type: 'whiteboard',
-    whiteboardContent: whiteboard.content,
+    // #29: WS-only content; the server copies it into the template on create (see mapCalloutContent).
+    whiteboardContent: EmptyWhiteboardString,
     previewImageUrl: whiteboard.profile.preview?.uri || undefined,
   };
 }

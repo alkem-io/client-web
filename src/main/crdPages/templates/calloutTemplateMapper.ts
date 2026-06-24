@@ -43,6 +43,14 @@ export type CalloutTemplateMapperFallbacks = {
  * Reuses the live-callout creation mapper (its output is, by construction, a `CreateCalloutOnCalloutsSetInput`
  * minus `calloutsSetID` — i.e. structurally a `CreateCalloutInput`); `visibility` is irrelevant for a
  * template (the create-template mutation ignores `settings.visibility`) so we pass a fixed value.
+ *
+ * #29 — a whiteboard-framed source's live content is WS-only and can no longer be read on the client
+ * (006-collab-content-unification), so we can't carry the scene over in `framing.whiteboard.content`.
+ * Instead, when the source has a whiteboard the user did NOT re-draw in this dialog (content is still
+ * the empty placeholder), we pass `framing.whiteboard.sourceWhiteboardID` and let the SERVER copy the
+ * source whiteboard's stored snapshot into the new template whiteboard. This also fixes Duplicate /
+ * import-from-library (same mapper, same source pointer in `editMeta.whiteboardId`). If the user DID
+ * draw fresh content, that real content is sent and the source pointer is omitted.
  */
 export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
@@ -53,6 +61,18 @@ export function calloutFormValuesToCreateCalloutInput(
     whiteboardFallbackDisplayName: fallbacks.whiteboardFallbackDisplayName,
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
   });
+
+  const sourceWhiteboardId = values.editMeta?.whiteboardId;
+  const drewFreshContent = Boolean(values.whiteboardContent && values.whiteboardContent !== EmptyWhiteboardString);
+  if (
+    input.framing?.whiteboard &&
+    framingChipToServer(values.framingChip) === CalloutFramingType.Whiteboard &&
+    sourceWhiteboardId &&
+    !drewFreshContent
+  ) {
+    input.framing.whiteboard.sourceWhiteboardID = sourceWhiteboardId;
+  }
+
   // Pick only the fields `CreateCalloutInput` accepts (drops `sendNotification` / `classification`,
   // which are concrete-callout concerns and meaningless on a template).
   return {
@@ -155,7 +175,8 @@ export function calloutTemplateContentToFormValues(
     pollAllowCustomOptions: framing.poll?.settings.allowContributorsAddOptions ?? false,
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
-    whiteboardContent: framing.whiteboard?.content || EmptyWhiteboardString,
+    // #29: live whiteboard content is WS-only; the server copies it into the template on create.
+    whiteboardContent: EmptyWhiteboardString,
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     // Server-rendered preview image (D16, 2026-05-18) — shown by `InlineWhiteboardPreview` as the

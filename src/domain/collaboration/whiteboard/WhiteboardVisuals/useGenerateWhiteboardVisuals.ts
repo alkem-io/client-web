@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { useTranslation } from 'react-i18next';
 import { VisualType, WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';

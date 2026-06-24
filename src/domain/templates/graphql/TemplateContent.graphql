@@ -87,7 +87,6 @@ fragment CalloutTemplateContent on Callout {
     type
     whiteboard {
       ...WhiteboardDetails
-      content
     }
     link {
       ...LinkDetails
@@ -263,7 +262,6 @@ fragment WhiteboardTemplateContent on Whiteboard {
       uri
     }
   }
-  content
   previewSettings {
     ...whiteboardPreviewSettings
   }

@@ -1494,6 +1494,7 @@ export type CreateWhiteboardDataKeySpecifier = (
   | 'nameID'
   | 'previewSettings'
   | 'profile'
+  | 'sourceWhiteboardID'
   | CreateWhiteboardDataKeySpecifier
 )[];
 export type CreateWhiteboardDataFieldPolicy = {
@@ -1501,6 +1502,7 @@ export type CreateWhiteboardDataFieldPolicy = {
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateWhiteboardPreviewSettingsDataKeySpecifier = (
   | 'coordinates'
@@ -5573,7 +5575,6 @@ export type VisualConstraintsFieldPolicy = {
 };
 export type WhiteboardKeySpecifier = (
   | 'authorization'
-  | 'content'
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
@@ -5588,7 +5589,6 @@ export type WhiteboardKeySpecifier = (
 )[];
 export type WhiteboardFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;

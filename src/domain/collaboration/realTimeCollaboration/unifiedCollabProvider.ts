@@ -1,4 +1,3 @@
-import type { EphemeralChannel, EphemeralEvent } from '@alkemio/excalidraw-yjs-binding';
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate, removeAwarenessStates } from 'y-protocols/awareness';
@@ -6,6 +5,7 @@ import { messageYjsSyncStep2, readSyncMessage, writeSyncStep1, writeUpdate } fro
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
+import type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
 /**
  * Wire message types of the unified collaboration service
@@ -36,7 +36,7 @@ export type ControlMessage = {
   users?: number;
 };
 
-export type { EphemeralChannel, EphemeralEvent } from '@alkemio/excalidraw-yjs-binding';
+export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
 
