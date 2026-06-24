@@ -2832,6 +2832,23 @@ export type DeleteWhiteboardInput = {
   ID: Scalars['UUID']['input'];
 };
 
+export type DirectMessageDeliveryResult = {
+  __typename?: 'DirectMessageDeliveryResult';
+  /** Set when status = SENT — the (existing or newly created) 1:1 conversation the message was delivered to. */
+  conversationID?: Maybe<Scalars['UUID']['output']>;
+  /** The intended recipient. */
+  receiverID: Scalars['UUID']['output'];
+  /** The per-recipient delivery outcome. */
+  status: DirectMessageDeliveryStatus;
+};
+
+/** Per-recipient outcome of sendDirectMessageToUsers. SENT: delivered (a conversation id is returned). BLOCKED_NO_CONSENT: the recipient disabled direct messages. FAILED: an unexpected per-recipient error (other recipients are still processed). */
+export enum DirectMessageDeliveryStatus {
+  BlockedNoConsent = 'BLOCKED_NO_CONSENT',
+  Failed = 'FAILED',
+  Sent = 'SENT',
+}
+
 export type Discussion = {
   __typename?: 'Discussion';
   /** The authorization rules for the entity */
@@ -4924,6 +4941,8 @@ export type Mutation = {
   revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
   revokeLicensePlanFromSpace: Space;
+  /** Send a private (1:1) chat message to each of the given Users individually. Does NOT create a group conversation. Each recipient is processed independently and reported on; partial success is possible. */
+  sendDirectMessageToUsers: Array<DirectMessageDeliveryResult>;
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
@@ -5592,6 +5611,10 @@ export type MutationRevokeLicensePlanFromAccountArgs = {
 
 export type MutationRevokeLicensePlanFromSpaceArgs = {
   planData: RevokeLicensePlanFromSpace;
+};
+
+export type MutationSendDirectMessageToUsersArgs = {
+  messageData: SendDirectMessageToUsersInput;
 };
 
 export type MutationSendMessageReplyToRoomArgs = {
@@ -7944,6 +7967,13 @@ export enum SearchVisibility {
   Public = 'PUBLIC',
 }
 
+export type SendDirectMessageToUsersInput = {
+  /** The message being sent to each recipient. */
+  message: Scalars['String']['input'];
+  /** The Users (1..N) the message is sent to, each as an individual 1:1 chat. No group conversation is created. */
+  receiverIDs: Array<Scalars['UUID']['input']>;
+};
+
 export type Sentry = {
   __typename?: 'Sentry';
   /** Flag indicating if the client should use Sentry for monitoring. */
@@ -9305,6 +9335,8 @@ export type UpdateUserSettingsAssistantInput = {
 };
 
 export type UpdateUserSettingsCommunicationInput = {
+  /** Allow other Users to be offered an email contact route to this User (using the account email; the address is never exposed). */
+  allowOtherUsersToContactViaEmail?: InputMaybe<Scalars['Boolean']['input']>;
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -9314,7 +9346,7 @@ export type UpdateUserSettingsEntityInput = {
   assistant?: InputMaybe<UpdateUserSettingsAssistantInput>;
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
-  /** Update the user's design version. Any integer accepted (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
+  /** Update the user's design version. Any integer accepted (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
@@ -9677,6 +9709,8 @@ export type User = ActorFull & {
   id: Scalars['UUID']['output'];
   /** Can a message be sent to this User. */
   isContactable: Scalars['Boolean']['output'];
+  /** Whether this User can be offered an email contact route (they enabled email contact). Exposes only the consent flag, never the email address. */
+  isContactableViaEmail: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
@@ -9821,7 +9855,7 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The design version this User has selected (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
+  /** The design version this User has selected (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion: Scalars['Int']['output'];
   /** The home space settings for this User. */
   homeSpace: UserSettingsHomeSpace;
@@ -9843,6 +9877,8 @@ export type UserSettingsAssistant = {
 
 export type UserSettingsCommunication = {
   __typename?: 'UserSettingsCommunication';
+  /** Allow other Users to be offered an email contact route to this User (using the account email; the address is never exposed). Default false. */
+  allowOtherUsersToContactViaEmail: Scalars['Boolean']['output'];
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
 };
@@ -22892,6 +22928,7 @@ export type UserModelFullQuery = {
       | {
           __typename?: 'User';
           isContactable: boolean;
+          isContactableViaEmail: boolean;
           id: string;
           firstName: string;
           lastName: string;
@@ -23367,7 +23404,11 @@ export type UpdateUserSettingsMutation = {
 export type UserSettingsFragmentFragment = {
   __typename?: 'UserSettings';
   id: string;
-  communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+  communication: {
+    __typename?: 'UserSettingsCommunication';
+    allowOtherUsersToSendMessages: boolean;
+    allowOtherUsersToContactViaEmail: boolean;
+  };
   privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
   homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
   notification: {
@@ -23584,7 +23625,11 @@ export type UserSettingsQuery = {
           settings: {
             __typename?: 'UserSettings';
             id: string;
-            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+            communication: {
+              __typename?: 'UserSettingsCommunication';
+              allowOtherUsersToSendMessages: boolean;
+              allowOtherUsersToContactViaEmail: boolean;
+            };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
             notification: {
@@ -46616,6 +46661,20 @@ export type RemoveConversationMemberMutationVariables = Exact<{
 }>;
 
 export type RemoveConversationMemberMutation = { __typename?: 'Mutation'; removeConversationMember: boolean };
+
+export type SendDirectMessageToUsersMutationVariables = Exact<{
+  messageData: SendDirectMessageToUsersInput;
+}>;
+
+export type SendDirectMessageToUsersMutation = {
+  __typename?: 'Mutation';
+  sendDirectMessageToUsers: Array<{
+    __typename?: 'DirectMessageDeliveryResult';
+    receiverID: string;
+    status: DirectMessageDeliveryStatus;
+    conversationID?: string | undefined;
+  }>;
+};
 
 export type UpdateConversationMutationVariables = Exact<{
   updateData: UpdateConversationInput;

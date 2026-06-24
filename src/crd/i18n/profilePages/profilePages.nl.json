@@ -4,15 +4,21 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Schrijf een e-mail…",
+      "placeholder": "Schrijf een bericht…",
       "send": "Verstuur",
       "cancel": "Annuleren",
       "sending": "Versturen…",
       "errorTitle": "Bericht kon niet worden verzonden",
       "ariaLabel": "Bericht opstellen",
+      "title": "Stuur een privébericht",
+      "notice": "Start een privéchat die je kunt voortzetten.",
+      "successToast": "Je bericht is verzonden.",
       "emailTitle": "Stuur een e-mail",
-      "emailNotice": "Bezorgd in hun inbox.",
-      "successToast": "Je e-mail is verzonden."
+      "emailNotice": "Verzonden naar het account-e-mailadres van deze persoon.",
+      "emailPlaceholder": "Schrijf een e-mail…",
+      "emailSuccessToast": "Je e-mail is verzonden.",
+      "cannotBeReached": "Deze persoon kan niet worden gecontacteerd.",
+      "openChatError": "We konden de chat niet openen. Probeer het opnieuw."
     },
     "resourceTabsAriaLabel": "Resourcesecties",
     "loading": {
@@ -33,6 +39,7 @@
     "hero": {
       "settingsTooltip": "Gebruikersinstellingen",
       "messageButton": "Bericht",
+      "emailButton": "E-mail",
       "settingsAriaLabel": "Gebruikersinstellingen openen"
     },
     "tabs": {
@@ -67,6 +74,9 @@
       "settingsTooltip": "Organisatie-instellingen",
       "settingsAriaLabel": "Organisatie-instellingen openen",
       "messageButton": "Bericht",
+      "messageEmailTitle": "Stuur een e-mail",
+      "messageEmailNotice": "Bezorgd bij de beheerders van de organisatie.",
+      "messageEmailPlaceholder": "Schrijf een e-mail…",
       "verifiedBadge": "Geverifieerd",
       "verifiedTooltip": "Deze organisatie is geverifieerd door Alkemio."
     },

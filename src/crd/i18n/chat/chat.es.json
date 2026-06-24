@@ -16,6 +16,7 @@
     "searchHint": "Empieza a escribir para buscar personas",
     "noResults": "No se encontraron personas",
     "create": "Iniciar chat",
+    "createGroup": "Iniciar chat grupal",
     "removeAria": "Quitar a {{name}}"
   },
   "group": {
@@ -74,5 +75,28 @@
     "back": "Volver a las conversaciones",
     "loading": "Cargando mensajes",
     "addReaction": "Añadir reacción"
+  },
+  "sendConfirmation": {
+    "title": "Mensaje enviado",
+    "description": "Tu mensaje se ha enviado como un chat privado.",
+    "partialDescription": "Tu mensaje se ha enviado, pero no se pudo contactar con algunas personas.",
+    "notReachedTitle": "No contactadas",
+    "openChat": "Abrir chat",
+    "close": "Cerrar"
+  },
+  "contactLeads": {
+    "title": "Contactar con los responsables",
+    "explanation": "Este mensaje se enviará a cada responsable de forma individual. Para contactar con un responsable concreto, visita su perfil directamente.",
+    "messageLabel": "Mensaje",
+    "messagePlaceholder": "Escribe tu mensaje…",
+    "recipientsLabel": "Destinatarios",
+    "send": "Enviar",
+    "cancel": "Cancelar",
+    "sending": "Enviando…",
+    "errors": {
+      "messageRequired": "El mensaje no puede estar vacío.",
+      "messageTooLong": "El mensaje debe tener {{max}} caracteres o menos.",
+      "sendFailed": "No se pudo enviar el mensaje. Inténtalo de nuevo."
+    }
   }
 }

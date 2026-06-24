@@ -3,18 +3,17 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { LONG_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
-import { DirectMessageDialog, type DirectMessageReceiver } from '@/crd/components/community/DirectMessageDialog';
+import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
 import { Button } from '@/crd/primitives/button';
-import useSendMessageToCommunityLeads from '@/domain/community/CommunityLeads/useSendMessageToCommunityLeads';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
+import { ContactLeadsDialogConnector } from '../dialogs/ContactLeadsDialogConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
@@ -48,9 +47,6 @@ export default function CrdSpaceCommunityPage() {
   const [vcInviteOpen, setVcInviteOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
-  const [contactMessage, setContactMessage] = useState('');
-  const [contactSending, setContactSending] = useState(false);
-  const [contactSent, setContactSent] = useState(false);
 
   const handleInvite = canInvite ? () => setInviteOpen(true) : undefined;
   // VC invite is gated on the VC entitlement + the same admin (canUpdate) gate as
@@ -59,38 +55,17 @@ export default function CrdSpaceCommunityPage() {
   const handleInviteVc = canInviteVc ? () => setVcInviteOpen(true) : undefined;
   const handleContactLead = () => setContactOpen(true);
 
-  const handleContactOpenChange = (open: boolean) => {
-    setContactOpen(open);
-    if (!open) {
-      setContactSent(false);
-      setContactMessage('');
-    }
-  };
-
   // Merge user + organization leads into a single list for the sidebar.
   const sidebarLeads: LeadItem[] = [...leadUsers, ...leadOrganizations];
   const canContactLeads = leadUsers.length > 0 && Boolean(communityId);
 
-  // Build DirectMessageDialog receiver chips from lead users only — lead
-  // organizations are not direct-message targets.
-  const messageReceivers: DirectMessageReceiver[] = leadUsers.map(lead => ({
+  // Build chat recipients from lead users only — lead organizations are not
+  // direct-message targets (org contact stays email, FR-009).
+  const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
     id: lead.id,
     displayName: lead.name,
     avatarUrl: lead.avatarUrl,
   }));
-
-  const sendMessageToCommunityLeads = useSendMessageToCommunityLeads(communityId);
-
-  const handleSendContactMessage = async () => {
-    setContactSending(true);
-    try {
-      await sendMessageToCommunityLeads(contactMessage);
-      setContactSent(true);
-      setContactMessage('');
-    } finally {
-      setContactSending(false);
-    }
-  };
 
   const guidelinesSlot = guidelines.id ? (
     <CommunityGuidelinesBlock
@@ -186,28 +161,7 @@ export default function CrdSpaceCommunityPage() {
       )}
 
       {canContactLeads && (
-        <DirectMessageDialog
-          title={t('send-message-dialog.community-message-title', { contact: t('community.leads') })}
-          open={contactOpen}
-          onOpenChange={handleContactOpenChange}
-          receivers={messageReceivers}
-          value={contactMessage}
-          onValueChange={value => {
-            setContactMessage(value);
-            setContactSent(false);
-          }}
-          maxLength={LONG_TEXT_LENGTH}
-          sending={contactSending}
-          sent={contactSent}
-          onSend={handleSendContactMessage}
-          labels={{
-            messageLabel: t('messaging.message'),
-            warning: t('share-dialog.warning'),
-            successLabel: t('messaging.successfully-sent'),
-            sendLabel: t('buttons.send'),
-            closeLabel: t('buttons.close'),
-          }}
-        />
+        <ContactLeadsDialogConnector open={contactOpen} onOpenChange={setContactOpen} recipients={leadRecipients} />
       )}
     </>
   );

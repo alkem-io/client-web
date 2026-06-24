@@ -65,7 +65,6 @@ export function UserProfileSelfDemoPage() {
         ...me.hero,
         showSettingsIcon: true,
         settingsHref: `/user/${me.slug}/settings/profile`,
-        showMessageButton: false,
       }}
       sidebar={{
         bio: me.bio,

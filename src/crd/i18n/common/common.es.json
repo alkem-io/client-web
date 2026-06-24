@@ -1389,13 +1389,12 @@
       },
       "messageLabel": "Mensaje",
       "noResults": "No se encontraron usuarios",
+      "notice": "Cada destinatario lo recibe como un mensaje privado en su chat.",
       "removeUser": "Quitar a {{name}}",
       "searchAriaLabel": "Buscar usuarios",
       "searchPlaceholder": "Busca usuarios por nombre o correo",
       "searching": "Buscando…",
-      "send": "Enviar",
-      "sent": "Mensaje enviado con éxito.",
-      "warning": "Los destinatarios verán tu nombre como remitente."
+      "send": "Enviar"
     },
     "back": "Atrás",
     "button": "Compartir",

@@ -4,15 +4,21 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Escribe un correo electrónico…",
+      "placeholder": "Escribe un mensaje…",
       "send": "Enviar",
       "cancel": "Cancelar",
       "sending": "Enviando…",
       "errorTitle": "No se pudo enviar el mensaje",
       "ariaLabel": "Redactar mensaje",
+      "title": "Enviar un mensaje privado",
+      "notice": "Inicia un chat privado que puedes continuar.",
+      "successToast": "Tu mensaje se ha enviado.",
       "emailTitle": "Enviar un correo electrónico",
-      "emailNotice": "Se entrega en su bandeja de entrada.",
-      "successToast": "Tu correo electrónico se ha enviado."
+      "emailNotice": "Se envía a la dirección de correo electrónico de la cuenta de esta persona.",
+      "emailPlaceholder": "Escribe un correo electrónico…",
+      "emailSuccessToast": "Tu correo electrónico se ha enviado.",
+      "cannotBeReached": "No se puede contactar con esta persona.",
+      "openChatError": "No se pudo abrir el chat. Inténtalo de nuevo."
     },
     "resourceTabsAriaLabel": "Secciones de recursos",
     "loading": {
@@ -33,6 +39,7 @@
     "hero": {
       "settingsTooltip": "Configuración de usuario",
       "messageButton": "Mensaje",
+      "emailButton": "Correo",
       "settingsAriaLabel": "Abrir configuración de usuario"
     },
     "tabs": {
@@ -67,6 +74,9 @@
       "settingsTooltip": "Configuración de la organización",
       "settingsAriaLabel": "Abrir configuración de la organización",
       "messageButton": "Mensaje",
+      "messageEmailTitle": "Enviar un correo electrónico",
+      "messageEmailNotice": "Se entrega a los administradores de la organización.",
+      "messageEmailPlaceholder": "Escribe un correo electrónico…",
       "verifiedBadge": "Verificada",
       "verifiedTooltip": "Esta organización ha sido verificada por Alkemio."
     },
