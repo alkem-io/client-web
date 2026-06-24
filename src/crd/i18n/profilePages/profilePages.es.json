@@ -14,7 +14,7 @@
       "notice": "Inicia un chat privado que puedes continuar.",
       "successToast": "Tu mensaje se ha enviado.",
       "emailTitle": "Enviar un correo electrónico",
-      "emailNotice": "Esta persona tiene el chat desactivado pero acepta correo electrónico. Se envía a la dirección de su cuenta.",
+      "emailNotice": "Se envía a la dirección de correo electrónico de la cuenta de esta persona.",
       "emailPlaceholder": "Escribe un correo electrónico…",
       "emailSuccessToast": "Tu correo electrónico se ha enviado.",
       "cannotBeReached": "No se puede contactar con esta persona.",

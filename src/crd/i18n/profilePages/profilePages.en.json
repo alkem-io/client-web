@@ -14,7 +14,7 @@
       "notice": "Starts a private chat you can continue.",
       "successToast": "Your message has been sent.",
       "emailTitle": "Send an email",
-      "emailNotice": "This person has chat turned off but accepts email. Sent to their account address.",
+      "emailNotice": "Sent to this person's account email address.",
       "emailPlaceholder": "Write an email…",
       "emailSuccessToast": "Your email has been sent.",
       "cannotBeReached": "This person cannot be contacted.",

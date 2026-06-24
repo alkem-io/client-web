@@ -14,7 +14,7 @@
       "notice": "Démarre une discussion privée que vous pourrez poursuivre.",
       "successToast": "Votre message a été envoyé.",
       "emailTitle": "Envoyer un e-mail",
-      "emailNotice": "Cette personne a désactivé la messagerie mais accepte les e-mails. Envoyé à l'adresse de son compte.",
+      "emailNotice": "Envoyé à l'adresse e-mail du compte de cette personne.",
       "emailPlaceholder": "Écrire un e-mail…",
       "emailSuccessToast": "Votre e-mail a été envoyé.",
       "cannotBeReached": "Cette personne ne peut pas être contactée.",

@@ -2,50 +2,61 @@ import { describe, expect, test } from 'vitest';
 
 /**
  * Mirrors the contact-route decision in CrdUserProfilePage (FR-011):
- *   - chat is the default and preferred route
- *   - the email fallback is offered ONLY when chat is off AND email is on
- *   - when both are off, no route is offered and we explain
+ *   - chat and email are INDEPENDENT routes
+ *   - offer chat whenever the recipient has chat on (`isContactable`)
+ *   - offer email whenever the recipient has email contact on
+ *     (`isContactableViaEmail`) — both may be shown together
+ *   - when neither is on, no route is offered and we explain
+ *   - any affordance requires the viewer to be allowed to contact at all
+ *     (authenticated, not their own profile)
+ *
+ * Kept in lock-step with `CrdUserProfilePage.tsx` (`showChat` / `showEmail` /
+ * `showCannotBeReached`).
  */
 const contactRoute = (viewerCanContact: boolean, isContactable: boolean, isContactableViaEmail: boolean) => {
-  const emailFallbackOnly = !isContactable && isContactableViaEmail;
-  const showMessageButton = viewerCanContact && (isContactable || emailFallbackOnly);
+  const showChat = viewerCanContact && isContactable;
+  const showEmail = viewerCanContact && isContactableViaEmail;
   const showCannotBeReached = viewerCanContact && !isContactable && !isContactableViaEmail;
-  return { emailFallbackOnly, showMessageButton, showCannotBeReached };
+  return { showChat, showEmail, showCannotBeReached };
 };
 
 describe('contact-route decision (US4 / FR-011)', () => {
-  test('chat enabled → chat route, no email fallback', () => {
+  test('chat on, email off → chat route only', () => {
     expect(contactRoute(true, true, false)).toEqual({
-      emailFallbackOnly: false,
-      showMessageButton: true,
+      showChat: true,
+      showEmail: false,
       showCannotBeReached: false,
     });
   });
 
-  test('chat off + email on → email fallback offered', () => {
+  test('chat off, email on → email route only', () => {
     expect(contactRoute(true, false, true)).toEqual({
-      emailFallbackOnly: true,
-      showMessageButton: true,
+      showChat: false,
+      showEmail: true,
       showCannotBeReached: false,
     });
   });
 
-  test('chat off + email off → no route, explain cannot be reached', () => {
+  test('chat on AND email on → BOTH routes offered together (independent flags)', () => {
+    expect(contactRoute(true, true, true)).toEqual({
+      showChat: true,
+      showEmail: true,
+      showCannotBeReached: false,
+    });
+  });
+
+  test('chat off, email off → no route, explain cannot be reached', () => {
     expect(contactRoute(true, false, false)).toEqual({
-      emailFallbackOnly: false,
-      showMessageButton: false,
+      showChat: false,
+      showEmail: false,
       showCannotBeReached: true,
     });
   });
 
-  test('email route is NOT offered when chat is on even if email is also on', () => {
-    expect(contactRoute(true, true, true).emailFallbackOnly).toBe(false);
-  });
-
   test('anonymous / own-profile viewer gets no affordance at all', () => {
     expect(contactRoute(false, true, true)).toEqual({
-      emailFallbackOnly: false,
-      showMessageButton: false,
+      showChat: false,
+      showEmail: false,
       showCannotBeReached: false,
     });
   });
