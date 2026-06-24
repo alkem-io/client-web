@@ -6,7 +6,13 @@
     "spacesSection": {
       "title": "{{hubName}} Spaces",
       "empty": "No Spaces have been added to this hub yet.",
-      "loading": "Loading Spaces…"
+      "loading": "Loading Spaces…",
+      "searchPlaceholder": "Search Spaces…",
+      "showing": "Showing",
+      "spacesLabel": "Spaces",
+      "noResultsTitle": "No Spaces found",
+      "noResultsMessage": "Try a different search term.",
+      "clearSearch": "Clear search"
     },
     "allSpacesCta": "Browse all Spaces on Alkemio"
   },
