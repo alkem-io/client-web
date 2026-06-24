@@ -1,9 +1,21 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { snapToFullRows } from '@/crd/hooks/useGridColumnCount';
 import { HubSpacesSection } from './HubSpacesSection';
+
+// Force a specific grid column count for tests that exercise full-row snapping.
+// Defaults to 1 (matching jsdom, where ResizeObserver is unavailable), so the
+// existing batch tests behave as before. The real `snapToFullRows` is preserved.
+let mockColumnCount = 1;
+vi.mock('@/crd/hooks/useGridColumnCount', async importActual => {
+  const actual = await importActual<typeof import('@/crd/hooks/useGridColumnCount')>();
+  return { ...actual, useGridColumnCount: () => [mockColumnCount, () => {}] };
+});
+afterEach(() => {
+  mockColumnCount = 1;
+});
 
 // The real `t` interpolates {{visible}}/{{total}} into the showingCount string.
 // We can't see the translated copy here, so the mock appends the interpolation
@@ -70,6 +82,19 @@ describe('HubSpacesSection — smaller cards + lazy load (US1)', () => {
     await user.click(screen.getByRole('button', { name: /loadMore/i }));
     expect(countCards()).toBe(25);
     expect(screen.queryByRole('button', { name: /loadMore/i })).not.toBeInTheDocument();
+  });
+
+  test('Load more reveals a new full row even when the grid is wider than a batch', async () => {
+    // columnCount (13) > BATCH_SIZE (12): the first batch snaps to one full row
+    // (13). A naive `+ BATCH_SIZE` would snap back to 13, revealing nothing — the
+    // fix advances past the current row, so each click must grow the visible set.
+    mockColumnCount = 13;
+    const user = userEvent.setup();
+    render(<HubSpacesSection spaces={makeSpaces(40)} hubName="VNG" />);
+
+    expect(countCards()).toBe(13);
+    await user.click(screen.getByRole('button', { name: /loadMore/i }));
+    expect(countCards()).toBeGreaterThan(13);
   });
 
   test('the results counter shows the visible batch out of the filtered total', () => {
@@ -288,7 +313,9 @@ describe('HubSpacesSection — privacy filter (Public / Private)', () => {
     expect(countCards()).toBe(0);
     expect(screen.getByText('home.spacesSection.noResultsTitle')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: /clearSearch/i }));
+    // The no-results reset clears all filters (here a privacy filter, no search),
+    // so it must use the "clear all filters" label — not the search-only one.
+    await user.click(screen.getByRole('button', { name: /clearFilters/i }));
     expect(countCards()).toBe(5);
   });
 });

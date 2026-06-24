@@ -1,5 +1,5 @@
 import { ChevronDown, FolderOpen, Search, SlidersHorizontal, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceCard, type SpaceCardData, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
 import { snapToFullRows, useGridColumnCount } from '@/crd/hooks/useGridColumnCount';
@@ -55,8 +55,7 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
   const [privacyFilter, setPrivacyFilter] = useState<PrivacyFilter>('all');
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
 
-  const gridRef = useRef<HTMLUListElement>(null);
-  const columnCount = useGridColumnCount(gridRef);
+  const [columnCount, gridRef] = useGridColumnCount();
 
   const hasSearch = query.trim().length > 0;
   const hasPrivacyFilter = privacyFilter !== 'all';
@@ -83,7 +82,10 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
   };
 
   const handleLoadMore = () => {
-    setVisibleCount(count => count + BATCH_SIZE);
+    // Advance past the rows currently shown so each click reveals at least one
+    // more full row — even when the grid is wider than a batch (columnCount >
+    // BATCH_SIZE), where a plain `+ BATCH_SIZE` could snap back to the same row.
+    setVisibleCount(() => renderCount + Math.max(BATCH_SIZE, columnCount));
   };
 
   const clearSearch = () => {
@@ -253,7 +255,7 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
               </p>
               <Button variant="outline" onClick={clearAllFilters} className="gap-2">
                 <X aria-hidden="true" className="size-3.5" />
-                {t('home.spacesSection.clearSearch')}
+                {t('home.spacesSection.clearFilters')}
               </Button>
             </div>
           )}

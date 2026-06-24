@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 /** Sane default when there is no DOM / ResizeObserver (SSR, first paint, tests). */
 const DEFAULT_COLUMN_COUNT = 1;
@@ -11,18 +11,24 @@ const DEFAULT_COLUMN_COUNT = 1;
  * recomputes on resize via a `ResizeObserver`. Works for any column-defining
  * grid, including `repeat(auto-fill, …)` where the count is layout-dependent.
  *
- * Returns `DEFAULT_COLUMN_COUNT` (1) until the element is measured, and when
+ * Returns a `[columnCount, ref]` tuple. Attach `ref` to the grid element (it is
+ * a callback ref, so it re-measures whenever the element mounts, unmounts, or is
+ * replaced — e.g. when the grid is conditionally rendered). `columnCount` is
+ * `DEFAULT_COLUMN_COUNT` (1) until the element is measured, and when
  * `ResizeObserver` is unavailable.
  */
-export function useGridColumnCount(ref: RefObject<HTMLElement | null>): number {
+export function useGridColumnCount(): [number, (node: HTMLElement | null) => void] {
   const [columnCount, setColumnCount] = useState(DEFAULT_COLUMN_COUNT);
+  // Track the node as state (set via the callback ref) so the effect re-runs and
+  // re-observes when the grid element unmounts and remounts — a plain RefObject
+  // never triggers the effect, leaving the new element unobserved.
+  const [node, setNode] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
-    const element = ref.current;
-    if (!element || typeof ResizeObserver === 'undefined') return;
+    if (!node || typeof ResizeObserver === 'undefined') return;
 
     const measure = () => {
-      const template = getComputedStyle(element).gridTemplateColumns;
+      const template = getComputedStyle(node).gridTemplateColumns;
       // `none` (no grid yet) → keep the default. Otherwise the value is a
       // space-separated list of resolved track sizes, one entry per column.
       const tracks = template === 'none' ? [] : template.trim().split(/\s+/).filter(Boolean);
@@ -31,11 +37,11 @@ export function useGridColumnCount(ref: RefObject<HTMLElement | null>): number {
 
     measure();
     const observer = new ResizeObserver(measure);
-    observer.observe(element);
+    observer.observe(node);
     return () => observer.disconnect();
-  }, [ref]);
+  }, [node]);
 
-  return columnCount;
+  return [columnCount, setNode];
 }
 
 /**
