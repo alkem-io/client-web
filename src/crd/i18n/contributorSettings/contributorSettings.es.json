@@ -86,6 +86,7 @@
         "membership": "Membresía",
         "organizations": "Organizaciones",
         "notifications": "Notificaciones",
+        "assistant": "Asistente",
         "settings": "Ajustes",
         "security": "Seguridad"
       },
@@ -259,6 +260,8 @@
         "title": "Comunicación y privacidad",
         "allowMessagesLabel": "Permitir que otros usuarios me envíen mensajes directos",
         "allowMessagesDescription": "Cuando esté desactivado, otros usuarios no podrán iniciar una conversación de mensaje directo contigo.",
+        "allowEmailContactLabel": "Permitir que otros me contacten por correo electrónico",
+        "allowEmailContactDescription": "Cuando está activado, las personas que no puedan contactarte por chat podrán enviarte un correo electrónico a la dirección de tu cuenta. Tu dirección nunca se les muestra.",
         "error": "No se pudo guardar la preferencia — inténtalo de nuevo"
       },
       "designSystem": {
@@ -422,6 +425,24 @@
         "description": "Esto eliminará permanentemente «{{name}}». Esta acción no se puede deshacer.",
         "confirm": "Eliminar"
       }
+    },
+    "assistant": {
+      "pageTitle": "Asistente",
+      "helpBanner": "Elige lo que el asistente puede hacer en tu nombre. Las capacidades de lectura están activadas de forma predeterminada; las capacidades que modifican contenido están desactivadas hasta que las habilites. El asistente nunca puede hacer más de lo que tú puedes hacer.",
+      "empty": "No hay capacidades del asistente disponibles en este momento.",
+      "destructiveBadge": "Puede modificar contenido existente",
+      "toggleAria": "Activar o desactivar la capacidad «{{capability}}»",
+      "toggleError": "No pudimos guardar ese cambio. Inténtalo de nuevo.",
+      "groups": {
+        "read": {
+          "title": "Lectura",
+          "description": "Permite que el asistente encuentre y resuma contenido al que ya tienes acceso."
+        },
+        "write": {
+          "title": "Modificar contenido",
+          "description": "Permite que el asistente cree o modifique contenido por ti. Siempre confirmarás antes de que se cambie algo."
+        }
+      }
     }
   },
   "org": {
@@ -434,12 +455,21 @@
           "hint": "Cómo aparece tu organización en Alkemio.",
           "required": "El nombre es obligatorio"
         },
-        "nameID": { "label": "Name ID", "caption": "No se puede cambiar tras la creación." },
-        "tagline": { "label": "Lema", "hint": "Una frase corta que aparece junto al nombre de tu organización." }
+        "nameID": {
+          "label": "Name ID",
+          "caption": "No se puede cambiar tras la creación."
+        },
+        "tagline": {
+          "label": "Lema",
+          "hint": "Una frase corta que aparece junto al nombre de tu organización."
+        }
       },
       "about": {
         "title": "Acerca de",
-        "description": { "label": "Descripción", "hint": "Se admite Markdown." },
+        "description": {
+          "label": "Descripción",
+          "hint": "Se admite Markdown."
+        },
         "location": {
           "title": "Ubicación",
           "city": "Ciudad",
@@ -464,8 +494,14 @@
           "hint": "Correo público de contacto de la organización.",
           "invalidFormat": "Introduce una dirección de correo válida"
         },
-        "domain": { "label": "Dominio", "hint": "El dominio web de tu organización (sin protocolo)." },
-        "legalEntityName": { "label": "Razón social", "hint": "El nombre oficial registrado." },
+        "domain": {
+          "label": "Dominio",
+          "hint": "El dominio web de tu organización (sin protocolo)."
+        },
+        "legalEntityName": {
+          "label": "Razón social",
+          "hint": "El nombre oficial registrado."
+        },
         "website": {
           "label": "Sitio web",
           "hint": "URL completa incluyendo https://",
@@ -494,16 +530,37 @@
         "helperText": "Recomendado: 400×400 px. JPG, PNG o GIF.",
         "uploading": "Subiendo…"
       },
-      "verification": { "verified": "Verificada", "pending": "Verificación pendiente", "notVerified": "No verificada" }
+      "verification": {
+        "verified": "Verificada",
+        "pending": "Verificación pendiente",
+        "notVerified": "No verificada"
+      }
     },
     "account": {
       "pageTitle": "Cuenta",
       "helpBanner": "Aquí puedes ver los recursos activos de tu organización y gestionar los límites de asignación.",
-      "spaces": { "title": "Espacios anfitriones", "createButton": "Crear espacio" },
-      "virtualContributors": { "title": "Contribuidores virtuales", "createButton": "Añadir contribuidor" },
-      "innovationPacks": { "title": "Paquetes de plantillas", "createButton": "Nuevo paquete" },
-      "innovationHubs": { "title": "Páginas de inicio personalizadas", "createButton": "Nueva página" },
-      "actions": { "view": "Ver", "manage": "Gestionar", "transfer": "Transferir", "delete": "Eliminar" },
+      "spaces": {
+        "title": "Espacios anfitriones",
+        "createButton": "Crear espacio"
+      },
+      "virtualContributors": {
+        "title": "Contribuidores virtuales",
+        "createButton": "Añadir contribuidor"
+      },
+      "innovationPacks": {
+        "title": "Paquetes de plantillas",
+        "createButton": "Nuevo paquete"
+      },
+      "innovationHubs": {
+        "title": "Páginas de inicio personalizadas",
+        "createButton": "Nueva página"
+      },
+      "actions": {
+        "view": "Ver",
+        "manage": "Gestionar",
+        "transfer": "Transferir",
+        "delete": "Eliminar"
+      },
       "deleteDialog": {
         "title": "¿Eliminar este recurso?",
         "description": "Esto eliminará permanentemente «{{name}}». Esta acción no se puede deshacer.",

@@ -1,4 +1,4 @@
-import { BadgeCheck, MapPin, Settings } from 'lucide-react';
+import { BadgeCheck, Mail, MapPin, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
@@ -69,7 +69,14 @@ export function OrganizationPageHero({
 
             <div className="flex gap-3 shrink-0">
               {onSendMessage ? (
-                <MessagePopover triggerLabel={t('orgProfile.hero.messageButton')} onSendMessage={onSendMessage} />
+                <MessagePopover
+                  triggerLabel={t('orgProfile.hero.messageButton')}
+                  triggerIcon={<Mail className="w-4 h-4" aria-hidden="true" />}
+                  onSendMessage={onSendMessage}
+                  title={t('orgProfile.hero.messageEmailTitle')}
+                  notice={t('orgProfile.hero.messageEmailNotice')}
+                  placeholder={t('orgProfile.hero.messageEmailPlaceholder')}
+                />
               ) : null}
               {settingsHref ? (
                 <Button

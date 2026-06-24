@@ -4,15 +4,21 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "E-Mail schreiben…",
+      "placeholder": "Nachricht schreiben…",
       "send": "Senden",
       "cancel": "Abbrechen",
       "sending": "Senden…",
       "errorTitle": "Nachricht konnte nicht gesendet werden",
       "ariaLabel": "Nachricht verfassen",
+      "title": "Private Nachricht senden",
+      "notice": "Startet einen privaten Chat, den du fortsetzen kannst.",
+      "successToast": "Deine Nachricht wurde gesendet.",
       "emailTitle": "E-Mail senden",
-      "emailNotice": "Wird in ihr Postfach zugestellt.",
-      "successToast": "Deine E-Mail wurde gesendet."
+      "emailNotice": "Wird an die Konto-E-Mail-Adresse dieser Person gesendet.",
+      "emailPlaceholder": "E-Mail schreiben…",
+      "emailSuccessToast": "Deine E-Mail wurde gesendet.",
+      "cannotBeReached": "Diese Person kann nicht kontaktiert werden.",
+      "openChatError": "Der Chat konnte nicht geöffnet werden. Bitte versuche es erneut."
     },
     "resourceTabsAriaLabel": "Ressourcenbereiche",
     "loading": {
@@ -33,6 +39,7 @@
     "hero": {
       "settingsTooltip": "Benutzereinstellungen",
       "messageButton": "Nachricht",
+      "emailButton": "E-Mail",
       "settingsAriaLabel": "Benutzereinstellungen öffnen"
     },
     "tabs": {
@@ -67,6 +74,9 @@
       "settingsTooltip": "Organisationseinstellungen",
       "settingsAriaLabel": "Organisationseinstellungen öffnen",
       "messageButton": "Nachricht",
+      "messageEmailTitle": "E-Mail senden",
+      "messageEmailNotice": "Wird an die Administratoren der Organisation zugestellt.",
+      "messageEmailPlaceholder": "E-Mail schreiben…",
       "verifiedBadge": "Verifiziert",
       "verifiedTooltip": "Diese Organisation wurde von Alkemio verifiziert."
     },

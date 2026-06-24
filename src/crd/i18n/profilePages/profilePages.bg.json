@@ -4,15 +4,21 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Напишете имейл…",
+      "placeholder": "Напишете съобщение…",
       "send": "Изпрати",
       "cancel": "Отмяна",
       "sending": "Изпращане…",
       "errorTitle": "Съобщението не може да бъде изпратено",
       "ariaLabel": "Съставяне на съобщение",
+      "title": "Изпрати лично съобщение",
+      "notice": "Започва личен чат, който можете да продължите.",
+      "successToast": "Вашето съобщение беше изпратено.",
       "emailTitle": "Изпрати имейл",
-      "emailNotice": "Доставя се в тяхната пощенска кутия.",
-      "successToast": "Вашият имейл беше изпратен."
+      "emailNotice": "Изпраща се на имейл адреса на акаунта на този човек.",
+      "emailPlaceholder": "Напишете имейл…",
+      "emailSuccessToast": "Вашият имейл беше изпратен.",
+      "cannotBeReached": "С този човек не може да се осъществи връзка.",
+      "openChatError": "Чатът не можа да се отвори. Моля, опитайте отново."
     },
     "resourceTabsAriaLabel": "Раздели с ресурси",
     "loading": {
@@ -33,6 +39,7 @@
     "hero": {
       "settingsTooltip": "Настройки на потребителя",
       "messageButton": "Съобщение",
+      "emailButton": "Имейл",
       "settingsAriaLabel": "Отвори потребителските настройки"
     },
     "tabs": {
@@ -67,6 +74,9 @@
       "settingsTooltip": "Настройки на организацията",
       "settingsAriaLabel": "Отвори настройките на организацията",
       "messageButton": "Съобщение",
+      "messageEmailTitle": "Изпрати имейл",
+      "messageEmailNotice": "Доставя се до администраторите на организацията.",
+      "messageEmailPlaceholder": "Напишете имейл…",
       "verifiedBadge": "Потвърдена",
       "verifiedTooltip": "Тази организация е потвърдена от Alkemio."
     },

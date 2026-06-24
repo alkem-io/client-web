@@ -8,6 +8,7 @@ export const USER_SETTINGS_TAB_IDS = [
   'membership',
   'organizations',
   'notifications',
+  'assistant',
   'settings',
   'security',
 ] as const;

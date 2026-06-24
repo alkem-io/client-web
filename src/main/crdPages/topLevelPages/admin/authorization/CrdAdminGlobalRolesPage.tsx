@@ -92,6 +92,7 @@ const CrdAdminGlobalRolesPage = () => {
     [RoleName.GlobalSupportManager]: t('roles.GLOBAL_SUPPORT_MANAGER'),
     [RoleName.PlatformBetaTester]: t('roles.PLATFORM_BETA_TESTER'),
     [RoleName.PlatformVcCampaign]: t('roles.PLATFORM_VC_CAMPAIGN'),
+    [RoleName.PlatformAssistantAccess]: t('roles.PLATFORM_ASSISTANT_ACCESS'),
   };
 
   return (

@@ -85,6 +85,15 @@
           "cancel": "Cancelar"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Eliminar pestaña",
+        "confirm": {
+          "title": "¿Eliminar esta pestaña?",
+          "description": "Las publicaciones de esta pestaña se moverán a la primera pestaña. Esta acción no se puede deshacer.",
+          "confirm": "Eliminar pestaña",
+          "cancel": "Cancelar"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Ocultar del menú",
         "showMenuLabel": "Mostrar en el menú",
@@ -110,6 +119,21 @@
         "errorGeneric": "No se pudo crear la fase. Inténtalo de nuevo.",
         "cancel": "Cancelar",
         "confirm": "Añadir fase"
+      }
+    },
+    "addTab": {
+      "button": "Añadir pestaña",
+      "dialog": {
+        "title": "Añadir una nueva pestaña",
+        "description": "Crea una nueva pestaña en este Space. Puedes cambiarle el nombre o eliminarla más tarde.",
+        "nameLabel": "Nombre de la pestaña",
+        "namePlaceholder": "p. ej. Archivo",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "¿Para qué sirve esta pestaña?",
+        "duplicate": "Ya existe una pestaña con este nombre.",
+        "errorGeneric": "No se pudo crear la pestaña. Inténtalo de nuevo.",
+        "cancel": "Cancelar",
+        "confirm": "Añadir pestaña"
       }
     },
     "replaceFlow": {

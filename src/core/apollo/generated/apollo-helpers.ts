@@ -558,6 +558,28 @@ export type ApplicationFieldPolicy = {
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AssistantCapabilityKeySpecifier = (
+  | 'description'
+  | 'displayName'
+  | 'kind'
+  | 'name'
+  | AssistantCapabilityKeySpecifier
+)[];
+export type AssistantCapabilityFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  kind?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AssistantCapabilityToggleKeySpecifier = (
+  | 'capability'
+  | 'enabled'
+  | AssistantCapabilityToggleKeySpecifier
+)[];
+export type AssistantCapabilityToggleFieldPolicy = {
+  capability?: FieldPolicy<any> | FieldReadFunction<any>;
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
   providers?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1534,6 +1556,17 @@ export type CredentialDefinitionKeySpecifier = ('resourceID' | 'type' | Credenti
 export type CredentialDefinitionFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type DirectMessageDeliveryResultKeySpecifier = (
+  | 'conversationID'
+  | 'receiverID'
+  | 'status'
+  | DirectMessageDeliveryResultKeySpecifier
+)[];
+export type DirectMessageDeliveryResultFieldPolicy = {
+  conversationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  receiverID?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type DiscussionKeySpecifier = (
   | 'authorization'
@@ -2850,6 +2883,7 @@ export type MutationKeySpecifier = (
   | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
   | 'revokeLicensePlanFromSpace'
+  | 'sendDirectMessageToUsers'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
@@ -2865,6 +2899,7 @@ export type MutationKeySpecifier = (
   | 'transferVirtualContributorToAccount'
   | 'unsubscribeFromPushNotifications'
   | 'updateApplicationFormOnRoleSet'
+  | 'updateAssistantActorCapabilities'
   | 'updateBaselineLicensePlanOnAccount'
   | 'updateCalendarEvent'
   | 'updateCallout'
@@ -3067,6 +3102,7 @@ export type MutationFieldPolicy = {
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendDirectMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3082,6 +3118,7 @@ export type MutationFieldPolicy = {
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   unsubscribeFromPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateAssistantActorCapabilities?: FieldPolicy<any> | FieldReadFunction<any>;
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3366,6 +3403,7 @@ export type PlatformKeySpecifier = (
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
+  | 'virtualAssistantAccess'
   | 'wellKnownVirtualContributors'
   | PlatformKeySpecifier
 )[];
@@ -3386,6 +3424,7 @@ export type PlatformFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualAssistantAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   wellKnownVirtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformAccessRoleKeySpecifier = ('grantedPrivileges' | 'roleName' | PlatformAccessRoleKeySpecifier)[];
@@ -3420,6 +3459,7 @@ export type PlatformAdminQueryResultsKeySpecifier = (
   | 'spaces'
   | 'userEmailChangeAuditEntries'
   | 'users'
+  | 'virtualAssistant'
   | 'virtualContributors'
   | PlatformAdminQueryResultsKeySpecifier
 )[];
@@ -3434,6 +3474,7 @@ export type PlatformAdminQueryResultsFieldPolicy = {
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   userEmailChangeAuditEntries?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualAssistant?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeatureFlagKeySpecifier)[];
@@ -3884,6 +3925,7 @@ export type QueryKeySpecifier = (
   | 'organizationsPaginated'
   | 'platform'
   | 'platformAdmin'
+  | 'platformCapabilities'
   | 'restrictedSpaceNames'
   | 'rolesOrganization'
   | 'rolesUser'
@@ -3924,6 +3966,7 @@ export type QueryFieldPolicy = {
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformCapabilities?: FieldPolicy<any> | FieldReadFunction<any>;
   restrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5102,6 +5145,7 @@ export type UserKeySpecifier = (
   | 'firstName'
   | 'id'
   | 'isContactable'
+  | 'isContactableViaEmail'
   | 'lastName'
   | 'nameID'
   | 'phone'
@@ -5123,6 +5167,7 @@ export type UserFieldPolicy = {
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContactableViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5224,6 +5269,7 @@ export type UserProfileSummaryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsKeySpecifier = (
+  | 'assistant'
   | 'authorization'
   | 'communication'
   | 'createdDate'
@@ -5236,6 +5282,7 @@ export type UserSettingsKeySpecifier = (
   | UserSettingsKeySpecifier
 )[];
 export type UserSettingsFieldPolicy = {
+  assistant?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5246,11 +5293,17 @@ export type UserSettingsFieldPolicy = {
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UserSettingsAssistantKeySpecifier = ('enabledCapabilities' | UserSettingsAssistantKeySpecifier)[];
+export type UserSettingsAssistantFieldPolicy = {
+  enabledCapabilities?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UserSettingsCommunicationKeySpecifier = (
+  | 'allowOtherUsersToContactViaEmail'
   | 'allowOtherUsersToSendMessages'
   | UserSettingsCommunicationKeySpecifier
 )[];
 export type UserSettingsCommunicationFieldPolicy = {
+  allowOtherUsersToContactViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsHomeSpaceKeySpecifier = ('autoRedirect' | 'spaceID' | UserSettingsHomeSpaceKeySpecifier)[];
@@ -5403,6 +5456,29 @@ export type VcInteractionKeySpecifier = ('threadID' | 'virtualContributorID' | V
 export type VcInteractionFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type VirtualAssistantKeySpecifier = (
+  | 'authorization'
+  | 'capabilityGrant'
+  | 'createdDate'
+  | 'credentials'
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | 'type'
+  | 'updatedDate'
+  | VirtualAssistantKeySpecifier
+)[];
+export type VirtualAssistantFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  capabilityGrant?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type VirtualContributorKeySpecifier = (
   | 'account'
@@ -5774,6 +5850,17 @@ export type StrictTypedTypePolicies = {
   Application?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
     fields?: ApplicationFieldPolicy;
+  };
+  AssistantCapability?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AssistantCapabilityKeySpecifier | (() => undefined | AssistantCapabilityKeySpecifier);
+    fields?: AssistantCapabilityFieldPolicy;
+  };
+  AssistantCapabilityToggle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AssistantCapabilityToggleKeySpecifier
+      | (() => undefined | AssistantCapabilityToggleKeySpecifier);
+    fields?: AssistantCapabilityToggleFieldPolicy;
   };
   AuthenticationConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AuthenticationConfigKeySpecifier | (() => undefined | AuthenticationConfigKeySpecifier);
@@ -6165,6 +6252,13 @@ export type StrictTypedTypePolicies = {
   CredentialDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialDefinitionKeySpecifier | (() => undefined | CredentialDefinitionKeySpecifier);
     fields?: CredentialDefinitionFieldPolicy;
+  };
+  DirectMessageDeliveryResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | DirectMessageDeliveryResultKeySpecifier
+      | (() => undefined | DirectMessageDeliveryResultKeySpecifier);
+    fields?: DirectMessageDeliveryResultFieldPolicy;
   };
   Discussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);
@@ -7191,6 +7285,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserSettingsKeySpecifier | (() => undefined | UserSettingsKeySpecifier);
     fields?: UserSettingsFieldPolicy;
   };
+  UserSettingsAssistant?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserSettingsAssistantKeySpecifier | (() => undefined | UserSettingsAssistantKeySpecifier);
+    fields?: UserSettingsAssistantFieldPolicy;
+  };
   UserSettingsCommunication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -7280,6 +7378,10 @@ export type StrictTypedTypePolicies = {
   VcInteraction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VcInteractionKeySpecifier | (() => undefined | VcInteractionKeySpecifier);
     fields?: VcInteractionFieldPolicy;
+  };
+  VirtualAssistant?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VirtualAssistantKeySpecifier | (() => undefined | VirtualAssistantKeySpecifier);
+    fields?: VirtualAssistantFieldPolicy;
   };
   VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);

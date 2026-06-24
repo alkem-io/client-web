@@ -85,6 +85,15 @@
           "cancel": "Annuleren"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Tab verwijderen",
+        "confirm": {
+          "title": "Deze tab verwijderen?",
+          "description": "Posts in deze tab worden verplaatst naar de eerste tab. Deze actie kan niet ongedaan worden gemaakt.",
+          "confirm": "Tab verwijderen",
+          "cancel": "Annuleren"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Verbergen in menu",
         "showMenuLabel": "Tonen in menu",
@@ -110,6 +119,21 @@
         "errorGeneric": "De fase kon niet worden gemaakt. Probeer het opnieuw.",
         "cancel": "Annuleren",
         "confirm": "Fase toevoegen"
+      }
+    },
+    "addTab": {
+      "button": "Tab toevoegen",
+      "dialog": {
+        "title": "Voeg een nieuwe tab toe",
+        "description": "Maak een nieuwe tab op deze Space. Je kunt deze later hernoemen of verwijderen.",
+        "nameLabel": "Naam van de tab",
+        "namePlaceholder": "bv. Archief",
+        "descriptionLabel": "Beschrijving (optioneel)",
+        "descriptionPlaceholder": "Waarvoor dient deze tab?",
+        "duplicate": "Er bestaat al een tab met deze naam.",
+        "errorGeneric": "De tab kon niet worden gemaakt. Probeer het opnieuw.",
+        "cancel": "Annuleren",
+        "confirm": "Tab toevoegen"
       }
     },
     "replaceFlow": {

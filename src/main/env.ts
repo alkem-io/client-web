@@ -9,6 +9,8 @@ declare global {
       VITE_APP_COLLAB_PATH?: string;
       VITE_APP_COLLAB_DOC_URL?: string;
       VITE_APP_COLLAB_DOC_PATH?: string;
+      VITE_APP_ASSISTANT_ENABLED?: string;
+      VITE_APP_ASSISTANT_BASE_PATH?: string;
     };
   }
 }
