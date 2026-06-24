@@ -8,13 +8,13 @@ import { HubSpacesSection } from './HubSpacesSection';
 // Force a specific grid column count for tests that exercise full-row snapping.
 // Defaults to 1 (matching jsdom, where ResizeObserver is unavailable), so the
 // existing batch tests behave as before. The real `snapToFullRows` is preserved.
-let mockColumnCount = 1;
+const gridMock = vi.hoisted(() => ({ columnCount: 1 }));
 vi.mock('@/crd/hooks/useGridColumnCount', async importActual => {
   const actual = await importActual<typeof import('@/crd/hooks/useGridColumnCount')>();
-  return { ...actual, useGridColumnCount: () => [mockColumnCount, () => {}] };
+  return { ...actual, useGridColumnCount: () => [gridMock.columnCount, () => {}] };
 });
 afterEach(() => {
-  mockColumnCount = 1;
+  gridMock.columnCount = 1;
 });
 
 // The real `t` interpolates {{visible}}/{{total}} into the showingCount string.
@@ -88,7 +88,7 @@ describe('HubSpacesSection — smaller cards + lazy load (US1)', () => {
     // columnCount (13) > BATCH_SIZE (12): the first batch snaps to one full row
     // (13). A naive `+ BATCH_SIZE` would snap back to 13, revealing nothing — the
     // fix advances past the current row, so each click must grow the visible set.
-    mockColumnCount = 13;
+    gridMock.columnCount = 13;
     const user = userEvent.setup();
     render(<HubSpacesSection spaces={makeSpaces(40)} hubName="VNG" />);
 
