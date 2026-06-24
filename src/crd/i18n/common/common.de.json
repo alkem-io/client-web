@@ -106,6 +106,51 @@
       }
     }
   },
+  "assistant": {
+    "title": "Assistant",
+    "openButton": "Open the assistant",
+    "openInWhiteboard": "Ask the assistant about this whiteboard",
+    "scopedTo": "Working on: {{name}}",
+    "closeButton": "Close the assistant",
+    "settings": "Assistant settings",
+    "settingsWhiteboardScope": "Whiteboard capabilities — manage all in Settings → Assistant",
+    "newConversation": "New Chat",
+    "intro": "Ask me about content on the platform. I can search and summarise what you have access to.",
+    "inputPlaceholder": "Ask the assistant…",
+    "send": "Send",
+    "stop": "Stop",
+    "thinking": "Thinking…",
+    "toolActivity": {
+      "started": "{{label}}",
+      "finished": "{{label}}",
+      "error": "{{label}} failed"
+    },
+    "confirmation": {
+      "title": "Confirm these actions",
+      "description": "Nothing changes until you approve. Review what the assistant will do:",
+      "destructiveItem": "This changes existing content.",
+      "approve": "Approve",
+      "decline": "Decline",
+      "enableCapabilityLink": "Enable this capability in Settings → Assistant"
+    },
+    "a11y": {
+      "userTurn": "Your message",
+      "assistantTurn": "Assistant reply"
+    },
+    "budget": {
+      "usage": "{{used}} of {{limit}} monthly tokens · resets on the 1st",
+      "noLimit": "No monthly token limit configured",
+      "a11y": "Monthly assistant usage: {{used}} of {{limit}} tokens"
+    },
+    "errors": {
+      "capability_unavailable": "A required capability is temporarily unavailable. Please try again shortly.",
+      "permission_denied": "You don't have access to the assistant, or the capability is disabled in your settings.",
+      "usage_limit_reached": "You've reached your monthly assistant usage limit. Your allowance resets on the 1st of next month.",
+      "session_invalid": "Your session ended. Please sign in again and re-ask.",
+      "internal_error": "Something went wrong. Please try again.",
+      "transport": "The connection was interrupted. Please try again."
+    }
+  },
   "associates-view": {
     "less": "weniger anzeigen",
     "more": "...plus {{count}} mehr",
@@ -971,13 +1016,13 @@
     "ua": "Ukrainian"
   },
   "lead": "Leiter",
+  "leads": "Leiter",
   "leadType": {
     "org": "Organisation",
     "person": "Person"
   },
-  "leads": "Leiter",
-  "loadMore": "Mehr laden",
   "loading": "Laden",
+  "loadMore": "Mehr laden",
   "member": "Mitglied",
   "messaging": {
     "message": "Nachricht",

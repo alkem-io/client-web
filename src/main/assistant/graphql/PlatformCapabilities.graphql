@@ -1,0 +1,8 @@
+query PlatformCapabilities {
+  platformCapabilities {
+    name
+    displayName
+    description
+    kind
+  }
+}
