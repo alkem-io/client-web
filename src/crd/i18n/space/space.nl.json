@@ -33,7 +33,8 @@
       "retry": "Opnieuw proberen",
       "loadingLabel": "Zoekresultaten laden",
       "appendingLabel": "Meer resultaten laden",
-      "removeTerm": "Term {{term}} verwijderen"
+      "removeTerm": "Term {{term}} verwijderen",
+      "removeTag": "Tag {{tag}} verwijderen"
     },
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",

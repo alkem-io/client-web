@@ -33,7 +33,8 @@
       "retry": "Erneut versuchen",
       "loadingLabel": "Suchergebnisse werden geladen",
       "appendingLabel": "Weitere Ergebnisse werden geladen",
-      "removeTerm": "Begriff {{term}} entfernen"
+      "removeTerm": "Begriff {{term}} entfernen",
+      "removeTag": "Tag {{tag}} entfernen"
     },
     "viewGrid": "Kartenansicht",
     "viewList": "Listenansicht",

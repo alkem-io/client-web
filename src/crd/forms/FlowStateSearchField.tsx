@@ -1,4 +1,4 @@
-import { Search, X } from 'lucide-react';
+import { Search, Tag, X } from 'lucide-react';
 import { type KeyboardEvent, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 
@@ -14,6 +14,16 @@ type FlowStateSearchFieldProps = {
   ariaLabel?: string;
   /** Accessible label for a pill's remove button (consumer i18n's the term). */
   removeTermAriaLabel: (term: string) => string;
+  /**
+   * Active tag filters — rendered as removable pills in the same row as the
+   * term pills, so the field is the single home for everything the search is
+   * scoped by. Tag pills carry a tag icon to set them apart from free-text terms.
+   */
+  tags?: string[];
+  /** Removes a tag filter (de-selects it in the consumer's tag source). */
+  onTagRemove?: (tag: string) => void;
+  /** Accessible label for a tag pill's remove button (consumer i18n's the tag). */
+  removeTagAriaLabel?: (tag: string) => string;
   /** Minimum draft length before a pill can form. Defaults to 1. */
   minLength?: number;
   className?: string;
@@ -34,6 +44,9 @@ export function FlowStateSearchField({
   placeholder,
   ariaLabel,
   removeTermAriaLabel,
+  tags = [],
+  onTagRemove,
+  removeTagAriaLabel,
   minLength = 1,
   className,
 }: FlowStateSearchFieldProps) {
@@ -68,7 +81,7 @@ export function FlowStateSearchField({
         />
       </div>
 
-      {terms.length > 0 && (
+      {(terms.length > 0 || tags.length > 0) && (
         <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
           {terms.map((term, index) => (
             <li
@@ -80,6 +93,23 @@ export function FlowStateSearchField({
                 type="button"
                 onClick={() => onTermRemove(index)}
                 aria-label={removeTermAriaLabel(term)}
+                className="rounded-full p-0.5 hover:opacity-70 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <X aria-hidden="true" className="size-3" />
+              </button>
+            </li>
+          ))}
+          {tags.map(tag => (
+            <li
+              key={`tag-${tag}`}
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-0.5 text-control border border-primary bg-primary/10 text-primary"
+            >
+              <Tag aria-hidden="true" className="size-3" />
+              {tag}
+              <button
+                type="button"
+                onClick={() => onTagRemove?.(tag)}
+                aria-label={removeTagAriaLabel?.(tag) ?? tag}
                 className="rounded-full p-0.5 hover:opacity-70 outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <X aria-hidden="true" className="size-3" />

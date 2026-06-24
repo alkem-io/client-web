@@ -33,7 +33,8 @@
       "retry": "Réessayer",
       "loadingLabel": "Chargement des résultats de recherche",
       "appendingLabel": "Chargement de résultats supplémentaires",
-      "removeTerm": "Supprimer le terme {{term}}"
+      "removeTerm": "Supprimer le terme {{term}}",
+      "removeTag": "Supprimer l'étiquette {{tag}}"
     },
     "viewGrid": "Vue en cartes",
     "viewList": "Vue en liste",

@@ -33,7 +33,8 @@
       "retry": "Try again",
       "loadingLabel": "Loading search results",
       "appendingLabel": "Loading more results",
-      "removeTerm": "Remove term {{term}}"
+      "removeTerm": "Remove term {{term}}",
+      "removeTag": "Remove tag {{tag}}"
     },
     "viewGrid": "Card view",
     "viewList": "List view",

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCalloutsSetTagsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
-import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
@@ -98,11 +97,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
     setTermPills(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleClearFilters = () => {
-    setTermPills([]);
-    setTagsFilter([]);
-  };
-
   const searchLabels = {
     emptyTitle: t('knowledge.search.emptyTitle'),
     emptyDescription: t('knowledge.search.emptyDescription'),
@@ -157,6 +151,9 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
             terms={termPills}
             onTermAdd={handleTermAdd}
             onTermRemove={handleTermRemove}
+            tags={tagsFilter}
+            onTagRemove={handleToggleTag}
+            removeTagAriaLabel={tag => t('knowledge.search.removeTag', { tag })}
             placeholder={t('knowledge.searchPlaceholder')}
             ariaLabel={t('knowledge.searchLabel')}
             removeTermAriaLabel={term => t('knowledge.search.removeTerm', { term })}
@@ -164,10 +161,6 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           />
           <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
         </div>
-
-        {/* Term pills live in the field itself; the summary only reflects active
-            tag filters and provides the clear-all affordance. */}
-        <FilterResultsSummary tags={tagsFilter} onClear={handleClearFilters} />
 
         {isSearching ? (
           <FlowStateSearchResults
