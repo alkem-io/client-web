@@ -86,6 +86,7 @@
         "membership": "Mitgliedschaft",
         "organizations": "Organisationen",
         "notifications": "Benachrichtigungen",
+        "assistant": "Assistent",
         "settings": "Einstellungen",
         "security": "Sicherheit"
       },
@@ -259,6 +260,8 @@
         "title": "Kommunikation und Datenschutz",
         "allowMessagesLabel": "Andere Nutzer dürfen mir Direktnachrichten senden",
         "allowMessagesDescription": "Wenn deaktiviert, können andere Nutzer kein Direktnachrichten-Gespräch mit dir starten.",
+        "allowEmailContactLabel": "Anderen erlauben, mich per E-Mail zu kontaktieren",
+        "allowEmailContactDescription": "Wenn aktiviert, können Personen, die dich nicht per Chat erreichen, dir eine E-Mail an deine Kontoadresse senden. Deine Adresse wird ihnen nie angezeigt.",
         "error": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
       },
       "designSystem": {
@@ -422,6 +425,24 @@
         "description": "Damit wird „{{name}}“ dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
         "confirm": "Löschen"
       }
+    },
+    "assistant": {
+      "pageTitle": "Assistent",
+      "helpBanner": "Lege fest, was der Assistent in deinem Namen tun darf. Lesefunktionen sind standardmäßig aktiviert; Funktionen, die Inhalte ändern, sind deaktiviert, bis du sie aktivierst. Der Assistent kann nie mehr tun, als du selbst tun kannst.",
+      "empty": "Derzeit sind keine Assistentenfunktionen verfügbar.",
+      "destructiveBadge": "Kann vorhandene Inhalte ändern",
+      "toggleAria": "Funktion „{{capability}}“ ein- oder ausschalten",
+      "toggleError": "Diese Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "groups": {
+        "read": {
+          "title": "Lesen",
+          "description": "Lass den Assistenten Inhalte finden und zusammenfassen, auf die du bereits Zugriff hast."
+        },
+        "write": {
+          "title": "Inhalte ändern",
+          "description": "Lass den Assistenten Inhalte für dich erstellen oder ändern. Vor jeder Änderung bestätigst du sie."
+        }
+      }
     }
   },
   "org": {
@@ -434,13 +455,27 @@
           "hint": "Wie deine Organisation auf Alkemio erscheint.",
           "required": "Anzeigename ist erforderlich"
         },
-        "nameID": { "label": "Name ID", "caption": "Kann nach der Erstellung nicht geändert werden." },
-        "tagline": { "label": "Slogan", "hint": "Eine kurze Zeile neben dem Namen deiner Organisation." }
+        "nameID": {
+          "label": "Name ID",
+          "caption": "Kann nach der Erstellung nicht geändert werden."
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Eine kurze Zeile neben dem Namen deiner Organisation."
+        }
       },
       "about": {
         "title": "Über",
-        "description": { "label": "Beschreibung", "hint": "Markdown wird unterstützt." },
-        "location": { "title": "Standort", "city": "Stadt", "country": "Land", "countryPlaceholder": "Land auswählen" },
+        "description": {
+          "label": "Beschreibung",
+          "hint": "Markdown wird unterstützt."
+        },
+        "location": {
+          "title": "Standort",
+          "city": "Stadt",
+          "country": "Land",
+          "countryPlaceholder": "Land auswählen"
+        },
         "keywords": {
           "label": "Schlüsselwörter",
           "hint": "Themen, an denen deine Organisation arbeitet. Mit Enter hinzufügen.",
@@ -459,8 +494,14 @@
           "hint": "Öffentliche Kontakt-E-Mail der Organisation.",
           "invalidFormat": "Gib eine gültige E-Mail-Adresse ein"
         },
-        "domain": { "label": "Domain", "hint": "Web-Domain deiner Organisation (ohne Protokoll)." },
-        "legalEntityName": { "label": "Rechtlicher Name", "hint": "Der offiziell eingetragene Name." },
+        "domain": {
+          "label": "Domain",
+          "hint": "Web-Domain deiner Organisation (ohne Protokoll)."
+        },
+        "legalEntityName": {
+          "label": "Rechtlicher Name",
+          "hint": "Der offiziell eingetragene Name."
+        },
         "website": {
           "label": "Website",
           "hint": "Vollständige URL inklusive https://",
@@ -498,11 +539,28 @@
     "account": {
       "pageTitle": "Konto",
       "helpBanner": "Hier kannst du die aktiven Ressourcen deiner Organisation einsehen und Kontolimits verwalten.",
-      "spaces": { "title": "Gehostete Spaces", "createButton": "Space erstellen" },
-      "virtualContributors": { "title": "Virtuelle Mitwirkende", "createButton": "Mitwirkenden hinzufügen" },
-      "innovationPacks": { "title": "Vorlagenpakete", "createButton": "Neues Paket" },
-      "innovationHubs": { "title": "Eigene Startseiten", "createButton": "Neue Seite" },
-      "actions": { "view": "Anzeigen", "manage": "Verwalten", "transfer": "Übertragen", "delete": "Löschen" },
+      "spaces": {
+        "title": "Gehostete Spaces",
+        "createButton": "Space erstellen"
+      },
+      "virtualContributors": {
+        "title": "Virtuelle Mitwirkende",
+        "createButton": "Mitwirkenden hinzufügen"
+      },
+      "innovationPacks": {
+        "title": "Vorlagenpakete",
+        "createButton": "Neues Paket"
+      },
+      "innovationHubs": {
+        "title": "Eigene Startseiten",
+        "createButton": "Neue Seite"
+      },
+      "actions": {
+        "view": "Anzeigen",
+        "manage": "Verwalten",
+        "transfer": "Übertragen",
+        "delete": "Löschen"
+      },
       "deleteDialog": {
         "title": "Diese Ressource löschen?",
         "description": "Damit wird „{{name}}“ dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",

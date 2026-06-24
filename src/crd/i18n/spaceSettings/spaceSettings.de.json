@@ -85,6 +85,15 @@
           "cancel": "Abbrechen"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Tab löschen",
+        "confirm": {
+          "title": "Diesen Tab löschen?",
+          "description": "Beiträge in diesem Tab werden in den ersten Tab verschoben. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirm": "Tab löschen",
+          "cancel": "Abbrechen"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Im Menü ausblenden",
         "showMenuLabel": "Im Menü anzeigen",
@@ -110,6 +119,21 @@
         "errorGeneric": "Die Phase konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
         "cancel": "Abbrechen",
         "confirm": "Phase hinzufügen"
+      }
+    },
+    "addTab": {
+      "button": "Tab hinzufügen",
+      "dialog": {
+        "title": "Neuen Tab hinzufügen",
+        "description": "Erstellen Sie einen neuen Tab in diesem Space. Sie können ihn später umbenennen oder entfernen.",
+        "nameLabel": "Tab-Name",
+        "namePlaceholder": "z. B. Archiv",
+        "descriptionLabel": "Beschreibung (optional)",
+        "descriptionPlaceholder": "Wofür ist dieser Tab?",
+        "duplicate": "Ein Tab mit diesem Namen existiert bereits.",
+        "errorGeneric": "Der Tab konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+        "cancel": "Abbrechen",
+        "confirm": "Tab hinzufügen"
       }
     },
     "replaceFlow": {

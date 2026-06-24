@@ -16,6 +16,7 @@
     "searchHint": "Begin te typen om mensen te zoeken",
     "noResults": "Geen mensen gevonden",
     "create": "Chat starten",
+    "createGroup": "Groepschat starten",
     "removeAria": "{{name}} verwijderen"
   },
   "group": {
@@ -74,5 +75,28 @@
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
     "addReaction": "Reactie toevoegen"
+  },
+  "sendConfirmation": {
+    "title": "Bericht verzonden",
+    "description": "Je bericht is verzonden als een privéchat.",
+    "partialDescription": "Je bericht is verzonden, maar sommige mensen konden niet worden bereikt.",
+    "notReachedTitle": "Niet bereikt",
+    "openChat": "Chat openen",
+    "close": "Sluiten"
+  },
+  "contactLeads": {
+    "title": "Contact opnemen met de leads",
+    "explanation": "Dit bericht wordt naar elke lead afzonderlijk verzonden. Bezoek het profiel van een specifieke lead om rechtstreeks contact op te nemen.",
+    "messageLabel": "Bericht",
+    "messagePlaceholder": "Schrijf je bericht…",
+    "recipientsLabel": "Ontvangers",
+    "send": "Verzenden",
+    "cancel": "Annuleren",
+    "sending": "Verzenden…",
+    "errors": {
+      "messageRequired": "Bericht mag niet leeg zijn.",
+      "messageTooLong": "Bericht mag maximaal {{max}} tekens bevatten.",
+      "sendFailed": "Kon het bericht niet verzenden. Probeer het opnieuw."
+    }
   }
 }

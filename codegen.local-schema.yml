@@ -1,0 +1,52 @@
+overwrite: true
+# Codegen against the committed server GraphQL schema snapshot from the
+# 004-web-ai-assistant server worktree (cross-repo handoff — the assistant
+# authority types are not yet on a live/develop server). Use the standard
+# `pnpm codegen` against localhost:3000/graphql once the server PR has merged
+# to develop; this variant only exists to bootstrap the assistant typed hooks
+# in isolation. See specs/004-web-ai-assistant/tasks/client-web.md T003.
+schema: '../server/schema.graphql'
+documents:
+  - 'src/**/*.graphql'
+hooks:
+  afterAllFileWrite:
+    - biome check --fix --unsafe
+    - biome format --write
+generates:
+  src/core/apollo/generated/graphql-schema.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+    config:
+      maybeValue: T | undefined
+      preResolveTypes: true
+      scalars:
+        Upload: File
+        TextID: string
+        NameID: string
+        Emoji: string
+        UUID: string
+        DID: string
+        CID: string
+        DateTime: Date
+        JSON: string
+        Markdown: string
+        MessageID: string
+        LifecycleDefinition: string
+        MemoContent: string
+        WhiteboardContent: string
+        SearchCursor: string
+      strictScalars: true
+  src/core/apollo/generated/apollo-hooks.ts:
+    preset: import-types
+    presetConfig:
+      typesPath: ./graphql-schema
+      importTypesNamespace: SchemaTypes
+    plugins:
+      - typescript-react-apollo
+    config:
+      withHooks: true
+      withRefetchFn: true
+  src/core/apollo/generated/apollo-helpers.ts:
+    plugins:
+      - typescript-apollo-client-helpers

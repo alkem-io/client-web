@@ -85,6 +85,15 @@
           "cancel": "Annuler"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Supprimer l'onglet",
+        "confirm": {
+          "title": "Supprimer cet onglet ?",
+          "description": "Les posts de cet onglet seront déplacés vers le premier onglet. Cette action est irréversible.",
+          "confirm": "Supprimer l'onglet",
+          "cancel": "Annuler"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Masquer du menu",
         "showMenuLabel": "Afficher dans le menu",
@@ -110,6 +119,21 @@
         "errorGeneric": "La phase n'a pas pu être créée. Veuillez réessayer.",
         "cancel": "Annuler",
         "confirm": "Ajouter la phase"
+      }
+    },
+    "addTab": {
+      "button": "Ajouter un onglet",
+      "dialog": {
+        "title": "Ajouter un nouvel onglet",
+        "description": "Créez un nouvel onglet sur ce Space. Vous pourrez le renommer ou le supprimer plus tard.",
+        "nameLabel": "Nom de l'onglet",
+        "namePlaceholder": "p. ex. Archives",
+        "descriptionLabel": "Description (optionnelle)",
+        "descriptionPlaceholder": "À quoi sert cet onglet ?",
+        "duplicate": "Un onglet portant ce nom existe déjà.",
+        "errorGeneric": "L'onglet n'a pas pu être créé. Veuillez réessayer.",
+        "cancel": "Annuler",
+        "confirm": "Ajouter l'onglet"
       }
     },
     "replaceFlow": {

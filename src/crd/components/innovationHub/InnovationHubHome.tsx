@@ -2,10 +2,11 @@ import { FoldHorizontal, Settings, UnfoldHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
-import { SpaceCard, type SpaceCardData, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
+import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
+import { HubSpacesSection } from './HubSpacesSection';
 import { InnovationHubBanner } from './InnovationHubBanner';
 
 export type InnovationHubHomeData = {
@@ -129,38 +130,7 @@ export const InnovationHubHome = ({
               </section>
             )}
 
-            <section>
-              <h2 className="text-section-title mb-6 text-foreground">
-                {t('home.spacesSection.title', { hubName: data.name })}
-              </h2>
-              {spacesLoading && spaces.length === 0 ? (
-                <output
-                  aria-label={t('home.spacesSection.loading')}
-                  className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-                >
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no stable key
-                    <SpaceCardSkeleton key={i} />
-                  ))}
-                </output>
-              ) : spaces.length === 0 ? (
-                <div className="rounded-lg border border-border bg-card/50 p-8 text-center text-muted-foreground">
-                  <p className="text-body">{t('home.spacesSection.empty')}</p>
-                </div>
-              ) : (
-                <>
-                  {/* biome-ignore lint/a11y/noRedundantRoles: VoiceOver/JAWS strip implicit list semantics from a Tailwind grid `<ul>`; the role restores them */}
-                  {/* biome-ignore lint/a11y/useSemanticElements: the `<ul>` IS the semantic element — the role is reaffirming, not substituting */}
-                  <ul role="list" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {spaces.map(space => (
-                      <li key={space.id}>
-                        <SpaceCard space={space} />
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </section>
+            <HubSpacesSection spaces={spaces} hubName={data.name} spacesLoading={spacesLoading} />
 
             <section className="flex items-center gap-3 px-4 py-3 text-muted-foreground">
               <div className="size-4 shrink-0">
