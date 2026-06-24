@@ -23,14 +23,14 @@ export const CrdUserProfilePage = () => {
   const { userId, userModel, currentUserId, accountResources, contributions, organizationIds, loading } = data;
   usePageTitle(userModel?.profile?.displayName);
 
-  const { activeTab, onSelectTab } = useResourceTabs();
+  const { activeTab, onSelectTab } = useResourceTabs('memberOf');
 
   const { onSendMessage } = useSendMessageToUserHandler({ recipientUserId: userId });
 
   const tabs = [
-    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
-    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
     { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
+    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
+    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
   ];
 
   const heroLoading = loading.route || !userModel;
