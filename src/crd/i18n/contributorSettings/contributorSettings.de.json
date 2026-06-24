@@ -259,6 +259,8 @@
         "title": "Kommunikation und Datenschutz",
         "allowMessagesLabel": "Andere Nutzer dürfen mir Direktnachrichten senden",
         "allowMessagesDescription": "Wenn deaktiviert, können andere Nutzer kein Direktnachrichten-Gespräch mit dir starten.",
+        "allowEmailContactLabel": "Anderen erlauben, mich per E-Mail zu kontaktieren",
+        "allowEmailContactDescription": "Wenn aktiviert, können Personen, die dich nicht per Chat erreichen, dir eine E-Mail an deine Kontoadresse senden. Deine Adresse wird ihnen nie angezeigt.",
         "error": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
       },
       "designSystem": {

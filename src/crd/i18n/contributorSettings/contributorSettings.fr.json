@@ -259,6 +259,8 @@
         "title": "Communication et confidentialité",
         "allowMessagesLabel": "Autoriser d'autres utilisateurs à m'envoyer des messages directs",
         "allowMessagesDescription": "Lorsque désactivé, les autres utilisateurs ne pourront pas démarrer une conversation par message direct avec vous.",
+        "allowEmailContactLabel": "Autoriser les autres à me contacter par e-mail",
+        "allowEmailContactDescription": "Lorsque activé, les personnes qui ne peuvent pas vous joindre par messagerie peuvent vous envoyer un e-mail à l'adresse de votre compte. Votre adresse ne leur est jamais montrée.",
         "error": "Impossible d'enregistrer la préférence — réessayez"
       },
       "designSystem": {

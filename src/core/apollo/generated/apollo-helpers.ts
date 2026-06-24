@@ -1535,6 +1535,17 @@ export type CredentialDefinitionFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type DirectMessageDeliveryResultKeySpecifier = (
+  | 'conversationID'
+  | 'receiverID'
+  | 'status'
+  | DirectMessageDeliveryResultKeySpecifier
+)[];
+export type DirectMessageDeliveryResultFieldPolicy = {
+  conversationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  receiverID?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type DiscussionKeySpecifier = (
   | 'authorization'
   | 'category'
@@ -2850,6 +2861,7 @@ export type MutationKeySpecifier = (
   | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
   | 'revokeLicensePlanFromSpace'
+  | 'sendDirectMessageToUsers'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
@@ -3067,6 +3079,7 @@ export type MutationFieldPolicy = {
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendDirectMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5102,6 +5115,7 @@ export type UserKeySpecifier = (
   | 'firstName'
   | 'id'
   | 'isContactable'
+  | 'isContactableViaEmail'
   | 'lastName'
   | 'nameID'
   | 'phone'
@@ -5123,6 +5137,7 @@ export type UserFieldPolicy = {
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContactableViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5247,10 +5262,12 @@ export type UserSettingsFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsCommunicationKeySpecifier = (
+  | 'allowOtherUsersToContactViaEmail'
   | 'allowOtherUsersToSendMessages'
   | UserSettingsCommunicationKeySpecifier
 )[];
 export type UserSettingsCommunicationFieldPolicy = {
+  allowOtherUsersToContactViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsHomeSpaceKeySpecifier = ('autoRedirect' | 'spaceID' | UserSettingsHomeSpaceKeySpecifier)[];
@@ -6165,6 +6182,13 @@ export type StrictTypedTypePolicies = {
   CredentialDefinition?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CredentialDefinitionKeySpecifier | (() => undefined | CredentialDefinitionKeySpecifier);
     fields?: CredentialDefinitionFieldPolicy;
+  };
+  DirectMessageDeliveryResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | DirectMessageDeliveryResultKeySpecifier
+      | (() => undefined | DirectMessageDeliveryResultKeySpecifier);
+    fields?: DirectMessageDeliveryResultFieldPolicy;
   };
   Discussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);

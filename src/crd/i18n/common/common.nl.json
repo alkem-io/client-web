@@ -1344,13 +1344,12 @@
       },
       "messageLabel": "Bericht",
       "noResults": "Geen gebruikers gevonden",
+      "notice": "Elke ontvanger krijgt dit als een privébericht in hun chat.",
       "removeUser": "{{name}} verwijderen",
       "searchAriaLabel": "Gebruikers zoeken",
       "searchPlaceholder": "Zoek gebruikers op naam of e-mail",
       "searching": "Zoeken…",
-      "send": "Verzenden",
-      "sent": "Bericht succesvol verzonden.",
-      "warning": "Ontvangers zien jouw naam als afzender."
+      "send": "Verzenden"
     },
     "back": "Terug",
     "button": "Delen",

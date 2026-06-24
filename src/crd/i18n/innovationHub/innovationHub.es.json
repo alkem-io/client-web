@@ -6,7 +6,20 @@
     "spacesSection": {
       "title": "Espacios de {{hubName}}",
       "empty": "Aún no se han añadido espacios a este hub.",
-      "loading": "Cargando espacios…"
+      "loading": "Cargando espacios…",
+      "searchPlaceholder": "Buscar espacios…",
+      "showingCount": "Mostrando {{visible}} de {{total}} espacios",
+      "spacesLabel": "espacios",
+      "noResultsTitle": "No se encontraron espacios",
+      "noResultsMessage": "Prueba con otro término de búsqueda.",
+      "clearSearch": "Borrar búsqueda",
+      "filters": "Filtros",
+      "filterPrivacy": "Privacidad",
+      "filterAll": "Todos",
+      "filterPublicOnly": "Solo públicos",
+      "filterPrivateOnly": "Solo privados",
+      "clearFilters": "Borrar todos los filtros",
+      "removeFilter": "eliminar filtro"
     },
     "allSpacesCta": "Explorar todos los espacios en Alkemio"
   },

@@ -1344,13 +1344,12 @@
       },
       "messageLabel": "Message",
       "noResults": "Aucun utilisateur trouvé",
+      "notice": "Chaque destinataire le reçoit comme un message privé dans sa discussion.",
       "removeUser": "Retirer {{name}}",
       "searchAriaLabel": "Rechercher des utilisateurs",
       "searchPlaceholder": "Rechercher des utilisateurs par nom ou e-mail",
       "searching": "Recherche…",
-      "send": "Envoyer",
-      "sent": "Message envoyé avec succès.",
-      "warning": "Les destinataires verront votre nom comme expéditeur."
+      "send": "Envoyer"
     },
     "back": "Retour",
     "button": "Partager",
