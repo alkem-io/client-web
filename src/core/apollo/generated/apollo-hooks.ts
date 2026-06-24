@@ -1679,6 +1679,7 @@ export const UserSettingsFragmentFragmentDoc = gql`
   id
   communication {
     allowOtherUsersToSendMessages
+    allowOtherUsersToContactViaEmail
   }
   privacy {
     contributionRolesPubliclyVisible
@@ -15348,6 +15349,7 @@ export const UserModelFullDocument = gql`
   lookup {
     user(ID: $userId) {
       isContactable
+      isContactableViaEmail
       ...UserDetails
     }
   }
@@ -33949,6 +33951,56 @@ export type RemoveConversationMemberMutationResult =
 export type RemoveConversationMemberMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.RemoveConversationMemberMutation,
   SchemaTypes.RemoveConversationMemberMutationVariables
+>;
+export const SendDirectMessageToUsersDocument = gql`
+    mutation SendDirectMessageToUsers($messageData: SendDirectMessageToUsersInput!) {
+  sendDirectMessageToUsers(messageData: $messageData) {
+    receiverID
+    status
+    conversationID
+  }
+}
+    `;
+export type SendDirectMessageToUsersMutationFn = Apollo.MutationFunction<
+  SchemaTypes.SendDirectMessageToUsersMutation,
+  SchemaTypes.SendDirectMessageToUsersMutationVariables
+>;
+
+/**
+ * __useSendDirectMessageToUsersMutation__
+ *
+ * To run a mutation, you first call `useSendDirectMessageToUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendDirectMessageToUsersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendDirectMessageToUsersMutation, { data, loading, error }] = useSendDirectMessageToUsersMutation({
+ *   variables: {
+ *      messageData: // value for 'messageData'
+ *   },
+ * });
+ */
+export function useSendDirectMessageToUsersMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.SendDirectMessageToUsersMutation,
+    SchemaTypes.SendDirectMessageToUsersMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.SendDirectMessageToUsersMutation,
+    SchemaTypes.SendDirectMessageToUsersMutationVariables
+  >(SendDirectMessageToUsersDocument, options);
+}
+export type SendDirectMessageToUsersMutationHookResult = ReturnType<typeof useSendDirectMessageToUsersMutation>;
+export type SendDirectMessageToUsersMutationResult =
+  Apollo.MutationResult<SchemaTypes.SendDirectMessageToUsersMutation>;
+export type SendDirectMessageToUsersMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.SendDirectMessageToUsersMutation,
+  SchemaTypes.SendDirectMessageToUsersMutationVariables
 >;
 export const UpdateConversationDocument = gql`
     mutation UpdateConversation($updateData: UpdateConversationInput!) {

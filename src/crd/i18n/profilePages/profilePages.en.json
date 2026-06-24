@@ -4,15 +4,21 @@
     "locationCityOnly": "{{city}}",
     "locationCountryOnly": "{{country}}",
     "messagePopover": {
-      "placeholder": "Write an email…",
+      "placeholder": "Write a message…",
       "send": "Send",
       "cancel": "Cancel",
       "sending": "Sending…",
       "errorTitle": "Could not send your message",
       "ariaLabel": "Compose message",
+      "title": "Send a private message",
+      "notice": "Starts a private chat you can continue.",
+      "successToast": "Your message has been sent.",
       "emailTitle": "Send an email",
-      "emailNotice": "Delivered to their inbox.",
-      "successToast": "Your email has been sent."
+      "emailNotice": "Sent to this person's account email address.",
+      "emailPlaceholder": "Write an email…",
+      "emailSuccessToast": "Your email has been sent.",
+      "cannotBeReached": "This person cannot be contacted.",
+      "openChatError": "We couldn't open the chat. Please try again."
     },
     "resourceTabsAriaLabel": "Resource sections",
     "loading": {
@@ -33,6 +39,7 @@
     "hero": {
       "settingsTooltip": "User settings",
       "messageButton": "Message",
+      "emailButton": "Email",
       "settingsAriaLabel": "Open user settings"
     },
     "tabs": {
@@ -67,6 +74,9 @@
       "settingsTooltip": "Organisation settings",
       "settingsAriaLabel": "Open organisation settings",
       "messageButton": "Message",
+      "messageEmailTitle": "Send an email",
+      "messageEmailNotice": "Delivered to the organisation's administrators.",
+      "messageEmailPlaceholder": "Write an email…",
       "verifiedBadge": "Verified",
       "verifiedTooltip": "This organisation has been verified by Alkemio."
     },

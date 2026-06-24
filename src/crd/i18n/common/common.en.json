@@ -1389,13 +1389,12 @@
       },
       "messageLabel": "Message",
       "noResults": "No users found",
+      "notice": "Each recipient receives this as a private message in their chat.",
       "removeUser": "Remove {{name}}",
       "searchAriaLabel": "Search users",
       "searchPlaceholder": "Search users by name or email",
       "searching": "Searching…",
-      "send": "Send",
-      "sent": "Message sent successfully.",
-      "warning": "Recipients will see your name as the sender."
+      "send": "Send"
     },
     "back": "Back",
     "button": "Share",

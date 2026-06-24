@@ -1389,13 +1389,12 @@
       },
       "messageLabel": "Nachricht",
       "noResults": "Keine Nutzer gefunden",
+      "notice": "Jeder Empfänger erhält dies als private Nachricht in seinem Chat.",
       "removeUser": "{{name}} entfernen",
       "searchAriaLabel": "Nutzer suchen",
       "searchPlaceholder": "Nutzer nach Name oder E-Mail suchen",
       "searching": "Suchen…",
-      "send": "Senden",
-      "sent": "Nachricht erfolgreich gesendet.",
-      "warning": "Die Empfänger sehen deinen Namen als Absender."
+      "send": "Senden"
     },
     "back": "Zurück",
     "button": "Teilen",
