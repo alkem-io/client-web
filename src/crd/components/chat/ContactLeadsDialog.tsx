@@ -60,9 +60,16 @@ export function ContactLeadsDialog({
   const handleSend = async () => {
     setShowError(true);
     if (error) return;
-    await onSend(trimmed);
-    setMessage('');
-    setShowError(false);
+    try {
+      await onSend(trimmed);
+      setMessage('');
+      setShowError(false);
+    } catch {
+      // `onSend` rejects on failure to keep the dialog open with the draft
+      // preserved (the connector has already notified the user). Swallow the
+      // rejection here so it does not surface as an unhandled promise rejection
+      // from the click handler, and leave `message` intact.
+    }
   };
 
   return (
