@@ -8,12 +8,6 @@ export interface TagsetModel {
   type: TagsetType;
 }
 
-export interface UpdateTagsetModel {
-  id: string;
-  name?: string;
-  tags?: string[];
-}
-
 export const EmptyTagset: TagsetModel = {
   id: '',
   name: TagsetReservedName.Default,
