@@ -12,25 +12,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -3767,6 +3757,7 @@ export enum LicenseEntitlementDataType {
 }
 
 export enum LicenseEntitlementType {
+  AccountAiAssistantTokensMonth = 'ACCOUNT_AI_ASSISTANT_TOKENS_MONTH',
   AccountInnovationHub = 'ACCOUNT_INNOVATION_HUB',
   AccountInnovationPack = 'ACCOUNT_INNOVATION_PACK',
   AccountSpaceFree = 'ACCOUNT_SPACE_FREE',
@@ -4571,6 +4562,7 @@ export enum MimeType {
   Gif = 'GIF',
   Heic = 'HEIC',
   Heif = 'HEIF',
+  Ics = 'ICS',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
   Odg = 'ODG',
@@ -7849,6 +7841,26 @@ export type SearchResultCallout = SearchResult & {
   type: SearchResultType;
 };
 
+export type SearchResultCollaboraDocument = SearchResult & {
+  __typename?: 'SearchResultCollaboraDocument';
+  /** The Callout of the Collabora document. */
+  callout: Callout;
+  /** The Collabora document that was found. */
+  collaboraDocument: CollaboraDocument;
+  /** The identifier of the search result. Does not represent the entity in Alkemio. */
+  id: Scalars['UUID']['output'];
+  /** Whether the Collabora document is a contribution (response) or part of the framing. */
+  isContribution: Scalars['Boolean']['output'];
+  /** The score for this search result; more matches means a higher score. */
+  score: Scalars['Float']['output'];
+  /** The Space of the Collabora document. */
+  space: Space;
+  /** The terms that were matched for this result */
+  terms: Array<Scalars['String']['output']>;
+  /** The type of returned result for this search. */
+  type: SearchResultType;
+};
+
 export type SearchResultMemo = SearchResult & {
   __typename?: 'SearchResultMemo';
   /** The Callout of the Memo. */
@@ -7920,6 +7932,7 @@ export type SearchResultSpace = SearchResult & {
 /** The different types of available search results. */
 export enum SearchResultType {
   Callout = 'CALLOUT',
+  CollaboraDocument = 'COLLABORA_DOCUMENT',
   Memo = 'MEMO',
   Organization = 'ORGANIZATION',
   Post = 'POST',
@@ -16291,62 +16304,6 @@ export type CalloutsSetTagsQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     calloutsSet?: { __typename?: 'CalloutsSet'; id: string; tags: Array<string> } | undefined;
-  };
-};
-
-export type CalloutsListForFeedQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID']['input'];
-  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
-}>;
-
-export type CalloutsListForFeedQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    calloutsSet?:
-      | {
-          __typename?: 'CalloutsSet';
-          id: string;
-          callouts: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
-        }
-      | undefined;
-  };
-};
-
-export type CalloutsIndexListQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID']['input'];
-  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
-}>;
-
-export type CalloutsIndexListQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    calloutsSet?:
-      | {
-          __typename?: 'CalloutsSet';
-          id: string;
-          callouts: Array<{
-            __typename?: 'Callout';
-            id: string;
-            sortOrder: number;
-            activity: number;
-            framing: {
-              __typename?: 'CalloutFraming';
-              id: string;
-              type: CalloutFramingType;
-              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-            };
-            settings: {
-              __typename?: 'CalloutSettings';
-              contribution: {
-                __typename?: 'CalloutSettingsContribution';
-                allowedTypes: Array<CalloutContributionType>;
-              };
-            };
-          }>;
-        }
-      | undefined;
   };
 };
 
@@ -35704,6 +35661,62 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
   };
 };
 
+export type CalloutsListForFeedQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsListForFeedQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutsIndexListQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsIndexListQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            sortOrder: number;
+            activity: number;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              type: CalloutFramingType;
+              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+            };
+            settings: {
+              __typename?: 'CalloutSettings';
+              contribution: {
+                __typename?: 'CalloutSettingsContribution';
+                allowedTypes: Array<CalloutContributionType>;
+              };
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
 export type FlowStateSearchQueryVariables = Exact<{
   searchData: SearchInput;
 }>;
@@ -35838,6 +35851,13 @@ export type FlowStateSearchQuery = {
               };
             };
           }
+        | {
+            __typename?: 'SearchResultCollaboraDocument';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
         | { __typename?: 'SearchResultMemo'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | {
             __typename?: 'SearchResultOrganization';
@@ -35889,6 +35909,7 @@ export type SpaceExplorerSearchQuery = {
       total: number;
       results: Array<
         | { __typename?: 'SearchResultCallout'; score: number; terms: Array<string>; type: SearchResultType }
+        | { __typename?: 'SearchResultCollaboraDocument'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultMemo'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultOrganization'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultPost'; score: number; terms: Array<string>; type: SearchResultType }
@@ -41327,6 +41348,13 @@ export type SearchQuery = {
             score: number;
             terms: Array<string>;
           }
+        | {
+            __typename?: 'SearchResultCollaboraDocument';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
         | { __typename?: 'SearchResultMemo'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | {
             __typename?: 'SearchResultOrganization';
@@ -41571,6 +41599,13 @@ export type SearchQuery = {
               };
             };
           }
+        | {
+            __typename?: 'SearchResultCollaboraDocument';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
         | { __typename?: 'SearchResultMemo'; id: string; type: SearchResultType; score: number; terms: Array<string> }
         | {
             __typename?: 'SearchResultOrganization';
@@ -41602,6 +41637,116 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
+          }
+        | {
+            __typename?: 'SearchResultCollaboraDocument';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+            isContribution: boolean;
+            collaboraDocument: {
+              __typename?: 'CollaboraDocument';
+              id: string;
+              createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                  }
+                | undefined;
+            };
+            space: {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              visibility: SpaceVisibility;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                isContentPublic: boolean;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  banner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+                membership: {
+                  __typename?: 'SpaceAboutMembership';
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID: string;
+                  roleSetID: string;
+                };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+              };
+            };
+            callout: {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              };
+            };
           }
         | {
             __typename?: 'SearchResultMemo';
@@ -41845,6 +41990,116 @@ export type SearchQuery = {
             type: SearchResultType;
             score: number;
             terms: Array<string>;
+          }
+        | {
+            __typename?: 'SearchResultCollaboraDocument';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+            isContribution: boolean;
+            collaboraDocument: {
+              __typename?: 'CollaboraDocument';
+              id: string;
+              createdDate: Date;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                url: string;
+                displayName: string;
+                description?: string | undefined;
+                visual?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+              };
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                  }
+                | undefined;
+            };
+            space: {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              visibility: SpaceVisibility;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                isContentPublic: boolean;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  banner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+                membership: {
+                  __typename?: 'SpaceAboutMembership';
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID: string;
+                  roleSetID: string;
+                };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+              };
+            };
+            callout: {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+              };
+            };
           }
         | {
             __typename?: 'SearchResultMemo';
@@ -42193,6 +42448,13 @@ export type SearchQuery = {
       results: Array<
         | {
             __typename?: 'SearchResultCallout';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+        | {
+            __typename?: 'SearchResultCollaboraDocument';
             id: string;
             type: SearchResultType;
             score: number;
@@ -43058,6 +43320,139 @@ export type WhiteboardParentFragment = {
   };
 };
 
+export type SearchResultCollaboraDocumentFragment = {
+  __typename?: 'SearchResultCollaboraDocument';
+  isContribution: boolean;
+  collaboraDocument: {
+    __typename?: 'CollaboraDocument';
+    id: string;
+    createdDate: Date;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      url: string;
+      displayName: string;
+      description?: string | undefined;
+      visual?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+      tagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+    };
+    createdBy?:
+      | {
+          __typename?: 'User';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        }
+      | undefined;
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    visibility: SpaceVisibility;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        banner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      };
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID: string;
+        roleSetID: string;
+      };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    };
+  };
+};
+
+export type CollaboraDocumentParentFragment = {
+  __typename?: 'SearchResultCollaboraDocument';
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    visibility: SpaceVisibility;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      isContentPublic: boolean;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        description?: string | undefined;
+        tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        banner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      };
+      membership: {
+        __typename?: 'SpaceAboutMembership';
+        myMembershipStatus?: CommunityMembershipStatus | undefined;
+        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+        communityID: string;
+        roleSetID: string;
+      };
+      guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    };
+  };
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+    };
+  };
+};
+
 export type SearchScopeDetailsSpaceQueryVariables = Exact<{
   spaceId: Scalars['UUID']['input'];
 }>;
@@ -43470,6 +43865,7 @@ export type ExploreSpacesSearchQuery = {
       total: number;
       results: Array<
         | { __typename?: 'SearchResultCallout'; score: number; terms: Array<string>; type: SearchResultType }
+        | { __typename?: 'SearchResultCollaboraDocument'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultMemo'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultOrganization'; score: number; terms: Array<string>; type: SearchResultType }
         | { __typename?: 'SearchResultPost'; score: number; terms: Array<string>; type: SearchResultType }

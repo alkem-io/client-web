@@ -4358,6 +4358,27 @@ export type SearchResultCalloutFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultCollaboraDocumentKeySpecifier = (
+  | 'callout'
+  | 'collaboraDocument'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultCollaboraDocumentKeySpecifier
+)[];
+export type SearchResultCollaboraDocumentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultMemoKeySpecifier = (
   | 'callout'
   | 'id'
@@ -7019,6 +7040,13 @@ export type StrictTypedTypePolicies = {
   SearchResultCallout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
+  };
+  SearchResultCollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SearchResultCollaboraDocumentKeySpecifier
+      | (() => undefined | SearchResultCollaboraDocumentKeySpecifier);
+    fields?: SearchResultCollaboraDocumentFieldPolicy;
   };
   SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
