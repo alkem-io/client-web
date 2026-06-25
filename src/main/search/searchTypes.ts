@@ -1,6 +1,7 @@
 import type {
   SearchResult,
   SearchResultCalloutFragment,
+  SearchResultCollaboraDocumentFragment,
   SearchResultMemoFragment,
   SearchResultOrganizationFragment,
   SearchResultPostFragment,
@@ -21,6 +22,7 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Subspace, SearchResultSpaceFragment>
   | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>
   | TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
-  | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>;
+  | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>
+  | TypedSearchResult<SearchResultType.CollaboraDocument, SearchResultCollaboraDocumentFragment>;
 
 export const MAX_TERMS_SEARCH = 5;

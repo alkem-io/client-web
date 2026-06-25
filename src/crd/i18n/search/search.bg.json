@@ -24,12 +24,14 @@
       "subspacesOnly": "Само подпространства",
       "whiteboards": "Дъски",
       "memos": "Бележки",
-      "posts": "Публикации"
+      "posts": "Публикации",
+      "documents": "Документи"
     },
     "postTypes": {
       "post": "Публикация",
       "whiteboard": "Дъска",
-      "memo": "Бележка"
+      "memo": "Бележка",
+      "collaboraDocument": "Документ"
     },
     "responseTo": "Отговор на: {{title}}",
     "spaceContext": "в: {{spaceName}}",

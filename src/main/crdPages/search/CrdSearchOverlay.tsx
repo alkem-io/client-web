@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useSearchQuery, useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SearchCategory, type SearchQuery, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import { CollaboraDocumentResultCard } from '@/crd/components/search/CollaboraDocumentResultCard';
 import { OrgResultCard } from '@/crd/components/search/OrgResultCard';
 import { PostResultCard } from '@/crd/components/search/PostResultCard';
 import { ResponseResultCard } from '@/crd/components/search/ResponseResultCard';
@@ -21,6 +22,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSearch } from '../../search/SearchContext';
 import type { SearchResultMetaType } from '../../search/searchTypes';
 import {
+  mapCollaboraDocumentResults,
   mapOrgResults,
   mapPostResults,
   mapResponseResults,
@@ -135,13 +137,18 @@ export function CrdSearchOverlay() {
           {
             category: SearchCategory.Framings,
             size: SEARCH_RESULTS_COUNT,
-            types: [SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [SearchResultType.Whiteboard, SearchResultType.Memo, SearchResultType.CollaboraDocument],
             cursor: undefined,
           },
           {
             category: SearchCategory.Contributions,
             size: SEARCH_RESULTS_COUNT,
-            types: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [
+              SearchResultType.Post,
+              SearchResultType.Whiteboard,
+              SearchResultType.Memo,
+              SearchResultType.CollaboraDocument,
+            ],
             cursor: undefined,
           },
           {
@@ -224,6 +231,15 @@ export function CrdSearchOverlay() {
   const mappedSpaces = mapSpaceResults(spaceResults ?? []);
   const mappedPosts = mapPostResults(calloutResults ?? [], framingResults ?? [], fallbackLabels);
   const mappedResponses = mapResponseResults(contributionResults ?? [], fallbackLabels);
+  const mappedCollaboraDocuments = mapCollaboraDocumentResults(
+    framingResults ?? [],
+    contributionResults ?? [],
+    fallbackLabels
+  );
+  // Framing-placed collabora documents render alongside posts; contribution-placed
+  // ones render alongside responses — mirroring how memos/whiteboards split.
+  const framingCollaboraDocuments = mappedCollaboraDocuments.filter(d => !d.isContribution);
+  const contributionCollaboraDocuments = mappedCollaboraDocuments.filter(d => d.isContribution);
   const mappedUsers = mapUserResults(contributorResults ?? []);
   const mappedOrgs = mapOrgResults(contributorResults ?? [], fallbackLabels);
 
@@ -253,6 +269,8 @@ export function CrdSearchOverlay() {
     mappedSpaces.length > 0 ||
     mappedPosts.length > 0 ||
     mappedResponses.length > 0 ||
+    framingCollaboraDocuments.length > 0 ||
+    contributionCollaboraDocuments.length > 0 ||
     mappedUsers.length > 0 ||
     mappedOrgs.length > 0;
 
@@ -297,6 +315,7 @@ export function CrdSearchOverlay() {
     { value: 'all', label: t('search.filters.all') },
     { value: 'whiteboard', label: t('search.filters.whiteboards') },
     { value: 'memo', label: t('search.filters.memos') },
+    { value: 'collaboraDocument', label: t('search.filters.documents') },
   ];
 
   const responseFilterOptions: SearchFilterOption[] = [
@@ -304,6 +323,7 @@ export function CrdSearchOverlay() {
     { value: 'post', label: t('search.filters.posts') },
     { value: 'whiteboard', label: t('search.filters.whiteboards') },
     { value: 'memo', label: t('search.filters.memos') },
+    { value: 'collaboraDocument', label: t('search.filters.documents') },
   ];
 
   // Section filter change handler
@@ -320,11 +340,19 @@ export function CrdSearchOverlay() {
         case SearchCategory.CollaborationTools:
           return { cursor: calloutCursor, types: [SearchResultType.Callout] };
         case SearchCategory.Framings:
-          return { cursor: framingCursor, types: [SearchResultType.Whiteboard, SearchResultType.Memo] };
+          return {
+            cursor: framingCursor,
+            types: [SearchResultType.Whiteboard, SearchResultType.Memo, SearchResultType.CollaboraDocument],
+          };
         case SearchCategory.Contributions:
           return {
             cursor: contributionCursor,
-            types: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [
+              SearchResultType.Post,
+              SearchResultType.Whiteboard,
+              SearchResultType.Memo,
+              SearchResultType.CollaboraDocument,
+            ],
           };
         case SearchCategory.Contributors:
           return { cursor: contributorCursor, types: [SearchResultType.User, SearchResultType.Organization] };
@@ -488,14 +516,20 @@ export function CrdSearchOverlay() {
     });
   }
 
-  if (mappedPosts.length > 0) {
+  // Framing-placed collabora documents render in the posts section, subject to
+  // the same 'all' / per-type filter. They render as a standard card (no excerpt,
+  // no match-source indicator — FR-013).
+  const visibleFramingCollaboraDocuments =
+    sectionFilters.posts === 'all' || sectionFilters.posts === 'collaboraDocument' ? framingCollaboraDocuments : [];
+
+  if (mappedPosts.length > 0 || framingCollaboraDocuments.length > 0) {
     const visiblePosts = filteredPosts.slice(0, visibleCounts.posts);
     const allLocalShown = visibleCounts.posts >= filteredPosts.length;
     categories.push({
       id: 'posts',
       label: t('search.categories.posts'),
       icon: FileText,
-      count: filteredPosts.length,
+      count: filteredPosts.length + visibleFramingCollaboraDocuments.length,
       filterOptions: postFilterOptions,
       activeFilter: sectionFilters.posts,
       onFilterChange: handleFilterChange('posts'),
@@ -503,22 +537,35 @@ export function CrdSearchOverlay() {
         filteredPosts.length > 0 &&
         (visibleCounts.posts < filteredPosts.length || (allLocalShown && (canCalloutLoadMore || canFramingLoadMore))),
       onLoadMore: handleLoadMore('posts'),
-      children: visiblePosts.map(post => (
-        <li key={post.id}>
-          <PostResultCard post={post} onClick={() => handleCardClick(post.href)} />
-        </li>
-      )),
+      children: [
+        ...visiblePosts.map(post => (
+          <li key={post.id}>
+            <PostResultCard post={post} onClick={() => handleCardClick(post.href)} />
+          </li>
+        )),
+        ...visibleFramingCollaboraDocuments.map(doc => (
+          <li key={doc.id}>
+            <CollaboraDocumentResultCard document={doc} onClick={() => handleCardClick(doc.href)} />
+          </li>
+        )),
+      ],
     });
   }
 
-  if (mappedResponses.length > 0) {
+  // Contribution-placed collabora documents render in the responses section.
+  const visibleContributionCollaboraDocuments =
+    sectionFilters.responses === 'all' || sectionFilters.responses === 'collaboraDocument'
+      ? contributionCollaboraDocuments
+      : [];
+
+  if (mappedResponses.length > 0 || contributionCollaboraDocuments.length > 0) {
     const visibleResponses = filteredResponses.slice(0, visibleCounts.responses);
     const allLocalShown = visibleCounts.responses >= filteredResponses.length;
     categories.push({
       id: 'responses',
       label: t('search.categories.responses'),
       icon: MessageSquare,
-      count: filteredResponses.length,
+      count: filteredResponses.length + visibleContributionCollaboraDocuments.length,
       filterOptions: responseFilterOptions,
       activeFilter: sectionFilters.responses,
       onFilterChange: handleFilterChange('responses'),
@@ -526,11 +573,18 @@ export function CrdSearchOverlay() {
         filteredResponses.length > 0 &&
         (visibleCounts.responses < filteredResponses.length || (allLocalShown && canContributionLoadMore)),
       onLoadMore: handleLoadMore('responses'),
-      children: visibleResponses.map(response => (
-        <li key={response.id}>
-          <ResponseResultCard response={response} onClick={() => handleCardClick(response.href)} />
-        </li>
-      )),
+      children: [
+        ...visibleResponses.map(response => (
+          <li key={response.id}>
+            <ResponseResultCard response={response} onClick={() => handleCardClick(response.href)} />
+          </li>
+        )),
+        ...visibleContributionCollaboraDocuments.map(doc => (
+          <li key={doc.id}>
+            <CollaboraDocumentResultCard document={doc} onClick={() => handleCardClick(doc.href)} />
+          </li>
+        )),
+      ],
     });
   }
 
@@ -578,8 +632,18 @@ export function CrdSearchOverlay() {
   // Use unfiltered counts so sidebar reflects total results, not filtered subset
   const allSidebarCategories: SidebarCategory[] = [
     { id: 'spaces', label: t('search.categories.spaces'), icon: Globe, count: mappedSpaces.length },
-    { id: 'posts', label: t('search.categories.posts'), icon: FileText, count: mappedPosts.length },
-    { id: 'responses', label: t('search.categories.responses'), icon: MessageSquare, count: mappedResponses.length },
+    {
+      id: 'posts',
+      label: t('search.categories.posts'),
+      icon: FileText,
+      count: mappedPosts.length + framingCollaboraDocuments.length,
+    },
+    {
+      id: 'responses',
+      label: t('search.categories.responses'),
+      icon: MessageSquare,
+      count: mappedResponses.length + contributionCollaboraDocuments.length,
+    },
     { id: 'users', label: t('search.categories.users'), icon: Users, count: mappedUsers.length },
     { id: 'organizations', label: t('search.categories.organizations'), icon: Building2, count: mappedOrgs.length },
   ];

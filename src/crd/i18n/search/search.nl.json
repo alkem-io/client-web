@@ -24,12 +24,14 @@
       "subspacesOnly": "Alleen Subspaces",
       "whiteboards": "Whiteboards",
       "memos": "Memo's",
-      "posts": "Posts"
+      "posts": "Posts",
+      "documents": "Documenten"
     },
     "postTypes": {
       "post": "Post",
       "whiteboard": "Whiteboard",
-      "memo": "Memo"
+      "memo": "Memo",
+      "collaboraDocument": "Document"
     },
     "responseTo": "Reactie op: {{title}}",
     "spaceContext": "in: {{spaceName}}",
