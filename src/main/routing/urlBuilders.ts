@@ -1,7 +1,6 @@
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { DIALOG_PARAM_VALUES } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 export const URL_SPACE_EXPLORER = '/spaces';
@@ -28,10 +27,6 @@ export const buildNotificationSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/notifications`;
 };
 
-export const buildSettingsCommunityUrl = (entityUrl: string) => {
-  return `${buildSettingsUrl(entityUrl)}/community`;
-};
-
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
@@ -55,10 +50,6 @@ export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
   }
 
   return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params ? params : ''}`;
-};
-
-export const buildUpdatesUrl = (spaceUrl: string) => {
-  return `${spaceUrl}/updates`;
 };
 
 export const buildSpaceSectionUrl = (
@@ -200,16 +191,15 @@ export const buildMembershipSettingsUrl = (profileUrl?: string) => {
   return profileUrl ? `${buildSettingsUrl(profileUrl)}/membership` : '';
 };
 
-// Generic per-tab settings URL composer used by the CRD contributor settings
-// shells (User + Organization). Caller passes the entity's `profile.url` and a
-// tab id; never call sites template `/user/<nameId>/settings/<tab>` by hand.
-export const buildSettingsTabUrl = (profileUrl: string | undefined, tabId: string) => {
-  return profileUrl ? `${buildSettingsUrl(profileUrl)}/${tabId}` : '';
+// Generic per-tab settings URL composer used by the CRD contributor + space
+// settings shells. Caller passes the entity's `profile.url`, a tab id, and an
+// optional in-page anchor (e.g. 'description', 'members'); never call sites
+// template `<url>/settings/<tab>#<anchor>` by hand.
+export const buildSettingsTabUrl = (profileUrl: string | undefined, tabId: string, anchor?: string) => {
+  return profileUrl ? `${buildSettingsUrl(profileUrl)}/${tabId}${anchor ? `#${anchor}` : ''}` : '';
 };
 
 export const buildWelcomeSpaceUrl = () => '/welcome-space';
-
-export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG_PARAM_VALUES.INVITATIONS}`;
 
 const VIDEO_CALL_BASE_URL = 'https://meet.jit.si/';
 

@@ -5,7 +5,7 @@ import {
   useReplyToMessageMutation,
   useSendMessageToRoomMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import useEnsurePresence from '@/core/utils/ensurePresence';
 import { refreshRoomMessagesCount } from './refreshRoomMessagesCount';
 

@@ -11,7 +11,7 @@ import {
   SpaceLevel,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
-import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { useApolloCache } from '@/core/apollo/utils/evictFromCache';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { error as logError, error as logPreviewError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
