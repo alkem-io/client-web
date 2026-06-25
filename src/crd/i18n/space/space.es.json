@@ -25,6 +25,17 @@
     "searchPlaceholder": "Buscar en la base de conocimiento...",
     "searchLabel": "Buscar en la base de conocimiento",
     "noResults": "Sin resultados",
+    "search": {
+      "emptyTitle": "Sin resultados",
+      "emptyDescription": "Ningún contenido de esta sección coincide con tu búsqueda.",
+      "errorTitle": "La búsqueda no está disponible",
+      "errorDescription": "Algo salió mal durante la búsqueda. Inténtalo de nuevo.",
+      "retry": "Reintentar",
+      "loadingLabel": "Cargando resultados de búsqueda",
+      "appendingLabel": "Cargando más resultados",
+      "removeTerm": "Eliminar término {{term}}",
+      "removeTag": "Eliminar etiqueta {{tag}}"
+    },
     "viewGrid": "Vista de tarjetas",
     "viewList": "Vista de lista",
     "count": {
@@ -39,6 +50,11 @@
       "document_one": "{{count}} documento",
       "document_other": "{{count}} documentos"
     }
+  },
+  "postIndexDialog": {
+    "close": "Cerrar",
+    "loadingLabel": "Cargando índice de publicaciones",
+    "empty": "Aún no hay publicaciones"
   },
   "sidebar": {
     "aboutSpace": "Acerca de este Espacio",

@@ -1,10 +1,11 @@
 import { SpaceFeed } from '@/crd/components/space/SpaceFeed';
-import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
+import type { CrdFeedCallout } from '../hooks/useCrdCalloutList';
 import { LazyCalloutItem } from './LazyCalloutItem';
 
 type CalloutListConnectorProps = {
   title?: string;
-  callouts: CalloutModelLightExtended[];
+  // The feed reads only id + sortOrder; each card lazy-loads its own content.
+  callouts: CrdFeedCallout[];
   calloutsSetId: string | undefined;
   canCreate?: boolean;
   /** Set-level Update privilege — gates the per-callout move/reorder menu items. */

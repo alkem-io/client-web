@@ -943,6 +943,8 @@
     "and": "and",
     "clear": "Clear filters",
     "filterByTag": "Filter by tag",
+    "filterByTagActive_one": "Filter by tag, {{count}} selected",
+    "filterByTagActive_other": "Filter by tag, {{count}} selected",
     "summary": "Results for {{criteria}}"
   },
   "forms": {
