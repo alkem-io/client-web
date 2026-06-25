@@ -898,6 +898,8 @@
     "and": "und",
     "clear": "Filter löschen",
     "filterByTag": "Nach Tag filtern",
+    "filterByTagActive_one": "Nach Tag filtern, {{count}} ausgewählt",
+    "filterByTagActive_other": "Nach Tag filtern, {{count}} ausgewählt",
     "summary": "Ergebnisse für {{criteria}}"
   },
   "forms": {

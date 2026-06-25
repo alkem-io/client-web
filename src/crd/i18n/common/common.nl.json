@@ -898,6 +898,8 @@
     "and": "en",
     "clear": "Filters wissen",
     "filterByTag": "Filter op tag",
+    "filterByTagActive_one": "Filter op tag, {{count}} geselecteerd",
+    "filterByTagActive_other": "Filter op tag, {{count}} geselecteerd",
     "summary": "Resultaten voor {{criteria}}"
   },
   "forms": {

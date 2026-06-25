@@ -898,6 +898,8 @@
     "and": "и",
     "clear": "Изчисти филтрите",
     "filterByTag": "Филтриране по таг",
+    "filterByTagActive_one": "Филтриране по таг, {{count}} избран",
+    "filterByTagActive_other": "Филтриране по таг, {{count}} избрани",
     "summary": "Резултати за {{criteria}}"
   },
   "forms": {
