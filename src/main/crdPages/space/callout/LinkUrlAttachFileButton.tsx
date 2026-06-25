@@ -18,6 +18,7 @@ const MIME_TO_EXT: Record<string, string> = {
   'application/msword': '.doc',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
   'application/vnd.oasis.opendocument.text': '.odt',
+  'text/calendar': '.ics',
   'image/bmp': '.bmp',
   'image/jpg': '.jpg',
   'image/jpeg': '.jpg,.jpeg',
