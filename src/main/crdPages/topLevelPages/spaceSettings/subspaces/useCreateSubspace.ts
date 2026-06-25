@@ -14,10 +14,10 @@ import type {
   CreateSubspaceFormValues,
 } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
+import type { VisualConstraints } from '@/domain/common/visual/model/VisualModel';
 import { useSubspaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSubspaceCreation/useSubspaceCreation';
 import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-import type { VisualConstraints } from './resizeImageToConstraints';
 
 export type UseCreateSubspaceOptions = {
   /** The owning account id — enables the Account source section in the template picker. */

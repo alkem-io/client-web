@@ -22,22 +22,6 @@ interface WhiteboardWithPreviewVisuals {
   };
 }
 
-export interface IWhiteboardActions {
-  onCreate: (
-    calloutId: string,
-    whiteboard: CreateWhiteboardInput,
-    previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<{ success: boolean; errors?: string[] }>;
-  onDelete: (whiteboard: Identifiable) => Promise<void>;
-
-  onUpdate: (
-    whiteboard: WhiteboardWithPreviewVisuals,
-    previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<{ success: boolean; errors?: string[] }>;
-
-  onChangeDisplayName: (whiteboardId: string | undefined, displayName: string) => Promise<void>;
-}
-
 export interface WhiteboardActionsContainerState {
   creatingWhiteboard?: boolean;
   deletingWhiteboard?: boolean;

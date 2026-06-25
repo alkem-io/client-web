@@ -32,8 +32,3 @@ export type PromptGraphState = {
   type: string;
   properties: DataPoint[];
 };
-
-export type FormValueType = {
-  nodes: Record<string, FormNodeValue>;
-  state: PromptGraphState;
-};

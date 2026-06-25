@@ -21,8 +21,3 @@ export type MemberSettingsOrganizationSubject = {
 };
 
 export type MemberSettingsSubject = MemberSettingsUserSubject | MemberSettingsOrganizationSubject;
-
-export type MemberSettingsLeadPolicy = {
-  canAddLead: boolean;
-  canRemoveLead: boolean;
-};
