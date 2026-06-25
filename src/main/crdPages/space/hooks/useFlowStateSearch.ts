@@ -58,7 +58,11 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   // variables change, Apollo issues a fresh page-1 query, and any in-flight
   // fetchMore from the previous signature is invalidated by `requestKeyRef`
   // (latest-wins, FR-022).
-  const requestKey = `${flowStateID ?? ''}|${terms.join(' ')}`;
+  // Serialize structurally (not `terms.join(' ')`): a joined string is ambiguous
+  // when a term itself contains spaces — `['foo bar']` and `['foo', 'bar']` would
+  // collapse to the same key, letting a stale in-flight page from the prior term
+  // set pass the latest-wins check and merge into the new query.
+  const requestKey = JSON.stringify({ flowStateID: flowStateID ?? '', terms });
   const requestKeyRef = useRef(requestKey);
   // Sync the latest-wins signature inside an effect (never during render).
   useEffect(() => {
@@ -66,6 +70,14 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   }, [requestKey]);
 
   const [appending, setAppending] = useState(false);
+
+  // The cursor whose append last failed. While the sentinel stays in view, a
+  // failed `fetchMore` must not be retried immediately: its `.finally` flips
+  // `appending` back to false, which re-runs the sentinel effect, which — with
+  // `inView`, `cursor`, and `loading` all unchanged — would fire the same failed
+  // request again in a tight loop. We block that exact cursor until the sentinel
+  // leaves view (or the term/tag set changes), then allow a fresh attempt.
+  const failedCursorRef = useRef<string | null>(null);
 
   const { data, loading, error, fetchMore, refetch } = useFlowStateSearchQuery({
     variables: {
@@ -88,9 +100,11 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   });
 
   // Reset the append flag whenever the term/tag set changes — a new page-1 load
-  // is a skeleton (FR-023), not an append.
+  // is a skeleton (FR-023), not an append. A new context also clears any failed
+  // cursor: the prior failure no longer applies to this request.
   useEffect(() => {
     setAppending(false);
+    failedCursorRef.current = null;
   }, [requestKey]);
 
   const results = data?.search.calloutResults.results ?? [];
@@ -118,8 +132,17 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   // The load is inlined in the effect with complete dependencies so the rules of
   // React (and the React Compiler) hold without disabling any lint rule.
   const { ref: sentinelRef, inView } = useInView({ rootMargin: '200px', delay: 100 });
+
+  // Once the sentinel scrolls out of view, clear any failed-cursor block so the
+  // next time it re-enters a retry is allowed.
   useEffect(() => {
-    if (!inView || shouldSkip || !cursor || appending || loading) {
+    if (!inView) {
+      failedCursorRef.current = null;
+    }
+  }, [inView]);
+
+  useEffect(() => {
+    if (!inView || shouldSkip || !cursor || appending || loading || failedCursorRef.current === cursor) {
       return;
     }
     const keyAtRequest = requestKeyRef.current;
@@ -158,6 +181,9 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
     })
       .catch(() => {
         // Append failure keeps prior results; the footer spinner simply stops.
+        // Record the cursor so the effect doesn't immediately retry the same
+        // failed page while the sentinel is still in view (avoids a tight loop).
+        failedCursorRef.current = cursor;
       })
       .finally(() => {
         if (keyAtRequest === requestKeyRef.current) {

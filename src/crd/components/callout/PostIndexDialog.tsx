@@ -61,7 +61,9 @@ export function PostIndexDialog({
         <div className="flex-1 min-h-0 overflow-y-auto">
           {loading ? (
             <output aria-label={labels.loadingLabel} className="block">
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-0.5 list-none p-0 m-0">
+              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+              {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset */}
+              <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-0.5 list-none p-0 m-0">
                 {Array.from({ length: SKELETON_ROWS }, (_, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length placeholder list
                   <li key={index} className="flex items-center gap-2.5 px-3 py-2">

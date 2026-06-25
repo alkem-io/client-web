@@ -29,22 +29,28 @@ export function CrdCalloutDialogById({ calloutId, calloutsSetId, onLoaded, onClo
     skip: !calloutId,
   });
 
-  // Fire `onLoaded` exactly once per callout — when its details first resolve —
-  // rather than on every render the callout stays loaded.
+  // Fire `onLoaded` exactly once per callout — when *the requested* callout's
+  // details first resolve. Gate on `callout.id === calloutId`: when `calloutId`
+  // changes, `useCalloutDetails` can briefly hand back the previous callout
+  // before its refetch lands, and firing `onLoaded` for that stale record would
+  // dismiss the opener's UI for the wrong callout.
   const loadedFor = useRef<string | undefined>(undefined);
   useEffect(() => {
-    if (callout && loadedFor.current !== callout.id) {
-      loadedFor.current = callout.id;
-      onLoaded?.();
-    }
     if (!calloutId) {
       loadedFor.current = undefined;
+      return;
     }
-  }, [callout, calloutId, onLoaded]);
+    if (callout?.id === calloutId && loadedFor.current !== calloutId) {
+      loadedFor.current = calloutId;
+      onLoaded?.();
+    }
+  }, [callout?.id, calloutId, onLoaded]);
 
-  // While the details load, render nothing — the opener keeps its own UI up so
-  // there is no spinner flash; the dialog appears once `callout` resolves.
-  if (!callout) {
+  // While the details load — or while a stale previous callout is still in hand
+  // after `calloutId` changed — render nothing. The opener keeps its own UI up
+  // so there is no spinner flash; the dialog appears once the *requested*
+  // callout resolves.
+  if (!calloutId || !callout || callout.id !== calloutId) {
     return null;
   }
 

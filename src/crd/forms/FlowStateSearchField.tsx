@@ -82,7 +82,9 @@ export function FlowStateSearchField({
       </div>
 
       {(terms.length > 0 || tags.length > 0) && (
-        <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
+        // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+        // biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset
+        <ul role="list" className="flex flex-wrap gap-2 list-none p-0 m-0">
           {terms.map((term, index) => (
             <li
               key={`term-${term}-${index}`}
