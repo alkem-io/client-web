@@ -32,6 +32,7 @@ import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/Invi
 import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
@@ -689,7 +690,7 @@ export default function CrdSpaceSettingsPage() {
         }}
         templates={subspacesTab.subspaceTemplateChoices}
         currentTemplateId={subspacesTab.defaultTemplateId}
-        libraryHref={`${spaceUrl}/settings/templates`}
+        libraryHref={buildSettingsTabUrl(spaceUrl, 'templates')}
         loading={subspacesTab.subspaceTemplatesLoading}
         onSave={subspacesTab.onSelectDefaultTemplate}
         saving={subspacesTab.subspaceTemplatesSaving}

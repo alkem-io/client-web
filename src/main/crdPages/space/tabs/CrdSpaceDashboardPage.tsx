@@ -7,7 +7,7 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsTabUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
@@ -78,7 +78,9 @@ export default function CrdSpaceDashboardPage() {
           variant="home"
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
-          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
+          onEditClick={
+            permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
+          }
           onAboutClick={() => setAboutOpen(true)}
           subspaces={subspaces}
           subspacesHref={buildSpaceSectionUrl(space.about.profile.url ?? '', 3)}

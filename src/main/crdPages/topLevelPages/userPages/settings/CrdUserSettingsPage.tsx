@@ -7,6 +7,7 @@ import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShe
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useAssistantEnabled } from '@/main/assistant/useAssistantEnabled';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import useUserPageRouteContext from '../useUserPageRouteContext';
 import useUserSettingsAccessGuard from './useUserSettingsAccessGuard';
@@ -43,7 +44,7 @@ const CrdUserSettingsPage = () => {
     displayName && profileUrl
       ? [
           { label: displayName, href: profileUrl, icon: User },
-          { label: t('breadcrumbs.settings'), href: `${profileUrl}/settings` },
+          { label: t('breadcrumbs.settings'), href: buildSettingsUrl(profileUrl) },
           { label: t(`shell.tabs.user.${activeTabId}`) },
         ]
       : [];
