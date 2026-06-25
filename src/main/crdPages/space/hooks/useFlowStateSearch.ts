@@ -84,6 +84,9 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
       searchData: {
         terms,
         searchInFlowStateFilter: flowStateID,
+        // Match in the callout framing resources and contributions too; matches
+        // fold up to the containing callout, deduped, in calloutResults.
+        foldCalloutResources: true,
         filters: [
           {
             category: SearchCategory.CollaborationTools,
@@ -152,6 +155,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
         searchData: {
           terms,
           searchInFlowStateFilter: flowStateID,
+          foldCalloutResources: true,
           filters: [
             {
               category: SearchCategory.CollaborationTools,
