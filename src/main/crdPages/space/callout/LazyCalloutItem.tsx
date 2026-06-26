@@ -35,6 +35,12 @@ type LazyCalloutItemProps = {
   orderedCalloutIds?: string[];
   /** Set-level Update privilege — gates the move/reorder menu items (FR-101). */
   canReorder?: boolean;
+  /**
+   * Force the description to start collapsed ("Read more"), ignoring the
+   * space-level display-mode setting. Used by scoped search so matches render
+   * compact regardless of how the tab is configured to browse.
+   */
+  forceDescriptionCollapsed?: boolean;
   onClick?: () => void;
   onExpandClick?: () => void;
 };
@@ -44,6 +50,7 @@ export function LazyCalloutItem({
   calloutsSetId,
   orderedCalloutIds = [],
   canReorder = false,
+  forceDescriptionCollapsed = false,
   onClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
@@ -60,6 +67,7 @@ export function LazyCalloutItem({
           calloutsSetId={calloutsSetId}
           orderedCalloutIds={orderedCalloutIds}
           canReorder={canReorder}
+          forceDescriptionCollapsed={forceDescriptionCollapsed}
           onClick={onClick}
           onExpandClick={onExpandClick}
         />
@@ -79,6 +87,7 @@ function LazyCalloutItemContent({
   calloutsSetId,
   orderedCalloutIds,
   canReorder,
+  forceDescriptionCollapsed,
   onClick,
   onExpandClick,
 }: {
@@ -86,6 +95,7 @@ function LazyCalloutItemContent({
   calloutsSetId: string | undefined;
   orderedCalloutIds: string[];
   canReorder: boolean;
+  forceDescriptionCollapsed: boolean;
   onClick?: () => void;
   onExpandClick?: () => void;
 }) {
@@ -117,7 +127,8 @@ function LazyCalloutItemContent({
 
   const postData = {
     ...mapCalloutDetailsToPostCard(callout, t),
-    descriptionExpanded: !descriptionCollapsed,
+    // Scoped search forces compact ("Read more"); otherwise follow the space setting.
+    descriptionExpanded: forceDescriptionCollapsed ? false : !descriptionCollapsed,
   };
 
   // The hook must run unconditionally (rules of hooks), but the move menu items

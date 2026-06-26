@@ -25,6 +25,17 @@
     "searchPlaceholder": "Zoek in de kennisbank...",
     "searchLabel": "Zoek in de kennisbank",
     "noResults": "Geen resultaten",
+    "search": {
+      "emptyTitle": "Geen resultaten",
+      "emptyDescription": "Geen inhoud in deze sectie komt overeen met je zoekopdracht.",
+      "errorTitle": "Zoeken is niet beschikbaar",
+      "errorDescription": "Er is iets misgegaan tijdens het zoeken. Probeer het opnieuw.",
+      "retry": "Opnieuw proberen",
+      "loadingLabel": "Zoekresultaten laden",
+      "appendingLabel": "Meer resultaten laden",
+      "removeTerm": "Term {{term}} verwijderen",
+      "removeTag": "Tag {{tag}} verwijderen"
+    },
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",
     "count": {
@@ -39,6 +50,11 @@
       "document_one": "{{count}} document",
       "document_other": "{{count}} documenten"
     }
+  },
+  "postIndexDialog": {
+    "close": "Sluiten",
+    "loadingLabel": "Post-index laden",
+    "empty": "Nog geen posts"
   },
   "sidebar": {
     "aboutSpace": "Over deze Space",

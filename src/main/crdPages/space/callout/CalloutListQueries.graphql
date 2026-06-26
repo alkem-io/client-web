@@ -1,0 +1,57 @@
+# Split list queries for the CRD space tab (feature 007).
+#
+# The legacy `CalloutsOnCalloutsSetUsingClassification` was a single heavy query
+# serving two very different consumers: the browse feed (which only needs the id
+# + sort order — each card lazy-fetches its own content via CalloutDetails) and
+# the sidebar "Post index" (which needs every post's title/type/response count).
+#
+# These two queries split that responsibility so each fetches EXACTLY its
+# consumer's fields and nothing more:
+#   - CalloutsListForFeed  → eager, drives the feed's ordered skeleton list.
+#   - CalloutsIndexList     → lazy, fired only when the Post Index dialog opens.
+
+# Feed: just the ordered id list. No framing, no classification, no
+# descriptions, no authorization — the feed reads only id + sortOrder and
+# lazy-loads each card's content on scroll-into-view. Reorder/create privileges
+# come from the separate `useCalloutsSetAuthorization` query, so they are not
+# re-fetched here.
+query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      callouts(classificationTagsets: $classificationTagsets) {
+        id
+        sortOrder
+      }
+    }
+  }
+}
+
+# Post index: the per-post metadata the list rows render — title, type icon, and
+# the bracketed response count. Fired lazily when the dialog opens.
+query CalloutsIndexList($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      callouts(classificationTagsets: $classificationTagsets) {
+        id
+        sortOrder
+        activity
+        framing {
+          id
+          type
+          profile {
+            id
+            url
+            displayName
+          }
+        }
+        settings {
+          contribution {
+            allowedTypes
+          }
+        }
+      }
+    }
+  }
+}
