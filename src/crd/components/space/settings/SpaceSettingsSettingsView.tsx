@@ -288,9 +288,9 @@ export function SpaceSettingsSettingsView({
                       <div className="space-y-1">
                         <span className="text-card-title flex items-center gap-2">
                           {option === 'membersOnly' ? (
-                            <Lock className="size-4 text-muted-foreground" />
+                            <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
                           ) : (
-                            <Globe className="size-4 text-primary" />
+                            <Globe className="size-4 text-primary" aria-hidden="true" />
                           )}
                           {t(`settings.userInfoVisibility.${option}` as 'settings.userInfoVisibility.followSpace')}
                         </span>

@@ -84,7 +84,7 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
               <a
                 href={href}
                 onClick={handleClick}
-                className="block text-card-title text-foreground truncate hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline"
+                className="block truncate text-card-title text-foreground transition-colors hover:text-primary focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 {contributor.name}
               </a>

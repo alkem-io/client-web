@@ -53,11 +53,9 @@ export function ContributorCollectionConfigField({
     const nextTypes = selected
       ? value.types.filter(tpe => tpe !== type)
       : TYPE_ORDER.filter(tpe => value.types.includes(tpe) || tpe === type);
-    // Auto-heal the default type to the first selected when it falls out of the
-    // selection; auto-heal the default view to LIST when no locatable type remains.
-    const defaultType = nextTypes.includes(value.defaultType) ? value.defaultType : (nextTypes[0] ?? value.defaultType);
-    const defaultView = nextTypes.some(isLocatable) ? value.defaultView : 'list';
-    onChange({ types: nextTypes, defaultType, defaultView });
+    // Emit raw user intent only — the consumer applies the auto-heal rules
+    // (default-type / default-view normalization). This stays a pure CRD field.
+    onChange({ ...value, types: nextTypes });
   };
 
   const setDefaultType = (type: ContributorTypeOption) => {

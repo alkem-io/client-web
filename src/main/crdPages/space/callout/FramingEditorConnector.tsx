@@ -454,7 +454,13 @@ export function FramingEditorConnector({
     case 'contributors':
       // Contributor-collection config (feature 008). Editable in both create and
       // edit (FR-004d). The callout renders no framing body — only its config.
-      if (!contributorCollection || !onContributorCollectionChange) return null;
+      // Fail fast on an incomplete call site rather than silently rendering
+      // nothing — these props are required whenever framingType === 'contributors'.
+      if (!contributorCollection || !onContributorCollectionChange) {
+        throw new Error(
+          "FramingEditorConnector: the 'contributors' framing requires `contributorCollection` and `onContributorCollectionChange` props."
+        );
+      }
       return (
         <ContributorCollectionConfigField
           value={contributorCollection}

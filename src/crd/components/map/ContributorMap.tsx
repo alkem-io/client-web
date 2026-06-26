@@ -111,7 +111,7 @@ export default function ContributorMap({ pins, ariaLabel, onPinClick, className 
                         onPinClick(active.href as string);
                       }
                     }}
-                    className="block text-card-title text-foreground truncate hover:text-primary"
+                    className="block truncate text-card-title text-foreground hover:text-primary focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   >
                     {active.name}
                   </a>

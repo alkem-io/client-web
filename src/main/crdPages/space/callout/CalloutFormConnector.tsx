@@ -73,6 +73,7 @@ import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
+import { healContributorCollection } from './contributorCollectionMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
@@ -775,7 +776,7 @@ function CalloutFormConnectorInner({
                     : undefined
                 }
                 contributorCollection={values.contributorCollection}
-                onContributorCollectionChange={v => setField('contributorCollection', v)}
+                onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
                 contributorCollectionError={errors.contributorCollection}
               />
             </div>

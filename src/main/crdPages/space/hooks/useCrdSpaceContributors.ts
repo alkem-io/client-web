@@ -87,6 +87,11 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
         const items = result.data?.lookup.callout?.framing.contributors ?? [];
         setCardsByType(prev => ({ ...prev, [type]: items.map(mapContributorItemToCard) }));
       })
+      .catch(() => {
+        // Roll back so a later switch can retry — otherwise a failed fetch would
+        // leave the type marked "requested" forever and the user stuck on empty.
+        requestedRef.current.delete(type);
+      })
       .finally(() => {
         setLoadingTypes(prev => {
           const next = new Set(prev);
