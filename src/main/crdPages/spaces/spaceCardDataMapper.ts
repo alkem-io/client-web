@@ -67,7 +67,7 @@ export function mapSpaceToCardData(space: SpaceWithParent, authenticated: boolea
     tags: profile.tagset?.tags ?? [],
     leads,
     href: profile.url,
-    matchedTerms: !!space.matchedTerms?.length,
+    matchedTerms: space.matchedTerms,
     parent,
     visibility: space.visibility ? VISIBILITY_VARIANT[space.visibility] : undefined,
   };

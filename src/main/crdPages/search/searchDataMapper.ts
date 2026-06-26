@@ -38,6 +38,7 @@ export type PostResultCardData = {
   author: { name: string; avatarUrl?: string };
   date: string;
   spaceName: string;
+  matchedTerms?: string[];
 
   href: string;
 };
@@ -51,6 +52,7 @@ export type ResponseResultCardData = {
   date: string;
   parentPostTitle: string;
   spaceName: string;
+  matchedTerms?: string[];
 
   href: string;
 };
@@ -61,6 +63,7 @@ export type UserResultCardData = {
   avatarUrl?: string;
   role?: string;
   email?: string;
+  matchedTerms?: string[];
   href: string;
 };
 
@@ -70,6 +73,7 @@ export type OrgResultCardData = {
   logoUrl?: string;
   type: string;
   tagline?: string;
+  matchedTerms?: string[];
   href: string;
 };
 
@@ -127,7 +131,7 @@ export function mapSpaceResults(results: SearchResultMetaType[]): SpaceCardData[
         tags: space.about.profile.tagset?.tags ?? [],
         leads: [],
         href: space.about.profile.url,
-        matchedTerms: result.terms.length > 0,
+        matchedTerms: result.terms,
         parent,
       };
     });
@@ -156,6 +160,7 @@ export function mapPostResults(
         },
         date: '',
         spaceName: r.space.about.profile.displayName,
+        matchedTerms: r.terms,
 
         href: r.callout.framing.profile.url,
       };
@@ -178,6 +183,7 @@ export function mapPostResults(
           author: { name: r.whiteboard.createdBy?.profile?.displayName ?? unknownLabel },
           date: formatDate(r.whiteboard.createdDate),
           spaceName: r.space.about.profile.displayName,
+          matchedTerms: r.terms,
 
           href: r.whiteboard.profile.url,
         };
@@ -193,6 +199,7 @@ export function mapPostResults(
         author: { name: r.memo.createdBy?.profile?.displayName ?? unknownLabel },
         date: formatDate(r.memo.createdDate),
         spaceName: r.space.about.profile.displayName,
+        matchedTerms: r.terms,
 
         href: r.memo.profile.url,
       };
@@ -227,6 +234,7 @@ export function mapResponseResults(
           date: formatDate(r.post.createdDate),
           parentPostTitle,
           spaceName,
+          matchedTerms: r.terms,
 
           href: r.post.profile.url,
         };
@@ -243,6 +251,7 @@ export function mapResponseResults(
           date: formatDate(r.memo.createdDate),
           parentPostTitle,
           spaceName,
+          matchedTerms: r.terms,
 
           href: r.memo.profile.url,
         };
@@ -259,6 +268,7 @@ export function mapResponseResults(
         date: formatDate(r.whiteboard.createdDate),
         parentPostTitle,
         spaceName,
+        matchedTerms: r.terms,
         href: r.whiteboard.profile.url,
       };
     });
@@ -274,6 +284,7 @@ export function mapUserResults(actorResults: SearchResultMetaType[]): UserResult
       avatarUrl: r.user.profile?.visual?.uri,
       role: r.user.profile?.tagsets?.[0]?.tags[0],
       email: undefined,
+      matchedTerms: r.terms,
       // biome-ignore lint/style/noNonNullAssertion: Filtered users without profile url
       href: r.user.profile?.url!,
     }));
@@ -289,6 +300,7 @@ export function mapOrgResults(actorResults: SearchResultMetaType[], labels: Sear
       logoUrl: r.organization.profile?.visual?.uri,
       type: labels.organization,
       tagline: r.organization.profile?.description,
+      matchedTerms: r.terms,
       // biome-ignore lint/style/noNonNullAssertion: Filtered orgs without profile url
       href: r.organization.profile?.url!,
     }));

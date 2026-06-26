@@ -1,5 +1,6 @@
 import { FileText, Presentation, StickyNote } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { MatchedTerms } from '@/crd/components/search/MatchedTerms';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -14,6 +15,7 @@ export type PostResultCardData = {
   author: { name: string; avatarUrl?: string };
   date: string;
   spaceName: string;
+  matchedTerms?: string[];
   href: string;
 };
 
@@ -37,67 +39,79 @@ export function PostResultCard({ post, onClick }: PostResultCardProps) {
   const { t } = useTranslation('crd-search');
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={post.title}
+    <div
       className={cn(
-        'group block w-full text-left rounded-xl border bg-card overflow-hidden',
-        'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        'shadow-none hover:shadow-[var(--elevation-sm)] hover:border-primary/30',
-        'transition-all duration-300 cursor-pointer'
+        'group relative rounded-xl border bg-card overflow-hidden',
+        'shadow-none hover:shadow-[var(--elevation-sm)] hover:border-primary/30 transition-all duration-300'
       )}
     >
-      {/* Banner */}
-      <div className="overflow-hidden aspect-video">
-        {post.bannerUrl ? (
-          <img
-            src={post.bannerUrl}
-            alt=""
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-muted to-accent flex items-center justify-center">
-            <PostTypeIcon type={post.type} />
-          </div>
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={post.title}
+        className={cn(
+          'block w-full text-left cursor-pointer',
+          'outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-xl'
         )}
-      </div>
-
-      {/* Content */}
-      <div className="p-3 flex flex-col gap-2">
-        {/* Author row */}
-        <div className="flex items-center gap-2">
-          <Avatar className="size-[22px]">
-            <AvatarImage src={post.author.avatarUrl} alt="" />
-            <AvatarFallback className="text-badge bg-secondary text-secondary-foreground">
-              {post.author.name.substring(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-caption font-medium text-card-foreground truncate">{post.author.name}</span>
+      >
+        {/* Banner */}
+        <div className="overflow-hidden aspect-video">
+          {post.bannerUrl ? (
+            <img
+              src={post.bannerUrl}
+              alt=""
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-muted to-accent flex items-center justify-center">
+              <PostTypeIcon type={post.type} />
+            </div>
+          )}
         </div>
 
-        {/* Title */}
-        <h4 className="line-clamp-2 text-card-title text-card-foreground group-hover:text-primary transition-colors duration-200">
-          {post.title}
-        </h4>
+        {/* Content */}
+        <div className="p-3 flex flex-col gap-2">
+          {/* Author row */}
+          <div className="flex items-center gap-2">
+            <Avatar className="size-[22px]">
+              <AvatarImage src={post.author.avatarUrl} alt="" />
+              <AvatarFallback className="text-badge bg-secondary text-secondary-foreground">
+                {post.author.name.substring(0, 2).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-caption font-medium text-card-foreground truncate">{post.author.name}</span>
+          </div>
 
-        {/* Snippet */}
-        <p className="line-clamp-2 text-caption text-muted-foreground flex-1">{post.snippet}</p>
+          {/* Title */}
+          <h4 className="line-clamp-2 text-card-title text-card-foreground group-hover:text-primary transition-colors duration-200">
+            {post.title}
+          </h4>
 
-        {/* Meta row */}
-        <div className="border-t border-border pt-2 flex items-center justify-between">
-          <span className="inline-flex items-center gap-1 text-badge bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
-            <PostTypeIcon type={post.type} />
-            {t(`search.postTypes.${post.type}`)}
-          </span>
-          <span className="text-badge text-muted-foreground">{post.date}</span>
+          {/* Snippet */}
+          <p className="line-clamp-2 text-caption text-muted-foreground flex-1">{post.snippet}</p>
+
+          {/* Meta row */}
+          <div className="border-t border-border pt-2 flex items-center justify-between">
+            <span className="inline-flex items-center gap-1 text-badge bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
+              <PostTypeIcon type={post.type} />
+              {t(`search.postTypes.${post.type}`)}
+            </span>
+            <span className="text-badge text-muted-foreground">{post.date}</span>
+          </div>
+
+          {/* Space context */}
+          <p className="text-caption text-muted-foreground truncate">
+            {t('search.spaceContext', { spaceName: post.spaceName })}
+          </p>
         </div>
+      </button>
 
-        {/* Space context */}
-        <p className="text-caption text-muted-foreground truncate">
-          {t('search.spaceContext', { spaceName: post.spaceName })}
-        </p>
-      </div>
-    </button>
+      {/* Matched search terms — sibling of the card button (not nested). */}
+      {post.matchedTerms && post.matchedTerms.length > 0 && (
+        <div className="px-3 pb-3 -mt-1">
+          <MatchedTerms terms={post.matchedTerms} />
+        </div>
+      )}
+    </div>
   );
 }

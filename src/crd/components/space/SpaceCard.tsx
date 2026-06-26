@@ -2,6 +2,7 @@ import { Globe, Lock, Pin, UserCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { StackedAvatars } from '@/crd/components/common/StackedAvatars';
+import { MatchedTerms } from '@/crd/components/search/MatchedTerms';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -56,7 +57,8 @@ export type SpaceCardData = {
   tags: string[];
   leads: SpaceLead[];
   href: string;
-  matchedTerms?: boolean;
+  /** Query-ordered matched terms (server `terms`); rendered as chips when non-empty. */
+  matchedTerms?: string[];
   parent?: SpaceCardParent;
   /** Lifecycle status used for filter pills (e.g. 'active', 'archived'). */
   status?: string;
@@ -229,6 +231,23 @@ export function SpaceCard({ space, onClick, onParentClick, className }: SpaceCar
               }}
             >
               <CollapsibleTagList tags={space.tags} />
+            </div>
+          )}
+
+          {/* Matched search terms — chips for the query word(s) that hit this
+              result. Wrapped to intercept clicks so they don't trigger card
+              navigation. */}
+          {space.matchedTerms && space.matchedTerms.length > 0 && (
+            // biome-ignore lint/a11y/noStaticElementInteractions: click-intercept wrapper (not an actionable element)
+            // biome-ignore lint/a11y/useKeyWithClickEvents: keyboard activation happens on inner interactive elements; this only blocks pointer bubbling
+            <div
+              className="mt-auto pt-2.5 min-w-0"
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              <MatchedTerms terms={space.matchedTerms} />
             </div>
           )}
         </div>
