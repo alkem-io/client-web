@@ -4112,104 +4112,6 @@ export const SpaceProfileCommunityDetailsFragmentDoc = gql`
   }
 }
     ${SpaceAboutLightFragmentDoc}`;
-export const UploadFileOnReferenceDocument = gql`
-    mutation UploadFileOnReference($file: Upload!, $uploadData: StorageBucketUploadFileOnReferenceInput!) {
-  uploadFileOnReference(uploadData: $uploadData, file: $file) {
-    id
-    uri
-  }
-}
-    `;
-export type UploadFileOnReferenceMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UploadFileOnReferenceMutation,
-  SchemaTypes.UploadFileOnReferenceMutationVariables
->;
-
-/**
- * __useUploadFileOnReferenceMutation__
- *
- * To run a mutation, you first call `useUploadFileOnReferenceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadFileOnReferenceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadFileOnReferenceMutation, { data, loading, error }] = useUploadFileOnReferenceMutation({
- *   variables: {
- *      file: // value for 'file'
- *      uploadData: // value for 'uploadData'
- *   },
- * });
- */
-export function useUploadFileOnReferenceMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UploadFileOnReferenceMutation,
-    SchemaTypes.UploadFileOnReferenceMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    SchemaTypes.UploadFileOnReferenceMutation,
-    SchemaTypes.UploadFileOnReferenceMutationVariables
-  >(UploadFileOnReferenceDocument, options);
-}
-export type UploadFileOnReferenceMutationHookResult = ReturnType<typeof useUploadFileOnReferenceMutation>;
-export type UploadFileOnReferenceMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnReferenceMutation>;
-export type UploadFileOnReferenceMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UploadFileOnReferenceMutation,
-  SchemaTypes.UploadFileOnReferenceMutationVariables
->;
-export const UploadFileOnLinkDocument = gql`
-    mutation UploadFileOnLink($file: Upload!, $uploadData: StorageBucketUploadFileOnLinkInput!) {
-  uploadFileOnLink(uploadData: $uploadData, file: $file) {
-    id
-    uri
-  }
-}
-    `;
-export type UploadFileOnLinkMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UploadFileOnLinkMutation,
-  SchemaTypes.UploadFileOnLinkMutationVariables
->;
-
-/**
- * __useUploadFileOnLinkMutation__
- *
- * To run a mutation, you first call `useUploadFileOnLinkMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadFileOnLinkMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadFileOnLinkMutation, { data, loading, error }] = useUploadFileOnLinkMutation({
- *   variables: {
- *      file: // value for 'file'
- *      uploadData: // value for 'uploadData'
- *   },
- * });
- */
-export function useUploadFileOnLinkMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.UploadFileOnLinkMutation,
-    SchemaTypes.UploadFileOnLinkMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UploadFileOnLinkMutation, SchemaTypes.UploadFileOnLinkMutationVariables>(
-    UploadFileOnLinkDocument,
-    options
-  );
-}
-export type UploadFileOnLinkMutationHookResult = ReturnType<typeof useUploadFileOnLinkMutation>;
-export type UploadFileOnLinkMutationResult = Apollo.MutationResult<SchemaTypes.UploadFileOnLinkMutation>;
-export type UploadFileOnLinkMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UploadFileOnLinkMutation,
-  SchemaTypes.UploadFileOnLinkMutationVariables
->;
 export const UploadFileDocument = gql`
     mutation UploadFile($file: Upload!, $uploadData: StorageBucketUploadFileInput!) {
   uploadFileOnStorageBucket(uploadData: $uploadData, file: $file) {
@@ -10197,50 +10099,6 @@ export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdatePostMutation,
   SchemaTypes.UpdatePostMutationVariables
 >;
-export const DeletePostDocument = gql`
-    mutation DeletePost($postId: UUID!) {
-  deletePost(deleteData: {ID: $postId}) {
-    id
-  }
-}
-    `;
-export type DeletePostMutationFn = Apollo.MutationFunction<
-  SchemaTypes.DeletePostMutation,
-  SchemaTypes.DeletePostMutationVariables
->;
-
-/**
- * __useDeletePostMutation__
- *
- * To run a mutation, you first call `useDeletePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletePostMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
- *   variables: {
- *      postId: // value for 'postId'
- *   },
- * });
- */
-export function useDeletePostMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.DeletePostMutation, SchemaTypes.DeletePostMutationVariables>(
-    DeletePostDocument,
-    options
-  );
-}
-export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
-export type DeletePostMutationResult = Apollo.MutationResult<SchemaTypes.DeletePostMutation>;
-export type DeletePostMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.DeletePostMutation,
-  SchemaTypes.DeletePostMutationVariables
->;
 export const MoveContributionToCalloutDocument = gql`
     mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
   moveContributionToCallout(
@@ -11146,52 +11004,6 @@ export type CreateTagsetOnProfileMutationResult = Apollo.MutationResult<SchemaTy
 export type CreateTagsetOnProfileMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTagsetOnProfileMutation,
   SchemaTypes.CreateTagsetOnProfileMutationVariables
->;
-export const UpdateVisualDocument = gql`
-    mutation updateVisual($updateData: UpdateVisualInput!) {
-  updateVisual(updateData: $updateData) {
-    id
-    uri
-    alternativeText
-  }
-}
-    `;
-export type UpdateVisualMutationFn = Apollo.MutationFunction<
-  SchemaTypes.UpdateVisualMutation,
-  SchemaTypes.UpdateVisualMutationVariables
->;
-
-/**
- * __useUpdateVisualMutation__
- *
- * To run a mutation, you first call `useUpdateVisualMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateVisualMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateVisualMutation, { data, loading, error }] = useUpdateVisualMutation({
- *   variables: {
- *      updateData: // value for 'updateData'
- *   },
- * });
- */
-export function useUpdateVisualMutation(
-  baseOptions?: Apollo.MutationHookOptions<SchemaTypes.UpdateVisualMutation, SchemaTypes.UpdateVisualMutationVariables>
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.UpdateVisualMutation, SchemaTypes.UpdateVisualMutationVariables>(
-    UpdateVisualDocument,
-    options
-  );
-}
-export type UpdateVisualMutationHookResult = ReturnType<typeof useUpdateVisualMutation>;
-export type UpdateVisualMutationResult = Apollo.MutationResult<SchemaTypes.UpdateVisualMutation>;
-export type UpdateVisualMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.UpdateVisualMutation,
-  SchemaTypes.UpdateVisualMutationVariables
 >;
 export const UploadVisualDocument = gql`
     mutation uploadVisual($file: Upload!, $uploadData: VisualUploadImageInput!) {
@@ -21845,51 +21657,6 @@ export type ConvertVcToKnowledgeBaseMutationResult =
 export type ConvertVcToKnowledgeBaseMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.ConvertVcToKnowledgeBaseMutation,
   SchemaTypes.ConvertVcToKnowledgeBaseMutationVariables
->;
-export const ShareLinkWithUserDocument = gql`
-    mutation shareLinkWithUser($messageData: CommunicationSendMessageToUsersInput!) {
-  sendMessageToUsers(messageData: $messageData)
-}
-    `;
-export type ShareLinkWithUserMutationFn = Apollo.MutationFunction<
-  SchemaTypes.ShareLinkWithUserMutation,
-  SchemaTypes.ShareLinkWithUserMutationVariables
->;
-
-/**
- * __useShareLinkWithUserMutation__
- *
- * To run a mutation, you first call `useShareLinkWithUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useShareLinkWithUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [shareLinkWithUserMutation, { data, loading, error }] = useShareLinkWithUserMutation({
- *   variables: {
- *      messageData: // value for 'messageData'
- *   },
- * });
- */
-export function useShareLinkWithUserMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    SchemaTypes.ShareLinkWithUserMutation,
-    SchemaTypes.ShareLinkWithUserMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<SchemaTypes.ShareLinkWithUserMutation, SchemaTypes.ShareLinkWithUserMutationVariables>(
-    ShareLinkWithUserDocument,
-    options
-  );
-}
-export type ShareLinkWithUserMutationHookResult = ReturnType<typeof useShareLinkWithUserMutation>;
-export type ShareLinkWithUserMutationResult = Apollo.MutationResult<SchemaTypes.ShareLinkWithUserMutation>;
-export type ShareLinkWithUserMutationOptions = Apollo.BaseMutationOptions<
-  SchemaTypes.ShareLinkWithUserMutation,
-  SchemaTypes.ShareLinkWithUserMutationVariables
 >;
 export const SpaceAboutBaseDocument = gql`
     query SpaceAboutBase($spaceId: UUID!) {

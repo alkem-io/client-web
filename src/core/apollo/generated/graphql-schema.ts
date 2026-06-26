@@ -10355,26 +10355,6 @@ export type WhiteboardPreviewSettings = {
   mode: WhiteboardPreviewMode;
 };
 
-export type UploadFileOnReferenceMutationVariables = Exact<{
-  file: Scalars['Upload']['input'];
-  uploadData: StorageBucketUploadFileOnReferenceInput;
-}>;
-
-export type UploadFileOnReferenceMutation = {
-  __typename?: 'Mutation';
-  uploadFileOnReference: { __typename?: 'Reference'; id: string; uri: string };
-};
-
-export type UploadFileOnLinkMutationVariables = Exact<{
-  file: Scalars['Upload']['input'];
-  uploadData: StorageBucketUploadFileOnLinkInput;
-}>;
-
-export type UploadFileOnLinkMutation = {
-  __typename?: 'Mutation';
-  uploadFileOnLink: { __typename?: 'Link'; id: string; uri: string };
-};
-
 export type UploadFileMutationVariables = Exact<{
   file: Scalars['Upload']['input'];
   uploadData: StorageBucketUploadFileInput;
@@ -18661,12 +18641,6 @@ export type UpdatePostMutation = {
   };
 };
 
-export type DeletePostMutationVariables = Exact<{
-  postId: Scalars['UUID']['input'];
-}>;
-
-export type DeletePostMutation = { __typename?: 'Mutation'; deletePost: { __typename?: 'Post'; id: string } };
-
 export type MoveContributionToCalloutMutationVariables = Exact<{
   contributionId: Scalars['UUID']['input'];
   calloutId: Scalars['UUID']['input'];
@@ -19611,15 +19585,6 @@ export type VisualModelFullFragment = {
   minHeight: number;
   minWidth: number;
   alternativeText?: string | undefined;
-};
-
-export type UpdateVisualMutationVariables = Exact<{
-  updateData: UpdateVisualInput;
-}>;
-
-export type UpdateVisualMutation = {
-  __typename?: 'Mutation';
-  updateVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
 };
 
 export type UploadVisualMutationVariables = Exact<{
@@ -26356,12 +26321,6 @@ export type ConvertVcToKnowledgeBaseMutation = {
   __typename?: 'Mutation';
   convertVirtualContributorToUseKnowledgeBase: { __typename?: 'VirtualContributor'; id: string };
 };
-
-export type ShareLinkWithUserMutationVariables = Exact<{
-  messageData: CommunicationSendMessageToUsersInput;
-}>;
-
-export type ShareLinkWithUserMutation = { __typename?: 'Mutation'; sendMessageToUsers: boolean };
 
 export type PageInfoFragment = {
   __typename?: 'PageInfo';
