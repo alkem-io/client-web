@@ -1,3 +1,4 @@
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { ReferenceLink } from '@/crd/components/common/profileTypes';
 import { excludeSocialReferences } from '@/crd/components/common/SocialLinks';
 
@@ -38,7 +39,9 @@ export function ReferencesList({ title, references, excludeSocial = true }: Refe
             >
               {ref.name}
             </a>
-            {ref.description ? <p className="text-caption text-muted-foreground">{ref.description}</p> : null}
+            {ref.description ? (
+              <InlineMarkdown content={ref.description} clampLines={0} className="text-caption text-muted-foreground" />
+            ) : null}
           </li>
         ))}
       </ul>
