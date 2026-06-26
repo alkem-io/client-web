@@ -5,14 +5,9 @@ import { ROUTE_HOME } from '@/domain/platform/routes/constants';
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 export const URL_SPACE_EXPLORER = '/spaces';
 
-// Keep these in sync with the consts in TabbedLayoutPage.tsx and don't import,
-// tests fail to import because they are in different modules
-const URL_PARAM_SECTION = 'tab';
-const URL_PARAM_DIALOG = 'dialog';
-
 export enum TabbedLayoutParams {
-  Section = URL_PARAM_SECTION,
-  Dialog = URL_PARAM_DIALOG,
+  Section = 'tab',
+  Dialog = 'dialog',
 }
 
 export const buildSettingsUrl = (entityUrl: string) => {
@@ -68,12 +63,12 @@ export const buildSpaceSectionUrl = (
   }
 
   if (sectionNumber) {
-    params.set(URL_PARAM_SECTION, sectionNumber.toString());
+    params.set(TabbedLayoutParams.Section, sectionNumber.toString());
   }
   if (dialog) {
-    params.set(URL_PARAM_DIALOG, dialog);
+    params.set(TabbedLayoutParams.Dialog, dialog);
   } else {
-    params.delete(URL_PARAM_DIALOG);
+    params.delete(TabbedLayoutParams.Dialog);
   }
 
   return `${result}?${params.toString()}`;
