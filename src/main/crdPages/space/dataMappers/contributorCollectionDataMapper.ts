@@ -18,12 +18,18 @@ export function mapContributorItemToCard(item: ContributorItem): ContributorCard
   const locationLabel = [city, country].filter(Boolean).join(', ') || undefined;
   const hasValidCoordinates = item.location?.hasValidCoordinates ?? false;
 
+  // Display role: only `lead` and `member` ever surface. The server already
+  // resolves this (a lead — including a lead who is also an admin — is labelled
+  // `lead`; admins who are not leads are labelled `member`); this is a defensive
+  // normalisation so any non-`lead` label still renders as `member` (feature 008).
+  const roleLabel = item.roleLabel == null ? undefined : item.roleLabel === 'lead' ? 'lead' : 'member';
+
   return {
     id: item.id,
     type: contributorTypeFromServer(item.type),
     name: item.displayName,
     avatarUrl: item.avatarUrl ?? undefined,
-    roleLabel: item.roleLabel ?? undefined,
+    roleLabel,
     href: item.url ?? undefined,
     locationLabel,
     // Coordinates only when valid; city/country alone => no map plot (FR-012).

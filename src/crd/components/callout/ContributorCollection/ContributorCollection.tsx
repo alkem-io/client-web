@@ -22,6 +22,9 @@ const ContributorMap = lazy(() => import('@/crd/components/map/ContributorMap'))
 
 export type ContributorTypeId = 'user' | 'organization' | 'virtualContributor';
 export type ContributorViewId = 'list' | 'map';
+/** Secondary filter on the active type's set: everyone, leads only, or members only. */
+type RoleFilterId = 'all' | 'lead' | 'member';
+const ROLE_FILTERS: RoleFilterId[] = ['all', 'lead', 'member'];
 
 export type ContributorCollectionCounts = {
   users: number;
@@ -78,16 +81,26 @@ export function ContributorCollection({
   // loads after first render) still takes effect, instead of being captured stale.
   const [viewOverride, setViewOverride] = useState<ContributorViewId | null>(null);
   const view = viewOverride ?? defaultView;
+  // Secondary role filter (All | Lead | Member) over the active type's set.
+  const [roleFilter, setRoleFilter] = useState<RoleFilterId>('all');
 
   const showMapControl = isLocatable(activeType);
   // Auto-heal to list on the VC segment (the map control is hidden there — FR-010).
   const effectiveView: ContributorViewId = showMapControl ? view : 'list';
 
-  // Client-side name search (case-insensitive substring on display name),
-  // scoped to the active type's fetched set (FR-008). Counts are NOT affected.
   const allCards = cards ?? [];
+  // Role filter is offered only when the active set actually mixes leads and
+  // members (so it can filter something) — e.g. it appears on People/Organizations
+  // but not on a members-only Virtual Contributors segment.
+  const leadCount = allCards.filter(c => c.roleLabel === 'lead').length;
+  const memberCount = allCards.length - leadCount;
+  const showRoleFilter = leadCount > 0 && memberCount > 0;
+  const roleScoped = roleFilter === 'all' ? allCards : allCards.filter(c => c.roleLabel === roleFilter);
+
+  // Client-side name search (case-insensitive substring on display name),
+  // scoped to the active (role-filtered) set (FR-008). Counts are NOT affected.
   const query = search.trim().toLowerCase();
-  const filtered = query ? allCards.filter(c => c.name.toLowerCase().includes(query)) : allCards;
+  const filtered = query ? roleScoped.filter(c => c.name.toLowerCase().includes(query)) : roleScoped;
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages - 1);
@@ -97,11 +110,20 @@ export function ContributorCollection({
     onActiveTypeChange(type);
     setSearch('');
     setPage(0);
+    setRoleFilter('all');
   };
 
   const countFor = (type: ContributorTypeId): number => counts[COUNT_BY_TYPE[type]];
 
   const typeLabel = (type: ContributorTypeId): string => t(`contributors.types.${type}` as 'contributors.types.user');
+
+  // Reuses the community block's existing role/filter strings (members.*).
+  const roleFilterLabel = (rf: RoleFilterId): string =>
+    rf === 'all' ? t('members.filterAll') : rf === 'lead' ? t('members.filterLead') : t('members.role.member');
+  const roleFilterCount = (rf: RoleFilterId): number =>
+    rf === 'all' ? allCards.length : rf === 'lead' ? leadCount : memberCount;
+  const roleLabelText = (role?: string): string | undefined =>
+    role ? t(`members.role.${role}` as 'members.role.lead') : undefined;
 
   // Map pins: only the located subset of the (search-filtered) active set.
   const pins: ContributorMapPin[] = filtered
@@ -110,7 +132,7 @@ export function ContributorCollection({
       id: c.id,
       name: c.name,
       avatarUrl: c.avatarUrl,
-      roleLabel: c.roleLabel,
+      roleLabel: roleLabelText(c.roleLabel),
       href: c.href,
       latitude: c.latitude as number,
       longitude: c.longitude as number,
@@ -132,6 +154,29 @@ export function ContributorCollection({
                 <span>{typeLabel(type)}</span>
                 <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
                   {countFor(type)}
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+      )}
+
+      {/* Secondary role filter (All | Lead | Member) — same segmented style as the
+          type switch; shown only when the active set mixes leads and members. */}
+      {showRoleFilter && (
+        <Tabs
+          value={roleFilter}
+          onValueChange={v => {
+            setRoleFilter(v as RoleFilterId);
+            setPage(0);
+          }}
+        >
+          <TabsList className="w-full max-w-full justify-start overflow-x-auto sm:w-fit sm:justify-center">
+            {ROLE_FILTERS.map(rf => (
+              <TabsTrigger key={rf} value={rf} className="flex-none sm:flex-1">
+                <span>{roleFilterLabel(rf)}</span>
+                <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
+                  {roleFilterCount(rf)}
                 </span>
               </TabsTrigger>
             ))}
@@ -178,12 +223,16 @@ export function ContributorCollection({
         )}
       </div>
 
-      {/* Single per-type count line (always visible, total eligible set). */}
-      <p className="text-caption text-muted-foreground" aria-live="off">
-        {t(`contributors.counts.${COUNT_BY_TYPE[activeType]}` as 'contributors.counts.users', {
-          count: countFor(activeType),
-        })}
-      </p>
+      {/* Per-type count line — the type-switch segments and the role filter both
+          already show counts, so this is only needed (to avoid a count-less view)
+          when neither is present: a single configured type with no lead/member mix. */}
+      {types.length === 1 && !showRoleFilter && (
+        <p className="text-caption text-muted-foreground" aria-live="off">
+          {t(`contributors.counts.${COUNT_BY_TYPE[activeType]}` as 'contributors.counts.users', {
+            count: countFor(activeType),
+          })}
+        </p>
+      )}
 
       {loading && cards === undefined ? (
         <output className="flex items-center justify-center py-12" aria-label={t('contributors.title')}>

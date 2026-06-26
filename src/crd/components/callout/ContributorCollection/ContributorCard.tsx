@@ -1,4 +1,5 @@
 import { Bot, Building2, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Card, CardContent } from '@/crd/primitives/card';
@@ -39,6 +40,7 @@ const TYPE_ICON = {
 } as const;
 
 export function ContributorCard({ contributor, onContributorClick, className }: ContributorCardProps) {
+  const { t } = useTranslation('crd-space');
   const Icon = TYPE_ICON[contributor.type];
   const isOrg = contributor.type === 'organization';
   const href = contributor.href;
@@ -94,7 +96,7 @@ export function ContributorCard({ contributor, onContributorClick, className }: 
             {contributor.roleLabel && (
               <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-caption font-medium border border-border bg-muted text-muted-foreground">
                 <Icon className="w-3 h-3" aria-hidden="true" />
-                {contributor.roleLabel}
+                {t(`members.role.${contributor.roleLabel}` as 'members.role.lead')}
               </span>
             )}
             {contributor.locationLabel && (
