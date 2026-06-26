@@ -99,5 +99,3 @@ export const useCrdVCProfilePageData = () => {
     },
   };
 };
-
-export type CrdVCProfilePageData = ReturnType<typeof useCrdVCProfilePageData>;

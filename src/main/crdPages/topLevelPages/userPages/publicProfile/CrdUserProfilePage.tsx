@@ -17,6 +17,7 @@ import {
   // handler intentionally not imported. See the deactivation notes below.
   // useSendEmailToUserHandler,
 } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
 import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
@@ -101,7 +102,7 @@ export const CrdUserProfilePage = () => {
   // const showEmail = viewerCanContact && isContactableViaEmail;
   const showCannotBeReached = viewerCanContact && !isContactable;
 
-  const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
+  const settingsHref = profile?.url ? buildSettingsTabUrl(profile.url, 'profile') : undefined;
 
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
     mapHostedSpacesToCardData(accountResources, t('userProfile.vcType'));

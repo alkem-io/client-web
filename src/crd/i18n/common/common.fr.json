@@ -943,6 +943,8 @@
     "and": "et",
     "clear": "Effacer les filtres",
     "filterByTag": "Filtrer par étiquette",
+    "filterByTagActive_one": "Filtrer par étiquette, {{count}} sélectionnée",
+    "filterByTagActive_other": "Filtrer par étiquette, {{count}} sélectionnées",
     "summary": "Résultats pour {{criteria}}"
   },
   "forms": {

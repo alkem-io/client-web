@@ -25,6 +25,17 @@
     "searchPlaceholder": "Search the knowledge base...",
     "searchLabel": "Search the knowledge base",
     "noResults": "No matches",
+    "search": {
+      "emptyTitle": "No matches",
+      "emptyDescription": "No content in this section matches your search.",
+      "errorTitle": "Search is unavailable",
+      "errorDescription": "Something went wrong while searching. Please try again.",
+      "retry": "Try again",
+      "loadingLabel": "Loading search results",
+      "appendingLabel": "Loading more results",
+      "removeTerm": "Remove term {{term}}",
+      "removeTag": "Remove tag {{tag}}"
+    },
     "viewGrid": "Card view",
     "viewList": "List view",
     "count": {
@@ -39,6 +50,11 @@
       "document_one": "{{count}} document",
       "document_other": "{{count}} documents"
     }
+  },
+  "postIndexDialog": {
+    "close": "Close",
+    "loadingLabel": "Loading Post Index",
+    "empty": "No posts yet"
   },
   "sidebar": {
     "aboutSpace": "About this Space",

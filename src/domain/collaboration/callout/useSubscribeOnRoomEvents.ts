@@ -7,7 +7,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { MutationType, PlatformFeatureFlagName } from '@/core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import { buildMessagesCountModifier } from '@/domain/communication/room/Comments/refreshRoomMessagesCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';

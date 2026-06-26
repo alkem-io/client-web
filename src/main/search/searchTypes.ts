@@ -22,5 +22,3 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Callout, SearchResultCalloutFragment>
   | TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
   | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>;
-
-export const MAX_TERMS_SEARCH = 5;
