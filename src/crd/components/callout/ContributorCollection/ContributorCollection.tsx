@@ -72,11 +72,15 @@ export function ContributorCollection({
   const { t } = useTranslation('crd-space');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
-  // View toggle opens on the configured default; auto-heals to list on the VC
-  // segment (the map control is hidden there — FR-010).
-  const [view, setView] = useState<ContributorViewId>(defaultView);
+  // The view follows the configured `defaultView` until the user explicitly
+  // toggles it (FR-010). Tracking an override — rather than seeding useState from
+  // `defaultView` — means a `defaultView` that resolves asynchronously (the config
+  // loads after first render) still takes effect, instead of being captured stale.
+  const [viewOverride, setViewOverride] = useState<ContributorViewId | null>(null);
+  const view = viewOverride ?? defaultView;
 
   const showMapControl = isLocatable(activeType);
+  // Auto-heal to list on the VC segment (the map control is hidden there — FR-010).
   const effectiveView: ContributorViewId = showMapControl ? view : 'list';
 
   // Client-side name search (case-insensitive substring on display name),
@@ -157,13 +161,13 @@ export function ContributorCollection({
           <div className="flex items-center gap-1 rounded-lg border border-border p-0.5">
             <ViewButton
               active={effectiveView === 'list'}
-              onClick={() => setView('list')}
+              onClick={() => setViewOverride('list')}
               icon={List}
               label={t('contributors.viewList')}
             />
             <ViewButton
               active={effectiveView === 'map'}
-              onClick={() => setView('map')}
+              onClick={() => setViewOverride('map')}
               icon={MapIcon}
               label={t('contributors.viewMap')}
             />

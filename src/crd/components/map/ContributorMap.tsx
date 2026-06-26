@@ -1,6 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useState } from 'react';
-import { Map as MapLibreMap, Marker, Popup } from 'react-map-gl/maplibre';
+import { AttributionControl, Map as MapLibreMap, Marker, Popup } from 'react-map-gl/maplibre';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -36,14 +36,26 @@ type ContributorMapProps = {
   className?: string;
 };
 
-// A neutral world-ish default view; the map fits its content via `initialViewState`
-// centered on the first pin (or 0/0 when empty).
+// Default to a Europe-centred view when there are no plottable pins; when there
+// are, fit the map to their bounds (single pin → centre on it). The view is only
+// the INITIAL state — the user can pan/zoom freely afterwards.
+const EUROPE_VIEW = { longitude: 10, latitude: 50, zoom: 3.5 } as const;
+
 function initialView(pins: ContributorMapPin[]) {
-  const first = pins[0];
+  if (pins.length === 0) {
+    return EUROPE_VIEW;
+  }
+  if (pins.length === 1) {
+    return { longitude: pins[0].longitude, latitude: pins[0].latitude, zoom: 5 };
+  }
+  const longitudes = pins.map(p => p.longitude);
+  const latitudes = pins.map(p => p.latitude);
   return {
-    longitude: first?.longitude ?? 0,
-    latitude: first?.latitude ?? 20,
-    zoom: first ? 2.5 : 1,
+    bounds: [
+      [Math.min(...longitudes), Math.min(...latitudes)],
+      [Math.max(...longitudes), Math.max(...latitudes)],
+    ] as [[number, number], [number, number]],
+    fitBoundsOptions: { padding: 48, maxZoom: 6 },
   };
 }
 
@@ -60,8 +72,12 @@ export default function ContributorMap({ pins, ariaLabel, onPinClick, className 
         initialViewState={initialView(pins)}
         mapStyle={POSITRON_STYLE}
         style={{ width: '100%', height: '100%' }}
-        attributionControl={{ compact: true }}
+        // Disable the default (expanded) control and add an explicit COMPACT one,
+        // so the OpenStreetMap/OpenFreeMap attribution (license-required) is kept
+        // but collapsed to a small "ⓘ" toggle in the corner.
+        attributionControl={false}
       >
+        <AttributionControl compact={true} position="bottom-right" />
         {pins.map(pin => (
           <Marker
             key={pin.id}
