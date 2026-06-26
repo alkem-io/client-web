@@ -778,6 +778,14 @@
         "description": "Dadurch werden dieser Subspace und alle Inhalte dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
         "confirm": "Subspace löschen"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Sichtbarkeit der Benutzerinformationen",
+      "description": "Legen Sie fest, wer die Informationen der Mitglieder in diesem Space sehen kann. Organisationen und virtuelle Mitwirkende folgen der Sichtbarkeit des Space.",
+      "followSpace": "Sichtbarkeit des Space übernehmen",
+      "followSpaceDescription": "Die Benutzerinformationen der Mitglieder sind entsprechend der Sichtbarkeit des Space sichtbar.",
+      "membersOnly": "Nur Mitglieder",
+      "membersOnlyDescription": "Nur Mitglieder dieses Space können die Benutzerinformationen der Mitglieder sehen."
     }
   },
   "storage": {

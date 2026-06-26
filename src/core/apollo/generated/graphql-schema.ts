@@ -1256,6 +1256,7 @@ export type CalloutFraming = {
 
 export enum CalloutFramingType {
   CollaboraDocument = 'COLLABORA_DOCUMENT',
+  Contributors = 'CONTRIBUTORS',
   Link = 'LINK',
   MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
@@ -1302,6 +1303,8 @@ export type CalloutSettingsFraming = {
   __typename?: 'CalloutSettingsFraming';
   /** Can comment to callout framing. */
   commentsEnabled: Scalars['Boolean']['output'];
+  /** Configuration for a contributor-collection callout. Present only when framing.type = CONTRIBUTORS. */
+  contributors?: Maybe<CalloutContributorsSettings>;
 };
 
 export enum CalloutVisibility {
@@ -1694,6 +1697,71 @@ export enum ContentUpdatePolicy {
   Owner = 'OWNER',
 }
 
+export enum ContributorType {
+  Organization = 'ORGANIZATION',
+  User = 'USER',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+}
+
+export enum ContributorCollectionView {
+  List = 'LIST',
+  Map = 'MAP',
+}
+
+export type ContributorLocation = {
+  __typename?: 'ContributorLocation';
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  /** Whether the location has valid stored coordinates (geoLocation.isValid). City/country alone is false. */
+  hasValidCoordinates: Scalars['Boolean']['output'];
+  latitude?: Maybe<Scalars['Float']['output']>;
+  longitude?: Maybe<Scalars['Float']['output']>;
+};
+
+export type ContributorCollectionItem = {
+  __typename?: 'ContributorCollectionItem';
+  avatarUrl?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  /** Location of the contributor; null for Virtual Contributors or when not readable. */
+  location?: Maybe<ContributorLocation>;
+  /** The role label for this contributor (lead/admin/member). */
+  roleLabel?: Maybe<Scalars['String']['output']>;
+  type: ContributorType;
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type ContributorCollectionCounts = {
+  __typename?: 'ContributorCollectionCounts';
+  organizations: Scalars['Int']['output'];
+  users: Scalars['Int']['output'];
+  virtualContributors: Scalars['Int']['output'];
+};
+
+export type CalloutContributorsSettings = {
+  __typename?: 'CalloutContributorsSettings';
+  /** The contributor types included in this contributor-collection callout. At least one. */
+  contributorTypes: Array<ContributorType>;
+  /** The contributor type shown first (the segmented switch opens on it). One of contributorTypes. */
+  defaultContributorType: ContributorType;
+  /** The default display mode (list or map). */
+  defaultView: ContributorCollectionView;
+};
+
+export type UpdateCalloutContributorsSettingsInput = {
+  /** The contributor types to include. At least one type is required. */
+  contributorTypes: Array<ContributorType>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: InputMaybe<ContributorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: InputMaybe<ContributorCollectionView>;
+};
+
+export enum UserInformationVisibility {
+  FollowSpaceVisibility = 'FOLLOW_SPACE_VISIBILITY',
+  MembersOnly = 'MEMBERS_ONLY',
+}
+
 export type ContributionsFilterInput = {
   /** The IDs of the Contributions to return. If omitted return all. */
   IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
@@ -2042,6 +2110,8 @@ export type CreateCalloutSettingsFramingData = {
 export type CreateCalloutSettingsFramingInput = {
   /** Can comment to callout framing. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
+  contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -2459,6 +2529,8 @@ export type CreateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+  /** Controls who may read member-user information. Follows space visibility by default, or restricts it to members only. */
+  userInformationVisibility?: InputMaybe<UserInformationVisibility>;
 };
 
 export type CreateStateOnInnovationFlowInput = {
@@ -8214,6 +8286,8 @@ export type SpaceSettingsPrivacy = {
   allowPlatformSupportAsAdmin: Scalars['Boolean']['output'];
   /** The privacy mode for this Space */
   mode: SpacePrivacyMode;
+  /** Controls who may read member-user information. Follows space visibility by default, or restricts it to members only. Absent is treated as follow-space-visibility. */
+  userInformationVisibility?: Maybe<UserInformationVisibility>;
 };
 
 export enum SpaceSortMode {
@@ -8827,6 +8901,8 @@ export type UpdateCalloutSettingsContributionInput = {
 export type UpdateCalloutSettingsFramingInput = {
   /** Can comment to callout framing. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
+  contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
 };
 
 export type UpdateCalloutSettingsInput = {
@@ -9247,6 +9323,8 @@ export type UpdateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+  /** Controls who may read member-user information. Follows space visibility by default, or restricts it to members only. */
+  userInformationVisibility?: InputMaybe<UserInformationVisibility>;
 };
 
 export type UpdateSubspacePinnedInput = {
@@ -14130,7 +14208,18 @@ export type CalloutContentQuery = {
               canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
-            framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+            framing: {
+              __typename?: 'CalloutSettingsFraming';
+              commentsEnabled: boolean;
+              contributors?:
+                | {
+                    __typename?: 'CalloutContributorsSettings';
+                    contributorTypes: Array<ContributorType>;
+                    defaultContributorType: ContributorType;
+                    defaultView: ContributorCollectionView;
+                  }
+                | undefined;
+            };
           };
         }
       | undefined;
@@ -15027,7 +15116,18 @@ export type CalloutSettingsFullFragment = {
     canAddContributions: CalloutAllowedActors;
     commentsEnabled: boolean;
   };
-  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+  framing: {
+    __typename?: 'CalloutSettingsFraming';
+    commentsEnabled: boolean;
+    contributors?:
+      | {
+          __typename?: 'CalloutContributorsSettings';
+          contributorTypes: Array<ContributorType>;
+          defaultContributorType: ContributorType;
+          defaultView: ContributorCollectionView;
+        }
+      | undefined;
+  };
 };
 
 export type CalloutContributionQueryVariables = Exact<{
@@ -30785,6 +30885,7 @@ export type SpaceSettingsQuery = {
               __typename?: 'SpaceSettingsPrivacy';
               mode: SpacePrivacyMode;
               allowPlatformSupportAsAdmin: boolean;
+              userInformationVisibility?: UserInformationVisibility | undefined;
             };
             membership: {
               __typename?: 'SpaceSettingsMembership';
@@ -30815,7 +30916,12 @@ export type SpaceSettingsQuery = {
 export type SpaceSettingsFragment = {
   __typename?: 'SpaceSettings';
   sortMode: SpaceSortMode;
-  privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
+  privacy: {
+    __typename?: 'SpaceSettingsPrivacy';
+    mode: SpacePrivacyMode;
+    allowPlatformSupportAsAdmin: boolean;
+    userInformationVisibility?: UserInformationVisibility | undefined;
+  };
   membership: {
     __typename?: 'SpaceSettingsMembership';
     policy: CommunityMembershipPolicy;
@@ -30846,7 +30952,12 @@ export type UpdateSpaceSettingsMutation = {
     settings: {
       __typename?: 'SpaceSettings';
       sortMode: SpaceSortMode;
-      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
+      privacy: {
+        __typename?: 'SpaceSettingsPrivacy';
+        mode: SpacePrivacyMode;
+        allowPlatformSupportAsAdmin: boolean;
+        userInformationVisibility?: UserInformationVisibility | undefined;
+      };
       membership: {
         __typename?: 'SpaceSettingsMembership';
         policy: CommunityMembershipPolicy;
@@ -46987,5 +47098,96 @@ export type UserConversationsUnreadCountQuery = {
         room: { __typename?: 'Room'; id: string; unreadCount: number };
       }>;
     };
+  };
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Feature 008 — Contributor Collection Callout operation types.
+// Hand-authored to match `ContributorCollectionQueries.graphql` because the
+// server schema snapshot at codegen time did not yet expose the new fields
+// (the server agent could not run the stack to regenerate the SDL snapshot).
+// These mirror exactly what `pnpm codegen` would emit once the server schema is
+// regenerated; re-running codegen will overwrite them identically.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ContributorCollectionConfigQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type ContributorCollectionConfigQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            contributorCounts: {
+              __typename?: 'ContributorCollectionCounts';
+              users: number;
+              organizations: number;
+              virtualContributors: number;
+            };
+          };
+          settings: {
+            __typename?: 'CalloutSettings';
+            framing: {
+              __typename?: 'CalloutSettingsFraming';
+              contributors?:
+                | {
+                    __typename?: 'CalloutContributorsSettings';
+                    contributorTypes: Array<ContributorType>;
+                    defaultContributorType: ContributorType;
+                    defaultView: ContributorCollectionView;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type ContributorCollectionByTypeQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  type: ContributorType;
+}>;
+
+export type ContributorCollectionByTypeQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            contributors: Array<{
+              __typename?: 'ContributorCollectionItem';
+              id: string;
+              type: ContributorType;
+              displayName: string;
+              avatarUrl?: string | undefined;
+              roleLabel?: string | undefined;
+              url?: string | undefined;
+              location?:
+                | {
+                    __typename?: 'ContributorLocation';
+                    city?: string | undefined;
+                    country?: string | undefined;
+                    latitude?: number | undefined;
+                    longitude?: number | undefined;
+                    hasValidCoordinates: boolean;
+                  }
+                | undefined;
+            }>;
+          };
+        }
+      | undefined;
   };
 };

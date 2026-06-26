@@ -5,7 +5,6 @@ import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
-import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
 import { Button } from '@/crd/primitives/button';
@@ -35,7 +34,6 @@ export default function CrdSpaceCommunityPage() {
     leadOrganizations,
     virtualContributors,
     hasVcEntitlement,
-    members,
     canInvite,
     communityId,
     roleSetId,
@@ -120,8 +118,6 @@ export default function CrdSpaceCommunityPage() {
             )
           }
         />
-
-        <SpaceMembers members={members} />
 
         <CalloutListConnector
           callouts={callouts}

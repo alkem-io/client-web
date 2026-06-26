@@ -778,6 +778,14 @@
         "description": "Hierdoor wordt deze subspace en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
         "confirm": "Subspace verwijderen"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Zichtbaarheid van gebruikersinformatie",
+      "description": "Bepaal wie de gebruikersinformatie van leden in deze space kan zien. Organisaties en virtual contributors volgen de zichtbaarheid van de space.",
+      "followSpace": "Volg de space-zichtbaarheid",
+      "followSpaceDescription": "Gebruikersinformatie van leden is zichtbaar volgens de zichtbaarheid van de space.",
+      "membersOnly": "Alleen leden",
+      "membersOnlyDescription": "Alleen leden van deze space kunnen de gebruikersinformatie van leden zien."
     }
   },
   "storage": {

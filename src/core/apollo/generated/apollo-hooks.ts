@@ -1042,6 +1042,11 @@ export const CalloutSettingsFullFragmentDoc = gql`
   }
   framing {
     commentsEnabled
+    contributors {
+      contributorTypes
+      defaultContributorType
+      defaultView
+    }
   }
   visibility
 }
@@ -2566,6 +2571,7 @@ export const SpaceSettingsFragmentDoc = gql`
   privacy {
     mode
     allowPlatformSupportAsAdmin
+    userInformationVisibility
   }
   membership {
     policy
@@ -26010,6 +26016,7 @@ export const UpdateSpaceSettingsDocument = gql`
       privacy {
         mode
         allowPlatformSupportAsAdmin
+        userInformationVisibility
       }
       membership {
         policy
@@ -34496,4 +34503,198 @@ export function refetchUserConversationsUnreadCountQuery(
   variables?: SchemaTypes.UserConversationsUnreadCountQueryVariables
 ) {
   return { query: UserConversationsUnreadCountDocument, variables: variables };
+}
+export const ContributorCollectionConfigDocument = gql`
+    query ContributorCollectionConfig($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        contributorCounts {
+          users
+          organizations
+          virtualContributors
+        }
+      }
+      settings {
+        framing {
+          contributors {
+            contributorTypes
+            defaultContributorType
+            defaultView
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useContributorCollectionConfigQuery__
+ *
+ * To run a query within a React component, call `useContributorCollectionConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorCollectionConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorCollectionConfigQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useContributorCollectionConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  > &
+    ({ variables: SchemaTypes.ContributorCollectionConfigQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >(ContributorCollectionConfigDocument, options);
+}
+export function useContributorCollectionConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >(ContributorCollectionConfigDocument, options);
+}
+export function useContributorCollectionConfigSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ContributorCollectionConfigQuery,
+        SchemaTypes.ContributorCollectionConfigQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >(ContributorCollectionConfigDocument, options);
+}
+export type ContributorCollectionConfigQueryHookResult = ReturnType<typeof useContributorCollectionConfigQuery>;
+export type ContributorCollectionConfigLazyQueryHookResult = ReturnType<typeof useContributorCollectionConfigLazyQuery>;
+export type ContributorCollectionConfigSuspenseQueryHookResult = ReturnType<
+  typeof useContributorCollectionConfigSuspenseQuery
+>;
+export type ContributorCollectionConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorCollectionConfigQuery,
+  SchemaTypes.ContributorCollectionConfigQueryVariables
+>;
+export function refetchContributorCollectionConfigQuery(
+  variables: SchemaTypes.ContributorCollectionConfigQueryVariables
+) {
+  return { query: ContributorCollectionConfigDocument, variables: variables };
+}
+export const ContributorCollectionByTypeDocument = gql`
+    query ContributorCollectionByType($calloutId: UUID!, $type: ContributorType!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        contributors(type: $type) {
+          id
+          type
+          displayName
+          avatarUrl
+          roleLabel
+          url
+          location {
+            city
+            country
+            latitude
+            longitude
+            hasValidCoordinates
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useContributorCollectionByTypeQuery__
+ *
+ * To run a query within a React component, call `useContributorCollectionByTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorCollectionByTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorCollectionByTypeQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useContributorCollectionByTypeQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  > &
+    ({ variables: SchemaTypes.ContributorCollectionByTypeQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >(ContributorCollectionByTypeDocument, options);
+}
+export function useContributorCollectionByTypeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >(ContributorCollectionByTypeDocument, options);
+}
+export function useContributorCollectionByTypeSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ContributorCollectionByTypeQuery,
+        SchemaTypes.ContributorCollectionByTypeQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >(ContributorCollectionByTypeDocument, options);
+}
+export type ContributorCollectionByTypeQueryHookResult = ReturnType<typeof useContributorCollectionByTypeQuery>;
+export type ContributorCollectionByTypeLazyQueryHookResult = ReturnType<typeof useContributorCollectionByTypeLazyQuery>;
+export type ContributorCollectionByTypeSuspenseQueryHookResult = ReturnType<
+  typeof useContributorCollectionByTypeSuspenseQuery
+>;
+export type ContributorCollectionByTypeQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorCollectionByTypeQuery,
+  SchemaTypes.ContributorCollectionByTypeQueryVariables
+>;
+export function refetchContributorCollectionByTypeQuery(
+  variables: SchemaTypes.ContributorCollectionByTypeQueryVariables
+) {
+  return { query: ContributorCollectionByTypeDocument, variables: variables };
 }

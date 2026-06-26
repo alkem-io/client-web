@@ -2,11 +2,14 @@ import type {
   CalloutDescriptionDisplayMode,
   CommunityMembershipPolicy,
   SpacePrivacyMode,
+  UserInformationVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 
 export interface SpaceSettingsPrivacy {
   mode: SpacePrivacyMode;
   allowPlatformSupportAsAdmin: boolean;
+  /** Who may read member-user information (feature 008). Absent = follow space visibility. */
+  userInformationVisibility?: UserInformationVisibility;
 }
 
 export interface SpaceSettingsMembership {

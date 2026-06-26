@@ -10,6 +10,10 @@ import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
 } from '@/crd/forms/callout/CollaboraDocumentTypePicker';
+import {
+  ContributorCollectionConfigField,
+  type ContributorCollectionConfigValue,
+} from '@/crd/forms/callout/ContributorCollectionConfigField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
@@ -144,6 +148,11 @@ type FramingEditorConnectorProps = {
     labelRemoveFile: string;
     labelOr: string;
   };
+  // Contributor-collection config (feature 008) — present for the 'contributors'
+  // framing only; editable in both create and edit (FR-004d).
+  contributorCollection?: ContributorCollectionConfigValue;
+  onContributorCollectionChange?: (value: ContributorCollectionConfigValue) => void;
+  contributorCollectionError?: string;
 };
 
 export function FramingEditorConnector({
@@ -188,6 +197,9 @@ export function FramingEditorConnector({
   collaboraDocumentType,
   onCollaboraDocumentTypeChange,
   collaboraUpload,
+  contributorCollection,
+  onContributorCollectionChange,
+  contributorCollectionError,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -437,6 +449,18 @@ export function FramingEditorConnector({
             />
           )}
         </>
+      );
+
+    case 'contributors':
+      // Contributor-collection config (feature 008). Editable in both create and
+      // edit (FR-004d). The callout renders no framing body — only its config.
+      if (!contributorCollection || !onContributorCollectionChange) return null;
+      return (
+        <ContributorCollectionConfigField
+          value={contributorCollection}
+          onChange={onContributorCollectionChange}
+          error={contributorCollectionError}
+        />
       );
 
     default:

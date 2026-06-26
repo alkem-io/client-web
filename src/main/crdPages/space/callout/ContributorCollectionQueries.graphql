@@ -1,0 +1,62 @@
+# Contributor-collection callout queries (feature 008).
+#
+# The server returns the FULL authorized set per active type (no server-side
+# pagination/search); the client paginates (list) and name-searches client-side
+# over that set, and the map plots it. Counts + settings are type-independent and
+# load once (eager); the contributors of each type load on demand (lazy, once per
+# type) when the viewer switches to that type's segment.
+
+# Eager: per-type counts (always-visible) + the callout's contributor config
+# (selected types, default type, default view). Loaded once on mount.
+query ContributorCollectionConfig($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        contributorCounts {
+          users
+          organizations
+          virtualContributors
+        }
+      }
+      settings {
+        framing {
+          contributors {
+            contributorTypes
+            defaultContributorType
+            defaultView
+          }
+        }
+      }
+    }
+  }
+}
+
+# Lazy: the full authorized set of one contributor type. Fired once per type on
+# switch. Items carry the display profile + location (null for VCs).
+query ContributorCollectionByType($calloutId: UUID!, $type: ContributorType!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        contributors(type: $type) {
+          id
+          type
+          displayName
+          avatarUrl
+          roleLabel
+          url
+          location {
+            city
+            country
+            latitude
+            longitude
+            hasValidCoordinates
+          }
+        }
+      }
+    }
+  }
+}

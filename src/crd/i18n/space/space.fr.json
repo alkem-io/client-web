@@ -282,7 +282,8 @@
     "postUnsavedCloseCancel": "Continuer la modification",
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
-    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer."
+    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
+    "contributors": "Contributeurs"
   },
   "contribution": {
     "edit": "Modifier",
@@ -490,7 +491,8 @@
     "maxPollOptions": "Au maximum {{count}} options sont autorisées",
     "pollOptionRequired": "Le texte de l'option est obligatoire",
     "referenceTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie",
-    "linkRowTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie"
+    "linkRowTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie",
+    "contributorTypesRequired": "Sélectionnez au moins un type de contributeur."
   },
   "forms": {
     "titleLabel": "Titre",
@@ -849,5 +851,36 @@
   },
   "activity": {
     "dialogTitle": "Activité récente"
+  },
+  "contributors": {
+    "title": "Contributeurs",
+    "search": "Rechercher par nom…",
+    "empty": "Aucun contributeur à afficher.",
+    "emptySearch": "Aucun contributeur ne correspond à votre recherche.",
+    "noLocationData": "Aucune donnée de localisation",
+    "noLocationDescription": "Ces contributeurs n’ont pas de données de localisation définies.",
+    "viewList": "Liste",
+    "viewMap": "Carte",
+    "types": {
+      "user": "Personnes",
+      "organization": "Organisations",
+      "virtualContributor": "Contributeurs virtuels"
+    },
+    "counts": {
+      "users": "{{count}} personnes",
+      "organizations": "{{count}} organisations",
+      "virtualContributors": "{{count}} contributeurs virtuels"
+    },
+    "config": {
+      "title": "Contributeurs",
+      "description": "Affichez les contributeurs de cette communauté comme une collection qui se met à jour automatiquement.",
+      "typesLabel": "Types de contributeur",
+      "typesHint": "Sélectionnez au moins un type à inclure.",
+      "defaultTypeLabel": "Type par défaut",
+      "defaultTypeHint": "Le type affiché en premier.",
+      "defaultViewLabel": "Affichage par défaut",
+      "viewList": "Liste",
+      "viewMap": "Carte"
+    }
   }
 }
