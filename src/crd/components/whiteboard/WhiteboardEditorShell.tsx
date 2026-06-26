@@ -22,7 +22,7 @@ type WhiteboardEditorShellProps = {
    * keep the dialog open (letting the inner content act on it); return `false`/`undefined` to let
    * the dialog close as usual.
    */
-  onEscapeKeyDown?: (event: KeyboardEvent) => boolean;
+  onEscapeKeyDown?: (event: KeyboardEvent) => boolean | void;
 };
 
 export function WhiteboardEditorShell({
