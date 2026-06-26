@@ -63,16 +63,6 @@ export type SubspaceCardData = {
   isPrivate: boolean;
 };
 
-export type SpaceHierarchyCardData = {
-  id: string;
-  name: string;
-  href: string;
-  tagline?: string;
-  bannerUrl?: string;
-  isHomeSpace: boolean;
-  subspaces: SubspaceCardData[];
-};
-
 export type InvitationCardData = {
   id: string;
   spaceId: string;

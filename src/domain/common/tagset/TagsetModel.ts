@@ -1,4 +1,4 @@
-import { TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
+import type { TagsetReservedName, TagsetType } from '@/core/apollo/generated/graphql-schema';
 
 export interface TagsetModel {
   id: string;
@@ -7,11 +7,3 @@ export interface TagsetModel {
   allowedValues: string[];
   type: TagsetType;
 }
-
-export const EmptyTagset: TagsetModel = {
-  id: '',
-  name: TagsetReservedName.Default,
-  tags: [],
-  allowedValues: [],
-  type: TagsetType.Freeform,
-};

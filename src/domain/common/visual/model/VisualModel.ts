@@ -20,5 +20,3 @@ export type VisualConstraints = {
   aspectRatio: number;
   allowedTypes: string[];
 };
-
-export interface VisualModelFull extends VisualModel, VisualConstraints {}

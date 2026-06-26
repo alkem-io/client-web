@@ -10,7 +10,6 @@ import type { CalloutDetailDialogData } from '@/crd/components/callout/CalloutDe
 import type { ReferencesAndTagsStripReference } from '@/crd/components/callout/ReferencesAndTagsStrip';
 import type { PostCardData, PostType } from '@/crd/components/space/PostCard';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
-import type { CalloutModelLightExtended } from '@/domain/collaboration/callout/models/CalloutModelLight';
 import { mapLinkToCallToActionProps } from './callToActionDataMapper';
 import { mapMediaGalleryToViewProps } from './mediaGalleryDataMapper';
 
@@ -104,24 +103,6 @@ function resolveAuthorAndTimestamp(
         }
       : undefined,
     timestamp: dateSource ? formatRelativeDate(dateSource, t) : undefined,
-  };
-}
-
-/**
- * Maps a lightweight callout (from the list query) to PostCardData.
- * Only has title and type — no description, no content previews.
- */
-export function mapCalloutLightToPostCard(callout: CalloutModelLightExtended, t: CrdSpaceTranslator): PostCardData {
-  const { author, timestamp } = resolveAuthorAndTimestamp(callout, t);
-  return {
-    id: callout.id,
-    type: mapFramingTypeToPostType(callout.framing.type),
-    title: callout.framing.profile.displayName,
-    snippet: undefined, // Not available in list query
-    isDraft: callout.draft,
-    timestamp,
-    author,
-    commentCount: callout.activity ?? 0,
   };
 }
 

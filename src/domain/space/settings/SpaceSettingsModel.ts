@@ -19,9 +19,3 @@ export interface SpaceSettingsCollaboration {
   allowMembersToVideoCall: boolean;
   allowGuestContributions: boolean;
 }
-
-export interface SpaceSettingsModel {
-  privacy: SpaceSettingsPrivacy;
-  membership: SpaceSettingsMembership;
-  collaboration: SpaceSettingsCollaboration;
-}
