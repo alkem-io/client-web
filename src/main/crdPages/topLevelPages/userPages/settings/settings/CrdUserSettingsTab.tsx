@@ -5,6 +5,7 @@ import {
   useUpdateUserSettingsMutation,
   useUserSettingsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { UpdateUserSettingsCommunicationInput } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { UserSettingsTabView } from '@/crd/components/user/settings/UserSettingsTabView';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
@@ -22,35 +23,51 @@ const CrdUserSettingsTab = () => {
   const mapped = mapUserSettings(data);
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
-  const [communicationOverride, setCommunicationOverride] = useState<boolean | null>(null);
+  const [messagesOverride, setMessagesOverride] = useState<boolean | null>(null);
+  // Email-contact toggle temporarily disabled client-side (chat-only).
+  // const [emailContactOverride, setEmailContactOverride] = useState<boolean | null>(null);
   const [communicationSaving, setCommunicationSaving] = useState(false);
 
-  const allowMessages = communicationOverride ?? mapped.allowOtherUsersToSendMessages;
+  const allowMessages = messagesOverride ?? mapped.allowOtherUsersToSendMessages;
+  // const allowEmailContact = emailContactOverride ?? mapped.allowOtherUsersToContactViaEmail;
 
-  const onToggleAllowMessages = async (next: boolean) => {
+  const persistCommunication = async (communication: UpdateUserSettingsCommunicationInput, rollback: () => void) => {
     if (!userId) return;
-    setCommunicationOverride(next);
     setCommunicationSaving(true);
     try {
       await updateUserSettings({
         variables: {
           settingsData: {
             userID: userId,
-            settings: { communication: { allowOtherUsersToSendMessages: next } },
+            settings: { communication },
           },
         },
         refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
         awaitRefetchQueries: true,
       });
-      setCommunicationOverride(null);
     } catch {
-      setCommunicationOverride(null);
       notify(t('user.settings.communication.error'), 'error');
     } finally {
+      rollback();
       setCommunicationSaving(false);
     }
   };
 
+  const onToggleAllowMessages = async (next: boolean) => {
+    setMessagesOverride(next);
+    await persistCommunication({ allowOtherUsersToSendMessages: next }, () => setMessagesOverride(null));
+  };
+
+  // Email-contact toggle temporarily disabled client-side (chat-only).
+  // const onToggleAllowEmailContact = async (next: boolean) => {
+  //   setEmailContactOverride(next);
+  //   await persistCommunication({ allowOtherUsersToContactViaEmail: next }, () => setEmailContactOverride(null));
+  // };
+
+  // The `allowOtherUsersToContactViaEmail` / `onToggleAllowEmailContact` props
+  // are intentionally not passed while the email-contact route is disabled.
+  // Server settings/storage are unchanged; restore the commented code above to
+  // re-enable.
   return (
     <UserSettingsTabView
       loading={loading && !data}

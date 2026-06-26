@@ -1,23 +1,18 @@
-import { Box } from '@mui/material';
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router-dom';
 import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationHandler';
-import { NotificationHandler } from '@/core/ui/notifications/NotificationHandler';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
-import { useCrdEnabled } from '@/main/crdPages/useCrdEnabled';
-import SwitchToNewDesignBanner from './SwitchToNewDesignBanner';
 
 const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
   const { userModel } = useCurrentUserContext();
-  const crdEnabled = useCrdEnabled();
 
   useUserScope(userModel);
 
@@ -41,25 +36,22 @@ const App = () => {
 
   return (
     <>
-      <Box
-        paddingBottom={cookieConsentHeight && `${cookieConsentHeight}px`}
-        display="flex"
-        flexDirection="column"
-        flexGrow={1}
+      <div
+        className="flex flex-col flex-grow"
+        style={cookieConsentHeight ? { paddingBottom: `${cookieConsentHeight}px` } : undefined}
       >
-        {!crdEnabled && <SwitchToNewDesignBanner />}
         {/* position: relative so the space layout's absolutely-positioned navigation bar
             anchors below the banner instead of overlapping it at the viewport top. */}
-        <Box position="relative" display="flex" flexDirection="column" flexGrow={1}>
+        <div className="relative flex flex-col flex-grow">
           <Outlet />
-        </Box>
-      </Box>
+        </div>
+      </div>
       {!cookies.accepted_cookies && (
         <Suspense fallback={null}>
           <CookieConsent ref={cookieConsentRef} />
         </Suspense>
       )}
-      {crdEnabled ? <CrdNotificationHandler /> : <NotificationHandler />}
+      <CrdNotificationHandler />
     </>
   );
 };

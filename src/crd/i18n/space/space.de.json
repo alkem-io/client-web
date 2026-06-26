@@ -25,6 +25,17 @@
     "searchPlaceholder": "Wissensdatenbank durchsuchen...",
     "searchLabel": "Wissensdatenbank durchsuchen",
     "noResults": "Keine Treffer",
+    "search": {
+      "emptyTitle": "Keine Treffer",
+      "emptyDescription": "Kein Inhalt in diesem Bereich entspricht deiner Suche.",
+      "errorTitle": "Suche nicht verfügbar",
+      "errorDescription": "Bei der Suche ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "retry": "Erneut versuchen",
+      "loadingLabel": "Suchergebnisse werden geladen",
+      "appendingLabel": "Weitere Ergebnisse werden geladen",
+      "removeTerm": "Begriff {{term}} entfernen",
+      "removeTag": "Tag {{tag}} entfernen"
+    },
     "viewGrid": "Kartenansicht",
     "viewList": "Listenansicht",
     "count": {
@@ -39,6 +50,11 @@
       "document_one": "{{count}} Dokument",
       "document_other": "{{count}} Dokumente"
     }
+  },
+  "postIndexDialog": {
+    "close": "Schließen",
+    "loadingLabel": "Beitragsverzeichnis wird geladen",
+    "empty": "Noch keine Beiträge"
   },
   "sidebar": {
     "aboutSpace": "Über diesen Bereich",

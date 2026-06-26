@@ -7,7 +7,7 @@ import { useState } from 'react';
  * so the preference is shared across both design versions — collapsing in one
  * is reflected in the other. The constant is duplicated here (rather than
  * imported from the MUI `SubspaceInfoColumn`) on purpose: that module pulls in
- * `@mui/icons-material`, and the CRD route bundle must stay MUI-free.
+ * the MUI icons package, and the CRD route bundle must stay MUI-free.
  */
 const STORAGE_KEY = 'menuState';
 const COLLAPSED = 'collapsed';

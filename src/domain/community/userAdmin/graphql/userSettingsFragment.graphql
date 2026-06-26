@@ -2,6 +2,7 @@ fragment userSettingsFragment on UserSettings {
   id
   communication {
     allowOtherUsersToSendMessages
+    allowOtherUsersToContactViaEmail
   }
   privacy {
     contributionRolesPubliclyVisible

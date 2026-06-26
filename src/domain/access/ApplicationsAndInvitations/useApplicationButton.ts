@@ -12,7 +12,7 @@ import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import type { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
+import type { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton.model';
 
 export interface UseApplicationButtonParams {
   parentSpaceId?: string;

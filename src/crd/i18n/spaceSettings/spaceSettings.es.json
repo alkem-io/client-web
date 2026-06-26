@@ -85,6 +85,15 @@
           "cancel": "Cancelar"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Eliminar pestaña",
+        "confirm": {
+          "title": "¿Eliminar esta pestaña?",
+          "description": "Las publicaciones de esta pestaña se moverán a la primera pestaña. Esta acción no se puede deshacer.",
+          "confirm": "Eliminar pestaña",
+          "cancel": "Cancelar"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Ocultar del menú",
         "showMenuLabel": "Mostrar en el menú",
@@ -112,10 +121,49 @@
         "confirm": "Añadir fase"
       }
     },
+    "addTab": {
+      "button": "Añadir pestaña",
+      "dialog": {
+        "title": "Añadir una nueva pestaña",
+        "description": "Crea una nueva pestaña en este Space. Puedes cambiarle el nombre o eliminarla más tarde.",
+        "nameLabel": "Nombre de la pestaña",
+        "namePlaceholder": "p. ej. Archivo",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "¿Para qué sirve esta pestaña?",
+        "duplicate": "Ya existe una pestaña con este nombre.",
+        "errorGeneric": "No se pudo crear la pestaña. Inténtalo de nuevo.",
+        "cancel": "Cancelar",
+        "confirm": "Añadir pestaña"
+      }
+    },
     "replaceFlow": {
       "button": "Reemplazar flujo de innovación",
       "loading": "Cargando nuevo flujo…",
-      "error": "No se pudo reemplazar el flujo de innovación. El flujo no ha cambiado: inténtalo de nuevo."
+      "error": "No se pudo reemplazar el flujo de innovación. El flujo no ha cambiado: inténtalo de nuevo.",
+      "applyDialog": {
+        "title": "Aplicar nueva plantilla",
+        "description": "Estás a punto de aplicar una nueva plantilla. Esta acción eliminará permanentemente tu flujo de innovación actual. Sin embargo, las publicaciones existentes vinculadas a distintas fases se conservarán y se agruparán en la primera fase de la nueva configuración.<br/><br/>Elige una de las siguientes opciones:",
+        "option1": {
+          "label": "Reemplazar con el nuevo flujo",
+          "description": "Esto eliminará tu flujo de innovación actual con todas las publicaciones existentes y lo reemplazará con el nuevo flujo, incluidas las publicaciones de la plantilla."
+        },
+        "option2": {
+          "label": "Reemplazar y añadir las publicaciones de la plantilla a las existentes",
+          "description": "Esto incluirá las nuevas publicaciones de la plantilla además de las existentes."
+        },
+        "option3": {
+          "label": "Reemplazar el flujo sin añadir publicaciones de la plantilla",
+          "description": "Solo reemplaza el flujo de innovación sin añadir publicaciones de la plantilla."
+        },
+        "apply": "Aplicar",
+        "cancel": "Cancelar",
+        "confirmDelete": {
+          "title": "Confirmar eliminación",
+          "description": "Esta acción eliminará permanentemente todas las publicaciones existentes y las reemplazará con publicaciones de la plantilla. Esto no se puede deshacer. ¿Seguro que quieres continuar?",
+          "confirm": "Confirmar",
+          "cancel": "Cancelar"
+        }
+      }
     },
     "row": {
       "drag": "Arrastra para reordenar",

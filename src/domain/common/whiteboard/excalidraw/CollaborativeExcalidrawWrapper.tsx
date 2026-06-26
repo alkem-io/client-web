@@ -5,24 +5,18 @@ import type {
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import { Box, Button, DialogActions, DialogContent } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
 import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
-import DialogHeader from '@/core/ui/dialog/DialogHeader';
 import Loading from '@/core/ui/loading/Loading';
-import WrapperMarkdown from '@/core/ui/markdown/WrapperMarkdown';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { Caption, Text } from '@/core/ui/typography';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
 import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
 import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
@@ -44,17 +38,17 @@ const LoadingScene = ({ enabled }: { enabled: boolean }) => {
   const { t } = useTranslation();
 
   return enabled ? (
-    <Box
-      sx={theme => ({
+    <div
+      style={{
         position: 'absolute',
-        width: 1,
-        height: 1,
-        zIndex: `${theme.zIndex.modal + 2} !important`,
-        backgroundColor: theme.palette.background.paper,
-      })}
+        width: '100%',
+        height: '100%',
+        zIndex: 1302,
+        backgroundColor: '#FFFFFF',
+      }}
     >
       <Loading text={t('pages.whiteboard.loadingScene')} />
-    </Box>
+    </div>
   ) : null;
 };
 
@@ -98,12 +92,11 @@ export interface WhiteboardWhiteboardProps {
   collabApiRef?: Ref<CollabAPI | null>;
   children: (props: PropsWithChildren<CollaborativeExcalidrawWrapperProvided>) => React.ReactNode;
   /**
-   * Optional render-prop for the "collaboration stopped" notice. When provided (CRD consumers), it
-   * replaces the built-in MUI dialog so the notice renders with CRD chrome. MUI consumers omit it and
-   * keep the built-in MUI dialog. The wrapper still owns all the notice state (open, countdown,
-   * reconnect) and hands it to the renderer.
+   * Render-prop for the "collaboration stopped" notice. The wrapper owns all the notice state
+   * (open, countdown, reconnect) and hands it to the renderer, which supplies the chrome (the CRD
+   * `WhiteboardDisconnectedDialog`).
    */
-  renderDisconnectNotice?: (props: DisconnectNoticeRenderProps) => React.ReactNode;
+  renderDisconnectNotice: (props: DisconnectNoticeRenderProps) => React.ReactNode;
 }
 
 const WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL = 100;
@@ -280,7 +273,7 @@ const CollaborativeExcalidrawWrapper = ({
   };
 
   const children = (
-    <Box sx={{ height: 1, flexGrow: 1, position: 'relative' }}>
+    <div style={{ height: '100%', flexGrow: 1, position: 'relative' }}>
       <Suspense fallback={<Loading />}>
         <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (
@@ -303,7 +296,7 @@ const CollaborativeExcalidrawWrapper = ({
           />
         )}
       </Suspense>
-    </Box>
+    </div>
   );
 
   return (
@@ -317,44 +310,15 @@ const CollaborativeExcalidrawWrapper = ({
         restartCollaboration,
         isReadOnly,
       })}
-      {renderDisconnectNotice ? (
-        renderDisconnectNotice({
-          open: collaborationStoppedNoticeOpen,
-          isOnline,
-          connecting,
-          autoReconnectSeconds,
-          lastSuccessfulSavedDate,
-          onReconnect: restartCollaboration,
-          onClose: () => setCollaborationStoppedNoticeOpen(false),
-        })
-      ) : (
-        <Dialog open={collaborationStoppedNoticeOpen} onClose={() => setCollaborationStoppedNoticeOpen(false)}>
-          <DialogHeader title={t('pages.whiteboard.whiteboardDisconnected.title')} />
-          <DialogContent>
-            {isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.message')}</WrapperMarkdown>}
-            {!isOnline && <WrapperMarkdown>{t('pages.whiteboard.whiteboardDisconnected.offline')}</WrapperMarkdown>}
-            {lastSuccessfulSavedDate && (
-              <Text>
-                {t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                  lastSaved: formatTimeElapsed(lastSuccessfulSavedDate, t, 'long'),
-                })}
-              </Text>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={restartCollaboration} disabled={!isOnline} loading={connecting}>
-              {t('pages.whiteboard.whiteboardDisconnected.reconnect')}
-              <Caption textTransform="none">
-                {autoReconnectSeconds !== null &&
-                  ` ${t('pages.whiteboard.whiteboardDisconnected.reconnectCountdown', {
-                    seconds: autoReconnectSeconds,
-                  })}`}
-              </Caption>
-            </Button>
-            <Button onClick={() => setCollaborationStoppedNoticeOpen(false)}>{t('buttons.ok')}</Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      {renderDisconnectNotice({
+        open: collaborationStoppedNoticeOpen,
+        isOnline,
+        connecting,
+        autoReconnectSeconds,
+        lastSuccessfulSavedDate,
+        onReconnect: restartCollaboration,
+        onClose: () => setCollaborationStoppedNoticeOpen(false),
+      })}
     </>
   );
 };

@@ -2,11 +2,11 @@ import { ScanEye } from 'lucide-react';
 import { type ReactNode, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
 import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/WhiteboardsManagement/useWhiteboardViewState';
@@ -48,6 +48,7 @@ const CrdWhiteboardView = ({
   // component's internal <Suspense>, which would tear down the live canvas
   // (see docs/crd/suspense-teardown-audit.md).
   const { t: tWb } = useTranslation('crd-whiteboard', { useSuspense: false });
+  const { t: tCommon } = useTranslation('crd-common', { useSuspense: false });
   const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
   const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState(false);
 
@@ -64,7 +65,7 @@ const CrdWhiteboardView = ({
   } = useWhiteboardViewState({ whiteboard, authorization, guestShareUrl, preventWhiteboardDeletion });
 
   const { fullscreen, setFullscreen } = useFullscreen();
-  const { isSmallScreen } = useScreenSize();
+  const isSmallScreen = useMediaQuery('(max-width: 599.95px)');
   const isFullscreen = fullscreen || isSmallScreen;
 
   const handleCancel = () => {
@@ -116,7 +117,7 @@ const CrdWhiteboardView = ({
                 )}
               </ShareButton>
 
-              {!isSmallScreen && <FullscreenButton />}
+              {!isSmallScreen && <CrdFullscreenButton label={tCommon('fullscreen')} />}
 
               <CrdWhiteboardSaveStatus isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 

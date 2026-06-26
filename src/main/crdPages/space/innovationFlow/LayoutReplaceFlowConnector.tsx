@@ -1,18 +1,17 @@
 import { Replace } from 'lucide-react';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TemplateType } from '@/core/apollo/generated/graphql-schema';
+import { CrdApplySpaceTemplateDialog } from '@/crd/components/space/innovationFlow/CrdApplySpaceTemplateDialog';
+import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
-import ApplySpaceTemplateDialog from '@/domain/templates/components/Dialogs/ApplySpaceTemplateDialog';
-import ImportTemplatesDialog from '@/domain/templates/components/Dialogs/ImportTemplateDialog/ImportTemplatesDialog';
 import { useFlowReplaceFlow } from './useFlowReplaceFlow';
 
 export type LayoutReplaceFlowConnectorProps = {
   collaborationId: string | undefined;
   /**
    * Number of callouts currently attached to this collaboration. Drives the
-   * destructive "replace all" confirmation in `ApplySpaceTemplateDialog`. Must
+   * destructive "replace all" confirmation in `CrdApplySpaceTemplateDialog`. Must
    * come from data the parent has already resolved (the layout tab's
    * InnovationFlowSettings query) — never a count that can still be 0 while the
    * admin confirms, which would silently skip the delete confirmation.
@@ -38,8 +37,8 @@ export type LayoutReplaceFlowConnectorProps = {
  * "Replace innovation flow" button rendered in the Subspace settings →
  * Layout tab header (L1/L2 only — see CrdSpaceSettingsPage). Mirrors the
  * "Select Different Flow" menu item from the MUI `InnovationFlowSettingsDialog`
- * (whose CRD counterpart is the Layout tab itself). Hosts the MUI
- * `ImportTemplatesDialog` + `ApplySpaceTemplateDialog` as sibling portals.
+ * (whose CRD counterpart is the Layout tab itself). Hosts the CRD
+ * `TemplatePicker` + `CrdApplySpaceTemplateDialog` as sibling portals.
  */
 export function LayoutReplaceFlowConnector({
   collaborationId,
@@ -50,9 +49,9 @@ export function LayoutReplaceFlowConnector({
 }: LayoutReplaceFlowConnectorProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const {
-    space: { accountId },
+    space: { accountId, levelZeroSpaceId },
   } = useSpace();
-  const replaceFlow = useFlowReplaceFlow({ collaborationId, onApplyComplete });
+  const replaceFlow = useFlowReplaceFlow({ collaborationId, levelZeroSpaceId, accountId, onApplyComplete });
 
   // Mirror the connector's local `importing` flag up to the parent so it can
   // render the loading overlay over the columns area while the mutation +
@@ -75,17 +74,9 @@ export function LayoutReplaceFlowConnector({
         {t('layout.replaceFlow.button')}
       </Button>
 
-      <ImportTemplatesDialog
-        open={replaceFlow.importDialogOpen}
-        templateType={TemplateType.Space}
-        accountId={accountId}
-        enablePlatformTemplates={true}
-        keepPreviewOnSelect={true}
-        onClose={replaceFlow.closeAll}
-        onSelectTemplate={replaceFlow.onTemplateSelected}
-      />
+      <TemplatePicker {...replaceFlow.pickerProps} />
 
-      <ApplySpaceTemplateDialog
+      <CrdApplySpaceTemplateDialog
         open={replaceFlow.applyDialogOpen}
         onClose={replaceFlow.onApplyDialogClose}
         onConfirm={replaceFlow.onApplyConfirm}

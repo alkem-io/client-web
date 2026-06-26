@@ -85,6 +85,15 @@
           "cancel": "Annuler"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Supprimer l'onglet",
+        "confirm": {
+          "title": "Supprimer cet onglet ?",
+          "description": "Les posts de cet onglet seront déplacés vers le premier onglet. Cette action est irréversible.",
+          "confirm": "Supprimer l'onglet",
+          "cancel": "Annuler"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Masquer du menu",
         "showMenuLabel": "Afficher dans le menu",
@@ -112,10 +121,49 @@
         "confirm": "Ajouter la phase"
       }
     },
+    "addTab": {
+      "button": "Ajouter un onglet",
+      "dialog": {
+        "title": "Ajouter un nouvel onglet",
+        "description": "Créez un nouvel onglet sur ce Space. Vous pourrez le renommer ou le supprimer plus tard.",
+        "nameLabel": "Nom de l'onglet",
+        "namePlaceholder": "p. ex. Archives",
+        "descriptionLabel": "Description (optionnelle)",
+        "descriptionPlaceholder": "À quoi sert cet onglet ?",
+        "duplicate": "Un onglet portant ce nom existe déjà.",
+        "errorGeneric": "L'onglet n'a pas pu être créé. Veuillez réessayer.",
+        "cancel": "Annuler",
+        "confirm": "Ajouter l'onglet"
+      }
+    },
     "replaceFlow": {
       "button": "Remplacer le flux d'innovation",
       "loading": "Chargement du nouveau flux…",
-      "error": "Le remplacement du flux d'innovation a échoué. Le flux est inchangé — veuillez réessayer."
+      "error": "Le remplacement du flux d'innovation a échoué. Le flux est inchangé — veuillez réessayer.",
+      "applyDialog": {
+        "title": "Appliquer un nouveau modèle",
+        "description": "Vous êtes sur le point d'appliquer un nouveau modèle. Cette action supprimera définitivement votre flux d'innovation actuel. Cependant, les publications existantes liées aux différentes phases seront conservées et regroupées sous la première phase de la nouvelle configuration.<br/><br/>Veuillez choisir l'une des options suivantes :",
+        "option1": {
+          "label": "Remplacer par le nouveau flux",
+          "description": "Cela supprimera votre flux d'innovation actuel avec toutes les publications existantes et le remplacera par le nouveau flux, y compris les publications du modèle."
+        },
+        "option2": {
+          "label": "Remplacer et ajouter les publications du modèle aux existantes",
+          "description": "Cela ajoutera les nouvelles publications du modèle à vos publications existantes."
+        },
+        "option3": {
+          "label": "Remplacer le flux sans ajouter les publications du modèle",
+          "description": "Remplace uniquement le flux d'innovation sans ajouter les publications du modèle."
+        },
+        "apply": "Appliquer",
+        "cancel": "Annuler",
+        "confirmDelete": {
+          "title": "Confirmer la suppression",
+          "description": "Cette action supprimera définitivement toutes les publications existantes et les remplacera par des publications du modèle. Cette opération est irréversible. Voulez-vous vraiment continuer ?",
+          "confirm": "Confirmer",
+          "cancel": "Annuler"
+        }
+      }
     },
     "row": {
       "drag": "Glisser pour réorganiser",

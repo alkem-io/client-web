@@ -243,8 +243,7 @@ const FLAG_LABEL_BY_NAME: Record<string, (l: VCContentLabels) => string> = {
  * Re-implementation of the data-extraction logic that today lives in
  * `src/domain/community/virtualContributor/vcProfilePage/useTemporaryHardCodedVCProfilePageData.ts`.
  * The MUI hook itself is NOT imported (it lives under `src/domain/`, off-limits
- * per CRD architectural rules). The MUI hook continues to power the legacy MUI
- * page when `useCrdEnabled` is OFF.
+ * per CRD architectural rules).
  */
 export const mapVCFunctionality = (
   vc: VirtualContributorModelFull | undefined,

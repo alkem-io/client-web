@@ -2783,6 +2783,23 @@ export type DeleteWhiteboardInput = {
   ID: Scalars['UUID']['input'];
 };
 
+export type DirectMessageDeliveryResult = {
+  __typename?: 'DirectMessageDeliveryResult';
+  /** Set when status = SENT — the (existing or newly created) 1:1 conversation the message was delivered to. */
+  conversationID?: Maybe<Scalars['UUID']['output']>;
+  /** The intended recipient. */
+  receiverID: Scalars['UUID']['output'];
+  /** The per-recipient delivery outcome. */
+  status: DirectMessageDeliveryStatus;
+};
+
+/** Per-recipient outcome of sendDirectMessageToUsers. SENT: delivered (a conversation id is returned). BLOCKED_NO_CONSENT: the recipient disabled direct messages. FAILED: an unexpected per-recipient error (other recipients are still processed). */
+export enum DirectMessageDeliveryStatus {
+  BlockedNoConsent = 'BLOCKED_NO_CONSENT',
+  Failed = 'FAILED',
+  Sent = 'SENT',
+}
+
 export type Discussion = {
   __typename?: 'Discussion';
   /** The authorization rules for the entity */
@@ -4868,6 +4885,8 @@ export type Mutation = {
   revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
   revokeLicensePlanFromSpace: Space;
+  /** Send a private (1:1) chat message to each of the given Users individually. Does NOT create a group conversation. Each recipient is processed independently and reported on; partial success is possible. */
+  sendDirectMessageToUsers: Array<DirectMessageDeliveryResult>;
   /** Sends a reply to a message from the specified Room. */
   sendMessageReplyToRoom: Message;
   /** Send message to Community Leads. */
@@ -5534,6 +5553,10 @@ export type MutationRevokeLicensePlanFromAccountArgs = {
 
 export type MutationRevokeLicensePlanFromSpaceArgs = {
   planData: RevokeLicensePlanFromSpace;
+};
+
+export type MutationSendDirectMessageToUsersArgs = {
+  messageData: SendDirectMessageToUsersInput;
 };
 
 export type MutationSendMessageReplyToRoomArgs = {
@@ -7720,6 +7743,10 @@ export type SearchFilterInput = {
 export type SearchInput = {
   /** Return results that satisfy these conditions. */
   filters?: InputMaybe<Array<SearchFilterInput>>;
+  /** When searching Callouts (COLLABORATION_TOOLS / CALLOUT), also match in the Callout framing resources (whiteboard, memo) and its contributions (post, whiteboard, memo). Any match folds up to the containing Callout, deduped, in calloutResults. */
+  foldCalloutResources?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Restrict the search to a single flow state, identified by the InnovationFlowState UUID. The state UUID is globally unique and transitively identifies its Collaboration, so no separate CalloutsSet filter is needed. Default is all flow states. */
+  searchInFlowStateFilter?: InputMaybe<Scalars['UUID']['input']>;
   /** Restrict the search to only the specified Space. Default is all Spaces. */
   searchInSpaceFilter?: InputMaybe<Scalars['UUID']['input']>;
   /** Expand the search to includes Tagsets with the provided names. Max 2. */
@@ -7874,6 +7901,13 @@ export enum SearchVisibility {
   Hidden = 'HIDDEN',
   Public = 'PUBLIC',
 }
+
+export type SendDirectMessageToUsersInput = {
+  /** The message being sent to each recipient. */
+  message: Scalars['String']['input'];
+  /** The Users (1..N) the message is sent to, each as an individual 1:1 chat. No group conversation is created. */
+  receiverIDs: Array<Scalars['UUID']['input']>;
+};
 
 export type Sentry = {
   __typename?: 'Sentry';
@@ -9231,6 +9265,8 @@ export type UpdateUserPlatformSettingsInput = {
 };
 
 export type UpdateUserSettingsCommunicationInput = {
+  /** Allow other Users to be offered an email contact route to this User (using the account email; the address is never exposed). */
+  allowOtherUsersToContactViaEmail?: InputMaybe<Scalars['Boolean']['input']>;
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -9238,7 +9274,7 @@ export type UpdateUserSettingsCommunicationInput = {
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
-  /** Update the user's design version. Any integer accepted (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
+  /** Update the user's design version. Any integer accepted (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
@@ -9601,6 +9637,8 @@ export type User = ActorFull & {
   id: Scalars['UUID']['output'];
   /** Can a message be sent to this User. */
   isContactable: Scalars['Boolean']['output'];
+  /** Whether this User can be offered an email contact route (they enabled email contact). Exposes only the consent flag, never the email address. */
+  isContactableViaEmail: Scalars['Boolean']['output'];
   lastName: Scalars['String']['output'];
   /** A name identifier of the entity, unique within a given scope. */
   nameID: Scalars['NameID']['output'];
@@ -9743,7 +9781,7 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
-  /** The design version this User has selected (1 = legacy design generation; 2 = current default design generation; 3+ reserved for future generations). */
+  /** The design version this User has selected (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion: Scalars['Int']['output'];
   /** The home space settings for this User. */
   homeSpace: UserSettingsHomeSpace;
@@ -9759,6 +9797,8 @@ export type UserSettings = {
 
 export type UserSettingsCommunication = {
   __typename?: 'UserSettingsCommunication';
+  /** Allow other Users to be offered an email contact route to this User (using the account email; the address is never exposed). Default false. */
+  allowOtherUsersToContactViaEmail: Scalars['Boolean']['output'];
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
 };
@@ -16147,6 +16187,62 @@ export type CalloutsSetTagsQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     calloutsSet?: { __typename?: 'CalloutsSet'; id: string; tags: Array<string> } | undefined;
+  };
+};
+
+export type CalloutsListForFeedQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsListForFeedQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutsIndexListQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsIndexListQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            sortOrder: number;
+            activity: number;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              type: CalloutFramingType;
+              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+            };
+            settings: {
+              __typename?: 'CalloutSettings';
+              contribution: {
+                __typename?: 'CalloutSettingsContribution';
+                allowedTypes: Array<CalloutContributionType>;
+              };
+            };
+          }>;
+        }
+      | undefined;
   };
 };
 
@@ -22722,6 +22818,7 @@ export type UserModelFullQuery = {
       | {
           __typename?: 'User';
           isContactable: boolean;
+          isContactableViaEmail: boolean;
           id: string;
           firstName: string;
           lastName: string;
@@ -23197,7 +23294,11 @@ export type UpdateUserSettingsMutation = {
 export type UserSettingsFragmentFragment = {
   __typename?: 'UserSettings';
   id: string;
-  communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+  communication: {
+    __typename?: 'UserSettingsCommunication';
+    allowOtherUsersToSendMessages: boolean;
+    allowOtherUsersToContactViaEmail: boolean;
+  };
   privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
   homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
   notification: {
@@ -23414,7 +23515,11 @@ export type UserSettingsQuery = {
           settings: {
             __typename?: 'UserSettings';
             id: string;
-            communication: { __typename?: 'UserSettingsCommunication'; allowOtherUsersToSendMessages: boolean };
+            communication: {
+              __typename?: 'UserSettingsCommunication';
+              allowOtherUsersToSendMessages: boolean;
+              allowOtherUsersToContactViaEmail: boolean;
+            };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
             notification: {
@@ -35366,6 +35471,163 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
   };
 };
 
+export type FlowStateSearchQueryVariables = Exact<{
+  searchData: SearchInput;
+}>;
+
+export type FlowStateSearchQuery = {
+  __typename?: 'Query';
+  search: {
+    __typename?: 'ISearchResults';
+    calloutResults: {
+      __typename?: 'ISearchCategoryResult';
+      cursor?: string | undefined;
+      results: Array<
+        | {
+            __typename?: 'SearchResultCallout';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+            callout: {
+              __typename?: 'Callout';
+              id: string;
+              framing: {
+                __typename?: 'CalloutFraming';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
+              contributions: Array<{
+                __typename?: 'CalloutContribution';
+                id: string;
+                post?: { __typename?: 'Post'; id: string } | undefined;
+                whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
+                link?: { __typename?: 'Link'; id: string } | undefined;
+              }>;
+              comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+              createdBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+              publishedBy?:
+                | {
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                        }
+                      | undefined;
+                  }
+                | undefined;
+            };
+            space: {
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              about: {
+                __typename?: 'SpaceAbout';
+                id: string;
+                isContentPublic: boolean;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  description?: string | undefined;
+                  tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  banner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+                membership: {
+                  __typename?: 'SpaceAboutMembership';
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  communityID: string;
+                  roleSetID: string;
+                };
+                guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+              };
+            };
+          }
+        | { __typename?: 'SearchResultMemo'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | {
+            __typename?: 'SearchResultOrganization';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+        | { __typename?: 'SearchResultPost'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultSpace'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | { __typename?: 'SearchResultUser'; id: string; type: SearchResultType; score: number; terms: Array<string> }
+        | {
+            __typename?: 'SearchResultWhiteboard';
+            id: string;
+            type: SearchResultType;
+            score: number;
+            terms: Array<string>;
+          }
+      >;
+    };
+  };
+};
+
 export type MySpacesExplorerPageQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MySpacesExplorerPageQuery = {
@@ -46381,6 +46643,20 @@ export type RemoveConversationMemberMutationVariables = Exact<{
 }>;
 
 export type RemoveConversationMemberMutation = { __typename?: 'Mutation'; removeConversationMember: boolean };
+
+export type SendDirectMessageToUsersMutationVariables = Exact<{
+  messageData: SendDirectMessageToUsersInput;
+}>;
+
+export type SendDirectMessageToUsersMutation = {
+  __typename?: 'Mutation';
+  sendDirectMessageToUsers: Array<{
+    __typename?: 'DirectMessageDeliveryResult';
+    receiverID: string;
+    status: DirectMessageDeliveryStatus;
+    conversationID?: string | undefined;
+  }>;
+};
 
 export type UpdateConversationMutationVariables = Exact<{
   updateData: UpdateConversationInput;

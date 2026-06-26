@@ -85,6 +85,15 @@
           "cancel": "Abbrechen"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Tab löschen",
+        "confirm": {
+          "title": "Diesen Tab löschen?",
+          "description": "Beiträge in diesem Tab werden in den ersten Tab verschoben. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirm": "Tab löschen",
+          "cancel": "Abbrechen"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Im Menü ausblenden",
         "showMenuLabel": "Im Menü anzeigen",
@@ -112,10 +121,49 @@
         "confirm": "Phase hinzufügen"
       }
     },
+    "addTab": {
+      "button": "Tab hinzufügen",
+      "dialog": {
+        "title": "Neuen Tab hinzufügen",
+        "description": "Erstellen Sie einen neuen Tab in diesem Space. Sie können ihn später umbenennen oder entfernen.",
+        "nameLabel": "Tab-Name",
+        "namePlaceholder": "z. B. Archiv",
+        "descriptionLabel": "Beschreibung (optional)",
+        "descriptionPlaceholder": "Wofür ist dieser Tab?",
+        "duplicate": "Ein Tab mit diesem Namen existiert bereits.",
+        "errorGeneric": "Der Tab konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+        "cancel": "Abbrechen",
+        "confirm": "Tab hinzufügen"
+      }
+    },
     "replaceFlow": {
       "button": "Innovationsfluss ersetzen",
       "loading": "Neuer Fluss wird geladen…",
-      "error": "Das Ersetzen des Innovationsflusses ist fehlgeschlagen. Der Fluss ist unverändert — bitte versuchen Sie es erneut."
+      "error": "Das Ersetzen des Innovationsflusses ist fehlgeschlagen. Der Fluss ist unverändert — bitte versuchen Sie es erneut.",
+      "applyDialog": {
+        "title": "Neue Vorlage anwenden",
+        "description": "Sie sind dabei, eine neue Vorlage anzuwenden. Diese Aktion löscht Ihren aktuellen Innovationsfluss dauerhaft. Die vorhandenen Beiträge, die mit verschiedenen Phasen verknüpft sind, bleiben jedoch erhalten und werden unter der ersten Phase der neuen Einrichtung gruppiert.<br/><br/>Bitte wählen Sie eine der folgenden Optionen:",
+        "option1": {
+          "label": "Durch neuen Fluss ersetzen",
+          "description": "Dadurch wird Ihr aktueller Innovationsfluss mit allen vorhandenen Beiträgen gelöscht und durch den neuen Fluss einschließlich der Vorlagen-Beiträge ersetzt."
+        },
+        "option2": {
+          "label": "Ersetzen und Vorlagen-Beiträge zu den vorhandenen hinzufügen",
+          "description": "Dadurch werden die neuen Beiträge aus der Vorlage zusätzlich zu Ihren vorhandenen aufgenommen."
+        },
+        "option3": {
+          "label": "Fluss ersetzen, ohne Vorlagen-Beiträge hinzuzufügen",
+          "description": "Ersetzt nur den Innovationsfluss, ohne Vorlagen-Beiträge hinzuzufügen."
+        },
+        "apply": "Anwenden",
+        "cancel": "Abbrechen",
+        "confirmDelete": {
+          "title": "Löschen bestätigen",
+          "description": "Diese Aktion löscht alle vorhandenen Beiträge dauerhaft und ersetzt sie durch Beiträge aus der Vorlage. Dies kann nicht rückgängig gemacht werden. Möchten Sie wirklich fortfahren?",
+          "confirm": "Bestätigen",
+          "cancel": "Abbrechen"
+        }
+      }
     },
     "row": {
       "drag": "Ziehen, um neu anzuordnen",

@@ -1,6 +1,5 @@
 import { User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Error404 } from '@/core/pages/Errors/Error404';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
@@ -8,10 +7,16 @@ import { UserPublicProfileView } from '@/crd/components/user/UserPublicProfileVi
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { RoleType } from '@/domain/community/user/constants/RoleType';
 import useFilteredMemberships from '@/domain/community/user/hooks/useFilteredMemberships';
+import { CrdNotFoundView } from '@/main/crdPages/error/CrdNotFoundView';
 import { MembershipCardConnector } from '@/main/crdPages/topLevelPages/common/MembershipCardConnector';
 import { normaliseReferences } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import useResourceTabs from '@/main/crdPages/topLevelPages/common/useResourceTabs';
-import { useSendMessageToUserHandler } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
+import {
+  useOpenDirectChatHandler,
+  // Email-to-user contact route temporarily disabled client-side (chat-only):
+  // handler intentionally not imported. See the deactivation notes below.
+  // useSendEmailToUserHandler,
+} from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
 import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
@@ -20,12 +25,28 @@ import { useCrdUserProfilePageData } from './useCrdUserProfilePageData';
 export const CrdUserProfilePage = () => {
   const { t } = useTranslation('crd-profilePages');
   const data = useCrdUserProfilePageData();
-  const { userId, userModel, currentUserId, accountResources, contributions, organizationIds, loading } = data;
+  const {
+    userId,
+    userModel,
+    currentUserId,
+    isContactable,
+    // Email-to-user contact route temporarily disabled client-side (chat-only).
+    // isContactableViaEmail,
+    accountResources,
+    contributions,
+    organizationIds,
+    loading,
+  } = data;
   usePageTitle(userModel?.profile?.displayName);
 
   const { activeTab, onSelectTab } = useResourceTabs();
 
-  const { onSendMessage } = useSendMessageToUserHandler({ recipientUserId: userId });
+  const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: userId });
+  // Email-to-user contact route temporarily DISABLED client-side — chat only.
+  // To re-enable: restore the `useSendEmailToUserHandler` import, this handler,
+  // the `isContactableViaEmail` destructure, `showEmail`, and the `onSendEmail`
+  // wiring below. The server transport/setting are unchanged.
+  // const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
 
   const tabs = [
     { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
@@ -48,7 +69,7 @@ export const CrdUserProfilePage = () => {
   useSetBreadcrumbs(breadcrumbItems);
 
   if (!loading.route && !userModel) {
-    return <Error404 />;
+    return <CrdNotFoundView />;
   }
 
   const profile = userModel?.profile;
@@ -69,7 +90,16 @@ export const CrdUserProfilePage = () => {
   const isOwnProfile = Boolean(currentUserId && userModel?.id && currentUserId === userModel.id);
 
   const showSettingsIcon = data.canEditSettings;
-  const showMessageButton = Boolean(currentUserId) && !isOwnProfile;
+
+  // FR-011: chat and email are independent routes. The email-to-user route is
+  // temporarily DISABLED client-side, so only the chat route is offered, and a
+  // user with chat disabled is treated as not reachable regardless of their
+  // email preference. To re-enable email, restore `showEmail` and the email
+  // branch of `showCannotBeReached` (`&& !isContactableViaEmail`).
+  const viewerCanContact = Boolean(currentUserId) && !isOwnProfile;
+  const showChat = viewerCanContact && isContactable;
+  // const showEmail = viewerCanContact && isContactableViaEmail;
+  const showCannotBeReached = viewerCanContact && !isContactable;
 
   const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
 
@@ -93,14 +123,17 @@ export const CrdUserProfilePage = () => {
         location,
         showSettingsIcon,
         settingsHref,
-        showMessageButton,
-        onSendMessage: showMessageButton ? onSendMessage : undefined,
+        onMessageClick: showChat ? onOpenChat : undefined,
+        // Email-to-user contact route temporarily disabled client-side (chat-only).
+        // onSendEmail: showEmail ? onSendEmailMessage : undefined,
+        onSendEmail: undefined,
+        cannotBeReachedLabel: showCannotBeReached ? t('common.messagePopover.cannotBeReached') : undefined,
       }}
       sidebar={{
         bio: profile?.description ?? null,
         tagsets: buildUserProfileTagsets(profile?.tagsets, {
-          keywords: t('components.profile.fields.keywords.title', { ns: 'translation' }),
-          skills: t('components.profile.fields.skills.title', { ns: 'translation' }),
+          keywords: t('components.profile.fields.keywords.title', { ns: 'crd-common' }),
+          skills: t('components.profile.fields.skills.title', { ns: 'crd-common' }),
         }),
         organizationsSlot,
         organizationsEmpty: safeOrgIds.length === 0,
@@ -130,8 +163,8 @@ export const CrdUserProfilePage = () => {
         labels: {
           spacesSubsection: t('userProfile.sections.spacesSubsection'),
           virtualContributorsSubsection: t('userProfile.sections.virtualContributorsSubsection'),
-          templatePacksSubsection: t('common.innovation-packs', { ns: 'translation' }),
-          customHomepagesSubsection: t('common.customHomepages', { ns: 'translation' }),
+          templatePacksSubsection: t('common.innovation-packs', { ns: 'crd-common' }),
+          customHomepagesSubsection: t('common.customHomepages', { ns: 'crd-common' }),
           spacesLeading: t('userProfile.sections.spacesLeading'),
           memberOf: t('userProfile.sections.memberOf'),
           emptyResourcesHosted: t('userProfile.empty.resourcesHosted'),

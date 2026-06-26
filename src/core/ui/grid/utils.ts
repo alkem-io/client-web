@@ -1,6 +1,12 @@
-import type { Theme } from '@mui/material/styles';
-import { GUTTER_MUI, GUTTER_PX } from './constants';
 import { useColumns } from './GridContext';
+import { GUTTER_MUI, GUTTER_PX } from './gutter.constants';
+
+/**
+ * Minimal structural shape of the theme `gutters` needs — just the spacing
+ * function. MUI-free replacement for the previous MUI Material styles `Theme`
+ * import; any MUI theme passed by remaining MUI callers still satisfies it.
+ */
+type ThemeWithSpacing = { spacing: (value: number) => string | number };
 
 export const getColumnsWidth = (itemColumns: number, gridColumns: number) => {
   const columns = Math.min(itemColumns, gridColumns);
@@ -11,7 +17,7 @@ export const getColumnsWidth = (itemColumns: number, gridColumns: number) => {
 
 export const gutters =
   (num: number = 1) =>
-  (theme: Theme) =>
+  (theme: ThemeWithSpacing) =>
     theme.spacing(GUTTER_MUI * num);
 
 export interface GridItemStyle {

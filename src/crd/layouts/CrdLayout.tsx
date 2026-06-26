@@ -4,7 +4,6 @@ import { GridOverlay } from '@/crd/layouts/components/GridOverlay';
 import { Footer } from '@/crd/layouts/Footer';
 import { Header } from '@/crd/layouts/Header';
 import type {
-  CrdDesignVersionSwitch,
   CrdFooterLinks,
   CrdLanguageOption,
   CrdNavigationHrefs,
@@ -34,7 +33,6 @@ type CrdLayoutProps = {
   onHelpClick?: () => void;
   footerLinks?: CrdFooterLinks;
   showGridToggle?: boolean;
-  designVersionSwitch?: CrdDesignVersionSwitch;
   /** When true the header's inner content fills all 12 grid columns (full-width space pages). */
   fullWidth?: boolean;
   /** When true the header renders transparently over a hero banner below it. */
@@ -64,7 +62,6 @@ export function CrdLayout({
   onHelpClick,
   footerLinks,
   showGridToggle,
-  designVersionSwitch,
   fullWidth,
   overlayBanner,
   children,
@@ -92,7 +89,6 @@ export function CrdLayout({
         onPendingMembershipsClick={onPendingMembershipsClick}
         onHelpClick={onHelpClick}
         showGridToggle={showGridToggle}
-        designVersionSwitch={designVersionSwitch}
         fullWidth={fullWidth}
         overlayBanner={overlayBanner}
       />

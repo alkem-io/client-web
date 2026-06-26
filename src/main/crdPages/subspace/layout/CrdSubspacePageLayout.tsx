@@ -380,7 +380,8 @@ export default function CrdSubspacePageLayout() {
             <CalloutShareOnAlkemioForm
               key={data.subspaceUrl}
               url={data.subspaceUrl}
-              entityLabel={t('common.subspace', { ns: 'translation' }).toLowerCase()}
+              entityLabel={t('common.subspace', { ns: 'crd-common' }).toLowerCase()}
+              onClose={() => setShareDialogOpen(false)}
             />
           ) : undefined
         }

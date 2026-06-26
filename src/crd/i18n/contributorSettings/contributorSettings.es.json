@@ -38,6 +38,7 @@
       "documentsTitle": "Documentos",
       "documentName": "Nombre",
       "documentUrl": "URL",
+      "attachDocument": "Adjuntar archivo",
       "removeDocument": "Eliminar documento",
       "addDocument": "Añadir documento",
       "exampleTitle": "Ejemplo: Acerca de Alkemio",
@@ -258,6 +259,8 @@
         "title": "Comunicación y privacidad",
         "allowMessagesLabel": "Permitir que otros usuarios me envíen mensajes directos",
         "allowMessagesDescription": "Cuando esté desactivado, otros usuarios no podrán iniciar una conversación de mensaje directo contigo.",
+        "allowEmailContactLabel": "Permitir que otros me contacten por correo electrónico",
+        "allowEmailContactDescription": "Cuando está activado, las personas que no puedan contactarte por chat podrán enviarte un correo electrónico a la dirección de tu cuenta. Tu dirección nunca se les muestra.",
         "error": "No se pudo guardar la preferencia — inténtalo de nuevo"
       },
       "designSystem": {

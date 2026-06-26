@@ -21,16 +21,17 @@ export function TagFilterPopover({ tags, selectedTags, onTagClick, className }: 
 
   if (tags.length === 0) return null;
 
-  const active = selectedTags.length > 0;
+  const selectedCount = selectedTags.length;
+  const active = selectedCount > 0;
 
   return (
     <Popover>
       <PopoverTrigger asChild={true}>
         <button
           type="button"
-          aria-label={t('filters.filterByTag')}
+          aria-label={active ? t('filters.filterByTagActive', { count: selectedCount }) : t('filters.filterByTag')}
           className={cn(
-            'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border bg-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
             active
               ? 'border-primary text-primary'
               : 'border-border text-muted-foreground hover:bg-muted hover:text-foreground',
@@ -38,6 +39,14 @@ export function TagFilterPopover({ tags, selectedTags, onTagClick, className }: 
           )}
         >
           <Filter className="w-4 h-4" aria-hidden="true" />
+          {active && (
+            <span
+              aria-hidden="true"
+              className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-badge text-primary-foreground"
+            >
+              {selectedCount}
+            </span>
+          )}
         </button>
       </PopoverTrigger>
       <PopoverContent

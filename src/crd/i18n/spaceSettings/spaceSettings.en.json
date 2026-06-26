@@ -85,6 +85,15 @@
           "cancel": "Cancel"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Delete tab",
+        "confirm": {
+          "title": "Delete this tab?",
+          "description": "Posts in this tab will move to the first tab. This action cannot be undone.",
+          "confirm": "Delete tab",
+          "cancel": "Cancel"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Hide from menu",
         "showMenuLabel": "Show in menu",
@@ -112,10 +121,49 @@
         "confirm": "Add phase"
       }
     },
+    "addTab": {
+      "button": "Add tab",
+      "dialog": {
+        "title": "Add a new tab",
+        "description": "Create a new tab on this Space. You can rename or remove it later.",
+        "nameLabel": "Tab name",
+        "namePlaceholder": "e.g. Archive",
+        "descriptionLabel": "Description (optional)",
+        "descriptionPlaceholder": "What is this tab for?",
+        "duplicate": "A tab with this name already exists.",
+        "errorGeneric": "Could not create the tab. Please try again.",
+        "cancel": "Cancel",
+        "confirm": "Add tab"
+      }
+    },
     "replaceFlow": {
       "button": "Replace innovation flow",
       "loading": "Loading new flow…",
-      "error": "Replacing the innovation flow failed. The flow is unchanged — please try again."
+      "error": "Replacing the innovation flow failed. The flow is unchanged — please try again.",
+      "applyDialog": {
+        "title": "Apply new template",
+        "description": "You are about to apply a new template. This action will permanently delete your current innovation flow. However, the existing Posts linked to different phases will remain and be grouped under the first phase of the new setup.<br/><br/>Please choose one of the following options:",
+        "option1": {
+          "label": "Replace with new flow",
+          "description": "This will delete your current innovation flow with all existing Posts and replace it with the new flow including the template Posts."
+        },
+        "option2": {
+          "label": "Replace and add template Posts to existing ones",
+          "description": "This will include the new Posts from the template in addition to your existing ones."
+        },
+        "option3": {
+          "label": "Replace flow without adding template Posts",
+          "description": "Only replace innovation flow without adding template Posts."
+        },
+        "apply": "Apply",
+        "cancel": "Cancel",
+        "confirmDelete": {
+          "title": "Confirm Deletion",
+          "description": "This action will permanently delete all existing Posts and replace them with Posts from the template. This cannot be undone. Are you sure you want to proceed?",
+          "confirm": "Confirm",
+          "cancel": "Cancel"
+        }
+      }
     },
     "row": {
       "drag": "Drag to reorder",

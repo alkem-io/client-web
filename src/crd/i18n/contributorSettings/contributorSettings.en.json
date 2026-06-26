@@ -38,6 +38,7 @@
       "documentsTitle": "Documents",
       "documentName": "Name",
       "documentUrl": "URL",
+      "attachDocument": "Attach file",
       "removeDocument": "Remove document",
       "addDocument": "Add document",
       "exampleTitle": "Example: About Alkemio",
@@ -258,6 +259,8 @@
         "title": "Communication & Privacy",
         "allowMessagesLabel": "Allow other users to send me direct messages",
         "allowMessagesDescription": "When off, other users won't be able to start a direct-message conversation with you.",
+        "allowEmailContactLabel": "Allow others to contact me by email",
+        "allowEmailContactDescription": "When on, people who can't reach you by chat can send you an email at your account address. Your address is never shown to them.",
         "error": "Couldn't save preference — try again"
       },
       "designSystem": {

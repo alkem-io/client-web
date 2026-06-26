@@ -1,87 +1,1402 @@
 {
-  "space": "Пространство",
-  "spaces": "Пространства",
-  "subspace": "Подпространство",
-  "ok": "OK",
+  "apollo": {
+    "errors": {
+      "BAD_USER_INPUT": "Невалидни потребителски данни: {{message}}",
+      "COMMUNITY_MEMBERSHIP": "Грешка при $t(common.community) $t(common.membership): {{message}}",
+      "ENTITY_NOT_FOUND": "Елементът не е намерен",
+      "FORMAT_NOT_SUPPORTED": "Форматът не се поддържа",
+      "MESSAGING_NOT_ENABLED": "Този потребител е деактивирал директните съобщения. Не можете да им изпратите съобщение в момента.",
+      "NOT_SUPPORTED": "Не се поддържа: {{message}}",
+      "OPERATION_NOT_ALLOWED": "{{message}}",
+      "generic": "Възникна грешка",
+      "generic-with-code": "Възникна грешка с код {{code}}",
+      "support": {
+        "emailBody": "Hello,\n\nI encountered an error while using Alkemio.\n\nError Code: {{code}}\n\nPlease help me resolve this issue.\n\nThank you.",
+        "emailBodyGeneric": "Hello,\n\nI encountered an error while using Alkemio.\n\nPlease help me resolve this issue.\n\nThank you.",
+        "emailSubject": "Support Request - Error {{code}}",
+        "emailSubjectGeneric": "Support Request",
+        "errorCode": "Error Code: {{code}}",
+        "linkText": "Contact Support"
+      },
+      "userMessages": {
+        "authorization": {
+          "apiRestricted": "API access restricted.",
+          "authorizationReset": "Authorization reset in progress.",
+          "bearerToken": "Bearer token error.",
+          "forbidden": "Access denied.",
+          "forbiddenLicensePolicy": "License restriction.",
+          "forbiddenPolicy": "You don't have the correct rights.",
+          "invalidPolicy": "Invalid authorization policy.",
+          "invalidToken": "Invalid token.",
+          "loginFlow": "Login flow error.",
+          "loginFlowInit": "Unable to initialize login flow.",
+          "sessionExpired": "Session expired.",
+          "sessionExtend": "Unable to extend session.",
+          "subscriptionNotAuthenticated": "Subscription requires authentication.",
+          "unauthenticated": "You might not be logged in.",
+          "unauthorized": "Access denied.",
+          "userNotVerified": "User is not verified."
+        },
+        "fallback": "An unexpected error occurred. Reference: {{errorId}}",
+        "notFound": {
+          "account": "Account not found.",
+          "entity": "Couldn't find what you were looking for.",
+          "license": "License not found.",
+          "matrixEntity": "Matrix entity not found.",
+          "mimeType": "MIME type not found.",
+          "pagination": "Pagination cursor not found.",
+          "resource": "Resource not found.",
+          "storageBucket": "Storage bucket not found.",
+          "tagset": "Tagset not found.",
+          "userIdentity": "User identity not found."
+        },
+        "operations": {
+          "calloutClosed": "Callout is closed.",
+          "licenseEntitlementNotAvailable": "License entitlement not available.",
+          "licenseEntitlementNotSupported": "License entitlement not supported.",
+          "messagingNotEnabled": "Messaging not enabled.",
+          "noAgentForUser": "No agent for user.",
+          "notEnabled": "Feature not enabled.",
+          "operationNotAllowed": "Operation not allowed.",
+          "roleLimitsViolated": "Role limits exceeded.",
+          "roleSetAlreadyMember": "You're already a member of this space.",
+          "roleSetInvitation": "Invitation error.",
+          "roleSetOpenApplicationExists": "You already have a pending application to this space.",
+          "roleSetOpenInvitationExists": "You've already been invited to this space — accept the invitation instead of applying.",
+          "roleSetRole": "Role set error.",
+          "userAlreadyRegistered": "User already registered.",
+          "userIdentityDeletionFailed": "User identity deletion failed.",
+          "userNotRegistered": "User not registered."
+        },
+        "system": {
+          "bootstrapFailed": "System initialization failed.",
+          "documentDeleteFailed": "Document delete failed.",
+          "documentReadFailed": "Document read failed.",
+          "documentSaveFailed": "Document save failed.",
+          "excalidrawAmqpResult": "Excalidraw service error.",
+          "excalidrawRedisAdapterInit": "Excalidraw initialization error.",
+          "excalidrawServerInit": "Excalidraw server initialization error.",
+          "geoLocationError": "Geolocation error.",
+          "geoServiceError": "Geolocation service error.",
+          "geoServiceNotAvailable": "Geolocation service not available.",
+          "geoServiceRequestLimit": "Geolocation request limit exceeded.",
+          "localStorageDeleteFailed": "Local storage delete failed.",
+          "localStorageReadFailed": "Local storage read failed.",
+          "localStorageSaveFailed": "Local storage save failed.",
+          "notificationPayloadBuilder": "Notification error.",
+          "storageDisabled": "Storage is disabled.",
+          "storageUploadFailed": "Upload failed.",
+          "urlResolverError": "URL resolver error."
+        },
+        "validation": {
+          "badUserInput": "{{message}}",
+          "entityNotInitialized": "Entity not initialized.",
+          "formatNotSupported": "Format not supported.",
+          "forumDiscussionCategory": "Invalid discussion category.",
+          "groupNotInitialized": "Group not initialized.",
+          "inputValidation": "Input validation error.",
+          "invalidStateTransition": "Invalid state transition.",
+          "invalidTemplateType": "Invalid template type.",
+          "invalidUuid": "Invalid identifier format.",
+          "notSupported": "Operation not supported.",
+          "paginationOutOfBound": "Pagination input out of bounds.",
+          "paginationParamNotFound": "Pagination parameter not found.",
+          "relationNotLoaded": "Relation not loaded."
+        }
+      }
+    }
+  },
+  "associates-view": {
+    "less": "покажи по-малко",
+    "more": "...плюс още {{count}}",
+    "sign-in": "Моля, влезете в системата, за да видите потребителите, свързани с тази $t(common.organization)."
+  },
+  "authentication": {
+    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
+    "passkey": {
+      "not-supported": "Passkeys are not supported by your browser",
+      "script-loading": "Loading passkey support...",
+      "unknown-error": "An error occurred with your passkey"
+    }
+  },
+  "buttons": {
+    "apply": "Приложи",
+    "close": "Затвори",
+    "delete": "Изтрий",
+    "find-template": "Намери $t(common.template)",
+    "send": "Изпрати",
+    "visit": "Посети"
+  },
+  "calendar": {
+    "addToCalendar": {
+      "exportAll": "Export all future events to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook"
+    },
+    "event": {
+      "whole-day": "Цял ден"
+    }
+  },
+  "callout": {
+    "whiteboard": {
+      "images": {
+        "downloadFailed": "Couldn't load the image. Please try again.",
+        "maxSizeFallback": "the allowed limit",
+        "multipleFailures_one": "{{count}} image could not be loaded",
+        "multipleFailures_other": "{{count}} images could not be loaded",
+        "retry": "Retry",
+        "singleFailure": "An image could not be loaded",
+        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
+        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
+        "uploadFailed": "Couldn't upload the image. Please try again."
+      },
+      "export": {
+        "title": "Запазване в Alkemio",
+        "description": "Запазете сцената в Alkemio и я споделете с други.",
+        "save": "Запазване в Alkemio"
+      }
+    }
+  },
   "cancel": "Отказ",
-  "save": "Запази",
+  "close": "Затвори",
+  "collaboraDocument": {
+    "editor": {
+      "error": {
+        "unavailable": "The document editor is temporarily unavailable. Please try again later."
+      },
+      "loading": "Loading document editor...",
+      "title": "Document Editor"
+    }
+  },
+  "common": {
+    "Account": "Акаунт",
+    "Admin": "Администратор",
+    "Admins": "Администратори",
+    "Callout": "$t(common.Post)",
+    "Callouts": "$t(common.Posts)",
+    "Collection": "Колекция",
+    "Collections": "Колекции",
+    "Comment": "Коментар",
+    "Comments": "Коментари",
+    "Community": "Общество",
+    "Link": "Връзка",
+    "Member": "Член",
+    "Members": "Членове",
+    "Membership": "Членство",
+    "Memberships": "Членства",
+    "Memo": "Бележка",
+    "Memos": "Бележки",
+    "Notification": "Известие",
+    "Notifications": "Известия",
+    "Organization": "Организация",
+    "Organizations": "Организации",
+    "Poll": "Poll",
+    "Post": "Публикация",
+    "Posts": "Публикации",
+    "Profile": "$t(common.Profile)",
+    "Response": "Отговор",
+    "Responses": "Отговори",
+    "Settings": "Настройки",
+    "Storage": "Съхранение",
+    "Whiteboard": "Бяла дъска",
+    "Whiteboards": "Бели дъски",
+    "about": "Относно",
+    "aboutThis": "Относно този/тази {{entity}}",
+    "account": "акаунт",
+    "actions": "Действия",
+    "activity": "Активност",
+    "add": "Добави",
+    "added": "Добавено",
+    "admin": "администратор",
+    "administration": "Администриране",
+    "admins": "администратори",
+    "agreement": "Споразумение",
+    "agreements": "Споразумения",
+    "all": "Всички",
+    "anonymous": "Анонимен",
+    "applications": "Заявки",
+    "aspect": "Карта",
+    "aspects": "Карти",
+    "authorization": "Авторизация",
+    "authorizationPolicies": "Политики за авторизация",
+    "avatar": "Аватар",
+    "avatar-of": "Аватар на {{user}}",
+    "beta": "Бета",
+    "blocks": {
+      "all-contributing-users": "всички потребители, които принасят",
+      "users-contributing": "потребители, които принасят"
+    },
+    "calendar": "Календар",
+    "callout": "$t(common.post)",
+    "calloutType": {
+      "COLLABORA_DOCUMENT": "Document",
+      "LINK": "$t(common.Link)",
+      "MEMO": "$t(common.Memo)",
+      "NONE": "$t(common.Post)",
+      "POLL": "$t(common.Poll)",
+      "POST": "$t(common.Post)",
+      "WHITEBOARD": "$t(common.Whiteboard)"
+    },
+    "callouts": "$t(common.posts)",
+    "card": "Карта",
+    "cards": "Карти",
+    "category": "Категория",
+    "collaboraDocument": "Document",
+    "collaborationTool": "Инструмент за сътрудничество",
+    "collaborationTools": "Инструменти за сътрудничество",
+    "collection": "колекция",
+    "collections": "колекции",
+    "comment": "коментар",
+    "comments": "коментари",
+    "communications": "Актуализации от $t(common.leads)",
+    "community": "общество",
+    "context": "Контекст",
+    "contribute": "Приноси",
+    "contributions": "Приноси",
+    "contributors": "Приносители",
+    "create": "Създай",
+    "create-new": "Създай ново",
+    "create-new-entity": "Създай ново {{entity}}",
+    "createdBy": "Създадено от",
+    "credentials": "Удостоверения",
+    "custom": "Персонализиран",
+    "customHomepage": "Персонална начална страница",
+    "customHomepages": "Персонални начални страници",
+    "dashboard": "Табло",
+    "date": "Дата",
+    "description": "Описание",
+    "disassociate": "Премахни асоциацията",
+    "discussion": "Дискусия",
+    "discussions": "Дискусии",
+    "edit-entity": "Редактирай {{entity}}",
+    "email": "Имейл",
+    "empty-string": "",
+    "entities": "{{entityType}}",
+    "entitiesWithCount": "{{entityType}} ({{count}})",
+    "enums": {
+      "calloutContributionType": {
+        "COLLABORA_DOCUMENT": "Document",
+        "LINK": "$t(common.Link)",
+        "MEMO": "$t(common.Memo)",
+        "POST": "$t(common.Post)",
+        "WHITEBOARD": "$t(common.Whiteboard)"
+      },
+      "calloutType": {
+        "LINK_COLLECTION": "$t(common.Link) $t(common.Collection)",
+        "POST": "$t(common.Post)",
+        "POST_COLLECTION": "$t(common.Post) $t(common.Collection)",
+        "WHITEBOARD": "$t(common.Whiteboard)",
+        "WHITEBOARD_COLLECTION": "$t(common.Whiteboard) $t(common.Collection)"
+      },
+      "discussion-category": {
+        "CHALLENGE_CENTRIC": "Работа по предизвикателства",
+        "COMMUNITY_BUILDING": "Градене на $t(common.community)",
+        "GENERAL": "Общи",
+        "HELP": "Нуждаете се от помощ?",
+        "IDEAS": "Идеи",
+        "OTHER": "Друго",
+        "PLATFORM_FUNCTIONALITIES": "Функционалности на платформата",
+        "QUESTIONS": "Въпроси",
+        "RELEASES": "Актуализации",
+        "SHARING": "Споделяне"
+      },
+      "edit-mode": {
+        "edit": "Редактиране",
+        "new": "Нов",
+        "read-only": "Само за четене"
+      },
+      "innovationFlowState": {
+        "abandoned": "Изоставен",
+        "archived": "Архивиран",
+        "beingRefined": "Прецизира се",
+        "complete": "Завършен",
+        "inProgress": "В процес",
+        "new": "Нов"
+      },
+      "invitationExternalStatus": {
+        "invited": "Поканен да се присъединиш към Alkemio и това $t(common.space)"
+      },
+      "invitationStatus": {
+        "accepted": "Поканата е приета",
+        "invited": "Поканен",
+        "rejected": "Поканата е отхвърлена"
+      },
+      "licenseEntitlementType": {
+        "SPACE_FREE": "Безплатен",
+        "SPACE_PLUS": "Plus",
+        "SPACE_PREMIUM": "Premium"
+      },
+      "roleSetContributorType": {
+        "ACCOUNT": "Account",
+        "ORGANIZATION": "$t(common.Organization)",
+        "SPACE": "$t(common.space)",
+        "USER": "Потребител",
+        "VIRTUAL_CONTRIBUTOR": "$t(common.virtualContributor)"
+      },
+      "searchVisibility": {
+        "ACCOUNT": "$t(common.Account)",
+        "HIDDEN": "Скрит",
+        "PUBLIC": "Публичен"
+      },
+      "space-visibility": {
+        "ACTIVE": "Активен",
+        "ARCHIVED": "Архивиран",
+        "DEMO": "Демо",
+        "INACTIVE": "Inactive"
+      },
+      "templateType": {
+        "CALLOUT": "Шаблон на инструмент за сътрудничество",
+        "CALLOUT_plural": "Шаблони на инструменти за сътрудничество",
+        "COMMUNITY_GUIDELINES": "Шаблон на правила за $t(common.community)",
+        "COMMUNITY_GUIDELINES_plural": "Шаблони на правила за $t(common.community)",
+        "INNOVATION_FLOW": "$t(common.innovation-flow)",
+        "INNOVATION_FLOW_plural": "Шаблони на $t(common.innovation-flow)",
+        "POST": "Шаблон на $t(common.Post)",
+        "POST_plural": "Шаблони на $t(common.Posts)",
+        "SPACE": "Шаблон на $t(common.space)",
+        "SPACE_plural": "Шаблони на $t(common.spaces)",
+        "WHITEBOARD": "Шаблон на $t(common.Whiteboard)",
+        "WHITEBOARD_plural": "Шаблони на $t(common.Whiteboards)"
+      }
+    },
+    "error-generic": "Възникна грешка при зареждане",
+    "event": "Събитие",
+    "events": "Събития",
+    "explore": "Приноси",
+    "externalLinkDisclaimer": "Тази връзка Ви пренася към външен сайт. Alkemio не носи отговорност за съдържанието му.",
+    "field-max-length": "Това поле трябва да съдържа максимум {{max}} символа",
+    "field-min-length": "Това поле трябва да съдържа минимум {{min}} символа",
+    "field-required": "Това поле е задължително",
+    "filter": "Филтър",
+    "filterBy": "Филтрирай по...",
+    "forum": "Форум",
+    "framing": "Допълнително съдържание",
+    "fullScreen": "Цял екран",
+    "genders": {
+      "female": "женски",
+      "male": "мъжки",
+      "notSpecified": "не е посочено"
+    },
+    "group": "Група",
+    "groups": "Групи",
+    "guestSuffix": "(гост)",
+    "help": "Помощ",
+    "helpCenter": "Център за помощ",
+    "home": "Начало",
+    "host": "домакин",
+    "hosts": "домакини",
+    "image": "Image",
+    "inApp": "В приложението",
+    "index": "$t(common.profile)",
+    "innovation-flow": "Поток на иновации",
+    "innovation-flows": "Потоци на иновации",
+    "innovation-hub": "Център за иновации",
+    "innovation-hubs": "Центрове за иновации",
+    "innovation-packs": "Пакети шаблони",
+    "innovationPack": "Пакет шаблони",
+    "inspiration": "Инспирация",
+    "interest": "Интерес",
+    "interests": "Интереси",
+    "introduction": "Представяне",
+    "knowledge-base": "База знания",
+    "layout": "Подредба",
+    "lead": "лидер",
+    "leads": "лидери",
+    "library": "Библиотека",
+    "license": "Лиценз",
+    "lifecycle": "Жизнен цикъл",
+    "link": "връзка",
+    "loading": "Зареждане...",
+    "location": "Местоположение",
+    "lock": "Заключено",
+    "member": "член",
+    "members": "членове",
+    "membership": "членство",
+    "memberships": "членства",
+    "memo": "бележка",
+    "memos": "бележки",
+    "menu": "Меню",
+    "more": "Още",
+    "my-memberships": "Моите $t(common.memberships)",
+    "my-profile": "Моят $t(common.profile)",
+    "name": "Име",
+    "no-references": "Няма налични препратки",
+    "no-tags": "Няма налични етикети",
+    "no-updates": "Няма актуализации от $t(common.leads)",
+    "noDescription": "Няма описание",
+    "noneTemplates": "Няма шаблони",
+    "notification": "известие",
+    "notifications": "известия",
+    "optional": "по избор",
+    "options": "Опции",
+    "or": "Или",
+    "organization": "организация",
+    "organizations": "организации",
+    "owner": "Собственик",
+    "people": "Хора",
+    "permission": "Право",
+    "permissions": "Права",
+    "poll": "poll",
+    "post": "публикация",
+    "posts": "публикации",
+    "preview": "Преглед",
+    "profile": "профил",
+    "project": "Проект",
+    "prompt": "Подканване",
+    "push": "Push",
+    "question": "Въпрос",
+    "questions": "Въпроси",
+    "reference": "Препратка",
+    "references": "Препратки",
+    "remove": "Премахни",
+    "response": "отговор",
+    "responses": "отговори",
+    "retrying": "Retrying...",
+    "role": "Роля",
+    "roles": {
+      "ADMIN": "$t(common.Admin)",
+      "ANONYMOUS": "Анонимен",
+      "ASSOCIATE": "Асоцииран",
+      "GLOBAL_ADMIN": "Глобален $t(common.Admin)",
+      "GLOBAL_COMMUNITY_READER": "Мениджър на $t(common.community)",
+      "GLOBAL_LICENSE_MANAGER": "Мениджър на лицензите",
+      "GLOBAL_PLATFORM_MANAGER": "Мениджър на платформата",
+      "GLOBAL_SPACES_READER": "Читател на $t(common.spaces)",
+      "GLOBAL_SUPPORT": "Поддържащ $t(common.Admin)",
+      "GLOBAL_SUPPORT_MANAGER": "Мениджър на поддръжката",
+      "GUEST": "Гост",
+      "HOST": "Домакин",
+      "LEAD": "Лидер",
+      "MEMBER": "$t(common.Member)",
+      "OWNER": "Собственик",
+      "PLATFORM_BETA_TESTER": "Бета тестер",
+      "PLATFORM_VC_CAMPAIGN": "Ранен достъп до VC",
+      "REGISTERED": "Регистриран"
+    },
+    "search": "Търсене",
+    "security": "Сигурност",
+    "settings": "настройки",
+    "show": "Покажи",
+    "show-all": "Покажи всички",
+    "show-more": "Покажи още",
+    "social": "Социален",
+    "sources": "Източници",
+    "space": "Пространство",
+    "space-level": {
+      "L0": "$t(common.space)",
+      "L1": "$t(common.subspace)",
+      "L2": "Подподпространство"
+    },
+    "space-settings": "$t(common.Settings)",
+    "spaceSubspace": "(Под)пространство",
+    "spaceSubspaces": "(Под)пространства",
+    "spaceTypes": {
+      "agreement": "$t(common.agreement)",
+      "agreement_plural": "$t(common.agreements)",
+      "space": "$t(common.space)",
+      "space_plural": "$t(common.spaces)",
+      "subspace": "$t(common.subspace)",
+      "subspace_plural": "$t(common.subspaces)",
+      "subsubspace": "$t(common.subsubspace)",
+      "subsubspace_plural": "$t(common.subsubspaces)"
+    },
+    "spaces": "Пространства",
+    "state": "Фаза",
+    "states": "Фази",
+    "status": "Статус",
+    "storage": "съхранение",
+    "subspace": "Подпространство",
+    "subspaces": "Подпространства",
+    "subsubspace": "Подпространство",
+    "subsubspaces": "Подпространства",
+    "supportEmail": "support@alkem.io",
+    "tags": "Етикети",
+    "template": "шаблон",
+    "template-lowercase": "template",
+    "templateLibrary": "Библиотека с шаблони",
+    "templateTypes": "Типове шаблони",
+    "templates": "Шаблони",
+    "time": {
+      "long": {
+        "day_one": "{{count}} ден",
+        "day_other": "{{count}} дни",
+        "hour_one": "{{count}} час",
+        "hour_other": "{{count}} часа",
+        "justNow": "just now",
+        "minute_one": "{{count}} минута",
+        "minute_other": "{{count}} минути",
+        "month_one": "{{count}} месец",
+        "month_other": "{{count}} месеца",
+        "moreThanYears_one": "> {{count}} year",
+        "moreThanYears_other": "> {{count}} years",
+        "second_one": "{{count}} секунда",
+        "second_other": "{{count}} секунди",
+        "timeAgo": "преди {{time}}",
+        "year_one": "{{count}} година",
+        "year_other": "{{count}} години"
+      },
+      "short": {
+        "day_one": "{{count}}д",
+        "day_other": "{{count}}д",
+        "hour_one": "{{count}}ч",
+        "hour_other": "{{count}}ч",
+        "justNow": "now",
+        "minute_one": "{{count}}м",
+        "minute_other": "{{count}}м",
+        "month_one": "{{count}}м",
+        "month_other": "{{count}}м",
+        "moreThanYears_one": "> {{count}}y",
+        "moreThanYears_other": "> {{count}}y",
+        "second_one": "{{count}}с",
+        "second_other": "{{count}}с",
+        "timeAgo": "{{time}}",
+        "year_one": "{{count}}г",
+        "year_other": "{{count}}г"
+      }
+    },
+    "title": "Заглавие",
+    "transfer": "Conversions & Transfers",
+    "type": "Тип",
+    "unknown": "Непознат",
+    "update": "Актуализация",
+    "updates": "Актуализации от $t(common.leads)",
+    "url": "URL",
+    "user": "потребител",
+    "user-group": "Потребителска група",
+    "user-groups": "Потребителски групи",
+    "username": "Потребителско име",
+    "users": "потребители",
+    "verified-status": {
+      "not-verified": "",
+      "verified": "Потвърден"
+    },
+    "virtualContributor": "Виртуален участник",
+    "virtualContributors": "Виртуални участници",
+    "visibility": "Видимост",
+    "visuals": "Визуални елементи",
+    "warning": "Предупреждение",
+    "welcome": "Добре дошли",
+    "whiteboard": "бяла дъска",
+    "whiteboards": "бели дъски"
+  },
+  "community": {
+    "communityGuidelines": {
+      "saveAndDeleteContentSuccessMessage": "Съдържанието на правилата на $t(common.Community) е премахнато и запазено успешно.",
+      "updatedSuccessfully": "Правилата на $t(common.Community) са актуализирани успешно."
+    },
+    "leads": "$t(common.leads)",
+    "pendingMembership": {
+      "invitationCardTitle": "{{user}} покани {{invitedEntity}} в <spaceicon /> {{space}}",
+      "invitationDialog": {
+        "title": "Моето чакащо $t(common.Membership): {{space}}",
+        "vc": {
+          "title": "Чакащо $t(common.virtualContributor) $t(common.membership): {{space}}"
+        }
+      },
+      "vc": "Вашия $t(common.virtualContributor)",
+      "you": "Вие"
+    }
+  },
+  "components": {
+    "activityLogView": {
+      "description": {
+        "MEMBER_JOINED": "{{subject}} се присъедини"
+      },
+      "detailedDescription": {
+        "parentLink": " в <parentlink><parenticon /> {{spaceDisplayName}}</parentlink>"
+      }
+    },
+    "application-button": {
+      "acceptInvitation": {
+        "full": "Вие сте поканен да станете $t(common.member) на този/тази $t(common.space), моля, кликнете тук, за да приемете",
+        "short": "Приеми поканата"
+      },
+      "apply-disabled": "Кандидатстването не е разрешено",
+      "apply-not-signed": "Влезете в системата, за да кандидатствате",
+      "apply-parent": "Кандидатствай към родител",
+      "apply-pending": "Кандидатстването е в процес на обработка",
+      "applyTo": "Кандидатствай към",
+      "contactOpportunityLeads": {
+        "full": "Изпратете съобщение до $t(common.subspace) $t(common.leads), за да станете $t(common.member)",
+        "short": "Изпратете съобщение до $t(common.subspace) $t(common.leads), за да станете $t(common.member)"
+      },
+      "dialog-apply-parent": {
+        "body": "За да се присъедините към <strong title='име на подпространството'>'{{subspaceName}}'</strong>, първо трябва да се присъедините към <strong title='име на пространството'>'{{spaceName}}'</strong> $t(common.space). Моля, добавете $t(common.subspace), към който искате да се присъедините, в формуляра за кандидатстване на $t(common.space).",
+        "title": "Кандидатствай към <strong title='Име на родителската общност'>{{parentCommunityName}}</strong>"
+      },
+      "dialog-join-parent": {
+        "body": "Можете да се присъедините към тази $t(common.community) без да кандидатствате за $t(common.membership), но първо трябва да се присъедините към <strong title='Име на родителската общност'>{{parentCommunityName}}</strong> и да приемете общите условия там.",
+        "title": "Присъедини се към <strong title='Име на родителската общност'>{{parentCommunityName}}</strong>"
+      },
+      "dialog-parent-app-pending": {
+        "body": "За да се присъедините към <strong title='име на подпространството'>{{subspaceName}}</strong>, първо трябва да се присъедините към <strong title='име на пространството'>'{{spaceName}}'</strong> $t(common.space). Вече има изпращена заявка за <strong title='име на пространството'>'{{spaceName}}'</strong>, така че можете също да изпратите паралелна заявка за <strong title='име на подпространството'>'{{subspaceName}}'</strong>.",
+        "title": "Кандидатстването към родителя е в процес на обработка!"
+      },
+      "dialogApplicationSuccessful": {
+        "apply": {
+          "body": "Благодарим Ви, че кандидатствахте за нашата $t(common.community)!"
+        },
+        "join": {
+          "body": "Благодарим Ви, че се присъединихте към тази $t(common.community)!"
+        }
+      },
+      "extendedMessage": "{{join}} към нашето {{space}} и започнете да променяте нещата!",
+      "goToSpace": "Отиди към $t(common.space)",
+      "goToSubspace": "Отиди към $t(common.subspace)",
+      "join": "Присъедини се",
+      "joinSpaceFirst": {
+        "full": "За да станете $t(common.member) на този/тази $t(common.subspace), първо станете $t(common.member) на родителския $t(common.space)",
+        "short": "Моля, присъединете се първо към родителския $t(common.space)"
+      },
+      "joinSubspaceFirst": {
+        "full": "За да станете $t(common.member) на този/тази $t(common.subspace), първо станете $t(common.member) на родителския $t(common.subspace)",
+        "short": "Моля, присъединете се първо към родителския $t(common.subspace)"
+      },
+      "parent-pending": "Кандидатстването към родителя е в процес на обработка"
+    },
+    "card": {
+      "privacy": {
+        "private": "Частен/а {{entity}}"
+      }
+    },
+    "discussion": {
+      "delete-discussion": "Изтриване на дискусия?"
+    },
+    "file-upload": {
+      "file-size-error": "Размерът на файла надвишава лимита от {{limit}}MB",
+      "file-upload-error": "Възникна грешка при качването на файла",
+      "file-upload-success": "Файлът е качен успешно",
+      "uploadFile": "Качи файл"
+    },
+    "inAppNotifications": {
+      "filters": {
+        "all": "Всички",
+        "messagesAndReplies": "Съобщения и отговори",
+        "platform": "Известия за платформата",
+        "space": "Известия за $t(common.space)"
+      },
+      "type": {
+        "ORGANIZATION_ADMIN_MENTIONED": {
+          "description": "{{message}}",
+          "subject": "{{triggeredByName}} спомена Вашата $t(common.organization) в {{spaceName}}"
+        },
+        "ORGANIZATION_ADMIN_MESSAGE": {
+          "description": "Вижте съобщението в кутията си за имейли",
+          "subject": "{{triggeredByName}} изпрати съобщение до Вашата $t(common.organization) {{organizationName}}"
+        },
+        "ORGANIZATION_MESSAGE_SENDER": {
+          "description": "",
+          "subject": "Изпратихте съобщение до {{organizationName}}"
+        },
+        "PLATFORM_ADMIN_GLOBAL_ROLE_CHANGED": {
+          "description": "",
+          "subject": "{{triggeredByName}} присвои {{role}} на {{userName}}"
+        },
+        "PLATFORM_ADMIN_SPACE_CREATED": {
+          "description": "{{spaceName}}",
+          "subject": "{{triggeredByName}} създаде новo $t(common.space)"
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_CREATED": {
+          "description": "",
+          "subject": "{{triggeredByName}} се регистрира в платформата"
+        },
+        "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
+          "description": "",
+          "subject": "{{userName}} ({{userEmail}}) е премахнат от платформата"
+        },
+        "PLATFORM_ADMIN_USER_SIGNED_UP": {
+          "description": "",
+          "subject": "{{triggeredByName}} се регистрира в платформата"
+        },
+        "PLATFORM_FORUM_DISCUSSION_COMMENT": {
+          "description": "",
+          "subject": "{{triggeredByName}} коментира Вашата форум публикация в {{discussionName}}"
+        },
+        "PLATFORM_FORUM_DISCUSSION_CREATED": {
+          "description": "{{discussionName}}",
+          "subject": "{{triggeredByName}} започна нова дискусия във форума {{category}}"
+        },
+        "SPACE_ADMIN_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "description": "В <b>{{spaceName}}</b>, за което Вие сте $t(common.admin).",
+          "subject": "{{triggeredByName}} създаде принос в „{{calloutName}}“"
+        },
+        "SPACE_ADMIN_COMMUNITY_APPLICATION": {
+          "description": "Разгледайте заявката в $t(common.space) $t(common.settings)",
+          "subject": "{{triggeredByName}} кандидатства да се присъедини към {{spaceName}}"
+        },
+        "SPACE_ADMIN_COMMUNITY_NEW_MEMBER": {
+          "description": "{{memberName}} се присъедини към {{spaceName}}, за което Вие сте $t(common.admin).",
+          "subject": "\"{{memberName}}\" се присъедини към {{spaceName}}"
+        },
+        "SPACE_ADMIN_VIRTUAL_CONTRIBUTOR_COMMUNITY_INVITATION_DECLINED": {
+          "description": "",
+          "subject": "{{triggeredByName}} отхвърли вашата покана за {{contributorName}} да се присъедини към {{spaceName}}"
+        },
+        "SPACE_COLLABORATION_CALLOUT_COMMENT": {
+          "description": "",
+          "subject": "{{triggeredByName}} коментира върху {{calloutName}} в {{spaceName}}"
+        },
+        "SPACE_COLLABORATION_CALLOUT_CONTRIBUTION": {
+          "description": "В <b>{{spaceName}}</b>, за което Вие сте $t(common.member).",
+          "subject": "{{triggeredByName}} създаде принос в „{{calloutName}}“"
+        },
+        "SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT": {
+          "description": "",
+          "subject": "{{triggeredByName}} коментира върху {{contributionName}} (принос) в {{spaceName}}"
+        },
+        "SPACE_COLLABORATION_CALLOUT_PUBLISHED": {
+          "description": "{{triggeredByName}} публикува нов $t(common.post) в {{spaceLevel}}: {{spaceName}}, с име: {{calloutName}}.",
+          "subject": "{{spaceName}} – Нов $t(common.post) е публикуван „{{calloutName}}“, хвърлете един поглед!"
+        },
+        "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
+          "description": "{{triggeredByName}} modified a $t(common.poll) you voted on",
+          "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified"
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE": {
+          "description": "{{triggeredByName}} changed an option on a $t(common.poll) you voted on, and your vote was removed",
+          "subject": "Your vote on \"{{calloutName}}\" in {{spaceName}} was affected by a change"
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL": {
+          "description": "",
+          "subject": "{{triggeredByName}} voted on your $t(common.poll) \"{{calloutName}}\" in {{spaceName}}"
+        },
+        "SPACE_COLLABORATION_POLL_VOTE_CAST_ON_POLL_I_VOTED_ON": {
+          "description": "",
+          "subject": "{{triggeredByName}} also voted on \"{{calloutName}}\" in {{spaceName}}"
+        },
+        "SPACE_COMMUNICATION_UPDATE": {
+          "description": "",
+          "subject": "{{triggeredByName}} сподели актуализация в {{spaceName}}"
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_COMMENT": {
+          "description": "{{triggeredByName}} остави $t(common.comment) на {{eventTitle}} в календара на {{spaceName}}",
+          "subject": "Нов $t(common.comment) към {{type}}: {{eventTitle}}"
+        },
+        "SPACE_COMMUNITY_CALENDAR_EVENT_CREATED": {
+          "description": "{{triggeredByName}} насрочи ново {{type}} в календара на {{spaceName}}: {{eventTitle}}",
+          "subject": "Ново {{type}} е насрочено в {{spaceName}}"
+        },
+        "SPACE_LEAD_COMMUNICATION_MESSAGE": {
+          "description": "",
+          "subject": "Като $t(common.lead) на {{spaceName}}, получихте съобщение от {{triggeredByName}}"
+        },
+        "USER_COMMENT_REPLY": {
+          "description": "",
+          "subject": "{{triggeredByName}} отговори на Вашия $t(common.comment) {{parentName}}"
+        },
+        "USER_MENTIONED": {
+          "description": "",
+          "subject": "{{triggeredByName}} спомена Вас в $t(common.comment) върху {{calloutName}}:"
+        },
+        "USER_MESSAGE": {
+          "description": "",
+          "subject": "{{triggeredByName}} Ви изпрати лично съобщение"
+        },
+        "USER_MESSAGE_SENDER": {
+          "description": "",
+          "subject": "Изпратихте лично съобщение до {{receiverName}}"
+        },
+        "USER_SIGN_UP_WELCOME": {
+          "description": "Вече сте част от общност, която расте чрез сътрудничество! 🤝 Щракнете, за да разгледате ръководството за започване и започнете да участвате в $t(common.spaces), където всяка идея ни помага да напредваме. Имате въпроси? Изпратете имейл на support@alkem.io",
+          "subject": "Добре дошли в Alkemio! 🎉"
+        },
+        "USER_SPACE_COMMUNITY_APPLICATION_DECLINED": {
+          "description": "",
+          "subject": "{{triggeredByName}} отхвърли вашата заявка да се присъедините към {{spaceName}}"
+        },
+        "USER_SPACE_COMMUNITY_INVITATION": {
+          "description": "",
+          "subject": "{{triggeredByName}} Ви покани да се присъедините към {{spaceName}}"
+        },
+        "USER_SPACE_COMMUNITY_JOINED": {
+          "description": "Благодарим Ви, че се присъединихте към {{spaceName}}!<br /> Сега можете да започнете да допринасяте към различни $t(common.posts) и $t(common.whiteboards), да задълбочите знанията си по тази тема и да се свържете с други участници.",
+          "subject": "{{spaceName}} – Добре дошли в $t(common.community)!"
+        },
+        "VIRTUAL_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "description": "",
+          "subject": "{{triggeredByName}} has invited {{contributorName}} to {{spaceName}}, of which you're an $t(common.admin)"
+        },
+        "VIRTUAL_CONTRIBUTOR_ADMIN_SPACE_COMMUNITY_INVITATION": {
+          "description": "",
+          "subject": "{{triggeredByName}} е поканил {{contributorName}} към {{spaceName}}, за което Вие сте $t(common.admin)"
+        }
+      }
+    },
+    "profile": {
+      "fields": {
+        "bodyOfKnowledge": {
+          "privateBokTooltip": "Тази База знания е частна",
+          "spaceBokDescription": "Отговорите, които {{vcName}} дава, са базирани на базата знания, идваща от:",
+          "title": "База знания"
+        },
+        "engines": {
+          "external": "OpenAI Generic",
+          "externalAssistant": "OpenAI Assistant",
+          "externalVCDescription": "Този $t(common.virtualContributor) използва <strong>{{engineName}}</strong>, външен AI двигател. Като резултат, Базата знания не е достъпна."
+        },
+        "keywords": {
+          "title": "Ключови думи"
+        },
+        "references": {
+          "title": "Референции"
+        },
+        "skills": {
+          "title": "Умения"
+        }
+      }
+    },
+    "shareSettings": {
+      "description": "Based on the $t(common.settings) of the $t(common.space) that this {{elementName}} is in, you can edit with multiple users at once. If you do not want others to edit, change the $t(common.settings) below.",
+      "editableBy": {
+        "options": {
+          "ADMINS": "Притежателят и $t(common.admins) и $t(common.leads) на този/тази $t(common.spaceSubspace)",
+          "CONTRIBUTORS": "Всички, които могат да допринасят в този/тази $t(common.spaceSubspace)",
+          "OWNER": "Притежателят на този/тази {{elementName}}"
+        },
+        "title": "Този/тази {{elementName}} може да бъде редактиран от:"
+      },
+      "guestAccessWarning": "Забележка: Ако направите този $t(common.whiteboard) публичен, всеки в $t(common.space) ще може да редактира $t(common.whiteboard).",
+      "ownedBy": {
+        "title": "Този/тази {{elementName}} е притежаван от:"
+      }
+    },
+    "urlResolver": {
+      "redirectDialog": {
+        "cancelCountdown": "[Кликнете, за да отмените]",
+        "countdown": "Пренасочване след {{seconds}} секунди...",
+        "goNow": "Отидете сега",
+        "message": "It looks like you don’t have permission to view this item, or it may have been moved or deleted.<br/> We’re taking you to the nearest available page.",
+        "title": "Пренасочваме ви..."
+      }
+    },
+    "visual-upload": {
+      "entityCreatedErrorUploading": "{{entity}} е създаден, но възникна грешка при качването на някои изображения. Моля, опитайте отново."
+    },
+    "wysiwyg-editor": {
+      "toolbar": {
+        "blocktype": {},
+        "embed": {},
+        "emoji": {},
+        "history": {},
+        "horizontal": {},
+        "image": {},
+        "inline": {},
+        "link": {},
+        "list": {},
+        "remove": {},
+        "table": {}
+      },
+      "validation": {
+        "maxLength": "This text exceeds the length limits for this field."
+      }
+    }
+  },
   "delete": "Изтрий",
   "edit": "Редактирай",
-  "close": "Затвори",
-  "loading": "Зареждане",
   "error": "Грешка",
-  "noResults": "Няма намерени резултати",
-  "private": "Частно",
-  "public": "Публично",
-  "member": "Член",
-  "virtualContributor": "Virtual Contributor",
-  "visibility": {
-    "demo": "Демо",
-    "inactive": "Неактивно",
-    "archived": "Архивирано"
-  },
-  "lead": "Лидер",
-  "leads": "Лидери",
-  "loadMore": "Зареди още",
-  "pinned": "Закрепено",
-  "leadType": {
-    "person": "Лице",
-    "org": "Организация"
-  },
-  "tags": {
-    "moreAria": "Покажи още {{count}}"
-  },
   "filters": {
-    "summary": "Резултати за {{criteria}}",
     "and": "и",
     "clear": "Изчисти филтрите",
-    "filterByTag": "Филтриране по таг"
+    "filterByTag": "Филтриране по таг",
+    "filterByTagActive_one": "Филтриране по таг, {{count}} избран",
+    "filterByTagActive_other": "Филтриране по таг, {{count}} избрани",
+    "summary": "Резултати за {{criteria}}"
+  },
+  "forms": {
+    "validations": {
+      "alphaNumeric": "{{field}} може да съдържа само малки латински букви, цифри и тирета",
+      "field": "Поле",
+      "fieldNotPresent": "{{fieldName}} не е налично",
+      "invalidEmail": "Невалиден имейл адрес",
+      "invalidUrl": "Невалиден URL",
+      "maxLength": "Надвишихте лимита от {{max}} символа",
+      "minLength": "{{field}} трябва да съдържа поне {{min}} символа",
+      "nonBlank": "{{field}} не може да се състои само от интервали",
+      "required": "Това поле е задължително!",
+      "reservedTopLevelRoute": "Този URL е запазен за платформата. Моля, изберете друг."
+    }
+  },
+  "fullscreen": "Превключи на цял екран",
+  "innovationHub": {
+    "outsideOfSpace": {
+      "forum": "Това е общият форум на Alkemio, извън <strong>{{space}}</strong> $t(common.space). Поканени сте да изследвате и да допринесете!"
+    }
+  },
+  "kratos": {
+    "errors": {
+      "401": "Неуточнен потребител",
+      "session": {
+        "default": "Сесията не може да бъде заредена!"
+      }
+    },
+    "fields": {
+      "E-Mail": "Имейл",
+      "Email": "$t(kratos.fields.E-Mail)",
+      "First Name": "Собствено име",
+      "HidePassword": "Скрий паролата",
+      "ID": "Идентификатор",
+      "Last Name": "Фамилия",
+      "Password": "Парола",
+      "Resend code": "Изпрати кода отново",
+      "Save": "Запази",
+      "ShowPassword": "Покажи паролата",
+      "Sign in": "Вход",
+      "Sign in with password": "Вход",
+      "Sign up": "Напред",
+      "Submit": "Изпрати",
+      "Verify code": "Потвърдете кода"
+    },
+    "messages": {
+      "account-disabled": "This account is disabled.",
+      "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
+      "invalid-credentials": "Въведеният имейл адрес или парола е невалиден. Моля, проверете вашите идентификационни данни и опитайте отново. Искате ли вместо това да се регистрирате? Можете да го направите, като кликнете върху връзката по-горе.",
+      "login-flow-account-exists": "Този имейл вече е свързан с $t(common.account). Ако преди това сте се регистрирали през LinkedIn, GitHub или Microsoft, моля използвайте този метод за вход. В противен случай, нулирайте паролата си.",
+      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "pick-password": "Изберете парола за вашия $t(common.account)",
+      "property-missing": "{{field}} is required.",
+      "recovery-flow-expired": "Този линк за нулиране на парола е изтекъл. Моля, поискайте нов, като въведете отново вашия имейл адрес.",
+      "request-recover-password": "<strong>Имейл, съдържащ връзка за възстановяване, беше изпратен до посочения от вас имейл адрес.</strong><br /> <br/>Ако не сте получили имейл, моля проверете следното:<br /> <br/><li> <strong>Проверете правописа</strong> на имейл адреса.</li><li> <strong>Уверете се, че използвате имейл адреса</strong>, с който сте се регистрирали.</li><li> <strong>Проверете папката със спам или нежелана поща</strong>, в случай че имейла е филтриран.</li><li> <strong>Aко сте се регистрирали чрез LinkedIn, Microsoft или друга социална мрежа,</strong> възстановяването на парола чрез имейл няма да работи. Моля, използвайте съответната опция за вход през социална мрежа.</li><br/><br/><i>Забележка: Това не потвърждава, че $t(common.account) е регистриран с този имейл.</i>",
+      "successfully-recovered-password": "Моля, въведете нова парола в рамките на следващите 15 минути, за да завършите нулирането на паролата си.",
+      "verification-flow-continue": "Продължете",
+      "verification-flow-expired": "Връзката за потвърждение е изтекла. Моля, поискайте нова, като въведете отново вашия имейл адрес."
+    }
+  },
+  "languages": {
+    "bg": "Български",
+    "de": "Deutsch",
+    "en": "English",
+    "es": "Español",
+    "fr": "Français",
+    "inContextTool": "Контекстно превеждане",
+    "nl": "Nederlands",
+    "pt": "Português (Brasil)",
+    "ua": "Українська"
+  },
+  "lead": "Лидер",
+  "leadType": {
+    "org": "Организация",
+    "person": "Лице"
+  },
+  "leads": "Лидери",
+  "loadMore": "Зареди още",
+  "loading": "Зареждане",
+  "member": "Член",
+  "messaging": {
+    "message": "Съобщение",
+    "successfully-sent": "Съобщението е изпратено успешно"
+  },
+  "ok": "OK",
+  "pages": {
+    "admin": {
+      "generic": {
+        "sections": {
+          "account": {
+            "licenseUpdated": "Лицензът е актуализиран успешно"
+          }
+        }
+      },
+      "innovation-packs": {
+        "notifications": {
+          "pack-created": "$t(common.innovationPack) е създаден успешно.",
+          "pack-error": "Възникна грешка при създаването на $t(common.innovationPack)."
+        }
+      },
+      "innovationHub": {
+        "notifications": {
+          "hubRemoved": "$t(common.innovation-hub) е премахнат успешно."
+        }
+      },
+      "innovationPack": {
+        "notifications": {
+          "packRemoved": "$t(common.innovationPack) е премахнат успешно."
+        }
+      },
+      "organization": {
+        "notifications": {
+          "organization-removed": "$t(common.Organization) е премахната успешно."
+        }
+      },
+      "space": {
+        "notifications": {
+          "space-removed": "$t(common.space) е премахнат успешно."
+        }
+      },
+      "spaceConversion": {
+        "accountOwner": "Account Owner",
+        "autoInvite": {
+          "label": "Send invitations to community members who are already in the destination space",
+          "messagePlaceholder": "Your space has been moved. You are invited to rejoin the community.",
+          "tooltip": "After the move, all community roles are cleared. This option sends an invitation to members who already belong to the destination space, so they can rejoin the moved subspace without having to find it themselves."
+        },
+        "communityMembers": "Community Members",
+        "communityMembersSummary": "{{members}} members, {{leads}} leads, {{orgs}} orgs, {{vcs}} VCs",
+        "demote": "Demote",
+        "demoteL1ToL2": {
+          "button": "Demote to Sub-subspace (L1 → L2)",
+          "confirmTitle": "Demote Subspace to Sub-subspace?",
+          "confirmWarning": "This will demote the subspace under the selected parent. All community members (users, organizations, and virtual contributors) will be REMOVED. Admin roles will be reset. This action cannot be easily undone.",
+          "hint": "All community members, leads, organizations, and virtual contributors will be removed. Only user admins are preserved. This is the most destructive conversion.",
+          "noTargets": "No other subspaces exist in this space to serve as a parent.",
+          "targetLabel": "Move under subspace"
+        },
+        "errorMessage": "Failed to convert space.",
+        "move": "Move",
+        "moveError": "Failed to move space.",
+        "moveL1ToL0": {
+          "button": "Move Space (L1 → L1 cross-Space)",
+          "confirmTitle": "Move Subspace to another Space?",
+          "confirmWarning": "This will move the subspace and all its content to the target Space. All community roles will be cleared. Innovation flow states may be remapped. Existing URLs will no longer work. This action cannot be easily undone.",
+          "hint": "Move this subspace to a different Space. It will remain at Level 1. All community members, leads, admins, organizations, and virtual contributors will be removed. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
+          "targetLabel": "Target Space"
+        },
+        "moveL1ToL2": {
+          "button": "Move & Demote (L1 → L2 cross-Space)",
+          "confirmTitle": "Move and demote Subspace?",
+          "confirmWarning": "This will move the subspace under the selected subspace in another Space and demote it to Level 2. ALL community roles will be cleared, including admins. Existing URLs will no longer work. This action cannot be easily undone.",
+          "disabledHasChildren": "Cannot demote to L2: this subspace has L2 sub-subspaces (would exceed max depth).",
+          "hint": "Move this subspace under a subspace in a different Space. It will be demoted to Level 2. ALL community roles will be cleared, including admins. Existing URLs will no longer be valid. Community members can be reinvited after the move if chosen below.",
+          "noL0Targets": "No other Spaces available.",
+          "noL1Targets": "No subspaces available in the selected Space.",
+          "targetL0Label": "Target Space",
+          "targetL1Label": "Target Subspace"
+        },
+        "moveSuccess": "Space moved successfully.",
+        "moveType": {
+          "toL0": "Move to Space (stays L1)",
+          "toL2": "Move under Subspace (becomes L2)"
+        },
+        "noConversions": "L0 (top-level) spaces cannot be converted to a different hierarchy level.",
+        "promote": "Promote",
+        "promoteL1ToL0": {
+          "button": "Promote to Space (L1 → L0)",
+          "confirmTitle": "Promote Subspace to Space?",
+          "confirmWarning": "This will promote the subspace to a top-level space. The innovation flow will be reset to defaults. Admin roles will be reset.",
+          "hint": "Community members and leads are preserved. Innovation flow will be reset to platform defaults. Child sub-subspaces are automatically promoted to subspaces."
+        },
+        "promoteL2ToL1": {
+          "button": "Promote to Subspace (L2 → L1)",
+          "confirmTitle": "Promote Sub-subspace to Subspace?",
+          "confirmWarning": "This will promote the sub-subspace to a subspace. Admin roles will be reset.",
+          "hint": "Lightweight conversion. All community members and leads are preserved. Admin roles will be reset."
+        },
+        "sectionDescription": "Change the hierarchy level of a space. Resolve a space URL to see available operations.",
+        "sectionTitle": "Space Hierarchy Conversion",
+        "spaceLevel": "Level",
+        "spaceName": "Name",
+        "successMessage": "Space conversion completed successfully.",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
+        "urlNotFound": "URL not found.",
+        "urlNotSpace": "URL does not resolve to a space.",
+        "urlPlaceholder": "Paste space URL or path",
+        "urlRequired": "URL is required"
+      },
+      "transferCallout": {
+        "urlNotCallout": "URL does not resolve to a $t(common.post)",
+        "urlNotFound": "URL not found",
+        "urlNotSpace": "URL does not resolve to a space"
+      },
+      "transferHub": {
+        "confirmTitle": "Transfer $t(common.customHomepage)?",
+        "confirmWarning": "This will transfer the $t(common.customHomepage) to the selected account. Ensure the target account has the necessary privileges.",
+        "currentAccount": "Current Account",
+        "errorMessage": "Failed to transfer $t(common.customHomepage).",
+        "hubName": "Name",
+        "sectionDescription": "Move a $t(common.customHomepage) to a different account. Only the ownership changes — content remains unchanged.",
+        "sectionTitle": "Transfer $t(common.customHomepage)",
+        "successMessage": "$t(common.customHomepage) transferred successfully.",
+        "targetAccountLabel": "Select target account",
+        "transferButton": "Transfer $t(common.customHomepage)",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
+        "urlNotFound": "URL not found.",
+        "urlNotHub": "URL does not resolve to a $t(common.customHomepage).",
+        "urlPlaceholder": "Paste $t(common.customHomepage) URL or path",
+        "urlRequired": "URL is required"
+      },
+      "transferPack": {
+        "confirmTitle": "Transfer $t(common.innovationPack)?",
+        "confirmWarning": "This will transfer the $t(common.innovationPack) to the selected account. Ensure the target account has the necessary privileges.",
+        "currentAccount": "Current Account",
+        "errorMessage": "Failed to transfer $t(common.innovationPack).",
+        "packName": "Name",
+        "sectionDescription": "Move a $t(common.innovationPack) to a different account. Only the ownership changes — templates remain unchanged.",
+        "sectionTitle": "Transfer $t(common.innovationPack)",
+        "successMessage": "$t(common.innovationPack) transferred successfully.",
+        "targetAccountLabel": "Select target account",
+        "transferButton": "Transfer $t(common.innovationPack)",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
+        "urlNotFound": "URL not found.",
+        "urlNotPack": "URL does not resolve to a $t(common.innovationPack).",
+        "urlPlaceholder": "Paste $t(common.innovationPack) URL or path",
+        "urlRequired": "URL is required"
+      },
+      "transferSpace": {
+        "notL0Space": "Only L0 (top-level) spaces can be transferred",
+        "urlNotFound": "URL not found",
+        "urlNotSpace": "URL does not resolve to a space",
+        "urlNotUserOrOrg": "URL does not resolve to a user or organization"
+      },
+      "transferVc": {
+        "confirmButton": "Transfer",
+        "confirmTitle": "Transfer Virtual Contributor?",
+        "confirmWarning": "This will transfer the virtual contributor to the selected account. Ensure the target account has the necessary privileges.",
+        "currentAccount": "Current Account",
+        "errorMessage": "Failed to transfer virtual contributor.",
+        "sectionDescription": "Move a virtual contributor to a different account. Only the ownership changes — configuration remains unchanged.",
+        "sectionTitle": "Transfer Virtual Contributor",
+        "successMessage": "Virtual contributor transferred successfully.",
+        "targetAccountLabel": "Select target account",
+        "transferButton": "Transfer Virtual Contributor",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
+        "urlNotFound": "URL not found.",
+        "urlNotVc": "URL does not resolve to a virtual contributor.",
+        "urlPlaceholder": "Paste virtual contributor URL or path",
+        "urlRequired": "URL is required",
+        "vcName": "Name"
+      },
+      "users": {
+        "emailChange": {
+          "drift": {
+            "resolveSuccess": "The account was reconciled. Its login email is now {{email}}."
+          },
+          "errors": {
+            "alkemioWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "conflict": "This email address is already in use.",
+            "driftDetected": "The change was only partially applied. Use the Resolve action to reconcile this account.",
+            "driftNotFound": "There is no outstanding drift to resolve for this user.",
+            "driftResolutionFailed": "The account could not be reconciled. Please try again.",
+            "generic": "The change could not be completed. Please try again.",
+            "kratosUnreachable": "The identity service is currently unavailable. Please try again shortly.",
+            "kratosWriteFailed": "The change could not be completed. No changes were made — you can try again.",
+            "noChange": "The new email is the same as the current login email.",
+            "subjectNotFound": "This user has no login identity that can be changed.",
+            "unauthorized": "You do not have permission to perform this action.",
+            "validation": "Enter a valid email address."
+          },
+          "history": {
+            "unknownInitiator": "—"
+          },
+          "outcomes": {
+            "committed": "Committed",
+            "driftDetected": "Drift detected",
+            "driftResolutionFailed": "Drift resolution failed",
+            "driftResolved": "Drift resolved",
+            "globalAdminNotificationFailed": "Committed — admin notification not sent",
+            "newAddressNotificationFailed": "Committed — new-address notification not sent",
+            "rejectedConflict": "Rejected — address in use",
+            "rejectedValidation": "Rejected — invalid address",
+            "rolledBack": "Rolled back",
+            "securitySignalFailed": "Committed — security signal not sent",
+            "sessionInvalidationFailed": "Committed — sessions not ended",
+            "spaceAdminNotificationFailed": "Committed — space admin notification not sent",
+            "unknown": "Unknown outcome"
+          },
+          "success": "Login email changed to {{email}}. The user has been notified by email."
+        },
+        "notifications": {
+          "user-removed": "Потребителят е премахнат успешно."
+        }
+      },
+      "vcConversion": {
+        "alreadyConverted": "This virtual contributor is already knowledge-base-based. No conversion needed.",
+        "calloutCount": "Callouts to Migrate",
+        "confirmTitle": "Convert Virtual Contributor?",
+        "confirmWarning": "This will convert the virtual contributor from space-based to knowledge-base-based. Callouts will be MOVED from the source space (not copied). This action cannot be undone.",
+        "convertButton": "Convert to Knowledge Base",
+        "errorMessage": "Failed to convert virtual contributor.",
+        "sectionDescription": "Convert a space-based virtual contributor to use a knowledge base. Callouts will be moved from the source space — not copied.",
+        "sectionTitle": "Virtual Contributor Type Conversion",
+        "sourceSpace": "Source Space",
+        "successMessage": "Virtual contributor conversion completed successfully.",
+        "urlForbidden": "Access denied. You don't have permission to view this resource.",
+        "urlNotFound": "URL not found.",
+        "urlNotVc": "URL does not resolve to a virtual contributor.",
+        "urlPlaceholder": "Paste virtual contributor URL or path",
+        "urlRequired": "URL is required",
+        "vcName": "Name",
+        "vcType": "Knowledge Type"
+      }
+    },
+    "documentation": {
+      "title": "Документация"
+    },
+    "exploreSpaces": {
+      "fullName": "Разглеждайте $t(common.spaces)"
+    },
+    "forum": {
+      "fullName": "Alkemio $t(common.forum)"
+    },
+    "home": {
+      "sections": {
+        "startingSpace": {
+          "url": "https://welcome.alkem.io/want-to-own-space/"
+        }
+      }
+    },
+    "innovationLibrary": {
+      "fullName": "$t(common.templateLibrary)"
+    },
+    "logout": {
+      "loading": "Излизане..."
+    },
+    "recovery": {
+      "cooldown": {
+        "button": "{{label}} in {{seconds}}s"
+      },
+      "header": "Възстановяване на парола"
+    },
+    "settings": {
+      "header": "Потребителски $t(common.settings)"
+    },
+    "titles": {
+      "alkemio": "Alkemio",
+      "documentation": "Documentation",
+      "forum": "Forum",
+      "separator": " | ",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "spaces": "Spaces",
+      "templateLibrary": "Template Library"
+    },
+    "user-profile": {
+      "communities": {
+        "noMembership": "Все още не сте $t(common.member) на нито едно $t(common.space) или $t(common.subspace)."
+      },
+      "loading": "Loading user profile..."
+    },
+    "verification": {
+      "header": "Потвърждение на имейл",
+      "resendEmail": "Resend verification email"
+    },
+    "verification-required": {
+      "header": "Потвърждението на имейла ви е в процес."
+    },
+    "virtualContributorProfile": {
+      "bokIngestStarted": "Поглъщането на тялото на знанията започна. Може да отнеме няколко минути, за да привърши."
+    },
+    "whiteboard": {
+      "delete": {
+        "confirmationText": "Сигурни ли сте, че искате да изтриете този $t(common.whiteboard)? Действието е необратимо.",
+        "confirmationTitle": "Изтриване на $t(common.whiteboard)"
+      },
+      "last-saved": "Автоматично запазване на последните промени: {{datetime}}",
+      "loadingScene": "Зареждане на сцената",
+      "preview": {
+        "errorGeneratingPreview": "Грешка при генериране на преглед за тази $t(common.whiteboard)."
+      },
+      "previewSettings": {
+        "errorGeneratingPreview": "Грешка при генериране на преглед за тази $t(common.whiteboard).",
+        "modes": {
+          "AUTO": {
+            "description": "Автоматично ще генерираме най-добрата визуализация от съдържанието на вашия $t(common.whiteboard).",
+            "title": "Автоматичен преглед"
+          },
+          "CUSTOM": {
+            "description": "Изберете точно коя част от вашия $t(common.whiteboard) да се показва като визуализация.",
+            "title": "Ръчен избор"
+          },
+          "FIXED": {
+            "description": "Направете екранна снимка на вашия $t(common.whiteboard), за да я използвате като визуализация. Тази екранна снимка няма да се актуализира, докато обновявате $t(common.whiteboard).",
+            "title": "Фиксиран избор"
+          }
+        }
+      },
+      "unsuccessful-save": "<p><strong>{{warningMessage}} Неуспешно запазване на промените. Последно запазване: {{datetime}}.</strong></p> <p>Ако проблемът продължава, моля свържете се с екипа. За да избегнете загуба на прогрес, кликнете менюто в горния ляв ъгъл, за да запазите вашия $t(common.whiteboard) на локален диск.</p>",
+      "whiteboardDisconnected": {
+        "lastSaved": "Съдържанието на този $t(common.whiteboard) е запазено за последно {{lastSaved}}.",
+        "message": "Съжаляваме за неудобството! $t(common.whiteboard) не е достъпен за редактиране в момента, вероятно поради проблем с мрежата или загуба на достъп. Моля, опитайте да затворите и отново отворите $t(common.whiteboard) или да презаредите страницата. Ако проблемът продължава, свържете се с вашия $t(common.space) $t(common.admin) за помощ.",
+        "offline": "В момента сте офлайн. $t(common.whiteboard) ще се опита да се свърже отново, когато отново сте онлайн.",
+        "title": "$t(common.Whiteboards) връзката е прекъсната"
+      }
+    }
+  },
+  "pinned": "Закрепено",
+  "private": "Частно",
+  "public": "Публично",
+  "references": {
+    "addRow": "Добави нова препратка",
+    "attachFile": "Прикачи файл",
+    "descriptionLabel": "Описание",
+    "descriptionPlaceholder": "По избор описание",
+    "empty": "Все още няма препратки.",
+    "heading": "Препратки",
+    "nameLabel": "Заглавие",
+    "namePlaceholder": "Заглавие на препратката",
+    "removeConfirm": {
+      "confirm": "Премахни",
+      "description": "„{{name}}“ ще бъде премахната при запазване. Това действие не може да бъде отменено.",
+      "title": "Премахване на тази препратка?",
+      "unnamed": "тази препратка"
+    },
+    "removeRow": "Премахни препратката",
+    "uriLabel": "URL",
+    "uriPlaceholder": "https://"
+  },
+  "send-message-dialog": {
+    "community-message-title": "Изпрати съобщение до {{contact}}"
   },
   "share": {
-    "title": "Споделяне",
-    "button": "Споделяне",
-    "url": "URL за споделяне",
-    "copy": "Копиране на линка",
-    "copied": "Копирано",
-    "shareOnAlkemio": "Споделяне в Alkemio",
-    "back": "Назад",
     "alkemio": {
-      "description": "Изпратете линк към този {{entity}} като лично съобщение до други потребители на Alkemio.",
       "defaultMessage": "Мисля, че този {{entity}} ще ви бъде интересен: {{url}}",
-      "searchPlaceholder": "Търсене на потребители по име или имейл",
-      "searchAriaLabel": "Търсене на потребители",
-      "searching": "Търсене…",
-      "noResults": "Не са намерени потребители",
-      "removeUser": "Премахване на {{name}}",
-      "messageLabel": "Съобщение",
-      "warning": "Получателите ще видят вашето име като подател.",
-      "send": "Изпращане",
-      "sent": "Съобщението е изпратено успешно.",
+      "description": "Изпратете линк към този {{entity}} като лично съобщение до други потребители на Alkemio.",
       "errors": {
         "atLeastOneUser": "Изберете поне един потребител.",
         "messageRequired": "Съобщението не може да бъде празно.",
         "messageTooLong": "Съобщението трябва да съдържа най-много {{max}} знака.",
         "sendFailed": "Неуспешно изпращане на съобщението. Моля, опитайте отново."
+      },
+      "messageLabel": "Съобщение",
+      "noResults": "Не са намерени потребители",
+      "notice": "Всеки получател го получава като лично съобщение в своя чат.",
+      "removeUser": "Премахване на {{name}}",
+      "searchAriaLabel": "Търсене на потребители",
+      "searchPlaceholder": "Търсене на потребители по име или имейл",
+      "searching": "Търсене…",
+      "send": "Изпращане"
+    },
+    "back": "Назад",
+    "button": "Споделяне",
+    "copied": "Копирано",
+    "copy": "Копиране на линка",
+    "shareOnAlkemio": "Споделяне в Alkemio",
+    "title": "Споделяне",
+    "url": "URL за споделяне"
+  },
+  "share-dialog": {
+    "guest-access": {
+      "copy-url": "Копирай линка за гости",
+      "errors": {
+        "UNKNOWN": "Не успяхме да актуализираме достъпа за гости. Моля, опитайте отново."
+      },
+      "label": "Достъп за гости",
+      "toggle-description": "Позволи на всеки, който има гост линка, да преглежда и допринася в този $t(common.whiteboard).",
+      "toggle-label": "Разреши достъп за гости",
+      "url-label": "URL за достъп за гости"
+    },
+    "platforms": {
+      "clipboard": {
+        "copied": "Копирано!"
       }
+    },
+    "warning": "Моля, имайте предвид, че вашият личен имейл ще бъде видим за потребителя, когато му изпратите съобщение."
+  },
+  "space": "Пространство",
+  "spaces": "Пространства",
+  "subspace": "Подпространство",
+  "tags": {
+    "moreAria": "Покажи още {{count}}"
+  },
+  "templateLibrary": {
+    "whiteboardTemplates": {
+      "errorImporting": "Грешка при импортиране на $t(common.enums.templateType.WHITEBOARD)"
     }
   },
-  "references": {
-    "heading": "Препратки",
-    "empty": "Все още няма препратки.",
-    "nameLabel": "Заглавие",
-    "namePlaceholder": "Заглавие на препратката",
-    "uriLabel": "URL",
-    "uriPlaceholder": "https://",
-    "descriptionLabel": "Описание",
-    "descriptionPlaceholder": "По избор описание",
-    "addRow": "Добави нова препратка",
-    "removeRow": "Премахни препратката",
-    "attachFile": "Прикачи файл",
-    "removeConfirm": {
-      "title": "Премахване на тази препратка?",
-      "description": "„{{name}}“ ще бъде премахната при запазване. Това действие не може да бъде отменено.",
-      "confirm": "Премахни",
-      "unnamed": "тази препратка"
-    }
+  "virtualContributor": "Virtual Contributor",
+  "virtualContributorSpaceSettings": {
+    "placeholder": "Този $t(common.virtualContributor) се базира на собствена подбрана $t(common.collection) от документи, текстове и връзки."
+  },
+  "visibility": {
+    "archived": "Архивирано",
+    "demo": "Демо",
+    "inactive": "Неактивно"
   }
 }

@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { useUpdateMemoDisplayNameMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import FullscreenButton from '@/core/ui/button/FullscreenButton';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
-import { useScreenSize } from '@/core/ui/grid/constants';
+import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -18,6 +17,7 @@ import { MemoEditorShell } from '@/crd/components/memo/MemoEditorShell';
 import { CollaborativeMarkdownEditor } from '@/crd/forms/markdown/CollaborativeMarkdownEditor';
 import type { CollabProviderLike, YDocLike } from '@/crd/forms/markdown/collabProviderTypes';
 import { htmlToMarkdown } from '@/crd/forms/markdown/markdownConverter';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -38,6 +38,7 @@ type CrdMemoDialogProps = {
 
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
+  const { t: tCommon } = useTranslation('crd-common');
   useRegisterFullscreenEditor(open);
   const client = useApolloClient();
   const { memo, loading } = useMemoManager({ id: memoId });
@@ -61,10 +62,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const markdownIntegration = useMarkdownEditorIntegration({ storageBucketId: memo?.profile.storageBucket.id });
 
   // Fullscreen + share parity with the legacy MUI MemoDialog (which exposed both
-  // in its header). `FullscreenButton` reads/toggles fullscreen via `useFullscreen`
-  // internally; the shell switches to `inset-0` when `fullscreen` is set.
+  // in its header). `CrdFullscreenButton` reads/toggles fullscreen via the DOM
+  // Fullscreen API internally; the shell switches to `inset-0` when `fullscreen` is set.
   const { fullscreen } = useFullscreen();
-  const { isSmallScreen } = useScreenSize();
+  const isSmallScreen = useMediaQuery('(max-width: 599.95px)');
   const isFullscreen = fullscreen || isSmallScreen;
 
   const handleEditorReady = (editor: Editor) => {
@@ -190,7 +191,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       <ShareButton url={memo?.profile.url} disabled={!memo?.profile.url}>
         {hasUpdatePrivileges && <CrdCollaborationSettings element={memo} elementType="memo" />}
       </ShareButton>
-      {!isSmallScreen && <FullscreenButton />}
+      {!isSmallScreen && <CrdFullscreenButton label={tCommon('fullscreen')} />}
     </>
   );
 

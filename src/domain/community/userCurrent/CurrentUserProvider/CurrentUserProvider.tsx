@@ -1,7 +1,7 @@
 import { createContext, type PropsWithChildren } from 'react';
 import { useCurrentUserLightQuery, usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { ErrorPage } from '@/core/pages/Errors/ErrorPage';
+import { CrdTopLevelErrorPage } from '@/main/crdPages/error/CrdTopLevelErrorPage';
 import type { CurrentUserModel } from '../model/CurrentUserModel';
 import { toPlatformPrivilegeWrapper } from './usePlatformPrivilegeWrapper';
 
@@ -9,7 +9,6 @@ const CurrentUserContext = createContext<CurrentUserModel>({
   platformPrivilegeWrapper: undefined,
   userModel: undefined,
   accountId: undefined,
-  designVersion: undefined,
   loading: true,
   loadingMe: true, // Loading Authentication and Profile data. Once it's false that's enough for showing the page header and avatar.
   verified: false,
@@ -49,15 +48,10 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   const accountPrivileges = user?.account?.authorization?.myPrivileges ?? [];
   const accountEntitlements = user?.account?.license?.availableEntitlements ?? [];
 
-  const rawDesignVersion = user?.settings?.designVersion;
-  const designVersion: 1 | 2 | undefined =
-    rawDesignVersion === 1 || rawDesignVersion === 2 ? rawDesignVersion : undefined;
-
   const providedValue = {
     platformPrivilegeWrapper,
     userModel: user,
     accountId,
-    designVersion,
     loading,
     loadingMe: loadingAuthentication || loadingMe,
     verified,
@@ -68,7 +62,7 @@ const CurrentUserProvider = ({ children }: PropsWithChildren) => {
   };
 
   return userProviderError ? (
-    <ErrorPage error={userProviderError} />
+    <CrdTopLevelErrorPage error={userProviderError} />
   ) : (
     <CurrentUserContext value={providedValue}>{children}</CurrentUserContext>
   );

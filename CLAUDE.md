@@ -10,7 +10,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
+Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`) — the **sole** design system. **CRD is the only runtime path** — every route renders its CRD page. **MUI and Emotion have been fully removed** (epic #1888, story #9885): the `@mui/*` and `@emotion/*` packages are uninstalled, no source file imports them, the legacy `src/core/ui/` MUI design system is deleted, and the `designVersion` toggle is gone. Global styles live in `src/index.css`. Apollo Client is the GraphQL data layer.
+
+> **Hard rule — never reintroduce MUI/Emotion.** Do not add `@mui/*` or `@emotion/*` (or `material-ui`) imports or dependencies anywhere. They are removed; CRD (`src/crd/`) is the only design system. New client-facing features are built in `src/crd/` with their integration glue in `src/main/crdPages/`.
+
+The completed MUI removal is recorded in `specs/111-remove-mui-library/mui-footprint-baseline.md` and `specs/111-remove-mui-library/mui-removal-inventory.md`.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
 - Requires Node ≥24.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
@@ -82,9 +86,9 @@ pnpm serve:dev
   - `ui/`: App-specific layouts (footer, navigation, `CrdLayoutWrapper`)
   - `constants/`: Environment helpers and constants
 
-- **`src/main/crdPages`**: Page-level integration for CRD-migrated pages
+- **`src/main/crdPages`**: Page-level integration for CRD pages
   - Contains page components, data mappers, hooks, and GraphQL queries for pages using the CRD design system
-  - Imports from `@/crd/`, `@/domain/`, `@/core/` — **MUST NOT import from `@mui/*` or `@emotion/*`**
+  - Imports from `@/crd/`, `@/domain/`, `@/core/` — never `@mui/*` or `@emotion/*` (removed)
   - Organized as `topLevelPages/<pageName>/` mirroring `src/main/topLevelPages/` structure
   - The "glue" layer: wires CRD presentational components to business logic and data
 
@@ -170,12 +174,12 @@ If there is genuinely no schema field to discriminate on and `__typename` is the
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- **New strings go to CRD** — every new user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
-- **Core is frozen for new keys** — `src/core/i18n/en/translation.en.json` is FROZEN for new keys; it and its sibling locale files serve only the not-yet-migrated MUI app. **Crowdin is no longer used.** Legacy core translations are now maintained directly in-repo: for upkeep of existing keys, edit `translation.en.json` **and** the non-English `translation.<lang>.json` files in the same PR (preserving key parity). New strings still go to CRD, never here.
+- **All strings live in CRD** — every user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
+- **The legacy core `translation` namespace was removed** (story #9885) — `src/core/i18n/<lang>/translation.<lang>.json` no longer exists. The default namespace is now **`crd-common`** (`src/crd/i18n/common/`), so a `useTranslation()` call with no namespace argument resolves against `crd-common`. **Crowdin is no longer used.** Never reintroduce a `translation` namespace or a `src/core/i18n` locale file.
 
 ### Namespaces
 
-- **`translation`** (default): Main app strings in `src/core/i18n/en/translation.en.json`. Used by all components outside `src/crd/`.
+- **`crd-common`** (default): The default namespace, in `src/crd/i18n/common/`. Eagerly loaded for English. Resolved by every `useTranslation()` call that omits a namespace argument (and the `{ ns: 'crd-common' }` form). Replaced the removed legacy `translation` namespace in story #9885.
 - **`crd-layout`**: Layout UI strings (header/footer) in `src/crd/i18n/layout/`. Eagerly loaded for English. Used by `src/crd/layouts/` via `useTranslation('crd-layout')`.
 - **`crd-exploreSpaces`**: Space explorer UI strings in `src/crd/i18n/exploreSpaces/`. Lazy-loaded on demand. Used by `src/crd/components/space/` via `useTranslation('crd-exploreSpaces')`.
 - **`crd-<feature>`**: Future feature namespaces follow the same pattern: `src/crd/i18n/<feature>/<feature>.<lang>.json`, lazy-loaded, used via `useTranslation('crd-<feature>')`.
@@ -224,7 +228,7 @@ For more details, see `specs/023-react-compiler-adoption/react-compiler.md`.
 
 - Takes ~20s, outputs to `build/`
 - Warns about large chunks (known, non-blocking)
-- Generates extensive code splitting for vendor libraries (Apollo, MUI, Tiptap, etc.)
+- Generates extensive code splitting for vendor libraries (Apollo, Tiptap, Excalidraw, etc.)
 
 ### Bundle Analysis
 
@@ -318,17 +322,17 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
-## prototype/ — Read-Only Reference (DO NOT MODIFY)
+## Prototype — External Design Reference
 
-The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. Both `biome.json` and `eslint.config.mjs` exclude `prototype/` from linting. See `prototype/CLAUDE.md` for full details.
+The prototype (Jeroen's design prototype) **is no longer part of this repo** — it lives in its own repository: **https://github.com/alkem-io/client-web-prototype**. It is the design reference for building `src/crd/` components; consult it there, not in this tree. Any `prototype/` folder appearing locally is stale and should not be committed.
 
-**No Python — anywhere.** This is a JavaScript/TypeScript repo; `.py` files must never be committed or merged into it. The upstream prototype ships helper scripts under `prototype/utils/*.py` (font merging, corruption fixes) that leak in when the `prototype/` folder is synced. When syncing the prototype or resolving a merge, **strip every `*.py` file** before committing. `.coderabbit.yaml` re-includes `**/*.py` (despite the `prototype/**` review exclusion) and flags any added/modified `.py` as a blocking issue so a stray script gets caught in review.
+**No Python — anywhere.** This is a JavaScript/TypeScript repo; `.py` files must never be committed or merged into it. The prototype ships helper scripts under `utils/*.py` (font merging, corruption fixes), but those now live only in the external `alkem-io/client-web-prototype` repo and must never appear here. `.coderabbit.yaml` flags any added/modified `.py` as a blocking issue so a stray script gets caught in review.
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
-`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`.
+`src/crd/` is the presentational UI layer. Full conventions are in `src/crd/CLAUDE.md`.
 
-**CRD is the only design system for new features.** All new client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI (`src/core/ui/`, `@mui/*`, `@emotion/*`) is **frozen** — no new MUI view/presentational components may be added; MUI is only ever *removed* as pages are migrated. `@mui/*`/`@emotion/*` imports are acceptable only inside already-existing MUI files until they are migrated.
+**CRD is the only design system.** All client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI/Emotion were fully removed (story #9885) — `@mui/*` and `@emotion/*` are uninstalled and must **never** be reintroduced.
 
 The critical rules:
 
@@ -341,59 +345,34 @@ The critical rules:
 - **State is visual only** — `useState` for open/close, expanded, active tab. Nothing else.
 
 **Structure:**
-- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `prototype/src/app/components/ui/`
+- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `src/app/components/ui/` in the external `alkem-io/client-web-prototype` repo
 - `components/` — composites of primitives (PostCard, SpaceCard), organized by feature area
 - `forms/` — form UI (inputs with labels/validation display), no form state libraries
 - `layouts/` — page shells (PageLayout, TwoColumnLayout, ContentBlock)
-- `styles/` — CSS tokens (`theme.css` from prototype) + Tailwind entry (`crd.css`)
+- `styles/` — CSS tokens (`theme.css` from the external prototype repo) + Tailwind entry (`crd.css`)
 - `lib/` — `cn()` utility
 - `hooks/` — UI-only hooks (`useMediaQuery`)
 
 Consumers in `src/main/crdPages/`, `src/domain/`, and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
 
-## CSS Isolation Strategy
+## CSS Strategy
 
-Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
+Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`; other global styles live in `src/index.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
 
-**Isolation mechanisms:**
-- `.crd-root` class scopes Tailwind preflight/resets to CRD pages only — MUI pages outside `.crd-root` are unaffected
-- MUI `ThemeProvider` wraps the entire app (including CRD routes) but is unused by CRD components — they never call `useTheme()` or import MUI
-- `src/main/crdPages/` pages **MUST NOT** import from `@mui/*` — ensuring no MUI code is loaded for CRD routes
+There is no second design system to isolate from: MUI/Emotion are removed, so there is no MUI `ThemeProvider`, no `useTheme()`, and no MUI CSS. The `.crd-root` class (which historically scoped Tailwind preflight/resets away from MUI pages) wraps the app; with MUI gone it is just the app root.
 
-**The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
+## CRD is the only runtime path
 
-## CRD Feature Toggle
+Every top-level route renders its `Crd*` page unconditionally — there is no toggle and no legacy MUI route tree. Story #9885 (epic #1888) removed the `designVersion` toggle machinery (`useCrdEnabled`, the design-version sync/upgrade hooks, the user-menu Design Version switch, the Sentry/APM `designVersion` tags) and deleted the entire legacy MUI app, then removed `@mui/*`/`@emotion/*` themselves. The only remaining trace is the server-side `UserSettings.designVersion` GraphQL field, which the client no longer reads.
 
-The CRD design system is gated by a per-user **`UserSettings.designVersion`** preference on the server (`1` = MUI/legacy, `2` = CRD/new). **Default is `2` (CRD)** — anyone without an explicit preference (anonymous visitors, fresh devices, users whose LS was cleared, or whose server record is unset) lands on CRD; users who previously opted into legacy (`1`) keep it. Authenticated users flip it via the **Design Version switch in the user menu** (top-right of the CRD header). The chosen version persists to that user's account and is mirrored into `localStorage('alkemio-design-version')` so the boot path picks the right shell without waiting for the user query.
-
-For developers / QA who want to seed the toggle without going through the UI:
-
-```js
-// Enable CRD (new design):
-localStorage.setItem('alkemio-design-version', '2');
-location.reload();
-
-// Back to MUI (old design):
-localStorage.setItem('alkemio-design-version', '1');
-location.reload();
-```
-
-The legacy `alkemio-crd-enabled` key is auto-migrated to `alkemio-design-version` on first load (see `useCrdEnabled.ts`).
-
-Implementation surface:
-- `src/main/crdPages/useCrdEnabled.ts` — boot-time read of `localStorage('alkemio-design-version')`; the `useCrdEnabled()` hook is consumed by route dispatchers.
-- `src/main/crdPages/useDesignVersionToggle.ts` — user-menu switch: writes `UserSettings.designVersion` via `updateUserSettings`, mirrors to localStorage, hard-reloads.
-- `src/main/crdPages/useDesignVersionSync.ts` — reconciles server state with localStorage on auth.
-- `TopLevelRoutes.tsx` — picks MUI vs CRD route trees off `useCrdEnabled()`.
-
-When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
+The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) routes were product-dropped during the removal; `InnovationPacks` (`/innovation-packs/*`) was kept on its CRD pages.
 
 ## Recent Changes
-- 110-guest-whiteboard-notice: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`), `lucide-react` (icons), `react-i18next`. No new runtime dependencies.
-- 105-create-space-dialog: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only); shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`); `lucide-react`; `react-i18next`; `yup` (validation on submit, decoupled from Formik). **No new runtime dependencies.**
-- 103-innovation-library-pagination: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only, per constitution III); shadcn/ui + Tailwind v4 (CRD layer); `react-i18next`; `lucide-react`. All existing — **no new runtime dependencies**.
+- 113-innovation-hub-ui: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `lucide-react`, `react-i18next`, Apollo Client (generated hooks only — already wired, unchanged this story)
+- 112-l0-additional-tabs: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only), shadcn/ui + Tailwind v4 + Radix UI (CRD layer `@/crd/*`), `react-i18next`, `lucide-react`. **No new runtime dependencies.**
+- 111-remove-mui-library / story #9885: **MUI and Emotion fully removed (epic #1888 complete).** The `@mui/*` and `@emotion/*` packages are uninstalled, zero source files import them, the legacy `src/core/ui/` MUI design system and the `designVersion` toggle are deleted, and CRD (shadcn/ui + Tailwind) is the sole design system. Global styles consolidated into `src/index.css`. See `specs/111-remove-mui-library/mui-footprint-baseline.md` and `mui-removal-inventory.md`.
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind v4 + Radix UI (`@/crd/primitives/*`), `lucide-react` (icons), `react-i18next`. No new runtime dependencies. (110-guest-whiteboard-notice)
-- Browser `sessionStorage` (`alkemio_guest_name`, `alkemio_guest_whiteboard_url`) — existing keys, unchanged. No backend, no GraphQL. (110-guest-whiteboard-notice)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `lucide-react`, `react-i18next`, Apollo Client (generated hooks only — already wired, unchanged this story) (113-innovation-hub-ui)
+- N/A — Apollo normalized cache via the existing `useDashboardSpacesQuery`; no new persistence (113-innovation-hub-ui)
