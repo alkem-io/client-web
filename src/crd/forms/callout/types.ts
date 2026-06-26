@@ -16,7 +16,7 @@ export type FramingChip = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 
  * Contributor-collection callout config (feature 008). Carried in the callout
  * form values and serialized into `settings.framing.contributors`. Plain TS —
  * the three contributor types are a fixed string union mirroring the server
- * `ContributorType` enum, kept design-system-agnostic here.
+ * `ActorType` enum, kept design-system-agnostic here.
  */
 export type ContributorTypeId = 'user' | 'organization' | 'virtualContributor';
 export type ContributorViewId = 'list' | 'map';

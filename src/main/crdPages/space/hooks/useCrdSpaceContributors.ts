@@ -3,7 +3,7 @@ import {
   useContributorCollectionByTypeLazyQuery,
   useContributorCollectionConfigQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import type { ContributorCollectionCounts } from '@/crd/components/callout/ContributorCollection/ContributorCollection';
 import type { ContributorTypeId, ContributorViewId } from '@/crd/forms/callout/types';
@@ -123,4 +123,4 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
 }
 
 /** Re-export for consumers that need the server enum bridge in one place. */
-export { contributorTypeFromServer, ContributorType };
+export { contributorTypeFromServer, ActorType };

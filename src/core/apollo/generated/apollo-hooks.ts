@@ -30090,7 +30090,7 @@ export function refetchContributorCollectionConfigQuery(
   return { query: ContributorCollectionConfigDocument, variables: variables };
 }
 export const ContributorCollectionByTypeDocument = gql`
-    query ContributorCollectionByType($calloutId: UUID!, $type: ContributorType!) {
+    query ContributorCollectionByType($calloutId: UUID!, $type: ActorType!) {
   lookup {
     callout(ID: $calloutId) {
       id

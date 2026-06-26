@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { ContributorCollectionView, ContributorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, ContributorCollectionView } from '@/core/apollo/generated/graphql-schema';
 import {
   contributorCollectionFromServer,
   contributorCollectionToServer,
@@ -41,8 +41,8 @@ describe('contributorCollectionMapper', () => {
       defaultView: 'map',
     });
     expect(input).toEqual({
-      contributorTypes: [ContributorType.User, ContributorType.Organization],
-      defaultContributorType: ContributorType.Organization,
+      contributorTypes: [ActorType.User, ActorType.Organization],
+      defaultContributorType: ActorType.Organization,
       defaultView: ContributorCollectionView.Map,
     });
   });
@@ -56,8 +56,8 @@ describe('contributorCollectionMapper', () => {
 
   test('round-trips server settings back into the form config', () => {
     const config = contributorCollectionFromServer({
-      contributorTypes: [ContributorType.Organization, ContributorType.User],
-      defaultContributorType: ContributorType.Organization,
+      contributorTypes: [ActorType.Organization, ActorType.User],
+      defaultContributorType: ActorType.Organization,
       defaultView: ContributorCollectionView.Map,
     });
     expect(config).toEqual({

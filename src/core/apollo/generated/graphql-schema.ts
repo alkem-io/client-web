@@ -1214,21 +1214,11 @@ export type CalloutContributionsCountOutput = {
 export type CalloutContributorsSettings = {
   __typename?: 'CalloutContributorsSettings';
   /** The contributor types included in this contributor-collection callout. At least one. */
-  contributorTypes: Array<ContributorType>;
+  contributorTypes: Array<ActorType>;
   /** The contributor type shown first (the segmented switch opens on it). One of contributorTypes. */
-  defaultContributorType: ContributorType;
+  defaultContributorType: ActorType;
   /** The default display mode (list or map). */
   defaultView: ContributorCollectionView;
-};
-
-export type CalloutContributorsSettingsData = {
-  __typename?: 'CalloutContributorsSettingsData';
-  /** The contributor types to include. At least one type is required. */
-  contributorTypes: Array<ContributorType>;
-  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
-  defaultContributorType?: Maybe<ContributorType>;
-  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
-  defaultView?: Maybe<ContributorCollectionView>;
 };
 
 export enum CalloutDescriptionDisplayMode {
@@ -1269,7 +1259,7 @@ export type CalloutFraming = {
 };
 
 export type CalloutFramingContributorsArgs = {
-  type: ContributorType;
+  type: ActorType;
 };
 
 export enum CalloutFramingType {
@@ -1738,7 +1728,7 @@ export type ContributorCollectionItem = {
   location?: Maybe<ContributorLocation>;
   /** The role label for this contributor (lead/admin/member). */
   roleLabel?: Maybe<Scalars['String']['output']>;
-  type: ContributorType;
+  type: ActorType;
   url?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1762,13 +1752,6 @@ export type ContributorLocation = {
   latitude?: Maybe<Scalars['Float']['output']>;
   longitude?: Maybe<Scalars['Float']['output']>;
 };
-
-/** The type of a contributor in a contributor-collection callout framing. */
-export enum ContributorType {
-  Organization = 'ORGANIZATION',
-  User = 'USER',
-  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
-}
 
 export type Conversation = {
   __typename?: 'Conversation';
@@ -1990,6 +1973,25 @@ export type CreateCalloutContributionInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
+export type CreateCalloutContributorsSettingsData = {
+  __typename?: 'CreateCalloutContributorsSettingsData';
+  /** The contributor types to include. At least one type is required. */
+  contributorTypes: Array<ActorType>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: Maybe<ActorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: Maybe<ContributorCollectionView>;
+};
+
+export type CreateCalloutContributorsSettingsInput = {
+  /** The contributor types to include. At least one type is required. */
+  contributorTypes: Array<ActorType>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: InputMaybe<ActorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: InputMaybe<ContributorCollectionView>;
+};
+
 export type CreateCalloutData = {
   __typename?: 'CreateCalloutData';
   classification?: Maybe<CreateClassificationData>;
@@ -2102,14 +2104,14 @@ export type CreateCalloutSettingsFramingData = {
   /** Can comment to callout framing. */
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
-  contributors?: Maybe<CalloutContributorsSettingsData>;
+  contributors?: Maybe<CreateCalloutContributorsSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
   /** Can comment to callout framing. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
-  contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
+  contributors?: InputMaybe<CreateCalloutContributorsSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -8849,10 +8851,10 @@ export type UpdateCalloutContributionDefaultsInput = {
 };
 
 export type UpdateCalloutContributorsSettingsInput = {
-  /** The contributor types to include. At least one type is required. */
-  contributorTypes: Array<ContributorType>;
+  /** When provided, replaces the selected contributor types (at least one). */
+  contributorTypes?: InputMaybe<Array<ActorType>>;
   /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
-  defaultContributorType?: InputMaybe<ContributorType>;
+  defaultContributorType?: InputMaybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: InputMaybe<ContributorCollectionView>;
 };
@@ -14229,8 +14231,8 @@ export type CalloutContentQuery = {
               contributors?:
                 | {
                     __typename?: 'CalloutContributorsSettings';
-                    contributorTypes: Array<ContributorType>;
-                    defaultContributorType: ContributorType;
+                    contributorTypes: Array<ActorType>;
+                    defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
                   }
                 | undefined;
@@ -14649,8 +14651,8 @@ export type UpdateCalloutContentMutation = {
         contributors?:
           | {
               __typename?: 'CalloutContributorsSettings';
-              contributorTypes: Array<ContributorType>;
-              defaultContributorType: ContributorType;
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
             }
           | undefined;
@@ -15097,8 +15099,8 @@ export type UpdateCalloutVisibilityMutation = {
         contributors?:
           | {
               __typename?: 'CalloutContributorsSettings';
-              contributorTypes: Array<ContributorType>;
-              defaultContributorType: ContributorType;
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
             }
           | undefined;
@@ -15159,8 +15161,8 @@ export type CalloutSettingsFullFragment = {
     contributors?:
       | {
           __typename?: 'CalloutContributorsSettings';
-          contributorTypes: Array<ContributorType>;
-          defaultContributorType: ContributorType;
+          contributorTypes: Array<ActorType>;
+          defaultContributorType: ActorType;
           defaultView: ContributorCollectionView;
         }
       | undefined;
@@ -16841,8 +16843,8 @@ export type CreateCalloutMutation = {
         contributors?:
           | {
               __typename?: 'CalloutContributorsSettings';
-              contributorTypes: Array<ContributorType>;
-              defaultContributorType: ContributorType;
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
             }
           | undefined;
@@ -17437,8 +17439,8 @@ export type CalloutDetailsQuery = {
               contributors?:
                 | {
                     __typename?: 'CalloutContributorsSettings';
-                    contributorTypes: Array<ContributorType>;
-                    defaultContributorType: ContributorType;
+                    contributorTypes: Array<ActorType>;
+                    defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
                   }
                 | undefined;
@@ -17917,8 +17919,8 @@ export type CalloutDetailsFragment = {
       contributors?:
         | {
             __typename?: 'CalloutContributorsSettings';
-            contributorTypes: Array<ContributorType>;
-            defaultContributorType: ContributorType;
+            contributorTypes: Array<ActorType>;
+            defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
           }
         | undefined;
@@ -32940,8 +32942,8 @@ export type TemplateContentQuery = {
                     contributors?:
                       | {
                           __typename?: 'CalloutContributorsSettings';
-                          contributorTypes: Array<ContributorType>;
-                          defaultContributorType: ContributorType;
+                          contributorTypes: Array<ActorType>;
+                          defaultContributorType: ActorType;
                           defaultView: ContributorCollectionView;
                         }
                       | undefined;
@@ -33680,8 +33682,8 @@ export type CalloutTemplateContentFragment = {
       contributors?:
         | {
             __typename?: 'CalloutContributorsSettings';
-            contributorTypes: Array<ContributorType>;
-            defaultContributorType: ContributorType;
+            contributorTypes: Array<ActorType>;
+            defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
           }
         | undefined;
@@ -34446,8 +34448,8 @@ export type UpdateCalloutTemplateMutation = {
         contributors?:
           | {
               __typename?: 'CalloutContributorsSettings';
-              contributorTypes: Array<ContributorType>;
-              defaultContributorType: ContributorType;
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
             }
           | undefined;
@@ -35947,8 +35949,8 @@ export type ContributorCollectionConfigQuery = {
               contributors?:
                 | {
                     __typename?: 'CalloutContributorsSettings';
-                    contributorTypes: Array<ContributorType>;
-                    defaultContributorType: ContributorType;
+                    contributorTypes: Array<ActorType>;
+                    defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
                   }
                 | undefined;
@@ -35961,7 +35963,7 @@ export type ContributorCollectionConfigQuery = {
 
 export type ContributorCollectionByTypeQueryVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
-  type: ContributorType;
+  type: ActorType;
 }>;
 
 export type ContributorCollectionByTypeQuery = {
@@ -35978,7 +35980,7 @@ export type ContributorCollectionByTypeQuery = {
             contributors: Array<{
               __typename?: 'ContributorCollectionItem';
               id: string;
-              type: ContributorType;
+              type: ActorType;
               displayName: string;
               avatarUrl?: string | undefined;
               roleLabel?: string | undefined;

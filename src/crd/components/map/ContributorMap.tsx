@@ -46,7 +46,7 @@ function initialView(pins: ContributorMapPin[]) {
     return EUROPE_VIEW;
   }
   if (pins.length === 1) {
-    return { longitude: pins[0].longitude, latitude: pins[0].latitude, zoom: 5 };
+    return { longitude: pins[0].longitude, latitude: pins[0].latitude, zoom: 7 };
   }
   const longitudes = pins.map(p => p.longitude);
   const latitudes = pins.map(p => p.latitude);
@@ -55,8 +55,22 @@ function initialView(pins: ContributorMapPin[]) {
       [Math.min(...longitudes), Math.min(...latitudes)],
       [Math.max(...longitudes), Math.max(...latitudes)],
     ] as [[number, number], [number, number]],
-    fitBoundsOptions: { padding: 48, maxZoom: 6 },
+    // Tighter padding + a higher zoom cap so clustered pins aren't shown on an
+    // unnecessarily wide view (still fits all pins).
+    fitBoundsOptions: { padding: 32, maxZoom: 10 },
   };
+}
+
+// MapLibre renders the compact attribution EXPANDED by default; collapse it on
+// load so it starts as a small "ⓘ" toggle (the license-required OpenStreetMap /
+// OpenFreeMap attribution stays — clicking ⓘ expands it).
+function collapseAttribution(target: { getContainer(): HTMLElement }) {
+  const el = target.getContainer().querySelector('.maplibregl-ctrl-attrib');
+  if (el instanceof HTMLDetailsElement) {
+    el.open = false;
+  } else if (el) {
+    el.classList.remove('maplibregl-compact-show');
+  }
 }
 
 export default function ContributorMap({ pins, ariaLabel, onPinClick, className }: ContributorMapProps) {
@@ -72,10 +86,11 @@ export default function ContributorMap({ pins, ariaLabel, onPinClick, className 
         initialViewState={initialView(pins)}
         mapStyle={POSITRON_STYLE}
         style={{ width: '100%', height: '100%' }}
-        // Disable the default (expanded) control and add an explicit COMPACT one,
-        // so the OpenStreetMap/OpenFreeMap attribution (license-required) is kept
-        // but collapsed to a small "ⓘ" toggle in the corner.
+        // Disable the default (expanded) control and add an explicit COMPACT one;
+        // `onLoad` then collapses it so the attribution starts as a small "ⓘ"
+        // toggle in the corner (license-required attribution is kept, not removed).
         attributionControl={false}
+        onLoad={e => collapseAttribution(e.target)}
       >
         <AttributionControl compact={true} position="bottom-right" />
         {pins.map(pin => (

@@ -1,28 +1,30 @@
 import {
+  ActorType,
   ContributorCollectionView,
-  ContributorType,
-  type UpdateCalloutContributorsSettingsInput,
+  type CreateCalloutContributorsSettingsInput,
 } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorCollectionConfig, ContributorTypeId, ContributorViewId } from '@/crd/forms/callout/types';
 
 /**
  * Pure mapping between the CRD callout form's contributor-collection config and
- * the server `ContributorType` / `ContributorCollectionView` enums + the
+ * the server `ActorType` / `ContributorCollectionView` enums + the
  * `UpdateCalloutContributorsSettingsInput`. No Apollo, no side effects (feature
  * 008). The form uses a design-system-agnostic string union; this module is the
  * single boundary that bridges it to the generated GraphQL enums.
  */
 
-const TYPE_ID_TO_SERVER: Record<ContributorTypeId, ContributorType> = {
-  user: ContributorType.User,
-  organization: ContributorType.Organization,
-  virtualContributor: ContributorType.VirtualContributor,
+const TYPE_ID_TO_SERVER: Record<ContributorTypeId, ActorType> = {
+  user: ActorType.User,
+  organization: ActorType.Organization,
+  virtualContributor: ActorType.VirtualContributor,
 };
 
-const SERVER_TO_TYPE_ID: Record<ContributorType, ContributorTypeId> = {
-  [ContributorType.User]: 'user',
-  [ContributorType.Organization]: 'organization',
-  [ContributorType.VirtualContributor]: 'virtualContributor',
+// Only the contributor ActorType subtypes map back; the server never returns the
+// others (SPACE/ACCOUNT/VIRTUAL_ASSISTANT) for a contributor-collection callout.
+const SERVER_TO_TYPE_ID: Partial<Record<ActorType, ContributorTypeId>> = {
+  [ActorType.User]: 'user',
+  [ActorType.Organization]: 'organization',
+  [ActorType.VirtualContributor]: 'virtualContributor',
 };
 
 const VIEW_ID_TO_SERVER: Record<ContributorViewId, ContributorCollectionView> = {
@@ -35,8 +37,8 @@ const SERVER_TO_VIEW_ID: Record<ContributorCollectionView, ContributorViewId> = 
   [ContributorCollectionView.Map]: 'map',
 };
 
-export const contributorTypeToServer = (id: ContributorTypeId): ContributorType => TYPE_ID_TO_SERVER[id];
-export const contributorTypeFromServer = (type: ContributorType): ContributorTypeId => SERVER_TO_TYPE_ID[type];
+export const contributorTypeToServer = (id: ContributorTypeId): ActorType => TYPE_ID_TO_SERVER[id];
+export const contributorTypeFromServer = (type: ActorType): ContributorTypeId => SERVER_TO_TYPE_ID[type] ?? 'user';
 export const contributorViewToServer = (id: ContributorViewId): ContributorCollectionView => VIEW_ID_TO_SERVER[id];
 export const contributorViewFromServer = (view: ContributorCollectionView): ContributorViewId =>
   SERVER_TO_VIEW_ID[view];
@@ -64,10 +66,13 @@ export const healContributorCollection = (config: ContributorCollectionConfig): 
   return { types, defaultType, defaultView };
 };
 
-/** Build the server input from the (healed) form config. */
+// Build the server input from the (healed) form config. Typed as the CREATE
+// input (contributorTypes REQUIRED) — the healed object always carries a
+// non-empty selection, and this stricter type is assignable to the UPDATE
+// framing field too, so one mapper serves both the create and update paths.
 export const contributorCollectionToServer = (
   config: ContributorCollectionConfig
-): UpdateCalloutContributorsSettingsInput => {
+): CreateCalloutContributorsSettingsInput => {
   const healed = healContributorCollection(config);
   return {
     contributorTypes: healed.types.map(contributorTypeToServer),
@@ -78,8 +83,8 @@ export const contributorCollectionToServer = (
 
 type ServerContributorsSettings =
   | {
-      contributorTypes: ContributorType[];
-      defaultContributorType: ContributorType;
+      contributorTypes: ActorType[];
+      defaultContributorType: ActorType;
       defaultView: ContributorCollectionView;
     }
   | null

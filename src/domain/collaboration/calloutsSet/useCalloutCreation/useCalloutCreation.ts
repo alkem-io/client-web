@@ -7,11 +7,11 @@ import type {
   CalloutVisibility,
   CollaboraDocumentType,
   CreateCalloutContributionInput,
+  CreateCalloutContributorsSettingsInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
   CreateReferenceInput,
   CreateTagsetInput,
-  UpdateCalloutContributorsSettingsInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import type { LinkFramingFieldSubmittedValues } from '../../callout/CalloutFramings/LinkFramingFieldSubmittedValues';
@@ -63,7 +63,7 @@ export interface CalloutCreationType {
     framing?: {
       commentsEnabled?: boolean;
       /** Contributor-collection config — set only for CONTRIBUTORS framing (feature 008). */
-      contributors?: UpdateCalloutContributorsSettingsInput;
+      contributors?: CreateCalloutContributorsSettingsInput;
     };
     contribution?: {
       enabled?: boolean;
