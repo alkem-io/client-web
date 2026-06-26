@@ -9,14 +9,6 @@ query UserSelector($first: Int!, $after: UUID, $filter: UserFilterInput) {
   }
 }
 
-query UserSelectorUserDetails($id: UUID!) {
-  lookup {
-    user(ID: $id) {
-      ...UserSelectorUserInformation
-    }
-  }
-}
-
 fragment UserSelectorUserInformation on User {
   id
   profile {
