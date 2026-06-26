@@ -139,6 +139,15 @@ export function ContributorCollection({
     }));
   const unlocated = filtered.filter(c => !c.hasValidCoordinates);
 
+  // Signature of the active type's located set BEFORE search — drives the map's
+  // auto re-fit so it re-zooms when the dataset changes (switching contributor
+  // type/role, or the set finishing its async load) but stays put while the user
+  // types in the search box.
+  const fitKey = roleScoped
+    .filter(c => c.hasValidCoordinates && c.latitude != null && c.longitude != null)
+    .map(c => c.id)
+    .join(',');
+
   return (
     <section className={cn('space-y-4', className)} aria-label={t('contributors.title')}>
       {/* Segmented type switch — shown only when >1 type (FR-009a). Counts are
@@ -247,7 +256,12 @@ export function ContributorCollection({
               </div>
             }
           >
-            <ContributorMap pins={pins} ariaLabel={t('contributors.viewMap')} onPinClick={onContributorClick} />
+            <ContributorMap
+              pins={pins}
+              fitKey={fitKey}
+              ariaLabel={t('contributors.viewMap')}
+              onPinClick={onContributorClick}
+            />
           </Suspense>
           {/* Contributors without precise coordinates — listed beneath the map (FR-012). */}
           {unlocated.length > 0 && (

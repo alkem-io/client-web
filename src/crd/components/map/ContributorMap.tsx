@@ -1,6 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { useState } from 'react';
-import { AttributionControl, Map as MapLibreMap, Marker, Popup } from 'react-map-gl/maplibre';
+import { useEffect, useRef, useState } from 'react';
+import { AttributionControl, Map as MapLibreMap, type MapRef, Marker, Popup } from 'react-map-gl/maplibre';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
@@ -32,6 +32,13 @@ type ContributorMapProps = {
   pins: ContributorMapPin[];
   /** Accessible label for the map region (consumer i18n's it). */
   ariaLabel: string;
+  /**
+   * A value that changes when the underlying dataset changes (e.g. the active
+   * contributor type or its loaded set) — the map re-fits to the new pins when
+   * it changes. `initialViewState` only applies on mount, so without this the
+   * view would stay frozen on the first type's bounds.
+   */
+  fitKey?: string;
   onPinClick?: (href: string) => void;
   className?: string;
 };
@@ -41,7 +48,18 @@ type ContributorMapProps = {
 // the INITIAL state — the user can pan/zoom freely afterwards.
 const EUROPE_VIEW = { longitude: 10, latitude: 50, zoom: 3.5 } as const;
 
-function initialView(pins: ContributorMapPin[]) {
+// Discriminated so `'bounds' in view` narrows cleanly (centre-view vs fit-bounds).
+type MapInitialView =
+  | { longitude: number; latitude: number; zoom: number }
+  | {
+      bounds: [[number, number], [number, number]];
+      fitBoundsOptions: {
+        padding: { top: number; bottom: number; left: number; right: number };
+        maxZoom: number;
+      };
+    };
+
+function initialView(pins: ContributorMapPin[]): MapInitialView {
   if (pins.length === 0) {
     return EUROPE_VIEW;
   }
@@ -78,9 +96,35 @@ function collapseAttribution(target: { getContainer(): HTMLElement }) {
   }
 }
 
-export default function ContributorMap({ pins, ariaLabel, onPinClick, className }: ContributorMapProps) {
+export default function ContributorMap({ pins, ariaLabel, fitKey, onPinClick, className }: ContributorMapProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = pins.find(p => p.id === activeId) ?? null;
+
+  const mapRef = useRef<MapRef>(null);
+  // Latest pins, read inside the fit effect without making it a dependency (we
+  // re-fit on `fitKey`, not on every pin change — so searching doesn't re-zoom).
+  const pinsRef = useRef(pins);
+  pinsRef.current = pins;
+  const isFirstFit = useRef(true);
+
+  useEffect(() => {
+    // `initialViewState` already positioned the map on mount; skip that first
+    // run and only re-fit on subsequent dataset changes (e.g. type switch).
+    if (isFirstFit.current) {
+      isFirstFit.current = false;
+      return;
+    }
+    const map = mapRef.current;
+    if (!map) {
+      return;
+    }
+    const view = initialView(pinsRef.current);
+    if ('bounds' in view) {
+      map.fitBounds(view.bounds, view.fitBoundsOptions);
+    } else {
+      map.easeTo({ center: [view.longitude, view.latitude], zoom: view.zoom });
+    }
+  }, [fitKey]);
 
   return (
     <section
@@ -88,6 +132,7 @@ export default function ContributorMap({ pins, ariaLabel, onPinClick, className 
       aria-label={ariaLabel}
     >
       <MapLibreMap
+        ref={mapRef}
         initialViewState={initialView(pins)}
         mapStyle={POSITRON_STYLE}
         style={{ width: '100%', height: '100%' }}
