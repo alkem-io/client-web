@@ -27,6 +27,7 @@ type QueryArgs = {
     searchData: {
       terms: string[];
       searchInFlowStateFilter?: string;
+      foldCalloutResources?: boolean;
       filters: Array<{ cursor?: string; size: number; category: string }>;
     };
   };
@@ -63,6 +64,8 @@ describe('useFlowStateSearch', () => {
     const args = useFlowStateSearchQueryMock.mock.calls.at(-1)?.[0] as QueryArgs;
     expect(args.variables.searchData.searchInFlowStateFilter).toBe(FLOW_STATE);
     expect(args.variables.searchData.terms).toEqual(['governance']);
+    // Fold framing resources and contributions up to the matching callout.
+    expect(args.variables.searchData.foldCalloutResources).toBe(true);
     expect(args.variables.searchData.filters[0].cursor).toBeUndefined();
     expect(args.variables.searchData.filters[0].size).toBe(10);
     expect(args.skip).toBe(false);
