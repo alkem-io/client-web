@@ -56,8 +56,13 @@ function initialView(pins: ContributorMapPin[]) {
       [Math.max(...longitudes), Math.max(...latitudes)],
     ] as [[number, number], [number, number]],
     // Tighter padding + a higher zoom cap so clustered pins aren't shown on an
-    // unnecessarily wide view (still fits all pins).
-    fitBoundsOptions: { padding: 32, maxZoom: 10 },
+    // unnecessarily wide view (still fits all pins). Extra TOP padding because
+    // the avatar pins are bottom-anchored (render upward from the point), so the
+    // topmost pin needs headroom or its avatar is clipped at the map's top edge.
+    fitBoundsOptions: {
+      padding: { top: 72, bottom: 32, left: 32, right: 32 },
+      maxZoom: 10,
+    },
   };
 }
 

@@ -123,9 +123,12 @@ export function ContributorCollection({
           always visible on each segment. */}
       {types.length > 1 && (
         <Tabs value={activeType} onValueChange={v => handleTypeChange(v as ContributorTypeId)}>
-          <TabsList>
+          {/* Full-width + horizontally scrollable below `sm` so the type labels
+              (with counts) never clip on narrow screens; equal-width segments
+              from `sm` up. */}
+          <TabsList className="w-full max-w-full justify-start overflow-x-auto sm:w-fit sm:justify-center">
             {types.map(type => (
-              <TabsTrigger key={type} value={type}>
+              <TabsTrigger key={type} value={type} className="flex-none sm:flex-1">
                 <span>{typeLabel(type)}</span>
                 <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
                   {countFor(type)}
