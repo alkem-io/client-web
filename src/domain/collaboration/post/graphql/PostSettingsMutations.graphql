@@ -18,12 +18,6 @@ mutation UpdatePost($input: UpdatePostInput!) {
   }
 }
 
-mutation DeletePost($postId: UUID!) {
-  deletePost(deleteData: { ID: $postId}) {
-    id
-  }
-}
-
 mutation MoveContributionToCallout($contributionId: UUID!, $calloutId: UUID!) {
   moveContributionToCallout(moveContributionData: { contributionID: $contributionId, calloutID: $calloutId }) {
     id

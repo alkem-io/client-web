@@ -1,9 +1,14 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { useBannerInnovationHubQuery } from '@/core/apollo/generated/apollo-hooks';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
-import PageContentRibbon from '@/core/ui/content/PageContentRibbon';
+import PageContentRibbon from '@/crd/components/common/PageContentRibbon';
 
-const useInnovationHubOutsideRibbon = ({ label }: { label: TranslationKey }) => {
+/**
+ *
+ * @deprecated ?? https://github.com/alkem-io/client-web/issues/9952
+ * @returns
+ */
+const CrdInnovationHubOutsideRibbon = ({ label }: { label: TranslationKey }) => {
   const { t } = useTranslation();
 
   const { data: innovationHubData } = useBannerInnovationHubQuery();
@@ -11,7 +16,7 @@ const useInnovationHubOutsideRibbon = ({ label }: { label: TranslationKey }) => 
   const { innovationHub } = innovationHubData?.platform ?? {};
 
   if (!innovationHub) {
-    return undefined;
+    return null;
   }
 
   return (
@@ -26,4 +31,4 @@ const useInnovationHubOutsideRibbon = ({ label }: { label: TranslationKey }) => 
   );
 };
 
-export default useInnovationHubOutsideRibbon;
+export default CrdInnovationHubOutsideRibbon;

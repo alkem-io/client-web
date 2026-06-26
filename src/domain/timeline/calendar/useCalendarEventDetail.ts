@@ -1,7 +1,7 @@
 import type { ApolloError } from '@apollo/client';
 import { useCalendarEventDetailsQuery, useRemoveMessageOnRoomMutation } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, type CalendarEventDetailsFragment } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
 import type { Message } from '@/domain/communication/room/models/Message';

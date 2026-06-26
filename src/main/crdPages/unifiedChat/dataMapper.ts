@@ -1,8 +1,12 @@
 import { ActorType } from '@/core/apollo/generated/graphql-schema';
 import type { ChatListItem, ChatMessage, GroupMember } from '@/crd/components/chat/types';
 import type { CommentAuthor, CommentReaction } from '@/crd/components/comment/types';
-import type { ConversationMessage, MessageReaction } from '@/main/userMessaging/models';
-import type { ConversationMember, UserConversation } from '@/main/userMessaging/useUserConversations';
+import type {
+  ConversationMember,
+  ConversationMessage,
+  MessageReaction,
+  UserConversation,
+} from '@/main/userMessaging/models';
 
 /** A conversation enriched with unified-chat presentation flags. */
 export type UnifiedConversation = UserConversation & {

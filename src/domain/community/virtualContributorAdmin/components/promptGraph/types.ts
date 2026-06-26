@@ -26,14 +26,3 @@ export type PromptGraphNode = {
   prompt?: string;
   output?: PromptGraphDataStruct;
 };
-
-export type PromptGraphState = {
-  title: string;
-  type: string;
-  properties: DataPoint[];
-};
-
-export type FormValueType = {
-  nodes: Record<string, FormNodeValue>;
-  state: PromptGraphState;
-};

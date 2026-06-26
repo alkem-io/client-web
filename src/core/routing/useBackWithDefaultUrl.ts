@@ -1,40 +1,9 @@
 import { TopLevelRoutePath } from '@/main/routing/TopLevelRoutePath';
 import { normalizeLink } from '../utils/links';
 import { getPreviousSafePath } from './NavigationHistory';
-import useCanGoBack from './useCanGoBack';
 import useNavigate from './useNavigate';
 
 const ROUTE_HOME = `/${TopLevelRoutePath.Home}`;
-
-/**
- * Goes back only if the previous history item has the specified URL.
- * This is based on the native browser history API, so it may not work with all flavors of react-router.
- */
-const useBackToPath = () => {
-  const navigate = useNavigate();
-  const canGoBack = useCanGoBack();
-
-  return (parentPagePath: string) => {
-    parentPagePath = normalizeLink(parentPagePath);
-    if (!canGoBack) {
-      navigate(parentPagePath);
-    }
-    const handlePopState = () => {
-      window.removeEventListener('popstate', handlePopState);
-      if (window.location.pathname !== parentPagePath) {
-        navigate(parentPagePath);
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    navigate(-1);
-  };
-};
-
-export const useBackToStaticPath = (parentPagePath: string) => {
-  const backToPath = useBackToPath();
-
-  return () => backToPath(parentPagePath);
-};
 
 /**
  * Useful to close dialogs and navigate safely within the Alkemio platform.
@@ -68,5 +37,3 @@ export const useBackWithDefaultUrl = (parentPagePath: string = ROUTE_HOME, steps
     navigate(normalizedDefaultPath);
   };
 };
-
-export default useBackToPath;

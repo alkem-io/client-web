@@ -7,7 +7,7 @@ import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyBut
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSpaceApplyFlow } from '../../space/useSpaceApplyFlow';
 
 type CrdSubspaceAboutProps = {
@@ -157,7 +157,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       }))}
       loading={guidelinesLoading}
       canEdit={permissions.canUpdate}
-      onEditClick={() => navigate(`${buildSettingsUrl(profileUrl)}/community#guidelines`)}
+      onEditClick={() => navigate(buildSettingsTabUrl(profileUrl, 'community', 'guidelines'))}
     />
   ) : undefined;
 
@@ -180,11 +180,11 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
         contactHostSlot={contactHostSlot}
         memberCount={memberCount}
         isMember={isMember}
-        onEditDescription={() => navigate(`${buildSettingsUrl(profileUrl)}/about#description`)}
-        onEditWhy={() => navigate(`${buildSettingsUrl(profileUrl)}/about#why`)}
-        onEditWho={() => navigate(`${buildSettingsUrl(profileUrl)}/about#who`)}
-        onEditReferences={() => navigate(`${buildSettingsUrl(profileUrl)}/about#references`)}
-        onEditMembers={() => navigate(`${buildSettingsUrl(profileUrl)}/community#members`)}
+        onEditDescription={() => navigate(buildSettingsTabUrl(profileUrl, 'about', 'description'))}
+        onEditWhy={() => navigate(buildSettingsTabUrl(profileUrl, 'about', 'why'))}
+        onEditWho={() => navigate(buildSettingsTabUrl(profileUrl, 'about', 'who'))}
+        onEditReferences={() => navigate(buildSettingsTabUrl(profileUrl, 'about', 'references'))}
+        onEditMembers={() => navigate(buildSettingsTabUrl(profileUrl, 'community', 'members'))}
       />
       {dialogs}
     </>

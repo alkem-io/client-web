@@ -27,7 +27,7 @@ export type ContactLeadsDialogProps = {
 /**
  * CRD "Contact the leads" dialog (US3). Sends a private message individually to
  * each lead; presentational only — the consumer owns the mutation and the
- * confirmation. Replaces the legacy MUI DirectMessageDialog for this flow.
+ * confirmation.
  */
 export function ContactLeadsDialog({
   open,
