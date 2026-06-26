@@ -157,14 +157,14 @@ export function CrdSearchOverlay() {
     skip: searchTags.length === 0 || spaceContextLoading,
   });
 
-  // Track canLoadMore flags from initial query results
+  // Track canLoadMore flags from the response cursor: a null cursor means the backend has no more results.
   useEffect(() => {
     if (data?.search && !isSearching) {
-      setCanSpaceLoadMore((data.search.spaceResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanCalloutLoadMore((data.search.calloutResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanFramingLoadMore((data.search.framingResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanContributionLoadMore((data.search.contributionResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanContributorLoadMore((data.search.actorResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
+      setCanSpaceLoadMore(!!data.search.spaceResults?.cursor);
+      setCanCalloutLoadMore(!!data.search.calloutResults?.cursor);
+      setCanFramingLoadMore(!!data.search.framingResults?.cursor);
+      setCanContributionLoadMore(!!data.search.contributionResults?.cursor);
+      setCanContributorLoadMore(!!data.search.actorResults?.cursor);
     }
   }, [data, isSearching]);
 
@@ -347,7 +347,7 @@ export function CrdSearchOverlay() {
       updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
         switch (resultsType) {
           case SearchCategory.Spaces:
-            setCanSpaceLoadMore((fetchMoreResult?.search?.spaceResults?.results?.length ?? 0) > 0);
+            setCanSpaceLoadMore(!!fetchMoreResult?.search?.spaceResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -361,7 +361,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.CollaborationTools:
-            setCanCalloutLoadMore((fetchMoreResult?.search?.calloutResults?.results?.length ?? 0) > 0);
+            setCanCalloutLoadMore(!!fetchMoreResult?.search?.calloutResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -375,7 +375,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.Framings:
-            setCanFramingLoadMore((fetchMoreResult?.search?.framingResults?.results?.length ?? 0) > 0);
+            setCanFramingLoadMore(!!fetchMoreResult?.search?.framingResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -389,7 +389,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.Contributions:
-            setCanContributionLoadMore((fetchMoreResult?.search?.contributionResults?.results?.length ?? 0) > 0);
+            setCanContributionLoadMore(!!fetchMoreResult?.search?.contributionResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -403,7 +403,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.Contributors:
-            setCanContributorLoadMore((fetchMoreResult?.search?.actorResults?.results?.length ?? 0) > 0);
+            setCanContributorLoadMore(!!fetchMoreResult?.search?.actorResults?.cursor);
             return {
               search: {
                 ...prev.search,
