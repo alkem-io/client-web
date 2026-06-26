@@ -40,7 +40,7 @@ export const CrdUserProfilePage = () => {
   } = data;
   usePageTitle(userModel?.profile?.displayName);
 
-  const { activeTab, onSelectTab } = useResourceTabs();
+  const { activeTab, onSelectTab } = useResourceTabs('memberOf');
 
   const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: userId });
   // Email-to-user contact route temporarily DISABLED client-side — chat only.
@@ -50,9 +50,9 @@ export const CrdUserProfilePage = () => {
   // const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
 
   const tabs = [
-    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
-    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
     { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
+    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
+    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
   ];
 
   const heroLoading = loading.route || !userModel;
