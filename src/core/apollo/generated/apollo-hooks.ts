@@ -9399,178 +9399,6 @@ export type CalloutsSetTagsQueryResult = Apollo.QueryResult<
 export function refetchCalloutsSetTagsQuery(variables: SchemaTypes.CalloutsSetTagsQueryVariables) {
   return { query: CalloutsSetTagsDocument, variables: variables };
 }
-export const CalloutsListForFeedDocument = gql`
-    query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
-  lookup {
-    calloutsSet(ID: $calloutsSetId) {
-      id
-      callouts(classificationTagsets: $classificationTagsets) {
-        id
-        sortOrder
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useCalloutsListForFeedQuery__
- *
- * To run a query within a React component, call `useCalloutsListForFeedQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutsListForFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutsListForFeedQuery({
- *   variables: {
- *      calloutsSetId: // value for 'calloutsSetId'
- *      classificationTagsets: // value for 'classificationTagsets'
- *   },
- * });
- */
-export function useCalloutsListForFeedQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutsListForFeedQuery,
-    SchemaTypes.CalloutsListForFeedQueryVariables
-  > &
-    ({ variables: SchemaTypes.CalloutsListForFeedQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutsListForFeedQuery, SchemaTypes.CalloutsListForFeedQueryVariables>(
-    CalloutsListForFeedDocument,
-    options
-  );
-}
-export function useCalloutsListForFeedLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutsListForFeedQuery,
-    SchemaTypes.CalloutsListForFeedQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutsListForFeedQuery, SchemaTypes.CalloutsListForFeedQueryVariables>(
-    CalloutsListForFeedDocument,
-    options
-  );
-}
-export function useCalloutsListForFeedSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.CalloutsListForFeedQuery,
-        SchemaTypes.CalloutsListForFeedQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.CalloutsListForFeedQuery, SchemaTypes.CalloutsListForFeedQueryVariables>(
-    CalloutsListForFeedDocument,
-    options
-  );
-}
-export type CalloutsListForFeedQueryHookResult = ReturnType<typeof useCalloutsListForFeedQuery>;
-export type CalloutsListForFeedLazyQueryHookResult = ReturnType<typeof useCalloutsListForFeedLazyQuery>;
-export type CalloutsListForFeedSuspenseQueryHookResult = ReturnType<typeof useCalloutsListForFeedSuspenseQuery>;
-export type CalloutsListForFeedQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutsListForFeedQuery,
-  SchemaTypes.CalloutsListForFeedQueryVariables
->;
-export function refetchCalloutsListForFeedQuery(variables: SchemaTypes.CalloutsListForFeedQueryVariables) {
-  return { query: CalloutsListForFeedDocument, variables: variables };
-}
-export const CalloutsIndexListDocument = gql`
-    query CalloutsIndexList($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
-  lookup {
-    calloutsSet(ID: $calloutsSetId) {
-      id
-      callouts(classificationTagsets: $classificationTagsets) {
-        id
-        sortOrder
-        activity
-        framing {
-          id
-          type
-          profile {
-            id
-            url
-            displayName
-          }
-        }
-        settings {
-          contribution {
-            allowedTypes
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useCalloutsIndexListQuery__
- *
- * To run a query within a React component, call `useCalloutsIndexListQuery` and pass it any options that fit your needs.
- * When your component renders, `useCalloutsIndexListQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCalloutsIndexListQuery({
- *   variables: {
- *      calloutsSetId: // value for 'calloutsSetId'
- *      classificationTagsets: // value for 'classificationTagsets'
- *   },
- * });
- */
-export function useCalloutsIndexListQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.CalloutsIndexListQuery,
-    SchemaTypes.CalloutsIndexListQueryVariables
-  > &
-    ({ variables: SchemaTypes.CalloutsIndexListQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>(
-    CalloutsIndexListDocument,
-    options
-  );
-}
-export function useCalloutsIndexListLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.CalloutsIndexListQuery,
-    SchemaTypes.CalloutsIndexListQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>(
-    CalloutsIndexListDocument,
-    options
-  );
-}
-export function useCalloutsIndexListSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>(
-    CalloutsIndexListDocument,
-    options
-  );
-}
-export type CalloutsIndexListQueryHookResult = ReturnType<typeof useCalloutsIndexListQuery>;
-export type CalloutsIndexListLazyQueryHookResult = ReturnType<typeof useCalloutsIndexListLazyQuery>;
-export type CalloutsIndexListSuspenseQueryHookResult = ReturnType<typeof useCalloutsIndexListSuspenseQuery>;
-export type CalloutsIndexListQueryResult = Apollo.QueryResult<
-  SchemaTypes.CalloutsIndexListQuery,
-  SchemaTypes.CalloutsIndexListQueryVariables
->;
-export function refetchCalloutsIndexListQuery(variables: SchemaTypes.CalloutsIndexListQueryVariables) {
-  return { query: CalloutsIndexListDocument, variables: variables };
-}
 export const CreateCalloutDocument = gql`
     mutation createCallout($calloutData: CreateCalloutOnCalloutsSetInput!, $file: Upload) {
   createCalloutOnCalloutsSet(calloutData: $calloutData, file: $file) {
@@ -29993,6 +29821,372 @@ export function refetchInnovationLibraryTemplatesPaginatedQuery(
 ) {
   return { query: InnovationLibraryTemplatesPaginatedDocument, variables: variables };
 }
+export const CalloutsListForFeedDocument = gql`
+    query CalloutsListForFeed($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      callouts(classificationTagsets: $classificationTagsets) {
+        id
+        sortOrder
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCalloutsListForFeedQuery__
+ *
+ * To run a query within a React component, call `useCalloutsListForFeedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutsListForFeedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutsListForFeedQuery({
+ *   variables: {
+ *      calloutsSetId: // value for 'calloutsSetId'
+ *      classificationTagsets: // value for 'classificationTagsets'
+ *   },
+ * });
+ */
+export function useCalloutsListForFeedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutsListForFeedQuery,
+    SchemaTypes.CalloutsListForFeedQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutsListForFeedQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutsListForFeedQuery, SchemaTypes.CalloutsListForFeedQueryVariables>(
+    CalloutsListForFeedDocument,
+    options
+  );
+}
+export function useCalloutsListForFeedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutsListForFeedQuery,
+    SchemaTypes.CalloutsListForFeedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutsListForFeedQuery, SchemaTypes.CalloutsListForFeedQueryVariables>(
+    CalloutsListForFeedDocument,
+    options
+  );
+}
+export function useCalloutsListForFeedSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CalloutsListForFeedQuery,
+        SchemaTypes.CalloutsListForFeedQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutsListForFeedQuery, SchemaTypes.CalloutsListForFeedQueryVariables>(
+    CalloutsListForFeedDocument,
+    options
+  );
+}
+export type CalloutsListForFeedQueryHookResult = ReturnType<typeof useCalloutsListForFeedQuery>;
+export type CalloutsListForFeedLazyQueryHookResult = ReturnType<typeof useCalloutsListForFeedLazyQuery>;
+export type CalloutsListForFeedSuspenseQueryHookResult = ReturnType<typeof useCalloutsListForFeedSuspenseQuery>;
+export type CalloutsListForFeedQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutsListForFeedQuery,
+  SchemaTypes.CalloutsListForFeedQueryVariables
+>;
+export function refetchCalloutsListForFeedQuery(variables: SchemaTypes.CalloutsListForFeedQueryVariables) {
+  return { query: CalloutsListForFeedDocument, variables: variables };
+}
+export const CalloutsIndexListDocument = gql`
+    query CalloutsIndexList($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      callouts(classificationTagsets: $classificationTagsets) {
+        id
+        sortOrder
+        activity
+        framing {
+          id
+          type
+          profile {
+            id
+            url
+            displayName
+          }
+        }
+        settings {
+          contribution {
+            allowedTypes
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCalloutsIndexListQuery__
+ *
+ * To run a query within a React component, call `useCalloutsIndexListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutsIndexListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutsIndexListQuery({
+ *   variables: {
+ *      calloutsSetId: // value for 'calloutsSetId'
+ *      classificationTagsets: // value for 'classificationTagsets'
+ *   },
+ * });
+ */
+export function useCalloutsIndexListQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutsIndexListQuery,
+    SchemaTypes.CalloutsIndexListQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutsIndexListQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>(
+    CalloutsIndexListDocument,
+    options
+  );
+}
+export function useCalloutsIndexListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutsIndexListQuery,
+    SchemaTypes.CalloutsIndexListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>(
+    CalloutsIndexListDocument,
+    options
+  );
+}
+export function useCalloutsIndexListSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutsIndexListQuery, SchemaTypes.CalloutsIndexListQueryVariables>(
+    CalloutsIndexListDocument,
+    options
+  );
+}
+export type CalloutsIndexListQueryHookResult = ReturnType<typeof useCalloutsIndexListQuery>;
+export type CalloutsIndexListLazyQueryHookResult = ReturnType<typeof useCalloutsIndexListLazyQuery>;
+export type CalloutsIndexListSuspenseQueryHookResult = ReturnType<typeof useCalloutsIndexListSuspenseQuery>;
+export type CalloutsIndexListQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutsIndexListQuery,
+  SchemaTypes.CalloutsIndexListQueryVariables
+>;
+export function refetchCalloutsIndexListQuery(variables: SchemaTypes.CalloutsIndexListQueryVariables) {
+  return { query: CalloutsIndexListDocument, variables: variables };
+}
+export const ContributorCollectionConfigDocument = gql`
+    query ContributorCollectionConfig($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        contributorCounts {
+          users
+          organizations
+          virtualContributors
+        }
+      }
+      settings {
+        framing {
+          contributors {
+            contributorTypes
+            defaultContributorType
+            defaultView
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useContributorCollectionConfigQuery__
+ *
+ * To run a query within a React component, call `useContributorCollectionConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorCollectionConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorCollectionConfigQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useContributorCollectionConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  > &
+    ({ variables: SchemaTypes.ContributorCollectionConfigQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >(ContributorCollectionConfigDocument, options);
+}
+export function useContributorCollectionConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >(ContributorCollectionConfigDocument, options);
+}
+export function useContributorCollectionConfigSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ContributorCollectionConfigQuery,
+        SchemaTypes.ContributorCollectionConfigQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ContributorCollectionConfigQuery,
+    SchemaTypes.ContributorCollectionConfigQueryVariables
+  >(ContributorCollectionConfigDocument, options);
+}
+export type ContributorCollectionConfigQueryHookResult = ReturnType<typeof useContributorCollectionConfigQuery>;
+export type ContributorCollectionConfigLazyQueryHookResult = ReturnType<typeof useContributorCollectionConfigLazyQuery>;
+export type ContributorCollectionConfigSuspenseQueryHookResult = ReturnType<
+  typeof useContributorCollectionConfigSuspenseQuery
+>;
+export type ContributorCollectionConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorCollectionConfigQuery,
+  SchemaTypes.ContributorCollectionConfigQueryVariables
+>;
+export function refetchContributorCollectionConfigQuery(
+  variables: SchemaTypes.ContributorCollectionConfigQueryVariables
+) {
+  return { query: ContributorCollectionConfigDocument, variables: variables };
+}
+export const ContributorCollectionByTypeDocument = gql`
+    query ContributorCollectionByType($calloutId: UUID!, $type: ContributorType!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        contributors(type: $type) {
+          id
+          type
+          displayName
+          avatarUrl
+          roleLabel
+          url
+          location {
+            city
+            country
+            latitude
+            longitude
+            hasValidCoordinates
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useContributorCollectionByTypeQuery__
+ *
+ * To run a query within a React component, call `useContributorCollectionByTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useContributorCollectionByTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useContributorCollectionByTypeQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useContributorCollectionByTypeQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  > &
+    ({ variables: SchemaTypes.ContributorCollectionByTypeQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >(ContributorCollectionByTypeDocument, options);
+}
+export function useContributorCollectionByTypeLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >(ContributorCollectionByTypeDocument, options);
+}
+export function useContributorCollectionByTypeSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ContributorCollectionByTypeQuery,
+        SchemaTypes.ContributorCollectionByTypeQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ContributorCollectionByTypeQuery,
+    SchemaTypes.ContributorCollectionByTypeQueryVariables
+  >(ContributorCollectionByTypeDocument, options);
+}
+export type ContributorCollectionByTypeQueryHookResult = ReturnType<typeof useContributorCollectionByTypeQuery>;
+export type ContributorCollectionByTypeLazyQueryHookResult = ReturnType<typeof useContributorCollectionByTypeLazyQuery>;
+export type ContributorCollectionByTypeSuspenseQueryHookResult = ReturnType<
+  typeof useContributorCollectionByTypeSuspenseQuery
+>;
+export type ContributorCollectionByTypeQueryResult = Apollo.QueryResult<
+  SchemaTypes.ContributorCollectionByTypeQuery,
+  SchemaTypes.ContributorCollectionByTypeQueryVariables
+>;
+export function refetchContributorCollectionByTypeQuery(
+  variables: SchemaTypes.ContributorCollectionByTypeQueryVariables
+) {
+  return { query: ContributorCollectionByTypeDocument, variables: variables };
+}
 export const FlowStateSearchDocument = gql`
     query FlowStateSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
@@ -34503,198 +34697,4 @@ export function refetchUserConversationsUnreadCountQuery(
   variables?: SchemaTypes.UserConversationsUnreadCountQueryVariables
 ) {
   return { query: UserConversationsUnreadCountDocument, variables: variables };
-}
-export const ContributorCollectionConfigDocument = gql`
-    query ContributorCollectionConfig($calloutId: UUID!) {
-  lookup {
-    callout(ID: $calloutId) {
-      id
-      framing {
-        id
-        contributorCounts {
-          users
-          organizations
-          virtualContributors
-        }
-      }
-      settings {
-        framing {
-          contributors {
-            contributorTypes
-            defaultContributorType
-            defaultView
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useContributorCollectionConfigQuery__
- *
- * To run a query within a React component, call `useContributorCollectionConfigQuery` and pass it any options that fit your needs.
- * When your component renders, `useContributorCollectionConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContributorCollectionConfigQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *   },
- * });
- */
-export function useContributorCollectionConfigQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ContributorCollectionConfigQuery,
-    SchemaTypes.ContributorCollectionConfigQueryVariables
-  > &
-    ({ variables: SchemaTypes.ContributorCollectionConfigQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ContributorCollectionConfigQuery,
-    SchemaTypes.ContributorCollectionConfigQueryVariables
-  >(ContributorCollectionConfigDocument, options);
-}
-export function useContributorCollectionConfigLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ContributorCollectionConfigQuery,
-    SchemaTypes.ContributorCollectionConfigQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ContributorCollectionConfigQuery,
-    SchemaTypes.ContributorCollectionConfigQueryVariables
-  >(ContributorCollectionConfigDocument, options);
-}
-export function useContributorCollectionConfigSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.ContributorCollectionConfigQuery,
-        SchemaTypes.ContributorCollectionConfigQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.ContributorCollectionConfigQuery,
-    SchemaTypes.ContributorCollectionConfigQueryVariables
-  >(ContributorCollectionConfigDocument, options);
-}
-export type ContributorCollectionConfigQueryHookResult = ReturnType<typeof useContributorCollectionConfigQuery>;
-export type ContributorCollectionConfigLazyQueryHookResult = ReturnType<typeof useContributorCollectionConfigLazyQuery>;
-export type ContributorCollectionConfigSuspenseQueryHookResult = ReturnType<
-  typeof useContributorCollectionConfigSuspenseQuery
->;
-export type ContributorCollectionConfigQueryResult = Apollo.QueryResult<
-  SchemaTypes.ContributorCollectionConfigQuery,
-  SchemaTypes.ContributorCollectionConfigQueryVariables
->;
-export function refetchContributorCollectionConfigQuery(
-  variables: SchemaTypes.ContributorCollectionConfigQueryVariables
-) {
-  return { query: ContributorCollectionConfigDocument, variables: variables };
-}
-export const ContributorCollectionByTypeDocument = gql`
-    query ContributorCollectionByType($calloutId: UUID!, $type: ContributorType!) {
-  lookup {
-    callout(ID: $calloutId) {
-      id
-      framing {
-        id
-        contributors(type: $type) {
-          id
-          type
-          displayName
-          avatarUrl
-          roleLabel
-          url
-          location {
-            city
-            country
-            latitude
-            longitude
-            hasValidCoordinates
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useContributorCollectionByTypeQuery__
- *
- * To run a query within a React component, call `useContributorCollectionByTypeQuery` and pass it any options that fit your needs.
- * When your component renders, `useContributorCollectionByTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useContributorCollectionByTypeQuery({
- *   variables: {
- *      calloutId: // value for 'calloutId'
- *      type: // value for 'type'
- *   },
- * });
- */
-export function useContributorCollectionByTypeQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    SchemaTypes.ContributorCollectionByTypeQuery,
-    SchemaTypes.ContributorCollectionByTypeQueryVariables
-  > &
-    ({ variables: SchemaTypes.ContributorCollectionByTypeQueryVariables; skip?: boolean } | { skip: boolean })
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    SchemaTypes.ContributorCollectionByTypeQuery,
-    SchemaTypes.ContributorCollectionByTypeQueryVariables
-  >(ContributorCollectionByTypeDocument, options);
-}
-export function useContributorCollectionByTypeLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    SchemaTypes.ContributorCollectionByTypeQuery,
-    SchemaTypes.ContributorCollectionByTypeQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    SchemaTypes.ContributorCollectionByTypeQuery,
-    SchemaTypes.ContributorCollectionByTypeQueryVariables
-  >(ContributorCollectionByTypeDocument, options);
-}
-export function useContributorCollectionByTypeSuspenseQuery(
-  baseOptions?:
-    | Apollo.SkipToken
-    | Apollo.SuspenseQueryHookOptions<
-        SchemaTypes.ContributorCollectionByTypeQuery,
-        SchemaTypes.ContributorCollectionByTypeQueryVariables
-      >
-) {
-  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
-  return Apollo.useSuspenseQuery<
-    SchemaTypes.ContributorCollectionByTypeQuery,
-    SchemaTypes.ContributorCollectionByTypeQueryVariables
-  >(ContributorCollectionByTypeDocument, options);
-}
-export type ContributorCollectionByTypeQueryHookResult = ReturnType<typeof useContributorCollectionByTypeQuery>;
-export type ContributorCollectionByTypeLazyQueryHookResult = ReturnType<typeof useContributorCollectionByTypeLazyQuery>;
-export type ContributorCollectionByTypeSuspenseQueryHookResult = ReturnType<
-  typeof useContributorCollectionByTypeSuspenseQuery
->;
-export type ContributorCollectionByTypeQueryResult = Apollo.QueryResult<
-  SchemaTypes.ContributorCollectionByTypeQuery,
-  SchemaTypes.ContributorCollectionByTypeQueryVariables
->;
-export function refetchContributorCollectionByTypeQuery(
-  variables: SchemaTypes.ContributorCollectionByTypeQueryVariables
-) {
-  return { query: ContributorCollectionByTypeDocument, variables: variables };
 }

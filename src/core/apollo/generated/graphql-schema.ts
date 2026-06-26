@@ -12,25 +12,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -1221,6 +1211,26 @@ export type CalloutContributionsCountOutput = {
   whiteboard: Scalars['Float']['output'];
 };
 
+export type CalloutContributorsSettings = {
+  __typename?: 'CalloutContributorsSettings';
+  /** The contributor types included in this contributor-collection callout. At least one. */
+  contributorTypes: Array<ContributorType>;
+  /** The contributor type shown first (the segmented switch opens on it). One of contributorTypes. */
+  defaultContributorType: ContributorType;
+  /** The default display mode (list or map). */
+  defaultView: ContributorCollectionView;
+};
+
+export type CalloutContributorsSettingsData = {
+  __typename?: 'CalloutContributorsSettingsData';
+  /** The contributor types to include. At least one type is required. */
+  contributorTypes: Array<ContributorType>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: Maybe<ContributorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: Maybe<ContributorCollectionView>;
+};
+
 export enum CalloutDescriptionDisplayMode {
   Collapsed = 'COLLAPSED',
   Expanded = 'EXPANDED',
@@ -1232,6 +1242,10 @@ export type CalloutFraming = {
   authorization?: Maybe<Authorization>;
   /** The Collabora document attached to this Callout Framing, if any. Present when framing.type = COLLABORA_DOCUMENT. */
   collaboraDocument?: Maybe<CollaboraDocument>;
+  /** Per-type counts (users, organizations, virtual contributors) of the total eligible set for a CONTRIBUTORS framing, after type-selection and user-information visibility filtering. Zeroed for non-CONTRIBUTORS framings. */
+  contributorCounts: ContributorCollectionCounts;
+  /** The full authorized set of contributors of the given type for a CONTRIBUTORS framing, ordered leads/admins first then alphabetically. No server-side pagination or search: the client paginates (list) and name-searches client-side over this set. Empty for non-CONTRIBUTORS framings or deselected types. */
+  contributors: Array<ContributorCollectionItem>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -1252,6 +1266,10 @@ export type CalloutFraming = {
   updatedDate: Scalars['DateTime']['output'];
   /** The Whiteboard for framing the associated Callout. */
   whiteboard?: Maybe<Whiteboard>;
+};
+
+export type CalloutFramingContributorsArgs = {
+  type: ContributorType;
 };
 
 export enum CalloutFramingType {
@@ -1697,25 +1715,18 @@ export enum ContentUpdatePolicy {
   Owner = 'OWNER',
 }
 
-export enum ContributorType {
-  Organization = 'ORGANIZATION',
-  User = 'USER',
-  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
-}
+export type ContributionsFilterInput = {
+  /** The IDs of the Contributions to return. If omitted return all. */
+  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  /** The contributions types to return. If omitted return all. */
+  types?: InputMaybe<Array<CalloutContributionType>>;
+};
 
-export enum ContributorCollectionView {
-  List = 'LIST',
-  Map = 'MAP',
-}
-
-export type ContributorLocation = {
-  __typename?: 'ContributorLocation';
-  city?: Maybe<Scalars['String']['output']>;
-  country?: Maybe<Scalars['String']['output']>;
-  /** Whether the location has valid stored coordinates (geoLocation.isValid). City/country alone is false. */
-  hasValidCoordinates: Scalars['Boolean']['output'];
-  latitude?: Maybe<Scalars['Float']['output']>;
-  longitude?: Maybe<Scalars['Float']['output']>;
+export type ContributorCollectionCounts = {
+  __typename?: 'ContributorCollectionCounts';
+  organizations: Scalars['Int']['output'];
+  users: Scalars['Int']['output'];
+  virtualContributors: Scalars['Int']['output'];
 };
 
 export type ContributorCollectionItem = {
@@ -1731,48 +1742,33 @@ export type ContributorCollectionItem = {
   url?: Maybe<Scalars['String']['output']>;
 };
 
-export type ContributorCollectionCounts = {
-  __typename?: 'ContributorCollectionCounts';
-  organizations: Scalars['Int']['output'];
-  users: Scalars['Int']['output'];
-  virtualContributors: Scalars['Int']['output'];
-};
-
-export type CalloutContributorsSettings = {
-  __typename?: 'CalloutContributorsSettings';
-  /** The contributor types included in this contributor-collection callout. At least one. */
-  contributorTypes: Array<ContributorType>;
-  /** The contributor type shown first (the segmented switch opens on it). One of contributorTypes. */
-  defaultContributorType: ContributorType;
-  /** The default display mode (list or map). */
-  defaultView: ContributorCollectionView;
-};
-
-export type UpdateCalloutContributorsSettingsInput = {
-  /** The contributor types to include. At least one type is required. */
-  contributorTypes: Array<ContributorType>;
-  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
-  defaultContributorType?: InputMaybe<ContributorType>;
-  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
-  defaultView?: InputMaybe<ContributorCollectionView>;
-};
-
-export enum UserInformationVisibility {
-  FollowSpaceVisibility = 'FOLLOW_SPACE_VISIBILITY',
-  MembersOnly = 'MEMBERS_ONLY',
+/** The default display mode for a contributor-collection callout framing. */
+export enum ContributorCollectionView {
+  List = 'LIST',
+  Map = 'MAP',
 }
-
-export type ContributionsFilterInput = {
-  /** The IDs of the Contributions to return. If omitted return all. */
-  IDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  /** The contributions types to return. If omitted return all. */
-  types?: InputMaybe<Array<CalloutContributionType>>;
-};
 
 export type ContributorFilterInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   nameID?: InputMaybe<Scalars['String']['input']>;
 };
+
+export type ContributorLocation = {
+  __typename?: 'ContributorLocation';
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  /** Whether the location has valid stored coordinates (geoLocation.isValid). City/country alone is false. */
+  hasValidCoordinates: Scalars['Boolean']['output'];
+  latitude?: Maybe<Scalars['Float']['output']>;
+  longitude?: Maybe<Scalars['Float']['output']>;
+};
+
+/** The type of a contributor in a contributor-collection callout framing. */
+export enum ContributorType {
+  Organization = 'ORGANIZATION',
+  User = 'USER',
+  VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
+}
 
 export type Conversation = {
   __typename?: 'Conversation';
@@ -2105,6 +2101,8 @@ export type CreateCalloutSettingsFramingData = {
   __typename?: 'CreateCalloutSettingsFramingData';
   /** Can comment to callout framing. */
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
+  contributors?: Maybe<CalloutContributorsSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
@@ -3839,6 +3837,7 @@ export enum LicenseEntitlementDataType {
 }
 
 export enum LicenseEntitlementType {
+  AccountAiAssistantTokensMonth = 'ACCOUNT_AI_ASSISTANT_TOKENS_MONTH',
   AccountInnovationHub = 'ACCOUNT_INNOVATION_HUB',
   AccountInnovationPack = 'ACCOUNT_INNOVATION_PACK',
   AccountSpaceFree = 'ACCOUNT_SPACE_FREE',
@@ -4643,6 +4642,7 @@ export enum MimeType {
   Gif = 'GIF',
   Heic = 'HEIC',
   Heif = 'HEIF',
+  Ics = 'ICS',
   Jpeg = 'JPEG',
   Jpg = 'JPG',
   Odg = 'ODG',
@@ -8848,6 +8848,15 @@ export type UpdateCalloutContributionDefaultsInput = {
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
 };
 
+export type UpdateCalloutContributorsSettingsInput = {
+  /** The contributor types to include. At least one type is required. */
+  contributorTypes: Array<ContributorType>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: InputMaybe<ContributorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: InputMaybe<ContributorCollectionView>;
+};
+
 export type UpdateCalloutEntityInput = {
   ID: Scalars['UUID']['input'];
   classification?: InputMaybe<UpdateClassificationInput>;
@@ -9917,6 +9926,12 @@ export type UserGroup = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
+
+/** Controls who may read member-user information in a Space. Follows space visibility by default, or restricts user info to members only. */
+export enum UserInformationVisibility {
+  FollowSpaceVisibility = 'FOLLOW_SPACE_VISIBILITY',
+  MembersOnly = 'MEMBERS_ONLY',
+}
 
 /** Minimal user-profile summary identifying a user without exposing PII beyond id + displayName. */
 export type UserProfileSummary = {
@@ -14628,7 +14643,18 @@ export type UpdateCalloutContentMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ContributorType>;
+              defaultContributorType: ContributorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
     createdBy?:
       | {
@@ -15065,7 +15091,18 @@ export type UpdateCalloutVisibilityMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ContributorType>;
+              defaultContributorType: ContributorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
     createdBy?:
       | {
@@ -16394,62 +16431,6 @@ export type CalloutsSetTagsQuery = {
   };
 };
 
-export type CalloutsListForFeedQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID']['input'];
-  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
-}>;
-
-export type CalloutsListForFeedQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    calloutsSet?:
-      | {
-          __typename?: 'CalloutsSet';
-          id: string;
-          callouts: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
-        }
-      | undefined;
-  };
-};
-
-export type CalloutsIndexListQueryVariables = Exact<{
-  calloutsSetId: Scalars['UUID']['input'];
-  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
-}>;
-
-export type CalloutsIndexListQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    calloutsSet?:
-      | {
-          __typename?: 'CalloutsSet';
-          id: string;
-          callouts: Array<{
-            __typename?: 'Callout';
-            id: string;
-            sortOrder: number;
-            activity: number;
-            framing: {
-              __typename?: 'CalloutFraming';
-              id: string;
-              type: CalloutFramingType;
-              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
-            };
-            settings: {
-              __typename?: 'CalloutSettings';
-              contribution: {
-                __typename?: 'CalloutSettingsContribution';
-                allowedTypes: Array<CalloutContributionType>;
-              };
-            };
-          }>;
-        }
-      | undefined;
-  };
-};
-
 export type CreateCalloutMutationVariables = Exact<{
   calloutData: CreateCalloutOnCalloutsSetInput;
   file?: InputMaybe<Scalars['Upload']['input']>;
@@ -16854,7 +16835,18 @@ export type CreateCalloutMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ContributorType>;
+              defaultContributorType: ContributorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
     createdBy?:
       | {
@@ -17439,7 +17431,18 @@ export type CalloutDetailsQuery = {
               canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
-            framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+            framing: {
+              __typename?: 'CalloutSettingsFraming';
+              commentsEnabled: boolean;
+              contributors?:
+                | {
+                    __typename?: 'CalloutContributorsSettings';
+                    contributorTypes: Array<ContributorType>;
+                    defaultContributorType: ContributorType;
+                    defaultView: ContributorCollectionView;
+                  }
+                | undefined;
+            };
           };
           createdBy?:
             | {
@@ -17908,7 +17911,18 @@ export type CalloutDetailsFragment = {
       canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
-    framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+    framing: {
+      __typename?: 'CalloutSettingsFraming';
+      commentsEnabled: boolean;
+      contributors?:
+        | {
+            __typename?: 'CalloutContributorsSettings';
+            contributorTypes: Array<ContributorType>;
+            defaultContributorType: ContributorType;
+            defaultView: ContributorCollectionView;
+          }
+        | undefined;
+    };
   };
   createdBy?:
     | {
@@ -32920,7 +32934,18 @@ export type TemplateContentQuery = {
                     canAddContributions: CalloutAllowedActors;
                     commentsEnabled: boolean;
                   };
-                  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+                  framing: {
+                    __typename?: 'CalloutSettingsFraming';
+                    commentsEnabled: boolean;
+                    contributors?:
+                      | {
+                          __typename?: 'CalloutContributorsSettings';
+                          contributorTypes: Array<ContributorType>;
+                          defaultContributorType: ContributorType;
+                          defaultView: ContributorCollectionView;
+                        }
+                      | undefined;
+                  };
                 };
                 contributionDefaults: {
                   __typename?: 'CalloutContributionDefaults';
@@ -33649,7 +33674,18 @@ export type CalloutTemplateContentFragment = {
       canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
-    framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+    framing: {
+      __typename?: 'CalloutSettingsFraming';
+      commentsEnabled: boolean;
+      contributors?:
+        | {
+            __typename?: 'CalloutContributorsSettings';
+            contributorTypes: Array<ContributorType>;
+            defaultContributorType: ContributorType;
+            defaultView: ContributorCollectionView;
+          }
+        | undefined;
+    };
   };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
@@ -34404,7 +34440,18 @@ export type UpdateCalloutTemplateMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ContributorType>;
+              defaultContributorType: ContributorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
   };
 };
@@ -35812,6 +35859,144 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
         };
       };
     };
+  };
+};
+
+export type CalloutsListForFeedQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsListForFeedQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{ __typename?: 'Callout'; id: string; sortOrder: number }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutsIndexListQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type CalloutsIndexListQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            sortOrder: number;
+            activity: number;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              type: CalloutFramingType;
+              profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+            };
+            settings: {
+              __typename?: 'CalloutSettings';
+              contribution: {
+                __typename?: 'CalloutSettingsContribution';
+                allowedTypes: Array<CalloutContributionType>;
+              };
+            };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type ContributorCollectionConfigQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type ContributorCollectionConfigQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            contributorCounts: {
+              __typename?: 'ContributorCollectionCounts';
+              users: number;
+              organizations: number;
+              virtualContributors: number;
+            };
+          };
+          settings: {
+            __typename?: 'CalloutSettings';
+            framing: {
+              __typename?: 'CalloutSettingsFraming';
+              contributors?:
+                | {
+                    __typename?: 'CalloutContributorsSettings';
+                    contributorTypes: Array<ContributorType>;
+                    defaultContributorType: ContributorType;
+                    defaultView: ContributorCollectionView;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type ContributorCollectionByTypeQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  type: ContributorType;
+}>;
+
+export type ContributorCollectionByTypeQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            contributors: Array<{
+              __typename?: 'ContributorCollectionItem';
+              id: string;
+              type: ContributorType;
+              displayName: string;
+              avatarUrl?: string | undefined;
+              roleLabel?: string | undefined;
+              url?: string | undefined;
+              location?:
+                | {
+                    __typename?: 'ContributorLocation';
+                    city?: string | undefined;
+                    country?: string | undefined;
+                    latitude?: number | undefined;
+                    longitude?: number | undefined;
+                    hasValidCoordinates: boolean;
+                  }
+                | undefined;
+            }>;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -47098,96 +47283,5 @@ export type UserConversationsUnreadCountQuery = {
         room: { __typename?: 'Room'; id: string; unreadCount: number };
       }>;
     };
-  };
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Feature 008 — Contributor Collection Callout operation types.
-// Hand-authored to match `ContributorCollectionQueries.graphql` because the
-// server schema snapshot at codegen time did not yet expose the new fields
-// (the server agent could not run the stack to regenerate the SDL snapshot).
-// These mirror exactly what `pnpm codegen` would emit once the server schema is
-// regenerated; re-running codegen will overwrite them identically.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export type ContributorCollectionConfigQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-}>;
-
-export type ContributorCollectionConfigQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    callout?:
-      | {
-          __typename?: 'Callout';
-          id: string;
-          framing: {
-            __typename?: 'CalloutFraming';
-            id: string;
-            contributorCounts: {
-              __typename?: 'ContributorCollectionCounts';
-              users: number;
-              organizations: number;
-              virtualContributors: number;
-            };
-          };
-          settings: {
-            __typename?: 'CalloutSettings';
-            framing: {
-              __typename?: 'CalloutSettingsFraming';
-              contributors?:
-                | {
-                    __typename?: 'CalloutContributorsSettings';
-                    contributorTypes: Array<ContributorType>;
-                    defaultContributorType: ContributorType;
-                    defaultView: ContributorCollectionView;
-                  }
-                | undefined;
-            };
-          };
-        }
-      | undefined;
-  };
-};
-
-export type ContributorCollectionByTypeQueryVariables = Exact<{
-  calloutId: Scalars['UUID']['input'];
-  type: ContributorType;
-}>;
-
-export type ContributorCollectionByTypeQuery = {
-  __typename?: 'Query';
-  lookup: {
-    __typename?: 'LookupQueryResults';
-    callout?:
-      | {
-          __typename?: 'Callout';
-          id: string;
-          framing: {
-            __typename?: 'CalloutFraming';
-            id: string;
-            contributors: Array<{
-              __typename?: 'ContributorCollectionItem';
-              id: string;
-              type: ContributorType;
-              displayName: string;
-              avatarUrl?: string | undefined;
-              roleLabel?: string | undefined;
-              url?: string | undefined;
-              location?:
-                | {
-                    __typename?: 'ContributorLocation';
-                    city?: string | undefined;
-                    country?: string | undefined;
-                    latitude?: number | undefined;
-                    longitude?: number | undefined;
-                    hasValidCoordinates: boolean;
-                  }
-                | undefined;
-            }>;
-          };
-        }
-      | undefined;
   };
 };
