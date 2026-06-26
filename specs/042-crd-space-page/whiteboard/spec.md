@@ -245,6 +245,7 @@ A community member with `Contribute` + `CreateWhiteboard` privilege opens a call
 - **FR-WB-019**: Guest access badge slot must accept ReactNode for the existing `GuestVisibilityBadge`
 - **FR-WB-020**: Shell must pass `onClose` through to the dialog, triggering save-before-close in the integration layer
 - **FR-WB-021**: Content area must render `children` (the Excalidraw canvas) as a flex-grow region filling available space
+- **FR-WB-021a**: Escape inside the editor must first cancel the active Excalidraw interaction before closing the dialog, mirroring the standalone Excalidraw app. When Excalidraw has a current selection (elements, groups, a selected linear element, or an active group edit), Escape clears it and keeps the dialog open; when Excalidraw is mid-edit/mid-draw (editing a text or linear element, placing a new or multi-point element, cropping an image), Escape lets Excalidraw finalize that operation and keeps the dialog open; only when there is nothing left to cancel does Escape fall through to the `onClose` save-before-close flow (FR-WB-020 / FR-WB-029). The selection is cleared through the Excalidraw `updateScene` API rather than by relying on Excalidraw's own key handler — when the canvas is unfocused the keydown never reaches it, and even when it does its Escape action re-keeps a plain selection. The shell stays Excalidraw-agnostic: it exposes an optional `onEscapeKeyDown(event) => boolean` interceptor (return `true` to consume the key) and the integration layer supplies the Excalidraw-aware handler (`handleExcalidrawEscape` in `src/domain/common/whiteboard/excalidraw/`), preserving the Excalidraw Isolation Rule.
 
 ### Accessibility
 
@@ -255,7 +256,7 @@ A community member with `Contribute` + `CreateWhiteboard` privilege opens a call
 - **FR-WB-026**: Delete button must have `aria-label` with translated text
 - **FR-WB-027**: Display name edit/save/cancel buttons must have `aria-label`
 - **FR-WB-028**: Focus must be trapped within the editor shell dialog when open
-- **FR-WB-029**: Escape key must trigger the close handler (save-before-close flow)
+- **FR-WB-029**: Escape key must trigger the close handler (save-before-close flow) **when Excalidraw has nothing to cancel** — see FR-WB-021a for the deselect-/cancel-before-close refinement
 
 ### Single-User Mode (US-WB3)
 
