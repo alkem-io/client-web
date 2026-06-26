@@ -92,11 +92,13 @@ export default function ContributorMap({ pins, ariaLabel, onPinClick, className 
             <button
               type="button"
               aria-label={pin.name}
-              className="flex size-7 items-center justify-center rounded-full border-2 border-card bg-primary text-primary-foreground shadow-md transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="block rounded-md transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Avatar className="size-6">
-                {pin.avatarUrl && <AvatarImage src={pin.avatarUrl} alt="" />}
-                <AvatarFallback className="text-[10px]">{pin.name.charAt(0).toUpperCase()}</AvatarFallback>
+              <Avatar className="size-12 rounded-md border-2 border-card shadow-md">
+                {pin.avatarUrl && <AvatarImage src={pin.avatarUrl} alt="" className="object-cover" />}
+                <AvatarFallback className="rounded-md bg-primary text-body text-primary-foreground">
+                  {pin.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
             </button>
           </Marker>
