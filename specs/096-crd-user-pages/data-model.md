@@ -142,13 +142,13 @@ type AssociatedOrganizationCard = {
 // One primitive renders three sites (User Orgs, Org Associates, VC Host).
 ```
 
-**Tab → section filter** (User profile — 3-tab layout per FR-013; default active tab is `Resources Hosted`):
+**Tab → section filter** (User profile — 3-tab layout per FR-013; tab order `Member Of` → `Leading` → `Resources Hosted`; default active tab is `Member Of`):
 
 | Active tab | Sections rendered |
 |---|---|
-| `Resources Hosted` (default) | Four sub-sections in this order: **Spaces** → **Virtual Contributors** → **Template Packs** (`hostedInnovationPacks`) → **Custom Homepages** (`hostedInnovationHubs`). Parent "Resources Hosted" header suppressed; the tab label is the heading. Each sub-section uses a `text-label` uppercase header. |
+| `Member Of` (default) | Member of only; section header suppressed; empty-state caption when the list is empty. |
 | `Leading` | Spaces Leading only; section header suppressed; empty-state caption when the list is empty. |
-| `Member Of` | Member of only; section header suppressed; empty-state caption when the list is empty. |
+| `Resources Hosted` | Four sub-sections in this order: **Spaces** → **Virtual Contributors** → **Template Packs** (`hostedInnovationPacks`) → **Custom Homepages** (`hostedInnovationHubs`). Parent "Resources Hosted" header suppressed; the tab label is the heading. Each sub-section uses a `text-label` uppercase header. |
 
 A section (or sub-section) is *omitted* — no header, no empty caption per slot — when its item list is empty (FR-015). The exception is the Leading and Member of tabs, which render an empty-state caption when their list is empty (so the tab body is never blank).
 
@@ -254,13 +254,13 @@ type CompactContributorCardItem = {
 // there's no reason to keep parallel types.
 ```
 
-**Tab → section filter (Organization right column)** — mirrors User profile per FR-024 refined; default active tab is `Resources Hosted`:
+**Tab → section filter (Organization right column)** — mirrors User profile per FR-024 refined; tab order `All Memberships` → `Lead Spaces` → `Resources Hosted`; default active tab is `All Memberships`:
 
 | Active tab | Sections rendered |
 |---|---|
-| `Resources Hosted` (default) | Four sub-sections in this order: **Spaces** (`hostedSpaces`) → **Virtual Contributors** (`hostedVirtualContributors`) → **Template Packs** (`hostedInnovationPacks`) → **Custom Homepages** (`hostedInnovationHubs`). Parent header suppressed; tab label is the heading. Empty sub-sections omitted entirely. |
+| `All Memberships` (default) | `memberOf` only; section header suppressed; empty-state caption "No memberships yet" (existing `pages.user-profile.communities.noMembership` translation key per FR-102) when the list is empty. |
 | `Lead Spaces` | `leadSpaces` only; section header suppressed; empty-state caption when the list is empty. Filtered via `useFilteredMemberships(contributions, [RoleType.Lead])` — `[Lead]` only (current MUI parity, no Admin). |
-| `All Memberships` | `memberOf` only; section header suppressed; empty-state caption "No memberships yet" (existing `pages.user-profile.communities.noMembership` translation key per FR-102) when the list is empty. |
+| `Resources Hosted` | Four sub-sections in this order: **Spaces** (`hostedSpaces`) → **Virtual Contributors** (`hostedVirtualContributors`) → **Template Packs** (`hostedInnovationPacks`) → **Custom Homepages** (`hostedInnovationHubs`). Parent header suppressed; tab label is the heading. Empty sub-sections omitted entirely. |
 
 A sub-section is *omitted* — no header, no empty caption per slot — when its item list is empty (FR-015). Lead Spaces and All Memberships render an empty-state caption (so the tab body is never blank).
 
@@ -531,7 +531,7 @@ pending ── mutation failure ──▶ popover stays open, inline error appea
 ### User profile resource tab strip
 
 ```text
-mount ── default ──▶ activeTab = 'resourcesHosted'
+mount ── default ──▶ activeTab = 'memberOf'
 click any tab ──▶ activeTab = clicked-tab-key (sections re-filter; no URL change)
 on smaller-than-md viewport ── activeTab change ──▶ active tab auto-scrolled into view
 ```
