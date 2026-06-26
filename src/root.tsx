@@ -26,12 +26,15 @@ import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProv
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
+import { AssistantProvider } from './main/assistant/AssistantContext';
+import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate';
 import { InAppNotificationsProvider } from './main/inAppNotifications/InAppNotificationsContext';
 import { OnlineStatusNotification } from './main/onlineStatus/OnlineStatusNotification';
 import { PushNotificationProvider } from './main/pushNotifications/PushNotificationProvider';
 import { VersionHandling } from './main/versionHandling';
 
 const CrdGlobalErrorDialog = lazyWithGlobalErrorHandler(() => import('./main/crdPages/error/CrdGlobalErrorDialog'));
+const AssistantDialog = lazyWithGlobalErrorHandler(() => import('./main/assistant/AssistantDialog'));
 
 const CrdNotificationsPanelConnector = lazyWithGlobalErrorHandler(
   () => import('./main/ui/layout/CrdNotificationsPanelConnector')
@@ -62,13 +65,23 @@ const AUTH_ROUTE_SEGMENTS = new Set<string>(Object.values(IdentityRoutes));
  * Mounts the unified chat floating launcher. The unified surface is the only
  * messaging entry point, so it is NOT hidden on mobile — only on auth flows and
  * immersive/fullscreen editors.
+ *
+ * The 004 assistant launcher (CrdAssistantButtonGate) is mounted alongside it: it
+ * self-positions just above the unified-chat button and self-gates on the assistant
+ * flag + auth, so it shares the same hide rules (auth flow / fullscreen editor).
  */
 function UnifiedChatGate() {
   const { pathname } = useLocation();
   const { fullscreen } = useFullscreen();
   const isFullscreenEditorOpen = useIsFullscreenEditorOpen();
   const isAuthPage = AUTH_ROUTE_SEGMENTS.has(pathname.split('/')[1]);
-  return <UnifiedChatLauncher hidden={isAuthPage || fullscreen || isFullscreenEditorOpen} />;
+  const hidden = isAuthPage || fullscreen || isFullscreenEditorOpen;
+  return (
+    <>
+      <UnifiedChatLauncher hidden={hidden} />
+      {!hidden && <CrdAssistantButtonGate />}
+    </>
+  );
 }
 
 const Root: FC = () => {
@@ -90,22 +103,27 @@ const Root: FC = () => {
                                 <PushNotificationProvider>
                                   <UnifiedChatProvider>
                                     <FullscreenEditorProvider>
-                                      <NavigationHistoryTracker />
-                                      <ApmUserSetter />
-                                      <ScrollToTop />
-                                      <NotificationsGate />
-                                      <InAppNotificationCountSubscriber />
-                                      <VersionHandling />
-                                      <OnlineStatusNotification />
-                                      <Error40XBoundary
-                                        errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
-                                      >
-                                        <TopLevelRoutes />
-                                        <GlobalErrorDialogGate />
-                                      </Error40XBoundary>
-                                      {/* Rendered after TopLevelRoutes so the full-screen mobile chat
-                                          panel (z-50) paints above the app header (also z-50). */}
-                                      <UnifiedChatGate />
+                                      <AssistantProvider>
+                                        <NavigationHistoryTracker />
+                                        <ApmUserSetter />
+                                        <ScrollToTop />
+                                        <NotificationsGate />
+                                        <InAppNotificationCountSubscriber />
+                                        <Suspense fallback={null}>
+                                          <AssistantDialog />
+                                        </Suspense>
+                                        <VersionHandling />
+                                        <OnlineStatusNotification />
+                                        <Error40XBoundary
+                                          errorComponent={errorState => <CrdAwareErrorComponent {...errorState} />}
+                                        >
+                                          <TopLevelRoutes />
+                                          <GlobalErrorDialogGate />
+                                        </Error40XBoundary>
+                                        {/* Rendered after TopLevelRoutes so the full-screen mobile chat
+                                            panel (z-50) paints above the app header (also z-50). */}
+                                        <UnifiedChatGate />
+                                      </AssistantProvider>
                                     </FullscreenEditorProvider>
                                   </UnifiedChatProvider>
                                 </PushNotificationProvider>
