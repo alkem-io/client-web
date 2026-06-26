@@ -206,7 +206,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         // Legacy shows the post displayName for post-comment context.
         contextName: activity.post?.profile?.displayName,
@@ -218,7 +222,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: calloutContext,
         href: activity.callout?.framing?.profile?.url,
@@ -299,7 +307,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <Mic aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         // Updates don't have their own URL; link to the space (legacy uses buildUpdatesUrl).
@@ -314,7 +326,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         href: activity.callout?.framing?.profile?.url,
