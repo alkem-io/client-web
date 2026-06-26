@@ -201,7 +201,7 @@ const resolveOne = (sx: Exclude<Sx, undefined | false | null>): CSSProperties =>
 
 type ResolvableSx = Exclude<Sx, undefined | false | null>;
 
-export const resolveSx = (sx, base?: CSSProperties): CSSProperties | undefined => {
+export const resolveSx = (sx: any, base?: CSSProperties): CSSProperties | undefined => {
   if (!sx) {
     return base;
   }
