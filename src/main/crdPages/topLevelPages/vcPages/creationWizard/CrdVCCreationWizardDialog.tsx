@@ -92,5 +92,3 @@ const VCCreationWizardWithUpload = ({
     />
   );
 };
-
-export default CrdVCCreationWizardDialog;

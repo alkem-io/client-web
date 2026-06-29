@@ -1,6 +1,5 @@
 import type { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import type { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 export interface WhiteboardFieldSubmittedValues {
   content: string;
@@ -13,9 +12,4 @@ export interface WhiteboardFieldSubmittedValues {
     }[];
   };
   previewSettings: WhiteboardPreviewSettings | undefined; // used if we edit the whiteboard and produces it's own visuals
-}
-
-export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {
-  // Whiteboard Preview Images are sent as visuals in a different call to the server after the callout is saved (See useCalloutCreationWithPreviewImages.ts)
-  previewImages: WhiteboardPreviewImage[] | undefined;
 }

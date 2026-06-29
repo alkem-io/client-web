@@ -66,25 +66,3 @@ fragment UrlResolverResultClosestAncestor on UrlResolverQueryClosestAncestor {
     levelZeroSpaceID
   }
 }
-
-# Needed for search and for resolving the welcome-space id
-# We are not using the subspace resolving anymore but leave it for now, it should be the way to resolve a subspace anyway
-query SpaceUrlResolver(
-  $spaceNameId: NameID!
-  $subspaceL1NameId: NameID = "nameid"
-  $subspaceL2NameId: NameID = "nameid"
-  $includeSubspaceL1: Boolean = false
-  $includeSubspaceL2: Boolean = false
-) {
-  lookupByName {
-    space(NAMEID: $spaceNameId) {
-      id
-      subspaceByNameID(NAMEID: $subspaceL1NameId) @include(if: $includeSubspaceL1) {
-        id
-        subspaceByNameID(NAMEID: $subspaceL2NameId) @include(if: $includeSubspaceL2) {
-          id
-        }
-      }
-    }
-  }
-}

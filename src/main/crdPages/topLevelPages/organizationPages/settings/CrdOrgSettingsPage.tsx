@@ -7,6 +7,7 @@ import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShe
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useOrganizationContext } from '@/domain/community/organization/hooks/useOrganizationContext';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import useOrgSettingsAccessGuard from './useOrgSettingsAccessGuard';
 import useOrgSettingsTab, { type OrgSettingsTabId } from './useOrgSettingsTab';
@@ -41,7 +42,7 @@ const CrdOrgSettingsPage = () => {
     displayName && profileUrl
       ? [
           { label: displayName, href: profileUrl, icon: Building2 },
-          { label: t('breadcrumbs.settings'), href: `${profileUrl}/settings` },
+          { label: t('breadcrumbs.settings'), href: buildSettingsUrl(profileUrl) },
           { label: t(`shell.tabs.org.${activeTabId}`) },
         ]
       : [];

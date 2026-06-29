@@ -29,7 +29,7 @@ import type {
 import {
   getDocumentCalloutRequestData,
   getPostCalloutRequestData,
-} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContent/AddContentProps';
+} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContentUtils';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import { hasReadPrivilege, type MappableSpace, mapSpaceToSelectable } from './vcCreationWizardMapper';
 
