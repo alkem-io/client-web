@@ -520,6 +520,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
             sender: event.message.sender,
             reactions: [],
             threadID: null,
+            attachments: event.message.attachments ?? [],
           };
 
           return {

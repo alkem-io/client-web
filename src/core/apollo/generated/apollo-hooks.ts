@@ -994,6 +994,17 @@ export const ContributorDetailsFragmentDoc = gql`
 }
     ${VisualModelFragmentDoc}
 ${TagsetDetailsFragmentDoc}`;
+export const MessageAttachmentDetailsFragmentDoc = gql`
+    fragment MessageAttachmentDetails on MessageAttachment {
+  id
+  url
+  displayName
+  mimeType
+  size
+  width
+  height
+}
+    `;
 export const MessageDetailsFragmentDoc = gql`
     fragment MessageDetails on Message {
   id
@@ -1006,9 +1017,13 @@ export const MessageDetailsFragmentDoc = gql`
   sender {
     ...ContributorDetails
   }
+  attachments {
+    ...MessageAttachmentDetails
+  }
 }
     ${ReactionDetailsFragmentDoc}
-${ContributorDetailsFragmentDoc}`;
+${ContributorDetailsFragmentDoc}
+${MessageAttachmentDetailsFragmentDoc}`;
 export const VcInteractionsDetailsFragmentDoc = gql`
     fragment VcInteractionsDetails on VcInteraction {
   threadID
@@ -11838,9 +11853,12 @@ export const ReplyToMessageDocument = gql`
       type
     }
     timestamp
+    attachments {
+      ...MessageAttachmentDetails
+    }
   }
 }
-    `;
+    ${MessageAttachmentDetailsFragmentDoc}`;
 export type ReplyToMessageMutationFn = Apollo.MutationFunction<
   SchemaTypes.ReplyToMessageMutation,
   SchemaTypes.ReplyToMessageMutationVariables
@@ -11987,9 +12005,12 @@ export const SendMessageToRoomDocument = gql`
       type
     }
     timestamp
+    attachments {
+      ...MessageAttachmentDetails
+    }
   }
 }
-    `;
+    ${MessageAttachmentDetailsFragmentDoc}`;
 export type SendMessageToRoomMutationFn = Apollo.MutationFunction<
   SchemaTypes.SendMessageToRoomMutation,
   SchemaTypes.SendMessageToRoomMutationVariables
@@ -31068,6 +31089,15 @@ export const ConversationEventsDocument = gql`
             }
           }
         }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
+        }
       }
     }
     conversationUpdated {
@@ -31136,6 +31166,15 @@ export const ConversationEventsDocument = gql`
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
@@ -31215,6 +31254,15 @@ export const ConversationMessagesDocument = gql`
                 displayName
               }
             }
+          }
+          attachments {
+            id
+            url
+            displayName
+            mimeType
+            size
+            width
+            height
           }
         }
       }

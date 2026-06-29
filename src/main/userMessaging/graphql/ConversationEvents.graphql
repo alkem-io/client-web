@@ -84,6 +84,15 @@ subscription ConversationEvents {
             }
           }
         }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
+        }
       }
     }
     conversationUpdated {
@@ -152,6 +161,15 @@ subscription ConversationEvents {
               displayName
             }
           }
+        }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
         }
       }
     }
