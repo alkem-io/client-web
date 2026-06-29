@@ -5,7 +5,7 @@ import {
   WhiteboardDetailsFragmentDoc,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { CreateWhiteboardInput } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import useUploadWhiteboardVisuals from '../WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
@@ -20,22 +20,6 @@ interface WhiteboardWithPreviewVisuals {
       id: string;
     };
   };
-}
-
-export interface IWhiteboardActions {
-  onCreate: (
-    calloutId: string,
-    whiteboard: CreateWhiteboardInput,
-    previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<{ success: boolean; errors?: string[] }>;
-  onDelete: (whiteboard: Identifiable) => Promise<void>;
-
-  onUpdate: (
-    whiteboard: WhiteboardWithPreviewVisuals,
-    previewImages?: WhiteboardPreviewImage[]
-  ) => Promise<{ success: boolean; errors?: string[] }>;
-
-  onChangeDisplayName: (whiteboardId: string | undefined, displayName: string) => Promise<void>;
 }
 
 export interface WhiteboardActionsContainerState {

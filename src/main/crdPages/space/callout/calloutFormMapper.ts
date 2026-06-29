@@ -173,8 +173,7 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
         commentsEnabled: true,
       };
 
-  // On CREATE, tags go in `framing.tags: string[]` (MUI parity — see
-  // mapProfileTagsToCreateTags + CreateCalloutDialog). The server auto-creates
+  // On CREATE, tags go in `framing.tags: string[]`. The server auto-creates
   // the default tagset; sending `framing.profile.tagsets` on create would
   // create a duplicate/conflict that the Whiteboard + MediaGallery framings
   // reject on the server.

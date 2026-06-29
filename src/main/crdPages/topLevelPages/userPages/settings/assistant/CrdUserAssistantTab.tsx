@@ -4,6 +4,7 @@ import { usePlatformCapabilitiesQuery, useUserAssistantSettingsQuery } from '@/c
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { UserAssistantTabView } from '@/crd/components/user/settings/UserAssistantTabView';
 import { useAssistantEnabled } from '@/main/assistant/useAssistantEnabled';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import { mapAssistantCapabilities, type PlatformCapability } from './assistantCapabilitiesMapper';
 import useUserAssistantTabData from './useUserAssistantTabData';
@@ -57,7 +58,7 @@ const CrdUserAssistantTab = () => {
 
   // Feature flag OFF → the tab is not exposed; bounce to the profile tab.
   if (!isAssistantEnabled) {
-    return <Navigate to={profileUrl ? `${profileUrl}/settings/profile` : '..'} replace={true} />;
+    return <Navigate to={profileUrl ? buildSettingsTabUrl(profileUrl, 'profile') : '..'} replace={true} />;
   }
 
   const loading = (capabilitiesLoading && !capabilitiesData) || (settingsLoading && !settingsData);

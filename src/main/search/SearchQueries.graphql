@@ -260,24 +260,6 @@ fragment SearchResultSpace on SearchResultSpace {
   }
 }
 
-query userRolesSearchCards($userId: UUID!) {
-  rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
-    id
-    spaces {
-      id
-      roles
-      subspaces {
-        id
-        roles
-      }
-    }
-    organizations {
-      id
-      roles
-    }
-  }
-}
-
 fragment SearchResultMemo on SearchResultMemo {
   memo {
     id

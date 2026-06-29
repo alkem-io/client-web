@@ -18,7 +18,7 @@ import type { ShareUser } from '@/crd/forms/UserSelector';
 import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import useStorageConfig from '@/domain/storage/StorageBucket/useStorageConfig';
-import type { ConversationMember } from '@/main/userMessaging/useUserConversations';
+import type { ConversationMember } from '@/main/userMessaging/models';
 
 type GroupInitialValues = {
   displayName: string;

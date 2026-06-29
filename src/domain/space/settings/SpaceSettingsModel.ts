@@ -1,5 +1,4 @@
 import type {
-  CalloutDescriptionDisplayMode,
   CommunityMembershipPolicy,
   SpacePrivacyMode,
   UserInformationVisibility,
@@ -25,14 +24,4 @@ export interface SpaceSettingsCollaboration {
   allowEventsFromSubspaces: boolean;
   allowMembersToVideoCall: boolean;
   allowGuestContributions: boolean;
-}
-
-export interface SpaceSettingsLayout {
-  calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
-}
-
-export interface SpaceSettingsModel {
-  privacy: SpaceSettingsPrivacy;
-  membership: SpaceSettingsMembership;
-  collaboration: SpaceSettingsCollaboration;
 }

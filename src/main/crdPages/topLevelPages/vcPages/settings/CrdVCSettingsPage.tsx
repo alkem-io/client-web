@@ -7,6 +7,7 @@ import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTra
 import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShell';
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import useVcSettingsAccessGuard from './useVcSettingsAccessGuard';
@@ -49,7 +50,7 @@ const CrdVCSettingsPage = () => {
     displayName && profileUrl
       ? [
           { label: displayName, href: profileUrl, icon: Bot },
-          { label: t('breadcrumbs.settings'), href: `${profileUrl}/settings` },
+          { label: t('breadcrumbs.settings'), href: buildSettingsUrl(profileUrl) },
           { label: t(`shell.tabs.vc.${activeTabId}`) },
         ]
       : [];

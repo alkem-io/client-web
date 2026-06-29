@@ -91,10 +91,6 @@ afterAll(() => {
   }
 });
 
-export const resetSessionStorageMock = () => {
-  sessionStorageMock.clear();
-};
-
 export const setSessionStorageImplementation = (storage: SessionStorageMock) => {
   defineSessionStorage(globalThis as typeof globalThis & { sessionStorage?: Storage }, storage);
   if (globalThis.window !== undefined) {

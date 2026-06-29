@@ -250,7 +250,7 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 **Why a separate phase**: like Phase 8, the original spec's choice (5-tab strip, prototype-faithful resource list) was implemented and shipped before this refinement. The change touches the contract (`ResourceTabKey` shrinks from 5 → 3 elements; `PublicProfileResources` gains 2 fields), the mapper, the view, the i18n keys, and the demo data — grouping them in one phase makes the rollback boundary clean.
 
-- [ ] T069 Update the contract types in `src/crd/components/user/UserResourceTabStrip.tsx`: shrink `ResourceTabKey` to `'resourcesHosted' | 'leading' | 'memberOf'`. Update `useResourceTabs.ts` default to `'resourcesHosted'`.
+- [ ] T069 Update the contract types in `src/crd/components/user/UserResourceTabStrip.tsx`: shrink `ResourceTabKey` to `'resourcesHosted' | 'leading' | 'memberOf'`. Update `useResourceTabs.ts` default to `'memberOf'`.
 
 - [ ] T070 Refactor `src/crd/components/user/UserResourceSections.tsx`:
   - Drop the `'allResources' | 'hostedSpaces' | 'virtualContributors'` switch branches.
@@ -266,7 +266,7 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
   - Update any call site in `CrdUserProfilePage.tsx` to forward the two new fields to the view.
 
 - [ ] T072 Update `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx`:
-  - Tab definitions array drops the two removed entries; default active tab is `'resourcesHosted'`.
+  - Tab definitions array drops the two removed entries; tab order is `memberOf` → `leading` → `resourcesHosted`; default active tab is `'memberOf'`.
   - Wire the two new `hostedInnovationPacks` / `hostedInnovationHubs` props from the mapper through to `UserResourceSections`.
   - Drop the `totalBadge` and `resourcesHosted` label values.
 
@@ -281,9 +281,9 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 - [ ] T074 Demo data + pages:
   - `src/crd/app/data/profiles.ts` — add 2-3 mock Template Packs and 1-2 mock Custom Homepages to `MOCK_ALEX_RIVERA` (and inherited by `MOCK_ME_USER`). Shape: `SimpleResourceCardItem`.
-  - `src/crd/app/pages/{UserProfileSelfDemoPage,UserProfileOtherDemoPage}.tsx` — drop the `tabs` array entries for hostedSpaces / virtualContributors; pass the new `hostedInnovationPacks` / `hostedInnovationHubs` props; drop the `totalBadge` and `resourcesHosted` label values; default the local `useState` to `'resourcesHosted'`.
+  - `src/crd/app/pages/{UserProfileSelfDemoPage,UserProfileOtherDemoPage}.tsx` — drop the `tabs` array entries for hostedSpaces / virtualContributors; pass the new `hostedInnovationPacks` / `hostedInnovationHubs` props; drop the `totalBadge` and `resourcesHosted` label values; default the local `useState` to `'memberOf'`.
 
-**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the User profile demo with 3 tabs, Resources Hosted active by default, all four sub-sections (Spaces / Virtual Contributors / Template Packs / Custom Homepages) rendering for `MOCK_ALEX_RIVERA`, and an empty Leading tab still showing the empty-state caption.
+**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the User profile demo with 3 tabs (Member of → Leading → Resources Hosted), Member of active by default, and — on the Resources Hosted tab — all four sub-sections (Spaces / Virtual Contributors / Template Packs / Custom Homepages) rendering for `MOCK_ALEX_RIVERA`, with an empty Leading tab still showing the empty-state caption.
 
 ---
 
@@ -329,9 +329,9 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 - [ ] T081 Update `src/crd/app/data/profiles.ts` and `src/crd/app/pages/OrganizationProfileDemoPage.tsx`:
   - `MOCK_ORG_ALKEMIO`: replace the `accountResources: AccountResourcesGroup` block with 4 separate arrays (`hostedSpaces`, `hostedVirtualContributors` — keep the existing 4 spaces + 2 packs + 1 hub from the demo, add a 1-2 mock VCs to exercise the new sub-section).
-  - `OrganizationProfileDemoPage.tsx`: drop the `accountResources` prop wiring; add `useState<ResourceTabKey>('resourcesHosted')`; pass the 4 new arrays and the `tabStrip` prop.
+  - `OrganizationProfileDemoPage.tsx`: drop the `accountResources` prop wiring; add `useState<ResourceTabKey>('memberOf')`; pass the 4 new arrays and the `tabStrip` prop.
 
-**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the Org profile demo with 3 tabs, Resources Hosted active by default, all 4 sub-sections rendering for `MOCK_ORG_ALKEMIO`. Toggle to Lead Spaces / All Memberships — only that tab's content renders.
+**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the Org profile demo with 3 tabs (All Memberships → Lead Spaces → Resources Hosted), All Memberships active by default. Toggle to Resources Hosted — all 4 sub-sections render for `MOCK_ORG_ALKEMIO`; Lead Spaces / All Memberships show only that tab's content.
 
 ---
 

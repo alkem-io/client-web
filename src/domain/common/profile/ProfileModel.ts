@@ -1,7 +1,7 @@
-import { EmptyLocationMapped, type LocationModelMapped } from '../location/LocationModelMapped';
+import type { LocationModelMapped } from '../location/LocationModelMapped';
 import type { ReferenceModel } from '../reference/ReferenceModel';
-import { EmptyTagset, type TagsetModel } from '../tagset/TagsetModel';
-import type { VisualModel, VisualModelFull } from '../visual/model/VisualModel';
+import type { TagsetModel } from '../tagset/TagsetModel';
+import type { VisualModel } from '../visual/model/VisualModel';
 
 export interface ProfileModel {
   id: string;
@@ -16,18 +16,3 @@ export interface ProfileModel {
   visuals?: VisualModel[];
   url?: string;
 }
-
-export interface ProfileModelFull extends ProfileModel {
-  visuals?: VisualModelFull[];
-}
-
-export const EmptyProfileModel: ProfileModelFull = {
-  id: '',
-  displayName: '',
-  description: '',
-  location: EmptyLocationMapped,
-  references: [],
-  tagline: '',
-  tagsets: [EmptyTagset],
-  visuals: [],
-};
