@@ -11,13 +11,6 @@ query SpaceStorageAdminPage($spaceId: UUID!) {
     }
   }
 }
-query StorageAggregatorLookup($storageAggregatorId: UUID!) {
-  lookup {
-    storageAggregator(ID: $storageAggregatorId) {
-      ...StorageAggregator
-    }
-  }
-}
 
 fragment StorageAggregator on StorageAggregator {
   id

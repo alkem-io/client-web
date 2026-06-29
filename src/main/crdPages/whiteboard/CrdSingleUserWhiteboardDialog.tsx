@@ -35,7 +35,9 @@ import type {
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
+import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
+import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 
 type ExcalidrawUtils = {
@@ -252,11 +254,14 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
             open={options.show}
             fullscreen={options.fullscreen}
             onClose={onClose}
+            // Escape first deselects/cancels in Excalidraw; only closes the dialog when there's nothing to clear.
+            onEscapeKeyDown={event => handleExcalidrawEscape(excalidrawAPI, event)}
             title={options.dialogTitle ?? t('common.Whiteboard')}
             titleExtra={
               options.canEdit ? <WhiteboardTemplatePickerButton onImport={handleImportTemplate} /> : undefined
             }
             headerActions={options.headerActions}
+            rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
             footer={
               <WhiteboardSaveFooter
                 onDelete={actions.onDelete ? () => actions.onDelete?.(whiteboard) : undefined}

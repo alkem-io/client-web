@@ -1,0 +1,233 @@
+import type React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { cn } from '@/crd/lib/utils';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
+import { AssistantConfirmation } from './AssistantConfirmation';
+import { useAssistantContext } from './AssistantContext';
+import { AssistantTextPart } from './AssistantTextPart';
+import { AssistantToolActivity } from './AssistantToolActivity';
+import { AssistantErrorCode, type AssistantMessage, type ConfirmationPart, type MessagePart } from './types';
+import { useAssistantConversation } from './useAssistantConversation';
+
+/**
+ * Renders the single rolling conversation: ordered message parts per turn.
+ * - `text` → streamed markdown (throttled re-parse).
+ * - `tool-activity` → human-readable "Searching…" with status (FR-004).
+ * - `tool-result` → optional inline result summary.
+ * - `confirmation` → the itemized write proposal with a single Approve / Decline
+ *   control (US2 / FR-015); the still-pending proposal is actionable, a
+ *   superseded/resolved one is rendered with the control disabled.
+ *
+ * A turn-level `error` renders a clear, non-blocking message; for
+ * `permission_denied` (the wire code surfaced when a write capability is disabled
+ * in the user's grant) it links to Settings → Assistant (US2 / FR-018).
+ * Clarifying questions are NORMAL text turns and never reach this error UI (T013).
+ */
+export const AssistantConversationView = () => {
+  const { t } = useTranslation();
+  const { state, setIsOpen, clearPanelContext } = useAssistantContext();
+  const { submitConfirmationDecision } = useAssistantConversation();
+  const navigate = useNavigate();
+
+  const handleDecision = (proposedWriteSetId: string, decision: 'approve' | 'decline') => {
+    void submitConfirmationDecision(proposedWriteSetId, decision);
+  };
+
+  // Clicking a link the assistant produced should TAKE the user to it and CLOSE
+  // the panel — never leave the assistant floating over the destination. We
+  // intercept in the capture phase (before RouterLink's own handler) so that, for
+  // a same-origin link, we navigate in-app once and dismiss the panel, instead of
+  // RouterLink popping a new tab (absolute URL) or client-side-navigating while
+  // the panel stays open behind it. External links keep their native behavior and
+  // leave the panel untouched.
+  const handleLinkClickCapture = (event: React.MouseEvent<HTMLElement>) => {
+    // Only plain left-clicks; let modified clicks (Cmd/Ctrl/middle = new tab) be.
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    const anchor = (event.target as HTMLElement).closest('a');
+    const href = anchor?.getAttribute('href');
+    if (!href || href.startsWith('#')) {
+      return; // not a link, or an in-page anchor — leave it alone
+    }
+
+    let internalPath: string | null = null;
+    try {
+      const url = new URL(href, window.location.origin);
+      if (url.origin === window.location.origin) {
+        internalPath = `${url.pathname}${url.search}${url.hash}`;
+      }
+    } catch {
+      // Unparseable href — let the browser handle it natively.
+    }
+
+    if (internalPath) {
+      event.preventDefault();
+      event.stopPropagation();
+      setIsOpen(false);
+      clearPanelContext();
+      navigate(internalPath);
+    }
+  };
+
+  return (
+    <div
+      className="flex flex-grow flex-col gap-4 overflow-y-auto p-4"
+      onClickCapture={handleLinkClickCapture}
+      // A conversation log: announce only newly-added content (not the whole
+      // growing buffer on every token), and flag busy while a turn streams (T031).
+      role="log"
+      aria-label={t('assistant.title')}
+      aria-live="polite"
+      aria-relevant="additions"
+      aria-busy={state.isStreaming}
+    >
+      {state.messages.length === 0 && <p className="text-body text-muted-foreground">{t('assistant.intro')}</p>}
+
+      {state.messages.map(message => (
+        <AssistantMessageView
+          key={message.id}
+          message={message}
+          streaming={state.isStreaming}
+          pendingConfirmationId={state.pendingConfirmationId}
+          onDecision={handleDecision}
+        />
+      ))}
+
+      {state.isStreaming && state.messages.length > 0 && (
+        // <output> carries an implicit role="status" so assistive tech announces the streaming state.
+        <output className="text-caption text-muted-foreground">{t('assistant.thinking')}</output>
+      )}
+
+      {state.error && (
+        <div role="alert">
+          <AssistantErrorAlert code={state.error.code} message={state.error.message} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * The turn-level error UI. For `permission_denied` (which is also the wire code
+ * surfaced when a write capability is disabled in the user's grant — there is no
+ * distinct `capability_disabled` wire code, browser-assistant-sse.md) we add a
+ * hint linking to Settings → Assistant (US2 / FR-018). `session_invalid`
+ * (incl. an expired/invalid approval) reads "please re-ask".
+ */
+const AssistantErrorAlert = ({ code, message }: { code: AssistantErrorCode; message: string }) => {
+  const { t } = useTranslation();
+  const { userModel } = useCurrentUserContext();
+  const settingsUrl = buildSettingsTabUrl(userModel?.profile?.url, 'assistant');
+
+  return (
+    <div className="flex flex-col gap-1 rounded-lg border border-destructive/50 bg-destructive/5 p-3 text-destructive">
+      <span className="text-body">{message || t(`assistant.errors.${code}` as const)}</span>
+      {code === AssistantErrorCode.PermissionDenied && settingsUrl && (
+        <RouterLink to={settingsUrl} className="text-caption text-primary underline-offset-4 hover:underline">
+          {t('assistant.confirmation.enableCapabilityLink')}
+        </RouterLink>
+      )}
+    </div>
+  );
+};
+
+const AssistantMessageView = ({
+  message,
+  streaming,
+  pendingConfirmationId,
+  onDecision,
+}: {
+  message: AssistantMessage;
+  streaming: boolean;
+  pendingConfirmationId: string | null;
+  onDecision: (proposedWriteSetId: string, decision: 'approve' | 'decline') => void;
+}) => {
+  const { t } = useTranslation();
+  const isUser = message.role === 'user';
+  return (
+    // Announce who authored the turn (T031) without a visual label.
+    // biome-ignore lint/a11y/useSemanticElements: a labelled conversation turn is a generic grouping; <fieldset> is for form-control grouping and is not a valid substitute.
+    <div
+      className={cn('flex max-w-[85%] flex-col gap-2', isUser ? 'self-end' : 'self-start')}
+      role="group"
+      aria-label={isUser ? t('assistant.a11y.userTurn') : t('assistant.a11y.assistantTurn')}
+    >
+      {message.parts.map((part, index) => (
+        <AssistantPartView
+          key={partKey(message.id, part, index)}
+          part={part}
+          streaming={streaming}
+          pendingConfirmationId={pendingConfirmationId}
+          onDecision={onDecision}
+        />
+      ))}
+    </div>
+  );
+};
+
+const AssistantPartView = ({
+  part,
+  streaming,
+  pendingConfirmationId,
+  onDecision,
+}: {
+  part: MessagePart;
+  streaming: boolean;
+  pendingConfirmationId: string | null;
+  onDecision: (proposedWriteSetId: string, decision: 'approve' | 'decline') => void;
+}) => {
+  switch (part.type) {
+    case 'text':
+      return <AssistantTextPart text={part.text} streaming={streaming} />;
+    case 'tool-activity':
+      return <AssistantToolActivity part={part} />;
+    case 'tool-result':
+      return <span className="text-caption text-muted-foreground">{part.summary}</span>;
+    case 'confirmation':
+      return (
+        <ConfirmationPartView
+          part={part}
+          // Only the still-pending proposal is actionable; a superseded/resolved
+          // one is rendered but its control disabled (e.g. an already-approved
+          // set or a rehydrated set whose stream has since ended).
+          actionable={pendingConfirmationId === part.proposedWriteSetId}
+          streaming={streaming}
+          onDecision={onDecision}
+        />
+      );
+    default:
+      return null;
+  }
+};
+
+const ConfirmationPartView = ({
+  part,
+  actionable,
+  streaming,
+  onDecision,
+}: {
+  part: ConfirmationPart;
+  actionable: boolean;
+  streaming: boolean;
+  onDecision: (proposedWriteSetId: string, decision: 'approve' | 'decline') => void;
+}) => (
+  <AssistantConfirmation
+    part={part}
+    disabled={!actionable || streaming}
+    onApprove={() => onDecision(part.proposedWriteSetId, 'approve')}
+    onDecline={() => onDecision(part.proposedWriteSetId, 'decline')}
+  />
+);
+
+function partKey(messageId: string, part: MessagePart, index: number): string {
+  if (part.type === 'tool-activity' || part.type === 'tool-result') {
+    return `${messageId}-${part.type}-${part.toolActionId}`;
+  }
+  if (part.type === 'confirmation') {
+    return `${messageId}-${part.proposedWriteSetId}`;
+  }
+  return `${messageId}-${index}`;
+}

@@ -5,6 +5,7 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import Loading from '@/core/ui/loading/Loading';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { InnovationHubHome } from '@/crd/components/innovationHub/InnovationHubHome';
+import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
@@ -34,14 +35,13 @@ function useRedirectToHubSubdomain(hubSubdomain: string | undefined, isPathEntry
   useEffect(() => {
     if (!ready || !isPathEntry || !hubSubdomain) return;
     if (import.meta.env.MODE !== 'production') return;
-    const { hostname, protocol } = window.location;
+    const { hostname } = window.location;
     // Skip if we're already on the right subdomain. Heuristic: the hostname
     // starts with `${subdomain}.`. Conservative — we only redirect when the
     // current host clearly isn't the subdomain.
     if (hostname.startsWith(`${hubSubdomain}.`)) return;
-    const domain = hostname.split('.').slice(-2).join('.');
-    if (!domain) return;
-    window.location.replace(`${protocol}//${hubSubdomain}.${domain}`);
+    // Subdomain origin building lives in urlBuilders (buildInnovationHubUrl).
+    window.location.replace(buildInnovationHubUrl(hubSubdomain));
   }, [hubSubdomain, isPathEntry, ready]);
 }
 

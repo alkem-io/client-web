@@ -5,8 +5,10 @@ import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
 import useActivityOnCollaboration from '@/domain/collaboration/activity/useActivityLogOnCollaboration/useActivityOnCollaboration';
-import { RECENT_ACTIVITIES_LIMIT_EXPANDED, RECENT_ACTIVITIES_LIMIT_INITIAL } from '@/domain/space/common/constants';
 import { mapActivityToFeedItems } from '../../dashboard/dashboardDataMappers';
+
+const RECENT_ACTIVITIES_LIMIT_INITIAL = 15;
+const RECENT_ACTIVITIES_LIMIT_EXPANDED = 50;
 
 const ALLOWED_ACTIVITY_TYPES = Object.values(ActivityEventType).filter(
   type => type !== ActivityEventType.CalloutWhiteboardContentModified
@@ -23,6 +25,7 @@ export function CrdSpaceActivityDialogConnector({ open, onOpenChange, spaceId }:
   const { t: tMain } = useTranslation();
 
   const { data: spacePageData } = useSpacePageQuery({
+    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: spaceId! },
     skip: !open || !spaceId,
     errorPolicy: 'all',

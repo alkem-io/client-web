@@ -10,7 +10,7 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { buildSettingsUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { ContactLeadsDialogConnector } from '../dialogs/ContactLeadsDialogConnector';
@@ -74,7 +74,7 @@ export default function CrdSpaceCommunityPage() {
       references={guidelines.references}
       loading={guidelines.loading}
       canEdit={permissions.canUpdate}
-      onEditClick={() => navigate(`${buildSettingsUrl(space.about.profile.url)}/community#guidelines`)}
+      onEditClick={() => navigate(buildSettingsTabUrl(space.about.profile.url, 'community', 'guidelines'))}
     />
   ) : undefined;
 
@@ -84,7 +84,9 @@ export default function CrdSpaceCommunityPage() {
         <SpaceSidebar
           variant="community"
           description={space.about.profile.description || ''}
-          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
+          onEditClick={
+            permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
+          }
           leads={sidebarLeads}
           canContactLeads={canContactLeads}
           onContactLead={handleContactLead}

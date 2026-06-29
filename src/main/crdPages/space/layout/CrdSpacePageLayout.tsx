@@ -38,7 +38,7 @@ import {
   type SpaceSettingsTabId,
   useSpaceSettingsTab,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
-import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl, buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
@@ -132,7 +132,7 @@ export default function CrdSpacePageLayout() {
   const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings;
 
   const tabItems = tabs.map(tab => ({ label: tab.label, index: tab.index }));
-  const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
+  const settingsHref = space.about.profile.url ? buildSettingsUrl(space.about.profile.url) : undefined;
 
   const headerActions = {
     showActivity: true,
@@ -310,7 +310,7 @@ function L0Breadcrumbs({
   const items: BreadcrumbTrailItem[] = isOnSettings
     ? [
         { label: spaceDisplayName, href: spaceUrl, icon: Layers },
-        { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+        { label: t('tabs.settings'), href: buildSettingsUrl(spaceUrl) },
         { label: t(`tabs.${activeSettingsTab}`) },
       ]
     : [{ label: spaceDisplayName, icon: Layers }];

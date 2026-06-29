@@ -48,13 +48,6 @@ body {
   flex-direction: column;
 }
 
-[aria-role='heading'] {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-style: italic;
-}
-
 .markdown {
   word-wrap: break-word;
 }

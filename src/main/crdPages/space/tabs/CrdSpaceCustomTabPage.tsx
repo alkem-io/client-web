@@ -10,6 +10,7 @@ import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { LazyCalloutItem } from '../callout/LazyCalloutItem';
@@ -114,7 +115,9 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           variant="knowledge"
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
-          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
+          onEditClick={
+            permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
+          }
         >
           {/* The full post index is now behind this button — the heavy list query
               fires only when the dialog opens (feature 007). */}
