@@ -1,4 +1,4 @@
-import { AtSign, Send, Smile } from 'lucide-react';
+import { AtSign, Loader2, Paperclip, Send, Smile, X } from 'lucide-react';
 import { type CSSProperties, type KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mention, MentionsInput, type SuggestionDataItem } from 'react-mentions';
@@ -8,7 +8,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { MentionSuggestionItem } from './MentionSuggestionItem';
-import type { CommentAuthor, CrdMentionSearch, CrdMentionSuggestion } from './types';
+import type { CommentAuthor, ComposerAttachment, CrdMentionSearch, CrdMentionSuggestion } from './types';
 
 type CommentInputProps = {
   currentUser?: CommentAuthor;
@@ -29,6 +29,23 @@ type CommentInputProps = {
    * input leaves this off so the page doesn't jump to the box on load.
    */
   autoFocus?: boolean;
+  /**
+   * Enables the attach-file affordance (feature 013). Only the conversation
+   * composer opts in this round; comment/post composers leave it off and render
+   * exactly as before. When true a paperclip button + preview chips appear and
+   * the message can be sent with attachments only (no text required).
+   */
+  attachmentsEnabled?: boolean;
+  /** Currently staged attachments (with their upload lifecycle state). */
+  attachments?: ComposerAttachment[];
+  /** User picked one or more files via the attach button. */
+  onAttachFiles?: (files: File[]) => void;
+  /** User removed a staged attachment chip. */
+  onRemoveAttachment?: (id: string) => void;
+  /** A localized validation / upload error to surface under the composer. */
+  attachmentError?: string;
+  /** `accept` attribute for the file picker, derived from the bucket policy. */
+  acceptMimeTypes?: string;
 };
 
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
@@ -94,16 +111,37 @@ export function CommentInput({
   maxLength = 2000,
   mentionSearch,
   autoFocus,
+  attachmentsEnabled = false,
+  attachments = [],
+  onAttachFiles,
+  onRemoveAttachment,
+  attachmentError,
+  acceptMimeTypes,
 }: CommentInputProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [content, setContent] = useState('');
 
   const trimmedContent = content.trim();
-  const canSend = !disabled && trimmedContent.length > 0;
+  const anyUploading = attachments.some(attachment => attachment.status === 'uploading');
+  const readyAttachmentCount = attachments.filter(attachment => attachment.status === 'ready').length;
+  // With attachments enabled, an attachment-only message (no text) is valid;
+  // block sending while any upload is still in flight.
+  const canSend =
+    !disabled && !anyUploading && (trimmedContent.length > 0 || (attachmentsEnabled && readyAttachmentCount > 0));
   const showCharCount = content.length >= Math.floor(maxLength * 0.8);
   const mentionsEnabled = Boolean(mentionSearch);
+
+  const handleFilesPicked = (fileList: FileList | null) => {
+    if (!fileList || fileList.length === 0) return;
+    onAttachFiles?.(Array.from(fileList));
+    // Reset so picking the same file again re-triggers onChange.
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const resizeTextarea = () => {
     const textarea = textareaRef.current;
@@ -195,6 +233,37 @@ export function CommentInput({
       </Avatar>
 
       <div className="min-w-0 flex-1">
+        {attachmentsEnabled && attachments.length > 0 && (
+          <ul aria-label={t('comments.attachments.attach')} className="mb-1.5 flex flex-wrap gap-1.5">
+            {attachments.map(attachment => (
+              <li
+                key={attachment.id}
+                className={cn(
+                  'flex max-w-[12rem] items-center gap-1.5 rounded-md border border-border bg-muted/40 py-1 pl-2 pr-1 text-caption',
+                  attachment.status === 'error' && 'border-destructive/50 text-destructive'
+                )}
+              >
+                {attachment.status === 'uploading' ? (
+                  <Loader2
+                    aria-label={t('comments.attachments.uploading')}
+                    className="size-3.5 shrink-0 animate-spin"
+                  />
+                ) : (
+                  <Paperclip aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground" />
+                )}
+                <span className="min-w-0 flex-1 truncate">{attachment.name}</span>
+                <button
+                  type="button"
+                  onClick={() => onRemoveAttachment?.(attachment.id)}
+                  aria-label={t('comments.attachments.removeAttachment', { name: attachment.name })}
+                  className="flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <X aria-hidden="true" className="size-3.5" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
         <div className="flex items-end gap-1 rounded-md border border-border bg-background px-2 py-1.5 transition-colors focus-within:border-primary/50">
           {mentionsEnabled ? (
             <div className="min-h-6 min-w-0 flex-1 text-body [&_textarea]:placeholder:text-muted-foreground">
@@ -274,6 +343,29 @@ export function CommentInput({
           )}
 
           <div className="flex shrink-0 items-center gap-0.5 pb-0.5">
+            {attachmentsEnabled && (
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple={true}
+                  accept={acceptMimeTypes}
+                  className="hidden"
+                  onChange={event => handleFilesPicked(event.target.files)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 text-muted-foreground hover:text-foreground md:h-7 md:w-7"
+                  disabled={disabled}
+                  onClick={() => fileInputRef.current?.click()}
+                  aria-label={t('comments.attachments.attach')}
+                >
+                  <Paperclip className="h-3.5 w-3.5 md:h-4 md:w-4" aria-hidden="true" />
+                </Button>
+              </>
+            )}
             {mentionsEnabled && (
               <Button
                 type="button"
@@ -319,6 +411,12 @@ export function CommentInput({
           <div className="mt-1 text-right text-caption text-muted-foreground">
             {t('comments.charCount', { count: content.length, max: maxLength })}
           </div>
+        )}
+
+        {attachmentsEnabled && attachmentError && (
+          <p role="alert" className="mt-1 text-caption text-destructive">
+            {attachmentError}
+          </p>
         )}
       </div>
     </div>

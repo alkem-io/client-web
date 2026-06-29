@@ -68,9 +68,7 @@ describe('MessageAttachments', () => {
     fireEvent.error(img);
     // Image is replaced by the downloadable chip carrying the unavailable hint.
     expect(screen.queryByRole('img')).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: `messageAttachments.download:${image.displayName}` })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: `messageAttachments.download:${image.displayName}` })).toBeInTheDocument();
     expect(screen.getByText('messageAttachments.unavailableHint')).toBeInTheDocument();
   });
 

@@ -746,7 +746,16 @@
     "empty": "No comments yet",
     "unknownUser": "Unknown user",
     "signInToComment": "Sign in to comment, reply or react.",
-    "cantComment": "You don't have permission to comment, reply or react here."
+    "cantComment": "You don't have permission to comment, reply or react here.",
+    "attachments": {
+      "attach": "Attach files",
+      "removeAttachment": "Remove {{name}}",
+      "uploading": "Uploading…",
+      "uploadFailed": "Upload failed",
+      "errorTooMany": "You can attach up to {{max}} files.",
+      "errorTooLarge": "{{name}} is larger than {{max}} MB.",
+      "errorUnsupportedType": "{{name}} has an unsupported file type."
+    }
   },
   "dialogs": {
     "cancel": "Cancel",

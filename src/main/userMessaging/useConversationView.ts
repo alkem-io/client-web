@@ -48,8 +48,9 @@ export const useConversationView = (
     onLeaveConversation?.();
   };
 
-  const handleSendMessage = async (message: string) => {
-    if (!conversation?.roomId || !message.trim()) return;
+  const handleSendMessage = async (message: string, attachments?: string[]) => {
+    const hasAttachments = Boolean(attachments && attachments.length > 0);
+    if (!conversation?.roomId || (!message.trim() && !hasAttachments)) return;
 
     try {
       await sendMessage({
@@ -57,6 +58,8 @@ export const useConversationView = (
           messageData: {
             roomID: conversation.roomId,
             message: message.trim(),
+            // file-service document ids (feature 013); omitted when none staged.
+            attachments: hasAttachments ? attachments : undefined,
           },
         },
       });

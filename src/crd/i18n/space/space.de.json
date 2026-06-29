@@ -746,7 +746,16 @@
     "empty": "Noch keine Kommentare",
     "unknownUser": "Unbekannter Benutzer",
     "signInToComment": "Melde dich an, um zu kommentieren, antworten oder reagieren.",
-    "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren."
+    "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren.",
+    "attachments": {
+      "attach": "Dateien anhängen",
+      "removeAttachment": "{{name}} entfernen",
+      "uploading": "Wird hochgeladen…",
+      "uploadFailed": "Hochladen fehlgeschlagen",
+      "errorTooMany": "Du kannst bis zu {{max}} Dateien anhängen.",
+      "errorTooLarge": "{{name}} ist größer als {{max}} MB.",
+      "errorUnsupportedType": "{{name}} hat einen nicht unterstützten Dateityp."
+    }
   },
   "dialogs": {
     "cancel": "Abbrechen",

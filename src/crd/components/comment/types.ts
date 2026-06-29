@@ -83,6 +83,19 @@ export type CommentsContainerData = {
 };
 
 /**
+ * A staged attachment in the composer (feature 013) — its upload lifecycle is
+ * owned by the integration layer; the input only renders the chip + remove
+ * affordance and reports picks/removals via callbacks.
+ */
+export type ComposerAttachment = {
+  id: string;
+  name: string;
+  /** Upload lifecycle of the staged file. */
+  status: 'uploading' | 'ready' | 'error';
+  mimeType?: string;
+};
+
+/**
  * Shape of a single @mention suggestion as rendered by the CRD comment input.
  * The `id` doubles as the mention's stable link target — we use the contributor's
  * profile URL so the resulting markdown `[@Name](url)` works as a real link.

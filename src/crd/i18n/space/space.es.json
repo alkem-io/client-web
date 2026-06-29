@@ -746,7 +746,16 @@
     "empty": "Sin comentarios aún",
     "unknownUser": "Usuario desconocido",
     "signInToComment": "Inicia sesión para comentar, responder o reaccionar.",
-    "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí."
+    "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí.",
+    "attachments": {
+      "attach": "Adjuntar archivos",
+      "removeAttachment": "Quitar {{name}}",
+      "uploading": "Subiendo…",
+      "uploadFailed": "Error al subir",
+      "errorTooMany": "Puedes adjuntar hasta {{max}} archivos.",
+      "errorTooLarge": "{{name}} supera los {{max}} MB.",
+      "errorUnsupportedType": "{{name}} tiene un tipo de archivo no admitido."
+    }
   },
   "dialogs": {
     "cancel": "Cancelar",

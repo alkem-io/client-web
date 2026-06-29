@@ -746,7 +746,16 @@
     "empty": "Nog geen opmerkingen",
     "unknownUser": "Onbekende gebruiker",
     "signInToComment": "Log in om te reageren, antwoorden of een reactie te geven.",
-    "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven."
+    "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven.",
+    "attachments": {
+      "attach": "Bestanden toevoegen",
+      "removeAttachment": "{{name}} verwijderen",
+      "uploading": "Uploaden…",
+      "uploadFailed": "Uploaden mislukt",
+      "errorTooMany": "Je kunt maximaal {{max}} bestanden toevoegen.",
+      "errorTooLarge": "{{name}} is groter dan {{max}} MB.",
+      "errorUnsupportedType": "{{name}} heeft een niet-ondersteund bestandstype."
+    }
   },
   "dialogs": {
     "cancel": "Annuleren",

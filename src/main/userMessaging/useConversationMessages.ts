@@ -6,7 +6,7 @@ export type { ConversationMessage } from './models';
 
 export const useConversationMessages = (conversationId: string | null) => {
   const { data, loading, error } = useConversationMessagesQuery({
-    variables: { conversationId: conversationId! },
+    variables: { conversationId: conversationId ?? '' },
     skip: !conversationId,
     fetchPolicy: 'cache-and-network',
   });

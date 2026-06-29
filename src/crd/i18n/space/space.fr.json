@@ -746,7 +746,16 @@
     "empty": "Pas encore de commentaires",
     "unknownUser": "Utilisateur inconnu",
     "signInToComment": "Connectez-vous pour commenter, répondre ou réagir.",
-    "cantComment": "Vous n'avez pas la permission de commenter, répondre ou réagir ici."
+    "cantComment": "Vous n'avez pas la permission de commenter, répondre ou réagir ici.",
+    "attachments": {
+      "attach": "Joindre des fichiers",
+      "removeAttachment": "Retirer {{name}}",
+      "uploading": "Téléversement…",
+      "uploadFailed": "Échec du téléversement",
+      "errorTooMany": "Vous pouvez joindre jusqu’à {{max}} fichiers.",
+      "errorTooLarge": "{{name}} dépasse {{max}} Mo.",
+      "errorUnsupportedType": "{{name}} a un type de fichier non pris en charge."
+    }
   },
   "dialogs": {
     "cancel": "Annuler",

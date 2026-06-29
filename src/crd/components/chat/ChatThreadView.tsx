@@ -2,7 +2,7 @@ import { Loader2 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
-import type { CommentAuthor } from '@/crd/components/comment/types';
+import type { CommentAuthor, ComposerAttachment } from '@/crd/components/comment/types';
 import { ChatMessageBubble } from './ChatMessageBubble';
 import type { ChatMessage, ChatThreadHeader } from './types';
 
@@ -18,6 +18,14 @@ type ChatThreadViewProps = {
   onSendMessage?: (content: string) => void;
   onAddReaction?: (messageId: string, emoji: string) => void;
   onRemoveReaction?: (messageId: string, emoji: string) => void;
+  /** Attachments (feature 013): when enabled the composer shows the attach
+   *  affordance + preview chips. Owned by the integration layer. */
+  attachmentsEnabled?: boolean;
+  attachments?: ComposerAttachment[];
+  onAttachFiles?: (files: File[]) => void;
+  onRemoveAttachment?: (id: string) => void;
+  attachmentError?: string;
+  acceptMimeTypes?: string;
 };
 
 /**
@@ -36,6 +44,12 @@ export function ChatThreadView({
   onSendMessage,
   onAddReaction,
   onRemoveReaction,
+  attachmentsEnabled,
+  attachments,
+  onAttachFiles,
+  onRemoveAttachment,
+  attachmentError,
+  acceptMimeTypes,
 }: ChatThreadViewProps) {
   const { t } = useTranslation('crd-chat');
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -83,6 +97,12 @@ export function ChatThreadView({
             currentUser={currentUser}
             onSubmit={onSendMessage}
             disabled={isSending || isAwaitingGuidanceResponse}
+            attachmentsEnabled={attachmentsEnabled}
+            attachments={attachments}
+            onAttachFiles={onAttachFiles}
+            onRemoveAttachment={onRemoveAttachment}
+            attachmentError={attachmentError}
+            acceptMimeTypes={acceptMimeTypes}
           />
         </div>
       )}

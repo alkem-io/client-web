@@ -19,6 +19,8 @@ import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrent
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationEventsSubscription } from '@/main/userMessaging/useConversationEventsSubscription';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
+import { useConversationAttachments } from './attachments/useConversationAttachments';
+import { useConversationStorageConfig } from './attachments/useConversationStorageConfig';
 import {
   injectGuidanceIntro,
   mapConversationToListItem,
@@ -69,6 +71,13 @@ export const UnifiedChatPanelConnector = () => {
   useConversationEventsSubscription(selectedRoomId);
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
     useUnifiedConversationView(selectedConversation ?? null, rawMessages);
+
+  // Attachments (feature 013) — only for real (non-guidance) conversation
+  // threads. `enabled` stays false until the server exposes the conversation
+  // storage bucket via GraphQL (see useConversationStorageConfig), so the
+  // composer renders unchanged until then.
+  const { storageConfig: attachmentStorageConfig } = useConversationStorageConfig(selectedConversationId ?? undefined);
+  const messageAttachments = useConversationAttachments(attachmentStorageConfig);
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -275,14 +284,24 @@ export const UnifiedChatPanelConnector = () => {
             canReact={Boolean(selectedConversation) && !isGuidanceThread}
             // Background-tracked, but only shown while the guidance thread is open.
             isAwaitingGuidanceResponse={isGuidanceThread && guidanceResponse.awaiting}
-            onSendMessage={message => {
+            onSendMessage={async message => {
               if (isGuidanceThread) {
                 guidanceResponse.markSent();
               }
-              return handleSendMessage(message);
+              const result = await handleSendMessage(message, messageAttachments.documentIds);
+              if (result) {
+                messageAttachments.reset();
+              }
+              return result;
             }}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
+            attachmentsEnabled={messageAttachments.enabled && !isGuidanceThread}
+            attachments={messageAttachments.attachments}
+            onAttachFiles={messageAttachments.attachFiles}
+            onRemoveAttachment={messageAttachments.removeAttachment}
+            attachmentError={messageAttachments.error}
+            acceptMimeTypes={messageAttachments.accept}
           />
         ) : (
           <ChatConversationList

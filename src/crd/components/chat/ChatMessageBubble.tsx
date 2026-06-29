@@ -74,7 +74,11 @@ export function ChatMessageBubble({
         )}
       </div>
       {hasAttachments && (
-        <MessageAttachments attachments={message.attachments ?? []} align={isOwn ? 'end' : 'start'} className="mt-0.5" />
+        <MessageAttachments
+          attachments={message.attachments ?? []}
+          align={isOwn ? 'end' : 'start'}
+          className="mt-0.5"
+        />
       )}
       {message.reactions.length > 0 && (
         <CommentReactions
