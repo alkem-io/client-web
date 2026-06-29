@@ -35,6 +35,15 @@ export type CommentsWithMessagesModel = {
       timestamp: number;
       sender?: { id: string; profile?: { displayName: string } };
     }[];
+    attachments?: {
+      id: string;
+      url: string;
+      displayName: string;
+      mimeType: string;
+      size: number;
+      width?: number;
+      height?: number;
+    }[];
     sender?: ContributorModel;
   }[];
   vcInteractions: { threadID: string; virtualContributorID: string }[];

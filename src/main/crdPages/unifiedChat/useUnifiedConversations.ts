@@ -83,6 +83,9 @@ export const useUnifiedConversations = () => {
                 timestamp: lastMessage.timestamp,
                 sender: mapMessageSender(lastMessage.sender),
                 reactions: mapMessageReactions(lastMessage.reactions),
+                // Conversation-list previews are text-only; attachments are not
+                // selected by the UserConversations query.
+                attachments: [],
               }
             : undefined,
           members,

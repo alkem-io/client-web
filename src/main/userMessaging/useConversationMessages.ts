@@ -1,4 +1,5 @@
 import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
+import { mapMessageAttachments } from '@/main/crdPages/utils/messageAttachmentMapper';
 import { mapMessageReactions, mapMessageSender } from './models';
 
 export type { ConversationMessage } from './models';
@@ -23,6 +24,7 @@ export const useConversationMessages = (conversationId: string | null) => {
         timestamp: msg.timestamp,
         sender: mapMessageSender(msg.sender),
         reactions: mapMessageReactions(msg.reactions),
+        attachments: mapMessageAttachments(msg.attachments),
       }))
       .sort((a, b) => a.timestamp - b.timestamp);
   })();

@@ -1443,5 +1443,13 @@
     "archived": "Gearchiveerd",
     "demo": "Demo",
     "inactive": "Inactief"
+  },
+  "messageAttachments": {
+    "listLabel": "Bijlagen",
+    "imageAlt": "Bijgevoegde afbeelding: {{name}}",
+    "download": "{{name}} downloaden",
+    "unavailable": "Bijlage niet beschikbaar",
+    "unavailableHint": "Dit bestand kon niet worden geladen. Download het om te bekijken.",
+    "loading": "Bijlage laden"
   }
 }

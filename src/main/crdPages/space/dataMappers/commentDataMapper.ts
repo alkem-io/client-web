@@ -3,6 +3,7 @@ import { ActorType, AuthorizationPrivilege } from '@/core/apollo/generated/graph
 import type { CommentData, CommentReaction } from '@/crd/components/comment/types';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { mapMessageAttachments } from '@/main/crdPages/utils/messageAttachmentMapper';
 
 type RoomWithMessages = Pick<CommentsWithMessagesModel, 'messages' | 'authorization'>;
 
@@ -46,6 +47,7 @@ export function mapRoomToCommentData(
       timestampMs: message.timestamp,
       parentId: message.threadID,
       reactions: mapReactions(message.reactions, currentUserId),
+      attachments: mapMessageAttachments(message.attachments),
       canDelete,
     };
   });

@@ -141,6 +141,7 @@ export const mapMessageToChatMessage = (
   timestamp: formatTimestamp(message.timestamp),
   timestampMs: message.timestamp,
   reactions: mapReactionsToCommentReactions(message.reactions, currentUserId),
+  attachments: message.attachments,
   isOwn: Boolean(currentUserId && message.sender?.id === currentUserId),
 });
 

@@ -7,6 +7,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { CommentReactions } from './CommentReactions';
+import { MessageAttachments } from './MessageAttachments';
 import type { CommentData } from './types';
 
 type CommentItemProps = {
@@ -104,6 +105,10 @@ export function CommentItem({
               )}
             </div>
           </div>
+
+          {!comment.isDeleted && comment.attachments && comment.attachments.length > 0 && (
+            <MessageAttachments attachments={comment.attachments} />
+          )}
 
           {!comment.isDeleted && (
             <CommentReactions

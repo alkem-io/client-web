@@ -44,6 +44,17 @@ export interface MessageReaction {
   };
 }
 
+// Attachment shape on a conversation message (feature 013)
+export interface MessageAttachmentModel {
+  id: string;
+  url: string;
+  displayName: string;
+  mimeType: string;
+  size: number;
+  width?: number;
+  height?: number;
+}
+
 // Message type used for conversation messages
 export interface ConversationMessage {
   id: string;
@@ -51,6 +62,7 @@ export interface ConversationMessage {
   timestamp: number;
   sender?: MessageSender;
   reactions: MessageReaction[];
+  attachments: MessageAttachmentModel[];
 }
 
 // GraphQL sender type (from generated types)

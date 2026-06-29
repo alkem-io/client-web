@@ -1,4 +1,4 @@
-import type { CommentAuthor, CommentReaction } from '@/crd/components/comment/types';
+import type { CommentAuthor, CommentReaction, MessageAttachment } from '@/crd/components/comment/types';
 
 /** A single avatar shown in a group composite avatar. */
 export type ChatMemberAvatar = {
@@ -36,6 +36,9 @@ export type ChatMessage = {
   /** Raw epoch milliseconds; sort key. Synthetic intro uses 0 to sort first. */
   timestampMs: number;
   reactions: CommentReaction[];
+  /** Media attachments on this message (feature 013). Empty/omitted when the
+   *  feature is off or the message has none. */
+  attachments?: MessageAttachment[];
   /** Authored by the current user → right-aligned bubble. */
   isOwn: boolean;
   /** Optimistic send, not yet confirmed by the server. */
