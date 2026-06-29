@@ -93,7 +93,7 @@ export function ContributorCollection({
   // members (so it can filter something) — e.g. it appears on People/Organizations
   // but not on a members-only Virtual Contributors segment.
   const leadCount = allCards.filter(c => c.roleLabel === 'lead').length;
-  const memberCount = allCards.length - leadCount;
+  const memberCount = allCards.filter(c => c.roleLabel === 'member').length;
   const showRoleFilter = leadCount > 0 && memberCount > 0;
   const roleScoped = roleFilter === 'all' ? allCards : allCards.filter(c => c.roleLabel === roleFilter);
 
