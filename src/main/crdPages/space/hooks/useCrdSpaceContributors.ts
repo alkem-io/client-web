@@ -70,10 +70,14 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
 
   // Per-type fetched card sets. `requestedRef` tracks which types have already
   // been fetched (a ref, not state, so `ensureLoaded` reads a fresh value without
-  // a render cycle and the eager-load effect stays free of function deps).
+  // a render cycle). It rolls back on error so a later switch can retry.
   const [cardsByType, setCardsByType] = useState<Partial<Record<ContributorTypeId, ContributorCardData[]>>>({});
   const [loadingTypes, setLoadingTypes] = useState<Set<ContributorTypeId>>(new Set());
   const requestedRef = useRef<Set<ContributorTypeId>>(new Set());
+  // Separate, never-rolled-back guard for the eager default-type auto-load. Kept
+  // distinct from `requestedRef` (which rolls back on error for manual retry) so
+  // the auto-load fires at most once even when its fetch fails — see the effect.
+  const eagerLoadedRef = useRef(false);
 
   const [fetchByType] = useContributorCollectionByTypeLazyQuery();
 
@@ -103,11 +107,19 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
 
   // Eager-load the default type once the config resolves (R2 — only the default
   // type's data is fetched on load; others are fetched on switch). `ensureLoaded`
-  // is idempotent via `requestedRef`, so re-running is a no-op once loaded.
+  // is re-created every render and is a dep here, so the effect re-runs on every
+  // render; `eagerLoadedRef` makes the auto-load fire at most once. Without that
+  // guard a failed default-type fetch loops forever: its `.catch` clears the type
+  // from `requestedRef` and its `.finally` triggers a re-render, which re-runs
+  // this effect and re-fetches. (Manual retry-on-switch still works — that path
+  // calls `ensureLoaded` directly and relies on the `requestedRef` roll-back.)
   const hasConfig = Boolean(calloutId) && !loading && Boolean(framing);
   const defaultType = config.defaultType;
   useEffect(() => {
-    if (hasConfig) ensureLoaded(defaultType);
+    if (hasConfig && !eagerLoadedRef.current) {
+      eagerLoadedRef.current = true;
+      ensureLoaded(defaultType);
+    }
   }, [hasConfig, defaultType, ensureLoaded]);
 
   return {
