@@ -81,6 +81,23 @@ describe('MessageAttachments', () => {
     expect(screen.getByText('messageAttachments.unavailableHint')).toBeInTheDocument();
   });
 
+  test('recovers from an error state when the attachment URL changes (re-home, FR-017)', () => {
+    const { rerender } = render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+    fireEvent.error(img);
+    // Errored → fallback chip, no image.
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableHint')).toBeInTheDocument();
+
+    // The document is re-homed: same id, fresh URL. The component must retry.
+    const rehomed: MessageAttachment = { ...image, url: 'https://alkem.io/storage/document/img-1-rehomed' };
+    rerender(<MessageAttachments attachments={[rehomed]} />);
+
+    const retried = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+    expect(retried).toHaveAttribute('src', rehomed.url);
+    expect(screen.queryByText('messageAttachments.unavailableHint')).not.toBeInTheDocument();
+  });
+
   test('shows a loading status until the image fires onLoad', () => {
     render(<MessageAttachments attachments={[image]} />);
     expect(screen.getByRole('status', { name: 'messageAttachments.loading' })).toBeInTheDocument();

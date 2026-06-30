@@ -1,5 +1,5 @@
 import { Download, FileText } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import type { MessageAttachment } from './types';
@@ -69,6 +69,13 @@ export function MessageAttachments({ attachments, align = 'start', className }: 
 function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
   const { t } = useTranslation('crd-common');
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
+
+  // When a document is re-homed (FR-017) the same attachment id can receive a
+  // fresh URL. Reset the load state so an image that previously errored gets
+  // another attempt instead of staying on the fallback chip forever.
+  useEffect(() => {
+    setStatus('loading');
+  }, [attachment.url]);
 
   // Briefly-unfetchable / broken image, or a non-http(s) URL we won't honour →
   // fall back to the same downloadable chip the non-image branch uses, with an
