@@ -1179,6 +1179,7 @@ export type ConversationKeySpecifier = (
   | 'members'
   | 'messaging'
   | 'room'
+  | 'storageBucket'
   | 'updatedDate'
   | ConversationKeySpecifier
 )[];
@@ -1189,6 +1190,7 @@ export type ConversationFieldPolicy = {
   members?: FieldPolicy<any> | FieldReadFunction<any>;
   messaging?: FieldPolicy<any> | FieldReadFunction<any>;
   room?: FieldPolicy<any> | FieldReadFunction<any>;
+  storageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationCreatedEventKeySpecifier = (

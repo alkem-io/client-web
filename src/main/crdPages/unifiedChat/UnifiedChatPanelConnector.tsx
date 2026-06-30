@@ -73,9 +73,9 @@ export const UnifiedChatPanelConnector = () => {
     useUnifiedConversationView(selectedConversation ?? null, rawMessages);
 
   // Attachments (feature 013) — only for real (non-guidance) conversation
-  // threads. `enabled` stays false until the server exposes the conversation
-  // storage bucket via GraphQL (see useConversationStorageConfig), so the
-  // composer renders unchanged until then.
+  // threads. The hook fetches the conversation's storage bucket behind the
+  // ATTACHMENTS feature flag; `enabled` stays false (composer unchanged) when
+  // the flag is off or the bucket is null (non-member / server flag off).
   const { storageConfig: attachmentStorageConfig } = useConversationStorageConfig(selectedConversationId ?? undefined);
   const messageAttachments = useConversationAttachments(attachmentStorageConfig);
 

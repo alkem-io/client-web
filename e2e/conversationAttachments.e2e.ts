@@ -9,12 +9,14 @@ import { expect, test } from '@playwright/test';
  *        pnpm add -D @playwright/test && pnpm exec playwright install chromium
  *   2. The web app on http://localhost:3001 with the Alkemio backend on :3000
  *        (matrix-adapter + file-service + Synapse — the full conversation stack).
- *   3. The `ATTACHMENTS` platform feature flag enabled on the backend.
- *   4. The SERVER exposing the per-conversation storage bucket via GraphQL so the
- *        composer can resolve an upload target — see
+ *   3. The `ATTACHMENTS` platform feature flag enabled on the backend (the server
+ *        only populates `Conversation.storageBucket` when this is on — with the
+ *        flag off the bucket is null and the composer's attach affordance stays
+ *        inert, so this spec will correctly not find the attach control).
+ *   4. The authenticated session being a MEMBER of the conversation, so the
+ *        READ-gated `Conversation.storageBucket` resolves and the composer can
+ *        resolve an upload target — see
  *        `src/main/crdPages/unifiedChat/attachments/useConversationStorageConfig.ts`.
- *        Until that field exists the composer's attach affordance stays inert and
- *        this spec will (correctly) not find the attach control.
  *   5. An authenticated session with at least one conversation, fixture image at
  *        `e2e/fixtures/photo.png`, and the env below.
  *

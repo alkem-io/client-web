@@ -1719,6 +1719,8 @@ export type Conversation = {
   messaging: Messaging;
   /** The room for this Conversation. */
   room: Room;
+  /** The storage bucket holding this Conversation's message attachments (feature 013). READ-gated to conversation members; null when message attachments are disabled. */
+  storageBucket?: Maybe<StorageBucket>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -8313,6 +8315,7 @@ export type StorageAggregatorParent = {
 
 export enum StorageAggregatorType {
   Account = 'ACCOUNT',
+  Conversation = 'CONVERSATION',
   Organization = 'ORGANIZATION',
   Platform = 'PLATFORM',
   Space = 'SPACE',
@@ -35831,6 +35834,38 @@ export type UserSecurityAuthenticationMethodsQuery = {
           __typename?: 'User';
           id: string;
           authentication?: { __typename?: 'UserAuthenticationResult'; methods: Array<AuthenticationType> } | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ConversationStorageConfigQueryVariables = Exact<{
+  conversationId: Scalars['UUID']['input'];
+}>;
+
+export type ConversationStorageConfigQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    conversation?:
+      | {
+          __typename?: 'Conversation';
+          id: string;
+          storageBucket?:
+            | {
+                __typename?: 'StorageBucket';
+                id: string;
+                allowedMimeTypes: Array<string>;
+                maxFileSize: number;
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
         }
       | undefined;
   };

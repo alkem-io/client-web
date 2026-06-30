@@ -109,7 +109,16 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
   };
 
   const removeAttachment = (id: string): void => {
-    setAttachments(prev => prev.filter(attachment => attachment.id !== id));
+    setAttachments(prev => {
+      const next = prev.filter(attachment => attachment.id !== id);
+      // Re-derive the error from what remains: a stale validation/upload message
+      // for a now-removed file should not linger. Keep the upload-failed message
+      // only while some staged attachment is still in an error state.
+      setError(
+        next.some(attachment => attachment.status === 'error') ? t('comments.attachments.uploadFailed') : undefined
+      );
+      return next;
+    });
   };
 
   const reset = (): void => {

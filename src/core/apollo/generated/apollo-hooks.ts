@@ -28570,6 +28570,92 @@ export function refetchUserSecurityAuthenticationMethodsQuery(
 ) {
   return { query: UserSecurityAuthenticationMethodsDocument, variables: variables };
 }
+export const ConversationStorageConfigDocument = gql`
+    query ConversationStorageConfig($conversationId: UUID!) {
+  lookup {
+    conversation(ID: $conversationId) {
+      id
+      storageBucket {
+        id
+        allowedMimeTypes
+        maxFileSize
+        authorization {
+          id
+          myPrivileges
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useConversationStorageConfigQuery__
+ *
+ * To run a query within a React component, call `useConversationStorageConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConversationStorageConfigQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConversationStorageConfigQuery({
+ *   variables: {
+ *      conversationId: // value for 'conversationId'
+ *   },
+ * });
+ */
+export function useConversationStorageConfigQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  > &
+    ({ variables: SchemaTypes.ConversationStorageConfigQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export function useConversationStorageConfigLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export function useConversationStorageConfigSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ConversationStorageConfigQuery,
+        SchemaTypes.ConversationStorageConfigQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ConversationStorageConfigQuery,
+    SchemaTypes.ConversationStorageConfigQueryVariables
+  >(ConversationStorageConfigDocument, options);
+}
+export type ConversationStorageConfigQueryHookResult = ReturnType<typeof useConversationStorageConfigQuery>;
+export type ConversationStorageConfigLazyQueryHookResult = ReturnType<typeof useConversationStorageConfigLazyQuery>;
+export type ConversationStorageConfigSuspenseQueryHookResult = ReturnType<
+  typeof useConversationStorageConfigSuspenseQuery
+>;
+export type ConversationStorageConfigQueryResult = Apollo.QueryResult<
+  SchemaTypes.ConversationStorageConfigQuery,
+  SchemaTypes.ConversationStorageConfigQueryVariables
+>;
+export function refetchConversationStorageConfigQuery(variables: SchemaTypes.ConversationStorageConfigQueryVariables) {
+  return { query: ConversationStorageConfigDocument, variables: variables };
+}
 export const ResetConversationVcDocument = gql`
     mutation resetConversationVc($input: ConversationVcResetInput!) {
   resetConversationVc(input: $input) {
