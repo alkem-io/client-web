@@ -778,6 +778,14 @@
         "description": "Esto eliminará permanentemente este subespacio y todo su contenido. Esta acción no se puede deshacer.",
         "confirm": "Eliminar subespacio"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Visibilidad de la información de usuario",
+      "description": "Controla quién puede ver la información de los usuarios miembros en este espacio. Las organizaciones y los colaboradores virtuales siguen la visibilidad del espacio.",
+      "followSpace": "Seguir la visibilidad del espacio",
+      "followSpaceDescription": "La información de los usuarios miembros es visible según la visibilidad del espacio.",
+      "membersOnly": "Solo miembros",
+      "membersOnlyDescription": "Solo los miembros de este espacio pueden ver la información de los usuarios miembros."
     }
   },
   "storage": {

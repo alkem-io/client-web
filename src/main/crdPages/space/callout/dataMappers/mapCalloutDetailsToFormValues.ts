@@ -8,6 +8,7 @@ import {
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
+import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type CalloutData = NonNullable<CalloutContentQuery['lookup']['callout']>;
@@ -20,6 +21,7 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.Link]: 'cta',
   [CalloutFramingType.MediaGallery]: 'image',
   [CalloutFramingType.Poll]: 'poll',
+  [CalloutFramingType.Contributors]: 'contributors',
 };
 
 // Documents are framing-only in P1 — no `document` response type. Existing
@@ -89,6 +91,9 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     tags: findTags(framing.profile.tagsets),
     framingChip,
     framingCommentsEnabled: settings.framing.commentsEnabled,
+    // Contributor-collection config prefill (feature 008). Falls back to the
+    // default (all types) when the callout is not a contributors framing.
+    contributorCollection: contributorCollectionFromServer(settings.framing.contributors),
     memoMarkdown: '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',

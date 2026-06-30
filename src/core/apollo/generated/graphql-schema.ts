@@ -1211,6 +1211,16 @@ export type CalloutContributionsCountOutput = {
   whiteboard: Scalars['Float']['output'];
 };
 
+export type CalloutContributorsSettings = {
+  __typename?: 'CalloutContributorsSettings';
+  /** The contributor types included in this contributor-collection callout. At least one. */
+  contributorTypes: Array<ActorType>;
+  /** The contributor type shown first (the segmented switch opens on it). One of contributorTypes. */
+  defaultContributorType: ActorType;
+  /** The default display mode (list or map). */
+  defaultView: ContributorCollectionView;
+};
+
 export enum CalloutDescriptionDisplayMode {
   Collapsed = 'COLLAPSED',
   Expanded = 'EXPANDED',
@@ -1222,6 +1232,10 @@ export type CalloutFraming = {
   authorization?: Maybe<Authorization>;
   /** The Collabora document attached to this Callout Framing, if any. Present when framing.type = COLLABORA_DOCUMENT. */
   collaboraDocument?: Maybe<CollaboraDocument>;
+  /** Per-type counts (users, organizations, virtual contributors) of the total eligible set for a CONTRIBUTORS framing, after type-selection and user-information visibility filtering. Zeroed for non-CONTRIBUTORS framings. */
+  contributorCounts: ContributorCollectionCounts;
+  /** The full authorized set of contributors of the given type for a CONTRIBUTORS framing, ordered leads/admins first then alphabetically. No server-side pagination or search: the client paginates (list) and name-searches client-side over this set. Empty for non-CONTRIBUTORS framings or deselected types. */
+  contributors: Array<ContributorCollectionItem>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The ID of the entity */
@@ -1244,8 +1258,13 @@ export type CalloutFraming = {
   whiteboard?: Maybe<Whiteboard>;
 };
 
+export type CalloutFramingContributorsArgs = {
+  type: ActorType;
+};
+
 export enum CalloutFramingType {
   CollaboraDocument = 'COLLABORA_DOCUMENT',
+  Contributors = 'CONTRIBUTORS',
   Link = 'LINK',
   MediaGallery = 'MEDIA_GALLERY',
   Memo = 'MEMO',
@@ -1292,6 +1311,8 @@ export type CalloutSettingsFraming = {
   __typename?: 'CalloutSettingsFraming';
   /** Can comment to callout framing. */
   commentsEnabled: Scalars['Boolean']['output'];
+  /** Configuration for a contributor-collection callout. Present only when framing.type = CONTRIBUTORS. */
+  contributors?: Maybe<CalloutContributorsSettings>;
 };
 
 export enum CalloutVisibility {
@@ -1691,9 +1712,45 @@ export type ContributionsFilterInput = {
   types?: InputMaybe<Array<CalloutContributionType>>;
 };
 
+export type ContributorCollectionCounts = {
+  __typename?: 'ContributorCollectionCounts';
+  organizations: Scalars['Int']['output'];
+  users: Scalars['Int']['output'];
+  virtualContributors: Scalars['Int']['output'];
+};
+
+export type ContributorCollectionItem = {
+  __typename?: 'ContributorCollectionItem';
+  avatarUrl?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  /** Location of the contributor; null for Virtual Contributors or when not readable. */
+  location?: Maybe<ContributorLocation>;
+  /** The role label for this contributor (lead/admin/member). */
+  roleLabel?: Maybe<Scalars['String']['output']>;
+  type: ActorType;
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+/** The default display mode for a contributor-collection callout framing. */
+export enum ContributorCollectionView {
+  List = 'LIST',
+  Map = 'MAP',
+}
+
 export type ContributorFilterInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
   nameID?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ContributorLocation = {
+  __typename?: 'ContributorLocation';
+  city?: Maybe<Scalars['String']['output']>;
+  country?: Maybe<Scalars['String']['output']>;
+  /** Whether the location has valid stored coordinates (geoLocation.isValid). City/country alone is false. */
+  hasValidCoordinates: Scalars['Boolean']['output'];
+  latitude?: Maybe<Scalars['Float']['output']>;
+  longitude?: Maybe<Scalars['Float']['output']>;
 };
 
 export type Conversation = {
@@ -1916,6 +1973,25 @@ export type CreateCalloutContributionInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
+export type CreateCalloutContributorsSettingsData = {
+  __typename?: 'CreateCalloutContributorsSettingsData';
+  /** The contributor types to include. At least one type is required. */
+  contributorTypes: Array<ActorType>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: Maybe<ActorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: Maybe<ContributorCollectionView>;
+};
+
+export type CreateCalloutContributorsSettingsInput = {
+  /** The contributor types to include. At least one type is required. */
+  contributorTypes: Array<ActorType>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: InputMaybe<ActorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: InputMaybe<ContributorCollectionView>;
+};
+
 export type CreateCalloutData = {
   __typename?: 'CreateCalloutData';
   classification?: Maybe<CreateClassificationData>;
@@ -2027,11 +2103,15 @@ export type CreateCalloutSettingsFramingData = {
   __typename?: 'CreateCalloutSettingsFramingData';
   /** Can comment to callout framing. */
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
+  contributors?: Maybe<CreateCalloutContributorsSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
   /** Can comment to callout framing. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
+  contributors?: InputMaybe<CreateCalloutContributorsSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -2449,6 +2529,8 @@ export type CreateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+  /** Controls who may read member-user information. Follows space visibility by default, or restricts it to members only. */
+  userInformationVisibility?: InputMaybe<UserInformationVisibility>;
 };
 
 export type CreateStateOnInnovationFlowInput = {
@@ -8208,6 +8290,8 @@ export type SpaceSettingsPrivacy = {
   allowPlatformSupportAsAdmin: Scalars['Boolean']['output'];
   /** The privacy mode for this Space */
   mode: SpacePrivacyMode;
+  /** Controls who may read member-user information. Follows space visibility by default, or restricts it to members only. Absent is treated as follow-space-visibility. */
+  userInformationVisibility?: Maybe<UserInformationVisibility>;
 };
 
 export enum SpaceSortMode {
@@ -8768,6 +8852,15 @@ export type UpdateCalloutContributionDefaultsInput = {
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
 };
 
+export type UpdateCalloutContributorsSettingsInput = {
+  /** When provided, replaces the selected contributor types (at least one). */
+  contributorTypes?: InputMaybe<Array<ActorType>>;
+  /** The default contributor type (one of contributorTypes). Defaults to the first selected type. */
+  defaultContributorType?: InputMaybe<ActorType>;
+  /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
+  defaultView?: InputMaybe<ContributorCollectionView>;
+};
+
 export type UpdateCalloutEntityInput = {
   ID: Scalars['UUID']['input'];
   classification?: InputMaybe<UpdateClassificationInput>;
@@ -8821,6 +8914,8 @@ export type UpdateCalloutSettingsContributionInput = {
 export type UpdateCalloutSettingsFramingInput = {
   /** Can comment to callout framing. */
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
+  contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
 };
 
 export type UpdateCalloutSettingsInput = {
@@ -9241,6 +9336,8 @@ export type UpdateSpaceSettingsPrivacyInput = {
   /** Flag to control if Platform Support has admin rights. */
   allowPlatformSupportAsAdmin?: InputMaybe<Scalars['Boolean']['input']>;
   mode?: InputMaybe<SpacePrivacyMode>;
+  /** Controls who may read member-user information. Follows space visibility by default, or restricts it to members only. */
+  userInformationVisibility?: InputMaybe<UserInformationVisibility>;
 };
 
 export type UpdateSubspacePinnedInput = {
@@ -9833,6 +9930,12 @@ export type UserGroup = {
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
+
+/** Controls who may read member-user information in a Space. Follows space visibility by default, or restricts user info to members only. */
+export enum UserInformationVisibility {
+  FollowSpaceVisibility = 'FOLLOW_SPACE_VISIBILITY',
+  MembersOnly = 'MEMBERS_ONLY',
+}
 
 /** Minimal user-profile summary identifying a user without exposing PII beyond id + displayName. */
 export type UserProfileSummary = {
@@ -14066,7 +14169,18 @@ export type CalloutContentQuery = {
               canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
-            framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+            framing: {
+              __typename?: 'CalloutSettingsFraming';
+              commentsEnabled: boolean;
+              contributors?:
+                | {
+                    __typename?: 'CalloutContributorsSettings';
+                    contributorTypes: Array<ActorType>;
+                    defaultContributorType: ActorType;
+                    defaultView: ContributorCollectionView;
+                  }
+                | undefined;
+            };
           };
         }
       | undefined;
@@ -14475,7 +14589,18 @@ export type UpdateCalloutContentMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
     createdBy?:
       | {
@@ -14912,7 +15037,18 @@ export type UpdateCalloutVisibilityMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
     createdBy?:
       | {
@@ -14963,7 +15099,18 @@ export type CalloutSettingsFullFragment = {
     canAddContributions: CalloutAllowedActors;
     commentsEnabled: boolean;
   };
-  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+  framing: {
+    __typename?: 'CalloutSettingsFraming';
+    commentsEnabled: boolean;
+    contributors?:
+      | {
+          __typename?: 'CalloutContributorsSettings';
+          contributorTypes: Array<ActorType>;
+          defaultContributorType: ActorType;
+          defaultView: ContributorCollectionView;
+        }
+      | undefined;
+  };
 };
 
 export type CalloutContributionQueryVariables = Exact<{
@@ -16634,7 +16781,18 @@ export type CreateCalloutMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
     createdBy?:
       | {
@@ -17219,7 +17377,18 @@ export type CalloutDetailsQuery = {
               canAddContributions: CalloutAllowedActors;
               commentsEnabled: boolean;
             };
-            framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+            framing: {
+              __typename?: 'CalloutSettingsFraming';
+              commentsEnabled: boolean;
+              contributors?:
+                | {
+                    __typename?: 'CalloutContributorsSettings';
+                    contributorTypes: Array<ActorType>;
+                    defaultContributorType: ActorType;
+                    defaultView: ContributorCollectionView;
+                  }
+                | undefined;
+            };
           };
           createdBy?:
             | {
@@ -17688,7 +17857,18 @@ export type CalloutDetailsFragment = {
       canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
-    framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+    framing: {
+      __typename?: 'CalloutSettingsFraming';
+      commentsEnabled: boolean;
+      contributors?:
+        | {
+            __typename?: 'CalloutContributorsSettings';
+            contributorTypes: Array<ActorType>;
+            defaultContributorType: ActorType;
+            defaultView: ContributorCollectionView;
+          }
+        | undefined;
+    };
   };
   createdBy?:
     | {
@@ -29662,6 +29842,7 @@ export type SpaceSettingsQuery = {
               __typename?: 'SpaceSettingsPrivacy';
               mode: SpacePrivacyMode;
               allowPlatformSupportAsAdmin: boolean;
+              userInformationVisibility?: UserInformationVisibility | undefined;
             };
             membership: {
               __typename?: 'SpaceSettingsMembership';
@@ -29692,7 +29873,12 @@ export type SpaceSettingsQuery = {
 export type SpaceSettingsFragment = {
   __typename?: 'SpaceSettings';
   sortMode: SpaceSortMode;
-  privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
+  privacy: {
+    __typename?: 'SpaceSettingsPrivacy';
+    mode: SpacePrivacyMode;
+    allowPlatformSupportAsAdmin: boolean;
+    userInformationVisibility?: UserInformationVisibility | undefined;
+  };
   membership: {
     __typename?: 'SpaceSettingsMembership';
     policy: CommunityMembershipPolicy;
@@ -29723,7 +29909,12 @@ export type UpdateSpaceSettingsMutation = {
     settings: {
       __typename?: 'SpaceSettings';
       sortMode: SpaceSortMode;
-      privacy: { __typename?: 'SpaceSettingsPrivacy'; mode: SpacePrivacyMode; allowPlatformSupportAsAdmin: boolean };
+      privacy: {
+        __typename?: 'SpaceSettingsPrivacy';
+        mode: SpacePrivacyMode;
+        allowPlatformSupportAsAdmin: boolean;
+        userInformationVisibility?: UserInformationVisibility | undefined;
+      };
       membership: {
         __typename?: 'SpaceSettingsMembership';
         policy: CommunityMembershipPolicy;
@@ -31593,7 +31784,18 @@ export type TemplateContentQuery = {
                     canAddContributions: CalloutAllowedActors;
                     commentsEnabled: boolean;
                   };
-                  framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+                  framing: {
+                    __typename?: 'CalloutSettingsFraming';
+                    commentsEnabled: boolean;
+                    contributors?:
+                      | {
+                          __typename?: 'CalloutContributorsSettings';
+                          contributorTypes: Array<ActorType>;
+                          defaultContributorType: ActorType;
+                          defaultView: ContributorCollectionView;
+                        }
+                      | undefined;
+                  };
                 };
                 contributionDefaults: {
                   __typename?: 'CalloutContributionDefaults';
@@ -32322,7 +32524,18 @@ export type CalloutTemplateContentFragment = {
       canAddContributions: CalloutAllowedActors;
       commentsEnabled: boolean;
     };
-    framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+    framing: {
+      __typename?: 'CalloutSettingsFraming';
+      commentsEnabled: boolean;
+      contributors?:
+        | {
+            __typename?: 'CalloutContributorsSettings';
+            contributorTypes: Array<ActorType>;
+            defaultContributorType: ActorType;
+            defaultView: ContributorCollectionView;
+          }
+        | undefined;
+    };
   };
   contributionDefaults: {
     __typename?: 'CalloutContributionDefaults';
@@ -33077,7 +33290,18 @@ export type UpdateCalloutTemplateMutation = {
         canAddContributions: CalloutAllowedActors;
         commentsEnabled: boolean;
       };
-      framing: { __typename?: 'CalloutSettingsFraming'; commentsEnabled: boolean };
+      framing: {
+        __typename?: 'CalloutSettingsFraming';
+        commentsEnabled: boolean;
+        contributors?:
+          | {
+              __typename?: 'CalloutContributorsSettings';
+              contributorTypes: Array<ActorType>;
+              defaultContributorType: ActorType;
+              defaultView: ContributorCollectionView;
+            }
+          | undefined;
+      };
     };
   };
 };
@@ -34525,6 +34749,88 @@ export type CalloutsIndexListQuery = {
               };
             };
           }>;
+        }
+      | undefined;
+  };
+};
+
+export type ContributorCollectionConfigQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type ContributorCollectionConfigQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            contributorCounts: {
+              __typename?: 'ContributorCollectionCounts';
+              users: number;
+              organizations: number;
+              virtualContributors: number;
+            };
+          };
+          settings: {
+            __typename?: 'CalloutSettings';
+            framing: {
+              __typename?: 'CalloutSettingsFraming';
+              contributors?:
+                | {
+                    __typename?: 'CalloutContributorsSettings';
+                    contributorTypes: Array<ActorType>;
+                    defaultContributorType: ActorType;
+                    defaultView: ContributorCollectionView;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type ContributorCollectionByTypeQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+  type: ActorType;
+}>;
+
+export type ContributorCollectionByTypeQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            contributors: Array<{
+              __typename?: 'ContributorCollectionItem';
+              id: string;
+              type: ActorType;
+              displayName: string;
+              avatarUrl?: string | undefined;
+              roleLabel?: string | undefined;
+              url?: string | undefined;
+              location?:
+                | {
+                    __typename?: 'ContributorLocation';
+                    city?: string | undefined;
+                    country?: string | undefined;
+                    latitude?: number | undefined;
+                    longitude?: number | undefined;
+                    hasValidCoordinates: boolean;
+                  }
+                | undefined;
+            }>;
+          };
         }
       | undefined;
   };

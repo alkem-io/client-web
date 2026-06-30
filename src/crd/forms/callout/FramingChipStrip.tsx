@@ -1,10 +1,10 @@
-import { FileText, Image as ImageIcon, Megaphone, Presentation, StickyNote, Vote, X } from 'lucide-react';
+import { FileText, Image as ImageIcon, Megaphone, Presentation, StickyNote, Users, Vote, X } from 'lucide-react';
 import { type ComponentType, type SVGProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
 import { cn } from '@/crd/lib/utils';
 
-export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll';
+export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors';
 
 type Chip = {
   id: FramingChipId;
@@ -19,6 +19,7 @@ const CHIPS: Chip[] = [
   { id: 'cta', labelKey: 'callout.callToAction', icon: Megaphone },
   { id: 'image', labelKey: 'callout.mediaGallery', icon: ImageIcon },
   { id: 'poll', labelKey: 'callout.poll', icon: Vote },
+  { id: 'contributors', labelKey: 'callout.contributors', icon: Users },
 ];
 
 export type DisabledChipMap = Partial<Record<FramingChipId, { tooltip?: string }>>;

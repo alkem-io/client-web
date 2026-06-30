@@ -14,6 +14,7 @@ import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/use
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { contributorCollectionToServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type {
   AllowedActors,
   CalloutFormValues,
@@ -35,6 +36,7 @@ const FRAMING_CHIP_TO_SERVER: Record<FramingChip, CalloutFramingType> = {
   cta: CalloutFramingType.Link,
   image: CalloutFramingType.MediaGallery,
   poll: CalloutFramingType.Poll,
+  contributors: CalloutFramingType.Contributors,
 };
 
 const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionType | undefined> = {
@@ -189,6 +191,13 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
       visibility: options.visibility,
       framing: {
         commentsEnabled: values.framingCommentsEnabled,
+        // Contributor-collection config travels in the framing settings only for
+        // the CONTRIBUTORS framing (feature 008). Healed so the persisted config
+        // always satisfies the server invariants (default type ∈ types; map only
+        // when a locatable type remains).
+        ...(framingType === CalloutFramingType.Contributors
+          ? { contributors: contributorCollectionToServer(values.contributorCollection) }
+          : {}),
       },
       contribution: contributionSettings,
     },
@@ -432,7 +441,14 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
     : undefined;
 
   const settings: UpdateCalloutEntityInput['settings'] = {
-    framing: { commentsEnabled: values.framingCommentsEnabled },
+    framing: {
+      commentsEnabled: values.framingCommentsEnabled,
+      // Editable any time (FR-004d): re-send the contributor-collection config on
+      // update for the CONTRIBUTORS framing, healed to the server invariants.
+      ...(framingType === CalloutFramingType.Contributors
+        ? { contributors: contributorCollectionToServer(values.contributorCollection) }
+        : {}),
+    },
   };
   if (contributionSettings) settings.contribution = contributionSettings;
 

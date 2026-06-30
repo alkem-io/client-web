@@ -778,6 +778,14 @@
         "description": "Cela supprimera définitivement ce sous-espace et tout son contenu. Cette action ne peut pas être annulée.",
         "confirm": "Supprimer le sous-espace"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Visibilité des informations utilisateur",
+      "description": "Contrôlez qui peut voir les informations des membres dans cet espace. Les organisations et les contributeurs virtuels suivent la visibilité de l’espace.",
+      "followSpace": "Suivre la visibilité de l’espace",
+      "followSpaceDescription": "Les informations des membres sont visibles selon la visibilité de l’espace.",
+      "membersOnly": "Membres uniquement",
+      "membersOnlyDescription": "Seuls les membres de cet espace peuvent voir les informations des membres."
     }
   },
   "storage": {

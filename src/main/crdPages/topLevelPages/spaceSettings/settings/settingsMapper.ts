@@ -1,8 +1,13 @@
-import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipPolicy,
+  SpacePrivacyMode,
+  UserInformationVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import type {
   AllowedActionToggle,
   MembershipPolicy,
   SpacePrivacy,
+  UserInfoVisibility,
 } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import type {
   SpaceSettingsCollaboration,
@@ -16,6 +21,17 @@ export function mapPrivacy(p: SpaceSettingsPrivacy | undefined): SpacePrivacy {
 
 export function mapPrivacyToBackend(p: SpacePrivacy): SpacePrivacyMode {
   return p === 'private' ? SpacePrivacyMode.Private : SpacePrivacyMode.Public;
+}
+
+/** Maps the server user-info-visibility enum to the view's union; absent = follow space. */
+export function mapUserInfoVisibility(value: UserInformationVisibility | undefined): UserInfoVisibility {
+  return value === UserInformationVisibility.MembersOnly ? 'membersOnly' : 'followSpace';
+}
+
+export function mapUserInfoVisibilityToBackend(value: UserInfoVisibility): UserInformationVisibility {
+  return value === 'membersOnly'
+    ? UserInformationVisibility.MembersOnly
+    : UserInformationVisibility.FollowSpaceVisibility;
 }
 
 export function mapMembershipPolicy(m: SpaceSettingsMembership | undefined): MembershipPolicy {

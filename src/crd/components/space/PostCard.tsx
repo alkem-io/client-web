@@ -10,6 +10,7 @@ import {
   MessageSquare,
   Presentation,
   StickyNote,
+  Users,
 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -35,10 +36,19 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/crd/primitives/card
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/crd/primitives/collapsible';
 import { CroppedMarkdown } from '@/crd/primitives/croppedMarkdown';
 
-export type PostType = 'text' | 'whiteboard' | 'memo' | 'mediaGallery' | 'document' | 'callToAction' | 'poll';
+export type PostType =
+  | 'text'
+  | 'whiteboard'
+  | 'memo'
+  | 'mediaGallery'
+  | 'document'
+  | 'callToAction'
+  | 'poll'
+  | 'contributors';
 
 type PostTypeLabelKey =
   | 'callout.post'
+  | 'callout.contributors'
   | 'callout.whiteboard'
   | 'callout.memo'
   | 'callout.mediaGallery'
@@ -62,6 +72,7 @@ export const POST_TYPE_DESCRIPTORS: Record<PostType, { icon: LucideIcon; labelKe
   mediaGallery: { icon: Images, labelKey: 'callout.mediaGallery' },
   callToAction: { icon: Megaphone, labelKey: 'callout.callToAction' },
   poll: { icon: BarChart3, labelKey: 'callout.poll' },
+  contributors: { icon: Users, labelKey: 'callout.contributors' },
 };
 
 export type PostCardData = {
