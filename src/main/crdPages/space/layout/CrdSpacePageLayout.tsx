@@ -43,6 +43,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
@@ -68,6 +69,10 @@ export default function CrdSpacePageLayout() {
   // the click must consult the guard before navigating — otherwise the
   // discard-changes dialog (owned by the page) never opens.
   const settingsDirtyGuard = useDirtyTabGuard();
+  // Read here (before any early return) so the hook order stays stable. The
+  // site-wide incident banner sits directly under the header; suppress the hero
+  // overlay while it shows so the hero doesn't slide up over the notice.
+  const { visible: downNoticeVisible } = useDownNoticeBanner();
   const handleSettingsTabChange = async (next: SpaceSettingsTabId) => {
     if (await settingsDirtyGuard.requestSwitch(next)) {
       setActiveSettingsTab(next);
@@ -128,8 +133,9 @@ export default function CrdSpacePageLayout() {
   // the active-space home tab(s). Suspended/archived spaces show a visibility
   // notice above the banner — pulling the banner up under the header would
   // collide with it. Settings pages render `SpaceSettingsHeader` (no banner
-  // image), so they stay opaque too.
-  const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings;
+  // image), so they stay opaque too. `downNoticeVisible` additionally suppresses
+  // the overlay while the site-wide incident banner shows (read above).
+  const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings && !downNoticeVisible;
 
   const tabItems = tabs.map(tab => ({ label: tab.label, index: tab.index }));
   const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
