@@ -9,6 +9,7 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { useInnovationHubHomeData } from './hooks/useInnovationHubHomeData';
 
@@ -50,7 +51,10 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
   useEnableSpaceFullWidth();
   // Mirror the Spaces home: a banner-overlay topbar that goes transparent over
   // the banner until the user scrolls. The page slides under by `-mt-16`.
-  useEnableBannerOverlay();
+  // Suppressed while the site-wide incident banner shows so the hero doesn't
+  // slide up over the notice under the header.
+  const { visible: downNoticeVisible } = useDownNoticeBanner();
+  useEnableBannerOverlay(!downNoticeVisible);
 
   const input = innovationHubFromSubdomain
     ? ({ kind: 'bySubdomain', hub: innovationHubFromSubdomain } as const)
@@ -86,7 +90,7 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
       spaces={spaces}
       fullWidth={fullWidth}
       onToggleFullWidth={toggleFullWidth}
-      overlayHeader={true}
+      overlayHeader={!downNoticeVisible}
       spacesLoading={spacesLoading}
     />
   );

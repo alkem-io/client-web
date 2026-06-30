@@ -25,19 +25,19 @@ export function useBannerOverlay(): boolean {
   return ctx.active;
 }
 
-export function useEnableBannerOverlay() {
+export function useEnableBannerOverlay(enabled = true) {
   const ctx = useContext(BannerOverlayContext);
   if (!ctx) throw new Error('useEnableBannerOverlay must be used within BannerOverlayProvider');
   const { setActive } = ctx;
 
-  // Publish on mount. The provider's equality guard turns repeated true→true
-  // updates into no-ops, so re-renders are cheap.
+  // Publish the requested state. The provider's equality guard turns repeated
+  // equal updates into no-ops, so re-renders are cheap. `enabled` lets a page
+  // opt out (e.g. when the incident banner is shown) without unmounting.
   useEffect(() => {
-    setActive(true);
-  }, [setActive]);
+    setActive(enabled);
+  }, [setActive, enabled]);
 
-  // Clear only on unmount. Kept separate from the publish effect so a re-render
-  // doesn't cycle state through [true → false → true].
+  // Clear on unmount so leaving the page always resets the overlay.
   useEffect(() => {
     return () => setActive(false);
   }, [setActive]);

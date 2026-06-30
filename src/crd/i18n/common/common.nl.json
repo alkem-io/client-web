@@ -892,6 +892,11 @@
     }
   },
   "delete": "Verwijderen",
+  "downNoticeBanner": {
+    "a11yLabel": "Melding over platformincident",
+    "dismiss": "Melding sluiten",
+    "message": "Na een incident eerder vandaag zijn sommige recent op ons platform opgeslagen bestanden (waaronder afbeeldingen) mogelijk niet toegankelijk. We werken hard aan opties om ze te herstellen. Vragen? Neem contact op via <support>support@alkemio.com</support>"
+  },
   "edit": "Bewerken",
   "error": "Fout",
   "filters": {
