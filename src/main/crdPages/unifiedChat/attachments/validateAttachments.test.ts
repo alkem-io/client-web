@@ -23,6 +23,19 @@ describe('validateAttachments', () => {
     expect(result.rejected).toEqual([{ fileName: 'evil.exe', reason: 'unsupportedType' }]);
   });
 
+  test('rejects files with an empty / unknown MIME type (no allow-list bypass)', () => {
+    const files = [makeFile('mystery', '', 1000)];
+    const result = validateAttachments(files, { existingCount: 0 });
+    expect(result.accepted).toHaveLength(0);
+    expect(result.rejected).toEqual([{ fileName: 'mystery', reason: 'unsupportedType' }]);
+  });
+
+  test('rejects SVG by default (dropped from the safe allow-list)', () => {
+    const files = [makeFile('vector.svg', 'image/svg+xml', 1000)];
+    const result = validateAttachments(files, { existingCount: 0 });
+    expect(result.rejected).toEqual([{ fileName: 'vector.svg', reason: 'unsupportedType' }]);
+  });
+
   test('rejects files over 50 MiB', () => {
     const files = [makeFile('huge.png', 'image/png', MAX_ATTACHMENT_SIZE_BYTES + 1)];
     const result = validateAttachments(files, { existingCount: 0 });

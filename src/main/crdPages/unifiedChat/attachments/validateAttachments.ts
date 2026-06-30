@@ -16,7 +16,6 @@ export const DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES: readonly string[] = [
   'image/gif',
   'image/webp',
   'image/avif',
-  'image/svg+xml',
   'video/mp4',
   'video/webm',
   'audio/mpeg',
@@ -75,7 +74,10 @@ export function validateAttachments(files: File[], options: ValidateOptions): At
   const allowed = new Set(allowedMimeTypes);
 
   for (const file of files) {
-    if (file.type && !allowed.has(file.type)) {
+    // An empty / unknown MIME type can't be vouched for — reject it rather than
+    // letting it bypass the allow-list (defense-in-depth; the server is still
+    // authoritative).
+    if (!file.type || !allowed.has(file.type)) {
       rejected.push({ fileName: file.name, reason: 'unsupportedType' });
       continue;
     }

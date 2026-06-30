@@ -12,7 +12,8 @@ type MessageAttachmentsProps = {
   className?: string;
 };
 
-const BYTE_UNITS = ['B', 'kB', 'MB', 'GB', 'TB'];
+// Base-1024 units, so the labels are the IEC binary ones (KiB/MiB/…).
+const BYTE_UNITS = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
 
 /** Pure, self-contained byte formatter so the design-system component keeps no
  *  host-app imports. */
@@ -26,6 +27,11 @@ function formatBytes(size: number): string {
 }
 
 const isImage = (mimeType: string) => mimeType.startsWith('image/');
+
+/** Only ever use a server-issued attachment URL as an `href`/`src` when it is an
+ *  http(s) URL — belt-and-suspenders against a `javascript:`/`data:` URL slipping
+ *  through. */
+const isHttpUrl = (url: string) => /^https?:\/\//i.test(url);
 
 /**
  * Renders the media attachments on a message (feature 013). Images show an
@@ -64,9 +70,10 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
   const { t } = useTranslation('crd-common');
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
 
-  // Briefly-unfetchable / broken image → fall back to the same downloadable
-  // chip the non-image branch uses, with an explanatory hint (FR-017).
-  if (status === 'error') {
+  // Briefly-unfetchable / broken image, or a non-http(s) URL we won't honour →
+  // fall back to the same downloadable chip the non-image branch uses, with an
+  // explanatory hint (FR-017). Guards the `href`/`src` below.
+  if (status === 'error' || !isHttpUrl(attachment.url)) {
     return <AttachmentFileChip attachment={attachment} hint={t('messageAttachments.unavailableHint')} />;
   }
 
@@ -79,7 +86,6 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
       target="_blank"
       rel="noopener noreferrer"
       className="block overflow-hidden rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-      aria-label={t('messageAttachments.imageAlt', { name: attachment.displayName })}
     >
       {status === 'loading' && (
         <output
@@ -104,6 +110,32 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
 function AttachmentFileChip({ attachment, hint }: { attachment: MessageAttachment; hint?: string }) {
   const { t } = useTranslation('crd-common');
   const formattedSize = formatBytes(attachment.size);
+  // Only treat a server-issued http(s) URL as downloadable; anything else is
+  // surfaced as an unavailable, non-interactive chip.
+  const downloadable = isHttpUrl(attachment.url);
+  const effectiveHint = hint ?? (downloadable ? undefined : t('messageAttachments.unavailableHint'));
+
+  const body = (
+    <>
+      <FileText aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-body-emphasis text-foreground">{attachment.displayName}</span>
+        {effectiveHint ? (
+          <span className="block text-caption text-muted-foreground">{effectiveHint}</span>
+        ) : (
+          formattedSize && <span className="block text-caption text-muted-foreground">{formattedSize}</span>
+        )}
+      </span>
+      {downloadable && <Download aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />}
+    </>
+  );
+
+  const chipClassName =
+    'flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 transition-colors';
+
+  if (!downloadable) {
+    return <span className={chipClassName}>{body}</span>;
+  }
 
   return (
     <a
@@ -112,18 +144,12 @@ function AttachmentFileChip({ attachment, hint }: { attachment: MessageAttachmen
       rel="noopener noreferrer"
       download={attachment.displayName}
       aria-label={t('messageAttachments.download', { name: attachment.displayName })}
-      className="flex items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className={cn(
+        chipClassName,
+        'hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+      )}
     >
-      <FileText aria-hidden="true" className="size-5 shrink-0 text-muted-foreground" />
-      <span className="min-w-0 flex-1">
-        <span className="block truncate text-body-emphasis text-foreground">{attachment.displayName}</span>
-        {hint ? (
-          <span className="block text-caption text-muted-foreground">{hint}</span>
-        ) : (
-          formattedSize && <span className="block text-caption text-muted-foreground">{formattedSize}</span>
-        )}
-      </span>
-      <Download aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
+      {body}
     </a>
   );
 }

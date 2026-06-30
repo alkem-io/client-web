@@ -52,8 +52,17 @@ describe('MessageAttachments', () => {
     expect(link).toHaveAttribute('href', file.url);
     expect(link).toHaveAttribute('download', file.displayName);
     expect(screen.getByText(file.displayName)).toBeInTheDocument();
-    // 2_500_000 bytes → ~2.4 MB
-    expect(screen.getByText('2.4 MB')).toBeInTheDocument();
+    // 2_500_000 bytes → ~2.4 MiB (base-1024 with IEC binary units)
+    expect(screen.getByText('2.4 MiB')).toBeInTheDocument();
+  });
+
+  test('renders a non-http(s) URL as a non-interactive unavailable chip', () => {
+    const unsafe: MessageAttachment = { ...file, id: 'att-unsafe', url: 'javascript:alert(1)' };
+    render(<MessageAttachments attachments={[unsafe]} />);
+    // No link or image is rendered for an unsafe URL.
+    expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.getByText('messageAttachments.unavailableHint')).toBeInTheDocument();
   });
 
   test('renders multiple attachments as a labelled list', () => {

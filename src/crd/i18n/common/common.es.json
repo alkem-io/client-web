@@ -1448,7 +1448,6 @@
     "listLabel": "Adjuntos",
     "imageAlt": "Imagen adjunta: {{name}}",
     "download": "Descargar {{name}}",
-    "unavailable": "Adjunto no disponible",
     "unavailableHint": "No se pudo cargar este archivo. Descárgalo para verlo.",
     "loading": "Cargando adjunto"
   }
