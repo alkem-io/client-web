@@ -77,7 +77,11 @@ export const UnifiedChatPanelConnector = () => {
   // ATTACHMENTS feature flag; `enabled` stays false (composer unchanged) when
   // the flag is off or the bucket is null (non-member / server flag off).
   const { storageConfig: attachmentStorageConfig } = useConversationStorageConfig(selectedConversationId ?? undefined);
-  const messageAttachments = useConversationAttachments(attachmentStorageConfig);
+  const messageAttachments = useConversationAttachments(attachmentStorageConfig, selectedConversationId ?? undefined);
+  // Attachments are only offered on real, uploadable threads — never the
+  // guidance/AI thread. Gates both the composer affordance and (belt-and-
+  // suspenders) whether a send carries document ids at all.
+  const attachmentsEnabled = messageAttachments.enabled && !isGuidanceThread;
 
   const groupSettings = useGroupSettings(selectedConversation?.id, selectedConversation?.members ?? [], {
     displayName: selectedConversation?.roomDisplayName ?? '',
@@ -288,7 +292,9 @@ export const UnifiedChatPanelConnector = () => {
               if (isGuidanceThread) {
                 guidanceResponse.markSent();
               }
-              const result = await handleSendMessage(message, messageAttachments.documentIds);
+              // Only carry document ids when attachments are actually enabled
+              // for this thread — a text-only send never ships stale ids.
+              const result = await handleSendMessage(message, attachmentsEnabled ? messageAttachments.documentIds : []);
               if (result) {
                 messageAttachments.reset();
               }
@@ -296,7 +302,7 @@ export const UnifiedChatPanelConnector = () => {
             }}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}
-            attachmentsEnabled={messageAttachments.enabled && !isGuidanceThread}
+            attachmentsEnabled={attachmentsEnabled}
             attachments={messageAttachments.attachments}
             onAttachFiles={messageAttachments.attachFiles}
             onRemoveAttachment={messageAttachments.removeAttachment}

@@ -83,6 +83,56 @@ describe('useConversationAttachments', () => {
     expect(result.current.error).toBe('comments.attachments.errorUnsupportedType');
   });
 
+  test('clears staged attachments when the selected conversation changes', async () => {
+    mockUploadFile.mockResolvedValue({ data: { uploadFileOnStorageBucket: { id: 'doc-A', url: 'https://x/doc-A' } } });
+    const { result, rerender } = renderHook(
+      ({ conversationId }) => useConversationAttachments(bucketConfig, conversationId),
+      { initialProps: { conversationId: 'conv-A' } }
+    );
+
+    await act(async () => {
+      await result.current.attachFiles([makeFile('a.png', 'image/png')]);
+    });
+    // Staged against conversation A's bucket.
+    expect(result.current.documentIds).toEqual(['doc-A']);
+    expect(result.current.attachments).toHaveLength(1);
+
+    // Switching to conversation B must drop the draft so a later send never
+    // carries A's bucket document ids.
+    act(() => {
+      rerender({ conversationId: 'conv-B' });
+    });
+
+    expect(result.current.attachments).toHaveLength(0);
+    expect(result.current.documentIds).toHaveLength(0);
+    expect(result.current.error).toBeUndefined();
+  });
+
+  test('rapid back-to-back picks respect the 10-attachment cap', async () => {
+    let uploadCount = 0;
+    mockUploadFile.mockImplementation(() => {
+      uploadCount += 1;
+      return Promise.resolve({ data: { uploadFileOnStorageBucket: { id: `doc-${uploadCount}`, url: 'https://x' } } });
+    });
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+
+    const batch = (prefix: string, count: number) =>
+      Array.from({ length: count }, (_, i) => makeFile(`${prefix}-${i}.png`, 'image/png'));
+
+    // Two picks fired back-to-back before a re-render: 6 then 6 = 12 requested,
+    // but the count cap reads the live ref, so only 10 are accepted in total.
+    await act(async () => {
+      await Promise.all([
+        result.current.attachFiles(batch('first', 6)),
+        result.current.attachFiles(batch('second', 6)),
+      ]);
+    });
+
+    expect(result.current.attachments).toHaveLength(10);
+    expect(result.current.documentIds).toHaveLength(10);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany');
+  });
+
   test('removeAttachment re-derives the error (clears a stale upload failure)', async () => {
     mockUploadFile.mockRejectedValue(new Error('boom'));
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));

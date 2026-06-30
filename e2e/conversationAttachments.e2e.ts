@@ -28,6 +28,9 @@ import { expect, test } from '@playwright/test';
 
 const BASE_URL = process.env.E2E_BASE_URL ?? 'http://localhost:3001';
 const CONVERSATION_PATH = process.env.E2E_CONVERSATION_PATH; // e.g. open the messaging panel + a conversation
+// A *second* conversation the same session is a member of, for the
+// switch-resets-the-draft scenario (round-2 review finding 1).
+const CONVERSATION_PATH_B = process.env.E2E_CONVERSATION_PATH_B;
 
 test.describe('conversation attachments', () => {
   test.skip(!CONVERSATION_PATH, 'Set E2E_CONVERSATION_PATH and run the full stack to enable.');
@@ -54,5 +57,32 @@ test.describe('conversation attachments', () => {
     const rendered = page.getByRole('img', { name: /attached image: photo\.png/i });
     await expect(rendered).toBeVisible();
     await expect(rendered).toHaveAttribute('src', /.+/);
+  });
+
+  // Round-2 review finding 1: a staged-but-unsent attachment must NOT survive a
+  // conversation switch — its document lives in conversation A's bucket and
+  // would be READ-gate-rejected if it rode along on a send in conversation B.
+  test('staging in one conversation does not carry over after switching to another', async ({ page }) => {
+    test.skip(!CONVERSATION_PATH_B, 'Set E2E_CONVERSATION_PATH_B (a second member conversation) to enable.');
+
+    await page.goto(`${BASE_URL}${CONVERSATION_PATH}`);
+
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await page.getByRole('button', { name: /attach files/i }).click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles('e2e/fixtures/photo.png');
+    await expect(page.getByText('photo.png')).toBeVisible();
+
+    // Switch to conversation B without sending — the staged chip must be gone.
+    await page.goto(`${BASE_URL}${CONVERSATION_PATH_B}`);
+    await expect(page.getByText('photo.png')).toHaveCount(0);
+
+    // A text-only send in B must succeed (it carries no stale document ids).
+    const composer = page.getByRole('textbox');
+    await composer.fill('plain text, no attachment');
+    const sendButton = page.getByRole('button', { name: /send/i });
+    await expect(sendButton).toBeEnabled();
+    await sendButton.click();
+    await expect(page.getByText('plain text, no attachment')).toBeVisible();
   });
 });

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { ComposerAttachment } from '@/crd/components/comment/types';
@@ -43,13 +43,32 @@ export type UseConversationAttachmentsResult = {
  * `storageConfig` is undefined and the hook reports `enabled: false`, so the
  * composer renders exactly as before.
  */
-export function useConversationAttachments(storageConfig: StorageConfig | undefined): UseConversationAttachmentsResult {
+export function useConversationAttachments(
+  storageConfig: StorageConfig | undefined,
+  conversationId?: string
+): UseConversationAttachmentsResult {
   const { t } = useTranslation('crd-space');
   const [uploadFile] = useUploadFileMutation();
   const [attachments, setAttachments] = useState<StagedAttachment[]>([]);
   const [error, setError] = useState<string | undefined>();
+  // Live count of staged attachments, kept in lockstep with `attachments`.
+  // Read instead of the `attachments` state closure when enforcing the count
+  // cap so two rapid back-to-back picks (before a re-render) can't both see a
+  // stale length and together exceed the limit (FR-020).
+  const stagedCountRef = useRef(0);
 
   const enabled = Boolean(storageConfig?.canUpload);
+
+  // Staged uploads land in the *current* conversation's temporary bucket. When
+  // the selected conversation changes, drop any unsent draft so a later send
+  // never carries a previous conversation's document ids — the server READ-gates
+  // them to the new bucket and would reject the whole send (the orphaned
+  // temporary uploads are swept server-side, FR-012).
+  useEffect(() => {
+    setAttachments([]);
+    setError(undefined);
+    stagedCountRef.current = 0;
+  }, [conversationId]);
 
   const describeRejection = (rejection: AttachmentRejection): string => {
     switch (rejection.reason) {
@@ -70,7 +89,7 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
     if (!storageConfig) return;
 
     const { accepted, rejected } = validateAttachments(files, {
-      existingCount: attachments.length,
+      existingCount: stagedCountRef.current,
       allowedMimeTypes: storageConfig.allowedMimeTypes?.length ? storageConfig.allowedMimeTypes : undefined,
       maxFileSizeBytes: storageConfig.maxFileSize || undefined,
     });
@@ -78,6 +97,10 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
     if (rejected.length > 0) {
       setError(describeRejection(rejected[0]));
     }
+
+    // Reserve the accepted slots synchronously (before the first upload await)
+    // so a back-to-back pick validates against the new count, not the stale one.
+    stagedCountRef.current += accepted.length;
 
     for (const file of accepted) {
       const stagedId = `${file.name}:${Date.now()}:${Math.random().toString(36).slice(2)}`;
@@ -111,6 +134,7 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
   const removeAttachment = (id: string): void => {
     setAttachments(prev => {
       const next = prev.filter(attachment => attachment.id !== id);
+      stagedCountRef.current = next.length;
       // Re-derive the error from what remains: a stale validation/upload message
       // for a now-removed file should not linger. Keep the upload-failed message
       // only while some staged attachment is still in an error state.
@@ -124,6 +148,7 @@ export function useConversationAttachments(storageConfig: StorageConfig | undefi
   const reset = (): void => {
     setAttachments([]);
     setError(undefined);
+    stagedCountRef.current = 0;
   };
 
   const accept = storageConfig?.allowedMimeTypes?.length ? storageConfig.allowedMimeTypes.join(',') : undefined;
