@@ -675,6 +675,19 @@
           "tokenExpiry": "Je bewerkingssessie is verlopen.",
           "service": "De editor is tijdelijk niet beschikbaar.",
           "unknown": "Verbinding verloren."
+        },
+        "reconnect": "Opnieuw verbinden",
+        "reload": "Herladen",
+        "terminal": {
+          "notFound": "Dit document is niet meer beschikbaar.",
+          "forbidden": "Je hebt geen toegang meer tot dit document.",
+          "generic": "Dit document kan niet opnieuw worden geopend."
+        },
+        "warning": {
+          "title": "Niet-opgeslagen wijzigingen negeren?",
+          "body": "Bij het herstellen van de editor wordt het document opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan — kopieer eerst wat je nodig hebt.",
+          "cancel": "Annuleren",
+          "confirm": "Doorgaan"
         }
       }
     }

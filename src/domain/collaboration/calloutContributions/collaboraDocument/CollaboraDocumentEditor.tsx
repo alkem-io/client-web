@@ -19,12 +19,32 @@ interface CollaboraDocumentEditorProps {
    * Collabora signal). See `useCollaboraConnectionMonitor`.
    */
   onAccessTokenTTL?: (accessTokenTTL: number) => void;
+  /**
+   * Recovery trigger. Bumping this re-issues a fresh editor URL/token (`network-only`) and
+   * remounts the iframe (it is used as the iframe `key`), re-establishing the session in
+   * place without a page reload. See `useCollaboraConnectionMonitor.reconnect()`.
+   */
+  reconnectNonce?: number;
+  /**
+   * Reports a failed editor-URL fetch so the caller can classify it: not-found / forbidden
+   * are terminal (document gone / access revoked), anything else is recoverable (FR-013).
+   */
+  onFetchError?: (code: string | undefined, message: string) => void;
+}
+
+/** Extracts the Alkemio error code (`extensions.code`) from an Apollo/GraphQL error, if any. */
+function graphQLErrorCode(error: unknown): string | undefined {
+  const graphQLErrors = (error as { graphQLErrors?: Array<{ extensions?: { code?: string } }> } | undefined)
+    ?.graphQLErrors;
+  return graphQLErrors?.[0]?.extensions?.code;
 }
 
 const CollaboraDocumentEditor = ({
   collaboraDocumentId,
   iframeRef,
   onAccessTokenTTL,
+  reconnectNonce = 0,
+  onFetchError,
 }: CollaboraDocumentEditorProps) => {
   const { t } = useTranslation();
   const client = useApolloClient();
@@ -50,18 +70,23 @@ const CollaboraDocumentEditor = ({
 
         if (error) {
           setErrorMessage(error.message);
+          onFetchError?.(graphQLErrorCode(error), error.message);
           setLoading(false);
           return;
         }
 
         if (data?.collaboraEditorUrl) {
-          setEditorUrl(prev => prev ?? data.collaboraEditorUrl.editorUrl);
+          // Adopt the freshly-issued URL every time (no first-URL pin) so a reconnect remounts
+          // with a new token; the iframe `key={reconnectNonce}` forces the actual remount.
+          setEditorUrl(data.collaboraEditorUrl.editorUrl);
           onAccessTokenTTL?.(data.collaboraEditorUrl.accessTokenTTL);
           setLoading(false);
         }
       } catch (err) {
         if (!mountedRef.current) return;
-        setErrorMessage(err instanceof Error ? err.message : 'Unknown error');
+        const message = err instanceof Error ? err.message : 'Unknown error';
+        setErrorMessage(message);
+        onFetchError?.(graphQLErrorCode(err), message);
         setLoading(false);
       }
     };
@@ -74,7 +99,7 @@ const CollaboraDocumentEditor = ({
         clearTimeout(timerRef.current);
       }
     };
-  }, [collaboraDocumentId, client, onAccessTokenTTL]);
+  }, [collaboraDocumentId, client, onAccessTokenTTL, onFetchError, reconnectNonce]);
 
   if (loading && !editorUrl) {
     return (
@@ -100,6 +125,9 @@ const CollaboraDocumentEditor = ({
 
   return (
     <iframe
+      // Keying on the reconnect nonce forces a full remount (fresh Collabora session) when the
+      // user reconnects, dropping the dead session and loading the new token'd URL.
+      key={reconnectNonce}
       ref={iframeRef}
       src={editorUrl}
       title={t('collaboraDocument.editor.title')}

@@ -667,6 +667,19 @@
           "tokenExpiry": "Your editing session expired.",
           "service": "The editor is temporarily unavailable.",
           "unknown": "Connection lost."
+        },
+        "reconnect": "Reconnect",
+        "reload": "Reload",
+        "terminal": {
+          "notFound": "This document is no longer available.",
+          "forbidden": "You no longer have access to this document.",
+          "generic": "This document can't be reopened."
+        },
+        "warning": {
+          "title": "Discard unsaved changes?",
+          "body": "Recovering the editor reloads the document. Changes made since the last save may be lost — copy anything you need first.",
+          "cancel": "Cancel",
+          "confirm": "Continue"
         }
       }
     }

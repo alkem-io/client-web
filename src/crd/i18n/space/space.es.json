@@ -675,6 +675,19 @@
           "tokenExpiry": "Tu sesión de edición ha caducado.",
           "service": "El editor no está disponible temporalmente.",
           "unknown": "Se perdió la conexión."
+        },
+        "reconnect": "Reconectar",
+        "reload": "Recargar",
+        "terminal": {
+          "notFound": "Este documento ya no está disponible.",
+          "forbidden": "Ya no tienes acceso a este documento.",
+          "generic": "Este documento no se puede volver a abrir."
+        },
+        "warning": {
+          "title": "¿Descartar los cambios sin guardar?",
+          "body": "Recuperar el editor recargará el documento. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
+          "cancel": "Cancelar",
+          "confirm": "Continuar"
         }
       }
     }

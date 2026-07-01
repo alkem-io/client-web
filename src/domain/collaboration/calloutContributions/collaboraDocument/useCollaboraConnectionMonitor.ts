@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useState } from 'react';
+import { type RefObject, useCallback, useEffect, useState } from 'react';
 import {
   type CollaboraConnectionState,
   type CollaboraConnectionStatus,
@@ -24,6 +24,12 @@ export const SELF_HEAL_WINDOW_MS = 20000;
 type Options = {
   /** WOPI access-token lifetime (ms) from the editor-URL query; arms the expiry timer. */
   accessTokenTTL?: number;
+  /**
+   * Forces the `terminal` state — set by the overlay when a reconnect attempt returned a
+   * non-recoverable error (document deleted → not-found, or access revoked → forbidden).
+   * A terminal session offers no retry (FR-013).
+   */
+  terminal?: boolean;
   onError?: (message: string) => void;
   onSessionClosed?: () => void;
 };
@@ -40,15 +46,19 @@ type Options = {
  *   predict expiry from the TTL and surface it (straight to `disconnected` — a token can
  *   only be refreshed by a remount, never by the editor self-healing).
  *
- * Increment 1 (US1) scope: detection + honest status only. Any hard drop resolves to
- * `disconnected` with a cause; the `reconnecting` self-heal window (US3) and the
- * `reconnect()` recovery action (US2) are layered on later.
+ * Increment 1 (US1): detection + honest status. Increment 2 (US2) adds `reconnect()` — a
+ * user-initiated in-place recovery that re-issues a fresh token and remounts the iframe (the
+ * editor keys on `reconnectNonce`) — plus the forced `terminal` state. The `reconnecting`
+ * self-heal window (US3) is layered on later.
  */
 export function useCollaboraConnectionMonitor(
   iframeRef: RefObject<HTMLIFrameElement | null>,
-  { accessTokenTTL, onError, onSessionClosed }: Options = {}
+  { accessTokenTTL, terminal, onError, onSessionClosed }: Options = {}
 ): CollaboraConnectionState {
   const base = useCollaboraPostMessage(iframeRef, { onError, onSessionClosed });
+
+  const [reconnectNonce, setReconnectNonce] = useState(0);
+  const reconnect = useCallback(() => setReconnectNonce(n => n + 1), []);
 
   const [online, setOnline] = useState(() => (typeof navigator === 'undefined' ? true : navigator.onLine));
   useEffect(() => {
@@ -62,18 +72,25 @@ export function useCollaboraConnectionMonitor(
     };
   }, []);
 
+  // Re-armed on every reconnect (nonce change) — a fresh token restarts the expiry clock even
+  // when the TTL value is unchanged (it's a constant ~8h), so the effect can't depend on the
+  // TTL value alone.
   const [tokenExpired, setTokenExpired] = useState(false);
   useEffect(() => {
     setTokenExpired(false);
     if (!accessTokenTTL || accessTokenTTL <= 0) return;
     const id = setTimeout(() => setTokenExpired(true), accessTokenTTL);
     return () => clearTimeout(id);
-  }, [accessTokenTTL]);
+  }, [accessTokenTTL, reconnectNonce]);
 
   let status: CollaboraConnectionStatus = base.connectionStatus;
   let cause: DisconnectCause | null = null;
 
-  if (tokenExpired) {
+  if (terminal) {
+    // Non-recoverable (document gone / access revoked) — no retry (FR-013).
+    status = 'terminal';
+    cause = 'service';
+  } else if (tokenExpired) {
     // Not transient — bypasses any self-heal window; only a remount mints a new token.
     status = 'disconnected';
     cause = 'tokenExpiry';
@@ -93,5 +110,7 @@ export function useCollaboraConnectionMonitor(
     connectedUsers: base.connectedUsers,
     accessTokenTTL,
     lastError: base.lastError,
+    reconnect,
+    reconnectNonce,
   };
 }

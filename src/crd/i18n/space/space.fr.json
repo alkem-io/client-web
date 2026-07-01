@@ -675,6 +675,19 @@
           "tokenExpiry": "Votre session d’édition a expiré.",
           "service": "L’éditeur est temporairement indisponible.",
           "unknown": "Connexion perdue."
+        },
+        "reconnect": "Se reconnecter",
+        "reload": "Recharger",
+        "terminal": {
+          "notFound": "Ce document n’est plus disponible.",
+          "forbidden": "Vous n’avez plus accès à ce document.",
+          "generic": "Ce document ne peut pas être rouvert."
+        },
+        "warning": {
+          "title": "Ignorer les modifications non enregistrées ?",
+          "body": "La récupération de l’éditeur rechargera le document. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
+          "cancel": "Annuler",
+          "confirm": "Continuer"
         }
       }
     }

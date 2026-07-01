@@ -141,5 +141,35 @@ describe('mapCollaboraFooterProps', () => {
       const r = mapCollaboraFooterProps({ ...baseParams, hasEditPrivilege: false, connectionStatus: 'disconnected' });
       expect(r.readonlyReason).toBeNull();
     });
+
+    it('maps a terminal status to a terminal, non-retryable state carrying its reason', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'terminal',
+        saveStatus: 'unsaved',
+        terminalReason: 'notFound',
+      });
+      expect(r.terminal).toBe(true);
+      expect(r.disconnected).toBe(true);
+      expect(r.terminalReason).toBe('notFound');
+      // No recovery is possible, so the "changes may not be saved" warning is not shown.
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('carries the forbidden terminal reason', () => {
+      const r = mapCollaboraFooterProps({ ...baseParams, connectionStatus: 'terminal', terminalReason: 'forbidden' });
+      expect(r.terminalReason).toBe('forbidden');
+    });
+
+    it('is not terminal and has a null terminal reason for an ordinary disconnect', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'disconnected',
+        disconnectCause: 'network',
+        terminalReason: 'notFound',
+      });
+      expect(r.terminal).toBe(false);
+      expect(r.terminalReason).toBeNull();
+    });
   });
 });

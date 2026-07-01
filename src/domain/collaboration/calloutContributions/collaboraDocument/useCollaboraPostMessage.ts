@@ -25,6 +25,10 @@ export type CollaboraConnectionState = {
   /** WOPI access-token lifetime (ms) as last returned by the editor-URL query, if known. */
   accessTokenTTL?: number;
   lastError?: string;
+  /** Trigger an in-place recovery: re-issue a fresh editor URL/token and remount the iframe. */
+  reconnect: () => void;
+  /** Monotonic counter bumped by `reconnect()`; the editor keys the iframe on it to remount. */
+  reconnectNonce: number;
 };
 
 type CollaboraMessage = {

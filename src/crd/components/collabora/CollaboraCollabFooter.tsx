@@ -1,4 +1,15 @@
-import { AlertCircle, Check, CircleDashed, CloudOff, Globe, Trash2, Unplug, Users } from 'lucide-react';
+import {
+  AlertCircle,
+  Check,
+  CircleDashed,
+  CloudOff,
+  Globe,
+  RefreshCw,
+  RotateCcw,
+  Trash2,
+  Unplug,
+  Users,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -10,6 +21,9 @@ import type { DisconnectCause } from '@/domain/collaboration/calloutContribution
 export type CollaboraSaveStatus = 'saved' | 'saving' | 'unsaved' | 'error';
 
 export type CollaboraReadonlyReason = 'connecting' | 'unauthenticated' | 'contentUpdatePolicy' | 'noMembership' | null;
+
+/** Why recovery is impossible: the document is gone (deleted/moved) or access was revoked. */
+export type CollaboraTerminalReason = 'notFound' | 'forbidden' | null;
 
 export type CollaboraConnectedUser = {
   id: string;
@@ -37,6 +51,14 @@ type CollaboraCollabFooterProps = {
   disconnectCause?: DisconnectCause | null;
   /** True when the disconnected session could have unsaved edits — shows the loss warning (FR-012). */
   changesAtRisk?: boolean;
+  /** True when recovery is impossible (document gone / access revoked) — no retry offered (FR-013). */
+  terminal?: boolean;
+  /** Which terminal condition, for the right message. */
+  terminalReason?: CollaboraTerminalReason;
+  /** Invoked when the user chooses in-place reconnect (primary recovery). */
+  onReconnect?: () => void;
+  /** Invoked when the user chooses the full-page reload fallback. */
+  onReload?: () => void;
 };
 
 export function CollaboraCollabFooter({
@@ -50,6 +72,10 @@ export function CollaboraCollabFooter({
   disconnected = false,
   disconnectCause = null,
   changesAtRisk = false,
+  terminal = false,
+  terminalReason = null,
+  onReconnect,
+  onReload,
 }: CollaboraCollabFooterProps) {
   const { t } = useTranslation('crd-space');
 
@@ -92,6 +118,9 @@ export function CollaboraCollabFooter({
   const disconnectCauseText = disconnectCause
     ? t(`collabora.footer.disconnect.cause.${disconnectCause}` as 'collabora.footer.disconnect.cause.network')
     : undefined;
+  const terminalText = terminalReason
+    ? t(`collabora.footer.disconnect.terminal.${terminalReason}` as 'collabora.footer.disconnect.terminal.notFound')
+    : t('collabora.footer.disconnect.terminal.generic');
 
   return (
     <div
@@ -142,13 +171,36 @@ export function CollaboraCollabFooter({
           </Button>
         )}
         {readonlyText && <span className="text-caption text-muted-foreground">{readonlyText}</span>}
-        {disconnected && disconnectCauseText && (
+        {disconnected && !terminal && disconnectCauseText && (
           <span className="text-caption text-muted-foreground">{disconnectCauseText}</span>
         )}
       </div>
 
       <div className="flex items-center gap-3">
-        {disconnected ? (
+        {/* Recovery actions — user-initiated (never automatic), shown only for a recoverable
+            disconnect. A terminal session (document gone / access revoked) offers no retry. */}
+        {disconnected && !terminal && (onReconnect || onReload) && (
+          <div className="flex items-center gap-2">
+            {onReconnect && (
+              <Button size="sm" variant="outline" onClick={onReconnect}>
+                <RotateCcw className="size-4 mr-1" aria-hidden="true" />
+                {t('collabora.footer.disconnect.reconnect')}
+              </Button>
+            )}
+            {onReload && (
+              <Button size="sm" variant="ghost" onClick={onReload}>
+                <RefreshCw className="size-4 mr-1" aria-hidden="true" />
+                {t('collabora.footer.disconnect.reload')}
+              </Button>
+            )}
+          </div>
+        )}
+        {terminal ? (
+          <output aria-live="assertive" className="flex items-center gap-1 text-caption text-destructive">
+            <Unplug className="size-3.5" aria-hidden="true" />
+            <span>{terminalText}</span>
+          </output>
+        ) : disconnected ? (
           // <output> carries an implicit role="status"; aria-live is raised to assertive when
           // the user's work is at risk so the drop is announced promptly (FR-015).
           <output

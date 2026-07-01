@@ -3,6 +3,7 @@ import type {
   CollaboraConnectedUser,
   CollaboraReadonlyReason,
   CollaboraSaveStatus,
+  CollaboraTerminalReason,
 } from '@/crd/components/collabora/CollaboraCollabFooter';
 import type { CollaboraConnectionStatus, DisconnectCause } from './useCollaboraPostMessage';
 
@@ -20,6 +21,8 @@ export type MapCollaboraFooterParams = {
   myMembershipStatus?: CommunityMembershipStatus | string;
   /** Why the session dropped, from the connection monitor; drives cause-specific messaging. */
   disconnectCause?: DisconnectCause | null;
+  /** Terminal condition (document gone / access revoked) when `connectionStatus` is `terminal`. */
+  terminalReason?: CollaboraTerminalReason;
 };
 
 export type CollaboraFooterMappedProps = {
@@ -40,6 +43,10 @@ export type CollaboraFooterMappedProps = {
    * false data-loss warning (FR-012).
    */
   changesAtRisk: boolean;
+  /** True when recovery is impossible (document gone / access revoked) — no retry (FR-013). */
+  terminal: boolean;
+  /** Which terminal condition, when `terminal`; else null. */
+  terminalReason: CollaboraTerminalReason;
 };
 
 /**
@@ -64,13 +71,16 @@ export function mapCollaboraFooterProps(params: MapCollaboraFooterParams): Colla
     contentUpdatePolicy,
     myMembershipStatus,
     disconnectCause,
+    terminalReason,
   } = params;
 
   const canDelete = isContribution && hasDeletePrivileges && !!onDelete;
 
-  const disconnected = connectionStatus === 'disconnected' || connectionStatus === 'terminal';
-  // Edit-capable session whose work wasn't confirmed saved at the drop → warn about loss.
-  const changesAtRisk = disconnected && isAuthenticated && hasEditPrivilege && saveStatus !== 'saved';
+  const terminal = connectionStatus === 'terminal';
+  const disconnected = connectionStatus === 'disconnected' || terminal;
+  // Edit-capable session whose work wasn't confirmed saved at the drop → warn about loss. Not
+  // for a terminal state (document gone / access revoked) — there's nothing to recover.
+  const changesAtRisk = disconnected && !terminal && isAuthenticated && hasEditPrivilege && saveStatus !== 'saved';
 
   return {
     saveStatus,
@@ -88,6 +98,8 @@ export function mapCollaboraFooterProps(params: MapCollaboraFooterParams): Colla
     disconnected,
     disconnectCause: disconnected ? (disconnectCause ?? 'unknown') : null,
     changesAtRisk,
+    terminal,
+    terminalReason: terminal ? (terminalReason ?? null) : null,
   };
 }
 

@@ -5,7 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
-import { CollaboraCollabFooter } from '@/crd/components/collabora/CollaboraCollabFooter';
+import { CollaboraCollabFooter, type CollaboraTerminalReason } from '@/crd/components/collabora/CollaboraCollabFooter';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/crd/primitives/alert-dialog';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
 import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor';
@@ -26,6 +36,17 @@ const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
   presentation: Presentation,
 };
 
+// Alkemio server error codes (extensions.code) on the editor-URL path that mean recovery is
+// impossible (FR-013). Anything else is treated as recoverable so a transient/unknown error
+// never wrongly strands the user in a terminal state (research R4, fail-safe).
+const TERMINAL_CODE_REASONS: Record<string, CollaboraTerminalReason> = {
+  ENTITY_NOT_FOUND: 'notFound',
+  RELATIONSHIP_NOT_FOUND: 'notFound',
+  FORBIDDEN: 'forbidden',
+};
+
+type PendingRecovery = 'reconnect' | 'reload' | null;
+
 /**
  * Fullscreen Collabora editor dialog rendered as a sibling of CalloutDetailDialog
  * to keep each Radix Dialog's FocusScope independent. Mirrors the CrdMemoDialog
@@ -45,20 +66,34 @@ export function CollaboraFramingEditorOverlay({
   const notify = useNotification();
 
   // The editor-URL query returns the WOPI token TTL; the monitor uses it to detect an
-  // impending token-expiry disconnect (an otherwise silent failure). Stable callback so the
-  // editor's fetch effect isn't re-triggered.
+  // impending token-expiry disconnect (an otherwise silent failure). A successful (re)issue
+  // also clears any terminal state. Stable callback so the editor's fetch effect isn't
+  // re-triggered.
   const [accessTokenTTL, setAccessTokenTTL] = useState<number>();
-  const handleAccessTokenTTL = useCallback((ttl: number) => setAccessTokenTTL(ttl), []);
+  const [terminalReason, setTerminalReason] = useState<CollaboraTerminalReason>(null);
+  const handleAccessTokenTTL = useCallback((ttl: number) => {
+    setAccessTokenTTL(ttl);
+    setTerminalReason(null);
+  }, []);
+  // Classify a failed editor-URL fetch: terminal (document gone / access revoked) vs recoverable.
+  const handleFetchError = useCallback((code: string | undefined) => {
+    setTerminalReason(code ? (TERMINAL_CODE_REASONS[code] ?? null) : null);
+  }, []);
 
-  const { status, cause, saveStatus, connectedUsers } = useCollaboraConnectionMonitor(iframeRef, {
-    accessTokenTTL,
-    onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
-    onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
-  });
+  const { status, cause, saveStatus, connectedUsers, reconnect, reconnectNonce } = useCollaboraConnectionMonitor(
+    iframeRef,
+    {
+      accessTokenTTL,
+      terminal: terminalReason !== null,
+      onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
+      onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
+    }
+  );
 
   const footerProps = mapCollaboraFooterProps({
     connectionStatus: status,
     disconnectCause: cause,
+    terminalReason,
     saveStatus,
     connectedUsers,
     isAuthenticated,
@@ -70,6 +105,31 @@ export function CollaboraFramingEditorOverlay({
     isContribution: false,
     hasDeletePrivileges: false,
   });
+
+  // Recovery is user-initiated and, when unsaved work could be lost, gated by a confirmation
+  // (FR-006) — both remount and reload replace the retained editor.
+  const [pendingRecovery, setPendingRecovery] = useState<PendingRecovery>(null);
+  const performRecovery = useCallback(
+    (kind: 'reconnect' | 'reload') => {
+      setPendingRecovery(null);
+      if (kind === 'reconnect') {
+        reconnect();
+      } else {
+        window.location.reload();
+      }
+    },
+    [reconnect]
+  );
+  const requestRecovery = useCallback(
+    (kind: 'reconnect' | 'reload') => {
+      if (footerProps.changesAtRisk) {
+        setPendingRecovery(kind);
+      } else {
+        performRecovery(kind);
+      }
+    },
+    [footerProps.changesAtRisk, performRecovery]
+  );
 
   return (
     <Dialog open={open} onOpenChange={o => !o && onClose()}>
@@ -99,12 +159,36 @@ export function CollaboraFramingEditorOverlay({
                 collaboraDocumentId={collaboraDocumentId}
                 iframeRef={iframeRef}
                 onAccessTokenTTL={handleAccessTokenTTL}
+                onFetchError={handleFetchError}
+                reconnectNonce={reconnectNonce}
               />
             )}
           </div>
-          {open && <CollaboraCollabFooter {...footerProps} />}
+          {open && (
+            <CollaboraCollabFooter
+              {...footerProps}
+              onReconnect={() => requestRecovery('reconnect')}
+              onReload={() => requestRecovery('reload')}
+            />
+          )}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
+
+      {/* Pre-recovery warning — only shown when recovery could discard unsaved work (FR-006). */}
+      <AlertDialog open={pendingRecovery !== null} onOpenChange={o => !o && setPendingRecovery(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('collabora.footer.disconnect.warning.title')}</AlertDialogTitle>
+            <AlertDialogDescription>{t('collabora.footer.disconnect.warning.body')}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('collabora.footer.disconnect.warning.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => pendingRecovery && performRecovery(pendingRecovery)}>
+              {t('collabora.footer.disconnect.warning.confirm')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Dialog>
   );
 }
