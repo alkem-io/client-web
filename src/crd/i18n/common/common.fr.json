@@ -895,7 +895,7 @@
   "downNoticeBanner": {
     "a11yLabel": "Avis d'incident sur la plateforme",
     "dismiss": "Fermer l'avis",
-    "message": "À la suite d'un incident survenu plus tôt aujourd'hui, certains fichiers (y compris des images) récemment stockés sur notre plateforme pourraient être inaccessibles. Nous travaillons activement à trouver des options pour les restaurer. Des questions ? Contactez-nous à <support>support@alkemio.com</support>"
+    "message": "À la suite d'un incident survenu hier, certains fichiers (y compris des images) récemment stockés sur notre plateforme pourraient être inaccessibles. Nous travaillons activement à trouver des options pour les restaurer. Des questions ? Contactez-nous à <support>support@alkemio.com</support>"
   },
   "edit": "Modifier",
   "error": "Erreur",

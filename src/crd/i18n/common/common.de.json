@@ -895,7 +895,7 @@
   "downNoticeBanner": {
     "a11yLabel": "Hinweis zu Plattformvorfall",
     "dismiss": "Hinweis schließen",
-    "message": "Nach einem Vorfall heute früher sind einige kürzlich auf unserer Plattform gespeicherte Dateien (einschließlich Bilder) möglicherweise nicht zugänglich. Wir arbeiten mit Hochdruck an Möglichkeiten zu ihrer Wiederherstellung. Fragen? Wenden Sie sich an <support>support@alkemio.com</support>"
+    "message": "Nach einem Vorfall gestern sind einige kürzlich auf unserer Plattform gespeicherte Dateien (einschließlich Bilder) möglicherweise nicht zugänglich. Wir arbeiten mit Hochdruck an Möglichkeiten zu ihrer Wiederherstellung. Fragen? Wenden Sie sich an <support>support@alkemio.com</support>"
   },
   "edit": "Bearbeiten",
   "error": "Fehler",
