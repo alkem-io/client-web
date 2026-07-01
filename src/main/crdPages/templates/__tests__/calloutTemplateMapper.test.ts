@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ActorType,
   CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
   type CalloutTemplateContentFragment,
   CalloutVisibility,
   CollaboraDocumentType,
+  ContributorCollectionView,
   PollResultsDetail,
   PollResultsVisibility,
   PollStatus,
@@ -206,6 +208,34 @@ describe('calloutTemplateContentToFormValues', () => {
     });
     expect(v.referenceRows).toEqual([{ id: 'ref-1', name: 'Docs', uri: 'https://x.test', description: 'd' }]);
     expect(v.editMeta?.framingProfileTagsetId).toBe('ts-1');
+  });
+
+  // Feature 008 — applying a contributors template MUST carry its captured config
+  // (types / default type / default view), not fall back to the form default.
+  // Regression guard for the apply-template prefill gap.
+  it('reads back the contributor-collection config (feature 008)', () => {
+    const base = baseFragment({ type: CalloutFramingType.Contributors });
+    const v = calloutTemplateContentToFormValues({
+      ...base,
+      settings: {
+        ...base.settings,
+        framing: {
+          ...base.settings.framing,
+          contributors: {
+            __typename: 'CalloutContributorsSettings',
+            contributorTypes: [ActorType.Organization],
+            defaultContributorType: ActorType.Organization,
+            defaultView: ContributorCollectionView.Map,
+          },
+        },
+      },
+    });
+    expect(v.framingChip).toBe('contributors');
+    expect(v.contributorCollection).toEqual({
+      types: ['organization'],
+      defaultType: 'organization',
+      defaultView: 'map',
+    });
   });
 
   it('copies the whiteboard drawing (unlike the live-callout edit prefill)', () => {
