@@ -56,6 +56,7 @@
     "sidebar": {
       "aboutTitle": "Über",
       "organizationsTitle": "Organisationen",
+      "referencesTitle": "Links",
       "socialLinksTitle": "Soziale Links",
       "bioEmpty": "Noch keine Biografie.",
       "organizationsEmpty": "Noch in keiner Organisation.",
@@ -86,7 +87,6 @@
       "tagsetKeywords": "Schlüsselwörter",
       "tagsetCapabilities": "Fähigkeiten",
       "referencesTitle": "Links",
-      "referencesEmpty": "Noch keine Links.",
       "associatesTitle": "Zugehörige",
       "associatesCount_one": "{{count}} Zugehöriger",
       "associatesCount_other": "{{count}} Zugehörige",

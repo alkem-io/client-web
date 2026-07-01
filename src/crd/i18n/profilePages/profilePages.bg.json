@@ -56,6 +56,7 @@
     "sidebar": {
       "aboutTitle": "Относно",
       "organizationsTitle": "Организации",
+      "referencesTitle": "Връзки",
       "socialLinksTitle": "Социални",
       "bioEmpty": "Все още няма биография.",
       "organizationsEmpty": "Все още не е част от организация.",
@@ -86,7 +87,6 @@
       "tagsetKeywords": "Ключови думи",
       "tagsetCapabilities": "Възможности",
       "referencesTitle": "Връзки",
-      "referencesEmpty": "Все още няма връзки.",
       "associatesTitle": "Сътрудници",
       "associatesCount_one": "{{count}} сътрудник",
       "associatesCount_other": "{{count}} сътрудника",
