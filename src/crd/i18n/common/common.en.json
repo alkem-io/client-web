@@ -895,7 +895,7 @@
   "downNoticeBanner": {
     "a11yLabel": "Platform incident notice",
     "dismiss": "Dismiss notice",
-    "message": "After an incident earlier today, some files (including images) recently stored on our platform may be inaccessible. We're working hard on finding options to restore them. Questions? Reach out to <support>support@alkemio.com</support>"
+    "message": "After an incident yesterday, some files (including images) recently stored on our platform may be inaccessible. We're working hard on finding options to restore them. Questions? Reach out to <support>support@alkemio.com</support>"
   },
   "edit": "Edit",
   "error": "Error",
