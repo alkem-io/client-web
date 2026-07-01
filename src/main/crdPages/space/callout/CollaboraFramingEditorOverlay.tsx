@@ -1,6 +1,6 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FileText, Presentation, Sheet, X } from 'lucide-react';
-import { useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -10,7 +10,7 @@ import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
 import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor';
 import { mapCollaboraFooterProps } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper';
-import { useCollaboraPostMessage } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraPostMessage';
+import { useCollaboraConnectionMonitor } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraConnectionMonitor';
 
 type CollaboraFramingEditorOverlayProps = {
   open: boolean;
@@ -44,13 +44,21 @@ export function CollaboraFramingEditorOverlay({
   const { isAuthenticated } = useAuthenticationContext();
   const notify = useNotification();
 
-  const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
+  // The editor-URL query returns the WOPI token TTL; the monitor uses it to detect an
+  // impending token-expiry disconnect (an otherwise silent failure). Stable callback so the
+  // editor's fetch effect isn't re-triggered.
+  const [accessTokenTTL, setAccessTokenTTL] = useState<number>();
+  const handleAccessTokenTTL = useCallback((ttl: number) => setAccessTokenTTL(ttl), []);
+
+  const { status, cause, saveStatus, connectedUsers } = useCollaboraConnectionMonitor(iframeRef, {
+    accessTokenTTL,
     onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
     onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
   });
 
   const footerProps = mapCollaboraFooterProps({
-    connectionStatus,
+    connectionStatus: status,
+    disconnectCause: cause,
     saveStatus,
     connectedUsers,
     isAuthenticated,
@@ -84,7 +92,15 @@ export function CollaboraFramingEditorOverlay({
             </Button>
           </div>
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-            {open && <CollaboraDocumentEditor collaboraDocumentId={collaboraDocumentId} iframeRef={iframeRef} />}
+            {/* The editor stays mounted on disconnect (retained for manual copy, FR-004a) — the
+                footer surfaces the disconnected state alongside it rather than replacing it. */}
+            {open && (
+              <CollaboraDocumentEditor
+                collaboraDocumentId={collaboraDocumentId}
+                iframeRef={iframeRef}
+                onAccessTokenTTL={handleAccessTokenTTL}
+              />
+            )}
           </div>
           {open && <CollaboraCollabFooter {...footerProps} />}
         </DialogPrimitive.Content>

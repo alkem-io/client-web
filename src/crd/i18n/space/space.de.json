@@ -666,6 +666,16 @@
         "unauthenticated": "Melde dich an, um dieses Dokument zu bearbeiten.",
         "contentUpdatePolicy": "Du hast keine Berechtigung, dieses Dokument zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
         "noMembership": "Nur Mitglieder dieses Space können dieses Dokument bearbeiten. Tritt bei, um mitzuwirken."
+      },
+      "disconnect": {
+        "atRisk": "Getrennt — aktuelle Änderungen wurden möglicherweise nicht gespeichert",
+        "status": "Getrennt",
+        "cause": {
+          "network": "Sie scheinen offline zu sein.",
+          "tokenExpiry": "Ihre Bearbeitungssitzung ist abgelaufen.",
+          "service": "Der Editor ist vorübergehend nicht verfügbar.",
+          "unknown": "Verbindung verloren."
+        }
       }
     }
   },

@@ -666,6 +666,16 @@
         "unauthenticated": "Inicia sesión para editar este documento.",
         "contentUpdatePolicy": "No tienes permiso para editar este documento. Pide al propietario que cambie los ajustes de uso compartido.",
         "noMembership": "Solo los miembros de este espacio pueden editar este documento. Únete al espacio para contribuir."
+      },
+      "disconnect": {
+        "atRisk": "Desconectado — es posible que los cambios recientes no se hayan guardado",
+        "status": "Desconectado",
+        "cause": {
+          "network": "Parece que no tienes conexión.",
+          "tokenExpiry": "Tu sesión de edición ha caducado.",
+          "service": "El editor no está disponible temporalmente.",
+          "unknown": "Se perdió la conexión."
+        }
       }
     }
   },

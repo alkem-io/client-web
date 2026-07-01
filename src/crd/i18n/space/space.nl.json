@@ -666,6 +666,16 @@
         "unauthenticated": "Meld je aan om dit document te bewerken.",
         "contentUpdatePolicy": "Je hebt geen toestemming om dit document te bewerken. Vraag de eigenaar om de deelinstellingen te wijzigen.",
         "noMembership": "Alleen leden van deze space kunnen dit document bewerken. Word lid om bij te dragen."
+      },
+      "disconnect": {
+        "atRisk": "Verbinding verbroken — recente wijzigingen zijn mogelijk niet opgeslagen",
+        "status": "Verbinding verbroken",
+        "cause": {
+          "network": "Je lijkt offline te zijn.",
+          "tokenExpiry": "Je bewerkingssessie is verlopen.",
+          "service": "De editor is tijdelijk niet beschikbaar.",
+          "unknown": "Verbinding verloren."
+        }
       }
     }
   },

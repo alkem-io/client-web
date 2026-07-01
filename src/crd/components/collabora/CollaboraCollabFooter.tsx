@@ -1,10 +1,11 @@
-import { AlertCircle, Check, CircleDashed, CloudOff, Globe, Trash2, Users } from 'lucide-react';
+import { AlertCircle, Check, CircleDashed, CloudOff, Globe, Trash2, Unplug, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
+import type { DisconnectCause } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraPostMessage';
 
 export type CollaboraSaveStatus = 'saved' | 'saving' | 'unsaved' | 'error';
 
@@ -30,6 +31,12 @@ type CollaboraCollabFooterProps = {
   readonlyReason: CollaboraReadonlyReason;
   onDelete?: () => void;
   className?: string;
+  /** True once the editing session has dropped — replaces the save chip with a disconnect banner. */
+  disconnected?: boolean;
+  /** Why the session dropped; drives a cause-specific hint. */
+  disconnectCause?: DisconnectCause | null;
+  /** True when the disconnected session could have unsaved edits — shows the loss warning (FR-012). */
+  changesAtRisk?: boolean;
 };
 
 export function CollaboraCollabFooter({
@@ -40,6 +47,9 @@ export function CollaboraCollabFooter({
   readonlyReason,
   onDelete,
   className,
+  disconnected = false,
+  disconnectCause = null,
+  changesAtRisk = false,
 }: CollaboraCollabFooterProps) {
   const { t } = useTranslation('crd-space');
 
@@ -56,9 +66,6 @@ export function CollaboraCollabFooter({
     return () => clearTimeout(timer);
   }, [readonlyReason]);
 
-  // Collabora doesn't reliably propagate transport state to the host window — pulling the
-  // network cable keeps the iframe reporting "connected" — so the connection chip is
-  // intentionally not rendered. `connectionStatus` still drives the readonly reason below.
   const SaveIcon =
     saveStatus === 'saved'
       ? Check
@@ -73,6 +80,17 @@ export function CollaboraCollabFooter({
 
   const readonlyText = delayedReason
     ? t(`collabora.footer.readonlyReason.${delayedReason}` as 'collabora.footer.readonlyReason.connecting')
+    : undefined;
+
+  // Disconnect detection lives upstream in `useCollaboraConnectionMonitor` (browser
+  // online/offline + token-expiry timer), because Collabora's own transport signal is
+  // unreliable — a pulled cable keeps the iframe reporting "connected". When disconnected we
+  // replace the save chip (never leave it implying "saved" — FR-002) with an honest banner.
+  const disconnectPrimary = changesAtRisk
+    ? t('collabora.footer.disconnect.atRisk')
+    : t('collabora.footer.disconnect.status');
+  const disconnectCauseText = disconnectCause
+    ? t(`collabora.footer.disconnect.cause.${disconnectCause}` as 'collabora.footer.disconnect.cause.network')
     : undefined;
 
   return (
@@ -124,13 +142,31 @@ export function CollaboraCollabFooter({
           </Button>
         )}
         {readonlyText && <span className="text-caption text-muted-foreground">{readonlyText}</span>}
+        {disconnected && disconnectCauseText && (
+          <span className="text-caption text-muted-foreground">{disconnectCauseText}</span>
+        )}
       </div>
 
       <div className="flex items-center gap-3">
-        <div className={cn('flex items-center gap-1 text-caption', saveToneClass)}>
-          <SaveIcon className={cn('size-3.5', saveStatus === 'saving' && 'animate-spin')} aria-hidden="true" />
-          <span>{saveLabel}</span>
-        </div>
+        {disconnected ? (
+          // <output> carries an implicit role="status"; aria-live is raised to assertive when
+          // the user's work is at risk so the drop is announced promptly (FR-015).
+          <output
+            aria-live={changesAtRisk ? 'assertive' : 'polite'}
+            className={cn(
+              'flex items-center gap-1 text-caption',
+              changesAtRisk ? 'text-destructive' : 'text-foreground'
+            )}
+          >
+            <Unplug className="size-3.5" aria-hidden="true" />
+            <span>{disconnectPrimary}</span>
+          </output>
+        ) : (
+          <div className={cn('flex items-center gap-1 text-caption', saveToneClass)}>
+            <SaveIcon className={cn('size-3.5', saveStatus === 'saving' && 'animate-spin')} aria-hidden="true" />
+            <span>{saveLabel}</span>
+          </div>
+        )}
         {memberCount > 0 && (
           <div className="flex items-center gap-1 text-caption text-muted-foreground">
             <Users className="size-3.5" aria-hidden="true" />

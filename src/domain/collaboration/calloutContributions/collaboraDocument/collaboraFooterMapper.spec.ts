@@ -77,4 +77,69 @@ describe('mapCollaboraFooterProps', () => {
     expect(result.memberCount).toBe(2);
     expect(result.isGuest).toBe(true);
   });
+
+  describe('disconnect mapping', () => {
+    it('is not disconnected and has no cause while connected', () => {
+      const r = mapCollaboraFooterProps(baseParams);
+      expect(r.disconnected).toBe(false);
+      expect(r.disconnectCause).toBeNull();
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('flags disconnected + changesAtRisk for an edit-capable session with unsaved work', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'disconnected',
+        saveStatus: 'unsaved',
+        disconnectCause: 'network',
+      });
+      expect(r.disconnected).toBe(true);
+      expect(r.disconnectCause).toBe('network');
+      expect(r.changesAtRisk).toBe(true);
+    });
+
+    it('does not warn of at-risk changes for a read-only viewer (FR-012)', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        hasEditPrivilege: false,
+        connectionStatus: 'disconnected',
+        saveStatus: 'unsaved',
+        disconnectCause: 'service',
+      });
+      expect(r.disconnected).toBe(true);
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('does not warn of at-risk changes for a guest, and falls back to an unknown cause', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        isAuthenticated: false,
+        connectionStatus: 'disconnected',
+        saveStatus: 'unsaved',
+      });
+      expect(r.changesAtRisk).toBe(false);
+      expect(r.disconnectCause).toBe('unknown');
+    });
+
+    it('does not warn of at-risk changes when the document was cleanly saved at the drop', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'disconnected',
+        saveStatus: 'saved',
+        disconnectCause: 'tokenExpiry',
+      });
+      expect(r.disconnected).toBe(true);
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('treats the terminal state as disconnected', () => {
+      const r = mapCollaboraFooterProps({ ...baseParams, connectionStatus: 'terminal', disconnectCause: 'service' });
+      expect(r.disconnected).toBe(true);
+    });
+
+    it('suppresses the readonly reason once disconnected (the banner owns the messaging)', () => {
+      const r = mapCollaboraFooterProps({ ...baseParams, hasEditPrivilege: false, connectionStatus: 'disconnected' });
+      expect(r.readonlyReason).toBeNull();
+    });
+  });
 });

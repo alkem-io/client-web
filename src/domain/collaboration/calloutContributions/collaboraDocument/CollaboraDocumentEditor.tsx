@@ -12,9 +12,20 @@ interface CollaboraDocumentEditorProps {
    * Collabora postMessage API for save-state + presence signals.
    */
   iframeRef?: Ref<HTMLIFrameElement>;
+  /**
+   * Called with the per-actor WOPI access-token lifetime (ms) each time the editor URL is
+   * (re)issued. The connection monitor uses it to arm a client-side token-expiry timer —
+   * an expiring token is otherwise an invisible failure (saves start 401'ing with no
+   * Collabora signal). See `useCollaboraConnectionMonitor`.
+   */
+  onAccessTokenTTL?: (accessTokenTTL: number) => void;
 }
 
-const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef }: CollaboraDocumentEditorProps) => {
+const CollaboraDocumentEditor = ({
+  collaboraDocumentId,
+  iframeRef,
+  onAccessTokenTTL,
+}: CollaboraDocumentEditorProps) => {
   const { t } = useTranslation();
   const client = useApolloClient();
   const [editorUrl, setEditorUrl] = useState<string>();
@@ -45,6 +56,7 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef }: CollaboraDo
 
         if (data?.collaboraEditorUrl) {
           setEditorUrl(prev => prev ?? data.collaboraEditorUrl.editorUrl);
+          onAccessTokenTTL?.(data.collaboraEditorUrl.accessTokenTTL);
           setLoading(false);
         }
       } catch (err) {
@@ -62,7 +74,7 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef }: CollaboraDo
         clearTimeout(timerRef.current);
       }
     };
-  }, [collaboraDocumentId, client]);
+  }, [collaboraDocumentId, client, onAccessTokenTTL]);
 
   if (loading && !editorUrl) {
     return (

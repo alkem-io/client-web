@@ -658,6 +658,16 @@
         "unauthenticated": "Sign in to edit this document.",
         "contentUpdatePolicy": "You don't have permission to edit this document. Ask the owner to change the share settings.",
         "noMembership": "Only members of this space can edit this document. Join the space to contribute."
+      },
+      "disconnect": {
+        "atRisk": "Disconnected — recent changes may not be saved",
+        "status": "Disconnected",
+        "cause": {
+          "network": "You appear to be offline.",
+          "tokenExpiry": "Your editing session expired.",
+          "service": "The editor is temporarily unavailable.",
+          "unknown": "Connection lost."
+        }
       }
     }
   },

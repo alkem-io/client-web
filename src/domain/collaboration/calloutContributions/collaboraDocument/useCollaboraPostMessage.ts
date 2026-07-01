@@ -1,7 +1,31 @@
 import { type RefObject, useEffect, useState } from 'react';
 import type { CollaboraConnectedUser, CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
 
-export type CollaboraConnectionStatus = 'connected' | 'connecting' | 'disconnected';
+export type CollaboraConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected' | 'terminal';
+
+/**
+ * Why an editing session dropped. `network` = the browser went offline; `tokenExpiry` = the
+ * per-actor WOPI access token reached its TTL (saves would start failing silently — see
+ * `useCollaboraConnectionMonitor`); `service` = Collabora reported an error / closed the
+ * session; `unknown` = detected via sustained silence with no more specific signal.
+ */
+export type DisconnectCause = 'network' | 'tokenExpiry' | 'service' | 'unknown';
+
+/**
+ * The composite connection state produced by `useCollaboraConnectionMonitor` — the raw
+ * postMessage signals (this hook) fused with the browser online/offline state and the
+ * client-side token-expiry timer. Consumed by the footer mapper and the editor overlay.
+ */
+export type CollaboraConnectionState = {
+  status: CollaboraConnectionStatus;
+  /** Set when `status` is `reconnecting` | `disconnected` | `terminal`; otherwise null. */
+  cause: DisconnectCause | null;
+  saveStatus: CollaboraSaveStatus;
+  connectedUsers: CollaboraConnectedUser[];
+  /** WOPI access-token lifetime (ms) as last returned by the editor-URL query, if known. */
+  accessTokenTTL?: number;
+  lastError?: string;
+};
 
 type CollaboraMessage = {
   MessageId?: string;

@@ -666,6 +666,16 @@
         "unauthenticated": "Connectez-vous pour modifier ce document.",
         "contentUpdatePolicy": "Vous n'avez pas l'autorisation de modifier ce document. Demandez au propriétaire de changer les paramètres de partage.",
         "noMembership": "Seuls les membres de cet espace peuvent modifier ce document. Rejoignez l'espace pour contribuer."
+      },
+      "disconnect": {
+        "atRisk": "Déconnecté — les modifications récentes n’ont peut-être pas été enregistrées",
+        "status": "Déconnecté",
+        "cause": {
+          "network": "Vous semblez être hors ligne.",
+          "tokenExpiry": "Votre session d’édition a expiré.",
+          "service": "L’éditeur est temporairement indisponible.",
+          "unknown": "Connexion perdue."
+        }
       }
     }
   },
