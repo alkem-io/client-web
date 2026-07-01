@@ -688,7 +688,8 @@
           "body": "Beim Wiederherstellen des Editors wird das Dokument neu geladen. Änderungen seit dem letzten Speichern können verloren gehen – kopieren Sie zuerst, was Sie benötigen.",
           "cancel": "Abbrechen",
           "confirm": "Fortfahren"
-        }
+        },
+        "reconnecting": "Verbindung wird wiederhergestellt…"
       }
     }
   },

@@ -46,10 +46,11 @@ type Options = {
  *   predict expiry from the TTL and surface it (straight to `disconnected` — a token can
  *   only be refreshed by a remount, never by the editor self-healing).
  *
- * Increment 1 (US1): detection + honest status. Increment 2 (US2) adds `reconnect()` — a
+ * Increment 1 (US1): detection + honest status. Increment 2 (US2): `reconnect()` — a
  * user-initiated in-place recovery that re-issues a fresh token and remounts the iframe (the
- * editor keys on `reconnectNonce`) — plus the forced `terminal` state. The `reconnecting`
- * self-heal window (US3) is layered on later.
+ * editor keys on `reconnectNonce`) — plus the forced `terminal` state. Increment 3 (US3): a
+ * bounded `reconnecting` self-heal window for transient network drops, background/focus
+ * re-sync (FR-011), and the false-positive guarantee that mere silence is never a disconnect.
  */
 export function useCollaboraConnectionMonitor(
   iframeRef: RefObject<HTMLIFrameElement | null>,
@@ -72,6 +73,19 @@ export function useCollaboraConnectionMonitor(
     };
   }, []);
 
+  // Re-evaluate transport state when the tab regains focus/visibility — a backgrounded or slept
+  // tab may have missed online/offline events, so reflect reality rather than a stale value
+  // (FR-011). The token-expiry timer below fires on wake for the same reason.
+  useEffect(() => {
+    const resync = () => setOnline(typeof navigator === 'undefined' ? true : navigator.onLine);
+    document.addEventListener('visibilitychange', resync);
+    window.addEventListener('focus', resync);
+    return () => {
+      document.removeEventListener('visibilitychange', resync);
+      window.removeEventListener('focus', resync);
+    };
+  }, []);
+
   // Re-armed on every reconnect (nonce change) — a fresh token restarts the expiry clock even
   // when the TTL value is unchanged (it's a constant ~8h), so the effect can't depend on the
   // TTL value alone.
@@ -82,6 +96,21 @@ export function useCollaboraConnectionMonitor(
     const id = setTimeout(() => setTokenExpired(true), accessTokenTTL);
     return () => clearTimeout(id);
   }, [accessTokenTTL, reconnectNonce]);
+
+  // A network drop is *transient* — the editor's own reconnection can heal it when the browser
+  // comes back online — so it enters the soft `reconnecting` state for a bounded self-heal
+  // window before escalating to a hard `disconnected`. An explicit Collabora close (`service`)
+  // won't self-reopen, and token expiry needs a new token, so both skip the window.
+  const isNetworkTransient = !terminal && !tokenExpired && !online;
+  const [selfHealElapsed, setSelfHealElapsed] = useState(false);
+  useEffect(() => {
+    if (!isNetworkTransient) {
+      setSelfHealElapsed(false);
+      return;
+    }
+    const id = setTimeout(() => setSelfHealElapsed(true), SELF_HEAL_WINDOW_MS);
+    return () => clearTimeout(id);
+  }, [isNetworkTransient]);
 
   let status: CollaboraConnectionStatus = base.connectionStatus;
   let cause: DisconnectCause | null = null;
@@ -94,11 +123,14 @@ export function useCollaboraConnectionMonitor(
     // Not transient — bypasses any self-heal window; only a remount mints a new token.
     status = 'disconnected';
     cause = 'tokenExpiry';
-  } else if (!online) {
-    status = 'disconnected';
+  } else if (isNetworkTransient) {
+    // Reconnecting while the self-heal window runs; hard-disconnected only once it elapses. The
+    // app NEVER auto-remounts — recovery stays user-initiated (FR-009).
+    status = selfHealElapsed ? 'disconnected' : 'reconnecting';
     cause = 'network';
   } else if (base.connectionStatus === 'disconnected') {
-    // Collabora reported Session_Closed / an Error while the browser is otherwise online.
+    // Collabora reported Session_Closed / an Error while the browser is otherwise online — an
+    // explicit close, so straight to disconnected (manual reconnect).
     status = 'disconnected';
     cause = 'service';
   }

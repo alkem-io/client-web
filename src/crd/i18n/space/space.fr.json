@@ -688,7 +688,8 @@
           "body": "La récupération de l’éditeur rechargera le document. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
           "cancel": "Annuler",
           "confirm": "Continuer"
-        }
+        },
+        "reconnecting": "Reconnexion…"
       }
     }
   },

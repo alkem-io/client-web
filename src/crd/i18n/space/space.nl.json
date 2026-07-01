@@ -688,7 +688,8 @@
           "body": "Bij het herstellen van de editor wordt het document opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan — kopieer eerst wat je nodig hebt.",
           "cancel": "Annuleren",
           "confirm": "Doorgaan"
-        }
+        },
+        "reconnecting": "Opnieuw verbinden…"
       }
     }
   },

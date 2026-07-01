@@ -688,7 +688,8 @@
           "body": "Recuperar el editor recargará el documento. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
           "cancel": "Cancelar",
           "confirm": "Continuar"
-        }
+        },
+        "reconnecting": "Reconectando…"
       }
     }
   },

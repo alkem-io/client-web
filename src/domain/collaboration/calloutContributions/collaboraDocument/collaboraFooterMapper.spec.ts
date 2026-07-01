@@ -161,6 +161,20 @@ describe('mapCollaboraFooterProps', () => {
       expect(r.terminalReason).toBe('forbidden');
     });
 
+    it('maps the reconnecting state as soft (not disconnected) but still surfaces the cause', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'reconnecting',
+        saveStatus: 'unsaved',
+        disconnectCause: 'network',
+      });
+      expect(r.reconnecting).toBe(true);
+      expect(r.disconnected).toBe(false);
+      expect(r.disconnectCause).toBe('network');
+      // Not a hard loss warning while self-healing.
+      expect(r.changesAtRisk).toBe(false);
+    });
+
     it('is not terminal and has a null terminal reason for an ordinary disconnect', () => {
       const r = mapCollaboraFooterProps({
         ...baseParams,

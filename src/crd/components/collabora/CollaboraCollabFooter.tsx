@@ -47,6 +47,8 @@ type CollaboraCollabFooterProps = {
   className?: string;
   /** True once the editing session has dropped — replaces the save chip with a disconnect banner. */
   disconnected?: boolean;
+  /** True during the bounded self-heal window — shows a soft "reconnecting…" indicator instead. */
+  reconnecting?: boolean;
   /** Why the session dropped; drives a cause-specific hint. */
   disconnectCause?: DisconnectCause | null;
   /** True when the disconnected session could have unsaved edits — shows the loss warning (FR-012). */
@@ -70,6 +72,7 @@ export function CollaboraCollabFooter({
   onDelete,
   className,
   disconnected = false,
+  reconnecting = false,
   disconnectCause = null,
   changesAtRisk = false,
   terminal = false,
@@ -121,6 +124,7 @@ export function CollaboraCollabFooter({
   const terminalText = terminalReason
     ? t(`collabora.footer.disconnect.terminal.${terminalReason}` as 'collabora.footer.disconnect.terminal.notFound')
     : t('collabora.footer.disconnect.terminal.generic');
+  const showCauseHint = reconnecting || (disconnected && !terminal);
 
   return (
     <div
@@ -171,7 +175,7 @@ export function CollaboraCollabFooter({
           </Button>
         )}
         {readonlyText && <span className="text-caption text-muted-foreground">{readonlyText}</span>}
-        {disconnected && !terminal && disconnectCauseText && (
+        {showCauseHint && disconnectCauseText && (
           <span className="text-caption text-muted-foreground">{disconnectCauseText}</span>
         )}
       </div>
@@ -212,6 +216,13 @@ export function CollaboraCollabFooter({
           >
             <Unplug className="size-3.5" aria-hidden="true" />
             <span>{disconnectPrimary}</span>
+          </output>
+        ) : reconnecting ? (
+          // Soft, self-healing state — announced politely, no recovery action (the editor's own
+          // reconnection is being awaited within the bounded window).
+          <output aria-live="polite" className="flex items-center gap-1 text-caption text-foreground">
+            <CircleDashed className="size-3.5 animate-spin" aria-hidden="true" />
+            <span>{t('collabora.footer.disconnect.reconnecting')}</span>
           </output>
         ) : (
           <div className={cn('flex items-center gap-1 text-caption', saveToneClass)}>

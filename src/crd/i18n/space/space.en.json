@@ -680,7 +680,8 @@
           "body": "Recovering the editor reloads the document. Changes made since the last save may be lost — copy anything you need first.",
           "cancel": "Cancel",
           "confirm": "Continue"
-        }
+        },
+        "reconnecting": "Reconnecting…"
       }
     }
   },

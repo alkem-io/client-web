@@ -34,7 +34,9 @@ export type CollaboraFooterMappedProps = {
   onDelete?: () => void;
   /** True once the session is in a hard disconnect (or terminal) state — drives the banner. */
   disconnected: boolean;
-  /** The disconnect cause when `disconnected`, else null. */
+  /** True during the bounded self-heal window (soft transient drop) — shows a "reconnecting…" hint. */
+  reconnecting: boolean;
+  /** The disconnect cause when `disconnected` or `reconnecting`, else null. */
   disconnectCause: DisconnectCause | null;
   /**
    * True only when the disconnected session could have unsaved edits — i.e. an authenticated
@@ -78,6 +80,7 @@ export function mapCollaboraFooterProps(params: MapCollaboraFooterParams): Colla
 
   const terminal = connectionStatus === 'terminal';
   const disconnected = connectionStatus === 'disconnected' || terminal;
+  const reconnecting = connectionStatus === 'reconnecting';
   // Edit-capable session whose work wasn't confirmed saved at the drop → warn about loss. Not
   // for a terminal state (document gone / access revoked) — there's nothing to recover.
   const changesAtRisk = disconnected && !terminal && isAuthenticated && hasEditPrivilege && saveStatus !== 'saved';
@@ -96,7 +99,8 @@ export function mapCollaboraFooterProps(params: MapCollaboraFooterParams): Colla
     }),
     onDelete: canDelete ? onDelete : undefined,
     disconnected,
-    disconnectCause: disconnected ? (disconnectCause ?? 'unknown') : null,
+    reconnecting,
+    disconnectCause: disconnected || reconnecting ? (disconnectCause ?? 'unknown') : null,
     changesAtRisk,
     terminal,
     terminalReason: terminal ? (terminalReason ?? null) : null,
