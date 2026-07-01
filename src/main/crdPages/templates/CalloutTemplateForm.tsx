@@ -29,6 +29,7 @@ import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/M
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { Label } from '@/crd/primitives/label';
+import { healContributorCollection } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
 import { ResponseDefaultsConnector } from '@/main/crdPages/space/callout/ResponseDefaultsConnector';
 import { referenceRowErrors, type UseCrdCalloutFormResult } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
@@ -154,6 +155,9 @@ export function CalloutTemplateForm({
           onMediaGalleryVisualsChange={v => setField('mediaGalleryVisuals', v)}
           collaboraDocumentType={values.collaboraDocumentType}
           onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
+          contributorCollection={values.contributorCollection}
+          onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
+          contributorCollectionError={errors.contributorCollection}
         />
       </div>
 
