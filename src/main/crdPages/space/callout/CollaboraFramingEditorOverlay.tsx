@@ -6,17 +6,21 @@ import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAu
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import { CollaboraCollabFooter } from '@/crd/components/collabora/CollaboraCollabFooter';
+import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
 import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor';
 import { mapCollaboraFooterProps } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper';
 import { useCollaboraPostMessage } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraPostMessage';
+import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 
 type CollaboraFramingEditorOverlayProps = {
   open: boolean;
   collaboraDocumentId: string;
   title: string;
   documentType: CollaboraDocumentPreviewType;
+  /** Whether the current user may rename the document (document-edit OR callout-edit). */
+  canRename: boolean;
   onClose: () => void;
 };
 
@@ -36,6 +40,7 @@ export function CollaboraFramingEditorOverlay({
   collaboraDocumentId,
   title,
   documentType,
+  canRename,
   onClose,
 }: CollaboraFramingEditorOverlayProps) {
   const TypeIcon = iconByType[documentType];
@@ -43,6 +48,8 @@ export function CollaboraFramingEditorOverlay({
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated } = useAuthenticationContext();
   const notify = useNotification();
+
+  const rename = useRenameCollaboraDocument({ collaboraDocumentId, displayName: title, canRename });
 
   const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
     onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
@@ -74,7 +81,26 @@ export function CollaboraFramingEditorOverlay({
           <div className="h-14 shrink-0 flex items-center justify-between px-4 border-b border-border bg-background gap-3">
             <div className="flex items-center gap-2 min-w-0">
               <TypeIcon className="size-5 shrink-0 text-primary" aria-hidden="true" />
-              <DialogTitle className="text-subsection-title text-foreground truncate">{title}</DialogTitle>
+              {canRename ? (
+                <>
+                  {/* Keep an accessible dialog title; the visible title is the editable control. */}
+                  <DialogTitle className="sr-only">{title}</DialogTitle>
+                  <CollaboraDocumentDisplayName
+                    displayName={title}
+                    value={rename.draft}
+                    readOnly={rename.readOnly}
+                    editing={rename.editing}
+                    saving={rename.saving}
+                    error={rename.error}
+                    onChange={rename.changeDraft}
+                    onEdit={rename.startEdit}
+                    onSave={rename.save}
+                    onCancel={rename.cancel}
+                  />
+                </>
+              ) : (
+                <DialogTitle className="text-subsection-title text-foreground truncate">{title}</DialogTitle>
+              )}
             </div>
             <DialogDescription id="collabora-editor-dialog-description" className="sr-only">
               {t('callout.openDocument')}

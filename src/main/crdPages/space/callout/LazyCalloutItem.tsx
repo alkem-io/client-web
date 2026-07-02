@@ -227,6 +227,10 @@ function LazyCalloutItemContent({
   // `canCreateContribution`.
   const hasContributionType = callout.settings.contribution.allowedTypes.length > 0;
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
+  // Rename is allowed to anyone who can edit the document OR the callout (independent privileges).
+  const canRenameFramingDocument =
+    (callout.framing.collaboraDocument?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false) ||
+    (callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false);
 
   const contributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
@@ -332,6 +336,7 @@ function LazyCalloutItemContent({
           collaboraDocumentId={collaboraDocumentId}
           title={callout.framing.collaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName}
           documentType={toCollaboraPreviewType(callout.framing.collaboraDocument?.documentType)}
+          canRename={canRenameFramingDocument}
           onClose={() => setCollaboraEditorOpen(false)}
         />
       )}

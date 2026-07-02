@@ -369,6 +369,10 @@ export function CalloutDetailDialogConnector({
   ) : undefined;
   const framingCollaboraDocument = callout.framing.collaboraDocument;
   const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
+  // Rename is allowed to anyone who can edit the document OR the callout (independent privileges).
+  const canRenameFramingDocument =
+    (framingCollaboraDocument?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false) ||
+    (callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false);
 
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
   const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
@@ -584,6 +588,7 @@ export function CalloutDetailDialogConnector({
       collaboraDocumentId={framingCollaboraDocument.id}
       title={framingCollaboraTitle}
       documentType={toCollaboraPreviewType(framingCollaboraDocument.documentType)}
+      canRename={canRenameFramingDocument}
       onClose={() => setFramingCollaboraOpen(false)}
     />
   ) : null;
