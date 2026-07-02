@@ -33,7 +33,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 - [X] T003 Run `pnpm codegen` to regenerate types/hooks for the new `collaboraDocument.authorization` selection. (depends on T002)
 - [X] T004 [P] Create the rename hook `useRenameCollaboraDocument` in `src/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument.ts` — holds `editing/draft/saving/error` state, validates with `displayNameValidator` (non-blank, min 3, max 128), no-ops when unchanged after trim, calls `useUpdateCollaboraDocumentMutation` (`{ updateData: { ID, displayName } }`), and on failure keeps the persisted name + sets `error`. Exposes `readOnly = !canRename`. (FR-007, FR-008, FR-013, FR-014)
 - [X] T005 [P] Add shared i18n keys under `crd-space` in `src/crd/i18n/space/space.en.json` — "Rename document" (menu + dialog title), Save/Cancel labels; reuse existing `forms.validations.*` messages. (FR-006, FR-007)
-- [ ] T006 [P] Unit test for `useRenameCollaboraDocument` in `src/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument.test.ts` — valid save calls the mutation; invalid (empty/whitespace/<3/>128) rejected & not persisted; unchanged = no-op; failure retains name. (SC-008)
+- [X] T006 [P] Unit test for `useRenameCollaboraDocument` in `src/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument.test.ts` — valid save calls the mutation; invalid (empty/whitespace/<3/>128) rejected & not persisted; unchanged = no-op; failure retains name. (SC-008)
 
 **Checkpoint**: Gate queries return the document privilege; rename mechanics + strings ready.
 
@@ -49,7 +49,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 - [X] T008 **[U1]** [US1] Add `documentMyPrivileges?: AuthorizationPrivilege[]` to `CalloutMenuPermissionsInput` and derive `canRenameDocument = isCollaboraDocument && (documentMyPrivileges?.includes(Update) || editable)` in `src/main/crdPages/space/callout/deriveCalloutMenuVisibility.ts` (`isCollaboraDocument` already exists; `editable` is the existing callout-Update check). (FR-001, FR-002, FR-003)
 - [X] T009 [US1] Add a "Rename document" item to `src/crd/components/callout/CalloutContextMenu.tsx` — new `onRenameDocument?: () => void` + visibility from `canRenameDocument`; shown only for document callouts to permitted users. (FR-003)
 - [X] T010 [US1] Wire the action and host the dialog in `src/main/crdPages/space/callout/CalloutSettingsConnector.tsx` — supply `documentMyPrivileges` from `callout.framing.collaboraDocument?.authorization?.myPrivileges`, pass `onRenameDocument` down (through `src/main/crdPages/space/callout/LazyCalloutItem.tsx` if needed), and open `RenameCollaboraDocumentDialog` with the callout's `collaboraDocument.id` + current `displayName`. (FR-003, FR-010)
-- [ ] T011 [P] [US1] Component test for `RenameCollaboraDocumentDialog` in `src/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog.test.tsx` — valid rename persists & closes; invalid rejected with message & not persisted; cancel leaves name unchanged. (SC-008)
+- [X] T011 [P] [US1] Component test for `RenameCollaboraDocumentDialog` in `src/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog.test.tsx` — valid rename persists & closes; invalid rejected with message & not persisted; cancel leaves name unchanged. (SC-008)
 
 **Checkpoint**: US1 fully functional — the menu-action rename path works for document editors, including those without callout rights.
 
@@ -64,7 +64,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 - [X] T012 [P] [US2] Create the reusable inline control `CollaboraDocumentDisplayName` in `src/crd/components/collabora/CollaboraDocumentDisplayName.tsx`, mirroring `WhiteboardDisplayName`/`MemoDisplayName` exactly (pencil → input → Check/Cancel; Enter=save, Escape=cancel; hidden pencil when `readOnly`). (FR-006, FR-014)
 - [X] T013 [US2] Render `CollaboraDocumentDisplayName` in the header of `src/main/crdPages/space/callout/CollaboraFramingEditorOverlay.tsx` (replace the static `DialogTitle` text), accept a new `canRename: boolean` prop, back it with `useRenameCollaboraDocument`, and sync the local header title on successful rename. (FR-004, FR-006, FR-009)
 - [X] T014 [US2] Derive `canRename = documentUpdate || calloutUpdate` in `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` (using `framing.collaboraDocument.authorization.myPrivileges` + `callout.authorization.myPrivileges`) and pass it to `CollaboraFramingEditorOverlay`. (FR-001, FR-004)
-- [ ] T015 [P] [US2] Component test for `CollaboraDocumentDisplayName` in `src/crd/components/collabora/CollaboraDocumentDisplayName.test.tsx` — edit/save/cancel, Enter/Escape, `readOnly` hides the affordance, invalid input rejected. (SC-007, SC-008)
+- [X] T015 [P] [US2] Component test for `CollaboraDocumentDisplayName` in `src/crd/components/collabora/CollaboraDocumentDisplayName.test.tsx` — edit/save/cancel, Enter/Escape, `readOnly` hides the affordance, invalid input rejected. (SC-007, SC-008)
 
 **Checkpoint**: US2 works independently — in-editor rename, gated by the union, live-updating.
 
