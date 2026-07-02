@@ -86,14 +86,24 @@ export function useCollaboraConnectionMonitor(
     };
   }, []);
 
-  // Re-armed on every reconnect (nonce change) — a fresh token restarts the expiry clock even
-  // when the TTL value is unchanged (it's a constant ~8h), so the effect can't depend on the
-  // TTL value alone.
+  // `accessTokenTTL` is an ABSOLUTE expiry — ms since the Unix epoch (per the WOPI spec), NOT a
+  // duration — so we schedule from the remaining time (`expiry - now`). Feeding the raw absolute
+  // value to setTimeout would overflow its ~24.8-day cap and fire almost immediately.
+  //
+  // This timer is only a FALLBACK. The primary path refreshes the token *in place* before it
+  // expires, via Collabora's `App_TokenExpiring` → `Reset_Access_Token` handshake (see
+  // `useCollaboraTokenRefresh`); a successful refresh pushes a new `accessTokenTTL` that re-arms
+  // this timer. It fires only if that refresh never happened or failed.
   const [tokenExpired, setTokenExpired] = useState(false);
   useEffect(() => {
     setTokenExpired(false);
     if (!accessTokenTTL || accessTokenTTL <= 0) return;
-    const id = setTimeout(() => setTokenExpired(true), accessTokenTTL);
+    const msUntilExpiry = accessTokenTTL - Date.now();
+    if (msUntilExpiry <= 0) {
+      setTokenExpired(true);
+      return;
+    }
+    const id = setTimeout(() => setTokenExpired(true), msUntilExpiry);
     return () => clearTimeout(id);
   }, [accessTokenTTL, reconnectNonce]);
 

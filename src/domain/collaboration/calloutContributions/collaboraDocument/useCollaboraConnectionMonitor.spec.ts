@@ -56,6 +56,7 @@ describe('useCollaboraConnectionMonitor', () => {
 
   it('routes token expiry straight to disconnected (never reconnecting) when the TTL elapses', () => {
     vi.useFakeTimers();
+    vi.setSystemTime(0); // accessTokenTTL is an absolute epoch ms; pin "now" to 0 so 5000 = +5s
     const { ref, iframe } = makeIframeRef();
     const { result } = renderHook(() => useCollaboraConnectionMonitor(ref, { accessTokenTTL: 5000 }));
     act(() => postFromIframe(iframe, loaded));

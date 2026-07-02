@@ -21,6 +21,7 @@ import { Dialog, DialogDescription, DialogTitle } from '@/crd/primitives/dialog'
 import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor';
 import { mapCollaboraFooterProps } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper';
 import { useCollaboraConnectionMonitor } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraConnectionMonitor';
+import { useCollaboraTokenRefresh } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraTokenRefresh';
 
 type CollaboraFramingEditorOverlayProps = {
   open: boolean;
@@ -89,6 +90,15 @@ export function CollaboraFramingEditorOverlay({
       onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
     }
   );
+
+  // Primary token-expiry handling: refresh the WOPI token in place (Collabora
+  // App_TokenExpiring → Reset_Access_Token) before it expires — seamless, no remount, no lost
+  // edits. `onRefreshed` pushes the new TTL (re-arming the monitor's fallback timer) and clears
+  // any terminal state; a failed re-issue falls through to the terminal/recoverable mapping.
+  useCollaboraTokenRefresh(iframeRef, collaboraDocumentId, {
+    onRefreshed: handleAccessTokenTTL,
+    onError: handleFetchError,
+  });
 
   const footerProps = mapCollaboraFooterProps({
     connectionStatus: status,
