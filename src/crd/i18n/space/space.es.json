@@ -691,6 +691,10 @@
         },
         "reconnecting": "Reconectando…"
       }
+    },
+    "serviceBanner": {
+      "message": "Un servicio no está disponible temporalmente: es posible que los cambios recientes no se guarden. Actualiza o espera un momento.",
+      "refresh": "Actualizar"
     }
   },
   "mediaGallery": {

@@ -1,5 +1,5 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { FileText, Presentation, Sheet, X } from 'lucide-react';
+import { AlertTriangle, FileText, Presentation, RefreshCw, Sheet, X } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
@@ -21,6 +21,7 @@ import { Dialog, DialogDescription, DialogTitle } from '@/crd/primitives/dialog'
 import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor';
 import { mapCollaboraFooterProps } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper';
 import { useCollaboraConnectionMonitor } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraConnectionMonitor';
+import { useCollaboraSaveHealth } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraSaveHealth';
 import { useCollaboraTokenRefresh } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraTokenRefresh';
 
 type CollaboraFramingEditorOverlayProps = {
@@ -100,6 +101,10 @@ export function CollaboraFramingEditorOverlay({
     onError: handleFetchError,
   });
 
+  // A WOPI/save-path outage is silent (Collabora keeps editing + buffering), so we detect it by
+  // probing when saves stall and surface a prominent banner. Distinct from a connection drop.
+  const { serviceUnavailable } = useCollaboraSaveHealth(collaboraDocumentId, saveStatus);
+
   const footerProps = mapCollaboraFooterProps({
     connectionStatus: status,
     disconnectCause: cause,
@@ -161,6 +166,28 @@ export function CollaboraFramingEditorOverlay({
               <X className="w-5 h-5" aria-hidden="true" />
             </Button>
           </div>
+          {open && serviceUnavailable && (
+            // Prominent top banner for a silent backend save-path outage (e.g. the WOPI service is
+            // down): Collabora keeps editing/buffering but changes are not being persisted. It
+            // auto-clears once saves resume; Refresh reloads the document.
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="shrink-0 flex items-center gap-3 px-4 py-2 border-b border-warning/30 bg-warning/10 text-foreground"
+            >
+              <AlertTriangle className="size-5 shrink-0 text-warning" aria-hidden="true" />
+              <span className="text-caption flex-1">{t('collabora.serviceBanner.message')}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => performRecovery('reload')}
+                aria-label={t('collabora.serviceBanner.refresh')}
+              >
+                <RefreshCw className="size-4 mr-1" aria-hidden="true" />
+                {t('collabora.serviceBanner.refresh')}
+              </Button>
+            </div>
+          )}
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
             {/* The editor stays mounted on disconnect (retained for manual copy, FR-004a) — the
                 footer surfaces the disconnected state alongside it rather than replacing it. */}

@@ -691,6 +691,10 @@
         },
         "reconnecting": "Opnieuw verbinden…"
       }
+    },
+    "serviceBanner": {
+      "message": "Een service is tijdelijk niet beschikbaar — recente wijzigingen worden mogelijk niet opgeslagen. Vernieuw of wacht even.",
+      "refresh": "Vernieuwen"
     }
   },
   "mediaGallery": {

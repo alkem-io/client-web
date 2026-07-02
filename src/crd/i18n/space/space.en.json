@@ -683,6 +683,10 @@
         },
         "reconnecting": "Reconnecting…"
       }
+    },
+    "serviceBanner": {
+      "message": "A service is temporarily unavailable — recent changes may not be saved. Refresh or wait a moment.",
+      "refresh": "Refresh"
     }
   },
   "callToAction": {

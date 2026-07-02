@@ -691,6 +691,10 @@
         },
         "reconnecting": "Verbindung wird wiederhergestellt…"
       }
+    },
+    "serviceBanner": {
+      "message": "Ein Dienst ist vorübergehend nicht verfügbar — aktuelle Änderungen werden möglicherweise nicht gespeichert. Aktualisieren oder einen Moment warten.",
+      "refresh": "Aktualisieren"
     }
   },
   "mediaGallery": {
