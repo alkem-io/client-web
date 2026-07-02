@@ -310,6 +310,23 @@
 
 ---
 
+## Phase 8: Editor Shell Keyboard Refinements (post-migration)
+
+**Goal**: Escape inside the whiteboard editor should behave like the standalone Excalidraw app — cancel the active Excalidraw interaction first, and only close the dialog when there is nothing left to cancel (FR-WB-021a). Previously Escape always closed the dialog (Radix dismiss), even with elements selected.
+
+- [X] T26 Escape: deselect/cancel in Excalidraw before closing the editor (FR-WB-021a)
+  - **Files**:
+    - new: `src/domain/common/whiteboard/excalidraw/excalidrawEscape.ts` — `handleExcalidrawEscape(excalidrawAPI, event)`. Reads `getAppState()`; if there's a selection (`selectedElementIds` / `selectedGroupIds` / `editingGroupId` / `selectedLinearElement`) it `stopPropagation()`s the event and clears the selection via `updateScene({ appState: { selectedElementIds: {}, selectedGroupIds: {}, editingGroupId: null, selectedLinearElement: null } })`, returning `true`; if mid-edit/mid-draw (`editingTextElement` / `editingLinearElement` / `newElement` / `multiElement` / `croppingElementId`) it returns `true` without stopping propagation so Excalidraw finalizes; otherwise returns `false`.
+    - modified: `src/crd/components/whiteboard/WhiteboardEditorShell.tsx` — add optional `onEscapeKeyDown?: (event: KeyboardEvent) => boolean` prop; the shell's `onEscapeKeyDown` always `preventDefault()`s (suppresses Radix dismiss) then returns early if the interceptor consumes the key, else calls `onClose()`. Shell remains Excalidraw-free (Isolation Rule).
+    - modified: `src/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog.tsx` and `src/main/crdPages/whiteboard/CrdWhiteboardDialog.tsx` — pass `onEscapeKeyDown={event => handleExcalidrawEscape(excalidrawAPI, event)}`.
+  - **Why clear via the API**: Radix listens for Escape on `document` in the capture phase, so its handler runs before Excalidraw; and when the canvas is unfocused the keydown never reaches Excalidraw's own handler (and even when it does, `actionFinalize` re-keeps a plain selection). Clearing through `updateScene` is the only reliable path.
+  - **Acceptance**: With elements selected, Escape clears the selection and the editor stays open; a second Escape (nothing selected) runs the normal close flow (unsaved-changes confirm for single-user). While editing text / drawing, Escape finalizes the Excalidraw operation and the editor stays open. `tsc --noEmit` passes; biome clean. Demo pages (`WhiteboardPage`, `SpacePage`) omit the prop and are unchanged.
+  - **Dependencies**: T10, T12, T16
+
+**Checkpoint**: Escape inside the whiteboard editor deselects/cancels before it closes, matching standalone Excalidraw.
+
+---
+
 ## Phase 7: Verification + Cleanup
 
 - [X] T23 [P] Verify zero forbidden imports in all new `src/crd/components/whiteboard/` files — grep for `@mui/`, `@emotion/`, `@apollo/client`, `@/domain/`, `formik`, `react-router-dom`, `@alkemio/excalidraw`

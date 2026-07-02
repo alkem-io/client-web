@@ -78,13 +78,6 @@ export const formatMaxFileSizeMb = (maxFileSizeBytes?: number): string | undefin
   return `${rounded} MB`;
 };
 
-export interface WhiteboardImageUploadI18nParams {
-  /** Comma-separated list of formats/mime types to show in copy. */
-  formats: string;
-  /** Formatted max size, e.g. "15 MB" */
-  maxSize: string;
-}
-
 /**
  * Derive message params for the whiteboard image upload callouts.
  * Designed to be used together with i18n keys under `callout.whiteboard.images.*`.

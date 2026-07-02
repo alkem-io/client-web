@@ -24,5 +24,3 @@ export type SearchResultMetaType =
   | TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>
   | TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>
   | TypedSearchResult<SearchResultType.CollaboraDocument, SearchResultCollaboraDocumentFragment>;
-
-export const MAX_TERMS_SEARCH = 5;

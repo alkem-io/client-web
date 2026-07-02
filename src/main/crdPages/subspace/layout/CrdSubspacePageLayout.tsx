@@ -31,6 +31,7 @@ import {
   getVisibleSettingsTabs,
   useSettingsTabDescriptors,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
+import { buildSettingsTabUrl, buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
@@ -130,7 +131,10 @@ export default function CrdSubspacePageLayout() {
         ]
       : [];
   const settingsTrail = isOnSettings
-    ? [{ label: t('tabs.settings'), href: `${data.subspaceUrl}/settings` }, { label: t(`tabs.${activeSettingsTab}`) }]
+    ? [
+        { label: t('tabs.settings'), href: buildSubspaceSettingsUrl(data.subspaceUrl) },
+        { label: t(`tabs.${activeSettingsTab}`) },
+      ]
     : [];
   useSetBreadcrumbs(baseTrail.length > 0 ? [...baseTrail, ...settingsTrail] : []);
 
@@ -147,7 +151,7 @@ export default function CrdSubspacePageLayout() {
     setActiveDialog(id);
   };
 
-  const editFlowHref = data.subspaceUrl ? `${data.subspaceUrl}/settings/layout` : undefined;
+  const editFlowHref = data.subspaceUrl ? buildSettingsTabUrl(data.subspaceUrl, 'layout') : undefined;
 
   // Single source of truth for the create-subspace handler. Both the sidebar
   // widget (when there are 0 nested subspaces) and the Subspaces dialog footer
@@ -170,7 +174,7 @@ export default function CrdSubspacePageLayout() {
     onEditClick: data.canUpdate
       ? () => {
           setMobileMenuOpen(false);
-          navigate(`${data.subspaceUrl}/settings/about`);
+          navigate(buildSettingsTabUrl(data.subspaceUrl, 'about'));
         }
       : undefined,
     onAboutClick: () => {

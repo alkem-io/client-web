@@ -296,16 +296,6 @@ export type TemplateFormDialogProps = {
 };
 
 // Each per-type form receives a narrowed value + onChange + errors.
-export type CalloutTemplateFormProps = {
-  value: CalloutTemplateValues;
-  errors: TemplateFormErrors;
-  onChange: (next: CalloutTemplateValues) => void;
-};
-export type WhiteboardTemplateFormProps = {
-  value: WhiteboardTemplateValues;
-  errors: TemplateFormErrors;
-  onChange: (next: WhiteboardTemplateValues) => void;
-};
 export type PostTemplateFormProps = {
   value: PostTemplateValues;
   errors: TemplateFormErrors;
@@ -405,44 +395,6 @@ export type TemplatePickerSelectProps = TemplatePickerCommon & {
 export type TemplatePickerProps = TemplatePickerImportProps | TemplatePickerSelectProps;
 
 // ---------------------------------------------------------------------------
-// Set-default dialog
-// ---------------------------------------------------------------------------
-
-export type SetDefaultTemplateDialogProps =
-  | {
-      open: boolean;
-      onClose: () => void;
-      purpose: 'defaultSubspaceTemplate';
-      /** The holder's own Space templates (the only valid candidates for this default). */
-      candidates: TemplateCardData[];
-      candidatesLoading?: boolean;
-      /** Currently-set default, if any (shown selected; offer to clear). */
-      currentTemplateId?: string;
-      /** Lazy-load a candidate's content for the preview pane. */
-      onPreview: (templateId: string) => void;
-      previewContent?: TemplateContent;
-      previewLoading: boolean;
-      /** Commit a new default (or `null` to clear it). */
-      onConfirm: (templateId: string | null) => void;
-      confirming: boolean;
-    }
-  | {
-      open: boolean;
-      onClose: () => void;
-      purpose: 'flowStateDefaultCalloutTemplate';
-      /** Source sections Space / Account / Platform (hosts `TemplatePicker` in `mode: 'select'`, `allowedTypes: ['callout']`). */
-      sources: TemplatePickerSource[];
-      search: string;
-      onSearchChange: (next: string) => void;
-      currentTemplateId?: string;
-      onPreview: (templateId: string) => void;
-      previewContent?: TemplateContent;
-      previewLoading: boolean;
-      onConfirm: (templateId: string | null) => void;
-      confirming: boolean;
-    };
-
-// ---------------------------------------------------------------------------
 // Community Guidelines editor (FR-038) — host for apply / save-as-template
 // ---------------------------------------------------------------------------
 
@@ -457,21 +409,4 @@ export type CommunityGuidelinesEditorValue = {
 export type CommunityGuidelinesEditorErrors = {
   title?: string;
   references?: (string | undefined)[];
-};
-
-export type CommunityGuidelinesEditorProps = {
-  value: CommunityGuidelinesEditorValue;
-  errors?: CommunityGuidelinesEditorErrors;
-  onChange: (next: CommunityGuidelinesEditorValue) => void;
-  onSave: () => void;
-  /** True while the update mutation is in flight — disables Save, shows aria-busy. */
-  saving: boolean;
-  /** Opens the template picker (consumption mode, communityGuidelines) — replacement guarded by a ConfirmationDialog when there is content. */
-  onApplyTemplate: () => void;
-  /** Opens TemplateFormDialog (create, communityGuidelines) pre-filled from the current value. */
-  onSaveAsTemplate: () => void;
-  canEdit: boolean;
-  canApplyTemplate: boolean;
-  canSaveAsTemplate: boolean;
-  className?: string;
 };

@@ -17,6 +17,7 @@ import {
   // handler intentionally not imported. See the deactivation notes below.
   // useSendEmailToUserHandler,
 } from '@/main/crdPages/topLevelPages/common/useSendMessageHandler';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { AssociatedOrganizationCardConnector } from './AssociatedOrganizationCardConnector';
 import { buildUserProfileTagsets, mapHostedSpacesToCardData } from './publicProfileMapper';
@@ -39,7 +40,7 @@ export const CrdUserProfilePage = () => {
   } = data;
   usePageTitle(userModel?.profile?.displayName);
 
-  const { activeTab, onSelectTab } = useResourceTabs();
+  const { activeTab, onSelectTab } = useResourceTabs('memberOf');
 
   const { onOpenChat } = useOpenDirectChatHandler({ recipientUserId: userId });
   // Email-to-user contact route temporarily DISABLED client-side — chat only.
@@ -49,9 +50,9 @@ export const CrdUserProfilePage = () => {
   // const { onSendMessage: onSendEmailMessage } = useSendEmailToUserHandler({ recipientUserId: userId });
 
   const tabs = [
-    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
-    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
     { key: 'memberOf' as ResourceTabKey, label: t('userProfile.tabs.memberOf') },
+    { key: 'leading' as ResourceTabKey, label: t('userProfile.tabs.leading') },
+    { key: 'resourcesHosted' as ResourceTabKey, label: t('userProfile.tabs.resourcesHosted') },
   ];
 
   const heroLoading = loading.route || !userModel;
@@ -101,7 +102,7 @@ export const CrdUserProfilePage = () => {
   // const showEmail = viewerCanContact && isContactableViaEmail;
   const showCannotBeReached = viewerCanContact && !isContactable;
 
-  const settingsHref = profile?.url ? `${profile.url}/settings/profile` : undefined;
+  const settingsHref = profile?.url ? buildSettingsTabUrl(profile.url, 'profile') : undefined;
 
   const { hostedSpaces, hostedVirtualContributors, hostedInnovationPacks, hostedInnovationHubs } =
     mapHostedSpacesToCardData(accountResources, t('userProfile.vcType'));

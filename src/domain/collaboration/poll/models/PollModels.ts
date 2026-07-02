@@ -43,17 +43,6 @@ export type PollDetailsModel = {
   myVote?: PollVoteModel;
 };
 
-export type PollFormOptionValue = {
-  id?: string;
-  text: string;
-};
-
-export type PollFormValues = {
-  title: string;
-  options: PollFormOptionValue[];
-  settings: PollSettingsFormValues;
-};
-
 export type PollSettingsFormValues = {
   allowContributorsAddOptions: boolean;
   minResponses: number;

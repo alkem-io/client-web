@@ -10,7 +10,25 @@
  * Framing chip id. Maps to the server `CalloutFramingType` at submit time
  * via the calloutFormMapper. `'document'` is a disabled placeholder chip.
  */
-export type FramingChip = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll';
+export type FramingChip = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors';
+
+/**
+ * Contributor-collection callout config (feature 008). Carried in the callout
+ * form values and serialized into `settings.framing.contributors`. Plain TS —
+ * the three contributor types are a fixed string union mirroring the server
+ * `ActorType` enum, kept design-system-agnostic here.
+ */
+export type ContributorTypeId = 'user' | 'organization' | 'virtualContributor';
+export type ContributorViewId = 'list' | 'map';
+
+export type ContributorCollectionConfig = {
+  /** Selected contributor types (>=1; save is blocked on zero). */
+  types: ContributorTypeId[];
+  /** Default type shown first; must be one of `types` (auto-heals to the first selected). */
+  defaultType: ContributorTypeId;
+  /** Default display; auto-heals to `list` when the selection is VC-only. */
+  defaultView: ContributorViewId;
+};
 
 /**
  * Response-type chip id. Maps to the server enum `CalloutContributionType`

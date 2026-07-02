@@ -37,20 +37,3 @@ query SpaceAboutDetails($spaceId: UUID!) {
     }
   }
 }
-
-query SpaceAboutFull($spaceId: UUID!) {
-  lookup {
-    space(ID: $spaceId) {
-      id
-      level
-      about {
-        ...SpaceAboutDetails
-      }
-      authorization {
-        id
-        myPrivileges
-      }
-      visibility
-    }
-  }
-}

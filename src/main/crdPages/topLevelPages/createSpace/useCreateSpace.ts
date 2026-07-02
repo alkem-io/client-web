@@ -15,12 +15,12 @@ import createNameId from '@/core/utils/nameId/createNameId';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type { CreateSpaceFieldErrors, CreateSpaceFormValues } from '@/crd/components/space/CreateSpaceDialog';
 import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
+import type { VisualConstraints } from '@/domain/common/visual/model/VisualModel';
 import { useSpacePlans } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans';
 import { useSpaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSpaceCreation/useSpaceCreation';
 import { addSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
 import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-import type { VisualConstraints } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/resizeImageToConstraints';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
 
 /** The number of innovation-flow states a Space template must have to seed an L0 Space (parity with the MUI selector). */

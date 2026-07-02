@@ -20,8 +20,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useValidationMessageTranslation } from '@/domain/shared/i18n/ValidationMessageTranslation';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 
-export type ForumDiscussionFormMode = 'initiate' | 'update';
-
 // Mirrors the legacy `DiscussionFormValues` (src/domain/communication/discussion/forms/DiscussionForm.tsx):
 // title, category, description — no tags. The CreateDiscussion mutation does
 // accept an optional `tags` array, but the MUI form never exposes it, the

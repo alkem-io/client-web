@@ -198,33 +198,6 @@ export function mapCalendarEventDetailsToDetailData(
   };
 }
 
-export function mapCalendarEventDetailsToFormValues(event: CalendarEventDetailsFragment): EventFormValues {
-  const startDate = event.startDate ? new Date(event.startDate) : undefined;
-
-  // Compute endDate from startDate + durationMinutes when non-zero; otherwise
-  // fall back to startDate (same-day form UI uses the duration input).
-  const endDate = (() => {
-    if (!startDate) return undefined;
-    if (event.durationMinutes > 0) {
-      return new Date(startDate.getTime() + event.durationMinutes * 60_000);
-    }
-    return startDate;
-  })();
-
-  return {
-    displayName: event.profile.displayName,
-    type: event.type,
-    startDate,
-    endDate,
-    wholeDay: event.wholeDay,
-    durationMinutes: event.durationMinutes,
-    description: event.profile.description ?? '',
-    locationCity: event.profile.location?.city ?? '',
-    tags: event.profile.tagset?.tags ?? [],
-    visibleOnParentCalendar: event.visibleOnParentCalendar,
-  };
-}
-
 export function mapCalendarEventImportUrlsToLinks(
   data: NonNullable<CalendarEventImportUrlsQuery['lookup']['calendarEvent']>
 ): AddToCalendarLinks {

@@ -6,8 +6,8 @@ import useNavigate from '@/core/routing/useNavigate';
 import { ForumBanner } from '@/crd/components/forum/ForumBanner';
 import { ForumCategoryNav } from '@/crd/components/forum/ForumCategoryNav';
 import { ForumLayout } from '@/crd/components/forum/ForumLayout';
-import useInnovationHubOutsideRibbon from '@/domain/innovationHub/InnovationHubOutsideRibbon/useInnovationHubOutsideRibbon';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import CrdInnovationHubOutsideRibbon from '@/main/crdPages/innovationHub/components/CrdInnovationHubOutsideRibbon';
 import { buildCategoryEntries } from '@/main/crdPages/topLevelPages/forum/forumDataMapper';
 import { ALL_SLUG } from '@/main/crdPages/topLevelPages/forum/useCategorySlug';
 
@@ -33,8 +33,6 @@ export const ForumShell = () => {
   const validCategories = data?.platform.forum.discussionCategories ?? [];
   const categoryEntries = buildCategoryEntries(validCategories, t, tDefault);
 
-  const ribbon = useInnovationHubOutsideRibbon({ label: 'innovationHub.outsideOfSpace.forum' });
-
   const activeSlug = deriveActiveSlug(pathname);
 
   const handleCategoryChange = (slug: string) => {
@@ -44,7 +42,7 @@ export const ForumShell = () => {
   return (
     <StorageConfigContextProvider locationType="platform">
       <ForumLayout
-        ribbonNode={ribbon}
+        ribbonNode={<CrdInnovationHubOutsideRibbon label="innovationHub.outsideOfSpace.forum" />}
         bannerNode={
           <ForumBanner
             titleNode={t('banner.title')}

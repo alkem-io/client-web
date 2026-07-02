@@ -59,8 +59,8 @@ export type UserPageHeroProps = {
 /**
  * Re-exported for convenience; canonical type lives at
  * `src/crd/components/common/ProfileResourceTabStrip.tsx`. Both the User and
- * Organization tab strips render the same 3 tabs in the same order with
- * `resourcesHosted` as default.
+ * Organization tab strips render the same 3 tabs in the same order
+ * (`memberOf` → `leading` → `resourcesHosted`) with `memberOf` as default.
  *
  * NOTE: an earlier 5-tab design (`allResources` / `hostedSpaces` /
  * `virtualContributors` / `leading` / `memberOf`) was dropped once Template

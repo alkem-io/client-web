@@ -1,4 +1,4 @@
-import { useBackWithDefaultUrl } from '@/core/routing/useBackToPath';
+import { useBackWithDefaultUrl } from '@/core/routing/useBackWithDefaultUrl';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { CrdSpaceAbout } from './CrdSpaceAbout';

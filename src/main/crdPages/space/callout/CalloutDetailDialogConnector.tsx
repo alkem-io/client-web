@@ -36,6 +36,7 @@ import { CallToActionFramingConnector } from './CallToActionFramingConnector';
 import { CollaboraFramingConnector } from './CollaboraFramingConnector';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
+import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { LinkContributionAddConnector } from './LinkContributionAddConnector';
 import { LinkContributionEditConnector } from './LinkContributionEditConnector';
@@ -372,6 +373,14 @@ export function CalloutDetailDialogConnector({
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
   const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
 
+  // Contributor-collection body (feature 008) — the self-updating cards/map for
+  // the active type. Rendered in the detail dialog just like the inline feed card
+  // (LazyCalloutItem), so opening the callout shows the collection too.
+  const hasContributors = callout.framing.type === CalloutFramingType.Contributors;
+  const contributorsFramingSlot = hasContributors ? (
+    <ContributorCollectionConnector calloutId={callout.id} />
+  ) : undefined;
+
   const handleContributionClick = (contributionId: string, clickedEntityId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(contributionId);
@@ -630,6 +639,7 @@ export function CalloutDetailDialogConnector({
           mediaGalleryFramingSlot={mediaGalleryFramingSlot}
           collaboraFramingSlot={collaboraFramingSlot}
           callToActionFramingSlot={callToActionFramingSlot}
+          contributorsFramingSlot={contributorsFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
@@ -689,6 +699,7 @@ export function CalloutDetailDialogConnector({
             mediaGalleryFramingSlot={mediaGalleryFramingSlot}
             collaboraFramingSlot={collaboraFramingSlot}
             callToActionFramingSlot={callToActionFramingSlot}
+            contributorsFramingSlot={contributorsFramingSlot}
             settingsSlot={settingsSlot}
             onShareClick={handleShareClick}
           />

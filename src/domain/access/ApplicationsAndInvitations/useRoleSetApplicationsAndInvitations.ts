@@ -16,7 +16,7 @@ import {
   type AuthorizationPrivilege,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import type { ApplicationModel } from '../model/ApplicationModel';
 import type { InvitationModel } from '../model/InvitationModel';
 import type InvitationResultModel from '../model/InvitationResultModel';
