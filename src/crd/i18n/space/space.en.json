@@ -457,8 +457,25 @@
   },
   "deleteCallout": {
     "title": "Delete this $t(common.callout)?",
-    "description": "“{{title}}” will be deleted permanently, along with its contributions and comments. This action cannot be undone.",
+    "description": "“{{title}}” will be deleted permanently. This cannot be undone.",
     "confirm": "Delete",
+    "confirmAll": "Delete $t(common.callout) and all contents",
+    "contentsIntro": "This will permanently delete:",
+    "contributions_one": "{{count}} contribution",
+    "contributions_other": "{{count}} contributions",
+    "attachmentsNote": "including attached files and links",
+    "including": "including {{content}}",
+    "contentType": {
+      "whiteboard": "a whiteboard",
+      "memo": "a memo",
+      "poll": "a poll",
+      "mediaGallery": "a media gallery",
+      "document": "a document"
+    },
+    "moreLinks_one": "and {{count}} more link",
+    "moreLinks_other": "and {{count}} more links",
+    "comments_one": "and {{count}} comment",
+    "comments_other": "and {{count}} comments",
     "saveFailed": "Could not delete the $t(common.callout). Please try again."
   },
   "saveAsTemplate": {

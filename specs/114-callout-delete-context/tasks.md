@@ -17,7 +17,7 @@ Single web-frontend project. CRD presentational layer under `src/crd/`; integrat
 
 **Purpose**: Confirm baseline; no new dependencies or codegen for this feature.
 
-- [ ] T001 Confirm green baseline before changes: run `pnpm vitest run src/crd/i18n/space/space.parity.test.ts --reporter=basic` and `pnpm lint`; confirm `src/main/crdPages/space/callout/dataMappers/` exists (it does — used by `mapCalloutDetailsToFormValues`). No `pnpm codegen` is required for this feature (Option A uses cache-only fields).
+- [X] T001 Confirm green baseline before changes: run `pnpm vitest run src/crd/i18n/space/space.parity.test.ts --reporter=basic` and `pnpm lint`; confirm `src/main/crdPages/space/callout/dataMappers/` exists (it does — used by `mapCalloutDetailsToFormValues`). No `pnpm codegen` is required for this feature (Option A uses cache-only fields).
 
 ---
 
@@ -27,15 +27,15 @@ Single web-frontend project. CRD presentational layer under `src/crd/`; integrat
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T002 [P] Create the plain-TS view-model types in `src/crd/components/dialogs/calloutDeletionSummary.types.ts` — `CalloutRichContentKind`, `DeletionLinkItem`, `CalloutDeletionSummary` (exact shapes from `specs/114-callout-delete-context/contracts/crd-delete-dialog.ts`). No GraphQL types; plain TypeScript only (defined in CRD so both the mapper in `src/main` and the CRD components can import it).
-- [ ] T003 [P] Extend `src/crd/components/dialogs/ConfirmationDialog.tsx`: add optional `children?: ReactNode` to `ConfirmationDialogConfirmProps` and render it beneath `<AlertDialogDescription>` in the confirm-variant branch only. Leave the discard variant untouched and keep all existing callers working (no children → no visual change).
-- [ ] T004 Add the English source keys under `deleteCallout` in `src/crd/i18n/space/space.en.json`: `confirmAll` ("Delete callout and all contents"), `contentsIntro`, `contributions_one`/`contributions_other`, `including`, `contentType.{whiteboard,memo,poll,mediaGallery,document}`, `moreLinks_one`/`moreLinks_other`, `comments_one`/`comments_other`, `attachmentsNote` ("including attached files and links"). Keep existing `title`/`description`/`confirm`/`saveFailed`.
-- [ ] T005 [P] Mirror the exact same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.nl.json` (respect the Dutch do-not-translate glossary: keep "Post/Posts" for contributions/callout terms).
-- [ ] T006 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.es.json`.
-- [ ] T007 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.bg.json`.
-- [ ] T008 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.de.json`.
-- [ ] T009 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.fr.json`.
-- [ ] T010 Run `pnpm vitest run src/crd/i18n/space/space.parity.test.ts --reporter=basic` and confirm key parity across all six locale files is green.
+- [X] T002 [P] Create the plain-TS view-model types in `src/crd/components/dialogs/calloutDeletionSummary.types.ts` — `CalloutRichContentKind`, `DeletionLinkItem`, `CalloutDeletionSummaryModel` (exact shapes from `specs/114-callout-delete-context/contracts/crd-delete-dialog.ts`; the `…Model` suffix avoids colliding with the `CalloutDeletionSummary` component, which `DeleteCalloutDialog.tsx` imports alongside the type). No GraphQL types; plain TypeScript only (defined in CRD so both the mapper in `src/main` and the CRD components can import it).
+- [X] T003 [P] Extend `src/crd/components/dialogs/ConfirmationDialog.tsx`: add optional `children?: ReactNode` to `ConfirmationDialogConfirmProps` and render it beneath `<AlertDialogDescription>` in the confirm-variant branch only. Leave the discard variant untouched and keep all existing callers working (no children → no visual change).
+- [X] T004 Update the `deleteCallout` keys in `src/crd/i18n/space/space.en.json`: **reword the existing `description` to be neutral** — "“{{title}}” will be deleted permanently. This cannot be undone." — dropping the static "along with its contributions and comments" claim, so the empty-callout dialog doesn't overstate scope (FR-008/US3; the content list carries the scope). Add the new keys: `confirmAll` ("Delete callout and all contents"), `contentsIntro` ("This will permanently delete:"), `contributions_one`/`contributions_other`, `including`, `contentType.{whiteboard,memo,poll,mediaGallery,document}`, `moreLinks_one`/`moreLinks_other`, `comments_one`/`comments_other`, `attachmentsNote` ("including attached files and links"). Keep existing `title`/`confirm`/`saveFailed` unchanged.
+- [X] T005 [P] Mirror the exact same `deleteCallout` keys (translated, **including the reworded `description`**) into `src/crd/i18n/space/space.nl.json` (respect the Dutch do-not-translate glossary: keep "Post/Posts" for contributions/callout terms).
+- [X] T006 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.es.json`.
+- [X] T007 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.bg.json`.
+- [X] T008 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.de.json`.
+- [X] T009 [P] Mirror the same `deleteCallout` keys (translated) into `src/crd/i18n/space/space.fr.json`.
+- [X] T010 Run `pnpm vitest run src/crd/i18n/space/space.parity.test.ts --reporter=basic` and confirm key parity across all six locale files is green.
 
 **Checkpoint**: Types, dialog body slot, and localized copy exist — story implementation can begin.
 
@@ -49,15 +49,15 @@ Single web-frontend project. CRD presentational layer under `src/crd/`; integrat
 
 ### Tests for User Story 1
 
-- [ ] T011 [P] [US1] Write unit tests for the mapper in `src/main/crdPages/space/callout/dataMappers/mapCalloutToDeletionSummary.test.ts`: covers contribution count, each rich-content kind precedence (whiteboard > memo > poll > mediaGallery > document), framing link + references → `links` with URL fallback and empty-label filtering, `commentCount` from `comments.messagesCount`, and the all-empty callout → zero/empty summary.
-- [ ] T012 [P] [US1] Write render tests for the summary component in `src/crd/components/dialogs/CalloutDeletionSummary.test.tsx`: renders pluralized contribution count, "including a whiteboard" note, links list, cap at 3 with an "and N more links" line, and comment count. (Empty-state assertion lands in US3/T018.)
+- [X] T011 [P] [US1] Write unit tests for the mapper in `src/main/crdPages/space/callout/dataMappers/mapCalloutToDeletionSummary.test.ts`: covers contribution count, each rich-content kind precedence (whiteboard > memo > poll > mediaGallery > document), framing link + references → `links` with URL fallback and empty-label filtering, `commentCount` from `comments.messagesCount`, and the all-empty callout → zero/empty summary.
+- [X] T012 [P] [US1] Write render tests for the summary component in `src/crd/components/dialogs/CalloutDeletionSummary.test.tsx`: renders the `deleteCallout.contentsIntro` lead-in line whenever the summary has deletable content, pluralized contribution count with the "including attached files and links" note (`deleteCallout.attachmentsNote`, shown iff `contributionCount > 0` — FR-007), "including a whiteboard" note, links list, cap at 3 with an "and N more links" line, comment count, and long link labels carrying the `truncate` class. (Empty-state assertion lands in US3/T018.)
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Implement the pure mapper `mapCalloutToDeletionSummary(callout: CalloutDetailsModelExtended): CalloutDeletionSummary` in `src/main/crdPages/space/callout/dataMappers/mapCalloutToDeletionSummary.ts` following data-model.md mapping rules (cache-only; optional-chained; no `__typename` branching; no fetch/mutation). Import the type from `@/crd/components/dialogs/calloutDeletionSummary.types`.
-- [ ] T014 [US1] Implement `src/crd/components/dialogs/CalloutDeletionSummary.tsx` — presentational `<ul role="list">` rendering counts, rich-content note, and named links (cap `listCap = 3`, "and N more links" overflow). Copy via `useTranslation('crd-space')`, i18next plural forms. No domain/apollo/router imports; Tailwind + semantic typography tokens only; `lucide-react` icons `aria-hidden`.
-- [ ] T015 [US1] Update `src/crd/components/dialogs/DeleteCalloutDialog.tsx`: accept optional `content?: CalloutDeletionSummary`; when `content` has deletable content, render `<CalloutDeletionSummary summary={content} />` into the `ConfirmationDialog` `children` slot. Keep `calloutTitle` in the heading/description. (Confirm-label logic is US2.)
-- [ ] T016 [US1] Wire it up in `src/main/crdPages/space/callout/CalloutSettingsConnector.tsx`: compute `const deletionSummary = mapCalloutToDeletionSummary(callout);` and pass `content={deletionSummary}` to the existing `<DeleteCalloutDialog>`. No change to the `handleDeleteConfirm` mutation path.
+- [X] T013 [US1] Implement the pure mapper `mapCalloutToDeletionSummary(callout: CalloutDetailsModelExtended): CalloutDeletionSummaryModel` in `src/main/crdPages/space/callout/dataMappers/mapCalloutToDeletionSummary.ts` following data-model.md mapping rules (cache-only; optional-chained; no `__typename` branching; no fetch/mutation). Import the type from `@/crd/components/dialogs/calloutDeletionSummary.types`.
+- [X] T014 [US1] Implement `src/crd/components/dialogs/CalloutDeletionSummary.tsx` — presentational `<ul role="list">` rendering counts, rich-content note, and named links (cap `listCap = 3`, "and N more links" overflow), preceded by the `deleteCallout.contentsIntro` lead-in line ("This will permanently delete:") whenever the summary has deletable content. When `contributionCount > 0`, render the `deleteCallout.attachmentsNote` general note ("including attached files and links") alongside the contribution count (FR-007). Truncate long link labels (Tailwind `truncate`) so the dialog stays readable and actions remain reachable. Copy via `useTranslation('crd-space')`, i18next plural forms. No domain/apollo/router imports; Tailwind + semantic typography tokens only; `lucide-react` icons `aria-hidden`.
+- [X] T015 [US1] Update `src/crd/components/dialogs/DeleteCalloutDialog.tsx`: accept optional `content?: CalloutDeletionSummaryModel`; when `content` has deletable content, render `<CalloutDeletionSummary summary={content} />` into the `ConfirmationDialog` `children` slot. Keep `calloutTitle` in the heading/description (description now uses the neutral T004 wording). (Confirm-label logic is US2.)
+- [X] T016 [US1] Wire it up in `src/main/crdPages/space/callout/CalloutSettingsConnector.tsx`: compute `const deletionSummary = mapCalloutToDeletionSummary(callout);` and pass `content={deletionSummary}` to the existing `<DeleteCalloutDialog>`. No change to the `handleDeleteConfirm` mutation path.
 
 **Checkpoint**: Delete dialog now shows a content summary for content-bearing callouts; opening it triggers no extra network request.
 
@@ -71,7 +71,7 @@ Single web-frontend project. CRD presentational layer under `src/crd/`; integrat
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] In `src/crd/components/dialogs/DeleteCalloutDialog.tsx`, derive `hasDeletableContent` from the summary (`contributionCount > 0 || richContent || links.length > 0 || commentCount > 0`) and choose `confirmLabel = t(hasDeletableContent ? 'deleteCallout.confirmAll' : 'deleteCallout.confirm')`. Extend `CalloutDeletionSummary.test.tsx` (or add to the dialog test) to assert the label switches with/without content.
+- [X] T017 [US2] In `src/crd/components/dialogs/DeleteCalloutDialog.tsx`, derive `hasDeletableContent` from the summary (`contributionCount > 0 || richContent || links.length > 0 || commentCount > 0`) and choose `confirmLabel = t(hasDeletableContent ? 'deleteCallout.confirmAll' : 'deleteCallout.confirm')`. Extend `CalloutDeletionSummary.test.tsx` (or add to the dialog test) to assert the label switches with/without content.
 
 **Checkpoint**: Confirm button scope matches the actual deletion effect.
 
@@ -85,7 +85,7 @@ Single web-frontend project. CRD presentational layer under `src/crd/`; integrat
 
 ### Implementation for User Story 3
 
-- [ ] T018 [US3] Ensure the empty path renders nothing extra: in `src/crd/components/dialogs/DeleteCalloutDialog.tsx` omit the `children` body entirely when `!hasDeletableContent` (do not render an empty `<ul>`), so the dialog collapses to the concise form. Add an assertion to `src/crd/components/dialogs/CalloutDeletionSummary.test.tsx` that an all-empty summary renders no list items (and/or the dialog renders no body).
+- [X] T018 [US3] Ensure the empty path renders nothing extra: in `src/crd/components/dialogs/DeleteCalloutDialog.tsx` omit the `children` body entirely when `!hasDeletableContent` (do not render an empty `<ul>`), so the dialog collapses to the concise form. Add an assertion to `src/crd/components/dialogs/CalloutDeletionSummary.test.tsx` that an all-empty summary renders no list items (and/or the dialog renders no body).
 
 **Checkpoint**: All three stories work independently; dialog size visibly varies between empty and content-bearing callouts.
 
@@ -95,10 +95,10 @@ Single web-frontend project. CRD presentational layer under `src/crd/`; integrat
 
 **Purpose**: Verification, accessibility, and full-suite green.
 
-- [ ] T019 [P] Accessibility pass on `CalloutDeletionSummary.tsx` and the extended `ConfirmationDialog.tsx`: content list is `<ul role="list">`/`<li>`, decorative icons `aria-hidden`, destructive confirm keyboard-reachable and focus-visible, no color-only signaling (WCAG 2.1 AA).
-- [ ] T020 [P] Run the targeted tests: `pnpm vitest run src/main/crdPages/space/callout/dataMappers/mapCalloutToDeletionSummary.test.ts src/crd/components/dialogs/CalloutDeletionSummary.test.tsx src/crd/i18n/space/space.parity.test.ts --reporter=basic`.
-- [ ] T021 Run `pnpm lint` and `pnpm vitest run` (full suite) and resolve any TypeScript/Biome/ESLint or test failures.
-- [ ] T022 Manual verification per `specs/114-callout-delete-context/quickstart.md` (content/whiteboard/links/comments/empty/cancel/failure/language cases) and confirm via the Network tab that opening the delete dialog issues **zero** extra GraphQL requests.
+- [X] T019 [P] Accessibility pass on `CalloutDeletionSummary.tsx` and the extended `ConfirmationDialog.tsx`: content list is `<ul role="list">`/`<li>`, decorative icons `aria-hidden`, destructive confirm keyboard-reachable and focus-visible, no color-only signaling (WCAG 2.1 AA).
+- [X] T020 [P] Run the targeted tests: `pnpm vitest run src/main/crdPages/space/callout/dataMappers/mapCalloutToDeletionSummary.test.ts src/crd/components/dialogs/CalloutDeletionSummary.test.tsx src/crd/i18n/space/space.parity.test.ts --reporter=basic`.
+- [X] T021 Run `pnpm lint` and `pnpm vitest run` (full suite) and resolve any TypeScript/Biome/ESLint or test failures.
+- [ ] T022 Manual verification per `specs/114-callout-delete-context/quickstart.md` (content/whiteboard/links/comments/empty/cancel/failure/language cases) and confirm via the Network tab that opening the delete dialog issues **zero** extra GraphQL requests. Verify the layout-variation criterion (SC-006): compare the dialog across an empty callout, a single-item callout, and a many-item callout — the body/size must visibly differ so the confirmation can't be dismissed from muscle memory; record the design-review outcome.
 
 ---
 

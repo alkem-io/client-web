@@ -457,8 +457,25 @@
   },
   "deleteCallout": {
     "title": "Да изтрия ли този $t(common.callout)?",
-    "description": "“{{title}}” ще бъде изтрит окончателно, заедно с приносите и коментарите. Това действие не може да бъде отменено.",
+    "description": "“{{title}}” ще бъде изтрит окончателно. Това действие не може да бъде отменено.",
     "confirm": "Изтрий",
+    "confirmAll": "Изтрий $t(common.callout)то и цялото съдържание",
+    "contentsIntro": "Това ще бъде изтрито окончателно:",
+    "contributions_one": "{{count}} принос",
+    "contributions_other": "{{count}} приноса",
+    "attachmentsNote": "включително прикачените файлове и връзки",
+    "including": "включително {{content}}",
+    "contentType": {
+      "whiteboard": "дъска",
+      "memo": "бележка",
+      "poll": "анкета",
+      "mediaGallery": "медийна галерия",
+      "document": "документ"
+    },
+    "moreLinks_one": "и още {{count}} връзка",
+    "moreLinks_other": "и още {{count}} връзки",
+    "comments_one": "и {{count}} коментар",
+    "comments_other": "и {{count}} коментара",
     "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
   },
   "saveAsTemplate": {

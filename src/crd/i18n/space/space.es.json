@@ -457,8 +457,25 @@
   },
   "deleteCallout": {
     "title": "¿Eliminar este aviso?",
-    "description": "“{{title}}” se eliminará de forma permanente, junto con sus contribuciones y comentarios. Esta acción no se puede deshacer.",
+    "description": "“{{title}}” se eliminará de forma permanente. Esta acción no se puede deshacer.",
     "confirm": "Eliminar",
+    "confirmAll": "Eliminar el $t(common.callout) y todo su contenido",
+    "contentsIntro": "Esto se eliminará de forma permanente:",
+    "contributions_one": "{{count}} contribución",
+    "contributions_other": "{{count}} contribuciones",
+    "attachmentsNote": "incluidos los archivos y enlaces adjuntos",
+    "including": "incluyendo {{content}}",
+    "contentType": {
+      "whiteboard": "una pizarra",
+      "memo": "una nota",
+      "poll": "una encuesta",
+      "mediaGallery": "una galería multimedia",
+      "document": "un documento"
+    },
+    "moreLinks_one": "y {{count}} enlace más",
+    "moreLinks_other": "y {{count}} enlaces más",
+    "comments_one": "y {{count}} comentario",
+    "comments_other": "y {{count}} comentarios",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
   },
   "saveAsTemplate": {

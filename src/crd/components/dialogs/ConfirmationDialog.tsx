@@ -1,4 +1,5 @@
 import { Loader2 } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import {
@@ -34,6 +35,8 @@ type ConfirmationDialogConfirmProps = {
   onCancel?: () => void;
   variant?: 'default' | 'destructive';
   loading?: boolean;
+  /** Optional structured body rendered beneath the description (e.g. a content list). */
+  children?: ReactNode;
 };
 
 type ConfirmationDialogDiscardProps = {
@@ -121,6 +124,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
     onCancel,
     variant = 'default',
     loading = false,
+    children,
   } = props;
 
   const handleCancel = () => {
@@ -136,6 +140,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
+        {children}
         <AlertDialogFooter>
           <AlertDialogCancel onClick={handleCancel} disabled={loading}>
             {cancelLabel ?? t('dialogs.cancel')}

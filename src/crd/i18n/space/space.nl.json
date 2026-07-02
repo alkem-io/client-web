@@ -457,8 +457,25 @@
   },
   "deleteCallout": {
     "title": "Deze $t(common.callout) verwijderen?",
-    "description": "“{{title}}” wordt definitief verwijderd, samen met de bijdragen en reacties. Deze actie kan niet ongedaan worden gemaakt.",
+    "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
     "confirm": "Verwijderen",
+    "confirmAll": "$t(common.Callout) en alle inhoud verwijderen",
+    "contentsIntro": "Dit wordt definitief verwijderd:",
+    "contributions_one": "{{count}} bijdrage",
+    "contributions_other": "{{count}} bijdragen",
+    "attachmentsNote": "inclusief bijgevoegde bestanden en links",
+    "including": "inclusief {{content}}",
+    "contentType": {
+      "whiteboard": "een whiteboard",
+      "memo": "een memo",
+      "poll": "een peiling",
+      "mediaGallery": "een mediagalerij",
+      "document": "een document"
+    },
+    "moreLinks_one": "en nog {{count}} link",
+    "moreLinks_other": "en nog {{count}} links",
+    "comments_one": "en {{count}} reactie",
+    "comments_other": "en {{count}} reacties",
     "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
   },
   "saveAsTemplate": {

@@ -9,8 +9,8 @@
 
 ### Session 2026-07-02
 
-- Q: How much data should the dialog fetch to build the content list? → A: Use only easily-available data — contribution count, link-contribution details, and framing content type. No extra query is issued when the dialog opens. Contributions are summarized primarily by count + content-type notes; per-contribution title/author/date appear only when already present in cache.
-- Q: What is the cap for the individually-listed contributions before an "and N more" summary line? → A: 3 items.
+- Q: How much data should the dialog fetch to build the content list? → A: Use only easily-available data — contribution count, framing link/reference details, framing content type, and comment count. No extra query is issued when the dialog opens. Contributions are summarized by count (the cached model carries no per-contribution detail), accompanied by a general note that their attached files and links will also be removed.
+- Q: What is the cap for individually-listed items (named links) before an "and N more" summary line? → A: 3 items.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -24,8 +24,8 @@ A person managing a space opens the callout options menu and chooses to delete a
 
 **Acceptance Scenarios**:
 
-1. **Given** a callout that contains several contributions, **When** the person opens the delete confirmation, **Then** the dialog body lists the contributions that will be deleted (title, and author/date where available).
-2. **Given** a callout whose contribution count exceeds the display cap, **When** the delete confirmation opens, **Then** the first few items are listed and an "and N more contributions" summary line indicates the remainder.
+1. **Given** a callout that contains several contributions, **When** the person opens the delete confirmation, **Then** the dialog body states the number of contributions that will be deleted (e.g. "3 contributions") together with a general note that their attached files and links will be removed.
+2. **Given** a callout whose named links (framing body link plus references) exceed the display cap, **When** the delete confirmation opens, **Then** the first 3 links are listed and an "and N more links" summary line indicates the remainder.
 3. **Given** a callout that contains files/documents, links/references, or rich content such as a whiteboard, **When** the delete confirmation opens, **Then** the dialog identifies each type of content that will be removed.
 4. **Given** the person reads the dialog, **When** they decide not to proceed, **Then** they can cancel and nothing is deleted.
 
@@ -63,7 +63,7 @@ When a callout has no contributions, files, links, or rich content, the person s
 ### Edge Cases
 
 - **Content present but details unavailable**: When the callout is known to contain content but per-item detail (e.g. an author name or post date) is not available at the moment of deletion, the dialog still communicates that content exists and will be lost (e.g. a general "including attached files and links" note), rather than showing blanks or nothing.
-- **Single item vs. many**: Wording adapts between singular and plural (e.g. "1 more contribution" vs. "3 more contributions").
+- **Single item vs. many**: Wording adapts between singular and plural wherever counts appear (e.g. "1 contribution" vs. "3 contributions", "and 1 more link" vs. "and 3 more links", "and 1 comment" vs. "and 5 comments").
 - **Mixed content**: A callout containing both contributions and framing content (a whiteboard, a link) surfaces each kind without duplicating or omitting a category.
 - **Very long titles**: Contribution or file titles that are long are truncated so the dialog stays readable and the confirm/cancel actions remain reachable.
 - **Deletion failure**: If the deletion request fails after confirmation, the person is informed and the callout is not silently lost.
@@ -74,18 +74,19 @@ When a callout has no contributions, files, links, or rich content, the person s
 ### Functional Requirements
 
 - **FR-001**: The callout delete confirmation MUST be context-aware — its body content and size MUST vary according to what the callout actually contains.
-- **FR-002**: When a callout contains contributions, the dialog MUST communicate that they will be deleted. The primary representation is a count ("N contributions"); the dialog MUST NOT issue an additional query to build the list. Where per-contribution detail (title, and author/date) is already available in cache, the dialog MAY list individual contributions, but MUST NOT depend on that detail being present.
-- **FR-003**: When individual contributions are listed (from already-available data), the list MUST be capped at 3 items and, when the total exceeds 3, MUST show an "and N more contributions" summary line reflecting the correct remaining count and singular/plural wording.
-- **FR-004**: When a callout contains files/documents that are identifiable from easily-available data, the dialog MUST identify them (filename and, where available, file type); otherwise their presence is covered by the general note in FR-007.
-- **FR-005**: When a callout contains links/references available at deletion time (framing references and link contributions), the dialog MUST identify them by link title or URL.
+- **FR-002**: When a callout contains contributions, the dialog MUST communicate that they will be deleted as a count ("N contributions") with correct singular/plural wording. The dialog MUST NOT issue an additional query to build the list; the cached model carries no per-contribution detail, so individual contributions are not listed.
+- **FR-003**: The named-link list (FR-005) MUST be capped at 3 items and, when the total exceeds 3, MUST show an "and N more links" summary line reflecting the correct remaining count and singular/plural wording.
+- **FR-004**: When a callout's framing body is a document, the dialog MUST indicate its presence by content type (e.g. "including a document"). Per-file detail (filename, file type) is not available from cached data; files attached to contributions are covered by the general note in FR-007.
+- **FR-005**: When a callout has named links available at deletion time (a framing body link and framing references), the dialog MUST identify them by link title, falling back to the URL. Link contributions are not individually identifiable from cached data and are covered by the contribution count (FR-002).
 - **FR-006**: When a callout contains other rich content (e.g. a whiteboard), the dialog MUST indicate its presence by content type (e.g. "including a whiteboard").
-- **FR-007**: When attached files or links are present but not individually enumerable, the dialog MUST show a general note such as "including attached files and links".
+- **FR-007**: When a callout contains contributions — whose attached files and links are not individually enumerable from cached data — the dialog MUST show a general note such as "including attached files and links" alongside the contribution count.
 - **FR-008**: When a callout has no content, the dialog MUST omit the content list and present a concise confirmation covering only the callout itself.
 - **FR-009**: The primary confirm button label MUST reflect the scope of the action — "Delete callout and all contents" when content is present — rather than a generic "Delete".
 - **FR-010**: The dialog MUST retain its destructive-action styling and a clear cancel path that performs no deletion.
 - **FR-011**: All dialog text (headings, content-list labels, summary lines, button labels) MUST be provided as translatable strings across every supported language, with singular/plural variants where counts are shown.
 - **FR-012**: The dialog MUST remain accessible — content list, summary, and actions reachable and operable by keyboard and assistive technology, and the destructive confirm clearly distinguishable.
 - **FR-013**: On confirmation, the system MUST delete the callout and all of its contained content, and on failure MUST inform the person without leaving an inconsistent state.
+- **FR-014**: When a callout has comments, the dialog MUST communicate the comment count ("and N comments") with correct singular/plural wording. Comments count as content for the purposes of FR-008 (empty vs. content-bearing) and FR-009 (confirm-button scope).
 
 ### Key Entities *(include if feature involves data)*
 
@@ -94,6 +95,7 @@ When a callout has no contributions, files, links, or rich content, the person s
 - **File / Document**: An attached asset associated with the callout. Has a filename and a file type.
 - **Link / Reference**: A referenced link associated with the callout. Has a title and/or a URL.
 - **Rich content**: Framing content such as a whiteboard, identified by its content type rather than enumerated in detail.
+- **Comment**: A message on the callout's comment thread, deleted with the callout. Represented in the dialog by a count only.
 
 ## Success Criteria *(mandatory)*
 
@@ -104,13 +106,13 @@ When a callout has no contributions, files, links, or rich content, the person s
 - **SC-003**: The confirm button communicates that both the callout and its contents will be removed in 100% of content-bearing cases.
 - **SC-004**: The dialog's visible layout/size differs measurably between an empty callout and a content-bearing callout, and between callouts with different amounts of content.
 - **SC-005**: All confirmation strings render correctly in every supported language with no missing keys and correct singular/plural forms.
-- **SC-006**: No increase in accidental confirmations attributable to a fixed-layout, blindly-dismissable dialog (the layout varies with content by design).
+- **SC-006**: Design review confirms the dialog layout demonstrably varies with content (empty vs. content-bearing vs. different content mixes), so the confirmation cannot be dismissed from muscle memory alone. Verified qualitatively during manual verification; no analytics instrumentation is required.
 
 ## Assumptions
 
-- **Data availability bounds the detail shown** (see Clarifications 2026-07-02): The dialog uses only data that is *easily available* at the point of deletion — a contribution count, link-contribution and framing-reference details, and the framing content type. It MUST NOT issue an additional query on open to enrich the list. Per-contribution title/author/date and per-file detail are shown only when already present in cache; otherwise the feature falls back to counts and the general "including attached files and links" note (FR-007).
+- **Data availability bounds the detail shown** (see Clarifications 2026-07-02): The dialog uses only data that is *easily available* at the point of deletion — a contribution count, framing link/reference details, the framing content type, and the comment count. It MUST NOT issue an additional query on open to enrich the list. The cached model carries no per-contribution or per-file detail, so contributions are represented by a count plus the general "including attached files and links" note (FR-007).
 - **Reuse of the existing confirmation surface**: This feature enhances the existing callout delete confirmation rather than introducing a separate deletion flow; the destructive-variant confirmation and cancel behavior are preserved.
-- **Cap value**: The contribution list is capped at 3 items (see Clarifications 2026-07-02), with the "and N more contributions" line carrying the remainder.
+- **Cap value**: The named-link list is capped at 3 items (see Clarifications 2026-07-02), with the "and N more links" line carrying the remainder.
 - **Supported languages**: The set of languages already supported by the product (en, nl, es, bg, de, fr) applies to all new strings.
 - **Permissions unchanged**: Who is allowed to delete a callout is unchanged; this feature only affects the confirmation experience for those already able to delete.
 

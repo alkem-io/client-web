@@ -22,7 +22,11 @@ export type DeletionLinkItem = {
   label: string;
 };
 
-export type CalloutDeletionSummary = {
+/**
+ * Named `…Model` (not `CalloutDeletionSummary`) to avoid colliding with the
+ * CRD component of that name — `DeleteCalloutDialog.tsx` imports both.
+ */
+export type CalloutDeletionSummaryModel = {
   /** Total contributions inside the callout (posts, whiteboards, links, …). */
   contributionCount: number;
   /** Rich framing body kind, if the callout body is one of these. */
@@ -43,7 +47,7 @@ export type CalloutDeletionSummary = {
  *
  * export function mapCalloutToDeletionSummary(
  *   callout: CalloutDetailsModelExtended,
- * ): CalloutDeletionSummary;
+ * ): CalloutDeletionSummaryModel;
  */
 
 /* ------------------------------------------------------------------ */
@@ -70,7 +74,7 @@ export type DeleteCalloutDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   calloutTitle: string;
-  content?: CalloutDeletionSummary;
+  content?: CalloutDeletionSummaryModel;
   onConfirm: () => void;
   loading?: boolean;
 };
@@ -80,7 +84,7 @@ export type DeleteCalloutDialogProps = {
  * Applies the display cap and "and N more" overflow; all copy from `crd-space`.
  */
 export type CalloutDeletionSummaryProps = {
-  summary: CalloutDeletionSummary;
+  summary: CalloutDeletionSummaryModel;
   /** Max named items shown before an overflow line. Default 3 (clarification 2026-07-02). */
   listCap?: number;
 };
@@ -92,14 +96,18 @@ export type CalloutDeletionSummaryProps = {
 
 /**
  * deleteCallout: {
- *   title, description, confirm, saveFailed,          // existing
+ *   title, confirm, saveFailed,                       // existing, unchanged
+ *   description,                                      // REWORDED neutral: "“{{title}}” will be deleted permanently. This cannot be undone."
+ *                                                     // — must NOT claim contributions/comments; the content list carries the
+ *                                                     // scope, so the empty-callout dialog doesn't overstate it (FR-008/US3)
  *   confirmAll,                                       // "Delete callout and all contents"
- *   contentsIntro,                                    // e.g. "This will permanently delete:"
+ *   contentsIntro,                                    // "This will permanently delete:" — lead-in line rendered above the
+ *                                                     // content list whenever the summary has deletable content
  *   contributions_one, contributions_other,           // "{{count}} contribution" / "…contributions"
  *   including,                                        // "including a {{content}}"
  *   contentType: { whiteboard, memo, poll, mediaGallery, document },
  *   moreLinks_one, moreLinks_other,                   // "and {{count}} more link(s)"
  *   comments_one, comments_other,                     // "and {{count}} comment(s)"
- *   attachmentsNote                                   // "including attached files and links" (fallback)
+ *   attachmentsNote                                   // "including attached files and links" — rendered iff contributionCount > 0 (FR-007)
  * }
  */

@@ -47,13 +47,17 @@ export type DeletionLinkItem = {
   label: string;
 };
 
-/** Everything the delete dialog needs to describe what will be removed. */
-export type CalloutDeletionSummary = {
+/**
+ * Everything the delete dialog needs to describe what will be removed.
+ * Named `…Model` to avoid colliding with the CRD component `CalloutDeletionSummary`
+ * (`DeleteCalloutDialog.tsx` imports both).
+ */
+export type CalloutDeletionSummaryModel = {
   /** Total contributions inside the callout (posts, whiteboards, links, …). */
   contributionCount: number;
   /** Rich framing body, if the callout's own body is one of these. */
   richContent?: CalloutRichContentKind;
-  /** Named links: framing body link + framing references (deduped, order stable). */
+  /** Named links: framing body link + framing references (source order). */
   links: DeletionLinkItem[];
   /** Number of comments/messages attached to the callout. */
   commentCount: number;
@@ -76,7 +80,7 @@ Drives (a) whether the content body renders at all (FR-008) and (b) the confirm-
 
 ## Mapping rules (pure, deterministic)
 
-`mapCalloutToDeletionSummary(callout: CalloutDetailsModelExtended): CalloutDeletionSummary`
+`mapCalloutToDeletionSummary(callout: CalloutDetailsModelExtended): CalloutDeletionSummaryModel`
 
 1. **contributionCount** = `callout.contributions?.length ?? 0`.
 2. **richContent**:
@@ -99,11 +103,12 @@ No mutation, no I/O, no `Date`/random — safe to unit-test in isolation and (in
 
 ## Rendering contract (CRD `CalloutDeletionSummary`)
 
-Input: `summary: CalloutDeletionSummary` + a display cap (`LIST_CAP = 3`). Output (semantic `<ul role="list">`):
+Input: `summary: CalloutDeletionSummaryModel` + a display cap (`LIST_CAP = 3`). Output (semantic `<ul role="list">`):
 
 | Summary state | Rendered line(s) |
 |---|---|
-| `contributionCount > 0` | `deleteCallout.contributions` with plural count ("3 contributions") |
+| `hasDeletableContent` | `deleteCallout.contentsIntro` lead-in line ("This will permanently delete:") rendered above the list |
+| `contributionCount > 0` | `deleteCallout.contributions` with plural count ("3 contributions") + `deleteCallout.attachmentsNote` general note ("including attached files and links") — contribution attachments are not enumerable from cache (FR-007) |
 | `richContent` set | `deleteCallout.including` + `deleteCallout.contentType.<kind>` ("including a whiteboard") |
 | `links.length ≤ 3` | one `<li>` per link (label) |
 | `links.length > 3` | first 3 links + `deleteCallout.moreLinks` plural line ("and 2 more links") |
@@ -111,6 +116,10 @@ Input: `summary: CalloutDeletionSummary` + a display cap (`LIST_CAP = 3`). Outpu
 | none of the above | body omitted entirely (empty callout) |
 
 Confirm label: `hasDeletableContent ? deleteCallout.confirmAll : deleteCallout.confirm`.
+
+Dialog description: the existing `deleteCallout.description` is **reworded neutral** — "“{{title}}” will be deleted permanently. This cannot be undone." — dropping the static "along with its contributions and comments" claim. The content list (not the description) carries the scope, so the empty-callout dialog communicates only that the callout itself will be deleted (FR-008 / US3).
+
+Long link labels are truncated (Tailwind `truncate` on the `<li>` label) so the dialog stays readable and the confirm/cancel actions remain reachable (spec edge case "Very long titles").
 
 ---
 

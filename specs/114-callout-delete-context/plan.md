@@ -62,10 +62,11 @@ specs/114-callout-delete-context/
 src/crd/components/dialogs/
 ├── ConfirmationDialog.tsx          # EXTEND: confirm variant gains optional `children` body slot
 ├── DeleteCalloutDialog.tsx         # CHANGE: accept plain-TS `content` summary; derive confirm label; render summary
-└── CalloutDeletionSummary.tsx      # NEW: presentational content list (count, "and N more", rich-content note, links)
+├── CalloutDeletionSummary.tsx      # NEW: presentational content list (intro line, count, "and N more", rich-content note, links)
+└── calloutDeletionSummary.types.ts # NEW: plain-TS view-model types (CalloutDeletionSummaryModel etc.) shared by mapper + CRD
 
 src/crd/i18n/space/
-├── space.en.json                   # EXTEND: deleteCallout.* (confirmAll, contents intro, plural counts, rich-content, links, attachments note)
+├── space.en.json                   # EXTEND: deleteCallout.* (confirmAll, contentsIntro, plural counts, rich-content, links, attachments note; description reworded neutral — no contributions/comments claim)
 ├── space.nl.json                   # EXTEND (parity)
 ├── space.es.json                   # EXTEND (parity)
 ├── space.bg.json                   # EXTEND (parity)
