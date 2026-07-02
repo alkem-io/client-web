@@ -20,6 +20,8 @@ export type CalloutMenuPermissionsInput = {
    * disabled (greyed out) rather than hidden — see `saveAsTemplateDisabled`.
    */
   isCollaboraDocument: boolean;
+  /** The Collabora document's OWN privileges (document-edit gate) — independent of the callout's. */
+  documentMyPrivileges?: AuthorizationPrivilege[];
   hasMoveNeighbours: boolean;
 };
 
@@ -40,6 +42,8 @@ export type CalloutMenuPermissions = {
    */
   saveAsTemplateDisabled: boolean;
   movable: boolean;
+  /** Show the "Rename document" action — a document callout AND (document-edit OR callout-edit). */
+  canRenameDocument: boolean;
 };
 
 /**
@@ -67,6 +71,7 @@ export type CalloutMenuPermissions = {
 export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput): CalloutMenuPermissions => {
   const editable = input.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const isDraft = input.visibility === CalloutVisibility.Draft;
+  const documentUpdate = input.documentMyPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   return {
     editable,
@@ -84,5 +89,7 @@ export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput):
       editable && input.saveAsTemplateFeatureEnabled && (input.canBeSavedAsTemplate || input.isCollaboraDocument),
     saveAsTemplateDisabled: editable && input.saveAsTemplateFeatureEnabled && input.isCollaboraDocument,
     movable: input.canMoveSet && input.hasMoveNeighbours,
+    // Rename is allowed to anyone who can edit the document OR the callout (independent privileges).
+    canRenameDocument: input.isCollaboraDocument && (documentUpdate || editable),
   };
 };

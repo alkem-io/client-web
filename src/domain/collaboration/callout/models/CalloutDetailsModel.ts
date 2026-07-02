@@ -1,4 +1,4 @@
-import type { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
@@ -35,6 +35,10 @@ export type CalloutDetailsModel = CalloutModelLight & {
     collaboraDocument?: {
       id: string;
       documentType: string;
+      authorization?: {
+        id?: string;
+        myPrivileges?: AuthorizationPrivilege[];
+      };
       profile?: {
         id: string;
         displayName: string;

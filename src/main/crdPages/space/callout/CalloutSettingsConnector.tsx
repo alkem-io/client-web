@@ -15,6 +15,7 @@ import { CalloutVisibilityChangeDialog } from '@/crd/components/callout/CalloutV
 import { DeleteCalloutDialog } from '@/crd/components/dialogs/DeleteCalloutDialog';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { RenameCollaboraDocumentDialog } from '@/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog';
 import { useCalloutManager } from '@/domain/collaboration/callout/utils/useCalloutManager';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -64,6 +65,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
   const [visibilityAction, setVisibilityAction] = useState<'publish' | 'unpublish' | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [renameOpen, setRenameOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
@@ -114,6 +116,8 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     // item is shown greyed out rather than hidden (mirrors the old UI hiding
     // it for documents, but with a visible "coming soon" affordance).
     isCollaboraDocument: callout.framing.type === CalloutFramingType.CollaboraDocument,
+    // The document's OWN Update privilege — lets a document editor rename even without callout-edit rights.
+    documentMyPrivileges: callout.framing.collaboraDocument?.authorization?.myPrivileges,
     hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
   });
 
@@ -192,7 +196,9 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         canSaveAsTemplate={perms.showSaveAsTemplate}
         saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
         saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
+        canRenameDocument={perms.canRenameDocument}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
+        onRenameDocument={perms.canRenameDocument ? () => setRenameOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
@@ -214,6 +220,15 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
           calloutId={callout.id}
           calloutsSetId={callout.calloutsSetId}
           editCallout={callout}
+        />
+      )}
+
+      {callout.framing.collaboraDocument && (
+        <RenameCollaboraDocumentDialog
+          open={renameOpen}
+          collaboraDocumentId={callout.framing.collaboraDocument.id}
+          displayName={callout.framing.collaboraDocument.profile?.displayName ?? ''}
+          onClose={() => setRenameOpen(false)}
         />
       )}
 
