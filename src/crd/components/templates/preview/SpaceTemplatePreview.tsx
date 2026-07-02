@@ -6,6 +6,7 @@ import {
   MessageSquareText,
   Presentation,
   StickyNote,
+  Users,
   Vote,
 } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
@@ -28,6 +29,7 @@ const FRAMING_ICON: Record<FramingKind, ComponentType<SVGProps<SVGSVGElement>>> 
   cta: Megaphone,
   image: ImageIcon,
   poll: Vote,
+  contributors: Users,
 };
 
 /**

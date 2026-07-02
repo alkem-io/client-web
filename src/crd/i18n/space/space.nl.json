@@ -282,7 +282,8 @@
     "postUnsavedCloseCancel": "Verder bewerken",
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
     "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
-    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw."
+    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
+    "contributors": "Contributors"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -490,7 +491,8 @@
     "maxPollOptions": "Maximaal {{count}} opties zijn toegestaan",
     "pollOptionRequired": "Optietekst is verplicht",
     "referenceTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
-    "linkRowTitleRequired": "Titel is verplicht wanneer een URL is opgegeven"
+    "linkRowTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
+    "contributorTypesRequired": "Selecteer ten minste één type contributor."
   },
   "forms": {
     "titleLabel": "Titel",
@@ -849,5 +851,36 @@
   },
   "activity": {
     "dialogTitle": "Recente activiteit"
+  },
+  "contributors": {
+    "title": "Contributors",
+    "search": "Zoeken op naam…",
+    "empty": "Geen contributors om weer te geven.",
+    "emptySearch": "Geen contributors komen overeen met je zoekopdracht.",
+    "noLocationData": "Geen locatiegegevens",
+    "noLocationDescription": "Deze contributors hebben geen locatiegegevens ingesteld.",
+    "viewList": "Lijst",
+    "viewMap": "Kaart",
+    "types": {
+      "user": "Personen",
+      "organization": "Organisaties",
+      "virtualContributor": "Virtual Contributors"
+    },
+    "counts": {
+      "users": "{{count}} personen",
+      "organizations": "{{count}} organisaties",
+      "virtualContributors": "{{count}} virtual contributors"
+    },
+    "config": {
+      "title": "Contributors",
+      "description": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
+      "typesLabel": "Typen contributor",
+      "typesHint": "Selecteer ten minste één type.",
+      "defaultTypeLabel": "Standaardtype",
+      "defaultTypeHint": "Het type dat als eerste wordt getoond.",
+      "defaultViewLabel": "Standaardweergave",
+      "viewList": "Lijst",
+      "viewMap": "Kaart"
+    }
   }
 }

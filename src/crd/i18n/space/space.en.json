@@ -282,7 +282,8 @@
     "postUnsavedCloseCancel": "Keep editing",
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
-    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again."
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
+    "contributors": "Contributors"
   },
   "contribution": {
     "edit": "Edit",
@@ -490,7 +491,8 @@
     "maxPollOptions": "At most {{count}} options are allowed",
     "pollOptionRequired": "Option text is required",
     "referenceTitleRequired": "Title is required when a URL is provided",
-    "linkRowTitleRequired": "Title is required when a URL is provided"
+    "linkRowTitleRequired": "Title is required when a URL is provided",
+    "contributorTypesRequired": "Select at least one contributor type."
   },
   "forms": {
     "titleLabel": "Title",
@@ -849,5 +851,36 @@
   },
   "activity": {
     "dialogTitle": "Recent Activity"
+  },
+  "contributors": {
+    "title": "Contributors",
+    "search": "Search by name…",
+    "empty": "No contributors to show.",
+    "emptySearch": "No contributors match your search.",
+    "noLocationData": "No location data",
+    "noLocationDescription": "These contributors have no location data set.",
+    "viewList": "List",
+    "viewMap": "Map",
+    "types": {
+      "user": "People",
+      "organization": "Organizations",
+      "virtualContributor": "Virtual Contributors"
+    },
+    "counts": {
+      "users": "{{count}} people",
+      "organizations": "{{count}} organizations",
+      "virtualContributors": "{{count}} virtual contributors"
+    },
+    "config": {
+      "title": "Contributors",
+      "description": "Show this community’s contributors as a self-updating collection.",
+      "typesLabel": "Contributor types",
+      "typesHint": "Select at least one type to include.",
+      "defaultTypeLabel": "Default type",
+      "defaultTypeHint": "The type shown first.",
+      "defaultViewLabel": "Default display",
+      "viewList": "List",
+      "viewMap": "Map"
+    }
   }
 }

@@ -26,6 +26,7 @@ import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
+import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 
 type LazyCalloutItemProps = {
@@ -238,6 +239,14 @@ function LazyCalloutItemContent({
   const pollPreview =
     callout.framing.type === CalloutFramingType.Poll ? <CalloutPollConnector callout={callout} /> : null;
 
+  // Contributor-collection callout body (feature 008): renders the self-updating
+  // contributor cards/map for the active type. The callout accepts no
+  // contributions, so it has no contributions-preview — only this body.
+  const contributorsPreview =
+    callout.framing.type === CalloutFramingType.Contributors ? (
+      <ContributorCollectionConnector calloutId={callout.id} className="mt-2" />
+    ) : null;
+
   // Without a comments room we can't wire the inline thread — fall back to the
   // dialog-only flow. The dialog itself handles its own "no room" rendering.
   const commentsRoomId = callout.comments?.id;
@@ -280,6 +289,7 @@ function LazyCalloutItemContent({
               contributionsPreview={contributionsPreview}
             >
               {pollPreview}
+              {contributorsPreview}
             </PostCard>
           )}
         </CalloutCommentsConnector>
@@ -301,6 +311,7 @@ function LazyCalloutItemContent({
           contributionsPreview={contributionsPreview}
         >
           {pollPreview}
+          {contributorsPreview}
         </PostCard>
       )}
       {mediaGalleryFileInput}

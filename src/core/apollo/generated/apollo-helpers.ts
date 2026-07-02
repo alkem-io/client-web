@@ -806,9 +806,22 @@ export type CalloutContributionsCountOutputFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributorsSettingsKeySpecifier = (
+  | 'contributorTypes'
+  | 'defaultContributorType'
+  | 'defaultView'
+  | CalloutContributorsSettingsKeySpecifier
+)[];
+export type CalloutContributorsSettingsFieldPolicy = {
+  contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
   | 'collaboraDocument'
+  | 'contributorCounts'
+  | 'contributors'
   | 'createdDate'
   | 'id'
   | 'link'
@@ -824,6 +837,8 @@ export type CalloutFramingKeySpecifier = (
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorCounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -867,9 +882,14 @@ export type CalloutSettingsContributionFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CalloutSettingsFramingKeySpecifier = ('commentsEnabled' | CalloutSettingsFramingKeySpecifier)[];
+export type CalloutSettingsFramingKeySpecifier = (
+  | 'commentsEnabled'
+  | 'contributors'
+  | CalloutSettingsFramingKeySpecifier
+)[];
 export type CalloutSettingsFramingFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutsSetKeySpecifier = (
   | 'authorization'
@@ -1172,6 +1192,51 @@ export type ConfigFieldPolicy = {
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ContributorCollectionCountsKeySpecifier = (
+  | 'organizations'
+  | 'users'
+  | 'virtualContributors'
+  | ContributorCollectionCountsKeySpecifier
+)[];
+export type ContributorCollectionCountsFieldPolicy = {
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContributorCollectionItemKeySpecifier = (
+  | 'avatarUrl'
+  | 'displayName'
+  | 'id'
+  | 'location'
+  | 'roleLabel'
+  | 'type'
+  | 'url'
+  | ContributorCollectionItemKeySpecifier
+)[];
+export type ContributorCollectionItemFieldPolicy = {
+  avatarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleLabel?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContributorLocationKeySpecifier = (
+  | 'city'
+  | 'country'
+  | 'hasValidCoordinates'
+  | 'latitude'
+  | 'longitude'
+  | ContributorLocationKeySpecifier
+)[];
+export type ContributorLocationFieldPolicy = {
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasValidCoordinates?: FieldPolicy<any> | FieldReadFunction<any>;
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ConversationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -1306,6 +1371,17 @@ export type CreateCalloutContributionDefaultsDataFieldPolicy = {
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutContributorsSettingsDataKeySpecifier = (
+  | 'contributorTypes'
+  | 'defaultContributorType'
+  | 'defaultView'
+  | CreateCalloutContributorsSettingsDataKeySpecifier
+)[];
+export type CreateCalloutContributorsSettingsDataFieldPolicy = {
+  contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutDataKeySpecifier = (
   | 'classification'
   | 'contributionDefaults'
@@ -1374,10 +1450,12 @@ export type CreateCalloutSettingsDataFieldPolicy = {
 };
 export type CreateCalloutSettingsFramingDataKeySpecifier = (
   | 'commentsEnabled'
+  | 'contributors'
   | CreateCalloutSettingsFramingDataKeySpecifier
 )[];
 export type CreateCalloutSettingsFramingDataFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutsSetDataKeySpecifier = ('calloutsData' | CreateCalloutsSetDataKeySpecifier)[];
 export type CreateCalloutsSetDataFieldPolicy = {
@@ -4654,11 +4732,13 @@ export type SpaceSettingsMembershipFieldPolicy = {
 export type SpaceSettingsPrivacyKeySpecifier = (
   | 'allowPlatformSupportAsAdmin'
   | 'mode'
+  | 'userInformationVisibility'
   | SpaceSettingsPrivacyKeySpecifier
 )[];
 export type SpaceSettingsPrivacyFieldPolicy = {
   allowPlatformSupportAsAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  userInformationVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSubscriptionKeySpecifier = ('expires' | 'name' | SpaceSubscriptionKeySpecifier)[];
 export type SpaceSubscriptionFieldPolicy = {
@@ -5921,6 +6001,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CalloutContributionsCountOutputKeySpecifier);
     fields?: CalloutContributionsCountOutputFieldPolicy;
   };
+  CalloutContributorsSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributorsSettingsKeySpecifier
+      | (() => undefined | CalloutContributorsSettingsKeySpecifier);
+    fields?: CalloutContributorsSettingsFieldPolicy;
+  };
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
     fields?: CalloutFramingFieldPolicy;
@@ -6050,6 +6137,24 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ConfigKeySpecifier | (() => undefined | ConfigKeySpecifier);
     fields?: ConfigFieldPolicy;
   };
+  ContributorCollectionCounts?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ContributorCollectionCountsKeySpecifier
+      | (() => undefined | ContributorCollectionCountsKeySpecifier);
+    fields?: ContributorCollectionCountsFieldPolicy;
+  };
+  ContributorCollectionItem?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ContributorCollectionItemKeySpecifier
+      | (() => undefined | ContributorCollectionItemKeySpecifier);
+    fields?: ContributorCollectionItemFieldPolicy;
+  };
+  ContributorLocation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ContributorLocationKeySpecifier | (() => undefined | ContributorLocationKeySpecifier);
+    fields?: ContributorLocationFieldPolicy;
+  };
   Conversation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier);
     fields?: ConversationFieldPolicy;
@@ -6121,6 +6226,13 @@ export type StrictTypedTypePolicies = {
       | CreateCalloutContributionDefaultsDataKeySpecifier
       | (() => undefined | CreateCalloutContributionDefaultsDataKeySpecifier);
     fields?: CreateCalloutContributionDefaultsDataFieldPolicy;
+  };
+  CreateCalloutContributorsSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributorsSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutContributorsSettingsDataKeySpecifier);
+    fields?: CreateCalloutContributorsSettingsDataFieldPolicy;
   };
   CreateCalloutData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutDataKeySpecifier | (() => undefined | CreateCalloutDataKeySpecifier);
