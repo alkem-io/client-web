@@ -76,8 +76,8 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 
 **Independent Test**: Open the callout edit dialog for a Collabora-document callout; the box shows the current name read-only, no "Create new" picker, no rename control.
 
-- [ ] T016 [US3] Plumb the existing document into the edit form: add `collaboraDocumentId` (+ `displayName`, `documentType`) to `editMeta` in `src/main/crdPages/space/callout/dataMappers/mapCalloutDetailsToFormValues.ts` (mirror `memoId`), and pass `editCollaboraDocument*` props from `src/main/crdPages/space/callout/CalloutFormConnector.tsx` into `FramingEditorConnector`. (FR-005)
-- [ ] T017 [US3] In `src/main/crdPages/space/callout/FramingEditorConnector.tsx` `case 'document'` **edit mode**, render a read-only existing-document box (icon + type + name, memo-box style) and stop rendering the `CollaboraDocumentTypePicker` "Create new" box; **no** rename control in the box. Create mode unchanged. (FR-005, SC-005)
+- [X] T016 [US3] Plumb the existing document into the edit form: add `collaboraDocumentId` (+ `displayName`, `documentType`) to `editMeta` in `src/main/crdPages/space/callout/dataMappers/mapCalloutDetailsToFormValues.ts` (mirror `memoId`), and pass `editCollaboraDocument*` props from `src/main/crdPages/space/callout/CalloutFormConnector.tsx` into `FramingEditorConnector`. (FR-005)
+- [X] T017 [US3] In `src/main/crdPages/space/callout/FramingEditorConnector.tsx` `case 'document'` **edit mode**, render a read-only existing-document box (icon + type + name, memo-box style) and stop rendering the `CollaboraDocumentTypePicker` "Create new" box; **no** rename control in the box. Create mode unchanged. (FR-005, SC-005)
 
 **Checkpoint**: US3 delivered — stale "Create new" picker gone on edit; name read-only in the box.
 

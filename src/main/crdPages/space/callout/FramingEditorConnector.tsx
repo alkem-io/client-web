@@ -1,4 +1,4 @@
-import { Settings, StickyNote } from 'lucide-react';
+import { FileText, Presentation, Settings, Sheet, StickyNote } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
@@ -42,6 +42,21 @@ import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
 const WHITEBOARD_FRAMING_TEMPLATE_ID = '__callout_framing_whiteboard';
+
+// Icon + label for the read-only existing-document box shown in edit mode.
+const collaboraDocIconByType: Record<CollaboraDocumentTypeValue, typeof FileText> = {
+  WORDPROCESSING: FileText,
+  SPREADSHEET: Sheet,
+  PRESENTATION: Presentation,
+};
+const collaboraDocLabelKeyByType: Record<
+  CollaboraDocumentTypeValue,
+  'callout.documentText' | 'callout.documentSpreadsheet' | 'callout.documentPresentation'
+> = {
+  WORDPROCESSING: 'callout.documentText',
+  SPREADSHEET: 'callout.documentSpreadsheet',
+  PRESENTATION: 'callout.documentPresentation',
+};
 
 type FramingEditorConnectorProps = {
   /**
@@ -130,6 +145,8 @@ type FramingEditorConnectorProps = {
   // create-callout mutation and cannot change after the document is created.
   collaboraDocumentType: CollaboraDocumentType;
   onCollaboraDocumentTypeChange: (next: CollaboraDocumentType) => void;
+  /** Existing Collabora document's display name — shown read-only in the edit-mode box. */
+  editCollaboraDocumentDisplayName?: string;
   /**
    * Upload-zone wiring for the create-mode "or upload" path (FR-002 / FR-003).
    * Omitted in edit mode — once a Collabora document exists, replacing its bytes
@@ -196,6 +213,7 @@ export function FramingEditorConnector({
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
   onCollaboraDocumentTypeChange,
+  editCollaboraDocumentDisplayName,
   collaboraUpload,
   contributorCollection,
   onContributorCollectionChange,
@@ -342,20 +360,41 @@ export function FramingEditorConnector({
         />
       );
 
-    case 'document':
-      // Collabora document framing — type is fixed at creation time (Collabora
-      // has no server-side conversion path between text/spreadsheet/presentation),
-      // so in edit mode the picker is shown read-only as a reminder of which
-      // type was provisioned. The actual document body is edited from the post
+    case 'document': {
+      // Collabora document framing. The document body is edited from the post
       // card / detail dialog via `CollaboraFramingEditorOverlay`.
+      if (mode === 'edit') {
+        // The document already exists, so the "Create new" type picker no longer
+        // applies (spec 114 US3 / FR-005): show the existing document read-only.
+        // Renaming happens from the editor header or the "Rename document" menu
+        // action, not here.
+        const docType = collaboraDocumentType as CollaboraDocumentTypeValue;
+        const DocIcon = collaboraDocIconByType[docType] ?? FileText;
+        return (
+          <div className="p-4 border rounded-xl bg-muted/30 flex items-center gap-3 animate-in fade-in">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <DocIcon className="w-5 h-5" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-body-emphasis truncate">
+                {editCollaboraDocumentDisplayName || t(collaboraDocLabelKeyByType[docType] ?? 'callout.documentText')}
+              </p>
+              <p className="text-caption text-muted-foreground">
+                {t(collaboraDocLabelKeyByType[docType] ?? 'callout.documentText')}
+              </p>
+            </div>
+          </div>
+        );
+      }
+      // Create mode — type picker + upload (type is fixed at creation time).
       return (
         <CollaboraDocumentTypePicker
           value={collaboraDocumentType as CollaboraDocumentTypeValue}
           onChange={next => onCollaboraDocumentTypeChange(next as CollaboraDocumentType)}
-          readOnly={mode === 'edit'}
           upload={collaboraUpload}
         />
       );
+    }
 
     case 'image':
       return (

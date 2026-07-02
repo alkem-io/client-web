@@ -718,6 +718,9 @@ function CalloutFormConnectorInner({
                 editMemoId={values.editMeta?.memoId}
                 editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
                 editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
+                editCollaboraDocumentDisplayName={
+                  mode === 'edit' ? editCallout?.framing.collaboraDocument?.profile?.displayName : undefined
+                }
                 framingType={values.framingChip}
                 linkUrl={values.linkUrl}
                 onLinkUrlChange={v => setField('linkUrl', v)}
