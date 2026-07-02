@@ -29,10 +29,10 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 
 **⚠️ CRITICAL**: US1 and US2 gating/mechanics cannot be implemented until T002–T004 are done.
 
-- [ ] T002 **[C1]** Add the document's own authorization to **all** callout gate queries: add `authorization { id myPrivileges }` to the `collaboraDocument` selection in `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql` (`CalloutDetails`, feeds the list menu + the editor overlay) **and** `src/domain/collaboration/callout/graphql/CalloutContent.graphql`. Prefer extracting a shared `CollaboraDocumentGate` fragment used by both to prevent drift. (FR-002)
-- [ ] T003 Run `pnpm codegen` to regenerate types/hooks for the new `collaboraDocument.authorization` selection. (depends on T002)
-- [ ] T004 [P] Create the rename hook `useRenameCollaboraDocument` in `src/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument.ts` — holds `editing/draft/saving/error` state, validates with `displayNameValidator` (non-blank, min 3, max 128), no-ops when unchanged after trim, calls `useUpdateCollaboraDocumentMutation` (`{ updateData: { ID, displayName } }`), and on failure keeps the persisted name + sets `error`. Exposes `readOnly = !canRename`. (FR-007, FR-008, FR-013, FR-014)
-- [ ] T005 [P] Add shared i18n keys under `crd-space` in `src/crd/i18n/space/space.en.json` — "Rename document" (menu + dialog title), Save/Cancel labels; reuse existing `forms.validations.*` messages. (FR-006, FR-007)
+- [X] T002 **[C1]** Add the document's own authorization to **all** callout gate queries: add `authorization { id myPrivileges }` to the `collaboraDocument` selection in `src/domain/collaboration/calloutsSet/useCalloutsSet/CalloutsSetQueries.graphql` (`CalloutDetails`, feeds the list menu + the editor overlay) **and** `src/domain/collaboration/callout/graphql/CalloutContent.graphql`. Prefer extracting a shared `CollaboraDocumentGate` fragment used by both to prevent drift. (FR-002)
+- [X] T003 Run `pnpm codegen` to regenerate types/hooks for the new `collaboraDocument.authorization` selection. (depends on T002)
+- [X] T004 [P] Create the rename hook `useRenameCollaboraDocument` in `src/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument.ts` — holds `editing/draft/saving/error` state, validates with `displayNameValidator` (non-blank, min 3, max 128), no-ops when unchanged after trim, calls `useUpdateCollaboraDocumentMutation` (`{ updateData: { ID, displayName } }`), and on failure keeps the persisted name + sets `error`. Exposes `readOnly = !canRename`. (FR-007, FR-008, FR-013, FR-014)
+- [X] T005 [P] Add shared i18n keys under `crd-space` in `src/crd/i18n/space/space.en.json` — "Rename document" (menu + dialog title), Save/Cancel labels; reuse existing `forms.validations.*` messages. (FR-006, FR-007)
 - [ ] T006 [P] Unit test for `useRenameCollaboraDocument` in `src/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument.test.ts` — valid save calls the mutation; invalid (empty/whitespace/<3/>128) rejected & not persisted; unchanged = no-op; failure retains name. (SC-008)
 
 **Checkpoint**: Gate queries return the document privilege; rename mechanics + strings ready.
@@ -45,7 +45,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 
 **Independent Test**: As an account with the document's `Update` privilege but not the callout's, open the callout menu → "Rename document" is present → rename to a valid value → the document-name surfaces update. As an account with neither privilege, the action is absent.
 
-- [ ] T007 [US1] Create `RenameCollaboraDocumentDialog` in `src/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog.tsx` — a small modal (Dialog primitives `src/crd/primitives/dialog.tsx` + `Input`) with a single name field + Save/Cancel, backed by `useRenameCollaboraDocument`; props `{ open, collaboraDocumentId, displayName, onClose }`. (FR-003, FR-006, FR-007)
+- [X] T007 [US1] Create `RenameCollaboraDocumentDialog` in `src/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog.tsx` — a small modal (Dialog primitives `src/crd/primitives/dialog.tsx` + `Input`) with a single name field + Save/Cancel, backed by `useRenameCollaboraDocument`; props `{ open, collaboraDocumentId, displayName, onClose }`. (FR-003, FR-006, FR-007)
 - [ ] T008 **[U1]** [US1] Add `documentMyPrivileges?: AuthorizationPrivilege[]` to `CalloutMenuPermissionsInput` and derive `canRenameDocument = isCollaboraDocument && (documentMyPrivileges?.includes(Update) || editable)` in `src/main/crdPages/space/callout/deriveCalloutMenuVisibility.ts` (`isCollaboraDocument` already exists; `editable` is the existing callout-Update check). (FR-001, FR-002, FR-003)
 - [ ] T009 [US1] Add a "Rename document" item to `src/crd/components/callout/CalloutContextMenu.tsx` — new `onRenameDocument?: () => void` + visibility from `canRenameDocument`; shown only for document callouts to permitted users. (FR-003)
 - [ ] T010 [US1] Wire the action and host the dialog in `src/main/crdPages/space/callout/CalloutSettingsConnector.tsx` — supply `documentMyPrivileges` from `callout.framing.collaboraDocument?.authorization?.myPrivileges`, pass `onRenameDocument` down (through `src/main/crdPages/space/callout/LazyCalloutItem.tsx` if needed), and open `RenameCollaboraDocumentDialog` with the callout's `collaboraDocument.id` + current `displayName`. (FR-003, FR-010)
@@ -61,7 +61,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 
 **Independent Test**: Open the document as a permitted user; rename from the title bar; the title updates without reopening and persists. A non-permitted user sees the title read-only.
 
-- [ ] T012 [P] [US2] Create the reusable inline control `CollaboraDocumentDisplayName` in `src/crd/components/collabora/CollaboraDocumentDisplayName.tsx`, mirroring `WhiteboardDisplayName`/`MemoDisplayName` exactly (pencil → input → Check/Cancel; Enter=save, Escape=cancel; hidden pencil when `readOnly`). (FR-006, FR-014)
+- [X] T012 [P] [US2] Create the reusable inline control `CollaboraDocumentDisplayName` in `src/crd/components/collabora/CollaboraDocumentDisplayName.tsx`, mirroring `WhiteboardDisplayName`/`MemoDisplayName` exactly (pencil → input → Check/Cancel; Enter=save, Escape=cancel; hidden pencil when `readOnly`). (FR-006, FR-014)
 - [ ] T013 [US2] Render `CollaboraDocumentDisplayName` in the header of `src/main/crdPages/space/callout/CollaboraFramingEditorOverlay.tsx` (replace the static `DialogTitle` text), accept a new `canRename: boolean` prop, back it with `useRenameCollaboraDocument`, and sync the local header title on successful rename. (FR-004, FR-006, FR-009)
 - [ ] T014 [US2] Derive `canRename = documentUpdate || calloutUpdate` in `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` (using `framing.collaboraDocument.authorization.myPrivileges` + `callout.authorization.myPrivileges`) and pass it to `CollaboraFramingEditorOverlay`. (FR-001, FR-004)
 - [ ] T015 [P] [US2] Component test for `CollaboraDocumentDisplayName` in `src/crd/components/collabora/CollaboraDocumentDisplayName.test.tsx` — edit/save/cancel, Enter/Escape, `readOnly` hides the affordance, invalid input rejected. (SC-007, SC-008)
@@ -97,7 +97,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 
 ## Phase 7: Polish & Cross-Cutting Concerns
 
-- [ ] T019 [P] Add the new i18n keys to the remaining locales (`space.de.json`, `space.fr.json`, `space.nl.json`, `space.es.json`, `space.bg.json`).
+- [X] T019 [P] Add the new i18n keys to the remaining locales (`space.de.json`, `space.fr.json`, `space.nl.json`, `space.es.json`, `space.bg.json`).
 - [ ] T020 [P] Run the `quickstart.md` acceptance walkthrough with the three-account gate matrix (can edit file / can edit callout / neither) across US1–US4, and confirm the expected **card-title divergence** (C2 — the space-feed card title does not change on document rename).
 - [ ] T021 Run `pnpm lint` + type-check and fix any issues introduced.
 - [ ] T022 [P] Optionally run Playwright e2e for US1–US4 + the gate matrix.

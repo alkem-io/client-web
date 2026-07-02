@@ -640,6 +640,21 @@
     }
   },
   "collabora": {
+    "rename": {
+      "menuItem": "Cambiar nombre del documento",
+      "dialogTitle": "Cambiar nombre del documento",
+      "inputLabel": "Nombre del documento",
+      "edit": "Cambiar nombre",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "errors": {
+        "blank": "Introduce un nombre.",
+        "tooShort": "El nombre debe tener al menos {{min}} caracteres.",
+        "tooLong": "El nombre no puede superar los {{max}} caracteres.",
+        "invalid": "Introduce un nombre válido.",
+        "saveFailed": "No se pudo cambiar el nombre del documento. Inténtalo de nuevo."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Error de Collabora: {{message}}",

@@ -14148,6 +14148,13 @@ export type CalloutContentQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | undefined;
@@ -14475,6 +14482,9 @@ export type UpdateCalloutContentMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
@@ -14923,6 +14933,9 @@ export type UpdateCalloutVisibilityMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
@@ -16667,6 +16680,9 @@ export type CreateCalloutMutation = {
             __typename?: 'CollaboraDocument';
             id: string;
             documentType: CollaboraDocumentType;
+            authorization?:
+              | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+              | undefined;
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           }
         | undefined;
@@ -17250,6 +17266,13 @@ export type CalloutDetailsQuery = {
                   __typename?: 'CollaboraDocument';
                   id: string;
                   documentType: CollaboraDocumentType;
+                  authorization?:
+                    | {
+                        __typename?: 'Authorization';
+                        id: string;
+                        myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                      }
+                    | undefined;
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
                 }
               | undefined;
@@ -17743,6 +17766,9 @@ export type CalloutDetailsFragment = {
           __typename?: 'CollaboraDocument';
           id: string;
           documentType: CollaboraDocumentType;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
           profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
         }
       | undefined;

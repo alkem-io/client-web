@@ -640,6 +640,21 @@
     }
   },
   "collabora": {
+    "rename": {
+      "menuItem": "Dokument umbenennen",
+      "dialogTitle": "Dokument umbenennen",
+      "inputLabel": "Dokumentname",
+      "edit": "Umbenennen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "errors": {
+        "blank": "Bitte geben Sie einen Namen ein.",
+        "tooShort": "Der Name muss mindestens {{min}} Zeichen lang sein.",
+        "tooLong": "Der Name darf höchstens {{max}} Zeichen lang sein.",
+        "invalid": "Bitte geben Sie einen gültigen Namen ein.",
+        "saveFailed": "Das Dokument konnte nicht umbenannt werden. Bitte versuchen Sie es erneut."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-Fehler: {{message}}",

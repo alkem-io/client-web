@@ -108,6 +108,10 @@ fragment CalloutDetails on Callout {
     collaboraDocument {
       id
       documentType
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         displayName

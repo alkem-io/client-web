@@ -632,6 +632,21 @@
     }
   },
   "collabora": {
+    "rename": {
+      "menuItem": "Rename document",
+      "dialogTitle": "Rename document",
+      "inputLabel": "Document name",
+      "edit": "Rename",
+      "save": "Save",
+      "cancel": "Cancel",
+      "errors": {
+        "blank": "Please enter a name.",
+        "tooShort": "Name must be at least {{min}} characters.",
+        "tooLong": "Name must be at most {{max}} characters.",
+        "invalid": "Please enter a valid name.",
+        "saveFailed": "Couldn't rename the document. Please try again."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora error: {{message}}",

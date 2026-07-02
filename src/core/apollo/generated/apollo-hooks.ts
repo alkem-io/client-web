@@ -1090,6 +1090,10 @@ export const CalloutDetailsFragmentDoc = gql`
     collaboraDocument {
       id
       documentType
+      authorization {
+        id
+        myPrivileges
+      }
       profile {
         id
         displayName
@@ -7382,6 +7386,10 @@ export const CalloutContentDocument = gql`
         collaboraDocument {
           id
           documentType
+          authorization {
+            id
+            myPrivileges
+          }
           profile {
             id
             displayName

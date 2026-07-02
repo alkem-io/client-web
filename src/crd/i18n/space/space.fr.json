@@ -640,6 +640,21 @@
     }
   },
   "collabora": {
+    "rename": {
+      "menuItem": "Renommer le document",
+      "dialogTitle": "Renommer le document",
+      "inputLabel": "Nom du document",
+      "edit": "Renommer",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "errors": {
+        "blank": "Veuillez saisir un nom.",
+        "tooShort": "Le nom doit comporter au moins {{min}} caractères.",
+        "tooLong": "Le nom ne peut pas dépasser {{max}} caractères.",
+        "invalid": "Veuillez saisir un nom valide.",
+        "saveFailed": "Impossible de renommer le document. Veuillez réessayer."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Erreur Collabora : {{message}}",
