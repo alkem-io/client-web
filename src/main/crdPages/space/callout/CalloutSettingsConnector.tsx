@@ -15,8 +15,8 @@ import { CalloutVisibilityChangeDialog } from '@/crd/components/callout/CalloutV
 import { DeleteCalloutDialog } from '@/crd/components/dialogs/DeleteCalloutDialog';
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
-import { RenameCollaboraDocumentDialog } from '@/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog';
 import { useCalloutManager } from '@/domain/collaboration/callout/utils/useCalloutManager';
+import { RenameCollaboraDocumentDialog } from '@/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';

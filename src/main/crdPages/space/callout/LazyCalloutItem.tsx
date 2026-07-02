@@ -229,7 +229,8 @@ function LazyCalloutItemContent({
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
   // Rename is allowed to anyone who can edit the document OR the callout (independent privileges).
   const canRenameFramingDocument =
-    (callout.framing.collaboraDocument?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false) ||
+    (callout.framing.collaboraDocument?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
+      false) ||
     (callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false);
 
   const contributionsPreview = hasContributionType ? (

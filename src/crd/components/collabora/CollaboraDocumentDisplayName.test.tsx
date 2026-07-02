@@ -53,7 +53,12 @@ describe('CollaboraDocumentDisplayName', () => {
 
   test('renders a validation error while editing', () => {
     render(
-      <CollaboraDocumentDisplayName displayName="Budget" value="ab" editing={true} error="collabora.rename.errors.tooShort" />
+      <CollaboraDocumentDisplayName
+        displayName="Budget"
+        value="ab"
+        editing={true}
+        error="collabora.rename.errors.tooShort"
+      />
     );
     expect(screen.getByText('collabora.rename.errors.tooShort')).toBeInTheDocument();
   });

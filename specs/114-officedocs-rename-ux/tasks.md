@@ -19,7 +19,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 
 ## Phase 1: Setup
 
-- [ ] T001 Create branch `114-officedocs-rename-ux` off `develop` and run `pnpm install`.
+- [X] T001 Create branch `114-officedocs-rename-ux` off `develop` and run `pnpm install`.
 
 ---
 
@@ -99,7 +99,7 @@ document-editor-without-callout-rights path) is the MVP 🎯.
 
 - [X] T019 [P] Add the new i18n keys to the remaining locales (`space.de.json`, `space.fr.json`, `space.nl.json`, `space.es.json`, `space.bg.json`).
 - [ ] T020 [P] Run the `quickstart.md` acceptance walkthrough with the three-account gate matrix (can edit file / can edit callout / neither) across US1–US4, and confirm the expected **card-title divergence** (C2 — the space-feed card title does not change on document rename).
-- [ ] T021 Run `pnpm lint` + type-check and fix any issues introduced.
+- [X] T021 Run `pnpm lint` + type-check and fix any issues introduced.
 - [ ] T022 [P] Optionally run Playwright e2e for US1–US4 + the gate matrix.
 
 ---
