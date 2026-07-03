@@ -582,6 +582,8 @@ export default function CrdSpaceSettingsPage() {
               <SpaceSettingsSettingsView
                 level={level}
                 privacy={settingsTab.privacy}
+                userInfoVisibility={settingsTab.userInfoVisibility}
+                onUserInfoVisibilityChange={settingsTab.onUserInfoVisibilityChange}
                 membershipPolicy={settingsTab.membershipPolicy}
                 allowedActions={settingsTab.allowedActions}
                 hostOrganizationTrusted={settingsTab.hostOrganizationTrusted}

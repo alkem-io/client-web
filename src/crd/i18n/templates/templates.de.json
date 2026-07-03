@@ -52,7 +52,8 @@
     "document": "Dokument",
     "cta": "Link",
     "image": "Galerie",
-    "poll": "Umfrage"
+    "poll": "Umfrage",
+    "contributors": "Mitwirkende"
   },
   "contributionType": {
     "post": "Beiträge",

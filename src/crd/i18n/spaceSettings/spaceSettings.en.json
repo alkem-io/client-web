@@ -778,6 +778,14 @@
         "description": "This will permanently delete this subspace and all its content. This action cannot be undone.",
         "confirm": "Delete Subspace"
       }
+    },
+    "userInfoVisibility": {
+      "title": "User information visibility",
+      "description": "Control who can see member user information in this space. Organizations and virtual contributors follow the space visibility.",
+      "followSpace": "Follow space visibility",
+      "followSpaceDescription": "Member user information is visible according to the space visibility.",
+      "membersOnly": "Members only",
+      "membersOnlyDescription": "Only members of this space can see member user information."
     }
   },
   "storage": {

@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`) — the **sole** design system. **CRD is the only runtime path** — every route renders its CRD page. **MUI and Emotion have been fully removed** (epic #1888, story #9885): the `@mui/*` and `@emotion/*` packages are uninstalled, no source file imports them, the legacy `src/core/ui/` MUI design system has been removed (its surviving files were de-MUI'd in place — `src/core/ui/` is now a set of MUI-free shared modules, not deleted outright), and the `designVersion` toggle is gone. Global styles live in `src/index.css`. Apollo Client is the GraphQL data layer.
+Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`) — the **sole** design system. **CRD is the only runtime path** — every route renders its CRD page. **MUI and Emotion have been fully removed** (epic #1888, story #9885): the `@mui/*` and `@emotion/*` packages are uninstalled, no source file imports them, the legacy `src/core/ui/` MUI design system is deleted, and the `designVersion` toggle is gone. Global styles live in `src/index.css`. Apollo Client is the GraphQL data layer.
 
 > **Hard rule — never reintroduce MUI/Emotion.** Do not add `@mui/*` or `@emotion/*` (or `material-ui`) imports or dependencies anywhere. They are removed; CRD (`src/crd/`) is the only design system. New client-facing features are built in `src/crd/` with their integration glue in `src/main/crdPages/`.
 
@@ -370,7 +370,7 @@ The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`)
 ## Recent Changes
 - 113-innovation-hub-ui: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `lucide-react`, `react-i18next`, Apollo Client (generated hooks only — already wired, unchanged this story)
 - 112-l0-additional-tabs: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only), shadcn/ui + Tailwind v4 + Radix UI (CRD layer `@/crd/*`), `react-i18next`, `lucide-react`. **No new runtime dependencies.**
-- 111-remove-mui-library / story #9885: **MUI and Emotion fully removed (epic #1888 complete).** The `@mui/*` and `@emotion/*` packages are uninstalled, zero source files import them, the legacy `src/core/ui/` MUI design system was removed (reduced to MUI-free shared modules — ~61 files de-MUI'd in place remain) and the `designVersion` toggle was deleted, and CRD (shadcn/ui + Tailwind) is the sole design system. Global styles consolidated into `src/index.css`. See `specs/111-remove-mui-library/mui-footprint-baseline.md` and `mui-removal-inventory.md`.
+- 111-remove-mui-library / story #9885: **MUI and Emotion fully removed (epic #1888 complete).** The `@mui/*` and `@emotion/*` packages are uninstalled, zero source files import them, the legacy `src/core/ui/` MUI design system and the `designVersion` toggle are deleted, and CRD (shadcn/ui + Tailwind) is the sole design system. Global styles consolidated into `src/index.css`. See `specs/111-remove-mui-library/mui-footprint-baseline.md` and `mui-removal-inventory.md`.
 
 
 ## Active Technologies

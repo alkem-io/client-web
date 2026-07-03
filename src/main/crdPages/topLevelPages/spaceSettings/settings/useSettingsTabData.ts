@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import { useSpaceSettingsQuery, useUpdateSpaceSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
-import type { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import type {
+  CommunityMembershipPolicy,
+  SpacePrivacyMode,
+  UserInformationVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import type {
   AllowedActionKey,
   AllowedActionToggle,
   MembershipPolicy,
   SpacePrivacy,
+  UserInfoVisibility,
 } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import { defaultSpaceSettings } from '@/domain/spaceAdmin/SpaceAdminSettings/SpaceDefaultSettings';
 import {
@@ -14,10 +19,13 @@ import {
   mapMembershipPolicyToBackend,
   mapPrivacy,
   mapPrivacyToBackend,
+  mapUserInfoVisibility,
+  mapUserInfoVisibilityToBackend,
 } from './settingsMapper';
 
 export type UseSettingsTabDataResult = {
   privacy: SpacePrivacy;
+  userInfoVisibility: UserInfoVisibility;
   membershipPolicy: MembershipPolicy;
   allowedActions: AllowedActionToggle[];
   hostOrganizationTrusted: boolean;
@@ -26,6 +34,7 @@ export type UseSettingsTabDataResult = {
   loading: boolean;
   updatingKeys: ReadonlySet<string>;
   onPrivacyChange: (next: SpacePrivacy) => void;
+  onUserInfoVisibilityChange: (next: UserInfoVisibility) => void;
   onMembershipPolicyChange: (next: MembershipPolicy) => void;
   onToggleAllowedAction: (key: AllowedActionKey, next: boolean) => void;
   onHostOrgTrustChange: (next: boolean) => void;
@@ -49,11 +58,13 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
   const [updatingKeys, setUpdatingKeys] = useState<Set<string>>(new Set());
 
   const privacy = mapPrivacy(settings?.privacy);
+  const userInfoVisibility = mapUserInfoVisibility(settings?.privacy?.userInformationVisibility);
   const membershipPolicy = mapMembershipPolicy(settings?.membership);
   const allowedActions = mapAllowedActions(settings?.collaboration, settings?.membership, settings?.privacy);
 
   const buildFullSettings = (overrides: {
     privacyMode?: SpacePrivacyMode;
+    userInformationVisibility?: UserInformationVisibility;
     membershipPolicy?: CommunityMembershipPolicy;
     allowSubspaceAdminsToInviteMembers?: boolean;
     allowPlatformSupportAsAdmin?: boolean;
@@ -78,6 +89,15 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
           overrides.allowPlatformSupportAsAdmin ??
           settings?.privacy?.allowPlatformSupportAsAdmin ??
           defaultSpaceSettings.privacy.allowPlatformSupportAsAdmin,
+        // Preserve the existing user-info-visibility unless this change targets it
+        // (feature 008). Omitting it would otherwise reset to the server default on
+        // every other settings change.
+        ...((overrides.userInformationVisibility ?? settings?.privacy?.userInformationVisibility)
+          ? {
+              userInformationVisibility:
+                overrides.userInformationVisibility ?? settings?.privacy?.userInformationVisibility,
+            }
+          : {}),
       },
       membership: {
         policy: overrides.membershipPolicy ?? settings?.membership?.policy ?? defaultSpaceSettings.membership.policy,
@@ -133,6 +153,20 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
         settingsData: {
           spaceID: spaceId,
           settings: buildFullSettings({ privacyMode: mapPrivacyToBackend(next) }),
+        },
+      },
+    }).finally(() => removeKey(key));
+  };
+
+  const onUserInfoVisibilityChange = (next: UserInfoVisibility) => {
+    if (next === userInfoVisibility || hasPrefix('userInfo:')) return;
+    const key = `userInfo:${next}`;
+    addKey(key);
+    updateSpaceSettings({
+      variables: {
+        settingsData: {
+          spaceID: spaceId,
+          settings: buildFullSettings({ userInformationVisibility: mapUserInfoVisibilityToBackend(next) }),
         },
       },
     }).finally(() => removeKey(key));
@@ -206,6 +240,7 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
 
   return {
     privacy,
+    userInfoVisibility,
     membershipPolicy,
     allowedActions,
     hostOrganizationTrusted,
@@ -214,6 +249,7 @@ export function useSettingsTabData(spaceId: string): UseSettingsTabDataResult {
     loading,
     updatingKeys,
     onPrivacyChange,
+    onUserInfoVisibilityChange,
     onMembershipPolicyChange,
     onToggleAllowedAction,
     onHostOrgTrustChange,

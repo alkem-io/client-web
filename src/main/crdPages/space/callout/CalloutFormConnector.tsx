@@ -32,7 +32,7 @@ import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDia
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
-import { type DisabledChipMap, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
+import { type DisabledChipMap, type FramingChipId, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
@@ -73,10 +73,26 @@ import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
+import { healContributorCollection } from './contributorCollectionMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+
+/**
+ * The full create-mode framing chip set, in display order. `contributors`
+ * (feature 008) is included here but admin-gated by the connector before being
+ * passed to `FramingChipStrip` (FR-004a); a non-admin gets every chip except it.
+ */
+const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
+  'whiteboard',
+  'memo',
+  'document',
+  'cta',
+  'image',
+  'poll',
+  'contributors',
+];
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -167,10 +183,27 @@ function CalloutFormConnectorInner({
       : undefined;
   const form = useCrdCalloutForm(restrictionOverrides);
 
-  // Chip allow-lists apply on create only — in edit mode the strips no longer
-  // switch type (framing can only be cleared to none; response is locked) and
-  // must stay unfiltered so an existing callout's type is never hidden.
-  const framingAllowList = mode === 'create' ? restrictions?.allowedFramingChips : undefined;
+  // Space context — `permissions.canUpdate` is the space-admin signal that gates
+  // the contributors framing chip; `entitlements` gates the office-documents chip
+  // (read further below). `spaceContextLoading` is the entitlements query flag.
+  const { entitlements, permissions, loading: spaceContextLoading } = useSpace();
+
+  // The "Contributors" framing chip (feature 008) is admin-only (FR-004a) and
+  // offered only in space/community (collaboration) callout contexts — never a VC
+  // knowledge base (FR-004f). The VC-KB flow passes
+  // `restrictions.allowedFramingChips = []` (None-only), so it never lists
+  // contributors; any other explicit `allowedFramingChips` likewise opts in
+  // deliberately. For the default collaboration flow we build the allow-list
+  // explicitly so the chip is gated to space admins instead of shown to everyone.
+  const canCreateContributorsCallout = permissions.canUpdate;
+  const framingAllowList: FramingChipId[] | undefined = (() => {
+    if (mode !== 'create') return undefined; // edit mode: never hide an existing type
+    if (restrictions?.allowedFramingChips) return restrictions.allowedFramingChips;
+    // Default collaboration flow: all chips, with `contributors` gated to admins.
+    return canCreateContributorsCallout
+      ? DEFAULT_FRAMING_CHIPS
+      : DEFAULT_FRAMING_CHIPS.filter(chip => chip !== 'contributors');
+  })();
   const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
   const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;
   // Comment-visibility and rich-media restrictions are create-only too — in edit
@@ -195,7 +228,6 @@ function CalloutFormConnectorInner({
   // flag. While loading, leave the chip enabled so the user doesn't see a
   // disabled flash on first paint; once the query resolves, the entitlement
   // is the final authority.
-  const { entitlements, loading: spaceContextLoading } = useSpace();
   const officeDocumentsEnabled =
     spaceContextLoading || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
   const disabledChips: DisabledChipMap | undefined = officeDocumentsEnabled
@@ -743,6 +775,9 @@ function CalloutFormConnectorInner({
                       }
                     : undefined
                 }
+                contributorCollection={values.contributorCollection}
+                onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
+                contributorCollectionError={errors.contributorCollection}
               />
             </div>
           )

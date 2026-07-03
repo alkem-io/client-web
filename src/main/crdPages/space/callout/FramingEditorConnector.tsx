@@ -10,6 +10,10 @@ import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
 } from '@/crd/forms/callout/CollaboraDocumentTypePicker';
+import {
+  ContributorCollectionConfigField,
+  type ContributorCollectionConfigValue,
+} from '@/crd/forms/callout/ContributorCollectionConfigField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
@@ -144,6 +148,11 @@ type FramingEditorConnectorProps = {
     labelRemoveFile: string;
     labelOr: string;
   };
+  // Contributor-collection config (feature 008) — present for the 'contributors'
+  // framing only; editable in both create and edit (FR-004d).
+  contributorCollection?: ContributorCollectionConfigValue;
+  onContributorCollectionChange?: (value: ContributorCollectionConfigValue) => void;
+  contributorCollectionError?: string;
 };
 
 export function FramingEditorConnector({
@@ -188,6 +197,9 @@ export function FramingEditorConnector({
   collaboraDocumentType,
   onCollaboraDocumentTypeChange,
   collaboraUpload,
+  contributorCollection,
+  onContributorCollectionChange,
+  contributorCollectionError,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -437,6 +449,24 @@ export function FramingEditorConnector({
             />
           )}
         </>
+      );
+
+    case 'contributors':
+      // Contributor-collection config (feature 008). Editable in both create and
+      // edit (FR-004d). The callout renders no framing body — only its config.
+      // Fail fast on an incomplete call site rather than silently rendering
+      // nothing — these props are required whenever framingType === 'contributors'.
+      if (!contributorCollection || !onContributorCollectionChange) {
+        throw new Error(
+          "FramingEditorConnector: the 'contributors' framing requires `contributorCollection` and `onContributorCollectionChange` props."
+        );
+      }
+      return (
+        <ContributorCollectionConfigField
+          value={contributorCollection}
+          onChange={onContributorCollectionChange}
+          error={contributorCollectionError}
+        />
       );
 
     default:
