@@ -121,6 +121,10 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
   });
 
+  // The menu gate keys on framing *type* (isCollaboraDocument); also require the
+  // document object so the item and the mountable dialog use the same predicate.
+  const canRenameDocument = perms.canRenameDocument && !!callout.framing.collaboraDocument;
+
   const handleVisibilityConfirm = async (sendNotification: boolean) => {
     if (!visibilityAction) return;
     const nextVisibility = visibilityAction === 'publish' ? CalloutVisibility.Published : CalloutVisibility.Draft;
@@ -196,9 +200,9 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         canSaveAsTemplate={perms.showSaveAsTemplate}
         saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
         saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
-        canRenameDocument={perms.canRenameDocument}
+        canRenameDocument={canRenameDocument}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
-        onRenameDocument={perms.canRenameDocument ? () => setRenameOpen(true) : undefined}
+        onRenameDocument={canRenameDocument ? () => setRenameOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}

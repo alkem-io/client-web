@@ -5001,6 +5001,8 @@ export type Mutation = {
   removeUserFromGroup: UserGroup;
   /** Reorder Poll options. Requires UPDATE privilege. The provided list must contain exactly the same option IDs as the current poll options. */
   reorderPollOptions: Poll;
+  /** Replace the backing file of an existing CollaboraDocument in place, preserving its identity. Requires UPDATE on the document. The replacement must be an allowed OfficeDocs format, within the size cap, and the SAME document type as the current file. Refused while the document is being edited. */
+  replaceCollaboraDocument: CollaboraDocument;
   /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
@@ -5659,6 +5661,11 @@ export type MutationRemoveUserFromGroupArgs = {
 
 export type MutationReorderPollOptionsArgs = {
   optionData: ReorderPollOptionsInput;
+};
+
+export type MutationReplaceCollaboraDocumentArgs = {
+  file: Scalars['Upload']['input'];
+  replaceData: ReplaceCollaboraDocumentInput;
 };
 
 export type MutationResetConversationVcArgs = {
@@ -7416,6 +7423,13 @@ export type RemoveUserGroupMemberInput = {
 export type ReorderPollOptionsInput = {
   optionIDs: Array<Scalars['UUID']['input']>;
   pollID: Scalars['UUID']['input'];
+};
+
+export type ReplaceCollaboraDocumentInput = {
+  /** The ID of the CollaboraDocument whose backing file is being replaced. */
+  ID: Scalars['UUID']['input'];
+  /** Optional title chosen in the replace dialog (defaults to the incoming file title). ACCEPTED FOR FORWARD-COMPATIBILITY BUT NOT APPLIED in this feature: the stored display name is left unchanged. Persisting a rename is owned by feature 016-officedocs-rename-ux (FR-009 / FR-015). Present so reviewers do not read the unused field as a bug. */
+  displayName?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type RevokeAuthorizationCredentialInput = {
@@ -15400,6 +15414,16 @@ export type UpdateContributionsSortOrderMutationVariables = Exact<{
 export type UpdateContributionsSortOrderMutation = {
   __typename?: 'Mutation';
   updateContributionsSortOrder: Array<{ __typename?: 'CalloutContribution'; id: string; sortOrder: number }>;
+};
+
+export type CollaboraDocumentGateFragment = {
+  __typename?: 'CollaboraDocument';
+  id: string;
+  documentType: CollaboraDocumentType;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
 };
 
 export type CollaboraEditorUrlQueryVariables = Exact<{

@@ -1,0 +1,17 @@
+# Shared selection for a callout's framing Collabora document wherever the rename
+# gate is evaluated (spec 114 / FR-002). Keeping `authorization { myPrivileges }`
+# in one place stops the gate selection drifting between the queries that feed it
+# (CalloutDetails / CalloutContent).
+fragment CollaboraDocumentGate on CollaboraDocument {
+  id
+  documentType
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    id
+    displayName
+    url
+  }
+}

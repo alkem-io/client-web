@@ -55,17 +55,7 @@ query CalloutContent($calloutId: UUID!) {
           ...PollDetails
         }
         collaboraDocument {
-          id
-          documentType
-          authorization {
-            id
-            myPrivileges
-          }
-          profile {
-            id
-            displayName
-            url
-          }
+          ...CollaboraDocumentGate
         }
       }
       contributionDefaults {

@@ -106,17 +106,7 @@ fragment CalloutDetails on Callout {
       ...PollDetails
     }
     collaboraDocument {
-      id
-      documentType
-      authorization {
-        id
-        myPrivileges
-      }
-      profile {
-        id
-        displayName
-        url
-      }
+      ...CollaboraDocumentGate
     }
   }
   contributionDefaults {
