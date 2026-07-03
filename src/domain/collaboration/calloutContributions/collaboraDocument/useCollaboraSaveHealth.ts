@@ -52,6 +52,9 @@ export function useCollaboraSaveHealth(
           query: CollaboraEditorUrlDocument,
           variables: { collaboraDocumentId },
           fetchPolicy: 'network-only',
+          // Silent background health check — we handle failure ourselves (the banner); it must
+          // not surface the app's global error toast (would spam "Request failed with 503").
+          context: { skipGlobalErrorHandler: true },
         });
         setServiceUnavailable(Boolean(error));
       } catch {

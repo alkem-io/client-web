@@ -64,6 +64,8 @@ const CollaboraDocumentEditor = ({
           query: CollaboraEditorUrlDocument,
           variables: { collaboraDocumentId },
           fetchPolicy: 'network-only',
+          // We render our own loading / error / terminal UI for this fetch; skip the global toast.
+          context: { skipGlobalErrorHandler: true },
         });
 
         if (!mountedRef.current) return;

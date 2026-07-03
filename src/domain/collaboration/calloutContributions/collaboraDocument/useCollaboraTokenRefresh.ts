@@ -85,6 +85,8 @@ export function useCollaboraTokenRefresh(
           query: CollaboraEditorUrlDocument,
           variables: { collaboraDocumentId },
           fetchPolicy: 'network-only',
+          // Background refresh — failures are handled via onError; don't show the global toast.
+          context: { skipGlobalErrorHandler: true },
         });
         if (error) {
           onErrorRef.current?.(graphQLErrorCode(error), error.message);
