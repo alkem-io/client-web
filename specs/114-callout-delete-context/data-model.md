@@ -77,7 +77,9 @@ export type CalloutDeletionSummaryModel = {
   contributions: DeletionListItem[];
   /** Rich framing body, if the callout's own body is one of these. */
   richContent?: CalloutRichContentKind;
-  /** Named links: framing body link + framing references (source order). */
+  /** The call-to-action button (link-framing callouts) — rendered as its own table row. */
+  callToAction?: DeletionListItem;
+  /** Named links: framing references (source order). */
   links: DeletionListItem[];
   /** Number of comments/messages attached to the callout. */
   commentCount: number;
@@ -113,11 +115,9 @@ Drives (a) whether the content body renders at all (FR-008) and (b) the confirm-
    - else `framing.collaboraDocument` → `'document'`
    - else `undefined`
    - (A `framing.link` body is surfaced via **links**, not `richContent`.)
-4. **links**: concat of
-   - `framing.link` → `{ id: framing.link.id ?? 'framing-link', label: framing.link.profile.displayName || framing.link.uri }` (only if present)
-   - each `framing.profile.references[]` → `{ id, label: name || uri }`
-   - Filter out empty labels; keep source order.
-5. **commentCount** = `callout.comments?.messagesCount ?? 0`.
+4. **callToAction**: when `framing.type === CalloutFramingType.Link` and `framing.link` is present → `{ id: framing.link.id ?? 'framing-link', label: framing.link.profile.displayName || framing.link.uri }` (the schema-enum discriminator, not `__typename`).
+5. **links**: a `framing.link` on any *other* framing type → same shape into `links` (first), then each `framing.profile.references[]` → `{ id, label: name || uri }`. Filter out empty labels; keep source order.
+6. **commentCount** = `callout.comments?.messagesCount ?? 0`.
 
 No mutation, no I/O, no `Date`/random — safe to unit-test in isolation and (incidentally) resume-safe.
 
@@ -140,6 +140,7 @@ Input: `summary: CalloutDeletionSummaryModel` + a display cap (`LIST_CAP = 3`). 
 
 | Row | Rendered |
 |---|---|
+| `callToAction` set (first row) | `<th scope="row">` `deleteCallout.callToAction` label ("Call to Action") + the action's title on the right |
 | First 3 contributions (one row each; all 4 when exactly 4 exist) | `<th scope="row">` title in **bold** on the left + one-line markdown `description` preview with ellipsis (`InlineMarkdown clampLines={1}`, `text-caption` size) on the right. |
 | More than 4 contributions (or unnameable items) | `deleteCallout.moreContributions` plural row — "17 contributions more..." (remainder = `contributionCount − rows shown`, so unnameable items are counted too). |
 | `commentCount > 0` | `deleteCallout.comments` plural row — "27 comments will be deleted" |

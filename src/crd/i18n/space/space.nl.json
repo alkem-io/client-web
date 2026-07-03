@@ -468,6 +468,7 @@
     "headerRichPoll": "De peiling en de resultaten worden verwijderd",
     "headerRichPollContributions_one": "De peiling, de resultaten en {{count}} bijdrage worden verwijderd",
     "headerRichPollContributions_other": "De peiling, de resultaten en {{count}} bijdragen worden verwijderd",
+    "callToAction": "Oproep tot actie",
     "moreContributions_one": "nog {{count}} bijdrage...",
     "moreContributions_other": "nog {{count}} bijdragen...",
     "attachmentsNote": "inclusief bijgevoegde bestanden en links",

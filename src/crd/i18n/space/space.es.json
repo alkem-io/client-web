@@ -468,6 +468,7 @@
     "headerRichPoll": "Se eliminarán la encuesta y sus resultados",
     "headerRichPollContributions_one": "Se eliminarán la encuesta, sus resultados y {{count}} contribución",
     "headerRichPollContributions_other": "Se eliminarán la encuesta, sus resultados y {{count}} contribuciones",
+    "callToAction": "Llamada a la acción",
     "moreContributions_one": "{{count}} contribución más...",
     "moreContributions_other": "{{count}} contribuciones más...",
     "attachmentsNote": "incluidos los archivos y enlaces adjuntos",

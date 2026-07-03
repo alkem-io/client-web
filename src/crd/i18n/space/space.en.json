@@ -468,6 +468,7 @@
     "headerRichPoll": "The poll and its results will be deleted",
     "headerRichPollContributions_one": "The poll, its results and {{count}} contribution will be deleted",
     "headerRichPollContributions_other": "The poll, its results and {{count}} contributions will be deleted",
+    "callToAction": "Call to Action",
     "moreContributions_one": "{{count}} contribution more...",
     "moreContributions_other": "{{count}} contributions more...",
     "attachmentsNote": "including attached files and links",

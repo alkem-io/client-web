@@ -468,6 +468,7 @@
     "headerRichPoll": "Le sondage et ses résultats seront supprimés",
     "headerRichPollContributions_one": "Le sondage, ses résultats et {{count}} contribution seront supprimés",
     "headerRichPollContributions_other": "Le sondage, ses résultats et {{count}} contributions seront supprimés",
+    "callToAction": "Appel à l'action",
     "moreContributions_one": "{{count}} contribution de plus...",
     "moreContributions_other": "{{count}} contributions de plus...",
     "attachmentsNote": "y compris les fichiers et liens joints",

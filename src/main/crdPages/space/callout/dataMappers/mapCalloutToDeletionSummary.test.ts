@@ -101,6 +101,20 @@ describe('mapCalloutToDeletionSummary', () => {
     expect(mapCalloutToDeletionSummary(linkBody).richContent).toBeUndefined();
   });
 
+  it('routes a link-framing body to callToAction (not the links list)', () => {
+    const callout = baseCallout({
+      framing: framing({
+        type: 'LINK',
+        link: { id: 'cta-1', uri: 'https://action.io', profile: { displayName: 'Visit our site' } },
+      }),
+    });
+
+    const summary = mapCalloutToDeletionSummary(callout);
+    expect(summary.callToAction).toEqual({ id: 'cta-1', label: 'Visit our site' });
+    expect(summary.links).toEqual([]);
+    expect(summary.richContent).toBeUndefined();
+  });
+
   it('collects the framing link and references as labelled links, falling back to the URL', () => {
     const callout = baseCallout({
       framing: framing({

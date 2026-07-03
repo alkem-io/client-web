@@ -36,7 +36,9 @@ export type CalloutDeletionSummaryModel = {
   contributions: DeletionListItem[];
   /** Rich framing body kind, if the callout body is one of these. */
   richContent?: CalloutRichContentKind;
-  /** Named links: framing body link + framing references, source order. */
+  /** The call-to-action button (link-framing callouts) — rendered as its own table row. */
+  callToAction?: DeletionListItem;
+  /** Named links: framing references, source order. */
   links: DeletionListItem[];
   /** Number of comments/messages on the callout. */
   commentCount: number;
@@ -124,6 +126,8 @@ export type CalloutDeletionSummaryProps = {
  *                                                               // — definite-article terms interpolated into the headers ("The whiteboard", …);
  *                                                               // cased per language for its sentence position (en/nl/de/fr sentence-start,
  *                                                               // es/bg mid-sentence)
+ *   callToAction,                                               // table row label ("Call to Action") — the row's right cell carries the
+ *                                                               // action's title; reuses the platform term's existing translations
  *   moreContributions_one, moreContributions_other,             // overflow row: "{{count}} contribution(s) more..." — shown only when more
  *                                                               // than cap+1 contributions exist (exactly 4 → the 4th renders as a row);
  *                                                               // remainder = contributionCount − rows shown

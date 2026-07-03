@@ -161,6 +161,17 @@ describe('CalloutDeletionSummary', () => {
     );
   });
 
+  it('renders the call-to-action as a table row — label cell + action title cell (FR-005)', () => {
+    render(<CalloutDeletionSummary summary={summary({ callToAction: { id: 'cta1', label: 'Visit our site' } })} />);
+
+    const labelCell = screen.getByText('deleteCallout.callToAction');
+    expect(labelCell.tagName).toBe('TH');
+    expect(screen.getByText('Visit our site')).toBeInTheDocument();
+    expect(screen.getByRole('table')).toBeInTheDocument();
+    // The CTA is not duplicated into the links list.
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+  });
+
   it('renders a comments-only table when only comments exist (FR-014)', () => {
     render(<CalloutDeletionSummary summary={summary({ commentCount: 5 })} />);
 

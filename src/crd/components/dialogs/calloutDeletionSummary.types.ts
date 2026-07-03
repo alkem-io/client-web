@@ -30,7 +30,9 @@ export type CalloutDeletionSummaryModel = {
   contributions: DeletionListItem[];
   /** Rich framing body kind, if the callout's own body is one of these. */
   richContent?: CalloutRichContentKind;
-  /** Named links: framing body link + framing references, source order. */
+  /** The call-to-action button (link-framing callouts) — rendered as its own table row. */
+  callToAction?: DeletionListItem;
+  /** Named links: framing references, source order. */
   links: DeletionListItem[];
   /** Number of comments/messages on the callout. */
   commentCount: number;

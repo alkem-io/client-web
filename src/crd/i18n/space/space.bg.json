@@ -468,6 +468,7 @@
     "headerRichPoll": "Ще се изтрият анкетата и резултатите от нея",
     "headerRichPollContributions_one": "Ще се изтрият анкетата, резултатите и {{count}} принос",
     "headerRichPollContributions_other": "Ще се изтрият анкетата, резултатите и {{count}} приноса",
+    "callToAction": "Призив за действие",
     "moreContributions_one": "още {{count}} принос...",
     "moreContributions_other": "още {{count}} приноса...",
     "attachmentsNote": "включително прикачените файлове и връзки",

@@ -1,3 +1,4 @@
+import { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type {
   CalloutDeletionSummaryModel,
   CalloutRichContentKind,
@@ -53,11 +54,19 @@ export function mapCalloutToDeletionSummary(callout: CalloutDetailsModelExtended
       return resolved ? [{ id: contribution.id, ...resolved }] : [];
     });
 
+  // A link-framing callout's body link IS the call-to-action button — it gets
+  // its own table row ("Call to action | <title>") instead of the links list.
+  let callToAction: DeletionListItem | undefined;
   const links: DeletionListItem[] = [];
   if (framing?.link) {
     const label = framing.link.profile?.displayName || framing.link.uri;
     if (label) {
-      links.push({ id: framing.link.id ?? 'framing-link', label });
+      const item = { id: framing.link.id ?? 'framing-link', label };
+      if (framing.type === CalloutFramingType.Link) {
+        callToAction = item;
+      } else {
+        links.push(item);
+      }
     }
   }
   for (const reference of framing?.profile?.references ?? []) {
@@ -71,6 +80,7 @@ export function mapCalloutToDeletionSummary(callout: CalloutDetailsModelExtended
     contributionCount: callout.contributions?.length ?? 0,
     contributions,
     richContent: resolveRichContent(framing),
+    callToAction,
     links,
     commentCount: callout.comments?.messagesCount ?? 0,
   };

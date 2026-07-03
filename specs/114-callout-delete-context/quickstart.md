@@ -50,6 +50,7 @@ Run `pnpm start` (backend at `localhost:3000`) and, as a user who can delete a c
 | Callout with mixed contributions (post + whiteboard + link) | Every listed contribution shows its title regardless of type, ordered by their sort order. |
 | Callout whose body is a whiteboard | Table header reads "The whiteboard will be deleted" — or "The whiteboard and N contributions will be deleted" when contributions exist. |
 | Callout with references/links | Links listed (≤3), "and N more links" beyond the cap. |
+| Call-to-action callout | Table row "Call to Action" + the action's title; the CTA does not appear in the links list. |
 | Callout with comments | "N comments will be deleted" row, placed before the clip-icon attachments row. |
 | Empty callout | No content list; neutral description mentions only the callout itself (no contributions/comments claim); confirm button reads "Delete". |
 | Cancel / X in the title bar | Nothing deleted; the X closes via the cancel path. |

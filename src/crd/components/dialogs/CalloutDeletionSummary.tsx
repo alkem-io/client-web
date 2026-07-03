@@ -17,6 +17,7 @@ export function hasDeletableContent(summary: CalloutDeletionSummaryModel): boole
   return (
     summary.contributionCount > 0 ||
     summary.richContent !== undefined ||
+    summary.callToAction !== undefined ||
     summary.links.length > 0 ||
     summary.commentCount > 0
   );
@@ -38,7 +39,7 @@ export function CalloutDeletionSummary({ summary, listCap = DEFAULT_LIST_CAP }: 
     return null;
   }
 
-  const { contributionCount, richContent, commentCount } = summary;
+  const { contributionCount, richContent, callToAction, commentCount } = summary;
   // With exactly one contribution beyond the cap, show it as a row — an
   // "1 contribution more..." line would waste the very row it summarizes.
   const contributionRowCap = contributionCount === listCap + 1 ? listCap + 1 : listCap;
@@ -66,7 +67,7 @@ export function CalloutDeletionSummary({ summary, listCap = DEFAULT_LIST_CAP }: 
     headerText = t('deleteCallout.headerContributions', { count: contributionCount });
   }
 
-  const showTable = headerText !== undefined || commentCount > 0;
+  const showTable = headerText !== undefined || callToAction !== undefined || commentCount > 0;
 
   return (
     <div className="flex flex-col gap-2">
@@ -82,6 +83,14 @@ export function CalloutDeletionSummary({ summary, listCap = DEFAULT_LIST_CAP }: 
             </thead>
           )}
           <tbody>
+            {callToAction !== undefined && (
+              <tr className="border-b border-border">
+                <th scope="row" className="w-2/5 truncate px-2 py-1.5 text-left text-card-title">
+                  {t('deleteCallout.callToAction')}
+                </th>
+                <td className="truncate py-1.5 pr-2">{callToAction.label}</td>
+              </tr>
+            )}
             {visibleContributions.map(contribution => (
               <tr key={contribution.id} className="border-b border-border">
                 <th scope="row" className="w-2/5 truncate px-2 py-1.5 text-left text-card-title">

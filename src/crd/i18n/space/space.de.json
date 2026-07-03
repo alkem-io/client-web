@@ -468,6 +468,7 @@
     "headerRichPoll": "Die Umfrage und ihre Ergebnisse werden gelöscht",
     "headerRichPollContributions_one": "Die Umfrage, ihre Ergebnisse und {{count}} Beitrag werden gelöscht",
     "headerRichPollContributions_other": "Die Umfrage, ihre Ergebnisse und {{count}} Beiträge werden gelöscht",
+    "callToAction": "Handlungsaufforderung",
     "moreContributions_one": "{{count}} weiterer Beitrag...",
     "moreContributions_other": "{{count}} weitere Beiträge...",
     "attachmentsNote": "einschließlich angehängter Dateien und Links",
