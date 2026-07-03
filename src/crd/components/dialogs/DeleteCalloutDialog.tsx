@@ -45,6 +45,7 @@ export function DeleteCalloutDialog({
       onConfirm={onConfirm}
       variant="destructive"
       loading={loading}
+      showCloseButton={true}
     >
       {withContent ? <CalloutDeletionSummary summary={content} /> : undefined}
     </ConfirmationDialog>

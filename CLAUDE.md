@@ -375,4 +375,4 @@ The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`)
 
 ## Active Technologies
 - TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `react-i18next`, `lucide-react`, Apollo Client (generated hooks only — unchanged), `date-fns` (only if a date is rendered) (114-callout-delete-context)
-- Apollo normalized cache — **no new persistence, no new query, no fragment change** (Option A uses fields already selected by the `CalloutDetails` fragment) (114-callout-delete-context)
+- Apollo normalized cache — **no new persistence, no new query**; one additive `CalloutDetails` fragment extension (contribution title + description stubs) + codegen (Option A: data rides the standard load) (114-callout-delete-context)

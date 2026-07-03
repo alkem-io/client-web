@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react';
+import { Loader2, XIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -37,6 +37,8 @@ type ConfirmationDialogConfirmProps = {
   loading?: boolean;
   /** Optional structured body rendered beneath the description (e.g. a content list). */
   children?: ReactNode;
+  /** Show an X close control in the title bar — closes via the cancel path (no action performed). */
+  showCloseButton?: boolean;
 };
 
 type ConfirmationDialogDiscardProps = {
@@ -125,6 +127,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
     variant = 'default',
     loading = false,
     children,
+    showCloseButton = false,
   } = props;
 
   const handleCancel = () => {
@@ -136,6 +139,17 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       {/* The z-[90] is necessary to ensure the dialog appears above some other dialogs like memos or whiteboards that have z-[60]. */}
       <AlertDialogContent className="z-[90]">
+        {showCloseButton && (
+          <button
+            type="button"
+            onClick={handleCancel}
+            disabled={loading}
+            aria-label={t('dialogs.close')}
+            className="ring-offset-background focus-visible:ring-ring absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0"
+          >
+            <XIcon aria-hidden="true" />
+          </button>
+        )}
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>

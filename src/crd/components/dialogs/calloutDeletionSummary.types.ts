@@ -1,18 +1,21 @@
 /**
  * Plain-TS view model for the context-aware callout delete confirmation
  * (feature 114). Produced by the integration-layer mapper
- * (`mapCalloutToDeletionSummary`) from cache-only data and consumed by the
- * CRD dialog components — no GraphQL types cross this boundary.
+ * (`mapCalloutToDeletionSummary`) from data that arrives with the callout's
+ * standard load and consumed by the CRD dialog components — no GraphQL types
+ * cross this boundary.
  */
 
-/** Rich framing-body kinds nameable from cached data. */
+/** Rich framing-body kinds nameable from the loaded data. */
 export type CalloutRichContentKind = 'whiteboard' | 'memo' | 'poll' | 'mediaGallery' | 'document';
 
-/** A nameable link/reference to be listed in the dialog. */
-export type DeletionLinkItem = {
+/** A nameable item to be listed in the dialog — a contribution (by title) or a link/reference. */
+export type DeletionListItem = {
   id: string;
-  /** Reference name / link display name, falling back to the URL. Never empty. */
+  /** Entity title / reference name, falling back to the URL for links. Never empty. */
   label: string;
+  /** Markdown description of the entity — rendered as a one-line clamped preview. */
+  description?: string;
 };
 
 /**
@@ -21,12 +24,14 @@ export type DeletionLinkItem = {
  * component, which `DeleteCalloutDialog` imports alongside this type.
  */
 export type CalloutDeletionSummaryModel = {
-  /** Total contributions inside the callout (posts, whiteboards, links, …). */
+  /** Exact total of contributions inside the callout (authoritative — may exceed `contributions.length`). */
   contributionCount: number;
+  /** Titled contributions (posts, whiteboards, memos, links, documents), sorted by sortOrder. */
+  contributions: DeletionListItem[];
   /** Rich framing body kind, if the callout's own body is one of these. */
   richContent?: CalloutRichContentKind;
   /** Named links: framing body link + framing references, source order. */
-  links: DeletionLinkItem[];
+  links: DeletionListItem[];
   /** Number of comments/messages on the callout. */
   commentCount: number;
 };

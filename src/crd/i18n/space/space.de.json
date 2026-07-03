@@ -460,23 +460,34 @@
     "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "confirm": "Löschen",
     "confirmAll": "$t(common.Callout) und alle Inhalte löschen",
-    "contentsIntro": "Folgendes wird endgültig gelöscht:",
-    "contributions_one": "{{count}} Beitrag",
-    "contributions_other": "{{count}} Beiträge",
+    "headerContributions_one": "{{count}} Beitrag wird gelöscht",
+    "headerContributions_other": "{{count}} Beiträge werden gelöscht",
+    "headerRich": "{{content}} wird gelöscht",
+    "headerRichContributions_one": "{{content}} und {{count}} Beitrag werden gelöscht",
+    "headerRichContributions_other": "{{content}} und {{count}} Beiträge werden gelöscht",
+    "headerRichPoll": "Die Umfrage und ihre Ergebnisse werden gelöscht",
+    "headerRichPollContributions_one": "Die Umfrage, ihre Ergebnisse und {{count}} Beitrag werden gelöscht",
+    "headerRichPollContributions_other": "Die Umfrage, ihre Ergebnisse und {{count}} Beiträge werden gelöscht",
+    "moreContributions_one": "{{count}} weiterer Beitrag...",
+    "moreContributions_other": "{{count}} weitere Beiträge...",
     "attachmentsNote": "einschließlich angehängter Dateien und Links",
-    "including": "enthält {{content}}",
     "contentType": {
-      "whiteboard": "ein Whiteboard",
-      "memo": "eine Notiz",
-      "poll": "eine Umfrage",
-      "mediaGallery": "eine Mediengalerie",
-      "document": "ein Dokument"
+      "whiteboard": "Das Whiteboard",
+      "memo": "Die Notiz",
+      "mediaGallery": "Die Mediengalerie",
+      "document": "Das Dokument"
     },
     "moreLinks_one": "und {{count}} weiterer Link",
     "moreLinks_other": "und {{count}} weitere Links",
-    "comments_one": "und {{count}} Kommentar",
-    "comments_other": "und {{count}} Kommentare",
+    "comments_one": "{{count}} Kommentar wird gelöscht",
+    "comments_other": "{{count}} Kommentare werden gelöscht",
     "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+  },
+  "deleteContribution": {
+    "title": "Diesen Beitrag löschen?",
+    "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "confirm": "Löschen",
+    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen."
   },
   "saveAsTemplate": {
     "saveFailed": "Die Vorlage konnte nicht gespeichert werden. Bitte erneut versuchen."
@@ -722,6 +733,7 @@
     "label": "Vorschau des ausgewählten Beitrags",
     "edit": "Beitrag bearbeiten",
     "share": "Beitrag teilen",
+    "delete": "Beitrag löschen",
     "close": "Vorschau schließen",
     "emptyDescription": "Keine Beschreibung",
     "references": "Verweise"
@@ -736,6 +748,7 @@
     "label": "Vorschau des ausgewählten Whiteboards",
     "edit": "Whiteboard bearbeiten",
     "share": "Whiteboard teilen",
+    "delete": "Whiteboard löschen",
     "close": "Vorschau schließen",
     "openFull": "Klicken Sie, um das vollständige Whiteboard anzuzeigen"
   },
@@ -769,6 +782,7 @@
   },
   "dialogs": {
     "cancel": "Abbrechen",
+    "close": "Schließen",
     "create": "Erstellen",
     "discardChanges": {
       "title": "Änderungen verwerfen?",
