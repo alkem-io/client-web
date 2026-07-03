@@ -1,4 +1,10 @@
-import { useState } from 'react';
+import { useApolloClient } from '@apollo/client';
+import { useEffect, useRef, useState } from 'react';
+import { CollaboraServiceAvailableDocument } from '@/core/apollo/generated/apollo-hooks';
+import type {
+  CollaboraServiceAvailableQuery,
+  CollaboraServiceAvailableQueryVariables,
+} from '@/core/apollo/generated/graphql-schema';
 import type { CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
 
 /**
@@ -21,30 +27,68 @@ export const SAVE_HEALTH_PROBE_INTERVAL_MS = 3_000;
  * "unsaved too long ⇒ service down" heuristic alone would false-positive during normal editing.
  *
  * So we confirm with a **probe**: once the document has been unsaved past {@link SAVE_STALL_TRIGGER_MS},
- * we re-run the editor-URL query (which traverses server → wopi-service). A failure means a
- * service really is unreachable → `serviceUnavailable`; a success means the backend is fine and
- * the lingering "unsaved" is just the cosmetic flag → stay quiet. Re-checks every
- * {@link SAVE_HEALTH_PROBE_INTERVAL_MS} and auto-clears once saves resume or the probe recovers.
+ * we run the **`collaboraServiceAvailable`** query. Unlike the editor-URL query, this is
+ * side-effect-free — the server just pings wopi-service `/health`, minting NO token and recording
+ * NO analytics (the earlier editor-URL probe spammed `COLLABORA_DOCUMENT_OPENED` events + tokens).
+ * `false` (or a failed query) means a service is unreachable → `serviceUnavailable`; `true` means
+ * the backend is fine and the lingering "unsaved" is just the cosmetic flag → stay quiet.
+ * Re-checks every {@link SAVE_HEALTH_PROBE_INTERVAL_MS}; auto-clears once saves resume or health
+ * recovers.
  *
  * `serviceUnavailable` feeds the single shared connection indicator in the footer (as a `service`
- * disconnect), so a WOPI/save-path outage looks the same as a network/Collabora drop rather than
- * a bespoke banner.
+ * disconnect) plus the top alert, so a WOPI/save-path outage looks consistent with other drops.
  */
 export function useCollaboraSaveHealth(
-  // Params kept for signature stability (used again once probing is re-enabled); unused while off.
-  _collaboraDocumentId: string,
-  _saveStatus: CollaboraSaveStatus
+  collaboraDocumentId: string,
+  saveStatus: CollaboraSaveStatus
 ): { serviceUnavailable: boolean } {
-  const [serviceUnavailable] = useState(false);
+  const client = useApolloClient();
+  const [serviceUnavailable, setServiceUnavailable] = useState(false);
+  const probingRef = useRef(false);
 
-  // ⚠️ PROBE DISABLED (2026-07-03). The probe re-ran `collaboraEditorUrl`, but that resolver has
-  // SIDE EFFECTS — it mints a WOPI token AND records a `COLLABORA_DOCUMENT_OPENED` analytics
-  // contribution (server `collabora.document.resolver.queries.ts`). At a 3s interval this spammed
-  // tokens + fake "document opened" events (confirmed in server logs) and churned WOPI
-  // locks/sessions. A health check must be side-effect-free, and there is no such client query to
-  // swap in. Re-enable once we have a proper detection channel — either a lightweight backend
-  // health query (server + wopi-service) or a Collabora save-failure postMessage. Until then this
-  // returns a constant `false` (WOPI-outage detection is off; network/token/Collabora drops are
-  // unaffected). See workspace#015 spec (2026-07-03 debugging note).
+  // Any non-"saved" state (unsaved / saving / error) means work has not been persisted yet.
+  const unsaved = saveStatus !== 'saved';
+
+  useEffect(() => {
+    if (!unsaved) {
+      setServiceUnavailable(false);
+      return;
+    }
+
+    const probe = async () => {
+      if (probingRef.current) return;
+      probingRef.current = true;
+      try {
+        const { data, error } = await client.query<
+          CollaboraServiceAvailableQuery,
+          CollaboraServiceAvailableQueryVariables
+        >({
+          query: CollaboraServiceAvailableDocument,
+          variables: { collaboraDocumentId },
+          fetchPolicy: 'network-only',
+          // Silent background health check — failures drive our own UI, never the global toast.
+          context: { skipGlobalErrorHandler: true },
+        });
+        // A reachable-but-false result, or a failed query, both mean a service is down.
+        setServiceUnavailable(Boolean(error) || data?.collaboraServiceAvailable === false);
+      } catch {
+        setServiceUnavailable(true);
+      } finally {
+        probingRef.current = false;
+      }
+    };
+
+    let interval: ReturnType<typeof setInterval> | undefined;
+    const start = setTimeout(() => {
+      probe();
+      interval = setInterval(probe, SAVE_HEALTH_PROBE_INTERVAL_MS);
+    }, SAVE_STALL_TRIGGER_MS);
+
+    return () => {
+      clearTimeout(start);
+      if (interval) clearInterval(interval);
+    };
+  }, [unsaved, client, collaboraDocumentId]);
+
   return { serviceUnavailable };
 }
