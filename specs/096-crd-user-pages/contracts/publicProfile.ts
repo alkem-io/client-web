@@ -36,6 +36,8 @@ export type UserPageHeroProps = {
   /** Deterministic colour (from `pickColorFromId(userId)`) used for the avatar fallback. */
   color: string;
   displayName: string;
+  /** Short headline shown under the name — null when empty (FR-010). */
+  tagline: string | null;
   /** "City, Country" — null when both empty. */
   location: string | null;
   /**
@@ -287,6 +289,8 @@ export type UserProfileSidebarProps = {
   labels: {
     aboutTitle: string;
     organizationsTitle: string;
+    /** Heading for the non-social "Links" section (FR-010b) — rendered via the shared `ReferencesList`. */
+    referencesTitle: string;
     socialLinksTitle: string;
     bioEmpty: string;
     organizationsEmpty: string;
