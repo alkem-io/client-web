@@ -14,6 +14,7 @@ import { ContributionLinkList } from '@/crd/components/contribution/Contribution
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
@@ -369,10 +370,10 @@ export function CalloutDetailDialogConnector({
   ) : undefined;
   const framingCollaboraDocument = callout.framing.collaboraDocument;
   const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
-  // Rename is allowed to anyone who can edit the document OR the callout (independent privileges).
-  const canRenameFramingDocument =
-    (framingCollaboraDocument?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false) ||
-    (callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false);
+  const canRenameFramingDocument = canRenameCollaboraDocument({
+    documentPrivileges: framingCollaboraDocument?.authorization?.myPrivileges,
+    calloutPrivileges: callout.authorization?.myPrivileges,
+  });
 
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
   const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;

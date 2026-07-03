@@ -1,4 +1,5 @@
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 
 export type CalloutMenuPermissionsInput = {
   myPrivileges: AuthorizationPrivilege[] | undefined;
@@ -71,7 +72,6 @@ export type CalloutMenuPermissions = {
 export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput): CalloutMenuPermissions => {
   const editable = input.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
   const isDraft = input.visibility === CalloutVisibility.Draft;
-  const documentUpdate = input.documentMyPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   return {
     editable,
@@ -89,7 +89,11 @@ export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput):
       editable && input.saveAsTemplateFeatureEnabled && (input.canBeSavedAsTemplate || input.isCollaboraDocument),
     saveAsTemplateDisabled: editable && input.saveAsTemplateFeatureEnabled && input.isCollaboraDocument,
     movable: input.canMoveSet && input.hasMoveNeighbours,
-    // Rename is allowed to anyone who can edit the document OR the callout (independent privileges).
-    canRenameDocument: input.isCollaboraDocument && (documentUpdate || editable),
+    canRenameDocument:
+      input.isCollaboraDocument &&
+      canRenameCollaboraDocument({
+        documentPrivileges: input.documentMyPrivileges,
+        calloutPrivileges: input.myPrivileges,
+      }),
   };
 };

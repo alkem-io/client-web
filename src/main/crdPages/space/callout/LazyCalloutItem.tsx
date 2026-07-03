@@ -9,6 +9,7 @@ import {
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -227,11 +228,10 @@ function LazyCalloutItemContent({
   // `canCreateContribution`.
   const hasContributionType = callout.settings.contribution.allowedTypes.length > 0;
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
-  // Rename is allowed to anyone who can edit the document OR the callout (independent privileges).
-  const canRenameFramingDocument =
-    (callout.framing.collaboraDocument?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
-      false) ||
-    (callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false);
+  const canRenameFramingDocument = canRenameCollaboraDocument({
+    documentPrivileges: callout.framing.collaboraDocument?.authorization?.myPrivileges,
+    calloutPrivileges: callout.authorization?.myPrivileges,
+  });
 
   const contributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
