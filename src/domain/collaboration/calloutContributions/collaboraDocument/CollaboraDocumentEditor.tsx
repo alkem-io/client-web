@@ -2,8 +2,7 @@ import { useApolloClient } from '@apollo/client';
 import { Loader2 } from 'lucide-react';
 import { type Ref, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
-import type { CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import { fetchCollaboraEditorUrl, graphQLErrorCode } from './collaboraEditorSession';
 
 interface CollaboraDocumentEditorProps {
   collaboraDocumentId: string;
@@ -32,13 +31,6 @@ interface CollaboraDocumentEditorProps {
   onFetchError?: (code: string | undefined, message: string) => void;
 }
 
-/** Extracts the Alkemio error code (`extensions.code`) from an Apollo/GraphQL error, if any. */
-function graphQLErrorCode(error: unknown): string | undefined {
-  const graphQLErrors = (error as { graphQLErrors?: Array<{ extensions?: { code?: string } }> } | undefined)
-    ?.graphQLErrors;
-  return graphQLErrors?.[0]?.extensions?.code;
-}
-
 const CollaboraDocumentEditor = ({
   collaboraDocumentId,
   iframeRef,
@@ -60,13 +52,8 @@ const CollaboraDocumentEditor = ({
     const fetchUrl = async () => {
       try {
         setLoading(true);
-        const { data, error } = await client.query<CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables>({
-          query: CollaboraEditorUrlDocument,
-          variables: { collaboraDocumentId },
-          fetchPolicy: 'network-only',
-          // We render our own loading / error / terminal UI for this fetch; skip the global toast.
-          context: { skipGlobalErrorHandler: true },
-        });
+        // network-only + silent (own loading/error/terminal UI, no global toast) — see the helper.
+        const { data, error } = await fetchCollaboraEditorUrl(client, collaboraDocumentId);
 
         if (!mountedRef.current) return;
 

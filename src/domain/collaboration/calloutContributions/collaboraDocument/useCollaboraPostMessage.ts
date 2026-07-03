@@ -1,5 +1,6 @@
 import { type RefObject, useEffect, useState } from 'react';
 import type { CollaboraConnectedUser, CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
+import { type CollaboraMessage, isMessageFromIframe, parseCollaboraMessage } from './collaboraPostMessage';
 
 export type CollaboraConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected' | 'terminal';
 
@@ -29,11 +30,6 @@ export type CollaboraConnectionState = {
   reconnect: () => void;
   /** Monotonic counter bumped by `reconnect()`; the editor keys the iframe on it to remount. */
   reconnectNonce: number;
-};
-
-type CollaboraMessage = {
-  MessageId?: string;
-  Values?: Record<string, unknown>;
 };
 
 type CollaboraView = {
@@ -74,12 +70,9 @@ export function useCollaboraPostMessage(
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
-      // Only accept messages coming from this iframe's own contentWindow — the editor
-      // URL host varies per deployment, so origin matching alone would require runtime config.
-      const iframe = iframeRef.current;
-      if (!iframe || event.source !== iframe.contentWindow) return;
+      if (!isMessageFromIframe(event, iframeRef.current)) return;
 
-      const data = parseMessage(event.data);
+      const data = parseCollaboraMessage(event.data);
       if (!data?.MessageId) return;
 
       setState(prev => reduce(prev, data, { onError, onSessionClosed }));
@@ -90,21 +83,6 @@ export function useCollaboraPostMessage(
   }, [iframeRef, onError, onSessionClosed]);
 
   return state;
-}
-
-function parseMessage(raw: unknown): CollaboraMessage | null {
-  if (typeof raw === 'string') {
-    try {
-      const parsed = JSON.parse(raw);
-      return typeof parsed === 'object' && parsed !== null ? (parsed as CollaboraMessage) : null;
-    } catch {
-      return null;
-    }
-  }
-  if (typeof raw === 'object' && raw !== null) {
-    return raw as CollaboraMessage;
-  }
-  return null;
 }
 
 function reduce(

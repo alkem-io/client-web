@@ -1,7 +1,12 @@
 import { useApolloClient } from '@apollo/client';
 import { type RefObject, useEffect, useRef } from 'react';
-import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
-import type { CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables } from '@/core/apollo/generated/graphql-schema';
+import {
+  accessTokenFromEditorUrl,
+  editorOrigin,
+  fetchCollaboraEditorUrl,
+  graphQLErrorCode,
+} from './collaboraEditorSession';
+import { isMessageFromIframe, parseCollaboraMessage } from './collaboraPostMessage';
 
 type Options = {
   /** Called with the fresh absolute-epoch `accessTokenTTL` after a successful in-place refresh. */
@@ -9,46 +14,6 @@ type Options = {
   /** Called if re-issuing the token failed; the caller classifies terminal vs recoverable. */
   onError?: (code: string | undefined, message: string) => void;
 };
-
-/** Extract the `access_token` query param from a Collabora editor URL. */
-function accessTokenFromEditorUrl(editorUrl: string): string | undefined {
-  try {
-    return new URL(editorUrl).searchParams.get('access_token') ?? undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-/** The Collabora editor origin, used as the postMessage target origin (falls back to '*'). */
-function editorOrigin(editorUrl: string): string {
-  try {
-    return new URL(editorUrl).origin;
-  } catch {
-    return '*';
-  }
-}
-
-function parseMessageId(raw: unknown): string | undefined {
-  const value = typeof raw === 'string' ? safeParse(raw) : raw;
-  if (value && typeof value === 'object' && 'MessageId' in value) {
-    const id = (value as { MessageId?: unknown }).MessageId;
-    return typeof id === 'string' ? id : undefined;
-  }
-  return undefined;
-}
-function safeParse(raw: string): unknown {
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return undefined;
-  }
-}
-
-function graphQLErrorCode(error: unknown): string | undefined {
-  const graphQLErrors = (error as { graphQLErrors?: Array<{ extensions?: { code?: string } }> } | undefined)
-    ?.graphQLErrors;
-  return graphQLErrors?.[0]?.extensions?.code;
-}
 
 /**
  * Refreshes the WOPI access token **in place** — no iframe remount, no reconnection, no lost
@@ -76,25 +41,19 @@ export function useCollaboraTokenRefresh(
   useEffect(() => {
     const handler = async (event: MessageEvent) => {
       const iframe = iframeRef.current;
-      if (!iframe || event.source !== iframe.contentWindow) return;
-      if (parseMessageId(event.data) !== 'App_TokenExpiring') return;
+      if (!isMessageFromIframe(event, iframe)) return;
+      if (parseCollaboraMessage(event.data)?.MessageId !== 'App_TokenExpiring') return;
       if (refreshingRef.current) return; // App_TokenExpiring repeats every 2 min — refresh once
       refreshingRef.current = true;
       try {
-        const { data, error } = await client.query<CollaboraEditorUrlQuery, CollaboraEditorUrlQueryVariables>({
-          query: CollaboraEditorUrlDocument,
-          variables: { collaboraDocumentId },
-          fetchPolicy: 'network-only',
-          // Background refresh — failures are handled via onError; don't show the global toast.
-          context: { skipGlobalErrorHandler: true },
-        });
+        const { data, error } = await fetchCollaboraEditorUrl(client, collaboraDocumentId);
         if (error) {
           onErrorRef.current?.(graphQLErrorCode(error), error.message);
           return;
         }
         const result = data?.collaboraEditorUrl;
         const token = result ? accessTokenFromEditorUrl(result.editorUrl) : undefined;
-        const target = iframe.contentWindow;
+        const target = iframe?.contentWindow;
         if (result && token && target) {
           target.postMessage(
             JSON.stringify({
