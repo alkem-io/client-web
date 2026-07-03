@@ -11,6 +11,7 @@ const baseProps = {
   avatarImageUrl: null,
   color: '#42a5f5',
   displayName: 'Jane Doe',
+  tagline: null,
   location: null,
   showSettingsIcon: false,
 };
@@ -41,5 +42,21 @@ describe('UserPageHero — contact affordances (FR-011)', () => {
     expect(screen.getByText('cannot reach')).toBeTruthy();
     expect(screen.queryByText('userProfile.hero.messageButton')).toBeNull();
     expect(screen.queryByText('userProfile.hero.emailButton')).toBeNull();
+  });
+});
+
+describe('UserPageHero — tagline (FR-010)', () => {
+  afterEach(() => vi.clearAllMocks());
+
+  const TAGLINE = 'Sustainable urban planning & civic technology';
+
+  test('renders the tagline under the display name when provided', () => {
+    render(<UserPageHero {...baseProps} tagline={TAGLINE} />);
+    expect(screen.getByText(TAGLINE)).toBeTruthy();
+  });
+
+  test('omits the tagline paragraph when tagline is null', () => {
+    render(<UserPageHero {...baseProps} tagline={null} />);
+    expect(screen.queryByText(TAGLINE)).toBeNull();
   });
 });

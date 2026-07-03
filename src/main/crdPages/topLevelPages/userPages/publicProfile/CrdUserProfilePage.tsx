@@ -121,6 +121,7 @@ export const CrdUserProfilePage = () => {
         avatarImageUrl: profile?.avatar?.uri ?? null,
         color,
         displayName: profile?.displayName ?? '',
+        tagline: profile?.tagline?.trim() || null,
         location,
         showSettingsIcon,
         settingsHref,
@@ -142,6 +143,7 @@ export const CrdUserProfilePage = () => {
         labels: {
           aboutTitle: t('userProfile.sidebar.aboutTitle'),
           organizationsTitle: t('userProfile.sidebar.organizationsTitle'),
+          referencesTitle: t('userProfile.sidebar.referencesTitle'),
           socialLinksTitle: t('userProfile.sidebar.socialLinksTitle'),
           bioEmpty: t('userProfile.sidebar.bioEmpty'),
           organizationsEmpty: t('userProfile.sidebar.organizationsEmpty'),
