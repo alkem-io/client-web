@@ -691,6 +691,9 @@
         },
         "reconnecting": "Reconectando…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Un servicio no está disponible. Guarda cualquier trabajo pendiente, ya que los datos sin guardar podrían perderse."
     }
   },
   "mediaGallery": {

@@ -691,6 +691,9 @@
         },
         "reconnecting": "Verbindung wird wiederhergestellt…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Ein Dienst ist nicht verfügbar. Bitte speichern Sie ausstehende Arbeit, da nicht gespeicherte Daten verloren gehen können."
     }
   },
   "mediaGallery": {

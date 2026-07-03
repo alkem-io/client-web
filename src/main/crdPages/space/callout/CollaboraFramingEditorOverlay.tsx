@@ -1,11 +1,12 @@
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { FileText, Presentation, Sheet, X } from 'lucide-react';
+import { FileText, Presentation, ServerOff, Sheet, X } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import { CollaboraCollabFooter, type CollaboraTerminalReason } from '@/crd/components/collabora/CollaboraCollabFooter';
+import { CollaboraTopAlert } from '@/crd/components/collabora/CollaboraTopAlert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -171,7 +172,13 @@ export function CollaboraFramingEditorOverlay({
               <X className="w-5 h-5" aria-hidden="true" />
             </Button>
           </div>
-          <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+          <div className="relative flex-1 min-h-0 flex flex-col overflow-hidden">
+            {/* A backend save-path (WOPI) outage: Collabora shows its own top banner for a network
+                drop but nothing here, so we float a matching card to prompt the user to save. The
+                footer carries the recovery actions. */}
+            {open && serviceUnavailable && (
+              <CollaboraTopAlert icon={ServerOff} message={t('collabora.serviceUnavailable.message')} />
+            )}
             {/* The editor stays mounted on disconnect (retained for manual copy, FR-004a) — the
                 footer surfaces the disconnected state alongside it rather than replacing it. */}
             {open && (

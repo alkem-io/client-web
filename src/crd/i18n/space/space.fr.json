@@ -691,6 +691,9 @@
         },
         "reconnecting": "Reconnexion…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Un service est indisponible. Veuillez enregistrer votre travail en cours, car les données non enregistrées pourraient être perdues."
     }
   },
   "mediaGallery": {

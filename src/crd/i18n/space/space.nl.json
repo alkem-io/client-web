@@ -691,6 +691,9 @@
         },
         "reconnecting": "Opnieuw verbinden…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Een service is niet beschikbaar. Sla lopend werk op, want niet-opgeslagen gegevens kunnen verloren gaan."
     }
   },
   "mediaGallery": {

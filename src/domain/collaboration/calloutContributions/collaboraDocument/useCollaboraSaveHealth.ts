@@ -9,10 +9,11 @@ import type { CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCo
  * probing. A short window is safe because the probe *confirms* the outage before we surface
  * anything — so a lingering "unsaved" flag (client-web#9973) never produces a false alarm.
  */
-export const SAVE_STALL_TRIGGER_MS = 15_000;
+export const SAVE_STALL_TRIGGER_MS = 3_000;
 
-/** How often we re-check backend reachability while the document remains unsaved. */
-export const SAVE_HEALTH_PROBE_INTERVAL_MS = 15_000;
+/** How often we re-check backend reachability while the document remains unsaved — kept short so
+ *  recovery (the service coming back) is picked up quickly and the outage state clears promptly. */
+export const SAVE_HEALTH_PROBE_INTERVAL_MS = 3_000;
 
 /**
  * Detects a backend save-path outage (e.g. the WOPI service is down) while editing.
