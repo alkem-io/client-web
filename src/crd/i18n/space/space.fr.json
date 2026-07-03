@@ -673,7 +673,7 @@
         "cause": {
           "network": "Vous semblez être hors ligne.",
           "tokenExpiry": "Votre session d’édition a expiré.",
-          "service": "L’éditeur est temporairement indisponible.",
+          "service": "Un service est temporairement indisponible.",
           "unknown": "Connexion perdue."
         },
         "reconnect": "Se reconnecter",
@@ -691,10 +691,6 @@
         },
         "reconnecting": "Reconnexion…"
       }
-    },
-    "serviceBanner": {
-      "message": "Un service est temporairement indisponible — les modifications récentes pourraient ne pas être enregistrées. Actualisez ou patientez un instant.",
-      "refresh": "Actualiser"
     }
   },
   "mediaGallery": {

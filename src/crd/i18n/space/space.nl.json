@@ -673,7 +673,7 @@
         "cause": {
           "network": "Je lijkt offline te zijn.",
           "tokenExpiry": "Je bewerkingssessie is verlopen.",
-          "service": "De editor is tijdelijk niet beschikbaar.",
+          "service": "Een service is tijdelijk niet beschikbaar.",
           "unknown": "Verbinding verloren."
         },
         "reconnect": "Opnieuw verbinden",
@@ -691,10 +691,6 @@
         },
         "reconnecting": "Opnieuw verbinden…"
       }
-    },
-    "serviceBanner": {
-      "message": "Een service is tijdelijk niet beschikbaar — recente wijzigingen worden mogelijk niet opgeslagen. Vernieuw of wacht even.",
-      "refresh": "Vernieuwen"
     }
   },
   "mediaGallery": {

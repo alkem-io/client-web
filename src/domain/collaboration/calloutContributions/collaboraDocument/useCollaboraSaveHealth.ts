@@ -6,12 +6,13 @@ import type { CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCo
 
 /**
  * How long the document may stay unsaved before we suspect the save path is broken and start
- * probing. Comfortably beyond Collabora's autosave cadence so healthy editing never triggers it.
+ * probing. A short window is safe because the probe *confirms* the outage before we surface
+ * anything — so a lingering "unsaved" flag (client-web#9973) never produces a false alarm.
  */
-export const SAVE_STALL_TRIGGER_MS = 45_000;
+export const SAVE_STALL_TRIGGER_MS = 15_000;
 
 /** How often we re-check backend reachability while the document remains unsaved. */
-export const SAVE_HEALTH_PROBE_INTERVAL_MS = 30_000;
+export const SAVE_HEALTH_PROBE_INTERVAL_MS = 15_000;
 
 /**
  * Detects a backend save-path outage (e.g. the WOPI service is down) while editing.
@@ -26,6 +27,10 @@ export const SAVE_HEALTH_PROBE_INTERVAL_MS = 30_000;
  * service really is unreachable → `serviceUnavailable`; a success means the backend is fine and
  * the lingering "unsaved" is just the cosmetic flag → stay quiet. Re-checks every
  * {@link SAVE_HEALTH_PROBE_INTERVAL_MS} and auto-clears once saves resume or the probe recovers.
+ *
+ * `serviceUnavailable` feeds the single shared connection indicator in the footer (as a `service`
+ * disconnect), so a WOPI/save-path outage looks the same as a network/Collabora drop rather than
+ * a bespoke banner.
  */
 export function useCollaboraSaveHealth(
   collaboraDocumentId: string,

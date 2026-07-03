@@ -665,7 +665,7 @@
         "cause": {
           "network": "You appear to be offline.",
           "tokenExpiry": "Your editing session expired.",
-          "service": "The editor is temporarily unavailable.",
+          "service": "A service is temporarily unavailable.",
           "unknown": "Connection lost."
         },
         "reconnect": "Reconnect",
@@ -683,10 +683,6 @@
         },
         "reconnecting": "Reconnecting…"
       }
-    },
-    "serviceBanner": {
-      "message": "A service is temporarily unavailable — recent changes may not be saved. Refresh or wait a moment.",
-      "refresh": "Refresh"
     }
   },
   "callToAction": {

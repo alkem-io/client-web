@@ -673,7 +673,7 @@
         "cause": {
           "network": "Sie scheinen offline zu sein.",
           "tokenExpiry": "Ihre Bearbeitungssitzung ist abgelaufen.",
-          "service": "Der Editor ist vorübergehend nicht verfügbar.",
+          "service": "Ein Dienst ist vorübergehend nicht verfügbar.",
           "unknown": "Verbindung verloren."
         },
         "reconnect": "Erneut verbinden",
@@ -691,10 +691,6 @@
         },
         "reconnecting": "Verbindung wird wiederhergestellt…"
       }
-    },
-    "serviceBanner": {
-      "message": "Ein Dienst ist vorübergehend nicht verfügbar — aktuelle Änderungen werden möglicherweise nicht gespeichert. Aktualisieren oder einen Moment warten.",
-      "refresh": "Aktualisieren"
     }
   },
   "mediaGallery": {

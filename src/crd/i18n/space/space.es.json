@@ -673,7 +673,7 @@
         "cause": {
           "network": "Parece que no tienes conexión.",
           "tokenExpiry": "Tu sesión de edición ha caducado.",
-          "service": "El editor no está disponible temporalmente.",
+          "service": "Un servicio no está disponible temporalmente.",
           "unknown": "Se perdió la conexión."
         },
         "reconnect": "Reconectar",
@@ -691,10 +691,6 @@
         },
         "reconnecting": "Reconectando…"
       }
-    },
-    "serviceBanner": {
-      "message": "Un servicio no está disponible temporalmente: es posible que los cambios recientes no se guarden. Actualiza o espera un momento.",
-      "refresh": "Actualizar"
     }
   },
   "mediaGallery": {
