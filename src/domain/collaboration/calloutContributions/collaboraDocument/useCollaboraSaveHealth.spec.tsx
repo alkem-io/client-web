@@ -1,55 +1,20 @@
 /** @vitest-environment jsdom */
-import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
-import { act, renderHook } from '@testing-library/react';
-import type { PropsWithChildren } from 'react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CollaboraEditorUrlDocument } from '@/core/apollo/generated/apollo-hooks';
-import { SAVE_STALL_TRIGGER_MS, useCollaboraSaveHealth } from './useCollaboraSaveHealth';
+import { renderHook } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
+import { useCollaboraSaveHealth } from './useCollaboraSaveHealth';
 
-const DOC = 'doc-1';
-const req = { query: CollaboraEditorUrlDocument, variables: { collaboraDocumentId: DOC } };
-const okMock: MockedResponse = {
-  request: req,
-  result: {
-    data: {
-      collaboraEditorUrl: { __typename: 'CollaboraEditorUrlResult', editorUrl: 'https://x/y', accessTokenTTL: 1 },
-    },
-  },
-};
-const downMock: MockedResponse = { request: req, error: new Error('wopi-service unreachable') };
-
-function wrapperWith(mocks: MockedResponse[]) {
-  return ({ children }: PropsWithChildren) => <MockedProvider mocks={mocks}>{children}</MockedProvider>;
-}
-
-describe('useCollaboraSaveHealth', () => {
-  afterEach(() => vi.useRealTimers());
-
-  it('never probes (and stays available) while the document is saved', async () => {
-    vi.useFakeTimers();
-    const { result } = renderHook(() => useCollaboraSaveHealth(DOC, 'saved'), { wrapper: wrapperWith([downMock]) });
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(SAVE_STALL_TRIGGER_MS * 3);
-    });
+// The backend probe is intentionally DISABLED (it re-ran a side-effectful query — token issuance
+// + COLLABORA_DOCUMENT_OPENED analytics — every few seconds). Until a side-effect-free detection
+// channel exists, the hook must report no outage regardless of save state, and must NOT hit Apollo
+// (so it needs no provider here).
+describe('useCollaboraSaveHealth (probe disabled)', () => {
+  it('reports no service outage while unsaved (no side-effectful probing)', () => {
+    const { result } = renderHook(() => useCollaboraSaveHealth('doc-1', 'unsaved'));
     expect(result.current.serviceUnavailable).toBe(false);
   });
 
-  it('flags service unavailable when saves stall AND the probe fails (a service is down)', async () => {
-    vi.useFakeTimers();
-    const { result } = renderHook(() => useCollaboraSaveHealth(DOC, 'unsaved'), { wrapper: wrapperWith([downMock]) });
-    expect(result.current.serviceUnavailable).toBe(false); // not yet — waiting out the stall window
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(SAVE_STALL_TRIGGER_MS + 100);
-    });
-    expect(result.current.serviceUnavailable).toBe(true);
-  });
-
-  it('stays quiet when saves linger but the probe succeeds (backend up — the #9973 stale-flag case)', async () => {
-    vi.useFakeTimers();
-    const { result } = renderHook(() => useCollaboraSaveHealth(DOC, 'unsaved'), { wrapper: wrapperWith([okMock]) });
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(SAVE_STALL_TRIGGER_MS + 100);
-    });
+  it('reports no service outage while saved', () => {
+    const { result } = renderHook(() => useCollaboraSaveHealth('doc-1', 'saved'));
     expect(result.current.serviceUnavailable).toBe(false);
   });
 });
