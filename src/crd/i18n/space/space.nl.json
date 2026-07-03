@@ -203,6 +203,7 @@
     "documentImportOr": "of",
     "documentImportHint": "Sleep een bestand of klik om te uploaden",
     "documentImportMaxSize": ".docx, .xlsx, .pptx tot {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} tot {{cap}} MB",
     "documentImportRemoveFile": "Bestand verwijderen",
     "documentImportErrorUnsupported": "Dit bestandstype wordt niet ondersteund. Probeer {{formats}}.",
     "documentImportErrorTooLarge": "Bestand is te groot. Maximale grootte is {{cap}} MB.",

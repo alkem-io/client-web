@@ -203,6 +203,7 @@
     "documentImportOr": "ou",
     "documentImportHint": "Glissez un fichier ou cliquez pour téléverser",
     "documentImportMaxSize": ".docx, .xlsx, .pptx jusqu'à {{cap}} Mo",
+    "documentReplaceAccepts": "{{ext}} jusqu'à {{cap}} Mo",
     "documentImportRemoveFile": "Supprimer le fichier",
     "documentImportErrorUnsupported": "Ce type de fichier n'est pas pris en charge. Essayez {{formats}}.",
     "documentImportErrorTooLarge": "Le fichier est trop volumineux. Taille maximale : {{cap}} Mo.",

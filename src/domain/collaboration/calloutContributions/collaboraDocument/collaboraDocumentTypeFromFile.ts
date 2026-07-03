@@ -22,6 +22,43 @@ export const collaboraDocumentTypeFromFilename = (filename: string): CollaboraDo
 };
 
 /**
+ * The canonical Phase-1 extension a replacement of a given document type must
+ * have — the inverse of {@link EXTENSION_TO_DOCUMENT_TYPE}. Used to narrow the
+ * replace dialog's file picker + hint to only the current document's type
+ * (since the replacement must match it, FR-006). `undefined` for a type with no
+ * Phase-1 extension (e.g. Drawing), in which case the caller falls back to the
+ * full allowlist.
+ */
+const DOCUMENT_TYPE_TO_EXTENSION: Readonly<Partial<Record<CollaboraDocumentType, string>>> = {
+  [CollaboraDocumentType.Wordprocessing]: '.docx',
+  [CollaboraDocumentType.Spreadsheet]: '.xlsx',
+  [CollaboraDocumentType.Presentation]: '.pptx',
+};
+
+export const collaboraExtensionForType = (type: CollaboraDocumentType | string): string | undefined =>
+  DOCUMENT_TYPE_TO_EXTENSION[type as CollaboraDocumentType];
+
+/**
+ * i18n key for the human-readable name of a document type, reusing the labels
+ * the create-flow type picker already ships. Lets the replace dialog *say what
+ * the current document is* (e.g. "Presentation"). `undefined` for an unmapped type.
+ */
+/** i18n keys for the document-type names (literal union so the typed `t()` accepts them). */
+export type CollaboraTypeLabelKey =
+  | 'callout.documentText'
+  | 'callout.documentSpreadsheet'
+  | 'callout.documentPresentation';
+
+const DOCUMENT_TYPE_LABEL_KEY: Readonly<Partial<Record<CollaboraDocumentType, CollaboraTypeLabelKey>>> = {
+  [CollaboraDocumentType.Wordprocessing]: 'callout.documentText',
+  [CollaboraDocumentType.Spreadsheet]: 'callout.documentSpreadsheet',
+  [CollaboraDocumentType.Presentation]: 'callout.documentPresentation',
+};
+
+export const collaboraTypeLabelKeyForType = (type: CollaboraDocumentType | string): CollaboraTypeLabelKey | undefined =>
+  DOCUMENT_TYPE_LABEL_KEY[type as CollaboraDocumentType];
+
+/**
  * True when the incoming file's extension maps to the same document type as the
  * current document. Returns `false` for an unknown extension (the extension
  * allowlist check in `validateCollaboraImportFile` runs first and catches those).

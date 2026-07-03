@@ -203,6 +203,7 @@
     "documentImportOr": "или",
     "documentImportHint": "Плъзнете файл или щракнете, за да качите",
     "documentImportMaxSize": ".docx, .xlsx, .pptx до {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} до {{cap}} MB",
     "documentImportRemoveFile": "Премахни файла",
     "documentImportErrorUnsupported": "Този тип файл не се поддържа. Опитайте с {{formats}}.",
     "documentImportErrorTooLarge": "Файлът е твърде голям. Максималният размер е {{cap}} MB.",

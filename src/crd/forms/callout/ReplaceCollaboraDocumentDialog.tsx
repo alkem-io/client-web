@@ -51,6 +51,8 @@ export type ReplaceCollaboraDocumentDialogProps = {
   serverErrorMessage: string | null;
   // ---- titles (FR-015) ----
   currentTitle: string;
+  /** Human-readable name of the current document's type (e.g. "Presentation"), so the user knows what kind the replacement must be (FR-006). */
+  currentTypeLabel?: string;
   /** Incoming file's derived title; `null` until a valid file is staged. */
   incomingTitle: string | null;
   titleValue: string;
@@ -83,6 +85,7 @@ export function ReplaceCollaboraDocumentDialog({
   importErrorMessage,
   serverErrorMessage,
   currentTitle,
+  currentTypeLabel,
   incomingTitle,
   titleValue,
   onTitleChange,
@@ -110,6 +113,7 @@ export function ReplaceCollaboraDocumentDialog({
             <p className="text-body-emphasis text-foreground truncate" title={currentTitle}>
               {currentTitle}
             </p>
+            {currentTypeLabel && <p className="text-caption text-muted-foreground">{currentTypeLabel}</p>}
           </div>
 
           <DocumentImportZone

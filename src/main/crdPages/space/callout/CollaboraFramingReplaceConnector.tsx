@@ -7,7 +7,11 @@ import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { ReplaceCollaboraDocumentDialog } from '@/crd/forms/callout/ReplaceCollaboraDocumentDialog';
-import { isSameCollaboraDocumentType } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraDocumentTypeFromFile';
+import {
+  collaboraExtensionForType,
+  collaboraTypeLabelKeyForType,
+  isSameCollaboraDocumentType,
+} from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraDocumentTypeFromFile';
 import {
   COLLABORA_IMPORT_ACCEPT_ATTR,
   COLLABORA_IMPORT_EXTENSIONS_P1,
@@ -66,6 +70,17 @@ export function CollaboraFramingReplaceConnector({
 
   const formatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
   const capMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
+
+  // The replacement must be the SAME type as the current document (FR-006), so
+  // narrow the picker + hint to just that type's extension and name what the
+  // current document is. Fall back to the full allowlist for an unmapped type.
+  const currentExtension = collaboraExtensionForType(currentDocumentType);
+  const currentTypeLabelKey = collaboraTypeLabelKeyForType(currentDocumentType);
+  const currentTypeLabel = currentTypeLabelKey ? t(currentTypeLabelKey) : undefined;
+  const acceptAttr = currentExtension ?? COLLABORA_IMPORT_ACCEPT_ATTR;
+  const acceptsLabel = currentExtension
+    ? t('callout.documentReplaceAccepts', { ext: currentExtension, cap: capMb })
+    : t('callout.documentImportMaxSize', { cap: capMb });
 
   const reset = () => {
     setFile(null);
@@ -185,7 +200,7 @@ export function CollaboraFramingReplaceConnector({
     <ReplaceCollaboraDocumentDialog
       open={open}
       onOpenChange={onOpenChange}
-      acceptAttr={COLLABORA_IMPORT_ACCEPT_ATTR}
+      acceptAttr={acceptAttr}
       file={file}
       onFileChange={handleFileChange}
       importError={importError}
@@ -193,6 +208,7 @@ export function CollaboraFramingReplaceConnector({
       importErrorMessage={importErrorMessage}
       serverErrorMessage={serverErrorMessage}
       currentTitle={currentTitle}
+      currentTypeLabel={currentTypeLabel}
       incomingTitle={incomingTitle}
       titleValue={titleValue}
       onTitleChange={setTitleValue}
@@ -203,7 +219,7 @@ export function CollaboraFramingReplaceConnector({
         dialogTitle: t('callout.documentReplaceTitle'),
         description: t('callout.documentReplaceDescription'),
         importHint: t('callout.documentImportHint'),
-        importMaxSize: t('callout.documentImportMaxSize', { cap: capMb }),
+        importMaxSize: acceptsLabel,
         importRemoveFile: t('callout.documentImportRemoveFile'),
         currentTitleLabel: t('callout.documentReplaceCurrentTitleLabel'),
         incomingTitleLabel: t('callout.documentReplaceIncomingTitleLabel'),

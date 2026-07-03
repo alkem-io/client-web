@@ -84,6 +84,26 @@ describe('CollaboraFramingReplaceConnector', () => {
     expect(titleField.value).toBe('Revised-plan');
   });
 
+  it('names the current document type and narrows the picker + hint to that type only (FR-006)', () => {
+    renderConnector(
+      <CollaboraFramingReplaceConnector
+        open={true}
+        onOpenChange={() => {}}
+        collaboraDocumentId={DOC_ID}
+        currentDocumentType={CollaboraDocumentType.Presentation}
+        currentTitle={CURRENT_TITLE}
+      />
+    );
+
+    // Says what the current document is.
+    expect(screen.getByText(enJson.callout.documentPresentation)).toBeInTheDocument();
+    // File picker only accepts the current type's extension.
+    expect(fileInput().getAttribute('accept')).toBe('.pptx');
+    // Hint lists only that extension, not all three.
+    const hint = enJson.callout.documentReplaceAccepts.replace('{{ext}}', '.pptx').replace('{{cap}}', '15');
+    expect(screen.getByText(hint)).toBeInTheDocument();
+  });
+
   it.each([
     [
       'unsupported extension',

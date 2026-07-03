@@ -231,6 +231,7 @@
     "documentImportOr": "or",
     "documentImportHint": "Drag & drop a file, or click to upload",
     "documentImportMaxSize": ".docx, .xlsx, .pptx up to {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} up to {{cap}} MB",
     "documentImportRemoveFile": "Remove file",
     "documentImportErrorUnsupported": "This file type isn't supported. Try {{formats}}.",
     "documentImportErrorTooLarge": "File is too large. Maximum size is {{cap}} MB.",

@@ -203,6 +203,7 @@
     "documentImportOr": "o",
     "documentImportHint": "Arrastra un archivo o haz clic para subirlo",
     "documentImportMaxSize": ".docx, .xlsx, .pptx hasta {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} hasta {{cap}} MB",
     "documentImportRemoveFile": "Eliminar archivo",
     "documentImportErrorUnsupported": "Este tipo de archivo no es compatible. Prueba con {{formats}}.",
     "documentImportErrorTooLarge": "El archivo es demasiado grande. Tamaño máximo: {{cap}} MB.",
