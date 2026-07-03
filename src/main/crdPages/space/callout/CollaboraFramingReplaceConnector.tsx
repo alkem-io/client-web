@@ -81,19 +81,23 @@ export function CollaboraFramingReplaceConnector({
     ? t('callout.documentReplaceAccepts', { ext: currentExtension, cap: capMb })
     : t('callout.documentImportMaxSize', { cap: capMb });
 
-  const reset = () => {
+  /** Clear the staged file + its derived title (used on cancel and every rejection). */
+  const clearStagedFile = () => {
     setFile(null);
-    setImportError(null);
     setTitleValue('');
+  };
+
+  const reset = () => {
+    clearStagedFile();
+    setImportError(null);
     setServerErrorMessage(null);
   };
 
   const handleFileChange = (next: File | null) => {
     setServerErrorMessage(null);
     if (!next) {
-      setFile(null);
       setImportError(null);
-      setTitleValue('');
+      clearStagedFile();
       return;
     }
 
@@ -102,14 +106,12 @@ export function CollaboraFramingReplaceConnector({
     const validation = validateCollaboraImportFile([next]);
     if (!validation.ok) {
       setImportError(validation.error);
-      setFile(null);
-      setTitleValue('');
+      clearStagedFile();
       return;
     }
     if (!isSameCollaboraDocumentType(next.name, currentDocumentType)) {
       setImportError({ kind: 'different-type' });
-      setFile(null);
-      setTitleValue('');
+      clearStagedFile();
       return;
     }
 
