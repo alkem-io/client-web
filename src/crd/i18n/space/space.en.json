@@ -242,7 +242,6 @@
     "documentReplaceTitle": "Replace file",
     "documentReplaceDescription": "Uploading a replacement overwrites the current file for everyone, and this can't be undone.",
     "documentReplaceCurrentTitleLabel": "Current document",
-    "documentReplaceIncomingTitleLabel": "Replacement file",
     "documentReplaceTitleFieldLabel": "Title",
     "documentReplaceConfirm": "Replace file",
     "documentReplaceErrorSameType": "The replacement must be the same kind of document as the current one.",

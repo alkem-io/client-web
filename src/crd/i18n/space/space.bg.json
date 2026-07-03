@@ -214,7 +214,6 @@
     "documentReplaceTitle": "Замяна на файла",
     "documentReplaceDescription": "Качването на заместващ файл презаписва текущия файл за всички и не може да бъде отменено.",
     "documentReplaceCurrentTitleLabel": "Текущ документ",
-    "documentReplaceIncomingTitleLabel": "Заместващ файл",
     "documentReplaceTitleFieldLabel": "Заглавие",
     "documentReplaceConfirm": "Замяна на файла",
     "documentReplaceErrorSameType": "Заместващият файл трябва да е същият вид документ като текущия.",

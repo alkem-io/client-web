@@ -26,8 +26,6 @@ export type ReplaceCollaboraDocumentDialogLabels = {
   importRemoveFile: string;
   /** Label for the current document's title (FR-015). */
   currentTitleLabel: string;
-  /** Label for the incoming file's title (FR-015). */
-  incomingTitleLabel: string;
   /** Label for the editable title field (FR-015). */
   titleFieldLabel: string;
   /** Confirm button label. */
@@ -53,8 +51,6 @@ export type ReplaceCollaboraDocumentDialogProps = {
   currentTitle: string;
   /** Human-readable name of the current document's type (e.g. "Presentation"), so the user knows what kind the replacement must be (FR-006). */
   currentTypeLabel?: string;
-  /** Incoming file's derived title; `null` until a valid file is staged. */
-  incomingTitle: string | null;
   titleValue: string;
   onTitleChange: (value: string) => void;
   // ---- actions ----
@@ -86,7 +82,6 @@ export function ReplaceCollaboraDocumentDialog({
   serverErrorMessage,
   currentTitle,
   currentTypeLabel,
-  incomingTitle,
   titleValue,
   onTitleChange,
   onConfirm,
@@ -129,25 +124,19 @@ export function ReplaceCollaboraDocumentDialog({
             labelRemoveFile={labels.importRemoveFile}
           />
 
-          {/* Incoming title + editable title field (FR-015) — shown once a valid file is staged. */}
-          {fileStaged && incomingTitle != null && (
-            <>
-              <div className="space-y-1">
-                <p className="text-caption text-muted-foreground">{labels.incomingTitleLabel}</p>
-                <p className="text-body-emphasis text-foreground truncate" title={incomingTitle}>
-                  {incomingTitle}
-                </p>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor={titleFieldId}>{labels.titleFieldLabel}</Label>
-                <Input
-                  id={titleFieldId}
-                  value={titleValue}
-                  onChange={event => onTitleChange(event.target.value)}
-                  disabled={loading}
-                />
-              </div>
-            </>
+          {/* Editable title field (FR-015) — shown once a valid file is staged. The
+              staged-file card above already shows the replacement file, so its name
+              is not repeated here. */}
+          {fileStaged && (
+            <div className="space-y-1">
+              <Label htmlFor={titleFieldId}>{labels.titleFieldLabel}</Label>
+              <Input
+                id={titleFieldId}
+                value={titleValue}
+                onChange={event => onTitleChange(event.target.value)}
+                disabled={loading}
+              />
+            </div>
           )}
 
           {serverErrorMessage && (

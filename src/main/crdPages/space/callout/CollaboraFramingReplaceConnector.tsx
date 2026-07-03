@@ -62,7 +62,6 @@ export function CollaboraFramingReplaceConnector({
 
   const [file, setFile] = useState<File | null>(null);
   const [importError, setImportError] = useState<DocumentImportError | null>(null);
-  const [incomingTitle, setIncomingTitle] = useState<string | null>(null);
   const [titleValue, setTitleValue] = useState('');
   const [serverErrorMessage, setServerErrorMessage] = useState<string | null>(null);
 
@@ -85,7 +84,6 @@ export function CollaboraFramingReplaceConnector({
   const reset = () => {
     setFile(null);
     setImportError(null);
-    setIncomingTitle(null);
     setTitleValue('');
     setServerErrorMessage(null);
   };
@@ -95,7 +93,6 @@ export function CollaboraFramingReplaceConnector({
     if (!next) {
       setFile(null);
       setImportError(null);
-      setIncomingTitle(null);
       setTitleValue('');
       return;
     }
@@ -106,23 +103,21 @@ export function CollaboraFramingReplaceConnector({
     if (!validation.ok) {
       setImportError(validation.error);
       setFile(null);
-      setIncomingTitle(null);
       setTitleValue('');
       return;
     }
     if (!isSameCollaboraDocumentType(next.name, currentDocumentType)) {
       setImportError({ kind: 'different-type' });
       setFile(null);
-      setIncomingTitle(null);
       setTitleValue('');
       return;
     }
 
-    const derivedTitle = filenameWithoutExtension(next.name);
+    // Prefill the editable title with the incoming file's name (FR-015). The staged
+    // file card shows the file itself, so we don't display the name separately.
     setImportError(null);
     setFile(next);
-    setIncomingTitle(derivedTitle);
-    setTitleValue(derivedTitle);
+    setTitleValue(filenameWithoutExtension(next.name));
   };
 
   const importErrorMessage: string | null = importError
@@ -209,7 +204,6 @@ export function CollaboraFramingReplaceConnector({
       serverErrorMessage={serverErrorMessage}
       currentTitle={currentTitle}
       currentTypeLabel={currentTypeLabel}
-      incomingTitle={incomingTitle}
       titleValue={titleValue}
       onTitleChange={setTitleValue}
       onConfirm={handleConfirm}
@@ -222,7 +216,6 @@ export function CollaboraFramingReplaceConnector({
         importMaxSize: acceptsLabel,
         importRemoveFile: t('callout.documentImportRemoveFile'),
         currentTitleLabel: t('callout.documentReplaceCurrentTitleLabel'),
-        incomingTitleLabel: t('callout.documentReplaceIncomingTitleLabel'),
         titleFieldLabel: t('callout.documentReplaceTitleFieldLabel'),
         confirmLabel: t('callout.documentReplaceConfirm'),
         cancelLabel: t('dialogs.cancel'),

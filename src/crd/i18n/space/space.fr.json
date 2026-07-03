@@ -214,7 +214,6 @@
     "documentReplaceTitle": "Remplacer le fichier",
     "documentReplaceDescription": "Téléverser un remplacement écrase le fichier actuel pour tout le monde, et c'est irréversible.",
     "documentReplaceCurrentTitleLabel": "Document actuel",
-    "documentReplaceIncomingTitleLabel": "Fichier de remplacement",
     "documentReplaceTitleFieldLabel": "Titre",
     "documentReplaceConfirm": "Remplacer le fichier",
     "documentReplaceErrorSameType": "Le remplacement doit être le même type de document que l'actuel.",

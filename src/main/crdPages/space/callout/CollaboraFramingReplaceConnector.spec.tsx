@@ -62,7 +62,7 @@ const stage = (file: File) => {
 };
 
 describe('CollaboraFramingReplaceConnector', () => {
-  it('shows the current title and, after staging a valid file, the incoming title + an editable title field', async () => {
+  it('shows the current title and, after staging a valid file, an editable title field prefilled with the file name', async () => {
     renderConnector(
       <CollaboraFramingReplaceConnector
         open={true}
@@ -78,9 +78,11 @@ describe('CollaboraFramingReplaceConnector', () => {
 
     stage(makeFile('Revised-plan.docx'));
 
-    // Incoming title (filename without extension) is shown and prefilled into the editable field.
-    expect(await screen.findByText('Revised-plan')).toBeInTheDocument();
-    const titleField = screen.getByLabelText(enJson.callout.documentReplaceTitleFieldLabel) as HTMLInputElement;
+    // Once staged, the editable title field appears prefilled with the file name
+    // (the staged-file card shows the file itself, so its name isn't repeated).
+    const titleField = (await screen.findByLabelText(
+      enJson.callout.documentReplaceTitleFieldLabel
+    )) as HTMLInputElement;
     expect(titleField.value).toBe('Revised-plan');
   });
 
@@ -174,7 +176,7 @@ describe('CollaboraFramingReplaceConnector', () => {
     );
 
     stage(makeFile('Revised-plan.docx'));
-    await screen.findByText('Revised-plan');
+    await screen.findByLabelText(enJson.callout.documentReplaceTitleFieldLabel);
 
     fireEvent.click(screen.getByRole('button', { name: enJson.dialogs.cancel }));
 
@@ -245,7 +247,7 @@ describe('CollaboraFramingReplaceConnector', () => {
     );
 
     stage(makeFile('Revised-plan.docx'));
-    await screen.findByText('Revised-plan');
+    await screen.findByLabelText(enJson.callout.documentReplaceTitleFieldLabel);
     fireEvent.click(screen.getByRole('button', { name: enJson.callout.documentReplaceConfirm }));
 
     expect(await screen.findByText(lockMessage)).toBeInTheDocument();

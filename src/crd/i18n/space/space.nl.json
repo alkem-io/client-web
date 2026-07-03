@@ -214,7 +214,6 @@
     "documentReplaceTitle": "Bestand vervangen",
     "documentReplaceDescription": "Een vervanging uploaden overschrijft het huidige bestand voor iedereen en kan niet ongedaan worden gemaakt.",
     "documentReplaceCurrentTitleLabel": "Huidig document",
-    "documentReplaceIncomingTitleLabel": "Vervangend bestand",
     "documentReplaceTitleFieldLabel": "Titel",
     "documentReplaceConfirm": "Bestand vervangen",
     "documentReplaceErrorSameType": "De vervanging moet hetzelfde soort document zijn als het huidige.",

@@ -214,7 +214,6 @@
     "documentReplaceTitle": "Reemplazar archivo",
     "documentReplaceDescription": "Subir un reemplazo sobrescribe el archivo actual para todos y no se puede deshacer.",
     "documentReplaceCurrentTitleLabel": "Documento actual",
-    "documentReplaceIncomingTitleLabel": "Archivo de reemplazo",
     "documentReplaceTitleFieldLabel": "Título",
     "documentReplaceConfirm": "Reemplazar archivo",
     "documentReplaceErrorSameType": "El reemplazo debe ser el mismo tipo de documento que el actual.",

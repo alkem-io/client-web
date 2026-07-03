@@ -214,7 +214,6 @@
     "documentReplaceTitle": "Datei ersetzen",
     "documentReplaceDescription": "Das Hochladen einer Ersatzdatei überschreibt die aktuelle Datei für alle und kann nicht rückgängig gemacht werden.",
     "documentReplaceCurrentTitleLabel": "Aktuelles Dokument",
-    "documentReplaceIncomingTitleLabel": "Ersatzdatei",
     "documentReplaceTitleFieldLabel": "Titel",
     "documentReplaceConfirm": "Datei ersetzen",
     "documentReplaceErrorSameType": "Die Ersatzdatei muss dieselbe Art von Dokument sein wie die aktuelle.",
