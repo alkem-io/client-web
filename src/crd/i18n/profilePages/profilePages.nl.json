@@ -56,6 +56,7 @@
     "sidebar": {
       "aboutTitle": "Over",
       "organizationsTitle": "Organisaties",
+      "referencesTitle": "Links",
       "socialLinksTitle": "Sociaal",
       "bioEmpty": "Nog geen bio.",
       "organizationsEmpty": "Nog geen lid van een organisatie.",
@@ -86,7 +87,6 @@
       "tagsetKeywords": "Trefwoorden",
       "tagsetCapabilities": "Capaciteiten",
       "referencesTitle": "Links",
-      "referencesEmpty": "Nog geen links.",
       "associatesTitle": "Geassocieerden",
       "associatesCount_one": "{{count}} geassocieerde",
       "associatesCount_other": "{{count}} geassocieerden",
