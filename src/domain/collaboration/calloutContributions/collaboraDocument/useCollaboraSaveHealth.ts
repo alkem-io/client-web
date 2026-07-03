@@ -56,6 +56,7 @@ export function useCollaboraSaveHealth(
       return;
     }
 
+    let cancelled = false;
     const probe = async () => {
       if (probingRef.current) return;
       probingRef.current = true;
@@ -70,10 +71,11 @@ export function useCollaboraSaveHealth(
           // Silent background health check — failures drive our own UI, never the global toast.
           context: SILENT_QUERY_CONTEXT,
         });
+        if (cancelled) return; // unmounted / document saved mid-request
         // A reachable-but-false result, or a failed query, both mean a service is down.
         setServiceUnavailable(Boolean(error) || data?.collaboraServiceAvailable === false);
       } catch {
-        setServiceUnavailable(true);
+        if (!cancelled) setServiceUnavailable(true);
       } finally {
         probingRef.current = false;
       }
@@ -86,6 +88,7 @@ export function useCollaboraSaveHealth(
     }, SAVE_STALL_TRIGGER_MS);
 
     return () => {
+      cancelled = true;
       clearTimeout(start);
       if (interval) clearInterval(interval);
     };

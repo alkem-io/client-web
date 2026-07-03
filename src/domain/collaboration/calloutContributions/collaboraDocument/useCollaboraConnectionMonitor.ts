@@ -7,13 +7,6 @@ import {
 } from './useCollaboraPostMessage';
 
 /**
- * Silence-based network-drop detection threshold (ms). Explicit signals (Collabora error /
- * session-closed, the `offline` event, token expiry) surface immediately; this bounds how
- * long unexplained quiet is tolerated before declaring a disconnect (FR-014 / SC-001).
- */
-export const DISCONNECT_DETECT_MS = 5000;
-
-/**
  * Bounded window a *transient* drop (network blip, rejoin-able service error) is given for
  * the editor's own reconnection to self-heal before manual recovery is offered (FR-009 /
  * SC-006). Consumed by the US3 `reconnecting` refinement; defined here as the single home

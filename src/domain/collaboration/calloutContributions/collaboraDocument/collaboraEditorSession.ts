@@ -41,11 +41,15 @@ export function accessTokenFromEditorUrl(editorUrl: string): string | undefined 
   }
 }
 
-/** The origin of a Collabora editor URL, used as the postMessage target origin (falls back to '*'). */
-export function editorOrigin(editorUrl: string): string {
+/**
+ * The origin of a Collabora editor URL, used as the postMessage target origin. Returns `undefined`
+ * on an unparseable URL — callers must then NOT post (a credential-bearing `Reset_Access_Token`
+ * must never be broadcast with a `'*'` target).
+ */
+export function editorOrigin(editorUrl: string): string | undefined {
   try {
     return new URL(editorUrl).origin;
   } catch {
-    return '*';
+    return undefined;
   }
 }

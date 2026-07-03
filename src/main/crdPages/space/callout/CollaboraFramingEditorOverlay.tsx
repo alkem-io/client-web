@@ -176,7 +176,7 @@ export function CollaboraFramingEditorOverlay({
             {/* A backend save-path (WOPI) outage: Collabora shows its own top banner for a network
                 drop but nothing here, so we float a matching card to prompt the user to save. The
                 footer carries the recovery actions. */}
-            {open && serviceUnavailable && (
+            {open && saveOutage && (
               <CollaboraTopAlert icon={ServerOff} message={t('collabora.serviceUnavailable.message')} />
             )}
             {/* The editor stays mounted on disconnect (retained for manual copy, FR-004a) — the

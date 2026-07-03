@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useState } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 import type { CollaboraConnectedUser, CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
 import { type CollaboraMessage, isMessageFromIframe, parseCollaboraMessage } from './collaboraPostMessage';
 
@@ -68,6 +68,13 @@ export function useCollaboraPostMessage(
     connectedUsers: [],
   });
 
+  // Hold callbacks in refs so the (global) message listener stays subscribed across renders —
+  // callers commonly pass fresh inline closures, which would otherwise churn the listener.
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
+  const onSessionClosedRef = useRef(onSessionClosed);
+  onSessionClosedRef.current = onSessionClosed;
+
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (!isMessageFromIframe(event, iframeRef.current)) return;
@@ -75,12 +82,14 @@ export function useCollaboraPostMessage(
       const data = parseCollaboraMessage(event.data);
       if (!data?.MessageId) return;
 
-      setState(prev => reduce(prev, data, { onError, onSessionClosed }));
+      setState(prev =>
+        reduce(prev, data, { onError: onErrorRef.current, onSessionClosed: onSessionClosedRef.current })
+      );
     };
 
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);
-  }, [iframeRef, onError, onSessionClosed]);
+  }, [iframeRef]);
 
   return state;
 }
@@ -107,8 +116,12 @@ function reduce(
       // Collabora fires Modified=false after autosave completes (and once at load time). Treat
       // it as the authoritative "saved" transition — without it, the flag stuck at 'unsaved'.
       const modified = Boolean(values.Modified);
+      // A completed save (Modified=false) is authoritative and clears a prior error — otherwise a
+      // one-off Collabora `Error` would latch the error chip (and the health poll) for the whole
+      // session. Modified=true keeps an existing error visible rather than downgrading to 'unsaved'.
+      if (!modified) return { ...prev, saveStatus: 'saved', lastError: undefined };
       if (prev.saveStatus === 'error') return prev;
-      return { ...prev, saveStatus: modified ? 'unsaved' : 'saved' };
+      return { ...prev, saveStatus: 'unsaved' };
     }
     case 'App_Saved':
       return { ...prev, saveStatus: 'saved' };

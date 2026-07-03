@@ -39,6 +39,7 @@ export function useCollaboraTokenRefresh(
   onErrorRef.current = onError;
 
   useEffect(() => {
+    let cancelled = false;
     const handler = async (event: MessageEvent) => {
       const iframe = iframeRef.current;
       if (!isMessageFromIframe(event, iframe)) return;
@@ -47,6 +48,7 @@ export function useCollaboraTokenRefresh(
       refreshingRef.current = true;
       try {
         const { data, error } = await fetchCollaboraEditorUrl(client, collaboraDocumentId);
+        if (cancelled) return; // unmounted / document changed mid-request
         if (error) {
           onErrorRef.current?.(graphQLErrorCode(error), error.message);
           return;
@@ -54,24 +56,31 @@ export function useCollaboraTokenRefresh(
         const result = data?.collaboraEditorUrl;
         const token = result ? accessTokenFromEditorUrl(result.editorUrl) : undefined;
         const target = iframe?.contentWindow;
-        if (result && token && target) {
+        const origin = result ? editorOrigin(result.editorUrl) : undefined;
+        // Require a resolvable origin — never broadcast the fresh token with a '*' target.
+        if (result && token && target && origin) {
           target.postMessage(
             JSON.stringify({
               MessageId: 'Reset_Access_Token',
               Values: { token, ttl: result.accessTokenTTL },
             }),
-            editorOrigin(result.editorUrl)
+            origin
           );
           onRefreshedRef.current?.(result.accessTokenTTL);
         }
       } catch (err) {
-        onErrorRef.current?.(graphQLErrorCode(err), err instanceof Error ? err.message : 'Unknown error');
+        if (!cancelled) {
+          onErrorRef.current?.(graphQLErrorCode(err), err instanceof Error ? err.message : 'Unknown error');
+        }
       } finally {
         refreshingRef.current = false;
       }
     };
 
     window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('message', handler);
+    };
   }, [iframeRef, client, collaboraDocumentId]);
 }
