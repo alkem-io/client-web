@@ -1,0 +1,21 @@
+# Spaces-collection callout query (feature 013).
+#
+# A SPACES callout renders the host space's subspaces as cards. The server returns
+# the FULL authorized set via `framing.subspaces` — already ordered pinned-first,
+# then the space's sortOrder/displayName (no server-side pagination/search). The
+# client name-searches + paginates client-side over that set (via the reused
+# `SpaceSubspacesList`). Selecting the existing `SubspaceCard` fragment fields keeps
+# the card shape identical to the block this callout replaces (no new card shape).
+query SpaceCollectionSubspaces($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        subspaces {
+          ...SubspaceCard
+        }
+      }
+    }
+  }
+}

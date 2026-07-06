@@ -53,7 +53,8 @@
     "cta": "Link",
     "image": "Galerij",
     "poll": "Poll",
-    "contributors": "Contributors"
+    "contributors": "Contributors",
+    "spaces": "Subspaces"
   },
   "contributionType": {
     "post": "Posts",

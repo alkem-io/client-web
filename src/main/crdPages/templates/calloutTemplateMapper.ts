@@ -99,6 +99,7 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.MediaGallery]: 'image',
   [CalloutFramingType.Poll]: 'poll',
   [CalloutFramingType.Contributors]: 'contributors',
+  [CalloutFramingType.Spaces]: 'spaces',
 };
 
 const CONTRIBUTION_TYPE_TO_RESPONSE: Record<CalloutContributionType, ResponseType | 'none'> = {

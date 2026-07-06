@@ -283,7 +283,8 @@
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
     "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
-    "contributors": "Contributeurs"
+    "contributors": "Contributeurs",
+    "subspaces": "Sous-espaces"
   },
   "contribution": {
     "edit": "Modifier",
@@ -881,6 +882,13 @@
       "defaultViewLabel": "Affichage par défaut",
       "viewList": "Liste",
       "viewMap": "Carte"
+    }
+  },
+  "spaceCollection": {
+    "search": "Rechercher des sous-espaces...",
+    "empty": {
+      "title": "Aucun sous-espace pour le moment",
+      "description": "Cet espace n'a pas encore de sous-espaces."
     }
   }
 }
