@@ -29,6 +29,7 @@ import {
   mapFormToCalloutCreationInput,
   mapFormToCalloutUpdateInput,
 } from '@/main/crdPages/space/callout/calloutFormMapper';
+import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 export type CalloutTemplateMapperFallbacks = {
@@ -145,6 +146,11 @@ export function calloutTemplateContentToFormValues(
     tags: findDefaultTagset(framing.profile.tagsets)?.tags ?? [],
     framingChip,
     framingCommentsEnabled: settings.framing.commentsEnabled,
+    // Contributor-collection config (feature 008) travels in the template's framing
+    // settings; read it back so applying a contributors template preserves the
+    // captured types/default-type/default-view instead of falling back to the form
+    // default. Yields the default (all types) for non-contributors framing.
+    contributorCollection: contributorCollectionFromServer(settings.framing.contributors),
     memoMarkdown: framing.memo?.markdown ?? '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',
