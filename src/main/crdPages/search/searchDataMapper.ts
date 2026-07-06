@@ -10,7 +10,6 @@ import {
   type SearchResultWhiteboardFragment,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
-import type { CollaboraDocumentResultCardData } from '@/crd/components/search/CollaboraDocumentResultCard';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -169,8 +168,10 @@ export function mapPostResults(
 
   const mappedFraming: PostResultCardData[] = framingResults
     .filter(
-      (r): r is WhiteboardResult | MemoResult =>
-        r.type === SearchResultType.Whiteboard || r.type === SearchResultType.Memo
+      (r): r is WhiteboardResult | MemoResult | CollaboraDocumentResult =>
+        r.type === SearchResultType.Whiteboard ||
+        r.type === SearchResultType.Memo ||
+        r.type === SearchResultType.CollaboraDocument
     )
     .map(result => {
       if (result.type === SearchResultType.Whiteboard) {
@@ -186,6 +187,25 @@ export function mapPostResults(
           spaceName: r.space.about.profile.displayName,
 
           href: r.whiteboard.profile.url,
+        };
+      }
+
+      if (result.type === SearchResultType.CollaboraDocument) {
+        const r = result as CollaboraDocumentResult;
+        // A document-content match renders as a standard card with NO excerpt and NO
+        // match-source indicator (FR-013, US3) — indistinguishable from a title match.
+        // `href` opens the document / its Collabora editor in one action (reused route).
+        return {
+          id: r.id,
+          title: r.collaboraDocument.profile.displayName,
+          snippet: '',
+          type: 'collaboraDocument' as PostType,
+          bannerUrl: undefined,
+          author: { name: r.collaboraDocument.createdBy?.profile?.displayName ?? unknownLabel },
+          date: formatDate(r.collaboraDocument.createdDate),
+          spaceName: r.space.about.profile.displayName,
+
+          href: r.collaboraDocument.profile.url,
         };
       }
 
@@ -215,12 +235,32 @@ export function mapResponseResults(
 
   return contributionResults
     .filter(
-      (r): r is PostResult | MemoResult | WhiteboardResult =>
-        r.type === SearchResultType.Post || r.type === SearchResultType.Memo || r.type === SearchResultType.Whiteboard
+      (r): r is PostResult | MemoResult | WhiteboardResult | CollaboraDocumentResult =>
+        r.type === SearchResultType.Post ||
+        r.type === SearchResultType.Memo ||
+        r.type === SearchResultType.Whiteboard ||
+        r.type === SearchResultType.CollaboraDocument
     )
     .map(result => {
       const spaceName = result.space.about.profile.displayName;
       const parentPostTitle = result.callout.framing.profile.displayName;
+
+      if (result.type === SearchResultType.CollaboraDocument) {
+        const r = result as CollaboraDocumentResult;
+        // Standard card, no excerpt, no match-source indicator (FR-013, US3).
+        return {
+          id: r.id,
+          title: r.collaboraDocument.profile.displayName,
+          snippet: '',
+          type: 'collaboraDocument' as PostType,
+          author: { name: r.collaboraDocument.createdBy?.profile?.displayName ?? unknownLabel },
+          date: formatDate(r.collaboraDocument.createdDate),
+          parentPostTitle,
+          spaceName,
+
+          href: r.collaboraDocument.profile.url,
+        };
+      }
 
       if (result.type === SearchResultType.Post) {
         const r = result as PostResult;
@@ -268,41 +308,6 @@ export function mapResponseResults(
         href: r.whiteboard.profile.url,
       };
     });
-}
-
-/**
- * Hydrates the `COLLABORA_DOCUMENT` search results into standard card data,
- * mirroring the Memo/Whiteboard hydration. A collabora-document result appears
- * in `framingResults` (isContribution = false) or `contributionResults`
- * (isContribution = true); both render as the same standard card.
- *
- * The card carries NO excerpt and NO match-source indicator (FR-013, US3) — a
- * document-content match is indistinguishable from a title/description match.
- * `href` is the document's profile URL, which opens the document / its Collabora
- * editor in one action (the existing editor dialog is reached via that route —
- * reused, no new editor).
- */
-export function mapCollaboraDocumentResults(
-  framingResults: SearchResultMetaType[],
-  contributionResults: SearchResultMetaType[],
-  labels: SearchFallbackLabels
-): CollaboraDocumentResultCardData[] {
-  const unknownLabel = labels.unknown;
-
-  const toCardData = (r: CollaboraDocumentResult): CollaboraDocumentResultCardData => ({
-    id: r.id,
-    title: r.collaboraDocument.profile.displayName,
-    isContribution: r.isContribution,
-    author: { name: r.collaboraDocument.createdBy?.profile?.displayName ?? unknownLabel },
-    date: formatDate(r.collaboraDocument.createdDate),
-    spaceName: r.space.about.profile.displayName,
-    parentPostTitle: r.callout.framing.profile.displayName,
-    href: r.collaboraDocument.profile.url,
-  });
-
-  return [...framingResults, ...contributionResults]
-    .filter((r): r is CollaboraDocumentResult => r.type === SearchResultType.CollaboraDocument)
-    .map(toCardData);
 }
 
 export function mapUserResults(actorResults: SearchResultMetaType[]): UserResultCardData[] {

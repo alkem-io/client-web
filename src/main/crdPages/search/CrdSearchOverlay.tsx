@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useSearchQuery, useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SearchCategory, type SearchQuery, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
-import { CollaboraDocumentResultCard } from '@/crd/components/search/CollaboraDocumentResultCard';
 import { OrgResultCard } from '@/crd/components/search/OrgResultCard';
 import { PostResultCard } from '@/crd/components/search/PostResultCard';
 import { ResponseResultCard } from '@/crd/components/search/ResponseResultCard';
@@ -22,7 +21,6 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSearch } from '../../search/SearchContext';
 import type { SearchResultMetaType } from '../../search/searchTypes';
 import {
-  mapCollaboraDocumentResults,
   mapOrgResults,
   mapPostResults,
   mapResponseResults,
@@ -231,15 +229,6 @@ export function CrdSearchOverlay() {
   const mappedSpaces = mapSpaceResults(spaceResults ?? []);
   const mappedPosts = mapPostResults(calloutResults ?? [], framingResults ?? [], fallbackLabels);
   const mappedResponses = mapResponseResults(contributionResults ?? [], fallbackLabels);
-  const mappedCollaboraDocuments = mapCollaboraDocumentResults(
-    framingResults ?? [],
-    contributionResults ?? [],
-    fallbackLabels
-  );
-  // Framing-placed collabora documents render alongside posts; contribution-placed
-  // ones render alongside responses — mirroring how memos/whiteboards split.
-  const framingCollaboraDocuments = mappedCollaboraDocuments.filter(d => !d.isContribution);
-  const contributionCollaboraDocuments = mappedCollaboraDocuments.filter(d => d.isContribution);
   const mappedUsers = mapUserResults(contributorResults ?? []);
   const mappedOrgs = mapOrgResults(contributorResults ?? [], fallbackLabels);
 
@@ -259,15 +248,6 @@ export function CrdSearchOverlay() {
       ? mappedResponses
       : mappedResponses.filter(r => r.type === sectionFilters.responses);
 
-  // Collabora documents obey the same section filter as the list they render with:
-  // framing-placed docs follow the posts filter, contribution-placed docs the responses filter.
-  const filteredFramingCollaboraDocuments =
-    sectionFilters.posts === 'all' || sectionFilters.posts === 'collaboraDocument' ? framingCollaboraDocuments : [];
-  const filteredContributionCollaboraDocuments =
-    sectionFilters.responses === 'all' || sectionFilters.responses === 'collaboraDocument'
-      ? contributionCollaboraDocuments
-      : [];
-
   // Users and orgs have no sub-filters
   const filteredUsers = mappedUsers;
   const filteredOrgs = mappedOrgs;
@@ -278,8 +258,6 @@ export function CrdSearchOverlay() {
     mappedSpaces.length > 0 ||
     mappedPosts.length > 0 ||
     mappedResponses.length > 0 ||
-    framingCollaboraDocuments.length > 0 ||
-    contributionCollaboraDocuments.length > 0 ||
     mappedUsers.length > 0 ||
     mappedOrgs.length > 0;
 
@@ -476,16 +454,13 @@ export function CrdSearchOverlay() {
         }
         break;
       case 'posts':
-        if (nextVisibleCount >= filteredPosts.length + filteredFramingCollaboraDocuments.length) {
+        if (nextVisibleCount >= filteredPosts.length) {
           if (canCalloutLoadMore) fetchMoreResults(SearchCategory.CollaborationTools);
           if (canFramingLoadMore) fetchMoreResults(SearchCategory.Framings);
         }
         break;
       case 'responses':
-        if (
-          nextVisibleCount >= filteredResponses.length + filteredContributionCollaboraDocuments.length &&
-          canContributionLoadMore
-        ) {
+        if (nextVisibleCount >= filteredResponses.length && canContributionLoadMore) {
           fetchMoreResults(SearchCategory.Contributions);
         }
         break;
@@ -528,78 +503,49 @@ export function CrdSearchOverlay() {
     });
   }
 
-  // Framing-placed collabora documents render in the posts section, after the posts,
-  // sharing the section's visibleCounts budget. They render as a standard card
-  // (no excerpt, no match-source indicator — FR-013).
-  if (mappedPosts.length > 0 || framingCollaboraDocuments.length > 0) {
-    const postResultCount = filteredPosts.length + filteredFramingCollaboraDocuments.length;
+  if (mappedPosts.length > 0) {
     const visiblePosts = filteredPosts.slice(0, visibleCounts.posts);
-    const visibleFramingCollaboraDocuments = filteredFramingCollaboraDocuments.slice(
-      0,
-      Math.max(visibleCounts.posts - filteredPosts.length, 0)
-    );
-    const allLocalShown = visibleCounts.posts >= postResultCount;
+    const allLocalShown = visibleCounts.posts >= filteredPosts.length;
     categories.push({
       id: 'posts',
       label: t('search.categories.posts'),
       icon: FileText,
-      count: postResultCount,
+      count: filteredPosts.length,
       filterOptions: postFilterOptions,
       activeFilter: sectionFilters.posts,
       onFilterChange: handleFilterChange('posts'),
       hasMore:
-        postResultCount > 0 &&
-        (visibleCounts.posts < postResultCount || (allLocalShown && (canCalloutLoadMore || canFramingLoadMore))),
+        filteredPosts.length > 0 &&
+        (visibleCounts.posts < filteredPosts.length || (allLocalShown && (canCalloutLoadMore || canFramingLoadMore))),
       onLoadMore: handleLoadMore('posts'),
-      children: [
-        ...visiblePosts.map(post => (
-          <li key={post.id}>
-            <PostResultCard post={post} onClick={() => handleCardClick(post.href)} />
-          </li>
-        )),
-        ...visibleFramingCollaboraDocuments.map(doc => (
-          <li key={doc.id}>
-            <CollaboraDocumentResultCard document={doc} onClick={() => handleCardClick(doc.href)} />
-          </li>
-        )),
-      ],
+      children: visiblePosts.map(post => (
+        <li key={post.id}>
+          <PostResultCard post={post} onClick={() => handleCardClick(post.href)} />
+        </li>
+      )),
     });
   }
 
-  // Contribution-placed collabora documents render in the responses section, after
-  // the responses, sharing the section's visibleCounts budget.
-  if (mappedResponses.length > 0 || contributionCollaboraDocuments.length > 0) {
-    const responseResultCount = filteredResponses.length + filteredContributionCollaboraDocuments.length;
+  if (mappedResponses.length > 0) {
     const visibleResponses = filteredResponses.slice(0, visibleCounts.responses);
-    const visibleContributionCollaboraDocuments = filteredContributionCollaboraDocuments.slice(
-      0,
-      Math.max(visibleCounts.responses - filteredResponses.length, 0)
-    );
-    const allLocalShown = visibleCounts.responses >= responseResultCount;
+    const allLocalShown = visibleCounts.responses >= filteredResponses.length;
     categories.push({
       id: 'responses',
       label: t('search.categories.responses'),
       icon: MessageSquare,
-      count: responseResultCount,
+      count: filteredResponses.length,
       filterOptions: responseFilterOptions,
       activeFilter: sectionFilters.responses,
       onFilterChange: handleFilterChange('responses'),
       hasMore:
-        responseResultCount > 0 &&
-        (visibleCounts.responses < responseResultCount || (allLocalShown && canContributionLoadMore)),
+        filteredResponses.length > 0 &&
+        (visibleCounts.responses < filteredResponses.length || (allLocalShown && canContributionLoadMore)),
       onLoadMore: handleLoadMore('responses'),
-      children: [
-        ...visibleResponses.map(response => (
-          <li key={response.id}>
-            <ResponseResultCard response={response} onClick={() => handleCardClick(response.href)} />
-          </li>
-        )),
-        ...visibleContributionCollaboraDocuments.map(doc => (
-          <li key={doc.id}>
-            <CollaboraDocumentResultCard document={doc} onClick={() => handleCardClick(doc.href)} />
-          </li>
-        )),
-      ],
+      children: visibleResponses.map(response => (
+        <li key={response.id}>
+          <ResponseResultCard response={response} onClick={() => handleCardClick(response.href)} />
+        </li>
+      )),
     });
   }
 
@@ -651,13 +597,13 @@ export function CrdSearchOverlay() {
       id: 'posts',
       label: t('search.categories.posts'),
       icon: FileText,
-      count: mappedPosts.length + framingCollaboraDocuments.length,
+      count: mappedPosts.length,
     },
     {
       id: 'responses',
       label: t('search.categories.responses'),
       icon: MessageSquare,
-      count: mappedResponses.length + contributionCollaboraDocuments.length,
+      count: mappedResponses.length,
     },
     { id: 'users', label: t('search.categories.users'), icon: Users, count: mappedUsers.length },
     { id: 'organizations', label: t('search.categories.organizations'), icon: Building2, count: mappedOrgs.length },
