@@ -38,8 +38,6 @@ type CrdLayoutProps = {
   fullWidth?: boolean;
   /** When true the header renders transparently over a hero banner below it. */
   overlayBanner?: boolean;
-  /** Full-width notice rendered between the header and the page content. */
-  topBanner?: ReactNode;
   children: ReactNode;
 };
 
@@ -67,7 +65,6 @@ export function CrdLayout({
   showGridToggle,
   fullWidth,
   overlayBanner,
-  topBanner,
   children,
 }: CrdLayoutProps) {
   const { t } = useTranslation('crd-layout');
@@ -103,7 +100,6 @@ export function CrdLayout({
         fullWidth={fullWidth}
         overlayBanner={overlayBanner}
       />
-      {topBanner}
       <main id="crd-main-content" tabIndex={-1} className="flex-1 flex flex-col outline-none">
         {children}
       </main>
