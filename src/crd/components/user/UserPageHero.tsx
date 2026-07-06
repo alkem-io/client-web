@@ -11,6 +11,8 @@ export type UserPageHeroProps = {
   /** Deterministic colour (from `pickColorFromId(userId)`) used for the avatar fallback. */
   color: string;
   displayName: string;
+  /** Short headline shown under the name — null when empty. */
+  tagline: string | null;
   /** "City, Country" — null when both empty. */
   location: string | null;
   showSettingsIcon: boolean;
@@ -39,6 +41,7 @@ export function UserPageHero({
   avatarImageUrl,
   color,
   displayName,
+  tagline,
   location,
   showSettingsIcon,
   settingsHref,
@@ -73,6 +76,7 @@ export function UserPageHero({
           <div className="flex-1 flex flex-col md:flex-row md:items-start justify-between gap-4 min-w-0">
             <div className="min-w-0">
               <h1 className="text-hero text-foreground">{displayName}</h1>
+              {tagline ? <p className="text-body-emphasis text-muted-foreground mt-1">{tagline}</p> : null}
               {location ? (
                 <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis mt-1">
                   <MapPin className="w-4 h-4" aria-hidden="true" />
