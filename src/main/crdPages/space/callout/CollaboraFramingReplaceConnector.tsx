@@ -29,8 +29,6 @@ type CollaboraFramingReplaceConnectorProps = {
   currentDocumentType: CollaboraDocumentType | string;
   /** The current document's display name, shown for review (FR-015). */
   currentTitle: string;
-  /** Called after a successful replace so the caller can refresh the document view. */
-  onReplaced?: () => void;
 };
 
 // Server error `extensions.code`s we map to a specific client surface, mirroring
@@ -55,7 +53,6 @@ export function CollaboraFramingReplaceConnector({
   collaboraDocumentId,
   currentDocumentType,
   currentTitle,
-  onReplaced,
 }: CollaboraFramingReplaceConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
@@ -150,12 +147,15 @@ export function CollaboraFramingReplaceConnector({
     const graphQLError = err instanceof ApolloError ? err.graphQLErrors[0] : undefined;
     const code = graphQLError?.extensions?.code as string | undefined;
 
+    // ALL server-side rejections surface via serverErrorMessage — the dialog's
+    // always-visible alert. The import-zone error surface only renders in the
+    // no-file state, so it cannot be reused once a file is staged.
     if (code === CODE_FORMAT_NOT_SUPPORTED) {
-      setImportError({ kind: 'extension', received: '' });
+      setServerErrorMessage(t('callout.documentImportErrorUnsupported', { formats: formatList }));
       return;
     }
     if (code === CODE_STORAGE_UPLOAD_FAILED) {
-      setImportError({ kind: 'size', bytes: file?.size ?? 0, maxBytes: COLLABORA_IMPORT_MAX_BYTES });
+      setServerErrorMessage(t('callout.documentReplaceError'));
       return;
     }
     if (code === CODE_STORAGE_SERVICE_UNAVAILABLE) {
@@ -165,11 +165,16 @@ export function CollaboraFramingReplaceConnector({
     // Active-edit block (FR-013) and content/type rejections (FR-006/FR-012) arrive
     // as BAD_USER_INPUT ValidationExceptions carrying a user-readable message — the
     // client can't know lock state itself, so surface the server's message verbatim.
-    const message = graphQLError?.message ?? (err instanceof Error ? err.message : undefined);
-    setServerErrorMessage(message ?? t('callout.documentReplaceError'));
-    if (!(err instanceof ApolloError)) {
-      logError(new Error('replaceCollaboraDocument mutation failed', { cause: err as Error }));
+    const graphQLMessage = graphQLError?.message;
+    if (graphQLMessage) {
+      setServerErrorMessage(graphQLMessage);
+      return;
     }
+    // Un-coded failure (e.g. a pure networkError, or a non-Apollo throw): show a
+    // localized generic message rather than a raw one, and log it — these are the
+    // genuine infra failures worth capturing in Sentry.
+    setServerErrorMessage(t('callout.documentReplaceError'));
+    logError(err instanceof Error ? err : new Error('replaceCollaboraDocument mutation failed'));
   };
 
   const handleConfirm = async () => {
@@ -185,7 +190,6 @@ export function CollaboraFramingReplaceConnector({
         },
       });
       notify(t('callout.documentReplaceSuccess'), 'success');
-      onReplaced?.();
       reset();
       onOpenChange(false);
     } catch (err) {

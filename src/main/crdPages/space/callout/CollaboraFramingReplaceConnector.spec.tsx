@@ -252,4 +252,42 @@ describe('CollaboraFramingReplaceConnector', () => {
 
     expect(await screen.findByText(lockMessage)).toBeInTheDocument();
   });
+
+  it('surfaces a coded server rejection (FORMAT_NOT_SUPPORTED) while a file is staged, without dead-ending', async () => {
+    const mocks: MockedResponse[] = [
+      {
+        request: { query: ReplaceCollaboraDocumentDocument },
+        variableMatcher: () => true,
+        result: {
+          errors: [
+            new GraphQLError('unsupported', {
+              extensions: { code: 'FORMAT_NOT_SUPPORTED' },
+            }),
+          ],
+        },
+      },
+    ];
+
+    renderConnector(
+      <CollaboraFramingReplaceConnector
+        open={true}
+        onOpenChange={() => {}}
+        collaboraDocumentId={DOC_ID}
+        currentDocumentType={CollaboraDocumentType.Wordprocessing}
+        currentTitle={CURRENT_TITLE}
+      />,
+      mocks
+    );
+
+    stage(makeFile('Revised-plan.docx'));
+    await screen.findByLabelText(enJson.callout.documentReplaceTitleFieldLabel);
+    fireEvent.click(screen.getByRole('button', { name: enJson.callout.documentReplaceConfirm }));
+
+    // The mapped message renders in the dialog's always-visible alert — it must
+    // NOT be routed to the import-zone surface (invisible while a file is staged),
+    // which previously produced a silent dead-end with a greyed-out Confirm.
+    const expected = enJson.callout.documentImportErrorUnsupported.replace('{{formats}}', '.docx, .xlsx, .pptx');
+    expect(await screen.findByText(expected)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: enJson.callout.documentReplaceConfirm })).not.toBeDisabled();
+  });
 });
