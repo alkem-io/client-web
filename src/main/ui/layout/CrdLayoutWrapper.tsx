@@ -5,6 +5,7 @@ import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentic
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
 import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
+import { DownNoticeBanner } from '@/crd/components/common/DownNoticeBanner';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
@@ -21,6 +22,7 @@ import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/Banner
 import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
+import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
@@ -52,6 +54,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { openSearch } = useSearch();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const { visible: downNoticeVisible, dismiss: dismissDownNotice } = useDownNoticeBanner();
   const breadcrumbItems = useBreadcrumbs();
   const overlayBanner = useBannerOverlay();
   // Full-width is owned per-space by the space page; the global header reads
@@ -94,6 +97,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
         overlayBanner={overlayBanner}
+        topBanner={downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : undefined}
         fullWidth={headerFullWidth}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
