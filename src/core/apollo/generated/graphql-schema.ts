@@ -24663,6 +24663,85 @@ export type InnovationHubByIdQuery = {
               | undefined;
           };
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
+          innovationPackListFilter?:
+            | Array<{
+                __typename?: 'InnovationPack';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      calloutTemplatesCount: number;
+                      spaceTemplatesCount: number;
+                      communityGuidelinesTemplatesCount: number;
+                      postTemplatesCount: number;
+                      whiteboardTemplatesCount: number;
+                    }
+                  | undefined;
+                provider: {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                };
+              }>
+            | undefined;
+          virtualContributorListFilter?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      tagline?: string | undefined;
+                      url: string;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -24780,6 +24859,7 @@ export type CreateInnovationHubMutation = {
     nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
+    account: { __typename?: 'Account'; id: string };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -24838,6 +24918,41 @@ export type CreateInnovationHubMutation = {
           };
         }>
       | undefined;
+    innovationPackListFilter?:
+      | Array<{
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                calloutTemplatesCount: number;
+                spaceTemplatesCount: number;
+                communityGuidelinesTemplatesCount: number;
+                postTemplatesCount: number;
+                whiteboardTemplatesCount: number;
+              }
+            | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          };
+        }>
+      | undefined;
+    virtualContributorListFilter?:
+      | Array<{
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          };
+        }>
+      | undefined;
   };
 };
 
@@ -24853,6 +24968,7 @@ export type UpdateInnovationHubMutation = {
     nameID: string;
     subdomain: string;
     spaceVisibilityFilter?: SpaceVisibility | undefined;
+    account: { __typename?: 'Account'; id: string };
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -24908,6 +25024,41 @@ export type UpdateInnovationHubMutation = {
               tagline?: string | undefined;
               url: string;
             };
+          };
+        }>
+      | undefined;
+    innovationPackListFilter?:
+      | Array<{
+          __typename?: 'InnovationPack';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          templatesSet?:
+            | {
+                __typename?: 'TemplatesSet';
+                id: string;
+                calloutTemplatesCount: number;
+                spaceTemplatesCount: number;
+                communityGuidelinesTemplatesCount: number;
+                postTemplatesCount: number;
+                whiteboardTemplatesCount: number;
+              }
+            | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+          };
+        }>
+      | undefined;
+    virtualContributorListFilter?:
+      | Array<{
+          __typename?: 'VirtualContributor';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+          provider: {
+            __typename?: 'Actor';
+            id: string;
+            profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
           };
         }>
       | undefined;
@@ -24982,6 +25133,7 @@ export type InnovationHubSettingsQuery = {
           nameID: string;
           subdomain: string;
           spaceVisibilityFilter?: SpaceVisibility | undefined;
+          account: { __typename?: 'Account'; id: string };
           profile: {
             __typename?: 'Profile';
             id: string;
@@ -25040,6 +25192,41 @@ export type InnovationHubSettingsQuery = {
                 };
               }>
             | undefined;
+          innovationPackListFilter?:
+            | Array<{
+                __typename?: 'InnovationPack';
+                id: string;
+                profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      calloutTemplatesCount: number;
+                      spaceTemplatesCount: number;
+                      communityGuidelinesTemplatesCount: number;
+                      postTemplatesCount: number;
+                      whiteboardTemplatesCount: number;
+                    }
+                  | undefined;
+                provider: {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                };
+              }>
+            | undefined;
+          virtualContributorListFilter?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+                provider: {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+                };
+              }>
+            | undefined;
         }
       | undefined;
   };
@@ -25051,6 +25238,7 @@ export type InnovationHubSettingsFragment = {
   nameID: string;
   subdomain: string;
   spaceVisibilityFilter?: SpaceVisibility | undefined;
+  account: { __typename?: 'Account'; id: string };
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -25109,6 +25297,41 @@ export type InnovationHubSettingsFragment = {
         };
       }>
     | undefined;
+  innovationPackListFilter?:
+    | Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+        templatesSet?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              calloutTemplatesCount: number;
+              spaceTemplatesCount: number;
+              communityGuidelinesTemplatesCount: number;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+            }
+          | undefined;
+        provider: {
+          __typename?: 'Actor';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        };
+      }>
+    | undefined;
+  virtualContributorListFilter?:
+    | Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
+        provider: {
+          __typename?: 'Actor';
+          id: string;
+          profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+        };
+      }>
+    | undefined;
 };
 
 export type InnovationHubQueryVariables = Exact<{
@@ -25139,6 +25362,85 @@ export type InnovationHubQuery = {
               | undefined;
           };
           spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
+          innovationPackListFilter?:
+            | Array<{
+                __typename?: 'InnovationPack';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  description?: string | undefined;
+                  url: string;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      calloutTemplatesCount: number;
+                      spaceTemplatesCount: number;
+                      communityGuidelinesTemplatesCount: number;
+                      postTemplatesCount: number;
+                      whiteboardTemplatesCount: number;
+                    }
+                  | undefined;
+                provider: {
+                  __typename?: 'Actor';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        avatar?:
+                          | {
+                              __typename?: 'Visual';
+                              id: string;
+                              uri: string;
+                              name: VisualType;
+                              alternativeText?: string | undefined;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                };
+              }>
+            | undefined;
+          virtualContributorListFilter?:
+            | Array<{
+                __typename?: 'VirtualContributor';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      tagline?: string | undefined;
+                      url: string;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }>
+            | undefined;
           authorization?:
             | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -25163,6 +25465,85 @@ export type InnovationHubHomeInnovationHubFragment = {
     banner?: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined } | undefined;
   };
   spaceListFilter?: Array<{ __typename?: 'Space'; id: string }> | undefined;
+  innovationPackListFilter?:
+    | Array<{
+        __typename?: 'InnovationPack';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          url: string;
+          tagset?:
+            | {
+                __typename?: 'Tagset';
+                id: string;
+                name: string;
+                tags: Array<string>;
+                allowedValues: Array<string>;
+                type: TagsetType;
+              }
+            | undefined;
+        };
+        templatesSet?:
+          | {
+              __typename?: 'TemplatesSet';
+              id: string;
+              calloutTemplatesCount: number;
+              spaceTemplatesCount: number;
+              communityGuidelinesTemplatesCount: number;
+              postTemplatesCount: number;
+              whiteboardTemplatesCount: number;
+            }
+          | undefined;
+        provider: {
+          __typename?: 'Actor';
+          id: string;
+          profile?:
+            | {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        };
+      }>
+    | undefined;
+  virtualContributorListFilter?:
+    | Array<{
+        __typename?: 'VirtualContributor';
+        id: string;
+        profile?:
+          | {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              tagline?: string | undefined;
+              url: string;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+      }>
+    | undefined;
   authorization?:
     | { __typename?: 'Authorization'; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
