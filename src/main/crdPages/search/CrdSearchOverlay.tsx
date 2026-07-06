@@ -259,6 +259,15 @@ export function CrdSearchOverlay() {
       ? mappedResponses
       : mappedResponses.filter(r => r.type === sectionFilters.responses);
 
+  // Collabora documents obey the same section filter as the list they render with:
+  // framing-placed docs follow the posts filter, contribution-placed docs the responses filter.
+  const filteredFramingCollaboraDocuments =
+    sectionFilters.posts === 'all' || sectionFilters.posts === 'collaboraDocument' ? framingCollaboraDocuments : [];
+  const filteredContributionCollaboraDocuments =
+    sectionFilters.responses === 'all' || sectionFilters.responses === 'collaboraDocument'
+      ? contributionCollaboraDocuments
+      : [];
+
   // Users and orgs have no sub-filters
   const filteredUsers = mappedUsers;
   const filteredOrgs = mappedOrgs;
@@ -467,13 +476,16 @@ export function CrdSearchOverlay() {
         }
         break;
       case 'posts':
-        if (nextVisibleCount >= filteredPosts.length) {
+        if (nextVisibleCount >= filteredPosts.length + filteredFramingCollaboraDocuments.length) {
           if (canCalloutLoadMore) fetchMoreResults(SearchCategory.CollaborationTools);
           if (canFramingLoadMore) fetchMoreResults(SearchCategory.Framings);
         }
         break;
       case 'responses':
-        if (nextVisibleCount >= filteredResponses.length && canContributionLoadMore) {
+        if (
+          nextVisibleCount >= filteredResponses.length + filteredContributionCollaboraDocuments.length &&
+          canContributionLoadMore
+        ) {
           fetchMoreResults(SearchCategory.Contributions);
         }
         break;
@@ -516,26 +528,28 @@ export function CrdSearchOverlay() {
     });
   }
 
-  // Framing-placed collabora documents render in the posts section, subject to
-  // the same 'all' / per-type filter. They render as a standard card (no excerpt,
-  // no match-source indicator — FR-013).
-  const visibleFramingCollaboraDocuments =
-    sectionFilters.posts === 'all' || sectionFilters.posts === 'collaboraDocument' ? framingCollaboraDocuments : [];
-
+  // Framing-placed collabora documents render in the posts section, after the posts,
+  // sharing the section's visibleCounts budget. They render as a standard card
+  // (no excerpt, no match-source indicator — FR-013).
   if (mappedPosts.length > 0 || framingCollaboraDocuments.length > 0) {
+    const postResultCount = filteredPosts.length + filteredFramingCollaboraDocuments.length;
     const visiblePosts = filteredPosts.slice(0, visibleCounts.posts);
-    const allLocalShown = visibleCounts.posts >= filteredPosts.length;
+    const visibleFramingCollaboraDocuments = filteredFramingCollaboraDocuments.slice(
+      0,
+      Math.max(visibleCounts.posts - filteredPosts.length, 0)
+    );
+    const allLocalShown = visibleCounts.posts >= postResultCount;
     categories.push({
       id: 'posts',
       label: t('search.categories.posts'),
       icon: FileText,
-      count: filteredPosts.length + visibleFramingCollaboraDocuments.length,
+      count: postResultCount,
       filterOptions: postFilterOptions,
       activeFilter: sectionFilters.posts,
       onFilterChange: handleFilterChange('posts'),
       hasMore:
-        filteredPosts.length > 0 &&
-        (visibleCounts.posts < filteredPosts.length || (allLocalShown && (canCalloutLoadMore || canFramingLoadMore))),
+        postResultCount > 0 &&
+        (visibleCounts.posts < postResultCount || (allLocalShown && (canCalloutLoadMore || canFramingLoadMore))),
       onLoadMore: handleLoadMore('posts'),
       children: [
         ...visiblePosts.map(post => (
@@ -552,26 +566,27 @@ export function CrdSearchOverlay() {
     });
   }
 
-  // Contribution-placed collabora documents render in the responses section.
-  const visibleContributionCollaboraDocuments =
-    sectionFilters.responses === 'all' || sectionFilters.responses === 'collaboraDocument'
-      ? contributionCollaboraDocuments
-      : [];
-
+  // Contribution-placed collabora documents render in the responses section, after
+  // the responses, sharing the section's visibleCounts budget.
   if (mappedResponses.length > 0 || contributionCollaboraDocuments.length > 0) {
+    const responseResultCount = filteredResponses.length + filteredContributionCollaboraDocuments.length;
     const visibleResponses = filteredResponses.slice(0, visibleCounts.responses);
-    const allLocalShown = visibleCounts.responses >= filteredResponses.length;
+    const visibleContributionCollaboraDocuments = filteredContributionCollaboraDocuments.slice(
+      0,
+      Math.max(visibleCounts.responses - filteredResponses.length, 0)
+    );
+    const allLocalShown = visibleCounts.responses >= responseResultCount;
     categories.push({
       id: 'responses',
       label: t('search.categories.responses'),
       icon: MessageSquare,
-      count: filteredResponses.length + visibleContributionCollaboraDocuments.length,
+      count: responseResultCount,
       filterOptions: responseFilterOptions,
       activeFilter: sectionFilters.responses,
       onFilterChange: handleFilterChange('responses'),
       hasMore:
-        filteredResponses.length > 0 &&
-        (visibleCounts.responses < filteredResponses.length || (allLocalShown && canContributionLoadMore)),
+        responseResultCount > 0 &&
+        (visibleCounts.responses < responseResultCount || (allLocalShown && canContributionLoadMore)),
       onLoadMore: handleLoadMore('responses'),
       children: [
         ...visibleResponses.map(response => (
