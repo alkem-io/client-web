@@ -21,6 +21,15 @@
       "clearFilters": "Alle filters wissen",
       "removeFilter": "filter verwijderen"
     },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Virtual Contributors",
+      "virtualContributorsLabel": "Virtual Contributors",
+      "vcType": "Virtual Contributor"
+    },
     "allSpacesCta": "Bekijk alle Spaces op Alkemio"
   },
   "breadcrumbs": {

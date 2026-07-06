@@ -21,6 +21,15 @@
       "clearFilters": "Изчисти всички филтри",
       "removeFilter": "премахни филтър"
     },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Виртуални сътрудници",
+      "virtualContributorsLabel": "Виртуални сътрудници",
+      "vcType": "Виртуален сътрудник"
+    },
     "allSpacesCta": "Разгледайте всички пространства в Alkemio"
   },
   "breadcrumbs": {

@@ -21,6 +21,15 @@
       "clearFilters": "Borrar todos los filtros",
       "removeFilter": "eliminar filtro"
     },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Colaboradores virtuales",
+      "virtualContributorsLabel": "Colaboradores virtuales",
+      "vcType": "Colaborador virtual"
+    },
     "allSpacesCta": "Explorar todos los espacios en Alkemio"
   },
   "breadcrumbs": {
