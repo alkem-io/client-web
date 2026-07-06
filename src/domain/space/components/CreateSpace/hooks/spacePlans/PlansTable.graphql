@@ -34,13 +34,3 @@ query AccountPlanAvailability($accountId: UUID!) {
     }
   }
 }
-
-query ContactSupportLocation {
-  platform {
-    configuration {
-      locations {
-        contactsupport
-      }
-    }
-  }
-}

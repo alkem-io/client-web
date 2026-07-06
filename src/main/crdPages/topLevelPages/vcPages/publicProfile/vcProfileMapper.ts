@@ -18,7 +18,7 @@ import type { TransparencyCardData } from '@/crd/components/virtualContributor/V
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import type { VirtualContributorModelFull } from '@/domain/community/virtualContributor/model/VirtualContributorModelFull';
-import { KNOWLEDGE_BASE_PATH } from '@/main/routing/urlBuilders';
+import { buildVCKnowledgeBaseUrl } from '@/main/routing/urlBuilders';
 
 /* ----------------------- BoK resolver ----------------------- */
 
@@ -74,7 +74,7 @@ export const resolveBodyOfKnowledge = (input: BoKResolverInput): BodyOfKnowledge
       kind: 'knowledgeBase',
       description: input.knowledgeBaseDescription || input.knowledgeBasePlaceholder,
       hasReadAccess: Boolean(input.knowledgeBaseHasReadAccess),
-      visitUrl: `${vc.profile.url}/${KNOWLEDGE_BASE_PATH}`,
+      visitUrl: buildVCKnowledgeBaseUrl(vc.profile.url),
     };
   }
 

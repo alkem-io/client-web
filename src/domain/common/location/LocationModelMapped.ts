@@ -5,12 +5,3 @@ export interface LocationModelMapped {
   city?: string;
   country?: CountryType;
 }
-
-export const EmptyLocationMapped: LocationModelMapped = {
-  id: '',
-  city: '',
-  country: {
-    code: '',
-    name: '',
-  },
-};

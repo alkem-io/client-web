@@ -8,6 +8,7 @@ const CrdUserAccountTab = lazy(() => import('./account/CrdUserAccountTab'));
 const CrdUserMembershipTab = lazy(() => import('./membership/CrdUserMembershipTab'));
 const CrdUserOrganizationsTab = lazy(() => import('./organizations/CrdUserOrganizationsTab'));
 const CrdUserNotificationsTab = lazy(() => import('./notifications/CrdUserNotificationsTab'));
+const CrdUserAssistantTab = lazy(() => import('./assistant/CrdUserAssistantTab'));
 const CrdUserSettingsTab = lazy(() => import('./settings/CrdUserSettingsTab'));
 const CrdUserSecurityTab = lazy(() => import('./security/CrdUserSecurityTab'));
 
@@ -58,6 +59,14 @@ export const CrdUserSettingsRoutes = () => (
         element={
           <Suspense fallback={<Loading />}>
             <CrdUserNotificationsTab />
+          </Suspense>
+        }
+      />
+      <Route
+        path="assistant"
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdUserAssistantTab />
           </Suspense>
         }
       />

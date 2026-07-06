@@ -6,8 +6,8 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import type { UserConversation } from './models';
 import type { ConversationMessage } from './useConversationMessages';
-import type { UserConversation } from './useUserConversations';
 
 export const useConversationView = (
   conversation: UserConversation | null,

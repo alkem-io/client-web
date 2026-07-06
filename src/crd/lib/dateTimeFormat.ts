@@ -52,29 +52,3 @@ export function formatShortDate(input: Date | string | number | null | undefined
   if (!date) return undefined;
   return format(date, 'P', locale ? { locale } : undefined);
 }
-
-const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
-
-/**
- * "Smart" comment-style timestamp: relative within the last 24 hours
- * ("less than a minute ago", "about 5 hours ago"), absolute date+time
- * afterwards ("13/05/2026, 15:51:44"). Mirrors the chat-style pattern of
- * recent-wins-glanceability / older-wins-precision so the day is
- * unambiguous once the message scrolls past the immediate context.
- *
- * The 24h cutoff is calendar-agnostic: a message posted yesterday at 23:59
- * and viewed today at 00:01 reads as "1 minute ago" for a full day, which
- * matches what users expect from chat-like surfaces.
- */
-export function formatRelativeOrAbsolute(
-  input: Date | string | number | null | undefined,
-  locale?: Locale
-): string | undefined {
-  const date = toDate(input);
-  if (!date) return undefined;
-  const ageMs = Date.now() - date.getTime();
-  if (ageMs >= 0 && ageMs < TWENTY_FOUR_HOURS_MS) {
-    return formatRelativeFromNow(date, locale);
-  }
-  return formatAbsoluteDateTime(date, locale);
-}

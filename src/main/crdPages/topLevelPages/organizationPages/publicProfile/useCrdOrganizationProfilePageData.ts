@@ -37,5 +37,3 @@ export const useCrdOrganizationProfilePageData = () => {
     },
   };
 };
-
-export type CrdOrganizationProfilePageData = ReturnType<typeof useCrdOrganizationProfilePageData>;

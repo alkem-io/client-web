@@ -30,12 +30,12 @@ export const CrdOrganizationProfilePage = () => {
     recipientOrganizationId: organization?.id,
   });
 
-  const { activeTab, onSelectTab } = useResourceTabs();
+  const { activeTab, onSelectTab } = useResourceTabs('memberOf');
 
   const tabs: ProfileResourceTab[] = [
-    { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
-    { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
     { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
+    { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
+    { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
   ];
 
   const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);

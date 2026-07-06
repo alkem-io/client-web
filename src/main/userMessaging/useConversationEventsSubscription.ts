@@ -15,7 +15,7 @@ import {
   type UserConversationsQuery,
   type UserConversationsUnreadCountQuery,
 } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useUserMessagingContext } from './UserMessagingContext';
 

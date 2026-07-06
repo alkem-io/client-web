@@ -6,14 +6,12 @@ import {
   RoleName,
   SearchVisibility,
 } from '@/core/apollo/generated/graphql-schema';
-import type { MemberCardData } from '@/crd/components/space/SpaceMembers';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpace } from '@/domain/space/context/useSpace';
 import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import {
   mapRoleSetMemberToSidebarLead,
-  mapRoleSetToMemberCards,
   mapVirtualContributorToSidebar,
   type SidebarLeadData,
   type SidebarVirtualContributorData,
@@ -37,15 +35,14 @@ export function useCrdSpaceCommunity() {
 
   const roleSetId = space.about.membership?.roleSetID;
 
-  // Fetch contributors across all relevant roles. The flat `users` /
-  // `organizations` arrays are deduplicated across roles, and each entry
-  // carries its full `roles` list, which the mapper uses to derive
-  // role/roleType for the UI badge. The per-role `usersByRole[Lead]` +
-  // `organizationsByRole[Lead]` feeds the sidebar lead block, and
-  // `virtualContributorsByRole[Member]` feeds the sidebar VC section.
+  // Fetch contributors across all relevant roles for the SIDEBAR only. The
+  // per-role `usersByRole[Lead]` + `organizationsByRole[Lead]` feeds the sidebar
+  // lead block, and `virtualContributorsByRole[Member]` feeds the sidebar VC
+  // section. The full member grid that the hard-coded `SpaceMembers` widget used
+  // to render was removed (feature 008, US6) — the community tab now relies on a
+  // contributor-collection callout instead, so the flat `users` / `organizations`
+  // arrays are no longer fetched/mapped here.
   const {
-    users,
-    organizations,
     usersByRole,
     organizationsByRole,
     virtualContributorsByRole,
@@ -56,8 +53,6 @@ export function useCrdSpaceCommunity() {
     contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
   });
-
-  const members: MemberCardData[] = mapRoleSetToMemberCards(users, organizations);
 
   // Sidebar leads (users + organizations with the Lead role)
   const leadUsers: SidebarLeadData[] = (usersByRole[RoleName.Lead] ?? [])
@@ -110,7 +105,6 @@ export function useCrdSpaceCommunity() {
     virtualContributors,
     hasVcEntitlement,
     guidelines,
-    members,
     roleSetId,
     communityId: space.about.membership?.communityID,
     canInvite: permissions.canUpdate,

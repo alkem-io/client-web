@@ -3,5 +3,3 @@ export interface LocationModel {
   city?: string;
   country?: string;
 }
-
-export const EmptyLocation: LocationModel = { id: '', city: '', country: '' };

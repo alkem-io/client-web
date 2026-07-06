@@ -60,6 +60,9 @@ export const WS_EVENTS = {
 
 export enum WS_SCENE_EVENT_TYPES {
   SCENE_UPDATE = 'SCENE_UPDATE',
+  // Server-initiated full-scene reload after an external (e.g. MCP) content
+  // write. Reconciled into the live scene exactly like a SCENE_UPDATE.
+  SCENE_RELOAD = 'SCENE_RELOAD',
   MOUSE_LOCATION = 'MOUSE_LOCATION',
   EMOJI_REACTION = 'EMOJI_REACTION',
   COUNTDOWN_TIMER = 'COUNTDOWN_TIMER',

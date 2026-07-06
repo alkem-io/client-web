@@ -11,7 +11,7 @@ import {
   SpaceLevel,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
-import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { useApolloCache } from '@/core/apollo/utils/evictFromCache';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { error as logError, error as logPreviewError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
@@ -46,6 +46,7 @@ import type {
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
 import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
@@ -53,6 +54,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 import { mapWhiteboardFooterProps } from './whiteboardFooterMapper';
 
@@ -410,6 +412,8 @@ const CrdWhiteboardDialog = ({
                   open={options.show}
                   fullscreen={options.fullscreen}
                   onClose={onClose}
+                  // Escape first deselects/cancels in Excalidraw; only closes the dialog when there's nothing to clear.
+                  onEscapeKeyDown={event => handleExcalidrawEscape(excalidrawAPI, event)}
                   title={
                     <WhiteboardDisplayName
                       displayName={whiteboard.profile.displayName}
@@ -434,6 +438,7 @@ const CrdWhiteboardDialog = ({
                     ) : undefined
                   }
                   headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
+                  rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
                   footer={
                     <WhiteboardCollabFooter
                       {...footerProps}

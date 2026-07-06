@@ -1,6 +1,6 @@
-import {
+import type {
   CalloutAllowedActors,
-  type CalloutContributionType,
+  CalloutContributionType,
   CalloutVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 
@@ -16,16 +16,3 @@ export interface CalloutSettingsModelFull {
   };
   visibility: CalloutVisibility;
 }
-
-export const DefaultCalloutSettings = {
-  contribution: {
-    enabled: true,
-    allowedTypes: [],
-    canAddContributions: CalloutAllowedActors.Members,
-    commentsEnabled: true,
-  },
-  framing: {
-    commentsEnabled: true,
-  },
-  visibility: CalloutVisibility.Published,
-};

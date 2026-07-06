@@ -1,6 +1,5 @@
 import { TagsetReservedName } from '@/core/apollo/generated/graphql-schema';
 import type { TagsetGroup } from '@/crd/components/common/profileTypes';
-import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import {
   type AccountResourcesShape,
   buildTagsetGroups,
@@ -33,7 +32,5 @@ export const buildUserProfileTagsets = (
   ]);
 
 export type { AccountResourcesShape };
-
-export type MapHostedSpacesResult = SpaceGridCardData[];
 
 export const mapHostedSpacesToCardData = mapAccountHostedResources;

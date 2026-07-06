@@ -1,0 +1,30 @@
+fragment UserSettingsAssistant on UserSettingsAssistant {
+  enabledCapabilities {
+    capability
+    enabled
+  }
+}
+
+query UserAssistantSettings($userId: UUID!) {
+  user(ID: $userId) {
+    id
+    settings {
+      id
+      assistant {
+        ...UserSettingsAssistant
+      }
+    }
+  }
+}
+
+mutation UpdateUserAssistantSettings($settingsData: UpdateUserSettingsInput!) {
+  updateUserSettings(settingsData: $settingsData) {
+    id
+    settings {
+      id
+      assistant {
+        ...UserSettingsAssistant
+      }
+    }
+  }
+}

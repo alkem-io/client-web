@@ -1,4 +1,4 @@
-import { Bell, Briefcase, Cog, ShieldCheck, User, Users } from 'lucide-react';
+import { Bell, Bot, Briefcase, Cog, ShieldCheck, User, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
@@ -6,6 +6,8 @@ import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTra
 import { SettingsShell } from '@/crd/components/contributor/settings/SettingsShell';
 import type { SettingsTabDescriptor } from '@/crd/components/contributor/settings/SettingsTabStrip';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { useAssistantEnabled } from '@/main/assistant/useAssistantEnabled';
+import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import useUserPageRouteContext from '../useUserPageRouteContext';
 import useUserSettingsAccessGuard from './useUserSettingsAccessGuard';
@@ -30,6 +32,7 @@ const CrdUserSettingsPage = () => {
   const { userId, userModel, profileUrl } = useUserPageRouteContext();
   const { isOwner } = useUserSettingsAccessGuard({ profileUserId: userId, profileUrl });
   const { activeTabId, onTabSelect } = useUserSettingsTab({ profileUrl });
+  const isAssistantEnabled = useAssistantEnabled();
 
   usePageTitle(t('user.profile.pageTitle'));
 
@@ -41,7 +44,7 @@ const CrdUserSettingsPage = () => {
     displayName && profileUrl
       ? [
           { label: displayName, href: profileUrl, icon: User },
-          { label: t('breadcrumbs.settings'), href: `${profileUrl}/settings` },
+          { label: t('breadcrumbs.settings'), href: buildSettingsUrl(profileUrl) },
           { label: t(`shell.tabs.user.${activeTabId}`) },
         ]
       : [];
@@ -53,6 +56,14 @@ const CrdUserSettingsPage = () => {
     { id: 'membership', label: t('shell.tabs.user.membership'), icon: Users },
     { id: 'organizations', label: t('shell.tabs.user.organizations'), icon: Briefcase },
     { id: 'notifications', label: t('shell.tabs.user.notifications'), icon: Bell },
+    {
+      id: 'assistant',
+      label: t('shell.tabs.user.assistant'),
+      icon: Bot,
+      // Only surfaced when the assistant feature flag is on (ships OFF; the tab
+      // is enumerated dynamically but the whole feature gates on the flag).
+      hidden: !isAssistantEnabled,
+    },
     { id: 'settings', label: t('shell.tabs.user.settings'), icon: Cog },
     {
       id: 'security',

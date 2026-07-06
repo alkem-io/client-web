@@ -338,6 +338,18 @@ class Collab {
                 );
                 return;
               }
+              // Server-initiated reload after an external (e.g. MCP) content
+              // write — handled exactly like a SCENE_UPDATE. Reusing
+              // reconcileElementsAndLoadFiles updates lastBroadcastedOrReceivedSceneVersion,
+              // which prevents a re-broadcast loop back to the server.
+              if (isSceneReloadPayload(data)) {
+                const remoteElements = data.payload.elements as RemoteExcalidrawElement[];
+                const remoteFiles = data.payload.files;
+                await this.handleRemoteSceneUpdate(
+                  await this.reconcileElementsAndLoadFiles(remoteElements, remoteFiles)
+                );
+                return;
+              }
               if (isEmojiReactionPayload(data)) {
                 try {
                   const { emoji, x, y, id } = data.payload;
@@ -713,6 +725,8 @@ const isMouseLocationPayload = (data: IncomingClientBroadcastData): data is Sock
   data.type === WS_SCENE_EVENT_TYPES.MOUSE_LOCATION;
 const isSceneUpdatePayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['SCENE_UPDATE'] =>
   data.type === WS_SCENE_EVENT_TYPES.SCENE_UPDATE;
+const isSceneReloadPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['SCENE_RELOAD'] =>
+  data.type === WS_SCENE_EVENT_TYPES.SCENE_RELOAD;
 const isEmojiReactionPayload = (data: IncomingClientBroadcastData): data is SocketUpdateDataSource['EMOJI_REACTION'] =>
   data.type === WS_SCENE_EVENT_TYPES.EMOJI_REACTION;
 const isCountdownTimerPayload = (

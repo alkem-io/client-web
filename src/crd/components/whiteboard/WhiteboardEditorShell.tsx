@@ -12,8 +12,17 @@ type WhiteboardEditorShellProps = {
   titleExtra?: ReactNode;
   headerActions?: ReactNode;
   children: ReactNode;
+  /** Optional docked rail rendered to the RIGHT of the canvas (push layout). */
+  rail?: ReactNode;
   footer?: ReactNode;
   className?: string;
+  /**
+   * Optional Escape-key interceptor. Radix invokes this during the capture phase, before the
+   * dialog content (e.g. Excalidraw) processes the key. Return `true` to consume the Escape and
+   * keep the dialog open (letting the inner content act on it); return `false`/`undefined` to let
+   * the dialog close as usual.
+   */
+  onEscapeKeyDown?: (event: KeyboardEvent) => boolean | void;
 };
 
 export function WhiteboardEditorShell({
@@ -24,8 +33,10 @@ export function WhiteboardEditorShell({
   titleExtra,
   headerActions,
   children,
+  rail,
   footer,
   className,
+  onEscapeKeyDown,
 }: WhiteboardEditorShellProps) {
   const { t } = useTranslation('crd-whiteboard');
   const titleId = useId();
@@ -44,7 +55,12 @@ export function WhiteboardEditorShell({
           onInteractOutside={e => e.preventDefault()}
           onPointerDownOutside={e => e.preventDefault()}
           onEscapeKeyDown={e => {
+            // Always prevent Radix's built-in dismiss; closing is routed through `onClose`.
             e.preventDefault();
+            // Give the content a chance to consume the Escape (e.g. Excalidraw deselecting).
+            if (onEscapeKeyDown?.(e)) {
+              return;
+            }
             onClose();
           }}
           className={cn(
@@ -74,8 +90,13 @@ export function WhiteboardEditorShell({
             </div>
           </div>
 
-          {/* Content: Excalidraw canvas (or any children) */}
-          <div className="flex-1 min-h-0 relative">{children}</div>
+          {/* Content: Excalidraw canvas (or any children) + optional docked rail.
+              The rail is a flex SIBLING, so opening it shrinks the canvas (push
+              layout) instead of overlaying it. */}
+          <div className="flex-1 min-h-0 flex flex-row">
+            <div className="flex-1 min-h-0 relative">{children}</div>
+            {rail}
+          </div>
 
           {/* Footer */}
           {footer && <div className="shrink-0">{footer}</div>}

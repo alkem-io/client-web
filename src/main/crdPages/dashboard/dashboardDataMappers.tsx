@@ -46,11 +46,6 @@ export type ActivityItemData = {
   rawDate?: string;
 };
 
-export type ActivityFilterOption = {
-  value: string;
-  label: string;
-};
-
 export type SidebarResourceData = {
   id: string;
   name: string;
@@ -66,16 +61,6 @@ export type SubspaceCardData = {
   href: string;
   bannerUrl?: string;
   isPrivate: boolean;
-};
-
-export type SpaceHierarchyCardData = {
-  id: string;
-  name: string;
-  href: string;
-  tagline?: string;
-  bannerUrl?: string;
-  isHomeSpace: boolean;
-  subspaces: SubspaceCardData[];
 };
 
 export type InvitationCardData = {
@@ -211,7 +196,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         // Legacy shows the post displayName for post-comment context.
         contextName: activity.post?.profile?.displayName,
@@ -223,7 +212,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: calloutContext,
         href: activity.callout?.framing?.profile?.url,
@@ -304,7 +297,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <Mic aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         // Updates don't have their own URL; link to the space (legacy uses buildUpdatesUrl).
@@ -319,7 +316,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         href: activity.callout?.framing?.profile?.url,
@@ -521,62 +522,4 @@ export const mapInvitationsToCards = (invitations: InvitationEntry[]): Invitatio
     role: invitation.contributorType ?? '',
     color: pickColorFromId(invitation.spacePendingMembershipInfo.id),
   }));
-};
-
-type DashboardSpaceMembership = {
-  space: {
-    id: string;
-    about: {
-      profile: {
-        displayName: string;
-        url: string;
-        tagline?: string;
-        cardBanner?: { uri: string };
-        spaceBanner?: { uri: string };
-      };
-    };
-  };
-  childMemberships?: Array<{
-    space: {
-      id: string;
-      about: {
-        profile: {
-          displayName: string;
-          url: string;
-          cardBanner?: { uri: string };
-        };
-        isContentPublic?: boolean;
-      };
-    };
-  }>;
-};
-
-export const mapDashboardSpaces = (
-  memberships: DashboardSpaceMembership[],
-  homeSpaceId?: string
-): SpaceHierarchyCardData[] => {
-  return memberships.map(membership => {
-    const { space } = membership;
-    const profile = space.about.profile;
-
-    return {
-      id: space.id,
-      name: profile.displayName,
-      href: profile.url,
-      tagline: profile.tagline,
-      // Leave undefined when the space has no real card banner — the component will
-      // render the deterministic gradient from `color` instead of a stock default.
-      bannerUrl: profile.cardBanner?.uri || undefined,
-      isHomeSpace: space.id === homeSpaceId,
-      color: pickColorFromId(space.id),
-      subspaces: (membership.childMemberships ?? []).map(child => ({
-        id: child.space.id,
-        name: child.space.about.profile.displayName,
-        href: child.space.about.profile.url,
-        bannerUrl: child.space.about.profile.cardBanner?.uri || undefined,
-        isPrivate: !child.space.about.isContentPublic,
-        color: pickColorFromId(child.space.id),
-      })),
-    };
-  });
 };

@@ -26,6 +26,7 @@ export const RELEVANT_ROLES = {
     RoleName.GlobalSupportManager,
     RoleName.PlatformBetaTester,
     RoleName.PlatformVcCampaign,
+    RoleName.PlatformAssistantAccess,
   ],
 } as const;
 

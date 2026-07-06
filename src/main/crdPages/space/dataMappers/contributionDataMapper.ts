@@ -53,55 +53,6 @@ export const mapContributionToLinkItem = (c: ContributionCardData): LinkListItem
   canDelete: c.canDeleteLink,
 });
 
-type ContributionQueryData = {
-  id: string;
-  profile: {
-    displayName: string;
-    description?: string | null;
-    url?: string;
-    tagset?: { tags: string[] } | null;
-    visual?: { uri: string } | null;
-  };
-  createdBy?: {
-    profile?: {
-      displayName: string;
-      avatar?: { uri: string } | null;
-    } | null;
-  } | null;
-  createdDate?: string;
-  link?: {
-    uri: string;
-    profile?: {
-      description?: string | null;
-    };
-  } | null;
-};
-
-export function mapContributionToCardData(
-  contribution: ContributionQueryData,
-  type: 'post' | 'memo' | 'whiteboard' | 'link'
-): ContributionCardData {
-  return {
-    id: contribution.id,
-    type,
-    title: contribution.profile.displayName,
-    description: contribution.profile.description ?? undefined,
-    href: contribution.profile.url,
-    tags: contribution.profile.tagset?.tags ?? [],
-    previewUrl: contribution.profile.visual?.uri,
-    author: contribution.createdBy?.profile
-      ? {
-          name: contribution.createdBy.profile.displayName,
-          avatarUrl: contribution.createdBy.profile.avatar?.uri,
-        }
-      : undefined,
-    createdDate: contribution.createdDate,
-    linkUrl: contribution.link?.uri,
-    linkDescription: contribution.link?.profile?.description ?? undefined,
-    linkIsFile: contribution.link?.uri ? isFileAttachmentUrl(contribution.link.uri) : undefined,
-  };
-}
-
 /**
  * Maps a contribution from the CalloutContributions query (union of post/whiteboard/memo/link)
  * to ContributionCardData. Extracts the correct sub-object from the union.

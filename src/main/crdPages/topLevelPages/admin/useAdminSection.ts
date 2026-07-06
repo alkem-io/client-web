@@ -26,5 +26,3 @@ export const useAdminSection = () => {
 
   return { activeSection, onSectionChange };
 };
-
-export default useAdminSection;

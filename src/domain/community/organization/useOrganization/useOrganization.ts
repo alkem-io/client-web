@@ -52,6 +52,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
 
   const { data: orgRolesData, loading: orgRolesLoading } = useRolesOrganizationQuery({
     variables: {
+      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
       organizationId: organizationId!,
     },
     skip: !organizationId || !canReadUsers,

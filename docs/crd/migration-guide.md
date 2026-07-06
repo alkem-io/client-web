@@ -4,8 +4,10 @@
 > (Client Re-Design — shadcn/ui + Tailwind CSS + Radix UI). **That migration is
 > done.** MUI and Emotion were fully removed in story #9885 (epic #1888): the
 > `@mui/*` and `@emotion/*` packages are uninstalled, no source file imports them,
-> the legacy `src/core/ui/` MUI design system and the `designVersion` toggle are
-> deleted, and CRD is the sole design system. There is no MUI/CRD coexistence and
+> the legacy `src/core/ui/` MUI design system was removed (its surviving files were
+> de-MUI'd in place — `src/core/ui/` remains as MUI-free shared modules, not deleted
+> outright) and the `designVersion` toggle was deleted, and CRD is the sole design
+> system. There is no MUI/CRD coexistence and
 > no per-route toggle — every route renders its CRD page.
 >
 > There is nothing left to migrate. Build new client-facing features directly in

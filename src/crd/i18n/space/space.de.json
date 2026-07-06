@@ -282,7 +282,8 @@
     "postUnsavedCloseCancel": "Weiter bearbeiten",
     "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
-    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut."
+    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
+    "contributors": "Mitwirkende"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -490,7 +491,8 @@
     "maxPollOptions": "Höchstens {{count}} Optionen sind erlaubt",
     "pollOptionRequired": "Der Optionstext ist erforderlich",
     "referenceTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird",
-    "linkRowTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird"
+    "linkRowTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird",
+    "contributorTypesRequired": "Wählen Sie mindestens einen Mitwirkenden-Typ aus."
   },
   "forms": {
     "titleLabel": "Titel",
@@ -849,5 +851,36 @@
   },
   "activity": {
     "dialogTitle": "Letzte Aktivität"
+  },
+  "contributors": {
+    "title": "Mitwirkende",
+    "search": "Nach Namen suchen…",
+    "empty": "Keine Mitwirkenden anzuzeigen.",
+    "emptySearch": "Keine Mitwirkenden entsprechen Ihrer Suche.",
+    "noLocationData": "Keine Standortdaten",
+    "noLocationDescription": "Für diese Mitwirkenden sind keine Standortdaten hinterlegt.",
+    "viewList": "Liste",
+    "viewMap": "Karte",
+    "types": {
+      "user": "Personen",
+      "organization": "Organisationen",
+      "virtualContributor": "Virtuelle Mitwirkende"
+    },
+    "counts": {
+      "users": "{{count}} Personen",
+      "organizations": "{{count}} Organisationen",
+      "virtualContributors": "{{count}} virtuelle Mitwirkende"
+    },
+    "config": {
+      "title": "Mitwirkende",
+      "description": "Zeigen Sie die Mitwirkenden dieser Community als selbst aktualisierende Sammlung an.",
+      "typesLabel": "Mitwirkenden-Typen",
+      "typesHint": "Wählen Sie mindestens einen Typ aus.",
+      "defaultTypeLabel": "Standardtyp",
+      "defaultTypeHint": "Der zuerst angezeigte Typ.",
+      "defaultViewLabel": "Standardanzeige",
+      "viewList": "Liste",
+      "viewMap": "Karte"
+    }
   }
 }
