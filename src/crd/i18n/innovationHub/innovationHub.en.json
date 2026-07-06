@@ -39,6 +39,8 @@
     "tabs": {
       "about": "About",
       "spaces": "Spaces",
+      "packs": "Innovation Packs",
+      "virtualContributors": "Virtual Contributors",
       "navAria": "Settings sections"
     },
     "header": {
@@ -146,17 +148,105 @@
         "removed": "Space removed.",
         "reordered": "Order updated.",
         "error": "Action failed."
+      }
+    },
+    "packs": {
+      "title": "Innovation Packs",
+      "subtitle": "Manage which Innovation Packs appear on the Innovation Hub home page. Drag to reorder.",
+      "columns": {
+        "name": "Name",
+        "templates": "Templates",
+        "provider": "Provider",
+        "actions": "Actions"
       },
-      "addDialog": {
-        "title": "Add Space by URL",
-        "description": "Paste the full URL of an Alkemio Space to add it to this hub.",
-        "placeholder": "https://alkem.io/welcome-space",
+      "actions": {
+        "add": "Add Innovation Pack",
+        "remove": "Remove"
+      },
+      "removeAria": "Remove {{name}} from this hub",
+      "dragHandle": "Drag to reorder",
+      "empty": "No Innovation Packs have been added yet. Use Add Innovation Pack to include one.",
+      "confirmRemove": {
+        "title": "Remove Innovation Pack?",
+        "body": "Remove “{{name}}” from this Innovation Hub? The Innovation Pack itself is not deleted; it just no longer appears on the hub home page.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "added": "Innovation Pack added.",
+        "removed": "Innovation Pack removed.",
+        "reordered": "Order updated.",
+        "error": "Action failed."
+      }
+    },
+    "virtualContributors": {
+      "title": "Virtual Contributors",
+      "subtitle": "Manage which Virtual Contributors appear on the Innovation Hub home page. Drag to reorder.",
+      "columns": {
+        "name": "Name",
+        "provider": "Provider",
+        "actions": "Actions"
+      },
+      "actions": {
+        "add": "Add Virtual Contributor",
+        "remove": "Remove"
+      },
+      "removeAria": "Remove {{name}} from this hub",
+      "dragHandle": "Drag to reorder",
+      "empty": "No Virtual Contributors have been added yet. Use Add Virtual Contributor to include one.",
+      "confirmRemove": {
+        "title": "Remove Virtual Contributor?",
+        "body": "Remove “{{name}}” from this Innovation Hub? The Virtual Contributor itself is not deleted; it just no longer appears on the hub home page.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "added": "Virtual Contributor added.",
+        "removed": "Virtual Contributor removed.",
+        "reordered": "Order updated.",
+        "error": "Action failed."
+      }
+    },
+    "addResourceDialog": {
+      "candidatesTab": "From this account",
+      "urlTab": "Add by URL",
+      "addToHub": "Add to the Innovation Hub",
+      "candidatesLoading": "Loading available resources…",
+      "close": "Close",
+      "url": {
         "submit": "Add",
-        "cancel": "Cancel",
         "validating": "Validating URL…",
+        "submitError": "Something went wrong while adding it. Please try again."
+      },
+      "space": {
+        "title": "Add Space",
+        "description": "Pick one of this account's Spaces, or add any Space on Alkemio by URL.",
+        "candidatesEmpty": "All of this account's Spaces are already in this hub.",
+        "candidatesAria": "Spaces available to add",
+        "urlLabel": "Space URL",
+        "urlPlaceholder": "https://alkem.io/welcome-space",
         "invalid": "We couldn't find a Space at that URL.",
-        "duplicate": "That Space is already in this hub.",
-        "submitError": "Something went wrong while adding the Space. Please try again."
+        "duplicate": "That Space is already in this hub."
+      },
+      "pack": {
+        "title": "Add Innovation Pack",
+        "description": "Pick one of this account's Innovation Packs, or add any Innovation Pack on Alkemio by URL.",
+        "candidatesEmpty": "All of this account's Innovation Packs are already in this hub.",
+        "candidatesAria": "Innovation Packs available to add",
+        "urlLabel": "Innovation Pack URL",
+        "urlPlaceholder": "https://alkem.io/innovation-packs/example",
+        "invalid": "We couldn't find an Innovation Pack at that URL.",
+        "duplicate": "That Innovation Pack is already in this hub."
+      },
+      "virtualContributor": {
+        "title": "Add Virtual Contributor",
+        "description": "Pick one of this account's Virtual Contributors, or add any Virtual Contributor on Alkemio by URL.",
+        "candidatesEmpty": "All of this account's Virtual Contributors are already in this hub.",
+        "candidatesAria": "Virtual Contributors available to add",
+        "urlLabel": "Virtual Contributor URL",
+        "urlPlaceholder": "https://alkem.io/vc/example",
+        "invalid": "We couldn't find a Virtual Contributor at that URL.",
+        "duplicate": "That Virtual Contributor is already in this hub."
       }
     }
   },
