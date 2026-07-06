@@ -122,8 +122,8 @@ export type OrganizationProfileSidebarProps = {
   labels: {
     bioTitle: string;
     bioEmpty: string;
+    /** Heading for the non-social "Links" section — rendered via the shared `ReferencesList`, omitted when empty (FR-023, correction 2026-06-24). `referencesEmpty` was removed in the same change. */
     referencesTitle: string;
-    referencesEmpty: string;
     /**
      * Receives `totalCount` from `metrics[Associate]` and returns the localized
      * heading (e.g., "Associates (12)"). Implemented as a closure so the

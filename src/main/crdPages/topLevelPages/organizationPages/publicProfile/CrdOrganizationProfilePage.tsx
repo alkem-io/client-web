@@ -119,7 +119,6 @@ export const CrdOrganizationProfilePage = () => {
           bioTitle: t('orgProfile.sidebar.bioTitle'),
           bioEmpty: t('orgProfile.sidebar.bioEmpty'),
           referencesTitle: t('orgProfile.sidebar.referencesTitle'),
-          referencesEmpty: t('orgProfile.sidebar.referencesEmpty'),
           associatesTitle: count => t('orgProfile.sidebar.associatesCount', { count }),
           associatesSignInCta: t('associates-view.sign-in', { ns: 'crd-common' }),
           associatesShowMore: count => t('associates-view.more', { ns: 'crd-common', count }),
