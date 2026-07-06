@@ -17,9 +17,16 @@ type SpaceCollectionConnectorProps = {
 
 export function SpaceCollectionConnector({ calloutId, className }: SpaceCollectionConnectorProps) {
   const navigate = useNavigate();
-  const { subspaces } = useCrdSpaceSubspaces(calloutId);
+  const { subspaces, loading } = useCrdSpaceSubspaces(calloutId);
 
   const handleSubspaceClick = (space: SpaceCardData) => navigate(space.href);
 
-  return <SpaceCollection className={className} subspaces={subspaces} onSubspaceClick={handleSubspaceClick} />;
+  return (
+    <SpaceCollection
+      className={className}
+      subspaces={subspaces}
+      loading={loading}
+      onSubspaceClick={handleSubspaceClick}
+    />
+  );
 }

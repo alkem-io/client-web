@@ -2,7 +2,7 @@ import { useSpaceCollectionSubspacesQuery } from '@/core/apollo/generated/apollo
 import { SpaceSortMode } from '@/core/apollo/generated/graphql-schema';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
-import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
+import { mapSubspacesToCardDataList } from '@/main/crdPages/space/dataMappers/subspaceCardDataMapper';
 
 /**
  * Data layer for a Spaces-collection callout (feature 013, T004).
