@@ -1,16 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCalloutContributionQuery, useMemoMarkdownLazyQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useCalloutContributionQuery,
+  useDeleteContributionMutation,
+  useMemoMarkdownLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   CalloutContributionType,
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
 import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
 import { CalloutWhiteboardContributionPreview } from '@/crd/components/callout/CalloutWhiteboardContributionPreview';
 import { ShareButton } from '@/crd/components/common/ShareButton';
 import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -274,6 +281,14 @@ export function CalloutDetailDialogConnector({
   const [framingMemoOpen, setFramingMemoOpen] = useState(false);
   const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  // Trash icon in the contribution-preview title bar → confirmation → delete
+  // mutation (Golden Rule #9: the icon only stages the id, never mutates).
+  const [confirmDeleteContribution, setConfirmDeleteContribution] = useState<
+    { id: string; title: string; kind: 'post' | 'whiteboard' } | undefined
+  >(undefined);
+  const [deletingContribution, setDeletingContribution] = useState(false);
+  const notify = useNotification();
+  const [deleteContribution] = useDeleteContributionMutation();
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -423,6 +438,9 @@ export function CalloutDetailDialogConnector({
   const canEditSelectedPost =
     postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
     false;
+  const canDeleteSelectedPost =
+    postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ??
+    false;
 
   // Whiteboard contribution data — drives the inline preview (header + thumbnail
   // + click-to-open overlay). MUI parity: clicking a whiteboard card surfaces
@@ -439,6 +457,51 @@ export function CalloutDetailDialogConnector({
     whiteboardContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(
       AuthorizationPrivilege.Update
     ) ?? false;
+  const canDeleteSelectedWhiteboard =
+    whiteboardContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.Delete
+    ) ?? false;
+
+  const handleDeleteContributionConfirm = async () => {
+    if (!confirmDeleteContribution) return;
+    setDeletingContribution(true);
+    try {
+      await deleteContribution({
+        variables: { contributionId: confirmDeleteContribution.id },
+        awaitRefetchQueries: true,
+        refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+      });
+      // Clear the inline preview too — otherwise the grid refreshes without the
+      // contribution but the preview keeps rendering its cached snapshot.
+      if (confirmDeleteContribution.kind === 'post') {
+        setPostContributionId(undefined);
+        setPostId(undefined);
+      } else {
+        setWhiteboardEditorOpen(false);
+        setWhiteboardContributionId(undefined);
+      }
+      setConfirmDeleteContribution(undefined);
+    } catch (err) {
+      logError(new Error('Contribution delete failed', { cause: err as Error }));
+      notify(t('deleteContribution.saveFailed'), 'error');
+    } finally {
+      setDeletingContribution(false);
+    }
+  };
+
+  const deleteContributionDialog = (
+    <ConfirmationDialog
+      open={confirmDeleteContribution !== undefined}
+      onOpenChange={isOpen => !isOpen && setConfirmDeleteContribution(undefined)}
+      title={t('deleteContribution.title')}
+      description={t('deleteContribution.description', { title: confirmDeleteContribution?.title ?? '' })}
+      confirmLabel={t('deleteContribution.confirm')}
+      cancelLabel={t('dialogs.cancel')}
+      onConfirm={handleDeleteContributionConfirm}
+      variant="destructive"
+      loading={deletingContribution}
+    />
+  );
 
   const selectedWhiteboardContributionSlot =
     whiteboardContributionId && contributionType === CalloutContributionType.Whiteboard ? (
@@ -462,6 +525,16 @@ export function CalloutDetailDialogConnector({
         }}
         onOpen={() => setWhiteboardEditorOpen(true)}
         onEdit={canEditSelectedWhiteboard ? () => setWhiteboardEditorOpen(true) : undefined}
+        onDelete={
+          canDeleteSelectedWhiteboard
+            ? () =>
+                setConfirmDeleteContribution({
+                  id: whiteboardContributionId,
+                  title: selectedWhiteboard?.profile.displayName ?? '',
+                  kind: 'whiteboard',
+                })
+            : undefined
+        }
         onClose={() => setWhiteboardContributionId(undefined)}
         shareSlot={
           selectedWhiteboard?.profile?.url ? (
@@ -501,6 +574,16 @@ export function CalloutDetailDialogConnector({
           references: selectedPost?.profile.references?.map(mapReferenceToStripData),
         }}
         onEdit={canEditSelectedPost ? () => setPostEditOpen(true) : undefined}
+        onDelete={
+          canDeleteSelectedPost
+            ? () =>
+                setConfirmDeleteContribution({
+                  id: postContributionId,
+                  title: selectedPost?.profile.displayName ?? '',
+                  kind: 'post',
+                })
+            : undefined
+        }
         onClose={() => {
           setPostContributionId(undefined);
           setPostId(undefined);
@@ -659,6 +742,7 @@ export function CalloutDetailDialogConnector({
         {framingMemoOverlay}
         {framingCollaboraOverlay}
         {shareDialog}
+        {deleteContributionDialog}
       </>
     );
   }
@@ -717,6 +801,7 @@ export function CalloutDetailDialogConnector({
       {framingMemoOverlay}
       {framingCollaboraOverlay}
       {shareDialog}
+      {deleteContributionDialog}
     </>
   );
 }

@@ -1120,6 +1120,38 @@ export const CalloutDetailsFragmentDoc = gql`
     link {
       ...LinkDetailsWithAuthorization
     }
+    post {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    whiteboard {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    memo {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    collaboraDocument {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
   }
   comments {
     ...CommentsWithMessages
