@@ -266,7 +266,7 @@
     "tagsPlaceholder": "Tag hinzufügen und Enter drücken",
     "references": "Referenzen",
     "listedInStore": "Im Store gelistet",
-    "listedInStoreHint": "Zeige dieses Pack in der Innovation Library.",
+    "listedInStoreHint": "Zeige dieses Pack in den Best practices.",
     "searchVisibility": "Such-Sichtbarkeit",
     "searchVisibilityOptions": {
       "public": "Öffentlich",
@@ -320,9 +320,9 @@
     "manage": "Dieses Pack verwalten"
   },
   "library": {
-    "title": "Innovationsbibliothek",
+    "title": "Best practices",
     "subtitle": "Entdecke Vorlagen und Innovation Packs aus der gesamten Plattform.",
-    "pageTitle": "Innovationsbibliothek",
+    "pageTitle": "Best practices",
     "loadedOfTotal": "{{loaded}} von {{total}}",
     "packs": {
       "heading": "Innovation Packs",

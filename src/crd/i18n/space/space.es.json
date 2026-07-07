@@ -457,9 +457,38 @@
   },
   "deleteCallout": {
     "title": "¿Eliminar este aviso?",
-    "description": "“{{title}}” se eliminará de forma permanente, junto con sus contribuciones y comentarios. Esta acción no se puede deshacer.",
+    "description": "“{{title}}” se eliminará de forma permanente. Esta acción no se puede deshacer.",
     "confirm": "Eliminar",
+    "confirmAll": "Eliminar el $t(common.callout) y todo su contenido",
+    "headerContributions_one": "Se eliminará {{count}} contribución",
+    "headerContributions_other": "Se eliminarán {{count}} contribuciones",
+    "headerRich": "Se eliminará {{content}}",
+    "headerRichContributions_one": "Se eliminarán {{content}} y {{count}} contribución",
+    "headerRichContributions_other": "Se eliminarán {{content}} y {{count}} contribuciones",
+    "headerRichPoll": "Se eliminarán la encuesta y sus resultados",
+    "headerRichPollContributions_one": "Se eliminarán la encuesta, sus resultados y {{count}} contribución",
+    "headerRichPollContributions_other": "Se eliminarán la encuesta, sus resultados y {{count}} contribuciones",
+    "callToAction": "Llamada a la acción",
+    "moreContributions_one": "{{count}} contribución más...",
+    "moreContributions_other": "{{count}} contribuciones más...",
+    "attachmentsNote": "incluidos los archivos y enlaces adjuntos",
+    "contentType": {
+      "whiteboard": "la pizarra",
+      "memo": "la nota",
+      "mediaGallery": "la galería multimedia",
+      "document": "el documento"
+    },
+    "moreLinks_one": "y {{count}} enlace más",
+    "moreLinks_other": "y {{count}} enlaces más",
+    "comments_one": "Se eliminará {{count}} comentario",
+    "comments_other": "Se eliminarán {{count}} comentarios",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+  },
+  "deleteContribution": {
+    "title": "¿Eliminar esta contribución?",
+    "description": "“{{title}}” se eliminará de forma permanente. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar",
+    "saveFailed": "No se pudo eliminar la contribución. Vuelve a intentarlo."
   },
   "saveAsTemplate": {
     "saveFailed": "No se pudo guardar la plantilla. Vuelve a intentarlo."
@@ -705,6 +734,7 @@
     "label": "Vista previa de la contribución seleccionada",
     "edit": "Editar respuesta",
     "share": "Compartir respuesta",
+    "delete": "Eliminar respuesta",
     "close": "Cerrar vista previa",
     "emptyDescription": "Sin descripción",
     "references": "Referencias"
@@ -719,6 +749,7 @@
     "label": "Vista previa del whiteboard seleccionado",
     "edit": "Editar whiteboard",
     "share": "Compartir whiteboard",
+    "delete": "Eliminar whiteboard",
     "close": "Cerrar vista previa",
     "openFull": "Haz clic para ver el whiteboard completo"
   },
@@ -752,6 +783,7 @@
   },
   "dialogs": {
     "cancel": "Cancelar",
+    "close": "Cerrar",
     "create": "Crear",
     "discardChanges": {
       "title": "¿Descartar tus cambios?",

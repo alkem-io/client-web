@@ -1,4 +1,4 @@
-import { Pencil, Presentation, X } from 'lucide-react';
+import { Pencil, Presentation, Trash2, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -24,6 +24,9 @@ type CalloutWhiteboardContributionPreviewProps = {
   onEdit?: () => void;
   /** Mount point for the share trigger (e.g. the CRD `ShareButton`). */
   shareSlot?: ReactNode;
+  /** Render the delete button when the consumer wires `onDelete` — the consumer
+   *  owns the confirmation (Golden Rule #9) and the mutation. */
+  onDelete?: () => void;
   /** Closing the preview returns to the contributions grid in the parent. */
   onClose?: () => void;
   className?: string;
@@ -43,6 +46,7 @@ export function CalloutWhiteboardContributionPreview({
   onOpen,
   onEdit,
   shareSlot,
+  onDelete,
   onClose,
   className,
 }: CalloutWhiteboardContributionPreviewProps) {
@@ -115,6 +119,17 @@ export function CalloutWhiteboardContributionPreview({
             </Button>
           )}
           {shareSlot}
+          {onDelete && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-destructive"
+              aria-label={t('whiteboardPreview.delete')}
+              onClick={onDelete}
+            >
+              <Trash2 className="w-4 h-4" aria-hidden="true" />
+            </Button>
+          )}
           {onClose && (
             <Button
               variant="ghost"

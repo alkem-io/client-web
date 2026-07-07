@@ -48,7 +48,32 @@ export type CalloutDetailsModel = CalloutModelLight & {
   settings: CalloutSettingsModelFull;
   contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
-  contributions: (Identifiable & { sortOrder: number })[];
+  contributions: CalloutContributionStub[];
+};
+
+type TitledStub = {
+  id: string;
+  profile: {
+    id: string;
+    displayName: string;
+    /** Markdown — preview material only (rendered clamped to one line). */
+    description?: string;
+  };
+};
+
+/**
+ * Contribution stub carried by the `CalloutDetails` fragment: sort order plus
+ * a title + description-preview stub of the contributed entity (exactly one is
+ * set), so the delete confirmation can name contributions without an extra
+ * query (feature 114).
+ */
+export type CalloutContributionStub = Identifiable & {
+  sortOrder: number;
+  post?: TitledStub;
+  whiteboard?: TitledStub;
+  memo?: TitledStub;
+  link?: LinkDetails;
+  collaboraDocument?: TitledStub;
 };
 
 /**
