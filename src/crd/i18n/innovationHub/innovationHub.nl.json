@@ -216,6 +216,7 @@
       "url": {
         "submit": "Toevoegen",
         "validating": "URL valideren…",
+        "submitting": "Toevoegen…",
         "submitError": "Er ging iets mis bij het toevoegen. Probeer het opnieuw."
       },
       "space": {

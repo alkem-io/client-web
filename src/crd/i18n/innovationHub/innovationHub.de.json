@@ -216,6 +216,7 @@
       "url": {
         "submit": "Hinzufügen",
         "validating": "URL wird validiert…",
+        "submitting": "Wird hinzugefügt…",
         "submitError": "Beim Hinzufügen ist etwas schiefgelaufen. Bitte erneut versuchen."
       },
       "space": {

@@ -90,14 +90,18 @@ export const CrdAddHubResourceDialog = ({
           avatarUrl: pack.profile.avatar?.uri || undefined,
         }));
     }
-    return (account.virtualContributors ?? [])
-      .filter(vc => !existingIds.includes(vc.id))
-      .map(vc => ({
-        id: vc.id,
-        displayName: vc.profile?.displayName ?? '',
-        description: vc.profile?.tagline || undefined,
-        avatarUrl: vc.profile?.avatar?.uri || undefined,
-      }));
+    return (
+      (account.virtualContributors ?? [])
+        // Profile-less VCs are dropped (consistent with mapAccountHostedResources) —
+        // a candidate card without a display name would render blank.
+        .filter(vc => vc.profile && !existingIds.includes(vc.id))
+        .map(vc => ({
+          id: vc.id,
+          displayName: vc.profile?.displayName ?? '',
+          description: vc.profile?.tagline || undefined,
+          avatarUrl: vc.profile?.avatar?.uri || undefined,
+        }))
+    );
   })();
 
   const labels: AddHubResourceDialogLabels = {

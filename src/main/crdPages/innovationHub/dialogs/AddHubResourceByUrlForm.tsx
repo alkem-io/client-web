@@ -11,6 +11,7 @@ import useResolveHubResourceUrl, {
 type Status =
   | { kind: 'idle' }
   | { kind: 'validating' }
+  | { kind: 'submitting' }
   | { kind: 'invalid' }
   | { kind: 'duplicate' }
   | { kind: 'submitError' };
@@ -86,7 +87,8 @@ export const AddHubResourceByUrlForm = ({
   };
 
   const trimmedUrl = url.trim();
-  const submitDisabled = trimmedUrl === '' || !isValidUrl(trimmedUrl) || status.kind === 'validating';
+  const inFlight = status.kind === 'validating' || status.kind === 'submitting';
+  const submitDisabled = trimmedUrl === '' || !isValidUrl(trimmedUrl) || inFlight;
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -104,6 +106,7 @@ export const AddHubResourceByUrlForm = ({
       setStatus({ kind: 'duplicate' });
       return;
     }
+    setStatus({ kind: 'submitting' });
     try {
       await onAdd(result.id);
       if (requestIdRef.current !== currentRequestId) return;
@@ -134,7 +137,7 @@ export const AddHubResourceByUrlForm = ({
           type="url"
           value={url}
           onChange={handleUrlChange}
-          disabled={status.kind === 'validating'}
+          disabled={inFlight}
           placeholder={t(URL_PLACEHOLDER_KEYS[resourceType])}
           aria-invalid={errorMessage ? 'true' : undefined}
           aria-describedby={errorMessage ? 'add-hub-resource-url-error' : undefined}
@@ -144,10 +147,14 @@ export const AddHubResourceByUrlForm = ({
             {errorMessage}
           </p>
         )}
-        {status.kind === 'validating' && (
+        {inFlight && (
           <p aria-live="polite" className="text-caption inline-flex items-center gap-1 text-muted-foreground">
             <Loader2 aria-hidden="true" className="size-3 animate-spin" />
-            {t('settings.addResourceDialog.url.validating')}
+            {t(
+              status.kind === 'submitting'
+                ? 'settings.addResourceDialog.url.submitting'
+                : 'settings.addResourceDialog.url.validating'
+            )}
           </p>
         )}
       </div>

@@ -216,6 +216,7 @@
       "url": {
         "submit": "Add",
         "validating": "Validating URL…",
+        "submitting": "Adding…",
         "submitError": "Something went wrong while adding it. Please try again."
       },
       "space": {
