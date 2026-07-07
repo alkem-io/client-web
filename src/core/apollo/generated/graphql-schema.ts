@@ -14513,6 +14513,34 @@ export type UpdateCalloutContentMutation = {
               | undefined;
           }
         | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
     }>;
     comments?:
       | {
@@ -14959,6 +14987,34 @@ export type UpdateCalloutVisibilityMutation = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+          }
+        | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     }>;
@@ -16705,6 +16761,34 @@ export type CreateCalloutMutation = {
               | undefined;
           }
         | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
     }>;
     comments?:
       | {
@@ -17297,6 +17381,54 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            post?:
+              | {
+                  __typename?: 'Post';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
+            collaboraDocument?:
+              | {
+                  __typename?: 'CollaboraDocument';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           }>;
           comments?:
             | {
@@ -17779,6 +17911,34 @@ export type CalloutDetailsFragment = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+        }
+      | undefined;
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
   }>;
