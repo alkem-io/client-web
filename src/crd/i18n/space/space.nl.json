@@ -216,7 +216,7 @@
     "documentReplaceCurrentTitleLabel": "Huidig document",
     "documentReplaceTitleFieldLabel": "Titel",
     "documentReplaceConfirm": "Bestand vervangen",
-    "documentReplaceErrorSameType": "De vervanging moet hetzelfde soort document zijn als het huidige.",
+    "documentReplaceErrorSameType": "De vervanging moet hetzelfde soort document zijn als het huidige: {{type}} ({{ext}}).",
     "documentReplaceSuccess": "Bestand vervangen.",
     "documentReplaceError": "Kon het bestand niet vervangen. Probeer het opnieuw.",
     "comments": "{{count}} reacties",

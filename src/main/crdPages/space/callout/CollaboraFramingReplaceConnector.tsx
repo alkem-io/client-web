@@ -119,19 +119,28 @@ export function CollaboraFramingReplaceConnector({
     setTitleValue(filenameWithoutExtension(next.name));
   };
 
+  // In the replace flow the accepted set is exactly the current document's
+  // type/extension (FR-006), so an unsupported file AND a wrong-but-allowed
+  // OfficeDocs type both mean the same thing: it must match the current
+  // document. Name the expected type when we know it, and only fall back to the
+  // generic allowlist message for an unmapped current type.
+  const sameTypeMessage =
+    currentTypeLabel && currentExtension
+      ? t('callout.documentReplaceErrorSameType', { type: currentTypeLabel, ext: currentExtension })
+      : t('callout.documentImportErrorUnsupported', { formats: formatList });
+
   const importErrorMessage: string | null = importError
     ? (() => {
         switch (importError.kind) {
           case 'extension':
-            return t('callout.documentImportErrorUnsupported', { formats: formatList });
+          case 'different-type':
+            return sameTypeMessage;
           case 'size':
             return t('callout.documentImportErrorTooLarge', { cap: capMb });
           case 'multiple-files':
             return t('callout.documentImportErrorMultiple');
           case 'folder':
             return t('callout.documentImportErrorFolder');
-          case 'different-type':
-            return t('callout.documentReplaceErrorSameType');
           default:
             return null;
         }

@@ -216,7 +216,7 @@
     "documentReplaceCurrentTitleLabel": "Document actuel",
     "documentReplaceTitleFieldLabel": "Titre",
     "documentReplaceConfirm": "Remplacer le fichier",
-    "documentReplaceErrorSameType": "Le remplacement doit être le même type de document que l'actuel.",
+    "documentReplaceErrorSameType": "Le remplacement doit être le même type de document que l'actuel : {{type}} ({{ext}}).",
     "documentReplaceSuccess": "Fichier remplacé.",
     "documentReplaceError": "Impossible de remplacer le fichier. Veuillez réessayer.",
     "comments": "{{count}} commentaires",

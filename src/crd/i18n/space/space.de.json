@@ -216,7 +216,7 @@
     "documentReplaceCurrentTitleLabel": "Aktuelles Dokument",
     "documentReplaceTitleFieldLabel": "Titel",
     "documentReplaceConfirm": "Datei ersetzen",
-    "documentReplaceErrorSameType": "Die Ersatzdatei muss dieselbe Art von Dokument sein wie die aktuelle.",
+    "documentReplaceErrorSameType": "Die Ersatzdatei muss dieselbe Art von Dokument sein wie die aktuelle: {{type}} ({{ext}}).",
     "documentReplaceSuccess": "Datei ersetzt.",
     "documentReplaceError": "Die Datei konnte nicht ersetzt werden. Bitte versuchen Sie es erneut.",
     "comments": "{{count}} Kommentare",

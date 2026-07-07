@@ -216,7 +216,7 @@
     "documentReplaceCurrentTitleLabel": "Текущ документ",
     "documentReplaceTitleFieldLabel": "Заглавие",
     "documentReplaceConfirm": "Замяна на файла",
-    "documentReplaceErrorSameType": "Заместващият файл трябва да е същият вид документ като текущия.",
+    "documentReplaceErrorSameType": "Заместващият файл трябва да е същият вид документ като текущия: {{type}} ({{ext}}).",
     "documentReplaceSuccess": "Файлът е заменен.",
     "documentReplaceError": "Файлът не можа да бъде заменен. Моля, опитайте отново.",
     "comments": "{{count}} коментара",

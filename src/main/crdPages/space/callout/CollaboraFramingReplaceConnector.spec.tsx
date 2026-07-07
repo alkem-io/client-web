@@ -106,20 +106,22 @@ describe('CollaboraFramingReplaceConnector', () => {
     expect(screen.getByText(hint)).toBeInTheDocument();
   });
 
+  // Current document is a Wordprocessing doc, so any non-matching pick (an
+  // unsupported format OR a wrong-but-allowed OfficeDocs type) must name the
+  // expected type: "Word Document (.docx)".
+  const sameTypeExpected = enJson.callout.documentReplaceErrorSameType
+    .replace('{{type}}', 'Word Document')
+    .replace('{{ext}}', '.docx');
+
   it.each([
-    [
-      'unsupported extension',
-      'notes.pdf',
-      1024,
-      enJson.callout.documentImportErrorUnsupported.replace('{{formats}}', '.docx, .xlsx, .pptx'),
-    ],
+    ['unsupported extension', 'notes.pdf', 1024, sameTypeExpected],
     [
       'oversized file',
       'big.docx',
       16 * 1024 * 1024,
       enJson.callout.documentImportErrorTooLarge.replace('{{cap}}', '15'),
     ],
-    ['different document type', 'budget.xlsx', 1024, enJson.callout.documentReplaceErrorSameType],
+    ['different document type', 'budget.xlsx', 1024, sameTypeExpected],
   ])('blocks a %s with its message and does not call the mutation', async (_label, name, size, expectedMessage) => {
     const variableMatcher = vi.fn().mockReturnValue(true);
     const mocks: MockedResponse[] = [

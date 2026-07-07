@@ -244,7 +244,7 @@
     "documentReplaceCurrentTitleLabel": "Current document",
     "documentReplaceTitleFieldLabel": "Title",
     "documentReplaceConfirm": "Replace file",
-    "documentReplaceErrorSameType": "The replacement must be the same kind of document as the current one.",
+    "documentReplaceErrorSameType": "The replacement must be the same kind of document as the current one: {{type}} ({{ext}}).",
     "documentReplaceSuccess": "File replaced.",
     "documentReplaceError": "Couldn't replace the file. Please try again.",
     "addLinkOrFile": "Add link or file",
