@@ -71,7 +71,7 @@ export function MemoContributionAddConnector({
           markdown: defaultMarkdown ?? '',
         },
       },
-      refetchQueries: ['CalloutContributions'],
+      refetchQueries: ['CalloutDetails', 'CalloutContributions'],
       awaitRefetchQueries: true,
     });
     onCreated?.();
