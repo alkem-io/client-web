@@ -2274,7 +2274,7 @@ export type CreateInnovationFlowStateSettingsInput = {
 export type CreateInnovationHubOnAccountInput = {
   /** The Account where the InnovationHub is to be created. */
   accountID: Scalars['UUID']['input'];
-  /** The Innovation Packs curated for this Innovation Hub. When omitted, defaults to all Innovation Packs of the Account. */
+  /** The Innovation Packs curated for this Innovation Hub. When omitted, the Innovation Hub is created with no Innovation Packs. */
   innovationPackListFilter?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
@@ -2287,7 +2287,7 @@ export type CreateInnovationHubOnAccountInput = {
   subdomain: Scalars['String']['input'];
   /** The type of Innovation Hub. */
   type: InnovationHubType;
-  /** The Virtual Contributors curated for this Innovation Hub. When omitted, defaults to all Virtual Contributors of the Account. */
+  /** The Virtual Contributors curated for this Innovation Hub. When omitted, the Innovation Hub is created with no Virtual Contributors. */
   virtualContributorListFilter?: InputMaybe<Array<Scalars['UUID']['input']>>;
 };
 
