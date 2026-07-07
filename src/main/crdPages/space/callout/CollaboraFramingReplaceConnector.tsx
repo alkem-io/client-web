@@ -78,7 +78,11 @@ export function CollaboraFramingReplaceConnector({
     ? t('callout.documentReplaceAccepts', { ext: currentExtension, cap: capMb })
     : t('callout.documentImportMaxSize', { cap: capMb });
 
-  /** Clear the staged file + its derived title (used on cancel and every rejection). */
+  /**
+   * Clear the staged file + its derived title. Used on cancel and on client-side
+   * rejections; server-side rejections intentionally keep the file staged (the
+   * user retries via the always-visible `serverErrorMessage` alert).
+   */
   const clearStagedFile = () => {
     setFile(null);
     setTitleValue('');

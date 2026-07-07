@@ -39,6 +39,16 @@ export const collaboraExtensionForType = (type: CollaboraDocumentType | string):
   DOCUMENT_TYPE_TO_EXTENSION[type as CollaboraDocumentType];
 
 /**
+ * True when a document of this type can be replaced in Phase 1 — i.e. we know a
+ * Phase-1 extension for it (the same map that drives the same-type pre-check,
+ * FR-006). A type with no Phase-1 extension (e.g. Drawing) is **not** replaceable:
+ * every allowed file would fail the same-type check, so the Replace action is
+ * suppressed rather than opening a dialog that can only reject.
+ */
+export const isReplaceableCollaboraDocumentType = (type: CollaboraDocumentType | string): boolean =>
+  collaboraExtensionForType(type) !== undefined;
+
+/**
  * i18n key for the human-readable name of a document type, reusing the labels
  * the create-flow type picker already ships. Lets the replace dialog *say what
  * the current document is* (e.g. "Presentation"). `undefined` for an unmapped type.

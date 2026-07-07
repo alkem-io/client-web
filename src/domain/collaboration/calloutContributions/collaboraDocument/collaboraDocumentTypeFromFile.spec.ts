@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
-import { collaboraDocumentTypeFromFilename, isSameCollaboraDocumentType } from './collaboraDocumentTypeFromFile';
+import {
+  collaboraDocumentTypeFromFilename,
+  isReplaceableCollaboraDocumentType,
+  isSameCollaboraDocumentType,
+} from './collaboraDocumentTypeFromFile';
 
 describe('collaboraDocumentTypeFromFilename', () => {
   it.each([
@@ -29,5 +33,19 @@ describe('isSameCollaboraDocumentType', () => {
 
   it('is false for an unknown extension', () => {
     expect(isSameCollaboraDocumentType('new.pdf', CollaboraDocumentType.Wordprocessing)).toBe(false);
+  });
+});
+
+describe('isReplaceableCollaboraDocumentType', () => {
+  it.each([
+    CollaboraDocumentType.Wordprocessing,
+    CollaboraDocumentType.Spreadsheet,
+    CollaboraDocumentType.Presentation,
+  ])('is true for the Phase-1 type %s', type => {
+    expect(isReplaceableCollaboraDocumentType(type)).toBe(true);
+  });
+
+  it('is false for Drawing (no Phase-1 extension — Replace would dead-end)', () => {
+    expect(isReplaceableCollaboraDocumentType(CollaboraDocumentType.Drawing)).toBe(false);
   });
 });
