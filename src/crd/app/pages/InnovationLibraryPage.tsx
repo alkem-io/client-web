@@ -48,7 +48,7 @@ export function InnovationLibraryPage() {
   return (
     <div className="crd-root mx-auto w-full max-w-7xl space-y-6 px-4 py-6">
       <header className="space-y-1">
-        <h1 className="text-page-title">Innovation Library</h1>
+        <h1 className="text-page-title">Template Library</h1>
         <p className="text-body text-muted-foreground">
           Mock preview of the public <code className="text-caption">InnovationLibraryView</code> with packs + every
           template type. Use the type combobox beside the Templates heading to filter; click a card to preview.

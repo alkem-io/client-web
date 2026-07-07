@@ -458,9 +458,38 @@
   },
   "deleteCallout": {
     "title": "Supprimer ce $t(common.callout) ?",
-    "description": "« {{title}} » sera définitivement supprimé, ainsi que ses contributions et commentaires. Cette action est irréversible.",
+    "description": "« {{title}} » sera définitivement supprimé. Cette action est irréversible.",
     "confirm": "Supprimer",
+    "confirmAll": "Supprimer l’$t(common.callout) et tout son contenu",
+    "headerContributions_one": "{{count}} contribution sera supprimée",
+    "headerContributions_other": "{{count}} contributions seront supprimées",
+    "headerRich": "{{content}} sera supprimé(e)",
+    "headerRichContributions_one": "{{content}} et {{count}} contribution seront supprimés",
+    "headerRichContributions_other": "{{content}} et {{count}} contributions seront supprimés",
+    "headerRichPoll": "Le sondage et ses résultats seront supprimés",
+    "headerRichPollContributions_one": "Le sondage, ses résultats et {{count}} contribution seront supprimés",
+    "headerRichPollContributions_other": "Le sondage, ses résultats et {{count}} contributions seront supprimés",
+    "callToAction": "Appel à l'action",
+    "moreContributions_one": "{{count}} contribution de plus...",
+    "moreContributions_other": "{{count}} contributions de plus...",
+    "attachmentsNote": "y compris les fichiers et liens joints",
+    "contentType": {
+      "whiteboard": "Le tableau blanc",
+      "memo": "Le mémo",
+      "mediaGallery": "La galerie multimédia",
+      "document": "Le document"
+    },
+    "moreLinks_one": "et {{count}} autre lien",
+    "moreLinks_other": "et {{count}} autres liens",
+    "comments_one": "{{count}} commentaire sera supprimé",
+    "comments_other": "{{count}} commentaires seront supprimés",
     "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+  },
+  "deleteContribution": {
+    "title": "Supprimer cette contribution ?",
+    "description": "« {{title}} » sera définitivement supprimé. Cette action est irréversible.",
+    "confirm": "Supprimer",
+    "saveFailed": "Impossible de supprimer la contribution. Veuillez réessayer."
   },
   "saveAsTemplate": {
     "saveFailed": "Impossible d'enregistrer le modèle. Veuillez réessayer."
@@ -706,6 +735,7 @@
     "label": "Aperçu de la contribution sélectionnée",
     "edit": "Modifier la réponse",
     "share": "Partager la réponse",
+    "delete": "Supprimer la réponse",
     "close": "Fermer l'aperçu",
     "emptyDescription": "Aucune description",
     "references": "Références"
@@ -720,6 +750,7 @@
     "label": "Aperçu du whiteboard sélectionné",
     "edit": "Modifier le whiteboard",
     "share": "Partager le whiteboard",
+    "delete": "Supprimer le whiteboard",
     "close": "Fermer l'aperçu",
     "openFull": "Cliquez pour voir le whiteboard complet"
   },
@@ -753,6 +784,7 @@
   },
   "dialogs": {
     "cancel": "Annuler",
+    "close": "Fermer",
     "create": "Créer",
     "discardChanges": {
       "title": "Abandonner vos modifications ?",

@@ -458,9 +458,38 @@
   },
   "deleteCallout": {
     "title": "Deze $t(common.callout) verwijderen?",
-    "description": "“{{title}}” wordt definitief verwijderd, samen met de bijdragen en reacties. Deze actie kan niet ongedaan worden gemaakt.",
+    "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
     "confirm": "Verwijderen",
+    "confirmAll": "$t(common.Callout) en alle inhoud verwijderen",
+    "headerContributions_one": "{{count}} bijdrage wordt verwijderd",
+    "headerContributions_other": "{{count}} bijdragen worden verwijderd",
+    "headerRich": "{{content}} wordt verwijderd",
+    "headerRichContributions_one": "{{content}} en {{count}} bijdrage worden verwijderd",
+    "headerRichContributions_other": "{{content}} en {{count}} bijdragen worden verwijderd",
+    "headerRichPoll": "De peiling en de resultaten worden verwijderd",
+    "headerRichPollContributions_one": "De peiling, de resultaten en {{count}} bijdrage worden verwijderd",
+    "headerRichPollContributions_other": "De peiling, de resultaten en {{count}} bijdragen worden verwijderd",
+    "callToAction": "Oproep tot actie",
+    "moreContributions_one": "nog {{count}} bijdrage...",
+    "moreContributions_other": "nog {{count}} bijdragen...",
+    "attachmentsNote": "inclusief bijgevoegde bestanden en links",
+    "contentType": {
+      "whiteboard": "Het whiteboard",
+      "memo": "De memo",
+      "mediaGallery": "De mediagalerij",
+      "document": "Het document"
+    },
+    "moreLinks_one": "en nog {{count}} link",
+    "moreLinks_other": "en nog {{count}} links",
+    "comments_one": "{{count}} reactie wordt verwijderd",
+    "comments_other": "{{count}} reacties worden verwijderd",
     "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
+  },
+  "deleteContribution": {
+    "title": "Deze bijdrage verwijderen?",
+    "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+    "confirm": "Verwijderen",
+    "saveFailed": "De bijdrage kon niet worden verwijderd. Probeer het opnieuw."
   },
   "saveAsTemplate": {
     "saveFailed": "De template kon niet worden opgeslagen. Probeer het opnieuw."
@@ -706,6 +735,7 @@
     "label": "Voorbeeld van geselecteerde bijdrage",
     "edit": "Reactie bewerken",
     "share": "Reactie delen",
+    "delete": "Reactie verwijderen",
     "close": "Voorbeeld sluiten",
     "emptyDescription": "Geen beschrijving",
     "references": "Referenties"
@@ -720,6 +750,7 @@
     "label": "Voorbeeld van geselecteerd whiteboard",
     "edit": "Whiteboard bewerken",
     "share": "Whiteboard delen",
+    "delete": "Whiteboard verwijderen",
     "close": "Voorbeeld sluiten",
     "openFull": "Klik om het volledige whiteboard te zien"
   },
@@ -753,6 +784,7 @@
   },
   "dialogs": {
     "cancel": "Annuleren",
+    "close": "Sluiten",
     "create": "Maken",
     "discardChanges": {
       "title": "Wijzigingen verwerpen?",
