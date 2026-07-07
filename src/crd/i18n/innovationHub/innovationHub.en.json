@@ -5,7 +5,6 @@
     "collapseWidth": "Collapse to default width",
     "spacesSection": {
       "title": "{{hubName}} Spaces",
-      "empty": "No Spaces have been added to this hub yet.",
       "loading": "Loading Spaces…",
       "searchPlaceholder": "Search Spaces…",
       "showingCount": "Showing {{visible}} of {{total}} Spaces",

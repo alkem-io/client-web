@@ -5,7 +5,6 @@
     "collapseWidth": "Inklappen naar standaardbreedte",
     "spacesSection": {
       "title": "{{hubName}} Spaces",
-      "empty": "Er zijn nog geen Spaces aan deze hub toegevoegd.",
       "loading": "Spaces laden…",
       "searchPlaceholder": "Spaces zoeken…",
       "showingCount": "{{visible}} van {{total}} Spaces weergegeven",

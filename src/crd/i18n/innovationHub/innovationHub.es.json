@@ -5,7 +5,6 @@
     "collapseWidth": "Contraer al ancho predeterminado",
     "spacesSection": {
       "title": "Espacios de {{hubName}}",
-      "empty": "Aún no se han añadido espacios a este hub.",
       "loading": "Cargando espacios…",
       "searchPlaceholder": "Buscar espacios…",
       "showingCount": "Mostrando {{visible}} de {{total}} espacios",

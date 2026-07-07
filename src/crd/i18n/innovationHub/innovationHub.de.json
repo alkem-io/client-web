@@ -5,7 +5,6 @@
     "collapseWidth": "Auf Standardbreite zurücksetzen",
     "spacesSection": {
       "title": "{{hubName}} Spaces",
-      "empty": "Diesem Hub wurden noch keine Spaces hinzugefügt.",
       "loading": "Spaces werden geladen…",
       "searchPlaceholder": "Spaces suchen…",
       "showingCount": "{{visible}} von {{total}} Spaces werden angezeigt",

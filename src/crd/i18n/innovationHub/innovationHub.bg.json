@@ -5,7 +5,6 @@
     "collapseWidth": "Свий до стандартна ширина",
     "spacesSection": {
       "title": "Пространства на {{hubName}}",
-      "empty": "Все още няма добавени пространства в този хъб.",
       "loading": "Зареждане на пространства…",
       "searchPlaceholder": "Търсене на пространства…",
       "showingCount": "Показани {{visible}} от {{total}} пространства",
