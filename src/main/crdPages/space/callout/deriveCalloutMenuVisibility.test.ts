@@ -112,6 +112,34 @@ describe('deriveCalloutMenuVisibility', () => {
     expect(perms.saveAsTemplateDisabled).toBe(false);
   });
 
+  it('Replace file hidden for a non-document callout even with Update', () => {
+    const perms = deriveCalloutMenuVisibility(withUpdate({ isCollaboraDocument: false }));
+    expect(perms.showReplace).toBe(false);
+  });
+
+  it('Replace file hidden for a document callout without edit rights', () => {
+    const perms = deriveCalloutMenuVisibility({
+      ...baseInput,
+      isCollaboraDocument: true,
+      collaboraDocumentType: 'WORDPROCESSING',
+    });
+    expect(perms.showReplace).toBe(false);
+  });
+
+  it('Replace file shown for an editable Phase-1 document callout', () => {
+    const perms = deriveCalloutMenuVisibility(
+      withUpdate({ isCollaboraDocument: true, collaboraDocumentType: 'WORDPROCESSING' })
+    );
+    expect(perms.showReplace).toBe(true);
+  });
+
+  it('Replace file hidden for a non-Phase-1 document type (Drawing would dead-end)', () => {
+    const perms = deriveCalloutMenuVisibility(
+      withUpdate({ isCollaboraDocument: true, collaboraDocumentType: 'DRAWING' })
+    );
+    expect(perms.showReplace).toBe(false);
+  });
+
   it('Move items hidden when the feed has no neighbours (isTop === isBottom)', () => {
     const perms = deriveCalloutMenuVisibility(withUpdate({ hasMoveNeighbours: false }));
     expect(perms.movable).toBe(false);
