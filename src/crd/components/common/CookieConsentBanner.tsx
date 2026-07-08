@@ -25,6 +25,10 @@ export function CookieConsentBanner({ ref, onAcceptAll, onConfirm }: CookieConse
   return (
     <div
       ref={ref}
+      // Interacting with the banner must never dismiss an open modal (Radix
+      // treats clicks outside its layer as backdrop dismisses — e.g. accepting
+      // cookies used to close the subspace About dialog and lose the context).
+      data-dialog-dismiss-ignore=""
       className="crd-root pointer-events-auto fixed inset-x-0 bottom-0 z-[1500] border-t border-border bg-card text-card-foreground shadow-lg"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 p-4">
