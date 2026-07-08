@@ -49,7 +49,7 @@ function CrdSignUpPage() {
   // that URL after registering + verifying (parity with MUI `SignUp`). The cookie
   // survives the email-verification round-trip, even across a new tab.
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
-  const { setReturnUrl } = useReturnUrl();
+  const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
   useEffect(() => {
     setReturnUrl(returnUrl);
   }, [returnUrl]);
@@ -107,7 +107,13 @@ function CrdSignUpPage() {
           <SignUpCard
             descriptor={descriptor}
             isLoading={loading}
-            signInHref={buildLoginUrl()}
+            signInHref={
+              // Carry the destination into the sign-in link: buildLoginUrl()
+              // with no argument defaults the param to home, and the login
+              // route STORES the param — a bare link would clobber the saved
+              // destination for a user who switches to sign-in.
+              buildLoginUrl(returnUrl ?? storedReturnUrl)
+            }
             termsOfUseHref={locations?.terms ?? '#'}
             privacyPolicyHref={locations?.privacy ?? '#'}
             hasAcceptedTerms={accepted}

@@ -17,7 +17,11 @@ const cookieDomain = (() => {
   return parts.length >= 2 ? `.${parts.slice(-2).join('.')}` : undefined;
 })();
 
-const returnUrlCookieOptions = { path: '/', domain: cookieDomain, sameSite: 'lax' } as const;
+// maxAge (1h) makes this a persistent cookie: a session cookie dies with the
+// browser session, so a first-time user who registers, closes the browser, and
+// opens the verification email later would lose the return destination and
+// land on home after signing in.
+const returnUrlCookieOptions = { path: '/', domain: cookieDomain, sameSite: 'lax', maxAge: 3600 } as const;
 
 type UseReturnUrlProvided = {
   returnUrl: string | undefined;

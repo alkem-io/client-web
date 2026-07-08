@@ -29,6 +29,9 @@ export type UseSpaceApplyFlowParams = {
 export type UseSpaceApplyFlowResult = {
   loading: boolean;
   isMember: boolean;
+  /** True once the viewer submitted an application in this session — lets
+   * close paths distinguish a fresh applicant from a merely-browsing visitor. */
+  hasApplied: boolean;
   buttonProps: Omit<SpaceAboutApplyButtonProps, 'className'>;
   dialogs: ReactNode;
 };
@@ -139,6 +142,7 @@ export function useSpaceApplyFlow({
   return {
     loading,
     isMember: applicationButtonProps.isMember,
+    hasApplied,
     buttonProps,
     dialogs,
   };
