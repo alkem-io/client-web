@@ -37,6 +37,9 @@ const FRAMING_CHIP_TO_SERVER: Record<FramingChip, CalloutFramingType> = {
   image: CalloutFramingType.MediaGallery,
   poll: CalloutFramingType.Poll,
   contributors: CalloutFramingType.Contributors,
+  // Feature 013: the "Subspaces" chip. Config-free — the SPACES framing carries no
+  // settings/config; only framing profile (name/description) is sent (FR-004b).
+  spaces: CalloutFramingType.Spaces,
 };
 
 const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionType | undefined> = {

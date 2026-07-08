@@ -203,12 +203,22 @@
     "documentImportOr": "o",
     "documentImportHint": "Arrastra un archivo o haz clic para subirlo",
     "documentImportMaxSize": ".docx, .xlsx, .pptx hasta {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} hasta {{cap}} MB",
     "documentImportRemoveFile": "Eliminar archivo",
     "documentImportErrorUnsupported": "Este tipo de archivo no es compatible. Prueba con {{formats}}.",
     "documentImportErrorTooLarge": "El archivo es demasiado grande. Tamaño máximo: {{cap}} MB.",
     "documentImportErrorMultiple": "Arrastra solo un archivo a la vez.",
     "documentImportErrorFolder": "Arrastra un archivo, no una carpeta.",
     "documentImportErrorServiceUnavailable": "El servicio de documentos no está disponible temporalmente. Inténtalo de nuevo en un momento.",
+    "documentReplace": "Reemplazar archivo",
+    "documentReplaceTitle": "Reemplazar archivo",
+    "documentReplaceDescription": "Subir un reemplazo sobrescribe el archivo actual para todos y no se puede deshacer.",
+    "documentReplaceCurrentTitleLabel": "Documento actual",
+    "documentReplaceTitleFieldLabel": "Título",
+    "documentReplaceConfirm": "Reemplazar archivo",
+    "documentReplaceErrorSameType": "El reemplazo debe ser el mismo tipo de documento que el actual: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Archivo reemplazado.",
+    "documentReplaceError": "No se pudo reemplazar el archivo. Inténtalo de nuevo.",
     "comments": "{{count}} comentarios",
     "commentsZero": "0 comentarios",
     "expandComments": "Expandir comentarios",
@@ -283,7 +293,8 @@
     "uploadAfterCreateFailed": "El aviso se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición del aviso.",
     "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo.",
     "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
-    "contributors": "Colaboradores"
+    "contributors": "Colaboradores",
+    "subspaces": "Subespacios"
   },
   "contribution": {
     "edit": "Editar",
@@ -482,6 +493,7 @@
     "moreLinks_other": "y {{count}} enlaces más",
     "comments_one": "Se eliminará {{count}} comentario",
     "comments_other": "Se eliminarán {{count}} comentarios",
+    "success": "El aviso “{{title}}” se ha eliminado.",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
   },
   "deleteContribution": {
@@ -926,6 +938,13 @@
       "defaultViewLabel": "Visualización predeterminada",
       "viewList": "Lista",
       "viewMap": "Mapa"
+    }
+  },
+  "spaceCollection": {
+    "search": "Buscar subespacios...",
+    "empty": {
+      "title": "Aún no hay subespacios",
+      "description": "Este espacio aún no tiene subespacios."
     }
   }
 }

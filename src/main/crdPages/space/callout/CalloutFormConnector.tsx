@@ -81,8 +81,9 @@ import { TemplateImportConnector } from './TemplateImportConnector';
 
 /**
  * The full create-mode framing chip set, in display order. `contributors`
- * (feature 008) is included here but admin-gated by the connector before being
- * passed to `FramingChipStrip` (FR-004a); a non-admin gets every chip except it.
+ * (feature 008) and `spaces` (feature 013) are included here but admin-gated by
+ * the connector before being passed to `FramingChipStrip` (FR-004a); a non-admin
+ * gets every chip except those two.
  */
 const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
   'whiteboard',
@@ -92,7 +93,16 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
   'image',
   'poll',
   'contributors',
+  'spaces',
 ];
+
+/**
+ * Admin-only framing chips (feature 008 `contributors`, feature 013 `spaces`).
+ * Both are offered only to space admins (`permissions.canUpdate`) and only in a
+ * collaboration context — never a VC knowledge base, which passes its own
+ * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
+ */
+const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -188,21 +198,24 @@ function CalloutFormConnectorInner({
   // (read further below). `spaceContextLoading` is the entitlements query flag.
   const { entitlements, permissions, loading: spaceContextLoading } = useSpace();
 
-  // The "Contributors" framing chip (feature 008) is admin-only (FR-004a) and
-  // offered only in space/community (collaboration) callout contexts — never a VC
-  // knowledge base (FR-004f). The VC-KB flow passes
-  // `restrictions.allowedFramingChips = []` (None-only), so it never lists
-  // contributors; any other explicit `allowedFramingChips` likewise opts in
-  // deliberately. For the default collaboration flow we build the allow-list
-  // explicitly so the chip is gated to space admins instead of shown to everyone.
-  const canCreateContributorsCallout = permissions.canUpdate;
+  // The "Contributors" (008) and "Subspaces" (013) framing chips are admin-only
+  // (FR-004a) and offered only in space/community (collaboration) callout contexts
+  // — never a VC knowledge base (FR-004d/FR-004f). The VC-KB flow passes
+  // `restrictions.allowedFramingChips = []` (None-only), so it never lists them;
+  // any other explicit `allowedFramingChips` likewise opts in deliberately. For the
+  // default collaboration flow we build the allow-list explicitly so the two admin
+  // chips are gated to space admins instead of shown to everyone. Neither chip is
+  // level-restricted — both appear on L0 and L1 collaboration spaces (a Subspaces
+  // callout on an L1 lists that space's subspaces); only auto-provisioning is
+  // L0-only (server-side, FR-004e).
+  const isSpaceAdmin = permissions.canUpdate;
   const framingAllowList: FramingChipId[] | undefined = (() => {
     if (mode !== 'create') return undefined; // edit mode: never hide an existing type
     if (restrictions?.allowedFramingChips) return restrictions.allowedFramingChips;
-    // Default collaboration flow: all chips, with `contributors` gated to admins.
-    return canCreateContributorsCallout
+    // Default collaboration flow: all chips, with the admin-only chips gated.
+    return isSpaceAdmin
       ? DEFAULT_FRAMING_CHIPS
-      : DEFAULT_FRAMING_CHIPS.filter(chip => chip !== 'contributors');
+      : DEFAULT_FRAMING_CHIPS.filter(chip => !ADMIN_ONLY_FRAMING_CHIPS.includes(chip));
   })();
   const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
   const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;

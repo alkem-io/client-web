@@ -231,12 +231,22 @@
     "documentImportOr": "or",
     "documentImportHint": "Drag & drop a file, or click to upload",
     "documentImportMaxSize": ".docx, .xlsx, .pptx up to {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} up to {{cap}} MB",
     "documentImportRemoveFile": "Remove file",
     "documentImportErrorUnsupported": "This file type isn't supported. Try {{formats}}.",
     "documentImportErrorTooLarge": "File is too large. Maximum size is {{cap}} MB.",
     "documentImportErrorMultiple": "Drop a single file at a time.",
     "documentImportErrorFolder": "Drop a single file, not a folder.",
     "documentImportErrorServiceUnavailable": "Document service is temporarily unavailable. Please try again in a moment.",
+    "documentReplace": "Replace file",
+    "documentReplaceTitle": "Replace file",
+    "documentReplaceDescription": "Uploading a replacement overwrites the current file for everyone, and this can't be undone.",
+    "documentReplaceCurrentTitleLabel": "Current document",
+    "documentReplaceTitleFieldLabel": "Title",
+    "documentReplaceConfirm": "Replace file",
+    "documentReplaceErrorSameType": "The replacement must be the same kind of document as the current one: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "File replaced.",
+    "documentReplaceError": "Couldn't replace the file. Please try again.",
     "addLinkOrFile": "Add link or file",
     "createLink": "Add links or attach documents",
     "editLink": "Edit link",
@@ -283,7 +293,8 @@
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
     "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
-    "contributors": "Contributors"
+    "contributors": "Contributors",
+    "subspaces": "Subspaces"
   },
   "contribution": {
     "edit": "Edit",
@@ -482,6 +493,7 @@
     "moreLinks_other": "and {{count}} more links",
     "comments_one": "{{count}} comment will be deleted",
     "comments_other": "{{count}} comments will be deleted",
+    "success": "$t(common.Callout) “{{title}}” was deleted.",
     "saveFailed": "Could not delete the $t(common.callout). Please try again."
   },
   "deleteContribution": {
@@ -926,6 +938,13 @@
       "defaultViewLabel": "Default display",
       "viewList": "List",
       "viewMap": "Map"
+    }
+  },
+  "spaceCollection": {
+    "search": "Search subspaces...",
+    "empty": {
+      "title": "No subspaces yet",
+      "description": "This space has no subspaces yet."
     }
   }
 }

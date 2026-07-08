@@ -1405,17 +1405,6 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
   }
 }
     ${VisualModelFragmentDoc}`;
-export const AccountResourceProfileFragmentDoc = gql`
-    fragment AccountResourceProfile on Profile {
-  id
-  displayName
-  tagline
-  url
-  avatar: visual(type: AVATAR) {
-    ...VisualModel
-  }
-}
-    ${VisualModelFragmentDoc}`;
 export const FullLocationFragmentDoc = gql`
     fragment fullLocation on Location {
   id
@@ -1915,16 +1904,68 @@ export const InnovationHubSettingsFragmentDoc = gql`
   id
   nameID
   subdomain
+  account {
+    id
+  }
   profile {
     ...InnovationHubProfile
   }
   spaceListFilter {
     ...InnovationHubSpace
   }
+  innovationPackListFilter {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+    templatesSet {
+      id
+      calloutTemplatesCount
+      spaceTemplatesCount
+      communityGuidelinesTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+  virtualContributorListFilter {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
   spaceVisibilityFilter
 }
     ${InnovationHubProfileFragmentDoc}
 ${InnovationHubSpaceFragmentDoc}`;
+export const AccountResourceProfileFragmentDoc = gql`
+    fragment AccountResourceProfile on Profile {
+  id
+  displayName
+  tagline
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualModel
+  }
+}
+    ${VisualModelFragmentDoc}`;
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
@@ -1946,11 +1987,42 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   spaceListFilter {
     id
   }
+  innovationPackListFilter {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      url
+    }
+    templatesSet {
+      id
+      calloutTemplatesCount
+      spaceTemplatesCount
+      communityGuidelinesTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
+    }
+    provider {
+      ...InnovationPackProviderProfileWithAvatar
+    }
+  }
+  virtualContributorListFilter {
+    id
+    profile {
+      ...AccountResourceProfile
+    }
+  }
   authorization {
     myPrivileges
   }
 }
-    `;
+    ${TagsetDetailsFragmentDoc}
+${InnovationPackProviderProfileWithAvatarFragmentDoc}
+${AccountResourceProfileFragmentDoc}`;
 export const ConfigurationFragmentDoc = gql`
     fragment Configuration on Config {
   authentication {
@@ -8152,6 +8224,55 @@ export type DeleteCollaboraDocumentMutationResult = Apollo.MutationResult<Schema
 export type DeleteCollaboraDocumentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCollaboraDocumentMutation,
   SchemaTypes.DeleteCollaboraDocumentMutationVariables
+>;
+export const ReplaceCollaboraDocumentDocument = gql`
+    mutation ReplaceCollaboraDocument($file: Upload!, $replaceData: ReplaceCollaboraDocumentInput!) {
+  replaceCollaboraDocument(file: $file, replaceData: $replaceData) {
+    id
+  }
+}
+    `;
+export type ReplaceCollaboraDocumentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ReplaceCollaboraDocumentMutation,
+  SchemaTypes.ReplaceCollaboraDocumentMutationVariables
+>;
+
+/**
+ * __useReplaceCollaboraDocumentMutation__
+ *
+ * To run a mutation, you first call `useReplaceCollaboraDocumentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReplaceCollaboraDocumentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [replaceCollaboraDocumentMutation, { data, loading, error }] = useReplaceCollaboraDocumentMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      replaceData: // value for 'replaceData'
+ *   },
+ * });
+ */
+export function useReplaceCollaboraDocumentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ReplaceCollaboraDocumentMutation,
+    SchemaTypes.ReplaceCollaboraDocumentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.ReplaceCollaboraDocumentMutation,
+    SchemaTypes.ReplaceCollaboraDocumentMutationVariables
+  >(ReplaceCollaboraDocumentDocument, options);
+}
+export type ReplaceCollaboraDocumentMutationHookResult = ReturnType<typeof useReplaceCollaboraDocumentMutation>;
+export type ReplaceCollaboraDocumentMutationResult =
+  Apollo.MutationResult<SchemaTypes.ReplaceCollaboraDocumentMutation>;
+export type ReplaceCollaboraDocumentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ReplaceCollaboraDocumentMutation,
+  SchemaTypes.ReplaceCollaboraDocumentMutationVariables
 >;
 export const UpdateCollaboraDocumentDocument = gql`
     mutation UpdateCollaboraDocument($updateData: UpdateCollaboraDocumentInput!) {
@@ -28152,6 +28273,89 @@ export function refetchContributorCollectionByTypeQuery(
   variables: SchemaTypes.ContributorCollectionByTypeQueryVariables
 ) {
   return { query: ContributorCollectionByTypeDocument, variables: variables };
+}
+export const SpaceCollectionSubspacesDocument = gql`
+    query SpaceCollectionSubspaces($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        subspaces {
+          ...SubspaceCard
+        }
+      }
+    }
+  }
+}
+    ${SubspaceCardFragmentDoc}`;
+
+/**
+ * __useSpaceCollectionSubspacesQuery__
+ *
+ * To run a query within a React component, call `useSpaceCollectionSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCollectionSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCollectionSubspacesQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useSpaceCollectionSubspacesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceCollectionSubspacesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceCollectionSubspacesQuery, SchemaTypes.SpaceCollectionSubspacesQueryVariables>(
+    SpaceCollectionSubspacesDocument,
+    options
+  );
+}
+export function useSpaceCollectionSubspacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  >(SpaceCollectionSubspacesDocument, options);
+}
+export function useSpaceCollectionSubspacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceCollectionSubspacesQuery,
+        SchemaTypes.SpaceCollectionSubspacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  >(SpaceCollectionSubspacesDocument, options);
+}
+export type SpaceCollectionSubspacesQueryHookResult = ReturnType<typeof useSpaceCollectionSubspacesQuery>;
+export type SpaceCollectionSubspacesLazyQueryHookResult = ReturnType<typeof useSpaceCollectionSubspacesLazyQuery>;
+export type SpaceCollectionSubspacesSuspenseQueryHookResult = ReturnType<
+  typeof useSpaceCollectionSubspacesSuspenseQuery
+>;
+export type SpaceCollectionSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCollectionSubspacesQuery,
+  SchemaTypes.SpaceCollectionSubspacesQueryVariables
+>;
+export function refetchSpaceCollectionSubspacesQuery(variables: SchemaTypes.SpaceCollectionSubspacesQueryVariables) {
+  return { query: SpaceCollectionSubspacesDocument, variables: variables };
 }
 export const FlowStateSearchDocument = gql`
     query FlowStateSearch($searchData: SearchInput!) {

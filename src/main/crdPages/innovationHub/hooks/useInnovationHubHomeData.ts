@@ -1,15 +1,23 @@
+import { useTranslation } from 'react-i18next';
 import { useDashboardSpacesQuery, useInnovationHubByIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import {
   type InnovationHubHomeInnovationHubFragment,
   InnovationHubType,
   SpaceVisibility,
 } from '@/core/apollo/generated/graphql-schema';
+import type { VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
 import type { InnovationHubHomeData } from '@/crd/components/innovationHub/InnovationHubHome';
+import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import type { SpaceWithParent } from '@/main/crdPages/spaces/SpaceExplorerPage';
-import { mapInnovationHubSpaces, mapInnovationHubToHomeData } from '../dataMappers/mapInnovationHubToHomeData';
+import {
+  mapInnovationHubPacks,
+  mapInnovationHubSpaces,
+  mapInnovationHubToHomeData,
+  mapInnovationHubVirtualContributors,
+} from '../dataMappers/mapInnovationHubToHomeData';
 
 export type UseInnovationHubHomeDataInput =
   | { kind: 'byId'; id: string }
@@ -20,6 +28,10 @@ export type UseInnovationHubHomeDataResult = {
   data: InnovationHubHomeData | undefined;
   /** The hub's Spaces — recomputed independently as the Spaces query resolves. */
   spaces: SpaceCardData[];
+  /** The hub's curated Innovation Packs — empty when the list is empty or its slice failed to resolve (FR-010). */
+  packs: InnovationPackCardData[];
+  /** The hub's curated Virtual Contributors — empty when the list is empty or its slice failed to resolve (FR-010). */
+  virtualContributors: VirtualContributorCardItem[];
   hub: InnovationHubHomeInnovationHubFragment | undefined;
   loading: boolean;
   /** The Spaces query is in flight (the hub itself has already resolved). */
@@ -62,11 +74,12 @@ export const useInnovationHubHomeData = (input: UseInnovationHubHomeDataInput): 
 
   const { isAuthenticated } = useCurrentUserContext();
   const { locations } = useConfig();
+  const { t } = useTranslation('crd-innovationHub');
 
   const loading = byIdActive && hubByIdLoading;
 
   if (!resolvedHub) {
-    return { data: undefined, spaces: [], hub: undefined, loading, spacesLoading };
+    return { data: undefined, spaces: [], packs: [], virtualContributors: [], hub: undefined, loading, spacesLoading };
   }
 
   // Header data depends only on the (stable) hub — kept separate from `spaces` so it
@@ -85,5 +98,15 @@ export const useInnovationHubHomeData = (input: UseInnovationHubHomeDataInput): 
     isAuthenticated
   );
 
-  return { data, spaces, hub: resolvedHub, loading, spacesLoading };
+  // Curated packs/VCs resolve on the hub fragment itself (stored order, already
+  // visibility-filtered by the server). A slice the server could not resolve
+  // arrives as null and maps to [] — the section is simply omitted, the rest of
+  // the page renders as usual (FR-010).
+  const packs = mapInnovationHubPacks(resolvedHub);
+  const virtualContributors = mapInnovationHubVirtualContributors(
+    resolvedHub,
+    t('home.virtualContributorsSection.vcType')
+  );
+
+  return { data, spaces, packs, virtualContributors, hub: resolvedHub, loading, spacesLoading };
 };
