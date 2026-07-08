@@ -4,7 +4,7 @@ import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, Trash2 } from '
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
-import { InlineEditText } from '@/crd/components/common/InlineEditText';
+// import { InlineEditText } from '@/crd/components/common/InlineEditText'; // in-place title editing disabled for now
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
@@ -66,7 +66,7 @@ export function LayoutPoolColumn({
   column,
   otherColumns,
   showDescription,
-  onRenameColumn,
+  // onRenameColumn, // unused while in-place title editing is disabled #9963
   onMoveToColumn,
   onViewPost,
   columnMenuActions,
@@ -138,14 +138,18 @@ export function LayoutPoolColumn({
                 <GripVertical aria-hidden="true" className="size-4" />
               </button>
             )}
-            <InlineEditText
+            {/* #9963
+                In-place title editing (pencil) disabled for now —
+                Titles are still editable via the overflow menu → Edit details. */}
+            {/* <InlineEditText
               value={column.title}
               onChange={next => onRenameColumn(column.id, { title: next })}
               ariaLabel={t('layout.column.titleAriaLabel')}
               editAriaLabel={t('layout.column.editTitle')}
               placeholder={t('layout.column.titlePlaceholder')}
               className="min-w-0 flex-1 text-card-title"
-            />
+            /> */}
+            <span className="min-w-0 flex-1 truncate text-card-title">{column.title}</span>
             <ColumnOverflowMenu
               column={column}
               actions={columnMenuActions}
