@@ -53,7 +53,8 @@
     "cta": "Enlace",
     "image": "Galería",
     "poll": "Encuesta",
-    "contributors": "Colaboradores"
+    "contributors": "Colaboradores",
+    "spaces": "Subespacios"
   },
   "contributionType": {
     "post": "Publicaciones",

@@ -37,6 +37,7 @@ const FRAMING_TYPE_TO_POST_TYPE: Record<CalloutFramingType, PostType> = {
   [CalloutFramingType.Link]: 'callToAction',
   [CalloutFramingType.Poll]: 'poll',
   [CalloutFramingType.Contributors]: 'contributors',
+  [CalloutFramingType.Spaces]: 'spaces',
 };
 
 function mapFramingTypeToPostType(framingType: CalloutFramingType): PostType {

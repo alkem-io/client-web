@@ -53,6 +53,7 @@ import { MemoContributionConnector } from './MemoContributionConnector';
 import { MemoFramingConnector } from './MemoFramingConnector';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { PostContributionConnector } from './PostContributionConnector';
+import { SpaceCollectionConnector } from './SpaceCollectionConnector';
 import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
 import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
 import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
@@ -396,6 +397,11 @@ export function CalloutDetailDialogConnector({
     <ContributorCollectionConnector calloutId={callout.id} />
   ) : undefined;
 
+  // Spaces-collection body (feature 013) — the host space's subspaces as cards.
+  // Rendered in the detail dialog just like the inline feed card (LazyCalloutItem).
+  const hasSpaces = callout.framing.type === CalloutFramingType.Spaces;
+  const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
+
   const handleContributionClick = (contributionId: string, clickedEntityId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(contributionId);
@@ -673,7 +679,12 @@ export function CalloutDetailDialogConnector({
 
   const handleShareClick = () => setShareOpen(true);
   const settingsSlot = (
-    <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={handleShareClick} />
+    <CalloutSettingsConnector
+      callout={callout}
+      moveActions={moveActions}
+      onShare={handleShareClick}
+      onDeleted={() => onOpenChange(false)}
+    />
   );
 
   const shareDialog = <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />;
@@ -723,6 +734,7 @@ export function CalloutDetailDialogConnector({
           collaboraFramingSlot={collaboraFramingSlot}
           callToActionFramingSlot={callToActionFramingSlot}
           contributorsFramingSlot={contributorsFramingSlot}
+          spacesFramingSlot={spacesFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
@@ -784,6 +796,7 @@ export function CalloutDetailDialogConnector({
             collaboraFramingSlot={collaboraFramingSlot}
             callToActionFramingSlot={callToActionFramingSlot}
             contributorsFramingSlot={contributorsFramingSlot}
+            spacesFramingSlot={spacesFramingSlot}
             settingsSlot={settingsSlot}
             onShareClick={handleShareClick}
           />

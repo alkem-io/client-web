@@ -39,6 +39,12 @@ type CalloutSettingsConnectorProps = {
    * single dialog instance. When omitted, the Share menu item is hidden.
    */
   onShare?: () => void;
+  /**
+   * Fires after the callout has been deleted (FR-018). The detail dialog uses
+   * it to close itself — the feed card needs nothing, it unmounts when the
+   * feed list drops the deleted id.
+   */
+  onDeleted?: () => void;
 };
 
 /**
@@ -56,7 +62,7 @@ type CalloutSettingsConnectorProps = {
  * Share is owned by the parent connector via `onShare` (so the detail dialog's
  * header / reactions-bar Share buttons share state with the menu's Share item).
  */
-export function CalloutSettingsConnector({ callout, moveActions, onShare }: CalloutSettingsConnectorProps) {
+export function CalloutSettingsConnector({ callout, moveActions, onShare, onDeleted }: CalloutSettingsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
   const {
@@ -142,7 +148,9 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     setMutating(true);
     try {
       await deleteCallout(callout);
+      notify(t('deleteCallout.success', { title: callout.framing.profile.displayName }), 'success');
       setDeleteOpen(false);
+      onDeleted?.();
     } catch (err) {
       logError(new Error('Callout delete failed', { cause: err as Error }));
       notify(t('deleteCallout.saveFailed'), 'error');

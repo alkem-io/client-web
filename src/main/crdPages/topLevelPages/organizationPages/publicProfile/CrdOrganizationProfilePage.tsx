@@ -101,6 +101,7 @@ export const CrdOrganizationProfilePage = () => {
         avatarImageUrl: profile?.avatar?.uri ?? null,
         color,
         displayName: profile?.displayName ?? '',
+        tagline: profile?.tagline?.trim() || null,
         location,
         verified,
         settingsHref,
