@@ -7,6 +7,10 @@
 
 ## Clarifications
 
+### Session 2026-07-08
+
+- Q: After confirming, the deletion succeeded server-side but the callout stayed on the space board until a manual refresh, and a repeat delete attempt errored ("already deleted"). What must happen after a confirmed deletion? → A: The deleted callout MUST disappear immediately from every view that lists it (board feed, post index, dashboards) without a manual refresh, the person MUST receive a positive (green) confirmation that the deletion happened, and any open dialog showing the deleted callout MUST close. There is no server-side deletion subscription — the client is responsible for propagating the deletion to its own views.
+
 ### Session 2026-07-02
 
 - Q: How much data should the dialog fetch to build the content list? → A: Use only easily-available data — data that arrives with the callout's standard load: contribution titles + description previews and the exact total count, framing link/reference details, framing content type, and comment count. No extra query is issued when the dialog opens. Contributions render as a table headed by the exact total ("20 contributions will be deleted"), one row per listed contribution (bold title + one-line description preview), closed by a clip-icon row noting that their attached files and links will also be removed (attachments are not individually enumerable).
@@ -105,6 +109,8 @@ With the callout dialog open and a contribution selected, its preview title bar 
 - **FR-013**: On confirmation, the system MUST delete the callout and all of its contained content, and on failure MUST inform the person without leaving an inconsistent state.
 - **FR-015**: The selected-contribution preview's title bar MUST offer a trashcan (delete) control placed between the share and close controls, shown only to people with permission to delete that contribution.
 - **FR-016**: Clicking the trashcan MUST open a confirmation dialog naming the contribution before anything is deleted; confirming deletes only that contribution and returns to the contributions grid; cancelling performs no deletion; on failure the person is informed and the contribution is not silently lost.
+- **FR-017**: After a confirmed deletion succeeds, the callout MUST disappear immediately from every view that lists it — the space board feed, the post index, and any other cached listing — without requiring a manual page refresh (see Clarifications 2026-07-08). It MUST NOT remain interactable in a state where a second delete attempt can be issued against an already-deleted callout.
+- **FR-018**: After a confirmed deletion succeeds, the person MUST receive a positive (success-styled) notification confirming the deletion, and when the deletion was initiated from within the callout's detail dialog, that dialog MUST close.
 - **FR-014**: When a callout has comments (more than 0), the dialog MUST show a table row stating the comment count ("27 comments will be deleted", correct singular/plural), placed after the contribution rows and before the FR-007 attachments row. Comments count as content for the purposes of FR-008 (empty vs. content-bearing) and FR-009 (confirm-button scope).
 
 ### Key Entities *(include if feature involves data)*

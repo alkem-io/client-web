@@ -483,6 +483,7 @@
     "moreLinks_other": "et {{count}} autres liens",
     "comments_one": "{{count}} commentaire sera supprimé",
     "comments_other": "{{count}} commentaires seront supprimés",
+    "success": "La $t(common.callout) « {{title}} » a été supprimée.",
     "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
   },
   "deleteContribution": {

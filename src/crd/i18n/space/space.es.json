@@ -483,6 +483,7 @@
     "moreLinks_other": "y {{count}} enlaces más",
     "comments_one": "Se eliminará {{count}} comentario",
     "comments_other": "Se eliminarán {{count}} comentarios",
+    "success": "El aviso “{{title}}” se ha eliminado.",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
   },
   "deleteContribution": {

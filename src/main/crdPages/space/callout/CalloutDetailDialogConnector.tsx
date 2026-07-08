@@ -679,7 +679,12 @@ export function CalloutDetailDialogConnector({
 
   const handleShareClick = () => setShareOpen(true);
   const settingsSlot = (
-    <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={handleShareClick} />
+    <CalloutSettingsConnector
+      callout={callout}
+      moveActions={moveActions}
+      onShare={handleShareClick}
+      onDeleted={() => onOpenChange(false)}
+    />
   );
 
   const shareDialog = <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />;

@@ -255,6 +255,7 @@ export const MOCK_ORG_ALKEMIO = {
     avatarImageUrl: null as string | null,
     color: pickColorFromId('org-alkemio'),
     displayName: 'Alkemio Foundation',
+    tagline: 'Open digital infrastructure for collaboration' as string | null,
     location: 'Amsterdam, Netherlands',
     verified: true,
   },
