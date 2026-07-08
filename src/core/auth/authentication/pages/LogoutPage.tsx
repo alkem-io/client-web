@@ -19,8 +19,13 @@ async function cleanupPushSubscription(
     }
 
     if ('serviceWorker' in navigator) {
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
+      // getRegistration() resolves immediately (undefined when no SW), unlike
+      // navigator.serviceWorker.ready, which NEVER resolves without an active
+      // service worker — the SW only registers in PROD builds, so awaiting
+      // `.ready` hung the logout redirect forever on dev stacks (and would in
+      // prod for any user whose SW failed to activate).
+      const registration = await navigator.serviceWorker.getRegistration();
+      const subscription = await registration?.pushManager.getSubscription();
       if (subscription) {
         await subscription.unsubscribe();
       }
