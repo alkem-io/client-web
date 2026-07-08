@@ -13,7 +13,6 @@ import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions
 import { mapCollaboraFooterProps } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper';
 import { useCollaboraPostMessage } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraPostMessage';
 import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 
 type CollaboraFramingEditorOverlayProps = {
   open: boolean;
@@ -48,27 +47,13 @@ export function CollaboraFramingEditorOverlay({
   const { t } = useTranslation('crd-space');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated } = useAuthenticationContext();
-  const { userModel } = useCurrentUserContext();
   const notify = useNotification();
 
-  const { connectionStatus, saveStatus, connectedUsers, isReadOnly } = useCollaboraPostMessage(iframeRef, {
+  const rename = useRenameCollaboraDocument({ collaboraDocumentId, displayName: title, canRename });
+
+  const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
     onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
     onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
-    currentUserId: userModel?.id,
-  });
-
-  // The editor pencil follows the user's real edit access to the OPEN document — not just
-  // the callout/document Update privilege. Framing docs tie Update to the callout, so a user
-  // who can write in Collabora but isn't a callout editor wouldn't otherwise get the pencil.
-  // Authorization is an immediate yes for callout/document editors; Collabora's read-only
-  // signal (once it arrives) adds content-writers. (A rename the server ultimately rejects
-  // surfaces a graceful error via the rename hook.)
-  const canRenameInEditor = canRename || isReadOnly === false;
-
-  const rename = useRenameCollaboraDocument({
-    collaboraDocumentId,
-    displayName: title,
-    canRename: canRenameInEditor,
   });
 
   const footerProps = mapCollaboraFooterProps({
@@ -96,7 +81,7 @@ export function CollaboraFramingEditorOverlay({
           <div className="h-14 shrink-0 flex items-center justify-between px-4 border-b border-border bg-background gap-3">
             <div className="flex items-center gap-2 min-w-0">
               <TypeIcon className="size-5 shrink-0 text-primary" aria-hidden="true" />
-              {canRenameInEditor ? (
+              {canRename ? (
                 <>
                   {/* Keep an accessible dialog title; the visible title is the editable control. */}
                   <DialogTitle className="sr-only">{title}</DialogTitle>

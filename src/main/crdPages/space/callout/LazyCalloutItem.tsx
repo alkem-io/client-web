@@ -228,9 +228,11 @@ function LazyCalloutItemContent({
   // `canCreateContribution`.
   const hasContributionType = callout.settings.contribution.allowedTypes.length > 0;
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
+  // Editor-header pencil: content editors (UPDATE_CONTENT) may rename too, not just UPDATE holders.
   const canRenameFramingDocument = canRenameCollaboraDocument({
     documentPrivileges: callout.framing.collaboraDocument?.authorization?.myPrivileges,
     calloutPrivileges: callout.authorization?.myPrivileges,
+    includeContentEditors: true,
   });
 
   const contributionsPreview = hasContributionType ? (

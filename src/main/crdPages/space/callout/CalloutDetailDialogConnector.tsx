@@ -385,9 +385,11 @@ export function CalloutDetailDialogConnector({
   ) : undefined;
   const framingCollaboraDocument = callout.framing.collaboraDocument;
   const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
+  // Editor-header pencil: content editors (UPDATE_CONTENT) may rename too, not just UPDATE holders.
   const canRenameFramingDocument = canRenameCollaboraDocument({
     documentPrivileges: framingCollaboraDocument?.authorization?.myPrivileges,
     calloutPrivileges: callout.authorization?.myPrivileges,
+    includeContentEditors: true,
   });
 
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;

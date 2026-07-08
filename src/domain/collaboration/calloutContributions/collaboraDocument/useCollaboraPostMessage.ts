@@ -10,7 +10,6 @@ type CollaboraMessage = {
 
 type CollaboraView = {
   ViewId?: number | string;
-  UserId?: number | string;
   UserName?: string;
   Color?: string;
   ReadOnly?: boolean;
@@ -20,21 +19,12 @@ export type CollaboraIframeState = {
   connectionStatus: CollaboraConnectionStatus;
   saveStatus: CollaboraSaveStatus;
   connectedUsers: CollaboraConnectedUser[];
-  /**
-   * Whether the current user has the document open **read-only**, as reported by
-   * Collabora (per-view `ReadOnly` in `Views_List`). `undefined` until Collabora
-   * reports it — callers should treat `false` (not merely "not true") as the
-   * signal that the user can edit.
-   */
-  isReadOnly?: boolean;
   lastError?: string;
 };
 
 type Options = {
   onError?: (message: string) => void;
   onSessionClosed?: () => void;
-  /** The current user's id, used to find their own view in `Views_List` to read its read-only flag. */
-  currentUserId?: string;
 };
 
 /**
@@ -46,7 +36,7 @@ type Options = {
  */
 export function useCollaboraPostMessage(
   iframeRef: RefObject<HTMLIFrameElement | null>,
-  { onError, onSessionClosed, currentUserId }: Options = {}
+  { onError, onSessionClosed }: Options = {}
 ): CollaboraIframeState {
   const [state, setState] = useState<CollaboraIframeState>({
     connectionStatus: 'connecting',
@@ -64,12 +54,12 @@ export function useCollaboraPostMessage(
       const data = parseMessage(event.data);
       if (!data?.MessageId) return;
 
-      setState(prev => reduce(prev, data, { onError, onSessionClosed, currentUserId }));
+      setState(prev => reduce(prev, data, { onError, onSessionClosed }));
     };
 
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);
-  }, [iframeRef, onError, onSessionClosed, currentUserId]);
+  }, [iframeRef, onError, onSessionClosed]);
 
   return state;
 }
@@ -92,7 +82,7 @@ function parseMessage(raw: unknown): CollaboraMessage | null {
 function reduce(
   prev: CollaboraIframeState,
   msg: CollaboraMessage,
-  { onError, onSessionClosed, currentUserId }: Options
+  { onError, onSessionClosed }: Options
 ): CollaboraIframeState {
   const values = msg.Values ?? {};
 
@@ -129,14 +119,7 @@ function reduce(
           name: v.UserName ?? '',
           color: normalizeColor(v.Color),
         }));
-      // Identify the current user's own view to read its read-only flag: prefer an
-      // exact UserId match, else the sole view when the user is alone in the document.
-      // Leave `isReadOnly` untouched when we can't confidently identify the own view.
-      const ownView =
-        (currentUserId ? views.find(v => String(v.UserId) === currentUserId) : undefined) ??
-        (views.length === 1 ? views[0] : undefined);
-      const isReadOnly = typeof ownView?.ReadOnly === 'boolean' ? ownView.ReadOnly : prev.isReadOnly;
-      return { ...prev, connectedUsers, isReadOnly };
+      return { ...prev, connectedUsers };
     }
     case 'Error': {
       const message = typeof values.Cmd === 'string' ? values.Cmd : 'Collabora error';
