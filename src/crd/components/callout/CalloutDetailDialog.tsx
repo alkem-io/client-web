@@ -66,6 +66,8 @@ type CalloutDetailDialogProps = {
   callToActionFramingSlot?: ReactNode;
   /** Contributor collection (cards/map) rendered below description (feature 008) */
   contributorsFramingSlot?: ReactNode;
+  /** Subspaces collection (cards) rendered below description (feature 013) */
+  spacesFramingSlot?: ReactNode;
   onShareClick?: () => void;
   /**
    * 3-dots settings slot in the sticky-header cluster. Consumer injects a
@@ -99,6 +101,7 @@ export function CalloutDetailDialog({
   collaboraFramingSlot,
   callToActionFramingSlot,
   contributorsFramingSlot,
+  spacesFramingSlot,
   onShareClick,
   settingsSlot,
   commentsEnabled,
@@ -209,6 +212,7 @@ export function CalloutDetailDialog({
               {collaboraFramingSlot && <div className="pt-2">{collaboraFramingSlot}</div>}
               {callToActionFramingSlot && <div className="pt-2">{callToActionFramingSlot}</div>}
               {contributorsFramingSlot && <div className="pt-2">{contributorsFramingSlot}</div>}
+              {spacesFramingSlot && <div className="pt-2">{spacesFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 

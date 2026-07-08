@@ -12,6 +12,7 @@ const baseHub: InnovationHubSettingsFragment = {
   nameID: 'demo-name-id',
   subdomain: 'demo',
   spaceVisibilityFilter: undefined,
+  account: { id: 'account-1' },
   profile: {
     id: 'profile-1',
     displayName: 'Demo Innovation Hub',

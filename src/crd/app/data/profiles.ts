@@ -52,6 +52,7 @@ export const MOCK_ALEX_RIVERA = {
       'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     color: pickColorFromId('user-alex-rivera'),
     displayName: 'Alex Rivera',
+    tagline: 'Sustainable urban planning & civic technology',
     location: 'San Francisco, US',
   },
   bio:
@@ -219,6 +220,7 @@ export const MOCK_ME_USER = {
   hero: {
     ...MOCK_ALEX_RIVERA.hero,
     displayName: 'Sam Lee',
+    tagline: 'Building community-driven climate tools',
     avatarImageUrl: 'https://i.pravatar.cc/300?u=sam-lee' as string | null,
     color: pickColorFromId('user-me'),
     location: 'Amsterdam, Netherlands',

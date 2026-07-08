@@ -129,11 +129,13 @@ describe('HubSpacesSection — smaller cards + lazy load (US1)', () => {
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
   });
 
-  test('empty hub shows the empty-hub message and no search box', () => {
-    render(<HubSpacesSection spaces={[]} hubName="VNG" />);
-    expect(screen.getByText('home.spacesSection.empty')).toBeInTheDocument();
+  test('a hub with no Spaces renders nothing at all (no heading, no search box)', () => {
+    // FR-007 amendment 2026-07-07: an empty Spaces list hides the whole
+    // section, matching the packs/VCs sections.
+    const { container } = render(<HubSpacesSection spaces={[]} hubName="VNG" />);
+    expect(container).toBeEmptyDOMElement();
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument();
     expect(screen.queryByRole('searchbox')).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /loadMore/i })).not.toBeInTheDocument();
   });
 });
 

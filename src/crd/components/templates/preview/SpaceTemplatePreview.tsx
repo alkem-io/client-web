@@ -1,5 +1,6 @@
 import {
   FileText,
+  FolderTree,
   Image as ImageIcon,
   Lock,
   Megaphone,
@@ -30,6 +31,7 @@ const FRAMING_ICON: Record<FramingKind, ComponentType<SVGProps<SVGSVGElement>>> 
   image: ImageIcon,
   poll: Vote,
   contributors: Users,
+  spaces: FolderTree,
 };
 
 /**

@@ -12,8 +12,11 @@ import {
   InnovationHubAboutTab,
   type InnovationHubAboutTabProps,
 } from '@/crd/components/innovationHub/InnovationHubAboutTab';
+import { InnovationHubPacksTab } from '@/crd/components/innovationHub/InnovationHubPacksTab';
 import { InnovationHubSettingsShell } from '@/crd/components/innovationHub/InnovationHubSettingsShell';
-import { type HubSpacesTableRow, InnovationHubSpacesTab } from '@/crd/components/innovationHub/InnovationHubSpacesTab';
+import { InnovationHubSpacesTab } from '@/crd/components/innovationHub/InnovationHubSpacesTab';
+import { InnovationHubVirtualContributorsTab } from '@/crd/components/innovationHub/InnovationHubVirtualContributorsTab';
+import type { HubResourceType } from '@/domain/innovationHub/InnovationHubsSettings/useResolveHubResourceUrl';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
@@ -23,10 +26,12 @@ import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import type { HubAboutSectionKey, HubSettingsTabKey } from './CrdInnovationHubSettingsPage.types';
 import { mapInnovationHubToSettingsHeader } from './dataMappers/mapInnovationHubToSettingsHeader';
-import { CrdAddSpaceByUrlDialog } from './dialogs/CrdAddSpaceByUrlDialog';
+import { CrdAddHubResourceDialog } from './dialogs/CrdAddHubResourceDialog';
 import { useHubAboutTabData } from './hooks/useHubAboutTabData';
 import { useHubAccessGuard } from './hooks/useHubAccessGuard';
+import { useHubPacksTabData } from './hooks/useHubPacksTabData';
 import { useHubSpacesTabData } from './hooks/useHubSpacesTabData';
+import { useHubVirtualContributorsTabData } from './hooks/useHubVirtualContributorsTabData';
 import { useInnovationHubSettingsData } from './hooks/useInnovationHubSettingsData';
 import { buildHubHomePath, buildHubSettingsPath } from './lib/hubUrls';
 
@@ -56,6 +61,30 @@ const VISIBILITY_LABEL_KEY = {
   [SpaceVisibility.Archived]: 'settings.spaces.visibility.archived',
 } as const;
 
+// Literal-key records keep `t()` fully typed for the per-type remove confirmation.
+const CONFIRM_REMOVE_KEYS = {
+  space: {
+    title: 'settings.spaces.confirmRemove.title',
+    body: 'settings.spaces.confirmRemove.body',
+    confirm: 'settings.spaces.confirmRemove.confirm',
+    cancel: 'settings.spaces.confirmRemove.cancel',
+  },
+  pack: {
+    title: 'settings.packs.confirmRemove.title',
+    body: 'settings.packs.confirmRemove.body',
+    confirm: 'settings.packs.confirmRemove.confirm',
+    cancel: 'settings.packs.confirmRemove.cancel',
+  },
+  virtualContributor: {
+    title: 'settings.virtualContributors.confirmRemove.title',
+    body: 'settings.virtualContributors.confirmRemove.body',
+    confirm: 'settings.virtualContributors.confirmRemove.confirm',
+    cancel: 'settings.virtualContributors.confirmRemove.cancel',
+  },
+} as const;
+
+type PendingRemove = { type: HubResourceType; id: string; name: string };
+
 const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps) => {
   const { t } = useTranslation('crd-innovationHub');
   const { innovationHubId } = useUrlResolver();
@@ -66,9 +95,11 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
 
   const aboutData = useHubAboutTabData(hub);
   const spacesData = useHubSpacesTabData(hub, () => refetch());
+  const packsData = useHubPacksTabData(hub, () => refetch());
+  const virtualContributorsData = useHubVirtualContributorsTabData(hub, () => refetch());
 
-  const [addDialogOpen, setAddDialogOpen] = useState(false);
-  const [pendingRemove, setPendingRemove] = useState<HubSpacesTableRow | null>(null);
+  const [addDialogType, setAddDialogType] = useState<HubResourceType | null>(null);
+  const [pendingRemove, setPendingRemove] = useState<PendingRemove | null>(null);
 
   // Top-bar breadcrumbs: `[PanelsTopLeft] HubName → Settings → ActiveTab`.
   // Same shape as Spaces / Org / User settings, so the topbar replaces the
@@ -77,7 +108,15 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
     ? [
         { label: hub.profile.displayName, href: buildHubHomePath(hub.nameID), icon: PanelsTopLeft },
         { label: t('breadcrumbs.settings'), href: buildHubSettingsPath(hub.nameID) },
-        { label: t(`settings.tabs.${tab}` as 'settings.tabs.about' | 'settings.tabs.spaces') },
+        {
+          label: t(
+            `settings.tabs.${tab}` as
+              | 'settings.tabs.about'
+              | 'settings.tabs.spaces'
+              | 'settings.tabs.packs'
+              | 'settings.tabs.virtualContributors'
+          ),
+        },
       ]
     : [];
   useSetBreadcrumbs(breadcrumbItems);
@@ -97,14 +136,24 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
   const tabHrefs: Record<HubSettingsTabKey, string> = {
     about: `${settingsBase}/about`,
     spaces: `${settingsBase}/spaces`,
+    packs: `${settingsBase}/packs`,
+    virtualContributors: `${settingsBase}/virtualContributors`,
   };
 
   const aboutTabValues: HubAboutFormValues = aboutData.values;
   const onSaveSection = (key: HubAboutSectionKey) => aboutData.onSaveSection(key);
 
+  // One data slice per curated resource type — the remove confirmation and the
+  // shared Add dialog dispatch on the resource type.
+  const tabDataByType = {
+    space: spacesData,
+    pack: packsData,
+    virtualContributor: virtualContributorsData,
+  } as const;
+
   const handleConfirmRemove = () => {
     if (pendingRemove) {
-      void spacesData.remove(pendingRemove.id);
+      void tabDataByType[pendingRemove.type].remove(pendingRemove.id);
       setPendingRemove(null);
     }
   };
@@ -144,18 +193,43 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
               rows={spacesData.rows}
               busy={spacesData.busy}
               onReorder={ids => void spacesData.reorder(ids)}
-              onAddClick={() => setAddDialogOpen(true)}
-              onRemoveRequest={row => setPendingRemove(row)}
+              onAddClick={() => setAddDialogType('space')}
+              onRemoveRequest={row => setPendingRemove({ type: 'space', id: row.id, name: row.name })}
             />
           ))}
+        {tab === 'packs' && (
+          <InnovationHubPacksTab
+            rows={packsData.rows}
+            busy={packsData.busy}
+            onReorder={ids => void packsData.reorder(ids)}
+            onAddClick={() => setAddDialogType('pack')}
+            onRemoveRequest={row => setPendingRemove({ type: 'pack', id: row.id, name: row.name })}
+          />
+        )}
+        {tab === 'virtualContributors' && (
+          <InnovationHubVirtualContributorsTab
+            rows={virtualContributorsData.rows}
+            busy={virtualContributorsData.busy}
+            onReorder={ids => void virtualContributorsData.reorder(ids)}
+            onAddClick={() => setAddDialogType('virtualContributor')}
+            onRemoveRequest={row => setPendingRemove({ type: 'virtualContributor', id: row.id, name: row.name })}
+          />
+        )}
       </InnovationHubSettingsShell>
 
-      <CrdAddSpaceByUrlDialog
-        open={addDialogOpen}
-        onClose={() => setAddDialogOpen(false)}
-        onAdd={spaceId => spacesData.add(spaceId)}
-        existingSpaceIds={spacesData.rows.map(r => r.id)}
-      />
+      {/* Uniform two-tab Add dialog (account candidates + add-by-URL) for all three
+          resource types — replaces the former URL-only Add Space dialog (FR-016). */}
+      {addDialogType && (
+        <CrdAddHubResourceDialog
+          open={true}
+          onClose={() => setAddDialogType(null)}
+          resourceType={addDialogType}
+          accountId={hub.account.id}
+          existingIds={tabDataByType[addDialogType].rows.map(row => row.id)}
+          onAdd={id => tabDataByType[addDialogType].add(id)}
+          busy={tabDataByType[addDialogType].busy}
+        />
+      )}
 
       <ConfirmationDialog
         open={Boolean(pendingRemove)}
@@ -163,10 +237,12 @@ const CrdInnovationHubSettingsPage = ({ tab }: CrdInnovationHubSettingsPageProps
           if (!next) setPendingRemove(null);
         }}
         variant="destructive"
-        title={t('settings.spaces.confirmRemove.title')}
-        description={t('settings.spaces.confirmRemove.body', { name: pendingRemove?.name ?? '' })}
-        confirmLabel={t('settings.spaces.confirmRemove.confirm')}
-        cancelLabel={t('settings.spaces.confirmRemove.cancel')}
+        title={t(CONFIRM_REMOVE_KEYS[pendingRemove?.type ?? 'space'].title)}
+        description={t(CONFIRM_REMOVE_KEYS[pendingRemove?.type ?? 'space'].body, {
+          name: pendingRemove?.name ?? '',
+        })}
+        confirmLabel={t(CONFIRM_REMOVE_KEYS[pendingRemove?.type ?? 'space'].confirm)}
+        cancelLabel={t(CONFIRM_REMOVE_KEYS[pendingRemove?.type ?? 'space'].cancel)}
         onConfirm={handleConfirmRemove}
       />
 

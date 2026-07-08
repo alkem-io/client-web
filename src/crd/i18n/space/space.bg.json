@@ -283,7 +283,8 @@
     "uploadAfterCreateFailed": "Известието беше създадено, но качването на визуализацията се провали. Можете да опитате отново от диалога за редактиране на известието.",
     "pollOptionsSaveFailed": "Една или повече промени на опциите на анкетата не бяха запазени. Можете да опитате отново от този диалог.",
     "referencesSaveFailed": "Една или повече нови референции не бяха запазени. Останалите промени не бяха приложени. Моля, опитайте отново.",
-    "contributors": "Сътрудници"
+    "contributors": "Сътрудници",
+    "subspaces": "Подпространства"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -457,9 +458,38 @@
   },
   "deleteCallout": {
     "title": "Да изтрия ли този $t(common.callout)?",
-    "description": "“{{title}}” ще бъде изтрит окончателно, заедно с приносите и коментарите. Това действие не може да бъде отменено.",
+    "description": "“{{title}}” ще бъде изтрит окончателно. Това действие не може да бъде отменено.",
     "confirm": "Изтрий",
+    "confirmAll": "Изтрий $t(common.callout)то и цялото съдържание",
+    "headerContributions_one": "Ще се изтрие {{count}} принос",
+    "headerContributions_other": "Ще се изтрият {{count}} приноса",
+    "headerRich": "Ще се изтрие {{content}}",
+    "headerRichContributions_one": "Ще се изтрият {{content}} и {{count}} принос",
+    "headerRichContributions_other": "Ще се изтрият {{content}} и {{count}} приноса",
+    "headerRichPoll": "Ще се изтрият анкетата и резултатите от нея",
+    "headerRichPollContributions_one": "Ще се изтрият анкетата, резултатите и {{count}} принос",
+    "headerRichPollContributions_other": "Ще се изтрият анкетата, резултатите и {{count}} приноса",
+    "callToAction": "Призив за действие",
+    "moreContributions_one": "още {{count}} принос...",
+    "moreContributions_other": "още {{count}} приноса...",
+    "attachmentsNote": "включително прикачените файлове и връзки",
+    "contentType": {
+      "whiteboard": "дъската",
+      "memo": "бележката",
+      "mediaGallery": "медийната галерия",
+      "document": "документа"
+    },
+    "moreLinks_one": "и още {{count}} връзка",
+    "moreLinks_other": "и още {{count}} връзки",
+    "comments_one": "Ще се изтрие {{count}} коментар",
+    "comments_other": "Ще се изтрият {{count}} коментара",
     "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+  },
+  "deleteContribution": {
+    "title": "Да изтрия ли този принос?",
+    "description": "“{{title}}” ще бъде изтрит окончателно. Това действие не може да бъде отменено.",
+    "confirm": "Изтрий",
+    "saveFailed": "Приносът не можа да бъде изтрит. Опитайте отново."
   },
   "saveAsTemplate": {
     "saveFailed": "Шаблонът не можа да бъде запазен. Опитайте отново."
@@ -705,6 +735,7 @@
     "label": "Преглед на избрания отговор",
     "edit": "Редактиране на отговора",
     "share": "Споделяне на отговора",
+    "delete": "Изтриване на отговора",
     "close": "Затваряне на прегледа",
     "emptyDescription": "Няма описание",
     "references": "Препратки"
@@ -719,6 +750,7 @@
     "label": "Преглед на избрания whiteboard",
     "edit": "Редактиране на whiteboard",
     "share": "Споделяне на whiteboard",
+    "delete": "Изтриване на whiteboard",
     "close": "Затваряне на прегледа",
     "openFull": "Кликнете, за да видите целия whiteboard"
   },
@@ -752,6 +784,7 @@
   },
   "dialogs": {
     "cancel": "Отказ",
+    "close": "Затвори",
     "create": "Създай",
     "discardChanges": {
       "title": "Отхвърляне на промените?",
@@ -881,6 +914,13 @@
       "defaultViewLabel": "Изглед по подразбиране",
       "viewList": "Списък",
       "viewMap": "Карта"
+    }
+  },
+  "spaceCollection": {
+    "search": "Търсене на подпространства...",
+    "empty": {
+      "title": "Все още няма подпространства",
+      "description": "Това пространство все още няма подпространства."
     }
   }
 }

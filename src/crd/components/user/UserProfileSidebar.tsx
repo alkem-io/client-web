@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import type { ReferenceLink, TagsetGroup } from '@/crd/components/common/profileTypes';
+import { ReferencesList } from '@/crd/components/common/ReferencesList';
 import { hasSocialReferences, SocialLinks } from '@/crd/components/common/SocialLinks';
 
 export type UserProfileSidebarProps = {
@@ -20,16 +21,19 @@ export type UserProfileSidebarProps = {
   /** True when there are no organisations to render — drives the empty-state. */
   organizationsEmpty: boolean;
   /**
-   * Optional references (social + non-social). The view passes the array
-   * straight to `<SocialLinks>` which filters internally for known networks
-   * (website / linkedin / github / bsky / youtube / email) and renders them
-   * as a monochrome icon row. When no social refs are present, the section
-   * is hidden entirely.
+   * Optional references (social + non-social). The view splits internally:
+   *   • The Links section renders `excludeSocialReferences(references)` as
+   *     labelled URL chips.
+   *   • The Social section passes the array straight to `<SocialLinks>` which
+   *     filters for known networks (website / linkedin / github / bsky /
+   *     youtube / email) and renders them as a monochrome icon row (hidden
+   *     entirely when no social refs are present).
    */
   references?: ReferenceLink[];
   labels: {
     aboutTitle: string;
     organizationsTitle: string;
+    referencesTitle: string;
     socialLinksTitle: string;
     bioEmpty: string;
     organizationsEmpty: string;
@@ -67,6 +71,8 @@ export function UserProfileSidebar({
           </ul>
         </section>
       ) : null}
+
+      <ReferencesList title={labels.referencesTitle} references={refs} />
 
       {hasSocialReferences(refs) ? (
         <section>

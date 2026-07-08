@@ -112,24 +112,24 @@ const useApplicationButton = ({
 
   const isMember = space?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const isSubspace = !!parentSpaceId;
   const isParentMember = parentSpace?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentUrl = parentSpace?.about.profile.url;
 
   const rolesetPrivileges = space?.about.membership.myPrivileges ?? [];
 
-  const canJoinCommunity =
-    (isSubspace && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin)) ||
-    (!isSubspace && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin));
+  // The server privilege is the single signal for eligibility, on both spaces and
+  // subspaces: for a subspace the server grants JOIN/APPLY to an eligible
+  // non-parent-member (public ancestor chain + the parent setting enabled), so we
+  // no longer gate on `isParentMember`. When the privilege is absent the button
+  // cascade falls back to the parent-first prompts.
+  const canJoinCommunity = rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin);
 
   // Changed from parent to current space
   const canAcceptInvitation =
     space?.about.membership.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
-  const canApplyToCommunity =
-    (isSubspace && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply)) ||
-    (!isSubspace && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply));
+  const canApplyToCommunity = rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply);
 
   const parentRoleSetPrivileges = parentSpace?.about.membership.myPrivileges ?? [];
 

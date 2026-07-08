@@ -3,11 +3,15 @@ import {
   type InnovationHubHomeInnovationHubFragment,
   InnovationHubType,
 } from '@/core/apollo/generated/graphql-schema';
+import type { VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
 import type { InnovationHubHomeData } from '@/crd/components/innovationHub/InnovationHubHome';
+import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { mapPackToInnovationPackCardData } from '@/main/crdPages/innovationLibrary/innovationLibraryMapper';
 import type { SpaceWithParent } from '@/main/crdPages/spaces/SpaceExplorerPage';
 import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
+import { mapAccountHostedResources } from '@/main/crdPages/topLevelPages/common/profileMapperHelpers';
 import { buildMainDomainUrl, buildSettingsUrl, URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 
 export type MapInnovationHubToHomeDataInput = {
@@ -80,3 +84,27 @@ export const mapInnovationHubSpaces = (
   }
   return mapSpacesToCardDataList(ordered, authenticated);
 };
+
+/**
+ * Maps the hub's curated Innovation Packs to Innovation Library card data. The
+ * fragment's selections mirror `InnovationLibraryPacksPaginated.graphql`, so the
+ * Innovation Library mapper is reused verbatim — the cards are indistinguishable
+ * from their library counterparts (FR-004). The server resolves the list in
+ * stored order, already filtered to what this visitor may see (FR-006/FR-012);
+ * an unresolved list (null — e.g. a failed slice) maps to empty (FR-010).
+ */
+export const mapInnovationHubPacks = (hub: InnovationHubHomeInnovationHubFragment): InnovationPackCardData[] =>
+  (hub.innovationPackListFilter ?? []).map(mapPackToInnovationPackCardData);
+
+/**
+ * Maps the hub's curated Virtual Contributors to the User Profile card item. The
+ * fragment selects the `AccountResourceProfile` shape, so the profile pages'
+ * `mapAccountHostedResources` VC branch is reused verbatim (FR-005) — including
+ * its tagline-as-description and translated type-label conventions.
+ */
+export const mapInnovationHubVirtualContributors = (
+  hub: InnovationHubHomeInnovationHubFragment,
+  vcTypeLabel: string
+): VirtualContributorCardItem[] =>
+  mapAccountHostedResources({ virtualContributors: hub.virtualContributorListFilter ?? [] }, vcTypeLabel)
+    .hostedVirtualContributors;
