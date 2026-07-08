@@ -57,6 +57,15 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
 
   const [columnCount, gridRef] = useGridColumnCount();
 
+  // A hub with no Spaces at all renders no section — no heading, no
+  // search/filters, no empty state — matching the packs/VCs sections
+  // (FR-007 amendment 2026-07-07). Skeletons still show while loading, and
+  // search/filters only ever narrow a non-empty list, so they can never be
+  // the reason `spaces` is empty here.
+  if (!spacesLoading && spaces.length === 0) {
+    return null;
+  }
+
   const hasSearch = query.trim().length > 0;
   const hasPrivacyFilter = privacyFilter !== 'all';
   const isFiltered = hasSearch || hasPrivacyFilter;
@@ -100,7 +109,6 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
   };
 
   const showLoadingSkeletons = spacesLoading && spaces.length === 0;
-  const showEmptyHub = !spacesLoading && spaces.length === 0;
   const showSearchBox = spaces.length > 0;
   const showNoResults = isFiltered && filtered.length === 0;
 
@@ -115,10 +123,6 @@ export function HubSpacesSection({ spaces, hubName, spacesLoading = false }: Hub
             <SpaceCardSkeleton key={i} />
           ))}
         </output>
-      ) : showEmptyHub ? (
-        <div className="rounded-lg border border-border bg-card/50 p-8 text-center text-muted-foreground">
-          <p className="text-body">{t('home.spacesSection.empty')}</p>
-        </div>
       ) : (
         <>
           {showSearchBox && (

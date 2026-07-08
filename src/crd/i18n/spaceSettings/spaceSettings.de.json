@@ -762,7 +762,7 @@
       "subspaceEvents": "Subspace-Veranstaltungen",
       "alkemioSupportAccess": "Alkemio-Support",
       "trustHostOrganization": "Hostorganisation vertrauen",
-      "subspaceAdminInvitationsDescription": "Ermöglicht Administratoren von Subspaces, Plattform-Benutzer in ihren Subspace einzuladen. Benutzer, die noch kein Mitglied dieses Space waren, werden es, sobald sie die Subspace-Einladung annehmen."
+      "subspaceAdminInvitationsDescription": "Ermöglicht Administratoren von Subspaces, Plattform-Benutzer in ihren Subspace einzuladen, und erlaubt Nicht-Mitgliedern, sich direkt zu bewerben. Benutzer, die noch kein Mitglied dieses Space waren, werden es, sobald sie die Subspace-Einladung annehmen oder ihre Subspace-Bewerbung genehmigt wird."
     },
     "saveAsTemplate": {
       "title": "Als Vorlage speichern",

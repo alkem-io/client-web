@@ -53,7 +53,8 @@
     "cta": "Връзка",
     "image": "Галерия",
     "poll": "Анкета",
-    "contributors": "Сътрудници"
+    "contributors": "Сътрудници",
+    "spaces": "Подпространства"
   },
   "contributionType": {
     "post": "Публикации",

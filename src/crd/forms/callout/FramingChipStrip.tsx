@@ -1,10 +1,20 @@
-import { FileText, Image as ImageIcon, Megaphone, Presentation, StickyNote, Users, Vote, X } from 'lucide-react';
+import {
+  FileText,
+  FolderTree,
+  Image as ImageIcon,
+  Megaphone,
+  Presentation,
+  StickyNote,
+  Users,
+  Vote,
+  X,
+} from 'lucide-react';
 import { type ComponentType, type SVGProps, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DeleteFramingDialog } from '@/crd/components/dialogs/DeleteFramingDialog';
 import { cn } from '@/crd/lib/utils';
 
-export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors';
+export type FramingChipId = 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors' | 'spaces';
 
 type Chip = {
   id: FramingChipId;
@@ -20,6 +30,9 @@ const CHIPS: Chip[] = [
   { id: 'image', labelKey: 'callout.mediaGallery', icon: ImageIcon },
   { id: 'poll', labelKey: 'callout.poll', icon: Vote },
   { id: 'contributors', labelKey: 'callout.contributors', icon: Users },
+  // Feature 013: the "Subspaces" framing (chip id stays `'spaces'` → maps to
+  // CalloutFramingType.Spaces; the visible label is "Subspaces").
+  { id: 'spaces', labelKey: 'callout.subspaces', icon: FolderTree },
 ];
 
 export type DisabledChipMap = Partial<Record<FramingChipId, { tooltip?: string }>>;

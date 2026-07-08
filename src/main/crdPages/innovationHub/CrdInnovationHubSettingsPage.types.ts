@@ -1,4 +1,4 @@
-export type HubSettingsTabKey = 'about' | 'spaces';
+export type HubSettingsTabKey = 'about' | 'spaces' | 'packs' | 'virtualContributors';
 
 export type HubSettingsHeaderData = {
   name: string;

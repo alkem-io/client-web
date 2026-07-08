@@ -829,6 +829,7 @@ export type CalloutFramingKeySpecifier = (
   | 'memo'
   | 'poll'
   | 'profile'
+  | 'subspaces'
   | 'type'
   | 'updatedDate'
   | 'whiteboard'
@@ -846,6 +847,7 @@ export type CalloutFramingFieldPolicy = {
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2159,6 +2161,7 @@ export type InnovationHubKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'innovationPackListFilter'
   | 'listedInStore'
   | 'nameID'
   | 'profile'
@@ -2169,6 +2172,7 @@ export type InnovationHubKeySpecifier = (
   | 'subdomain'
   | 'type'
   | 'updatedDate'
+  | 'virtualContributorListFilter'
   | InnovationHubKeySpecifier
 )[];
 export type InnovationHubFieldPolicy = {
@@ -2176,6 +2180,7 @@ export type InnovationHubFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPackListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2186,6 +2191,7 @@ export type InnovationHubFieldPolicy = {
   subdomain?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationPackKeySpecifier = (
   | 'authorization'

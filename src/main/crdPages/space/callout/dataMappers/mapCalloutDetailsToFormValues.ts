@@ -22,6 +22,7 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.MediaGallery]: 'image',
   [CalloutFramingType.Poll]: 'poll',
   [CalloutFramingType.Contributors]: 'contributors',
+  [CalloutFramingType.Spaces]: 'spaces',
 };
 
 // Documents are framing-only in P1 — no `document` response type. Existing

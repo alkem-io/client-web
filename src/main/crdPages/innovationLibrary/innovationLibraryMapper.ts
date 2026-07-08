@@ -5,8 +5,19 @@ import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 type GqlLibraryPack =
   InnovationLibraryPacksPaginatedQuery['platform']['library']['innovationPacksPaginated']['innovationPacks'][number];
 
+/** Structural parameter type so any pack selection carrying the templatesSet counts can reuse the sum. */
+export type PackWithTemplateCounts = {
+  templatesSet?: {
+    calloutTemplatesCount?: number;
+    spaceTemplatesCount?: number;
+    communityGuidelinesTemplatesCount?: number;
+    postTemplatesCount?: number;
+    whiteboardTemplatesCount?: number;
+  };
+};
+
 /** Sum of `templatesSet.*Count` (the InnovationLibrary query exposes counts, not full template lists). */
-export function packTemplateCount(pack: GqlLibraryPack): number {
+export function packTemplateCount(pack: PackWithTemplateCounts): number {
   const ts = pack.templatesSet;
   if (!ts) return 0;
   return (

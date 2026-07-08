@@ -11,6 +11,8 @@ export type OrganizationPageHeroProps = {
   avatarImageUrl: string | null;
   color: string;
   displayName: string;
+  /** Muted single line under the display-name row; `null` renders nothing. */
+  tagline: string | null;
   location: string | null;
   verified: boolean;
   /** When `null` the gear icon is hidden. */
@@ -23,6 +25,7 @@ export function OrganizationPageHero({
   avatarImageUrl,
   color,
   displayName,
+  tagline,
   location,
   verified,
   settingsHref,
@@ -59,6 +62,7 @@ export function OrganizationPageHero({
                   </TooltipProvider>
                 ) : null}
               </div>
+              {tagline ? <p className="text-body-emphasis text-muted-foreground mt-1">{tagline}</p> : null}
               {location ? (
                 <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis mt-1">
                   <MapPin className="w-4 h-4" aria-hidden="true" />

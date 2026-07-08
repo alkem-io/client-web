@@ -34,6 +34,11 @@ export type OrganizationPageHeroProps = {
   /** Deterministic colour (from `pickColorFromId(orgId)`) used for the avatar fallback. */
   color: string;
   displayName: string;
+  /**
+   * Muted single line under the display-name row, above the location line.
+   * `null` (empty/whitespace tagline) renders nothing (FR-020, 2026-07-08).
+   */
+  tagline: string | null;
   /** "City, Country" — null when both empty. */
   location: string | null;
   /** Verified badge shown when `verified === true` (FR-020). */

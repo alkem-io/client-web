@@ -47,8 +47,18 @@ export const useCalloutManager = (): useCalloutEditProvided => {
     });
   };
 
+  // There is no deletion subscription — the client must propagate the delete
+  // itself. Evicting the Callout drops its dangling reference from every cached
+  // list on read (feed `CalloutsListForFeed`, post index, classification,
+  // dashboards) without a network round-trip; a refetch of one named query
+  // would only fix the surfaces that happen to watch it.
   const [deleteCallout] = useDeleteCalloutMutation({
-    refetchQueries: ['CalloutsOnCalloutsSetUsingClassification'],
+    update(cache, { data }) {
+      const deletedId = data?.deleteCallout?.id;
+      if (!deletedId) return;
+      cache.evict({ id: cache.identify({ __typename: 'Callout', id: deletedId }) });
+      cache.gc();
+    },
   });
 
   const handleDeleteCallout = async (callout: Identifiable) => {
