@@ -61,7 +61,7 @@ export type SpaceSettingsLayoutViewProps = {
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   /** Column-level reorder — called with the new order of column IDs. Only invoked at L1/L2. */
   onReorderColumns?: (orderedColumnIds: LayoutColumnId[]) => void;
-  onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
+  // onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void; // in-place title editing disabled #9963
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
@@ -95,7 +95,8 @@ export type SpaceSettingsLayoutViewProps = {
  * Scope:
  *  - Renders one column card per backend state (dynamic order).
  *  - Drag-and-drop reorder + cross-column move (dnd-kit with keyboard sensor).
- *  - Inline-edit column title + description with hover-reveal pencil.
+ *  - Column title + description editing via the per-column menu → Edit details
+ *    (in-place hover-pencil editing is disabled for now — #9963).
  *  - Three-dot per-column menu: Active phase + Default post template.
  *  - Per-callout kebab (two entries: Move to + View Post).
  *  - Post description display toggle at the top (collapsed / expanded).
@@ -110,7 +111,7 @@ export function SpaceSettingsLayoutView({
   saveBar,
   onReorder,
   onReorderColumns,
-  onRenameColumn,
+  // onRenameColumn, // in-place title editing disabled #9963
   onMoveToColumn,
   onViewPost,
   onPostDescriptionDisplayChange,
@@ -291,7 +292,6 @@ export function SpaceSettingsLayoutView({
                     column={column}
                     otherColumns={otherColumns}
                     showDescription={postDescriptionDisplay === 'expanded'}
-                    onRenameColumn={onRenameColumn}
                     onMoveToColumn={onMoveToColumn}
                     onViewPost={onViewPost}
                     columnMenuActions={columnMenuActions}

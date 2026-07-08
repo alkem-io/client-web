@@ -419,7 +419,6 @@ export default function CrdSpaceSettingsPage() {
                 saveBar={layout.saveBar}
                 onReorder={layout.onReorder}
                 onReorderColumns={layout.onReorderColumns}
-                onRenameColumn={layout.onRenameColumn}
                 onMoveToColumn={layout.onMoveToColumn}
                 onViewPost={calloutId => {
                   const target = layout.columns

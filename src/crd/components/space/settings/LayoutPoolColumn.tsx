@@ -51,7 +51,7 @@ type LayoutPoolColumnProps = {
   column: LayoutPoolColumnData;
   otherColumns: ReadonlyArray<Pick<LayoutPoolColumnData, 'id' | 'title'>>;
   showDescription: boolean;
-  onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
+  // onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void; // in-place title editing disabled #9963
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   columnMenuActions: ColumnMenuActions;

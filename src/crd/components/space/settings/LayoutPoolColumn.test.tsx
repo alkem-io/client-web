@@ -41,7 +41,6 @@ const renderColumn = (column: LayoutPoolColumnData, actions: ColumnMenuActions, 
         column={column}
         otherColumns={[]}
         showDescription={false}
-        onRenameColumn={vi.fn()}
         onMoveToColumn={vi.fn()}
         onViewPost={vi.fn()}
         columnMenuActions={actions}

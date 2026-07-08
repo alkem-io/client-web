@@ -33,7 +33,7 @@ export type UseLayoutTabDataResult = {
   error: Error | null;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   onReorderColumns: (orderedColumnIds: LayoutColumnId[]) => void;
-  onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
+  // onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void; // in-place title editing disabled #9963
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
   onSave: () => void;
@@ -261,19 +261,21 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     });
   };
 
-  const onRenameColumn = (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => {
-    setColumns(prev =>
-      prev.map(c =>
-        c.id === columnId
-          ? {
-              ...c,
-              title: patch.title !== undefined ? patch.title : c.title,
-              description: patch.description !== undefined ? patch.description : c.description,
-            }
-          : c
-      )
-    );
-  };
+  // In-place title editing is disabled for now (#9963) — column details are saved via the
+  // Edit Details dialog path (`onSaveColumnDetails` + `markColumnSaved`) instead.
+  // const onRenameColumn = (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => {
+  //   setColumns(prev =>
+  //     prev.map(c =>
+  //       c.id === columnId
+  //         ? {
+  //             ...c,
+  //             title: patch.title !== undefined ? patch.title : c.title,
+  //             description: patch.description !== undefined ? patch.description : c.description,
+  //           }
+  //         : c
+  //     )
+  //   );
+  // };
 
   /** Toggle fires immediately — NOT part of the Save Changes buffer. */
   const onPostDescriptionDisplayChange = (next: LayoutPostDescriptionDisplay) => {
@@ -560,7 +562,7 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     error: settingsError ?? flowError ?? null,
     onReorder,
     onReorderColumns,
-    onRenameColumn,
+    // onRenameColumn, // in-place title editing disabled #9963
     onMoveToColumn,
     onPostDescriptionDisplayChange,
     onSave,
