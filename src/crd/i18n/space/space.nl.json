@@ -483,6 +483,7 @@
     "moreLinks_other": "en nog {{count}} links",
     "comments_one": "{{count}} reactie wordt verwijderd",
     "comments_other": "{{count}} reacties worden verwijderd",
+    "success": "$t(common.Callout) “{{title}}” is verwijderd.",
     "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
   },
   "deleteContribution": {

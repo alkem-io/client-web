@@ -483,6 +483,7 @@
     "moreLinks_other": "and {{count}} more links",
     "comments_one": "{{count}} comment will be deleted",
     "comments_other": "{{count}} comments will be deleted",
+    "success": "$t(common.Callout) “{{title}}” was deleted.",
     "saveFailed": "Could not delete the $t(common.callout). Please try again."
   },
   "deleteContribution": {

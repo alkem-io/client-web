@@ -483,6 +483,7 @@
     "moreLinks_other": "и още {{count}} връзки",
     "comments_one": "Ще се изтрие {{count}} коментар",
     "comments_other": "Ще се изтрият {{count}} коментара",
+    "success": "$t(common.Callout)-ът “{{title}}” беше изтрит.",
     "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
   },
   "deleteContribution": {

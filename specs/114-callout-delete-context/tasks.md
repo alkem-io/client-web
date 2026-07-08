@@ -119,6 +119,20 @@ Single web-frontend project. Data layer under `src/domain/collaboration/` (fragm
 
 ---
 
+## Phase 8: Deletion propagation & success feedback (FR-017 / FR-018, Clarification 2026-07-08)
+
+**Goal**: A confirmed deletion is reflected everywhere immediately — the callout vanishes from the board feed (and every other cached list) without a refresh, a green success toast confirms the deletion, and a detail dialog showing the deleted callout closes. Root cause of the stale board: `useDeleteCalloutMutation` only refetched the legacy `CalloutsOnCalloutsSetUsingClassification`, but since feature 007 the feed renders from `CalloutsListForFeed`, which nothing invalidated — and there is no server-side deletion subscription.
+
+**Independent Test**: On the space board, delete a callout from the card's 3-dots menu → the card disappears without a refresh and a green toast appears. Repeat from inside the detail dialog → the dialog closes, card gone, toast shown.
+
+- [X] T029 Fix cache propagation in `src/domain/collaboration/callout/utils/useCalloutManager.ts`: replace the stale `refetchQueries: ['CalloutsOnCalloutsSetUsingClassification']` with an `update` callback that `cache.evict`s the deleted `Callout` and runs `cache.gc()` — every cached list (feed, post index, classification, dashboards) drops the dangling reference on read, with no extra network round-trip.
+- [X] T030 Success feedback in `src/main/crdPages/space/callout/CalloutSettingsConnector.tsx`: after a successful `deleteCallout`, notify `deleteCallout.success` with severity `success` (green), then invoke a new optional `onDeleted` prop. Add the `deleteCallout.success` key (with `{{title}}`) to all six `space.<lang>.json` — parity enforced by the parity test.
+- [X] T031 Close the detail dialog on deletion: `src/main/crdPages/space/callout/CalloutDetailDialogConnector.tsx` passes `onDeleted={() => onOpenChange(false)}` to its `CalloutSettingsConnector` (the feed card's instance needs nothing — the card unmounts when the feed list drops the id).
+
+**Checkpoint**: Deleting a callout is visibly confirmed and fully propagated client-side; no stale card, no double-delete errors.
+
+---
+
 ## Dependencies & Execution Order
 
 - **Setup (Phase 1)** → **Foundational (Phase 2)** → **User Stories (Phases 3–5)** → **Polish (Phase 6)**.

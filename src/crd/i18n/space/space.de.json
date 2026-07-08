@@ -483,6 +483,7 @@
     "moreLinks_other": "und {{count}} weitere Links",
     "comments_one": "{{count}} Kommentar wird gelöscht",
     "comments_other": "{{count}} Kommentare werden gelöscht",
+    "success": "Der $t(common.Callout) „{{title}}“ wurde gelöscht.",
     "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
   },
   "deleteContribution": {
