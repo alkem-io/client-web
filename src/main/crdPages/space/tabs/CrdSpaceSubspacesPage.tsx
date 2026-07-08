@@ -1,27 +1,20 @@
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useSpaceDefaultTemplatesQuery,
-  useSpaceSubspaceCardsQuery,
-  useSpaceTemplatesManagerQuery,
-} from '@/core/apollo/generated/apollo-hooks';
+import { useSpaceDefaultTemplatesQuery, useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
-import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
-import useSubspacesSorted from '@/domain/space/hooks/useSubspacesSorted';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
-import { mapSubspacesToCardDataList } from '../dataMappers/subspaceCardDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
@@ -46,16 +39,13 @@ export default function CrdSpaceSubspacesPage() {
     tabPosition: 2,
   });
 
-  const { data: subspacesData } = useSpaceSubspaceCardsQuery({
-    // biome-ignore lint/style/noNonNullAssertion: ensured by skip
-    variables: { spaceId: spaceId! },
-    skip: !spaceId,
-  });
-
-  const rawSubspaces = subspacesData?.lookup.space?.subspaces;
-  const sortMode = subspacesData?.lookup.space?.settings.sortMode;
-  const sortedSubspaces = useSubspacesSorted(rawSubspaces, sortMode);
-  const subspaces = mapSubspacesToCardDataList(sortedSubspaces, sortMode);
+  // US3 (feature 013): the hard-coded subspaces block was removed from this tab.
+  // The subspaces are now rendered by the provisioned Subspaces (SPACES) callout
+  // in the callout list below — server-provisioned on the 3rd (Subspaces) tab, on
+  // top — so the tab is driven purely by its callouts. The subspace fetch/sort/map
+  // machinery (`useSpaceSubspaceCardsQuery`, `useSubspacesSorted`,
+  // `subspaceCardDataMapper`, `SpaceSubspacesList`) is now owned by the callout's
+  // `SpaceCollectionConnector` / `useCrdSpaceSubspaces` hook.
 
   const [createCalloutOpen, setCreateCalloutOpen] = useState(false);
   const canCreate = permissions.canCreateSubspaces;
@@ -121,8 +111,6 @@ export default function CrdSpaceSubspacesPage() {
             )
           }
         />
-
-        <SpaceSubspacesList subspaces={subspaces} />
 
         <CalloutListConnector
           callouts={callouts}

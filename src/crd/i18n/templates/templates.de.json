@@ -53,7 +53,8 @@
     "cta": "Link",
     "image": "Galerie",
     "poll": "Umfrage",
-    "contributors": "Mitwirkende"
+    "contributors": "Mitwirkende",
+    "spaces": "Unterbereiche"
   },
   "contributionType": {
     "post": "Beiträge",

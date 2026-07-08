@@ -28,6 +28,7 @@ import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
+import { SpaceCollectionConnector } from './SpaceCollectionConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -247,6 +248,15 @@ function LazyCalloutItemContent({
       <ContributorCollectionConnector calloutId={callout.id} className="mt-2" />
     ) : null;
 
+  // Spaces-collection callout body (feature 013): renders the host space's
+  // subspaces as cards (name search + filters + empty state via the reused
+  // SpaceSubspacesList). Like the contributors body, it accepts no contributions,
+  // so it has no contributions-preview — only this body.
+  const spacesPreview =
+    callout.framing.type === CalloutFramingType.Spaces ? (
+      <SpaceCollectionConnector calloutId={callout.id} className="mt-2" />
+    ) : null;
+
   // Without a comments room we can't wire the inline thread — fall back to the
   // dialog-only flow. The dialog itself handles its own "no room" rendering.
   const commentsRoomId = callout.comments?.id;
@@ -290,6 +300,7 @@ function LazyCalloutItemContent({
             >
               {pollPreview}
               {contributorsPreview}
+              {spacesPreview}
             </PostCard>
           )}
         </CalloutCommentsConnector>
@@ -312,6 +323,7 @@ function LazyCalloutItemContent({
         >
           {pollPreview}
           {contributorsPreview}
+          {spacesPreview}
         </PostCard>
       )}
       {mediaGalleryFileInput}
