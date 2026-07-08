@@ -829,6 +829,7 @@ export type CalloutFramingKeySpecifier = (
   | 'memo'
   | 'poll'
   | 'profile'
+  | 'subspaces'
   | 'type'
   | 'updatedDate'
   | 'whiteboard'
@@ -846,6 +847,7 @@ export type CalloutFramingFieldPolicy = {
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;

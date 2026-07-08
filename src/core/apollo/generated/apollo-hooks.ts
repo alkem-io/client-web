@@ -1111,6 +1111,38 @@ export const CalloutDetailsFragmentDoc = gql`
     link {
       ...LinkDetailsWithAuthorization
     }
+    post {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    whiteboard {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    memo {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    collaboraDocument {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
   }
   comments {
     ...CommentsWithMessages
@@ -28115,6 +28147,89 @@ export function refetchContributorCollectionByTypeQuery(
   variables: SchemaTypes.ContributorCollectionByTypeQueryVariables
 ) {
   return { query: ContributorCollectionByTypeDocument, variables: variables };
+}
+export const SpaceCollectionSubspacesDocument = gql`
+    query SpaceCollectionSubspaces($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      framing {
+        id
+        subspaces {
+          ...SubspaceCard
+        }
+      }
+    }
+  }
+}
+    ${SubspaceCardFragmentDoc}`;
+
+/**
+ * __useSpaceCollectionSubspacesQuery__
+ *
+ * To run a query within a React component, call `useSpaceCollectionSubspacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSpaceCollectionSubspacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSpaceCollectionSubspacesQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useSpaceCollectionSubspacesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  > &
+    ({ variables: SchemaTypes.SpaceCollectionSubspacesQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.SpaceCollectionSubspacesQuery, SchemaTypes.SpaceCollectionSubspacesQueryVariables>(
+    SpaceCollectionSubspacesDocument,
+    options
+  );
+}
+export function useSpaceCollectionSubspacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  >(SpaceCollectionSubspacesDocument, options);
+}
+export function useSpaceCollectionSubspacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.SpaceCollectionSubspacesQuery,
+        SchemaTypes.SpaceCollectionSubspacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.SpaceCollectionSubspacesQuery,
+    SchemaTypes.SpaceCollectionSubspacesQueryVariables
+  >(SpaceCollectionSubspacesDocument, options);
+}
+export type SpaceCollectionSubspacesQueryHookResult = ReturnType<typeof useSpaceCollectionSubspacesQuery>;
+export type SpaceCollectionSubspacesLazyQueryHookResult = ReturnType<typeof useSpaceCollectionSubspacesLazyQuery>;
+export type SpaceCollectionSubspacesSuspenseQueryHookResult = ReturnType<
+  typeof useSpaceCollectionSubspacesSuspenseQuery
+>;
+export type SpaceCollectionSubspacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.SpaceCollectionSubspacesQuery,
+  SchemaTypes.SpaceCollectionSubspacesQueryVariables
+>;
+export function refetchSpaceCollectionSubspacesQuery(variables: SchemaTypes.SpaceCollectionSubspacesQueryVariables) {
+  return { query: SpaceCollectionSubspacesDocument, variables: variables };
 }
 export const FlowStateSearchDocument = gql`
     query FlowStateSearch($searchData: SearchInput!) {

@@ -1250,6 +1250,8 @@ export type CalloutFraming = {
   poll?: Maybe<Poll>;
   /** The Profile for framing the associated Callout. */
   profile: Profile;
+  /** The host space's subspaces for a SPACES framing, ordered pinned-first then the space's sortOrder/displayName. Returns the existing Space type (no new item type). No server-side pagination/search: the client name-searches and paginates client-side over this set. Empty for non-SPACES framings, for a callout not attached to a space, or for a host with no subspaces. */
+  subspaces: Array<Space>;
   /** The type of the Callout Framing, the additional content attached to this callout */
   type: CalloutFramingType;
   /** The date at which the entity was last updated. */
@@ -1270,6 +1272,7 @@ export enum CalloutFramingType {
   Memo = 'MEMO',
   None = 'NONE',
   Poll = 'POLL',
+  Spaces = 'SPACES',
   Whiteboard = 'WHITEBOARD',
 }
 
@@ -14501,6 +14504,34 @@ export type UpdateCalloutContentMutation = {
               | undefined;
           }
         | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
     }>;
     comments?:
       | {
@@ -14947,6 +14978,34 @@ export type UpdateCalloutVisibilityMutation = {
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
+          }
+        | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
           }
         | undefined;
     }>;
@@ -16693,6 +16752,34 @@ export type CreateCalloutMutation = {
               | undefined;
           }
         | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      whiteboard?:
+        | {
+            __typename?: 'Whiteboard';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      memo?:
+        | {
+            __typename?: 'Memo';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
+      collaboraDocument?:
+        | {
+            __typename?: 'CollaboraDocument';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          }
+        | undefined;
     }>;
     comments?:
       | {
@@ -17285,6 +17372,54 @@ export type CalloutDetailsQuery = {
                     | undefined;
                 }
               | undefined;
+            post?:
+              | {
+                  __typename?: 'Post';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
+            memo?:
+              | {
+                  __typename?: 'Memo';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
+            collaboraDocument?:
+              | {
+                  __typename?: 'CollaboraDocument';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                  };
+                }
+              | undefined;
           }>;
           comments?:
             | {
@@ -17767,6 +17902,34 @@ export type CalloutDetailsFragment = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+        }
+      | undefined;
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    memo?:
+      | {
+          __typename?: 'Memo';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+        }
+      | undefined;
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
         }
       | undefined;
   }>;
@@ -34829,6 +34992,124 @@ export type ContributorCollectionByTypeQuery = {
                     hasValidCoordinates: boolean;
                   }
                 | undefined;
+            }>;
+          };
+        }
+      | undefined;
+  };
+};
+
+export type SpaceCollectionSubspacesQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type SpaceCollectionSubspacesQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            subspaces: Array<{
+              __typename?: 'Space';
+              id: string;
+              level: SpaceLevel;
+              visibility: SpaceVisibility;
+              pinned: boolean;
+              sortOrder: number;
+              about: {
+                __typename?: 'SpaceAbout';
+                isContentPublic: boolean;
+                why?: string | undefined;
+                id: string;
+                metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+                membership: {
+                  __typename?: 'SpaceAboutMembership';
+                  myMembershipStatus?: CommunityMembershipStatus | undefined;
+                  myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                  leadUsers: Array<{
+                    __typename?: 'User';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          url: string;
+                          displayName: string;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
+                  }>;
+                  leadOrganizations: Array<{
+                    __typename?: 'Organization';
+                    id: string;
+                    profile?:
+                      | {
+                          __typename?: 'Profile';
+                          id: string;
+                          url: string;
+                          displayName: string;
+                          avatar?:
+                            | {
+                                __typename?: 'Visual';
+                                id: string;
+                                uri: string;
+                                name: VisualType;
+                                alternativeText?: string | undefined;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
+                  }>;
+                };
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  displayName: string;
+                  url: string;
+                  tagline?: string | undefined;
+                  avatar?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                  tagset?:
+                    | {
+                        __typename?: 'Tagset';
+                        id: string;
+                        name: string;
+                        tags: Array<string>;
+                        allowedValues: Array<string>;
+                        type: TagsetType;
+                      }
+                    | undefined;
+                };
+              };
             }>;
           };
         }

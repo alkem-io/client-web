@@ -53,7 +53,8 @@
     "cta": "Link",
     "image": "Gallery",
     "poll": "Poll",
-    "contributors": "Contributors"
+    "contributors": "Contributors",
+    "spaces": "Subspaces"
   },
   "contributionType": {
     "post": "Posts",
@@ -266,7 +267,7 @@
     "tagsPlaceholder": "Add a tag and press Enter",
     "references": "References",
     "listedInStore": "Listed in store",
-    "listedInStoreHint": "Show this pack in the Innovation Library.",
+    "listedInStoreHint": "Show this pack in the Template Library.",
     "searchVisibility": "Search visibility",
     "searchVisibilityOptions": {
       "public": "Public",
@@ -320,9 +321,9 @@
     "manage": "Manage this pack"
   },
   "library": {
-    "title": "Innovation Library",
+    "title": "Template Library",
     "subtitle": "Discover templates and innovation packs published across the platform.",
-    "pageTitle": "Innovation Library",
+    "pageTitle": "Template Library",
     "loadedOfTotal": "{{loaded}} of {{total}}",
     "packs": {
       "heading": "Innovation Packs",

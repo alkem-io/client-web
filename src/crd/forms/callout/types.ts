@@ -10,7 +10,16 @@
  * Framing chip id. Maps to the server `CalloutFramingType` at submit time
  * via the calloutFormMapper. `'document'` is a disabled placeholder chip.
  */
-export type FramingChip = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll' | 'contributors';
+export type FramingChip =
+  | 'none'
+  | 'whiteboard'
+  | 'memo'
+  | 'document'
+  | 'cta'
+  | 'image'
+  | 'poll'
+  | 'contributors'
+  | 'spaces';
 
 /**
  * Contributor-collection callout config (feature 008). Carried in the callout

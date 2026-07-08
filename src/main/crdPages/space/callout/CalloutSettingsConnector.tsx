@@ -24,6 +24,7 @@ import { fetchPreviewImageBlob } from '@/main/crdPages/templates/fetchPreviewIma
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { CalloutEditConnector } from './CalloutEditConnector';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
+import { mapCalloutToDeletionSummary } from './dataMappers/mapCalloutToDeletionSummary';
 import { deriveCalloutMenuVisibility } from './deriveCalloutMenuVisibility';
 
 type CalloutSettingsConnectorProps = {
@@ -229,6 +230,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         calloutTitle={callout.framing.profile.displayName}
+        content={mapCalloutToDeletionSummary(callout)}
         loading={mutating}
         onConfirm={handleDeleteConfirm}
       />
