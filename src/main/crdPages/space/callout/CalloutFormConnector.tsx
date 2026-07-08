@@ -718,6 +718,7 @@ function CalloutFormConnectorInner({
                 editMemoId={values.editMeta?.memoId}
                 editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
                 editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
+                editCollaboraDocumentId={mode === 'edit' ? editCallout?.framing.collaboraDocument?.id : undefined}
                 editCollaboraDocumentDisplayName={
                   mode === 'edit' ? editCallout?.framing.collaboraDocument?.profile?.displayName : undefined
                 }

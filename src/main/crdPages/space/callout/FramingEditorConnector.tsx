@@ -3,6 +3,7 @@ import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
+import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
@@ -24,6 +25,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import {
   DefaultWhiteboardPreviewSettings,
@@ -57,6 +59,48 @@ const collaboraDocLabelKeyByType: Record<
   SPREADSHEET: 'callout.documentSpreadsheet',
   PRESENTATION: 'callout.documentPresentation',
 };
+
+/**
+ * Existing-document box shown in the callout edit dialog (edit mode), with inline
+ * rename. Reaching the edit dialog already requires callout-edit rights — which
+ * carry the framing document's Update privilege — so rename is permitted here.
+ */
+function CollaboraDocumentEditBox({
+  collaboraDocumentId,
+  displayName,
+  documentType,
+}: {
+  collaboraDocumentId: string;
+  displayName: string;
+  documentType: CollaboraDocumentTypeValue;
+}) {
+  const { t } = useTranslation('crd-space');
+  const rename = useRenameCollaboraDocument({ collaboraDocumentId, displayName, canRename: true });
+  const DocIcon = collaboraDocIconByType[documentType] ?? FileText;
+  const typeLabel = t(collaboraDocLabelKeyByType[documentType] ?? 'callout.documentText');
+  return (
+    <div className="p-4 border rounded-xl bg-muted/30 flex items-center gap-3 animate-in fade-in">
+      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+        <DocIcon className="w-5 h-5" aria-hidden="true" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <CollaboraDocumentDisplayName
+          displayName={displayName}
+          value={rename.draft}
+          readOnly={rename.readOnly}
+          editing={rename.editing}
+          saving={rename.saving}
+          error={rename.error}
+          onChange={rename.changeDraft}
+          onEdit={rename.startEdit}
+          onSave={rename.save}
+          onCancel={rename.cancel}
+        />
+        <p className="text-caption text-muted-foreground">{typeLabel}</p>
+      </div>
+    </div>
+  );
+}
 
 type FramingEditorConnectorProps = {
   /**
@@ -145,7 +189,8 @@ type FramingEditorConnectorProps = {
   // create-callout mutation and cannot change after the document is created.
   collaboraDocumentType: CollaboraDocumentType;
   onCollaboraDocumentTypeChange: (next: CollaboraDocumentType) => void;
-  /** Existing Collabora document's display name — shown read-only in the edit-mode box. */
+  /** Existing Collabora document's id + display name — power the inline rename in the edit-mode box. */
+  editCollaboraDocumentId?: string;
   editCollaboraDocumentDisplayName?: string;
   /**
    * Upload-zone wiring for the create-mode "or upload" path (FR-002 / FR-003).
@@ -213,6 +258,7 @@ export function FramingEditorConnector({
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
   onCollaboraDocumentTypeChange,
+  editCollaboraDocumentId,
   editCollaboraDocumentDisplayName,
   collaboraUpload,
   contributorCollection,
@@ -365,10 +411,19 @@ export function FramingEditorConnector({
       // card / detail dialog via `CollaboraFramingEditorOverlay`.
       if (mode === 'edit') {
         // The document already exists, so the "Create new" type picker no longer
-        // applies (spec 114 US3 / FR-005): show the existing document read-only.
-        // Renaming happens from the editor header or the "Rename document" menu
-        // action, not here.
+        // applies (spec 114 US3 / FR-005): show the existing document with inline
+        // rename (the pencil), consistent with the editor title bar.
         const docType = collaboraDocumentType as CollaboraDocumentTypeValue;
+        if (editCollaboraDocumentId) {
+          return (
+            <CollaboraDocumentEditBox
+              collaboraDocumentId={editCollaboraDocumentId}
+              displayName={editCollaboraDocumentDisplayName ?? ''}
+              documentType={docType}
+            />
+          );
+        }
+        // Fallback when the document id isn't available: read-only box.
         const DocIcon = collaboraDocIconByType[docType] ?? FileText;
         return (
           <div className="p-4 border rounded-xl bg-muted/30 flex items-center gap-3 animate-in fade-in">
