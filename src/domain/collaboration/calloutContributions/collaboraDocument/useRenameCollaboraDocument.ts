@@ -23,9 +23,9 @@ export type UseRenameCollaboraDocumentArgs = {
 /**
  * Rename mechanics for a Collabora (OfficeDocs) document — draft/editing/saving
  * state, validation with the shared display-name rules, an unchanged no-op, and
- * persistence via the existing `updateCollaboraDocument` mutation. Backs both the
- * inline `CollaboraDocumentDisplayName` control (editor header) and the standalone
- * `RenameCollaboraDocumentDialog`, and is reusable for future contribution surfaces.
+ * persistence via the existing `updateCollaboraDocument` mutation. Backs the inline
+ * `CollaboraDocumentDisplayName` control on the editor header and the callout edit
+ * dialog's document box, and is reusable for future contribution surfaces.
  */
 export function useRenameCollaboraDocument({
   collaboraDocumentId,

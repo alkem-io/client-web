@@ -670,8 +670,6 @@
   },
   "collabora": {
     "rename": {
-      "menuItem": "Dokument umbenennen",
-      "dialogTitle": "Dokument umbenennen",
       "inputLabel": "Dokumentname",
       "edit": "Umbenennen",
       "save": "Speichern",

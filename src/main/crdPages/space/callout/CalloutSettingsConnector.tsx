@@ -16,7 +16,6 @@ import { DeleteCalloutDialog } from '@/crd/components/dialogs/DeleteCalloutDialo
 import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { useCalloutManager } from '@/domain/collaboration/callout/utils/useCalloutManager';
-import { RenameCollaboraDocumentDialog } from '@/domain/collaboration/calloutContributions/collaboraDocument/RenameCollaboraDocumentDialog';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
@@ -66,7 +65,6 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
   const [visibilityAction, setVisibilityAction] = useState<'publish' | 'unpublish' | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-  const [renameOpen, setRenameOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
@@ -117,14 +115,8 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     // item is shown greyed out rather than hidden (mirrors the old UI hiding
     // it for documents, but with a visible "coming soon" affordance).
     isCollaboraDocument: callout.framing.type === CalloutFramingType.CollaboraDocument,
-    // The document's OWN Update privilege — lets a document editor rename even without callout-edit rights.
-    documentMyPrivileges: callout.framing.collaboraDocument?.authorization?.myPrivileges,
     hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
   });
-
-  // The menu gate keys on framing *type* (isCollaboraDocument); also require the
-  // document object so the item and the mountable dialog use the same predicate.
-  const canRenameDocument = perms.canRenameDocument && !!callout.framing.collaboraDocument;
 
   const handleVisibilityConfirm = async (sendNotification: boolean) => {
     if (!visibilityAction) return;
@@ -201,9 +193,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         canSaveAsTemplate={perms.showSaveAsTemplate}
         saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
         saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
-        canRenameDocument={canRenameDocument}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
-        onRenameDocument={canRenameDocument ? () => setRenameOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
@@ -225,15 +215,6 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
           calloutId={callout.id}
           calloutsSetId={callout.calloutsSetId}
           editCallout={callout}
-        />
-      )}
-
-      {callout.framing.collaboraDocument && (
-        <RenameCollaboraDocumentDialog
-          open={renameOpen}
-          collaboraDocumentId={callout.framing.collaboraDocument.id}
-          displayName={callout.framing.collaboraDocument.profile?.displayName ?? ''}
-          onClose={() => setRenameOpen(false)}
         />
       )}
 

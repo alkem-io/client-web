@@ -6,7 +6,6 @@ import {
   Bookmark,
   Eye,
   EyeOff,
-  FilePen,
   GripVertical,
   MoreHorizontal,
   Pencil,
@@ -32,10 +31,7 @@ type CalloutContextMenuProps = {
   saveAsTemplateDisabled?: boolean;
   /** Tooltip explaining why Save-as-Template is disabled. */
   saveAsTemplateDisabledReason?: string;
-  /** Show the "Rename document" item — set for Collabora-document callouts the user may rename. */
-  canRenameDocument?: boolean;
   onEdit?: () => void;
-  onRenameDocument?: () => void;
   onPublish?: () => void;
   onUnpublish?: () => void;
   onDelete?: () => void;
@@ -56,9 +52,7 @@ export function CalloutContextMenu({
   canSaveAsTemplate,
   saveAsTemplateDisabled,
   saveAsTemplateDisabledReason,
-  canRenameDocument,
   onEdit,
-  onRenameDocument,
   onPublish,
   onUnpublish,
   onDelete,
@@ -89,13 +83,6 @@ export function CalloutContextMenu({
           <DropdownMenuItem onClick={onEdit}>
             <Pencil className="w-4 h-4 mr-2" aria-hidden="true" />
             {t('contextMenu.edit')}
-          </DropdownMenuItem>
-        )}
-
-        {canRenameDocument && onRenameDocument && (
-          <DropdownMenuItem onClick={onRenameDocument}>
-            <FilePen className="w-4 h-4 mr-2" aria-hidden="true" />
-            {t('collabora.rename.menuItem')}
           </DropdownMenuItem>
         )}
 

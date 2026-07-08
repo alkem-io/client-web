@@ -1,5 +1,4 @@
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
-import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 
 export type CalloutMenuPermissionsInput = {
   myPrivileges: AuthorizationPrivilege[] | undefined;
@@ -21,8 +20,6 @@ export type CalloutMenuPermissionsInput = {
    * disabled (greyed out) rather than hidden — see `saveAsTemplateDisabled`.
    */
   isCollaboraDocument: boolean;
-  /** The Collabora document's OWN privileges (document-edit gate) — independent of the callout's. */
-  documentMyPrivileges?: AuthorizationPrivilege[];
   hasMoveNeighbours: boolean;
 };
 
@@ -43,8 +40,6 @@ export type CalloutMenuPermissions = {
    */
   saveAsTemplateDisabled: boolean;
   movable: boolean;
-  /** Show the "Rename document" action — a document callout AND (document-edit OR callout-edit). */
-  canRenameDocument: boolean;
 };
 
 /**
@@ -89,11 +84,5 @@ export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput):
       editable && input.saveAsTemplateFeatureEnabled && (input.canBeSavedAsTemplate || input.isCollaboraDocument),
     saveAsTemplateDisabled: editable && input.saveAsTemplateFeatureEnabled && input.isCollaboraDocument,
     movable: input.canMoveSet && input.hasMoveNeighbours,
-    canRenameDocument:
-      input.isCollaboraDocument &&
-      canRenameCollaboraDocument({
-        documentPrivileges: input.documentMyPrivileges,
-        calloutPrivileges: input.myPrivileges,
-      }),
   };
 };

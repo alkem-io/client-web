@@ -670,8 +670,6 @@
   },
   "collabora": {
     "rename": {
-      "menuItem": "Document hernoemen",
-      "dialogTitle": "Document hernoemen",
       "inputLabel": "Documentnaam",
       "edit": "Hernoemen",
       "save": "Opslaan",

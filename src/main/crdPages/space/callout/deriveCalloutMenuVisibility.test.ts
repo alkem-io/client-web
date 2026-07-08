@@ -140,36 +140,4 @@ describe('deriveCalloutMenuVisibility', () => {
     expect(perms.showEdit).toBe(false);
     expect(perms.movable).toBe(false);
   });
-
-  it('Rename document: hidden for non-document callouts even with callout Update', () => {
-    expect(deriveCalloutMenuVisibility(withUpdate({ isCollaboraDocument: false })).canRenameDocument).toBe(false);
-  });
-
-  it("Rename document: shown on the document's OWN Update, without callout Update", () => {
-    const perms = deriveCalloutMenuVisibility({
-      ...baseInput,
-      isCollaboraDocument: true,
-      myPrivileges: [AuthorizationPrivilege.Read],
-      documentMyPrivileges: [AuthorizationPrivilege.Update],
-    });
-    expect(perms.canRenameDocument).toBe(true);
-    expect(perms.editable).toBe(false); // not a callout editor — but may still rename
-  });
-
-  it('Rename document: shown on callout Update, without document Update', () => {
-    const perms = deriveCalloutMenuVisibility(
-      withUpdate({ isCollaboraDocument: true, documentMyPrivileges: [AuthorizationPrivilege.Read] })
-    );
-    expect(perms.canRenameDocument).toBe(true);
-  });
-
-  it('Rename document: hidden when the user has neither document nor callout Update', () => {
-    const perms = deriveCalloutMenuVisibility({
-      ...baseInput,
-      isCollaboraDocument: true,
-      myPrivileges: [AuthorizationPrivilege.Read],
-      documentMyPrivileges: [AuthorizationPrivilege.Read],
-    });
-    expect(perms.canRenameDocument).toBe(false);
-  });
 });

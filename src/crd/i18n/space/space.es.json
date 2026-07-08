@@ -670,8 +670,6 @@
   },
   "collabora": {
     "rename": {
-      "menuItem": "Cambiar nombre del documento",
-      "dialogTitle": "Cambiar nombre del documento",
       "inputLabel": "Nombre del documento",
       "edit": "Cambiar nombre",
       "save": "Guardar",
