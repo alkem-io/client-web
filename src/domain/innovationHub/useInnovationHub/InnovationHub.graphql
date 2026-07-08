@@ -27,6 +27,39 @@ fragment InnovationHubHomeInnovationHub on InnovationHub {
   spaceListFilter {
     id
   }
+  # Curated Innovation Packs — card-data selections mirror InnovationLibraryPacksPaginated
+  # so the hub section reuses the Innovation Library card + mapper verbatim (FR-004).
+  innovationPackListFilter {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      url
+    }
+    templatesSet {
+      id
+      calloutTemplatesCount
+      spaceTemplatesCount
+      communityGuidelinesTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
+    }
+    provider {
+      ...InnovationPackProviderProfileWithAvatar
+    }
+  }
+  # Curated Virtual Contributors — profile selections mirror AccountResourceProfile so the
+  # hub section renders the exact User Profile VC card data shape (FR-005).
+  virtualContributorListFilter {
+    id
+    profile {
+      ...AccountResourceProfile
+    }
+  }
   authorization {
     myPrivileges
   }

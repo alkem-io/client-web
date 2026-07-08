@@ -1395,17 +1395,6 @@ export const BasicOrganizationDetailsFragmentDoc = gql`
   }
 }
     ${VisualModelFragmentDoc}`;
-export const AccountResourceProfileFragmentDoc = gql`
-    fragment AccountResourceProfile on Profile {
-  id
-  displayName
-  tagline
-  url
-  avatar: visual(type: AVATAR) {
-    ...VisualModel
-  }
-}
-    ${VisualModelFragmentDoc}`;
 export const FullLocationFragmentDoc = gql`
     fragment fullLocation on Location {
   id
@@ -1905,16 +1894,68 @@ export const InnovationHubSettingsFragmentDoc = gql`
   id
   nameID
   subdomain
+  account {
+    id
+  }
   profile {
     ...InnovationHubProfile
   }
   spaceListFilter {
     ...InnovationHubSpace
   }
+  innovationPackListFilter {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+    templatesSet {
+      id
+      calloutTemplatesCount
+      spaceTemplatesCount
+      communityGuidelinesTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+  virtualContributorListFilter {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
   spaceVisibilityFilter
 }
     ${InnovationHubProfileFragmentDoc}
 ${InnovationHubSpaceFragmentDoc}`;
+export const AccountResourceProfileFragmentDoc = gql`
+    fragment AccountResourceProfile on Profile {
+  id
+  displayName
+  tagline
+  url
+  avatar: visual(type: AVATAR) {
+    ...VisualModel
+  }
+}
+    ${VisualModelFragmentDoc}`;
 export const InnovationHubHomeInnovationHubFragmentDoc = gql`
     fragment InnovationHubHomeInnovationHub on InnovationHub {
   id
@@ -1936,11 +1977,42 @@ export const InnovationHubHomeInnovationHubFragmentDoc = gql`
   spaceListFilter {
     id
   }
+  innovationPackListFilter {
+    id
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        ...TagsetDetails
+      }
+      url
+    }
+    templatesSet {
+      id
+      calloutTemplatesCount
+      spaceTemplatesCount
+      communityGuidelinesTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
+    }
+    provider {
+      ...InnovationPackProviderProfileWithAvatar
+    }
+  }
+  virtualContributorListFilter {
+    id
+    profile {
+      ...AccountResourceProfile
+    }
+  }
   authorization {
     myPrivileges
   }
 }
-    `;
+    ${TagsetDetailsFragmentDoc}
+${InnovationPackProviderProfileWithAvatarFragmentDoc}
+${AccountResourceProfileFragmentDoc}`;
 export const ConfigurationFragmentDoc = gql`
     fragment Configuration on Config {
   authentication {

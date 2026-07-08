@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useUpdateInnovationHubMutation } from '@/core/apollo/generated/apollo-hooks';
@@ -22,7 +22,12 @@ export const useHubSpacesTabData = (
   refetch: () => Promise<unknown>
 ): UseHubSpacesTabDataResult => {
   const { t } = useTranslation('crd-innovationHub');
-  const [updateInnovationHub, { loading: busy }] = useUpdateInnovationHubMutation();
+  const [updateInnovationHub, { loading: mutating }] = useUpdateInnovationHubMutation();
+  // `busy` must span mutation + refetch: if controls re-enable between the
+  // two, a second edit computed from the stale rows races the in-flight
+  // refetch and can clobber the list.
+  const [refetching, setRefetching] = useState(false);
+  const busy = mutating || refetching;
 
   // Resolve visibility labels here with typed `t()` calls — keeps the mapper
   // i18n-free (one job: GraphQL → plain TS, no i18n stub needed in tests).
@@ -71,7 +76,12 @@ export const useHubSpacesTabData = (
             },
           },
         });
-        await refetch();
+        setRefetching(true);
+        try {
+          await refetch();
+        } finally {
+          setRefetching(false);
+        }
         const successMessage =
           successKey === 'added'
             ? t('settings.spaces.toast.added')

@@ -2,11 +2,15 @@ import { FoldHorizontal, Settings, UnfoldHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
+import type { VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
+import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
 import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
+import { HubPacksSection } from './HubPacksSection';
 import { HubSpacesSection } from './HubSpacesSection';
+import { HubVirtualContributorsSection } from './HubVirtualContributorsSection';
 import { InnovationHubBanner } from './InnovationHubBanner';
 
 export type InnovationHubHomeData = {
@@ -28,6 +32,10 @@ export type InnovationHubHomeProps = {
    * stable `data`) is left untouched, avoiding a full-page repaint.
    */
   spaces: SpaceCardData[];
+  /** The hub's curated Innovation Packs — the section is omitted entirely when empty (FR-007). */
+  packs: InnovationPackCardData[];
+  /** The hub's curated Virtual Contributors — the section is omitted entirely when empty (FR-007). */
+  virtualContributors: VirtualContributorCardItem[];
   onSettingsClick?: () => void;
   /**
    * Current full-width state — mirrors the Spaces "Wide layout" toggle. When
@@ -59,6 +67,8 @@ export type InnovationHubHomeProps = {
 export const InnovationHubHome = ({
   data,
   spaces,
+  packs,
+  virtualContributors,
   onSettingsClick,
   fullWidth = false,
   onToggleFullWidth,
@@ -131,6 +141,12 @@ export const InnovationHubHome = ({
             )}
 
             <HubSpacesSection spaces={spaces} hubName={data.name} spacesLoading={spacesLoading} />
+
+            {/* Curated resource bands, between the Spaces listing and the CTA footer —
+                packs first, then Virtual Contributors (FR-003). Each renders null when empty. */}
+            <HubPacksSection packs={packs} />
+
+            <HubVirtualContributorsSection virtualContributors={virtualContributors} />
 
             <section className="flex items-center gap-3 px-4 py-3 text-muted-foreground">
               <div className="size-4 shrink-0">
