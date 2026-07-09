@@ -68,6 +68,7 @@
         "menuLabel": "Details bewerken",
         "dialogTitle": "Details bewerken: stroomfase",
         "titleLabel": "Titel",
+        "titleTooShort": "De titel moet minimaal 3 tekens lang zijn",
         "editTitle": "Titel bewerken",
         "insertEmoji": "Emoji invoegen",
         "descriptionLabel": "Beschrijving",

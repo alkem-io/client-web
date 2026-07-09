@@ -68,6 +68,7 @@
         "menuLabel": "Edit Details",
         "dialogTitle": "Edit Details: Flow Phase",
         "titleLabel": "Title",
+        "titleTooShort": "The title must be at least 3 characters long",
         "editTitle": "Edit title",
         "insertEmoji": "Insert emoji",
         "descriptionLabel": "Description",

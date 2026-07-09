@@ -350,6 +350,11 @@ function ColumnOverflowMenu({
 
 /* ──────────────── Edit Details dialog ──────────────── */
 
+// A title made up entirely of emoji (including flags, skin-tone modifiers, and ZWJ sequences
+// like family emoji) is exempt from the 3-character minimum — JS string length counts UTF-16
+// code units, so even a single simple emoji (e.g. "🎉") measures 2, not 1.
+const EMOJI_ONLY_TITLE = /^[\p{Extended_Pictographic}\p{Emoji_Component}]+$/u;
+
 type EditDetailsDialogProps = {
   open: boolean;
   title: string;
@@ -374,10 +379,15 @@ function EditDetailsDialog({
   const [saving, setSaving] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
+  const trimmedTitle = title.trim();
+  const isEmojiOnlyTitle = trimmedTitle.length > 0 && EMOJI_ONLY_TITLE.test(trimmedTitle);
+  const titleTooShort = !isEmojiOnlyTitle && trimmedTitle.length < 3;
+
   const handleSave = async () => {
+    if (titleTooShort) return;
     setSaving(true);
     try {
-      await onSave(title.trim(), description);
+      await onSave(trimmedTitle, description);
     } finally {
       setSaving(false);
     }
@@ -410,6 +420,7 @@ function EditDetailsDialog({
                 onChange={e => setTitle(e.target.value)}
                 placeholder={t('layout.column.titlePlaceholder')}
                 aria-label={t('layout.column.editDetails.titleLabel')}
+                aria-invalid={titleTooShort}
                 disabled={saving}
                 className="flex-1 text-subsection-title"
               />
@@ -421,6 +432,9 @@ function EditDetailsDialog({
                 disabled={saving}
               />
             </div>
+            {titleTooShort && (
+              <p className="text-caption text-destructive">{t('layout.column.editDetails.titleTooShort')}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-1">
@@ -440,7 +454,7 @@ function EditDetailsDialog({
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
             {t('layout.column.editDetails.cancel')}
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving}>
+          <Button type="button" onClick={handleSave} disabled={saving || titleTooShort}>
             {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
           </Button>
         </DialogFooter>

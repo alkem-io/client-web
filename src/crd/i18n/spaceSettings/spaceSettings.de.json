@@ -68,6 +68,7 @@
         "menuLabel": "Details bearbeiten",
         "dialogTitle": "Details bearbeiten: Flow-Phase",
         "titleLabel": "Titel",
+        "titleTooShort": "Der Titel muss mindestens 3 Zeichen lang sein",
         "editTitle": "Titel bearbeiten",
         "insertEmoji": "Emoji einfügen",
         "descriptionLabel": "Beschreibung",

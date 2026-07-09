@@ -68,6 +68,7 @@
         "menuLabel": "Modifier les détails",
         "dialogTitle": "Modifier les détails : phase de flux",
         "titleLabel": "Titre",
+        "titleTooShort": "Le titre doit comporter au moins 3 caractères",
         "editTitle": "Modifier le titre",
         "insertEmoji": "Insérer un emoji",
         "descriptionLabel": "Description",

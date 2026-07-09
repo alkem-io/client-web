@@ -68,6 +68,7 @@
         "menuLabel": "Editar detalles",
         "dialogTitle": "Editar detalles: fase del flujo",
         "titleLabel": "Título",
+        "titleTooShort": "El título debe tener al menos 3 caracteres",
         "editTitle": "Editar título",
         "insertEmoji": "Insertar emoji",
         "descriptionLabel": "Descripción",
