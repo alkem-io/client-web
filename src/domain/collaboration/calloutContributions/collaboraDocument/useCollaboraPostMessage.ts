@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useRef, useState } from 'react';
+import { type RefObject, useEffect, useState } from 'react';
 import type { CollaboraConnectedUser, CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
 
 export type CollaboraConnectionStatus = 'connected' | 'connecting' | 'disconnected';
@@ -25,13 +25,6 @@ export type CollaboraIframeState = {
 type Options = {
   onError?: (message: string) => void;
   onSessionClosed?: () => void;
-  /**
-   * Called when the editor re-loads the document after the initial load. Collabora
-   * reloads the frame after an in-editor rename (its `reloadafterrename` flow), so
-   * this is our signal that the document name may have changed on the server — the
-   * overlay uses it to re-read the name into Apollo so our own title tracks it.
-   */
-  onDocumentReloaded?: () => void;
 };
 
 /**
@@ -43,16 +36,13 @@ type Options = {
  */
 export function useCollaboraPostMessage(
   iframeRef: RefObject<HTMLIFrameElement | null>,
-  { onError, onSessionClosed, onDocumentReloaded }: Options = {}
+  { onError, onSessionClosed }: Options = {}
 ): CollaboraIframeState {
   const [state, setState] = useState<CollaboraIframeState>({
     connectionStatus: 'connecting',
     saveStatus: 'saved',
     connectedUsers: [],
   });
-  // Count Document_Loaded events so we can tell the initial load (name already
-  // current) from a later reload (e.g. after an in-editor rename).
-  const loadCountRef = useRef(0);
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
@@ -64,23 +54,12 @@ export function useCollaboraPostMessage(
       const data = parseMessage(event.data);
       if (!data?.MessageId) return;
 
-      if (data.MessageId === 'App_LoadingStatus' && data.Values?.Status === 'Document_Loaded') {
-        loadCountRef.current += 1;
-        // Only a RE-load (2nd+) signals a possible rename; the first is the initial open.
-        if (loadCountRef.current > 1) {
-          onDocumentReloaded?.();
-        }
-      }
-
       setState(prev => reduce(prev, data, { onError, onSessionClosed }));
     };
 
     window.addEventListener('message', handler);
-    return () => {
-      window.removeEventListener('message', handler);
-      loadCountRef.current = 0;
-    };
-  }, [iframeRef, onError, onSessionClosed, onDocumentReloaded]);
+    return () => window.removeEventListener('message', handler);
+  }, [iframeRef, onError, onSessionClosed]);
 
   return state;
 }

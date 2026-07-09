@@ -56,14 +56,32 @@ export function CollaboraFramingEditorOverlay({
   const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
     onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
     onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
-    // A rename from inside Collabora is persisted server-side (WOPI → server), but
-    // Apollo doesn't observe that write. Collabora reloads the frame after such a
-    // rename, so re-read the callout's collabora document to pull the new name into
-    // the normalized cache — the title here and the callout title update in step.
-    onDocumentReloaded: () => {
-      client.refetchQueries({ include: ['CalloutsOnCalloutsSetUsingClassification', 'CalloutContent'] });
-    },
   });
+
+  // A rename from inside Collabora is persisted server-side (WOPI → server event),
+  // but Apollo never observes that write, so our own title would go stale. Re-read
+  // the callout's collabora document to pull the new name into the normalized cache
+  // — the title here and the callout title then update in step. Cheap + idempotent.
+  const refetchDocumentName = () => {
+    client.refetchQueries({ include: ['CalloutsOnCalloutsSetUsingClassification', 'CalloutContent'] });
+  };
+
+  // Collabora reloads the iframe after an in-editor rename; the iframe's onLoad is a
+  // plain DOM signal for that (independent of Collabora's postMessages). Skip the
+  // first (initial open — name already current); refetch on every reload after.
+  const loadCountRef = useRef(0);
+  const handleIframeLoad = () => {
+    loadCountRef.current += 1;
+    if (loadCountRef.current > 1) {
+      refetchDocumentName();
+    }
+  };
+
+  // Backstop: whatever happened inside the editor, refresh our copy on the way out.
+  const handleClose = () => {
+    refetchDocumentName();
+    onClose();
+  };
 
   const footerProps = mapCollaboraFooterProps({
     connectionStatus,
@@ -80,7 +98,7 @@ export function CollaboraFramingEditorOverlay({
   });
 
   return (
-    <Dialog open={open} onOpenChange={o => !o && onClose()}>
+    <Dialog open={open} onOpenChange={o => !o && handleClose()}>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content
@@ -114,12 +132,18 @@ export function CollaboraFramingEditorOverlay({
             <DialogDescription id="collabora-editor-dialog-description" className="sr-only">
               {t('callout.openDocument')}
             </DialogDescription>
-            <Button variant="ghost" size="icon" onClick={onClose} aria-label={t('contribution.close')}>
+            <Button variant="ghost" size="icon" onClick={handleClose} aria-label={t('contribution.close')}>
               <X className="w-5 h-5" aria-hidden="true" />
             </Button>
           </div>
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-            {open && <CollaboraDocumentEditor collaboraDocumentId={collaboraDocumentId} iframeRef={iframeRef} />}
+            {open && (
+              <CollaboraDocumentEditor
+                collaboraDocumentId={collaboraDocumentId}
+                iframeRef={iframeRef}
+                onLoad={handleIframeLoad}
+              />
+            )}
           </div>
           {open && <CollaboraCollabFooter {...footerProps} />}
         </DialogPrimitive.Content>

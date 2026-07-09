@@ -12,9 +12,15 @@ interface CollaboraDocumentEditorProps {
    * Collabora postMessage API for save-state + presence signals.
    */
   iframeRef?: Ref<HTMLIFrameElement>;
+  /**
+   * Fired on every iframe load. Collabora reloads the frame after an in-editor
+   * rename, so callers use this (skipping the first, initial load) to re-read the
+   * document name — a plain DOM signal, independent of Collabora's postMessages.
+   */
+  onLoad?: () => void;
 }
 
-const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef }: CollaboraDocumentEditorProps) => {
+const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef, onLoad }: CollaboraDocumentEditorProps) => {
   const { t } = useTranslation();
   const client = useApolloClient();
   const [editorUrl, setEditorUrl] = useState<string>();
@@ -94,6 +100,7 @@ const CollaboraDocumentEditor = ({ collaboraDocumentId, iframeRef }: CollaboraDo
       style={{ width: '100%', flex: 1, border: 'none', minHeight: 0 }}
       allow="clipboard-read; clipboard-write; microphone; camera"
       allowFullScreen={true}
+      onLoad={onLoad}
     />
   );
 };

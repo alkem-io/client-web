@@ -24,36 +24,29 @@ const documentLoaded = { MessageId: 'App_LoadingStatus', Values: { Status: 'Docu
 describe('useCollaboraPostMessage', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('fires onDocumentReloaded on a re-load (2nd Document_Loaded) but NOT the initial load', () => {
-    const { ref, contentWindow } = fakeIframeRef();
-    const onDocumentReloaded = vi.fn();
-    renderHook(() => useCollaboraPostMessage(ref, { onDocumentReloaded }));
-
-    // Initial open — no reload signal.
-    dispatchFromIframe(contentWindow, documentLoaded);
-    expect(onDocumentReloaded).not.toHaveBeenCalled();
-
-    // Collabora reloads the frame after an in-editor rename → this IS the signal.
-    dispatchFromIframe(contentWindow, documentLoaded);
-    expect(onDocumentReloaded).toHaveBeenCalledTimes(1);
-  });
-
-  it('ignores messages that are not from the tracked iframe', () => {
-    const { ref } = fakeIframeRef();
-    const onDocumentReloaded = vi.fn();
-    renderHook(() => useCollaboraPostMessage(ref, { onDocumentReloaded }));
-
-    dispatchFromIframe({} as Window, documentLoaded); // different source
-    dispatchFromIframe({} as Window, documentLoaded);
-    expect(onDocumentReloaded).not.toHaveBeenCalled();
-  });
-
-  it('reflects connection status from App_LoadingStatus', () => {
+  it('reflects connection status from App_LoadingStatus (Document_Loaded → connected)', () => {
     const { ref, contentWindow } = fakeIframeRef();
     const { result } = renderHook(() => useCollaboraPostMessage(ref));
 
     expect(result.current.connectionStatus).toBe('connecting');
     act(() => dispatchFromIframe(contentWindow, documentLoaded));
     expect(result.current.connectionStatus).toBe('connected');
+  });
+
+  it('ignores messages that are not from the tracked iframe', () => {
+    const { ref } = fakeIframeRef();
+    const { result } = renderHook(() => useCollaboraPostMessage(ref));
+
+    act(() => dispatchFromIframe({} as Window, documentLoaded)); // different source
+    expect(result.current.connectionStatus).toBe('connecting');
+  });
+
+  it('surfaces a runtime error to onError', () => {
+    const { ref, contentWindow } = fakeIframeRef();
+    const onError = vi.fn();
+    renderHook(() => useCollaboraPostMessage(ref, { onError }));
+
+    act(() => dispatchFromIframe(contentWindow, { MessageId: 'Error', Values: { Cmd: 'boom' } }));
+    expect(onError).toHaveBeenCalledWith('boom');
   });
 });
