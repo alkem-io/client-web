@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FileText, Presentation, Sheet, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -63,7 +63,13 @@ export function CollaboraFramingEditorOverlay({
   // the callout's collabora document to pull the new name into the normalized cache
   // — the title here and the callout title then update in step. Cheap + idempotent.
   const refetchDocumentName = () => {
-    client.refetchQueries({ include: ['CalloutsOnCalloutsSetUsingClassification', 'CalloutContent'] });
+    // Refetch whichever callout query is feeding this overlay: CalloutDetails backs
+    // the card/dialog view, the classification query backs the callouts list, and
+    // CalloutContent backs the edit form. All three carry the collabora document's
+    // profile, so any active one re-normalizes the new displayName into the cache.
+    client.refetchQueries({
+      include: ['CalloutDetails', 'CalloutsOnCalloutsSetUsingClassification', 'CalloutContent'],
+    });
   };
 
   // Collabora reloads the iframe after an in-editor rename; the iframe's onLoad is a
@@ -81,21 +87,6 @@ export function CollaboraFramingEditorOverlay({
   const handleClose = () => {
     refetchDocumentName();
     onClose();
-  };
-
-  // Renaming from THIS header (outside the iframe) persists via GraphQL and updates
-  // our own title live, but Collabora cached its filename (the green bar) at load
-  // time. We can't reload a cross-origin iframe from the parent, so remount the
-  // editor on a successful rename — it fetches a fresh URL and Collabora re-reads
-  // the new name from CheckFileInfo. Bumping this key drives the remount.
-  const [editorReloadKey, setEditorReloadKey] = useState(0);
-  const handleHeaderRenameSave = async (): Promise<boolean> => {
-    const changed = rename.draft.trim() !== title;
-    const saved = await rename.save();
-    if (saved && changed) {
-      setEditorReloadKey(key => key + 1);
-    }
-    return saved;
   };
 
   const footerProps = mapCollaboraFooterProps({
@@ -136,7 +127,7 @@ export function CollaboraFramingEditorOverlay({
                     error={rename.error}
                     onChange={rename.changeDraft}
                     onEdit={rename.startEdit}
-                    onSave={handleHeaderRenameSave}
+                    onSave={rename.save}
                     onCancel={rename.cancel}
                   />
                 </>
@@ -154,7 +145,6 @@ export function CollaboraFramingEditorOverlay({
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
             {open && (
               <CollaboraDocumentEditor
-                key={editorReloadKey}
                 collaboraDocumentId={collaboraDocumentId}
                 iframeRef={iframeRef}
                 onLoad={handleIframeLoad}
