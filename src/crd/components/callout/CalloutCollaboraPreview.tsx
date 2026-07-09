@@ -1,4 +1,4 @@
-import { FileText, Presentation, Sheet } from 'lucide-react';
+import { FileText, Presentation, RefreshCw, Sheet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -8,6 +8,13 @@ export type CollaboraDocumentPreviewType = 'text' | 'spreadsheet' | 'presentatio
 type CalloutCollaboraPreviewProps = {
   documentType: CollaboraDocumentPreviewType;
   onOpen: () => void;
+  /**
+   * When provided, a "Replace file" action is shown on the preview so a user
+   * with edit rights can swap the backing file without opening the editor
+   * (workspace#014-officedocs-replace-file, FR-001). Omitted for users without
+   * edit rights (FR-002).
+   */
+  onReplace?: () => void;
   /** `default` = aspect-video (used inside the callout detail dialog);
    *  `compact` = shorter fixed height for the space feed card. */
   size?: 'default' | 'compact';
@@ -29,6 +36,7 @@ const typeLabelKey: Record<CollaboraDocumentPreviewType, string> = {
 export function CalloutCollaboraPreview({
   documentType,
   onOpen,
+  onReplace,
   size = 'default',
   className,
 }: CalloutCollaboraPreviewProps) {
@@ -54,10 +62,16 @@ export function CalloutCollaboraPreview({
           {typeLabel}
         </span>
       </div>
-      <div className="absolute inset-0 flex items-center justify-center bg-primary/10 hover:bg-primary/20 transition-colors">
+      <div className="absolute inset-0 flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 transition-colors">
         <Button variant="secondary" className="shadow-sm" onClick={onOpen}>
           {t('callout.openDocument')}
         </Button>
+        {onReplace && (
+          <Button variant="secondary" className="shadow-sm" onClick={onReplace}>
+            <RefreshCw className="w-4 h-4" aria-hidden="true" />
+            {t('callout.documentReplace')}
+          </Button>
+        )}
       </div>
     </div>
   );
