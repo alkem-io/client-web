@@ -12,7 +12,7 @@ import {
   User,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { ActivityEventType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType, type SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { ApplicationCardData } from '@/crd/components/dashboard/ApplicationsBlock';
@@ -20,6 +20,7 @@ import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/ty
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { spaceTileImageUrl } from '@/domain/space/about/utils/spaceTileImageUrl';
 
 export type CompactSpaceCardData = {
   id: string;
@@ -502,11 +503,13 @@ type InvitationEntry = {
   id: string;
   spacePendingMembershipInfo: {
     id: string;
+    level: SpaceLevel;
     about: {
       profile: {
         displayName: string;
         url: string;
         avatar?: { uri: string };
+        cardBanner?: { uri: string };
       };
     };
   };
@@ -519,7 +522,12 @@ export const mapInvitationsToCards = (invitations: InvitationEntry[]): Invitatio
     spaceId: invitation.spacePendingMembershipInfo.id,
     spaceName: invitation.spacePendingMembershipInfo.about.profile.displayName,
     spaceHref: invitation.spacePendingMembershipInfo.about.profile.url,
-    spaceAvatarUrl: invitation.spacePendingMembershipInfo.about.profile.avatar?.uri,
+    // Was `avatar` for every level, so an invitation to an L0 space — which has
+    // no avatar — never showed an image.
+    spaceAvatarUrl: spaceTileImageUrl(
+      invitation.spacePendingMembershipInfo.level,
+      invitation.spacePendingMembershipInfo.about.profile
+    ),
     role: invitation.contributorType ?? '',
     color: pickColorFromId(invitation.spacePendingMembershipInfo.id),
   }));
@@ -541,25 +549,9 @@ type ApplicationEntry = {
   };
 };
 
-/**
- * The image for a space's square row tile.
- *
- * Per the canonical visual-fields rule an L0 space has no avatar — its identity
- * image is the cardBanner — while an L1/L2 subspace has a real avatar, which is
- * the right thing to crop into a square. Never substitute one for the other.
- *
- * The backend returns a `Visual` object with an empty `uri` when nothing has
- * been uploaded, so an empty string means "no image", not "".
- */
-const spaceTileImageUrl = (
-  level: SpaceLevel,
-  profile: { avatar?: { uri: string }; cardBanner?: { uri: string } }
-): string | undefined => (level === SpaceLevel.L0 ? profile.cardBanner?.uri : profile.avatar?.uri) || undefined;
-
 export const mapApplicationsToCards = (applications: ApplicationEntry[]): ApplicationCardData[] => {
   return applications.map(application => ({
     id: application.id,
-    spaceId: application.spacePendingMembershipInfo.id,
     spaceName: application.spacePendingMembershipInfo.about.profile.displayName,
     spaceHref: application.spacePendingMembershipInfo.about.profile.url,
     spaceImageUrl: spaceTileImageUrl(

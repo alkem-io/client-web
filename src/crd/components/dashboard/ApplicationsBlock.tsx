@@ -6,7 +6,6 @@ import { Badge } from '@/crd/primitives/badge';
 
 type ApplicationCardData = {
   id: string;
-  spaceId: string;
   spaceName: string;
   spaceHref: string;
   /** The space's cardBanner. Wide, so it is cropped to fill the square tile. */

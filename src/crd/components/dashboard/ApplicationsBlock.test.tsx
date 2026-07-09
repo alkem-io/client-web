@@ -21,13 +21,11 @@ vi.mock('@/crd/primitives/avatar', () => ({
 const applications = [
   {
     id: 'app-1',
-    spaceId: 'space-1',
     spaceName: 'Welcome Sub',
     spaceHref: '/challenges/welcome-sub',
   },
   {
     id: 'app-2',
-    spaceId: 'space-2',
     spaceName: 'Second Space',
     spaceHref: '/spaces/second',
     spaceImageUrl: 'https://example.com/card-banner.png',
