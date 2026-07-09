@@ -1,9 +1,9 @@
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   hashElementsVersion as ExcalidrawHashElementsVersion,
-} from '@alkemio/excalidraw/dist/types/element/src';
-import type { ExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+} from '@alkemio/excalidraw/element/index';
+import type { ExcalidrawElement } from '@alkemio/excalidraw/element/types';
+import type { BinaryFileData, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 

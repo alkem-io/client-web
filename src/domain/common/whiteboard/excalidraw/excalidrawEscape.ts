@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
 
 /**
  * Handles the Escape key for an Excalidraw instance embedded in a dialog, mirroring the

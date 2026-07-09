@@ -1,4 +1,4 @@
-import type { DataURL } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { DataURL } from '@alkemio/excalidraw/types';
 import { describe, expect, it } from 'vitest';
 import { isFileRenderable, shouldStripDataUrlForBroadcast } from '../../fileStore/fileAvailability';
 import type { BinaryFileDataWithOptionalUrl } from '../../types';
