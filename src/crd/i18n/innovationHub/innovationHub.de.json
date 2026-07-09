@@ -5,7 +5,6 @@
     "collapseWidth": "Auf Standardbreite zurücksetzen",
     "spacesSection": {
       "title": "{{hubName}} Spaces",
-      "empty": "Diesem Hub wurden noch keine Spaces hinzugefügt.",
       "loading": "Spaces werden geladen…",
       "searchPlaceholder": "Spaces suchen…",
       "showingCount": "{{visible}} von {{total}} Spaces werden angezeigt",
@@ -21,6 +20,15 @@
       "clearFilters": "Alle Filter zurücksetzen",
       "removeFilter": "Filter entfernen"
     },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Virtuelle Mitwirkende",
+      "virtualContributorsLabel": "Virtuelle Mitwirkende",
+      "vcType": "Virtueller Mitwirkender"
+    },
     "allSpacesCta": "Alle Spaces auf Alkemio durchsuchen"
   },
   "breadcrumbs": {
@@ -30,6 +38,8 @@
     "tabs": {
       "about": "Über",
       "spaces": "Spaces",
+      "packs": "Innovation Packs",
+      "virtualContributors": "Virtuelle Mitwirkende",
       "navAria": "Einstellungsbereiche"
     },
     "header": {
@@ -137,17 +147,106 @@
         "removed": "Space entfernt.",
         "reordered": "Reihenfolge aktualisiert.",
         "error": "Aktion fehlgeschlagen."
+      }
+    },
+    "packs": {
+      "title": "Innovation Packs",
+      "subtitle": "Verwalten Sie, welche Innovation Packs auf der Innovation-Hub-Startseite angezeigt werden. Zum Umordnen ziehen.",
+      "columns": {
+        "name": "Name",
+        "templates": "Vorlagen",
+        "provider": "Anbieter",
+        "actions": "Aktionen"
       },
-      "addDialog": {
-        "title": "Space per URL hinzufügen",
-        "description": "Fügen Sie die vollständige URL eines Alkemio-Spaces ein, um ihn zu diesem Hub hinzuzufügen.",
-        "placeholder": "https://alkem.io/welcome-space",
+      "actions": {
+        "add": "Innovation Pack hinzufügen",
+        "remove": "Entfernen"
+      },
+      "removeAria": "{{name}} aus diesem Hub entfernen",
+      "dragHandle": "Zum Umordnen ziehen",
+      "empty": "Noch keine Innovation Packs hinzugefügt. Verwenden Sie „Innovation Pack hinzufügen“, um eines aufzunehmen.",
+      "confirmRemove": {
+        "title": "Innovation Pack entfernen?",
+        "body": "„{{name}}“ aus diesem Innovation Hub entfernen? Das Innovation Pack selbst wird nicht gelöscht; es erscheint nur nicht mehr auf der Hub-Startseite.",
+        "confirm": "Entfernen",
+        "cancel": "Abbrechen"
+      },
+      "toast": {
+        "added": "Innovation Pack hinzugefügt.",
+        "removed": "Innovation Pack entfernt.",
+        "reordered": "Reihenfolge aktualisiert.",
+        "error": "Aktion fehlgeschlagen."
+      }
+    },
+    "virtualContributors": {
+      "title": "Virtuelle Mitwirkende",
+      "subtitle": "Verwalten Sie, welche virtuellen Mitwirkenden auf der Innovation-Hub-Startseite angezeigt werden. Zum Umordnen ziehen.",
+      "columns": {
+        "name": "Name",
+        "provider": "Anbieter",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "add": "Virtuellen Mitwirkenden hinzufügen",
+        "remove": "Entfernen"
+      },
+      "removeAria": "{{name}} aus diesem Hub entfernen",
+      "dragHandle": "Zum Umordnen ziehen",
+      "empty": "Noch keine virtuellen Mitwirkenden hinzugefügt. Verwenden Sie „Virtuellen Mitwirkenden hinzufügen“, um einen aufzunehmen.",
+      "confirmRemove": {
+        "title": "Virtuellen Mitwirkenden entfernen?",
+        "body": "„{{name}}“ aus diesem Innovation Hub entfernen? Der virtuelle Mitwirkende selbst wird nicht gelöscht; er erscheint nur nicht mehr auf der Hub-Startseite.",
+        "confirm": "Entfernen",
+        "cancel": "Abbrechen"
+      },
+      "toast": {
+        "added": "Virtueller Mitwirkender hinzugefügt.",
+        "removed": "Virtueller Mitwirkender entfernt.",
+        "reordered": "Reihenfolge aktualisiert.",
+        "error": "Aktion fehlgeschlagen."
+      }
+    },
+    "addResourceDialog": {
+      "candidatesTab": "Aus diesem Konto",
+      "urlTab": "Per URL hinzufügen",
+      "addToHub": "Zum Innovation Hub hinzufügen",
+      "candidatesLoading": "Verfügbare Ressourcen werden geladen…",
+      "close": "Schließen",
+      "url": {
         "submit": "Hinzufügen",
-        "cancel": "Abbrechen",
         "validating": "URL wird validiert…",
+        "submitting": "Wird hinzugefügt…",
+        "submitError": "Beim Hinzufügen ist etwas schiefgelaufen. Bitte erneut versuchen."
+      },
+      "space": {
+        "title": "Space hinzufügen",
+        "description": "Wählen Sie einen Space dieses Kontos oder fügen Sie einen beliebigen Alkemio-Space per URL hinzu.",
+        "candidatesEmpty": "Alle Spaces dieses Kontos sind bereits in diesem Hub.",
+        "candidatesAria": "Zum Hinzufügen verfügbare Spaces",
+        "urlLabel": "Space-URL",
+        "urlPlaceholder": "https://alkem.io/welcome-space",
         "invalid": "An dieser URL konnten wir keinen Space finden.",
-        "duplicate": "Dieser Space ist bereits in diesem Hub.",
-        "submitError": "Beim Hinzufügen des Spaces ist etwas schiefgelaufen. Bitte erneut versuchen."
+        "duplicate": "Dieser Space ist bereits in diesem Hub."
+      },
+      "pack": {
+        "title": "Innovation Pack hinzufügen",
+        "description": "Wählen Sie ein Innovation Pack dieses Kontos oder fügen Sie ein beliebiges Innovation Pack auf Alkemio per URL hinzu.",
+        "candidatesEmpty": "Alle Innovation Packs dieses Kontos sind bereits in diesem Hub.",
+        "candidatesAria": "Zum Hinzufügen verfügbare Innovation Packs",
+        "urlLabel": "Innovation-Pack-URL",
+        "urlPlaceholder": "https://alkem.io/innovation-packs/example",
+        "invalid": "An dieser URL konnten wir kein Innovation Pack finden.",
+        "duplicate": "Dieses Innovation Pack ist bereits in diesem Hub."
+      },
+      "virtualContributor": {
+        "title": "Virtuellen Mitwirkenden hinzufügen",
+        "description": "Wählen Sie einen virtuellen Mitwirkenden dieses Kontos oder fügen Sie einen beliebigen virtuellen Mitwirkenden auf Alkemio per URL hinzu.",
+        "candidatesEmpty": "Alle virtuellen Mitwirkenden dieses Kontos sind bereits in diesem Hub.",
+        "candidatesAria": "Zum Hinzufügen verfügbare virtuelle Mitwirkende",
+        "urlLabel": "URL des virtuellen Mitwirkenden",
+        "urlPlaceholder": "https://alkem.io/vc/example",
+        "invalid": "An dieser URL konnten wir keinen virtuellen Mitwirkenden finden.",
+        "duplicate": "Dieser virtuelle Mitwirkende ist bereits in diesem Hub."
       }
     }
   },

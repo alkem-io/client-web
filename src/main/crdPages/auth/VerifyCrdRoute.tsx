@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import { error, TagCategoryValues } from '@/core/logging/sentry/log';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -21,6 +22,9 @@ function CrdVerificationPage() {
 
   const flowId = useQueryParams().get('flow') || undefined;
   const { flow: verificationFlow, loading } = useKratosFlow(FlowTypeName.Verification, flowId);
+  // Carry the pending returnUrl into the sign-in link — buildLoginUrl() with no
+  // argument defaults the param to home, overwriting the stored destination.
+  const { returnUrl } = useReturnUrl();
   const translateDescriptor = useTranslateDescriptor();
 
   const baseDescriptor = verificationFlow ? flowDescriptorAdapter(verificationFlow, 'verification') : undefined;
@@ -44,7 +48,7 @@ function CrdVerificationPage() {
 
   return (
     <AuthShellWrapper>
-      <VerificationCard descriptor={descriptor} isLoading={loading} signInHref={buildLoginUrl()} />
+      <VerificationCard descriptor={descriptor} isLoading={loading} signInHref={buildLoginUrl(returnUrl)} />
     </AuthShellWrapper>
   );
 }

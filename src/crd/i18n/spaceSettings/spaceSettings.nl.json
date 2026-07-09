@@ -762,7 +762,7 @@
       "subspaceEvents": "Subspace-evenementen",
       "alkemioSupportAccess": "Alkemio-ondersteuning",
       "trustHostOrganization": "Vertrouw hostorganisatie",
-      "subspaceAdminInvitationsDescription": "Sta beheerders van Subspaces toe om platformgebruikers uit te nodigen voor hun Subspace. Gebruikers die nog geen lid van deze Space waren, worden dat zodra ze de Subspace-uitnodiging accepteren."
+      "subspaceAdminInvitationsDescription": "Sta beheerders van Subspaces toe om platformgebruikers uit te nodigen voor hun Subspace, en laat niet-leden zich rechtstreeks aanmelden om lid te worden. Gebruikers die nog geen lid van deze Space waren, worden dat zodra ze de Subspace-uitnodiging accepteren of hun Subspace-aanvraag wordt goedgekeurd."
     },
     "saveAsTemplate": {
       "title": "Opslaan als template",

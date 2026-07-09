@@ -2,6 +2,7 @@ import {
   BarChart3,
   ChevronDown,
   FileText,
+  FolderTree,
   ImagePlus,
   Images,
   type LucideIcon,
@@ -44,11 +45,13 @@ export type PostType =
   | 'document'
   | 'callToAction'
   | 'poll'
-  | 'contributors';
+  | 'contributors'
+  | 'spaces';
 
 type PostTypeLabelKey =
   | 'callout.post'
   | 'callout.contributors'
+  | 'callout.subspaces'
   | 'callout.whiteboard'
   | 'callout.memo'
   | 'callout.mediaGallery'
@@ -73,6 +76,7 @@ export const POST_TYPE_DESCRIPTORS: Record<PostType, { icon: LucideIcon; labelKe
   callToAction: { icon: Megaphone, labelKey: 'callout.callToAction' },
   poll: { icon: BarChart3, labelKey: 'callout.poll' },
   contributors: { icon: Users, labelKey: 'callout.contributors' },
+  spaces: { icon: FolderTree, labelKey: 'callout.subspaces' },
 };
 
 export type PostCardData = {
