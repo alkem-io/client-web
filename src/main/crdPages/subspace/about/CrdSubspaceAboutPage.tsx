@@ -16,11 +16,6 @@ import { CrdSubspaceAbout } from './CrdSubspaceAbout';
  * URL and trap the user in a redirect loop. We navigate to the most specific
  * place the viewer can actually open:
  *  - the subspace itself when they can read it (member),
- *  - else, when they just APPLIED here (combined subspace application — the
- *    application is pending, so canRead is still false), home — where the
- *    memberships panel confirms the pending application. Landing on the parent
- *    would greet them with the parent's own big "Apply" CTA, contradicting the
- *    application they just submitted.
  *  - else the parent space when they can read that,
  *  - else home — so a user with only a pending invitation (no access to either
  *    the subspace or its private parent) can still escape the About dialog
@@ -38,11 +33,9 @@ export default function CrdSubspaceAboutPage() {
   } = useSpace();
   const navigate = useNavigate();
 
-  const handleClose = (context?: { hasApplied: boolean }) => {
+  const handleClose = () => {
     if (permissions.canRead) {
       navigate(subspace.about.profile.url);
-    } else if (context?.hasApplied) {
-      navigate(ROUTE_HOME);
     } else if (parentPermissions.canRead && parentSpaceUrl) {
       navigate(parentSpaceUrl);
     } else {
