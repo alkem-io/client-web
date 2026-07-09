@@ -422,8 +422,8 @@ export function FramingEditorConnector({
       // card / detail dialog via `CollaboraFramingEditorOverlay`.
       if (mode === 'edit') {
         // The document already exists, so the "Create new" type picker no longer
-        // applies (spec 114 US3 / FR-005): show the existing document with inline
-        // rename (the pencil), consistent with the editor title bar.
+        // applies: show the existing document with inline rename (the pencil),
+        // consistent with the editor title bar.
         const docType = collaboraDocumentType as CollaboraDocumentTypeValue;
         if (editCollaboraDocumentId && collaboraRename) {
           return (

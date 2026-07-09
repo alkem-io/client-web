@@ -98,7 +98,7 @@ export function ReplaceCollaboraDocumentDialog({
       <DialogContent className="z-[90] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader className="shrink-0">
           <DialogTitle>{labels.dialogTitle}</DialogTitle>
-          {/* The overwrite is irreversible (FR-007), so the warning is a prominent
+          {/* The overwrite is irreversible, so the warning is a prominent
               warning banner rather than muted description text — a caution, not an
               error, matching CRD's other warning banners (e.g. WhiteboardCollabSettings).
               It stays the Radix DialogDescription so it remains the dialog's accessible

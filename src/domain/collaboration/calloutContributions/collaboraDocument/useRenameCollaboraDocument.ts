@@ -7,7 +7,7 @@ import { displayNameValidator } from '@/core/ui/forms/validator/displayNameValid
 /** Minimum display-name length — matches `displayNameValidator`. */
 const MIN_LENGTH = 3;
 
-// Rule-of-truth: the same validator used for whiteboard/memo display names
+// Source of truth: the same validator used for whiteboard/memo display names
 // (non-blank, min 3, max SMALL_TEXT_LENGTH). We use it for the authoritative
 // validity check and derive a specific, translated message for the UI.
 const validator = displayNameValidator({ required: true });
@@ -94,7 +94,7 @@ export function useRenameCollaboraDocument({
       setError(null);
       return true;
     } catch {
-      // Keep the persisted name; surface a save error (FR-013).
+      // Keep the persisted name; surface a save error.
       setError(t('collabora.rename.errors.saveFailed'));
       return false;
     }

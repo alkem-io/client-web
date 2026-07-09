@@ -198,7 +198,7 @@ export function CollaboraFramingReplaceConnector({
         variables: {
           file,
           // The chosen title is persisted as the document's display name by the
-          // server (feature 016 / FR-009 / FR-015); omit when the field is blank.
+          // server; omit when the field is blank.
           replaceData: { ID: collaboraDocumentId, displayName: titleValue.trim() || undefined },
         },
       });
