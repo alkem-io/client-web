@@ -98,13 +98,13 @@ export function ReplaceCollaboraDocumentDialog({
       <DialogContent className="z-[90] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader className="shrink-0">
           <DialogTitle>{labels.dialogTitle}</DialogTitle>
-          {/* The overwrite is destructive and irreversible (FR-007), so the warning
-              is a prominent destructive banner rather than muted description text,
-              matching the other irreversible-action warnings across CRD. It stays
-              the Radix DialogDescription so it remains the dialog's accessible
+          {/* The overwrite is irreversible (FR-007), so the warning is a prominent
+              warning banner rather than muted description text — a caution, not an
+              error, matching CRD's other warning banners (e.g. WhiteboardCollabSettings).
+              It stays the Radix DialogDescription so it remains the dialog's accessible
               description; the banner styling overrides the muted base via cn(). */}
-          <DialogDescription className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-caption text-destructive">
-            <AlertTriangle className="size-4 shrink-0" aria-hidden="true" />
+          <DialogDescription className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3 text-caption text-foreground">
+            <AlertTriangle className="size-4 shrink-0 text-warning" aria-hidden="true" />
             <span>{labels.description}</span>
           </DialogDescription>
         </DialogHeader>
