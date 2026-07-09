@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
+import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { EmailVerificationRequiredCard } from '@/crd/components/auth/EmailVerificationRequiredCard';
@@ -20,10 +21,14 @@ export function CrdEmailVerificationRequiredPage({ pageTitleKey }: CrdEmailVerif
   useTransactionScope({ type: 'authentication' });
   const { t } = useTranslation();
   usePageTitle(t(pageTitleKey));
+  // Carry the pending returnUrl into the sign-in link: buildLoginUrl() with no
+  // argument defaults the param to home, which would OVERWRITE the stored
+  // return destination the moment the user signs in after verifying.
+  const { returnUrl } = useReturnUrl();
 
   return (
     <AuthShellWrapper>
-      <EmailVerificationRequiredCard signInHref={buildLoginUrl()} />
+      <EmailVerificationRequiredCard signInHref={buildLoginUrl(returnUrl)} />
     </AuthShellWrapper>
   );
 }

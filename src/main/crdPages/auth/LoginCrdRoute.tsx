@@ -22,6 +22,7 @@ import { useQueryParams } from '@/core/routing/useQueryParams';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard } from '@/crd/components/auth/LoginCard';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
@@ -56,6 +57,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // render the form as normal (the flow id is opaque state Kratos owns).
   const returnUrlFromParam = params.get(PARAM_NAME_RETURN_URL) ?? undefined;
   const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
+  const signUpReturnUrl = returnUrlFromParam ?? storedReturnUrl;
   const platformOrigin = usePlatformOrigin();
   const isOidcEntry = !flow;
 
@@ -144,7 +146,12 @@ function CrdLoginPage({ flow }: { flow?: string }) {
         <LoginCard
           descriptor={undefined}
           isLoading={true}
-          signUpHref={AUTH_SIGN_UP_PATH}
+          signUpHref={
+            // Forward the pending returnUrl so a first-time visitor who came
+            // for a specific space/subspace keeps that destination through
+            // sign-up (bare /sign_up would drop it — they'd land on home).
+            signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
+          }
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         />
       </AuthShellWrapper>
@@ -156,7 +163,12 @@ function CrdLoginPage({ flow }: { flow?: string }) {
       <LoginCard
         descriptor={descriptor}
         isLoading={loading}
-        signUpHref={AUTH_SIGN_UP_PATH}
+        signUpHref={
+          // Forward the pending returnUrl so a first-time visitor who came
+          // for a specific space/subspace keeps that destination through
+          // sign-up (bare /sign_up would drop it — they'd land on home).
+          signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
+        }
         forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         onPasskeyTrigger={trigger => {
           setPasskeyError(undefined);
