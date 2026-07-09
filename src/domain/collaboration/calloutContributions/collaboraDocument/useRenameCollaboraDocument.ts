@@ -112,3 +112,6 @@ export function useRenameCollaboraDocument({
     cancel,
   };
 }
+
+/** Return shape of {@link useRenameCollaboraDocument}, for threading it to a child. */
+export type UseRenameCollaboraDocumentResult = ReturnType<typeof useRenameCollaboraDocument>;

@@ -686,6 +686,7 @@
       "edit": "Umbenennen",
       "save": "Speichern",
       "cancel": "Abbrechen",
+      "saving": "Wird gespeichert…",
       "errors": {
         "blank": "Bitte geben Sie einen Namen ein.",
         "tooShort": "Der Name muss mindestens {{min}} Zeichen lang sein.",

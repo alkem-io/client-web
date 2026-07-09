@@ -25,7 +25,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
-import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
+import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import {
   DefaultWhiteboardPreviewSettings,
@@ -64,18 +64,21 @@ const collaboraDocLabelKeyByType: Record<
  * Existing-document box shown in the callout edit dialog (edit mode), with inline
  * rename. Reaching the edit dialog already requires callout-edit rights — which
  * carry the framing document's Update privilege — so rename is permitted here.
+ *
+ * The rename state is owned by the parent form (`CalloutFormConnector`) and passed
+ * in as `rename`, so the form's Save button drives the commit (there is no separate
+ * ✓/✕ here — `showActions={false}`); the pencil just opens the input.
  */
 function CollaboraDocumentEditBox({
-  collaboraDocumentId,
   displayName,
   documentType,
+  rename,
 }: {
-  collaboraDocumentId: string;
   displayName: string;
   documentType: CollaboraDocumentTypeValue;
+  rename: UseRenameCollaboraDocumentResult;
 }) {
   const { t } = useTranslation('crd-space');
-  const rename = useRenameCollaboraDocument({ collaboraDocumentId, displayName, canRename: true });
   const DocIcon = collaboraDocIconByType[documentType] ?? FileText;
   const typeLabel = t(collaboraDocLabelKeyByType[documentType] ?? 'callout.documentText');
   return (
@@ -91,6 +94,7 @@ function CollaboraDocumentEditBox({
           editing={rename.editing}
           saving={rename.saving}
           error={rename.error}
+          showActions={false}
           onChange={rename.changeDraft}
           onEdit={rename.startEdit}
           onSave={rename.save}
@@ -193,6 +197,12 @@ type FramingEditorConnectorProps = {
   editCollaboraDocumentId?: string;
   editCollaboraDocumentDisplayName?: string;
   /**
+   * Rename state for the edit-mode document box, owned by the parent form so its
+   * Save button commits the rename. Present only for a document-framing callout in
+   * edit mode; when absent, the box falls back to a read-only display.
+   */
+  collaboraRename?: UseRenameCollaboraDocumentResult;
+  /**
    * Upload-zone wiring for the create-mode "or upload" path (FR-002 / FR-003).
    * Omitted in edit mode — once a Collabora document exists, replacing its bytes
    * is out of P1 scope.
@@ -260,6 +270,7 @@ export function FramingEditorConnector({
   onCollaboraDocumentTypeChange,
   editCollaboraDocumentId,
   editCollaboraDocumentDisplayName,
+  collaboraRename,
   collaboraUpload,
   contributorCollection,
   onContributorCollectionChange,
@@ -414,12 +425,12 @@ export function FramingEditorConnector({
         // applies (spec 114 US3 / FR-005): show the existing document with inline
         // rename (the pencil), consistent with the editor title bar.
         const docType = collaboraDocumentType as CollaboraDocumentTypeValue;
-        if (editCollaboraDocumentId) {
+        if (editCollaboraDocumentId && collaboraRename) {
           return (
             <CollaboraDocumentEditBox
-              collaboraDocumentId={editCollaboraDocumentId}
               displayName={editCollaboraDocumentDisplayName ?? ''}
               documentType={docType}
+              rename={collaboraRename}
             />
           );
         }

@@ -686,6 +686,7 @@
       "edit": "Hernoemen",
       "save": "Opslaan",
       "cancel": "Annuleren",
+      "saving": "Bezig met opslaan…",
       "errors": {
         "blank": "Voer een naam in.",
         "tooShort": "De naam moet minstens {{min}} tekens bevatten.",

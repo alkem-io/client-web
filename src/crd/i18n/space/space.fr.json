@@ -686,6 +686,7 @@
       "edit": "Renommer",
       "save": "Enregistrer",
       "cancel": "Annuler",
+      "saving": "Enregistrement…",
       "errors": {
         "blank": "Veuillez saisir un nom.",
         "tooShort": "Le nom doit comporter au moins {{min}} caractères.",

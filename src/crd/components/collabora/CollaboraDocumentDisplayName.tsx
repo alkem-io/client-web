@@ -14,6 +14,14 @@ type CollaboraDocumentDisplayNameProps = {
   saving?: boolean;
   /** Validation / save error message shown beneath the input while editing. */
   error?: string | null;
+  /**
+   * Whether to render the inline confirm (✓) / cancel (✕) buttons while editing.
+   * Default `true` for the standalone editor title bar, where the control owns
+   * its own commit. Pass `false` in the callout edit form, where committing is
+   * driven by the form's own Save button (the pencil just opens the input);
+   * Enter still commits and Escape still cancels via the keyboard.
+   */
+  showActions?: boolean;
   onChange?: (value: string) => void;
   onEdit?: () => void;
   onSave?: () => void;
@@ -21,11 +29,16 @@ type CollaboraDocumentDisplayNameProps = {
 };
 
 /**
- * Inline rename control for a Collabora (OfficeDocs) document title. Mirrors
- * `WhiteboardDisplayName` / `MemoDisplayName` (pencil → input → Check/Cancel;
- * Enter=save, Escape=cancel) so the rename interaction is consistent across
- * collaborative content types. Reused by the editor header and the standalone
- * rename dialog, and reusable by a future documents-as-contributions surface.
+ * Inline rename control for a Collabora (OfficeDocs) document title. Click the
+ * pencil to open an input; Enter commits and Escape reverts.
+ *
+ * Two commit surfaces depending on context (`showActions`):
+ *   - Editor title bar (`showActions` defaults to true): the control owns its
+ *     commit via the ✓ / ✕ buttons (mirrors WhiteboardDisplayName/MemoDisplayName).
+ *   - Callout edit form (`showActions={false}`): no ✓ / ✕ — the surrounding
+ *     form's Save button drives the commit, so the rename persists together with
+ *     the rest of the form. A dirty field is assumed intended; an unchanged field
+ *     is a no-op (both handled in `useRenameCollaboraDocument`).
  */
 export function CollaboraDocumentDisplayName({
   displayName,
@@ -34,6 +47,7 @@ export function CollaboraDocumentDisplayName({
   editing,
   saving,
   error,
+  showActions = true,
   onChange,
   onEdit,
   onSave,
@@ -70,31 +84,45 @@ export function CollaboraDocumentDisplayName({
             onChange={e => onChange?.(e.target.value)}
             onKeyDown={handleKeyDown}
             autoFocus={true}
+            disabled={saving}
             className="h-8"
           />
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 shrink-0"
-            onClick={onSave}
-            disabled={saving}
-            aria-label={t('collabora.rename.save')}
-          >
-            {saving ? (
-              <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Check className="size-4" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 shrink-0"
-            onClick={onCancel}
-            aria-label={t('collabora.rename.cancel')}
-          >
-            <X className="size-4" />
-          </Button>
+          {showActions ? (
+            <>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 shrink-0"
+                onClick={onSave}
+                disabled={saving}
+                aria-label={t('collabora.rename.save')}
+              >
+                {saving ? (
+                  <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Check className="size-4" />
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8 shrink-0"
+                onClick={onCancel}
+                aria-label={t('collabora.rename.cancel')}
+              >
+                <X className="size-4" />
+              </Button>
+            </>
+          ) : (
+            // Form-driven commit: no buttons, but keep a saving affordance for
+            // the moment the form's Save fires the rename mutation.
+            saving && (
+              <output
+                className="size-4 shrink-0 border-2 border-current border-t-transparent rounded-full animate-spin"
+                aria-label={t('collabora.rename.saving')}
+              />
+            )
+          )}
         </div>
         {error && <p className="text-caption text-destructive">{error}</p>}
       </div>

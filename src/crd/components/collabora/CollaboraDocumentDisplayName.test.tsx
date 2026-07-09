@@ -20,7 +20,7 @@ describe('CollaboraDocumentDisplayName', () => {
     expect(onEdit).toHaveBeenCalledTimes(1);
   });
 
-  test('editing: typing calls onChange; Save/Enter call onSave; Cancel/Escape call onCancel', () => {
+  test('editing (default): typing calls onChange; ✓/Enter call onSave; ✕/Escape call onCancel', () => {
     const onChange = vi.fn();
     const onSave = vi.fn();
     const onCancel = vi.fn();
@@ -49,6 +49,33 @@ describe('CollaboraDocumentDisplayName', () => {
 
     fireEvent.keyDown(input, { key: 'Escape' });
     expect(onCancel).toHaveBeenCalledTimes(2);
+  });
+
+  test('editing with showActions=false: no ✓/✕ buttons; commit is form-driven (Enter still saves, blur does not)', () => {
+    const onSave = vi.fn();
+    const onCancel = vi.fn();
+    render(
+      <CollaboraDocumentDisplayName
+        displayName="Budget"
+        value="Budget 2026"
+        editing={true}
+        showActions={false}
+        onSave={onSave}
+        onCancel={onCancel}
+      />
+    );
+    expect(screen.queryByLabelText('collabora.rename.save')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('collabora.rename.cancel')).not.toBeInTheDocument();
+
+    const input = screen.getByLabelText('collabora.rename.inputLabel');
+    // Losing focus must NOT commit — the form's Save button owns the commit.
+    fireEvent.blur(input);
+    expect(onSave).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSave).toHaveBeenCalledTimes(1);
+    fireEvent.keyDown(input, { key: 'Escape' });
+    expect(onCancel).toHaveBeenCalledTimes(1);
   });
 
   test('renders a validation error while editing', () => {

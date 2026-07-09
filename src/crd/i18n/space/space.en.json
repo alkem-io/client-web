@@ -678,6 +678,7 @@
       "edit": "Rename",
       "save": "Save",
       "cancel": "Cancel",
+      "saving": "Saving…",
       "errors": {
         "blank": "Please enter a name.",
         "tooShort": "Name must be at least {{min}} characters.",

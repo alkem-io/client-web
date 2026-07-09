@@ -686,6 +686,7 @@
       "edit": "Cambiar nombre",
       "save": "Guardar",
       "cancel": "Cancelar",
+      "saving": "Guardando…",
       "errors": {
         "blank": "Introduce un nombre.",
         "tooShort": "El nombre debe tener al menos {{min}} caracteres.",
