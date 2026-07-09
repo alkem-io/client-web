@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FileText, Presentation, Sheet, X } from 'lucide-react';
 import { useRef } from 'react';
@@ -48,25 +49,21 @@ export function CollaboraFramingEditorOverlay({
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { isAuthenticated } = useAuthenticationContext();
   const notify = useNotification();
+  const client = useApolloClient();
 
   const rename = useRenameCollaboraDocument({ collaboraDocumentId, displayName: title, canRename });
 
-  const { connectionStatus, saveStatus, connectedUsers, renameInEditor } = useCollaboraPostMessage(iframeRef, {
+  const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
     onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
     onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
+    // A rename from inside Collabora is persisted server-side (WOPI → server), but
+    // Apollo doesn't observe that write. Collabora reloads the frame after such a
+    // rename, so re-read the callout's collabora document to pull the new name into
+    // the normalized cache — the title here and the callout title update in step.
+    onDocumentReloaded: () => {
+      client.refetchQueries({ include: ['CalloutsOnCalloutsSetUsingClassification', 'CalloutContent'] });
+    },
   });
-
-  // Persist the rename, then ask Collabora to relabel its own title bar live so the
-  // in-iframe filename (the green bar) tracks the header rename without a reload.
-  // The persisted name is authoritative; we only signal Collabora once it's saved.
-  const handleRenameSave = async (): Promise<boolean> => {
-    const nextName = rename.draft.trim();
-    const saved = await rename.save();
-    if (saved && nextName && nextName !== title) {
-      renameInEditor(nextName);
-    }
-    return saved;
-  };
 
   const footerProps = mapCollaboraFooterProps({
     connectionStatus,
@@ -106,7 +103,7 @@ export function CollaboraFramingEditorOverlay({
                     error={rename.error}
                     onChange={rename.changeDraft}
                     onEdit={rename.startEdit}
-                    onSave={handleRenameSave}
+                    onSave={rename.save}
                     onCancel={rename.cancel}
                   />
                 </>
