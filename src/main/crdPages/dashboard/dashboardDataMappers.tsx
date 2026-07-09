@@ -12,9 +12,10 @@ import {
   User,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
+import type { ApplicationCardData } from '@/crd/components/dashboard/ApplicationsBlock';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -521,5 +522,50 @@ export const mapInvitationsToCards = (invitations: InvitationEntry[]): Invitatio
     spaceAvatarUrl: invitation.spacePendingMembershipInfo.about.profile.avatar?.uri,
     role: invitation.contributorType ?? '',
     color: pickColorFromId(invitation.spacePendingMembershipInfo.id),
+  }));
+};
+
+type ApplicationEntry = {
+  id: string;
+  spacePendingMembershipInfo: {
+    id: string;
+    level: SpaceLevel;
+    about: {
+      profile: {
+        displayName: string;
+        url: string;
+        avatar?: { uri: string };
+        cardBanner?: { uri: string };
+      };
+    };
+  };
+};
+
+/**
+ * The image for a space's square row tile.
+ *
+ * Per the canonical visual-fields rule an L0 space has no avatar — its identity
+ * image is the cardBanner — while an L1/L2 subspace has a real avatar, which is
+ * the right thing to crop into a square. Never substitute one for the other.
+ *
+ * The backend returns a `Visual` object with an empty `uri` when nothing has
+ * been uploaded, so an empty string means "no image", not "".
+ */
+const spaceTileImageUrl = (
+  level: SpaceLevel,
+  profile: { avatar?: { uri: string }; cardBanner?: { uri: string } }
+): string | undefined => (level === SpaceLevel.L0 ? profile.cardBanner?.uri : profile.avatar?.uri) || undefined;
+
+export const mapApplicationsToCards = (applications: ApplicationEntry[]): ApplicationCardData[] => {
+  return applications.map(application => ({
+    id: application.id,
+    spaceId: application.spacePendingMembershipInfo.id,
+    spaceName: application.spacePendingMembershipInfo.about.profile.displayName,
+    spaceHref: application.spacePendingMembershipInfo.about.profile.url,
+    spaceImageUrl: spaceTileImageUrl(
+      application.spacePendingMembershipInfo.level,
+      application.spacePendingMembershipInfo.about.profile
+    ),
+    color: pickColorFromId(application.spacePendingMembershipInfo.id),
   }));
 };
