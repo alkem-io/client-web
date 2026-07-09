@@ -58,33 +58,19 @@ export function CollaboraFramingEditorOverlay({
   // the callout's collabora document to pull the new name into the normalized cache
   // — the title here and the callout title then update in step. Cheap + idempotent.
   const refetchDocumentName = () => {
-    // Refetch whichever callout query is feeding this overlay: CalloutDetails backs
-    // the card/dialog view, the classification query backs the callouts list, and
-    // CalloutContent backs the edit form. All three carry the collabora document's
-    // profile, so any active one re-normalizes the new displayName into the cache.
-    client.refetchQueries({
-      include: ['CalloutDetails', 'CalloutsOnCalloutsSetUsingClassification', 'CalloutContent'],
-    });
+    // CalloutDetails backs the card/dialog view (the overlay's source); the
+    // classification query backs the callouts list. Both carry the collabora
+    // document's profile, so refetching whichever is active re-normalizes the new
+    // displayName into the cache and our title updates in place.
+    client.refetchQueries({ include: ['CalloutDetails', 'CalloutsOnCalloutsSetUsingClassification'] });
   };
 
-  // Collabora signals its post-rename reload with a fresh App_LoadingStatus, but the
-  // exact shape varies by build and it does NOT re-navigate the iframe (so onLoad
-  // won't fire). Count Document_Loaded events and refetch on any after the first
-  // (initial open). TEMP: log every message so we can pin the exact rename signal.
-  const loadCountRef = useRef(0);
+  // Collabora reconnects and re-emits Document_Loaded after an in-editor rename
+  // (without navigating the iframe), so that postMessage is our refresh signal.
   const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
     onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
     onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
-    onMessage: msg => {
-      // biome-ignore lint/suspicious/noConsole: temporary diagnostic to pin the exact post-rename signal
-      console.debug('[collabora postMessage]', msg.MessageId, msg.Values?.Status ?? '');
-      if (msg.MessageId === 'App_LoadingStatus' && msg.Values?.Status === 'Document_Loaded') {
-        loadCountRef.current += 1;
-        if (loadCountRef.current > 1) {
-          refetchDocumentName();
-        }
-      }
-    },
+    onDocumentReloaded: refetchDocumentName,
   });
 
   // Backstop: whatever happened inside the editor, refresh our copy on the way out.

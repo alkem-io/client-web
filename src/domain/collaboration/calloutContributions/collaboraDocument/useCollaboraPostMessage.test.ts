@@ -49,4 +49,16 @@ describe('useCollaboraPostMessage', () => {
     act(() => dispatchFromIframe(contentWindow, { MessageId: 'Error', Values: { Cmd: 'boom' } }));
     expect(onError).toHaveBeenCalledWith('boom');
   });
+
+  it('fires onDocumentReloaded on a re-emitted Document_Loaded (Collabora reconnect after rename), not the first', () => {
+    const { ref, contentWindow } = fakeIframeRef();
+    const onDocumentReloaded = vi.fn();
+    renderHook(() => useCollaboraPostMessage(ref, { onDocumentReloaded }));
+
+    act(() => dispatchFromIframe(contentWindow, documentLoaded)); // initial open
+    expect(onDocumentReloaded).not.toHaveBeenCalled();
+
+    act(() => dispatchFromIframe(contentWindow, documentLoaded)); // reconnect after rename
+    expect(onDocumentReloaded).toHaveBeenCalledTimes(1);
+  });
 });
