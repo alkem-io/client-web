@@ -905,6 +905,8 @@
     "noLocationDescription": "Estos colaboradores no tienen datos de ubicación configurados.",
     "viewList": "Lista",
     "viewMap": "Mapa",
+    "expandMap": "Ampliar mapa",
+    "closeMap": "Cerrar mapa",
     "types": {
       "user": "Personas",
       "organization": "Organizaciones",

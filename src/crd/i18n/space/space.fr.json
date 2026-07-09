@@ -905,6 +905,8 @@
     "noLocationDescription": "Ces contributeurs n’ont pas de données de localisation définies.",
     "viewList": "Liste",
     "viewMap": "Carte",
+    "expandMap": "Agrandir la carte",
+    "closeMap": "Fermer la carte",
     "types": {
       "user": "Personnes",
       "organization": "Organisations",

@@ -905,6 +905,8 @@
     "noLocationDescription": "These contributors have no location data set.",
     "viewList": "List",
     "viewMap": "Map",
+    "expandMap": "Expand map",
+    "closeMap": "Close map",
     "types": {
       "user": "People",
       "organization": "Organizations",
