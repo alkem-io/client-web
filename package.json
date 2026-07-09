@@ -18,7 +18,7 @@
     "benchmark:lcp": "node scripts/analyze-lcp.mjs",
     "benchmark:memory": "node scripts/analyze-memory.mjs",
     "build": "NODE_ENV=production node buildConfiguration && NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite build",
-    "build:dev": "NODE_ENV=development node buildConfiguration && NODE_ENV=development NODE_OPTIONS=--max-old-space-size=8192 vite build",
+    "build:dev": "NODE_ENV=development node buildConfiguration && NODE_ENV=development NODE_OPTIONS=--max-old-space-size=8192 vite build --mode development",
     "build:sentry": "NODE_ENV=production node buildConfiguration && NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 vite -c vite.sentry.config.mjs build",
     "codegen": "graphql-codegen --config codegen.yml",
     "crd:dev": "vite --config src/crd/app/vite.config.ts",
