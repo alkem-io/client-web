@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateCollaboraDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -37,6 +37,9 @@ export function useRenameCollaboraDocument({
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
+  // The mutation's `loading` flips asynchronously, so guard against overlapping
+  // dispatches (rapid repeated triggers) with a synchronous in-flight ref.
+  const savingRef = useRef(false);
 
   const startEdit = () => {
     setDraft(displayName);
@@ -86,6 +89,10 @@ export function useRenameCollaboraDocument({
       setError(validationError);
       return false;
     }
+    if (savingRef.current) {
+      return false;
+    }
+    savingRef.current = true;
     try {
       await updateCollaboraDocument({
         variables: { updateData: { ID: collaboraDocumentId, displayName: trimmed } },
@@ -97,6 +104,8 @@ export function useRenameCollaboraDocument({
       // Keep the persisted name; surface a save error.
       setError(t('collabora.rename.errors.saveFailed'));
       return false;
+    } finally {
+      savingRef.current = false;
     }
   };
 

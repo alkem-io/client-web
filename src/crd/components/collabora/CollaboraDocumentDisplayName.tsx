@@ -95,12 +95,16 @@ export function CollaboraDocumentDisplayName({
                 className="size-8 shrink-0"
                 onClick={onSave}
                 disabled={saving}
+                aria-busy={saving}
                 aria-label={t('collabora.rename.save')}
               >
                 {saving ? (
-                  <span className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  <span
+                    className="size-4 border-2 border-current border-t-transparent rounded-full animate-spin"
+                    aria-hidden="true"
+                  />
                 ) : (
-                  <Check className="size-4" />
+                  <Check className="size-4" aria-hidden="true" />
                 )}
               </Button>
               <Button
@@ -108,9 +112,10 @@ export function CollaboraDocumentDisplayName({
                 size="icon"
                 className="size-8 shrink-0"
                 onClick={onCancel}
+                disabled={saving}
                 aria-label={t('collabora.rename.cancel')}
               >
-                <X className="size-4" />
+                <X className="size-4" aria-hidden="true" />
               </Button>
             </>
           ) : (
@@ -139,7 +144,7 @@ export function CollaboraDocumentDisplayName({
         onClick={onEdit}
         aria-label={t('collabora.rename.edit')}
       >
-        <Pencil className="size-4" />
+        <Pencil className="size-4" aria-hidden="true" />
       </Button>
     </div>
   );

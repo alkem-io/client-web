@@ -106,6 +106,9 @@ describe('CollaboraDocumentDisplayName', () => {
     const input = screen.getByLabelText('collabora.rename.inputLabel');
     fireEvent.keyDown(input, { key: 'Enter' });
     fireEvent.keyDown(input, { key: 'Escape' });
+    // The ✓/✕ buttons are disabled while saving, so clicking them is a no-op too.
+    fireEvent.click(screen.getByLabelText('collabora.rename.save'));
+    fireEvent.click(screen.getByLabelText('collabora.rename.cancel'));
     expect(onSave).not.toHaveBeenCalled();
     expect(onCancel).not.toHaveBeenCalled();
   });
