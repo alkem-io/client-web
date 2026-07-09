@@ -8229,6 +8229,10 @@ export const ReplaceCollaboraDocumentDocument = gql`
     mutation ReplaceCollaboraDocument($file: Upload!, $replaceData: ReplaceCollaboraDocumentInput!) {
   replaceCollaboraDocument(file: $file, replaceData: $replaceData) {
     id
+    profile {
+      id
+      displayName
+    }
   }
 }
     `;

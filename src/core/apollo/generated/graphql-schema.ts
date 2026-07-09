@@ -7439,7 +7439,7 @@ export type ReorderPollOptionsInput = {
 export type ReplaceCollaboraDocumentInput = {
   /** The ID of the CollaboraDocument whose backing file is being replaced. */
   ID: Scalars['UUID']['input'];
-  /** Optional title chosen in the replace dialog (defaults to the incoming file title). ACCEPTED FOR FORWARD-COMPATIBILITY BUT NOT APPLIED in this feature: the stored display name is left unchanged. Persisting a rename is owned by feature 016-officedocs-rename-ux (FR-009 / FR-015). Present so reviewers do not read the unused field as a bug. */
+  /** Optional title chosen in the replace dialog (defaults to the incoming file title). When supplied it is persisted as the CollaboraDocument display name (the same entity), propagating to the editor title and the download filename (feature 016-officedocs-rename-ux / FR-009 / FR-015). Omit to leave the current name unchanged. */
   displayName?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -15542,7 +15542,11 @@ export type ReplaceCollaboraDocumentMutationVariables = Exact<{
 
 export type ReplaceCollaboraDocumentMutation = {
   __typename?: 'Mutation';
-  replaceCollaboraDocument: { __typename?: 'CollaboraDocument'; id: string };
+  replaceCollaboraDocument: {
+    __typename?: 'CollaboraDocument';
+    id: string;
+    profile: { __typename?: 'Profile'; id: string; displayName: string };
+  };
 };
 
 export type UpdateCollaboraDocumentMutationVariables = Exact<{
