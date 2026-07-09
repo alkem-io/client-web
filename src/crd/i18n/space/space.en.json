@@ -550,6 +550,7 @@
     "publishedLabel": "Published",
     "draftLabel": "Draft",
     "notifyMembers": "Notify space members",
+    "titleRequiredHint": "Add a title to your $t(common.Callout) to continue",
     "saveDraft": "Save Draft",
     "save": "Save",
     "publish": "Post",
@@ -567,7 +568,8 @@
     "addOption": "Add Option",
     "removeOption": "Remove option",
     "allowComments": "Allow comments",
-    "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing."
+    "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Responses",

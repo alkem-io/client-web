@@ -550,6 +550,7 @@
     "publishedLabel": "Gepubliceerd",
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
+    "titleRequiredHint": "Voeg een titel toe aan je $t(common.Callout) om verder te gaan",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
     "publish": "Post",
@@ -567,7 +568,8 @@
     "addOption": "Optie toevoegen",
     "removeOption": "Optie verwijderen",
     "allowComments": "Reacties toestaan",
-    "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing."
+    "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Reacties",
