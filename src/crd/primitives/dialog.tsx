@@ -4,6 +4,29 @@ import * as React from 'react';
 
 import { cn } from '@/crd/lib/utils';
 
+/**
+ * Marker attribute for fixed overlays that live OUTSIDE the Radix dialog layer
+ * (e.g. the cookie-consent banner) but must not dismiss an open modal when
+ * clicked: Radix treats any pointer-down outside its layer as a backdrop
+ * dismiss. Tag the overlay's root element with this attribute and dialog
+ * content ignores interactions originating from it — a generic escape hatch,
+ * no overlay-specific knowledge in the dialog.
+ */
+export const DIALOG_DISMISS_IGNORE_ATTR = 'data-dialog-dismiss-ignore';
+
+type InteractOutsideHandler = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>['onInteractOutside'];
+
+const guardInteractOutside =
+  (userHandler: InteractOutsideHandler): NonNullable<InteractOutsideHandler> =>
+  event => {
+    const target = event.target as Element | null;
+    if (target?.closest?.(`[${DIALOG_DISMISS_IGNORE_ATTR}]`)) {
+      event.preventDefault();
+      return;
+    }
+    userHandler?.(event);
+  };
+
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
@@ -45,11 +68,12 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const DialogContentRaw = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, ...props }, ref) => (
+>(({ className, onInteractOutside, ...props }, ref) => (
   <DialogPrimitive.Content
     ref={ref}
     data-slot="dialog-content-raw"
     className={cn('pointer-events-auto', className)}
+    onInteractOutside={guardInteractOutside(onInteractOutside)}
     {...props}
   />
 ));
@@ -62,12 +86,13 @@ const DialogContent = React.forwardRef<
     /** Optional className for the overlay — escape hatch for stacking fixes (e.g. when this dialog is opened on top of another z-[60] dialog like the whiteboard editor). */
     overlayClassName?: string;
   }
->(({ className, children, closeLabel, overlayClassName, ...props }, ref) => (
+>(({ className, children, closeLabel, overlayClassName, onInteractOutside, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay className={overlayClassName} />
     <DialogPrimitive.Content
       ref={ref}
       data-slot="dialog-content"
+      onInteractOutside={guardInteractOutside(onInteractOutside)}
       className={cn(
         'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg',
         className
