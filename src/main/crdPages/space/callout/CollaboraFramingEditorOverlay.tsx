@@ -53,11 +53,6 @@ export function CollaboraFramingEditorOverlay({
 
   const rename = useRenameCollaboraDocument({ collaboraDocumentId, displayName: title, canRename });
 
-  const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
-    onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
-    onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
-  });
-
   // A rename from inside Collabora is persisted server-side (WOPI → server event),
   // but Apollo never observes that write, so our own title would go stale. Re-read
   // the callout's collabora document to pull the new name into the normalized cache
@@ -72,16 +67,25 @@ export function CollaboraFramingEditorOverlay({
     });
   };
 
-  // Collabora reloads the iframe after an in-editor rename; the iframe's onLoad is a
-  // plain DOM signal for that (independent of Collabora's postMessages). Skip the
-  // first (initial open — name already current); refetch on every reload after.
+  // Collabora signals its post-rename reload with a fresh App_LoadingStatus, but the
+  // exact shape varies by build and it does NOT re-navigate the iframe (so onLoad
+  // won't fire). Count Document_Loaded events and refetch on any after the first
+  // (initial open). TEMP: log every message so we can pin the exact rename signal.
   const loadCountRef = useRef(0);
-  const handleIframeLoad = () => {
-    loadCountRef.current += 1;
-    if (loadCountRef.current > 1) {
-      refetchDocumentName();
-    }
-  };
+  const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
+    onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
+    onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
+    onMessage: msg => {
+      // biome-ignore lint/suspicious/noConsole: temporary diagnostic to pin the exact post-rename signal
+      console.debug('[collabora postMessage]', msg.MessageId, msg.Values?.Status ?? '');
+      if (msg.MessageId === 'App_LoadingStatus' && msg.Values?.Status === 'Document_Loaded') {
+        loadCountRef.current += 1;
+        if (loadCountRef.current > 1) {
+          refetchDocumentName();
+        }
+      }
+    },
+  });
 
   // Backstop: whatever happened inside the editor, refresh our copy on the way out.
   const handleClose = () => {
@@ -143,13 +147,7 @@ export function CollaboraFramingEditorOverlay({
             </Button>
           </div>
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-            {open && (
-              <CollaboraDocumentEditor
-                collaboraDocumentId={collaboraDocumentId}
-                iframeRef={iframeRef}
-                onLoad={handleIframeLoad}
-              />
-            )}
+            {open && <CollaboraDocumentEditor collaboraDocumentId={collaboraDocumentId} iframeRef={iframeRef} />}
           </div>
           {open && <CollaboraCollabFooter {...footerProps} />}
         </DialogPrimitive.Content>

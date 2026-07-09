@@ -25,6 +25,12 @@ export type CollaboraIframeState = {
 type Options = {
   onError?: (message: string) => void;
   onSessionClosed?: () => void;
+  /**
+   * Raw firehose of every parsed Collabora postMessage from the iframe. Used to
+   * react to signals we don't model in state (e.g. the reload after an in-editor
+   * rename, whose exact MessageId varies by Collabora build).
+   */
+  onMessage?: (message: { MessageId?: string; Values?: Record<string, unknown> }) => void;
 };
 
 /**
@@ -36,7 +42,7 @@ type Options = {
  */
 export function useCollaboraPostMessage(
   iframeRef: RefObject<HTMLIFrameElement | null>,
-  { onError, onSessionClosed }: Options = {}
+  { onError, onSessionClosed, onMessage }: Options = {}
 ): CollaboraIframeState {
   const [state, setState] = useState<CollaboraIframeState>({
     connectionStatus: 'connecting',
@@ -54,12 +60,13 @@ export function useCollaboraPostMessage(
       const data = parseMessage(event.data);
       if (!data?.MessageId) return;
 
+      onMessage?.(data);
       setState(prev => reduce(prev, data, { onError, onSessionClosed }));
     };
 
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);
-  }, [iframeRef, onError, onSessionClosed]);
+  }, [iframeRef, onError, onSessionClosed, onMessage]);
 
   return state;
 }
