@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FileText, Presentation, Sheet, X } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -83,6 +83,21 @@ export function CollaboraFramingEditorOverlay({
     onClose();
   };
 
+  // Renaming from THIS header (outside the iframe) persists via GraphQL and updates
+  // our own title live, but Collabora cached its filename (the green bar) at load
+  // time. We can't reload a cross-origin iframe from the parent, so remount the
+  // editor on a successful rename — it fetches a fresh URL and Collabora re-reads
+  // the new name from CheckFileInfo. Bumping this key drives the remount.
+  const [editorReloadKey, setEditorReloadKey] = useState(0);
+  const handleHeaderRenameSave = async (): Promise<boolean> => {
+    const changed = rename.draft.trim() !== title;
+    const saved = await rename.save();
+    if (saved && changed) {
+      setEditorReloadKey(key => key + 1);
+    }
+    return saved;
+  };
+
   const footerProps = mapCollaboraFooterProps({
     connectionStatus,
     saveStatus,
@@ -121,7 +136,7 @@ export function CollaboraFramingEditorOverlay({
                     error={rename.error}
                     onChange={rename.changeDraft}
                     onEdit={rename.startEdit}
-                    onSave={rename.save}
+                    onSave={handleHeaderRenameSave}
                     onCancel={rename.cancel}
                   />
                 </>
@@ -139,6 +154,7 @@ export function CollaboraFramingEditorOverlay({
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
             {open && (
               <CollaboraDocumentEditor
+                key={editorReloadKey}
                 collaboraDocumentId={collaboraDocumentId}
                 iframeRef={iframeRef}
                 onLoad={handleIframeLoad}
