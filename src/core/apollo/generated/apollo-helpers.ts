@@ -2960,6 +2960,7 @@ export type MutationKeySpecifier = (
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'reorderPollOptions'
+  | 'replaceCollaboraDocument'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -3179,6 +3180,7 @@ export type MutationFieldPolicy = {
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  replaceCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;

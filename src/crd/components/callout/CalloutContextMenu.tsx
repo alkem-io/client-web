@@ -9,6 +9,7 @@ import {
   GripVertical,
   MoreHorizontal,
   Pencil,
+  RefreshCw,
   Share2,
   Trash2,
 } from 'lucide-react';
@@ -32,6 +33,8 @@ type CalloutContextMenuProps = {
   /** Tooltip explaining why Save-as-Template is disabled. */
   saveAsTemplateDisabledReason?: string;
   onEdit?: () => void;
+  /** Replace the backing file of a Collabora (OfficeDocs) framing document. */
+  onReplace?: () => void;
   onPublish?: () => void;
   onUnpublish?: () => void;
   onDelete?: () => void;
@@ -53,6 +56,7 @@ export function CalloutContextMenu({
   saveAsTemplateDisabled,
   saveAsTemplateDisabledReason,
   onEdit,
+  onReplace,
   onPublish,
   onUnpublish,
   onDelete,
@@ -83,6 +87,13 @@ export function CalloutContextMenu({
           <DropdownMenuItem onClick={onEdit}>
             <Pencil className="w-4 h-4 mr-2" aria-hidden="true" />
             {t('contextMenu.edit')}
+          </DropdownMenuItem>
+        )}
+
+        {editable && onReplace && (
+          <DropdownMenuItem onClick={onReplace}>
+            <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
+            {t('callout.documentReplace')}
           </DropdownMenuItem>
         )}
 
