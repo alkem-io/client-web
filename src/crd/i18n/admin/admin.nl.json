@@ -76,7 +76,21 @@
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
     "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
-    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access"
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "SERVICE_ADMIN": "Service Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Volledige administratieve controle over het hele platform.",
+    "GLOBAL_SUPPORT": "Platformbeheer en supportactiviteiten; kan afhankelijk van Space-instellingen als Space-admin optreden.",
+    "GLOBAL_LICENSE_MANAGER": "Beheert licenties en plannen voor alle accounts.",
+    "GLOBAL_COMMUNITY_READER": "Alleen-lezen toegang tot community-informatie op het hele platform.",
+    "GLOBAL_SPACES_READER": "Alleen-lezen toegang tot alle Spaces en hun inhoud.",
+    "GLOBAL_PLATFORM_MANAGER": "Beheert instellingen en inhoud op platformniveau.",
+    "GLOBAL_SUPPORT_MANAGER": "Uitgebreide supportrol voor het beheren van supportactiviteiten.",
+    "PLATFORM_BETA_TESTER": "Toegang tot bètafuncties vóór algemene release.",
+    "PLATFORM_VC_CAMPAIGN": "Deelname aan de Virtual Contributor-campagne.",
+    "PLATFORM_ASSISTANT_ACCESS": "Toegang tot de AI-assistent.",
+    "SERVICE_ADMIN": "Alleen onderhoudsbewerkingen op serviceniveau — momenteel autorisatie-resets. Geeft geen andere administratieve rechten; de reikwijdte kan in de toekomst worden uitgebreid."
   },
   "roleMembers": {
     "currentMembers": "Huidige leden",

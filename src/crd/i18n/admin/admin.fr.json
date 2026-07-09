@@ -76,7 +76,21 @@
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
     "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
-    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access"
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "SERVICE_ADMIN": "Service Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Contrôle administratif complet sur l'ensemble de la plateforme.",
+    "GLOBAL_SUPPORT": "Gestion de la plateforme et opérations de support ; peut agir comme administrateur d'un espace selon ses paramètres.",
+    "GLOBAL_LICENSE_MANAGER": "Gère les licences et les plans sur tous les comptes.",
+    "GLOBAL_COMMUNITY_READER": "Accès en lecture seule aux informations de la communauté sur toute la plateforme.",
+    "GLOBAL_SPACES_READER": "Accès en lecture seule à tous les espaces et à leur contenu.",
+    "GLOBAL_PLATFORM_MANAGER": "Gère les paramètres et le contenu au niveau de la plateforme.",
+    "GLOBAL_SUPPORT_MANAGER": "Rôle de support avancé pour la gestion des opérations de support.",
+    "PLATFORM_BETA_TESTER": "Accès aux fonctionnalités bêta avant leur diffusion générale.",
+    "PLATFORM_VC_CAMPAIGN": "Participation à la campagne Virtual Contributor.",
+    "PLATFORM_ASSISTANT_ACCESS": "Accès à l'assistant IA.",
+    "SERVICE_ADMIN": "Opérations de maintenance au niveau service uniquement — actuellement les réinitialisations d'autorisation. N'accorde aucun autre pouvoir administratif ; le périmètre pourra être étendu à l'avenir."
   },
   "roleMembers": {
     "currentMembers": "Membres actuels",
