@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useState } from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import type { CollaboraConnectedUser, CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
 
 export type CollaboraConnectionStatus = 'connected' | 'connecting' | 'disconnected';
@@ -27,6 +27,27 @@ type Options = {
   onSessionClosed?: () => void;
 };
 
+export type CollaboraPostMessageApi = CollaboraIframeState & {
+  /**
+   * Ask the open Collabora editor to relabel its title bar to `name` (base name,
+   * no extension) without a reload. Fires the WOPI RenameFile flow; the name is
+   * authoritative on the Alkemio side, so call this only AFTER the rename has been
+   * persisted server-side. No-op until the iframe is ready.
+   */
+  renameInEditor: (name: string) => void;
+};
+
+/** Post a Collabora PostMessage-API command into the editor iframe. */
+function postToCollabora(iframe: HTMLIFrameElement | null, messageId: string, values?: Record<string, unknown>): void {
+  // Date.now() is fine in browser code (unlike workflow scripts); Collabora reads
+  // SendTime purely for logging/ordering. The editor URL host varies per
+  // deployment, so we target '*' — the same trust model as the inbound listener.
+  iframe?.contentWindow?.postMessage(
+    JSON.stringify({ MessageId: messageId, SendTime: Date.now(), Values: values }),
+    '*'
+  );
+}
+
 /**
  * Parses Collabora Online's postMessage API emitted from the editor iframe. Collabora's
  * save pipeline is internal to the WOPI host; the only signals the embedder gets are
@@ -37,12 +58,15 @@ type Options = {
 export function useCollaboraPostMessage(
   iframeRef: RefObject<HTMLIFrameElement | null>,
   { onError, onSessionClosed }: Options = {}
-): CollaboraIframeState {
+): CollaboraPostMessageApi {
   const [state, setState] = useState<CollaboraIframeState>({
     connectionStatus: 'connecting',
     saveStatus: 'saved',
     connectedUsers: [],
   });
+  // Collabora ignores host commands until the host has posted Host_PostmessageReady.
+  // Track that we've completed the handshake so we send it exactly once.
+  const readyRef = useRef(false);
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
@@ -54,14 +78,42 @@ export function useCollaboraPostMessage(
       const data = parseMessage(event.data);
       if (!data?.MessageId) return;
 
+      // Complete the handshake as soon as the frame reports readiness, so later
+      // host commands (e.g. Action_RenameFile) are accepted.
+      if (!readyRef.current && data.MessageId === 'App_LoadingStatus') {
+        const status = data.Values?.Status;
+        if (status === 'Frame_Ready' || status === 'Document_Loaded') {
+          postToCollabora(iframe, 'Host_PostmessageReady');
+          readyRef.current = true;
+        }
+      }
+
       setState(prev => reduce(prev, data, { onError, onSessionClosed }));
     };
 
     window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
+    return () => {
+      window.removeEventListener('message', handler);
+      readyRef.current = false;
+    };
   }, [iframeRef, onError, onSessionClosed]);
 
-  return state;
+  const renameInEditor = useCallback(
+    (name: string) => {
+      const iframe = iframeRef.current;
+      if (!iframe) return;
+      // Defensively (re)send the handshake in case the ready signal was missed,
+      // then request the relabel. Both are idempotent on Collabora's side.
+      if (!readyRef.current) {
+        postToCollabora(iframe, 'Host_PostmessageReady');
+        readyRef.current = true;
+      }
+      postToCollabora(iframe, 'Action_RenameFile', { Name: name });
+    },
+    [iframeRef]
+  );
+
+  return { ...state, renameInEditor };
 }
 
 function parseMessage(raw: unknown): CollaboraMessage | null {

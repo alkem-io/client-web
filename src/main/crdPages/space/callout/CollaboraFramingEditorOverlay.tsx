@@ -51,10 +51,22 @@ export function CollaboraFramingEditorOverlay({
 
   const rename = useRenameCollaboraDocument({ collaboraDocumentId, displayName: title, canRename });
 
-  const { connectionStatus, saveStatus, connectedUsers } = useCollaboraPostMessage(iframeRef, {
+  const { connectionStatus, saveStatus, connectedUsers, renameInEditor } = useCollaboraPostMessage(iframeRef, {
     onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
     onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
   });
+
+  // Persist the rename, then ask Collabora to relabel its own title bar live so the
+  // in-iframe filename (the green bar) tracks the header rename without a reload.
+  // The persisted name is authoritative; we only signal Collabora once it's saved.
+  const handleRenameSave = async (): Promise<boolean> => {
+    const nextName = rename.draft.trim();
+    const saved = await rename.save();
+    if (saved && nextName && nextName !== title) {
+      renameInEditor(nextName);
+    }
+    return saved;
+  };
 
   const footerProps = mapCollaboraFooterProps({
     connectionStatus,
@@ -94,7 +106,7 @@ export function CollaboraFramingEditorOverlay({
                     error={rename.error}
                     onChange={rename.changeDraft}
                     onEdit={rename.startEdit}
-                    onSave={rename.save}
+                    onSave={handleRenameSave}
                     onCancel={rename.cancel}
                   />
                 </>
