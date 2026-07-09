@@ -53,6 +53,11 @@ export function useCollaboraPostMessage(
   // Count Document_Loaded events: the first is the initial open; any after it is a
   // reload (e.g. Collabora's reconnect after an in-editor rename).
   const loadCountRef = useRef(0);
+  // Keep the callbacks in refs so the message listener can subscribe ONCE. Binding
+  // them into the effect deps instead would re-subscribe on every render (the
+  // callers pass fresh closures) and reset loadCountRef, breaking reload detection.
+  const callbacksRef = useRef({ onError, onSessionClosed, onDocumentReloaded });
+  callbacksRef.current = { onError, onSessionClosed, onDocumentReloaded };
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
@@ -64,6 +69,7 @@ export function useCollaboraPostMessage(
       const data = parseMessage(event.data);
       if (!data?.MessageId) return;
 
+      const { onError, onSessionClosed, onDocumentReloaded } = callbacksRef.current;
       if (data.MessageId === 'App_LoadingStatus' && data.Values?.Status === 'Document_Loaded') {
         loadCountRef.current += 1;
         if (loadCountRef.current > 1) {
@@ -79,7 +85,7 @@ export function useCollaboraPostMessage(
       window.removeEventListener('message', handler);
       loadCountRef.current = 0;
     };
-  }, [iframeRef, onError, onSessionClosed, onDocumentReloaded]);
+  }, [iframeRef]);
 
   return state;
 }
