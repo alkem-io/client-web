@@ -421,7 +421,8 @@
     "maxLength": "Máximo {{count}} caracteres.",
     "submitted": {
       "title": "Solicitud enviada",
-      "body": "Tu solicitud a {{communityName}} ha sido enviada."
+      "body": "Tu solicitud a {{communityName}} ha sido enviada.",
+      "review": "Tu solicitud será revisada. Una vez aprobada recibirás una notificación <bell/> y podrás entrar en la comunidad desde tu panel de Inicio."
     }
   },
   "mobile": {
@@ -919,6 +920,8 @@
     "noLocationDescription": "Estos colaboradores no tienen datos de ubicación configurados.",
     "viewList": "Lista",
     "viewMap": "Mapa",
+    "expandMap": "Ampliar mapa",
+    "closeMap": "Cerrar mapa",
     "types": {
       "user": "Personas",
       "organization": "Organizaciones",

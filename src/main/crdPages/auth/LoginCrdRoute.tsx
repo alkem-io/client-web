@@ -19,9 +19,11 @@ import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUr
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
+import { resolveInternalReturnPath } from '@/core/utils/links';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard } from '@/crd/components/auth/LoginCard';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
 import { invokePasskeyTrigger, PasskeyTriggerError } from './passkeyTrigger';
@@ -56,6 +58,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // render the form as normal (the flow id is opaque state Kratos owns).
   const returnUrlFromParam = params.get(PARAM_NAME_RETURN_URL) ?? undefined;
   const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
+  const signUpReturnUrl = returnUrlFromParam ?? storedReturnUrl;
   const platformOrigin = usePlatformOrigin();
   const isOidcEntry = !flow;
 
@@ -66,14 +69,11 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     }
     const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
     // FR-017a — server-side validator requires a same-origin path-only value.
-    const returnTo = (() => {
-      try {
-        const u = new URL(raw, window.location.origin);
-        return u.origin === window.location.origin ? `${u.pathname}${u.search}${u.hash}` || '/' : '/';
-      } catch {
-        return raw.startsWith('/') ? raw : '/';
-      }
-    })();
+    // Resolve against the apex, not `window.location.origin`: this page also
+    // renders on the identity subdomain (see below), where an apex-absolute
+    // returnUrl would otherwise be judged cross-origin and collapse to '/',
+    // dropping the destination on every deployed sign-up.
+    const returnTo = resolveInternalReturnPath(raw, platformOrigin) ?? '/';
     // The OIDC BFF (/api/auth/oidc/*) is apex-only and called same-origin-relative.
     // This page also renders on the identity subdomain (its sign-up/recovery pages
     // link back to /login); a relative replace there would land on
@@ -144,7 +144,12 @@ function CrdLoginPage({ flow }: { flow?: string }) {
         <LoginCard
           descriptor={undefined}
           isLoading={true}
-          signUpHref={AUTH_SIGN_UP_PATH}
+          signUpHref={
+            // Forward the pending returnUrl so a first-time visitor who came
+            // for a specific space/subspace keeps that destination through
+            // sign-up (bare /sign_up would drop it — they'd land on home).
+            signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
+          }
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         />
       </AuthShellWrapper>
@@ -156,7 +161,12 @@ function CrdLoginPage({ flow }: { flow?: string }) {
       <LoginCard
         descriptor={descriptor}
         isLoading={loading}
-        signUpHref={AUTH_SIGN_UP_PATH}
+        signUpHref={
+          // Forward the pending returnUrl so a first-time visitor who came
+          // for a specific space/subspace keeps that destination through
+          // sign-up (bare /sign_up would drop it — they'd land on home).
+          signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
+        }
         forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         onPasskeyTrigger={trigger => {
           setPasskeyError(undefined);

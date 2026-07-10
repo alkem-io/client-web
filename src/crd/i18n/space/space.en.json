@@ -421,7 +421,8 @@
     "maxLength": "Maximum {{count}} characters.",
     "submitted": {
       "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "body": "Your application to {{communityName}} has been submitted.",
+      "review": "Your application will be reviewed. Once it is approved you will get a notification <bell/> and you will be able to enter the community from your Home dashboard."
     }
   },
   "mobile": {
@@ -919,6 +920,8 @@
     "noLocationDescription": "These contributors have no location data set.",
     "viewList": "List",
     "viewMap": "Map",
+    "expandMap": "Expand map",
+    "closeMap": "Close map",
     "types": {
       "user": "People",
       "organization": "Organizations",

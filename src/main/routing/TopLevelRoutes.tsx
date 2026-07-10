@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { useSignUpReturnRedirect } from '@/core/auth/authentication/hooks/useSignUpReturnRedirect';
 import { IdentityRoute } from '@/core/auth/authentication/routing/IdentityRoute';
 import useRedirectToIdentityDomain from '@/core/auth/authentication/routing/useRedirectToIdentityDomain';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -43,6 +44,7 @@ const InnovationPackRoute = lazyWithGlobalErrorHandler(() => import('@/domain/In
 
 export const TopLevelRoutes = () => {
   useRedirectToIdentityDomain();
+  useSignUpReturnRedirect();
 
   return (
     <Routes>

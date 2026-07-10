@@ -421,7 +421,8 @@
     "maxLength": "Maximaal {{count}} tekens.",
     "submitted": {
       "title": "Aanvraag ingediend",
-      "body": "Je aanvraag voor {{communityName}} is ingediend."
+      "body": "Je aanvraag voor {{communityName}} is ingediend.",
+      "review": "Je aanvraag wordt beoordeeld. Zodra deze is goedgekeurd ontvang je een melding <bell/> en kun je de community binnengaan vanaf je Home-dashboard."
     }
   },
   "mobile": {
@@ -919,6 +920,8 @@
     "noLocationDescription": "Deze contributors hebben geen locatiegegevens ingesteld.",
     "viewList": "Lijst",
     "viewMap": "Kaart",
+    "expandMap": "Kaart vergroten",
+    "closeMap": "Kaart sluiten",
     "types": {
       "user": "Personen",
       "organization": "Organisaties",

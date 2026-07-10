@@ -145,6 +145,10 @@
     "decline": "Ablehnen",
     "noInvitations": "Keine ausstehenden Einladungen"
   },
+  "applications": {
+    "title": "Ausstehende Bewerbungen",
+    "pending": "Ausstehend"
+  },
   "campaign": {
     "title": "Erstelle deinen virtuellen Mitwirkenden",
     "description": "Starte mit deinem eigenen KI-gestützten Mitwirkenden",

@@ -5256,6 +5256,14 @@ export const UserPendingMembershipsDocument = gql`
         level
         about {
           ...SpaceAboutMinimalUrl
+          profile {
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualModel
+            }
+          }
         }
       }
       application {
@@ -5271,6 +5279,7 @@ export const UserPendingMembershipsDocument = gql`
 }
     ${UserDetailsFragmentDoc}
 ${SpaceAboutMinimalUrlFragmentDoc}
+${VisualModelFragmentDoc}
 ${InvitationDataFragmentDoc}`;
 
 /**

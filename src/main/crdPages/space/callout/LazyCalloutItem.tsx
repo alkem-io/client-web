@@ -249,10 +249,12 @@ function LazyCalloutItemContent({
 
   // Contributor-collection callout body (feature 008): renders the self-updating
   // contributor cards/map for the active type. The callout accepts no
-  // contributions, so it has no contributions-preview — only this body.
+  // contributions, so it has no contributions-preview — only this body. The
+  // negative margin pulls the body against the Card root's `gap-6` so the
+  // filters sit close under the callout title.
   const contributorsPreview =
     callout.framing.type === CalloutFramingType.Contributors ? (
-      <ContributorCollectionConnector calloutId={callout.id} className="mt-2" />
+      <ContributorCollectionConnector calloutId={callout.id} className="-mt-4" />
     ) : null;
 
   // Spaces-collection callout body (feature 013): renders the host space's

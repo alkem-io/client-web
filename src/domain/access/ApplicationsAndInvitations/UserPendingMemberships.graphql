@@ -10,6 +10,18 @@ query UserPendingMemberships {
         level
         about {
           ...SpaceAboutMinimalUrl
+          # Selected here rather than in SpaceAboutMinimalUrl: six queries spread
+          # that fragment, including CurrentUserFull on every page load.
+          # Both visuals are needed: per the canonical visual-fields rule an L0
+          # space has no avatar (cardBanner only), while L1/L2 subspaces do.
+          profile {
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualModel
+            }
+          }
         }
       }
       application {
