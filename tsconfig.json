@@ -7,11 +7,10 @@
     "jsx": "react-jsx",
 
     // Paths & modules
-    "baseUrl": "src",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./src/*"]
     },
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
 
     // Types & checks
