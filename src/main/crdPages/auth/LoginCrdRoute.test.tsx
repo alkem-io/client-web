@@ -114,6 +114,31 @@ describe('LoginCrdRoute', () => {
     expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome');
   });
 
+  it('OIDC entry keeps an apex-absolute returnUrl when rendered on the identity subdomain', () => {
+    // The sign-up / verify screens are served on identity.<domain> and link back
+    // to /login relatively, so this page runs there with an apex-absolute
+    // returnUrl. Resolving it against `window.location.origin` (identity) would
+    // judge it cross-origin and collapse returnTo to '/', dropping the
+    // destination on every deployed sign-up — it must resolve against the apex.
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'returnUrl=https://sandbox-alkem.io/challenges/my-subspace';
+
+    renderRoute();
+
+    expect(replaceSpy).toHaveBeenCalledWith(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fchallenges%2Fmy-subspace'
+    );
+  });
+
+  it('OIDC entry refuses an off-platform returnUrl', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'returnUrl=https://evil.example.com/steal';
+
+    renderRoute();
+
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
+  });
+
   it('renders the login page for an authenticated user when a flow id is present (refresh / step-up re-auth)', () => {
     // Kratos redirects refresh logins here as `/login?flow=<id>` while the user
     // still holds a (non-privileged) session — the page must render so the

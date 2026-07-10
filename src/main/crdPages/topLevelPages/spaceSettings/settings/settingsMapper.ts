@@ -61,8 +61,9 @@ export function mapAllowedActions(
   membership: SpaceSettingsMembership | undefined,
   privacy: SpaceSettingsPrivacy | undefined
 ): AllowedActionToggle[] {
+  // Order drives the on-screen order of the Allowed Actions grid — the view
+  // filters this list by level but never re-sorts it.
   return [
-    { key: 'subspaceAdminInvitations', enabled: membership?.allowSubspaceAdminsToInviteMembers ?? false },
     { key: 'memberCreatePosts', enabled: collab?.allowMembersToCreateCallouts ?? false },
     { key: 'videoCalls', enabled: collab?.allowMembersToVideoCall ?? false },
     { key: 'guestContributions', enabled: collab?.allowGuestContributions ?? false },
@@ -70,5 +71,6 @@ export function mapAllowedActions(
     { key: 'inheritMembershipRights', enabled: collab?.inheritMembershipRights ?? false },
     { key: 'subspaceEvents', enabled: collab?.allowEventsFromSubspaces ?? false },
     { key: 'alkemioSupportAccess', enabled: privacy?.allowPlatformSupportAsAdmin ?? false },
+    { key: 'subspaceAdminInvitations', enabled: membership?.allowSubspaceAdminsToInviteMembers ?? false },
   ];
 }

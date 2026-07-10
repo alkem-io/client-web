@@ -145,6 +145,10 @@
     "decline": "Refuser",
     "noInvitations": "Aucune invitation en attente"
   },
+  "applications": {
+    "title": "Candidatures en Attente",
+    "pending": "En attente"
+  },
   "campaign": {
     "title": "Créez votre Contributeur Virtuel",
     "description": "Commencez avec votre propre contributeur alimenté par l'IA",

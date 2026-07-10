@@ -421,7 +421,8 @@
     "maxLength": "Maximum {{count}} caractères.",
     "submitted": {
       "title": "Candidature envoyée",
-      "body": "Votre candidature à {{communityName}} a été envoyée."
+      "body": "Votre candidature à {{communityName}} a été envoyée.",
+      "review": "Votre candidature sera examinée. Une fois approuvée, vous recevrez une notification <bell/> et vous pourrez entrer dans la communauté depuis votre tableau de bord Accueil."
     }
   },
   "mobile": {
