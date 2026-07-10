@@ -906,6 +906,8 @@
     "noLocationDescription": "Für diese Mitwirkenden sind keine Standortdaten hinterlegt.",
     "viewList": "Liste",
     "viewMap": "Karte",
+    "expandMap": "Karte vergrößern",
+    "closeMap": "Karte schließen",
     "types": {
       "user": "Personen",
       "organization": "Organisationen",

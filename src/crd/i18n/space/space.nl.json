@@ -906,6 +906,8 @@
     "noLocationDescription": "Deze contributors hebben geen locatiegegevens ingesteld.",
     "viewList": "Lijst",
     "viewMap": "Kaart",
+    "expandMap": "Kaart vergroten",
+    "closeMap": "Kaart sluiten",
     "types": {
       "user": "Personen",
       "organization": "Organisaties",
