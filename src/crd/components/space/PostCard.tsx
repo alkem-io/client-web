@@ -13,7 +13,7 @@ import {
   StickyNote,
   Users,
 } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { Children, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutCollaboraPreview,
@@ -474,7 +474,10 @@ export function PostCard({
         {contributionsPreview}
       </CardContent>
 
-      {children && <div className="px-6 pb-4">{children}</div>}
+      {/* `children` arrives as an array of slots (poll/contributors/spaces previews) that are often
+          all null — a bare `children &&` check is always truthy then. Children.toArray strips
+          null/undefined/booleans, so the padded wrapper only renders when something is visible. */}
+      {Children.toArray(children).length > 0 && <div className="px-6 pb-4">{children}</div>}
 
       {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
           mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via
