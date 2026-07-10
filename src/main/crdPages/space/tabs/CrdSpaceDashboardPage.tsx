@@ -19,7 +19,6 @@ import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
-import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 
@@ -99,13 +98,6 @@ export default function CrdSpaceDashboardPage() {
           }
         />
       </SpaceSidebarPortal>
-
-      <SpaceApplyButtonConnector
-        spaceId={space.id}
-        spaceProfileUrl={space.about.profile.url}
-        communityName={space.about.profile.displayName}
-        className="mb-6"
-      />
 
       <SpaceTabActionHeader
         description={tabDescription}

@@ -3,22 +3,7 @@ import {
   OIDC_LOGIN_PATH,
   OIDC_RECOVERY_ATTEMPTED_KEY,
 } from '@/core/auth/authentication/constants/authentication.constants';
-
-// Identity/auth screens (mirrors IdentityRoutes in IdentityRoute.tsx). On these
-// a "Kratos session but no BFF session" state is normal and expected — it IS the
-// login / logout / settings / recovery flow in progress — so silent recovery
-// must stay out of the way or it would fight the very flow being rendered.
-const AUTH_ROUTE_SEGMENTS = [
-  'login',
-  'logout',
-  'registration',
-  'sign_up',
-  'verify',
-  'recovery',
-  'required',
-  'error',
-  'settings',
-];
+import { isAuthRoutePathname } from '@/core/auth/authentication/utils/isAuthRoutePathname';
 
 type OidcSessionRecoveryInput = {
   loading: boolean;
@@ -50,10 +35,10 @@ export function shouldRecoverOidcSession(input: OidcSessionRecoveryInput): boole
   // Loop guard: one attempt per tab. If the BFF still won't mint a session after
   // a recovery redirect, fall back to the manual "Log in" button.
   if (input.recoveryAlreadyAttempted) return false;
-  // Never fire on the auth screens themselves — that mismatch is by design.
-  // Split on `/`, `?` and `#` so a stray query/hash can't sneak a route past us.
-  const segment = input.pathname.replace(/^\/+/, '').split(/[/?#]/)[0];
-  if (AUTH_ROUTE_SEGMENTS.includes(segment)) return false;
+  // Never fire on the auth screens themselves — a "Kratos session but no BFF
+  // session" state is normal there, it IS the login / logout / settings /
+  // recovery flow in progress, and recovering would fight the flow being rendered.
+  if (isAuthRoutePathname(input.pathname)) return false;
   return true;
 }
 

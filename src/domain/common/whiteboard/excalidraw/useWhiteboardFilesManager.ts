@@ -1,8 +1,4 @@
-import type {
-  BinaryFileData,
-  BinaryFiles,
-  ExcalidrawImperativeAPI,
-} from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { BinaryFileData, BinaryFiles, ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Semaphore from 'ts-semaphore';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
