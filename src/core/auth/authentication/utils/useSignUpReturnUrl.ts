@@ -1,7 +1,5 @@
 import { useCookies } from 'react-cookie';
-import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
-import { STORAGE_KEY_RETURN_URL } from '../constants/authentication.constants';
+import { STORAGE_KEY_RETURN_URL, STORAGE_KEY_SIGNUP_RETURN_ARMED } from '../constants/authentication.constants';
 
 // Determine base cookie domain (e.g. .alkem.io) for cross-subdomain cookies
 const cookieDomain = (() => {
@@ -52,12 +50,30 @@ export function useReturnUrl(): UseReturnUrlProvided {
   };
 }
 
-type UseGetReturnUrlProvided = string;
-
-export const useGetReturnUrl = (): UseGetReturnUrlProvided => {
-  const [cookies] = useCookies([STORAGE_KEY_RETURN_URL]);
-  const platformOrigin = usePlatformOrigin();
-  const defaultReturnUrl = platformOrigin && `${platformOrigin}${ROUTE_HOME}`;
-
-  return cookies[STORAGE_KEY_RETURN_URL] || defaultReturnUrl;
+type UseSignUpRoundTripProvided = {
+  armed: boolean;
+  arm: () => void;
+  clearArmed: () => void;
 };
+
+/**
+ * Marks that a sign-up carrying a return destination is in flight.
+ *
+ * Kratos's verification email link is a server-side GET that verifies and
+ * redirects straight to its configured landing page (`/home`) — the SPA's
+ * `/verify` screen never renders and the OIDC request that carried the
+ * destination is long gone. `useSignUpReturnRedirect` reads this flag on that
+ * landing to decide whether the stored `returnUrl` is still owed to the user.
+ *
+ * Same base-domain, 1h-lifetime cookie options as `returnUrl`: the flag is set
+ * on the identity subdomain and read on the apex.
+ */
+export function useSignUpRoundTrip(): UseSignUpRoundTripProvided {
+  const [cookies, setCookie, removeCookie] = useCookies([STORAGE_KEY_SIGNUP_RETURN_ARMED]);
+
+  return {
+    armed: cookies[STORAGE_KEY_SIGNUP_RETURN_ARMED] === '1',
+    arm: () => setCookie(STORAGE_KEY_SIGNUP_RETURN_ARMED, '1', returnUrlCookieOptions),
+    clearArmed: () => removeCookie(STORAGE_KEY_SIGNUP_RETURN_ARMED, returnUrlCookieOptions),
+  };
+}

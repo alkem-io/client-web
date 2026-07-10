@@ -11165,6 +11165,24 @@ export type UserPendingMembershipsQuery = {
             displayName: string;
             tagline?: string | undefined;
             url: string;
+            avatar?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
           };
         };
       };
