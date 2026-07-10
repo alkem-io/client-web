@@ -411,7 +411,8 @@
     "maxLength": "Maximal {{count}} Zeichen.",
     "submitted": {
       "title": "Bewerbung eingereicht",
-      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht."
+      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht.",
+      "review": "Deine Bewerbung wird geprüft. Sobald sie genehmigt ist, erhältst du eine Benachrichtigung <bell/> und kannst die Community über deine Startseite betreten."
     }
   },
   "mobile": {

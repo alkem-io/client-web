@@ -80,7 +80,7 @@ export type SpaceSettingsSettingsViewProps = {
   /**
    * Space hierarchy level. Drives which member-action toggles are visible:
    * - L0: hides "Inherit Membership Rights" (only meaningful inside subspaces).
-   * - L2: hides "Subspace Admin Invitations", "Create Subspaces", "Subspace Events"
+   * - L2: hides "Subspace Membership", "Create Subspaces", "Subspace Events"
    *   (a sub-subspace cannot have child subspaces).
    */
   level: 'L0' | 'L1' | 'L2';
@@ -116,8 +116,8 @@ export type SpaceSettingsSettingsViewProps = {
 
 const ACTION_META: Record<AllowedActionKey, { label: string; description: string; icon: React.ElementType }> = {
   subspaceAdminInvitations: {
-    label: 'Space Invitations',
-    description: 'Allow admins of Subspaces to invite users to their Subspace.',
+    label: 'Subspace Membership',
+    description: 'Let Subspaces bring in their own members. They become members here too.',
     icon: UserPlus,
   },
   memberCreatePosts: {

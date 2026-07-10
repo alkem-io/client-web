@@ -411,7 +411,8 @@
     "maxLength": "Máximo {{count}} caracteres.",
     "submitted": {
       "title": "Solicitud enviada",
-      "body": "Tu solicitud a {{communityName}} ha sido enviada."
+      "body": "Tu solicitud a {{communityName}} ha sido enviada.",
+      "review": "Tu solicitud será revisada. Una vez aprobada recibirás una notificación <bell/> y podrás entrar en la comunidad desde tu panel de Inicio."
     }
   },
   "mobile": {
