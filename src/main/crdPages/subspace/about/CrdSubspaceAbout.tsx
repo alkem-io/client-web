@@ -12,10 +12,7 @@ import { useSpaceApplyFlow } from '../../space/useSpaceApplyFlow';
 
 type CrdSubspaceAboutProps = {
   open: boolean;
-  /** `hasApplied` is true when the viewer submitted an application while the
-   * About was open — the /about route uses it to pick a close destination
-   * that doesn't contradict the fresh application (no parent Apply CTA). */
-  onClose: (context?: { hasApplied: boolean }) => void;
+  onClose: () => void;
 };
 
 /**
@@ -48,7 +45,6 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
   const {
     loading: applyLoading,
     isMember,
-    hasApplied,
     buttonProps,
     dialogs,
   } = useSpaceApplyFlow({
@@ -58,7 +54,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
     parentSpaceId,
     // Joining from the About dialog closes it via the normal close path instead
     // of letting the default navigate yank the open modal (which froze the page).
-    onJoined: () => onClose(),
+    onJoined: onClose,
   });
 
   const guidelinesId = data?.lookup.space?.about.guidelines.id;
@@ -171,7 +167,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
         open={open}
         onOpenChange={isOpen => {
           if (!isOpen) {
-            onClose({ hasApplied });
+            onClose();
           }
         }}
         data={aboutData}

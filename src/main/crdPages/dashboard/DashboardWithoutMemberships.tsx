@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import { ApplicationsBlock } from '@/crd/components/dashboard/ApplicationsBlock';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
@@ -10,12 +11,13 @@ import { InvitationsBlock } from '@/crd/components/dashboard/InvitationsBlock';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { SpaceExplorer } from '@/crd/components/space/SpaceExplorer';
 import useInvitationActions from '@/domain/community/invitations/useInvitationActions';
+import { usePendingMemberships } from '@/domain/community/pendingMembership/PendingMemberships';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { mapSpacesToCardDataList } from '@/main/crdPages/spaces/spaceCardDataMapper';
 import useSpaceExplorer from '@/main/crdPages/spaces/useSpaceExplorer';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
-import { mapInvitationsToCards } from './dashboardDataMappers';
+import { mapApplicationsToCards, mapInvitationsToCards } from './dashboardDataMappers';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
 
@@ -58,6 +60,11 @@ export default function DashboardWithoutMemberships({
     (invitationsData?.me.communityInvitations ?? []) as Parameters<typeof mapInvitationsToCards>[0]
   );
   const hasInvitations = pendingCount > 0;
+
+  // Applications. No count query exists for these, so the block is driven by the
+  // list itself and renders nothing until it resolves non-empty.
+  const { applications } = usePendingMemberships({ skip: false });
+  const applicationCards = mapApplicationsToCards(applications ?? []);
 
   // Explore spaces
   const {
@@ -104,6 +111,8 @@ export default function DashboardWithoutMemberships({
           />
         )}
 
+        <ApplicationsBlock applications={applicationCards} />
+
         {showCampaign && <CampaignBanner onAction={() => setCreateVcOpen(true)} />}
 
         <SpaceExplorer
@@ -118,8 +127,8 @@ export default function DashboardWithoutMemberships({
           onSearchTermsChange={terms => setSearchTerms(terms)}
           onMembershipFilterChange={onMembershipFilterChange}
           onParentClick={parent => navigate(parent.href)}
-          gridClassName="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-          className="max-w-none mx-0 px-0 sm:px-0 py-0"
+          gridClassName="grid-cols-1 sm:grid-cols-2"
+          className="max-w-none mx-0 px-0 lg:px-0 py-0"
         />
       </DashboardLayout>
 
