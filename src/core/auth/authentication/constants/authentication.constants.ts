@@ -14,6 +14,10 @@ export const AUTH_RESET_PASSWORD_REQUEST = '/ory/kratos/public/self-service/reco
 export const AUTH_RESET_PASSWORD_PATH = '/recovery';
 export const PARAM_NAME_RETURN_URL = 'returnUrl';
 export const STORAGE_KEY_RETURN_URL = 'returnUrl';
+// Companion cookie to STORAGE_KEY_RETURN_URL: set when a sign-up carrying a
+// return destination begins, consumed once on the next authenticated landing.
+// See useSignUpRoundTrip / useSignUpReturnRedirect.
+export const STORAGE_KEY_SIGNUP_RETURN_ARMED = 'signupReturnArmed';
 
 export const AUTH_PAGE_PREFIXES = [_AUTH_LOGIN_PATH, AUTH_REGISTRATION_PATH, AUTH_SIGN_UP_PATH];
 

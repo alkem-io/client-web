@@ -46,6 +46,7 @@ vi.mock('@/core/auth/authentication/hooks/useKratosFlow', () => ({
 vi.mock('@/core/auth/authentication/hooks/usePasskeyScript', () => ({ default: () => ({}) }));
 vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
   useReturnUrl: () => ({ setReturnUrl: vi.fn() }),
+  useSignUpRoundTrip: () => ({ armed: false, arm: vi.fn(), clearArmed: vi.fn() }),
 }));
 vi.mock('@/core/analytics/SentryTransactionScopeContext', () => ({ useTransactionScope: () => {} }));
 vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
