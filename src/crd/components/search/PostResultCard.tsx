@@ -1,9 +1,9 @@
-import { FileText, Presentation, StickyNote } from 'lucide-react';
+import { FileSpreadsheet, FileText, Presentation, StickyNote } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 
-export type PostType = 'post' | 'whiteboard' | 'memo';
+export type PostType = 'post' | 'whiteboard' | 'memo' | 'collaboraDocument';
 
 export type PostResultCardData = {
   id: string;
@@ -28,6 +28,8 @@ function PostTypeIcon({ type }: { type: PostType }) {
       return <Presentation aria-hidden="true" className="size-3" />;
     case 'memo':
       return <StickyNote aria-hidden="true" className="size-3" />;
+    case 'collaboraDocument':
+      return <FileSpreadsheet aria-hidden="true" className="size-3" />;
     default:
       return <FileText aria-hidden="true" className="size-3" />;
   }
