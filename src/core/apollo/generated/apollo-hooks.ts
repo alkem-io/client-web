@@ -4124,6 +4124,60 @@ export const SearchResultWhiteboardFragmentDoc = gql`
     ${VisualModelFragmentDoc}
 ${TagsetDetailsFragmentDoc}
 ${WhiteboardParentFragmentDoc}`;
+export const CollaboraDocumentParentFragmentDoc = gql`
+    fragment CollaboraDocumentParent on SearchResultCollaboraDocument {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+    ${SpaceAboutLightFragmentDoc}`;
+export const SearchResultCollaboraDocumentFragmentDoc = gql`
+    fragment SearchResultCollaboraDocument on SearchResultCollaboraDocument {
+  isContribution
+  collaboraDocument {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+  }
+  ...CollaboraDocumentParent
+}
+    ${VisualModelFragmentDoc}
+${TagsetDetailsFragmentDoc}
+${CollaboraDocumentParentFragmentDoc}`;
 export const DashboardSpaceMembershipFragmentDoc = gql`
     fragment DashboardSpaceMembership on Space {
   id
@@ -29873,6 +29927,7 @@ export const SearchDocument = gql`
         terms
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -29886,6 +29941,7 @@ export const SearchDocument = gql`
         ...SearchResultPost
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -29907,6 +29963,7 @@ export const SearchDocument = gql`
 ${SearchResultCalloutFragmentDoc}
 ${SearchResultMemoFragmentDoc}
 ${SearchResultWhiteboardFragmentDoc}
+${SearchResultCollaboraDocumentFragmentDoc}
 ${SearchResultPostFragmentDoc}
 ${SearchResultUserFragmentDoc}
 ${SearchResultOrganizationFragmentDoc}`;
