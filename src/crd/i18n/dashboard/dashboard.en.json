@@ -145,6 +145,10 @@
     "decline": "Decline",
     "noInvitations": "No pending invitations"
   },
+  "applications": {
+    "title": "Pending Applications",
+    "pending": "Pending"
+  },
   "campaign": {
     "title": "Create your Virtual Contributor",
     "description": "Get started with your own AI-powered contributor",
