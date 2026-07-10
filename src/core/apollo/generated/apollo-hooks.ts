@@ -941,6 +941,21 @@ export const PollDetailsFragmentDoc = gql`
     ${PollSettingsFieldsFragmentDoc}
 ${PollOptionFieldsFragmentDoc}
 ${PollVoteFieldsFragmentDoc}`;
+export const CollaboraDocumentGateFragmentDoc = gql`
+    fragment CollaboraDocumentGate on CollaboraDocument {
+  id
+  documentType
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    id
+    displayName
+    url
+  }
+}
+    `;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
     fragment LinkDetailsWithAuthorization on Link {
   id
@@ -1088,13 +1103,7 @@ export const CalloutDetailsFragmentDoc = gql`
       ...PollDetails
     }
     collaboraDocument {
-      id
-      documentType
-      profile {
-        id
-        displayName
-        url
-      }
+      ...CollaboraDocumentGate
     }
   }
   contributionDefaults {
@@ -1188,6 +1197,7 @@ ${MemoDetailsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CollaboraDocumentGateFragmentDoc}
 ${LinkDetailsWithAuthorizationFragmentDoc}
 ${CommentsWithMessagesFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
@@ -7547,13 +7557,7 @@ export const CalloutContentDocument = gql`
           ...PollDetails
         }
         collaboraDocument {
-          id
-          documentType
-          profile {
-            id
-            displayName
-            url
-          }
+          ...CollaboraDocumentGate
         }
       }
       contributionDefaults {
@@ -7574,6 +7578,7 @@ ${WhiteboardPreviewSettingsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CollaboraDocumentGateFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 
 /**
@@ -8287,6 +8292,10 @@ export const ReplaceCollaboraDocumentDocument = gql`
     mutation ReplaceCollaboraDocument($file: Upload!, $replaceData: ReplaceCollaboraDocumentInput!) {
   replaceCollaboraDocument(file: $file, replaceData: $replaceData) {
     id
+    profile {
+      id
+      displayName
+    }
   }
 }
     `;
