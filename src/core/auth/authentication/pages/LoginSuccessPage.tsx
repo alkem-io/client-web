@@ -1,10 +1,14 @@
 import { useEffect } from 'react';
+import { resolveInternalReturnPath } from '@/core/utils/links';
 import { clearAllGuestSessionData } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { useGetReturnUrl } from '../utils/useSignUpReturnUrl';
+import { ROUTE_HOME } from '@/domain/platform/routes/constants';
+import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
+import { useReturnUrl } from '../utils/useSignUpReturnUrl';
 
 export const LoginSuccessPage = () => {
-  const returnUrl = useGetReturnUrl();
+  const { returnUrl, clearReturnUrl } = useReturnUrl();
+  const platformOrigin = usePlatformOrigin();
 
   // We don't really need to use user info here on every login,
   // but user profile creation is triggered the first time the user logs in,
@@ -14,12 +18,21 @@ export const LoginSuccessPage = () => {
   const { userModel, loading } = useCurrentUserContext();
 
   useEffect(() => {
-    if (!loading && userModel && returnUrl) {
-      // Clear all guest session data (name, whiteboard URL) on successful authentication
-      clearAllGuestSessionData();
-      globalThis.location.replace(returnUrl);
+    if (loading || !userModel) {
+      return;
     }
-  }, [returnUrl, userModel, loading]);
+    // The cookie is base-domain scoped, so any subdomain can plant a value in
+    // it — resolve it to an in-platform path before navigating, and prefix the
+    // apex ourselves. This route is apex-only, so a relative navigation is the
+    // correct fallback when the platform origin is not yet known.
+    const path = resolveInternalReturnPath(returnUrl, platformOrigin) ?? ROUTE_HOME;
+    // Clear all guest session data (name, whiteboard URL) on successful authentication
+    clearAllGuestSessionData();
+    // Single-shot: the destination has been reached, so it must not survive to
+    // hijack a later navigation.
+    clearReturnUrl();
+    globalThis.location.replace(`${platformOrigin ?? ''}${path}`);
+  }, [returnUrl, userModel, loading, platformOrigin]);
 
   return null;
 };
