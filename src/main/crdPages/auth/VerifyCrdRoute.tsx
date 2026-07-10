@@ -22,8 +22,8 @@ function CrdVerificationPage() {
 
   const flowId = useQueryParams().get('flow') || undefined;
   const { flow: verificationFlow, loading } = useKratosFlow(FlowTypeName.Verification, flowId);
-  // Carry the pending returnUrl into the sign-in link — buildLoginUrl() with no
-  // argument defaults the param to home, overwriting the stored destination.
+  // Carry the pending returnUrl into the sign-in link so the destination stays
+  // in the URL when the user signs in after verifying.
   const { returnUrl } = useReturnUrl();
   const translateDescriptor = useTranslateDescriptor();
 

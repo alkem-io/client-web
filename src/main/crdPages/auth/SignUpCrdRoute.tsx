@@ -6,7 +6,7 @@ import { _AUTH_LOGIN_PATH, PARAM_NAME_RETURN_URL } from '@/core/auth/authenticat
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import type { LocationStateWithKratosErrors } from '@/core/auth/authentication/pages/LocationStateWithKratosErrors';
-import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
+import { useReturnUrl, useSignUpRoundTrip } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
@@ -50,8 +50,15 @@ function CrdSignUpPage() {
   // survives the email-verification round-trip, even across a new tab.
   const returnUrl = params.get(PARAM_NAME_RETURN_URL);
   const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
+  const { arm } = useSignUpRoundTrip();
   useEffect(() => {
     setReturnUrl(returnUrl);
+    if (returnUrl) {
+      // Arm here rather than on `/registration/success`: this page is guaranteed
+      // to render, whereas that one is reached only if Kratos is configured to
+      // redirect there. `useSignUpReturnRedirect` disarms on first consumption.
+      arm();
+    }
   }, [returnUrl]);
 
   const translateDescriptor = useTranslateDescriptor();
@@ -108,10 +115,8 @@ function CrdSignUpPage() {
             descriptor={descriptor}
             isLoading={loading}
             signInHref={
-              // Carry the destination into the sign-in link: buildLoginUrl()
-              // with no argument defaults the param to home, and the login
-              // route STORES the param — a bare link would clobber the saved
-              // destination for a user who switches to sign-in.
+              // Carry the destination into the sign-in link so a user who
+              // switches from sign-up to sign-in keeps it.
               buildLoginUrl(returnUrl ?? storedReturnUrl)
             }
             termsOfUseHref={locations?.terms ?? '#'}

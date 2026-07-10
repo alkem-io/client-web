@@ -19,6 +19,7 @@ import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUr
 import { NotAuthenticatedRoute } from '@/core/routing/NotAuthenticatedRoute';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { useQueryParams } from '@/core/routing/useQueryParams';
+import { resolveInternalReturnPath } from '@/core/utils/links';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard } from '@/crd/components/auth/LoginCard';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
@@ -68,14 +69,11 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     }
     const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
     // FR-017a — server-side validator requires a same-origin path-only value.
-    const returnTo = (() => {
-      try {
-        const u = new URL(raw, window.location.origin);
-        return u.origin === window.location.origin ? `${u.pathname}${u.search}${u.hash}` || '/' : '/';
-      } catch {
-        return raw.startsWith('/') ? raw : '/';
-      }
-    })();
+    // Resolve against the apex, not `window.location.origin`: this page also
+    // renders on the identity subdomain (see below), where an apex-absolute
+    // returnUrl would otherwise be judged cross-origin and collapse to '/',
+    // dropping the destination on every deployed sign-up.
+    const returnTo = resolveInternalReturnPath(raw, platformOrigin) ?? '/';
     // The OIDC BFF (/api/auth/oidc/*) is apex-only and called same-origin-relative.
     // This page also renders on the identity subdomain (its sign-up/recovery pages
     // link back to /login); a relative replace there would land on

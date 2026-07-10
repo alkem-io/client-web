@@ -1,8 +1,10 @@
-import { ChevronLeft, ChevronRight, List, Loader2, Map as MapIcon, Search, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, List, Loader2, Map as MapIcon, Maximize2, Search, Users } from 'lucide-react';
 import { type ComponentType, lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
+import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Tabs, TabsList, TabsTrigger } from '@/crd/primitives/tabs';
 import { ContributorCard, type ContributorCardData } from './ContributorCard';
 
@@ -83,6 +85,8 @@ export function ContributorCollection({
   const view = viewOverride ?? defaultView;
   // Secondary role filter (All | Lead | Member) over the active type's set.
   const [roleFilter, setRoleFilter] = useState<RoleFilterId>('all');
+  // Expanded (near-full-window) map dialog.
+  const [mapExpanded, setMapExpanded] = useState(false);
 
   const showMapControl = isLocatable(activeType);
   // Auto-heal to list on the VC segment (the map control is hidden there — FR-010).
@@ -150,47 +154,59 @@ export function ContributorCollection({
 
   return (
     <section className={cn('space-y-4', className)} aria-label={t('contributors.title')}>
-      {/* Segmented type switch — shown only when >1 type (FR-009a). Counts are
-          always visible on each segment. */}
-      {types.length > 1 && (
-        <Tabs value={activeType} onValueChange={v => handleTypeChange(v as ContributorTypeId)}>
-          {/* Full-width + horizontally scrollable below `sm` so the type labels
-              (with counts) never clip on narrow screens; equal-width segments
-              from `sm` up. */}
-          <TabsList className="w-full max-w-full justify-start overflow-x-auto sm:w-fit sm:justify-center">
-            {types.map(type => (
-              <TabsTrigger key={type} value={type} className="flex-none sm:flex-1">
-                <span>{typeLabel(type)}</span>
-                <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
-                  {countFor(type)}
-                </span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
-      )}
+      {/* Filter row — type switch + role filter share one horizontal line when
+          there's room (each is full-width below `sm`, so phones stack them;
+          `flex-wrap` degrades gracefully if the pair ever outgrows the row). */}
+      {(types.length > 1 || showRoleFilter) && (
+        <div className="flex flex-wrap items-center gap-4">
+          {/* Segmented type switch — shown only when >1 type (FR-009a). Counts are
+              always visible on each segment. */}
+          {types.length > 1 && (
+            <Tabs
+              className="w-full sm:w-auto"
+              value={activeType}
+              onValueChange={v => handleTypeChange(v as ContributorTypeId)}
+            >
+              {/* Full-width + horizontally scrollable below `sm` so the type labels
+                  (with counts) never clip on narrow screens; equal-width segments
+                  from `sm` up. */}
+              <TabsList className="w-full max-w-full justify-start overflow-x-auto sm:w-fit sm:justify-center">
+                {types.map(type => (
+                  <TabsTrigger key={type} value={type} className="flex-none sm:flex-1">
+                    <span>{typeLabel(type)}</span>
+                    <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
+                      {countFor(type)}
+                    </span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          )}
 
-      {/* Secondary role filter (All | Lead | Member) — same segmented style as the
-          type switch; shown only when the active set mixes leads and members. */}
-      {showRoleFilter && (
-        <Tabs
-          value={roleFilter}
-          onValueChange={v => {
-            setRoleFilter(v as RoleFilterId);
-            setPage(0);
-          }}
-        >
-          <TabsList className="w-full max-w-full justify-start overflow-x-auto sm:w-fit sm:justify-center">
-            {ROLE_FILTERS.map(rf => (
-              <TabsTrigger key={rf} value={rf} className="flex-none sm:flex-1">
-                <span>{roleFilterLabel(rf)}</span>
-                <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
-                  {roleFilterCount(rf)}
-                </span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+          {/* Secondary role filter (All | Lead | Member) — same segmented style as the
+              type switch; shown only when the active set mixes leads and members. */}
+          {showRoleFilter && (
+            <Tabs
+              className="w-full sm:w-auto"
+              value={roleFilter}
+              onValueChange={v => {
+                setRoleFilter(v as RoleFilterId);
+                setPage(0);
+              }}
+            >
+              <TabsList className="w-full max-w-full justify-start overflow-x-auto sm:w-fit sm:justify-center">
+                {ROLE_FILTERS.map(rf => (
+                  <TabsTrigger key={rf} value={rf} className="flex-none sm:flex-1">
+                    <span>{roleFilterLabel(rf)}</span>
+                    <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
+                      {roleFilterCount(rf)}
+                    </span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          )}
+        </div>
       )}
 
       {/* Search + view toggle */}
@@ -249,20 +265,58 @@ export function ContributorCollection({
         </output>
       ) : effectiveView === 'map' ? (
         <div className="space-y-4">
-          <Suspense
-            fallback={
-              <div className="flex h-96 items-center justify-center rounded-lg border border-border">
-                <Loader2 className="size-6 animate-spin text-muted-foreground" />
-              </div>
-            }
-          >
-            <ContributorMap
-              pins={pins}
-              fitKey={fitKey}
-              ariaLabel={t('contributors.viewMap')}
-              onPinClick={onContributorClick}
-            />
-          </Suspense>
+          <div className="relative">
+            <Suspense
+              fallback={
+                <div className="flex h-96 items-center justify-center rounded-lg border border-border">
+                  <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                </div>
+              }
+            >
+              <ContributorMap
+                pins={pins}
+                fitKey={fitKey}
+                ariaLabel={t('contributors.viewMap')}
+                onPinClick={onContributorClick}
+              />
+            </Suspense>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="absolute top-2 right-2 z-10 h-8 w-8 shadow-sm opacity-90 hover:opacity-100"
+              aria-label={t('contributors.expandMap')}
+              onClick={() => setMapExpanded(true)}
+            >
+              <Maximize2 className="size-4" aria-hidden="true" />
+            </Button>
+          </div>
+          {/* Expanded map — same pins in a near-full-window dialog. The map remounts
+              inside the dialog, so `initialViewState` re-fits to the pins at the
+              larger size. */}
+          <Dialog open={mapExpanded} onOpenChange={setMapExpanded}>
+            <DialogContent
+              closeLabel={t('contributors.closeMap')}
+              aria-describedby={undefined}
+              className="block h-[calc(100dvh-2rem)] w-[calc(100vw-2rem)] max-w-none overflow-hidden p-0 sm:max-w-none"
+            >
+              <DialogTitle className="sr-only">{t('contributors.viewMap')}</DialogTitle>
+              <Suspense
+                fallback={
+                  <div className="flex h-full items-center justify-center">
+                    <Loader2 className="size-6 animate-spin text-muted-foreground" />
+                  </div>
+                }
+              >
+                <ContributorMap
+                  pins={pins}
+                  fitKey={fitKey}
+                  ariaLabel={t('contributors.viewMap')}
+                  onPinClick={onContributorClick}
+                  className="h-full border-0"
+                />
+              </Suspense>
+            </DialogContent>
+          </Dialog>
           {/* Contributors without precise coordinates — listed beneath the map (FR-012). */}
           {unlocated.length > 0 && (
             <div className="space-y-3">
