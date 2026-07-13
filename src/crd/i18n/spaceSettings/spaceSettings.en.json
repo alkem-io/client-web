@@ -44,9 +44,7 @@
       "description": "Collapse post descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
     },
     "column": {
-      "titleAriaLabel": "Column title",
       "descriptionAriaLabel": "Column description",
-      "editTitle": "Edit column title",
       "editDescription": "Edit column description",
       "confirm": "Confirm",
       "cancel": "Cancel",

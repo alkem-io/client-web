@@ -44,9 +44,7 @@
       "description": "Contrae las descripciones de publicaciones por defecto. Cuando está activado, las descripciones muestran un enlace \"Leer más\" en lugar del texto completo."
     },
     "column": {
-      "titleAriaLabel": "Título de la columna",
       "descriptionAriaLabel": "Descripción de la columna",
-      "editTitle": "Editar título de la columna",
       "editDescription": "Editar descripción de la columna",
       "confirm": "Confirmar",
       "cancel": "Cancelar",

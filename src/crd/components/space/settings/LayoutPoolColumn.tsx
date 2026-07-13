@@ -4,7 +4,6 @@ import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, Trash2 } from '
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
-// import { InlineEditText } from '@/crd/components/common/InlineEditText'; // in-place title editing disabled for now
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
@@ -51,7 +50,6 @@ type LayoutPoolColumnProps = {
   column: LayoutPoolColumnData;
   otherColumns: ReadonlyArray<Pick<LayoutPoolColumnData, 'id' | 'title'>>;
   showDescription: boolean;
-  // onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void; // in-place title editing disabled #9963
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   columnMenuActions: ColumnMenuActions;
@@ -66,7 +64,6 @@ export function LayoutPoolColumn({
   column,
   otherColumns,
   showDescription,
-  // onRenameColumn, // unused while in-place title editing is disabled #9963
   onMoveToColumn,
   onViewPost,
   columnMenuActions,
@@ -138,18 +135,9 @@ export function LayoutPoolColumn({
                 <GripVertical aria-hidden="true" className="size-4" />
               </button>
             )}
-            {/* #9963
-                In-place title editing (pencil) disabled for now —
-                Titles are still editable via the overflow menu → Edit details. */}
-            {/* <InlineEditText
-              value={column.title}
-              onChange={next => onRenameColumn(column.id, { title: next })}
-              ariaLabel={t('layout.column.titleAriaLabel')}
-              editAriaLabel={t('layout.column.editTitle')}
-              placeholder={t('layout.column.titlePlaceholder')}
-              className="min-w-0 flex-1 text-card-title"
-            /> */}
-            <span className="min-w-0 flex-1 truncate text-card-title">{column.title}</span>
+            <span title={column.title} className="min-w-0 flex-1 truncate text-card-title">
+              {column.title}
+            </span>
             <ColumnOverflowMenu
               column={column}
               actions={columnMenuActions}
@@ -350,10 +338,21 @@ function ColumnOverflowMenu({
 
 /* ──────────────── Edit Details dialog ──────────────── */
 
-// A title made up entirely of emoji (including flags, skin-tone modifiers, and ZWJ sequences
-// like family emoji) is exempt from the 3-character minimum — JS string length counts UTF-16
-// code units, so even a single simple emoji (e.g. "🎉") measures 2, not 1.
-const EMOJI_ONLY_TITLE = /^[\p{Extended_Pictographic}\p{Emoji_Component}]+$/u;
+// A title made up entirely of emoji (including flags, skin-tone modifiers, keycaps, and ZWJ
+// sequences like family emoji) is exempt from the 3-character minimum — JS string length counts
+// UTF-16 code units, so even a single simple emoji (e.g. "🎉") measures 2, not 1.
+// \p{Emoji_Component} is required for flags (regional indicators), skin tones, keycaps, VS-16 and
+// ZWJ, but it also matches plain 0-9/#/* — the lookahead demands at least one genuinely emoji
+// character so digit-only titles like "1" don't slip past the minimum.
+const EMOJI_ONLY_TITLE =
+  /^(?=.*(?:[\p{Extended_Pictographic}\p{Regional_Indicator}]|\uFE0F))[\p{Extended_Pictographic}\p{Emoji_Component}]+$/u;
+
+/** The Edit Details title rule: min 3 characters after trimming, unless the title is emoji-only. */
+export function isColumnTitleTooShort(title: string): boolean {
+  const trimmed = title.trim();
+  const emojiOnly = trimmed.length > 0 && EMOJI_ONLY_TITLE.test(trimmed);
+  return !emojiOnly && trimmed.length < 3;
+}
 
 type EditDetailsDialogProps = {
   open: boolean;
@@ -379,15 +378,13 @@ function EditDetailsDialog({
   const [saving, setSaving] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
-  const trimmedTitle = title.trim();
-  const isEmojiOnlyTitle = trimmedTitle.length > 0 && EMOJI_ONLY_TITLE.test(trimmedTitle);
-  const titleTooShort = !isEmojiOnlyTitle && trimmedTitle.length < 3;
+  const titleTooShort = isColumnTitleTooShort(title);
 
   const handleSave = async () => {
     if (titleTooShort) return;
     setSaving(true);
     try {
-      await onSave(trimmedTitle, description);
+      await onSave(title.trim(), description);
     } finally {
       setSaving(false);
     }

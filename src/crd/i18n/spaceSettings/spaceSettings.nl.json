@@ -44,9 +44,7 @@
       "description": "Klap post-beschrijvingen standaard in. Als dit aanstaat, tonen beschrijvingen een \"Lees meer\"-link in plaats van de volledige tekst."
     },
     "column": {
-      "titleAriaLabel": "Kolomtitel",
       "descriptionAriaLabel": "Kolombeschrijving",
-      "editTitle": "Kolomtitel bewerken",
       "editDescription": "Kolombeschrijving bewerken",
       "confirm": "Bevestigen",
       "cancel": "Annuleren",

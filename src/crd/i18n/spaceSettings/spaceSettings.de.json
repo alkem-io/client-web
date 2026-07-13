@@ -44,9 +44,7 @@
       "description": "Beitragsbeschreibungen standardmäßig einklappen. Wenn aktiviert, zeigen Beschreibungen einen \"Mehr lesen\"-Link statt des vollständigen Texts."
     },
     "column": {
-      "titleAriaLabel": "Spaltentitel",
       "descriptionAriaLabel": "Spaltenbeschreibung",
-      "editTitle": "Spaltentitel bearbeiten",
       "editDescription": "Spaltenbeschreibung bearbeiten",
       "confirm": "Bestätigen",
       "cancel": "Abbrechen",

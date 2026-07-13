@@ -44,9 +44,7 @@
       "description": "Réduire les descriptions de publications par défaut. Lorsqu'il est activé, les descriptions affichent un lien \"Lire la suite\" au lieu du texte complet."
     },
     "column": {
-      "titleAriaLabel": "Titre de la colonne",
       "descriptionAriaLabel": "Description de la colonne",
-      "editTitle": "Modifier le titre de la colonne",
       "editDescription": "Modifier la description de la colonne",
       "confirm": "Confirmer",
       "cancel": "Annuler",
