@@ -551,7 +551,7 @@
     "publishedLabel": "Gepubliceerd",
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
-    "titleRequiredHint": "Voeg een titel toe aan je $t(common.Callout) om verder te gaan",
+    "titleRequiredHint": "Voeg een titel toe aan je $t(common.callout) om verder te gaan",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
     "publish": "Post",

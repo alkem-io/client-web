@@ -551,7 +551,7 @@
     "publishedLabel": "Published",
     "draftLabel": "Draft",
     "notifyMembers": "Notify space members",
-    "titleRequiredHint": "Add a title to your $t(common.Callout) to continue",
+    "titleRequiredHint": "Add a title to your $t(common.callout) to continue",
     "saveDraft": "Save Draft",
     "save": "Save",
     "publish": "Post",

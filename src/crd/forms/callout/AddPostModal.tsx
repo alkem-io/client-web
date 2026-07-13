@@ -1,5 +1,5 @@
 import { ChevronRight, Settings, X } from 'lucide-react';
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { cn } from '@/crd/lib/utils';
@@ -54,9 +54,11 @@ export type AddPostModalProps = {
   onFindTemplate?: () => void;
   submitLabel?: string;
   /**
-   * False while the title is empty. The footer buttons then look and read as
-   * disabled (`aria-disabled`, dimmed) but stay clickable, so the consumer's
-   * submit handler still runs its validation and surfaces the title error.
+   * False while the title is empty. The footer buttons are then only *visually*
+   * dimmed and carry a tooltip / `aria-describedby` hint, but stay fully
+   * operable — clicking still runs the consumer's validation, which surfaces the
+   * title error and focuses the field. They are deliberately not `aria-disabled`
+   * (that would announce an operable control as disabled to assistive tech).
    */
   canSubmit?: boolean;
   className?: string;
@@ -84,6 +86,7 @@ export function AddPostModal({
   const { t } = useTranslation('crd-space');
   const [moreOpen, setMoreOpen] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const titleHintId = useId();
 
   const isCreate = mode === 'create';
   const headerTitle = isCreate ? t('forms.createPost') : t('forms.editPost');
@@ -96,8 +99,7 @@ export function AddPostModal({
   const showTitleCounter = titleMaxLength !== undefined && titleLength >= (counterThreshold ?? titleMaxLength);
   // Submit-time errors from the consumer win; the live length message only fills
   // the gap before the user has tried to submit.
-  const titleError =
-    title.error ?? (titleOverLimit ? t('validation.maxSmall', { count: titleMaxLength }) : undefined);
+  const titleError = title.error ?? (titleOverLimit ? t('validation.maxSmall', { count: titleMaxLength }) : undefined);
 
   // While the title is missing the button is only *visually* disabled: the click
   // still reaches the consumer, whose validation sets `title.error`.
@@ -109,7 +111,7 @@ export function AddPostModal({
   const actionButton = (node: ReactNode) =>
     blockedByTitle ? (
       <Tooltip>
-        <TooltipTrigger asChild>{node}</TooltipTrigger>
+        <TooltipTrigger asChild={true}>{node}</TooltipTrigger>
         <TooltipContent>{t('forms.titleRequiredHint')}</TooltipContent>
       </Tooltip>
     ) : (
@@ -242,6 +244,11 @@ export function AddPostModal({
 
         {/* Footer */}
         <DialogFooter className="px-6 py-4 border-t bg-muted/10 flex items-center">
+          {blockedByTitle && (
+            <span id={titleHintId} className="sr-only">
+              {t('forms.titleRequiredHint')}
+            </span>
+          )}
           <div className="ml-auto flex items-center gap-3">
             {isCreate && notifySwitchSlot}
             {isCreate ? (
@@ -252,7 +259,7 @@ export function AddPostModal({
                       variant="ghost"
                       onClick={runAction(onSaveDraft)}
                       disabled={submitting}
-                      aria-disabled={blockedByTitle}
+                      aria-describedby={blockedByTitle ? titleHintId : undefined}
                       aria-busy={submitting}
                       className={cn(blockedByTitle && 'opacity-50')}
                     >
@@ -264,7 +271,7 @@ export function AddPostModal({
                     onClick={runAction(onSubmit)}
                     className={cn('px-8', blockedByTitle && 'opacity-50')}
                     disabled={submitting}
-                    aria-disabled={blockedByTitle}
+                    aria-describedby={blockedByTitle ? titleHintId : undefined}
                     aria-busy={submitting}
                   >
                     {primaryLabel}
@@ -281,7 +288,7 @@ export function AddPostModal({
                     onClick={runAction(onSubmit)}
                     className={cn('px-8', blockedByTitle && 'opacity-50')}
                     disabled={submitting}
-                    aria-disabled={blockedByTitle}
+                    aria-describedby={blockedByTitle ? titleHintId : undefined}
                     aria-busy={submitting}
                   >
                     {primaryLabel}

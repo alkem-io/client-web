@@ -551,7 +551,7 @@
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
-    "titleRequiredHint": "Fügen Sie Ihrem $t(common.Callout) einen Titel hinzu, um fortzufahren",
+    "titleRequiredHint": "Fügen Sie Ihrem $t(common.callout) einen Titel hinzu, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",
