@@ -5,7 +5,6 @@
     "collapseWidth": "Свий до стандартна ширина",
     "spacesSection": {
       "title": "Пространства на {{hubName}}",
-      "empty": "Все още няма добавени пространства в този хъб.",
       "loading": "Зареждане на пространства…",
       "searchPlaceholder": "Търсене на пространства…",
       "showingCount": "Показани {{visible}} от {{total}} пространства",
@@ -21,6 +20,15 @@
       "clearFilters": "Изчисти всички филтри",
       "removeFilter": "премахни филтър"
     },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Виртуални сътрудници",
+      "virtualContributorsLabel": "Виртуални сътрудници",
+      "vcType": "Виртуален сътрудник"
+    },
     "allSpacesCta": "Разгледайте всички пространства в Alkemio"
   },
   "breadcrumbs": {
@@ -30,6 +38,8 @@
     "tabs": {
       "about": "За",
       "spaces": "Пространства",
+      "packs": "Innovation Packs",
+      "virtualContributors": "Виртуални сътрудници",
       "navAria": "Раздели на настройките"
     },
     "header": {
@@ -137,17 +147,106 @@
         "removed": "Пространството е премахнато.",
         "reordered": "Подредбата е обновена.",
         "error": "Действието не успя."
+      }
+    },
+    "packs": {
+      "title": "Innovation Packs",
+      "subtitle": "Управлявайте кои Innovation Packs се показват на началната страница на Innovation Hub. Влачете, за да пренаредите.",
+      "columns": {
+        "name": "Име",
+        "templates": "Шаблони",
+        "provider": "Доставчик",
+        "actions": "Действия"
       },
-      "addDialog": {
-        "title": "Добавяне на пространство чрез URL",
-        "description": "Поставете пълния URL на пространство в Alkemio, за да го добавите към този хъб.",
-        "placeholder": "https://alkem.io/welcome-space",
+      "actions": {
+        "add": "Добавяне на Innovation Pack",
+        "remove": "Премахване"
+      },
+      "removeAria": "Премахване на {{name}} от този хъб",
+      "dragHandle": "Влачете, за да пренаредите",
+      "empty": "Все още няма добавени Innovation Packs. Използвайте 'Добавяне на Innovation Pack', за да включите такъв.",
+      "confirmRemove": {
+        "title": "Премахване на Innovation Pack?",
+        "body": "Да премахнем „{{name}}“ от този Innovation Hub? Самият Innovation Pack не се изтрива — просто вече няма да се показва на началната страница на хъба.",
+        "confirm": "Премахни",
+        "cancel": "Отказ"
+      },
+      "toast": {
+        "added": "Innovation Pack е добавен.",
+        "removed": "Innovation Pack е премахнат.",
+        "reordered": "Подредбата е обновена.",
+        "error": "Действието не успя."
+      }
+    },
+    "virtualContributors": {
+      "title": "Виртуални сътрудници",
+      "subtitle": "Управлявайте кои виртуални сътрудници се показват на началната страница на Innovation Hub. Влачете, за да пренаредите.",
+      "columns": {
+        "name": "Име",
+        "provider": "Доставчик",
+        "actions": "Действия"
+      },
+      "actions": {
+        "add": "Добавяне на виртуален сътрудник",
+        "remove": "Премахване"
+      },
+      "removeAria": "Премахване на {{name}} от този хъб",
+      "dragHandle": "Влачете, за да пренаредите",
+      "empty": "Все още няма добавени виртуални сътрудници. Използвайте 'Добавяне на виртуален сътрудник', за да включите такъв.",
+      "confirmRemove": {
+        "title": "Премахване на виртуален сътрудник?",
+        "body": "Да премахнем „{{name}}“ от този Innovation Hub? Самият виртуален сътрудник не се изтрива — просто вече няма да се показва на началната страница на хъба.",
+        "confirm": "Премахни",
+        "cancel": "Отказ"
+      },
+      "toast": {
+        "added": "Виртуалният сътрудник е добавен.",
+        "removed": "Виртуалният сътрудник е премахнат.",
+        "reordered": "Подредбата е обновена.",
+        "error": "Действието не успя."
+      }
+    },
+    "addResourceDialog": {
+      "candidatesTab": "От този акаунт",
+      "urlTab": "Добавяне чрез URL",
+      "addToHub": "Добавяне към Innovation Hub",
+      "candidatesLoading": "Зареждане на наличните ресурси…",
+      "close": "Затвори",
+      "url": {
         "submit": "Добави",
-        "cancel": "Отказ",
         "validating": "Валидиране на URL…",
+        "submitting": "Добавяне…",
+        "submitError": "Нещо се обърка при добавянето. Опитайте отново."
+      },
+      "space": {
+        "title": "Добавяне на пространство",
+        "description": "Изберете едно от пространствата на този акаунт или добавете което и да е пространство в Alkemio чрез URL.",
+        "candidatesEmpty": "Всички пространства на този акаунт вече са в този хъб.",
+        "candidatesAria": "Пространства, налични за добавяне",
+        "urlLabel": "URL на пространството",
+        "urlPlaceholder": "https://alkem.io/welcome-space",
         "invalid": "Не намерихме пространство на този URL.",
-        "duplicate": "Това пространство вече е в този хъб.",
-        "submitError": "Нещо се обърка при добавянето на пространството. Опитайте отново."
+        "duplicate": "Това пространство вече е в този хъб."
+      },
+      "pack": {
+        "title": "Добавяне на Innovation Pack",
+        "description": "Изберете един от Innovation Packs на този акаунт или добавете който и да е Innovation Pack в Alkemio чрез URL.",
+        "candidatesEmpty": "Всички Innovation Packs на този акаунт вече са в този хъб.",
+        "candidatesAria": "Innovation Packs, налични за добавяне",
+        "urlLabel": "URL на Innovation Pack",
+        "urlPlaceholder": "https://alkem.io/innovation-packs/example",
+        "invalid": "Не намерихме Innovation Pack на този URL.",
+        "duplicate": "Този Innovation Pack вече е в този хъб."
+      },
+      "virtualContributor": {
+        "title": "Добавяне на виртуален сътрудник",
+        "description": "Изберете един от виртуалните сътрудници на този акаунт или добавете който и да е виртуален сътрудник в Alkemio чрез URL.",
+        "candidatesEmpty": "Всички виртуални сътрудници на този акаунт вече са в този хъб.",
+        "candidatesAria": "Виртуални сътрудници, налични за добавяне",
+        "urlLabel": "URL на виртуалния сътрудник",
+        "urlPlaceholder": "https://alkem.io/vc/example",
+        "invalid": "Не намерихме виртуален сътрудник на този URL.",
+        "duplicate": "Този виртуален сътрудник вече е в този хъб."
       }
     }
   },

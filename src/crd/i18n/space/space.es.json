@@ -203,12 +203,22 @@
     "documentImportOr": "o",
     "documentImportHint": "Arrastra un archivo o haz clic para subirlo",
     "documentImportMaxSize": ".docx, .xlsx, .pptx hasta {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} hasta {{cap}} MB",
     "documentImportRemoveFile": "Eliminar archivo",
     "documentImportErrorUnsupported": "Este tipo de archivo no es compatible. Prueba con {{formats}}.",
     "documentImportErrorTooLarge": "El archivo es demasiado grande. Tamaño máximo: {{cap}} MB.",
     "documentImportErrorMultiple": "Arrastra solo un archivo a la vez.",
     "documentImportErrorFolder": "Arrastra un archivo, no una carpeta.",
     "documentImportErrorServiceUnavailable": "El servicio de documentos no está disponible temporalmente. Inténtalo de nuevo en un momento.",
+    "documentReplace": "Reemplazar archivo",
+    "documentReplaceTitle": "Reemplazar archivo",
+    "documentReplaceDescription": "Subir un reemplazo sobrescribe el archivo actual para todos y no se puede deshacer.",
+    "documentReplaceCurrentTitleLabel": "Documento actual",
+    "documentReplaceTitleFieldLabel": "Título",
+    "documentReplaceConfirm": "Reemplazar archivo",
+    "documentReplaceErrorSameType": "El reemplazo debe ser el mismo tipo de documento que el actual: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Archivo reemplazado.",
+    "documentReplaceError": "No se pudo reemplazar el archivo. Inténtalo de nuevo.",
     "comments": "{{count}} comentarios",
     "commentsZero": "0 comentarios",
     "expandComments": "Expandir comentarios",
@@ -283,7 +293,8 @@
     "uploadAfterCreateFailed": "El aviso se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición del aviso.",
     "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo.",
     "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
-    "contributors": "Colaboradores"
+    "contributors": "Colaboradores",
+    "subspaces": "Subespacios"
   },
   "contribution": {
     "edit": "Editar",
@@ -410,7 +421,8 @@
     "maxLength": "Máximo {{count}} caracteres.",
     "submitted": {
       "title": "Solicitud enviada",
-      "body": "Tu solicitud a {{communityName}} ha sido enviada."
+      "body": "Tu solicitud a {{communityName}} ha sido enviada.",
+      "review": "Tu solicitud será revisada. Una vez aprobada recibirás una notificación <bell/> y podrás entrar en la comunidad desde tu panel de Inicio."
     }
   },
   "mobile": {
@@ -457,9 +469,39 @@
   },
   "deleteCallout": {
     "title": "¿Eliminar este aviso?",
-    "description": "“{{title}}” se eliminará de forma permanente, junto con sus contribuciones y comentarios. Esta acción no se puede deshacer.",
+    "description": "“{{title}}” se eliminará de forma permanente. Esta acción no se puede deshacer.",
     "confirm": "Eliminar",
+    "confirmAll": "Eliminar el $t(common.callout) y todo su contenido",
+    "headerContributions_one": "Se eliminará {{count}} contribución",
+    "headerContributions_other": "Se eliminarán {{count}} contribuciones",
+    "headerRich": "Se eliminará {{content}}",
+    "headerRichContributions_one": "Se eliminarán {{content}} y {{count}} contribución",
+    "headerRichContributions_other": "Se eliminarán {{content}} y {{count}} contribuciones",
+    "headerRichPoll": "Se eliminarán la encuesta y sus resultados",
+    "headerRichPollContributions_one": "Se eliminarán la encuesta, sus resultados y {{count}} contribución",
+    "headerRichPollContributions_other": "Se eliminarán la encuesta, sus resultados y {{count}} contribuciones",
+    "callToAction": "Llamada a la acción",
+    "moreContributions_one": "{{count}} contribución más...",
+    "moreContributions_other": "{{count}} contribuciones más...",
+    "attachmentsNote": "incluidos los archivos y enlaces adjuntos",
+    "contentType": {
+      "whiteboard": "la pizarra",
+      "memo": "la nota",
+      "mediaGallery": "la galería multimedia",
+      "document": "el documento"
+    },
+    "moreLinks_one": "y {{count}} enlace más",
+    "moreLinks_other": "y {{count}} enlaces más",
+    "comments_one": "Se eliminará {{count}} comentario",
+    "comments_other": "Se eliminarán {{count}} comentarios",
+    "success": "El aviso “{{title}}” se ha eliminado.",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+  },
+  "deleteContribution": {
+    "title": "¿Eliminar esta contribución?",
+    "description": "“{{title}}” se eliminará de forma permanente. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar",
+    "saveFailed": "No se pudo eliminar la contribución. Vuelve a intentarlo."
   },
   "saveAsTemplate": {
     "saveFailed": "No se pudo guardar la plantilla. Vuelve a intentarlo."
@@ -640,6 +682,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Nombre del documento",
+      "edit": "Cambiar nombre",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saving": "Guardando…",
+      "errors": {
+        "blank": "Introduce un nombre.",
+        "tooShort": "El nombre debe tener al menos {{min}} caracteres.",
+        "tooLong": "El nombre no puede superar los {{max}} caracteres.",
+        "invalid": "Introduce un nombre válido.",
+        "saveFailed": "No se pudo cambiar el nombre del documento. Inténtalo de nuevo."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Error de Collabora: {{message}}",
@@ -732,6 +788,7 @@
     "label": "Vista previa de la contribución seleccionada",
     "edit": "Editar respuesta",
     "share": "Compartir respuesta",
+    "delete": "Eliminar respuesta",
     "close": "Cerrar vista previa",
     "emptyDescription": "Sin descripción",
     "references": "Referencias"
@@ -746,6 +803,7 @@
     "label": "Vista previa del whiteboard seleccionado",
     "edit": "Editar whiteboard",
     "share": "Compartir whiteboard",
+    "delete": "Eliminar whiteboard",
     "close": "Cerrar vista previa",
     "openFull": "Haz clic para ver el whiteboard completo"
   },
@@ -779,6 +837,7 @@
   },
   "dialogs": {
     "cancel": "Cancelar",
+    "close": "Cerrar",
     "create": "Crear",
     "discardChanges": {
       "title": "¿Descartar tus cambios?",
@@ -888,6 +947,8 @@
     "noLocationDescription": "Estos colaboradores no tienen datos de ubicación configurados.",
     "viewList": "Lista",
     "viewMap": "Mapa",
+    "expandMap": "Ampliar mapa",
+    "closeMap": "Cerrar mapa",
     "types": {
       "user": "Personas",
       "organization": "Organizaciones",
@@ -908,6 +969,13 @@
       "defaultViewLabel": "Visualización predeterminada",
       "viewList": "Lista",
       "viewMap": "Mapa"
+    }
+  },
+  "spaceCollection": {
+    "search": "Buscar subespacios...",
+    "empty": {
+      "title": "Aún no hay subespacios",
+      "description": "Este espacio aún no tiene subespacios."
     }
   }
 }

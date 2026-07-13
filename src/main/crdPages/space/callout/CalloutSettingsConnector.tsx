@@ -23,7 +23,9 @@ import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCallo
 import { fetchPreviewImageBlob } from '@/main/crdPages/templates/fetchPreviewImageBlob';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { CalloutEditConnector } from './CalloutEditConnector';
+import { CollaboraFramingReplaceConnector } from './CollaboraFramingReplaceConnector';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
+import { mapCalloutToDeletionSummary } from './dataMappers/mapCalloutToDeletionSummary';
 import { deriveCalloutMenuVisibility } from './deriveCalloutMenuVisibility';
 
 type CalloutSettingsConnectorProps = {
@@ -37,6 +39,12 @@ type CalloutSettingsConnectorProps = {
    * single dialog instance. When omitted, the Share menu item is hidden.
    */
   onShare?: () => void;
+  /**
+   * Fires after the callout has been deleted (FR-018). The detail dialog uses
+   * it to close itself — the feed card needs nothing, it unmounts when the
+   * feed list drops the deleted id.
+   */
+  onDeleted?: () => void;
 };
 
 /**
@@ -54,7 +62,7 @@ type CalloutSettingsConnectorProps = {
  * Share is owned by the parent connector via `onShare` (so the detail dialog's
  * header / reactions-bar Share buttons share state with the menu's Share item).
  */
-export function CalloutSettingsConnector({ callout, moveActions, onShare }: CalloutSettingsConnectorProps) {
+export function CalloutSettingsConnector({ callout, moveActions, onShare, onDeleted }: CalloutSettingsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
   const {
@@ -63,6 +71,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
   const [editOpen, setEditOpen] = useState(false);
   const [visibilityAction, setVisibilityAction] = useState<'publish' | 'unpublish' | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [replaceOpen, setReplaceOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
@@ -97,6 +106,8 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         '',
     }));
 
+  const collaboraDocument = callout.framing.collaboraDocument;
+
   const perms = deriveCalloutMenuVisibility({
     myPrivileges: callout.authorization?.myPrivileges,
     visibility: callout.settings.visibility,
@@ -114,6 +125,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     // item is shown greyed out rather than hidden (mirrors the old UI hiding
     // it for documents, but with a visible "coming soon" affordance).
     isCollaboraDocument: callout.framing.type === CalloutFramingType.CollaboraDocument,
+    collaboraDocumentType: collaboraDocument?.documentType,
     hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
   });
 
@@ -136,7 +148,9 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
     setMutating(true);
     try {
       await deleteCallout(callout);
+      notify(t('deleteCallout.success', { title: callout.framing.profile.displayName }), 'success');
       setDeleteOpen(false);
+      onDeleted?.();
     } catch (err) {
       logError(new Error('Callout delete failed', { cause: err as Error }));
       notify(t('deleteCallout.saveFailed'), 'error');
@@ -193,6 +207,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
         saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
+        onReplace={perms.showReplace ? () => setReplaceOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
@@ -217,6 +232,16 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         />
       )}
 
+      {perms.showReplace && collaboraDocument && (
+        <CollaboraFramingReplaceConnector
+          open={replaceOpen}
+          onOpenChange={setReplaceOpen}
+          collaboraDocumentId={collaboraDocument.id}
+          currentDocumentType={collaboraDocument.documentType}
+          currentTitle={collaboraDocument.profile?.displayName ?? callout.framing.profile.displayName}
+        />
+      )}
+
       <CalloutVisibilityChangeDialog
         open={visibilityAction !== null}
         onOpenChange={open => !open && setVisibilityAction(null)}
@@ -229,6 +254,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare }: Call
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         calloutTitle={callout.framing.profile.displayName}
+        content={mapCalloutToDeletionSummary(callout)}
         loading={mutating}
         onConfirm={handleDeleteConfirm}
       />

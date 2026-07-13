@@ -1,0 +1,185 @@
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/crd/primitives/table';
+
+export type HubPacksTableRow = {
+  id: string;
+  name: string;
+  templateCount: number;
+  provider: string;
+  packUrl: string;
+};
+
+export type InnovationHubPacksTabProps = {
+  rows: HubPacksTableRow[];
+  busy: boolean;
+  onReorder: (orderedIds: string[]) => void;
+  onAddClick: () => void;
+  onRemoveRequest: (row: HubPacksTableRow) => void;
+};
+
+const SortableRow = ({
+  row,
+  onRemoveRequest,
+  busy,
+  removeAriaLabel,
+  dragHandleAriaLabel,
+}: {
+  row: HubPacksTableRow;
+  onRemoveRequest: (row: HubPacksTableRow) => void;
+  busy: boolean;
+  removeAriaLabel: string;
+  dragHandleAriaLabel: string;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: row.id });
+
+  const style: React.CSSProperties = {
+    transform: transform
+      ? `translate3d(${transform.x}px, ${transform.y}px, 0) scaleX(${transform.scaleX}) scaleY(${transform.scaleY})`
+      : undefined,
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <TableRow ref={setNodeRef} style={style} className={cn(isDragging && 'bg-accent')}>
+      <TableCell className="w-12">
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          aria-label={dragHandleAriaLabel}
+          className={cn(
+            'inline-flex size-6 cursor-grab items-center justify-center rounded-md text-muted-foreground hover:bg-accent',
+            'focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
+            'touch-none'
+          )}
+          disabled={busy}
+        >
+          <GripVertical aria-hidden="true" className="size-4" />
+        </button>
+      </TableCell>
+      <TableCell className="font-medium">{row.name}</TableCell>
+      <TableCell className="text-muted-foreground">{row.templateCount}</TableCell>
+      <TableCell className="text-muted-foreground">{row.provider}</TableCell>
+      <TableCell className="text-right">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => onRemoveRequest(row)}
+          disabled={busy}
+          aria-label={removeAriaLabel}
+        >
+          <Trash2 aria-hidden="true" className="size-4 text-destructive" />
+        </Button>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+/**
+ * Settings tab listing the hub's curated Innovation Packs — a clone of
+ * `InnovationHubSpacesTab` (dnd-kit sortable table, add button, per-row remove)
+ * with pack-appropriate columns (name, template count, provider).
+ */
+export const InnovationHubPacksTab = ({
+  rows,
+  busy,
+  onReorder,
+  onAddClick,
+  onRemoveRequest,
+}: InnovationHubPacksTabProps) => {
+  const { t } = useTranslation('crd-innovationHub');
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) {
+      return;
+    }
+    const ids = rows.map(r => r.id);
+    const activeId = String(active.id);
+    const overId = String(over.id);
+    const next = ids.filter(id => id !== activeId);
+    const overIndex = ids.indexOf(overId);
+    next.splice(overIndex, 0, activeId);
+    onReorder(next);
+  };
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-page-title">{t('settings.packs.title')}</h2>
+          <p className="text-body mt-2 text-muted-foreground">{t('settings.packs.subtitle')}</p>
+        </div>
+        <Button onClick={onAddClick} disabled={busy} className="gap-2">
+          <Plus aria-hidden="true" className="size-4" />
+          {t('settings.packs.actions.add')}
+        </Button>
+      </div>
+
+      {rows.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-border bg-muted/30 p-8 text-center">
+          <p className="text-body text-muted-foreground">{t('settings.packs.empty')}</p>
+          <Button onClick={onAddClick} variant="outline" className="mt-4 gap-2">
+            <Plus aria-hidden="true" className="size-4" />
+            {t('settings.packs.actions.add')}
+          </Button>
+        </div>
+      ) : (
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={rows.map(r => r.id)} strategy={verticalListSortingStrategy}>
+            <div className="rounded-lg border border-border">
+              <Table>
+                <TableCaption className="sr-only">{t('settings.packs.title')}</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead aria-label={t('settings.packs.dragHandle')} className="w-12" />
+                    <TableHead>{t('settings.packs.columns.name')}</TableHead>
+                    <TableHead>{t('settings.packs.columns.templates')}</TableHead>
+                    <TableHead>{t('settings.packs.columns.provider')}</TableHead>
+                    <TableHead aria-label={t('settings.packs.columns.actions')} className="w-12" />
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {rows.map(row => (
+                    <SortableRow
+                      key={row.id}
+                      row={row}
+                      onRemoveRequest={onRemoveRequest}
+                      busy={busy}
+                      removeAriaLabel={t('settings.packs.removeAria', { name: row.name })}
+                      dragHandleAriaLabel={t('settings.packs.dragHandle')}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </SortableContext>
+        </DndContext>
+      )}
+    </div>
+  );
+};

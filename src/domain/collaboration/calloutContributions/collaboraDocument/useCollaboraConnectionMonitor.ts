@@ -25,6 +25,13 @@ type Options = {
   terminal?: boolean;
   onError?: (message: string) => void;
   onSessionClosed?: () => void;
+  /**
+   * Forwarded to the underlying postMessage hook: fires when Collabora re-loads the document
+   * after the initial open (e.g. its reconnect following an in-editor rename). The overlay uses
+   * it to re-read the persisted document name. Routed through the monitor so the whole overlay
+   * shares a single postMessage subscription rather than opening a second listener.
+   */
+  onDocumentReloaded?: () => void;
 };
 
 /**
@@ -47,9 +54,9 @@ type Options = {
  */
 export function useCollaboraConnectionMonitor(
   iframeRef: RefObject<HTMLIFrameElement | null>,
-  { accessTokenTTL, terminal, onError, onSessionClosed }: Options = {}
+  { accessTokenTTL, terminal, onError, onSessionClosed, onDocumentReloaded }: Options = {}
 ): CollaboraConnectionState {
-  const base = useCollaboraPostMessage(iframeRef, { onError, onSessionClosed });
+  const base = useCollaboraPostMessage(iframeRef, { onError, onSessionClosed, onDocumentReloaded });
 
   const [reconnectNonce, setReconnectNonce] = useState(0);
   const reconnect = useCallback(() => setReconnectNonce(n => n + 1), []);

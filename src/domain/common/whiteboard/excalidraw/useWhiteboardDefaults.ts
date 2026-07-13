@@ -1,4 +1,4 @@
-import type { AppState } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { AppState } from '@alkemio/excalidraw/types';
 import { WHITEBOARD_DEFAULTS } from './whiteboardDefaults';
 
 const useWhiteboardDefaults = (): {

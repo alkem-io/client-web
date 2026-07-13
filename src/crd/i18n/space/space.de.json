@@ -203,12 +203,22 @@
     "documentImportOr": "oder",
     "documentImportHint": "Datei hierher ziehen oder klicken zum Hochladen",
     "documentImportMaxSize": ".docx, .xlsx, .pptx bis zu {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} bis zu {{cap}} MB",
     "documentImportRemoveFile": "Datei entfernen",
     "documentImportErrorUnsupported": "Dieser Dateityp wird nicht unterstützt. Probieren Sie {{formats}}.",
     "documentImportErrorTooLarge": "Datei ist zu groß. Maximale Größe: {{cap}} MB.",
     "documentImportErrorMultiple": "Bitte nur eine Datei gleichzeitig hochladen.",
     "documentImportErrorFolder": "Bitte eine Datei hochladen, keinen Ordner.",
     "documentImportErrorServiceUnavailable": "Der Dokumentendienst ist vorübergehend nicht verfügbar. Bitte gleich noch einmal versuchen.",
+    "documentReplace": "Datei ersetzen",
+    "documentReplaceTitle": "Datei ersetzen",
+    "documentReplaceDescription": "Das Hochladen einer Ersatzdatei überschreibt die aktuelle Datei für alle und kann nicht rückgängig gemacht werden.",
+    "documentReplaceCurrentTitleLabel": "Aktuelles Dokument",
+    "documentReplaceTitleFieldLabel": "Titel",
+    "documentReplaceConfirm": "Datei ersetzen",
+    "documentReplaceErrorSameType": "Die Ersatzdatei muss dieselbe Art von Dokument sein wie die aktuelle: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Datei ersetzt.",
+    "documentReplaceError": "Die Datei konnte nicht ersetzt werden. Bitte versuchen Sie es erneut.",
     "comments": "{{count}} Kommentare",
     "commentsZero": "0 Kommentare",
     "expandComments": "Kommentare ausklappen",
@@ -283,7 +293,8 @@
     "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
     "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
-    "contributors": "Mitwirkende"
+    "contributors": "Mitwirkende",
+    "subspaces": "Unterbereiche"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -410,7 +421,8 @@
     "maxLength": "Maximal {{count}} Zeichen.",
     "submitted": {
       "title": "Bewerbung eingereicht",
-      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht."
+      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht.",
+      "review": "Deine Bewerbung wird geprüft. Sobald sie genehmigt ist, erhältst du eine Benachrichtigung <bell/> und kannst die Community über deine Startseite betreten."
     }
   },
   "mobile": {
@@ -457,9 +469,39 @@
   },
   "deleteCallout": {
     "title": "Diesen $t(common.Callout) löschen?",
-    "description": "„{{title}}“ wird dauerhaft gelöscht, zusammen mit seinen Beiträgen und Kommentaren. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "confirm": "Löschen",
+    "confirmAll": "$t(common.Callout) und alle Inhalte löschen",
+    "headerContributions_one": "{{count}} Beitrag wird gelöscht",
+    "headerContributions_other": "{{count}} Beiträge werden gelöscht",
+    "headerRich": "{{content}} wird gelöscht",
+    "headerRichContributions_one": "{{content}} und {{count}} Beitrag werden gelöscht",
+    "headerRichContributions_other": "{{content}} und {{count}} Beiträge werden gelöscht",
+    "headerRichPoll": "Die Umfrage und ihre Ergebnisse werden gelöscht",
+    "headerRichPollContributions_one": "Die Umfrage, ihre Ergebnisse und {{count}} Beitrag werden gelöscht",
+    "headerRichPollContributions_other": "Die Umfrage, ihre Ergebnisse und {{count}} Beiträge werden gelöscht",
+    "callToAction": "Handlungsaufforderung",
+    "moreContributions_one": "{{count}} weiterer Beitrag...",
+    "moreContributions_other": "{{count}} weitere Beiträge...",
+    "attachmentsNote": "einschließlich angehängter Dateien und Links",
+    "contentType": {
+      "whiteboard": "Das Whiteboard",
+      "memo": "Die Notiz",
+      "mediaGallery": "Die Mediengalerie",
+      "document": "Das Dokument"
+    },
+    "moreLinks_one": "und {{count}} weiterer Link",
+    "moreLinks_other": "und {{count}} weitere Links",
+    "comments_one": "{{count}} Kommentar wird gelöscht",
+    "comments_other": "{{count}} Kommentare werden gelöscht",
+    "success": "Der $t(common.Callout) „{{title}}“ wurde gelöscht.",
     "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+  },
+  "deleteContribution": {
+    "title": "Diesen Beitrag löschen?",
+    "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "confirm": "Löschen",
+    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen."
   },
   "saveAsTemplate": {
     "saveFailed": "Die Vorlage konnte nicht gespeichert werden. Bitte erneut versuchen."
@@ -640,6 +682,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Dokumentname",
+      "edit": "Umbenennen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "saving": "Wird gespeichert…",
+      "errors": {
+        "blank": "Bitte geben Sie einen Namen ein.",
+        "tooShort": "Der Name muss mindestens {{min}} Zeichen lang sein.",
+        "tooLong": "Der Name darf höchstens {{max}} Zeichen lang sein.",
+        "invalid": "Bitte geben Sie einen gültigen Namen ein.",
+        "saveFailed": "Das Dokument konnte nicht umbenannt werden. Bitte versuchen Sie es erneut."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-Fehler: {{message}}",
@@ -732,6 +788,7 @@
     "label": "Vorschau des ausgewählten Beitrags",
     "edit": "Beitrag bearbeiten",
     "share": "Beitrag teilen",
+    "delete": "Beitrag löschen",
     "close": "Vorschau schließen",
     "emptyDescription": "Keine Beschreibung",
     "references": "Verweise"
@@ -746,6 +803,7 @@
     "label": "Vorschau des ausgewählten Whiteboards",
     "edit": "Whiteboard bearbeiten",
     "share": "Whiteboard teilen",
+    "delete": "Whiteboard löschen",
     "close": "Vorschau schließen",
     "openFull": "Klicken Sie, um das vollständige Whiteboard anzuzeigen"
   },
@@ -779,6 +837,7 @@
   },
   "dialogs": {
     "cancel": "Abbrechen",
+    "close": "Schließen",
     "create": "Erstellen",
     "discardChanges": {
       "title": "Änderungen verwerfen?",
@@ -888,6 +947,8 @@
     "noLocationDescription": "Für diese Mitwirkenden sind keine Standortdaten hinterlegt.",
     "viewList": "Liste",
     "viewMap": "Karte",
+    "expandMap": "Karte vergrößern",
+    "closeMap": "Karte schließen",
     "types": {
       "user": "Personen",
       "organization": "Organisationen",
@@ -908,6 +969,13 @@
       "defaultViewLabel": "Standardanzeige",
       "viewList": "Liste",
       "viewMap": "Karte"
+    }
+  },
+  "spaceCollection": {
+    "search": "Unterbereiche suchen...",
+    "empty": {
+      "title": "Noch keine Unterbereiche",
+      "description": "Dieser Bereich hat noch keine Unterbereiche."
     }
   }
 }

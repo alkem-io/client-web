@@ -2,6 +2,7 @@ import {
   BarChart3,
   ChevronDown,
   FileText,
+  FolderTree,
   ImagePlus,
   Images,
   type LucideIcon,
@@ -12,7 +13,7 @@ import {
   StickyNote,
   Users,
 } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { Children, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   CalloutCollaboraPreview,
@@ -44,11 +45,13 @@ export type PostType =
   | 'document'
   | 'callToAction'
   | 'poll'
-  | 'contributors';
+  | 'contributors'
+  | 'spaces';
 
 type PostTypeLabelKey =
   | 'callout.post'
   | 'callout.contributors'
+  | 'callout.subspaces'
   | 'callout.whiteboard'
   | 'callout.memo'
   | 'callout.mediaGallery'
@@ -73,6 +76,7 @@ export const POST_TYPE_DESCRIPTORS: Record<PostType, { icon: LucideIcon; labelKe
   callToAction: { icon: Megaphone, labelKey: 'callout.callToAction' },
   poll: { icon: BarChart3, labelKey: 'callout.poll' },
   contributors: { icon: Users, labelKey: 'callout.contributors' },
+  spaces: { icon: FolderTree, labelKey: 'callout.subspaces' },
 };
 
 export type PostCardData = {
@@ -470,7 +474,10 @@ export function PostCard({
         {contributionsPreview}
       </CardContent>
 
-      {children && <div className="px-6 pb-4">{children}</div>}
+      {/* `children` arrives as an array of slots (poll/contributors/spaces previews) that are often
+          all null — a bare `children &&` check is always truthy then. Children.toArray strips
+          null/undefined/booleans, so the padded wrapper only renders when something is visible. */}
+      {Children.toArray(children).length > 0 && <div className="px-6 pb-4">{children}</div>}
 
       {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
           mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via

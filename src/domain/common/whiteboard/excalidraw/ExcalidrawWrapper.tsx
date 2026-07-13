@@ -1,10 +1,5 @@
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
-import type {
-  BinaryFileData,
-  BinaryFiles,
-  ExcalidrawImperativeAPI,
-  ExcalidrawProps,
-} from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/data/types';
+import type { BinaryFileData, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types';
 import { compact, debounce, merge } from 'lodash-es';
 import { CloudUpload } from 'lucide-react';
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';

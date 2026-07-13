@@ -1,4 +1,4 @@
-import { FoldHorizontal, Info, Layers, UnfoldHorizontal } from 'lucide-react';
+import { Bot, FoldHorizontal, Info, Layers, Package, UnfoldHorizontal } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
@@ -6,7 +6,7 @@ import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { HubSettingsHeaderThumbnail } from './HubSettingsHeaderThumbnail';
 
-export type HubSettingsTabKey = 'about' | 'spaces';
+export type HubSettingsTabKey = 'about' | 'spaces' | 'packs' | 'virtualContributors';
 
 export type HubSettingsHeaderData = {
   name: string;
@@ -37,6 +37,8 @@ export type InnovationHubSettingsShellProps = {
 const tabs: { key: HubSettingsTabKey; icon: typeof Info; labelKey: string }[] = [
   { key: 'about', icon: Info, labelKey: 'settings.tabs.about' },
   { key: 'spaces', icon: Layers, labelKey: 'settings.tabs.spaces' },
+  { key: 'packs', icon: Package, labelKey: 'settings.tabs.packs' },
+  { key: 'virtualContributors', icon: Bot, labelKey: 'settings.tabs.virtualContributors' },
 ];
 
 export const InnovationHubSettingsShell = ({
@@ -111,7 +113,13 @@ export const InnovationHubSettingsShell = ({
                       )}
                     >
                       <Icon aria-hidden="true" className="size-4" />
-                      {t(item.labelKey as 'settings.tabs.about' | 'settings.tabs.spaces')}
+                      {t(
+                        item.labelKey as
+                          | 'settings.tabs.about'
+                          | 'settings.tabs.spaces'
+                          | 'settings.tabs.packs'
+                          | 'settings.tabs.virtualContributors'
+                      )}
                     </a>
                   );
                 })}

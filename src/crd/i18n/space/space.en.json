@@ -231,12 +231,22 @@
     "documentImportOr": "or",
     "documentImportHint": "Drag & drop a file, or click to upload",
     "documentImportMaxSize": ".docx, .xlsx, .pptx up to {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} up to {{cap}} MB",
     "documentImportRemoveFile": "Remove file",
     "documentImportErrorUnsupported": "This file type isn't supported. Try {{formats}}.",
     "documentImportErrorTooLarge": "File is too large. Maximum size is {{cap}} MB.",
     "documentImportErrorMultiple": "Drop a single file at a time.",
     "documentImportErrorFolder": "Drop a single file, not a folder.",
     "documentImportErrorServiceUnavailable": "Document service is temporarily unavailable. Please try again in a moment.",
+    "documentReplace": "Replace file",
+    "documentReplaceTitle": "Replace file",
+    "documentReplaceDescription": "Uploading a replacement overwrites the current file for everyone, and this can't be undone.",
+    "documentReplaceCurrentTitleLabel": "Current document",
+    "documentReplaceTitleFieldLabel": "Title",
+    "documentReplaceConfirm": "Replace file",
+    "documentReplaceErrorSameType": "The replacement must be the same kind of document as the current one: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "File replaced.",
+    "documentReplaceError": "Couldn't replace the file. Please try again.",
     "addLinkOrFile": "Add link or file",
     "createLink": "Add links or attach documents",
     "editLink": "Edit link",
@@ -283,7 +293,8 @@
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
     "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
-    "contributors": "Contributors"
+    "contributors": "Contributors",
+    "subspaces": "Subspaces"
   },
   "contribution": {
     "edit": "Edit",
@@ -410,7 +421,8 @@
     "maxLength": "Maximum {{count}} characters.",
     "submitted": {
       "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "body": "Your application to {{communityName}} has been submitted.",
+      "review": "Your application will be reviewed. Once it is approved you will get a notification <bell/> and you will be able to enter the community from your Home dashboard."
     }
   },
   "mobile": {
@@ -457,9 +469,39 @@
   },
   "deleteCallout": {
     "title": "Delete this $t(common.callout)?",
-    "description": "“{{title}}” will be deleted permanently, along with its contributions and comments. This action cannot be undone.",
+    "description": "“{{title}}” will be deleted permanently. This cannot be undone.",
     "confirm": "Delete",
+    "confirmAll": "Delete $t(common.callout) and all contents",
+    "headerContributions_one": "{{count}} contribution will be deleted",
+    "headerContributions_other": "{{count}} contributions will be deleted",
+    "headerRich": "{{content}} will be deleted",
+    "headerRichContributions_one": "{{content}} and {{count}} contribution will be deleted",
+    "headerRichContributions_other": "{{content}} and {{count}} contributions will be deleted",
+    "headerRichPoll": "The poll and its results will be deleted",
+    "headerRichPollContributions_one": "The poll, its results and {{count}} contribution will be deleted",
+    "headerRichPollContributions_other": "The poll, its results and {{count}} contributions will be deleted",
+    "callToAction": "Call to Action",
+    "moreContributions_one": "{{count}} contribution more...",
+    "moreContributions_other": "{{count}} contributions more...",
+    "attachmentsNote": "including attached files and links",
+    "contentType": {
+      "whiteboard": "The whiteboard",
+      "memo": "The memo",
+      "mediaGallery": "The media gallery",
+      "document": "The document"
+    },
+    "moreLinks_one": "and {{count}} more link",
+    "moreLinks_other": "and {{count}} more links",
+    "comments_one": "{{count}} comment will be deleted",
+    "comments_other": "{{count}} comments will be deleted",
+    "success": "$t(common.Callout) “{{title}}” was deleted.",
     "saveFailed": "Could not delete the $t(common.callout). Please try again."
+  },
+  "deleteContribution": {
+    "title": "Delete this contribution?",
+    "description": "“{{title}}” will be deleted permanently. This cannot be undone.",
+    "confirm": "Delete",
+    "saveFailed": "Could not delete the contribution. Please try again."
   },
   "saveAsTemplate": {
     "saveFailed": "Could not save the template. Please try again."
@@ -632,6 +674,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Document name",
+      "edit": "Rename",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "errors": {
+        "blank": "Please enter a name.",
+        "tooShort": "Name must be at least {{min}} characters.",
+        "tooLong": "Name must be at most {{max}} characters.",
+        "invalid": "Please enter a valid name.",
+        "saveFailed": "Couldn't rename the document. Please try again."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora error: {{message}}",
@@ -732,6 +788,7 @@
     "label": "Selected contribution preview",
     "edit": "Edit response",
     "share": "Share response",
+    "delete": "Delete response",
     "close": "Close preview",
     "emptyDescription": "No description",
     "references": "References"
@@ -746,6 +803,7 @@
     "label": "Selected whiteboard preview",
     "edit": "Edit whiteboard",
     "share": "Share whiteboard",
+    "delete": "Delete whiteboard",
     "close": "Close preview",
     "openFull": "Click to see the full whiteboard"
   },
@@ -779,6 +837,7 @@
   },
   "dialogs": {
     "cancel": "Cancel",
+    "close": "Close",
     "create": "Create",
     "discardChanges": {
       "title": "Discard your changes?",
@@ -888,6 +947,8 @@
     "noLocationDescription": "These contributors have no location data set.",
     "viewList": "List",
     "viewMap": "Map",
+    "expandMap": "Expand map",
+    "closeMap": "Close map",
     "types": {
       "user": "People",
       "organization": "Organizations",
@@ -908,6 +969,13 @@
       "defaultViewLabel": "Default display",
       "viewList": "List",
       "viewMap": "Map"
+    }
+  },
+  "spaceCollection": {
+    "search": "Search subspaces...",
+    "empty": {
+      "title": "No subspaces yet",
+      "description": "This space has no subspaces yet."
     }
   }
 }

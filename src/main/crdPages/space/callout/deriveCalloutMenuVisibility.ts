@@ -1,4 +1,5 @@
 import { AuthorizationPrivilege, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { isReplaceableCollaboraDocumentType } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraDocumentTypeFromFile';
 
 export type CalloutMenuPermissionsInput = {
   myPrivileges: AuthorizationPrivilege[] | undefined;
@@ -20,6 +21,13 @@ export type CalloutMenuPermissionsInput = {
    * disabled (greyed out) rather than hidden — see `saveAsTemplateDisabled`.
    */
   isCollaboraDocument: boolean;
+  /**
+   * The Collabora document's type (e.g. `WORDPROCESSING`), when the framing is a
+   * Collabora document. Gates the Replace-file item to Phase-1 replaceable types
+   * (a non-replaceable type such as Drawing would open a dialog that can only
+   * reject — see `isReplaceableCollaboraDocumentType`).
+   */
+  collaboraDocumentType?: string;
   hasMoveNeighbours: boolean;
 };
 
@@ -31,6 +39,12 @@ export type CalloutMenuPermissions = {
   showUnpublish: boolean;
   showDelete: boolean;
   showShare: boolean;
+  /**
+   * "Replace file" — swap the backing file of a Collabora (OfficeDocs) framing
+   * document in place (workspace#014-officedocs-replace-file). Same edit-rights
+   * gate as the inline preview action, restricted to Phase-1 replaceable types.
+   */
+  showReplace: boolean;
   showSortContributions: boolean;
   showSaveAsTemplate: boolean;
   /**
@@ -55,6 +69,9 @@ export type CalloutMenuPermissions = {
  * - Sort Contributions requires `Update` on the callout **and** at least two
  *   contributions to reorder **and** contributions enabled on the callout.
  * - Share is always shown.
+ * - Replace file requires `Update` on the callout **and** a Collabora framing
+ *   document **and** a Phase-1 replaceable type (Drawing is excluded — it would
+ *   open a replace dialog that can only reject).
  * - Save-as-Template additionally requires the local feature flag
  *   `CRD_SAVE_AS_TEMPLATE_ENABLED` (plan D12) and the backend-derived
  *   `canBeSavedAsTemplate` flag. Document (Collabora) callouts are an
@@ -76,6 +93,11 @@ export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput):
     showUnpublish: editable && !isDraft,
     showDelete: editable,
     showShare: true,
+    showReplace:
+      editable &&
+      input.isCollaboraDocument &&
+      input.collaboraDocumentType !== undefined &&
+      isReplaceableCollaboraDocumentType(input.collaboraDocumentType),
     showSortContributions: editable && input.contributionsEnabled && input.contributionsCount >= 2,
     // Documents show the item greyed out (`saveAsTemplateDisabled`) even though
     // the backend `canBeSavedAsTemplate` flag may not cover them, so the

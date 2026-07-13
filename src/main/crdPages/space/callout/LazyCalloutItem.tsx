@@ -9,6 +9,7 @@ import {
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -28,6 +29,7 @@ import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
+import { SpaceCollectionConnector } from './SpaceCollectionConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -227,6 +229,12 @@ function LazyCalloutItemContent({
   // `canCreateContribution`.
   const hasContributionType = callout.settings.contribution.allowedTypes.length > 0;
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
+  // Editor-header pencil: content editors (UPDATE_CONTENT) may rename too, not just UPDATE holders.
+  const canRenameFramingDocument = canRenameCollaboraDocument({
+    documentPrivileges: callout.framing.collaboraDocument?.authorization?.myPrivileges,
+    calloutPrivileges: callout.authorization?.myPrivileges,
+    includeContentEditors: true,
+  });
 
   const contributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
@@ -241,10 +249,21 @@ function LazyCalloutItemContent({
 
   // Contributor-collection callout body (feature 008): renders the self-updating
   // contributor cards/map for the active type. The callout accepts no
-  // contributions, so it has no contributions-preview — only this body.
+  // contributions, so it has no contributions-preview — only this body. The
+  // negative margin pulls the body against the Card root's `gap-6` so the
+  // filters sit close under the callout title.
   const contributorsPreview =
     callout.framing.type === CalloutFramingType.Contributors ? (
-      <ContributorCollectionConnector calloutId={callout.id} className="mt-2" />
+      <ContributorCollectionConnector calloutId={callout.id} className="-mt-4" />
+    ) : null;
+
+  // Spaces-collection callout body (feature 013): renders the host space's
+  // subspaces as cards (name search + filters + empty state via the reused
+  // SpaceSubspacesList). Like the contributors body, it accepts no contributions,
+  // so it has no contributions-preview — only this body.
+  const spacesPreview =
+    callout.framing.type === CalloutFramingType.Spaces ? (
+      <SpaceCollectionConnector calloutId={callout.id} className="mt-2" />
     ) : null;
 
   // Without a comments room we can't wire the inline thread — fall back to the
@@ -290,6 +309,7 @@ function LazyCalloutItemContent({
             >
               {pollPreview}
               {contributorsPreview}
+              {spacesPreview}
             </PostCard>
           )}
         </CalloutCommentsConnector>
@@ -312,6 +332,7 @@ function LazyCalloutItemContent({
         >
           {pollPreview}
           {contributorsPreview}
+          {spacesPreview}
         </PostCard>
       )}
       {mediaGalleryFileInput}
@@ -332,6 +353,7 @@ function LazyCalloutItemContent({
           collaboraDocumentId={collaboraDocumentId}
           title={callout.framing.collaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName}
           documentType={toCollaboraPreviewType(callout.framing.collaboraDocument?.documentType)}
+          canRename={canRenameFramingDocument}
           onClose={() => setCollaboraEditorOpen(false)}
         />
       )}

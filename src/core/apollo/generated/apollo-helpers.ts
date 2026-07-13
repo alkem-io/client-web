@@ -829,6 +829,7 @@ export type CalloutFramingKeySpecifier = (
   | 'memo'
   | 'poll'
   | 'profile'
+  | 'subspaces'
   | 'type'
   | 'updatedDate'
   | 'whiteboard'
@@ -846,6 +847,7 @@ export type CalloutFramingFieldPolicy = {
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2159,6 +2161,7 @@ export type InnovationHubKeySpecifier = (
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'innovationPackListFilter'
   | 'listedInStore'
   | 'nameID'
   | 'profile'
@@ -2169,6 +2172,7 @@ export type InnovationHubKeySpecifier = (
   | 'subdomain'
   | 'type'
   | 'updatedDate'
+  | 'virtualContributorListFilter'
   | InnovationHubKeySpecifier
 )[];
 export type InnovationHubFieldPolicy = {
@@ -2176,6 +2180,7 @@ export type InnovationHubFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPackListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2186,6 +2191,7 @@ export type InnovationHubFieldPolicy = {
   subdomain?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationPackKeySpecifier = (
   | 'authorization'
@@ -2954,6 +2960,7 @@ export type MutationKeySpecifier = (
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'reorderPollOptions'
+  | 'replaceCollaboraDocument'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -3173,6 +3180,7 @@ export type MutationFieldPolicy = {
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  replaceCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4433,6 +4441,27 @@ export type SearchResultCalloutKeySpecifier = (
 export type SearchResultCalloutFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultCollaboraDocumentKeySpecifier = (
+  | 'callout'
+  | 'collaboraDocument'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultCollaboraDocumentKeySpecifier
+)[];
+export type SearchResultCollaboraDocumentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -7133,6 +7162,13 @@ export type StrictTypedTypePolicies = {
   SearchResultCallout?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
+  };
+  SearchResultCollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SearchResultCollaboraDocumentKeySpecifier
+      | (() => undefined | SearchResultCollaboraDocumentKeySpecifier);
+    fields?: SearchResultCollaboraDocumentFieldPolicy;
   };
   SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
