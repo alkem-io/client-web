@@ -44,10 +44,6 @@
       "description": "Klap post-beschrijvingen standaard in. Als dit aanstaat, tonen beschrijvingen een \"Lees meer\"-link in plaats van de volledige tekst."
     },
     "column": {
-      "descriptionAriaLabel": "Kolombeschrijving",
-      "editDescription": "Kolombeschrijving bewerken",
-      "confirm": "Bevestigen",
-      "cancel": "Annuleren",
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
@@ -67,7 +63,6 @@
         "dialogTitle": "Details bewerken: stroomfase",
         "titleLabel": "Titel",
         "titleTooShort": "De titel moet minimaal 3 tekens lang zijn",
-        "editTitle": "Titel bewerken",
         "insertEmoji": "Emoji invoegen",
         "descriptionLabel": "Beschrijving",
         "descriptionPlaceholder": "Beschrijving",

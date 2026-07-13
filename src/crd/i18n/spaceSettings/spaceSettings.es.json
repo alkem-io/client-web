@@ -44,10 +44,6 @@
       "description": "Contrae las descripciones de publicaciones por defecto. Cuando está activado, las descripciones muestran un enlace \"Leer más\" en lugar del texto completo."
     },
     "column": {
-      "descriptionAriaLabel": "Descripción de la columna",
-      "editDescription": "Editar descripción de la columna",
-      "confirm": "Confirmar",
-      "cancel": "Cancelar",
       "titlePlaceholder": "Título de la columna",
       "descriptionPlaceholder": "Describe esta columna…",
       "menu": "Acciones de columna",
@@ -67,7 +63,6 @@
         "dialogTitle": "Editar detalles: fase del flujo",
         "titleLabel": "Título",
         "titleTooShort": "El título debe tener al menos 3 caracteres",
-        "editTitle": "Editar título",
         "insertEmoji": "Insertar emoji",
         "descriptionLabel": "Descripción",
         "descriptionPlaceholder": "Descripción",

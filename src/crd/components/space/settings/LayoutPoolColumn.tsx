@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
@@ -380,6 +381,13 @@ function EditDetailsDialog({
 
   const titleTooShort = isColumnTitleTooShort(title);
 
+  const isDirty = title !== initialTitle || description !== initialDescription;
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty,
+    onClose: onCancel,
+    blockClose: saving,
+  });
+
   const handleSave = async () => {
     if (titleTooShort) return;
     setSaving(true);
@@ -391,71 +399,69 @@ function EditDetailsDialog({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={nextOpen => {
-        if (!nextOpen) onCancel();
-      }}
-    >
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
-        <DialogHeader className="shrink-0">
-          <DialogTitle className="flex items-center gap-2">
-            <Pencil aria-hidden="true" className="size-4" />
-            {t('layout.column.editDetails.dialogTitle')}
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="shrink-0">
+            <DialogTitle className="flex items-center gap-2">
+              <Pencil aria-hidden="true" className="size-4" />
+              {t('layout.column.editDetails.dialogTitle')}
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
-          <div className="flex flex-col gap-1">
-            <span className="text-body-emphasis text-muted-foreground">
-              {t('layout.column.editDetails.titleLabel')}
-            </span>
-            <div className="flex items-center gap-2">
-              <Input
-                ref={titleInputRef}
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder={t('layout.column.titlePlaceholder')}
-                aria-label={t('layout.column.editDetails.titleLabel')}
-                aria-invalid={titleTooShort}
-                disabled={saving}
-                className="flex-1 text-subsection-title"
-              />
-              <EmojiInsertButton
-                inputRef={titleInputRef}
-                value={title}
-                onChange={setTitle}
-                ariaLabel={t('layout.column.editDetails.insertEmoji')}
-                disabled={saving}
+          <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col gap-1">
+              <span className="text-body-emphasis text-muted-foreground">
+                {t('layout.column.editDetails.titleLabel')}
+              </span>
+              <div className="flex items-center gap-2">
+                <Input
+                  ref={titleInputRef}
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  placeholder={t('layout.column.titlePlaceholder')}
+                  aria-label={t('layout.column.editDetails.titleLabel')}
+                  aria-invalid={titleTooShort}
+                  disabled={saving}
+                  className="flex-1 text-subsection-title"
+                />
+                <EmojiInsertButton
+                  inputRef={titleInputRef}
+                  value={title}
+                  onChange={setTitle}
+                  ariaLabel={t('layout.column.editDetails.insertEmoji')}
+                  disabled={saving}
+                />
+              </div>
+              {titleTooShort && (
+                <p className="text-caption text-destructive">{t('layout.column.editDetails.titleTooShort')}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-body-emphasis">{t('layout.column.editDetails.descriptionLabel')}</span>
+              <MarkdownEditor
+                value={description}
+                onChange={setDescription}
+                placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
               />
             </div>
-            {titleTooShort && (
-              <p className="text-caption text-destructive">{t('layout.column.editDetails.titleTooShort')}</p>
-            )}
           </div>
 
-          <div className="flex flex-col gap-1">
-            <span className="text-body-emphasis">{t('layout.column.editDetails.descriptionLabel')}</span>
-            <MarkdownEditor
-              value={description}
-              onChange={setDescription}
-              placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
-              onImageUpload={onImageUpload}
-              iframeAllowedUrls={iframeAllowedUrls}
-              onError={onError}
-            />
-          </div>
-        </div>
-
-        <DialogFooter className="shrink-0">
-          <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
-            {t('layout.column.editDetails.cancel')}
-          </Button>
-          <Button type="button" onClick={handleSave} disabled={saving || titleTooShort}>
-            {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter className="shrink-0">
+            <Button type="button" variant="ghost" onClick={requestClose} disabled={saving}>
+              {t('layout.column.editDetails.cancel')}
+            </Button>
+            <Button type="button" onClick={handleSave} disabled={saving || titleTooShort}>
+              {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {guardElement}
+    </>
   );
 }
