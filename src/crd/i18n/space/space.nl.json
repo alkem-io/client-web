@@ -730,7 +730,8 @@
           "network": "Je lijkt offline te zijn.",
           "tokenExpiry": "Je bewerkingssessie is verlopen.",
           "service": "Een service is tijdelijk niet beschikbaar.",
-          "unknown": "Verbinding verloren."
+          "unknown": "Verbinding verloren.",
+          "unloading": "Het document wordt nog afgesloten van een vorige sessie. Probeer het zo meteen opnieuw."
         },
         "reconnect": "Opnieuw verbinden",
         "reload": "Herladen",
@@ -740,10 +741,13 @@
           "generic": "Dit document kan niet opnieuw worden geopend."
         },
         "warning": {
-          "title": "Niet-opgeslagen wijzigingen negeren?",
-          "body": "Bij het herstellen van de editor wordt het document opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan — kopieer eerst wat je nodig hebt.",
-          "cancel": "Annuleren",
-          "confirm": "Doorgaan"
+          "reconnectTitle": "Editor opnieuw verbinden?",
+          "reconnectBody": "Hiermee wordt de huidige bewerkingssessie beëindigd en het document ter plekke opnieuw geopend — de pagina wordt niet opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reconnectConfirm": "Opnieuw verbinden",
+          "reloadTitle": "Pagina opnieuw laden?",
+          "reloadBody": "Hiermee wordt de hele pagina opnieuw geladen en het document helemaal opnieuw geopend. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reloadConfirm": "Pagina opnieuw laden",
+          "cancel": "Annuleren"
         },
         "reconnecting": "Opnieuw verbinden…"
       }

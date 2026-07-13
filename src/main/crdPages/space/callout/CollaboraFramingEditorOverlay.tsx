@@ -183,6 +183,10 @@ export function CollaboraFramingEditorOverlay({
     },
     [footerProps.changesAtRisk, performRecovery]
   );
+  // The warning dialog is action-specific: reconnect reopens the editor in place (no page
+  // reload), reload refreshes the whole page. Fall back to 'reconnect' for the brief close
+  // animation after `pendingRecovery` clears.
+  const recoveryKind: 'reconnect' | 'reload' = pendingRecovery ?? 'reconnect';
 
   return (
     <Dialog open={open} onOpenChange={o => !o && handleClose()}>
@@ -256,13 +260,23 @@ export function CollaboraFramingEditorOverlay({
       <AlertDialog open={pendingRecovery !== null} onOpenChange={o => !o && setPendingRecovery(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>{t('collabora.footer.disconnect.warning.title')}</AlertDialogTitle>
-            <AlertDialogDescription>{t('collabora.footer.disconnect.warning.body')}</AlertDialogDescription>
+            <AlertDialogTitle>
+              {t(
+                `collabora.footer.disconnect.warning.${recoveryKind}Title` as 'collabora.footer.disconnect.warning.reconnectTitle'
+              )}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t(
+                `collabora.footer.disconnect.warning.${recoveryKind}Body` as 'collabora.footer.disconnect.warning.reconnectBody'
+              )}
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('collabora.footer.disconnect.warning.cancel')}</AlertDialogCancel>
             <AlertDialogAction onClick={() => pendingRecovery && performRecovery(pendingRecovery)}>
-              {t('collabora.footer.disconnect.warning.confirm')}
+              {t(
+                `collabora.footer.disconnect.warning.${recoveryKind}Confirm` as 'collabora.footer.disconnect.warning.reconnectConfirm'
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

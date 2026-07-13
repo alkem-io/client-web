@@ -730,7 +730,8 @@
           "network": "Vous semblez être hors ligne.",
           "tokenExpiry": "Votre session d’édition a expiré.",
           "service": "Un service est temporairement indisponible.",
-          "unknown": "Connexion perdue."
+          "unknown": "Connexion perdue.",
+          "unloading": "Le document est encore en cours de fermeture d’une session précédente. Réessayez dans un instant."
         },
         "reconnect": "Se reconnecter",
         "reload": "Recharger",
@@ -740,10 +741,13 @@
           "generic": "Ce document ne peut pas être rouvert."
         },
         "warning": {
-          "title": "Ignorer les modifications non enregistrées ?",
-          "body": "La récupération de l’éditeur rechargera le document. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
-          "cancel": "Annuler",
-          "confirm": "Continuer"
+          "reconnectTitle": "Reconnecter l’éditeur ?",
+          "reconnectBody": "Cela met fin à la session d’édition en cours et rouvre le document sur place — la page ne sera pas rechargée. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
+          "reconnectConfirm": "Reconnecter",
+          "reloadTitle": "Recharger la page ?",
+          "reloadBody": "Cela recharge toute la page et rouvre le document à zéro. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
+          "reloadConfirm": "Recharger la page",
+          "cancel": "Annuler"
         },
         "reconnecting": "Reconnexion…"
       }

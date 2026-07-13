@@ -722,7 +722,8 @@
           "network": "You appear to be offline.",
           "tokenExpiry": "Your editing session expired.",
           "service": "A service is temporarily unavailable.",
-          "unknown": "Connection lost."
+          "unknown": "Connection lost.",
+          "unloading": "The document is still closing from a previous session. Try again in a moment."
         },
         "reconnect": "Reconnect",
         "reload": "Reload",
@@ -732,10 +733,13 @@
           "generic": "This document can't be reopened."
         },
         "warning": {
-          "title": "Discard unsaved changes?",
-          "body": "Recovering the editor reloads the document. Changes made since the last save may be lost — copy anything you need first.",
-          "cancel": "Cancel",
-          "confirm": "Continue"
+          "reconnectTitle": "Reconnect the editor?",
+          "reconnectBody": "This drops the current editing session and reopens the document in place — the page won't reload. Anything changed since the last save may be lost, so copy what you need first.",
+          "reconnectConfirm": "Reconnect",
+          "reloadTitle": "Reload the page?",
+          "reloadBody": "This reloads the whole page and reopens the document from scratch. Anything changed since the last save may be lost, so copy what you need first.",
+          "reloadConfirm": "Reload page",
+          "cancel": "Cancel"
         },
         "reconnecting": "Reconnecting…"
       }

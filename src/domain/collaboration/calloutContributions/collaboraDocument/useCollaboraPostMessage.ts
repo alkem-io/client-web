@@ -8,9 +8,12 @@ export type CollaboraConnectionStatus = 'connecting' | 'connected' | 'reconnecti
  * Why an editing session dropped. `network` = the browser went offline; `tokenExpiry` = the
  * per-actor WOPI access token reached its TTL (saves would start failing silently — see
  * `useCollaboraConnectionMonitor`); `service` = Collabora reported an error / closed the
- * session; `unknown` = detected via sustained silence with no more specific signal.
+ * session; `unloading` = the document couldn't be (re)opened because Collabora is still
+ * closing a previous session for it (`cmd=load kind=docunloading`, typically after the WOPI
+ * host was briefly unreachable mid-edit) — a retry succeeds once that finishes; `unknown` =
+ * detected via sustained silence with no more specific signal.
  */
-export type DisconnectCause = 'network' | 'tokenExpiry' | 'service' | 'unknown';
+export type DisconnectCause = 'network' | 'tokenExpiry' | 'service' | 'unloading' | 'unknown';
 
 /**
  * The composite connection state produced by `useCollaboraConnectionMonitor` — the raw
@@ -158,8 +161,19 @@ function reduce(
       return { ...prev, connectedUsers };
     }
     case 'Error': {
-      const message = typeof values.Cmd === 'string' ? values.Cmd : 'Collabora error';
+      const cmd = typeof values.Cmd === 'string' ? values.Cmd : undefined;
+      const kind = typeof values.Kind === 'string' ? values.Kind : undefined;
+      const message = cmd ?? 'Collabora error';
       onError?.(message);
+      // A `load` failure means the editing session never came up — most often the document
+      // is still unloading from a previous session (`cmd=load kind=docunloading`, e.g. after
+      // the WOPI host was briefly unreachable mid-edit). That is a connection drop, not a save
+      // error: surface it as `disconnected` (recording the kind so the monitor can show a
+      // "still closing" hint) so the recovery banner + Reconnect appear instead of an
+      // indefinite "connecting…" spinner.
+      if (cmd === 'load') {
+        return { ...prev, connectionStatus: 'disconnected', lastError: kind ?? message };
+      }
       return { ...prev, saveStatus: 'error', lastError: message };
     }
     case 'Session_Closed':

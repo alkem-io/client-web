@@ -730,7 +730,8 @@
           "network": "Sie scheinen offline zu sein.",
           "tokenExpiry": "Ihre Bearbeitungssitzung ist abgelaufen.",
           "service": "Ein Dienst ist vorübergehend nicht verfügbar.",
-          "unknown": "Verbindung verloren."
+          "unknown": "Verbindung verloren.",
+          "unloading": "Das Dokument wird noch aus einer vorherigen Sitzung geschlossen. Versuchen Sie es gleich noch einmal."
         },
         "reconnect": "Erneut verbinden",
         "reload": "Neu laden",
@@ -740,10 +741,13 @@
           "generic": "Dieses Dokument kann nicht erneut geöffnet werden."
         },
         "warning": {
-          "title": "Nicht gespeicherte Änderungen verwerfen?",
-          "body": "Beim Wiederherstellen des Editors wird das Dokument neu geladen. Änderungen seit dem letzten Speichern können verloren gehen – kopieren Sie zuerst, was Sie benötigen.",
-          "cancel": "Abbrechen",
-          "confirm": "Fortfahren"
+          "reconnectTitle": "Editor neu verbinden?",
+          "reconnectBody": "Dadurch wird die aktuelle Bearbeitungssitzung beendet und das Dokument an Ort und Stelle neu geöffnet – die Seite wird nicht neu geladen. Änderungen seit dem letzten Speichern können verloren gehen; kopieren Sie zuerst, was Sie benötigen.",
+          "reconnectConfirm": "Neu verbinden",
+          "reloadTitle": "Seite neu laden?",
+          "reloadBody": "Dadurch wird die gesamte Seite neu geladen und das Dokument von Grund auf neu geöffnet. Änderungen seit dem letzten Speichern können verloren gehen; kopieren Sie zuerst, was Sie benötigen.",
+          "reloadConfirm": "Seite neu laden",
+          "cancel": "Abbrechen"
         },
         "reconnecting": "Verbindung wird wiederhergestellt…"
       }

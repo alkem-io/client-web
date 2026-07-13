@@ -35,7 +35,8 @@ describe('useCollaboraPostMessage', () => {
     const { ref, iframe } = makeIframeRef();
     const { result } = renderHook(() => useCollaboraPostMessage(ref));
 
-    emit(iframe, { MessageId: 'Error', Values: { Cmd: 'load' } });
+    // A save-side error (not a `load` failure — that's reclassified as a connection drop).
+    emit(iframe, { MessageId: 'Error', Values: { Cmd: 'save' } });
     expect(result.current.saveStatus).toBe('error');
 
     // Modified=true must NOT downgrade a visible error to 'unsaved'...

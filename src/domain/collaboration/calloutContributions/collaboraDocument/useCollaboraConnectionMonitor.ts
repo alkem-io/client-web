@@ -14,6 +14,16 @@ import {
  */
 export const SELF_HEAL_WINDOW_MS = 20000;
 
+/**
+ * Bounded window the initial (or post-reconnect) load is given to reach `Document_Loaded`
+ * before a still-`connecting` editor is treated as a hard disconnect. Without this, a load
+ * that never completes — e.g. Collabora rejecting the document while it finishes unloading a
+ * previous session (`cmd=load kind=docunloading`) when Collabora doesn't forward that as a
+ * postMessage — strands the user on an indefinite "connecting…" spinner with no banner and no
+ * recovery action. Generous enough not to trip a slow-but-legitimate cold load.
+ */
+export const CONNECT_TIMEOUT_MS = 30000;
+
 type Options = {
   /** WOPI access-token lifetime (ms) from the editor-URL query; arms the expiry timer. */
   accessTokenTTL?: number;
@@ -122,6 +132,18 @@ export function useCollaboraConnectionMonitor(
     return () => clearTimeout(id);
   }, [isNetworkTransient]);
 
+  // Escalate a stuck load to a hard disconnect (see CONNECT_TIMEOUT_MS). Armed only while
+  // genuinely awaiting a load, online, and with no other signal (terminal / token expiry)
+  // already owning the state; re-armed on a manual reconnect (nonce bump) so each retry gets a
+  // fresh window, and cleared the moment the document loads.
+  const [connectTimedOut, setConnectTimedOut] = useState(false);
+  useEffect(() => {
+    setConnectTimedOut(false);
+    if (base.connectionStatus !== 'connecting' || terminal || tokenExpired || !online) return;
+    const id = setTimeout(() => setConnectTimedOut(true), CONNECT_TIMEOUT_MS);
+    return () => clearTimeout(id);
+  }, [base.connectionStatus, terminal, tokenExpired, online, reconnectNonce]);
+
   let status: CollaboraConnectionStatus = base.connectionStatus;
   let cause: DisconnectCause | null = null;
 
@@ -139,8 +161,14 @@ export function useCollaboraConnectionMonitor(
     status = selfHealElapsed ? 'disconnected' : 'reconnecting';
     cause = 'network';
   } else if (base.connectionStatus === 'disconnected') {
-    // Collabora reported Session_Closed / an Error while the browser is otherwise online — an
-    // explicit close, so straight to disconnected (manual reconnect).
+    // Collabora reported Session_Closed / a load failure while the browser is otherwise online —
+    // an explicit drop, so straight to disconnected (manual reconnect). A reopen blocked by the
+    // previous session still unloading gets a distinct, reassuring "still closing" hint.
+    status = 'disconnected';
+    cause = base.lastError === 'docunloading' ? 'unloading' : 'service';
+  } else if (connectTimedOut) {
+    // Never reached Document_Loaded within the window (e.g. a silently-rejected reopen) — treat
+    // as a hard disconnect so the user gets a banner + Reconnect instead of an endless spinner.
     status = 'disconnected';
     cause = 'service';
   }

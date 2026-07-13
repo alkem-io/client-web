@@ -1,6 +1,10 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { SELF_HEAL_WINDOW_MS, useCollaboraConnectionMonitor } from './useCollaboraConnectionMonitor';
+import {
+  CONNECT_TIMEOUT_MS,
+  SELF_HEAL_WINDOW_MS,
+  useCollaboraConnectionMonitor,
+} from './useCollaboraConnectionMonitor';
 
 function makeIframeRef() {
   const iframe = document.createElement('iframe');
@@ -52,6 +56,40 @@ describe('useCollaboraConnectionMonitor', () => {
     act(() => postFromIframe(iframe, { MessageId: 'Session_Closed' }));
     expect(result.current.status).toBe('disconnected');
     expect(result.current.cause).toBe('service');
+  });
+
+  it('surfaces a blocked reopen (load failure) as a disconnect with an unloading cause', () => {
+    const { ref, iframe } = makeIframeRef();
+    const { result } = renderHook(() => useCollaboraConnectionMonitor(ref));
+
+    // Collabora rejects the reopen because the previous session is still unloading.
+    act(() => postFromIframe(iframe, { MessageId: 'Error', Values: { Cmd: 'load', Kind: 'docunloading' } }));
+    expect(result.current.status).toBe('disconnected');
+    expect(result.current.cause).toBe('unloading');
+  });
+
+  it('escalates a stuck load (never Document_Loaded) to disconnected after the connect timeout', () => {
+    vi.useFakeTimers();
+    const { ref } = makeIframeRef();
+    const { result } = renderHook(() => useCollaboraConnectionMonitor(ref));
+    // Never loads — no Document_Loaded, no error postMessage, just an endless spinner.
+    expect(result.current.status).toBe('connecting');
+
+    act(() => vi.advanceTimersByTime(CONNECT_TIMEOUT_MS));
+    expect(result.current.status).toBe('disconnected');
+    expect(result.current.cause).toBe('service');
+  });
+
+  it('does not time out a load that completes within the connect window', () => {
+    vi.useFakeTimers();
+    const { ref, iframe } = makeIframeRef();
+    const { result } = renderHook(() => useCollaboraConnectionMonitor(ref));
+    act(() => postFromIframe(iframe, loaded));
+    expect(result.current.status).toBe('connected');
+
+    act(() => vi.advanceTimersByTime(CONNECT_TIMEOUT_MS * 2));
+    expect(result.current.status).toBe('connected');
+    expect(result.current.cause).toBeNull();
   });
 
   it('routes token expiry straight to disconnected (never reconnecting) when the TTL elapses', () => {

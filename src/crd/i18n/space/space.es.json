@@ -730,7 +730,8 @@
           "network": "Parece que no tienes conexión.",
           "tokenExpiry": "Tu sesión de edición ha caducado.",
           "service": "Un servicio no está disponible temporalmente.",
-          "unknown": "Se perdió la conexión."
+          "unknown": "Se perdió la conexión.",
+          "unloading": "El documento aún se está cerrando de una sesión anterior. Inténtalo de nuevo en un momento."
         },
         "reconnect": "Reconectar",
         "reload": "Recargar",
@@ -740,10 +741,13 @@
           "generic": "Este documento no se puede volver a abrir."
         },
         "warning": {
-          "title": "¿Descartar los cambios sin guardar?",
-          "body": "Recuperar el editor recargará el documento. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
-          "cancel": "Cancelar",
-          "confirm": "Continuar"
+          "reconnectTitle": "¿Volver a conectar el editor?",
+          "reconnectBody": "Esto cierra la sesión de edición actual y vuelve a abrir el documento en el sitio, sin recargar la página. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
+          "reconnectConfirm": "Volver a conectar",
+          "reloadTitle": "¿Recargar la página?",
+          "reloadBody": "Esto recarga toda la página y vuelve a abrir el documento desde cero. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
+          "reloadConfirm": "Recargar la página",
+          "cancel": "Cancelar"
         },
         "reconnecting": "Reconectando…"
       }
