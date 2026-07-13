@@ -753,7 +753,7 @@
     "allowedActions": {
       "title": "Toegestane acties",
       "description": "Kies welke acties leden in deze Space kunnen uitvoeren",
-      "subspaceAdminInvitations": "Space-uitnodigingen",
+      "subspaceAdminInvitations": "Subspace-lidmaatschap",
       "memberCreatePosts": "Posts maken",
       "videoCalls": "Videogesprekken",
       "guestContributions": "Gastbijdragen",
@@ -763,7 +763,7 @@
       "subspaceEvents": "Subspace-evenementen",
       "alkemioSupportAccess": "Alkemio-ondersteuning",
       "trustHostOrganization": "Vertrouw hostorganisatie",
-      "subspaceAdminInvitationsDescription": "Sta beheerders van Subspaces toe om platformgebruikers uit te nodigen voor hun Subspace, en laat niet-leden zich rechtstreeks aanmelden om lid te worden. Gebruikers die nog geen lid van deze Space waren, worden dat zodra ze de Subspace-uitnodiging accepteren of hun Subspace-aanvraag wordt goedgekeurd."
+      "subspaceAdminInvitationsDescription": "Laat Subspaces hun eigen leden binnenhalen. Zij worden hier ook lid."
     },
     "saveAsTemplate": {
       "title": "Opslaan als template",

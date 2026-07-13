@@ -753,7 +753,7 @@
     "allowedActions": {
       "title": "Разрешени действия",
       "description": "Изберете кои действия могат да извършват членовете в това пространство",
-      "subspaceAdminInvitations": "Покани в пространство",
+      "subspaceAdminInvitations": "Членство в Subspace",
       "memberCreatePosts": "Създаване на публикации",
       "videoCalls": "Видео разговори",
       "guestContributions": "Приноси от гости",
@@ -763,7 +763,7 @@
       "subspaceEvents": "Събития в подпространството",
       "alkemioSupportAccess": "Поддръжка от Alkemio",
       "trustHostOrganization": "Доверие към домакинстващата организация",
-      "subspaceAdminInvitationsDescription": "Позволява на администраторите на Subspaces да канят потребители на платформата в своя Subspace и позволява на потребители, които не са членове, да кандидатстват директно за присъединяване. Потребителите, които все още не са членове на този Space, ще станат такива, когато приемат поканата за Subspace или когато заявката им за Subspace бъде одобрена."
+      "subspaceAdminInvitationsDescription": "Позволете на Subspaces сами да привличат членове. Те стават членове и тук."
     },
     "saveAsTemplate": {
       "title": "Запази като шаблон",

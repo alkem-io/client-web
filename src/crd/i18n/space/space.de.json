@@ -421,7 +421,8 @@
     "maxLength": "Maximal {{count}} Zeichen.",
     "submitted": {
       "title": "Bewerbung eingereicht",
-      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht."
+      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht.",
+      "review": "Deine Bewerbung wird geprüft. Sobald sie genehmigt ist, erhältst du eine Benachrichtigung <bell/> und kannst die Community über deine Startseite betreten."
     }
   },
   "mobile": {
@@ -681,6 +682,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Dokumentname",
+      "edit": "Umbenennen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "saving": "Wird gespeichert…",
+      "errors": {
+        "blank": "Bitte geben Sie einen Namen ein.",
+        "tooShort": "Der Name muss mindestens {{min}} Zeichen lang sein.",
+        "tooLong": "Der Name darf höchstens {{max}} Zeichen lang sein.",
+        "invalid": "Bitte geben Sie einen gültigen Namen ein.",
+        "saveFailed": "Das Dokument konnte nicht umbenannt werden. Bitte versuchen Sie es erneut."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-Fehler: {{message}}",
@@ -905,6 +920,8 @@
     "noLocationDescription": "Für diese Mitwirkenden sind keine Standortdaten hinterlegt.",
     "viewList": "Liste",
     "viewMap": "Karte",
+    "expandMap": "Karte vergrößern",
+    "closeMap": "Karte schließen",
     "types": {
       "user": "Personen",
       "organization": "Organisationen",

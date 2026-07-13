@@ -941,6 +941,21 @@ export const PollDetailsFragmentDoc = gql`
     ${PollSettingsFieldsFragmentDoc}
 ${PollOptionFieldsFragmentDoc}
 ${PollVoteFieldsFragmentDoc}`;
+export const CollaboraDocumentGateFragmentDoc = gql`
+    fragment CollaboraDocumentGate on CollaboraDocument {
+  id
+  documentType
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    id
+    displayName
+    url
+  }
+}
+    `;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
     fragment LinkDetailsWithAuthorization on Link {
   id
@@ -1088,13 +1103,7 @@ export const CalloutDetailsFragmentDoc = gql`
       ...PollDetails
     }
     collaboraDocument {
-      id
-      documentType
-      profile {
-        id
-        displayName
-        url
-      }
+      ...CollaboraDocumentGate
     }
   }
   contributionDefaults {
@@ -1188,6 +1197,7 @@ ${MemoDetailsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CollaboraDocumentGateFragmentDoc}
 ${LinkDetailsWithAuthorizationFragmentDoc}
 ${CommentsWithMessagesFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
@@ -4124,6 +4134,60 @@ export const SearchResultWhiteboardFragmentDoc = gql`
     ${VisualModelFragmentDoc}
 ${TagsetDetailsFragmentDoc}
 ${WhiteboardParentFragmentDoc}`;
+export const CollaboraDocumentParentFragmentDoc = gql`
+    fragment CollaboraDocumentParent on SearchResultCollaboraDocument {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+    ${SpaceAboutLightFragmentDoc}`;
+export const SearchResultCollaboraDocumentFragmentDoc = gql`
+    fragment SearchResultCollaboraDocument on SearchResultCollaboraDocument {
+  isContribution
+  collaboraDocument {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+  }
+  ...CollaboraDocumentParent
+}
+    ${VisualModelFragmentDoc}
+${TagsetDetailsFragmentDoc}
+${CollaboraDocumentParentFragmentDoc}`;
 export const DashboardSpaceMembershipFragmentDoc = gql`
     fragment DashboardSpaceMembership on Space {
   id
@@ -5246,6 +5310,14 @@ export const UserPendingMembershipsDocument = gql`
         level
         about {
           ...SpaceAboutMinimalUrl
+          profile {
+            avatar: visual(type: AVATAR) {
+              ...VisualModel
+            }
+            cardBanner: visual(type: CARD) {
+              ...VisualModel
+            }
+          }
         }
       }
       application {
@@ -5261,6 +5333,7 @@ export const UserPendingMembershipsDocument = gql`
 }
     ${UserDetailsFragmentDoc}
 ${SpaceAboutMinimalUrlFragmentDoc}
+${VisualModelFragmentDoc}
 ${InvitationDataFragmentDoc}`;
 
 /**
@@ -7484,13 +7557,7 @@ export const CalloutContentDocument = gql`
           ...PollDetails
         }
         collaboraDocument {
-          id
-          documentType
-          profile {
-            id
-            displayName
-            url
-          }
+          ...CollaboraDocumentGate
         }
       }
       contributionDefaults {
@@ -7511,6 +7578,7 @@ ${WhiteboardPreviewSettingsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CollaboraDocumentGateFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 
 /**
@@ -8224,6 +8292,10 @@ export const ReplaceCollaboraDocumentDocument = gql`
     mutation ReplaceCollaboraDocument($file: Upload!, $replaceData: ReplaceCollaboraDocumentInput!) {
   replaceCollaboraDocument(file: $file, replaceData: $replaceData) {
     id
+    profile {
+      id
+      displayName
+    }
   }
 }
     `;
@@ -29864,6 +29936,7 @@ export const SearchDocument = gql`
         terms
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -29877,6 +29950,7 @@ export const SearchDocument = gql`
         ...SearchResultPost
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -29898,6 +29972,7 @@ export const SearchDocument = gql`
 ${SearchResultCalloutFragmentDoc}
 ${SearchResultMemoFragmentDoc}
 ${SearchResultWhiteboardFragmentDoc}
+${SearchResultCollaboraDocumentFragmentDoc}
 ${SearchResultPostFragmentDoc}
 ${SearchResultUserFragmentDoc}
 ${SearchResultOrganizationFragmentDoc}`;
