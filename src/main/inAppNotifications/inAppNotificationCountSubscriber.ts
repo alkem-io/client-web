@@ -1,14 +1,27 @@
+import { useRef } from 'react';
 import {
   InAppNotificationsUnreadCountDocument,
   useNotificationsUnreadCountSubscription,
 } from '@/core/apollo/generated/apollo-hooks';
+import type { UserDetailsFragment } from '@/core/apollo/generated/graphql-schema';
 import { useApolloErrorHandler } from '@/core/apollo/hooks/useApolloErrorHandler';
+import { playSound } from '@/core/sound/soundPlayer';
+import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { NOTIFICATION_EVENT_TYPES } from '@/main/inAppNotifications/useInAppNotifications';
+import { shouldPlayNotificationSound } from './shouldPlayNotificationSound';
 
 export const InAppNotificationCountSubscriber = () => {
   const { isEnabled } = useInAppNotificationsContext();
   const handleError = useApolloErrorHandler();
+  const { userModel } = useCurrentUserContext();
+
+  // Read through refs: onData is memoized by the React Compiler, so values it
+  // reads must not be captured by a stale closure.
+  const previousCountRef = useRef<number | null>(null);
+  const soundEnabledRef = useRef(true);
+  soundEnabledRef.current =
+    (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.inAppNotification ?? true;
 
   useNotificationsUnreadCountSubscription({
     skip: !isEnabled,
@@ -24,6 +37,13 @@ export const InAppNotificationCountSubscriber = () => {
       }
 
       const { notificationsUnreadCount } = data;
+
+      // Play the notification sound on a strict increase only (US2). This adds
+      // no new subscription — it reuses the already-global count subscriber.
+      if (shouldPlayNotificationSound(previousCountRef.current, notificationsUnreadCount, soundEnabledRef.current)) {
+        playSound('notification');
+      }
+      previousCountRef.current = notificationsUnreadCount;
 
       // Update the unread count query cache
       client.cache.updateQuery(

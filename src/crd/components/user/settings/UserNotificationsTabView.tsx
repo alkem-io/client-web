@@ -22,6 +22,19 @@ export type NotificationGroupData = {
   rows: NotificationRowData[];
 };
 
+export type SoundRowData = {
+  property: string;
+  label: string;
+  enabled: boolean;
+};
+
+export type SoundGroupData = {
+  groupId: string;
+  title: string;
+  description: string;
+  rows: SoundRowData[];
+};
+
 export type UserNotificationsTabViewProps = {
   loading: boolean;
 
@@ -37,8 +50,14 @@ export type UserNotificationsTabViewProps = {
   // Activity groups (already privilege-filtered by the integration layer).
   groups: NotificationGroupData[];
 
+  /** The "Sounds" group — two independent on/off switches. */
+  soundGroup: SoundGroupData;
+
   /** Called when any per-row Switch flips. Hook handles optimistic state + revert. */
   onToggle: (groupId: string, property: string, channel: ChannelType, next: boolean) => void;
+
+  /** Called when a sound switch flips. Same optimistic state + revert handling. */
+  onToggleSound: (property: string, next: boolean) => void;
 };
 
 /**
@@ -75,6 +94,8 @@ export function UserNotificationsTabView(props: UserNotificationsTabViewProps) {
 
       <InfoBanner />
 
+      <SoundGroupSection group={props.soundGroup} onToggle={props.onToggleSound} />
+
       {props.groups.map(group => (
         <NotificationGroupSection
           key={group.groupId}
@@ -84,6 +105,46 @@ export function UserNotificationsTabView(props: UserNotificationsTabViewProps) {
         />
       ))}
     </div>
+  );
+}
+
+// ─── Sounds group (single-switch rows) ───────────────────────────────────
+
+function SoundGroupSection({
+  group,
+  onToggle,
+}: {
+  group: SoundGroupData;
+  onToggle: (property: string, next: boolean) => void;
+}) {
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-section-title">{group.title}</h2>
+        <p className="text-body text-muted-foreground">{group.description}</p>
+      </div>
+
+      <Card>
+        <CardContent className="p-0">
+          {group.rows.map((row, idx) => (
+            <div
+              key={row.property}
+              className={cn(
+                'flex items-center justify-between gap-4 p-4 transition-colors hover:bg-muted/10 md:px-6',
+                idx !== group.rows.length - 1 && 'border-b border-border/50'
+              )}
+            >
+              <p className="flex-1 pr-4 text-body-emphasis leading-normal">{row.label}</p>
+              <Switch
+                checked={row.enabled}
+                onCheckedChange={next => onToggle(row.property, next)}
+                aria-label={row.label}
+              />
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+    </section>
   );
 }
 

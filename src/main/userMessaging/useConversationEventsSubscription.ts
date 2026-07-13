@@ -14,9 +14,12 @@ import {
   type ConversationMessagesQuery,
   type UserConversationsQuery,
   type UserConversationsUnreadCountQuery,
+  type UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
+import { playSound } from '@/core/sound/soundPlayer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { shouldPlayChatSound } from './shouldPlayChatSound';
 import { useUserMessagingContext } from './UserMessagingContext';
 
 type SelectionClearer = (conversationId: string) => void;
@@ -87,8 +90,9 @@ const MessageCacheFragment = gql`
   }
 `;
 
-export const useConversationEventsSubscription = (selectedRoomId: string | null) => {
-  const { isEnabled, selectedConversationId, setSelectedConversationId, setSelectedRoomId } = useUserMessagingContext();
+export const useConversationEventsSubscription = () => {
+  const { isEnabled, selectedRoomId, selectedConversationId, setSelectedConversationId, setSelectedRoomId } =
+    useUserMessagingContext();
   const { isAuthenticated, userModel } = useCurrentUserContext();
   const client = useApolloClient();
   const currentUserId = userModel?.id;
@@ -100,6 +104,14 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
 
   const selectedConversationIdRef = useRef(selectedConversationId);
   selectedConversationIdRef.current = selectedConversationId;
+
+  // The chat-sound preference rides along on the current user (UserDetails*
+  // fragments). Read through a ref because the React Compiler memoizes the
+  // subscription options, so values read inside onData must not be captured by
+  // a stale closure. Defaults to on (matches the server default) until loaded.
+  const chatSoundEnabledRef = useRef(true);
+  chatSoundEnabledRef.current =
+    (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.chatMessage ?? true;
 
   const clearSelectionIfActive: SelectionClearer = (conversationId: string) => {
     if (selectedConversationIdRef.current === conversationId) {
@@ -450,6 +462,20 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
     // Check if message is from current user (don't increment unread for own messages)
     const sender = event.message.sender;
     const isOwnMessage = sender && 'id' in sender && sender.id === currentUserId;
+
+    // Play the chat sound (US1). Reuses the same isViewing/isOwnMessage signals
+    // that gate the unread increment, layering document.hasFocus() on for the
+    // SOUND ONLY (FR-010) — the unread increment below stays selection-based.
+    if (
+      shouldPlayChatSound({
+        isOwnMessage: Boolean(isOwnMessage),
+        isViewing,
+        hasFocus: document.hasFocus(),
+        enabled: chatSoundEnabledRef.current,
+      })
+    ) {
+      playSound('chat');
+    }
 
     // Write lastMessage to cache first to get a proper reference
     const lastMessageRef = client.cache.writeFragment({

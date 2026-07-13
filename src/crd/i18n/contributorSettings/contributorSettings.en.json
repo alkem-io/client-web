@@ -318,6 +318,10 @@
         "virtualContributor": {
           "title": "Virtual Contributor Notifications",
           "description": "Notifications regarding virtual contributor activities and assignments."
+        },
+        "sound": {
+          "title": "Notification Sounds",
+          "description": "Choose whether to play a sound when a chat message or an in-app notification arrives."
         }
       },
       "rows": {
@@ -364,6 +368,10 @@
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Receive a notification when a VC manager is invited to join a community"
+        },
+        "sound": {
+          "chatMessage": "Play a sound when a chat message is received",
+          "inAppNotification": "Play a sound when an in-app notification is received"
         }
       }
     },

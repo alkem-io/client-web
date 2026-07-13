@@ -65,6 +65,31 @@ export interface VCNotificationSettings {
   adminSpaceCommunityInvitation?: NotificationChannels;
 }
 
+// Sound playback settings — a flat boolean pair, NOT a per-channel matrix.
+export interface SoundNotificationSettings {
+  chatMessage?: boolean;
+  inAppNotification?: boolean;
+}
+
+// A single on/off switch row (e.g. a sound toggle), distinct from the
+// 3-channel `NotificationRow` used by the per-event notification matrices.
+export interface NotificationSwitchRow {
+  /** Stable key used by the mutation builder (the sound key). */
+  property: string;
+  /** Pre-localized human label. */
+  label: string;
+  /** Resolved on/off state (server value + optimistic override applied). */
+  enabled: boolean;
+}
+
+// A group of single-switch rows (the "Sounds" group).
+export interface NotificationSwitchGroup {
+  groupId: string;
+  title: string;
+  description: string;
+  rows: NotificationSwitchRow[];
+}
+
 // Complete notification settings
 export interface NotificationSettings {
   space?: SpaceNotificationSettings;
@@ -74,4 +99,5 @@ export interface NotificationSettings {
   platform?: PlatformNotificationSettings;
   platformAdmin?: PlatformAdminNotificationSettings;
   virtualContributor?: VCNotificationSettings;
+  sound?: SoundNotificationSettings;
 }
