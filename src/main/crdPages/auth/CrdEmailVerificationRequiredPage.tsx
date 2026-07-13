@@ -21,9 +21,8 @@ export function CrdEmailVerificationRequiredPage({ pageTitleKey }: CrdEmailVerif
   useTransactionScope({ type: 'authentication' });
   const { t } = useTranslation();
   usePageTitle(t(pageTitleKey));
-  // Carry the pending returnUrl into the sign-in link: buildLoginUrl() with no
-  // argument defaults the param to home, which would OVERWRITE the stored
-  // return destination the moment the user signs in after verifying.
+  // Carry the pending returnUrl into the sign-in link so the destination stays
+  // in the URL when the user signs in after verifying.
   const { returnUrl } = useReturnUrl();
 
   return (

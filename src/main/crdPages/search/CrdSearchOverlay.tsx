@@ -135,13 +135,18 @@ export function CrdSearchOverlay() {
           {
             category: SearchCategory.Framings,
             size: SEARCH_RESULTS_COUNT,
-            types: [SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [SearchResultType.Whiteboard, SearchResultType.Memo, SearchResultType.CollaboraDocument],
             cursor: undefined,
           },
           {
             category: SearchCategory.Contributions,
             size: SEARCH_RESULTS_COUNT,
-            types: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [
+              SearchResultType.Post,
+              SearchResultType.Whiteboard,
+              SearchResultType.Memo,
+              SearchResultType.CollaboraDocument,
+            ],
             cursor: undefined,
           },
           {
@@ -297,6 +302,7 @@ export function CrdSearchOverlay() {
     { value: 'all', label: t('search.filters.all') },
     { value: 'whiteboard', label: t('search.filters.whiteboards') },
     { value: 'memo', label: t('search.filters.memos') },
+    { value: 'collaboraDocument', label: t('search.filters.documents') },
   ];
 
   const responseFilterOptions: SearchFilterOption[] = [
@@ -304,6 +310,7 @@ export function CrdSearchOverlay() {
     { value: 'post', label: t('search.filters.posts') },
     { value: 'whiteboard', label: t('search.filters.whiteboards') },
     { value: 'memo', label: t('search.filters.memos') },
+    { value: 'collaboraDocument', label: t('search.filters.documents') },
   ];
 
   // Section filter change handler
@@ -320,11 +327,19 @@ export function CrdSearchOverlay() {
         case SearchCategory.CollaborationTools:
           return { cursor: calloutCursor, types: [SearchResultType.Callout] };
         case SearchCategory.Framings:
-          return { cursor: framingCursor, types: [SearchResultType.Whiteboard, SearchResultType.Memo] };
+          return {
+            cursor: framingCursor,
+            types: [SearchResultType.Whiteboard, SearchResultType.Memo, SearchResultType.CollaboraDocument],
+          };
         case SearchCategory.Contributions:
           return {
             cursor: contributionCursor,
-            types: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [
+              SearchResultType.Post,
+              SearchResultType.Whiteboard,
+              SearchResultType.Memo,
+              SearchResultType.CollaboraDocument,
+            ],
           };
         case SearchCategory.Contributors:
           return { cursor: contributorCursor, types: [SearchResultType.User, SearchResultType.Organization] };
@@ -578,8 +593,18 @@ export function CrdSearchOverlay() {
   // Use unfiltered counts so sidebar reflects total results, not filtered subset
   const allSidebarCategories: SidebarCategory[] = [
     { id: 'spaces', label: t('search.categories.spaces'), icon: Globe, count: mappedSpaces.length },
-    { id: 'posts', label: t('search.categories.posts'), icon: FileText, count: mappedPosts.length },
-    { id: 'responses', label: t('search.categories.responses'), icon: MessageSquare, count: mappedResponses.length },
+    {
+      id: 'posts',
+      label: t('search.categories.posts'),
+      icon: FileText,
+      count: mappedPosts.length,
+    },
+    {
+      id: 'responses',
+      label: t('search.categories.responses'),
+      icon: MessageSquare,
+      count: mappedResponses.length,
+    },
     { id: 'users', label: t('search.categories.users'), icon: Users, count: mappedUsers.length },
     { id: 'organizations', label: t('search.categories.organizations'), icon: Building2, count: mappedOrgs.length },
   ];

@@ -49,6 +49,7 @@ import {
   COLLABORA_IMPORT_MAX_BYTES,
 } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
 import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
+import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
@@ -271,6 +272,17 @@ function CalloutFormConnectorInner({
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
+
+  // Inline-rename state for the framing Collabora document, owned here (not in the
+  // edit box) so the form's Save button commits any pending rename alongside the
+  // rest of the edit. Instantiated with empty ids for non-document callouts, where
+  // it stays idle (`editing` never opens, so `save()` is never invoked).
+  const editCollaboraDocument = mode === 'edit' ? editCallout?.framing.collaboraDocument : undefined;
+  const collaboraRename = useRenameCollaboraDocument({
+    collaboraDocumentId: editCollaboraDocument?.id ?? '',
+    displayName: editCollaboraDocument?.profile?.displayName ?? '',
+    canRename: true,
+  });
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
@@ -535,6 +547,15 @@ function CalloutFormConnectorInner({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
+    // Commit a pending framing-document rename as part of Save (the edit box has
+    // no ✓ of its own). Only when the input is open; unchanged is a no-op inside
+    // the hook. On validation/save failure keep the dialog open — the box shows
+    // the inline error — and abort the rest of the save.
+    if (collaboraRename.editing) {
+      const renamed = await collaboraRename.save();
+      if (!renamed) return;
+    }
+
     // New references added in edit mode have no server id yet, so they can't
     // travel through `UpdateReferenceInput` (which requires `ID`). Persist them
     // via the dedicated `createReferenceOnProfile` mutation against the framing
@@ -737,6 +758,11 @@ function CalloutFormConnectorInner({
                 editMemoId={values.editMeta?.memoId}
                 editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
                 editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
+                editCollaboraDocumentId={mode === 'edit' ? editCallout?.framing.collaboraDocument?.id : undefined}
+                editCollaboraDocumentDisplayName={
+                  mode === 'edit' ? editCallout?.framing.collaboraDocument?.profile?.displayName : undefined
+                }
+                collaboraRename={editCollaboraDocument ? collaboraRename : undefined}
                 framingType={values.framingChip}
                 linkUrl={values.linkUrl}
                 onLinkUrlChange={v => setField('linkUrl', v)}

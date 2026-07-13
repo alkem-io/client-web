@@ -421,7 +421,8 @@
     "maxLength": "Maximaal {{count}} tekens.",
     "submitted": {
       "title": "Aanvraag ingediend",
-      "body": "Je aanvraag voor {{communityName}} is ingediend."
+      "body": "Je aanvraag voor {{communityName}} is ingediend.",
+      "review": "Je aanvraag wordt beoordeeld. Zodra deze is goedgekeurd ontvang je een melding <bell/> en kun je de community binnengaan vanaf je Home-dashboard."
     }
   },
   "mobile": {
@@ -683,6 +684,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Documentnaam",
+      "edit": "Hernoemen",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "saving": "Bezig met opslaan…",
+      "errors": {
+        "blank": "Voer een naam in.",
+        "tooShort": "De naam moet minstens {{min}} tekens bevatten.",
+        "tooLong": "De naam mag maximaal {{max}} tekens bevatten.",
+        "invalid": "Voer een geldige naam in.",
+        "saveFailed": "Kan het document niet hernoemen. Probeer het opnieuw."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-fout: {{message}}",
@@ -907,6 +922,8 @@
     "noLocationDescription": "Deze contributors hebben geen locatiegegevens ingesteld.",
     "viewList": "Lijst",
     "viewMap": "Kaart",
+    "expandMap": "Kaart vergroten",
+    "closeMap": "Kaart sluiten",
     "types": {
       "user": "Personen",
       "organization": "Organisaties",

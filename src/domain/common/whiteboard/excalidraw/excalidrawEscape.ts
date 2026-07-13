@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
 
 /**
  * Handles the Escape key for an Excalidraw instance embedded in a dialog, mirroring the
@@ -28,6 +28,32 @@ export const handleExcalidrawEscape = (
 
   const appState = excalidrawAPI.getAppState();
 
+  // Mid-edit / mid-draw: let Excalidraw finalize the operation (the key reaches the active text
+  // editor / canvas directly, so we must NOT stop propagation) while keeping the dialog open.
+  // This MUST be checked before the selection: a brand-new element (e.g. text-tool text) stays in
+  // `selectedElementIds` while it is still being edited — Excalidraw's pointer-up handler
+  // re-selects the element it just created even though the wysiwyg editor is open. Treating that
+  // phantom selection as "something to clear" would stop propagation and block the text editor
+  // from ever seeing the Escape.
+  const isEditingOrDrawing =
+    appState.editingTextElement != null ||
+    appState.editingLinearElement != null ||
+    appState.newElement != null ||
+    appState.multiElement != null ||
+    appState.croppingElementId != null;
+
+  if (isEditingOrDrawing) {
+    return true;
+  }
+
+  // An armed tool other than the default selection tool (freedraw, shapes, eraser, hand…):
+  // Excalidraw's own Escape action (`actionFinalize`) resets it to the selection tool, so let the
+  // event through (no stopPropagation) and keep the dialog open. The next Escape, with the
+  // selection tool active and nothing selected, falls through and closes the dialog.
+  if (appState.activeTool.type !== 'selection') {
+    return true;
+  }
+
   const hasSelection =
     Object.keys(appState.selectedElementIds ?? {}).length > 0 ||
     Object.keys(appState.selectedGroupIds ?? {}).length > 0 ||
@@ -48,14 +74,5 @@ export const handleExcalidrawEscape = (
     return true;
   }
 
-  // Mid-edit / mid-draw: let Excalidraw finalize the operation (the key reaches the active text
-  // editor / canvas directly, so we must NOT stop propagation) while keeping the dialog open.
-  const isEditingOrDrawing =
-    appState.editingTextElement != null ||
-    appState.editingLinearElement != null ||
-    appState.newElement != null ||
-    appState.multiElement != null ||
-    appState.croppingElementId != null;
-
-  return isEditingOrDrawing;
+  return false;
 };

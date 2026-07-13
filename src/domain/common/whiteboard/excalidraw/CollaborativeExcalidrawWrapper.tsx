@@ -1,10 +1,5 @@
-import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type {
-  AppState,
-  BinaryFiles,
-  ExcalidrawImperativeAPI,
-  ExcalidrawProps,
-} from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { OrderedExcalidrawElement } from '@alkemio/excalidraw/element/types';
+import type { AppState, BinaryFiles, ExcalidrawImperativeAPI, ExcalidrawProps } from '@alkemio/excalidraw/types';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
 import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';

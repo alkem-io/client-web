@@ -50,9 +50,15 @@ export function InvitationsBlock({ invitations, loading, onAccept, onDecline, cl
           {invitations.map(invitation => {
             return (
               <li key={invitation.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-4">
-                <Avatar className="size-10 rounded-lg">
+                <Avatar className="size-10 shrink-0 rounded-lg">
                   {invitation.spaceAvatarUrl ? (
-                    <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} />
+                    // `object-cover` because an L0 space supplies a wide cardBanner
+                    // here (it has no avatar); a square avatar is unaffected.
+                    <AvatarImage
+                      src={invitation.spaceAvatarUrl}
+                      alt={invitation.spaceName}
+                      className="rounded-lg object-cover"
+                    />
                   ) : null}
                   <AvatarFallback
                     className={cn('rounded-lg text-caption', invitation.color && 'text-white')}

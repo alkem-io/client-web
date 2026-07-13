@@ -752,7 +752,7 @@
     "allowedActions": {
       "title": "Acciones permitidas",
       "description": "Elige qué acciones pueden realizar los miembros en este espacio",
-      "subspaceAdminInvitations": "Invitaciones al espacio",
+      "subspaceAdminInvitations": "Membresía de Subspace",
       "memberCreatePosts": "Crear publicaciones",
       "videoCalls": "Videollamadas",
       "guestContributions": "Contribuciones de invitados",
@@ -762,7 +762,7 @@
       "subspaceEvents": "Eventos del subespacio",
       "alkemioSupportAccess": "Soporte de Alkemio",
       "trustHostOrganization": "Confiar en la organización anfitriona",
-      "subspaceAdminInvitationsDescription": "Permite a los administradores de los Subspaces invitar a usuarios de la plataforma a su Subspace, y permite que quienes no son miembros soliciten unirse directamente. Los usuarios que aún no eran miembros de este Space lo serán cuando acepten la invitación al Subspace o cuando se apruebe su solicitud al Subspace."
+      "subspaceAdminInvitationsDescription": "Permite que los Subspaces incorporen sus propios miembros. También pasan a ser miembros aquí."
     },
     "saveAsTemplate": {
       "title": "Guardar como plantilla",

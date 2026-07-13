@@ -421,7 +421,8 @@
     "maxLength": "Maximum {{count}} characters.",
     "submitted": {
       "title": "Application submitted",
-      "body": "Your application to {{communityName}} has been submitted."
+      "body": "Your application to {{communityName}} has been submitted.",
+      "review": "Your application will be reviewed. Once it is approved you will get a notification <bell/> and you will be able to enter the community from your Home dashboard."
     }
   },
   "mobile": {
@@ -675,6 +676,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Document name",
+      "edit": "Rename",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "errors": {
+        "blank": "Please enter a name.",
+        "tooShort": "Name must be at least {{min}} characters.",
+        "tooLong": "Name must be at most {{max}} characters.",
+        "invalid": "Please enter a valid name.",
+        "saveFailed": "Couldn't rename the document. Please try again."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora error: {{message}}",
@@ -907,6 +922,8 @@
     "noLocationDescription": "These contributors have no location data set.",
     "viewList": "List",
     "viewMap": "Map",
+    "expandMap": "Expand map",
+    "closeMap": "Close map",
     "types": {
       "user": "People",
       "organization": "Organizations",

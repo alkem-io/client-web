@@ -145,6 +145,10 @@
     "decline": "Weigeren",
     "noInvitations": "Geen openstaande uitnodigingen"
   },
+  "applications": {
+    "title": "Openstaande Aanvragen",
+    "pending": "In behandeling"
+  },
   "campaign": {
     "title": "Maak je Virtual Contributor",
     "description": "Begin met je eigen AI-aangedreven bijdrager",

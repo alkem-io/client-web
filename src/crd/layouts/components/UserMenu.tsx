@@ -31,6 +31,7 @@ type UserMenuProps = {
   onHelpClick?: () => void;
   onLanguageChange?: (code: string) => void;
   showGridToggle?: boolean;
+  showBetaBadge?: boolean;
 };
 
 export function UserMenu({
@@ -46,6 +47,7 @@ export function UserMenu({
   onHelpClick,
   onLanguageChange,
   showGridToggle,
+  showBetaBadge,
 }: UserMenuProps) {
   const { t } = useTranslation('crd-layout');
   const { isVisible: isGridVisible, toggle: toggleGrid } = useGridOverlay();
@@ -68,12 +70,15 @@ export function UserMenu({
             <AvatarImage src={user.avatarUrl} alt={user.name} />
             <AvatarFallback className="bg-primary/10 text-primary text-caption">{user.initials}</AvatarFallback>
           </Avatar>
-          <Badge
-            variant="secondary"
-            className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-badge leading-[14px]"
-          >
-            {t('header.beta')}
-          </Badge>
+          {/* No consumer passes this today: the badge is kept for a possible beta-tester-only reveal. */}
+          {showBetaBadge && (
+            <Badge
+              variant="secondary"
+              className="absolute -bottom-1 -right-1 px-1 py-0 h-4 border border-border text-badge leading-[14px]"
+            >
+              {t('header.beta')}
+            </Badge>
+          )}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
