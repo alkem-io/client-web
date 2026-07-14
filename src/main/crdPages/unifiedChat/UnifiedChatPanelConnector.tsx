@@ -264,7 +264,13 @@ export const UnifiedChatPanelConnector = () => {
         closeLabel={t('launcher.close')}
         onBack={view === 'thread' ? handleBack : undefined}
         backLabel={t('thread.back')}
-        onGoToSettings={() => navigate(buildUserNotificationSettingsUrl())}
+        onGoToSettings={() => {
+          // Close first: the panel lives outside <Routes> and the messaging context has
+          // no route listener, so navigating alone leaves it mounted. On a small screen
+          // it is `fixed inset-0`, which would cover the settings page it just opened.
+          setIsOpen(false);
+          navigate(buildUserNotificationSettingsUrl());
+        }}
         settingsLabel={t('panel.settings')}
         headerActions={view === 'thread' ? headerActions : undefined}
       >

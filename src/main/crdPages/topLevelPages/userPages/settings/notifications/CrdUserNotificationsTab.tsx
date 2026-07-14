@@ -2,7 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { UserNotificationsTabView } from '@/crd/components/user/settings/UserNotificationsTabView';
+import {
+  type SoundSettingKey,
+  UserNotificationsTabView,
+} from '@/crd/components/user/settings/UserNotificationsTabView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { usePushNotificationContext } from '@/main/pushNotifications/PushNotificationProvider';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
@@ -83,9 +86,9 @@ const CrdUserNotificationsTab = () => {
     }
   };
 
-  const handleToggleSound = async (property: string, next: boolean) => {
+  const handleToggleSound = async (property: SoundSettingKey, next: boolean) => {
     try {
-      await onToggleSound(property as Parameters<typeof onToggleSound>[0], next);
+      await onToggleSound(property, next);
     } catch {
       notify(t('user.notifications.toggleError'), 'error');
     }

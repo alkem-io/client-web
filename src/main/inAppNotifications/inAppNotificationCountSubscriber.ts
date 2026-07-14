@@ -23,6 +23,16 @@ export const InAppNotificationCountSubscriber = () => {
   soundEnabledRef.current =
     (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.inAppNotification ?? true;
 
+  // This component never unmounts, so the ref outlives a skipped subscription.
+  // Clear it while disabled so the first count of the next enabled session is
+  // treated as "first observed" (never sounds) instead of being compared against
+  // a stale count from a previous session — which would either ding spuriously or,
+  // if the stale count was higher, silence every genuinely new notification until
+  // the count climbed back past it.
+  if (!isEnabled) {
+    previousCountRef.current = null;
+  }
+
   useNotificationsUnreadCountSubscription({
     skip: !isEnabled,
     onData: ({ client, data: subscriptionData }) => {

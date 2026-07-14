@@ -22,8 +22,12 @@ export type NotificationGroupData = {
   rows: NotificationRowData[];
 };
 
+/** The two independent sound preferences. A plain string-literal union so the
+ * consumer's toggle handler is typed end-to-end and needs no cast. */
+export type SoundSettingKey = 'chatMessage' | 'inAppNotification';
+
 export type SoundRowData = {
-  property: string;
+  property: SoundSettingKey;
   label: string;
   enabled: boolean;
 };
@@ -57,7 +61,7 @@ export type UserNotificationsTabViewProps = {
   onToggle: (groupId: string, property: string, channel: ChannelType, next: boolean) => void;
 
   /** Called when a sound switch flips. Same optimistic state + revert handling. */
-  onToggleSound: (property: string, next: boolean) => void;
+  onToggleSound: (property: SoundSettingKey, next: boolean) => void;
 };
 
 /**
@@ -115,7 +119,7 @@ function SoundGroupSection({
   onToggle,
 }: {
   group: SoundGroupData;
-  onToggle: (property: string, next: boolean) => void;
+  onToggle: (property: SoundSettingKey, next: boolean) => void;
 }) {
   return (
     <section className="space-y-4">
