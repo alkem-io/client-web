@@ -551,6 +551,7 @@
     "publishedLabel": "Publicado",
     "draftLabel": "Borrador",
     "notifyMembers": "Notificar a los miembros del espacio",
+    "titleRequiredHint": "Añade un título a tu $t(common.callout) para continuar",
     "saveDraft": "Guardar borrador",
     "save": "Guardar",
     "publish": "Publicar",
@@ -568,7 +569,8 @@
     "addOption": "Añadir opción",
     "removeOption": "Eliminar opción",
     "allowComments": "Permitir comentarios",
-    "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre del aviso."
+    "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre del aviso.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Respuestas",

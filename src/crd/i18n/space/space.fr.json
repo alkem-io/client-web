@@ -551,6 +551,7 @@
     "publishedLabel": "Publié",
     "draftLabel": "Brouillon",
     "notifyMembers": "Notifier les membres de l'espace",
+    "titleRequiredHint": "Ajoutez un titre à votre $t(common.callout) pour continuer",
     "saveDraft": "Enregistrer le brouillon",
     "save": "Enregistrer",
     "publish": "Publier",
@@ -568,7 +569,8 @@
     "addOption": "Ajouter une option",
     "removeOption": "Supprimer l'option",
     "allowComments": "Autoriser les commentaires",
-    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout)."
+    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout).",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Réponses",
