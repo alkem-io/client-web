@@ -44,12 +44,17 @@ describe('CollaboraDocumentEditor reconnect remount', () => {
     await waitFor(() =>
       expect(document.querySelector('iframe')).toHaveAttribute('src', 'https://collabora.test/first')
     );
+    const firstIframe = document.querySelector('iframe');
+    expect(firstIframe).not.toBeNull();
 
     await userEvent.click(screen.getByRole('button', { name: 'bump' }));
 
-    // The old first-URL pin is gone: the fresh fetch adopts the new URL and the iframe remounts.
+    // The old first-URL pin is gone: the fresh fetch adopts the new URL.
     await waitFor(() =>
       expect(document.querySelector('iframe')).toHaveAttribute('src', 'https://collabora.test/second')
     );
+    // …and `key={reconnectNonce}` forces a real remount — a brand-new iframe node, not just a
+    // src swap on the existing element (which would keep the dead Collabora session alive).
+    expect(document.querySelector('iframe')).not.toBe(firstIframe);
   });
 });

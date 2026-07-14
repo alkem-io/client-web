@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { act, renderHook } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useCollaboraPostMessage } from './useCollaboraPostMessage';
 
 function makeIframeRef() {
@@ -60,5 +60,48 @@ describe('useCollaboraPostMessage', () => {
       );
     });
     expect(result.current.saveStatus).toBe('saved'); // unchanged from initial
+  });
+
+  it('reflects connection status from App_LoadingStatus (Document_Loaded → connected)', () => {
+    const { ref, iframe } = makeIframeRef();
+    const { result } = renderHook(() => useCollaboraPostMessage(ref));
+    expect(result.current.connectionStatus).toBe('connecting');
+    emit(iframe, { MessageId: 'App_LoadingStatus', Values: { Status: 'Document_Loaded' } });
+    expect(result.current.connectionStatus).toBe('connected');
+  });
+
+  it('surfaces a runtime (non-load) error to onError', () => {
+    const { ref, iframe } = makeIframeRef();
+    const onError = vi.fn();
+    renderHook(() => useCollaboraPostMessage(ref, { onError }));
+    emit(iframe, { MessageId: 'Error', Values: { Cmd: 'boom' } });
+    expect(onError).toHaveBeenCalledWith('boom');
+  });
+
+  it('treats a load failure (docunloading) as a disconnect, not a save error, and raises no toast', () => {
+    const { ref, iframe } = makeIframeRef();
+    const onError = vi.fn();
+    const { result } = renderHook(() => useCollaboraPostMessage(ref, { onError }));
+
+    // Collabora rejects a reopen while the previous session is still unloading.
+    emit(iframe, { MessageId: 'Error', Values: { Cmd: 'load', Kind: 'docunloading' } });
+    expect(result.current.connectionStatus).toBe('disconnected');
+    expect(result.current.lastError).toBe('docunloading');
+    // A blocked load is a connection drop, not a failed save — the save chip must not latch to error.
+    expect(result.current.saveStatus).not.toBe('error');
+    // …and the disconnect banner owns the messaging — no scary, redundant global error toast (FR-003).
+    expect(onError).not.toHaveBeenCalled();
+  });
+
+  it('fires onDocumentReloaded on a re-emitted Document_Loaded (reconnect after rename), not the first', () => {
+    const { ref, iframe } = makeIframeRef();
+    const onDocumentReloaded = vi.fn();
+    renderHook(() => useCollaboraPostMessage(ref, { onDocumentReloaded }));
+
+    emit(iframe, { MessageId: 'App_LoadingStatus', Values: { Status: 'Document_Loaded' } }); // initial open
+    expect(onDocumentReloaded).not.toHaveBeenCalled();
+
+    emit(iframe, { MessageId: 'App_LoadingStatus', Values: { Status: 'Document_Loaded' } }); // reconnect
+    expect(onDocumentReloaded).toHaveBeenCalledTimes(1);
   });
 });

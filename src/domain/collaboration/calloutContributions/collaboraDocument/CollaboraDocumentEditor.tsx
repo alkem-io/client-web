@@ -1,10 +1,10 @@
 import { useApolloClient } from '@apollo/client';
 import { Loader2 } from 'lucide-react';
-import { type Ref, useEffect, useRef, useState } from 'react';
+import { type Ref, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fetchCollaboraEditorUrl, graphQLErrorCode } from './collaboraEditorSession';
 
-interface CollaboraDocumentEditorProps {
+type CollaboraDocumentEditorProps = {
   collaboraDocumentId: string;
   /**
    * Optional ref attached to the underlying iframe so callers can listen to the
@@ -29,7 +29,7 @@ interface CollaboraDocumentEditorProps {
    * are terminal (document gone / access revoked), anything else is recoverable (FR-013).
    */
   onFetchError?: (code: string | undefined, message: string) => void;
-}
+};
 
 const CollaboraDocumentEditor = ({
   collaboraDocumentId,
@@ -43,19 +43,19 @@ const CollaboraDocumentEditor = ({
   const [editorUrl, setEditorUrl] = useState<string>();
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string>();
-  const mountedRef = useRef(true);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-
   useEffect(() => {
-    mountedRef.current = true;
+    // Guards against a superseded request: when the deps change (a reconnect bumps the nonce) or
+    // the editor unmounts, cleanup flips this so a stale in-flight response can't apply an
+    // outdated URL/TTL/error over the newer request's result. A shared mounted-ref would be
+    // re-set true by the next effect run and let the stale response through.
+    let cancelled = false;
 
     const fetchUrl = async () => {
       try {
         setLoading(true);
         // network-only + silent (own loading/error/terminal UI, no global toast) — see the helper.
         const { data, error } = await fetchCollaboraEditorUrl(client, collaboraDocumentId);
-
-        if (!mountedRef.current) return;
+        if (cancelled) return;
 
         if (error) {
           setErrorMessage(error.message);
@@ -72,7 +72,7 @@ const CollaboraDocumentEditor = ({
           setLoading(false);
         }
       } catch (err) {
-        if (!mountedRef.current) return;
+        if (cancelled) return;
         const message = err instanceof Error ? err.message : 'Unknown error';
         setErrorMessage(message);
         onFetchError?.(graphQLErrorCode(err), message);
@@ -83,10 +83,7 @@ const CollaboraDocumentEditor = ({
     fetchUrl();
 
     return () => {
-      mountedRef.current = false;
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+      cancelled = true;
     };
   }, [collaboraDocumentId, client, onAccessTokenTTL, onFetchError, reconnectNonce]);
 

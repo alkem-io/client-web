@@ -49,6 +49,11 @@ export function useCollaboraTokenRefresh(
       try {
         const { data, error } = await fetchCollaboraEditorUrl(client, collaboraDocumentId);
         if (cancelled) return; // unmounted / document changed mid-request
+        // The iframe may have remounted during the await (e.g. a user-initiated reconnect bumped
+        // the nonce), so re-read the ref: posting the fresh token to the old, detached
+        // contentWindow — or calling onRefreshed for a session that no longer exists — would be
+        // wrong. Bail if it is no longer the same iframe we validated the message against.
+        if (iframeRef.current !== iframe) return;
         if (error) {
           onErrorRef.current?.(graphQLErrorCode(error), error.message);
           return;

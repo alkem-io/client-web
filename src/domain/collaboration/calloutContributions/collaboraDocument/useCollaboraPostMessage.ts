@@ -1,19 +1,17 @@
 import { type RefObject, useEffect, useRef, useState } from 'react';
-import type { CollaboraConnectedUser, CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
+import type {
+  CollaboraConnectedUser,
+  CollaboraSaveStatus,
+  DisconnectCause,
+} from '@/crd/components/collabora/CollaboraCollabFooter';
 import { type CollaboraMessage, isMessageFromIframe, parseCollaboraMessage } from './collaboraPostMessage';
 
-export type CollaboraConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected' | 'terminal';
+// `DisconnectCause` is a presentational union owned by the CRD footer (alongside
+// `CollaboraSaveStatus` etc.); re-exported here so domain modules can keep importing it from the
+// hook that produces it.
+export type { DisconnectCause };
 
-/**
- * Why an editing session dropped. `network` = the browser went offline; `tokenExpiry` = the
- * per-actor WOPI access token reached its TTL (saves would start failing silently — see
- * `useCollaboraConnectionMonitor`); `service` = Collabora reported an error / closed the
- * session; `unloading` = the document couldn't be (re)opened because Collabora is still
- * closing a previous session for it (`cmd=load kind=docunloading`, typically after the WOPI
- * host was briefly unreachable mid-edit) — a retry succeeds once that finishes; `unknown` =
- * detected via sustained silence with no more specific signal.
- */
-export type DisconnectCause = 'network' | 'tokenExpiry' | 'service' | 'unloading' | 'unknown';
+export type CollaboraConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected' | 'terminal';
 
 /**
  * The composite connection state produced by `useCollaboraConnectionMonitor` — the raw
@@ -101,7 +99,22 @@ export function useCollaboraPostMessage(
         }
       }
 
-      setState(prev => reduce(prev, data, { onError, onSessionClosed }));
+      // Fire notification side effects here in the event handler — never inside the setState
+      // reducer below, which React may invoke more than once (e.g. StrictMode) and would then
+      // double-fire the toast.
+      if (data.MessageId === 'Error') {
+        const cmd = typeof data.Values?.Cmd === 'string' ? data.Values.Cmd : undefined;
+        // A `load` failure is surfaced as a disconnect banner (see reduce), not a toast.
+        if (cmd !== 'load') onError?.(cmd ?? 'Collabora error');
+      } else if (
+        data.MessageId === 'Session_Closed' ||
+        data.MessageId === 'Close_Session' ||
+        data.MessageId === 'UI_Close'
+      ) {
+        onSessionClosed?.();
+      }
+
+      setState(prev => reduce(prev, data));
     };
 
     window.addEventListener('message', handler);
@@ -114,11 +127,9 @@ export function useCollaboraPostMessage(
   return state;
 }
 
-function reduce(
-  prev: CollaboraIframeState,
-  msg: CollaboraMessage,
-  { onError, onSessionClosed }: Options
-): CollaboraIframeState {
+// Pure state reducer — no side effects (notification callbacks fire in the event handler, so
+// this stays safe under React re-invoking it).
+function reduce(prev: CollaboraIframeState, msg: CollaboraMessage): CollaboraIframeState {
   const values = msg.Values ?? {};
 
   switch (msg.MessageId) {
@@ -169,19 +180,16 @@ function reduce(
       // the WOPI host was briefly unreachable mid-edit). That is a connection drop, not a save
       // error: surface it as `disconnected` (recording the kind so the monitor can show a
       // "still closing" hint) so the recovery banner + Reconnect appear instead of an
-      // indefinite "connecting…" spinner. We deliberately do NOT also raise the global error
-      // toast here — the banner already communicates it, and a red "runtime error" alert would
-      // be a scary, redundant interruption for what is usually a transient state (FR-003).
+      // indefinite "connecting…" spinner. The global error toast is deliberately suppressed for
+      // load errors (see the event handler) — the banner already communicates it (FR-003).
       if (cmd === 'load') {
         return { ...prev, connectionStatus: 'disconnected', lastError: kind ?? message };
       }
-      onError?.(message);
       return { ...prev, saveStatus: 'error', lastError: message };
     }
     case 'Session_Closed':
     case 'Close_Session':
     case 'UI_Close':
-      onSessionClosed?.();
       return { ...prev, connectionStatus: 'disconnected' };
     default:
       return prev;

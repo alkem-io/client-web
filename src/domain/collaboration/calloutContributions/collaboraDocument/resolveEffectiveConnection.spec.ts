@@ -38,4 +38,20 @@ describe('resolveEffectiveConnection', () => {
       saveOutage: false,
     });
   });
+
+  it('surfaces a recoverable fetch failure as a service disconnect (no top alert) while otherwise live', () => {
+    expect(resolveEffectiveConnection('connecting', null, false, true)).toEqual({
+      status: 'disconnected',
+      cause: 'service',
+      saveOutage: false, // fetch failure shows the editor's own panel, not the outage top alert
+    });
+  });
+
+  it('does not override an existing hard drop with a recoverable fetch failure', () => {
+    expect(resolveEffectiveConnection('disconnected', 'network', false, true)).toEqual({
+      status: 'disconnected',
+      cause: 'network',
+      saveOutage: false,
+    });
+  });
 });

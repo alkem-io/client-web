@@ -727,11 +727,11 @@
         "atRisk": "Getrennt — aktuelle Änderungen wurden möglicherweise nicht gespeichert",
         "status": "Getrennt",
         "cause": {
-          "network": "Sie scheinen offline zu sein.",
-          "tokenExpiry": "Ihre Bearbeitungssitzung ist abgelaufen.",
+          "network": "Du scheinst offline zu sein.",
+          "tokenExpiry": "Deine Bearbeitungssitzung ist abgelaufen.",
           "service": "Ein Dienst ist vorübergehend nicht verfügbar.",
           "unknown": "Verbindung verloren.",
-          "unloading": "Das Dokument wird noch aus einer vorherigen Sitzung geschlossen. Versuchen Sie es gleich noch einmal."
+          "unloading": "Das Dokument wird noch aus einer vorherigen Sitzung geschlossen. Versuche es gleich noch einmal."
         },
         "reconnect": "Erneut verbinden",
         "reload": "Neu laden",
@@ -742,10 +742,10 @@
         },
         "warning": {
           "reconnectTitle": "Editor neu verbinden?",
-          "reconnectBody": "Dadurch wird die aktuelle Bearbeitungssitzung beendet und das Dokument an Ort und Stelle neu geöffnet – die Seite wird nicht neu geladen. Änderungen seit dem letzten Speichern können verloren gehen; kopieren Sie zuerst, was Sie benötigen.",
+          "reconnectBody": "Dadurch wird die aktuelle Bearbeitungssitzung beendet und das Dokument an Ort und Stelle neu geöffnet – die Seite wird nicht neu geladen. Änderungen seit dem letzten Speichern können verloren gehen; kopiere zuerst, was du benötigst.",
           "reconnectConfirm": "Neu verbinden",
           "reloadTitle": "Seite neu laden?",
-          "reloadBody": "Dadurch wird die gesamte Seite neu geladen und das Dokument von Grund auf neu geöffnet. Änderungen seit dem letzten Speichern können verloren gehen; kopieren Sie zuerst, was Sie benötigen.",
+          "reloadBody": "Dadurch wird die gesamte Seite neu geladen und das Dokument von Grund auf neu geöffnet. Änderungen seit dem letzten Speichern können verloren gehen; kopiere zuerst, was du benötigst.",
           "reloadConfirm": "Seite neu laden",
           "cancel": "Abbrechen"
         },
@@ -753,7 +753,7 @@
       }
     },
     "serviceUnavailable": {
-      "message": "Ein Dienst ist nicht verfügbar. Bitte speichern Sie ausstehende Arbeit, da nicht gespeicherte Daten verloren gehen können."
+      "message": "Ein Dienst ist nicht verfügbar. Bitte speichere ausstehende Arbeit, da nicht gespeicherte Daten verloren gehen können."
     }
   },
   "mediaGallery": {

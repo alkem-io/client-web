@@ -16,9 +16,18 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
-import type { DisconnectCause } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraPostMessage';
 
 export type CollaboraSaveStatus = 'saved' | 'saving' | 'unsaved' | 'error';
+
+/**
+ * Why an editing session dropped. `network` = the browser went offline; `tokenExpiry` = the
+ * per-actor WOPI token reached its TTL (silent save failures); `service` = Collabora reported an
+ * error / closed the session, or the WOPI save path is unreachable; `unloading` = a reopen was
+ * rejected while the previous session is still closing (`cmd=load kind=docunloading`), retriable;
+ * `unknown` = no more specific signal. Owned here — a CRD-local presentational union, like the
+ * other Collabora status types — so this component needs no domain import.
+ */
+export type DisconnectCause = 'network' | 'tokenExpiry' | 'service' | 'unloading' | 'unknown';
 
 export type CollaboraReadonlyReason = 'connecting' | 'unauthenticated' | 'contentUpdatePolicy' | 'noMembership' | null;
 

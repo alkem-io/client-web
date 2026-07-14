@@ -1,5 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CollaboraServiceAvailableDocument } from '@/core/apollo/generated/apollo-hooks';
 import type {
   CollaboraServiceAvailableQuery,
@@ -15,9 +15,15 @@ import { SILENT_QUERY_CONTEXT } from './collaboraEditorSession';
  */
 export const SAVE_STALL_TRIGGER_MS = 3_000;
 
-/** How often we re-check backend reachability while the document remains unsaved — kept short so
+/** How often we re-check backend reachability while an outage is confirmed — kept short so
  *  recovery (the service coming back) is picked up quickly and the outage state clears promptly. */
 export const SAVE_HEALTH_PROBE_INTERVAL_MS = 3_000;
+
+/** Ceiling for the healthy-state backoff: while the backend keeps reporting reachable, the probe
+ *  interval doubles from {@link SAVE_HEALTH_PROBE_INTERVAL_MS} up to this, so a long-unsaved
+ *  document (or the lingering-flag bug client-web#9973) doesn't ping /health every few seconds
+ *  indefinitely. */
+export const SAVE_HEALTH_MAX_INTERVAL_MS = 30_000;
 
 /**
  * Detects a backend save-path outage (e.g. the WOPI service is down) while editing.
@@ -33,8 +39,8 @@ export const SAVE_HEALTH_PROBE_INTERVAL_MS = 3_000;
  * NO analytics (the earlier editor-URL probe spammed `COLLABORA_DOCUMENT_OPENED` events + tokens).
  * `false` (or a failed query) means a service is unreachable → `serviceUnavailable`; `true` means
  * the backend is fine and the lingering "unsaved" is just the cosmetic flag → stay quiet.
- * Re-checks every {@link SAVE_HEALTH_PROBE_INTERVAL_MS}; auto-clears once saves resume or health
- * recovers.
+ * Re-probes on the short interval while an outage is confirmed, backing off while healthy (up to
+ * {@link SAVE_HEALTH_MAX_INTERVAL_MS}); auto-clears once saves resume or health recovers.
  *
  * `serviceUnavailable` feeds the single shared connection indicator in the footer (as a `service`
  * disconnect) plus the top alert, so a WOPI/save-path outage looks consistent with other drops.
@@ -45,7 +51,6 @@ export function useCollaboraSaveHealth(
 ): { serviceUnavailable: boolean } {
   const client = useApolloClient();
   const [serviceUnavailable, setServiceUnavailable] = useState(false);
-  const probingRef = useRef(false);
 
   // Any non-"saved" state (unsaved / saving / error) means work has not been persisted yet.
   const unsaved = saveStatus !== 'saved';
@@ -57,9 +62,14 @@ export function useCollaboraSaveHealth(
     }
 
     let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    // Fast while an outage is confirmed (catch recovery promptly); back off (doubling up to the
+    // cap) while the backend keeps reporting healthy, so a long-unsaved document doesn't probe
+    // indefinitely. Self-scheduling rather than setInterval, so each probe settles before the next.
+    let delay = SAVE_HEALTH_PROBE_INTERVAL_MS;
+
     const probe = async () => {
-      if (probingRef.current) return;
-      probingRef.current = true;
+      let down: boolean;
       try {
         const { data, error } = await client.query<
           CollaboraServiceAvailableQuery,
@@ -71,26 +81,22 @@ export function useCollaboraSaveHealth(
           // Silent background health check — failures drive our own UI, never the global toast.
           context: SILENT_QUERY_CONTEXT,
         });
-        if (cancelled) return; // unmounted / document saved mid-request
         // A reachable-but-false result, or a failed query, both mean a service is down.
-        setServiceUnavailable(Boolean(error) || data?.collaboraServiceAvailable === false);
+        down = Boolean(error) || data?.collaboraServiceAvailable === false;
       } catch {
-        if (!cancelled) setServiceUnavailable(true);
-      } finally {
-        probingRef.current = false;
+        down = true;
       }
+      if (cancelled) return; // unmounted / document saved mid-request
+      setServiceUnavailable(down);
+      delay = down ? SAVE_HEALTH_PROBE_INTERVAL_MS : Math.min(delay * 2, SAVE_HEALTH_MAX_INTERVAL_MS);
+      timer = setTimeout(probe, delay);
     };
 
-    let interval: ReturnType<typeof setInterval> | undefined;
-    const start = setTimeout(() => {
-      probe();
-      interval = setInterval(probe, SAVE_HEALTH_PROBE_INTERVAL_MS);
-    }, SAVE_STALL_TRIGGER_MS);
+    timer = setTimeout(probe, SAVE_STALL_TRIGGER_MS);
 
     return () => {
       cancelled = true;
-      clearTimeout(start);
-      if (interval) clearInterval(interval);
+      if (timer) clearTimeout(timer);
     };
   }, [unsaved, client, collaboraDocumentId]);
 

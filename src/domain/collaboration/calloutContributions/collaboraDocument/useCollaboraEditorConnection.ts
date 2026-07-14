@@ -20,19 +20,26 @@ const TERMINAL_CODE_REASONS: Record<string, CollaboraTerminalReason> = {
 };
 
 /**
- * Folds a confirmed WOPI/save-path outage into the shared connection state. Pure so the
- * precedence rule is unit-testable: a silent outage only overrides an *otherwise-live* editor
- * — a real network/Collabora drop already owns a disconnect status and keeps its own cause.
+ * Folds backend problems into the shared connection state. Pure so the precedence rule is
+ * unit-testable: a save-path outage or a recoverable fetch failure only overrides an
+ * *otherwise-live* editor — a real network/Collabora drop already owns a disconnect status and
+ * keeps its own cause. Only the confirmed save-path outage drives the top alert (`saveOutage`).
  */
 export function resolveEffectiveConnection(
   status: CollaboraConnectionStatus,
   cause: DisconnectCause | null,
-  serviceUnavailable: boolean
+  serviceUnavailable: boolean,
+  recoverableFetchError = false
 ): { status: CollaboraConnectionStatus; cause: DisconnectCause | null; saveOutage: boolean } {
-  const saveOutage = serviceUnavailable && (status === 'connected' || status === 'connecting');
+  const live = status === 'connected' || status === 'connecting';
+  const saveOutage = serviceUnavailable && live;
+  // A recoverable (non-terminal) editor-URL fetch failure means the session can't come up right
+  // now — surface a service disconnect so Reconnect appears immediately, rather than leaving the
+  // editor's own error panel with no recovery action until the connect-timeout backstop fires.
+  const backendDown = saveOutage || (recoverableFetchError && live);
   return {
-    status: saveOutage ? 'disconnected' : status,
-    cause: saveOutage ? 'service' : cause,
+    status: backendDown ? 'disconnected' : status,
+    cause: backendDown ? 'service' : cause,
     saveOutage,
   };
 }
@@ -80,12 +87,18 @@ export function useCollaboraEditorConnection(
   // callbacks so the editor's fetch effect isn't needlessly re-triggered.
   const [accessTokenTTL, setAccessTokenTTL] = useState<number>();
   const [terminalReason, setTerminalReason] = useState<CollaboraTerminalReason>(null);
+  const [recoverableFetchError, setRecoverableFetchError] = useState(false);
   const onAccessTokenTTL = useCallback((ttl: number) => {
     setAccessTokenTTL(ttl);
     setTerminalReason(null);
+    setRecoverableFetchError(false);
   }, []);
   const onFetchError = useCallback((code: string | undefined) => {
-    setTerminalReason(code ? (TERMINAL_CODE_REASONS[code] ?? null) : null);
+    const reason = code ? (TERMINAL_CODE_REASONS[code] ?? null) : null;
+    setTerminalReason(reason);
+    // A fetch failure with no terminal mapping is recoverable — surface it as a service
+    // disconnect (below) so the recovery affordance appears right away.
+    setRecoverableFetchError(reason === null);
   }, []);
 
   const { status, cause, saveStatus, connectedUsers, reconnect, reconnectNonce } = useCollaboraConnectionMonitor(
@@ -112,7 +125,7 @@ export function useCollaboraEditorConnection(
     status: effectiveStatus,
     cause: effectiveCause,
     saveOutage,
-  } = resolveEffectiveConnection(status, cause, serviceUnavailable);
+  } = resolveEffectiveConnection(status, cause, serviceUnavailable, recoverableFetchError);
 
   const footerProps = mapCollaboraFooterProps({
     connectionStatus: effectiveStatus,
