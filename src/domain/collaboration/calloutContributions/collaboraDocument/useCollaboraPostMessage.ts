@@ -164,16 +164,18 @@ function reduce(
       const cmd = typeof values.Cmd === 'string' ? values.Cmd : undefined;
       const kind = typeof values.Kind === 'string' ? values.Kind : undefined;
       const message = cmd ?? 'Collabora error';
-      onError?.(message);
       // A `load` failure means the editing session never came up — most often the document
       // is still unloading from a previous session (`cmd=load kind=docunloading`, e.g. after
       // the WOPI host was briefly unreachable mid-edit). That is a connection drop, not a save
       // error: surface it as `disconnected` (recording the kind so the monitor can show a
       // "still closing" hint) so the recovery banner + Reconnect appear instead of an
-      // indefinite "connecting…" spinner.
+      // indefinite "connecting…" spinner. We deliberately do NOT also raise the global error
+      // toast here — the banner already communicates it, and a red "runtime error" alert would
+      // be a scary, redundant interruption for what is usually a transient state (FR-003).
       if (cmd === 'load') {
         return { ...prev, connectionStatus: 'disconnected', lastError: kind ?? message };
       }
+      onError?.(message);
       return { ...prev, saveStatus: 'error', lastError: message };
     }
     case 'Session_Closed':

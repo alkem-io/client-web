@@ -52,7 +52,8 @@ describe('useCollaboraPostMessage', () => {
 
   it('treats a load failure (docunloading) as a disconnect, not a save error', () => {
     const { ref, contentWindow } = fakeIframeRef();
-    const { result } = renderHook(() => useCollaboraPostMessage(ref));
+    const onError = vi.fn();
+    const { result } = renderHook(() => useCollaboraPostMessage(ref, { onError }));
 
     // Collabora rejects a reopen while the previous session is still unloading.
     act(() => dispatchFromIframe(contentWindow, { MessageId: 'Error', Values: { Cmd: 'load', Kind: 'docunloading' } }));
@@ -60,6 +61,8 @@ describe('useCollaboraPostMessage', () => {
     expect(result.current.lastError).toBe('docunloading');
     // A blocked load is a connection drop, not a failed save — the save chip must not latch to error.
     expect(result.current.saveStatus).not.toBe('error');
+    // …and the disconnect banner owns the messaging — no scary, redundant global error toast (FR-003).
+    expect(onError).not.toHaveBeenCalled();
   });
 
   it('fires onDocumentReloaded on a re-emitted Document_Loaded (Collabora reconnect after rename), not the first', () => {
