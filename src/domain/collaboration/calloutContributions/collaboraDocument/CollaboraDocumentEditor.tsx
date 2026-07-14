@@ -50,6 +50,11 @@ const CollaboraDocumentEditor = ({
     // re-set true by the next effect run and let the stale response through.
     let cancelled = false;
 
+    // Drop the previous URL up front so a reconnect (nonce bump) shows the loader instead of
+    // briefly remounting the iframe on the stale/expired URL before the freshly-issued token
+    // arrives. Without this, `key={reconnectNonce}` remounts immediately on the old `editorUrl`.
+    setEditorUrl(undefined);
+
     const fetchUrl = async () => {
       try {
         setLoading(true);
