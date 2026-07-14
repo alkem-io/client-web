@@ -1,12 +1,9 @@
 import { useApolloClient } from '@apollo/client';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { FileText, Presentation, ServerOff, Sheet, X } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
-import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
-import { CollaboraCollabFooter, type CollaboraTerminalReason } from '@/crd/components/collabora/CollaboraCollabFooter';
+import { CollaboraCollabFooter } from '@/crd/components/collabora/CollaboraCollabFooter';
 import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { CollaboraTopAlert } from '@/crd/components/collabora/CollaboraTopAlert';
 import {
@@ -22,10 +19,7 @@ import {
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
 import CollaboraDocumentEditor from '@/domain/collaboration/calloutContributions/collaboraDocument/CollaboraDocumentEditor';
-import { mapCollaboraFooterProps } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraFooterMapper';
-import { useCollaboraConnectionMonitor } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraConnectionMonitor';
-import { useCollaboraSaveHealth } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraSaveHealth';
-import { useCollaboraTokenRefresh } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraTokenRefresh';
+import { useCollaboraEditorConnection } from '@/domain/collaboration/calloutContributions/collaboraDocument/useCollaboraEditorConnection';
 import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 
 type CollaboraFramingEditorOverlayProps = {
@@ -44,21 +38,13 @@ const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
   presentation: Presentation,
 };
 
-// Alkemio server error codes (extensions.code) on the editor-URL path that mean recovery is
-// impossible (FR-013). Anything else is treated as recoverable so a transient/unknown error
-// never wrongly strands the user in a terminal state (research R4, fail-safe).
-const TERMINAL_CODE_REASONS: Record<string, CollaboraTerminalReason> = {
-  ENTITY_NOT_FOUND: 'notFound',
-  RELATIONSHIP_NOT_FOUND: 'notFound',
-  FORBIDDEN: 'forbidden',
-};
-
-type PendingRecovery = 'reconnect' | 'reload' | null;
-
 /**
  * Fullscreen Collabora editor dialog rendered as a sibling of CalloutDetailDialog
  * to keep each Radix Dialog's FocusScope independent. Mirrors the CrdMemoDialog
  * sibling pattern used for memo framing.
+ *
+ * The whole disconnect-detection / token-refresh / recovery pipeline lives in
+ * `useCollaboraEditorConnection`; this component is the view over it.
  */
 export function CollaboraFramingEditorOverlay({
   open,
@@ -70,9 +56,6 @@ export function CollaboraFramingEditorOverlay({
 }: CollaboraFramingEditorOverlayProps) {
   const TypeIcon = iconByType[documentType];
   const { t } = useTranslation('crd-space');
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const { isAuthenticated } = useAuthenticationContext();
-  const notify = useNotification();
   const client = useApolloClient();
 
   // Rename mechanics for the editable title (develop's OfficeDocs rename UX).
@@ -90,103 +73,18 @@ export function CollaboraFramingEditorOverlay({
     client.refetchQueries({ include: ['CalloutDetails', 'CalloutsOnCalloutsSetUsingClassification'] });
   };
 
-  // The editor-URL query returns the WOPI token TTL; the monitor uses it to detect an
-  // impending token-expiry disconnect (an otherwise silent failure). A successful (re)issue
-  // also clears any terminal state. Stable callback so the editor's fetch effect isn't
-  // re-triggered.
-  const [accessTokenTTL, setAccessTokenTTL] = useState<number>();
-  const [terminalReason, setTerminalReason] = useState<CollaboraTerminalReason>(null);
-  const handleAccessTokenTTL = useCallback((ttl: number) => {
-    setAccessTokenTTL(ttl);
-    setTerminalReason(null);
-  }, []);
-  // Classify a failed editor-URL fetch: terminal (document gone / access revoked) vs recoverable.
-  const handleFetchError = useCallback((code: string | undefined) => {
-    setTerminalReason(code ? (TERMINAL_CODE_REASONS[code] ?? null) : null);
-  }, []);
-
-  const { status, cause, saveStatus, connectedUsers, reconnect, reconnectNonce } = useCollaboraConnectionMonitor(
-    iframeRef,
-    {
-      accessTokenTTL,
-      terminal: terminalReason !== null,
-      onError: message => notify(t('collabora.editor.error.runtime', { message }), 'error'),
-      onSessionClosed: () => notify(t('collabora.editor.error.sessionClosed'), 'warning'),
+  const { iframeRef, onAccessTokenTTL, onFetchError, reconnectNonce, footerProps, saveOutage, recovery } =
+    useCollaboraEditorConnection(collaboraDocumentId, {
       // Collabora reconnects and re-emits Document_Loaded after an in-editor rename (without
-      // navigating the iframe). The monitor forwards that postMessage so the rename feature and
-      // the connection state share a single subscription; use it to re-read the persisted name.
+      // navigating the iframe); re-read the persisted name when that happens.
       onDocumentReloaded: refetchDocumentName,
-    }
-  );
-
-  // Primary token-expiry handling: refresh the WOPI token in place (Collabora
-  // App_TokenExpiring → Reset_Access_Token) before it expires — seamless, no remount, no lost
-  // edits. `onRefreshed` pushes the new TTL (re-arming the monitor's fallback timer) and clears
-  // any terminal state; a failed re-issue falls through to the terminal/recoverable mapping.
-  useCollaboraTokenRefresh(iframeRef, collaboraDocumentId, {
-    onRefreshed: handleAccessTokenTTL,
-    onError: handleFetchError,
-  });
-
-  // A WOPI/save-path outage is silent (Collabora keeps editing + buffering); the probe detects it.
-  // Fold it into the single shared connection indicator as a `service` disconnect — same look as a
-  // network/Collabora drop — rather than a separate banner. Network/Collabora drops already set a
-  // disconnect status, so only override when otherwise connected/connecting.
-  const { serviceUnavailable } = useCollaboraSaveHealth(collaboraDocumentId, saveStatus);
-  const saveOutage = serviceUnavailable && (status === 'connected' || status === 'connecting');
-  const effectiveStatus = saveOutage ? 'disconnected' : status;
-  const effectiveCause = saveOutage ? 'service' : cause;
+    });
 
   // Backstop: whatever happened inside the editor, refresh our copy on the way out.
   const handleClose = () => {
     refetchDocumentName();
     onClose();
   };
-
-  const footerProps = mapCollaboraFooterProps({
-    connectionStatus: effectiveStatus,
-    disconnectCause: effectiveCause,
-    terminalReason,
-    saveStatus,
-    connectedUsers,
-    isAuthenticated,
-    // Framing edit privileges are enforced by the server via the editor URL; the client
-    // can't distinguish read-only from read-write after the URL is issued, so we optimistically
-    // assume editable for authenticated users. The footer still falls back to the server's
-    // readonly behavior inside the iframe itself.
-    hasEditPrivilege: isAuthenticated,
-    isContribution: false,
-    hasDeletePrivileges: false,
-  });
-
-  // Recovery is user-initiated and, when unsaved work could be lost, gated by a confirmation
-  // (FR-006) — both remount and reload replace the retained editor.
-  const [pendingRecovery, setPendingRecovery] = useState<PendingRecovery>(null);
-  const performRecovery = useCallback(
-    (kind: 'reconnect' | 'reload') => {
-      setPendingRecovery(null);
-      if (kind === 'reconnect') {
-        reconnect();
-      } else {
-        window.location.reload();
-      }
-    },
-    [reconnect]
-  );
-  const requestRecovery = useCallback(
-    (kind: 'reconnect' | 'reload') => {
-      if (footerProps.changesAtRisk) {
-        setPendingRecovery(kind);
-      } else {
-        performRecovery(kind);
-      }
-    },
-    [footerProps.changesAtRisk, performRecovery]
-  );
-  // The warning dialog is action-specific: reconnect reopens the editor in place (no page
-  // reload), reload refreshes the whole page. Fall back to 'reconnect' for the brief close
-  // animation after `pendingRecovery` clears.
-  const recoveryKind: 'reconnect' | 'reload' = pendingRecovery ?? 'reconnect';
 
   return (
     <Dialog open={open} onOpenChange={o => !o && handleClose()}>
@@ -234,14 +132,14 @@ export function CollaboraFramingEditorOverlay({
             {open && saveOutage && (
               <CollaboraTopAlert icon={ServerOff} message={t('collabora.serviceUnavailable.message')} />
             )}
-            {/* The editor stays mounted on disconnect (retained for manual copy, FR-004a) — the
-                footer surfaces the disconnected state alongside it rather than replacing it. */}
+            {/* The editor stays mounted on disconnect (retained for context, FR-004a) — the footer
+                surfaces the disconnected state alongside it rather than replacing it. */}
             {open && (
               <CollaboraDocumentEditor
                 collaboraDocumentId={collaboraDocumentId}
                 iframeRef={iframeRef}
-                onAccessTokenTTL={handleAccessTokenTTL}
-                onFetchError={handleFetchError}
+                onAccessTokenTTL={onAccessTokenTTL}
+                onFetchError={onFetchError}
                 reconnectNonce={reconnectNonce}
               />
             )}
@@ -249,33 +147,34 @@ export function CollaboraFramingEditorOverlay({
           {open && (
             <CollaboraCollabFooter
               {...footerProps}
-              onReconnect={() => requestRecovery('reconnect')}
-              onReload={() => requestRecovery('reload')}
+              onReconnect={() => recovery.request('reconnect')}
+              onReload={() => recovery.request('reload')}
             />
           )}
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
 
-      {/* Pre-recovery warning — only shown when recovery could discard unsaved work (FR-006). */}
-      <AlertDialog open={pendingRecovery !== null} onOpenChange={o => !o && setPendingRecovery(null)}>
+      {/* Pre-recovery warning — only shown when recovery could discard unsaved work (FR-006).
+          Copy is action-specific: reconnect reopens in place, reload refreshes the whole page. */}
+      <AlertDialog open={recovery.pending !== null} onOpenChange={o => !o && recovery.cancel()}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
               {t(
-                `collabora.footer.disconnect.warning.${recoveryKind}Title` as 'collabora.footer.disconnect.warning.reconnectTitle'
+                `collabora.footer.disconnect.warning.${recovery.kind}Title` as 'collabora.footer.disconnect.warning.reconnectTitle'
               )}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {t(
-                `collabora.footer.disconnect.warning.${recoveryKind}Body` as 'collabora.footer.disconnect.warning.reconnectBody'
+                `collabora.footer.disconnect.warning.${recovery.kind}Body` as 'collabora.footer.disconnect.warning.reconnectBody'
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t('collabora.footer.disconnect.warning.cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={() => pendingRecovery && performRecovery(pendingRecovery)}>
+            <AlertDialogAction onClick={recovery.confirm}>
               {t(
-                `collabora.footer.disconnect.warning.${recoveryKind}Confirm` as 'collabora.footer.disconnect.warning.reconnectConfirm'
+                `collabora.footer.disconnect.warning.${recovery.kind}Confirm` as 'collabora.footer.disconnect.warning.reconnectConfirm'
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
