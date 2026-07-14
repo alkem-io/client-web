@@ -33,7 +33,6 @@ export type UseLayoutTabDataResult = {
   error: Error | null;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   onReorderColumns: (orderedColumnIds: LayoutColumnId[]) => void;
-  onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
   onSave: () => void;
@@ -259,20 +258,6 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
       mutTarget.callouts.push(removed);
       return next;
     });
-  };
-
-  const onRenameColumn = (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => {
-    setColumns(prev =>
-      prev.map(c =>
-        c.id === columnId
-          ? {
-              ...c,
-              title: patch.title !== undefined ? patch.title : c.title,
-              description: patch.description !== undefined ? patch.description : c.description,
-            }
-          : c
-      )
-    );
   };
 
   /** Toggle fires immediately — NOT part of the Save Changes buffer. */
@@ -560,7 +545,6 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     error: settingsError ?? flowError ?? null,
     onReorder,
     onReorderColumns,
-    onRenameColumn,
     onMoveToColumn,
     onPostDescriptionDisplayChange,
     onSave,

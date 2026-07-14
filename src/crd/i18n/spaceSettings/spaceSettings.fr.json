@@ -44,12 +44,6 @@
       "description": "Réduire les descriptions de publications par défaut. Lorsqu'il est activé, les descriptions affichent un lien \"Lire la suite\" au lieu du texte complet."
     },
     "column": {
-      "titleAriaLabel": "Titre de la colonne",
-      "descriptionAriaLabel": "Description de la colonne",
-      "editTitle": "Modifier le titre de la colonne",
-      "editDescription": "Modifier la description de la colonne",
-      "confirm": "Confirmer",
-      "cancel": "Annuler",
       "titlePlaceholder": "Titre de la colonne",
       "descriptionPlaceholder": "Décrivez cette colonne…",
       "menu": "Actions de la colonne",
@@ -68,7 +62,7 @@
         "menuLabel": "Modifier les détails",
         "dialogTitle": "Modifier les détails : phase de flux",
         "titleLabel": "Titre",
-        "editTitle": "Modifier le titre",
+        "titleTooShort": "Le titre doit comporter au moins 3 caractères",
         "insertEmoji": "Insérer un emoji",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Description",

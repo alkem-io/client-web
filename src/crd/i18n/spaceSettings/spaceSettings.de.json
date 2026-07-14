@@ -44,12 +44,6 @@
       "description": "Beitragsbeschreibungen standardmäßig einklappen. Wenn aktiviert, zeigen Beschreibungen einen \"Mehr lesen\"-Link statt des vollständigen Texts."
     },
     "column": {
-      "titleAriaLabel": "Spaltentitel",
-      "descriptionAriaLabel": "Spaltenbeschreibung",
-      "editTitle": "Spaltentitel bearbeiten",
-      "editDescription": "Spaltenbeschreibung bearbeiten",
-      "confirm": "Bestätigen",
-      "cancel": "Abbrechen",
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
       "menu": "Spaltenaktionen",
@@ -68,7 +62,7 @@
         "menuLabel": "Details bearbeiten",
         "dialogTitle": "Details bearbeiten: Flow-Phase",
         "titleLabel": "Titel",
-        "editTitle": "Titel bearbeiten",
+        "titleTooShort": "Der Titel muss mindestens 3 Zeichen lang sein",
         "insertEmoji": "Emoji einfügen",
         "descriptionLabel": "Beschreibung",
         "descriptionPlaceholder": "Beschreibung",
