@@ -4,9 +4,9 @@ import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, Trash2 } from '
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
-import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
@@ -51,7 +51,6 @@ type LayoutPoolColumnProps = {
   column: LayoutPoolColumnData;
   otherColumns: ReadonlyArray<Pick<LayoutPoolColumnData, 'id' | 'title'>>;
   showDescription: boolean;
-  onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   columnMenuActions: ColumnMenuActions;
@@ -66,7 +65,6 @@ export function LayoutPoolColumn({
   column,
   otherColumns,
   showDescription,
-  onRenameColumn,
   onMoveToColumn,
   onViewPost,
   columnMenuActions,
@@ -138,14 +136,9 @@ export function LayoutPoolColumn({
                 <GripVertical aria-hidden="true" className="size-4" />
               </button>
             )}
-            <InlineEditText
-              value={column.title}
-              onChange={next => onRenameColumn(column.id, { title: next })}
-              ariaLabel={t('layout.column.titleAriaLabel')}
-              editAriaLabel={t('layout.column.editTitle')}
-              placeholder={t('layout.column.titlePlaceholder')}
-              className="min-w-0 flex-1 text-card-title"
-            />
+            <span title={column.title} className="min-w-0 flex-1 truncate text-card-title">
+              {column.title}
+            </span>
             <ColumnOverflowMenu
               column={column}
               actions={columnMenuActions}
@@ -346,6 +339,22 @@ function ColumnOverflowMenu({
 
 /* ──────────────── Edit Details dialog ──────────────── */
 
+// A title made up entirely of emoji (including flags, skin-tone modifiers, keycaps, and ZWJ
+// sequences like family emoji) is exempt from the 3-character minimum — JS string length counts
+// UTF-16 code units, so even a single simple emoji (e.g. "🎉") measures 2, not 1.
+// \p{Emoji_Component} is required for flags (regional indicators), skin tones, keycaps, VS-16 and
+// ZWJ, but it also matches plain 0-9/#/* — the lookahead demands at least one genuinely emoji
+// character so digit-only titles like "1" don't slip past the minimum.
+const EMOJI_ONLY_TITLE =
+  /^(?=.*(?:[\p{Extended_Pictographic}\p{Regional_Indicator}]|\uFE0F))[\p{Extended_Pictographic}\p{Emoji_Component}]+$/u;
+
+/** The Edit Details title rule: min 3 characters after trimming, unless the title is emoji-only. */
+export function isColumnTitleTooShort(title: string): boolean {
+  const trimmed = title.trim();
+  const emojiOnly = trimmed.length > 0 && EMOJI_ONLY_TITLE.test(trimmed);
+  return !emojiOnly && trimmed.length < 3;
+}
+
 type EditDetailsDialogProps = {
   open: boolean;
   title: string;
@@ -370,7 +379,17 @@ function EditDetailsDialog({
   const [saving, setSaving] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
+  const titleTooShort = isColumnTitleTooShort(title);
+
+  const isDirty = title !== initialTitle || description !== initialDescription;
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty,
+    onClose: onCancel,
+    blockClose: saving,
+  });
+
   const handleSave = async () => {
+    if (titleTooShort) return;
     setSaving(true);
     try {
       await onSave(title.trim(), description);
@@ -380,67 +399,69 @@ function EditDetailsDialog({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={nextOpen => {
-        if (!nextOpen) onCancel();
-      }}
-    >
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
-        <DialogHeader className="shrink-0">
-          <DialogTitle className="flex items-center gap-2">
-            <Pencil aria-hidden="true" className="size-4" />
-            {t('layout.column.editDetails.dialogTitle')}
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="shrink-0">
+            <DialogTitle className="flex items-center gap-2">
+              <Pencil aria-hidden="true" className="size-4" />
+              {t('layout.column.editDetails.dialogTitle')}
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
-          <div className="flex flex-col gap-1">
-            <span className="text-body-emphasis text-muted-foreground">
-              {t('layout.column.editDetails.titleLabel')}
-            </span>
-            <div className="flex items-center gap-2">
-              <Input
-                ref={titleInputRef}
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder={t('layout.column.titlePlaceholder')}
-                aria-label={t('layout.column.editDetails.titleLabel')}
-                disabled={saving}
-                className="flex-1 text-subsection-title"
-              />
-              <EmojiInsertButton
-                inputRef={titleInputRef}
-                value={title}
-                onChange={setTitle}
-                ariaLabel={t('layout.column.editDetails.insertEmoji')}
-                disabled={saving}
+          <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col gap-1">
+              <span className="text-body-emphasis text-muted-foreground">
+                {t('layout.column.editDetails.titleLabel')}
+              </span>
+              <div className="flex items-center gap-2">
+                <Input
+                  ref={titleInputRef}
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  placeholder={t('layout.column.titlePlaceholder')}
+                  aria-label={t('layout.column.editDetails.titleLabel')}
+                  aria-invalid={titleTooShort}
+                  disabled={saving}
+                  className="flex-1 text-subsection-title"
+                />
+                <EmojiInsertButton
+                  inputRef={titleInputRef}
+                  value={title}
+                  onChange={setTitle}
+                  ariaLabel={t('layout.column.editDetails.insertEmoji')}
+                  disabled={saving}
+                />
+              </div>
+              {titleTooShort && (
+                <p className="text-caption text-destructive">{t('layout.column.editDetails.titleTooShort')}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-body-emphasis">{t('layout.column.editDetails.descriptionLabel')}</span>
+              <MarkdownEditor
+                value={description}
+                onChange={setDescription}
+                placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
               />
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <span className="text-body-emphasis">{t('layout.column.editDetails.descriptionLabel')}</span>
-            <MarkdownEditor
-              value={description}
-              onChange={setDescription}
-              placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
-              onImageUpload={onImageUpload}
-              iframeAllowedUrls={iframeAllowedUrls}
-              onError={onError}
-            />
-          </div>
-        </div>
-
-        <DialogFooter className="shrink-0">
-          <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
-            {t('layout.column.editDetails.cancel')}
-          </Button>
-          <Button type="button" onClick={handleSave} disabled={saving}>
-            {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter className="shrink-0">
+            <Button type="button" variant="ghost" onClick={requestClose} disabled={saving}>
+              {t('layout.column.editDetails.cancel')}
+            </Button>
+            <Button type="button" onClick={handleSave} disabled={saving || titleTooShort}>
+              {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {guardElement}
+    </>
   );
 }

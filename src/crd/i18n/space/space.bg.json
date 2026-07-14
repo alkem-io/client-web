@@ -551,6 +551,7 @@
     "publishedLabel": "Публикувано",
     "draftLabel": "Чернова",
     "notifyMembers": "Уведоми членовете на пространството",
+    "titleRequiredHint": "Добавете заглавие на вашето $t(common.callout), за да продължите",
     "saveDraft": "Запази чернова",
     "save": "Запази",
     "publish": "Публикувай",
@@ -568,7 +569,8 @@
     "addOption": "Добави опция",
     "removeOption": "Премахни опция",
     "allowComments": "Разреши коментари",
-    "allowCommentsDescription": "Членовете могат да публикуват коментари върху рамката на известието."
+    "allowCommentsDescription": "Членовете могат да публикуват коментари върху рамката на известието.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Отговори",

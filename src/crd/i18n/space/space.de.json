@@ -551,6 +551,7 @@
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
+    "titleRequiredHint": "Fügen Sie Ihrem $t(common.callout) einen Titel hinzu, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",
@@ -568,7 +569,8 @@
     "addOption": "Option hinzufügen",
     "removeOption": "Option entfernen",
     "allowComments": "Kommentare zulassen",
-    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen."
+    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Antworten",

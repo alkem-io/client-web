@@ -332,7 +332,7 @@ export function PostCard({
         <h3 className="text-subsection-title mb-2 text-foreground group-hover:text-primary transition-colors">
           <a
             href={href ?? '#'}
-            className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            className="block max-w-full truncate rounded hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             onClick={
               onClick
                 ? e => {
