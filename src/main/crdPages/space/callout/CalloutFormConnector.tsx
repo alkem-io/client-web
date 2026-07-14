@@ -27,6 +27,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
@@ -104,6 +105,9 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
  * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
  */
 const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
+
+/** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
+const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -712,6 +716,8 @@ function CalloutFormConnectorInner({
           value: values.title,
           onChange: v => setField('title', v),
           error: errors.title,
+          maxLength: SMALL_TEXT_LENGTH,
+          counterThreshold: TITLE_COUNTER_THRESHOLD,
         }}
         descriptionSlot={
           <MarkdownEditor

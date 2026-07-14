@@ -44,12 +44,6 @@
       "description": "Collapse post descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
     },
     "column": {
-      "titleAriaLabel": "Column title",
-      "descriptionAriaLabel": "Column description",
-      "editTitle": "Edit column title",
-      "editDescription": "Edit column description",
-      "confirm": "Confirm",
-      "cancel": "Cancel",
       "titlePlaceholder": "Column title",
       "descriptionPlaceholder": "Describe this column…",
       "menu": "Column actions",
@@ -68,7 +62,7 @@
         "menuLabel": "Edit Details",
         "dialogTitle": "Edit Details: Flow Phase",
         "titleLabel": "Title",
-        "editTitle": "Edit title",
+        "titleTooShort": "The title must be at least 3 characters long",
         "insertEmoji": "Insert emoji",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Description",
