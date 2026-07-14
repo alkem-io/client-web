@@ -98,6 +98,36 @@
           "confirm": "Hide",
           "cancel": "Cancel"
         }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post description",
+          "collapsedHint": "Posts start collapsed — members expand to read.",
+          "expandedHint": "Posts are fully expanded by default.",
+          "switchLabel": "Collapse post descriptions"
+        },
+        "publishDetails": {
+          "label": "Publisher details",
+          "onHint": "Author name, avatar, and date are shown on each Post.",
+          "offHint": "Author name, avatar, and date are hidden on Posts in this phase.",
+          "switchLabel": "Show publisher details"
+        },
+        "cancel": "Cancel",
+        "save": "Save"
+      },
+      "postTemplate": {
+        "menuLabel": "Post Template",
+        "dialogTitle": "Post Template: {{phaseName}}",
+        "choose": "Choose template…",
+        "clear": "Clear template",
+        "clearConfirm": {
+          "title": "Clear Post Template?",
+          "description": "The default Post template for this phase will be removed. New Posts in this phase will use no default template. This does not affect existing Posts.",
+          "confirm": "Clear template",
+          "cancel": "Cancel"
+        }
       }
     },
     "addPhase": {

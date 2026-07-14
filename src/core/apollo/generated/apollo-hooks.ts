@@ -344,6 +344,8 @@ export const InnovationFlowStatesFragmentDoc = gql`
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
     defaultCalloutTemplate {
       id
@@ -7100,6 +7102,8 @@ export const CreateStateOnInnovationFlowDocument = gql`
     description
     settings {
       allowNewCallouts
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }
@@ -7204,6 +7208,8 @@ export const UpdateInnovationFlowStateDocument = gql`
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }
@@ -23250,6 +23256,8 @@ export const SpaceTabDocument = gql`
             sortOrder
             settings {
               allowNewCallouts
+              descriptionDisplayMode
+              showPublishDetails
             }
             defaultCalloutTemplate {
               id
@@ -23396,6 +23404,8 @@ export const SpaceTabsDocument = gql`
             settings {
               allowNewCallouts
               visible
+              descriptionDisplayMode
+              showPublishDetails
             }
           }
         }

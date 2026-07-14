@@ -98,6 +98,36 @@
           "confirm": "Verbergen",
           "cancel": "Annuleren"
         }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post-beschrijving",
+          "collapsedHint": "Posts beginnen ingeklapt — leden kunnen ze uitklappen om te lezen.",
+          "expandedHint": "Posts zijn standaard volledig uitgevouwen.",
+          "switchLabel": "Post-beschrijvingen inklappen"
+        },
+        "publishDetails": {
+          "label": "Publicatiegegevens",
+          "onHint": "Naam, avatar en datum van de auteur worden getoond bij elke Post.",
+          "offHint": "Naam, avatar en datum van de auteur zijn verborgen bij Posts in deze fase.",
+          "switchLabel": "Publicatiegegevens tonen"
+        },
+        "cancel": "Annuleren",
+        "save": "Opslaan"
+      },
+      "postTemplate": {
+        "menuLabel": "Post-template",
+        "dialogTitle": "Post-template: {{phaseName}}",
+        "choose": "Kies template…",
+        "clear": "Template verwijderen",
+        "clearConfirm": {
+          "title": "Post-template verwijderen?",
+          "description": "De standaard Post-template voor deze fase wordt verwijderd. Nieuwe Posts in deze fase gebruiken geen standaard template. Bestaande Posts worden niet beïnvloed.",
+          "confirm": "Template verwijderen",
+          "cancel": "Annuleren"
+        }
       }
     },
     "addPhase": {

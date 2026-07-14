@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, SlidersHorizontal, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
@@ -22,11 +22,14 @@ import {
 } from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
 import { LayoutCalloutRow } from './LayoutCalloutRow';
+import { PhaseLayoutDialog } from './PhaseLayoutDialog';
+import { PhasePostTemplateDialog } from './PhasePostTemplateDialog';
 import type {
   ColumnMenuActions,
   LayoutCallout,
   LayoutColumnId,
   LayoutPoolColumn as LayoutPoolColumnData,
+  PhaseLayoutInput,
 } from './SpaceSettingsLayoutView.types';
 
 // Full literal i18n keys for the per-column Delete affordance, one set per user-facing noun.
@@ -105,6 +108,8 @@ export function LayoutPoolColumn({
       }
     : undefined;
   const [editDetailsOpen, setEditDetailsOpen] = useState(false);
+  const [layoutDialogOpen, setLayoutDialogOpen] = useState(false);
+  const [postTemplateDialogOpen, setPostTemplateDialogOpen] = useState(false);
   const [pendingPhaseDelete, setPendingPhaseDelete] = useState(false);
   // Hiding removes the phase from the member-facing menu, so it is confirmed; showing
   // again is non-destructive and applies directly (no dialog).
@@ -144,6 +149,8 @@ export function LayoutPoolColumn({
               actions={columnMenuActions}
               deleteKeys={deleteKeys}
               onEditDetails={() => setEditDetailsOpen(true)}
+              onRequestLayout={() => setLayoutDialogOpen(true)}
+              onRequestPostTemplate={() => setPostTemplateDialogOpen(true)}
               onRequestDeletePhase={() => setPendingPhaseDelete(true)}
               onRequestHidePhase={() => setPendingPhaseHide(true)}
               t={t}
@@ -194,7 +201,7 @@ export function LayoutPoolColumn({
       </Card>
 
       <EditDetailsDialog
-        key={`${column.id}:${String(editDetailsOpen)}`}
+        key={`edit:${column.id}:${String(editDetailsOpen)}`}
         open={editDetailsOpen}
         title={column.title}
         description={column.description}
@@ -206,6 +213,29 @@ export function LayoutPoolColumn({
         onImageUpload={onImageUpload}
         iframeAllowedUrls={iframeAllowedUrls}
         onError={onError}
+      />
+
+      <PhaseLayoutDialog
+        key={`layout:${column.id}:${String(layoutDialogOpen)}`}
+        open={layoutDialogOpen}
+        onOpenChange={setLayoutDialogOpen}
+        phaseName={column.title}
+        values={column.layout ?? { descriptionCollapsed: false, showPublishDetails: true }}
+        onSave={async (layout: PhaseLayoutInput) => {
+          // Await persistence and let the dialog close itself on success — a failed save
+          // keeps it open (see PhaseLayoutDialog.handleSave). Rejection propagates so the
+          // dialog can react; Apollo's error layer surfaces the toast.
+          await columnMenuActions.onSaveLayout(column.id, layout);
+        }}
+      />
+
+      <PhasePostTemplateDialog
+        open={postTemplateDialogOpen}
+        onOpenChange={setPostTemplateDialogOpen}
+        phaseName={column.title}
+        currentTemplate={column.defaultCalloutTemplate}
+        onChooseTemplate={() => columnMenuActions.onOpenDefaultCalloutTemplatePicker(column.id)}
+        onClearTemplate={() => columnMenuActions.onSetAsDefaultCalloutTemplate(column.id, null)}
       />
 
       <ConfirmationDialog
@@ -254,6 +284,8 @@ type ColumnOverflowMenuProps = {
   /** Literal i18n keys for the Delete entry — the tab set (L0) or the phase set (subspaces). */
   deleteKeys: DeleteKeySet;
   onEditDetails: () => void;
+  onRequestLayout: () => void;
+  onRequestPostTemplate: () => void;
   onRequestDeletePhase: () => void;
   onRequestHidePhase: () => void;
   t: ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
@@ -264,6 +296,8 @@ function ColumnOverflowMenu({
   actions,
   deleteKeys,
   onEditDetails,
+  onRequestLayout,
+  onRequestPostTemplate,
   onRequestDeletePhase,
   onRequestHidePhase,
   t,
@@ -279,6 +313,7 @@ function ColumnOverflowMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {/* FR-010 menu order: Mark as active / Title and Description / Layout / Post Template / Hide/Show / Delete */}
         <DropdownMenuItem onClick={() => actions.onChangeActivePhase(column.id)} disabled={column.isCurrentPhase}>
           {column.isCurrentPhase ? (
             <span className="inline-flex items-center gap-1">
@@ -294,12 +329,13 @@ function ColumnOverflowMenu({
           <Pencil aria-hidden="true" className="mr-2 size-3.5" />
           {t('layout.column.editDetails.menuLabel')}
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => actions.onOpenDefaultCalloutTemplatePicker(column.id)}>
-          {t('layout.column.defaultCalloutTemplate.set')}
+        <DropdownMenuItem onClick={onRequestLayout}>
+          <SlidersHorizontal aria-hidden="true" className="mr-2 size-3.5" />
+          {t('layout.column.phaseLayout.menuLabel')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => actions.onSetAsDefaultCalloutTemplate(column.id, null)}>
-          {t('layout.column.defaultCalloutTemplate.clear')}
+        <DropdownMenuItem onClick={onRequestPostTemplate}>
+          <Pencil aria-hidden="true" className="mr-2 size-3.5" />
+          {t('layout.column.postTemplate.menuLabel')}
         </DropdownMenuItem>
         {canToggleVisibility && (
           <>

@@ -16,6 +16,8 @@ mutation CreateStateOnInnovationFlow($stateData: CreateStateOnInnovationFlowInpu
     description
     settings {
       allowNewCallouts
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }
@@ -46,6 +48,8 @@ mutation UpdateInnovationFlowState(
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }

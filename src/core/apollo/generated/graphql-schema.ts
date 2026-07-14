@@ -12,15 +12,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
+  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -2253,6 +2263,10 @@ export type CreateInnovationFlowStateSettingsData = {
   __typename?: 'CreateInnovationFlowStateSettingsData';
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['output'];
+  /** Optional. How Post descriptions in this State are displayed in the feed: expanded or collapsed. Defaults to EXPANDED when omitted. */
+  descriptionDisplayMode?: Maybe<CalloutDescriptionDisplayMode>;
+  /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
+  showPublishDetails?: Maybe<Scalars['Boolean']['output']>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -2260,6 +2274,10 @@ export type CreateInnovationFlowStateSettingsData = {
 export type CreateInnovationFlowStateSettingsInput = {
   /** The flag to set. */
   allowNewCallouts: Scalars['Boolean']['input'];
+  /** Optional. How Post descriptions in this State are displayed in the feed: expanded or collapsed. Defaults to EXPANDED when omitted. */
+  descriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
+  /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
+  showPublishDetails?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -3534,6 +3552,10 @@ export type InnovationFlowStateSettings = {
   __typename?: 'InnovationFlowStateSettings';
   /** Whether new callouts can be added to this State. */
   allowNewCallouts: Scalars['Boolean']['output'];
+  /** How Post descriptions in this State are displayed in the feed: expanded or collapsed. Default expanded. */
+  descriptionDisplayMode: CalloutDescriptionDisplayMode;
+  /** Whether Posts in this State show publish details (publisher, publish date, avatar) in the feed. Presentation only — does not restrict access to publisher data. Default true. */
+  showPublishDetails: Scalars['Boolean']['output'];
   /** Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content. */
   visible: Scalars['Boolean']['output'];
 };
@@ -8316,7 +8338,10 @@ export type SpaceSettingsCollaboration = {
 
 export type SpaceSettingsLayout = {
   __typename?: 'SpaceSettingsLayout';
-  /** The default display mode for callout descriptions in this Space. */
+  /**
+   * The default display mode for callout descriptions in this Space.
+   * @deprecated REMOVE_AFTER=2026-10-31 | superseded by InnovationFlowStateSettings.descriptionDisplayMode
+   */
   calloutDescriptionDisplayMode: CalloutDescriptionDisplayMode;
 };
 
@@ -9098,6 +9123,10 @@ export type UpdateInnovationFlowStateInput = {
 export type UpdateInnovationFlowStateSettingsInput = {
   /** Optional. Sets whether new callouts can be added to this State; omission leaves the stored value unchanged. */
   allowNewCallouts?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Optional. Sets how Post descriptions in this State are displayed in the feed; omission leaves the stored value unchanged. */
+  descriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
+  /** Optional. Sets whether Posts in this State show publish details (publisher, publish date, avatar) in the feed; omission leaves the stored value unchanged. */
+  showPublishDetails?: InputMaybe<Scalars['Boolean']['input']>;
   /** Optional. Sets whether the phase is shown in member-facing navigation; omission leaves the stored value unchanged. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -12067,7 +12096,13 @@ export type InnovationFlowSettingsQuery = {
               displayName: string;
               description?: string | undefined;
               sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+              settings: {
+                __typename?: 'InnovationFlowStateSettings';
+                allowNewCallouts: boolean;
+                visible: boolean;
+                descriptionDisplayMode: CalloutDescriptionDisplayMode;
+                showPublishDetails: boolean;
+              };
               defaultCalloutTemplate?:
                 | {
                     __typename?: 'Template';
@@ -12185,7 +12220,13 @@ export type InnovationFlowDetailsQuery = {
               displayName: string;
               description?: string | undefined;
               sortOrder: number;
-              settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+              settings: {
+                __typename?: 'InnovationFlowStateSettings';
+                allowNewCallouts: boolean;
+                visible: boolean;
+                descriptionDisplayMode: CalloutDescriptionDisplayMode;
+                showPublishDetails: boolean;
+              };
               defaultCalloutTemplate?:
                 | {
                     __typename?: 'Template';
@@ -12335,7 +12376,13 @@ export type InnovationFlowDetailsFragment = {
     displayName: string;
     description?: string | undefined;
     sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+    settings: {
+      __typename?: 'InnovationFlowStateSettings';
+      allowNewCallouts: boolean;
+      visible: boolean;
+      descriptionDisplayMode: CalloutDescriptionDisplayMode;
+      showPublishDetails: boolean;
+    };
     defaultCalloutTemplate?:
       | {
           __typename?: 'Template';
@@ -12379,7 +12426,13 @@ export type InnovationFlowStatesFragment = {
     displayName: string;
     description?: string | undefined;
     sortOrder: number;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+    settings: {
+      __typename?: 'InnovationFlowStateSettings';
+      allowNewCallouts: boolean;
+      visible: boolean;
+      descriptionDisplayMode: CalloutDescriptionDisplayMode;
+      showPublishDetails: boolean;
+    };
     defaultCalloutTemplate?:
       | {
           __typename?: 'Template';
@@ -12472,7 +12525,12 @@ export type CreateStateOnInnovationFlowMutation = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+    settings: {
+      __typename?: 'InnovationFlowStateSettings';
+      allowNewCallouts: boolean;
+      descriptionDisplayMode: CalloutDescriptionDisplayMode;
+      showPublishDetails: boolean;
+    };
   };
 };
 
@@ -12499,7 +12557,13 @@ export type UpdateInnovationFlowStateMutation = {
     id: string;
     displayName: string;
     description?: string | undefined;
-    settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+    settings: {
+      __typename?: 'InnovationFlowStateSettings';
+      allowNewCallouts: boolean;
+      visible: boolean;
+      descriptionDisplayMode: CalloutDescriptionDisplayMode;
+      showPublishDetails: boolean;
+    };
   };
 };
 
@@ -29314,7 +29378,12 @@ export type SpaceTabQuery = {
                 displayName: string;
                 description?: string | undefined;
                 sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean };
+                settings: {
+                  __typename?: 'InnovationFlowStateSettings';
+                  allowNewCallouts: boolean;
+                  descriptionDisplayMode: CalloutDescriptionDisplayMode;
+                  showPublishDetails: boolean;
+                };
                 defaultCalloutTemplate?:
                   | {
                       __typename?: 'Template';
@@ -29851,7 +29920,13 @@ export type SpaceTabsQuery = {
                 displayName: string;
                 description?: string | undefined;
                 sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+                settings: {
+                  __typename?: 'InnovationFlowStateSettings';
+                  allowNewCallouts: boolean;
+                  visible: boolean;
+                  descriptionDisplayMode: CalloutDescriptionDisplayMode;
+                  showPublishDetails: boolean;
+                };
               }>;
             };
           };
@@ -31049,6 +31124,8 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                       __typename?: 'InnovationFlowStateSettings';
                                       allowNewCallouts: boolean;
                                       visible: boolean;
+                                      descriptionDisplayMode: CalloutDescriptionDisplayMode;
+                                      showPublishDetails: boolean;
                                     };
                                     defaultCalloutTemplate?:
                                       | {
@@ -32539,6 +32616,8 @@ export type TemplateContentQuery = {
                         __typename?: 'InnovationFlowStateSettings';
                         allowNewCallouts: boolean;
                         visible: boolean;
+                        descriptionDisplayMode: CalloutDescriptionDisplayMode;
+                        showPublishDetails: boolean;
                       };
                       defaultCalloutTemplate?:
                         | {
@@ -32753,7 +32832,13 @@ export type SpaceTemplateContentQuery = {
                 displayName: string;
                 description?: string | undefined;
                 sortOrder: number;
-                settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+                settings: {
+                  __typename?: 'InnovationFlowStateSettings';
+                  allowNewCallouts: boolean;
+                  visible: boolean;
+                  descriptionDisplayMode: CalloutDescriptionDisplayMode;
+                  showPublishDetails: boolean;
+                };
                 defaultCalloutTemplate?:
                   | {
                       __typename?: 'Template';
@@ -33250,7 +33335,13 @@ export type SpaceTemplateContentFragment = {
         displayName: string;
         description?: string | undefined;
         sortOrder: number;
-        settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+        settings: {
+          __typename?: 'InnovationFlowStateSettings';
+          allowNewCallouts: boolean;
+          visible: boolean;
+          descriptionDisplayMode: CalloutDescriptionDisplayMode;
+          showPublishDetails: boolean;
+        };
         defaultCalloutTemplate?:
           | {
               __typename?: 'Template';
@@ -33402,7 +33493,13 @@ export type SpaceTemplateContent_CollaborationFragment = {
       displayName: string;
       description?: string | undefined;
       sortOrder: number;
-      settings: { __typename?: 'InnovationFlowStateSettings'; allowNewCallouts: boolean; visible: boolean };
+      settings: {
+        __typename?: 'InnovationFlowStateSettings';
+        allowNewCallouts: boolean;
+        visible: boolean;
+        descriptionDisplayMode: CalloutDescriptionDisplayMode;
+        showPublishDetails: boolean;
+      };
       defaultCalloutTemplate?:
         | {
             __typename?: 'Template';

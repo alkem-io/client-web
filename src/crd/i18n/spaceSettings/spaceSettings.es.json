@@ -98,6 +98,36 @@
           "confirm": "Ocultar",
           "cancel": "Cancelar"
         }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Descripción del Post",
+          "collapsedHint": "Los Posts comienzan contraídos — los miembros los expanden para leer.",
+          "expandedHint": "Los Posts están completamente expandidos por defecto.",
+          "switchLabel": "Contraer descripciones de Posts"
+        },
+        "publishDetails": {
+          "label": "Detalles del publicador",
+          "onHint": "El nombre, avatar y fecha del autor se muestran en cada Post.",
+          "offHint": "El nombre, avatar y fecha del autor están ocultos en los Posts de esta fase.",
+          "switchLabel": "Mostrar detalles del publicador"
+        },
+        "cancel": "Cancelar",
+        "save": "Guardar"
+      },
+      "postTemplate": {
+        "menuLabel": "Plantilla de Post",
+        "dialogTitle": "Plantilla de Post: {{phaseName}}",
+        "choose": "Elegir plantilla…",
+        "clear": "Eliminar plantilla",
+        "clearConfirm": {
+          "title": "¿Eliminar la plantilla de Post?",
+          "description": "Se eliminará la plantilla de Post predeterminada para esta fase. Los nuevos Posts en esta fase no usarán ninguna plantilla predeterminada. Los Posts existentes no se verán afectados.",
+          "confirm": "Eliminar plantilla",
+          "cancel": "Cancelar"
+        }
       }
     },
     "addPhase": {

@@ -98,6 +98,36 @@
           "confirm": "Masquer",
           "cancel": "Annuler"
         }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout : {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Description du Post",
+          "collapsedHint": "Les Posts commencent réduits — les membres les développent pour lire.",
+          "expandedHint": "Les Posts sont entièrement développés par défaut.",
+          "switchLabel": "Réduire les descriptions de Posts"
+        },
+        "publishDetails": {
+          "label": "Informations sur l'auteur",
+          "onHint": "Le nom, l'avatar et la date de l'auteur sont affichés sur chaque Post.",
+          "offHint": "Le nom, l'avatar et la date de l'auteur sont masqués sur les Posts de cette phase.",
+          "switchLabel": "Afficher les informations sur l'auteur"
+        },
+        "cancel": "Annuler",
+        "save": "Enregistrer"
+      },
+      "postTemplate": {
+        "menuLabel": "Modèle de Post",
+        "dialogTitle": "Modèle de Post : {{phaseName}}",
+        "choose": "Choisir un modèle…",
+        "clear": "Supprimer le modèle",
+        "clearConfirm": {
+          "title": "Supprimer le modèle de Post ?",
+          "description": "Le modèle de Post par défaut de cette phase sera supprimé. Les nouveaux Posts de cette phase n'utiliseront aucun modèle par défaut. Les Posts existants ne sont pas affectés.",
+          "confirm": "Supprimer le modèle",
+          "cancel": "Annuler"
+        }
       }
     },
     "addPhase": {

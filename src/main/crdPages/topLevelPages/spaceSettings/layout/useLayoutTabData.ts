@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   refetchInnovationFlowSettingsQuery,
   useInnovationFlowSettingsQuery,
@@ -7,15 +7,13 @@ import {
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowStateMutation,
   useUpdateInnovationFlowStatesSortOrderMutation,
-  useUpdateSpaceSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
 import type {
   LayoutColumnId,
   LayoutPoolColumn,
-  LayoutPostDescriptionDisplay,
   LayoutReorderTarget,
   LayoutSaveBarState,
+  PhaseLayoutInput,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
 import { mapCollaborationToLayoutColumns, type SpaceLevelTag } from './layoutMapper';
@@ -27,19 +25,23 @@ export type {
 
 export type UseLayoutTabDataResult = {
   columns: LayoutPoolColumn[];
-  postDescriptionDisplay: LayoutPostDescriptionDisplay;
   saveBar: LayoutSaveBarState;
   loading: boolean;
   error: Error | null;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   onReorderColumns: (orderedColumnIds: LayoutColumnId[]) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
-  onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
   onSave: () => void;
   onReset: () => void;
   isDirty: boolean;
   /** Update both buffer AND snapshot for a column saved via the Edit Details dialog. */
   markColumnSaved: (columnId: LayoutColumnId, title: string, description: string) => void;
+  /**
+   * Update both buffer AND snapshot for a column saved via the Layout dialog.
+   * Mirrors `markColumnSaved` but patches `column.layout` so the Layout dialog
+   * is pre-filled with the just-saved values on the next open (FR-011).
+   */
+  markLayoutSaved: (columnId: LayoutColumnId, layout: PhaseLayoutInput) => void;
   /**
    * Optimistic update for "Mark as active phase" — flips `isCurrentPhase` on
    * both buffer and snapshot so the kebab menu reflects the new state without
@@ -84,17 +86,25 @@ export type UseLayoutTabDataResult = {
    * refetched — without it the buffer keeps showing the pre-mutation columns.
    */
   reseedFromServer: () => void;
+  /**
+   * Raw innovation flow states from the server — passed to `useColumnMenu`'s
+   * `innovationFlowStates` option so `onSaveLayout` can do a defensive per-field merge.
+   */
+  innovationFlowStates: ReadonlyArray<{
+    id: string;
+    displayName: string;
+    description?: string | null;
+    settings: { allowNewCallouts: boolean; visible: boolean };
+  }>;
 };
 
 type Snapshot = {
   columns: LayoutPoolColumn[];
-  postDescriptionDisplay: LayoutPostDescriptionDisplay;
 };
 
-function toSnapshot(columns: LayoutPoolColumn[], postDescriptionDisplay: LayoutPostDescriptionDisplay): Snapshot {
+function toSnapshot(columns: LayoutPoolColumn[]): Snapshot {
   // Deep clone so the snapshot is immune to later local mutation.
   return {
-    postDescriptionDisplay,
     columns: columns.map(c => ({
       ...c,
       callouts: c.callouts.map(cb => ({ ...cb })),
@@ -119,10 +129,11 @@ function columnsEqual(a: LayoutPoolColumn[], b: LayoutPoolColumn[]): boolean {
 }
 
 export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayoutTabDataResult {
-  // We need both the collaboration (for innovationFlow + callouts) and the
-  // space settings (for calloutDescriptionDisplayMode). The collaboration id
-  // is on space.collaboration.id, which we fetch via the settings query to
-  // avoid a third round-trip.
+  // Fetch the space settings to resolve the collaboration ID (on
+  // space.collaboration.id). The per-phase layout settings (descriptionDisplayMode,
+  // showPublishDetails) are now on the innovation flow states themselves and are
+  // seeded from the InnovationFlowSettings query below; the space-wide
+  // calloutDescriptionDisplayMode is deprecated (REMOVE_AFTER=2026-10-31).
   const {
     data: settingsData,
     loading: settingsLoading,
@@ -141,10 +152,8 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
   });
 
   const [columns, setColumns] = useState<LayoutPoolColumn[]>([]);
-  const [postDescriptionDisplay, setPostDescriptionDisplay] = useState<LayoutPostDescriptionDisplay>('expanded');
   const snapshotRef = useRef<Snapshot | null>(null);
   const [saveBar, setSaveBar] = useState<LayoutSaveBarState>({ kind: 'clean' });
-  const [, startTransition] = useTransition();
   const [isStructureMutating, setIsStructureMutating] = useState(false);
   // Bumped by `reseedFromServer` to force the seed effect to re-run even when
   // the flowData/settingsData references haven't changed since the last render
@@ -156,7 +165,6 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
   const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
   const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation();
   const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
-  const [updateSpaceSettings] = useUpdateSpaceSettingsMutation();
 
   // Borrow only the structural action handlers from the legacy hook —
   // they handle the create+sortOrder atomicity and refetches.
@@ -166,17 +174,17 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
   });
 
   // Seed the buffer once, from the first successful query pair.
+  // Per-phase layout settings (descriptionDisplayMode, showPublishDetails) are now on
+  // innovation flow states and seeded via mapCollaborationToLayoutColumns.
   useEffect(() => {
     if (snapshotRef.current !== null) return;
     const collaboration = flowData?.lookup.collaboration;
-    const layoutMode = settingsData?.lookup.space?.settings.layout.calloutDescriptionDisplayMode;
-    if (!collaboration || !layoutMode) return;
+    // settingsData is used only for the collaborationId (resolved above). The
+    // per-phase layout values come from the flow states in flowData.
+    if (!collaboration || !settingsData) return;
     const nextColumns = mapCollaborationToLayoutColumns(collaboration, level);
-    const nextDisplay: LayoutPostDescriptionDisplay =
-      layoutMode === CalloutDescriptionDisplayMode.Collapsed ? 'collapsed' : 'expanded';
-    snapshotRef.current = toSnapshot(nextColumns, nextDisplay);
+    snapshotRef.current = toSnapshot(nextColumns);
     setColumns(nextColumns);
-    setPostDescriptionDisplay(nextDisplay);
   }, [flowData, settingsData, reseedToken, level]);
 
   // Dirty flag — tracks whether the buffer differs from the snapshot.
@@ -260,38 +268,12 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     });
   };
 
-  /** Toggle fires immediately — NOT part of the Save Changes buffer. */
-  const onPostDescriptionDisplayChange = (next: LayoutPostDescriptionDisplay) => {
-    setPostDescriptionDisplay(next);
-    if (snapshotRef.current) {
-      snapshotRef.current = { ...snapshotRef.current, postDescriptionDisplay: next };
-    }
-    startTransition(() => {
-      void updateSpaceSettings({
-        variables: {
-          settingsData: {
-            spaceID: spaceId,
-            settings: {
-              layout: {
-                calloutDescriptionDisplayMode:
-                  next === 'collapsed'
-                    ? CalloutDescriptionDisplayMode.Collapsed
-                    : CalloutDescriptionDisplayMode.Expanded,
-              },
-            },
-          },
-        },
-      });
-    });
-  };
-
   // ────────────────── Save / Reset ──────────────────
 
   const onReset = () => {
     const snap = snapshotRef.current;
     if (!snap) return;
     setColumns(snap.columns.map(c => ({ ...c, callouts: c.callouts.map(cb => ({ ...cb })) })));
-    setPostDescriptionDisplay(snap.postDescriptionDisplay);
     setIsDirty(false);
     setSaveBar({ kind: 'clean' });
   };
@@ -366,6 +348,26 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
       };
     }
     setIsDirty(false);
+  };
+
+  /**
+   * Update both buffer and snapshot for a column saved directly via the Layout dialog.
+   * Mirrors `markColumnSaved` but patches `column.layout` so the Layout dialog is
+   * pre-filled with the just-saved values on the next open (FR-011).
+   * The Apollo refetch from `onSaveLayout` already updates the normalized cache, but
+   * the seed guard (`snapshotRef.current !== null`) blocks the seed effect from
+   * re-deriving the buffer from the fresh data — so we patch the buffer + snapshot
+   * manually, keeping them in sync with the server response.
+   */
+  const markLayoutSaved = (columnId: LayoutColumnId, layout: PhaseLayoutInput) => {
+    const updateCol = (cols: LayoutPoolColumn[]) => cols.map(c => (c.id === columnId ? { ...c, layout } : c));
+    setColumns(prev => updateCol(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = {
+        ...snapshotRef.current,
+        columns: updateCol(snapshotRef.current.columns),
+      };
+    }
   };
 
   const onSave = async () => {
@@ -461,7 +463,7 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
 
       // No refetch needed — update the snapshot to match the buffer directly.
       // We know exactly what the server state is now (our buffer was accepted).
-      snapshotRef.current = toSnapshot(columns, postDescriptionDisplay);
+      snapshotRef.current = toSnapshot(columns);
       setIsDirty(false);
       setSaveBar({ kind: 'clean' });
     } catch (err) {
@@ -539,18 +541,17 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
 
   return {
     columns,
-    postDescriptionDisplay,
     saveBar,
     loading: settingsLoading || flowLoading,
     error: settingsError ?? flowError ?? null,
     onReorder,
     onReorderColumns,
     onMoveToColumn,
-    onPostDescriptionDisplayChange,
     onSave,
     onReset,
     isDirty,
     markColumnSaved,
+    markLayoutSaved,
     markCurrentPhaseChanged,
     onToggleVisibility,
     collaborationId,
@@ -563,6 +564,7 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     existingCalloutsCount: flowData?.lookup.collaboration?.calloutsSet.callouts?.length ?? 0,
     isStructureMutating,
     reseedFromServer: resetSnapshotForReseed,
+    innovationFlowStates: innovationFlowSettings.data.innovationFlow?.states ?? [],
   };
 }
 

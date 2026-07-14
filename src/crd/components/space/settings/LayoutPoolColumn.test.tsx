@@ -16,6 +16,12 @@ vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
   MarkdownEditor: () => null,
 }));
 
+// PhasePostTemplateDialog is tested in its own file; stub it here so the
+// LayoutPoolColumn tests don't depend on Radix Dialog internals.
+vi.mock('./PhasePostTemplateDialog', () => ({
+  PhasePostTemplateDialog: () => null,
+}));
+
 const baseColumn = (overrides?: Partial<LayoutPoolColumnData>): LayoutPoolColumnData => ({
   id: 'col-1',
   title: 'Archive',
@@ -30,6 +36,7 @@ const baseActions = (overrides?: Partial<ColumnMenuActions>): ColumnMenuActions 
   onSetAsDefaultCalloutTemplate: vi.fn(),
   onOpenDefaultCalloutTemplatePicker: vi.fn(),
   onSaveColumnDetails: vi.fn().mockResolvedValue(undefined),
+  onSaveLayout: vi.fn().mockResolvedValue(undefined),
   onDeletePhase: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 });
@@ -78,6 +85,40 @@ describe('LayoutPoolColumn — Delete affordance gating (FR-005/FR-006)', () => 
     renderColumn(baseColumn({ isDeletable: true }), baseActions({ onDeletePhase: undefined }), 'tab');
     await openMenu();
     expect(screen.queryByText('layout.column.deleteTab.menuLabel')).toBeNull();
+  });
+});
+
+describe('LayoutPoolColumn — menu order (US3-AS1, FR-010)', () => {
+  test('menu contains Layout and Post Template entries in the correct relative order', async () => {
+    renderColumn(baseColumn(), baseActions(), 'phase');
+    await openMenu();
+
+    // All four entries must be present
+    const setActive = screen.getByText('layout.column.activePhase.set');
+    const editDetails = screen.getByText('layout.column.editDetails.menuLabel');
+    const layout = screen.getByText('layout.column.phaseLayout.menuLabel');
+    const postTemplate = screen.getByText('layout.column.postTemplate.menuLabel');
+
+    // Verify DOM order: set-active → edit-details → layout → post-template
+    const pairs: Array<[Element, Element]> = [
+      [setActive, editDetails],
+      [editDetails, layout],
+      [layout, postTemplate],
+    ];
+    for (const [a, b] of pairs) {
+      expect(a.compareDocumentPosition(b)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    }
+  });
+
+  test('Post Template menu entry is present and triggers no immediate mutation', async () => {
+    const actions = baseActions();
+    renderColumn(baseColumn(), actions, 'phase');
+    await openMenu();
+    const postTemplateItem = screen.getByText('layout.column.postTemplate.menuLabel');
+    await userEvent.click(postTemplateItem);
+    // Clicking "Post Template" opens the dialog — it must NOT directly call the template picker
+    expect(actions.onOpenDefaultCalloutTemplatePicker).not.toHaveBeenCalled();
+    expect(actions.onSetAsDefaultCalloutTemplate).not.toHaveBeenCalled();
   });
 });
 

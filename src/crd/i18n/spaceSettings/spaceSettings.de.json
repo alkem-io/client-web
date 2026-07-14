@@ -98,6 +98,36 @@
           "confirm": "Ausblenden",
           "cancel": "Abbrechen"
         }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post-Beschreibung",
+          "collapsedHint": "Posts starten eingeklappt — Mitglieder können sie ausklappen, um zu lesen.",
+          "expandedHint": "Posts sind standardmäßig vollständig ausgeklappt.",
+          "switchLabel": "Post-Beschreibungen einklappen"
+        },
+        "publishDetails": {
+          "label": "Autorendetails",
+          "onHint": "Name, Avatar und Datum des Autors werden bei jedem Post angezeigt.",
+          "offHint": "Name, Avatar und Datum des Autors sind bei Posts in dieser Phase ausgeblendet.",
+          "switchLabel": "Autorendetails anzeigen"
+        },
+        "cancel": "Abbrechen",
+        "save": "Speichern"
+      },
+      "postTemplate": {
+        "menuLabel": "Post-Vorlage",
+        "dialogTitle": "Post-Vorlage: {{phaseName}}",
+        "choose": "Vorlage auswählen…",
+        "clear": "Vorlage entfernen",
+        "clearConfirm": {
+          "title": "Post-Vorlage entfernen?",
+          "description": "Die Standard-Post-Vorlage für diese Phase wird entfernt. Neue Posts in dieser Phase verwenden keine Standardvorlage. Bestehende Posts sind nicht betroffen.",
+          "confirm": "Vorlage entfernen",
+          "cancel": "Abbrechen"
+        }
       }
     },
     "addPhase": {

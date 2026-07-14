@@ -98,6 +98,36 @@
           "confirm": "Скриване",
           "cancel": "Отказ"
         }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Описание на Post",
+          "collapsedHint": "Публикациите започват свити — членовете могат да ги разгърнат за четене.",
+          "expandedHint": "Публикациите са напълно разгърнати по подразбиране.",
+          "switchLabel": "Свиване на описанията на Posts"
+        },
+        "publishDetails": {
+          "label": "Данни за публикатора",
+          "onHint": "Името, аватарът и датата на автора се показват за всеки Post.",
+          "offHint": "Името, аватарът и датата на автора са скрити за Posts в тази фаза.",
+          "switchLabel": "Показване на данните за публикатора"
+        },
+        "cancel": "Отказ",
+        "save": "Запазване"
+      },
+      "postTemplate": {
+        "menuLabel": "Post шаблон",
+        "dialogTitle": "Post шаблон: {{phaseName}}",
+        "choose": "Избери шаблон…",
+        "clear": "Изчисти шаблона",
+        "clearConfirm": {
+          "title": "Да се изчисти ли Post шаблонът?",
+          "description": "Стандартният Post шаблон за тази фаза ще бъде премахнат. Новите Posts в тази фаза няма да използват стандартен шаблон. Съществуващите Posts не се засягат.",
+          "confirm": "Изчисти шаблона",
+          "cancel": "Отказ"
+        }
       }
     },
     "addPhase": {

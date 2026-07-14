@@ -1,15 +1,26 @@
 import { useRef, useTransition } from 'react';
 import {
+  refetchInnovationFlowSettingsQuery,
   useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation,
   useSetDefaultCalloutTemplateOnInnovationFlowStateMutation,
   useUpdateCalloutFlowStateMutation,
   useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStateMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { ColumnMenuActions, LayoutColumnId } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
+import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
+import type {
+  ColumnMenuActions,
+  LayoutColumnId,
+  PhaseLayoutInput,
+} from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 
 export type UseColumnMenuOptions = {
   innovationFlowId: string;
+  /**
+   * Collaboration ID — used to refetch InnovationFlowSettings after a layout save
+   * so `column.layout` is accurate on the next dialog open.
+   */
+  collaborationId: string;
   /** Open the shared Callout-template picker for the given flow state — the page hosts the picker. */
   onOpenDefaultCalloutTemplatePicker: (columnId: LayoutColumnId) => void;
   /** All callouts with their current flowState tag + tagset ID, needed for rename cascade. */
@@ -18,6 +29,12 @@ export type UseColumnMenuOptions = {
   columnNames: ReadonlyArray<{ id: string; title: string }>;
   /** Called after a successful save to update the local buffer/snapshot. */
   onColumnSaved?: (columnId: LayoutColumnId, title: string, description: string) => void;
+  /**
+   * Called after a successful layout save so the caller can patch the buffer + snapshot
+   * with the just-saved values (FR-011: pre-fill the Layout dialog on the next open).
+   * Mirrors `onColumnSaved` for the layout fields.
+   */
+  onLayoutSaved?: (columnId: LayoutColumnId, layout: PhaseLayoutInput) => void;
   /**
    * Optimistic mirror for "Mark as active phase" — fired BEFORE the mutation
    * so the column kebab menu reflects the new active state immediately.
@@ -41,19 +58,35 @@ export type UseColumnMenuOptions = {
    * still gates the entry on the column carrying a known `isHidden` (capability present).
    */
   onToggleVisibility?: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
+  /**
+   * All innovation flow states — needed to read current settings for partial-update
+   * in `onSaveLayout`. Provided by the layout data hook.
+   */
+  innovationFlowStates?: ReadonlyArray<{
+    id: string;
+    displayName: string;
+    description?: string | null;
+    settings: {
+      allowNewCallouts: boolean;
+      visible: boolean;
+    };
+  }>;
 };
 
 export function useColumnMenu({
   innovationFlowId,
+  collaborationId,
   onOpenDefaultCalloutTemplatePicker,
   callouts,
   columnNames,
   onColumnSaved,
+  onLayoutSaved,
   onActivePhaseChanged,
   onDeleteState,
   columnCount,
   minimumNumberOfStates,
   onToggleVisibility,
+  innovationFlowStates,
 }: UseColumnMenuOptions): ColumnMenuActions {
   const [updateCurrentState] = useUpdateInnovationFlowCurrentStateMutation();
   const [setDefaultTemplate] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
@@ -147,11 +180,48 @@ export function useColumnMenu({
         }
       : undefined;
 
+  /**
+   * Persist per-phase layout settings immediately (partial-update semantics).
+   * Reads the current non-layout settings from `innovationFlowStates` and merges
+   * only `descriptionDisplayMode` + `showPublishDetails`, leaving `allowNewCallouts`
+   * and `visible` unchanged (defensive per-field merge, mirrors `visible` precedent).
+   */
+  const onSaveLayout = async (columnId: LayoutColumnId, layout: PhaseLayoutInput): Promise<void> => {
+    const state = innovationFlowStates?.find(s => s.id === columnId);
+    if (!state) return;
+
+    await updateFlowState({
+      variables: {
+        innovationFlowStateId: columnId,
+        displayName: state.displayName,
+        description: state.description ?? '',
+        settings: {
+          allowNewCallouts: state.settings.allowNewCallouts,
+          visible: state.settings.visible,
+          descriptionDisplayMode: layout.descriptionCollapsed
+            ? CalloutDescriptionDisplayMode.Collapsed
+            : CalloutDescriptionDisplayMode.Expanded,
+          showPublishDetails: layout.showPublishDetails,
+        },
+      },
+      // Refetch so the local column buffer's `column.layout` reflects the saved
+      // values on the next dialog open (FR-011: "pre-filled with current values").
+      refetchQueries: collaborationId ? [refetchInnovationFlowSettingsQuery({ collaborationId })] : [],
+    });
+
+    // Immediately patch the buffer + snapshot with the saved layout values so the
+    // Layout dialog is pre-filled correctly on the next open — without waiting for
+    // the seed effect (which is blocked by the non-null snapshot guard). Mirrors
+    // `onColumnSaved → markColumnSaved` for the layout fields (corr-client-2).
+    onLayoutSaved?.(columnId, layout);
+  };
+
   return {
     onChangeActivePhase,
     onSetAsDefaultCalloutTemplate,
     onOpenDefaultCalloutTemplatePicker,
     onSaveColumnDetails,
+    onSaveLayout,
     onDeletePhase,
     onToggleVisibility,
   };
