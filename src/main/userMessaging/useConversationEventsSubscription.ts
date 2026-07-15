@@ -1,5 +1,5 @@
 import { gql, useApolloClient } from '@apollo/client';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   ConversationDetailsDocument,
   ConversationMessagesDocument,
@@ -98,20 +98,25 @@ export const useConversationEventsSubscription = () => {
   const currentUserId = userModel?.id;
 
   // Use refs for values read inside the onData callback to avoid stale closures
-  // when the React Compiler memoizes the subscription options.
+  // when the React Compiler memoizes the subscription options. The chat-sound
+  // preference rides along on the current user (UserDetails* fragments) and
+  // defaults to on (matches the server default) until loaded.
+  //
+  // Refs are synced in a useEffect rather than during render (React 19
+  // concurrency hygiene). onData fires post-commit, so it always reads the
+  // latest committed value.
   const selectedRoomIdRef = useRef(selectedRoomId);
-  selectedRoomIdRef.current = selectedRoomId;
-
   const selectedConversationIdRef = useRef(selectedConversationId);
-  selectedConversationIdRef.current = selectedConversationId;
-
-  // The chat-sound preference rides along on the current user (UserDetails*
-  // fragments). Read through a ref because the React Compiler memoizes the
-  // subscription options, so values read inside onData must not be captured by
-  // a stale closure. Defaults to on (matches the server default) until loaded.
   const chatSoundEnabledRef = useRef(true);
-  chatSoundEnabledRef.current =
+
+  const chatSoundEnabled =
     (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.chatMessage ?? true;
+
+  useEffect(() => {
+    selectedRoomIdRef.current = selectedRoomId;
+    selectedConversationIdRef.current = selectedConversationId;
+    chatSoundEnabledRef.current = chatSoundEnabled;
+  }, [selectedRoomId, selectedConversationId, chatSoundEnabled]);
 
   const clearSelectionIfActive: SelectionClearer = (conversationId: string) => {
     if (selectedConversationIdRef.current === conversationId) {
@@ -670,9 +675,7 @@ export const useConversationEventsSubscription = () => {
               unreadCount: () => unreadCount,
             },
           });
-        } else {
         }
-      } else {
       }
     }
   };

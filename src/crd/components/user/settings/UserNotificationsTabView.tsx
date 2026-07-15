@@ -130,22 +130,26 @@ function SoundGroupSection({
 
       <Card>
         <CardContent className="p-0">
-          {group.rows.map((row, idx) => (
-            <div
-              key={row.property}
-              className={cn(
-                'flex items-center justify-between gap-4 p-4 transition-colors hover:bg-muted/10 md:px-6',
-                idx !== group.rows.length - 1 && 'border-b border-border/50'
-              )}
-            >
-              <p className="flex-1 pr-4 text-body-emphasis leading-normal">{row.label}</p>
-              <Switch
-                checked={row.enabled}
-                onCheckedChange={next => onToggle(row.property, next)}
-                aria-label={row.label}
-              />
-            </div>
-          ))}
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="list-none p-0 m-0">
+            {group.rows.map((row, idx) => (
+              <li
+                key={row.property}
+                className={cn(
+                  'flex items-center justify-between gap-4 p-4 transition-colors hover:bg-muted/10 md:px-6',
+                  idx !== group.rows.length - 1 && 'border-b border-border/50'
+                )}
+              >
+                <p className="flex-1 pr-4 text-body-emphasis leading-normal">{row.label}</p>
+                <Switch
+                  checked={row.enabled}
+                  onCheckedChange={next => onToggle(row.property, next)}
+                  aria-label={row.label}
+                />
+              </li>
+            ))}
+          </ul>
         </CardContent>
       </Card>
     </section>

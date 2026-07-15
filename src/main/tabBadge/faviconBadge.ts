@@ -114,6 +114,16 @@ export const setFaviconBadge = (count: number): void => {
     const img = baseImage ?? new Image();
     baseImage = img;
     img.onload = () => draw(img);
+    img.onerror = () => {
+      if (currentGeneration !== generation) {
+        return; // Superseded — a later set/clear already owns the icon state.
+      }
+      // The base icon itself failed to load. activateBadgeLink() has already
+      // detached the originals, so leaving badgeLink in place would show a blank
+      // favicon. Restore the originals instead — best-effort, title prefix still
+      // signals unread (matches the header comment's "left unbadged" intent).
+      clearFaviconBadge();
+    };
     img.src = baseHref;
   } catch {
     // Best-effort — Image/canvas unavailable; the title prefix still signals unread.

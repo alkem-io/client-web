@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   InAppNotificationsUnreadCountDocument,
   useNotificationsUnreadCountSubscription,
@@ -19,19 +19,26 @@ export const InAppNotificationCountSubscriber = () => {
   // Read through refs: onData is memoized by the React Compiler, so values it
   // reads must not be captured by a stale closure.
   const previousCountRef = useRef<number | null>(null);
-  const soundEnabledRef = useRef(true);
-  soundEnabledRef.current =
+  const soundEnabled =
     (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.inAppNotification ?? true;
+  const soundEnabledRef = useRef(soundEnabled);
 
+  // Sync refs after commit rather than during render (React 19 concurrency
+  // hygiene). onData reads the committed values.
+  //
   // This component never unmounts, so the ref outlives a skipped subscription.
-  // Clear it while disabled so the first count of the next enabled session is
-  // treated as "first observed" (never sounds) instead of being compared against
-  // a stale count from a previous session — which would either ding spuriously or,
-  // if the stale count was higher, silence every genuinely new notification until
-  // the count climbed back past it.
-  if (!isEnabled) {
-    previousCountRef.current = null;
-  }
+  // Clear previousCountRef while disabled so the first count of the next enabled
+  // session is treated as "first observed" (never sounds) instead of being
+  // compared against a stale count from a previous session — which would either
+  // ding spuriously or, if the stale count was higher, silence every genuinely
+  // new notification until the count climbed back past it. The subscription is
+  // skipped while disabled, so onData never fires before this clear commits.
+  useEffect(() => {
+    soundEnabledRef.current = soundEnabled;
+    if (!isEnabled) {
+      previousCountRef.current = null;
+    }
+  }, [soundEnabled, isEnabled]);
 
   useNotificationsUnreadCountSubscription({
     skip: !isEnabled,

@@ -14,6 +14,7 @@ let images: FakeImage[] = [];
 
 class FakeImage {
   onload: (() => void) | null = null;
+  onerror: (() => void) | null = null;
   complete = false;
   naturalWidth = 0;
   private _src = '';
@@ -34,6 +35,11 @@ class FakeImage {
     this.complete = true;
     this.naturalWidth = SIZE;
     this.onload?.();
+  }
+
+  /** Simulate the base icon failing to load (blocked, network error, CSP). */
+  fireError(): void {
+    this.onerror?.();
   }
 }
 
@@ -117,6 +123,28 @@ describe('setFaviconBadge', () => {
       faviconBadge.setFaviconBadge(1);
       images[0].fireLoad();
     }).not.toThrow();
+  });
+
+  it('restores the original icons when the base image fails to load', () => {
+    faviconBadge.setFaviconBadge(1); // detaches the originals, starts the async load…
+    expect(iconLinks()).toHaveLength(1); // originals already removed, badge link has no href yet
+
+    images[0].fireError(); // …the base icon never arrives
+
+    // Without the onerror handler the tab would be left with a single href-less
+    // link — a blank favicon. Recovery re-attaches the originals instead.
+    expect(fillText).not.toHaveBeenCalled();
+    expect(iconHrefs()).toEqual(['/favicon.ico', '/favicon-32x32.png', '/favicon-16x16.png']);
+    expect(iconHrefs()).not.toContain(BADGED_DATA_URL);
+  });
+
+  it('ignores a load failure that has already been superseded', () => {
+    faviconBadge.setFaviconBadge(1); // starts an async load…
+    faviconBadge.clearFaviconBadge(); // …superseded before it resolves
+
+    expect(() => images[0].fireError()).not.toThrow();
+    // The generation guard drops the stale error; the clear already restored icons.
+    expect(iconHrefs()).toEqual(['/favicon.ico', '/favicon-32x32.png', '/favicon-16x16.png']);
   });
 
   it('does not throw when canvas export is blocked (tainted canvas)', () => {
