@@ -2,19 +2,21 @@ import { describe, expect, test } from 'vitest';
 import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
 import { resolveFlowStateLayout } from './resolveFlowStateLayout';
 
-const DEFAULTS = { descriptionCollapsed: false, showPublishDetails: true };
+const DEFAULTS = { descriptionCollapsed: false, showPublishDetails: true, forumMode: false };
 
 const makeState = (
   displayName: string,
   descriptionDisplayMode?: CalloutDescriptionDisplayMode,
-  showPublishDetails?: boolean
+  showPublishDetails?: boolean,
+  forumMode?: boolean
 ) => ({
   displayName,
   settings:
-    descriptionDisplayMode !== undefined || showPublishDetails !== undefined
+    descriptionDisplayMode !== undefined || showPublishDetails !== undefined || forumMode !== undefined
       ? {
           descriptionDisplayMode: descriptionDisplayMode ?? null,
           showPublishDetails: showPublishDetails ?? null,
+          forumMode: forumMode ?? null,
         }
       : null,
 });
@@ -27,6 +29,7 @@ describe('resolveFlowStateLayout', () => {
     expect(resolveFlowStateLayout(states, 'Knowledge Base')).toEqual({
       descriptionCollapsed: true,
       showPublishDetails: true,
+      forumMode: false,
     });
   });
 
@@ -35,6 +38,7 @@ describe('resolveFlowStateLayout', () => {
     expect(resolveFlowStateLayout(states, 'Home')).toEqual({
       descriptionCollapsed: false,
       showPublishDetails: true,
+      forumMode: false,
     });
   });
 
@@ -43,6 +47,7 @@ describe('resolveFlowStateLayout', () => {
     expect(resolveFlowStateLayout(states, 'Contributors')).toEqual({
       descriptionCollapsed: false,
       showPublishDetails: false,
+      forumMode: false,
     });
   });
 
@@ -51,6 +56,16 @@ describe('resolveFlowStateLayout', () => {
     expect(resolveFlowStateLayout(states, 'Archive')).toEqual({
       descriptionCollapsed: true,
       showPublishDetails: false,
+      forumMode: false,
+    });
+  });
+
+  test('match with forumMode: true → forum layout enabled', () => {
+    const states = [makeState('Home', CalloutDescriptionDisplayMode.Expanded, true, true)];
+    expect(resolveFlowStateLayout(states, 'Home')).toEqual({
+      descriptionCollapsed: false,
+      showPublishDetails: true,
+      forumMode: true,
     });
   });
 
@@ -152,10 +167,12 @@ describe('resolveFlowStateLayout', () => {
     expect(resolveFlowStateLayout(states, 'Knowledge Base')).toEqual({
       descriptionCollapsed: true,
       showPublishDetails: false,
+      forumMode: false,
     });
     expect(resolveFlowStateLayout(states, 'Home')).toEqual({
       descriptionCollapsed: false,
       showPublishDetails: true,
+      forumMode: false,
     });
   });
 });

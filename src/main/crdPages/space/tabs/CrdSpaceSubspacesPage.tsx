@@ -117,6 +117,7 @@ export default function CrdSpaceSubspacesPage() {
           calloutsSetId={calloutsSetId}
           canReorder={canReorderCallouts}
           loading={calloutsLoading}
+          flowStateDisplayName={flowStateForNewCallouts?.displayName}
         />
       </div>
 

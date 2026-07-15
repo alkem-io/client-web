@@ -952,5 +952,19 @@
       "title": "Noch keine Unterbereiche",
       "description": "Dieser Bereich hat noch keine Unterbereiche."
     }
+  },
+  "forum": {
+    "searchPlaceholder": "Beiträge suchen...",
+    "searchLabel": "Beiträge suchen",
+    "columns": {
+      "title": "Titel",
+      "author": "Autor",
+      "date": "Veröffentlicht",
+      "comments": "Kommentare"
+    },
+    "empty": "Keine Beiträge entsprechen deiner Suche.",
+    "commentCount_one": "{{count}} Kommentar",
+    "commentCount_other": "{{count}} Kommentare",
+    "listLabel": "Beiträge"
   }
 }

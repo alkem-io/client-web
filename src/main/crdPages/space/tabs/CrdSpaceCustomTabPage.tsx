@@ -195,6 +195,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
             calloutsSetId={calloutsSetId}
             canReorder={canReorderCallouts}
             loading={loading}
+            flowStateDisplayName={flowStateForNewCallouts?.displayName}
           />
         )}
       </div>

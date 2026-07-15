@@ -75,6 +75,7 @@ export default function CrdSubspaceCalloutsPage() {
           canCreate={false}
           canReorder={canReorderCallouts}
           loading={calloutsLoading}
+          flowStateDisplayName={activePhase?.label}
         />
       )}
 

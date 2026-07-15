@@ -952,5 +952,19 @@
       "title": "Aucun sous-espace pour le moment",
       "description": "Cet espace n'a pas encore de sous-espaces."
     }
+  },
+  "forum": {
+    "searchPlaceholder": "Rechercher des publications...",
+    "searchLabel": "Rechercher des publications",
+    "columns": {
+      "title": "Titre",
+      "author": "Auteur",
+      "date": "Publié",
+      "comments": "Commentaires"
+    },
+    "empty": "Aucune publication ne correspond à votre recherche.",
+    "commentCount_one": "{{count}} commentaire",
+    "commentCount_other": "{{count}} commentaires",
+    "listLabel": "Publications"
   }
 }

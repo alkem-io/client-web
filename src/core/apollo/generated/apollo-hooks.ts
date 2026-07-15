@@ -23483,6 +23483,7 @@ export const SpaceTabsDocument = gql`
               visible
               descriptionDisplayMode
               showPublishDetails
+              forumMode
             }
           }
         }
@@ -28427,6 +28428,119 @@ export function refetchContributorCollectionByTypeQuery(
   variables: SchemaTypes.ContributorCollectionByTypeQueryVariables
 ) {
   return { query: ContributorCollectionByTypeDocument, variables: variables };
+}
+export const ForumCalloutListDocument = gql`
+    query ForumCalloutList($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      callouts(classificationTagsets: $classificationTagsets) {
+        id
+        sortOrder
+        publishedDate
+        createdDate
+        framing {
+          id
+          profile {
+            id
+            displayName
+            url
+            description
+          }
+        }
+        comments {
+          id
+          messagesCount
+        }
+        createdBy {
+          id
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+        publishedBy {
+          id
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useForumCalloutListQuery__
+ *
+ * To run a query within a React component, call `useForumCalloutListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useForumCalloutListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useForumCalloutListQuery({
+ *   variables: {
+ *      calloutsSetId: // value for 'calloutsSetId'
+ *      classificationTagsets: // value for 'classificationTagsets'
+ *   },
+ * });
+ */
+export function useForumCalloutListQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.ForumCalloutListQuery, SchemaTypes.ForumCalloutListQueryVariables> &
+    ({ variables: SchemaTypes.ForumCalloutListQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.ForumCalloutListQuery, SchemaTypes.ForumCalloutListQueryVariables>(
+    ForumCalloutListDocument,
+    options
+  );
+}
+export function useForumCalloutListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ForumCalloutListQuery,
+    SchemaTypes.ForumCalloutListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.ForumCalloutListQuery, SchemaTypes.ForumCalloutListQueryVariables>(
+    ForumCalloutListDocument,
+    options
+  );
+}
+export function useForumCalloutListSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.ForumCalloutListQuery, SchemaTypes.ForumCalloutListQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.ForumCalloutListQuery, SchemaTypes.ForumCalloutListQueryVariables>(
+    ForumCalloutListDocument,
+    options
+  );
+}
+export type ForumCalloutListQueryHookResult = ReturnType<typeof useForumCalloutListQuery>;
+export type ForumCalloutListLazyQueryHookResult = ReturnType<typeof useForumCalloutListLazyQuery>;
+export type ForumCalloutListSuspenseQueryHookResult = ReturnType<typeof useForumCalloutListSuspenseQuery>;
+export type ForumCalloutListQueryResult = Apollo.QueryResult<
+  SchemaTypes.ForumCalloutListQuery,
+  SchemaTypes.ForumCalloutListQueryVariables
+>;
+export function refetchForumCalloutListQuery(variables: SchemaTypes.ForumCalloutListQueryVariables) {
+  return { query: ForumCalloutListDocument, variables: variables };
 }
 export const SpaceCollectionSubspacesDocument = gql`
     query SpaceCollectionSubspaces($calloutId: UUID!) {

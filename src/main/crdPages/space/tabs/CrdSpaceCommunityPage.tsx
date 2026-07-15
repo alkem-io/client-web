@@ -126,6 +126,7 @@ export default function CrdSpaceCommunityPage() {
           calloutsSetId={calloutsSetId}
           canReorder={canReorderCallouts}
           loading={loading}
+          flowStateDisplayName={flowStateForNewCallouts?.displayName}
         />
       </div>
 

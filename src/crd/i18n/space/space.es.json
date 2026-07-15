@@ -952,5 +952,19 @@
       "title": "Aún no hay subespacios",
       "description": "Este espacio aún no tiene subespacios."
     }
+  },
+  "forum": {
+    "searchPlaceholder": "Buscar publicaciones...",
+    "searchLabel": "Buscar publicaciones",
+    "columns": {
+      "title": "Título",
+      "author": "Autor",
+      "date": "Publicado",
+      "comments": "Comentarios"
+    },
+    "empty": "Ninguna publicación coincide con tu búsqueda.",
+    "commentCount_one": "{{count}} comentario",
+    "commentCount_other": "{{count}} comentarios",
+    "listLabel": "Publicaciones"
   }
 }

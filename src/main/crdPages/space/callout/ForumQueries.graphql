@@ -1,0 +1,56 @@
+# Forum mode (POC): eager query for a flow state's callouts.
+#
+# Unlike the lazy feed (CalloutsListForFeed → id + sortOrder, each card
+# self-fetches), the forum table needs every callout's title, author, publish
+# date and comment count up front so the search box can filter across the whole
+# list. One query, all rows.
+query ForumCalloutList($calloutsSetId: UUID!, $classificationTagsets: [TagsetArgs!] = []) {
+  lookup {
+    calloutsSet(ID: $calloutsSetId) {
+      id
+      callouts(classificationTagsets: $classificationTagsets) {
+        id
+        sortOrder
+        publishedDate
+        createdDate
+        framing {
+          id
+          profile {
+            id
+            displayName
+            url
+            description
+          }
+        }
+        comments {
+          id
+          messagesCount
+        }
+        createdBy {
+          id
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+        publishedBy {
+          id
+          profile {
+            id
+            displayName
+            url
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}

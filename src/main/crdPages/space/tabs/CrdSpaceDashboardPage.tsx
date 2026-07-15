@@ -117,6 +117,7 @@ export default function CrdSpaceDashboardPage() {
         calloutsSetId={calloutsSetId}
         canReorder={canReorderCallouts}
         loading={loading}
+        flowStateDisplayName={flowStateForNewCallouts?.displayName}
       />
 
       {canCreateCallout && (

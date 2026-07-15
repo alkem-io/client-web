@@ -2154,6 +2154,7 @@ export type InnovationFlowStateFieldPolicy = {
 export type InnovationFlowStateSettingsKeySpecifier = (
   | 'allowNewCallouts'
   | 'descriptionDisplayMode'
+  | 'forumMode'
   | 'showPublishDetails'
   | 'visible'
   | InnovationFlowStateSettingsKeySpecifier
@@ -2161,6 +2162,7 @@ export type InnovationFlowStateSettingsKeySpecifier = (
 export type InnovationFlowStateSettingsFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
   descriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  forumMode?: FieldPolicy<any> | FieldReadFunction<any>;
   showPublishDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };

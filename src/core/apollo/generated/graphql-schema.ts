@@ -3554,6 +3554,8 @@ export type InnovationFlowStateSettings = {
   allowNewCallouts: Scalars['Boolean']['output'];
   /** How Post descriptions in this State are displayed in the feed: expanded or collapsed. Default expanded. */
   descriptionDisplayMode: CalloutDescriptionDisplayMode;
+  /** Whether Callouts in this State are presented as a forum: a compact table (title, author, date, comment count) with a search box, instead of the default feed. Presentation only. Default true (POC). */
+  forumMode: Scalars['Boolean']['output'];
   /** Whether Posts in this State show publish details (publisher, publish date, avatar) in the feed. Presentation only — does not restrict access to publisher data. Default true. */
   showPublishDetails: Scalars['Boolean']['output'];
   /** Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content. */
@@ -30005,6 +30007,7 @@ export type SpaceTabsQuery = {
                   visible: boolean;
                   descriptionDisplayMode: CalloutDescriptionDisplayMode;
                   showPublishDetails: boolean;
+                  forumMode: boolean;
                 };
               }>;
             };
@@ -35666,6 +35669,73 @@ export type ContributorCollectionByTypeQuery = {
                 | undefined;
             }>;
           };
+        }
+      | undefined;
+  };
+};
+
+export type ForumCalloutListQueryVariables = Exact<{
+  calloutsSetId: Scalars['UUID']['input'];
+  classificationTagsets?: InputMaybe<Array<TagsetArgs> | TagsetArgs>;
+}>;
+
+export type ForumCalloutListQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    calloutsSet?:
+      | {
+          __typename?: 'CalloutsSet';
+          id: string;
+          callouts: Array<{
+            __typename?: 'Callout';
+            id: string;
+            sortOrder: number;
+            publishedDate?: Date | undefined;
+            createdDate: Date;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                url: string;
+                description?: string | undefined;
+              };
+            };
+            comments?: { __typename?: 'Room'; id: string; messagesCount: number } | undefined;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            publishedBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        url: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+          }>;
         }
       | undefined;
   };

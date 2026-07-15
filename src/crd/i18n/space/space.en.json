@@ -952,5 +952,19 @@
       "title": "No subspaces yet",
       "description": "This space has no subspaces yet."
     }
+  },
+  "forum": {
+    "searchPlaceholder": "Search posts...",
+    "searchLabel": "Search posts",
+    "columns": {
+      "title": "Title",
+      "author": "Author",
+      "date": "Published",
+      "comments": "Comments"
+    },
+    "empty": "No posts match your search.",
+    "commentCount_one": "{{count}} comment",
+    "commentCount_other": "{{count}} comments",
+    "listLabel": "Posts"
   }
 }

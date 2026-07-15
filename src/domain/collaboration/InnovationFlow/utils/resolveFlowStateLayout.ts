@@ -8,12 +8,15 @@ import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-s
 export type FlowStateLayout = {
   descriptionCollapsed: boolean;
   showPublishDetails: boolean;
+  /** POC: when true, the state's callouts render as a searchable forum table instead of the feed. */
+  forumMode: boolean;
 };
 
 /** FR-006 defaults: fail toward pre-feature behaviour, never toward hiding content. */
 const DEFAULTS: FlowStateLayout = {
   descriptionCollapsed: false,
   showPublishDetails: true,
+  forumMode: false,
 };
 
 /**
@@ -26,6 +29,7 @@ type StateWithLayout = {
   settings?: {
     descriptionDisplayMode?: CalloutDescriptionDisplayMode | null;
     showPublishDetails?: boolean | null;
+    forumMode?: boolean | null;
   } | null;
 };
 
@@ -66,6 +70,8 @@ export function resolveFlowStateLayout(
   const descriptionCollapsed = settings.descriptionDisplayMode === CalloutDescriptionDisplayMode.Collapsed;
   // Defensive: treat null/undefined as the default (true = show details).
   const showPublishDetails = settings.showPublishDetails !== false;
+  // POC: forum layout is opt-in per state; only an explicit true switches it on.
+  const forumMode = settings.forumMode === true;
 
-  return { descriptionCollapsed, showPublishDetails };
+  return { descriptionCollapsed, showPublishDetails, forumMode };
 }

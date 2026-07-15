@@ -952,5 +952,19 @@
       "title": "Nog geen subspaces",
       "description": "Deze space heeft nog geen subspaces."
     }
+  },
+  "forum": {
+    "searchPlaceholder": "Zoek posts...",
+    "searchLabel": "Zoek posts",
+    "columns": {
+      "title": "Titel",
+      "author": "Auteur",
+      "date": "Gepubliceerd",
+      "comments": "Reacties"
+    },
+    "empty": "Geen posts komen overeen met je zoekopdracht.",
+    "commentCount_one": "{{count}} reactie",
+    "commentCount_other": "{{count}} reacties",
+    "listLabel": "Posts"
   }
 }
