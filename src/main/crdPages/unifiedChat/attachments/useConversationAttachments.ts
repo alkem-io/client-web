@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { ComposerAttachment } from '@/crd/components/comment/types';
@@ -51,11 +51,23 @@ export function useConversationAttachments(
   const [uploadFile] = useUploadFileMutation();
   const [attachments, setAttachments] = useState<StagedAttachment[]>([]);
   const [error, setError] = useState<string | undefined>();
-  // Live count of staged attachments, kept in lockstep with `attachments`.
-  // Read instead of the `attachments` state closure when enforcing the count
-  // cap so two rapid back-to-back picks (before a re-render) can't both see a
-  // stale length and together exceed the limit (FR-020).
+  // Live count of slots the draft occupies against the cap = staged chips that
+  // are already present + slots reserved for accepted files whose chip has not
+  // been added yet. Read instead of the `attachments` state closure when
+  // enforcing the count cap so two rapid back-to-back picks (before a re-render)
+  // can't both see a stale length and together exceed the limit (FR-020).
+  // Invariant: stagedCountRef === (present chips) + pendingReservationRef.
   const stagedCountRef = useRef(0);
+  // Slots reserved by an in-flight `attachFiles` batch whose chips have not yet
+  // been added (one is decremented as each chip lands). Tracked separately so a
+  // `removeAttachment` mid-batch can subtract the removed chip without clobbering
+  // the reservations for files later in the same batch (which would otherwise let
+  // a subsequent pick exceed the cap client-side).
+  const pendingReservationRef = useRef(0);
+  // Mirrors the current `conversationId` for async upload callbacks: an upload
+  // that resolves/rejects after the user switched conversations must not paint
+  // the new conversation's composer (stale error / stale chip update).
+  const conversationIdRef = useRef(conversationId);
 
   const enabled = Boolean(storageConfig?.canUpload);
 
@@ -64,10 +76,15 @@ export function useConversationAttachments(
   // never carries a previous conversation's document ids — the server READ-gates
   // them to the new bucket and would reject the whole send (the orphaned
   // temporary uploads are swept server-side, FR-012).
-  useEffect(() => {
+  // useLayoutEffect (not useEffect) so the reset commits before paint: a cached
+  // bucket conversation must never render for even one frame with the previous
+  // conversation's staged ids.
+  useLayoutEffect(() => {
+    conversationIdRef.current = conversationId;
     setAttachments([]);
     setError(undefined);
     stagedCountRef.current = 0;
+    pendingReservationRef.current = 0;
   }, [conversationId]);
 
   const describeRejection = (rejection: AttachmentRejection): string => {
@@ -85,6 +102,9 @@ export function useConversationAttachments(
   };
 
   const attachFiles = async (files: File[]): Promise<void> => {
+    // The conversation this batch belongs to; if it changes while an upload is
+    // in flight, later resolutions/rejections must not paint the new one.
+    const requestConversationId = conversationId;
     setError(undefined);
     if (!storageConfig) return;
 
@@ -100,11 +120,17 @@ export function useConversationAttachments(
 
     // Reserve the accepted slots synchronously (before the first upload await)
     // so a back-to-back pick validates against the new count, not the stale one.
+    // The reservation is also tracked as `pending` and drawn down one-per-chip
+    // below, so a mid-batch `removeAttachment` can't discard the not-yet-added
+    // slots.
     stagedCountRef.current += accepted.length;
+    pendingReservationRef.current += accepted.length;
 
     for (const file of accepted) {
       const stagedId = `${file.name}:${Date.now()}:${Math.random().toString(36).slice(2)}`;
       setAttachments(prev => [...prev, { id: stagedId, name: file.name, status: 'uploading', mimeType: file.type }]);
+      // This reserved slot is now a present chip.
+      pendingReservationRef.current -= 1;
 
       try {
         const { data } = await uploadFile({
@@ -113,6 +139,9 @@ export function useConversationAttachments(
             uploadData: { storageBucketId: storageConfig.storageBucketId, temporaryLocation: true },
           },
         });
+        // Conversation switched away while this upload was in flight — the draft
+        // (and its refs) were reset for the new conversation; drop the result.
+        if (conversationIdRef.current !== requestConversationId) return;
         const documentId = data?.uploadFileOnStorageBucket.id;
         if (!documentId) {
           throw new Error('Upload returned no document id');
@@ -123,6 +152,9 @@ export function useConversationAttachments(
           )
         );
       } catch {
+        // Same guard as the success path: a rejection from a previous
+        // conversation must not surface a spurious error on the current one.
+        if (conversationIdRef.current !== requestConversationId) return;
         setAttachments(prev =>
           prev.map(attachment => (attachment.id === stagedId ? { ...attachment, status: 'error' } : attachment))
         );
@@ -134,7 +166,11 @@ export function useConversationAttachments(
   const removeAttachment = (id: string): void => {
     setAttachments(prev => {
       const next = prev.filter(attachment => attachment.id !== id);
-      stagedCountRef.current = next.length;
+      // Re-derive from the invariant (present chips + pending reservations)
+      // rather than `next.length` alone, so removing an already-added chip while
+      // later files in the same batch are still uploading does not discard their
+      // reserved slots. Idempotent under a double-invoked updater.
+      stagedCountRef.current = next.length + pendingReservationRef.current;
       // Re-derive the error from what remains: a stale validation/upload message
       // for a now-removed file should not linger. Keep the upload-failed message
       // only while some staged attachment is still in an error state.
@@ -149,6 +185,7 @@ export function useConversationAttachments(
     setAttachments([]);
     setError(undefined);
     stagedCountRef.current = 0;
+    pendingReservationRef.current = 0;
   };
 
   const accept = storageConfig?.allowedMimeTypes?.length ? storageConfig.allowedMimeTypes.join(',') : undefined;

@@ -27,6 +27,17 @@ const makeFile = (name: string, type: string, size = 10): File => {
   return file;
 };
 
+const batch = (prefix: string, count: number): File[] =>
+  Array.from({ length: count }, (_, i) => makeFile(`${prefix}-${i}.png`, 'image/png'));
+
+// Flush pending microtasks + a macrotask so an in-flight upload's continuation
+// (chip status update, next loop iteration) commits inside act().
+const tick = async (): Promise<void> => {
+  await act(async () => {
+    await new Promise(resolve => setTimeout(resolve, 0));
+  });
+};
+
 describe('useConversationAttachments', () => {
   beforeEach(() => {
     mockUploadFile.mockReset();
@@ -131,6 +142,102 @@ describe('useConversationAttachments', () => {
     expect(result.current.attachments).toHaveLength(10);
     expect(result.current.documentIds).toHaveLength(10);
     expect(result.current.error).toBe('comments.attachments.errorTooMany');
+  });
+
+  test('removing a chip mid-batch keeps the count cap honest for a later pick', async () => {
+    // Deferred uploads so chips are added one iteration at a time and we can
+    // remove an already-added chip while later files in the same batch are still
+    // in flight (the reservation-drift scenario).
+    const resolvers: Array<(id: string) => void> = [];
+    mockUploadFile.mockImplementation(
+      () =>
+        new Promise(resolve => {
+          resolvers.push(id => resolve({ data: { uploadFileOnStorageBucket: { id, url: 'https://x' } } }));
+        })
+    );
+    const resolveNext = async (id: string): Promise<void> => {
+      const resolve = resolvers.shift();
+      resolve?.(id);
+      await tick();
+    };
+
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+
+    // Start a 6-file batch; only the first chip is added before it awaits.
+    act(() => {
+      void result.current.attachFiles(batch('a', 6));
+    });
+    await tick();
+    expect(result.current.attachments).toHaveLength(1);
+
+    // Let a-0 finish uploading; a-1's chip is now added too.
+    await resolveNext('doc-a0');
+    expect(result.current.attachments).toHaveLength(2);
+
+    // Remove a-0 while a-2..a-5 are still to be added by the same batch. The old
+    // code reset the count ref to the current length (1), discarding the four
+    // not-yet-added reservations.
+    act(() => {
+      result.current.removeAttachment(result.current.attachments[0].id);
+    });
+    expect(result.current.attachments).toHaveLength(1);
+
+    // Drain the remaining uploads (a-1..a-5).
+    await resolveNext('doc-a1');
+    await resolveNext('doc-a2');
+    await resolveNext('doc-a3');
+    await resolveNext('doc-a4');
+    await resolveNext('doc-a5');
+    expect(result.current.attachments).toHaveLength(5);
+
+    // A later pick of 6 must accept only 5 to reach — but not exceed — the cap of
+    // 10. With the drift bug the ref was 1, so all 6 would have been accepted.
+    mockUploadFile.mockImplementation(() =>
+      Promise.resolve({ data: { uploadFileOnStorageBucket: { id: 'doc-b', url: 'https://x' } } })
+    );
+    await act(async () => {
+      await result.current.attachFiles(batch('b', 6));
+    });
+
+    expect(result.current.attachments).toHaveLength(10);
+    expect(result.current.error).toBe('comments.attachments.errorTooMany');
+  });
+
+  test('a stale upload rejection from a previous conversation is not surfaced in the new one', async () => {
+    let rejectA: (reason?: unknown) => void = () => {};
+    mockUploadFile.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectA = reject;
+        })
+    );
+    const { result, rerender } = renderHook(
+      ({ conversationId }) => useConversationAttachments(bucketConfig, conversationId),
+      { initialProps: { conversationId: 'conv-A' } }
+    );
+
+    // Stage a file in conversation A; its upload stays in flight.
+    act(() => {
+      void result.current.attachFiles([makeFile('a.png', 'image/png')]);
+    });
+    await tick();
+    expect(result.current.attachments).toHaveLength(1);
+
+    // Switch to conversation B — the draft (and refs) reset.
+    act(() => {
+      rerender({ conversationId: 'conv-B' });
+    });
+    expect(result.current.attachments).toHaveLength(0);
+
+    // A's upload now rejects. It must NOT repaint conversation B's composer with
+    // a spurious "upload failed" error.
+    await act(async () => {
+      rejectA(new Error('boom'));
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.error).toBeUndefined();
+    expect(result.current.attachments).toHaveLength(0);
   });
 
   test('removeAttachment re-derives the error (clears a stale upload failure)', async () => {
