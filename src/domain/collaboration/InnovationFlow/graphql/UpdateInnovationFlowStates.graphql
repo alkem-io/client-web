@@ -54,6 +54,24 @@ mutation UpdateInnovationFlowState(
   }
 }
 
+mutation UpdateInnovationFlowStateSettings($innovationFlowStateId: UUID!, $settings: UpdateInnovationFlowStateSettingsInput) {
+  # True partial update (FR-013): sends ONLY settings — no displayName, no description.
+  # Every non-settings field is optional on the input and "omission leaves the stored value
+  # unchanged", so a concurrent rename or description edit is never clobbered by a settings save.
+  updateInnovationFlowState(
+    stateData: { innovationFlowStateID: $innovationFlowStateId, settings: $settings }
+  ) {
+    id
+    displayName
+    settings {
+      allowNewCallouts
+      visible
+      descriptionDisplayMode
+      showPublishDetails
+    }
+  }
+}
+
 mutation UpdateInnovationFlowStatesSortOrder($innovationFlowID: UUID!, $stateIDs: [UUID!]!) {
   updateInnovationFlowStatesSortOrder(sortOrderData: { innovationFlowID: $innovationFlowID, stateIDs: $stateIDs }) {
     id

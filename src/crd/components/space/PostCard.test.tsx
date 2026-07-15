@@ -82,9 +82,13 @@ describe('PostCard showPublishDetails', () => {
     expect(titleInContent?.textContent).toBe('My Post');
   });
 
-  it('shows draft badge in both modes', () => {
-    const draft = { ...basePost, isDraft: true, showPublishDetails: false };
-    render(<PostCard post={draft} />);
+  it('shows draft badge when showPublishDetails=false', () => {
+    render(<PostCard post={{ ...basePost, isDraft: true, showPublishDetails: false }} />);
+    expect(screen.getByText(/draft/i)).toBeInTheDocument();
+  });
+
+  it('shows draft badge when showPublishDetails=true', () => {
+    render(<PostCard post={{ ...basePost, isDraft: true, showPublishDetails: true }} />);
     expect(screen.getByText(/draft/i)).toBeInTheDocument();
   });
 

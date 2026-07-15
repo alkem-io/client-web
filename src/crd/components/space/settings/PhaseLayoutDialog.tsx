@@ -1,7 +1,6 @@
 import { LayoutDashboard } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Label } from '@/crd/primitives/label';
@@ -80,7 +79,7 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
           {/* Description height control */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex flex-col gap-0.5">
-              <Label htmlFor="phase-description-height" className={cn('text-body-emphasis', 'cursor-pointer')}>
+              <Label htmlFor="phase-description-height" className="text-body-emphasis cursor-pointer">
                 {t('layout.column.phaseLayout.descriptionHeight.label')}
               </Label>
               <p className="text-caption text-muted-foreground">
@@ -100,7 +99,7 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
           {/* Publisher & Date control */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex flex-col gap-0.5">
-              <Label htmlFor="phase-show-publish-details" className={cn('text-body-emphasis', 'cursor-pointer')}>
+              <Label htmlFor="phase-show-publish-details" className="text-body-emphasis cursor-pointer">
                 {t('layout.column.phaseLayout.publishDetails.label')}
               </Label>
               <p className="text-caption text-muted-foreground">
@@ -123,7 +122,7 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
             {t('layout.column.phaseLayout.cancel')}
           </Button>
           <Button type="button" onClick={handleSave} disabled={saving} aria-busy={saving}>
-            {t('layout.column.phaseLayout.save')}
+            {saving ? t('layout.column.phaseLayout.saving') : t('layout.column.phaseLayout.save')}
           </Button>
         </DialogFooter>
       </DialogContent>

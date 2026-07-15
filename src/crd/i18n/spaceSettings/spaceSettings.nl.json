@@ -38,11 +38,6 @@
       "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
       "confirm": "Wijzigingen verwerpen"
     },
-    "postDescriptionDisplay": {
-      "title": "Weergave post-beschrijving",
-      "switchLabel": "Post-beschrijvingen standaard inklappen",
-      "description": "Klap post-beschrijvingen standaard in. Als dit aanstaat, tonen beschrijvingen een \"Lees meer\"-link in plaats van de volledige tekst."
-    },
     "column": {
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
@@ -63,6 +58,7 @@
         "dialogTitle": "Details bewerken: stroomfase",
         "titleLabel": "Titel",
         "titleTooShort": "De titel moet minimaal 3 tekens lang zijn",
+        "titleDuplicate": "Er bestaat al een fase met deze naam.",
         "insertEmoji": "Emoji invoegen",
         "descriptionLabel": "Beschrijving",
         "descriptionPlaceholder": "Beschrijving",
@@ -115,6 +111,7 @@
           "switchLabel": "Publicatiegegevens tonen"
         },
         "cancel": "Annuleren",
+        "saving": "Opslaan…",
         "save": "Opslaan"
       },
       "postTemplate": {

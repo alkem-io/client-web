@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { PhaseLayoutDialog } from './PhaseLayoutDialog';
@@ -83,15 +83,31 @@ describe('PhaseLayoutDialog', () => {
     expect(onSave).toHaveBeenCalledWith({ descriptionCollapsed: true, showPublishDetails: false });
   });
 
-  test('closes only after an async save resolves', async () => {
-    const onSave = vi.fn().mockResolvedValue(undefined);
+  test('closes only AFTER the async save resolves (not before)', async () => {
+    // A manually-controlled promise proves ordering — a `mockResolvedValue` would settle in
+    // the same microtask flush, so a dialog that closed *before* awaiting would still pass.
+    let resolveSave!: () => void;
+    const savePromise = new Promise<void>(res => {
+      resolveSave = res;
+    });
+    const onSave = vi.fn().mockReturnValue(savePromise);
     const onOpenChange = vi.fn();
     renderDialog(defaultValues, onSave, onOpenChange);
 
     await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
 
+    // Save fired but is still pending → dialog must stay open.
     expect(onSave).toHaveBeenCalledOnce();
-    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(onOpenChange).not.toHaveBeenCalled();
+
+    // Pending UI (CW-4): the button's accessible name swaps to the saving key, disabled + aria-busy.
+    const pendingButton = screen.getByRole('button', { name: 'layout.column.phaseLayout.saving' });
+    expect(pendingButton).toBeDisabled();
+    expect(pendingButton).toHaveAttribute('aria-busy', 'true');
+
+    // Resolve the save → the dialog now closes.
+    resolveSave();
+    await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
   });
 
   test('stays open when the async save rejects (no silent discard)', async () => {

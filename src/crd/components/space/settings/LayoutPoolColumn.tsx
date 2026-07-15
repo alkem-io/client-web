@@ -205,6 +205,7 @@ export function LayoutPoolColumn({
         open={editDetailsOpen}
         title={column.title}
         description={column.description}
+        otherTitles={otherColumns.map(c => c.title)}
         onSave={async (title, description) => {
           await columnMenuActions.onSaveColumnDetails(column.id, title, description);
           setEditDetailsOpen(false);
@@ -395,6 +396,8 @@ type EditDetailsDialogProps = {
   open: boolean;
   title: string;
   description: string;
+  /** Titles of every OTHER column — a rename to any of these (case-insensitive) is rejected. */
+  otherTitles: string[];
   onSave: (title: string, description: string) => void | Promise<void>;
   onCancel: () => void;
 } & MarkdownUploadProps;
@@ -403,6 +406,7 @@ function EditDetailsDialog({
   open,
   title: initialTitle,
   description: initialDescription,
+  otherTitles,
   onSave,
   onCancel,
   onImageUpload,
@@ -415,7 +419,14 @@ function EditDetailsDialog({
   const [saving, setSaving] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
+  const trimmedTitle = title.trim();
   const titleTooShort = isColumnTitleTooShort(title);
+  // Phase display names must be unique — the feed joins posts to their phase by NAME, so two
+  // phases sharing a name break the join (ambiguous settings, duplicated posts, rename cascade
+  // dragging the other phase's posts). Mirrors AddPhaseDialog's guard for the rename path.
+  const titleDuplicate =
+    trimmedTitle.length > 0 && otherTitles.some(n => n.toLowerCase() === trimmedTitle.toLowerCase());
+  const titleInvalid = titleTooShort || titleDuplicate;
 
   const isDirty = title !== initialTitle || description !== initialDescription;
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
@@ -425,7 +436,7 @@ function EditDetailsDialog({
   });
 
   const handleSave = async () => {
-    if (titleTooShort) return;
+    if (titleInvalid) return;
     setSaving(true);
     try {
       await onSave(title.trim(), description);
@@ -457,7 +468,7 @@ function EditDetailsDialog({
                   onChange={e => setTitle(e.target.value)}
                   placeholder={t('layout.column.titlePlaceholder')}
                   aria-label={t('layout.column.editDetails.titleLabel')}
-                  aria-invalid={titleTooShort}
+                  aria-invalid={titleInvalid}
                   disabled={saving}
                   className="flex-1 text-subsection-title"
                 />
@@ -471,6 +482,9 @@ function EditDetailsDialog({
               </div>
               {titleTooShort && (
                 <p className="text-caption text-destructive">{t('layout.column.editDetails.titleTooShort')}</p>
+              )}
+              {titleDuplicate && !titleTooShort && (
+                <p className="text-caption text-destructive">{t('layout.column.editDetails.titleDuplicate')}</p>
               )}
             </div>
 
@@ -491,7 +505,7 @@ function EditDetailsDialog({
             <Button type="button" variant="ghost" onClick={requestClose} disabled={saving}>
               {t('layout.column.editDetails.cancel')}
             </Button>
-            <Button type="button" onClick={handleSave} disabled={saving || titleTooShort}>
+            <Button type="button" onClick={handleSave} disabled={saving || titleInvalid}>
               {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
             </Button>
           </DialogFooter>

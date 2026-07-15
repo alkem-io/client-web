@@ -38,11 +38,6 @@
       "description": "Your unsaved Layout changes will be reverted to the last saved state. This cannot be undone.",
       "confirm": "Discard Changes"
     },
-    "postDescriptionDisplay": {
-      "title": "Post description display",
-      "switchLabel": "Collapse post descriptions by default",
-      "description": "Collapse post descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
-    },
     "column": {
       "titlePlaceholder": "Column title",
       "descriptionPlaceholder": "Describe this column…",
@@ -63,6 +58,7 @@
         "dialogTitle": "Edit Details: Flow Phase",
         "titleLabel": "Title",
         "titleTooShort": "The title must be at least 3 characters long",
+        "titleDuplicate": "A phase with this name already exists.",
         "insertEmoji": "Insert emoji",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Description",
@@ -115,6 +111,7 @@
           "switchLabel": "Show publisher details"
         },
         "cancel": "Cancel",
+        "saving": "Saving…",
         "save": "Save"
       },
       "postTemplate": {

@@ -73,7 +73,7 @@ export type PhaseLayoutInput = {
 export type ColumnMenuActions = {
   onChangeActivePhase: (columnId: LayoutColumnId) => void;
   /** Set (templateId) or clear (null) this flow state's default Callout template. Fires the mutation immediately. */
-  onSetAsDefaultCalloutTemplate: (columnId: LayoutColumnId, templateId: string | null) => void;
+  onSetAsDefaultCalloutTemplate: (columnId: LayoutColumnId, templateId: string | null) => void | Promise<void>;
   /** Open the shared template picker (Callout templates) to choose this flow state's default — the consumer hosts it. */
   onOpenDefaultCalloutTemplatePicker: (columnId: LayoutColumnId) => void;
   /** Fires mutation immediately — saves title + description to backend, cascades rename to callouts. */
@@ -98,5 +98,3 @@ export type ColumnMenuActions = {
    */
   onToggleVisibility?: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
 };
-
-export type LayoutPostDescriptionDisplay = 'collapsed' | 'expanded';

@@ -41,12 +41,17 @@ const baseActions = (overrides?: Partial<ColumnMenuActions>): ColumnMenuActions 
   ...overrides,
 });
 
-const renderColumn = (column: LayoutPoolColumnData, actions: ColumnMenuActions, entityNoun: 'tab' | 'phase') =>
+const renderColumn = (
+  column: LayoutPoolColumnData,
+  actions: ColumnMenuActions,
+  entityNoun: 'tab' | 'phase',
+  otherColumns: ReadonlyArray<{ id: string; title: string }> = []
+) =>
   render(
     <DndContext>
       <LayoutPoolColumn
         column={column}
-        otherColumns={[]}
+        otherColumns={otherColumns}
         showDescription={false}
         onMoveToColumn={vi.fn()}
         onViewPost={vi.fn()}
@@ -119,6 +124,40 @@ describe('LayoutPoolColumn — menu order (US3-AS1, FR-010)', () => {
     // Clicking "Post Template" opens the dialog — it must NOT directly call the template picker
     expect(actions.onOpenDefaultCalloutTemplatePicker).not.toHaveBeenCalled();
     expect(actions.onSetAsDefaultCalloutTemplate).not.toHaveBeenCalled();
+  });
+});
+
+describe('LayoutPoolColumn — Edit Details duplicate-name guard (M3)', () => {
+  const openEditDetails = async () => {
+    await openMenu();
+    await userEvent.click(screen.getByText('layout.column.editDetails.menuLabel'));
+  };
+
+  test('renaming a phase to another phase’s name blocks Save and shows the duplicate error', async () => {
+    renderColumn(baseColumn({ title: 'Archive' }), baseActions(), 'phase', [{ id: 'col-2', title: 'Discussion' }]);
+    await openEditDetails();
+
+    const titleInput = screen.getByLabelText('layout.column.editDetails.titleLabel');
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'discussion'); // case-insensitive collision with "Discussion"
+
+    expect(screen.getByText('layout.column.editDetails.titleDuplicate')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'layout.column.editDetails.save' })).toBeDisabled();
+  });
+
+  test('a unique name clears the error and re-enables Save', async () => {
+    renderColumn(baseColumn({ title: 'Archive' }), baseActions(), 'phase', [{ id: 'col-2', title: 'Discussion' }]);
+    await openEditDetails();
+
+    const titleInput = screen.getByLabelText('layout.column.editDetails.titleLabel');
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'Discussion');
+    expect(screen.getByRole('button', { name: 'layout.column.editDetails.save' })).toBeDisabled();
+
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'Reflections');
+    expect(screen.queryByText('layout.column.editDetails.titleDuplicate')).toBeNull();
+    expect(screen.getByRole('button', { name: 'layout.column.editDetails.save' })).toBeEnabled();
   });
 });
 

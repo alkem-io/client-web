@@ -38,11 +38,6 @@
       "description": "Tus cambios de Diseño no guardados se revertirán al último estado guardado. Esta acción no se puede deshacer.",
       "confirm": "Descartar cambios"
     },
-    "postDescriptionDisplay": {
-      "title": "Visualización de descripciones de publicaciones",
-      "switchLabel": "Contraer descripciones de publicaciones por defecto",
-      "description": "Contrae las descripciones de publicaciones por defecto. Cuando está activado, las descripciones muestran un enlace \"Leer más\" en lugar del texto completo."
-    },
     "column": {
       "titlePlaceholder": "Título de la columna",
       "descriptionPlaceholder": "Describe esta columna…",
@@ -63,6 +58,7 @@
         "dialogTitle": "Editar detalles: fase del flujo",
         "titleLabel": "Título",
         "titleTooShort": "El título debe tener al menos 3 caracteres",
+        "titleDuplicate": "Ya existe una fase con este nombre.",
         "insertEmoji": "Insertar emoji",
         "descriptionLabel": "Descripción",
         "descriptionPlaceholder": "Descripción",
@@ -115,6 +111,7 @@
           "switchLabel": "Mostrar detalles del publicador"
         },
         "cancel": "Cancelar",
+        "saving": "Guardando…",
         "save": "Guardar"
       },
       "postTemplate": {

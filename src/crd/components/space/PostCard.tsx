@@ -116,9 +116,9 @@ export type PostCardData = {
    */
   commentsEnabled?: boolean;
   /**
-   * Whether the snippet/description starts expanded. Mirrors the space-level
-   * `calloutDescriptionDisplayMode` setting (Expanded vs Collapsed). Only takes
-   * effect when the snippet actually overflows the clamp height.
+   * Whether the snippet/description starts expanded. Reflects the post's per-flow-state
+   * description-display setting (Expanded vs Collapsed), resolved by the consumer. Only
+   * takes effect when the snippet actually overflows the clamp height.
    */
   descriptionExpanded?: boolean;
   /**
@@ -322,7 +322,7 @@ export function PostCard({
           /* publish-details hidden: the type treatment (icon + label) is hidden too,
              and the title moves next to the menu icon (FR-005/US2-AS2). Hiding meta
              yields a clean, chrome-free post for landing-page-style phases. */
-          <div className="flex items-center gap-2 min-w-0 flex-1">
+          <div className="relative z-10 flex items-center gap-2 min-w-0 flex-1">
             {post.isDraft && (
               <Badge className="text-badge h-5 px-1.5 font-semibold bg-amber-100 text-amber-700 border border-amber-300 hover:bg-amber-100 shrink-0">
                 {t('callout.draft')}

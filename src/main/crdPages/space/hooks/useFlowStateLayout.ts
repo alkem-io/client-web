@@ -18,8 +18,7 @@ import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
  *   Uses `subspace?.id || space?.id` (NOT `??`) — SubspaceContext defaults
  *   `subspace.id` to `''` (not `undefined`) at the space root, so `||` is required
  *   to fall through to the space id. With `??` the empty string sticks, the query is
- *   skipped, and every callout wrongly defaults to Expanded. (Mirror of the comment
- *   that was on the removed `useCalloutDescriptionDisplayMode` hook.)
+ *   skipped, and every callout wrongly defaults to Expanded.
  *
  * Falls back to defaults (Expanded, publish details shown) for any miss.
  *

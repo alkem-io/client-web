@@ -6,6 +6,7 @@ import {
   useUpdateCalloutFlowStateMutation,
   useUpdateInnovationFlowCurrentStateMutation,
   useUpdateInnovationFlowStateMutation,
+  useUpdateInnovationFlowStateSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
 import type {
@@ -36,6 +37,15 @@ export type UseColumnMenuOptions = {
    */
   onLayoutSaved?: (columnId: LayoutColumnId, layout: PhaseLayoutInput) => void;
   /**
+   * Called after a successful set/clear of the phase's default Callout template so the
+   * caller can patch the buffer + snapshot (the seed guard blocks re-derivation from the
+   * refetched query). Mirrors `onLayoutSaved`. `null` = the phase now has no default template.
+   */
+  onTemplateSaved?: (
+    columnId: LayoutColumnId,
+    defaultCalloutTemplate: { id: string; displayName: string } | null
+  ) => void;
+  /**
    * Optimistic mirror for "Mark as active phase" — fired BEFORE the mutation
    * so the column kebab menu reflects the new active state immediately.
    */
@@ -59,18 +69,10 @@ export type UseColumnMenuOptions = {
    */
   onToggleVisibility?: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
   /**
-   * All innovation flow states — needed to read current settings for partial-update
-   * in `onSaveLayout`. Provided by the layout data hook.
+   * All innovation flow state ids — `onSaveLayout` uses this to verify the target state still
+   * exists before firing the settings-only mutation. Provided by the layout data hook.
    */
-  innovationFlowStates?: ReadonlyArray<{
-    id: string;
-    displayName: string;
-    description?: string | null;
-    settings: {
-      allowNewCallouts: boolean;
-      visible: boolean;
-    };
-  }>;
+  innovationFlowStates?: ReadonlyArray<{ id: string }>;
 };
 
 export function useColumnMenu({
@@ -81,6 +83,7 @@ export function useColumnMenu({
   columnNames,
   onColumnSaved,
   onLayoutSaved,
+  onTemplateSaved,
   onActivePhaseChanged,
   onDeleteState,
   columnCount,
@@ -92,6 +95,7 @@ export function useColumnMenu({
   const [setDefaultTemplate] = useSetDefaultCalloutTemplateOnInnovationFlowStateMutation();
   const [removeDefaultTemplate] = useRemoveDefaultCalloutTemplateOnInnovationFlowStateMutation();
   const [updateFlowState] = useUpdateInnovationFlowStateMutation();
+  const [updateFlowStateSettings] = useUpdateInnovationFlowStateSettingsMutation();
   const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
   const [, startTransition] = useTransition();
 
@@ -109,14 +113,19 @@ export function useColumnMenu({
     });
   };
 
-  const onSetAsDefaultCalloutTemplate = (columnId: LayoutColumnId, templateId: string | null) => {
-    startTransition(() => {
-      if (templateId) {
-        void setDefaultTemplate({ variables: { flowStateId: columnId, templateId } });
-      } else {
-        void removeDefaultTemplate({ variables: { flowStateId: columnId } });
-      }
-    });
+  const onSetAsDefaultCalloutTemplate = async (columnId: LayoutColumnId, templateId: string | null): Promise<void> => {
+    const refetch = collaborationId ? [refetchInnovationFlowSettingsQuery({ collaborationId })] : [];
+    if (templateId) {
+      const { data } = await setDefaultTemplate({
+        variables: { flowStateId: columnId, templateId },
+        refetchQueries: refetch,
+      });
+      const dct = data?.setDefaultCalloutTemplateOnInnovationFlowState.defaultCalloutTemplate;
+      onTemplateSaved?.(columnId, dct ? { id: dct.id, displayName: dct.profile.displayName } : null);
+    } else {
+      await removeDefaultTemplate({ variables: { flowStateId: columnId }, refetchQueries: refetch });
+      onTemplateSaved?.(columnId, null);
+    }
   };
 
   const onSaveColumnDetails = async (columnId: LayoutColumnId, title: string, description: string) => {
@@ -181,23 +190,23 @@ export function useColumnMenu({
       : undefined;
 
   /**
-   * Persist per-phase layout settings immediately (partial-update semantics).
-   * Reads the current non-layout settings from `innovationFlowStates` and merges
-   * only `descriptionDisplayMode` + `showPublishDetails`, leaving `allowNewCallouts`
-   * and `visible` unchanged (defensive per-field merge, mirrors `visible` precedent).
+   * Persist per-phase layout settings immediately (FR-013 partial update).
+   * Uses the settings-only mutation so ONLY `descriptionDisplayMode` + `showPublishDetails`
+   * are sent — every other field (allowNewCallouts/visible/displayName/description) is omitted
+   * and thus left unchanged on the server, so a concurrent hide, rename, or description edit is
+   * never clobbered by a layout save.
    */
   const onSaveLayout = async (columnId: LayoutColumnId, layout: PhaseLayoutInput): Promise<void> => {
     const state = innovationFlowStates?.find(s => s.id === columnId);
-    if (!state) return;
+    // Surface a missing state as a rejection (never a silent no-op) — PhaseLayoutDialog
+    // treats a resolved promise as success and closes; a swallowed miss would report a
+    // save that never happened. The dialog already handles the rejection (stays open).
+    if (!state) throw new Error(`onSaveLayout: no innovation flow state for column ${columnId}`);
 
-    await updateFlowState({
+    await updateFlowStateSettings({
       variables: {
         innovationFlowStateId: columnId,
-        displayName: state.displayName,
-        description: state.description ?? '',
         settings: {
-          allowNewCallouts: state.settings.allowNewCallouts,
-          visible: state.settings.visible,
           descriptionDisplayMode: layout.descriptionCollapsed
             ? CalloutDescriptionDisplayMode.Collapsed
             : CalloutDescriptionDisplayMode.Expanded,

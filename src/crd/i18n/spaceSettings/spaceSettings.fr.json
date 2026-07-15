@@ -38,11 +38,6 @@
       "description": "Vos modifications de mise en page non enregistrées seront ramenées au dernier état enregistré. Cette action ne peut pas être annulée.",
       "confirm": "Abandonner les modifications"
     },
-    "postDescriptionDisplay": {
-      "title": "Affichage des descriptions de publications",
-      "switchLabel": "Réduire les descriptions de publications par défaut",
-      "description": "Réduire les descriptions de publications par défaut. Lorsqu'il est activé, les descriptions affichent un lien \"Lire la suite\" au lieu du texte complet."
-    },
     "column": {
       "titlePlaceholder": "Titre de la colonne",
       "descriptionPlaceholder": "Décrivez cette colonne…",
@@ -63,6 +58,7 @@
         "dialogTitle": "Modifier les détails : phase de flux",
         "titleLabel": "Titre",
         "titleTooShort": "Le titre doit comporter au moins 3 caractères",
+        "titleDuplicate": "Une phase portant ce nom existe déjà.",
         "insertEmoji": "Insérer un emoji",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Description",
@@ -115,6 +111,7 @@
           "switchLabel": "Afficher les informations sur l'auteur"
         },
         "cancel": "Annuler",
+        "saving": "Enregistrement…",
         "save": "Enregistrer"
       },
       "postTemplate": {

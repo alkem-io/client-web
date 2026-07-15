@@ -129,9 +129,11 @@ function LazyCalloutItemContent({
 
   const postData = {
     ...mapCalloutDetailsToPostCard(callout, t),
-    // Scoped search forces compact ("Read more"); otherwise follow the per-phase setting.
+    // Scoped search forces compact ("Read more") AND ignores the per-phase settings entirely
+    // (FR-016: per-phase layout does not override the forced-compact surface) — so publish
+    // details fall back to the default (shown), not the phase's showPublishDetails value.
     descriptionExpanded: forceDescriptionCollapsed ? false : !descriptionCollapsed,
-    showPublishDetails,
+    showPublishDetails: forceDescriptionCollapsed ? true : showPublishDetails,
   };
 
   // The hook must run unconditionally (rules of hooks), but the move menu items

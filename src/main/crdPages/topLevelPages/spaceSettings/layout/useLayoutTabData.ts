@@ -6,6 +6,7 @@ import {
   useUpdateCalloutFlowStateMutation,
   useUpdateCalloutsSortOrderMutation,
   useUpdateInnovationFlowStateMutation,
+  useUpdateInnovationFlowStateSettingsMutation,
   useUpdateInnovationFlowStatesSortOrderMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type {
@@ -43,6 +44,16 @@ export type UseLayoutTabDataResult = {
    */
   markLayoutSaved: (columnId: LayoutColumnId, layout: PhaseLayoutInput) => void;
   /**
+   * Update both buffer AND snapshot after a phase's default Callout template is set/cleared.
+   * Mirrors `markLayoutSaved` (the seed guard blocks re-derivation from the refetched query),
+   * so the Post Template modal's "Clear template" affordance reflects the new state without a
+   * reload. `null` = the phase now has no default template.
+   */
+  markTemplateSaved: (
+    columnId: LayoutColumnId,
+    defaultCalloutTemplate: { id: string; displayName: string } | null
+  ) => void;
+  /**
    * Optimistic update for "Mark as active phase" — flips `isCurrentPhase` on
    * both buffer and snapshot so the kebab menu reflects the new state without
    * waiting for the server refetch.
@@ -51,8 +62,8 @@ export type UseLayoutTabDataResult = {
   /**
    * Toggle a phase's member-facing visibility (immediate-save, UI-only — never touches
    * content access). Optimistically flips `isHidden` on buffer + snapshot, then persists
-   * via the existing state-update mutation (carrying the unchanged displayName/description/
-   * allowNewCallouts plus the new `visible` flag) so the change is shared across all viewers.
+   * via the settings-only mutation carrying only the `visible` flag so the change is shared
+   * across all viewers without disturbing any other setting.
    */
   onToggleVisibility: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
   /** Underlying ids — useful for the view's useColumnMenu consumer. */
@@ -87,15 +98,10 @@ export type UseLayoutTabDataResult = {
    */
   reseedFromServer: () => void;
   /**
-   * Raw innovation flow states from the server — passed to `useColumnMenu`'s
-   * `innovationFlowStates` option so `onSaveLayout` can do a defensive per-field merge.
+   * Innovation flow state ids from the server — passed to `useColumnMenu`'s
+   * `innovationFlowStates` option so `onSaveLayout` can verify the target state exists.
    */
-  innovationFlowStates: ReadonlyArray<{
-    id: string;
-    displayName: string;
-    description?: string | null;
-    settings: { allowNewCallouts: boolean; visible: boolean };
-  }>;
+  innovationFlowStates: ReadonlyArray<{ id: string }>;
 };
 
 type Snapshot = {
@@ -162,6 +168,7 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
   const [reseedToken, setReseedToken] = useState(0);
 
   const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
+  const [updateInnovationFlowStateSettings] = useUpdateInnovationFlowStateSettingsMutation();
   const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
   const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation();
   const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
@@ -292,11 +299,9 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
   /**
    * Visibility toggle — immediate-save, NOT part of the Save Changes buffer (mirrors the
    * active-phase + default-template actions). Optimistically flips `isHidden` on buffer and
-   * snapshot so the kebab + badge update instantly, then fires the persist mutation. The
-   * `visible` settings field is not yet in the generated input type (it ships with
-   * server#6138 + codegen); we attach it via a typed widening so the mutation carries it the
-   * moment the server accepts it. Until then the server ignores the unknown field and the
-   * capability stays inert (no state reports a boolean `visible`, so the menu entry is hidden).
+   * snapshot so the kebab + badge update instantly, then persists via the settings-only
+   * mutation carrying ONLY `visible` — omitting the other settings/description leaves them
+   * unchanged, so a concurrent layout or description edit is never reverted (FR-013).
    */
   const onToggleVisibility = async (columnId: LayoutColumnId, nextHidden: boolean): Promise<void> => {
     const state = innovationFlowSettings.data.innovationFlow?.states?.find(s => s.id === columnId);
@@ -316,16 +321,12 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     }
 
     try {
-      await updateInnovationFlowState({
+      await updateInnovationFlowStateSettings({
         variables: {
           innovationFlowStateId: columnId,
-          displayName: state.displayName,
-          description: state.description ?? '',
-          settings: {
-            allowNewCallouts: state.settings.allowNewCallouts,
-            // `visible` is the inverse of `isHidden`. Widened cast until codegen regenerates the input type.
-            visible: !nextHidden,
-          } as typeof state.settings & { visible: boolean },
+          // Settings-only: send just `visible` (inverse of `isHidden`); everything else omitted
+          // is left unchanged, so a concurrent rename/description/layout edit is never clobbered.
+          settings: { visible: !nextHidden },
         },
         refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
       });
@@ -361,6 +362,26 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
    */
   const markLayoutSaved = (columnId: LayoutColumnId, layout: PhaseLayoutInput) => {
     const updateCol = (cols: LayoutPoolColumn[]) => cols.map(c => (c.id === columnId ? { ...c, layout } : c));
+    setColumns(prev => updateCol(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = {
+        ...snapshotRef.current,
+        columns: updateCol(snapshotRef.current.columns),
+      };
+    }
+  };
+
+  /**
+   * Update both buffer and snapshot after a phase's default Callout template is set/cleared.
+   * Mirrors `markLayoutSaved`; no `setIsDirty` — `defaultCalloutTemplate` isn't part of the
+   * dirty comparison (`columnsEqual`), so this immediate-save action never flips the Save bar.
+   */
+  const markTemplateSaved = (
+    columnId: LayoutColumnId,
+    defaultCalloutTemplate: { id: string; displayName: string } | null
+  ) => {
+    const updateCol = (cols: LayoutPoolColumn[]) =>
+      cols.map(c => (c.id === columnId ? { ...c, defaultCalloutTemplate } : c));
     setColumns(prev => updateCol(prev));
     if (snapshotRef.current) {
       snapshotRef.current = {
@@ -552,6 +573,7 @@ export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayo
     isDirty,
     markColumnSaved,
     markLayoutSaved,
+    markTemplateSaved,
     markCurrentPhaseChanged,
     onToggleVisibility,
     collaborationId,

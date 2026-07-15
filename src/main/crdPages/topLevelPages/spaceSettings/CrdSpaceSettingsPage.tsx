@@ -227,6 +227,9 @@ export default function CrdSpaceSettingsPage() {
     onLayoutSaved: (columnId, layoutInput) => {
       layout.markLayoutSaved(columnId, layoutInput);
     },
+    onTemplateSaved: (columnId, defaultCalloutTemplate) => {
+      layout.markTemplateSaved(columnId, defaultCalloutTemplate);
+    },
     onActivePhaseChanged: layout.markCurrentPhaseChanged,
     // Delete is offered at every level now, including L0. Positional protection of the four
     // built-in L0 tabs is enforced per-column via `column.isDeletable` (set in the layout mapper),
