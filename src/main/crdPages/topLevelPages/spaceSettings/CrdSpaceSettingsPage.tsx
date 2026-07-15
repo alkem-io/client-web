@@ -215,6 +215,7 @@ export default function CrdSpaceSettingsPage() {
       : undefined;
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
+    collaborationId: layout.collaborationId,
     onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
     callouts: layout.columns.flatMap(col =>
       col.callouts.map(c => ({ id: c.id, flowStateTagsetId: c.flowStateTagsetId, currentStateName: col.title }))
@@ -222,6 +223,12 @@ export default function CrdSpaceSettingsPage() {
     columnNames: layout.columns.map(c => ({ id: c.id, title: c.title })),
     onColumnSaved: (columnId, title, description) => {
       layout.markColumnSaved(columnId, title, description);
+    },
+    onLayoutSaved: (columnId, layoutInput) => {
+      layout.markLayoutSaved(columnId, layoutInput);
+    },
+    onTemplateSaved: (columnId, defaultCalloutTemplate) => {
+      layout.markTemplateSaved(columnId, defaultCalloutTemplate);
     },
     onActivePhaseChanged: layout.markCurrentPhaseChanged,
     // Delete is offered at every level now, including L0. Positional protection of the four
@@ -234,6 +241,7 @@ export default function CrdSpaceSettingsPage() {
     // structure, only what members see in the menu. The CRD column menu self-gates the entry
     // on the column carrying a known `isHidden` (capability present).
     onToggleVisibility: layout.onToggleVisibility,
+    innovationFlowStates: layout.innovationFlowStates,
   });
   // When the user picks a Callout template in the layout-tab picker, set it as the chosen flow state's default.
   const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
@@ -415,7 +423,6 @@ export default function CrdSpaceSettingsPage() {
                 canManageTabs={true}
                 entityNoun={level === 'L0' ? 'tab' : 'phase'}
                 columns={layout.columns}
-                postDescriptionDisplay={layout.postDescriptionDisplay}
                 saveBar={layout.saveBar}
                 onReorder={layout.onReorder}
                 onReorderColumns={layout.onReorderColumns}
@@ -436,7 +443,6 @@ export default function CrdSpaceSettingsPage() {
                   }
                   navigate(path);
                 }}
-                onPostDescriptionDisplayChange={layout.onPostDescriptionDisplayChange}
                 onSave={layout.onSave}
                 onDiscardChanges={() => setLayoutDiscardOpen(true)}
                 columnMenuActions={columnMenu}

@@ -38,11 +38,6 @@
       "description": "Ihre nicht gespeicherten Layout-Änderungen werden auf den zuletzt gespeicherten Stand zurückgesetzt. Dies kann nicht rückgängig gemacht werden.",
       "confirm": "Änderungen verwerfen"
     },
-    "postDescriptionDisplay": {
-      "title": "Anzeige der Beitragsbeschreibung",
-      "switchLabel": "Beitragsbeschreibungen standardmäßig einklappen",
-      "description": "Beitragsbeschreibungen standardmäßig einklappen. Wenn aktiviert, zeigen Beschreibungen einen \"Mehr lesen\"-Link statt des vollständigen Texts."
-    },
     "column": {
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
@@ -63,6 +58,7 @@
         "dialogTitle": "Details bearbeiten: Flow-Phase",
         "titleLabel": "Titel",
         "titleTooShort": "Der Titel muss mindestens 3 Zeichen lang sein",
+        "titleDuplicate": "Eine Phase mit diesem Namen existiert bereits.",
         "insertEmoji": "Emoji einfügen",
         "descriptionLabel": "Beschreibung",
         "descriptionPlaceholder": "Beschreibung",
@@ -96,6 +92,37 @@
           "title": "Diese Phase ausblenden?",
           "description": "Dies blendet die Phase nur im Menü aus. Der Zugriff auf ihre Inhalte wird nicht entfernt: Wer einen Link zur Phase oder zu einem Beitrag darin hat, kann sie weiterhin öffnen.",
           "confirm": "Ausblenden",
+          "cancel": "Abbrechen"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post-Beschreibung",
+          "collapsedHint": "Posts starten eingeklappt — Mitglieder können sie ausklappen, um zu lesen.",
+          "expandedHint": "Posts sind standardmäßig vollständig ausgeklappt.",
+          "switchLabel": "Post-Beschreibungen einklappen"
+        },
+        "publishDetails": {
+          "label": "Autorendetails",
+          "onHint": "Name, Avatar und Datum des Autors werden bei jedem Post angezeigt.",
+          "offHint": "Name, Avatar und Datum des Autors sind bei Posts in dieser Phase ausgeblendet.",
+          "switchLabel": "Autorendetails anzeigen"
+        },
+        "cancel": "Abbrechen",
+        "saving": "Speichern…",
+        "save": "Speichern"
+      },
+      "postTemplate": {
+        "menuLabel": "Post-Vorlage",
+        "dialogTitle": "Post-Vorlage: {{phaseName}}",
+        "choose": "Vorlage auswählen…",
+        "clear": "Vorlage entfernen",
+        "clearConfirm": {
+          "title": "Post-Vorlage entfernen?",
+          "description": "Die Standard-Post-Vorlage für diese Phase wird entfernt. Neue Posts in dieser Phase verwenden keine Standardvorlage. Bestehende Posts sind nicht betroffen.",
+          "confirm": "Vorlage entfernen",
           "cancel": "Abbrechen"
         }
       }
