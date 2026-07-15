@@ -318,6 +318,10 @@
         "virtualContributor": {
           "title": "Meldingen voor Virtual Contributors",
           "description": "Meldingen over activiteiten en toewijzingen van Virtual Contributors."
+        },
+        "sound": {
+          "title": "Meldingsgeluiden",
+          "description": "Kies of er een geluid wordt afgespeeld wanneer een chatbericht of een in-app melding binnenkomt."
         }
       },
       "rows": {
@@ -364,6 +368,10 @@
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
+        },
+        "sound": {
+          "chatMessage": "Speel een geluid af wanneer een chatbericht wordt ontvangen",
+          "inAppNotification": "Speel een geluid af wanneer een in-app melding wordt ontvangen"
         }
       }
     },

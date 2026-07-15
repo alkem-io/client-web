@@ -9553,6 +9553,8 @@ export type UpdateUserSettingsNotificationInput = {
   organization?: InputMaybe<UpdateUserSettingsNotificationOrganizationInput>;
   /** Settings related to Platform Notifications. */
   platform?: InputMaybe<UpdateUserSettingsNotificationPlatformInput>;
+  /** Settings related to notification sound playback. */
+  sound?: InputMaybe<UpdateUserSettingsNotificationSoundInput>;
   /** Settings related to Space Notifications. */
   space?: InputMaybe<UpdateUserSettingsNotificationSpaceInput>;
   /** Settings related to User Notifications. */
@@ -9588,6 +9590,13 @@ export type UpdateUserSettingsNotificationPlatformInput = {
   forumDiscussionComment?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a new Discussion is created in the Forum */
   forumDiscussionCreated?: InputMaybe<NotificationSettingInput>;
+};
+
+export type UpdateUserSettingsNotificationSoundInput = {
+  /** Play a sound when a chat message is received. Default true. */
+  chatMessage?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Play a sound when a non-chat in-app notification is received. Default true. */
+  inAppNotification?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateUserSettingsNotificationSpaceAdminInput = {
@@ -10081,6 +10090,8 @@ export type UserSettingsNotification = {
   organization: UserSettingsNotificationOrganization;
   /** The notifications settings for Platform events for this User */
   platform: UserSettingsNotificationPlatform;
+  /** The sound playback settings for this User. */
+  sound: UserSettingsNotificationSound;
   /** The notifications settings for Space events for this User */
   space: UserSettingsNotificationSpace;
   /** The notifications settings for User events for this User */
@@ -10129,6 +10140,14 @@ export type UserSettingsNotificationPlatformAdmin = {
   userProfileCreated: UserSettingsNotificationChannels;
   /** Receive a notification when a user profile is removed */
   userProfileRemoved: UserSettingsNotificationChannels;
+};
+
+export type UserSettingsNotificationSound = {
+  __typename?: 'UserSettingsNotificationSound';
+  /** Play a sound when a chat message is received. Default true. */
+  chatMessage: Scalars['Boolean']['output'];
+  /** Play a sound when a non-chat in-app notification is received. Default true. */
+  inAppNotification: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsNotificationSpace = {
@@ -11189,6 +11208,10 @@ export type UserPendingMembershipsQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            notification: {
+              __typename?: 'UserSettingsNotification';
+              sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+            };
           };
         }
       | undefined;
@@ -22869,6 +22892,10 @@ export type UserDetailsFragment = {
     __typename?: 'UserSettings';
     id: string;
     homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    notification: {
+      __typename?: 'UserSettingsNotification';
+      sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+    };
   };
 };
 
@@ -22893,6 +22920,10 @@ export type UserDetailsLightFragment = {
     __typename?: 'UserSettings';
     id: string;
     homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    notification: {
+      __typename?: 'UserSettingsNotification';
+      sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+    };
   };
 };
 
@@ -22994,6 +23025,10 @@ export type UserQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            notification: {
+              __typename?: 'UserSettingsNotification';
+              sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+            };
           };
         }
       | undefined;
@@ -23069,6 +23104,10 @@ export type UserModelFullQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            notification: {
+              __typename?: 'UserSettingsNotification';
+              sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+            };
           };
         }
       | undefined;
@@ -23140,6 +23179,10 @@ export type UsersModelFullQuery = {
       __typename?: 'UserSettings';
       id: string;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      notification: {
+        __typename?: 'UserSettingsNotification';
+        sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+      };
     };
   }>;
 };
@@ -23240,6 +23283,10 @@ export type UpdateUserMutation = {
       __typename?: 'UserSettings';
       id: string;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      notification: {
+        __typename?: 'UserSettingsNotification';
+        sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+      };
     };
   };
 };
@@ -23669,6 +23716,7 @@ export type UserSettingsFragmentFragment = {
         push: boolean;
       };
     };
+    sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
   };
 };
 
@@ -23900,6 +23948,7 @@ export type UserSettingsQuery = {
                   push: boolean;
                 };
               };
+              sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
             };
           };
         }
@@ -23990,6 +24039,10 @@ export type CurrentUserFullQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            notification: {
+              __typename?: 'UserSettingsNotification';
+              sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+            };
           };
         }
       | undefined;
@@ -24049,6 +24102,10 @@ export type CurrentUserLightQuery = {
             id: string;
             designVersion: number;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            notification: {
+              __typename?: 'UserSettingsNotification';
+              sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
+            };
           };
           account?:
             | {

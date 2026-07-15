@@ -1602,6 +1602,12 @@ export const UserDetailsFragmentDoc = gql`
       spaceID
       autoRedirect
     }
+    notification {
+      sound {
+        chatMessage
+        inAppNotification
+      }
+    }
   }
 }
     ${VisualModelFullFragmentDoc}
@@ -1625,6 +1631,12 @@ export const UserDetailsLightFragmentDoc = gql`
     homeSpace {
       spaceID
       autoRedirect
+    }
+    notification {
+      sound {
+        chatMessage
+        inAppNotification
+      }
     }
   }
 }
@@ -1818,6 +1830,10 @@ export const UserSettingsFragmentFragmentDoc = gql`
         inApp
         push
       }
+    }
+    sound {
+      chatMessage
+      inAppNotification
     }
   }
 }

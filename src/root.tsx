@@ -25,6 +25,8 @@ import { UnifiedChatLauncher } from '@/main/crdPages/unifiedChat/UnifiedChatLaun
 import { UnifiedChatProvider } from '@/main/crdPages/unifiedChat/UnifiedChatProvider';
 import { InAppNotificationCountSubscriber } from '@/main/inAppNotifications/inAppNotificationCountSubscriber';
 import { TopLevelRoutes } from '@/main/routing/TopLevelRoutes';
+import { UnreadTabBadge } from '@/main/tabBadge/UnreadTabBadge';
+import { ConversationEventsSubscriber } from '@/main/userMessaging/ConversationEventsSubscriber';
 import { GlobalErrorProvider } from './core/lazyLoading/GlobalErrorContext';
 import { AssistantProvider } from './main/assistant/AssistantContext';
 import { CrdAssistantButtonGate } from './main/assistant/CrdAssistantButtonGate';
@@ -109,6 +111,8 @@ const Root: FC = () => {
                                         <ScrollToTop />
                                         <NotificationsGate />
                                         <InAppNotificationCountSubscriber />
+                                        <ConversationEventsSubscriber />
+                                        <UnreadTabBadge />
                                         <Suspense fallback={null}>
                                           <AssistantDialog />
                                         </Suspense>
