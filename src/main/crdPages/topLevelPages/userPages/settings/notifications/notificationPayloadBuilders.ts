@@ -275,3 +275,15 @@ export const buildNotificationUpdate = (
       return { virtualContributor: buildVC(server.virtualContributor, property, type, value) };
   }
 };
+
+export type SoundKey = 'chatMessage' | 'inAppNotification';
+
+/**
+ * Build the mutation payload for a single sound toggle. Emits ONLY the changed
+ * key: the server merges `notification.sound` field-by-field, so omitting the
+ * sibling key is exactly what leaves it untouched (the two are independent).
+ * Returns the full `{ notification: { sound: … } }` shape passed as `settings`.
+ */
+export const buildSoundUpdate = (key: SoundKey, next: boolean): Record<string, unknown> => ({
+  notification: { sound: { [key]: next } },
+});

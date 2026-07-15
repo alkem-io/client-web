@@ -318,6 +318,10 @@
         "virtualContributor": {
           "title": "Benachrichtigungen für virtuelle Mitwirkende",
           "description": "Benachrichtigungen zu Aktivitäten und Zuweisungen virtueller Mitwirkender."
+        },
+        "sound": {
+          "title": "Benachrichtigungstöne",
+          "description": "Legen Sie fest, ob ein Ton abgespielt wird, wenn eine Chatnachricht oder eine In-App-Benachrichtigung eintrifft."
         }
       },
       "rows": {
@@ -364,6 +368,10 @@
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Benachrichtigung erhalten, wenn ein VC-Manager eingeladen wird, einer Community beizutreten"
+        },
+        "sound": {
+          "chatMessage": "Einen Ton abspielen, wenn eine Chatnachricht empfangen wird",
+          "inAppNotification": "Einen Ton abspielen, wenn eine In-App-Benachrichtigung empfangen wird"
         }
       }
     },

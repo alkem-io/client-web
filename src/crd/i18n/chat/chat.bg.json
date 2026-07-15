@@ -5,7 +5,8 @@
     "unreadLabel": "Имате непрочетени съобщения"
   },
   "panel": {
-    "title": "Чат"
+    "title": "Чат",
+    "settings": "Настройки за известия"
   },
   "actions": {
     "cancel": "Отказ"
