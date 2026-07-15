@@ -22,6 +22,23 @@ export type NotificationGroupData = {
   rows: NotificationRowData[];
 };
 
+/** The two independent sound preferences. A plain string-literal union so the
+ * consumer's toggle handler is typed end-to-end and needs no cast. */
+export type SoundSettingKey = 'chatMessage' | 'inAppNotification';
+
+export type SoundRowData = {
+  property: SoundSettingKey;
+  label: string;
+  enabled: boolean;
+};
+
+export type SoundGroupData = {
+  groupId: string;
+  title: string;
+  description: string;
+  rows: SoundRowData[];
+};
+
 export type UserNotificationsTabViewProps = {
   loading: boolean;
 
@@ -37,8 +54,14 @@ export type UserNotificationsTabViewProps = {
   // Activity groups (already privilege-filtered by the integration layer).
   groups: NotificationGroupData[];
 
+  /** The "Sounds" group — two independent on/off switches. */
+  soundGroup: SoundGroupData;
+
   /** Called when any per-row Switch flips. Hook handles optimistic state + revert. */
   onToggle: (groupId: string, property: string, channel: ChannelType, next: boolean) => void;
+
+  /** Called when a sound switch flips. Same optimistic state + revert handling. */
+  onToggleSound: (property: SoundSettingKey, next: boolean) => void;
 };
 
 /**
@@ -75,6 +98,8 @@ export function UserNotificationsTabView(props: UserNotificationsTabViewProps) {
 
       <InfoBanner />
 
+      <SoundGroupSection group={props.soundGroup} onToggle={props.onToggleSound} />
+
       {props.groups.map(group => (
         <NotificationGroupSection
           key={group.groupId}
@@ -84,6 +109,50 @@ export function UserNotificationsTabView(props: UserNotificationsTabViewProps) {
         />
       ))}
     </div>
+  );
+}
+
+// ─── Sounds group (single-switch rows) ───────────────────────────────────
+
+function SoundGroupSection({
+  group,
+  onToggle,
+}: {
+  group: SoundGroupData;
+  onToggle: (property: SoundSettingKey, next: boolean) => void;
+}) {
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-section-title">{group.title}</h2>
+        <p className="text-body text-muted-foreground">{group.description}</p>
+      </div>
+
+      <Card>
+        <CardContent className="p-0">
+          {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+          {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+          <ul role="list" className="list-none p-0 m-0">
+            {group.rows.map((row, idx) => (
+              <li
+                key={row.property}
+                className={cn(
+                  'flex items-center justify-between gap-4 p-4 transition-colors hover:bg-muted/10 md:px-6',
+                  idx !== group.rows.length - 1 && 'border-b border-border/50'
+                )}
+              >
+                <p className="flex-1 pr-4 text-body-emphasis leading-normal">{row.label}</p>
+                <Switch
+                  checked={row.enabled}
+                  onCheckedChange={next => onToggle(row.property, next)}
+                  aria-label={row.label}
+                />
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+    </section>
   );
 }
 

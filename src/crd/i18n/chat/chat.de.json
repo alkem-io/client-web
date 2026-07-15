@@ -5,7 +5,8 @@
     "unreadLabel": "Sie haben ungelesene Nachrichten"
   },
   "panel": {
-    "title": "Chat"
+    "title": "Chat",
+    "settings": "Benachrichtigungseinstellungen"
   },
   "actions": {
     "cancel": "Abbrechen"

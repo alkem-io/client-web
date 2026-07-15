@@ -5,7 +5,8 @@
     "unreadLabel": "Je hebt ongelezen berichten"
   },
   "panel": {
-    "title": "Chat"
+    "title": "Chat",
+    "settings": "Meldingsinstellingen"
   },
   "actions": {
     "cancel": "Annuleren"

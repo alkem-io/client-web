@@ -34,5 +34,11 @@ fragment UserDetails on User {
       spaceID
       autoRedirect
     }
+    notification {
+      sound {
+        chatMessage
+        inAppNotification
+      }
+    }
   }
 }

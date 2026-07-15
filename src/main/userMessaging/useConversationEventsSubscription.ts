@@ -1,5 +1,5 @@
 import { gql, useApolloClient } from '@apollo/client';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   ConversationDetailsDocument,
   ConversationMessagesDocument,
@@ -14,9 +14,12 @@ import {
   type ConversationMessagesQuery,
   type UserConversationsQuery,
   type UserConversationsUnreadCountQuery,
+  type UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
+import { playSound } from '@/core/sound/soundPlayer';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { shouldPlayChatSound } from './shouldPlayChatSound';
 import { useUserMessagingContext } from './UserMessagingContext';
 
 type SelectionClearer = (conversationId: string) => void;
@@ -87,19 +90,33 @@ const MessageCacheFragment = gql`
   }
 `;
 
-export const useConversationEventsSubscription = (selectedRoomId: string | null) => {
-  const { isEnabled, selectedConversationId, setSelectedConversationId, setSelectedRoomId } = useUserMessagingContext();
+export const useConversationEventsSubscription = () => {
+  const { isEnabled, selectedRoomId, selectedConversationId, setSelectedConversationId, setSelectedRoomId } =
+    useUserMessagingContext();
   const { isAuthenticated, userModel } = useCurrentUserContext();
   const client = useApolloClient();
   const currentUserId = userModel?.id;
 
   // Use refs for values read inside the onData callback to avoid stale closures
-  // when the React Compiler memoizes the subscription options.
+  // when the React Compiler memoizes the subscription options. The chat-sound
+  // preference rides along on the current user (UserDetails* fragments) and
+  // defaults to on (matches the server default) until loaded.
+  //
+  // Refs are synced in a useEffect rather than during render (React 19
+  // concurrency hygiene). onData fires post-commit, so it always reads the
+  // latest committed value.
   const selectedRoomIdRef = useRef(selectedRoomId);
-  selectedRoomIdRef.current = selectedRoomId;
-
   const selectedConversationIdRef = useRef(selectedConversationId);
-  selectedConversationIdRef.current = selectedConversationId;
+  const chatSoundEnabledRef = useRef(true);
+
+  const chatSoundEnabled =
+    (userModel as UserDetailsFragment | undefined)?.settings?.notification?.sound?.chatMessage ?? true;
+
+  useEffect(() => {
+    selectedRoomIdRef.current = selectedRoomId;
+    selectedConversationIdRef.current = selectedConversationId;
+    chatSoundEnabledRef.current = chatSoundEnabled;
+  }, [selectedRoomId, selectedConversationId, chatSoundEnabled]);
 
   const clearSelectionIfActive: SelectionClearer = (conversationId: string) => {
     if (selectedConversationIdRef.current === conversationId) {
@@ -451,6 +468,20 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
     const sender = event.message.sender;
     const isOwnMessage = sender && 'id' in sender && sender.id === currentUserId;
 
+    // Play the chat sound (US1). Reuses the same isViewing/isOwnMessage signals
+    // that gate the unread increment, layering document.hasFocus() on for the
+    // SOUND ONLY (FR-010) — the unread increment below stays selection-based.
+    if (
+      shouldPlayChatSound({
+        isOwnMessage: Boolean(isOwnMessage),
+        isViewing,
+        hasFocus: document.hasFocus(),
+        enabled: chatSoundEnabledRef.current,
+      })
+    ) {
+      playSound('chat');
+    }
+
     // Write lastMessage to cache first to get a proper reference
     const lastMessageRef = client.cache.writeFragment({
       data: {
@@ -644,9 +675,7 @@ export const useConversationEventsSubscription = (selectedRoomId: string | null)
               unreadCount: () => unreadCount,
             },
           });
-        } else {
         }
-      } else {
       }
     }
   };
