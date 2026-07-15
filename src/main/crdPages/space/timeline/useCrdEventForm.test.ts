@@ -1,8 +1,44 @@
 import { act, renderHook } from '@testing-library/react';
 import { isSameDay } from 'date-fns';
+import { createInstance } from 'i18next';
+import { createElement, type ReactNode } from 'react';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
 import { describe, expect, it } from 'vitest';
 import type { EventFormValues } from '../dataMappers/calendarEventDataMapper';
 import { useCrdEventForm } from './useCrdEventForm';
+
+// A self-contained i18next instance so useCrdEventForm's
+// useTranslation('crd-space') resolves deterministically, independent of global
+// i18n setup or test execution order. Synchronous init (inline resources, no
+// async backend) + useSuspense:false so the hook renders immediately.
+const i18n = createInstance();
+i18n.use(initReactI18next).init({
+  lng: 'en',
+  fallbackLng: 'en',
+  ns: ['crd-space'],
+  defaultNS: 'crd-space',
+  react: { useSuspense: false },
+  resources: {
+    en: {
+      'crd-space': {
+        calendar: {
+          validation: {
+            displayNameRequired: 'Display name is required',
+            typeRequired: 'Type is required',
+            descriptionTooLong: 'Description is too long',
+            invalidDuration: 'Invalid duration',
+            endBeforeStart: 'End must be after start',
+          },
+        },
+      },
+    },
+  },
+});
+
+const wrapper = ({ children }: { children: ReactNode }) => createElement(I18nextProvider, { i18n }, children);
+
+const renderForm = (initialValues?: Partial<EventFormValues>) =>
+  renderHook(() => useCrdEventForm(initialValues), { wrapper });
 
 // Seed the fields unrelated to the end/start rule so validate() isolates the
 // duration/end checks (displayName + type are required independently).
@@ -12,7 +48,7 @@ const baseValues: Partial<EventFormValues> = {
 };
 
 const runValidate = (values: Partial<EventFormValues>) => {
-  const { result } = renderHook(() => useCrdEventForm({ ...baseValues, ...values }));
+  const { result } = renderForm({ ...baseValues, ...values });
   let valid = false;
   act(() => {
     valid = result.current.validate();
@@ -98,12 +134,10 @@ describe('useCrdEventForm validation — end date vs start date', () => {
 describe('useCrdEventForm — start/end date coupling', () => {
   describe('changing the start date', () => {
     it('moves the end date to the new start day when both were on the same day (preserving end time)', () => {
-      const { result } = renderHook(() =>
-        useCrdEventForm({
-          startDate: new Date(2026, 6, 23, 10, 0),
-          endDate: new Date(2026, 6, 23, 14, 30),
-        })
-      );
+      const { result } = renderForm({
+        startDate: new Date(2026, 6, 23, 10, 0),
+        endDate: new Date(2026, 6, 23, 14, 30),
+      });
 
       // react-day-picker returns the selected day at midnight.
       act(() => result.current.setField('startDate', new Date(2026, 6, 25, 0, 0)));
@@ -116,12 +150,10 @@ describe('useCrdEventForm — start/end date coupling', () => {
 
     it('leaves the end date untouched when start and end were on different days', () => {
       const originalEnd = new Date(2026, 6, 25, 14, 0);
-      const { result } = renderHook(() =>
-        useCrdEventForm({
-          startDate: new Date(2026, 6, 23, 10, 0),
-          endDate: originalEnd,
-        })
-      );
+      const { result } = renderForm({
+        startDate: new Date(2026, 6, 23, 10, 0),
+        endDate: originalEnd,
+      });
 
       act(() => result.current.setField('startDate', new Date(2026, 6, 24, 0, 0)));
 
@@ -131,13 +163,11 @@ describe('useCrdEventForm — start/end date coupling', () => {
 
   describe('toggling "whole day"', () => {
     it('zeroes both times to midnight without shifting the day for a same-day event', () => {
-      const { result } = renderHook(() =>
-        useCrdEventForm({
-          wholeDay: false,
-          startDate: new Date(2026, 6, 23, 10, 0),
-          endDate: new Date(2026, 6, 23, 14, 0),
-        })
-      );
+      const { result } = renderForm({
+        wholeDay: false,
+        startDate: new Date(2026, 6, 23, 10, 0),
+        endDate: new Date(2026, 6, 23, 14, 0),
+      });
 
       act(() => result.current.setField('wholeDay', true));
 
@@ -149,13 +179,11 @@ describe('useCrdEventForm — start/end date coupling', () => {
     });
 
     it('zeroes the times but keeps the end day when start and end are on different days', () => {
-      const { result } = renderHook(() =>
-        useCrdEventForm({
-          wholeDay: false,
-          startDate: new Date(2026, 6, 23, 10, 0),
-          endDate: new Date(2026, 6, 25, 14, 0),
-        })
-      );
+      const { result } = renderForm({
+        wholeDay: false,
+        startDate: new Date(2026, 6, 23, 10, 0),
+        endDate: new Date(2026, 6, 25, 14, 0),
+      });
 
       act(() => result.current.setField('wholeDay', true));
 
@@ -165,13 +193,11 @@ describe('useCrdEventForm — start/end date coupling', () => {
 
     it('does not change dates when whole day is toggled off', () => {
       const originalEnd = new Date(2026, 6, 23, 14, 0);
-      const { result } = renderHook(() =>
-        useCrdEventForm({
-          wholeDay: true,
-          startDate: new Date(2026, 6, 23, 10, 0),
-          endDate: originalEnd,
-        })
-      );
+      const { result } = renderForm({
+        wholeDay: true,
+        startDate: new Date(2026, 6, 23, 10, 0),
+        endDate: originalEnd,
+      });
 
       act(() => result.current.setField('wholeDay', false));
 
