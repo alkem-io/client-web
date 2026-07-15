@@ -14,12 +14,10 @@ import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates } fro
 import { Loader2, Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceSettingsCard } from '@/crd/components/space/settings/SpaceSettingsCard';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { Switch } from '@/crd/primitives/switch';
 import { AddPhaseDialog } from './AddPhaseDialog';
 import { LayoutCalloutRowPreview } from './LayoutCalloutRow';
 import { LayoutPoolColumn } from './LayoutPoolColumn';
@@ -28,7 +26,6 @@ import type {
   LayoutCallout,
   LayoutColumnId,
   LayoutPoolColumn as LayoutPoolColumnData,
-  LayoutPostDescriptionDisplay,
   LayoutReorderTarget,
   LayoutSaveBarState,
 } from './SpaceSettingsLayoutView.types';
@@ -56,14 +53,12 @@ export type SpaceSettingsLayoutViewProps = {
    */
   entityNoun?: 'tab' | 'phase';
   columns: LayoutPoolColumnData[];
-  postDescriptionDisplay: LayoutPostDescriptionDisplay;
   saveBar: LayoutSaveBarState;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   /** Column-level reorder — called with the new order of column IDs. Only invoked at L1/L2. */
   onReorderColumns?: (orderedColumnIds: LayoutColumnId[]) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
-  onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
   onSave: () => void;
   onDiscardChanges: () => void;
   columnMenuActions: ColumnMenuActions;
@@ -97,7 +92,7 @@ export type SpaceSettingsLayoutViewProps = {
  *  - Column title + description editing via the per-column menu → Edit details.
  *  - Three-dot per-column menu: Active phase + Default post template.
  *  - Per-callout kebab (two entries: Move to + View Post).
- *  - Post description display toggle at the top (collapsed / expanded).
+ *  - Per-phase Layout modal (description collapse + publish details) via column menu.
  *  - Save Changes / Discard Changes action bar at the bottom-right.
  */
 export function SpaceSettingsLayoutView({
@@ -105,13 +100,11 @@ export function SpaceSettingsLayoutView({
   canManageTabs,
   entityNoun = 'phase',
   columns,
-  postDescriptionDisplay,
   saveBar,
   onReorder,
   onReorderColumns,
   onMoveToColumn,
   onViewPost,
-  onPostDescriptionDisplayChange,
   onSave,
   onDiscardChanges,
   columnMenuActions,
@@ -288,7 +281,7 @@ export function SpaceSettingsLayoutView({
                     key={column.id}
                     column={column}
                     otherColumns={otherColumns}
-                    showDescription={postDescriptionDisplay === 'expanded'}
+                    showDescription={true}
                     onMoveToColumn={onMoveToColumn}
                     onViewPost={onViewPost}
                     columnMenuActions={columnMenuActions}
@@ -303,12 +296,7 @@ export function SpaceSettingsLayoutView({
             </div>
           </SortableContext>
           <DragOverlay dropAnimation={null}>
-            {activeCallout ? (
-              <LayoutCalloutRowPreview
-                callout={activeCallout}
-                showDescription={postDescriptionDisplay === 'expanded'}
-              />
-            ) : null}
+            {activeCallout ? <LayoutCalloutRowPreview callout={activeCallout} showDescription={true} /> : null}
           </DragOverlay>
         </DndContext>
 
@@ -325,18 +313,6 @@ export function SpaceSettingsLayoutView({
           savingLabel={t('saveBar.saving')}
         />
       </div>
-
-      {/* Post description display toggle — below columns, saves immediately (not buffered) */}
-      <SpaceSettingsCard title={t('layout.postDescriptionDisplay.title')}>
-        <div className="flex items-start gap-3">
-          <Switch
-            checked={postDescriptionDisplay === 'collapsed'}
-            onCheckedChange={checked => onPostDescriptionDisplayChange(checked ? 'collapsed' : 'expanded')}
-            aria-label={t('layout.postDescriptionDisplay.switchLabel')}
-          />
-          <p className="text-body text-muted-foreground">{t('layout.postDescriptionDisplay.description')}</p>
-        </div>
-      </SpaceSettingsCard>
 
       {canManagePhases && onCreatePhase && (
         <AddPhaseDialog

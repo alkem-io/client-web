@@ -344,6 +344,8 @@ export const InnovationFlowStatesFragmentDoc = gql`
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
     defaultCalloutTemplate {
       id
@@ -7100,6 +7102,8 @@ export const CreateStateOnInnovationFlowDocument = gql`
     description
     settings {
       allowNewCallouts
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }
@@ -7204,6 +7208,8 @@ export const UpdateInnovationFlowStateDocument = gql`
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }
@@ -7251,6 +7257,66 @@ export type UpdateInnovationFlowStateMutationResult =
 export type UpdateInnovationFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowStateMutation,
   SchemaTypes.UpdateInnovationFlowStateMutationVariables
+>;
+export const UpdateInnovationFlowStateSettingsDocument = gql`
+    mutation UpdateInnovationFlowStateSettings($innovationFlowStateId: UUID!, $settings: UpdateInnovationFlowStateSettingsInput) {
+  updateInnovationFlowState(
+    stateData: {innovationFlowStateID: $innovationFlowStateId, settings: $settings}
+  ) {
+    id
+    displayName
+    settings {
+      allowNewCallouts
+      visible
+      descriptionDisplayMode
+      showPublishDetails
+    }
+  }
+}
+    `;
+export type UpdateInnovationFlowStateSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowStateSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowStateSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowStateSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowStateSettingsMutation, { data, loading, error }] = useUpdateInnovationFlowStateSettingsMutation({
+ *   variables: {
+ *      innovationFlowStateId: // value for 'innovationFlowStateId'
+ *      settings: // value for 'settings'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowStateSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
+  >(UpdateInnovationFlowStateSettingsDocument, options);
+}
+export type UpdateInnovationFlowStateSettingsMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowStateSettingsMutation
+>;
+export type UpdateInnovationFlowStateSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStateSettingsMutation>;
+export type UpdateInnovationFlowStateSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
 >;
 export const UpdateInnovationFlowStatesSortOrderDocument = gql`
     mutation UpdateInnovationFlowStatesSortOrder($innovationFlowID: UUID!, $stateIDs: [UUID!]!) {
@@ -23250,6 +23316,9 @@ export const SpaceTabDocument = gql`
             sortOrder
             settings {
               allowNewCallouts
+              visible
+              descriptionDisplayMode
+              showPublishDetails
             }
             defaultCalloutTemplate {
               id
@@ -23396,6 +23465,8 @@ export const SpaceTabsDocument = gql`
             settings {
               allowNewCallouts
               visible
+              descriptionDisplayMode
+              showPublishDetails
             }
           }
         }
