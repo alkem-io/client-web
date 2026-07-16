@@ -14804,9 +14804,7 @@ export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFull
 }
 export const UserContributionsDocument = gql`
     query UserContributions($userId: UUID!) {
-  rolesUser(
-    rolesData: {actorID: $userId, filter: {visibilities: [ACTIVE, DEMO]}}
-  ) {
+  rolesUser(rolesData: {actorID: $userId, filter: {visibilities: [ACTIVE, DEMO]}}) {
     id
     spaces {
       id
