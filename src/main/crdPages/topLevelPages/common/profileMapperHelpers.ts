@@ -8,10 +8,13 @@ import type {
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 
-// Spaces in these visibilities are hidden from public profiles (issue #1938).
-// Denylist rather than an ACTIVE/DEMO allowlist so a space with an unexpected
-// or absent visibility is still shown rather than silently dropped.
-const HIDDEN_HOSTED_VISIBILITIES: SpaceVisibility[] = [SpaceVisibility.Inactive, SpaceVisibility.Archived];
+// Spaces in these visibilities are never shown on public (user/org) profiles
+// (issue #1938). A denylist — not an ACTIVE/DEMO allowlist — so a space with an
+// unexpected or absent visibility still shows rather than silently disappearing.
+const HIDDEN_PROFILE_VISIBILITIES: SpaceVisibility[] = [SpaceVisibility.Inactive, SpaceVisibility.Archived];
+
+const isSpaceHiddenOnProfile = (visibility: SpaceVisibility | undefined): boolean =>
+  visibility !== undefined && HIDDEN_PROFILE_VISIBILITIES.includes(visibility);
 
 export type RawReference = {
   id: string;
@@ -88,7 +91,7 @@ export const mapAccountHostedResources = (input: AccountResourcesShape, vcType: 
   const hostedSpaces: SpaceGridCardData[] = (input?.spaces ?? []).flatMap(s => {
     const profile = s.about?.profile;
     if (!profile) return [];
-    if (s.visibility && HIDDEN_HOSTED_VISIBILITIES.includes(s.visibility)) return [];
+    if (isSpaceHiddenOnProfile(s.visibility)) return [];
     return [
       {
         id: s.id,
