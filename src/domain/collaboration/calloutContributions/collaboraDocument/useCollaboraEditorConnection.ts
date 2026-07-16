@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useRef, useState } from 'react';
+import { type RefObject, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -88,18 +88,18 @@ export function useCollaboraEditorConnection(
   const [accessTokenTTL, setAccessTokenTTL] = useState<number>();
   const [terminalReason, setTerminalReason] = useState<CollaboraTerminalReason>(null);
   const [recoverableFetchError, setRecoverableFetchError] = useState(false);
-  const onAccessTokenTTL = useCallback((ttl: number) => {
+  const onAccessTokenTTL = (ttl: number) => {
     setAccessTokenTTL(ttl);
     setTerminalReason(null);
     setRecoverableFetchError(false);
-  }, []);
-  const onFetchError = useCallback((code: string | undefined) => {
+  };
+  const onFetchError = (code: string | undefined) => {
     const reason = code ? (TERMINAL_CODE_REASONS[code] ?? null) : null;
     setTerminalReason(reason);
     // A fetch failure with no terminal mapping is recoverable — surface it as a service
     // disconnect (below) so the recovery affordance appears right away.
     setRecoverableFetchError(reason === null);
-  }, []);
+  };
 
   const { status, cause, saveStatus, connectedUsers, reconnect, reconnectNonce } = useCollaboraConnectionMonitor(
     iframeRef,
@@ -142,16 +142,13 @@ export function useCollaboraEditorConnection(
     hasDeletePrivileges: false,
   });
 
-  const perform = useCallback(
-    (kind: CollaboraRecoveryKind) => {
-      if (kind === 'reconnect') {
-        reconnect();
-      } else {
-        window.location.reload();
-      }
-    },
-    [reconnect]
-  );
+  const perform = (kind: CollaboraRecoveryKind) => {
+    if (kind === 'reconnect') {
+      reconnect();
+    } else {
+      window.location.reload();
+    }
+  };
   const recovery = useCollaboraRecovery(footerProps.changesAtRisk, perform);
 
   return { iframeRef, onAccessTokenTTL, onFetchError, reconnectNonce, footerProps, saveOutage, recovery };

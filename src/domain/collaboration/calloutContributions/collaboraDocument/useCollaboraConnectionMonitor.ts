@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useEffect, useState } from 'react';
+import { type RefObject, useEffect, useState } from 'react';
 import {
   type CollaboraConnectionState,
   type CollaboraConnectionStatus,
@@ -69,7 +69,7 @@ export function useCollaboraConnectionMonitor(
   const base = useCollaboraPostMessage(iframeRef, { onError, onSessionClosed, onDocumentReloaded });
 
   const [reconnectNonce, setReconnectNonce] = useState(0);
-  const reconnect = useCallback(() => setReconnectNonce(n => n + 1), []);
+  const reconnect = () => setReconnectNonce(n => n + 1);
 
   const [online, setOnline] = useState(() => (typeof navigator === 'undefined' ? true : navigator.onLine));
   useEffect(() => {

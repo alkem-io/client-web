@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 export type CollaboraRecoveryKind = 'reconnect' | 'reload';
 
@@ -30,23 +30,20 @@ export function useCollaboraRecovery(
 ): CollaboraRecovery {
   const [pending, setPending] = useState<CollaboraRecoveryKind | null>(null);
 
-  const request = useCallback(
-    (kind: CollaboraRecoveryKind) => {
-      if (changesAtRisk) {
-        setPending(kind);
-      } else {
-        perform(kind);
-      }
-    },
-    [changesAtRisk, perform]
-  );
+  const request = (kind: CollaboraRecoveryKind) => {
+    if (changesAtRisk) {
+      setPending(kind);
+    } else {
+      perform(kind);
+    }
+  };
 
-  const confirm = useCallback(() => {
+  const confirm = () => {
     if (pending) perform(pending);
     setPending(null);
-  }, [pending, perform]);
+  };
 
-  const cancel = useCallback(() => setPending(null), []);
+  const cancel = () => setPending(null);
 
   // Keep the last real action for the dialog's close animation, after `pending` clears.
   return { request, pending, kind: pending ?? 'reconnect', confirm, cancel };
