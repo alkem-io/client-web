@@ -13623,7 +13623,7 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 export const RolesOrganizationDocument = gql`
     query rolesOrganization($organizationId: UUID!) {
   rolesOrganization(
-    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}}
+    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO]}}
   ) {
     id
     spaces {
@@ -14805,7 +14805,7 @@ export function refetchUsersModelFullQuery(variables: SchemaTypes.UsersModelFull
 export const UserContributionsDocument = gql`
     query UserContributions($userId: UUID!) {
   rolesUser(
-    rolesData: {actorID: $userId, filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}}
+    rolesData: {actorID: $userId, filter: {visibilities: [ACTIVE, DEMO]}}
   ) {
     id
     spaces {

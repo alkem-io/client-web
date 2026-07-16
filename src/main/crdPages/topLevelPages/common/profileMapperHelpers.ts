@@ -1,3 +1,4 @@
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type {
   ReferenceLink,
   SimpleResourceCardItem,
@@ -6,6 +7,11 @@ import type {
 } from '@/crd/components/common/profileTypes';
 import type { SpaceGridCardData } from '@/crd/components/user/SpaceGridCard';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+
+// Spaces in these visibilities are hidden from public profiles (issue #1938).
+// Denylist rather than an ACTIVE/DEMO allowlist so a space with an unexpected
+// or absent visibility is still shown rather than silently dropped.
+const HIDDEN_HOSTED_VISIBILITIES: SpaceVisibility[] = [SpaceVisibility.Inactive, SpaceVisibility.Archived];
 
 export type RawReference = {
   id: string;
@@ -41,6 +47,7 @@ export type AccountResourcesShape =
   | {
       spaces?: Array<{
         id: string;
+        visibility?: SpaceVisibility;
         about?: { profile?: AccountResourceProfileLike; isContentPublic?: boolean };
       }>;
       virtualContributors?: Array<{ id: string; profile?: AccountResourceProfileLike }>;
@@ -81,6 +88,7 @@ export const mapAccountHostedResources = (input: AccountResourcesShape, vcType: 
   const hostedSpaces: SpaceGridCardData[] = (input?.spaces ?? []).flatMap(s => {
     const profile = s.about?.profile;
     if (!profile) return [];
+    if (s.visibility && HIDDEN_HOSTED_VISIBILITIES.includes(s.visibility)) return [];
     return [
       {
         id: s.id,
