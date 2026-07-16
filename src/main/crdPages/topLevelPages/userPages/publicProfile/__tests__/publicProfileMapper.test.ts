@@ -87,7 +87,7 @@ describe('mapHostedSpacesToCardData', () => {
     expect(result.hostedSpaces[0].id).toBe('s-2');
   });
 
-  it('keeps inactive spaces — visibility filtering is org-profile-only (issue #1938)', () => {
+  it('keeps inactive spaces — visibility filtering is org-profile-only', () => {
     const resources: AccountResourcesShape = {
       spaces: [
         { id: 'active', visibility: SpaceVisibility.Active, about: { profile: { displayName: 'A', url: '/a' } } },

@@ -23,9 +23,9 @@ export const mapAssociates = (associates: AssociateInput[]): AssociateGridItem[]
 export type { AccountResourcesShape };
 
 // Spaces in these visibilities are hidden from the organization's public
-// profile (issue #1938). Denylist rather than an ACTIVE/DEMO allowlist so a
-// space with an unexpected or absent visibility still shows rather than
-// silently disappearing.
+// profile. Denylist rather than an ACTIVE/DEMO allowlist so a space with an
+// unexpected or absent visibility still shows rather than silently
+// disappearing.
 const HIDDEN_PROFILE_VISIBILITIES: SpaceVisibility[] = [SpaceVisibility.Inactive, SpaceVisibility.Archived];
 
 const isSpaceHiddenOnProfile = (visibility: SpaceVisibility | undefined): boolean =>
