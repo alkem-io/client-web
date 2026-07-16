@@ -27,6 +27,7 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
@@ -48,6 +49,7 @@ import {
   COLLABORA_IMPORT_MAX_BYTES,
 } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
 import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
+import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
@@ -103,6 +105,9 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
  * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
  */
 const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
+
+/** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
+const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -267,6 +272,17 @@ function CalloutFormConnectorInner({
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
+
+  // Inline-rename state for the framing Collabora document, owned here (not in the
+  // edit box) so the form's Save button commits any pending rename alongside the
+  // rest of the edit. Instantiated with empty ids for non-document callouts, where
+  // it stays idle (`editing` never opens, so `save()` is never invoked).
+  const editCollaboraDocument = mode === 'edit' ? editCallout?.framing.collaboraDocument : undefined;
+  const collaboraRename = useRenameCollaboraDocument({
+    collaboraDocumentId: editCollaboraDocument?.id ?? '',
+    displayName: editCollaboraDocument?.profile?.displayName ?? '',
+    canRename: true,
+  });
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
@@ -531,6 +547,15 @@ function CalloutFormConnectorInner({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
+    // Commit a pending framing-document rename as part of Save (the edit box has
+    // no ✓ of its own). Only when the input is open; unchanged is a no-op inside
+    // the hook. On validation/save failure keep the dialog open — the box shows
+    // the inline error — and abort the rest of the save.
+    if (collaboraRename.editing) {
+      const renamed = await collaboraRename.save();
+      if (!renamed) return;
+    }
+
     // New references added in edit mode have no server id yet, so they can't
     // travel through `UpdateReferenceInput` (which requires `ID`). Persist them
     // via the dedicated `createReferenceOnProfile` mutation against the framing
@@ -691,6 +716,8 @@ function CalloutFormConnectorInner({
           value: values.title,
           onChange: v => setField('title', v),
           error: errors.title,
+          maxLength: SMALL_TEXT_LENGTH,
+          counterThreshold: TITLE_COUNTER_THRESHOLD,
         }}
         descriptionSlot={
           <MarkdownEditor
@@ -731,6 +758,11 @@ function CalloutFormConnectorInner({
                 editMemoId={values.editMeta?.memoId}
                 editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
                 editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
+                editCollaboraDocumentId={mode === 'edit' ? editCallout?.framing.collaboraDocument?.id : undefined}
+                editCollaboraDocumentDisplayName={
+                  mode === 'edit' ? editCallout?.framing.collaboraDocument?.profile?.displayName : undefined
+                }
+                collaboraRename={editCollaboraDocument ? collaboraRename : undefined}
                 framingType={values.framingChip}
                 linkUrl={values.linkUrl}
                 onLinkUrlChange={v => setField('linkUrl', v)}

@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { NotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
-import { overrideKey } from '../userNotificationsMapper';
+import { overrideKey, soundOverrideKey } from '../userNotificationsMapper';
 
 // ─── Apollo hook mocks ────────────────────────────────────────────────────
 
@@ -123,6 +123,65 @@ describe('useUserNotificationsTabData — guard clauses', () => {
     const { result } = renderHook(() => useUserNotificationsTabData({ userId: undefined, serverSettings: baseServer }));
     await act(async () => {
       await result.current.onToggle('space', 'communicationUpdates', 'inApp', true);
+    });
+    expect(mockUpdateUserSettings).not.toHaveBeenCalled();
+  });
+});
+
+describe('useUserNotificationsTabData — sound toggles (US3)', () => {
+  it('flips optimistically, then clears the override after mutate + refetch', async () => {
+    const { result } = renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
+
+    let savePromise: Promise<void> = Promise.resolve();
+    act(() => {
+      savePromise = result.current.onToggleSound('chatMessage', false);
+    });
+    // Optimistic flip is synchronous.
+    expect(result.current.overrides.get(soundOverrideKey('chatMessage'))).toBe(false);
+
+    await act(async () => {
+      await savePromise;
+    });
+
+    await waitFor(() => {
+      expect(result.current.overrides.has(soundOverrideKey('chatMessage'))).toBe(false);
+    });
+    expect(mockRefetchUserSettings).toHaveBeenCalledWith({ userID: 'user-1' });
+  });
+
+  it('emits ONLY the changed sound key (server merges the sibling)', async () => {
+    const { result } = renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
+
+    await act(async () => {
+      await result.current.onToggleSound('chatMessage', false);
+    });
+
+    const call = mockUpdateUserSettings.mock.calls[0][0];
+    expect(call.variables.settingsData.userID).toBe('user-1');
+    expect(call.variables.settingsData.settings).toEqual({ notification: { sound: { chatMessage: false } } });
+  });
+
+  it('rolls back AND re-throws on hard failure', async () => {
+    mockUpdateUserSettings.mockRejectedValueOnce(new Error('Network down'));
+    const { result } = renderHook(() => useUserNotificationsTabData({ userId: 'user-1', serverSettings: baseServer }));
+
+    let caughtError: unknown = null;
+    await act(async () => {
+      try {
+        await result.current.onToggleSound('inAppNotification', false);
+      } catch (e) {
+        caughtError = e;
+      }
+    });
+
+    expect(result.current.overrides.has(soundOverrideKey('inAppNotification'))).toBe(false);
+    expect((caughtError as Error).message).toBe('Network down');
+  });
+
+  it('does not fire the mutation when userId is undefined', async () => {
+    const { result } = renderHook(() => useUserNotificationsTabData({ userId: undefined, serverSettings: baseServer }));
+    await act(async () => {
+      await result.current.onToggleSound('chatMessage', false);
     });
     expect(mockUpdateUserSettings).not.toHaveBeenCalled();
   });

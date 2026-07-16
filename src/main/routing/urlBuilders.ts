@@ -22,6 +22,10 @@ export const buildNotificationSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/notifications`;
 };
 
+// The current user's own notification-settings tab (where the sound toggles live).
+// Distinct from `buildNotificationSettingsUrl` above, which is for *spaces*.
+export const buildUserNotificationSettingsUrl = () => '/user/me/settings/notifications';
+
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {

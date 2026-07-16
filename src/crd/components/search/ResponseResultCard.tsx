@@ -1,4 +1,4 @@
-import { FileText, MessageSquare, Presentation, StickyNote } from 'lucide-react';
+import { FileSpreadsheet, FileText, MessageSquare, Presentation, StickyNote } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { PostType } from '@/crd/components/search/PostResultCard';
 import { cn } from '@/crd/lib/utils';
@@ -27,6 +27,8 @@ function PostTypeIcon({ type }: { type: PostType }) {
       return <Presentation aria-hidden="true" className="size-3" />;
     case 'memo':
       return <StickyNote aria-hidden="true" className="size-3" />;
+    case 'collaboraDocument':
+      return <FileSpreadsheet aria-hidden="true" className="size-3" />;
     default:
       return <FileText aria-hidden="true" className="size-3" />;
   }

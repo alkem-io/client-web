@@ -1,7 +1,7 @@
 import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement, UserIdleState } from '@alkemio/excalidraw';
-import type { MakeBrand } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type { AppState, CollaboratorPointer, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { MakeBrand } from '@alkemio/excalidraw/common/utility-types';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/element/types';
+import type { AppState, CollaboratorPointer, SocketId } from '@alkemio/excalidraw/types';
 import type { BinaryFilesWithOptionalUrl } from '@/domain/common/whiteboard/excalidraw/types';
 import { env } from '@/main/env';
 import { DELETED_ELEMENT_TIMEOUT, type WS_SCENE_EVENT_TYPES } from '../excalidrawAppConstants';

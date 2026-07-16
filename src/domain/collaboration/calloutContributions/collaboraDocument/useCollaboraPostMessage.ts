@@ -1,4 +1,4 @@
-import { type RefObject, useEffect, useState } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 import type { CollaboraConnectedUser, CollaboraSaveStatus } from '@/crd/components/collabora/CollaboraCollabFooter';
 
 export type CollaboraConnectionStatus = 'connected' | 'connecting' | 'disconnected';
@@ -25,6 +25,13 @@ export type CollaboraIframeState = {
 type Options = {
   onError?: (message: string) => void;
   onSessionClosed?: () => void;
+  /**
+   * Fired when the editor re-loads the document after the initial open. After an
+   * in-editor rename Collabora reconnects and re-emits App_LoadingStatus /
+   * Document_Loaded (verified) WITHOUT navigating the iframe — so this postMessage,
+   * not the DOM onLoad, is the reliable signal. Callers use it to re-read the name.
+   */
+  onDocumentReloaded?: () => void;
 };
 
 /**
@@ -36,13 +43,21 @@ type Options = {
  */
 export function useCollaboraPostMessage(
   iframeRef: RefObject<HTMLIFrameElement | null>,
-  { onError, onSessionClosed }: Options = {}
+  { onError, onSessionClosed, onDocumentReloaded }: Options = {}
 ): CollaboraIframeState {
   const [state, setState] = useState<CollaboraIframeState>({
     connectionStatus: 'connecting',
     saveStatus: 'saved',
     connectedUsers: [],
   });
+  // Count Document_Loaded events: the first is the initial open; any after it is a
+  // reload (e.g. Collabora's reconnect after an in-editor rename).
+  const loadCountRef = useRef(0);
+  // Keep the callbacks in refs so the message listener can subscribe ONCE. Binding
+  // them into the effect deps instead would re-subscribe on every render (the
+  // callers pass fresh closures) and reset loadCountRef, breaking reload detection.
+  const callbacksRef = useRef({ onError, onSessionClosed, onDocumentReloaded });
+  callbacksRef.current = { onError, onSessionClosed, onDocumentReloaded };
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
@@ -54,12 +69,23 @@ export function useCollaboraPostMessage(
       const data = parseMessage(event.data);
       if (!data?.MessageId) return;
 
+      const { onError, onSessionClosed, onDocumentReloaded } = callbacksRef.current;
+      if (data.MessageId === 'App_LoadingStatus' && data.Values?.Status === 'Document_Loaded') {
+        loadCountRef.current += 1;
+        if (loadCountRef.current > 1) {
+          onDocumentReloaded?.();
+        }
+      }
+
       setState(prev => reduce(prev, data, { onError, onSessionClosed }));
     };
 
     window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
-  }, [iframeRef, onError, onSessionClosed]);
+    return () => {
+      window.removeEventListener('message', handler);
+      loadCountRef.current = 0;
+    };
+  }, [iframeRef]);
 
   return state;
 }
