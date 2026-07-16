@@ -6,6 +6,7 @@ import type { CalendarEventFormData } from '@/domain/timeline/calendar/useCalend
 import type { EventFormValues } from '../dataMappers/calendarEventDataMapper';
 import type { CrdCalendarUrlState } from './useCrdCalendarUrlState';
 import { useCrdEventForm } from './useCrdEventForm';
+import { toWholeDayWire } from './wholeDayDate';
 
 /**
  * Owns the create/edit/delete slice of the calendar dialog: form state, edit
@@ -80,10 +81,16 @@ function buildEditInitialValues(event: CalendarEventInfoFragment): Partial<Event
   };
 }
 
-function toDomainPayload(values: EventFormValues): CalendarEventFormData | undefined {
-  const { displayName, type, startDate, endDate, wholeDay, description, locationCity, tags, visibleOnParentCalendar } =
-    values;
-  if (!startDate || !endDate || !type) return undefined;
+export function toDomainPayload(values: EventFormValues): CalendarEventFormData | undefined {
+  const { displayName, type, wholeDay, description, locationCity, tags, visibleOnParentCalendar } = values;
+  if (!values.startDate || !values.endDate || !type) return undefined;
+
+  // A whole-day event is a bare calendar date: anchor start/end to UTC-midnight of
+  // the picked day so the wire value is timezone-independent, and derive the
+  // duration from those anchored dates (exact whole days, DST-safe). Timed events
+  // keep their real instant.
+  const startDate = wholeDay ? toWholeDayWire(values.startDate) : values.startDate;
+  const endDate = wholeDay ? toWholeDayWire(values.endDate) : values.endDate;
 
   let durationMinutes = values.durationMinutes ?? 0;
   let durationDays = 0;
