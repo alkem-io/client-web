@@ -6,7 +6,7 @@ import type { CalendarEventFormData } from '@/domain/timeline/calendar/useCalend
 import type { EventFormValues } from '../dataMappers/calendarEventDataMapper';
 import type { CrdCalendarUrlState } from './useCrdCalendarUrlState';
 import { useCrdEventForm } from './useCrdEventForm';
-import { toWholeDayWire } from './wholeDayDate';
+import { fromWholeDayWire, toWholeDayWire } from './wholeDayDate';
 
 /**
  * Owns the create/edit/delete slice of the calendar dialog: form state, edit
@@ -64,9 +64,14 @@ export type UseCrdEventFormDialogResult = {
   typeOptions: { value: string; label: string }[];
 };
 
-function buildEditInitialValues(event: CalendarEventInfoFragment): Partial<EventFormValues> {
-  const startDate = event.startDate ? new Date(event.startDate) : undefined;
-  const endDate = startDate ? new Date(startDate.getTime() + event.durationMinutes * 60_000) : undefined;
+export function buildEditInitialValues(event: CalendarEventInfoFragment): Partial<EventFormValues> {
+  const startInstant = event.startDate ? new Date(event.startDate) : undefined;
+  const endInstant = startInstant ? new Date(startInstant.getTime() + event.durationMinutes * 60_000) : undefined;
+  // Whole-day start/end are UTC-midnight bare dates: seed the form with local
+  // floating dates so the pickers show the picked calendar days for any viewer.
+  // The end is derived from the UTC instant (DST-safe) before flooring to a date.
+  const startDate = startInstant && event.wholeDay ? fromWholeDayWire(startInstant) : startInstant;
+  const endDate = endInstant && event.wholeDay ? fromWholeDayWire(endInstant) : endInstant;
   return {
     displayName: event.profile.displayName,
     type: event.type,
