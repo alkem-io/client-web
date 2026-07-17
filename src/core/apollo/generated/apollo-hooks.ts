@@ -13623,7 +13623,7 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 export const RolesOrganizationDocument = gql`
     query rolesOrganization($organizationId: UUID!) {
   rolesOrganization(
-    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}}
+    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO]}}
   ) {
     id
     spaces {
