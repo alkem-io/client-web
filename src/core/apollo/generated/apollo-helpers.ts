@@ -4007,6 +4007,7 @@ export type QueryKeySpecifier = (
   | 'adminIdentitiesUnverified'
   | 'aiServer'
   | 'collaboraEditorUrl'
+  | 'collaboraServiceAvailable'
   | 'exploreSpaces'
   | 'inputCreator'
   | 'lookup'
@@ -4048,6 +4049,7 @@ export type QueryFieldPolicy = {
   adminIdentitiesUnverified?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboraEditorUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraServiceAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
