@@ -1,16 +1,25 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * Fraction of the token's remaining lifetime that must elapse before we refresh. At 0.5 the
- * refresh fires at the *midpoint* of the token's life — i.e. half the lifetime BEFORE expiry.
+ * How much token life must remain when we refresh. Collabora shows its own native "your session
+ * will expire" dialog once the token has **~15 minutes** of life left (confirmed empirically), a
+ * *fixed* lead regardless of the token's total TTL. To keep that dialog from ever appearing we
+ * refresh — resetting the token clock — while MORE than that remains, i.e. this lead must exceed
+ * Collabora's ~15-min warning window.
  *
- * Collabora warns the user with its own native "your session will expire" dialog only a few
- * *minutes* before expiry; firing at the midpoint (hours before, for a normal 8h token; minutes
- * before, for a short one) always beats that dialog by construction, regardless of Collabora's
- * exact threshold — which it does not expose. Small enough that even a short test token (17m →
- * ~8.5m) refreshes well before the warning.
+ * For a normal 8h token this fires ~once, only in a marathon session (and most sessions end
+ * before it, so no refresh happens at all). A token whose whole TTL is shorter than this lead
+ * cannot be refreshed before Collabora's warning — it is left to the fallback disconnect (and is
+ * only ever a test artifact; real tokens are hours long).
  */
-export const TOKEN_REFRESH_FRACTION = 0.5;
+export const REFRESH_LEAD_MS = 20 * 60_000; // 20 min — safely above Collabora's ~15-min warning
+
+/**
+ * If the document is unsaved when the refresh comes due, wait this long for Collabora's autosave
+ * so no edit is dropped — but not so long we slip past the warning window (the lead above leaves
+ * ~5 min of headroom, far more than this).
+ */
+export const SAVED_WAIT_MAX_MS = 60_000; // 1 min
 
 type Params = {
   /** Current token's expiry as an absolute epoch (ms); the refresh is timed from this. */
@@ -25,47 +34,45 @@ type Params = {
 
 /**
  * Keeps a Collabora editing session alive across WOPI token expiry by refreshing the token
- * **proactively, before it expires** — because (verified against a live session) Collabora emits
- * NO postMessage when a token is about to expire; it just shows its own scary "session will
- * expire — please save and reload" dialog. So the host must drive the refresh itself.
+ * **proactively, before Collabora's expiry warning fires** — because (verified against a live
+ * session) Collabora emits NO postMessage when a token nears expiry; it just shows its own scary
+ * "session will expire — please save and reload" dialog once ~15 min of life remain. So the host
+ * must drive the refresh itself, and must do it *before* that ~15-min mark.
  *
  * Refresh = an in-place remount (re-key the iframe → `network-only` editor-URL refetch → fresh
  * per-actor token). To avoid dropping unsaved edits, the remount waits for the next moment the
  * document reports **saved** (piggybacking Collabora's own autosave — a signal we DO receive),
- * bounded so it never waits past a safe point before expiry. The result: token expiry never
- * reaches the user — no dialog, no data loss, no re-login — at the cost of a brief editor reload
- * (~once per several hours for a normal token).
+ * bounded so it never slips past the warning window. The result: token expiry never reaches the
+ * user — no dialog, no data loss, no re-login — at the cost of a brief editor reload.
  */
 export function useProactiveTokenRefresh({ accessTokenTTL, saved, reconnectNonce, onRefresh }: Params): void {
   const [due, setDue] = useState(false);
-  // Latest-value refs so the timer effects don't re-run (and re-arm) on every render — the
-  // callback and TTL are read at fire time, not baked into effect deps.
+  // Latest-callback ref so the timer effects don't re-run (and re-arm) on every render.
   const onRefreshRef = useRef(onRefresh);
   onRefreshRef.current = onRefresh;
-  const ttlRef = useRef(accessTokenTTL);
-  ttlRef.current = accessTokenTTL;
 
-  // Arm the proactive timer: fire once TOKEN_REFRESH_FRACTION of the remaining lifetime elapses.
-  // Re-armed on each token (re)issue (accessTokenTTL changes) and each remount (reconnectNonce).
+  // Arm the proactive timer: fire once the remaining lifetime drops to REFRESH_LEAD_MS. Re-armed
+  // on each token (re)issue (accessTokenTTL changes) and each remount (reconnectNonce).
   useEffect(() => {
     setDue(false);
     if (!accessTokenTTL || accessTokenTTL <= 0) return;
-    const remaining = accessTokenTTL - Date.now();
-    if (remaining <= 0) return; // already expired — the monitor's fallback disconnect owns this
-    const id = setTimeout(() => setDue(true), remaining * TOKEN_REFRESH_FRACTION);
+    const delay = accessTokenTTL - Date.now() - REFRESH_LEAD_MS;
+    // A token whose remaining life is already within the lead can't be refreshed before
+    // Collabora's warning — leave it to the fallback disconnect rather than remount-looping.
+    if (delay <= 0) return;
+    const id = setTimeout(() => setDue(true), delay);
     return () => clearTimeout(id);
   }, [accessTokenTTL, reconnectNonce]);
 
   // Once due, remount at the next saved moment so no unsaved edit is dropped; if the document
-  // stays unsaved, remount anyway before expiry (bounded to half the still-remaining life).
+  // stays unsaved, remount anyway after a bounded grace (still well before the warning).
   useEffect(() => {
     if (!due) return;
     if (saved) {
       onRefreshRef.current();
       return;
     }
-    const remaining = ttlRef.current ? ttlRef.current - Date.now() : 0;
-    const id = setTimeout(() => onRefreshRef.current(), Math.max(0, remaining / 2));
+    const id = setTimeout(() => onRefreshRef.current(), SAVED_WAIT_MAX_MS);
     return () => clearTimeout(id);
   }, [due, saved]);
 }
