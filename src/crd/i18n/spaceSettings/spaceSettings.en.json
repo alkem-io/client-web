@@ -38,18 +38,7 @@
       "description": "Your unsaved Layout changes will be reverted to the last saved state. This cannot be undone.",
       "confirm": "Discard Changes"
     },
-    "postDescriptionDisplay": {
-      "title": "Post description display",
-      "switchLabel": "Collapse post descriptions by default",
-      "description": "Collapse post descriptions by default. When enabled, descriptions show a \"Read more\" link instead of the full text."
-    },
     "column": {
-      "titleAriaLabel": "Column title",
-      "descriptionAriaLabel": "Column description",
-      "editTitle": "Edit column title",
-      "editDescription": "Edit column description",
-      "confirm": "Confirm",
-      "cancel": "Cancel",
       "titlePlaceholder": "Column title",
       "descriptionPlaceholder": "Describe this column…",
       "menu": "Column actions",
@@ -68,7 +57,8 @@
         "menuLabel": "Edit Details",
         "dialogTitle": "Edit Details: Flow Phase",
         "titleLabel": "Title",
-        "editTitle": "Edit title",
+        "titleTooShort": "The title must be at least 3 characters long",
+        "titleDuplicate": "A phase with this name already exists.",
         "insertEmoji": "Insert emoji",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Description",
@@ -102,6 +92,37 @@
           "title": "Hide this phase?",
           "description": "This only hides the phase from the menu. It does not remove access to its content: anyone with a link to the phase, or to a post inside it, can still open it.",
           "confirm": "Hide",
+          "cancel": "Cancel"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post description",
+          "collapsedHint": "Posts start collapsed — members expand to read.",
+          "expandedHint": "Posts are fully expanded by default.",
+          "switchLabel": "Collapse post descriptions"
+        },
+        "publishDetails": {
+          "label": "Publisher details",
+          "onHint": "Author name, avatar, and date are shown on each Post.",
+          "offHint": "Author name, avatar, and date are hidden on Posts in this phase.",
+          "switchLabel": "Show publisher details"
+        },
+        "cancel": "Cancel",
+        "saving": "Saving…",
+        "save": "Save"
+      },
+      "postTemplate": {
+        "menuLabel": "Post Template",
+        "dialogTitle": "Post Template: {{phaseName}}",
+        "choose": "Choose template…",
+        "clear": "Clear template",
+        "clearConfirm": {
+          "title": "Clear Post Template?",
+          "description": "The default Post template for this phase will be removed. New Posts in this phase will use no default template. This does not affect existing Posts.",
+          "confirm": "Clear template",
           "cancel": "Cancel"
         }
       }
@@ -752,7 +773,7 @@
     "allowedActions": {
       "title": "Allowed Actions",
       "description": "Choose which actions members can perform in this space",
-      "subspaceAdminInvitations": "Space Invitations",
+      "subspaceAdminInvitations": "Subspace Membership",
       "memberCreatePosts": "Create Posts",
       "videoCalls": "Video Calls",
       "guestContributions": "Guest Contributions",
@@ -762,7 +783,7 @@
       "subspaceEvents": "Subspace Events",
       "alkemioSupportAccess": "Alkemio Support",
       "trustHostOrganization": "Trust Host Organisation",
-      "subspaceAdminInvitationsDescription": "Allow admins of Subspaces to invite platform users to their Subspace. Users who were not yet a member of this Space will become so when they accept the Subspace invitation."
+      "subspaceAdminInvitationsDescription": "Let Subspaces bring in their own members. They become members here too."
     },
     "saveAsTemplate": {
       "title": "Save as a template",
@@ -778,6 +799,14 @@
         "description": "This will permanently delete this subspace and all its content. This action cannot be undone.",
         "confirm": "Delete Subspace"
       }
+    },
+    "userInfoVisibility": {
+      "title": "User information visibility",
+      "description": "Control who can see member user information in this space. Organizations and virtual contributors follow the space visibility.",
+      "followSpace": "Follow space visibility",
+      "followSpaceDescription": "Member user information is visible according to the space visibility.",
+      "membersOnly": "Members only",
+      "membersOnlyDescription": "Only members of this space can see member user information."
     }
   },
   "storage": {

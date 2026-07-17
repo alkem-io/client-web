@@ -2,6 +2,7 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Info, Loader2, Trash2, Users } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useNavigate from '@/core/routing/useNavigate';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
 import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
@@ -16,8 +17,8 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Avatar, AvatarImage } from '@/crd/primitives/avatar';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
-import { useConversationEventsSubscription } from '@/main/userMessaging/useConversationEventsSubscription';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { useConversationAttachments } from './attachments/useConversationAttachments';
 import { useConversationStorageConfig } from './attachments/useConversationStorageConfig';
@@ -43,12 +44,12 @@ export const UnifiedChatPanelConnector = () => {
   const { t, i18n } = useTranslation('crd-chat');
   const { userModel } = useCurrentUserContext();
   const currentUserId = userModel?.id;
+  const navigate = useNavigate();
 
   const {
     isOpen,
     setIsOpen,
     selectedConversationId,
-    selectedRoomId,
     setSelectedConversationId,
     setSelectedRoomId,
     setNewlyCreatedConversationId,
@@ -67,8 +68,9 @@ export const UnifiedChatPanelConnector = () => {
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
   const isGuidanceThread = selectedConversation?.isGuidance ?? false;
 
-  // Realtime: global conversation events + the selected room's stream (inside the view hook).
-  useConversationEventsSubscription(selectedRoomId);
+  // Realtime conversation events are subscribed globally by
+  // <ConversationEventsSubscriber /> (mounted in root.tsx) so they arrive with
+  // the panel closed too. The selected room's message stream is inside the view hook.
   const { isSending, handleSendMessage, handleAddReaction, handleRemoveReaction, handleLeaveGroup, clearGuidance } =
     useUnifiedConversationView(selectedConversation ?? null, rawMessages);
 
@@ -275,6 +277,14 @@ export const UnifiedChatPanelConnector = () => {
         closeLabel={t('launcher.close')}
         onBack={view === 'thread' ? handleBack : undefined}
         backLabel={t('thread.back')}
+        onGoToSettings={() => {
+          // Close first: the panel lives outside <Routes> and the messaging context has
+          // no route listener, so navigating alone leaves it mounted. On a small screen
+          // it is `fixed inset-0`, which would cover the settings page it just opened.
+          setIsOpen(false);
+          navigate(buildUserNotificationSettingsUrl());
+        }}
+        settingsLabel={t('panel.settings')}
         headerActions={view === 'thread' ? headerActions : undefined}
       >
         {view === 'thread' ? (

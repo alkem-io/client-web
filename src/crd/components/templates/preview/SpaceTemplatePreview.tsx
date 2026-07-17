@@ -1,11 +1,13 @@
 import {
   FileText,
+  FolderTree,
   Image as ImageIcon,
   Lock,
   Megaphone,
   MessageSquareText,
   Presentation,
   StickyNote,
+  Users,
   Vote,
 } from 'lucide-react';
 import type { ComponentType, SVGProps } from 'react';
@@ -28,6 +30,8 @@ const FRAMING_ICON: Record<FramingKind, ComponentType<SVGProps<SVGSVGElement>>> 
   cta: Megaphone,
   image: ImageIcon,
   poll: Vote,
+  contributors: Users,
+  spaces: FolderTree,
 };
 
 /**

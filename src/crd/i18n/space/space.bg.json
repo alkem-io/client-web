@@ -203,12 +203,22 @@
     "documentImportOr": "или",
     "documentImportHint": "Плъзнете файл или щракнете, за да качите",
     "documentImportMaxSize": ".docx, .xlsx, .pptx до {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} до {{cap}} MB",
     "documentImportRemoveFile": "Премахни файла",
     "documentImportErrorUnsupported": "Този тип файл не се поддържа. Опитайте с {{formats}}.",
     "documentImportErrorTooLarge": "Файлът е твърде голям. Максималният размер е {{cap}} MB.",
     "documentImportErrorMultiple": "Качвайте само по един файл.",
     "documentImportErrorFolder": "Качете файл, а не папка.",
     "documentImportErrorServiceUnavailable": "Услугата за документи временно не е налична. Моля, опитайте отново след малко.",
+    "documentReplace": "Замяна на файла",
+    "documentReplaceTitle": "Замяна на файла",
+    "documentReplaceDescription": "Качването на заместващ файл презаписва текущия файл за всички и не може да бъде отменено.",
+    "documentReplaceCurrentTitleLabel": "Текущ документ",
+    "documentReplaceTitleFieldLabel": "Заглавие",
+    "documentReplaceConfirm": "Замяна на файла",
+    "documentReplaceErrorSameType": "Заместващият файл трябва да е същият вид документ като текущия: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Файлът е заменен.",
+    "documentReplaceError": "Файлът не можа да бъде заменен. Моля, опитайте отново.",
     "comments": "{{count}} коментара",
     "commentsZero": "0 коментара",
     "expandComments": "Разгъни коментарите",
@@ -282,7 +292,9 @@
     "postUnsavedCloseCancel": "Продължи редактирането",
     "uploadAfterCreateFailed": "Известието беше създадено, но качването на визуализацията се провали. Можете да опитате отново от диалога за редактиране на известието.",
     "pollOptionsSaveFailed": "Една или повече промени на опциите на анкетата не бяха запазени. Можете да опитате отново от този диалог.",
-    "referencesSaveFailed": "Една или повече нови референции не бяха запазени. Останалите промени не бяха приложени. Моля, опитайте отново."
+    "referencesSaveFailed": "Една или повече нови референции не бяха запазени. Останалите промени не бяха приложени. Моля, опитайте отново.",
+    "contributors": "Сътрудници",
+    "subspaces": "Подпространства"
   },
   "contribution": {
     "edit": "Редактирай",
@@ -409,7 +421,8 @@
     "maxLength": "Максимум {{count}} символа.",
     "submitted": {
       "title": "Кандидатурата е изпратена",
-      "body": "Кандидатурата ти за {{communityName}} беше изпратена."
+      "body": "Кандидатурата ти за {{communityName}} беше изпратена.",
+      "review": "Кандидатурата ти ще бъде разгледана. След като бъде одобрена, ще получиш известие <bell/> и ще можеш да влезеш в общността от таблото си Начало."
     }
   },
   "mobile": {
@@ -456,9 +469,39 @@
   },
   "deleteCallout": {
     "title": "Да изтрия ли този $t(common.callout)?",
-    "description": "“{{title}}” ще бъде изтрит окончателно, заедно с приносите и коментарите. Това действие не може да бъде отменено.",
+    "description": "“{{title}}” ще бъде изтрит окончателно. Това действие не може да бъде отменено.",
     "confirm": "Изтрий",
+    "confirmAll": "Изтрий $t(common.callout)то и цялото съдържание",
+    "headerContributions_one": "Ще се изтрие {{count}} принос",
+    "headerContributions_other": "Ще се изтрият {{count}} приноса",
+    "headerRich": "Ще се изтрие {{content}}",
+    "headerRichContributions_one": "Ще се изтрият {{content}} и {{count}} принос",
+    "headerRichContributions_other": "Ще се изтрият {{content}} и {{count}} приноса",
+    "headerRichPoll": "Ще се изтрият анкетата и резултатите от нея",
+    "headerRichPollContributions_one": "Ще се изтрият анкетата, резултатите и {{count}} принос",
+    "headerRichPollContributions_other": "Ще се изтрият анкетата, резултатите и {{count}} приноса",
+    "callToAction": "Призив за действие",
+    "moreContributions_one": "още {{count}} принос...",
+    "moreContributions_other": "още {{count}} приноса...",
+    "attachmentsNote": "включително прикачените файлове и връзки",
+    "contentType": {
+      "whiteboard": "дъската",
+      "memo": "бележката",
+      "mediaGallery": "медийната галерия",
+      "document": "документа"
+    },
+    "moreLinks_one": "и още {{count}} връзка",
+    "moreLinks_other": "и още {{count}} връзки",
+    "comments_one": "Ще се изтрие {{count}} коментар",
+    "comments_other": "Ще се изтрият {{count}} коментара",
+    "success": "$t(common.Callout)-ът “{{title}}” беше изтрит.",
     "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+  },
+  "deleteContribution": {
+    "title": "Да изтрия ли този принос?",
+    "description": "“{{title}}” ще бъде изтрит окончателно. Това действие не може да бъде отменено.",
+    "confirm": "Изтрий",
+    "saveFailed": "Приносът не можа да бъде изтрит. Опитайте отново."
   },
   "saveAsTemplate": {
     "saveFailed": "Шаблонът не можа да бъде запазен. Опитайте отново."
@@ -490,7 +533,8 @@
     "maxPollOptions": "Допускат се най-много {{count}} опции",
     "pollOptionRequired": "Текстът на опцията е задължителен",
     "referenceTitleRequired": "Заглавието е задължително, когато е предоставен URL",
-    "linkRowTitleRequired": "Заглавието е задължително, когато е предоставен URL"
+    "linkRowTitleRequired": "Заглавието е задължително, когато е предоставен URL",
+    "contributorTypesRequired": "Изберете поне един тип сътрудник."
   },
   "forms": {
     "titleLabel": "Заглавие",
@@ -507,6 +551,7 @@
     "publishedLabel": "Публикувано",
     "draftLabel": "Чернова",
     "notifyMembers": "Уведоми членовете на пространството",
+    "titleRequiredHint": "Добавете заглавие на вашето $t(common.callout), за да продължите",
     "saveDraft": "Запази чернова",
     "save": "Запази",
     "publish": "Публикувай",
@@ -524,7 +569,8 @@
     "addOption": "Добави опция",
     "removeOption": "Премахни опция",
     "allowComments": "Разреши коментари",
-    "allowCommentsDescription": "Членовете могат да публикуват коментари върху рамката на известието."
+    "allowCommentsDescription": "Членовете могат да публикуват коментари върху рамката на известието.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Отговори",
@@ -638,6 +684,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Име на документа",
+      "edit": "Преименуване",
+      "save": "Запази",
+      "cancel": "Отказ",
+      "saving": "Записване…",
+      "errors": {
+        "blank": "Моля, въведете име.",
+        "tooShort": "Името трябва да е поне {{min}} знака.",
+        "tooLong": "Името може да е най-много {{max}} знака.",
+        "invalid": "Моля, въведете валидно име.",
+        "saveFailed": "Документът не можа да бъде преименуван. Моля, опитайте отново."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Грешка в Collabora: {{message}}",
@@ -703,6 +763,7 @@
     "label": "Преглед на избрания отговор",
     "edit": "Редактиране на отговора",
     "share": "Споделяне на отговора",
+    "delete": "Изтриване на отговора",
     "close": "Затваряне на прегледа",
     "emptyDescription": "Няма описание",
     "references": "Препратки"
@@ -717,6 +778,7 @@
     "label": "Преглед на избрания whiteboard",
     "edit": "Редактиране на whiteboard",
     "share": "Споделяне на whiteboard",
+    "delete": "Изтриване на whiteboard",
     "close": "Затваряне на прегледа",
     "openFull": "Кликнете, за да видите целия whiteboard"
   },
@@ -759,6 +821,7 @@
   },
   "dialogs": {
     "cancel": "Отказ",
+    "close": "Затвори",
     "create": "Създай",
     "discardChanges": {
       "title": "Отхвърляне на промените?",
@@ -858,5 +921,45 @@
   },
   "activity": {
     "dialogTitle": "Скорошна активност"
+  },
+  "contributors": {
+    "title": "Сътрудници",
+    "search": "Търсене по име…",
+    "empty": "Няма сътрудници за показване.",
+    "emptySearch": "Няма сътрудници, отговарящи на търсенето.",
+    "noLocationData": "Няма данни за местоположение",
+    "noLocationDescription": "Тези сътрудници нямат зададени данни за местоположение.",
+    "viewList": "Списък",
+    "viewMap": "Карта",
+    "expandMap": "Разгъване на картата",
+    "closeMap": "Затваряне на картата",
+    "types": {
+      "user": "Хора",
+      "organization": "Организации",
+      "virtualContributor": "Виртуални сътрудници"
+    },
+    "counts": {
+      "users": "{{count}} хора",
+      "organizations": "{{count}} организации",
+      "virtualContributors": "{{count}} виртуални сътрудници"
+    },
+    "config": {
+      "title": "Сътрудници",
+      "description": "Показвайте сътрудниците на тази общност като самообновяваща се колекция.",
+      "typesLabel": "Типове сътрудници",
+      "typesHint": "Изберете поне един тип за включване.",
+      "defaultTypeLabel": "Тип по подразбиране",
+      "defaultTypeHint": "Типът, който се показва първи.",
+      "defaultViewLabel": "Изглед по подразбиране",
+      "viewList": "Списък",
+      "viewMap": "Карта"
+    }
+  },
+  "spaceCollection": {
+    "search": "Търсене на подпространства...",
+    "empty": {
+      "title": "Все още няма подпространства",
+      "description": "Това пространство все още няма подпространства."
+    }
   }
 }

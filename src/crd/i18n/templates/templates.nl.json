@@ -52,7 +52,9 @@
     "document": "Document",
     "cta": "Link",
     "image": "Galerij",
-    "poll": "Poll"
+    "poll": "Poll",
+    "contributors": "Contributors",
+    "spaces": "Subspaces"
   },
   "contributionType": {
     "post": "Posts",
@@ -265,7 +267,7 @@
     "tagsPlaceholder": "Voeg een label toe en druk op Enter",
     "references": "Referenties",
     "listedInStore": "In de winkel vermelden",
-    "listedInStoreHint": "Toon dit pakket in de Innovation Library.",
+    "listedInStoreHint": "Toon dit pakket in de Template Bibliotheek.",
     "searchVisibility": "Zichtbaarheid in zoekopdrachten",
     "searchVisibilityOptions": {
       "public": "Openbaar",
@@ -319,9 +321,9 @@
     "manage": "Beheer dit pakket"
   },
   "library": {
-    "title": "Innovatiebibliotheek",
+    "title": "Template Bibliotheek",
     "subtitle": "Ontdek templates en innovation packs van het platform.",
-    "pageTitle": "Innovatiebibliotheek",
+    "pageTitle": "Template Bibliotheek",
     "loadedOfTotal": "{{loaded}} van {{total}}",
     "packs": {
       "heading": "Innovation Packs",

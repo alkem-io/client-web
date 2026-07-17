@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { setTitlePrefix } from './documentTitle';
 import { usePageTitle } from './usePageTitle';
 import '@/core/i18n/config'; // PageTitle needs translations
 
@@ -7,6 +8,9 @@ describe('usePageTitle', () => {
   const originalTitle = document.title;
 
   beforeEach(() => {
+    // The title now flows through the documentTitle singleton; keep the unread
+    // prefix cleared so these base-title assertions are unaffected by it.
+    setTitlePrefix('');
     document.title = 'Initial Title';
   });
 

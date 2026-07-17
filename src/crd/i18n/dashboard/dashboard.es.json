@@ -145,6 +145,10 @@
     "decline": "Rechazar",
     "noInvitations": "Sin invitaciones pendientes"
   },
+  "applications": {
+    "title": "Solicitudes Pendientes",
+    "pending": "Pendiente"
+  },
   "campaign": {
     "title": "Crea tu Colaborador Virtual",
     "description": "Comienza con tu propio colaborador impulsado por IA",

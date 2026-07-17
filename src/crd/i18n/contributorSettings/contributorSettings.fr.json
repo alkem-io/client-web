@@ -318,6 +318,10 @@
         "virtualContributor": {
           "title": "Notifications de contributeur virtuel",
           "description": "Notifications concernant les activités et affectations des contributeurs virtuels."
+        },
+        "sound": {
+          "title": "Sons de notification",
+          "description": "Choisissez si un son est joué lorsqu'un message de chat ou une notification dans l'application arrive."
         }
       },
       "rows": {
@@ -364,6 +368,10 @@
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'un manager VC est invité à rejoindre une communauté"
+        },
+        "sound": {
+          "chatMessage": "Jouer un son lorsqu'un message de chat est reçu",
+          "inAppNotification": "Jouer un son lorsqu'une notification dans l'application est reçue"
         }
       }
     },

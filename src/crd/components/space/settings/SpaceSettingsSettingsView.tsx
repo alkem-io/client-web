@@ -25,6 +25,8 @@ import { Switch } from '@/crd/primitives/switch';
 
 export type SpacePrivacy = 'public' | 'private';
 export type MembershipPolicy = 'open' | 'application' | 'invitation';
+/** Space-level user-information visibility (feature 008). */
+export type UserInfoVisibility = 'followSpace' | 'membersOnly';
 
 export type AllowedActionKey =
   | 'subspaceAdminInvitations'
@@ -78,11 +80,14 @@ export type SpaceSettingsSettingsViewProps = {
   /**
    * Space hierarchy level. Drives which member-action toggles are visible:
    * - L0: hides "Inherit Membership Rights" (only meaningful inside subspaces).
-   * - L2: hides "Subspace Admin Invitations", "Create Subspaces", "Subspace Events"
+   * - L2: hides "Subspace Membership", "Create Subspaces", "Subspace Events"
    *   (a sub-subspace cannot have child subspaces).
    */
   level: 'L0' | 'L1' | 'L2';
   privacy: SpacePrivacy;
+  /** User-information visibility (feature 008). Admin-gated; enforcement is server-side. */
+  userInfoVisibility: UserInfoVisibility;
+  onUserInfoVisibilityChange: (next: UserInfoVisibility) => void;
   membershipPolicy: MembershipPolicy;
   allowedActions: AllowedActionToggle[];
   hostOrganizationTrusted: boolean;
@@ -111,8 +116,8 @@ export type SpaceSettingsSettingsViewProps = {
 
 const ACTION_META: Record<AllowedActionKey, { label: string; description: string; icon: React.ElementType }> = {
   subspaceAdminInvitations: {
-    label: 'Space Invitations',
-    description: 'Allow admins of Subspaces to invite users to their Subspace.',
+    label: 'Subspace Membership',
+    description: 'Let Subspaces bring in their own members. They become members here too.',
     icon: UserPlus,
   },
   memberCreatePosts: {
@@ -156,6 +161,8 @@ const ACTION_META: Record<AllowedActionKey, { label: string; description: string
 export function SpaceSettingsSettingsView({
   level,
   privacy,
+  userInfoVisibility,
+  onUserInfoVisibilityChange,
   membershipPolicy,
   allowedActions,
   hostOrganizationTrusted,
@@ -172,6 +179,7 @@ export function SpaceSettingsSettingsView({
   const { t } = useTranslation('crd-spaceSettings');
   const hasPrefix = (prefix: string) => [...updatingKeys].some(k => k.startsWith(prefix));
   const privacyBusy = hasPrefix('privacy:');
+  const userInfoBusy = hasPrefix('userInfo:');
   const membershipBusy = hasPrefix('membership:');
   const visibleActions = allowedActions.filter(action => isActionVisibleAtLevel(level, action.key));
 
@@ -246,6 +254,57 @@ export function SpaceSettingsSettingsView({
               </label>
             </RadioGroup>
             <p className="text-caption text-muted-foreground mt-4 italic">{t('settings.visibility.hint')}</p>
+
+            {/* User-information visibility (feature 008). Enforcement is
+                server-side; this only configures + reflects the setting. */}
+            <Separator className="my-4" />
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <h4 className="text-card-title">{t('settings.userInfoVisibility.title')}</h4>
+                <p className="text-body text-muted-foreground">{t('settings.userInfoVisibility.description')}</p>
+              </div>
+              <RadioGroup
+                value={userInfoVisibility}
+                onValueChange={v => onUserInfoVisibilityChange(v as UserInfoVisibility)}
+                className="space-y-3"
+                disabled={userInfoBusy}
+              >
+                {(['followSpace', 'membersOnly'] as const).map(option => {
+                  const inputId = `user-info-${option}`;
+                  return (
+                    <label
+                      key={option}
+                      htmlFor={inputId}
+                      className={cn(
+                        'flex items-start space-x-3 p-4 rounded-md border bg-muted/20 transition-colors',
+                        userInfoBusy ? 'opacity-70 cursor-not-allowed' : 'hover:bg-muted/40 cursor-pointer'
+                      )}
+                    >
+                      {updatingKeys.has(`userInfo:${option}`) ? (
+                        <Loader2 className="size-4 mt-1 animate-spin text-primary shrink-0" />
+                      ) : (
+                        <RadioGroupItem value={option} id={inputId} className="mt-1" />
+                      )}
+                      <div className="space-y-1">
+                        <span className="text-card-title flex items-center gap-2">
+                          {option === 'membersOnly' ? (
+                            <Lock className="size-4 text-muted-foreground" aria-hidden="true" />
+                          ) : (
+                            <Globe className="size-4 text-primary" aria-hidden="true" />
+                          )}
+                          {t(`settings.userInfoVisibility.${option}` as 'settings.userInfoVisibility.followSpace')}
+                        </span>
+                        <p className="text-body text-muted-foreground">
+                          {t(
+                            `settings.userInfoVisibility.${option}Description` as 'settings.userInfoVisibility.followSpaceDescription'
+                          )}
+                        </p>
+                      </div>
+                    </label>
+                  );
+                })}
+              </RadioGroup>
+            </div>
           </AccordionContent>
         </AccordionItem>
 

@@ -1,5 +1,10 @@
 import type { InnovationFlowSettingsQuery } from '@/core/apollo/generated/graphql-schema';
-import type { LayoutCallout, LayoutPoolColumn } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
+import { CalloutDescriptionDisplayMode } from '@/core/apollo/generated/graphql-schema';
+import type {
+  LayoutCallout,
+  LayoutPoolColumn,
+  PhaseLayoutInput,
+} from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 
 export type { LayoutCallout, LayoutPoolColumn };
 
@@ -83,6 +88,10 @@ function mapStateToColumn(
   currentStateId: string | null,
   isDeletable: boolean
 ): LayoutPoolColumn {
+  const defaultCalloutTemplate = state.defaultCalloutTemplate
+    ? { id: state.defaultCalloutTemplate.id, displayName: state.defaultCalloutTemplate.profile.displayName }
+    : null;
+
   return {
     id: state.id,
     title: state.displayName,
@@ -90,6 +99,8 @@ function mapStateToColumn(
     isCurrentPhase: state.id === currentStateId,
     isHidden: readIsHidden(state),
     isDeletable,
+    layout: readPhaseLayout(state),
+    defaultCalloutTemplate,
     callouts,
   };
 }
@@ -105,4 +116,34 @@ function mapStateToColumn(
 function readIsHidden(state: RawState): boolean | undefined {
   const visible = (state.settings as { visible?: boolean } | undefined)?.visible;
   return typeof visible === 'boolean' ? !visible : undefined;
+}
+
+/**
+ * Reads the per-phase layout settings for pre-filling the Layout modal.
+ *
+ * Defensive read: `descriptionDisplayMode` and `showPublishDetails` are widened
+ * fields (added in this feature, may be absent before server wave 1 deploys).
+ * Returns `undefined` for the whole layout when neither field is present so callers
+ * can gracefully degrade. When present, converts to the UI model:
+ *   `descriptionDisplayMode === COLLAPSED` → `descriptionCollapsed: true`
+ *   `showPublishDetails !== false` → `showPublishDetails: true` (null/undefined → true)
+ */
+function readPhaseLayout(state: RawState): PhaseLayoutInput | undefined {
+  // Defensive: `state.settings` may be absent when the server wave 1 hasn't
+  // deployed yet or when test fixtures omit it (the TypeScript cast on test
+  // data does not enforce presence at runtime).
+  const settings =
+    (state.settings as
+      | {
+          descriptionDisplayMode?: CalloutDescriptionDisplayMode | null;
+          showPublishDetails?: boolean | null;
+        }
+      | undefined) ?? {};
+  if (settings.descriptionDisplayMode === undefined && settings.showPublishDetails === undefined) {
+    return undefined;
+  }
+  return {
+    descriptionCollapsed: settings.descriptionDisplayMode === CalloutDescriptionDisplayMode.Collapsed,
+    showPublishDetails: settings.showPublishDetails !== false,
+  };
 }

@@ -5,7 +5,8 @@
     "unreadLabel": "You have unread messages"
   },
   "panel": {
-    "title": "Chat"
+    "title": "Chat",
+    "settings": "Notification settings"
   },
   "actions": {
     "cancel": "Cancel"

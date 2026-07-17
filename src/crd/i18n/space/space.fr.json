@@ -203,12 +203,22 @@
     "documentImportOr": "ou",
     "documentImportHint": "Glissez un fichier ou cliquez pour téléverser",
     "documentImportMaxSize": ".docx, .xlsx, .pptx jusqu'à {{cap}} Mo",
+    "documentReplaceAccepts": "{{ext}} jusqu'à {{cap}} Mo",
     "documentImportRemoveFile": "Supprimer le fichier",
     "documentImportErrorUnsupported": "Ce type de fichier n'est pas pris en charge. Essayez {{formats}}.",
     "documentImportErrorTooLarge": "Le fichier est trop volumineux. Taille maximale : {{cap}} Mo.",
     "documentImportErrorMultiple": "Téléversez un seul fichier à la fois.",
     "documentImportErrorFolder": "Téléversez un fichier, pas un dossier.",
     "documentImportErrorServiceUnavailable": "Le service documentaire est temporairement indisponible. Réessayez dans un instant.",
+    "documentReplace": "Remplacer le fichier",
+    "documentReplaceTitle": "Remplacer le fichier",
+    "documentReplaceDescription": "Téléverser un remplacement écrase le fichier actuel pour tout le monde, et c'est irréversible.",
+    "documentReplaceCurrentTitleLabel": "Document actuel",
+    "documentReplaceTitleFieldLabel": "Titre",
+    "documentReplaceConfirm": "Remplacer le fichier",
+    "documentReplaceErrorSameType": "Le remplacement doit être le même type de document que l'actuel : {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Fichier remplacé.",
+    "documentReplaceError": "Impossible de remplacer le fichier. Veuillez réessayer.",
     "comments": "{{count}} commentaires",
     "commentsZero": "0 commentaires",
     "expandComments": "Afficher les commentaires",
@@ -282,7 +292,9 @@
     "postUnsavedCloseCancel": "Continuer la modification",
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
-    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer."
+    "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
+    "contributors": "Contributeurs",
+    "subspaces": "Sous-espaces"
   },
   "contribution": {
     "edit": "Modifier",
@@ -409,7 +421,8 @@
     "maxLength": "Maximum {{count}} caractères.",
     "submitted": {
       "title": "Candidature envoyée",
-      "body": "Votre candidature à {{communityName}} a été envoyée."
+      "body": "Votre candidature à {{communityName}} a été envoyée.",
+      "review": "Votre candidature sera examinée. Une fois approuvée, vous recevrez une notification <bell/> et vous pourrez entrer dans la communauté depuis votre tableau de bord Accueil."
     }
   },
   "mobile": {
@@ -456,9 +469,39 @@
   },
   "deleteCallout": {
     "title": "Supprimer ce $t(common.callout) ?",
-    "description": "« {{title}} » sera définitivement supprimé, ainsi que ses contributions et commentaires. Cette action est irréversible.",
+    "description": "« {{title}} » sera définitivement supprimé. Cette action est irréversible.",
     "confirm": "Supprimer",
+    "confirmAll": "Supprimer l’$t(common.callout) et tout son contenu",
+    "headerContributions_one": "{{count}} contribution sera supprimée",
+    "headerContributions_other": "{{count}} contributions seront supprimées",
+    "headerRich": "{{content}} sera supprimé(e)",
+    "headerRichContributions_one": "{{content}} et {{count}} contribution seront supprimés",
+    "headerRichContributions_other": "{{content}} et {{count}} contributions seront supprimés",
+    "headerRichPoll": "Le sondage et ses résultats seront supprimés",
+    "headerRichPollContributions_one": "Le sondage, ses résultats et {{count}} contribution seront supprimés",
+    "headerRichPollContributions_other": "Le sondage, ses résultats et {{count}} contributions seront supprimés",
+    "callToAction": "Appel à l'action",
+    "moreContributions_one": "{{count}} contribution de plus...",
+    "moreContributions_other": "{{count}} contributions de plus...",
+    "attachmentsNote": "y compris les fichiers et liens joints",
+    "contentType": {
+      "whiteboard": "Le tableau blanc",
+      "memo": "Le mémo",
+      "mediaGallery": "La galerie multimédia",
+      "document": "Le document"
+    },
+    "moreLinks_one": "et {{count}} autre lien",
+    "moreLinks_other": "et {{count}} autres liens",
+    "comments_one": "{{count}} commentaire sera supprimé",
+    "comments_other": "{{count}} commentaires seront supprimés",
+    "success": "La $t(common.callout) « {{title}} » a été supprimée.",
     "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+  },
+  "deleteContribution": {
+    "title": "Supprimer cette contribution ?",
+    "description": "« {{title}} » sera définitivement supprimé. Cette action est irréversible.",
+    "confirm": "Supprimer",
+    "saveFailed": "Impossible de supprimer la contribution. Veuillez réessayer."
   },
   "saveAsTemplate": {
     "saveFailed": "Impossible d'enregistrer le modèle. Veuillez réessayer."
@@ -490,7 +533,8 @@
     "maxPollOptions": "Au maximum {{count}} options sont autorisées",
     "pollOptionRequired": "Le texte de l'option est obligatoire",
     "referenceTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie",
-    "linkRowTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie"
+    "linkRowTitleRequired": "Le titre est obligatoire lorsqu'une URL est fournie",
+    "contributorTypesRequired": "Sélectionnez au moins un type de contributeur."
   },
   "forms": {
     "titleLabel": "Titre",
@@ -507,6 +551,7 @@
     "publishedLabel": "Publié",
     "draftLabel": "Brouillon",
     "notifyMembers": "Notifier les membres de l'espace",
+    "titleRequiredHint": "Ajoutez un titre à votre $t(common.callout) pour continuer",
     "saveDraft": "Enregistrer le brouillon",
     "save": "Enregistrer",
     "publish": "Publier",
@@ -524,7 +569,8 @@
     "addOption": "Ajouter une option",
     "removeOption": "Supprimer l'option",
     "allowComments": "Autoriser les commentaires",
-    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout)."
+    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout).",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Réponses",
@@ -638,6 +684,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Nom du document",
+      "edit": "Renommer",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement…",
+      "errors": {
+        "blank": "Veuillez saisir un nom.",
+        "tooShort": "Le nom doit comporter au moins {{min}} caractères.",
+        "tooLong": "Le nom ne peut pas dépasser {{max}} caractères.",
+        "invalid": "Veuillez saisir un nom valide.",
+        "saveFailed": "Impossible de renommer le document. Veuillez réessayer."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Erreur Collabora : {{message}}",
@@ -703,6 +763,7 @@
     "label": "Aperçu de la contribution sélectionnée",
     "edit": "Modifier la réponse",
     "share": "Partager la réponse",
+    "delete": "Supprimer la réponse",
     "close": "Fermer l'aperçu",
     "emptyDescription": "Aucune description",
     "references": "Références"
@@ -717,6 +778,7 @@
     "label": "Aperçu du whiteboard sélectionné",
     "edit": "Modifier le whiteboard",
     "share": "Partager le whiteboard",
+    "delete": "Supprimer le whiteboard",
     "close": "Fermer l'aperçu",
     "openFull": "Cliquez pour voir le whiteboard complet"
   },
@@ -759,6 +821,7 @@
   },
   "dialogs": {
     "cancel": "Annuler",
+    "close": "Fermer",
     "create": "Créer",
     "discardChanges": {
       "title": "Abandonner vos modifications ?",
@@ -858,5 +921,45 @@
   },
   "activity": {
     "dialogTitle": "Activité récente"
+  },
+  "contributors": {
+    "title": "Contributeurs",
+    "search": "Rechercher par nom…",
+    "empty": "Aucun contributeur à afficher.",
+    "emptySearch": "Aucun contributeur ne correspond à votre recherche.",
+    "noLocationData": "Aucune donnée de localisation",
+    "noLocationDescription": "Ces contributeurs n’ont pas de données de localisation définies.",
+    "viewList": "Liste",
+    "viewMap": "Carte",
+    "expandMap": "Agrandir la carte",
+    "closeMap": "Fermer la carte",
+    "types": {
+      "user": "Personnes",
+      "organization": "Organisations",
+      "virtualContributor": "Contributeurs virtuels"
+    },
+    "counts": {
+      "users": "{{count}} personnes",
+      "organizations": "{{count}} organisations",
+      "virtualContributors": "{{count}} contributeurs virtuels"
+    },
+    "config": {
+      "title": "Contributeurs",
+      "description": "Affichez les contributeurs de cette communauté comme une collection qui se met à jour automatiquement.",
+      "typesLabel": "Types de contributeur",
+      "typesHint": "Sélectionnez au moins un type à inclure.",
+      "defaultTypeLabel": "Type par défaut",
+      "defaultTypeHint": "Le type affiché en premier.",
+      "defaultViewLabel": "Affichage par défaut",
+      "viewList": "Liste",
+      "viewMap": "Carte"
+    }
+  },
+  "spaceCollection": {
+    "search": "Rechercher des sous-espaces...",
+    "empty": {
+      "title": "Aucun sous-espace pour le moment",
+      "description": "Cet espace n'a pas encore de sous-espaces."
+    }
   }
 }

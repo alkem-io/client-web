@@ -106,13 +106,7 @@ fragment CalloutDetails on Callout {
       ...PollDetails
     }
     collaboraDocument {
-      id
-      documentType
-      profile {
-        id
-        displayName
-        url
-      }
+      ...CollaboraDocumentGate
     }
   }
   contributionDefaults {
@@ -128,6 +122,39 @@ fragment CalloutDetails on Callout {
     sortOrder
     link {
       ...LinkDetailsWithAuthorization
+    }
+    # Title + description-preview stubs so the delete confirmation can name contributions without an extra query (feature 114).
+    post {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    whiteboard {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    memo {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    collaboraDocument {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
     }
   }
   comments {

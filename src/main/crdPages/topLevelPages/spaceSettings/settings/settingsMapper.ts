@@ -1,8 +1,13 @@
-import { CommunityMembershipPolicy, SpacePrivacyMode } from '@/core/apollo/generated/graphql-schema';
+import {
+  CommunityMembershipPolicy,
+  SpacePrivacyMode,
+  UserInformationVisibility,
+} from '@/core/apollo/generated/graphql-schema';
 import type {
   AllowedActionToggle,
   MembershipPolicy,
   SpacePrivacy,
+  UserInfoVisibility,
 } from '@/crd/components/space/settings/SpaceSettingsSettingsView';
 import type {
   SpaceSettingsCollaboration,
@@ -16,6 +21,17 @@ export function mapPrivacy(p: SpaceSettingsPrivacy | undefined): SpacePrivacy {
 
 export function mapPrivacyToBackend(p: SpacePrivacy): SpacePrivacyMode {
   return p === 'private' ? SpacePrivacyMode.Private : SpacePrivacyMode.Public;
+}
+
+/** Maps the server user-info-visibility enum to the view's union; absent = follow space. */
+export function mapUserInfoVisibility(value: UserInformationVisibility | undefined): UserInfoVisibility {
+  return value === UserInformationVisibility.MembersOnly ? 'membersOnly' : 'followSpace';
+}
+
+export function mapUserInfoVisibilityToBackend(value: UserInfoVisibility): UserInformationVisibility {
+  return value === 'membersOnly'
+    ? UserInformationVisibility.MembersOnly
+    : UserInformationVisibility.FollowSpaceVisibility;
 }
 
 export function mapMembershipPolicy(m: SpaceSettingsMembership | undefined): MembershipPolicy {
@@ -45,8 +61,9 @@ export function mapAllowedActions(
   membership: SpaceSettingsMembership | undefined,
   privacy: SpaceSettingsPrivacy | undefined
 ): AllowedActionToggle[] {
+  // Order drives the on-screen order of the Allowed Actions grid — the view
+  // filters this list by level but never re-sorts it.
   return [
-    { key: 'subspaceAdminInvitations', enabled: membership?.allowSubspaceAdminsToInviteMembers ?? false },
     { key: 'memberCreatePosts', enabled: collab?.allowMembersToCreateCallouts ?? false },
     { key: 'videoCalls', enabled: collab?.allowMembersToVideoCall ?? false },
     { key: 'guestContributions', enabled: collab?.allowGuestContributions ?? false },
@@ -54,5 +71,6 @@ export function mapAllowedActions(
     { key: 'inheritMembershipRights', enabled: collab?.inheritMembershipRights ?? false },
     { key: 'subspaceEvents', enabled: collab?.allowEventsFromSubspaces ?? false },
     { key: 'alkemioSupportAccess', enabled: privacy?.allowPlatformSupportAsAdmin ?? false },
+    { key: 'subspaceAdminInvitations', enabled: membership?.allowSubspaceAdminsToInviteMembers ?? false },
   ];
 }

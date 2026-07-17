@@ -203,12 +203,22 @@
     "documentImportOr": "of",
     "documentImportHint": "Sleep een bestand of klik om te uploaden",
     "documentImportMaxSize": ".docx, .xlsx, .pptx tot {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} tot {{cap}} MB",
     "documentImportRemoveFile": "Bestand verwijderen",
     "documentImportErrorUnsupported": "Dit bestandstype wordt niet ondersteund. Probeer {{formats}}.",
     "documentImportErrorTooLarge": "Bestand is te groot. Maximale grootte is {{cap}} MB.",
     "documentImportErrorMultiple": "Sleep één bestand per keer.",
     "documentImportErrorFolder": "Sleep een bestand, geen map.",
     "documentImportErrorServiceUnavailable": "De documentservice is tijdelijk niet beschikbaar. Probeer het zo opnieuw.",
+    "documentReplace": "Bestand vervangen",
+    "documentReplaceTitle": "Bestand vervangen",
+    "documentReplaceDescription": "Een vervanging uploaden overschrijft het huidige bestand voor iedereen en kan niet ongedaan worden gemaakt.",
+    "documentReplaceCurrentTitleLabel": "Huidig document",
+    "documentReplaceTitleFieldLabel": "Titel",
+    "documentReplaceConfirm": "Bestand vervangen",
+    "documentReplaceErrorSameType": "De vervanging moet hetzelfde soort document zijn als het huidige: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Bestand vervangen.",
+    "documentReplaceError": "Kon het bestand niet vervangen. Probeer het opnieuw.",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
     "expandComments": "Reacties uitvouwen",
@@ -282,7 +292,9 @@
     "postUnsavedCloseCancel": "Verder bewerken",
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
     "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
-    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw."
+    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
+    "contributors": "Contributors",
+    "subspaces": "Subspaces"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -409,7 +421,8 @@
     "maxLength": "Maximaal {{count}} tekens.",
     "submitted": {
       "title": "Aanvraag ingediend",
-      "body": "Je aanvraag voor {{communityName}} is ingediend."
+      "body": "Je aanvraag voor {{communityName}} is ingediend.",
+      "review": "Je aanvraag wordt beoordeeld. Zodra deze is goedgekeurd ontvang je een melding <bell/> en kun je de community binnengaan vanaf je Home-dashboard."
     }
   },
   "mobile": {
@@ -456,9 +469,39 @@
   },
   "deleteCallout": {
     "title": "Deze $t(common.callout) verwijderen?",
-    "description": "“{{title}}” wordt definitief verwijderd, samen met de bijdragen en reacties. Deze actie kan niet ongedaan worden gemaakt.",
+    "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
     "confirm": "Verwijderen",
+    "confirmAll": "$t(common.Callout) en alle inhoud verwijderen",
+    "headerContributions_one": "{{count}} bijdrage wordt verwijderd",
+    "headerContributions_other": "{{count}} bijdragen worden verwijderd",
+    "headerRich": "{{content}} wordt verwijderd",
+    "headerRichContributions_one": "{{content}} en {{count}} bijdrage worden verwijderd",
+    "headerRichContributions_other": "{{content}} en {{count}} bijdragen worden verwijderd",
+    "headerRichPoll": "De peiling en de resultaten worden verwijderd",
+    "headerRichPollContributions_one": "De peiling, de resultaten en {{count}} bijdrage worden verwijderd",
+    "headerRichPollContributions_other": "De peiling, de resultaten en {{count}} bijdragen worden verwijderd",
+    "callToAction": "Oproep tot actie",
+    "moreContributions_one": "nog {{count}} bijdrage...",
+    "moreContributions_other": "nog {{count}} bijdragen...",
+    "attachmentsNote": "inclusief bijgevoegde bestanden en links",
+    "contentType": {
+      "whiteboard": "Het whiteboard",
+      "memo": "De memo",
+      "mediaGallery": "De mediagalerij",
+      "document": "Het document"
+    },
+    "moreLinks_one": "en nog {{count}} link",
+    "moreLinks_other": "en nog {{count}} links",
+    "comments_one": "{{count}} reactie wordt verwijderd",
+    "comments_other": "{{count}} reacties worden verwijderd",
+    "success": "$t(common.Callout) “{{title}}” is verwijderd.",
     "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
+  },
+  "deleteContribution": {
+    "title": "Deze bijdrage verwijderen?",
+    "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+    "confirm": "Verwijderen",
+    "saveFailed": "De bijdrage kon niet worden verwijderd. Probeer het opnieuw."
   },
   "saveAsTemplate": {
     "saveFailed": "De template kon niet worden opgeslagen. Probeer het opnieuw."
@@ -490,7 +533,8 @@
     "maxPollOptions": "Maximaal {{count}} opties zijn toegestaan",
     "pollOptionRequired": "Optietekst is verplicht",
     "referenceTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
-    "linkRowTitleRequired": "Titel is verplicht wanneer een URL is opgegeven"
+    "linkRowTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
+    "contributorTypesRequired": "Selecteer ten minste één type contributor."
   },
   "forms": {
     "titleLabel": "Titel",
@@ -507,6 +551,7 @@
     "publishedLabel": "Gepubliceerd",
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
+    "titleRequiredHint": "Voeg een titel toe aan je $t(common.callout) om verder te gaan",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
     "publish": "Post",
@@ -524,7 +569,8 @@
     "addOption": "Optie toevoegen",
     "removeOption": "Optie verwijderen",
     "allowComments": "Reacties toestaan",
-    "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing."
+    "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Reacties",
@@ -638,6 +684,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Documentnaam",
+      "edit": "Hernoemen",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "saving": "Bezig met opslaan…",
+      "errors": {
+        "blank": "Voer een naam in.",
+        "tooShort": "De naam moet minstens {{min}} tekens bevatten.",
+        "tooLong": "De naam mag maximaal {{max}} tekens bevatten.",
+        "invalid": "Voer een geldige naam in.",
+        "saveFailed": "Kan het document niet hernoemen. Probeer het opnieuw."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-fout: {{message}}",
@@ -703,6 +763,7 @@
     "label": "Voorbeeld van geselecteerde bijdrage",
     "edit": "Reactie bewerken",
     "share": "Reactie delen",
+    "delete": "Reactie verwijderen",
     "close": "Voorbeeld sluiten",
     "emptyDescription": "Geen beschrijving",
     "references": "Referenties"
@@ -717,6 +778,7 @@
     "label": "Voorbeeld van geselecteerd whiteboard",
     "edit": "Whiteboard bewerken",
     "share": "Whiteboard delen",
+    "delete": "Whiteboard verwijderen",
     "close": "Voorbeeld sluiten",
     "openFull": "Klik om het volledige whiteboard te zien"
   },
@@ -759,6 +821,7 @@
   },
   "dialogs": {
     "cancel": "Annuleren",
+    "close": "Sluiten",
     "create": "Maken",
     "discardChanges": {
       "title": "Wijzigingen verwerpen?",
@@ -858,5 +921,45 @@
   },
   "activity": {
     "dialogTitle": "Recente activiteit"
+  },
+  "contributors": {
+    "title": "Contributors",
+    "search": "Zoeken op naam…",
+    "empty": "Geen contributors om weer te geven.",
+    "emptySearch": "Geen contributors komen overeen met je zoekopdracht.",
+    "noLocationData": "Geen locatiegegevens",
+    "noLocationDescription": "Deze contributors hebben geen locatiegegevens ingesteld.",
+    "viewList": "Lijst",
+    "viewMap": "Kaart",
+    "expandMap": "Kaart vergroten",
+    "closeMap": "Kaart sluiten",
+    "types": {
+      "user": "Personen",
+      "organization": "Organisaties",
+      "virtualContributor": "Virtual Contributors"
+    },
+    "counts": {
+      "users": "{{count}} personen",
+      "organizations": "{{count}} organisaties",
+      "virtualContributors": "{{count}} virtual contributors"
+    },
+    "config": {
+      "title": "Contributors",
+      "description": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
+      "typesLabel": "Typen contributor",
+      "typesHint": "Selecteer ten minste één type.",
+      "defaultTypeLabel": "Standaardtype",
+      "defaultTypeHint": "Het type dat als eerste wordt getoond.",
+      "defaultViewLabel": "Standaardweergave",
+      "viewList": "Lijst",
+      "viewMap": "Kaart"
+    }
+  },
+  "spaceCollection": {
+    "search": "Zoek subspaces...",
+    "empty": {
+      "title": "Nog geen subspaces",
+      "description": "Deze space heeft nog geen subspaces."
+    }
   }
 }

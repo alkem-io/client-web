@@ -1,12 +1,12 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, SlidersHorizontal, Trash2 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
-import { InlineEditText } from '@/crd/components/common/InlineEditText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Badge } from '@/crd/primitives/badge';
@@ -22,11 +22,14 @@ import {
 } from '@/crd/primitives/dropdown-menu';
 import { Input } from '@/crd/primitives/input';
 import { LayoutCalloutRow } from './LayoutCalloutRow';
+import { PhaseLayoutDialog } from './PhaseLayoutDialog';
+import { PhasePostTemplateDialog } from './PhasePostTemplateDialog';
 import type {
   ColumnMenuActions,
   LayoutCallout,
   LayoutColumnId,
   LayoutPoolColumn as LayoutPoolColumnData,
+  PhaseLayoutInput,
 } from './SpaceSettingsLayoutView.types';
 
 // Full literal i18n keys for the per-column Delete affordance, one set per user-facing noun.
@@ -51,7 +54,6 @@ type LayoutPoolColumnProps = {
   column: LayoutPoolColumnData;
   otherColumns: ReadonlyArray<Pick<LayoutPoolColumnData, 'id' | 'title'>>;
   showDescription: boolean;
-  onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
   columnMenuActions: ColumnMenuActions;
@@ -66,7 +68,6 @@ export function LayoutPoolColumn({
   column,
   otherColumns,
   showDescription,
-  onRenameColumn,
   onMoveToColumn,
   onViewPost,
   columnMenuActions,
@@ -107,6 +108,8 @@ export function LayoutPoolColumn({
       }
     : undefined;
   const [editDetailsOpen, setEditDetailsOpen] = useState(false);
+  const [layoutDialogOpen, setLayoutDialogOpen] = useState(false);
+  const [postTemplateDialogOpen, setPostTemplateDialogOpen] = useState(false);
   const [pendingPhaseDelete, setPendingPhaseDelete] = useState(false);
   // Hiding removes the phase from the member-facing menu, so it is confirmed; showing
   // again is non-destructive and applies directly (no dialog).
@@ -138,19 +141,16 @@ export function LayoutPoolColumn({
                 <GripVertical aria-hidden="true" className="size-4" />
               </button>
             )}
-            <InlineEditText
-              value={column.title}
-              onChange={next => onRenameColumn(column.id, { title: next })}
-              ariaLabel={t('layout.column.titleAriaLabel')}
-              editAriaLabel={t('layout.column.editTitle')}
-              placeholder={t('layout.column.titlePlaceholder')}
-              className="min-w-0 flex-1 text-card-title"
-            />
+            <span title={column.title} className="min-w-0 flex-1 truncate text-card-title">
+              {column.title}
+            </span>
             <ColumnOverflowMenu
               column={column}
               actions={columnMenuActions}
               deleteKeys={deleteKeys}
               onEditDetails={() => setEditDetailsOpen(true)}
+              onRequestLayout={() => setLayoutDialogOpen(true)}
+              onRequestPostTemplate={() => setPostTemplateDialogOpen(true)}
               onRequestDeletePhase={() => setPendingPhaseDelete(true)}
               onRequestHidePhase={() => setPendingPhaseHide(true)}
               t={t}
@@ -201,10 +201,11 @@ export function LayoutPoolColumn({
       </Card>
 
       <EditDetailsDialog
-        key={`${column.id}:${String(editDetailsOpen)}`}
+        key={`edit:${column.id}:${String(editDetailsOpen)}`}
         open={editDetailsOpen}
         title={column.title}
         description={column.description}
+        otherTitles={otherColumns.map(c => c.title)}
         onSave={async (title, description) => {
           await columnMenuActions.onSaveColumnDetails(column.id, title, description);
           setEditDetailsOpen(false);
@@ -213,6 +214,29 @@ export function LayoutPoolColumn({
         onImageUpload={onImageUpload}
         iframeAllowedUrls={iframeAllowedUrls}
         onError={onError}
+      />
+
+      <PhaseLayoutDialog
+        key={`layout:${column.id}:${String(layoutDialogOpen)}`}
+        open={layoutDialogOpen}
+        onOpenChange={setLayoutDialogOpen}
+        phaseName={column.title}
+        values={column.layout ?? { descriptionCollapsed: false, showPublishDetails: true }}
+        onSave={async (layout: PhaseLayoutInput) => {
+          // Await persistence and let the dialog close itself on success — a failed save
+          // keeps it open (see PhaseLayoutDialog.handleSave). Rejection propagates so the
+          // dialog can react; Apollo's error layer surfaces the toast.
+          await columnMenuActions.onSaveLayout(column.id, layout);
+        }}
+      />
+
+      <PhasePostTemplateDialog
+        open={postTemplateDialogOpen}
+        onOpenChange={setPostTemplateDialogOpen}
+        phaseName={column.title}
+        currentTemplate={column.defaultCalloutTemplate}
+        onChooseTemplate={() => columnMenuActions.onOpenDefaultCalloutTemplatePicker(column.id)}
+        onClearTemplate={() => columnMenuActions.onSetAsDefaultCalloutTemplate(column.id, null)}
       />
 
       <ConfirmationDialog
@@ -261,6 +285,8 @@ type ColumnOverflowMenuProps = {
   /** Literal i18n keys for the Delete entry — the tab set (L0) or the phase set (subspaces). */
   deleteKeys: DeleteKeySet;
   onEditDetails: () => void;
+  onRequestLayout: () => void;
+  onRequestPostTemplate: () => void;
   onRequestDeletePhase: () => void;
   onRequestHidePhase: () => void;
   t: ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
@@ -271,6 +297,8 @@ function ColumnOverflowMenu({
   actions,
   deleteKeys,
   onEditDetails,
+  onRequestLayout,
+  onRequestPostTemplate,
   onRequestDeletePhase,
   onRequestHidePhase,
   t,
@@ -286,6 +314,7 @@ function ColumnOverflowMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {/* FR-010 menu order: Mark as active / Title and Description / Layout / Post Template / Hide/Show / Delete */}
         <DropdownMenuItem onClick={() => actions.onChangeActivePhase(column.id)} disabled={column.isCurrentPhase}>
           {column.isCurrentPhase ? (
             <span className="inline-flex items-center gap-1">
@@ -301,12 +330,13 @@ function ColumnOverflowMenu({
           <Pencil aria-hidden="true" className="mr-2 size-3.5" />
           {t('layout.column.editDetails.menuLabel')}
         </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => actions.onOpenDefaultCalloutTemplatePicker(column.id)}>
-          {t('layout.column.defaultCalloutTemplate.set')}
+        <DropdownMenuItem onClick={onRequestLayout}>
+          <SlidersHorizontal aria-hidden="true" className="mr-2 size-3.5" />
+          {t('layout.column.phaseLayout.menuLabel')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => actions.onSetAsDefaultCalloutTemplate(column.id, null)}>
-          {t('layout.column.defaultCalloutTemplate.clear')}
+        <DropdownMenuItem onClick={onRequestPostTemplate}>
+          <Pencil aria-hidden="true" className="mr-2 size-3.5" />
+          {t('layout.column.postTemplate.menuLabel')}
         </DropdownMenuItem>
         {canToggleVisibility && (
           <>
@@ -346,10 +376,28 @@ function ColumnOverflowMenu({
 
 /* ──────────────── Edit Details dialog ──────────────── */
 
+// A title made up entirely of emoji (including flags, skin-tone modifiers, keycaps, and ZWJ
+// sequences like family emoji) is exempt from the 3-character minimum — JS string length counts
+// UTF-16 code units, so even a single simple emoji (e.g. "🎉") measures 2, not 1.
+// \p{Emoji_Component} is required for flags (regional indicators), skin tones, keycaps, VS-16 and
+// ZWJ, but it also matches plain 0-9/#/* — the lookahead demands at least one genuinely emoji
+// character so digit-only titles like "1" don't slip past the minimum.
+const EMOJI_ONLY_TITLE =
+  /^(?=.*(?:[\p{Extended_Pictographic}\p{Regional_Indicator}]|\uFE0F))[\p{Extended_Pictographic}\p{Emoji_Component}]+$/u;
+
+/** The Edit Details title rule: min 3 characters after trimming, unless the title is emoji-only. */
+export function isColumnTitleTooShort(title: string): boolean {
+  const trimmed = title.trim();
+  const emojiOnly = trimmed.length > 0 && EMOJI_ONLY_TITLE.test(trimmed);
+  return !emojiOnly && trimmed.length < 3;
+}
+
 type EditDetailsDialogProps = {
   open: boolean;
   title: string;
   description: string;
+  /** Titles of every OTHER column — a rename to any of these (case-insensitive) is rejected. */
+  otherTitles: string[];
   onSave: (title: string, description: string) => void | Promise<void>;
   onCancel: () => void;
 } & MarkdownUploadProps;
@@ -358,6 +406,7 @@ function EditDetailsDialog({
   open,
   title: initialTitle,
   description: initialDescription,
+  otherTitles,
   onSave,
   onCancel,
   onImageUpload,
@@ -370,7 +419,24 @@ function EditDetailsDialog({
   const [saving, setSaving] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
 
+  const trimmedTitle = title.trim();
+  const titleTooShort = isColumnTitleTooShort(title);
+  // Phase display names must be unique — the feed joins posts to their phase by NAME, so two
+  // phases sharing a name break the join (ambiguous settings, duplicated posts, rename cascade
+  // dragging the other phase's posts). Mirrors AddPhaseDialog's guard for the rename path.
+  const titleDuplicate =
+    trimmedTitle.length > 0 && otherTitles.some(n => n.toLowerCase() === trimmedTitle.toLowerCase());
+  const titleInvalid = titleTooShort || titleDuplicate;
+
+  const isDirty = title !== initialTitle || description !== initialDescription;
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty,
+    onClose: onCancel,
+    blockClose: saving,
+  });
+
   const handleSave = async () => {
+    if (titleInvalid) return;
     setSaving(true);
     try {
       await onSave(title.trim(), description);
@@ -380,67 +446,72 @@ function EditDetailsDialog({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={nextOpen => {
-        if (!nextOpen) onCancel();
-      }}
-    >
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
-        <DialogHeader className="shrink-0">
-          <DialogTitle className="flex items-center gap-2">
-            <Pencil aria-hidden="true" className="size-4" />
-            {t('layout.column.editDetails.dialogTitle')}
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+          <DialogHeader className="shrink-0">
+            <DialogTitle className="flex items-center gap-2">
+              <Pencil aria-hidden="true" className="size-4" />
+              {t('layout.column.editDetails.dialogTitle')}
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
-          <div className="flex flex-col gap-1">
-            <span className="text-body-emphasis text-muted-foreground">
-              {t('layout.column.editDetails.titleLabel')}
-            </span>
-            <div className="flex items-center gap-2">
-              <Input
-                ref={titleInputRef}
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder={t('layout.column.titlePlaceholder')}
-                aria-label={t('layout.column.editDetails.titleLabel')}
-                disabled={saving}
-                className="flex-1 text-subsection-title"
-              />
-              <EmojiInsertButton
-                inputRef={titleInputRef}
-                value={title}
-                onChange={setTitle}
-                ariaLabel={t('layout.column.editDetails.insertEmoji')}
-                disabled={saving}
+          <div className="flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col gap-1">
+              <span className="text-body-emphasis text-muted-foreground">
+                {t('layout.column.editDetails.titleLabel')}
+              </span>
+              <div className="flex items-center gap-2">
+                <Input
+                  ref={titleInputRef}
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  placeholder={t('layout.column.titlePlaceholder')}
+                  aria-label={t('layout.column.editDetails.titleLabel')}
+                  aria-invalid={titleInvalid}
+                  disabled={saving}
+                  className="flex-1 text-subsection-title"
+                />
+                <EmojiInsertButton
+                  inputRef={titleInputRef}
+                  value={title}
+                  onChange={setTitle}
+                  ariaLabel={t('layout.column.editDetails.insertEmoji')}
+                  disabled={saving}
+                />
+              </div>
+              {titleTooShort && (
+                <p className="text-caption text-destructive">{t('layout.column.editDetails.titleTooShort')}</p>
+              )}
+              {titleDuplicate && !titleTooShort && (
+                <p className="text-caption text-destructive">{t('layout.column.editDetails.titleDuplicate')}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-body-emphasis">{t('layout.column.editDetails.descriptionLabel')}</span>
+              <MarkdownEditor
+                value={description}
+                onChange={setDescription}
+                placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
+                onImageUpload={onImageUpload}
+                iframeAllowedUrls={iframeAllowedUrls}
+                onError={onError}
               />
             </div>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <span className="text-body-emphasis">{t('layout.column.editDetails.descriptionLabel')}</span>
-            <MarkdownEditor
-              value={description}
-              onChange={setDescription}
-              placeholder={t('layout.column.editDetails.descriptionPlaceholder')}
-              onImageUpload={onImageUpload}
-              iframeAllowedUrls={iframeAllowedUrls}
-              onError={onError}
-            />
-          </div>
-        </div>
-
-        <DialogFooter className="shrink-0">
-          <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
-            {t('layout.column.editDetails.cancel')}
-          </Button>
-          <Button type="button" onClick={handleSave} disabled={saving}>
-            {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter className="shrink-0">
+            <Button type="button" variant="ghost" onClick={requestClose} disabled={saving}>
+              {t('layout.column.editDetails.cancel')}
+            </Button>
+            <Button type="button" onClick={handleSave} disabled={saving || titleInvalid}>
+              {saving ? t('layout.column.editDetails.saving') : t('layout.column.editDetails.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {guardElement}
+    </>
   );
 }

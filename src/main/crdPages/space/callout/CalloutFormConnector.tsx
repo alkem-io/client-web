@@ -27,12 +27,13 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
-import { type DisabledChipMap, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
+import { type DisabledChipMap, type FramingChipId, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
 import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
@@ -48,6 +49,7 @@ import {
   COLLABORA_IMPORT_MAX_BYTES,
 } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
 import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
+import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
@@ -73,10 +75,39 @@ import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
+import { healContributorCollection } from './contributorCollectionMapper';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+
+/**
+ * The full create-mode framing chip set, in display order. `contributors`
+ * (feature 008) and `spaces` (feature 013) are included here but admin-gated by
+ * the connector before being passed to `FramingChipStrip` (FR-004a); a non-admin
+ * gets every chip except those two.
+ */
+const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
+  'whiteboard',
+  'memo',
+  'document',
+  'cta',
+  'image',
+  'poll',
+  'contributors',
+  'spaces',
+];
+
+/**
+ * Admin-only framing chips (feature 008 `contributors`, feature 013 `spaces`).
+ * Both are offered only to space admins (`permissions.canUpdate`) and only in a
+ * collaboration context — never a VC knowledge base, which passes its own
+ * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
+ */
+const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
+
+/** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
+const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -167,10 +198,30 @@ function CalloutFormConnectorInner({
       : undefined;
   const form = useCrdCalloutForm(restrictionOverrides);
 
-  // Chip allow-lists apply on create only — in edit mode the strips no longer
-  // switch type (framing can only be cleared to none; response is locked) and
-  // must stay unfiltered so an existing callout's type is never hidden.
-  const framingAllowList = mode === 'create' ? restrictions?.allowedFramingChips : undefined;
+  // Space context — `permissions.canUpdate` is the space-admin signal that gates
+  // the contributors framing chip; `entitlements` gates the office-documents chip
+  // (read further below). `spaceContextLoading` is the entitlements query flag.
+  const { entitlements, permissions, loading: spaceContextLoading } = useSpace();
+
+  // The "Contributors" (008) and "Subspaces" (013) framing chips are admin-only
+  // (FR-004a) and offered only in space/community (collaboration) callout contexts
+  // — never a VC knowledge base (FR-004d/FR-004f). The VC-KB flow passes
+  // `restrictions.allowedFramingChips = []` (None-only), so it never lists them;
+  // any other explicit `allowedFramingChips` likewise opts in deliberately. For the
+  // default collaboration flow we build the allow-list explicitly so the two admin
+  // chips are gated to space admins instead of shown to everyone. Neither chip is
+  // level-restricted — both appear on L0 and L1 collaboration spaces (a Subspaces
+  // callout on an L1 lists that space's subspaces); only auto-provisioning is
+  // L0-only (server-side, FR-004e).
+  const isSpaceAdmin = permissions.canUpdate;
+  const framingAllowList: FramingChipId[] | undefined = (() => {
+    if (mode !== 'create') return undefined; // edit mode: never hide an existing type
+    if (restrictions?.allowedFramingChips) return restrictions.allowedFramingChips;
+    // Default collaboration flow: all chips, with the admin-only chips gated.
+    return isSpaceAdmin
+      ? DEFAULT_FRAMING_CHIPS
+      : DEFAULT_FRAMING_CHIPS.filter(chip => !ADMIN_ONLY_FRAMING_CHIPS.includes(chip));
+  })();
   const hideFramingZone = mode === 'create' && Array.isArray(framingAllowList) && framingAllowList.length === 0;
   const responseAllowList = mode === 'create' ? restrictions?.allowedResponseChips : undefined;
   // Comment-visibility and rich-media restrictions are create-only too — in edit
@@ -195,7 +246,6 @@ function CalloutFormConnectorInner({
   // flag. While loading, leave the chip enabled so the user doesn't see a
   // disabled flash on first paint; once the query resolves, the entitlement
   // is the final authority.
-  const { entitlements, loading: spaceContextLoading } = useSpace();
   const officeDocumentsEnabled =
     spaceContextLoading || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
   const disabledChips: DisabledChipMap | undefined = officeDocumentsEnabled
@@ -222,6 +272,17 @@ function CalloutFormConnectorInner({
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
+
+  // Inline-rename state for the framing Collabora document, owned here (not in the
+  // edit box) so the form's Save button commits any pending rename alongside the
+  // rest of the edit. Instantiated with empty ids for non-document callouts, where
+  // it stays idle (`editing` never opens, so `save()` is never invoked).
+  const editCollaboraDocument = mode === 'edit' ? editCallout?.framing.collaboraDocument : undefined;
+  const collaboraRename = useRenameCollaboraDocument({
+    collaboraDocumentId: editCollaboraDocument?.id ?? '',
+    displayName: editCollaboraDocument?.profile?.displayName ?? '',
+    canRename: true,
+  });
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
@@ -486,6 +547,15 @@ function CalloutFormConnectorInner({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
+    // Commit a pending framing-document rename as part of Save (the edit box has
+    // no ✓ of its own). Only when the input is open; unchanged is a no-op inside
+    // the hook. On validation/save failure keep the dialog open — the box shows
+    // the inline error — and abort the rest of the save.
+    if (collaboraRename.editing) {
+      const renamed = await collaboraRename.save();
+      if (!renamed) return;
+    }
+
     // New references added in edit mode have no server id yet, so they can't
     // travel through `UpdateReferenceInput` (which requires `ID`). Persist them
     // via the dedicated `createReferenceOnProfile` mutation against the framing
@@ -646,6 +716,8 @@ function CalloutFormConnectorInner({
           value: values.title,
           onChange: v => setField('title', v),
           error: errors.title,
+          maxLength: SMALL_TEXT_LENGTH,
+          counterThreshold: TITLE_COUNTER_THRESHOLD,
         }}
         descriptionSlot={
           <MarkdownEditor
@@ -686,6 +758,11 @@ function CalloutFormConnectorInner({
                 editMemoId={values.editMeta?.memoId}
                 editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
                 editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
+                editCollaboraDocumentId={mode === 'edit' ? editCallout?.framing.collaboraDocument?.id : undefined}
+                editCollaboraDocumentDisplayName={
+                  mode === 'edit' ? editCallout?.framing.collaboraDocument?.profile?.displayName : undefined
+                }
+                collaboraRename={editCollaboraDocument ? collaboraRename : undefined}
                 framingType={values.framingChip}
                 linkUrl={values.linkUrl}
                 onLinkUrlChange={v => setField('linkUrl', v)}
@@ -743,6 +820,9 @@ function CalloutFormConnectorInner({
                       }
                     : undefined
                 }
+                contributorCollection={values.contributorCollection}
+                onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
+                contributorCollectionError={errors.contributorCollection}
               />
             </div>
           )

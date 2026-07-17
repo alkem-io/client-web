@@ -22,6 +22,10 @@ export const buildNotificationSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/notifications`;
 };
 
+// The current user's own notification-settings tab (where the sound toggles live).
+// Distinct from `buildNotificationSettingsUrl` above, which is for *spaces*.
+export const buildUserNotificationSettingsUrl = () => '/user/me/settings/notifications';
+
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
 export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.location.origin) => {
@@ -31,12 +35,18 @@ export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.loca
 
 export const hasReturnUrlParam = (params?: string) => params?.includes('returnUrl=');
 
+// With no returnUrl these emit a bare path rather than defaulting the param to
+// home. `LoginCrdRoute` stores whatever `?returnUrl=` it sees, so a defaulted
+// param overwrites the destination a user is mid-way through — and on the
+// identity subdomain it would store `https://identity.<domain>/home`, an origin
+// the apex must never navigate to. `buildReturnUrlParam` keeps its own default:
+// the `/required` gate relies on it.
 export const buildLoginUrl = (returnUrl?: string, params?: string) => {
   if (hasReturnUrlParam(params)) {
     return `${_AUTH_LOGIN_PATH}${params}`;
   }
 
-  return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
+  return returnUrl ? `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}` : _AUTH_LOGIN_PATH;
 };
 
 export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
@@ -44,7 +54,8 @@ export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
     return `${AUTH_SIGN_UP_PATH}${params}`;
   }
 
-  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params ? params : ''}`;
+  const returnUrlParam = returnUrl ? buildReturnUrlParam(returnUrl) : '';
+  return `${AUTH_SIGN_UP_PATH}${returnUrlParam}${params ?? ''}`;
 };
 
 export const buildSpaceSectionUrl = (

@@ -41,6 +41,22 @@ const CrdHubRoute = () => (
           </Suspense>
         }
       />
+      <Route
+        path={`:${nameOfUrl.innovationHubNameId}/settings/packs`}
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdInnovationHubSettingsPage tab="packs" />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`:${nameOfUrl.innovationHubNameId}/settings/virtualContributors`}
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdInnovationHubSettingsPage tab="virtualContributors" />
+          </Suspense>
+        }
+      />
       <Route path="*" element={<CrdNotFoundView />} />
     </Routes>
   </StorageConfigContextProvider>

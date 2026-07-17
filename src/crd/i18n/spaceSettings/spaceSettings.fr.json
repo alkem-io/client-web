@@ -38,18 +38,7 @@
       "description": "Vos modifications de mise en page non enregistrées seront ramenées au dernier état enregistré. Cette action ne peut pas être annulée.",
       "confirm": "Abandonner les modifications"
     },
-    "postDescriptionDisplay": {
-      "title": "Affichage des descriptions de publications",
-      "switchLabel": "Réduire les descriptions de publications par défaut",
-      "description": "Réduire les descriptions de publications par défaut. Lorsqu'il est activé, les descriptions affichent un lien \"Lire la suite\" au lieu du texte complet."
-    },
     "column": {
-      "titleAriaLabel": "Titre de la colonne",
-      "descriptionAriaLabel": "Description de la colonne",
-      "editTitle": "Modifier le titre de la colonne",
-      "editDescription": "Modifier la description de la colonne",
-      "confirm": "Confirmer",
-      "cancel": "Annuler",
       "titlePlaceholder": "Titre de la colonne",
       "descriptionPlaceholder": "Décrivez cette colonne…",
       "menu": "Actions de la colonne",
@@ -68,7 +57,8 @@
         "menuLabel": "Modifier les détails",
         "dialogTitle": "Modifier les détails : phase de flux",
         "titleLabel": "Titre",
-        "editTitle": "Modifier le titre",
+        "titleTooShort": "Le titre doit comporter au moins 3 caractères",
+        "titleDuplicate": "Une phase portant ce nom existe déjà.",
         "insertEmoji": "Insérer un emoji",
         "descriptionLabel": "Description",
         "descriptionPlaceholder": "Description",
@@ -102,6 +92,37 @@
           "title": "Masquer cette phase ?",
           "description": "Cela masque uniquement la phase du menu. L'accès à son contenu n'est pas supprimé : toute personne disposant d'un lien vers la phase, ou vers une publication qu'elle contient, peut toujours l'ouvrir.",
           "confirm": "Masquer",
+          "cancel": "Annuler"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout : {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Description du Post",
+          "collapsedHint": "Les Posts commencent réduits — les membres les développent pour lire.",
+          "expandedHint": "Les Posts sont entièrement développés par défaut.",
+          "switchLabel": "Réduire les descriptions de Posts"
+        },
+        "publishDetails": {
+          "label": "Informations sur l'auteur",
+          "onHint": "Le nom, l'avatar et la date de l'auteur sont affichés sur chaque Post.",
+          "offHint": "Le nom, l'avatar et la date de l'auteur sont masqués sur les Posts de cette phase.",
+          "switchLabel": "Afficher les informations sur l'auteur"
+        },
+        "cancel": "Annuler",
+        "saving": "Enregistrement…",
+        "save": "Enregistrer"
+      },
+      "postTemplate": {
+        "menuLabel": "Modèle de Post",
+        "dialogTitle": "Modèle de Post : {{phaseName}}",
+        "choose": "Choisir un modèle…",
+        "clear": "Supprimer le modèle",
+        "clearConfirm": {
+          "title": "Supprimer le modèle de Post ?",
+          "description": "Le modèle de Post par défaut de cette phase sera supprimé. Les nouveaux Posts de cette phase n'utiliseront aucun modèle par défaut. Les Posts existants ne sont pas affectés.",
+          "confirm": "Supprimer le modèle",
           "cancel": "Annuler"
         }
       }
@@ -752,7 +773,7 @@
     "allowedActions": {
       "title": "Actions autorisées",
       "description": "Choisissez quelles actions les membres peuvent effectuer dans cet espace",
-      "subspaceAdminInvitations": "Invitations à l'espace",
+      "subspaceAdminInvitations": "Adhésion aux Subspaces",
       "memberCreatePosts": "Créer des publications",
       "videoCalls": "Appels vidéo",
       "guestContributions": "Contributions des invités",
@@ -762,7 +783,7 @@
       "subspaceEvents": "Événements du sous-espace",
       "alkemioSupportAccess": "Support Alkemio",
       "trustHostOrganization": "Faire confiance à l'organisation hôte",
-      "subspaceAdminInvitationsDescription": "Permet aux administrateurs des Subspaces d'inviter des utilisateurs de la plateforme dans leur Subspace. Les utilisateurs qui n'étaient pas encore membres de ce Space le deviendront lorsqu'ils accepteront l'invitation au Subspace."
+      "subspaceAdminInvitationsDescription": "Les Subspaces peuvent recruter leurs propres membres. Ils deviennent aussi membres ici."
     },
     "saveAsTemplate": {
       "title": "Enregistrer comme modèle",
@@ -778,6 +799,14 @@
         "description": "Cela supprimera définitivement ce sous-espace et tout son contenu. Cette action ne peut pas être annulée.",
         "confirm": "Supprimer le sous-espace"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Visibilité des informations utilisateur",
+      "description": "Contrôlez qui peut voir les informations des membres dans cet espace. Les organisations et les contributeurs virtuels suivent la visibilité de l’espace.",
+      "followSpace": "Suivre la visibilité de l’espace",
+      "followSpaceDescription": "Les informations des membres sont visibles selon la visibilité de l’espace.",
+      "membersOnly": "Membres uniquement",
+      "membersOnlyDescription": "Seuls les membres de cet espace peuvent voir les informations des membres."
     }
   },
   "storage": {

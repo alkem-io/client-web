@@ -60,7 +60,7 @@ const NAVIGATION_HREFS = {
 };
 
 const MOCK_PLATFORM_NAVIGATION_ITEMS = [
-  { icon: <Lightbulb className="h-4 w-4" />, label: 'Innovation Library', href: '/innovation-library' },
+  { icon: <Lightbulb className="h-4 w-4" />, label: 'Template Library', href: '/innovation-library' },
   { icon: <MessageCircle className="h-4 w-4" />, label: 'Forum', href: '/forum' },
   { icon: <Compass className="h-4 w-4" />, label: 'Explore Spaces', href: '/spaces' },
   { icon: <BookOpen className="h-4 w-4" />, label: 'Documentation', href: '/docs' },

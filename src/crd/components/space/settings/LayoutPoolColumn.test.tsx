@@ -2,7 +2,7 @@ import { DndContext } from '@dnd-kit/core';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
-import { LayoutPoolColumn } from './LayoutPoolColumn';
+import { isColumnTitleTooShort, LayoutPoolColumn } from './LayoutPoolColumn';
 import type { ColumnMenuActions, LayoutPoolColumn as LayoutPoolColumnData } from './SpaceSettingsLayoutView.types';
 
 // i18n: return the key so we can assert on the deleteTab/deletePhase menu-label key directly.
@@ -14,6 +14,12 @@ vi.mock('react-i18next', () => ({
 // menu/Delete gating is independent of the editor.
 vi.mock('@/crd/forms/markdown/MarkdownEditor', () => ({
   MarkdownEditor: () => null,
+}));
+
+// PhasePostTemplateDialog is tested in its own file; stub it here so the
+// LayoutPoolColumn tests don't depend on Radix Dialog internals.
+vi.mock('./PhasePostTemplateDialog', () => ({
+  PhasePostTemplateDialog: () => null,
 }));
 
 const baseColumn = (overrides?: Partial<LayoutPoolColumnData>): LayoutPoolColumnData => ({
@@ -30,18 +36,23 @@ const baseActions = (overrides?: Partial<ColumnMenuActions>): ColumnMenuActions 
   onSetAsDefaultCalloutTemplate: vi.fn(),
   onOpenDefaultCalloutTemplatePicker: vi.fn(),
   onSaveColumnDetails: vi.fn().mockResolvedValue(undefined),
+  onSaveLayout: vi.fn().mockResolvedValue(undefined),
   onDeletePhase: vi.fn().mockResolvedValue(undefined),
   ...overrides,
 });
 
-const renderColumn = (column: LayoutPoolColumnData, actions: ColumnMenuActions, entityNoun: 'tab' | 'phase') =>
+const renderColumn = (
+  column: LayoutPoolColumnData,
+  actions: ColumnMenuActions,
+  entityNoun: 'tab' | 'phase',
+  otherColumns: ReadonlyArray<{ id: string; title: string }> = []
+) =>
   render(
     <DndContext>
       <LayoutPoolColumn
         column={column}
-        otherColumns={[]}
+        otherColumns={otherColumns}
         showDescription={false}
-        onRenameColumn={vi.fn()}
         onMoveToColumn={vi.fn()}
         onViewPost={vi.fn()}
         columnMenuActions={actions}
@@ -79,5 +90,116 @@ describe('LayoutPoolColumn — Delete affordance gating (FR-005/FR-006)', () => 
     renderColumn(baseColumn({ isDeletable: true }), baseActions({ onDeletePhase: undefined }), 'tab');
     await openMenu();
     expect(screen.queryByText('layout.column.deleteTab.menuLabel')).toBeNull();
+  });
+});
+
+describe('LayoutPoolColumn — menu order (US3-AS1, FR-010)', () => {
+  test('menu contains Layout and Post Template entries in the correct relative order', async () => {
+    renderColumn(baseColumn(), baseActions(), 'phase');
+    await openMenu();
+
+    // All four entries must be present
+    const setActive = screen.getByText('layout.column.activePhase.set');
+    const editDetails = screen.getByText('layout.column.editDetails.menuLabel');
+    const layout = screen.getByText('layout.column.phaseLayout.menuLabel');
+    const postTemplate = screen.getByText('layout.column.postTemplate.menuLabel');
+
+    // Verify DOM order: set-active → edit-details → layout → post-template
+    const pairs: Array<[Element, Element]> = [
+      [setActive, editDetails],
+      [editDetails, layout],
+      [layout, postTemplate],
+    ];
+    for (const [a, b] of pairs) {
+      expect(a.compareDocumentPosition(b)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    }
+  });
+
+  test('Post Template menu entry is present and triggers no immediate mutation', async () => {
+    const actions = baseActions();
+    renderColumn(baseColumn(), actions, 'phase');
+    await openMenu();
+    const postTemplateItem = screen.getByText('layout.column.postTemplate.menuLabel');
+    await userEvent.click(postTemplateItem);
+    // Clicking "Post Template" opens the dialog — it must NOT directly call the template picker
+    expect(actions.onOpenDefaultCalloutTemplatePicker).not.toHaveBeenCalled();
+    expect(actions.onSetAsDefaultCalloutTemplate).not.toHaveBeenCalled();
+  });
+});
+
+describe('LayoutPoolColumn — Edit Details duplicate-name guard (M3)', () => {
+  const openEditDetails = async () => {
+    await openMenu();
+    await userEvent.click(screen.getByText('layout.column.editDetails.menuLabel'));
+  };
+
+  test('renaming a phase to another phase’s name blocks Save and shows the duplicate error', async () => {
+    renderColumn(baseColumn({ title: 'Archive' }), baseActions(), 'phase', [{ id: 'col-2', title: 'Discussion' }]);
+    await openEditDetails();
+
+    const titleInput = screen.getByLabelText('layout.column.editDetails.titleLabel');
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'discussion'); // case-insensitive collision with "Discussion"
+
+    expect(screen.getByText('layout.column.editDetails.titleDuplicate')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'layout.column.editDetails.save' })).toBeDisabled();
+  });
+
+  test('a unique name clears the error and re-enables Save', async () => {
+    renderColumn(baseColumn({ title: 'Archive' }), baseActions(), 'phase', [{ id: 'col-2', title: 'Discussion' }]);
+    await openEditDetails();
+
+    const titleInput = screen.getByLabelText('layout.column.editDetails.titleLabel');
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'Discussion');
+    expect(screen.getByRole('button', { name: 'layout.column.editDetails.save' })).toBeDisabled();
+
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'Reflections');
+    expect(screen.queryByText('layout.column.editDetails.titleDuplicate')).toBeNull();
+    expect(screen.getByRole('button', { name: 'layout.column.editDetails.save' })).toBeEnabled();
+  });
+});
+
+describe('isColumnTitleTooShort — Edit Details title minimum', () => {
+  test.each([
+    ['empty', ''],
+    ['whitespace only', '   '],
+    ['one letter', 'a'],
+    ['two letters', 'ab'],
+    ['two letters padded with spaces', '  ab  '],
+  ])('%s is too short', (_label, title) => {
+    expect(isColumnTitleTooShort(title)).toBe(true);
+  });
+
+  test.each([
+    ['three letters', 'abc'],
+    ['regular title', 'Discussion'],
+    ['two letters plus emoji', 'ab🎉'],
+  ])('%s is accepted', (_label, title) => {
+    expect(isColumnTitleTooShort(title)).toBe(false);
+  });
+
+  test.each([
+    ['single simple emoji', '🎉'],
+    ['flag (two regional indicators)', '🇳🇱'],
+    ['skin-tone modifier sequence', '👍🏽'],
+    ['ZWJ family sequence', '👩‍👩‍👦'],
+    ['keycap sequence', '1️⃣'],
+    ['text symbol forced emoji via VS-16', '❤️'],
+    ['two emoji', '🎉🚀'],
+    ['emoji padded with spaces', ' 🎉 '],
+  ])('emoji-only title (%s) is exempt from the minimum', (_label, title) => {
+    expect(isColumnTitleTooShort(title)).toBe(false);
+  });
+
+  test.each([
+    ['single digit', '1'],
+    ['two digits', '12'],
+    ['hash', '#'],
+    ['asterisk', '*'],
+    ['digits and hash', '#1'],
+  ])('keycap-component-only title (%s) does NOT count as emoji and is too short', (_label, title) => {
+    expect(isColumnTitleTooShort(title)).toBe(true);
   });
 });

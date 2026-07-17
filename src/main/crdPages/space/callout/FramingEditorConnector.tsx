@@ -1,8 +1,9 @@
-import { Settings, StickyNote } from 'lucide-react';
+import { FileText, Presentation, Settings, Sheet, StickyNote } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
+import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
@@ -10,6 +11,10 @@ import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
 } from '@/crd/forms/callout/CollaboraDocumentTypePicker';
+import {
+  ContributorCollectionConfigField,
+  type ContributorCollectionConfigValue,
+} from '@/crd/forms/callout/ContributorCollectionConfigField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
@@ -20,6 +25,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import {
   DefaultWhiteboardPreviewSettings,
@@ -38,6 +44,67 @@ import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
 const WHITEBOARD_FRAMING_TEMPLATE_ID = '__callout_framing_whiteboard';
+
+// Icon + label for the read-only existing-document box shown in edit mode.
+const collaboraDocIconByType: Record<CollaboraDocumentTypeValue, typeof FileText> = {
+  WORDPROCESSING: FileText,
+  SPREADSHEET: Sheet,
+  PRESENTATION: Presentation,
+};
+const collaboraDocLabelKeyByType: Record<
+  CollaboraDocumentTypeValue,
+  'callout.documentText' | 'callout.documentSpreadsheet' | 'callout.documentPresentation'
+> = {
+  WORDPROCESSING: 'callout.documentText',
+  SPREADSHEET: 'callout.documentSpreadsheet',
+  PRESENTATION: 'callout.documentPresentation',
+};
+
+/**
+ * Existing-document box shown in the callout edit dialog (edit mode), with inline
+ * rename. Reaching the edit dialog already requires callout-edit rights — which
+ * carry the framing document's Update privilege — so rename is permitted here.
+ *
+ * The rename state is owned by the parent form (`CalloutFormConnector`) and passed
+ * in as `rename`, so the form's Save button drives the commit (there is no separate
+ * ✓/✕ here — `showActions={false}`); the pencil just opens the input.
+ */
+function CollaboraDocumentEditBox({
+  displayName,
+  documentType,
+  rename,
+}: {
+  displayName: string;
+  documentType: CollaboraDocumentTypeValue;
+  rename: UseRenameCollaboraDocumentResult;
+}) {
+  const { t } = useTranslation('crd-space');
+  const DocIcon = collaboraDocIconByType[documentType] ?? FileText;
+  const typeLabel = t(collaboraDocLabelKeyByType[documentType] ?? 'callout.documentText');
+  return (
+    <div className="p-4 border rounded-xl bg-muted/30 flex items-center gap-3 animate-in fade-in">
+      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+        <DocIcon className="w-5 h-5" aria-hidden="true" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <CollaboraDocumentDisplayName
+          displayName={displayName}
+          value={rename.draft}
+          readOnly={rename.readOnly}
+          editing={rename.editing}
+          saving={rename.saving}
+          error={rename.error}
+          showActions={false}
+          onChange={rename.changeDraft}
+          onEdit={rename.startEdit}
+          onSave={rename.save}
+          onCancel={rename.cancel}
+        />
+        <p className="text-caption text-muted-foreground">{typeLabel}</p>
+      </div>
+    </div>
+  );
+}
 
 type FramingEditorConnectorProps = {
   /**
@@ -126,6 +193,15 @@ type FramingEditorConnectorProps = {
   // create-callout mutation and cannot change after the document is created.
   collaboraDocumentType: CollaboraDocumentType;
   onCollaboraDocumentTypeChange: (next: CollaboraDocumentType) => void;
+  /** Existing Collabora document's id + display name — power the inline rename in the edit-mode box. */
+  editCollaboraDocumentId?: string;
+  editCollaboraDocumentDisplayName?: string;
+  /**
+   * Rename state for the edit-mode document box, owned by the parent form so its
+   * Save button commits the rename. Present only for a document-framing callout in
+   * edit mode; when absent, the box falls back to a read-only display.
+   */
+  collaboraRename?: UseRenameCollaboraDocumentResult;
   /**
    * Upload-zone wiring for the create-mode "or upload" path (FR-002 / FR-003).
    * Omitted in edit mode — once a Collabora document exists, replacing its bytes
@@ -144,6 +220,11 @@ type FramingEditorConnectorProps = {
     labelRemoveFile: string;
     labelOr: string;
   };
+  // Contributor-collection config (feature 008) — present for the 'contributors'
+  // framing only; editable in both create and edit (FR-004d).
+  contributorCollection?: ContributorCollectionConfigValue;
+  onContributorCollectionChange?: (value: ContributorCollectionConfigValue) => void;
+  contributorCollectionError?: string;
 };
 
 export function FramingEditorConnector({
@@ -187,7 +268,13 @@ export function FramingEditorConnector({
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
   onCollaboraDocumentTypeChange,
+  editCollaboraDocumentId,
+  editCollaboraDocumentDisplayName,
+  collaboraRename,
   collaboraUpload,
+  contributorCollection,
+  onContributorCollectionChange,
+  contributorCollectionError,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -330,20 +417,50 @@ export function FramingEditorConnector({
         />
       );
 
-    case 'document':
-      // Collabora document framing — type is fixed at creation time (Collabora
-      // has no server-side conversion path between text/spreadsheet/presentation),
-      // so in edit mode the picker is shown read-only as a reminder of which
-      // type was provisioned. The actual document body is edited from the post
+    case 'document': {
+      // Collabora document framing. The document body is edited from the post
       // card / detail dialog via `CollaboraFramingEditorOverlay`.
+      if (mode === 'edit') {
+        // The document already exists, so the "Create new" type picker no longer
+        // applies: show the existing document with inline rename (the pencil),
+        // consistent with the editor title bar.
+        const docType = collaboraDocumentType as CollaboraDocumentTypeValue;
+        if (editCollaboraDocumentId && collaboraRename) {
+          return (
+            <CollaboraDocumentEditBox
+              displayName={editCollaboraDocumentDisplayName ?? ''}
+              documentType={docType}
+              rename={collaboraRename}
+            />
+          );
+        }
+        // Fallback when the document id isn't available: read-only box.
+        const DocIcon = collaboraDocIconByType[docType] ?? FileText;
+        return (
+          <div className="p-4 border rounded-xl bg-muted/30 flex items-center gap-3 animate-in fade-in">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <DocIcon className="w-5 h-5" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-body-emphasis truncate">
+                {editCollaboraDocumentDisplayName || t(collaboraDocLabelKeyByType[docType] ?? 'callout.documentText')}
+              </p>
+              <p className="text-caption text-muted-foreground">
+                {t(collaboraDocLabelKeyByType[docType] ?? 'callout.documentText')}
+              </p>
+            </div>
+          </div>
+        );
+      }
+      // Create mode — type picker + upload (type is fixed at creation time).
       return (
         <CollaboraDocumentTypePicker
           value={collaboraDocumentType as CollaboraDocumentTypeValue}
           onChange={next => onCollaboraDocumentTypeChange(next as CollaboraDocumentType)}
-          readOnly={mode === 'edit'}
           upload={collaboraUpload}
         />
       );
+    }
 
     case 'image':
       return (
@@ -437,6 +554,24 @@ export function FramingEditorConnector({
             />
           )}
         </>
+      );
+
+    case 'contributors':
+      // Contributor-collection config (feature 008). Editable in both create and
+      // edit (FR-004d). The callout renders no framing body — only its config.
+      // Fail fast on an incomplete call site rather than silently rendering
+      // nothing — these props are required whenever framingType === 'contributors'.
+      if (!contributorCollection || !onContributorCollectionChange) {
+        throw new Error(
+          "FramingEditorConnector: the 'contributors' framing requires `contributorCollection` and `onContributorCollectionChange` props."
+        );
+      }
+      return (
+        <ContributorCollectionConfigField
+          value={contributorCollection}
+          onChange={onContributorCollectionChange}
+          error={contributorCollectionError}
+        />
       );
 
     default:

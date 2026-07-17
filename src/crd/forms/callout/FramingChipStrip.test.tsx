@@ -10,15 +10,37 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('FramingChipStrip', () => {
-  test('renders as a radiogroup with 6 chips', () => {
+  test('renders as a radiogroup with 8 chips', () => {
     render(<FramingChipStrip value="none" onChange={vi.fn()} />);
     const group = screen.getByRole('radiogroup');
     expect(group).toBeInTheDocument();
     const chips = screen.getAllByRole('radio');
-    expect(chips).toHaveLength(6);
+    // 6 base framing chips + the admin-gated `contributors` (008) and `spaces` (013)
+    // chips. The component renders all chips by default; the consumer
+    // (CalloutFormConnector) gates the two admin chips via `allowedChips`.
+    expect(chips).toHaveLength(8);
     // Document chip is interactive (Collabora wired in 085-collabora-callout)
     const doc = screen.getByRole('radio', { name: /callout.document/i });
     expect(doc).not.toHaveAttribute('aria-disabled', 'true');
+  });
+
+  test('renders the contributors chip and selecting it emits "contributors"', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="none" onChange={onChange} />);
+    const contributors = screen.getByRole('radio', { name: /callout.contributors/i });
+    expect(contributors).toBeInTheDocument();
+    await userEvent.click(contributors);
+    expect(onChange).toHaveBeenCalledWith('contributors');
+  });
+
+  test('renders the Subspaces chip and selecting it emits "spaces" (feature 013)', async () => {
+    const onChange = vi.fn();
+    render(<FramingChipStrip value="none" onChange={onChange} />);
+    // The chip id is `spaces` but its label key is `callout.subspaces` → "Subspaces".
+    const spaces = screen.getByRole('radio', { name: /callout.subspaces/i });
+    expect(spaces).toBeInTheDocument();
+    await userEvent.click(spaces);
+    expect(onChange).toHaveBeenCalledWith('spaces');
   });
 
   test('clicking an inactive chip selects it', async () => {
