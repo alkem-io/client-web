@@ -24,8 +24,14 @@ import {
   useDeleteReferenceMutation,
   useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
+  useUpdatePollStatusMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutFramingType,
+  CalloutVisibility,
+  LicenseEntitlementType,
+  PollStatus,
+} from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -504,6 +510,29 @@ function CalloutFormConnectorInner({
   const pollId = editData?.lookup.callout?.framing.poll?.id ?? values.editMeta?.pollId;
   const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '' });
 
+  // Poll open/closed status. Unlike the option edits (which are diffed and flushed
+  // on save), the status toggle applies immediately on confirm — matching the
+  // pre-CRD MUI behaviour. The mutation returns `...PollDetails`, so the Apollo
+  // cache updates `framing.poll.status` and the form re-renders from it; there is
+  // no local status field to keep in sync.
+  const pollStatus = editData?.lookup.callout?.framing.poll?.status;
+  const [updatePollStatus] = useUpdatePollStatusMutation();
+
+  const handlePollStatusChange = async (status: 'open' | 'closed') => {
+    if (!pollId) return;
+    const nextStatus = status === 'closed' ? PollStatus.Closed : PollStatus.Open;
+    try {
+      await updatePollStatus({ variables: { statusData: { pollID: pollId, status: nextStatus } } });
+      notify(
+        status === 'closed' ? t('pollForm.statusChange.closeSuccess') : t('pollForm.statusChange.reopenSuccess'),
+        'success'
+      );
+    } catch (err) {
+      logError(new Error('Poll status change failed', { cause: err as Error }));
+      notify(t('pollForm.statusChange.failed'), 'error');
+    }
+  };
+
   const runPollOptionDiff = async () => {
     if (!pollId) return;
     const diff = diffPollOptions(originalPollOptions, values.pollOptions);
@@ -784,6 +813,10 @@ function CalloutFormConnectorInner({
                 onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
                 pollShowVoterAvatars={values.pollShowVoterAvatars}
                 onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
+                // Only an existing poll has a status to toggle — a poll being created is
+                // always open, so the toggle stays hidden until there is a `pollId`.
+                pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
+                onPollStatusChange={handlePollStatusChange}
                 whiteboardContent={values.whiteboardContent}
                 whiteboardPreviewSettings={values.whiteboardPreviewSettings}
                 whiteboardConfigured={values.whiteboardConfigured}

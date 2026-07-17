@@ -877,8 +877,17 @@
     "settings.hideResultsUntilVoted": "Masquer les résultats jusqu'au vote",
     "settings.showVoterAvatars": "Afficher les avatars des votants",
     "settings.close": "Fermer",
-    "openPoll": "Le sondage est ouvert",
-    "closePoll": "Le sondage est fermé",
+    "closePoll": "Fermer le sondage",
+    "reopenPoll": "Rouvrir le sondage",
+    "closePollHint": {
+      "open": "Ce sondage est ouvert aux votes",
+      "closed": "Plus personne ne pourra voter à ce sondage"
+    },
+    "statusChange": {
+      "closeSuccess": "Le sondage est désormais fermé.",
+      "reopenSuccess": "Le sondage est désormais ouvert aux votes.",
+      "failed": "Le statut du sondage n'a pas pu être modifié. Veuillez réessayer."
+    },
     "closePollConfirm": {
       "title": "Fermer ce sondage ?",
       "description": "La fermeture du sondage empêchera de nouveaux votes et verrouillera l'édition. Vous pourrez le rouvrir plus tard.",

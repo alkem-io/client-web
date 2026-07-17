@@ -877,8 +877,17 @@
     "settings.hideResultsUntilVoted": "Ocultar resultados hasta que el usuario vote",
     "settings.showVoterAvatars": "Mostrar avatares de los votantes",
     "settings.close": "Cerrar",
-    "openPoll": "La encuesta está abierta",
-    "closePoll": "La encuesta está cerrada",
+    "closePoll": "Cerrar encuesta",
+    "reopenPoll": "Reabrir encuesta",
+    "closePollHint": {
+      "open": "Esta encuesta está abierta a votos",
+      "closed": "Ya nadie podrá votar en esta encuesta"
+    },
+    "statusChange": {
+      "closeSuccess": "La encuesta ahora está cerrada.",
+      "reopenSuccess": "La encuesta ahora está abierta a votos.",
+      "failed": "No se pudo cambiar el estado de la encuesta. Inténtalo de nuevo."
+    },
     "closePollConfirm": {
       "title": "¿Cerrar esta encuesta?",
       "description": "Cerrar la encuesta impedirá nuevos votos y bloqueará la edición. Puedes reabrirla más tarde.",
