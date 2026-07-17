@@ -1,12 +1,11 @@
-import { isSameDay } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type CalendarEventInfoFragment, CalendarEventType } from '@/core/apollo/generated/graphql-schema';
+import { fromWholeDayWire } from '@/core/utils/time/wholeDayDate';
 import type { CalendarEventFormData } from '@/domain/timeline/calendar/useCalendarEvents';
 import type { EventFormValues } from '../dataMappers/calendarEventDataMapper';
 import type { CrdCalendarUrlState } from './useCrdCalendarUrlState';
 import { useCrdEventForm } from './useCrdEventForm';
-import { fromWholeDayWire, toWholeDayWire } from './wholeDayDate';
 
 /**
  * Owns the create/edit/delete slice of the calendar dialog: form state, edit
@@ -90,35 +89,20 @@ export function toDomainPayload(values: EventFormValues): CalendarEventFormData 
   const { displayName, type, wholeDay, description, locationCity, tags, visibleOnParentCalendar } = values;
   if (!values.startDate || !values.endDate || !type) return undefined;
 
-  // A whole-day event is a bare calendar date: anchor start/end to UTC-midnight of
-  // the picked day so the wire value is timezone-independent, and derive the
-  // duration from those anchored dates (exact whole days, DST-safe). Timed events
-  // keep their real instant.
-  const startDate = wholeDay ? toWholeDayWire(values.startDate) : values.startDate;
-  const endDate = wholeDay ? toWholeDayWire(values.endDate) : values.endDate;
-
-  let durationMinutes = values.durationMinutes ?? 0;
-  let durationDays = 0;
-  let multipleDays = false;
-
-  // Mirrors useCalendarEvents.createEvent (lines 103-115): when start and end
-  // are different days, recompute the duration from the date diff.
-  if (!isSameDay(startDate, endDate)) {
-    durationMinutes = Math.floor((endDate.getTime() - startDate.getTime()) / 60_000);
-    durationDays = Math.floor(durationMinutes / (24 * 60));
-    multipleDays = durationDays > 0;
-  }
-
+  // Whole-day anchoring (→ UTC-midnight) and duration derivation are finalized once
+  // at the mutation boundary (useCalendarEvents → deriveEventWireFields), so any
+  // caller stays consistent. Forward the raw picked dates + the user's duration;
+  // durationDays/multipleDays are computed there.
   return {
     displayName,
     description,
     type: type as CalendarEventType,
-    startDate,
-    endDate,
+    startDate: values.startDate,
+    endDate: values.endDate,
     wholeDay,
-    durationMinutes,
-    durationDays,
-    multipleDays,
+    durationMinutes: values.durationMinutes ?? 0,
+    durationDays: 0,
+    multipleDays: false,
     visibleOnParentCalendar,
     tags,
     references: [],

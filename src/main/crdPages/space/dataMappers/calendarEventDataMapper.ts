@@ -20,7 +20,7 @@ import type {
   CalendarEventImportUrlsQuery,
   CalendarEventInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { fromWholeDayWire } from '../timeline/wholeDayDate';
+import { fromWholeDayWire } from '@/core/utils/time/wholeDayDate';
 
 // -----------------------------------------------------------------------------
 // CRD prop types (re-declared here per project convention — no barrel imports
