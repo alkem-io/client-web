@@ -31,25 +31,3 @@ export function fetchCollaboraEditorUrl(
     context: SILENT_QUERY_CONTEXT,
   });
 }
-
-/** The `access_token` query param of a Collabora editor URL, if present. */
-export function accessTokenFromEditorUrl(editorUrl: string): string | undefined {
-  try {
-    return new URL(editorUrl).searchParams.get('access_token') ?? undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-/**
- * The origin of a Collabora editor URL, used as the postMessage target origin. Returns `undefined`
- * on an unparseable URL — callers must then NOT post (a credential-bearing `Reset_Access_Token`
- * must never be broadcast with a `'*'` target).
- */
-export function editorOrigin(editorUrl: string): string | undefined {
-  try {
-    return new URL(editorUrl).origin;
-  } catch {
-    return undefined;
-  }
-}

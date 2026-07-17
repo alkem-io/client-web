@@ -1,6 +1,6 @@
 /**
  * Shared helpers for the Collabora Online postMessage protocol, used by the hooks that listen to
- * the editor iframe (`useCollaboraPostMessage`, `useCollaboraTokenRefresh`).
+ * the editor iframe (`useCollaboraPostMessage`).
  *
  * See https://sdk.collaboraonline.com/docs/postmessage_api.html
  */

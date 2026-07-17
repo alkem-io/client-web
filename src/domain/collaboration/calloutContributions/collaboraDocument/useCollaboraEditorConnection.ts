@@ -8,7 +8,7 @@ import { useCollaboraConnectionMonitor } from './useCollaboraConnectionMonitor';
 import type { CollaboraConnectionStatus, DisconnectCause } from './useCollaboraPostMessage';
 import { type CollaboraRecovery, type CollaboraRecoveryKind, useCollaboraRecovery } from './useCollaboraRecovery';
 import { useCollaboraSaveHealth } from './useCollaboraSaveHealth';
-import { useCollaboraTokenRefresh } from './useCollaboraTokenRefresh';
+import { useProactiveTokenRefresh } from './useProactiveTokenRefresh';
 
 // Alkemio server error codes (extensions.code) on the editor-URL path that mean recovery is
 // impossible (FR-013). Anything else is treated as recoverable so a transient/unknown error
@@ -64,7 +64,7 @@ export type CollaboraEditorConnection = {
  * Composes the whole disconnect-recovery pipeline for one embedded Collabora editor into a
  * single connection facade, so the overlay stays a thin view:
  *
- * - **prevent** token expiry (`useCollaboraTokenRefresh` — in-place `Reset_Access_Token`),
+ * - **prevent** token expiry (`useProactiveTokenRefresh` — proactive pre-expiry remount),
  * - **detect** drops (`useCollaboraConnectionMonitor` — postMessage + online/offline + TTL),
  * - **detect** a silent save-path outage (`useCollaboraSaveHealth`) and fold it in,
  * - **map** the result to footer props, and
@@ -112,12 +112,15 @@ export function useCollaboraEditorConnection(
     }
   );
 
-  // Primary token-expiry handling: refresh the WOPI token in place before it expires — seamless,
-  // no remount, no lost edits. `onRefreshed` re-arms the monitor's fallback timer and clears any
-  // terminal state; a failed re-issue falls through to the terminal/recoverable mapping.
-  useCollaboraTokenRefresh(iframeRef, collaboraDocumentId, {
-    onRefreshed: onAccessTokenTTL,
-    onError: onFetchError,
+  // Primary token-expiry handling: Collabora emits NO event before a token expires (verified) — it
+  // just shows its own "session will expire, please reload" dialog — so the host must refresh
+  // proactively. This remounts with a fresh token before expiry, waiting for a saved moment so no
+  // edit is dropped. The editor's own fetch (onAccessTokenTTL / onFetchError) handles the refetch.
+  useProactiveTokenRefresh({
+    accessTokenTTL,
+    saved: saveStatus === 'saved',
+    reconnectNonce,
+    onRefresh: reconnect,
   });
 
   const { serviceUnavailable } = useCollaboraSaveHealth(collaboraDocumentId, saveStatus);

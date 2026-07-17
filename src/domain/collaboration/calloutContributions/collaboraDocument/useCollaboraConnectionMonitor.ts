@@ -100,10 +100,10 @@ export function useCollaboraConnectionMonitor(
   // duration — so we schedule from the remaining time (`expiry - now`). Feeding the raw absolute
   // value to setTimeout would overflow its ~24.8-day cap and fire almost immediately.
   //
-  // This timer is only a FALLBACK. The primary path refreshes the token *in place* before it
-  // expires, via Collabora's `App_TokenExpiring` → `Reset_Access_Token` handshake (see
-  // `useCollaboraTokenRefresh`); a successful refresh pushes a new `accessTokenTTL` that re-arms
-  // this timer. It fires only if that refresh never happened or failed.
+  // This timer is only a FALLBACK. The primary path (`useProactiveTokenRefresh`) remounts with a
+  // fresh token BEFORE expiry — Collabora emits no expiry event to react to — which pushes a new
+  // `accessTokenTTL` that re-arms this timer. It fires only if that proactive refresh never
+  // happened or failed, surfacing a `tokenExpiry` disconnect the user can manually recover from.
   const [tokenExpired, setTokenExpired] = useState(false);
   useEffect(() => {
     setTokenExpired(false);
