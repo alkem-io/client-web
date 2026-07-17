@@ -1,11 +1,12 @@
 import { ChevronRight, Settings, X } from 'lucide-react';
-import { type ReactNode, useRef, useState } from 'react';
+import { type ReactNode, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from '@/crd/primitives/dialog';
 import { Separator } from '@/crd/primitives/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 export type AddPostModalMode = 'create' | 'edit';
 
@@ -28,8 +29,19 @@ export type AddPostModalProps = {
   dirty?: boolean;
   /** True while a create / update mutation is in flight. Footer buttons go busy. */
   submitting?: boolean;
-  // Title input
-  title: { value: string; onChange: (v: string) => void; error?: string };
+  /**
+   * Title input. `maxLength` turns on the character counter: it appears once the
+   * value reaches `counterThreshold` and, past `maxLength`, the input goes into
+   * an error state without waiting for a submit. The consumer's own submit-time
+   * validation still produces `error`, which wins over the live length message.
+   */
+  title: {
+    value: string;
+    onChange: (v: string) => void;
+    error?: string;
+    maxLength?: number;
+    counterThreshold?: number;
+  };
   // Slots
   descriptionSlot?: ReactNode;
   framingZoneSlot?: ReactNode;
@@ -41,7 +53,13 @@ export type AddPostModalProps = {
   onSaveDraft?: () => void;
   onFindTemplate?: () => void;
   submitLabel?: string;
-  /** Publish / Save button is disabled until the title is non-empty. */
+  /**
+   * False while the title is empty. The footer buttons are then only *visually*
+   * dimmed and carry a tooltip / `aria-describedby` hint, but stay fully
+   * operable — clicking still runs the consumer's validation, which surfaces the
+   * title error and focuses the field. They are deliberately not `aria-disabled`
+   * (that would announce an operable control as disabled to assistive tech).
+   */
   canSubmit?: boolean;
   className?: string;
 };
@@ -68,11 +86,37 @@ export function AddPostModal({
   const { t } = useTranslation('crd-space');
   const [moreOpen, setMoreOpen] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const titleHintId = useId();
 
   const isCreate = mode === 'create';
   const headerTitle = isCreate ? t('forms.createPost') : t('forms.editPost');
   const primaryLabel = submitLabel ?? (isCreate ? t('forms.publish') : t('forms.save'));
-  const primaryDisabled = submitting || !canSubmit;
+  const blockedByTitle = !submitting && !canSubmit;
+
+  const { maxLength: titleMaxLength, counterThreshold } = title;
+  const titleLength = title.value.length;
+  const titleOverLimit = titleMaxLength !== undefined && titleLength > titleMaxLength;
+  const showTitleCounter = titleMaxLength !== undefined && titleLength >= (counterThreshold ?? titleMaxLength);
+  // Submit-time errors from the consumer win; the live length message only fills
+  // the gap before the user has tried to submit.
+  const titleError = title.error ?? (titleOverLimit ? t('validation.maxSmall', { count: titleMaxLength }) : undefined);
+
+  // While the title is missing the button is only *visually* disabled: the click
+  // still reaches the consumer, whose validation sets `title.error`.
+  const runAction = (action: () => void) => () => {
+    action();
+    if (blockedByTitle) titleInputRef.current?.focus();
+  };
+
+  const actionButton = (node: ReactNode) =>
+    blockedByTitle ? (
+      <Tooltip>
+        <TooltipTrigger asChild={true}>{node}</TooltipTrigger>
+        <TooltipContent>{t('forms.titleRequiredHint')}</TooltipContent>
+      </Tooltip>
+    ) : (
+      node
+    );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -110,6 +154,7 @@ export function AddPostModal({
             <div className="flex items-center gap-2">
               <input
                 ref={titleInputRef}
+                id="add-post-title"
                 type="text"
                 placeholder={t('forms.titlePlaceholder')}
                 value={title.value}
@@ -118,11 +163,11 @@ export function AddPostModal({
                 autoFocus={true}
                 className={cn(
                   'flex-1 min-w-0 text-section-title md:text-page-title border-none px-0 bg-transparent focus:outline-none placeholder:text-muted-foreground/60 disabled:opacity-60',
-                  title.error && 'text-destructive'
+                  titleError && 'text-destructive'
                 )}
                 aria-label={t('forms.titleLabel')}
-                aria-invalid={!!title.error}
-                aria-describedby={title.error ? 'add-post-title-error' : undefined}
+                aria-invalid={!!titleError}
+                aria-describedby={titleError ? 'add-post-title-error' : undefined}
               />
               <EmojiInsertButton
                 inputRef={titleInputRef}
@@ -132,10 +177,28 @@ export function AddPostModal({
                 disabled={submitting}
               />
             </div>
-            {title.error && (
-              <p id="add-post-title-error" className="text-caption text-destructive" aria-live="polite">
-                {title.error}
-              </p>
+            {(titleError || showTitleCounter) && (
+              <div className="flex items-start justify-between gap-4">
+                {titleError ? (
+                  <p id="add-post-title-error" className="text-caption text-destructive" aria-live="polite">
+                    {titleError}
+                  </p>
+                ) : (
+                  <span />
+                )}
+                {showTitleCounter && (
+                  <output
+                    htmlFor="add-post-title"
+                    aria-live="polite"
+                    className={cn(
+                      'shrink-0 text-caption tabular-nums',
+                      titleOverLimit ? 'text-destructive' : 'text-muted-foreground'
+                    )}
+                  >
+                    {t('forms.titleCharacterCount', { current: titleLength, max: titleMaxLength })}
+                  </output>
+                )}
+              </div>
             )}
           </div>
 
@@ -181,27 +244,56 @@ export function AddPostModal({
 
         {/* Footer */}
         <DialogFooter className="px-6 py-4 border-t bg-muted/10 flex items-center">
+          {blockedByTitle && (
+            <span id={titleHintId} className="sr-only">
+              {t('forms.titleRequiredHint')}
+            </span>
+          )}
           <div className="ml-auto flex items-center gap-3">
             {isCreate && notifySwitchSlot}
             {isCreate ? (
               <>
-                {onSaveDraft && (
-                  <Button variant="ghost" onClick={onSaveDraft} disabled={primaryDisabled} aria-busy={submitting}>
-                    {t('forms.saveDraft')}
+                {onSaveDraft &&
+                  actionButton(
+                    <Button
+                      variant="ghost"
+                      onClick={runAction(onSaveDraft)}
+                      disabled={submitting}
+                      aria-describedby={blockedByTitle ? titleHintId : undefined}
+                      aria-busy={submitting}
+                      className={cn(blockedByTitle && 'opacity-50')}
+                    >
+                      {t('forms.saveDraft')}
+                    </Button>
+                  )}
+                {actionButton(
+                  <Button
+                    onClick={runAction(onSubmit)}
+                    className={cn('px-8', blockedByTitle && 'opacity-50')}
+                    disabled={submitting}
+                    aria-describedby={blockedByTitle ? titleHintId : undefined}
+                    aria-busy={submitting}
+                  >
+                    {primaryLabel}
                   </Button>
                 )}
-                <Button onClick={onSubmit} className="px-8" disabled={primaryDisabled} aria-busy={submitting}>
-                  {primaryLabel}
-                </Button>
               </>
             ) : (
               <>
                 <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={submitting}>
                   {t('dialogs.cancel')}
                 </Button>
-                <Button onClick={onSubmit} className="px-8" disabled={primaryDisabled} aria-busy={submitting}>
-                  {primaryLabel}
-                </Button>
+                {actionButton(
+                  <Button
+                    onClick={runAction(onSubmit)}
+                    className={cn('px-8', blockedByTitle && 'opacity-50')}
+                    disabled={submitting}
+                    aria-describedby={blockedByTitle ? titleHintId : undefined}
+                    aria-busy={submitting}
+                  >
+                    {primaryLabel}
+                  </Button>
+                )}
               </>
             )}
           </div>

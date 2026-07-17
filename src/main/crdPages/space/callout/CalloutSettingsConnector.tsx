@@ -23,6 +23,7 @@ import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCallo
 import { fetchPreviewImageBlob } from '@/main/crdPages/templates/fetchPreviewImageBlob';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { CalloutEditConnector } from './CalloutEditConnector';
+import { CollaboraFramingReplaceConnector } from './CollaboraFramingReplaceConnector';
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { mapCalloutToDeletionSummary } from './dataMappers/mapCalloutToDeletionSummary';
 import { deriveCalloutMenuVisibility } from './deriveCalloutMenuVisibility';
@@ -70,6 +71,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
   const [editOpen, setEditOpen] = useState(false);
   const [visibilityAction, setVisibilityAction] = useState<'publish' | 'unpublish' | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [replaceOpen, setReplaceOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
@@ -104,6 +106,8 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
         '',
     }));
 
+  const collaboraDocument = callout.framing.collaboraDocument;
+
   const perms = deriveCalloutMenuVisibility({
     myPrivileges: callout.authorization?.myPrivileges,
     visibility: callout.settings.visibility,
@@ -121,6 +125,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
     // item is shown greyed out rather than hidden (mirrors the old UI hiding
     // it for documents, but with a visible "coming soon" affordance).
     isCollaboraDocument: callout.framing.type === CalloutFramingType.CollaboraDocument,
+    collaboraDocumentType: collaboraDocument?.documentType,
     hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
   });
 
@@ -202,6 +207,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
         saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
         saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
+        onReplace={perms.showReplace ? () => setReplaceOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
         onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
@@ -223,6 +229,16 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
           calloutId={callout.id}
           calloutsSetId={callout.calloutsSetId}
           editCallout={callout}
+        />
+      )}
+
+      {perms.showReplace && collaboraDocument && (
+        <CollaboraFramingReplaceConnector
+          open={replaceOpen}
+          onOpenChange={setReplaceOpen}
+          collaboraDocumentId={collaboraDocument.id}
+          currentDocumentType={collaboraDocument.documentType}
+          currentTitle={collaboraDocument.profile?.displayName ?? callout.framing.profile.displayName}
         />
       )}
 

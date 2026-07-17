@@ -203,12 +203,22 @@
     "documentImportOr": "ou",
     "documentImportHint": "Glissez un fichier ou cliquez pour téléverser",
     "documentImportMaxSize": ".docx, .xlsx, .pptx jusqu'à {{cap}} Mo",
+    "documentReplaceAccepts": "{{ext}} jusqu'à {{cap}} Mo",
     "documentImportRemoveFile": "Supprimer le fichier",
     "documentImportErrorUnsupported": "Ce type de fichier n'est pas pris en charge. Essayez {{formats}}.",
     "documentImportErrorTooLarge": "Le fichier est trop volumineux. Taille maximale : {{cap}} Mo.",
     "documentImportErrorMultiple": "Téléversez un seul fichier à la fois.",
     "documentImportErrorFolder": "Téléversez un fichier, pas un dossier.",
     "documentImportErrorServiceUnavailable": "Le service documentaire est temporairement indisponible. Réessayez dans un instant.",
+    "documentReplace": "Remplacer le fichier",
+    "documentReplaceTitle": "Remplacer le fichier",
+    "documentReplaceDescription": "Téléverser un remplacement écrase le fichier actuel pour tout le monde, et c'est irréversible.",
+    "documentReplaceCurrentTitleLabel": "Document actuel",
+    "documentReplaceTitleFieldLabel": "Titre",
+    "documentReplaceConfirm": "Remplacer le fichier",
+    "documentReplaceErrorSameType": "Le remplacement doit être le même type de document que l'actuel : {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Fichier remplacé.",
+    "documentReplaceError": "Impossible de remplacer le fichier. Veuillez réessayer.",
     "comments": "{{count}} commentaires",
     "commentsZero": "0 commentaires",
     "expandComments": "Afficher les commentaires",
@@ -541,6 +551,7 @@
     "publishedLabel": "Publié",
     "draftLabel": "Brouillon",
     "notifyMembers": "Notifier les membres de l'espace",
+    "titleRequiredHint": "Ajoutez un titre à votre $t(common.callout) pour continuer",
     "saveDraft": "Enregistrer le brouillon",
     "save": "Enregistrer",
     "publish": "Publier",
@@ -558,7 +569,8 @@
     "addOption": "Ajouter une option",
     "removeOption": "Supprimer l'option",
     "allowComments": "Autoriser les commentaires",
-    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout)."
+    "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout).",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Réponses",
@@ -672,6 +684,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Nom du document",
+      "edit": "Renommer",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "saving": "Enregistrement…",
+      "errors": {
+        "blank": "Veuillez saisir un nom.",
+        "tooShort": "Le nom doit comporter au moins {{min}} caractères.",
+        "tooLong": "Le nom ne peut pas dépasser {{max}} caractères.",
+        "invalid": "Veuillez saisir un nom valide.",
+        "saveFailed": "Impossible de renommer le document. Veuillez réessayer."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Erreur Collabora : {{message}}",
@@ -896,6 +922,8 @@
     "noLocationDescription": "Ces contributeurs n’ont pas de données de localisation définies.",
     "viewList": "Liste",
     "viewMap": "Carte",
+    "expandMap": "Agrandir la carte",
+    "closeMap": "Fermer la carte",
     "types": {
       "user": "Personnes",
       "organization": "Organisations",

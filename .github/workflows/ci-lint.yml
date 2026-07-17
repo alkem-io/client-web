@@ -81,8 +81,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: TypeScript type-check
-        run: pnpm exec tsc --noEmit
+      - name: TypeScript type-check (native)
+        run: pnpm run typecheck:native
 
   lint:
     needs: setup

@@ -203,12 +203,22 @@
     "documentImportOr": "of",
     "documentImportHint": "Sleep een bestand of klik om te uploaden",
     "documentImportMaxSize": ".docx, .xlsx, .pptx tot {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} tot {{cap}} MB",
     "documentImportRemoveFile": "Bestand verwijderen",
     "documentImportErrorUnsupported": "Dit bestandstype wordt niet ondersteund. Probeer {{formats}}.",
     "documentImportErrorTooLarge": "Bestand is te groot. Maximale grootte is {{cap}} MB.",
     "documentImportErrorMultiple": "Sleep één bestand per keer.",
     "documentImportErrorFolder": "Sleep een bestand, geen map.",
     "documentImportErrorServiceUnavailable": "De documentservice is tijdelijk niet beschikbaar. Probeer het zo opnieuw.",
+    "documentReplace": "Bestand vervangen",
+    "documentReplaceTitle": "Bestand vervangen",
+    "documentReplaceDescription": "Een vervanging uploaden overschrijft het huidige bestand voor iedereen en kan niet ongedaan worden gemaakt.",
+    "documentReplaceCurrentTitleLabel": "Huidig document",
+    "documentReplaceTitleFieldLabel": "Titel",
+    "documentReplaceConfirm": "Bestand vervangen",
+    "documentReplaceErrorSameType": "De vervanging moet hetzelfde soort document zijn als het huidige: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Bestand vervangen.",
+    "documentReplaceError": "Kon het bestand niet vervangen. Probeer het opnieuw.",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
     "expandComments": "Reacties uitvouwen",
@@ -541,6 +551,7 @@
     "publishedLabel": "Gepubliceerd",
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
+    "titleRequiredHint": "Voeg een titel toe aan je $t(common.callout) om verder te gaan",
     "saveDraft": "Concept opslaan",
     "save": "Opslaan",
     "publish": "Post",
@@ -558,7 +569,8 @@
     "addOption": "Optie toevoegen",
     "removeOption": "Optie verwijderen",
     "allowComments": "Reacties toestaan",
-    "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing."
+    "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Reacties",
@@ -672,6 +684,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Documentnaam",
+      "edit": "Hernoemen",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "saving": "Bezig met opslaan…",
+      "errors": {
+        "blank": "Voer een naam in.",
+        "tooShort": "De naam moet minstens {{min}} tekens bevatten.",
+        "tooLong": "De naam mag maximaal {{max}} tekens bevatten.",
+        "invalid": "Voer een geldige naam in.",
+        "saveFailed": "Kan het document niet hernoemen. Probeer het opnieuw."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-fout: {{message}}",
@@ -896,6 +922,8 @@
     "noLocationDescription": "Deze contributors hebben geen locatiegegevens ingesteld.",
     "viewList": "Lijst",
     "viewMap": "Kaart",
+    "expandMap": "Kaart vergroten",
+    "closeMap": "Kaart sluiten",
     "types": {
       "user": "Personen",
       "organization": "Organisaties",

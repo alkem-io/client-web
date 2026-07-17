@@ -8,6 +8,8 @@ fragment InnovationFlowStates on InnovationFlow {
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
     defaultCalloutTemplate {
       id

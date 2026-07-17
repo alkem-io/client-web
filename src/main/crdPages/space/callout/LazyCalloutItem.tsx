@@ -9,15 +9,14 @@ import {
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 import useCalloutInView from '@/domain/collaboration/calloutsSet/CalloutsView/useCalloutInView';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
-import { useSpace } from '@/domain/space/context/useSpace';
-import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
-import { useCalloutDescriptionDisplayMode } from '@/domain/space/settings/useCalloutDescriptionDisplayMode';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { getCalloutContributionType, mapCalloutDetailsToPostCard } from '../dataMappers/calloutDataMapper';
 import { useCrdCalloutMoveActions } from '../hooks/useCrdCalloutMoveActions';
+import { useFlowStateLayout } from '../hooks/useFlowStateLayout';
 import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUpload';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
@@ -56,9 +55,15 @@ export function LazyCalloutItem({
   onClick,
   onExpandClick,
 }: LazyCalloutItemProps) {
+  // `withClassification: true` is required — the per-phase layout resolution reads
+  // `callout.classification.flowState.tags[0]` (the phase display name) to look up the
+  // state's descriptionDisplayMode / showPublishDetails. Without it the classification
+  // is omitted, `flowStateTagValue` is undefined, and every callout silently falls back
+  // to the layout DEFAULTS (expanded, publish details shown) regardless of admin settings.
   const { ref, inView, callout, loading } = useCalloutInView({
     calloutId,
     calloutsSetId,
+    withClassification: true,
   });
 
   return (
@@ -115,22 +120,20 @@ function LazyCalloutItemContent({
   const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
   const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useTranslation('crd-space');
-  const { space } = useSpace();
-  const { subspace } = useSubSpace();
-  // Mirror MUI `CalloutView`: the description display mode is read from the
-  // closest space context (subspace if we're inside one, otherwise the parent
-  // space). `SubspaceContext` defaults `subspace.id` to `''` (not `undefined`)
-  // at the space root, so `||` — not `??` — is required to fall through to the
-  // space id; with `??` the empty string sticks, the settings query is skipped,
-  // and every callout wrongly defaults to Expanded regardless of the setting.
-  // `useCalloutDescriptionDisplayMode` returns `true` when the setting is
-  // "Collapsed"; the PostCard expects the inverse.
-  const descriptionCollapsed = useCalloutDescriptionDisplayMode(subspace?.id || space?.id);
+  // Resolve per-phase layout from the FLOW_STATE classification tag.
+  // `flowState.tags[0]` is the phase display name the callout is tagged under.
+  // `useFlowStateLayout` reads from the cached SpaceTabsQuery (zero extra round-trips)
+  // and falls back to defaults (Expanded, publish details shown) on any miss.
+  const flowStateTagValue = callout.classification?.flowState?.tags[0];
+  const { descriptionCollapsed, showPublishDetails } = useFlowStateLayout(flowStateTagValue);
 
   const postData = {
     ...mapCalloutDetailsToPostCard(callout, t),
-    // Scoped search forces compact ("Read more"); otherwise follow the space setting.
+    // Scoped search forces compact ("Read more") AND ignores the per-phase settings entirely
+    // (FR-016: per-phase layout does not override the forced-compact surface) — so publish
+    // details fall back to the default (shown), not the phase's showPublishDetails value.
     descriptionExpanded: forceDescriptionCollapsed ? false : !descriptionCollapsed,
+    showPublishDetails: forceDescriptionCollapsed ? true : showPublishDetails,
   };
 
   // The hook must run unconditionally (rules of hooks), but the move menu items
@@ -228,6 +231,12 @@ function LazyCalloutItemContent({
   // `canCreateContribution`.
   const hasContributionType = callout.settings.contribution.allowedTypes.length > 0;
   const collaboraDocumentId = callout.framing.collaboraDocument?.id;
+  // Editor-header pencil: content editors (UPDATE_CONTENT) may rename too, not just UPDATE holders.
+  const canRenameFramingDocument = canRenameCollaboraDocument({
+    documentPrivileges: callout.framing.collaboraDocument?.authorization?.myPrivileges,
+    calloutPrivileges: callout.authorization?.myPrivileges,
+    includeContentEditors: true,
+  });
 
   const contributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
@@ -242,10 +251,12 @@ function LazyCalloutItemContent({
 
   // Contributor-collection callout body (feature 008): renders the self-updating
   // contributor cards/map for the active type. The callout accepts no
-  // contributions, so it has no contributions-preview — only this body.
+  // contributions, so it has no contributions-preview — only this body. The
+  // negative margin pulls the body against the Card root's `gap-6` so the
+  // filters sit close under the callout title.
   const contributorsPreview =
     callout.framing.type === CalloutFramingType.Contributors ? (
-      <ContributorCollectionConnector calloutId={callout.id} className="mt-2" />
+      <ContributorCollectionConnector calloutId={callout.id} className="-mt-4" />
     ) : null;
 
   // Spaces-collection callout body (feature 013): renders the host space's
@@ -344,6 +355,7 @@ function LazyCalloutItemContent({
           collaboraDocumentId={collaboraDocumentId}
           title={callout.framing.collaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName}
           documentType={toCollaboraPreviewType(callout.framing.collaboraDocument?.documentType)}
+          canRename={canRenameFramingDocument}
           onClose={() => setCollaboraEditorOpen(false)}
         />
       )}

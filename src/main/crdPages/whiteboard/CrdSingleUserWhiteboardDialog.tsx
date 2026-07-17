@@ -1,6 +1,6 @@
 import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
-import type { ExportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { ExportedDataState } from '@alkemio/excalidraw/data/types';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';

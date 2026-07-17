@@ -21,6 +21,7 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
 import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
@@ -385,6 +386,12 @@ export function CalloutDetailDialogConnector({
   ) : undefined;
   const framingCollaboraDocument = callout.framing.collaboraDocument;
   const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
+  // Editor-header pencil: content editors (UPDATE_CONTENT) may rename too, not just UPDATE holders.
+  const canRenameFramingDocument = canRenameCollaboraDocument({
+    documentPrivileges: framingCollaboraDocument?.authorization?.myPrivileges,
+    calloutPrivileges: callout.authorization?.myPrivileges,
+    includeContentEditors: true,
+  });
 
   const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
   const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
@@ -673,6 +680,7 @@ export function CalloutDetailDialogConnector({
       collaboraDocumentId={framingCollaboraDocument.id}
       title={framingCollaboraTitle}
       documentType={toCollaboraPreviewType(framingCollaboraDocument.documentType)}
+      canRename={canRenameFramingDocument}
       onClose={() => setFramingCollaboraOpen(false)}
     />
   ) : null;

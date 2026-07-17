@@ -203,12 +203,22 @@
     "documentImportOr": "или",
     "documentImportHint": "Плъзнете файл или щракнете, за да качите",
     "documentImportMaxSize": ".docx, .xlsx, .pptx до {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} до {{cap}} MB",
     "documentImportRemoveFile": "Премахни файла",
     "documentImportErrorUnsupported": "Този тип файл не се поддържа. Опитайте с {{formats}}.",
     "documentImportErrorTooLarge": "Файлът е твърде голям. Максималният размер е {{cap}} MB.",
     "documentImportErrorMultiple": "Качвайте само по един файл.",
     "documentImportErrorFolder": "Качете файл, а не папка.",
     "documentImportErrorServiceUnavailable": "Услугата за документи временно не е налична. Моля, опитайте отново след малко.",
+    "documentReplace": "Замяна на файла",
+    "documentReplaceTitle": "Замяна на файла",
+    "documentReplaceDescription": "Качването на заместващ файл презаписва текущия файл за всички и не може да бъде отменено.",
+    "documentReplaceCurrentTitleLabel": "Текущ документ",
+    "documentReplaceTitleFieldLabel": "Заглавие",
+    "documentReplaceConfirm": "Замяна на файла",
+    "documentReplaceErrorSameType": "Заместващият файл трябва да е същият вид документ като текущия: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Файлът е заменен.",
+    "documentReplaceError": "Файлът не можа да бъде заменен. Моля, опитайте отново.",
     "comments": "{{count}} коментара",
     "commentsZero": "0 коментара",
     "expandComments": "Разгъни коментарите",
@@ -541,6 +551,7 @@
     "publishedLabel": "Публикувано",
     "draftLabel": "Чернова",
     "notifyMembers": "Уведоми членовете на пространството",
+    "titleRequiredHint": "Добавете заглавие на вашето $t(common.callout), за да продължите",
     "saveDraft": "Запази чернова",
     "save": "Запази",
     "publish": "Публикувай",
@@ -558,7 +569,8 @@
     "addOption": "Добави опция",
     "removeOption": "Премахни опция",
     "allowComments": "Разреши коментари",
-    "allowCommentsDescription": "Членовете могат да публикуват коментари върху рамката на известието."
+    "allowCommentsDescription": "Членовете могат да публикуват коментари върху рамката на известието.",
+    "titleCharacterCount": "{{current}}/{{max}}"
   },
   "contributionSettings": {
     "heading": "Отговори",
@@ -672,6 +684,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Име на документа",
+      "edit": "Преименуване",
+      "save": "Запази",
+      "cancel": "Отказ",
+      "saving": "Записване…",
+      "errors": {
+        "blank": "Моля, въведете име.",
+        "tooShort": "Името трябва да е поне {{min}} знака.",
+        "tooLong": "Името може да е най-много {{max}} знака.",
+        "invalid": "Моля, въведете валидно име.",
+        "saveFailed": "Документът не можа да бъде преименуван. Моля, опитайте отново."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Грешка в Collabora: {{message}}",
@@ -896,6 +922,8 @@
     "noLocationDescription": "Тези сътрудници нямат зададени данни за местоположение.",
     "viewList": "Списък",
     "viewMap": "Карта",
+    "expandMap": "Разгъване на картата",
+    "closeMap": "Затваряне на картата",
     "types": {
       "user": "Хора",
       "organization": "Организации",

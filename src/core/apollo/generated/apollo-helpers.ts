@@ -1509,11 +1509,15 @@ export type CreateInnovationFlowStateDataFieldPolicy = {
 };
 export type CreateInnovationFlowStateSettingsDataKeySpecifier = (
   | 'allowNewCallouts'
+  | 'descriptionDisplayMode'
+  | 'showPublishDetails'
   | 'visible'
   | CreateInnovationFlowStateSettingsDataKeySpecifier
 )[];
 export type CreateInnovationFlowStateSettingsDataFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  descriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  showPublishDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateLinkDataKeySpecifier = ('profile' | 'uri' | CreateLinkDataKeySpecifier)[];
@@ -2149,11 +2153,15 @@ export type InnovationFlowStateFieldPolicy = {
 };
 export type InnovationFlowStateSettingsKeySpecifier = (
   | 'allowNewCallouts'
+  | 'descriptionDisplayMode'
+  | 'showPublishDetails'
   | 'visible'
   | InnovationFlowStateSettingsKeySpecifier
 )[];
 export type InnovationFlowStateSettingsFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  descriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  showPublishDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationHubKeySpecifier = (
@@ -2960,6 +2968,7 @@ export type MutationKeySpecifier = (
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'reorderPollOptions'
+  | 'replaceCollaboraDocument'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -3179,6 +3188,7 @@ export type MutationFieldPolicy = {
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  replaceCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4442,6 +4452,27 @@ export type SearchResultCalloutFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultCollaboraDocumentKeySpecifier = (
+  | 'callout'
+  | 'collaboraDocument'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultCollaboraDocumentKeySpecifier
+)[];
+export type SearchResultCollaboraDocumentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultMemoKeySpecifier = (
   | 'callout'
   | 'id'
@@ -5400,6 +5431,7 @@ export type UserSettingsHomeSpaceFieldPolicy = {
 export type UserSettingsNotificationKeySpecifier = (
   | 'organization'
   | 'platform'
+  | 'sound'
   | 'space'
   | 'user'
   | 'virtualContributor'
@@ -5408,6 +5440,7 @@ export type UserSettingsNotificationKeySpecifier = (
 export type UserSettingsNotificationFieldPolicy = {
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  sound?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5457,6 +5490,15 @@ export type UserSettingsNotificationPlatformAdminFieldPolicy = {
   userGlobalRoleChanged?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationSoundKeySpecifier = (
+  | 'chatMessage'
+  | 'inAppNotification'
+  | UserSettingsNotificationSoundKeySpecifier
+)[];
+export type UserSettingsNotificationSoundFieldPolicy = {
+  chatMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  inAppNotification?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'admin'
@@ -7138,6 +7180,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
   };
+  SearchResultCollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SearchResultCollaboraDocumentKeySpecifier
+      | (() => undefined | SearchResultCollaboraDocumentKeySpecifier);
+    fields?: SearchResultCollaboraDocumentFieldPolicy;
+  };
   SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
     fields?: SearchResultMemoFieldPolicy;
@@ -7449,6 +7498,13 @@ export type StrictTypedTypePolicies = {
       | UserSettingsNotificationPlatformAdminKeySpecifier
       | (() => undefined | UserSettingsNotificationPlatformAdminKeySpecifier);
     fields?: UserSettingsNotificationPlatformAdminFieldPolicy;
+  };
+  UserSettingsNotificationSound?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationSoundKeySpecifier
+      | (() => undefined | UserSettingsNotificationSoundKeySpecifier);
+    fields?: UserSettingsNotificationSoundFieldPolicy;
   };
   UserSettingsNotificationSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
