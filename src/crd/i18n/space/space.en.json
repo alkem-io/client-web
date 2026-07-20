@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
     "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
+    "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
     "subspaces": "Subspaces"
   },
@@ -570,7 +571,28 @@
     "removeOption": "Remove option",
     "allowComments": "Allow comments",
     "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing.",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Manual selection",
+      "contributors": {
+        "autoDescription": "Show this community’s contributors as a self-updating collection.",
+        "customDescription": "Shows only the contributors you select."
+      },
+      "spaces": {
+        "autoDescription": "Automatically shows all subspaces and updates as they are added or removed.",
+        "customDescription": "Shows only the subspaces you select below."
+      },
+      "noLongerAvailable": "No longer available",
+      "searchPlaceholder": "Search members…",
+      "searchAriaLabel": "Search members",
+      "searchSubspacePlaceholder": "Search subspaces…",
+      "searchSubspaceAriaLabel": "Search subspaces",
+      "noResults": "No matching results",
+      "loading": "Loading…",
+      "loadMore": "Loading more…",
+      "removeAriaLabel": "Remove {{name}}",
+      "clearSearch": "Clear search"
+    }
   },
   "contributionSettings": {
     "heading": "Responses",
@@ -967,7 +989,6 @@
     },
     "config": {
       "title": "Contributors",
-      "description": "Show this community’s contributors as a self-updating collection.",
       "typesLabel": "Contributor types",
       "typesHint": "Select at least one type to include.",
       "defaultTypeLabel": "Default type",

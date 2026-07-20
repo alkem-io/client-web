@@ -1064,6 +1064,10 @@ export const CalloutSettingsFullFragmentDoc = gql`
       defaultContributorType
       defaultView
     }
+    selection {
+      mode
+      selectedIds
+    }
   }
   visibility
 }
@@ -28326,6 +28330,9 @@ export const ContributorCollectionConfigDocument = gql`
             contributorTypes
             defaultContributorType
             defaultView
+          }
+          selection {
+            mode
           }
         }
       }
