@@ -930,8 +930,17 @@
     "settings.hideResultsUntilVoted": "Ergebnisse bis zur Abstimmung ausblenden",
     "settings.showVoterAvatars": "Avatare der Abstimmenden anzeigen",
     "settings.close": "Schließen",
-    "openPoll": "Umfrage ist offen",
-    "closePoll": "Umfrage ist geschlossen",
+    "closePoll": "Umfrage schließen",
+    "reopenPoll": "Umfrage wieder öffnen",
+    "closePollHint": {
+      "open": "Diese Umfrage ist für Stimmen geöffnet",
+      "closed": "Niemand kann mehr an dieser Umfrage teilnehmen"
+    },
+    "statusChange": {
+      "closeSuccess": "Die Umfrage ist jetzt geschlossen.",
+      "reopenSuccess": "Die Umfrage ist jetzt für Stimmen geöffnet.",
+      "failed": "Der Status der Umfrage konnte nicht geändert werden. Bitte versuche es erneut."
+    },
     "closePollConfirm": {
       "title": "Diese Umfrage schließen?",
       "description": "Das Schließen der Umfrage verhindert neue Stimmen und sperrt die Bearbeitung. Sie können sie später wieder öffnen.",

@@ -930,8 +930,17 @@
     "settings.hideResultsUntilVoted": "Hide results until user votes",
     "settings.showVoterAvatars": "Show voter avatars",
     "settings.close": "Close",
-    "openPoll": "Poll is open",
-    "closePoll": "Poll is closed",
+    "closePoll": "Close poll",
+    "reopenPoll": "Reopen poll",
+    "closePollHint": {
+      "open": "This poll is open for votes",
+      "closed": "No one will be able to vote on this poll anymore"
+    },
+    "statusChange": {
+      "closeSuccess": "The poll is now closed.",
+      "reopenSuccess": "The poll is now open for votes.",
+      "failed": "The poll status could not be changed. Please try again."
+    },
     "closePollConfirm": {
       "title": "Close this poll?",
       "description": "Closing the poll will prevent new votes and lock editing. You can reopen it later.",
