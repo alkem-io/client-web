@@ -1,5 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import { fromWholeDayWire, toWholeDayWire } from './wholeDayDate';
+import { fromWholeDayWire, toWholeDayWire, wholeDaySpanMinutes } from './wholeDayDate';
+
+describe('wholeDaySpanMinutes', () => {
+  it('is 0 for a single-day span', () => {
+    expect(wholeDaySpanMinutes(new Date(2026, 6, 20), new Date(2026, 6, 20))).toBe(0);
+  });
+
+  it('is (days × 1440) for a multi-day span', () => {
+    expect(wholeDaySpanMinutes(new Date(2026, 6, 20), new Date(2026, 6, 22))).toBe(2 * 24 * 60);
+  });
+
+  it('ignores time-of-day (calendar days only)', () => {
+    expect(wholeDaySpanMinutes(new Date(2026, 6, 20, 10), new Date(2026, 6, 20, 23))).toBe(0);
+  });
+
+  it('is 0 (never negative) when the end is before the start', () => {
+    expect(wholeDaySpanMinutes(new Date(2026, 6, 22), new Date(2026, 6, 20))).toBe(0);
+  });
+
+  it('is 0 when a date is missing', () => {
+    expect(wholeDaySpanMinutes(undefined, new Date(2026, 6, 20))).toBe(0);
+    expect(wholeDaySpanMinutes(new Date(2026, 6, 20), undefined)).toBe(0);
+  });
+});
 
 // A whole-day event is a bare calendar date. Its canonical wire/storage value is
 // UTC-midnight of that date, so it reads the same day for every timezone. These

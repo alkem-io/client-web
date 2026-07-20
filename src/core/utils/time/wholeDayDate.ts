@@ -1,7 +1,9 @@
+import { differenceInCalendarDays } from 'date-fns';
+
 /**
  * Whole-day calendar events are bare calendar dates, not instants. Their
  * canonical wire/storage value is UTC-midnight of the intended date, so a
- * whole-day event reads as the same calendar day for every timezone. These two
+ * whole-day event reads as the same calendar day for every timezone. These
  * helpers are the single place that encodes/decodes that convention — keep the
  * math here and out of call sites.
  */
@@ -23,3 +25,12 @@ export const fromWholeDayWire = (iso: string | Date): Date => {
   const utc = new Date(iso);
   return new Date(utc.getUTCFullYear(), utc.getUTCMonth(), utc.getUTCDate());
 };
+
+/**
+ * Whole-day span in minutes = (end day − start day) × 1440 — zero for a single day.
+ * A whole-day event has no time-of-day, so its length is a pure function of the date
+ * range. Uses a calendar-day diff so the result is exact (a clean multiple of 1440)
+ * and DST-safe; returns 0 when either date is missing.
+ */
+export const wholeDaySpanMinutes = (start: Date | undefined, end: Date | undefined): number =>
+  start && end ? Math.max(0, differenceInCalendarDays(end, start)) * 24 * 60 : 0;

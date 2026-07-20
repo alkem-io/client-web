@@ -13,7 +13,7 @@ import {
   type CalendarEventInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { isSameDay } from '@/core/utils/time/utils';
-import { toWholeDayWire } from '@/core/utils/time/wholeDayDate';
+import { toWholeDayWire, wholeDaySpanMinutes } from '@/core/utils/time/wholeDayDate';
 import type { LocationModel } from '@/domain/common/location/LocationModel';
 import {
   mapProfileModelToCreateProfileInput,
@@ -61,23 +61,20 @@ export function deriveEventWireFields(input: {
   const endDate = input.wholeDay ? toWholeDayWire(rawEnd) : rawEnd;
 
   let durationMinutes = input.durationMinutes ?? 0;
-  let durationDays = 0;
-  let multipleDays = false;
   if (input.wholeDay) {
-    // A whole-day event's span is its date range, so durationMinutes is the offset
-    // between the two date pickers (End date − Start date) — NOT the event's length.
-    // A single-day whole-day event (End date === Start date) is therefore 0, and
-    // that is a correct, genuine all-day day: the ICS/Google/Outlook export appends
-    // the RFC 5545 exclusive +1 day, so 0 covers exactly one day (1440 would cover
-    // two). Any carried-over sub-day duration is discarded.
-    durationMinutes = Math.max(0, Math.round((endDate.getTime() - startDate.getTime()) / 60000));
-    durationDays = Math.floor(durationMinutes / (24 * 60));
-    multipleDays = durationDays > 0;
+    // A whole-day event's span is its date range: durationMinutes is the offset
+    // between the pickers (End − Start), NOT the event's length. A single-day
+    // whole-day event is therefore 0 — a correct, genuine all-day day, because the
+    // export appends the RFC 5545 exclusive +1 day (0 covers one day; 1440 would
+    // cover two). Any carried-over sub-day duration is discarded.
+    durationMinutes = wholeDaySpanMinutes(startDate, endDate);
   } else if (!isSameDay(startDate, endDate)) {
+    // A multi-day timed event's span is the start→end difference. A same-day timed
+    // event keeps its provided sub-day duration.
     durationMinutes = Math.floor((endDate.getTime() - startDate.getTime()) / 60000);
-    durationDays = Math.floor(durationMinutes / (24 * 60));
-    multipleDays = durationDays > 0;
   }
+  const durationDays = Math.floor(durationMinutes / (24 * 60));
+  const multipleDays = durationDays > 0;
   return { startDate, durationMinutes, durationDays, multipleDays };
 }
 
