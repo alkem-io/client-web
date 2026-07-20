@@ -1064,6 +1064,10 @@ export const CalloutSettingsFullFragmentDoc = gql`
       defaultContributorType
       defaultView
     }
+    selection {
+      mode
+      selectedIds
+    }
   }
   visibility
 }

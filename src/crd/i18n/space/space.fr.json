@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
     "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
+    "updateFailed": "Les modifications du $t(common.callout) n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
     "subspaces": "Sous-espaces"
   },
@@ -570,7 +571,21 @@
     "removeOption": "Supprimer l'option",
     "allowComments": "Autoriser les commentaires",
     "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout).",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Sélection automatique",
+      "autoDescription": "La collection se met à jour automatiquement avec les membres et sous-espaces éligibles.",
+      "customDescription": "La collection affiche une liste fixe et sélectionnée manuellement.",
+      "noLongerAvailable": "Plus disponible",
+      "searchPlaceholder": "Rechercher des membres…",
+      "searchAriaLabel": "Rechercher des membres",
+      "searchSubspacePlaceholder": "Rechercher des sous-espaces…",
+      "searchSubspaceAriaLabel": "Rechercher des sous-espaces",
+      "noResults": "Aucun résultat correspondant",
+      "loading": "Chargement…",
+      "loadMore": "Chargement de plus…",
+      "removeAriaLabel": "Supprimer {{name}}"
+    }
   },
   "contributionSettings": {
     "heading": "Réponses",

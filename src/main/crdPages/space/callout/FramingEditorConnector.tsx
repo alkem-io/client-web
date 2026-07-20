@@ -7,6 +7,8 @@ import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/Collabo
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
+import { ContributorSelector } from '@/crd/forms/ContributorSelector';
+import { CalloutSelectionField } from '@/crd/forms/callout/CalloutSelectionField';
 import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
@@ -225,6 +227,28 @@ type FramingEditorConnectorProps = {
   contributorCollection?: ContributorCollectionConfigValue;
   onContributorCollectionChange?: (value: ContributorCollectionConfigValue) => void;
   contributorCollectionError?: string;
+  // Custom selection (feature 025) — present for 'contributors' and 'spaces' framing.
+  selectionMode?: 'auto' | 'custom';
+  onSelectionModeChange?: (next: 'auto' | 'custom') => void;
+  selectedIds?: string[];
+  onSelectedIdsChange?: (ids: string[]) => void;
+  /**
+   * Picker candidates + search for the contributors chip (feature 025, T005).
+   * Derived by `useSelectionCandidates` in `CalloutFormConnector` and passed in
+   * so `FramingEditorConnector` stays free of Apollo hooks (CRD connector rules).
+   */
+  contributorCandidates?: import('./useSelectionCandidates').SelectionCandidate[];
+  resolveContributorChips?: (
+    selectedIds: string[]
+  ) => import('@/crd/forms/ContributorSelector').ContributorSelectorInvitee[];
+  contributorCandidatesLoading?: boolean;
+  /**
+   * Subspace candidates for the spaces chip (feature 025, T006).
+   * Derived by `useCrdSpaceSubspaces` in `CalloutFormConnector` (the same data
+   * the collection renderer already has) — no new query.
+   */
+  subspaceCandidates?: { id: string; displayName: string; avatarUrl?: string }[];
+  subspaceCandidatesLoading?: boolean;
 };
 
 export function FramingEditorConnector({
@@ -275,6 +299,15 @@ export function FramingEditorConnector({
   contributorCollection,
   onContributorCollectionChange,
   contributorCollectionError,
+  selectionMode = 'auto',
+  onSelectionModeChange,
+  selectedIds = [],
+  onSelectedIdsChange,
+  contributorCandidates = [],
+  resolveContributorChips,
+  contributorCandidatesLoading = false,
+  subspaceCandidates = [],
+  subspaceCandidatesLoading = false,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -282,6 +315,10 @@ export function FramingEditorConnector({
   const [pendingStatus, setPendingStatus] = useState<'open' | 'closed' | null>(null);
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [memoDialogOpen, setMemoDialogOpen] = useState(false);
+  // Feature 025: search query state for the contributor and subspace pickers.
+  // Must live at function top-level (Rules of Hooks — no hooks inside switch cases).
+  const [contributorSearchQuery, setContributorSearchQuery] = useState('');
+  const [subspaceSearchQuery, setSubspaceSearchQuery] = useState('');
   const whiteboardPreviewUrl = useWhiteboardPreviewBlobUrl(whiteboardPreviewImages);
 
   switch (framingType) {
@@ -556,7 +593,7 @@ export function FramingEditorConnector({
         </>
       );
 
-    case 'contributors':
+    case 'contributors': {
       // Contributor-collection config (feature 008). Editable in both create and
       // edit (FR-004d). The callout renders no framing body — only its config.
       // Fail fast on an incomplete call site rather than silently rendering
@@ -566,13 +603,133 @@ export function FramingEditorConnector({
           "FramingEditorConnector: the 'contributors' framing requires `contributorCollection` and `onContributorCollectionChange` props."
         );
       }
+
+      // Feature 025: build the ContributorSelector chip list from selectedIds
+      // resolved against the candidate set (stale ids → eligible: false).
+      const contributorChips = resolveContributorChips ? resolveContributorChips(selectedIds) : [];
+      const selectedUserIds = new Set(
+        contributorChips.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
+      );
+      const contributorSearchResults = contributorCandidates
+        .filter(c => {
+          if (c.kind === 'user' && selectedUserIds.has(c.id)) return false;
+          if (!contributorSearchQuery.trim()) return true;
+          return c.displayName.toLowerCase().includes(contributorSearchQuery.toLowerCase());
+        })
+        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
+
+      const handleContributorSelect = (userId: string) => {
+        if (!selectedIds.includes(userId)) {
+          onSelectedIdsChange?.([...selectedIds, userId]);
+        }
+      };
+      const handleContributorRemove = (index: number) => {
+        const chip = contributorChips[index];
+        if (!chip) return;
+        const chipId = chip.kind === 'user' ? chip.userId : chip.kind !== 'email' ? chip.id : undefined;
+        if (!chipId) return;
+        onSelectedIdsChange?.(selectedIds.filter(id => id !== chipId));
+      };
+
       return (
-        <ContributorCollectionConfigField
-          value={contributorCollection}
-          onChange={onContributorCollectionChange}
-          error={contributorCollectionError}
+        <div className="space-y-4">
+          <ContributorCollectionConfigField
+            value={contributorCollection}
+            onChange={onContributorCollectionChange}
+            error={contributorCollectionError}
+          />
+          <CalloutSelectionField
+            mode={selectionMode}
+            onModeChange={next => onSelectionModeChange?.(next)}
+            pickerSlot={
+              <ContributorSelector
+                selectedContributors={contributorChips}
+                searchResults={contributorSearchResults}
+                searchQuery={contributorSearchQuery}
+                onSearchChange={setContributorSearchQuery}
+                onSelectUser={handleContributorSelect}
+                onRemoveContributor={handleContributorRemove}
+                loading={contributorCandidatesLoading}
+                allowEmailInvites={false}
+                ineligibleLabel={t('forms.selection.noLongerAvailable')}
+                placeholder={t('forms.selection.searchPlaceholder')}
+                searchAriaLabel={t('forms.selection.searchAriaLabel')}
+                noResultsLabel={t('forms.selection.noResults')}
+                loadingLabel={t('forms.selection.loading')}
+                loadMoreLabel={t('forms.selection.loadMore')}
+                removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
+                validationErrorLabel={() => ''}
+              />
+            }
+          />
+        </div>
+      );
+    }
+
+    case 'spaces': {
+      // Feature 025: custom subspace selection for a Spaces-collection callout.
+      // Candidates come from the existing `SubspacesInSpace` query data
+      // (already-shipped host-scoped query — R-6 compliant).
+      const subspaceChips = selectedIds.map(id => {
+        const found = subspaceCandidates.find(c => c.id === id);
+        if (found) {
+          return {
+            kind: 'subspace' as const,
+            id: found.id,
+            displayName: found.displayName,
+            avatarUrl: found.avatarUrl,
+            eligible: true,
+          };
+        }
+        return { kind: 'subspace' as const, id, displayName: id, eligible: false };
+      });
+
+      const subspaceSearchResults = subspaceCandidates
+        .filter(c => {
+          if (selectedIds.includes(c.id)) return false;
+          if (!subspaceSearchQuery.trim()) return true;
+          return c.displayName.toLowerCase().includes(subspaceSearchQuery.toLowerCase());
+        })
+        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
+
+      const handleSubspaceSelect = (id: string) => {
+        if (!selectedIds.includes(id)) {
+          onSelectedIdsChange?.([...selectedIds, id]);
+        }
+      };
+      const handleSubspaceRemove = (index: number) => {
+        const chip = subspaceChips[index];
+        if (!chip) return;
+        onSelectedIdsChange?.(selectedIds.filter(id => id !== chip.id));
+      };
+
+      return (
+        <CalloutSelectionField
+          mode={selectionMode}
+          onModeChange={next => onSelectionModeChange?.(next)}
+          pickerSlot={
+            <ContributorSelector
+              selectedContributors={subspaceChips}
+              searchResults={subspaceSearchResults}
+              searchQuery={subspaceSearchQuery}
+              onSearchChange={setSubspaceSearchQuery}
+              onSelectUser={handleSubspaceSelect}
+              onRemoveContributor={handleSubspaceRemove}
+              loading={subspaceCandidatesLoading}
+              allowEmailInvites={false}
+              ineligibleLabel={t('forms.selection.noLongerAvailable')}
+              placeholder={t('forms.selection.searchSubspacePlaceholder')}
+              searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
+              noResultsLabel={t('forms.selection.noResults')}
+              loadingLabel={t('forms.selection.loading')}
+              loadMoreLabel={t('forms.selection.loadMore')}
+              removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
+              validationErrorLabel={() => ''}
+            />
+          }
         />
       );
+    }
 
     default:
       return null;

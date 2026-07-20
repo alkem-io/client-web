@@ -12,6 +12,10 @@ fragment CalloutSettingsFull on CalloutSettings {
       defaultContributorType
       defaultView
     }
+    selection {
+      mode
+      selectedIds
+    }
   }
   visibility
 }

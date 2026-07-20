@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
     "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
+    "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
     "subspaces": "Subspaces"
   },
@@ -570,7 +571,21 @@
     "removeOption": "Remove option",
     "allowComments": "Allow comments",
     "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing.",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Automatic selection",
+      "autoDescription": "Collection updates automatically with eligible members and subspaces.",
+      "customDescription": "Collection shows a fixed, manually curated list.",
+      "noLongerAvailable": "No longer available",
+      "searchPlaceholder": "Search members…",
+      "searchAriaLabel": "Search members",
+      "searchSubspacePlaceholder": "Search subspaces…",
+      "searchSubspaceAriaLabel": "Search subspaces",
+      "noResults": "No matching results",
+      "loading": "Loading…",
+      "loadMore": "Loading more…",
+      "removeAriaLabel": "Remove {{name}}"
+    }
   },
   "contributionSettings": {
     "heading": "Responses",

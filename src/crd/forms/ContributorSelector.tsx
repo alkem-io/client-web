@@ -13,8 +13,18 @@ export type ContributorSelectorUserResult = {
   location?: string;
 };
 
+/**
+ * A selected entry in the picker — supports users (existing invite flow),
+ * organizations, virtual contributors, and subspaces (feature 025 collection
+ * selection picker). Entries that are no longer eligible (member left, subspace
+ * deleted) carry `eligible: false` so the consumer can display a "no longer
+ * available" chip state and omit them on save.
+ */
 export type ContributorSelectorInvitee =
-  | { kind: 'user'; userId: string; displayName: string; avatarUrl?: string; location?: string }
+  | { kind: 'user'; userId: string; displayName: string; avatarUrl?: string; location?: string; eligible?: boolean }
+  | { kind: 'organization'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
+  | { kind: 'virtualContributor'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
+  | { kind: 'subspace'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
   | { kind: 'email'; email: string; validationError?: 'invalid' | 'duplicate' };
 
 type ValidationErrorKind = 'invalid' | 'duplicate';
@@ -45,6 +55,12 @@ export type ContributorSelectorProps = {
   loadMoreLabel: string;
   removeAriaLabel: (label: string) => string;
   validationErrorLabel: (kind: ValidationErrorKind) => string;
+  /**
+   * Label shown in the tooltip on entries with `eligible: false`
+   * (feature 025 — member left, subspace deleted). Only required when the
+   * component is used as the collection selection picker (not invite flow).
+   */
+  ineligibleLabel?: string;
 
   className?: string;
 };
@@ -85,10 +101,13 @@ export function ContributorSelector({
   loadMoreLabel,
   removeAriaLabel,
   validationErrorLabel,
+  ineligibleLabel,
   className,
 }: ContributorSelectorProps) {
   const trimmedQuery = searchQuery.trim();
   const showResults = trimmedQuery.length > 0;
+  // Exclude users already selected — covers user/org/vc/subspace picks that
+  // overlap with the userId-keyed result set.
   const selectedUserIds = new Set(
     selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
   );
@@ -200,24 +219,55 @@ export function ContributorSelector({
       {selectedContributors.length > 0 && (
         <ul className="flex flex-wrap gap-2">
           {selectedContributors.map((contributor, index) => {
-            const labelText = contributor.kind === 'user' ? contributor.displayName : contributor.email;
-            const validationError = contributor.kind === 'email' ? contributor.validationError : undefined;
-            const chipKey =
-              contributor.kind === 'user'
-                ? `user-${contributor.userId}`
-                : `email-${contributor.email}-${validationError ?? 'ok'}-${index}`;
+            // Resolve display text and validation state per kind.
+            let labelText: string;
+            let validationError: 'invalid' | 'duplicate' | undefined;
+            let avatarUrl: string | undefined;
+            let chipKey: string;
+            let ineligible = false;
+
+            if (contributor.kind === 'user') {
+              labelText = contributor.displayName;
+              avatarUrl = contributor.avatarUrl;
+              chipKey = `user-${contributor.userId}`;
+              ineligible = contributor.eligible === false;
+            } else if (contributor.kind === 'organization') {
+              labelText = contributor.displayName;
+              avatarUrl = contributor.avatarUrl;
+              chipKey = `org-${contributor.id}`;
+              ineligible = contributor.eligible === false;
+            } else if (contributor.kind === 'virtualContributor') {
+              labelText = contributor.displayName;
+              avatarUrl = contributor.avatarUrl;
+              chipKey = `vc-${contributor.id}`;
+              ineligible = contributor.eligible === false;
+            } else if (contributor.kind === 'subspace') {
+              labelText = contributor.displayName;
+              avatarUrl = contributor.avatarUrl;
+              chipKey = `subspace-${contributor.id}`;
+              ineligible = contributor.eligible === false;
+            } else {
+              // email
+              labelText = contributor.email;
+              validationError = contributor.validationError;
+              chipKey = `email-${contributor.email}-${validationError ?? 'ok'}-${index}`;
+            }
+
+            const hasAvatarBased = contributor.kind !== 'email';
+            const isError = !!validationError || ineligible;
+
             return (
               <li key={chipKey}>
                 <span
                   className={cn(
                     'inline-flex items-center gap-2 pr-1 pl-1 py-1 rounded-full border bg-background',
-                    validationError ? 'border-destructive' : 'border-border'
+                    isError ? 'border-destructive' : 'border-border'
                   )}
                 >
-                  {contributor.kind === 'user' ? (
+                  {hasAvatarBased ? (
                     <Avatar className="size-6">
-                      {contributor.avatarUrl && <AvatarImage src={contributor.avatarUrl} alt="" />}
-                      <AvatarFallback className="text-badge">{getInitials(contributor.displayName)}</AvatarFallback>
+                      {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
+                      <AvatarFallback className="text-badge">{getInitials(labelText)}</AvatarFallback>
                     </Avatar>
                   ) : (
                     <span
@@ -230,21 +280,29 @@ export function ContributorSelector({
                       <Mail className="size-3.5" />
                     </span>
                   )}
-                  <span className="text-control max-w-[14rem] truncate" title={labelText}>
+                  <span
+                    className={cn(
+                      'text-control max-w-[14rem] truncate',
+                      ineligible && 'text-muted-foreground line-through'
+                    )}
+                    title={labelText}
+                  >
                     {labelText}
                   </span>
-                  {validationError && (
+                  {(validationError || ineligible) && (
                     <Tooltip>
                       <TooltipTrigger asChild={true}>
                         <span
                           role="img"
-                          aria-label={validationErrorLabel(validationError)}
+                          aria-label={validationError ? validationErrorLabel(validationError) : (ineligibleLabel ?? '')}
                           className="inline-flex size-5 items-center justify-center text-destructive"
                         >
                           <AlertCircle className="size-4" aria-hidden="true" />
                         </span>
                       </TooltipTrigger>
-                      <TooltipContent>{validationErrorLabel(validationError)}</TooltipContent>
+                      <TooltipContent>
+                        {validationError ? validationErrorLabel(validationError) : (ineligibleLabel ?? '')}
+                      </TooltipContent>
                     </Tooltip>
                   )}
                   <button

@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
     "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
+    "updateFailed": "Die Änderungen am $t(common.callout) konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
     "subspaces": "Unterbereiche"
   },
@@ -570,7 +571,21 @@
     "removeOption": "Option entfernen",
     "allowComments": "Kommentare zulassen",
     "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen.",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Automatische Auswahl",
+      "autoDescription": "Die Sammlung wird automatisch mit berechtigten Mitgliedern und Unterräumen aktualisiert.",
+      "customDescription": "Die Sammlung zeigt eine feste, manuell kuratierte Liste.",
+      "noLongerAvailable": "Nicht mehr verfügbar",
+      "searchPlaceholder": "Mitglieder suchen…",
+      "searchAriaLabel": "Mitglieder suchen",
+      "searchSubspacePlaceholder": "Unterräume suchen…",
+      "searchSubspaceAriaLabel": "Unterräume suchen",
+      "noResults": "Keine passenden Ergebnisse",
+      "loading": "Laden…",
+      "loadMore": "Mehr laden…",
+      "removeAriaLabel": "{{name}} entfernen"
+    }
   },
   "contributionSettings": {
     "heading": "Antworten",

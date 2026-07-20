@@ -159,4 +159,96 @@ describe('ContributorSelector', () => {
     await userEvent.click(screen.getByLabelText('Remove b@example.com'));
     expect(onRemoveContributor).toHaveBeenCalledWith(1);
   });
+
+  // --- feature 025: organization, virtualContributor, subspace chip kinds ---
+
+  test('organization chip renders displayName and remove button', () => {
+    const selected: ContributorSelectorInvitee[] = [{ kind: 'organization', id: 'org-1', displayName: 'Acme Corp' }];
+    render(
+      <ContributorSelector
+        selectedContributors={selected}
+        searchResults={[]}
+        searchQuery=""
+        onSearchChange={vi.fn()}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        {...baseLabels}
+      />
+    );
+    expect(screen.getByText('Acme Corp')).toBeInTheDocument();
+    expect(screen.getByLabelText('Remove Acme Corp')).toBeInTheDocument();
+  });
+
+  test('virtualContributor chip renders displayName', () => {
+    const selected: ContributorSelectorInvitee[] = [
+      { kind: 'virtualContributor', id: 'vc-1', displayName: 'Virtual Assistant' },
+    ];
+    render(
+      <ContributorSelector
+        selectedContributors={selected}
+        searchResults={[]}
+        searchQuery=""
+        onSearchChange={vi.fn()}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        {...baseLabels}
+      />
+    );
+    expect(screen.getByText('Virtual Assistant')).toBeInTheDocument();
+  });
+
+  test('subspace chip renders displayName', () => {
+    const selected: ContributorSelectorInvitee[] = [{ kind: 'subspace', id: 'space-1', displayName: 'Challenge A' }];
+    render(
+      <ContributorSelector
+        selectedContributors={selected}
+        searchResults={[]}
+        searchQuery=""
+        onSearchChange={vi.fn()}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        {...baseLabels}
+      />
+    );
+    expect(screen.getByText('Challenge A')).toBeInTheDocument();
+  });
+
+  test('ineligible entry renders with line-through style and shows ineligibleLabel tooltip', () => {
+    const selected: ContributorSelectorInvitee[] = [
+      { kind: 'user', userId: 'user-gone', displayName: 'Gone User', eligible: false },
+    ];
+    render(
+      <ContributorSelector
+        selectedContributors={selected}
+        searchResults={[]}
+        searchQuery=""
+        onSearchChange={vi.fn()}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        ineligibleLabel="No longer available"
+        {...baseLabels}
+      />
+    );
+    expect(screen.getByLabelText('No longer available')).toBeInTheDocument();
+  });
+
+  test('eligible entry (eligible=true) does NOT render ineligible indicator', () => {
+    const selected: ContributorSelectorInvitee[] = [
+      { kind: 'organization', id: 'org-1', displayName: 'Good Org', eligible: true },
+    ];
+    render(
+      <ContributorSelector
+        selectedContributors={selected}
+        searchResults={[]}
+        searchQuery=""
+        onSearchChange={vi.fn()}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        ineligibleLabel="No longer available"
+        {...baseLabels}
+      />
+    );
+    // Should NOT have the ineligible tooltip label
+    expect(screen.queryByLabelText('No longer available')).not.toBeInTheDocument();
+  });
 });
