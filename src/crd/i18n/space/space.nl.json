@@ -930,8 +930,17 @@
     "settings.hideResultsUntilVoted": "Resultaten verbergen tot gebruiker heeft gestemd",
     "settings.showVoterAvatars": "Avatars van stemmers tonen",
     "settings.close": "Sluiten",
-    "openPoll": "Peiling is open",
-    "closePoll": "Peiling is gesloten",
+    "closePoll": "Peiling sluiten",
+    "reopenPoll": "Peiling heropenen",
+    "closePollHint": {
+      "open": "Deze peiling staat open voor stemmen",
+      "closed": "Niemand kan nog op deze peiling stemmen"
+    },
+    "statusChange": {
+      "closeSuccess": "De peiling is nu gesloten.",
+      "reopenSuccess": "De peiling staat nu open voor stemmen.",
+      "failed": "De status van de peiling kon niet worden gewijzigd. Probeer het opnieuw."
+    },
     "closePollConfirm": {
       "title": "Deze peiling sluiten?",
       "description": "Het sluiten van de peiling voorkomt nieuwe stemmen en vergrendelt bewerking. Je kunt deze later heropenen.",
