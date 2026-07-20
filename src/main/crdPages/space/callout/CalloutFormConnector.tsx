@@ -482,14 +482,17 @@ function CalloutFormConnectorInner({
     // Same loading guard as in saveEdit: if candidates aren't loaded yet, skip
     // the strip and let the server be the authority (corr-client-3 / qual-client-1).
     const isCollectionChipForCreate = values.framingChip === 'contributors' || values.framingChip === 'spaces';
-    const candidatesStillLoadingForCreate =
+    // Unresolved = still loading OR skipped for a missing id (see saveEdit).
+    const candidatesUnresolvedForCreate =
       isCollectionChipForCreate &&
       values.selectionMode === 'custom' &&
-      (values.framingChip === 'contributors' ? contributorCandidatesLoading : subspaceCandidatesLoading);
+      (values.framingChip === 'contributors'
+        ? contributorCandidatesLoading || !roleSetId
+        : subspaceCandidatesLoading || !spaceId);
 
     const eligibleSelectedIdsForCreate = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
-      if (candidatesStillLoadingForCreate) return values.selectedIds;
+      if (candidatesUnresolvedForCreate) return values.selectedIds;
       if (values.framingChip === 'contributors') {
         const chips = resolveContributorChips(values.selectedIds);
         return omitIneligibleIds(values.selectedIds, chips);
@@ -683,15 +686,20 @@ function CalloutFormConnectorInner({
     // we skip the strip and let the server be the authority (server rejects
     // foreign / non-member ids on every write anyway — FR-006).
     const isCollectionChip = values.framingChip === 'contributors' || values.framingChip === 'spaces';
-    const candidatesStillLoading =
+    // The candidate set is "unresolved" while it is still loading OR while its query
+    // was skipped for a missing id (roleSetId / spaceId) — in that state the candidate
+    // list is empty, so stripping would wrongly erase the whole custom selection.
+    const candidatesUnresolved =
       isCollectionChip &&
       values.selectionMode === 'custom' &&
-      (values.framingChip === 'contributors' ? contributorCandidatesLoading : subspaceCandidatesLoading);
+      (values.framingChip === 'contributors'
+        ? contributorCandidatesLoading || !roleSetId
+        : subspaceCandidatesLoading || !spaceId);
 
     const eligibleSelectedIds = (() => {
       if (values.selectionMode !== 'custom') return values.selectedIds;
-      // Skip the strip while the candidate set is still resolving.
-      if (candidatesStillLoading) return values.selectedIds;
+      // Skip the strip while the candidate set is unresolved.
+      if (candidatesUnresolved) return values.selectedIds;
       if (values.framingChip === 'contributors') {
         const chips = resolveContributorChips(values.selectedIds);
         return omitIneligibleIds(values.selectedIds, chips);

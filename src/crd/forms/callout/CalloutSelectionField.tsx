@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useId } from 'react';
 import { cn } from '@/crd/lib/utils';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
@@ -56,6 +56,8 @@ export function CalloutSelectionField({
   className,
 }: CalloutSelectionFieldProps) {
   const isCustom = mode === 'custom';
+  // Per-instance id so multiple mounted fields keep distinct label/switch associations.
+  const switchId = useId();
 
   const handleToggle = (checked: boolean) => {
     onModeChange(checked ? 'custom' : 'auto');
@@ -68,13 +70,13 @@ export function CalloutSelectionField({
           reads clearly as a setting. */}
       <div className="flex items-center gap-2">
         <Switch
-          id="callout-selection-mode"
+          id={switchId}
           checked={isCustom}
           onCheckedChange={handleToggle}
           disabled={disabled}
           aria-label={label}
         />
-        <Label htmlFor="callout-selection-mode" className="text-body text-foreground">
+        <Label htmlFor={switchId} className="text-body text-foreground">
           {label}
         </Label>
       </div>

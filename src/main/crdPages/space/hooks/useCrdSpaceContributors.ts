@@ -94,11 +94,15 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
   // never re-fires on a refetch, which is why the view used to stay stale.
   const byTypeItems = byTypeData?.lookup.callout?.framing.contributors;
   const byTypeServerType = byTypeVars?.type;
+  const byTypeCalloutId = byTypeVars?.calloutId;
   useEffect(() => {
-    if (!byTypeItems || !byTypeServerType) return;
+    // Ignore a late response for a different callout: the lazy observer's variables
+    // must match this hook's calloutId before we write into its cache.
+    if (!byTypeServerType || byTypeCalloutId !== calloutId) return;
     const type = contributorTypeFromServer(byTypeServerType);
-    setCardsByType(prev => ({ ...prev, [type]: byTypeItems.map(mapContributorItemToCard) }));
-  }, [byTypeItems, byTypeServerType]);
+    // Normalize a missing collection to [] so stale cards are cleared, not left behind.
+    setCardsByType(prev => ({ ...prev, [type]: (byTypeItems ?? []).map(mapContributorItemToCard) }));
+  }, [byTypeItems, byTypeServerType, byTypeCalloutId, calloutId]);
 
   const ensureLoaded = (type: ContributorTypeId) => {
     if (!calloutId || requestedRef.current.has(type)) return;
