@@ -22,12 +22,12 @@ export default [
     rules: {
       'react-compiler/react-compiler': 'error',
       // Prevent reintroduction of manual memoization — the React Compiler handles it
-      // automatically (see CLAUDE.md → State & Hooks). Warn-level for now; a handful of
-      // documented exceptions (collaborative editor, MarkdownInput ecosystem) still exist,
-      // so this transitions to 'error' once those are migrated. Genuine exceptions must
-      // carry an eslint-disable-next-line comment with a reason.
+      // automatically (see CLAUDE.md → State & Hooks). Error-level: any new
+      // useMemo/useCallback/memo/React.memo fails lint (and the pre-commit hook, which runs
+      // `pnpm eslint .`). Each remaining genuine exception carries an
+      // `eslint-disable-next-line no-restricted-syntax -- <reason>` comment explaining why.
       'no-restricted-syntax': [
-        'warn',
+        'error',
         {
           selector: 'CallExpression[callee.name="useMemo"]',
           message:

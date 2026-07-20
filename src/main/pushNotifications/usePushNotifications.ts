@@ -76,6 +76,7 @@ export function usePushNotifications(): PushNotificationState {
       });
   }, [isSupported, isServerEnabled]);
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
   const subscribe = useCallback(async () => {
     if (!isSupported || !vapidPublicKey) return;
 
@@ -135,6 +136,7 @@ export function usePushNotifications(): PushNotificationState {
     }
   }, [isSupported, vapidPublicKey, subscribeMutation]);
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
   const unsubscribe = useCallback(async () => {
     setLoading(true);
     try {

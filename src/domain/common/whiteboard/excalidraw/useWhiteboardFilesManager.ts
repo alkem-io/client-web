@@ -387,6 +387,7 @@ const useWhiteboardFilesManager = ({
 
   // Keep useMemo: consumers use this return value in useEffect deps (e.g. ExcalidrawWrapper).
   // Note: uploadingFile is intentionally excluded — including it caused an infinite re-render loop.
+  // eslint-disable-next-line no-restricted-syntax -- see above: the returned object is a useEffect dependency in consumers; stable identity prevents effect churn / infinite loops.
   return useMemo<WhiteboardFilesManager>(
     () => ({
       addNewFile,

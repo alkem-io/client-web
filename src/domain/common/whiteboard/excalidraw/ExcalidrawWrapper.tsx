@@ -72,6 +72,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
 
   // Keep useMemo: data is in useEffect deps. Without stable reference,
   // JSON.parse creates a new object every render → effect fires every render → excess API calls.
+  // eslint-disable-next-line no-restricted-syntax -- see above: stable identity is required because `data` is a useEffect dependency.
   const data = useMemo(() => {
     const parsedData = whiteboard?.content ? JSON.parse(whiteboard?.content) : EmptyWhiteboard;
 
@@ -91,6 +92,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
 
   // Keep useMemo: wraps debounce(). Without stable reference, debounce is recreated every render,
   // cancelling the previous timer — effectively disabling the debounce.
+  // eslint-disable-next-line no-restricted-syntax -- see above: a stable debounced function is required or the timer resets every render.
   const refreshOnDataChange = useMemo(
     () =>
       debounce(async (state: RefreshWhiteboardStateParam) => {

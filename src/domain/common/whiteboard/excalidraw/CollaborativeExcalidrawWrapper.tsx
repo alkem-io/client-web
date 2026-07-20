@@ -153,6 +153,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   // Keep useMemo: wraps debounce(). Without stable reference, debounce is recreated every render,
   // resetting the timer and breaking the scroll-listener cleanup in useEffect.
+  // eslint-disable-next-line no-restricted-syntax -- see above: a stable debounced function is required for the scroll-listener effect cleanup.
   const debouncedRefresh = useMemo(
     () =>
       debounce(async () => {

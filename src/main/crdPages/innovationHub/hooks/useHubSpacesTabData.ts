@@ -39,6 +39,7 @@ export const useHubSpacesTabData = (
     unknown: t('settings.spaces.visibility.unknown'),
   };
 
+  // eslint-disable-next-line no-restricted-syntax -- derived table rows returned to the consumer; retained pending React Compiler migration verification (T006).
   const rows = useMemo(
     () =>
       (hub?.spaceListFilter ?? []).map(space => {
@@ -51,6 +52,7 @@ export const useHubSpacesTabData = (
     [hub?.spaceListFilter, t]
   );
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler referenced in add/remove/reorder dependency arrays and returned to the consumer; retained pending React Compiler migration verification (T006).
   const writeFilter = useCallback(
     async (nextIds: string[], successKey: 'added' | 'removed' | 'reordered') => {
       if (!hub) return;
@@ -97,6 +99,7 @@ export const useHubSpacesTabData = (
     [hub, updateInnovationHub, refetch, t]
   );
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
   const add = useCallback(
     async (spaceId: string) => {
       const currentIds = (hub?.spaceListFilter ?? []).map(s => s.id);
@@ -106,6 +109,7 @@ export const useHubSpacesTabData = (
     [hub?.spaceListFilter, writeFilter]
   );
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
   const remove = useCallback(
     async (spaceId: string) => {
       const currentIds = (hub?.spaceListFilter ?? []).map(s => s.id);
@@ -117,6 +121,7 @@ export const useHubSpacesTabData = (
     [hub?.spaceListFilter, writeFilter]
   );
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
   const reorder = useCallback(
     async (orderedIds: string[]) => {
       await writeFilter(orderedIds, 'reordered');

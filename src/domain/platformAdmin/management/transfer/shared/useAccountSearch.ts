@@ -29,6 +29,7 @@ const useAccountSearch = () => {
     searchOrgs({ variables: { first: 20, filter: { displayName: term } } });
   };
 
+  // eslint-disable-next-line no-restricted-syntax -- memoized derived result set returned to the consumer; retained pending React Compiler migration verification (T006).
   const results: AccountSearchResult[] = useMemo(() => {
     const userResults: AccountSearchResult[] =
       usersData?.platformAdmin?.users?.users

@@ -155,6 +155,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     };
   })();
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer as a form prop; retained pending React Compiler migration verification (T006).
   const onChange = useCallback((patch: Partial<HubAboutFormValues>) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
@@ -175,6 +176,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     });
   }, []);
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer as a form prop; retained pending React Compiler migration verification (T006).
   const onSaveSection = useCallback(
     (key: HubAboutSectionKey) => {
       const current = valuesRef.current;
@@ -222,6 +224,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
 
   // ────────────────── Banner crop + upload ──────────────────
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer as a form prop; retained pending React Compiler migration verification (T006).
   const onBannerFileSelected = useCallback(
     (file: File) => {
       const visual = hub?.profile.visual;
@@ -257,6 +260,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     [hub, t]
   );
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer as a form prop; retained pending React Compiler migration verification (T006).
   const onBannerCropComplete = useCallback(
     ({ file, altText }: { file: File; altText: string }) => {
       setPendingBannerCrop(null);
@@ -290,6 +294,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     [hub, uploadVisual, t]
   );
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer as a form prop; retained pending React Compiler migration verification (T006).
   const onBannerCropCancel = useCallback(() => setPendingBannerCrop(null), []);
 
   return {

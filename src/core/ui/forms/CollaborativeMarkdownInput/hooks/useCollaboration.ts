@@ -36,6 +36,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
   const [readOnlyState, setReadOnlyState] = useState<{ readOnly: boolean; readOnlyCode?: ReadOnlyCode }>();
 
+  // eslint-disable-next-line no-restricted-syntax -- Yjs Y.Doc must be instantiated exactly once; a new identity would reset the shared collaborative document.
   const ydoc = useMemo(() => new Y.Doc(), []);
 
   const getCollaborationServiceUrl = (): string | null => {
@@ -63,6 +64,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   notifyRef.current = notify;
 
   // Create provider without auto-connecting; connection is started in useEffect
+  // eslint-disable-next-line no-restricted-syntax -- provider identity keys the connect/destroy effect; a new instance each render would tear down and reconnect the websocket.
   const provider = useMemo(() => {
     const MEMO_SERVICE_URL = getCollaborationServiceUrl();
 
@@ -143,6 +145,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   }, [isOnline]);
 
   // Extensions depend on the memoized provider, not ref.current
+  // eslint-disable-next-line no-restricted-syntax -- TipTap extensions array is bound to the provider/ydoc instances and consumed by the editor; identity must track [provider, ydoc].
   const collaborationExtensions: Extensions = useMemo(() => {
     if (!provider) return [];
 

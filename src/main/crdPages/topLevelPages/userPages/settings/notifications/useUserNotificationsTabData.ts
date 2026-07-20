@@ -48,6 +48,7 @@ export const useUserNotificationsTabData = ({
   const [overrides, setOverrides] = useState<Map<string, boolean>>(() => new Map());
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
+  // eslint-disable-next-line no-restricted-syntax -- referenced in onToggle/onToggleSound dependency arrays; retained pending React Compiler migration verification (T006).
   const setOverride = useCallback((key: string, value: boolean) => {
     setOverrides(prev => {
       const next = new Map(prev);
@@ -56,6 +57,7 @@ export const useUserNotificationsTabData = ({
     });
   }, []);
 
+  // eslint-disable-next-line no-restricted-syntax -- referenced in onToggle/onToggleSound dependency arrays; retained pending React Compiler migration verification (T006).
   const clearOverride = useCallback((key: string) => {
     setOverrides(prev => {
       if (!prev.has(key)) return prev;
@@ -65,6 +67,7 @@ export const useUserNotificationsTabData = ({
     });
   }, []);
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
   const onToggle = useCallback(
     async (group: NotificationGroupId, property: string, type: ChannelType, next: boolean) => {
       if (!userId) return;
@@ -91,6 +94,7 @@ export const useUserNotificationsTabData = ({
     [userId, serverSettings, updateUserSettings, setOverride, clearOverride]
   );
 
+  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
   const onToggleSound = useCallback(
     async (key: SoundKey, next: boolean) => {
       if (!userId) return;
