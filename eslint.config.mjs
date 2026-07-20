@@ -21,6 +21,34 @@ export default [
     },
     rules: {
       'react-compiler/react-compiler': 'error',
+      // Prevent reintroduction of manual memoization — the React Compiler handles it
+      // automatically (see CLAUDE.md → State & Hooks). Warn-level for now; a handful of
+      // documented exceptions (collaborative editor, MarkdownInput ecosystem) still exist,
+      // so this transitions to 'error' once those are migrated. Genuine exceptions must
+      // carry an eslint-disable-next-line comment with a reason.
+      'no-restricted-syntax': [
+        'warn',
+        {
+          selector: 'CallExpression[callee.name="useMemo"]',
+          message:
+            'useMemo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+        {
+          selector: 'CallExpression[callee.name="useCallback"]',
+          message:
+            'useCallback is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+        {
+          selector: 'CallExpression[callee.name="memo"]',
+          message:
+            'React.memo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+        {
+          selector: 'CallExpression[callee.object.name="React"][callee.property.name="memo"]',
+          message:
+            'React.memo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+      ],
     },
   },
 ];

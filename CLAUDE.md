@@ -130,7 +130,8 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 ### State & Hooks
 
 - `useState` pairs: `const [value, setValue] = useState()`
-- **Do NOT use `useMemo`, `useCallback`, or `React.memo`** — React Compiler is enabled and handles memoization automatically. Manual memoization adds noise without benefit. Write plain expressions and let the compiler optimize.
+- **Do NOT use `useMemo`, `useCallback`, or `React.memo`** — React Compiler is enabled and handles memoization automatically. Manual memoization adds noise without benefit. Write plain expressions and let the compiler optimize. This is enforced by ESLint `no-restricted-syntax` rules (`eslint.config.mjs`), which flag any `useMemo`/`useCallback`/`memo`/`React.memo` call. If a genuine exception is unavoidable (e.g. a third-party library requiring reference stability, like the collaborative editor), add an `eslint-disable-next-line no-restricted-syntax` comment stating why the compiler is insufficient — reviewed in PR.
+- Biome's `useExhaustiveDependencies` is intentionally `off` (`biome.json`) — the React Compiler tracks dependencies, so manual dependency arrays are unnecessary.
 
 ### Component Organization
 
@@ -368,6 +369,7 @@ Every top-level route renders its `Crd*` page unconditionally — there is no to
 The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) routes were product-dropped during the removal; `InnovationPacks` (`/innovation-packs/*`) was kept on its CRD pages.
 
 ## Recent Changes
+- 041-react-compiler-lint-rules: Added ESLint `no-restricted-syntax` rules (warn) prohibiting `useMemo`/`useCallback`/`memo`/`React.memo`; documented the enforcement + exception policy and the intentional `useExhaustiveDependencies: off` in CLAUDE.md
 - 114-callout-delete-context: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `react-i18next`, `lucide-react`, Apollo Client (generated hooks only — unchanged), `date-fns` (only if a date is rendered)
 - 113-innovation-hub-ui: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `lucide-react`, `react-i18next`, Apollo Client (generated hooks only — already wired, unchanged this story)
 - 112-l0-additional-tabs: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only), shadcn/ui + Tailwind v4 + Radix UI (CRD layer `@/crd/*`), `react-i18next`, `lucide-react`. **No new runtime dependencies.**
