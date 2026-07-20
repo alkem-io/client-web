@@ -55,4 +55,35 @@ describe('deriveEventWireFields', () => {
     expect(wire.durationDays).toBe(0);
     expect(wire.multipleDays).toBe(false);
   });
+
+  it('ignores a stale sub-day duration for whole-day — the span is the date range', () => {
+    // Editing a 4-day event down to a single day: the end date is set back to the
+    // start, but the form still carries the old span (4320 min = 72h). For a
+    // whole-day event that stale value must NOT survive — the span is the date
+    // range, so a single-day whole-day event is zero-length. (Before the fix the
+    // same-day branch kept 4320 and the server re-expanded the event to 4 days.)
+    const wire = deriveEventWireFields({
+      startDate: new Date(2026, 6, 20),
+      endDate: new Date(2026, 6, 20),
+      wholeDay: true,
+      durationMinutes: 4320,
+    });
+
+    expect(wire.durationMinutes).toBe(0);
+    expect(wire.durationDays).toBe(0);
+    expect(wire.multipleDays).toBe(false);
+  });
+
+  it('derives whole-day duration from the date range even for a multi-day stale value', () => {
+    // Whole-day 20 → 22 July (2-day span) with a stale 72h value — the range wins.
+    const wire = deriveEventWireFields({
+      startDate: new Date(2026, 6, 20),
+      endDate: new Date(2026, 6, 22),
+      wholeDay: true,
+      durationMinutes: 4320,
+    });
+
+    expect(wire.durationMinutes).toBe(2 * 24 * 60);
+    expect(wire.durationDays).toBe(2);
+  });
 });

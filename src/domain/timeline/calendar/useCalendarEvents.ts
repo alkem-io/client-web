@@ -41,8 +41,13 @@ export interface CalendarEventFormData
  * was built:
  *   - whole-day start/end are anchored to UTC-midnight (bare, timezone-independent
  *     calendar dates); timed events keep their real instant;
- *   - `durationMinutes` is the full span, recomputed from the (anchored) start/end
- *     when they differ, and `durationDays`/`multipleDays` are derived from it.
+ *   - a **whole-day** event's span is defined purely by its date range, so
+ *     `durationMinutes` is ALWAYS derived from the (anchored) start/end — a stale
+ *     sub-day duration from before "whole day" was toggled never survives, and a
+ *     single-day whole-day event is zero-length;
+ *   - a **timed** event's `durationMinutes` is the full span, recomputed from
+ *     start/end when they differ and kept as the user's value when they are the
+ *     same day (that is its sub-day duration).
  */
 export function deriveEventWireFields(input: {
   startDate: Date | number | null | undefined;
@@ -58,7 +63,12 @@ export function deriveEventWireFields(input: {
   let durationMinutes = input.durationMinutes ?? 0;
   let durationDays = 0;
   let multipleDays = false;
-  if (!isSameDay(startDate, endDate)) {
+  if (input.wholeDay) {
+    // Span = the whole-day date range; ignore any carried-over sub-day duration.
+    durationMinutes = Math.max(0, Math.round((endDate.getTime() - startDate.getTime()) / 60000));
+    durationDays = Math.floor(durationMinutes / (24 * 60));
+    multipleDays = durationDays > 0;
+  } else if (!isSameDay(startDate, endDate)) {
     durationMinutes = Math.floor((endDate.getTime() - startDate.getTime()) / 60000);
     durationDays = Math.floor(durationMinutes / (24 * 60));
     multipleDays = durationDays > 0;
