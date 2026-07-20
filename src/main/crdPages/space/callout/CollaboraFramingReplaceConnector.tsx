@@ -197,8 +197,8 @@ export function CollaboraFramingReplaceConnector({
       await replaceCollaboraDocument({
         variables: {
           file,
-          // `displayName` is sent for forward-compatibility but NOT applied by the
-          // server in this feature (FR-009/FR-015); persisting a rename is `016`.
+          // The chosen title is persisted as the document's display name by the
+          // server; omit when the field is blank.
           replaceData: { ID: collaboraDocumentId, displayName: titleValue.trim() || undefined },
         },
       });

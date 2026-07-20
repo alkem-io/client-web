@@ -38,18 +38,7 @@
       "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
       "confirm": "Wijzigingen verwerpen"
     },
-    "postDescriptionDisplay": {
-      "title": "Weergave post-beschrijving",
-      "switchLabel": "Post-beschrijvingen standaard inklappen",
-      "description": "Klap post-beschrijvingen standaard in. Als dit aanstaat, tonen beschrijvingen een \"Lees meer\"-link in plaats van de volledige tekst."
-    },
     "column": {
-      "titleAriaLabel": "Kolomtitel",
-      "descriptionAriaLabel": "Kolombeschrijving",
-      "editTitle": "Kolomtitel bewerken",
-      "editDescription": "Kolombeschrijving bewerken",
-      "confirm": "Bevestigen",
-      "cancel": "Annuleren",
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
@@ -68,7 +57,8 @@
         "menuLabel": "Details bewerken",
         "dialogTitle": "Details bewerken: stroomfase",
         "titleLabel": "Titel",
-        "editTitle": "Titel bewerken",
+        "titleTooShort": "De titel moet minimaal 3 tekens lang zijn",
+        "titleDuplicate": "Er bestaat al een fase met deze naam.",
         "insertEmoji": "Emoji invoegen",
         "descriptionLabel": "Beschrijving",
         "descriptionPlaceholder": "Beschrijving",
@@ -102,6 +92,37 @@
           "title": "Deze fase verbergen?",
           "description": "Dit verbergt de fase alleen in het menu. Het ontneemt geen toegang tot de inhoud: iedereen met een link naar de fase, of naar een Post erin, kan deze nog steeds openen.",
           "confirm": "Verbergen",
+          "cancel": "Annuleren"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post-beschrijving",
+          "collapsedHint": "Posts beginnen ingeklapt — leden kunnen ze uitklappen om te lezen.",
+          "expandedHint": "Posts zijn standaard volledig uitgevouwen.",
+          "switchLabel": "Post-beschrijvingen inklappen"
+        },
+        "publishDetails": {
+          "label": "Publicatiegegevens",
+          "onHint": "Naam, avatar en datum van de auteur worden getoond bij elke Post.",
+          "offHint": "Naam, avatar en datum van de auteur zijn verborgen bij Posts in deze fase.",
+          "switchLabel": "Publicatiegegevens tonen"
+        },
+        "cancel": "Annuleren",
+        "saving": "Opslaan…",
+        "save": "Opslaan"
+      },
+      "postTemplate": {
+        "menuLabel": "Post-template",
+        "dialogTitle": "Post-template: {{phaseName}}",
+        "choose": "Kies template…",
+        "clear": "Template verwijderen",
+        "clearConfirm": {
+          "title": "Post-template verwijderen?",
+          "description": "De standaard Post-template voor deze fase wordt verwijderd. Nieuwe Posts in deze fase gebruiken geen standaard template. Bestaande Posts worden niet beïnvloed.",
+          "confirm": "Template verwijderen",
           "cancel": "Annuleren"
         }
       }

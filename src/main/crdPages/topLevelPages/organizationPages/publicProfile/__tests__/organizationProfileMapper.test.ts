@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import {
   type AccountResourcesShape,
   type AssociateInput,
@@ -60,6 +61,31 @@ describe('mapOrgHostedResources', () => {
     const result = mapOrgHostedResources(resources, vcType);
     expect(result.hostedSpaces).toHaveLength(1);
     expect(result.hostedSpaces[0].id).toBe('s-ok');
+  });
+
+  it('hides inactive and archived hosted spaces, keeps active and demo ones', () => {
+    const withVisibility = (id: string, visibility: SpaceVisibility) => ({
+      id,
+      visibility,
+      about: { profile: { displayName: id, url: `/s/${id}` }, isContentPublic: true },
+    });
+    const resources: AccountResourcesShape = {
+      spaces: [
+        withVisibility('active', SpaceVisibility.Active),
+        withVisibility('demo', SpaceVisibility.Demo),
+        withVisibility('inactive', SpaceVisibility.Inactive),
+        withVisibility('archived', SpaceVisibility.Archived),
+      ],
+    };
+    const result = mapOrgHostedResources(resources, vcType);
+    expect(result.hostedSpaces.map(s => s.id)).toEqual(['active', 'demo']);
+  });
+
+  it('keeps hosted spaces whose visibility is absent (defensive)', () => {
+    const resources: AccountResourcesShape = {
+      spaces: [{ id: 's-no-vis', about: { profile: { displayName: 'S', url: '/s' }, isContentPublic: true } }],
+    };
+    expect(mapOrgHostedResources(resources, vcType).hostedSpaces.map(s => s.id)).toEqual(['s-no-vis']);
   });
 
   it('maps a space with banner + tagline to SpaceGridCardData', () => {

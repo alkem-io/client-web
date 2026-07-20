@@ -24,12 +24,14 @@
       "subspacesOnly": "Solo subespacios",
       "whiteboards": "Pizarras",
       "memos": "Notas",
-      "posts": "Publicaciones"
+      "posts": "Publicaciones",
+      "documents": "Documentos"
     },
     "postTypes": {
       "post": "Publicación",
       "whiteboard": "Pizarra",
-      "memo": "Nota"
+      "memo": "Nota",
+      "collaboraDocument": "Documento"
     },
     "responseTo": "Respuesta a: {{title}}",
     "spaceContext": "en: {{spaceName}}",

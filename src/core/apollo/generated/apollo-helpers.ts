@@ -865,6 +865,11 @@ export type CalloutPostCreatedFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutSelectionSettingsKeySpecifier = ('mode' | 'selectedIds' | CalloutSelectionSettingsKeySpecifier)[];
+export type CalloutSelectionSettingsFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedIds?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutSettingsKeySpecifier = ('contribution' | 'framing' | 'visibility' | CalloutSettingsKeySpecifier)[];
 export type CalloutSettingsFieldPolicy = {
   contribution?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -887,11 +892,13 @@ export type CalloutSettingsContributionFieldPolicy = {
 export type CalloutSettingsFramingKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
+  | 'selection'
   | CalloutSettingsFramingKeySpecifier
 )[];
 export type CalloutSettingsFramingFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
+  selection?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutsSetKeySpecifier = (
   | 'authorization'
@@ -1426,6 +1433,15 @@ export type CreateCalloutFramingDataFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutSelectionSettingsDataKeySpecifier = (
+  | 'mode'
+  | 'selectedIds'
+  | CreateCalloutSelectionSettingsDataKeySpecifier
+)[];
+export type CreateCalloutSelectionSettingsDataFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedIds?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutSettingsContributionDataKeySpecifier = (
   | 'allowedTypes'
   | 'canAddContributions'
@@ -1453,11 +1469,13 @@ export type CreateCalloutSettingsDataFieldPolicy = {
 export type CreateCalloutSettingsFramingDataKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
+  | 'selection'
   | CreateCalloutSettingsFramingDataKeySpecifier
 )[];
 export type CreateCalloutSettingsFramingDataFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
+  selection?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutsSetDataKeySpecifier = ('calloutsData' | CreateCalloutsSetDataKeySpecifier)[];
 export type CreateCalloutsSetDataFieldPolicy = {
@@ -1509,11 +1527,15 @@ export type CreateInnovationFlowStateDataFieldPolicy = {
 };
 export type CreateInnovationFlowStateSettingsDataKeySpecifier = (
   | 'allowNewCallouts'
+  | 'descriptionDisplayMode'
+  | 'showPublishDetails'
   | 'visible'
   | CreateInnovationFlowStateSettingsDataKeySpecifier
 )[];
 export type CreateInnovationFlowStateSettingsDataFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  descriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  showPublishDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateLinkDataKeySpecifier = ('profile' | 'uri' | CreateLinkDataKeySpecifier)[];
@@ -2149,11 +2171,15 @@ export type InnovationFlowStateFieldPolicy = {
 };
 export type InnovationFlowStateSettingsKeySpecifier = (
   | 'allowNewCallouts'
+  | 'descriptionDisplayMode'
+  | 'showPublishDetails'
   | 'visible'
   | InnovationFlowStateSettingsKeySpecifier
 )[];
 export type InnovationFlowStateSettingsFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  descriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  showPublishDetails?: FieldPolicy<any> | FieldReadFunction<any>;
   visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationHubKeySpecifier = (
@@ -3999,6 +4025,7 @@ export type QueryKeySpecifier = (
   | 'adminIdentitiesUnverified'
   | 'aiServer'
   | 'collaboraEditorUrl'
+  | 'collaboraServiceAvailable'
   | 'exploreSpaces'
   | 'inputCreator'
   | 'lookup'
@@ -4040,6 +4067,7 @@ export type QueryFieldPolicy = {
   adminIdentitiesUnverified?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboraEditorUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraServiceAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4439,6 +4467,27 @@ export type SearchResultCalloutKeySpecifier = (
 export type SearchResultCalloutFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type SearchResultCollaboraDocumentKeySpecifier = (
+  | 'callout'
+  | 'collaboraDocument'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultCollaboraDocumentKeySpecifier
+)[];
+export type SearchResultCollaboraDocumentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   score?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5402,6 +5451,7 @@ export type UserSettingsHomeSpaceFieldPolicy = {
 export type UserSettingsNotificationKeySpecifier = (
   | 'organization'
   | 'platform'
+  | 'sound'
   | 'space'
   | 'user'
   | 'virtualContributor'
@@ -5410,6 +5460,7 @@ export type UserSettingsNotificationKeySpecifier = (
 export type UserSettingsNotificationFieldPolicy = {
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  sound?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5459,6 +5510,15 @@ export type UserSettingsNotificationPlatformAdminFieldPolicy = {
   userGlobalRoleChanged?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationSoundKeySpecifier = (
+  | 'chatMessage'
+  | 'inAppNotification'
+  | UserSettingsNotificationSoundKeySpecifier
+)[];
+export type UserSettingsNotificationSoundFieldPolicy = {
+  chatMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  inAppNotification?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'admin'
@@ -6024,6 +6084,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);
     fields?: CalloutPostCreatedFieldPolicy;
   };
+  CalloutSelectionSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutSelectionSettingsKeySpecifier | (() => undefined | CalloutSelectionSettingsKeySpecifier);
+    fields?: CalloutSelectionSettingsFieldPolicy;
+  };
   CalloutSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutSettingsKeySpecifier | (() => undefined | CalloutSettingsKeySpecifier);
     fields?: CalloutSettingsFieldPolicy;
@@ -6249,6 +6313,13 @@ export type StrictTypedTypePolicies = {
   CreateCalloutFramingData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutFramingDataKeySpecifier | (() => undefined | CreateCalloutFramingDataKeySpecifier);
     fields?: CreateCalloutFramingDataFieldPolicy;
+  };
+  CreateCalloutSelectionSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutSelectionSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutSelectionSettingsDataKeySpecifier);
+    fields?: CreateCalloutSelectionSettingsDataFieldPolicy;
   };
   CreateCalloutSettingsContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -7140,6 +7211,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
   };
+  SearchResultCollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SearchResultCollaboraDocumentKeySpecifier
+      | (() => undefined | SearchResultCollaboraDocumentKeySpecifier);
+    fields?: SearchResultCollaboraDocumentFieldPolicy;
+  };
   SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
     fields?: SearchResultMemoFieldPolicy;
@@ -7451,6 +7529,13 @@ export type StrictTypedTypePolicies = {
       | UserSettingsNotificationPlatformAdminKeySpecifier
       | (() => undefined | UserSettingsNotificationPlatformAdminKeySpecifier);
     fields?: UserSettingsNotificationPlatformAdminFieldPolicy;
+  };
+  UserSettingsNotificationSound?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationSoundKeySpecifier
+      | (() => undefined | UserSettingsNotificationSoundKeySpecifier);
+    fields?: UserSettingsNotificationSoundFieldPolicy;
   };
   UserSettingsNotificationSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

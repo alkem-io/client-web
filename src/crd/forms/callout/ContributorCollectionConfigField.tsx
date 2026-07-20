@@ -28,6 +28,12 @@ type ContributorCollectionConfigFieldProps = {
   /** Validation error (e.g. zero types selected). */
   error?: string;
   disabled?: boolean;
+  /**
+   * When true (custom / manual selection), the callout is users-only: hide the
+   * contributor-types multi-select and the default-type picker, keeping only the
+   * default-display (list/map) control, which stays editable.
+   */
+  restrictToUsers?: boolean;
 };
 
 const TYPE_ORDER: ContributorTypeOption[] = ['user', 'organization', 'virtualContributor'];
@@ -45,6 +51,7 @@ export function ContributorCollectionConfigField({
   onChange,
   error,
   disabled = false,
+  restrictToUsers = false,
 }: ContributorCollectionConfigFieldProps) {
   const { t } = useTranslation('crd-space');
 
@@ -71,42 +78,42 @@ export function ContributorCollectionConfigField({
 
   return (
     <div className="space-y-4">
-      <p className="text-body text-muted-foreground">{t('contributors.config.description')}</p>
+      {/* Contributor types (multi-select; >=1 required) — hidden when users-only (custom mode). */}
+      {!restrictToUsers && (
+        <fieldset className="space-y-2">
+          <legend className="text-label text-muted-foreground uppercase">{t('contributors.config.typesLabel')}</legend>
+          <div className="flex flex-wrap gap-2">
+            {TYPE_ORDER.map(type => {
+              const active = value.types.includes(type);
+              const Icon = TYPE_ICON[type];
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  aria-pressed={active}
+                  disabled={disabled}
+                  onClick={() => toggleType(type)}
+                  className={cn(
+                    'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                    active
+                      ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+                      : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
+                    disabled && 'opacity-50 cursor-not-allowed'
+                  )}
+                >
+                  <Icon className="w-4 h-4" aria-hidden="true" />
+                  <span>{t(`contributors.types.${type}` as 'contributors.types.user')}</span>
+                </button>
+              );
+            })}
+          </div>
+          <p className="text-caption text-muted-foreground">{t('contributors.config.typesHint')}</p>
+          {error && <p className="text-caption text-destructive">{error}</p>}
+        </fieldset>
+      )}
 
-      {/* Contributor types (multi-select; >=1 required) */}
-      <fieldset className="space-y-2">
-        <legend className="text-label text-muted-foreground uppercase">{t('contributors.config.typesLabel')}</legend>
-        <div className="flex flex-wrap gap-2">
-          {TYPE_ORDER.map(type => {
-            const active = value.types.includes(type);
-            const Icon = TYPE_ICON[type];
-            return (
-              <button
-                key={type}
-                type="button"
-                aria-pressed={active}
-                disabled={disabled}
-                onClick={() => toggleType(type)}
-                className={cn(
-                  'flex items-center gap-2 px-3 py-2 rounded-full border text-control font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  active
-                    ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
-                    : 'bg-background border-border text-muted-foreground hover:bg-muted hover:text-foreground',
-                  disabled && 'opacity-50 cursor-not-allowed'
-                )}
-              >
-                <Icon className="w-4 h-4" aria-hidden="true" />
-                <span>{t(`contributors.types.${type}` as 'contributors.types.user')}</span>
-              </button>
-            );
-          })}
-        </div>
-        <p className="text-caption text-muted-foreground">{t('contributors.config.typesHint')}</p>
-        {error && <p className="text-caption text-destructive">{error}</p>}
-      </fieldset>
-
-      {/* Default type (constrained to selected types) */}
-      {value.types.length > 1 && (
+      {/* Default type (constrained to selected types) — hidden when users-only. */}
+      {!restrictToUsers && value.types.length > 1 && (
         <div className="space-y-2">
           <Label className="text-label text-muted-foreground uppercase">
             {t('contributors.config.defaultTypeLabel')}

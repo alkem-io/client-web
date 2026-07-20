@@ -5,7 +5,8 @@
     "unreadLabel": "Vous avez des messages non lus"
   },
   "panel": {
-    "title": "Chat"
+    "title": "Chat",
+    "settings": "Paramètres de notification"
   },
   "actions": {
     "cancel": "Annuler"
