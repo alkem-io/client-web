@@ -60,6 +60,12 @@ type ContributorCollectionProps = {
   /** Whether the active type's set is currently loading. */
   loading: boolean;
   onContributorClick?: (href: string) => void;
+  /**
+   * When true (custom/manual selection), the secondary All | Lead | Member role
+   * filter is suppressed — the admin curated a specific list, so the lead/member
+   * split filter is not meaningful (feature 025).
+   */
+  isCustomSelection?: boolean;
   className?: string;
 };
 
@@ -72,6 +78,7 @@ export function ContributorCollection({
   cards,
   loading,
   onContributorClick,
+  isCustomSelection = false,
   className,
 }: ContributorCollectionProps) {
   const { t } = useTranslation('crd-space');
@@ -120,7 +127,9 @@ export function ContributorCollection({
   // but not on a members-only Virtual Contributors segment.
   const leadCount = allCards.filter(c => c.roleLabel === 'lead').length;
   const memberCount = allCards.filter(c => c.roleLabel === 'member').length;
-  const showRoleFilter = leadCount > 0 && memberCount > 0;
+  // Custom selection: the admin curated a fixed list, so the lead/member split
+  // filter is not offered (feature 025).
+  const showRoleFilter = leadCount > 0 && memberCount > 0 && !isCustomSelection;
   const roleScoped = roleFilter === 'all' ? allCards : allCards.filter(c => c.roleLabel === roleFilter);
 
   // Client-side name search (case-insensitive substring on display name),

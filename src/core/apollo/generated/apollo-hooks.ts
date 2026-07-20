@@ -28258,6 +28258,9 @@ export const ContributorCollectionConfigDocument = gql`
             defaultContributorType
             defaultView
           }
+          selection {
+            mode
+          }
         }
       }
     }

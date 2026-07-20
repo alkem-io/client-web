@@ -35707,6 +35707,7 @@ export type ContributorCollectionConfigQuery = {
                     defaultView: ContributorCollectionView;
                   }
                 | undefined;
+              selection?: { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode } | undefined;
             };
           };
         }

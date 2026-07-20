@@ -3,7 +3,7 @@ import {
   useContributorCollectionByTypeLazyQuery,
   useContributorCollectionConfigQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, CalloutSelectionMode } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import type { ContributorCollectionCounts } from '@/crd/components/callout/ContributorCollection/ContributorCollection';
 import type { ContributorTypeId, ContributorViewId } from '@/crd/forms/callout/types';
@@ -46,6 +46,8 @@ export type UseCrdSpaceContributorsResult = {
   isLoading: (type: ContributorTypeId) => boolean;
   /** Config query loading state. */
   loading: boolean;
+  /** True when the callout's selection mode is CUSTOM (admin curated a fixed list). */
+  isCustomSelection: boolean;
 };
 
 const EMPTY_COUNTS: ContributorCollectionCounts = { users: 0, organizations: 0, virtualContributors: 0 };
@@ -67,6 +69,9 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
         virtualContributors: framing.contributorCounts.virtualContributors,
       }
     : EMPTY_COUNTS;
+
+  const isCustomSelection =
+    configData?.lookup.callout?.settings.framing.selection?.mode === CalloutSelectionMode.Custom;
 
   // Per-type fetched card sets. `requestedRef` tracks which types have already
   // been fetched (a ref, not state, so `ensureLoaded` reads a fresh value without
@@ -131,6 +136,7 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
     ensureLoaded,
     isLoading: (type: ContributorTypeId) => loadingTypes.has(type),
     loading,
+    isCustomSelection,
   };
 }
 

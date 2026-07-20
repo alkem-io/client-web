@@ -633,11 +633,6 @@ export function FramingEditorConnector({
 
       return (
         <div className="space-y-4">
-          <ContributorCollectionConfigField
-            value={contributorCollection}
-            onChange={onContributorCollectionChange}
-            error={contributorCollectionError}
-          />
           <CalloutSelectionField
             mode={selectionMode}
             onModeChange={next => onSelectionModeChange?.(next)}
@@ -651,6 +646,7 @@ export function FramingEditorConnector({
                 onRemoveContributor={handleContributorRemove}
                 loading={contributorCandidatesLoading}
                 allowEmailInvites={false}
+                chipsPosition="above"
                 ineligibleLabel={t('forms.selection.noLongerAvailable')}
                 placeholder={t('forms.selection.searchPlaceholder')}
                 searchAriaLabel={t('forms.selection.searchAriaLabel')}
@@ -661,6 +657,14 @@ export function FramingEditorConnector({
                 validationErrorLabel={() => ''}
               />
             }
+          />
+          {/* Type config (auto mode). In custom mode the admin curates a specific
+              list, so which types to auto-include is irrelevant — disable it. */}
+          <ContributorCollectionConfigField
+            value={contributorCollection}
+            onChange={onContributorCollectionChange}
+            error={contributorCollectionError}
+            disabled={selectionMode === 'custom'}
           />
         </div>
       );
