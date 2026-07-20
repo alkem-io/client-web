@@ -72,7 +72,6 @@ export function EventForm({
   const visibleOnParentId = useId();
 
   const sameDay = values.startDate && values.endDate && isSameDay(values.startDate, values.endDate);
-  const timeFieldsDisabled = values.wholeDay || isSubmitting;
 
   return (
     <form
@@ -126,10 +125,13 @@ export function EventForm({
         </div>
       </div>
 
-      {/* Row 2: start date | start time | end date | end time-or-duration.
-          Symmetric 4-column grid on desktop so the matching pickers align
-          horizontally; stacks vertically on mobile. */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+      {/* Row 2: dates, plus time-of-day only for timed events. A whole-day event
+          has no time-of-day — its span is the Start date → End date range — so
+          only the two date pickers show. Timed events also show start/end times,
+          or a same-day duration. */}
+      <div
+        className={cn('grid grid-cols-1 gap-4 sm:grid-cols-2', values.wholeDay ? 'md:grid-cols-2' : 'md:grid-cols-4')}
+      >
         <DateField
           label={t('calendar.fields.startDate')}
           value={values.startDate}
@@ -137,12 +139,14 @@ export function EventForm({
           disabled={isSubmitting}
           locale={locale}
         />
-        <TimeField
-          label={t('calendar.fields.startTime')}
-          value={values.startDate}
-          onChange={next => onChange('startDate', next)}
-          disabled={timeFieldsDisabled}
-        />
+        {!values.wholeDay && (
+          <TimeField
+            label={t('calendar.fields.startTime')}
+            value={values.startDate}
+            onChange={next => onChange('startDate', next)}
+            disabled={isSubmitting}
+          />
+        )}
         <DateField
           label={t('calendar.fields.endDate')}
           value={values.endDate}
@@ -152,30 +156,31 @@ export function EventForm({
           error={errors.endDate}
           locale={locale}
         />
-        {sameDay ? (
-          <DurationField
-            label={t('calendar.fields.duration')}
-            startDate={values.startDate}
-            value={values.durationMinutes}
-            onChange={next => onChange('durationMinutes', next)}
-            disabled={timeFieldsDisabled}
-            error={errors.durationMinutes}
-            locale={locale}
-          />
-        ) : (
-          <TimeField
-            label={t('calendar.fields.endTime')}
-            value={values.endDate}
-            onChange={next => onChange('endDate', next)}
-            // Native <input type="time"> only enforces `min` against HH:mm —
-            // it has no calendar-day awareness. Applying minTime when the
-            // dates differ would (incorrectly) reject valid overnight ranges
-            // like 18:00 → 09:00 next-day. Only constrain the end time when
-            // both fields point at the same calendar day.
-            disabled={timeFieldsDisabled}
-            error={errors.endDate}
-          />
-        )}
+        {!values.wholeDay &&
+          (sameDay ? (
+            <DurationField
+              label={t('calendar.fields.duration')}
+              startDate={values.startDate}
+              value={values.durationMinutes}
+              onChange={next => onChange('durationMinutes', next)}
+              disabled={isSubmitting}
+              error={errors.durationMinutes}
+              locale={locale}
+            />
+          ) : (
+            <TimeField
+              label={t('calendar.fields.endTime')}
+              value={values.endDate}
+              onChange={next => onChange('endDate', next)}
+              // Native <input type="time"> only enforces `min` against HH:mm —
+              // it has no calendar-day awareness. Applying minTime when the
+              // dates differ would (incorrectly) reject valid overnight ranges
+              // like 18:00 → 09:00 next-day. Only constrain the end time when
+              // both fields point at the same calendar day.
+              disabled={isSubmitting}
+              error={errors.endDate}
+            />
+          ))}
       </div>
 
       {/* Row 2b: whole-day toggle on its own row, full width — keeps row 2's
