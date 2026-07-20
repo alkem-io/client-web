@@ -205,3 +205,59 @@ describe('useCrdEventForm — start/end date coupling', () => {
     });
   });
 });
+
+describe('useCrdEventForm — whole-day durationMinutes is derived from the date range', () => {
+  it('derives durationMinutes = 0 for a single-day whole-day event on toggle', () => {
+    const { result } = renderForm({
+      wholeDay: false,
+      startDate: new Date(2026, 6, 20, 10, 0),
+      endDate: new Date(2026, 6, 20, 12, 0),
+      durationMinutes: 120,
+    });
+
+    act(() => result.current.setField('wholeDay', true));
+
+    expect(result.current.values.durationMinutes).toBe(0);
+  });
+
+  it('derives durationMinutes = N whole days for a multi-day whole-day event on toggle', () => {
+    const { result } = renderForm({
+      wholeDay: false,
+      startDate: new Date(2026, 6, 20, 10, 0),
+      endDate: new Date(2026, 6, 22, 12, 0),
+      durationMinutes: 120,
+    });
+
+    act(() => result.current.setField('wholeDay', true));
+
+    expect(result.current.values.durationMinutes).toBe(2 * 24 * 60);
+  });
+
+  it('recomputes durationMinutes when the end date shrinks to the start while whole-day', () => {
+    const { result } = renderForm({
+      wholeDay: true,
+      startDate: new Date(2026, 6, 20, 0, 0),
+      endDate: new Date(2026, 6, 23, 0, 0),
+      durationMinutes: 4320, // stale 72h
+    });
+
+    act(() => result.current.setField('endDate', new Date(2026, 6, 20, 0, 0)));
+
+    expect(result.current.values.durationMinutes).toBe(0);
+  });
+
+  it('does not re-expose a stale whole-day span in the duration when toggling back to timed', () => {
+    // The reported bug: a whole-day event carrying a 72h span, toggled to timed,
+    // must not show "72 HOURS" in the duration picker.
+    const { result } = renderForm({
+      wholeDay: true,
+      startDate: new Date(2026, 6, 20, 0, 0),
+      endDate: new Date(2026, 6, 20, 0, 0),
+      durationMinutes: 4320,
+    });
+
+    act(() => result.current.setField('wholeDay', false));
+
+    expect(result.current.values.durationMinutes).not.toBe(4320);
+  });
+});
