@@ -635,7 +635,14 @@ export function FramingEditorConnector({
         <div className="space-y-4">
           <CalloutSelectionField
             mode={selectionMode}
-            onModeChange={next => onSelectionModeChange?.(next)}
+            onModeChange={next => {
+              onSelectionModeChange?.(next);
+              // Manual contributor selection is users-only: force the config to Users so
+              // the picker offers only people and the type controls collapse (feature 025).
+              if (next === 'custom') {
+                onContributorCollectionChange({ ...contributorCollection, types: ['user'], defaultType: 'user' });
+              }
+            }}
             label={t('forms.selection.label')}
             autoDescription={t('forms.selection.contributors.autoDescription')}
             customDescription={t('forms.selection.contributors.customDescription')}
@@ -662,13 +669,14 @@ export function FramingEditorConnector({
               />
             }
           />
-          {/* Type config (auto mode). In custom mode the admin curates a specific
-              list, so which types to auto-include is irrelevant — disable it. */}
+          {/* Type config. In custom mode the callout is users-only: the contributor-
+              types filter + default-type are hidden and only the default display
+              (list/map) remains, still editable. */}
           <ContributorCollectionConfigField
             value={contributorCollection}
             onChange={onContributorCollectionChange}
             error={contributorCollectionError}
-            disabled={selectionMode === 'custom'}
+            restrictToUsers={selectionMode === 'custom'}
           />
         </div>
       );
