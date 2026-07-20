@@ -32,9 +32,10 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', () => ({
       'GLOBAL_SPACES_READER',
       'GLOBAL_PLATFORM_MANAGER',
       'GLOBAL_SUPPORT_MANAGER',
+      'SERVICE_ADMIN',
       'PLATFORM_BETA_TESTER',
       'PLATFORM_VC_CAMPAIGN',
-      'SERVICE_ADMIN',
+      'PLATFORM_ASSISTANT_ACCESS',
     ],
   },
   default: () => ({
@@ -59,10 +60,10 @@ vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableUsers', () => 
 beforeEach(() => vi.clearAllMocks());
 
 describe('CrdAdminGlobalRolesPage', () => {
-  test('offers all ten global roles as selectable tabs', () => {
+  test('offers all eleven global roles as selectable tabs', () => {
     render(<CrdAdminGlobalRolesPage />);
     const nav = screen.getByRole('navigation');
-    expect(within(nav).getAllByRole('button')).toHaveLength(10);
+    expect(within(nav).getAllByRole('button')).toHaveLength(11);
   });
 
   test('lists the current members and available users for the selected role', () => {
