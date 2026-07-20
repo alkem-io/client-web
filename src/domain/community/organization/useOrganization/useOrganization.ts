@@ -1,4 +1,4 @@
-import type { ParseKeys } from 'i18next/typescript/t';
+import type { ParseKeys } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import {

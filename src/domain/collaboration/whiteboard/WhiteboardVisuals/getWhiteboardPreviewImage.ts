@@ -1,5 +1,5 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type { exportToCanvas as ExcalidrawExportToCanvas } from '@alkemio/excalidraw/dist/types/utils/src/export';
+import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
+import type { exportToCanvas as ExcalidrawExportToCanvas } from '@alkemio/excalidraw/utils/export';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
 import { padImage } from '@/core/utils/images/padImage';

@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
     "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
+    "updateFailed": "Die Änderungen am $t(common.callout) konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "contributors": "Mitwirkende",
     "subspaces": "Unterbereiche"
   },
@@ -551,6 +552,7 @@
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
+    "titleRequiredHint": "Fügen Sie Ihrem $t(common.callout) einen Titel hinzu, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",
@@ -568,7 +570,29 @@
     "addOption": "Option hinzufügen",
     "removeOption": "Option entfernen",
     "allowComments": "Kommentare zulassen",
-    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen."
+    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen.",
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Manuelle Auswahl",
+      "contributors": {
+        "autoDescription": "Zeigen Sie die Mitwirkenden dieser Community als selbst aktualisierende Sammlung an.",
+        "customDescription": "Zeigt nur die von Ihnen ausgewählten Mitwirkenden an."
+      },
+      "spaces": {
+        "autoDescription": "Zeigt automatisch alle Subspaces an und aktualisiert sich, wenn sie hinzugefügt oder entfernt werden.",
+        "customDescription": "Zeigt nur die unten ausgewählten Subspaces an."
+      },
+      "noLongerAvailable": "Nicht mehr verfügbar",
+      "searchPlaceholder": "Mitglieder suchen…",
+      "searchAriaLabel": "Mitglieder suchen",
+      "searchSubspacePlaceholder": "Unterräume suchen…",
+      "searchSubspaceAriaLabel": "Unterräume suchen",
+      "noResults": "Keine passenden Ergebnisse",
+      "loading": "Laden…",
+      "loadMore": "Mehr laden…",
+      "removeAriaLabel": "{{name}} entfernen",
+      "clearSearch": "Suche löschen"
+    }
   },
   "contributionSettings": {
     "heading": "Antworten",
@@ -682,6 +706,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Dokumentname",
+      "edit": "Umbenennen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "saving": "Wird gespeichert…",
+      "errors": {
+        "blank": "Bitte geben Sie einen Namen ein.",
+        "tooShort": "Der Name muss mindestens {{min}} Zeichen lang sein.",
+        "tooLong": "Der Name darf höchstens {{max}} Zeichen lang sein.",
+        "invalid": "Bitte geben Sie einen gültigen Namen ein.",
+        "saveFailed": "Das Dokument konnte nicht umbenannt werden. Bitte versuchen Sie es erneut."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-Fehler: {{message}}",
@@ -708,7 +746,38 @@
         "unauthenticated": "Melde dich an, um dieses Dokument zu bearbeiten.",
         "contentUpdatePolicy": "Du hast keine Berechtigung, dieses Dokument zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
         "noMembership": "Nur Mitglieder dieses Space können dieses Dokument bearbeiten. Tritt bei, um mitzuwirken."
+      },
+      "disconnect": {
+        "atRisk": "Getrennt — aktuelle Änderungen wurden möglicherweise nicht gespeichert",
+        "status": "Getrennt",
+        "cause": {
+          "network": "Du scheinst offline zu sein.",
+          "tokenExpiry": "Deine Bearbeitungssitzung ist abgelaufen.",
+          "service": "Ein Dienst ist vorübergehend nicht verfügbar.",
+          "unknown": "Verbindung verloren.",
+          "unloading": "Das Dokument wird noch aus einer vorherigen Sitzung geschlossen. Versuche es gleich noch einmal."
+        },
+        "reconnect": "Erneut verbinden",
+        "reload": "Neu laden",
+        "terminal": {
+          "notFound": "Dieses Dokument ist nicht mehr verfügbar.",
+          "forbidden": "Sie haben keinen Zugriff mehr auf dieses Dokument.",
+          "generic": "Dieses Dokument kann nicht erneut geöffnet werden."
+        },
+        "warning": {
+          "reconnectTitle": "Editor neu verbinden?",
+          "reconnectBody": "Dadurch wird die aktuelle Bearbeitungssitzung beendet und das Dokument an Ort und Stelle neu geöffnet – die Seite wird nicht neu geladen. Änderungen seit dem letzten Speichern können verloren gehen; kopiere zuerst, was du benötigst.",
+          "reconnectConfirm": "Neu verbinden",
+          "reloadTitle": "Seite neu laden?",
+          "reloadBody": "Dadurch wird die gesamte Seite neu geladen und das Dokument von Grund auf neu geöffnet. Änderungen seit dem letzten Speichern können verloren gehen; kopiere zuerst, was du benötigst.",
+          "reloadConfirm": "Seite neu laden",
+          "cancel": "Abbrechen"
+        },
+        "reconnecting": "Verbindung wird wiederhergestellt…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Ein Dienst ist nicht verfügbar. Bitte speichere ausstehende Arbeit, da nicht gespeicherte Daten verloren gehen können."
     }
   },
   "mediaGallery": {
@@ -920,7 +989,6 @@
     },
     "config": {
       "title": "Mitwirkende",
-      "description": "Zeigen Sie die Mitwirkenden dieser Community als selbst aktualisierende Sammlung an.",
       "typesLabel": "Mitwirkenden-Typen",
       "typesHint": "Wählen Sie mindestens einen Typ aus.",
       "defaultTypeLabel": "Standardtyp",

@@ -1,4 +1,4 @@
-import { isSameDay } from 'date-fns';
+import { isBefore, isSameDay, startOfDay } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -61,7 +61,38 @@ export function useCrdEventForm(initialValues?: Partial<EventFormValues>): UseCr
   const DURATION_FIELDS: ReadonlyArray<keyof EventFormValues> = ['wholeDay', 'startDate', 'endDate', 'durationMinutes'];
 
   const setField = <K extends keyof EventFormValues>(key: K, value: EventFormValues[K]) => {
-    setValues(prev => ({ ...prev, [key]: value }));
+    setValues(prev => {
+      const next = { ...prev, [key]: value };
+
+      // Keep the end date coupled to the start date when the two were already on
+      // the same calendar day: moving the start date carries the end date to the
+      // same new day (the end date's time-of-day is preserved). If they were on
+      // different days, the end date is left untouched.
+      if (key === 'startDate') {
+        const newStart = value as Date | undefined;
+        if (newStart && prev.startDate && prev.endDate && isSameDay(prev.startDate, prev.endDate)) {
+          const coupledEnd = new Date(prev.endDate);
+          coupledEnd.setFullYear(newStart.getFullYear(), newStart.getMonth(), newStart.getDate());
+          next.endDate = coupledEnd;
+        }
+      }
+
+      // Turning on "whole day" normalises the times to midnight (12:00 AM) —
+      // whole-day events carry a calendar date, not a time-of-day. The end date
+      // is the last day the event covers (inclusive); the exclusive +1 day that
+      // ICS/Google/Outlook need is added at export time, not stored here, so a
+      // single-day whole-day event keeps the same start and end date.
+      if (key === 'wholeDay' && value === true) {
+        if (prev.startDate) {
+          next.startDate = startOfDay(prev.startDate);
+        }
+        if (prev.endDate) {
+          next.endDate = startOfDay(prev.endDate);
+        }
+      }
+
+      return next;
+    });
     setErrors(prev => {
       const next = { ...prev };
       // Always clear the edited field's own error.
@@ -93,10 +124,20 @@ export function useCrdEventForm(initialValues?: Partial<EventFormValues>): UseCr
       nextErrors.description = t('calendar.validation.descriptionTooLong');
     }
 
-    // Duration/end validity — mirrors MUI validateDuration:
-    //   valid when wholeDay || (sameDay && durationMinutes > 0) || endDate > startDate
-    if (!values.wholeDay) {
-      const { startDate, endDate, durationMinutes } = values;
+    // Duration/end validity:
+    //   whole-day → end day must not fall before the start day
+    //   same-day (timed) → durationMinutes must be > 0
+    //   multi-day (timed) → endDate must be after startDate
+    // The end-before-start guard applies to whole-day events too: without it a
+    // whole-day event whose end date precedes its start date is persisted with
+    // a negative durationMinutes (see toDomainPayload's date-diff branch).
+    const { startDate, endDate, durationMinutes } = values;
+
+    if (values.wholeDay) {
+      if (startDate && endDate && isBefore(startOfDay(endDate), startOfDay(startDate))) {
+        nextErrors.endDate = t('calendar.validation.endBeforeStart');
+      }
+    } else {
       const sameDay = startDate && endDate && isSameDay(startDate, endDate);
 
       if (sameDay) {

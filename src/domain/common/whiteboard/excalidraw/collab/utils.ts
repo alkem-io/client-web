@@ -1,8 +1,4 @@
-import type {
-  ExcalidrawElement,
-  ExcalidrawImageElement,
-  FileId,
-} from '@alkemio/excalidraw/dist/types/element/src/types';
+import type { ExcalidrawElement, ExcalidrawImageElement, FileId } from '@alkemio/excalidraw/element/types';
 
 ///// This is copied from Excalidraw sources because VITE cannot import certain things from the package,
 ///// even though VSCode seems to have no problem to see them and shows no compilation error

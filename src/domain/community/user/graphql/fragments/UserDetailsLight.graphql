@@ -17,5 +17,11 @@ fragment UserDetailsLight on User {
       spaceID
       autoRedirect
     }
+    notification {
+      sound {
+        chatMessage
+        inAppNotification
+      }
+    }
   }
 }

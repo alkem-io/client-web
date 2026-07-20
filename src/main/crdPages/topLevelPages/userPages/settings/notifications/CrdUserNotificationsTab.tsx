@@ -2,7 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { useUserSettingsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { UserNotificationsTabView } from '@/crd/components/user/settings/UserNotificationsTabView';
+import {
+  type SoundSettingKey,
+  UserNotificationsTabView,
+} from '@/crd/components/user/settings/UserNotificationsTabView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { usePushNotificationContext } from '@/main/pushNotifications/PushNotificationProvider';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
@@ -64,9 +67,9 @@ const CrdUserNotificationsTab = () => {
       platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.ReceiveNotificationsSpaceLead) ?? false,
   };
 
-  const { overrides, onToggle } = useUserNotificationsTabData({ userId, serverSettings });
+  const { overrides, onToggle, onToggleSound } = useUserNotificationsTabData({ userId, serverSettings });
 
-  const { groups } = mapUserNotifications(serverSettings, overrides, privileges, t);
+  const { groups, soundGroup } = mapUserNotifications(serverSettings, overrides, privileges, t);
 
   const handleToggle = async (
     groupId: string,
@@ -78,6 +81,14 @@ const CrdUserNotificationsTab = () => {
       // The view passes the groupId as a plain string; cast to the union the
       // hook expects. The mapper produced these ids so they're guaranteed valid.
       await onToggle(groupId as Parameters<typeof onToggle>[0], property, channel, next);
+    } catch {
+      notify(t('user.notifications.toggleError'), 'error');
+    }
+  };
+
+  const handleToggleSound = async (property: SoundSettingKey, next: boolean) => {
+    try {
+      await onToggleSound(property, next);
     } catch {
       notify(t('user.notifications.toggleError'), 'error');
     }
@@ -105,7 +116,9 @@ const CrdUserNotificationsTab = () => {
       pushRequiresPwa={Boolean(requiresPWAMode)}
       onPushMasterToggle={handlePushMasterToggle}
       groups={groups}
+      soundGroup={soundGroup}
       onToggle={handleToggle}
+      onToggleSound={handleToggleSound}
     />
   );
 };

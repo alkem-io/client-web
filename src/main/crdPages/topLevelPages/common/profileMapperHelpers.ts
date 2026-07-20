@@ -1,3 +1,4 @@
+import type { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import type {
   ReferenceLink,
   SimpleResourceCardItem,
@@ -41,6 +42,7 @@ export type AccountResourcesShape =
   | {
       spaces?: Array<{
         id: string;
+        visibility?: SpaceVisibility;
         about?: { profile?: AccountResourceProfileLike; isContentPublic?: boolean };
       }>;
       virtualContributors?: Array<{ id: string; profile?: AccountResourceProfileLike }>;

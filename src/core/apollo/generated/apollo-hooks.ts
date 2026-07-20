@@ -344,6 +344,8 @@ export const InnovationFlowStatesFragmentDoc = gql`
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
     defaultCalloutTemplate {
       id
@@ -941,6 +943,21 @@ export const PollDetailsFragmentDoc = gql`
     ${PollSettingsFieldsFragmentDoc}
 ${PollOptionFieldsFragmentDoc}
 ${PollVoteFieldsFragmentDoc}`;
+export const CollaboraDocumentGateFragmentDoc = gql`
+    fragment CollaboraDocumentGate on CollaboraDocument {
+  id
+  documentType
+  authorization {
+    id
+    myPrivileges
+  }
+  profile {
+    id
+    displayName
+    url
+  }
+}
+    `;
 export const LinkDetailsWithAuthorizationFragmentDoc = gql`
     fragment LinkDetailsWithAuthorization on Link {
   id
@@ -1047,6 +1064,10 @@ export const CalloutSettingsFullFragmentDoc = gql`
       defaultContributorType
       defaultView
     }
+    selection {
+      mode
+      selectedIds
+    }
   }
   visibility
 }
@@ -1088,13 +1109,7 @@ export const CalloutDetailsFragmentDoc = gql`
       ...PollDetails
     }
     collaboraDocument {
-      id
-      documentType
-      profile {
-        id
-        displayName
-        url
-      }
+      ...CollaboraDocumentGate
     }
   }
   contributionDefaults {
@@ -1188,6 +1203,7 @@ ${MemoDetailsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CollaboraDocumentGateFragmentDoc}
 ${LinkDetailsWithAuthorizationFragmentDoc}
 ${CommentsWithMessagesFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
@@ -1590,6 +1606,12 @@ export const UserDetailsFragmentDoc = gql`
       spaceID
       autoRedirect
     }
+    notification {
+      sound {
+        chatMessage
+        inAppNotification
+      }
+    }
   }
 }
     ${VisualModelFullFragmentDoc}
@@ -1613,6 +1635,12 @@ export const UserDetailsLightFragmentDoc = gql`
     homeSpace {
       spaceID
       autoRedirect
+    }
+    notification {
+      sound {
+        chatMessage
+        inAppNotification
+      }
     }
   }
 }
@@ -1806,6 +1834,10 @@ export const UserSettingsFragmentFragmentDoc = gql`
         inApp
         push
       }
+    }
+    sound {
+      chatMessage
+      inAppNotification
     }
   }
 }
@@ -4124,6 +4156,60 @@ export const SearchResultWhiteboardFragmentDoc = gql`
     ${VisualModelFragmentDoc}
 ${TagsetDetailsFragmentDoc}
 ${WhiteboardParentFragmentDoc}`;
+export const CollaboraDocumentParentFragmentDoc = gql`
+    fragment CollaboraDocumentParent on SearchResultCollaboraDocument {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+    ${SpaceAboutLightFragmentDoc}`;
+export const SearchResultCollaboraDocumentFragmentDoc = gql`
+    fragment SearchResultCollaboraDocument on SearchResultCollaboraDocument {
+  isContribution
+  collaboraDocument {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+  }
+  ...CollaboraDocumentParent
+}
+    ${VisualModelFragmentDoc}
+${TagsetDetailsFragmentDoc}
+${CollaboraDocumentParentFragmentDoc}`;
 export const DashboardSpaceMembershipFragmentDoc = gql`
     fragment DashboardSpaceMembership on Space {
   id
@@ -7036,6 +7122,8 @@ export const CreateStateOnInnovationFlowDocument = gql`
     description
     settings {
       allowNewCallouts
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }
@@ -7140,6 +7228,8 @@ export const UpdateInnovationFlowStateDocument = gql`
     settings {
       allowNewCallouts
       visible
+      descriptionDisplayMode
+      showPublishDetails
     }
   }
 }
@@ -7187,6 +7277,66 @@ export type UpdateInnovationFlowStateMutationResult =
 export type UpdateInnovationFlowStateMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateInnovationFlowStateMutation,
   SchemaTypes.UpdateInnovationFlowStateMutationVariables
+>;
+export const UpdateInnovationFlowStateSettingsDocument = gql`
+    mutation UpdateInnovationFlowStateSettings($innovationFlowStateId: UUID!, $settings: UpdateInnovationFlowStateSettingsInput) {
+  updateInnovationFlowState(
+    stateData: {innovationFlowStateID: $innovationFlowStateId, settings: $settings}
+  ) {
+    id
+    displayName
+    settings {
+      allowNewCallouts
+      visible
+      descriptionDisplayMode
+      showPublishDetails
+    }
+  }
+}
+    `;
+export type UpdateInnovationFlowStateSettingsMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
+>;
+
+/**
+ * __useUpdateInnovationFlowStateSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateInnovationFlowStateSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateInnovationFlowStateSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateInnovationFlowStateSettingsMutation, { data, loading, error }] = useUpdateInnovationFlowStateSettingsMutation({
+ *   variables: {
+ *      innovationFlowStateId: // value for 'innovationFlowStateId'
+ *      settings: // value for 'settings'
+ *   },
+ * });
+ */
+export function useUpdateInnovationFlowStateSettingsMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+    SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
+  >(UpdateInnovationFlowStateSettingsDocument, options);
+}
+export type UpdateInnovationFlowStateSettingsMutationHookResult = ReturnType<
+  typeof useUpdateInnovationFlowStateSettingsMutation
+>;
+export type UpdateInnovationFlowStateSettingsMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateInnovationFlowStateSettingsMutation>;
+export type UpdateInnovationFlowStateSettingsMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutation,
+  SchemaTypes.UpdateInnovationFlowStateSettingsMutationVariables
 >;
 export const UpdateInnovationFlowStatesSortOrderDocument = gql`
     mutation UpdateInnovationFlowStatesSortOrder($innovationFlowID: UUID!, $stateIDs: [UUID!]!) {
@@ -7493,13 +7643,7 @@ export const CalloutContentDocument = gql`
           ...PollDetails
         }
         collaboraDocument {
-          id
-          documentType
-          profile {
-            id
-            displayName
-            url
-          }
+          ...CollaboraDocumentGate
         }
       }
       contributionDefaults {
@@ -7520,6 +7664,7 @@ ${WhiteboardPreviewSettingsFragmentDoc}
 ${LinkDetailsFragmentDoc}
 ${MediaGalleryVisualsFragmentDoc}
 ${PollDetailsFragmentDoc}
+${CollaboraDocumentGateFragmentDoc}
 ${CalloutSettingsFullFragmentDoc}`;
 
 /**
@@ -8121,6 +8266,79 @@ export type CollaboraEditorUrlQueryResult = Apollo.QueryResult<
 export function refetchCollaboraEditorUrlQuery(variables: SchemaTypes.CollaboraEditorUrlQueryVariables) {
   return { query: CollaboraEditorUrlDocument, variables: variables };
 }
+export const CollaboraServiceAvailableDocument = gql`
+    query CollaboraServiceAvailable($collaboraDocumentId: UUID!) {
+  collaboraServiceAvailable(collaboraDocumentID: $collaboraDocumentId)
+}
+    `;
+
+/**
+ * __useCollaboraServiceAvailableQuery__
+ *
+ * To run a query within a React component, call `useCollaboraServiceAvailableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaboraServiceAvailableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaboraServiceAvailableQuery({
+ *   variables: {
+ *      collaboraDocumentId: // value for 'collaboraDocumentId'
+ *   },
+ * });
+ */
+export function useCollaboraServiceAvailableQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  > &
+    ({ variables: SchemaTypes.CollaboraServiceAvailableQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >(CollaboraServiceAvailableDocument, options);
+}
+export function useCollaboraServiceAvailableLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >(CollaboraServiceAvailableDocument, options);
+}
+export function useCollaboraServiceAvailableSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CollaboraServiceAvailableQuery,
+        SchemaTypes.CollaboraServiceAvailableQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >(CollaboraServiceAvailableDocument, options);
+}
+export type CollaboraServiceAvailableQueryHookResult = ReturnType<typeof useCollaboraServiceAvailableQuery>;
+export type CollaboraServiceAvailableLazyQueryHookResult = ReturnType<typeof useCollaboraServiceAvailableLazyQuery>;
+export type CollaboraServiceAvailableSuspenseQueryHookResult = ReturnType<
+  typeof useCollaboraServiceAvailableSuspenseQuery
+>;
+export type CollaboraServiceAvailableQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaboraServiceAvailableQuery,
+  SchemaTypes.CollaboraServiceAvailableQueryVariables
+>;
+export function refetchCollaboraServiceAvailableQuery(variables: SchemaTypes.CollaboraServiceAvailableQueryVariables) {
+  return { query: CollaboraServiceAvailableDocument, variables: variables };
+}
 export const CreateCollaboraDocumentOnCalloutDocument = gql`
     mutation CreateCollaboraDocumentOnCallout($calloutId: UUID!, $collaboraDocument: CreateCollaboraDocumentInput!) {
   createContributionOnCallout(
@@ -8233,6 +8451,10 @@ export const ReplaceCollaboraDocumentDocument = gql`
     mutation ReplaceCollaboraDocument($file: Upload!, $replaceData: ReplaceCollaboraDocumentInput!) {
   replaceCollaboraDocument(file: $file, replaceData: $replaceData) {
     id
+    profile {
+      id
+      displayName
+    }
   }
 }
     `;
@@ -13478,7 +13700,7 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 export const RolesOrganizationDocument = gql`
     query rolesOrganization($organizationId: UUID!) {
   rolesOrganization(
-    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}}
+    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO]}}
   ) {
     id
     spaces {
@@ -23187,6 +23409,9 @@ export const SpaceTabDocument = gql`
             sortOrder
             settings {
               allowNewCallouts
+              visible
+              descriptionDisplayMode
+              showPublishDetails
             }
             defaultCalloutTemplate {
               id
@@ -23333,6 +23558,8 @@ export const SpaceTabsDocument = gql`
             settings {
               allowNewCallouts
               visible
+              descriptionDisplayMode
+              showPublishDetails
             }
           }
         }
@@ -28104,6 +28331,9 @@ export const ContributorCollectionConfigDocument = gql`
             defaultContributorType
             defaultView
           }
+          selection {
+            mode
+          }
         }
       }
     }
@@ -29873,6 +30103,7 @@ export const SearchDocument = gql`
         terms
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -29886,6 +30117,7 @@ export const SearchDocument = gql`
         ...SearchResultPost
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -29907,6 +30139,7 @@ export const SearchDocument = gql`
 ${SearchResultCalloutFragmentDoc}
 ${SearchResultMemoFragmentDoc}
 ${SearchResultWhiteboardFragmentDoc}
+${SearchResultCollaboraDocumentFragmentDoc}
 ${SearchResultPostFragmentDoc}
 ${SearchResultUserFragmentDoc}
 ${SearchResultOrganizationFragmentDoc}`;
