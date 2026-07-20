@@ -4,6 +4,13 @@
 **Branch**: `041-react-compiler-lint-rules` (rebased onto current `develop`)
 **Machine**: local (macOS, arm64), Node 24.14.0 (Volta), pnpm 10.17.1
 
+> **See also** [`optimization-baseline-2026-07.md`](./optimization-baseline-2026-07.md) — the
+> July-2026 production anchor in the platform's optimization timeline, which adds two new
+> metrics introduced with this work: **React Compiler coverage 1285/1285 (100%)**
+> (`pnpm compiler:healthcheck`) and **INP 40 ms** (worst interaction, well under the 200 ms
+> "good" threshold). Future performance comparisons should use that anchor, not the stale
+> March dev baseline.
+
 > **Read this first — what this PR actually changes.** This PR is **build-neutral**: it
 > adds ESLint `no-restricted-syntax` rules (`eslint.config.mjs`) and documentation
 > (`CLAUDE.md`) plus this spec folder. It touches **zero runtime code** (`git diff
