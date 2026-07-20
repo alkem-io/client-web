@@ -15715,6 +15715,12 @@ export type CollaboraEditorUrlQuery = {
   collaboraEditorUrl: { __typename?: 'CollaboraEditorUrlResult'; editorUrl: string; accessTokenTTL: number };
 };
 
+export type CollaboraServiceAvailableQueryVariables = Exact<{
+  collaboraDocumentId: Scalars['UUID']['input'];
+}>;
+
+export type CollaboraServiceAvailableQuery = { __typename?: 'Query'; collaboraServiceAvailable: boolean };
+
 export type CreateCollaboraDocumentOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   collaboraDocument: CreateCollaboraDocumentInput;

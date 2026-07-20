@@ -746,7 +746,38 @@
         "unauthenticated": "Connectez-vous pour modifier ce document.",
         "contentUpdatePolicy": "Vous n'avez pas l'autorisation de modifier ce document. Demandez au propriétaire de changer les paramètres de partage.",
         "noMembership": "Seuls les membres de cet espace peuvent modifier ce document. Rejoignez l'espace pour contribuer."
+      },
+      "disconnect": {
+        "atRisk": "Déconnecté — les modifications récentes n’ont peut-être pas été enregistrées",
+        "status": "Déconnecté",
+        "cause": {
+          "network": "Vous semblez être hors ligne.",
+          "tokenExpiry": "Votre session d’édition a expiré.",
+          "service": "Un service est temporairement indisponible.",
+          "unknown": "Connexion perdue.",
+          "unloading": "Le document est encore en cours de fermeture d’une session précédente. Réessayez dans un instant."
+        },
+        "reconnect": "Se reconnecter",
+        "reload": "Recharger",
+        "terminal": {
+          "notFound": "Ce document n’est plus disponible.",
+          "forbidden": "Vous n’avez plus accès à ce document.",
+          "generic": "Ce document ne peut pas être rouvert."
+        },
+        "warning": {
+          "reconnectTitle": "Reconnecter l’éditeur ?",
+          "reconnectBody": "Cela met fin à la session d’édition en cours et rouvre le document sur place — la page ne sera pas rechargée. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
+          "reconnectConfirm": "Reconnecter",
+          "reloadTitle": "Recharger la page ?",
+          "reloadBody": "Cela recharge toute la page et rouvre le document à zéro. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
+          "reloadConfirm": "Recharger la page",
+          "cancel": "Annuler"
+        },
+        "reconnecting": "Reconnexion…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Un service est indisponible. Veuillez enregistrer votre travail en cours, car les données non enregistrées pourraient être perdues."
     }
   },
   "mediaGallery": {
