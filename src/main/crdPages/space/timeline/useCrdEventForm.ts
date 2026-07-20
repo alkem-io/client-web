@@ -1,4 +1,4 @@
-import { isBefore, isSameDay, startOfDay } from 'date-fns';
+import { differenceInCalendarDays, isBefore, isSameDay, startOfDay } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
@@ -9,13 +9,14 @@ export type EventFormErrors = Partial<Record<keyof EventFormValues, string>>;
 const DEFAULT_DURATION_MINUTES = 30;
 
 /**
- * Whole-day span in minutes = (end day − start day). Zero for a single-day event.
- * A whole-day event has no time-of-day, so its duration is a pure function of the
- * date range — never an independent (stale) value.
+ * Whole-day span in minutes = (end day − start day) × 1440. Zero for a single-day
+ * event. A whole-day event has no time-of-day, so its duration is a pure function of
+ * the date range — never an independent (stale) value. Uses a calendar-day diff so
+ * the count is exact (a clean multiple of 1440) across DST transitions.
  */
 function wholeDaySpanMinutes(start: Date | undefined, end: Date | undefined): number {
   if (!start || !end) return 0;
-  return Math.max(0, Math.round((startOfDay(end).getTime() - startOfDay(start).getTime()) / 60_000));
+  return Math.max(0, differenceInCalendarDays(end, start)) * 24 * 60;
 }
 
 /**
