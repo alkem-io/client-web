@@ -746,7 +746,38 @@
         "unauthenticated": "Meld je aan om dit document te bewerken.",
         "contentUpdatePolicy": "Je hebt geen toestemming om dit document te bewerken. Vraag de eigenaar om de deelinstellingen te wijzigen.",
         "noMembership": "Alleen leden van deze space kunnen dit document bewerken. Word lid om bij te dragen."
+      },
+      "disconnect": {
+        "atRisk": "Verbinding verbroken — recente wijzigingen zijn mogelijk niet opgeslagen",
+        "status": "Verbinding verbroken",
+        "cause": {
+          "network": "Je lijkt offline te zijn.",
+          "tokenExpiry": "Je bewerkingssessie is verlopen.",
+          "service": "Een service is tijdelijk niet beschikbaar.",
+          "unknown": "Verbinding verloren.",
+          "unloading": "Het document wordt nog afgesloten van een vorige sessie. Probeer het zo meteen opnieuw."
+        },
+        "reconnect": "Opnieuw verbinden",
+        "reload": "Herladen",
+        "terminal": {
+          "notFound": "Dit document is niet meer beschikbaar.",
+          "forbidden": "Je hebt geen toegang meer tot dit document.",
+          "generic": "Dit document kan niet opnieuw worden geopend."
+        },
+        "warning": {
+          "reconnectTitle": "Editor opnieuw verbinden?",
+          "reconnectBody": "Hiermee wordt de huidige bewerkingssessie beëindigd en het document ter plekke opnieuw geopend — de pagina wordt niet opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reconnectConfirm": "Opnieuw verbinden",
+          "reloadTitle": "Pagina opnieuw laden?",
+          "reloadBody": "Hiermee wordt de hele pagina opnieuw geladen en het document helemaal opnieuw geopend. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reloadConfirm": "Pagina opnieuw laden",
+          "cancel": "Annuleren"
+        },
+        "reconnecting": "Opnieuw verbinden…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Een service is niet beschikbaar. Sla lopend werk op, want niet-opgeslagen gegevens kunnen verloren gaan."
     }
   },
   "mediaGallery": {

@@ -746,7 +746,38 @@
         "unauthenticated": "Inicia sesión para editar este documento.",
         "contentUpdatePolicy": "No tienes permiso para editar este documento. Pide al propietario que cambie los ajustes de uso compartido.",
         "noMembership": "Solo los miembros de este espacio pueden editar este documento. Únete al espacio para contribuir."
+      },
+      "disconnect": {
+        "atRisk": "Desconectado — es posible que los cambios recientes no se hayan guardado",
+        "status": "Desconectado",
+        "cause": {
+          "network": "Parece que no tienes conexión.",
+          "tokenExpiry": "Tu sesión de edición ha caducado.",
+          "service": "Un servicio no está disponible temporalmente.",
+          "unknown": "Se perdió la conexión.",
+          "unloading": "El documento aún se está cerrando de una sesión anterior. Inténtalo de nuevo en un momento."
+        },
+        "reconnect": "Reconectar",
+        "reload": "Recargar",
+        "terminal": {
+          "notFound": "Este documento ya no está disponible.",
+          "forbidden": "Ya no tienes acceso a este documento.",
+          "generic": "Este documento no se puede volver a abrir."
+        },
+        "warning": {
+          "reconnectTitle": "¿Volver a conectar el editor?",
+          "reconnectBody": "Esto cierra la sesión de edición actual y vuelve a abrir el documento en el sitio, sin recargar la página. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
+          "reconnectConfirm": "Volver a conectar",
+          "reloadTitle": "¿Recargar la página?",
+          "reloadBody": "Esto recarga toda la página y vuelve a abrir el documento desde cero. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
+          "reloadConfirm": "Recargar la página",
+          "cancel": "Cancelar"
+        },
+        "reconnecting": "Reconectando…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Un servicio no está disponible. Guarda cualquier trabajo pendiente, ya que los datos sin guardar podrían perderse."
     }
   },
   "mediaGallery": {
