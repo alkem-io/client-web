@@ -62,6 +62,59 @@ describe('ContributorSelector', () => {
     expect(onSelectUser).toHaveBeenCalledWith('user-alice');
   });
 
+  test('selecting a result also clears the search query', async () => {
+    const onSearchChange = vi.fn();
+    render(
+      <ContributorSelector
+        selectedContributors={[]}
+        searchResults={[aliceRow]}
+        searchQuery="al"
+        onSearchChange={onSearchChange}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        {...baseLabels}
+      />
+    );
+    await userEvent.click(screen.getByText('Alice Adams'));
+    expect(onSearchChange).toHaveBeenCalledWith('');
+  });
+
+  test('collection picker shows a clear button that resets the query', async () => {
+    const onSearchChange = vi.fn();
+    render(
+      <ContributorSelector
+        selectedContributors={[]}
+        searchResults={[]}
+        searchQuery="al"
+        onSearchChange={onSearchChange}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        allowEmailInvites={false}
+        clearSearchAriaLabel="Clear search"
+        {...baseLabels}
+      />
+    );
+    await userEvent.click(screen.getByLabelText('Clear search'));
+    expect(onSearchChange).toHaveBeenCalledWith('');
+  });
+
+  test('no clear button in the invite flow (allowEmailInvites on)', () => {
+    render(
+      <ContributorSelector
+        selectedContributors={[]}
+        searchResults={[]}
+        searchQuery="al"
+        onSearchChange={vi.fn()}
+        onSelectUser={vi.fn()}
+        onRemoveContributor={vi.fn()}
+        allowEmailInvites={true}
+        clearSearchAriaLabel="Clear search"
+        {...baseLabels}
+      />
+    );
+    expect(screen.queryByLabelText('Clear search')).not.toBeInTheDocument();
+  });
+
   test('already-selected users are filtered out of the autocomplete dropdown', () => {
     const selected: ContributorSelectorInvitee[] = [{ kind: 'user', userId: 'user-alice', displayName: 'Alice Adams' }];
     render(

@@ -590,7 +590,8 @@
       "noResults": "Няма съвпадащи резултати",
       "loading": "Зареждане…",
       "loadMore": "Зареждане на още…",
-      "removeAriaLabel": "Премахване на {{name}}"
+      "removeAriaLabel": "Премахване на {{name}}",
+      "clearSearch": "Изчистване на търсенето"
     }
   },
   "contributionSettings": {

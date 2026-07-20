@@ -590,7 +590,8 @@
       "noResults": "Aucun résultat correspondant",
       "loading": "Chargement…",
       "loadMore": "Chargement de plus…",
-      "removeAriaLabel": "Supprimer {{name}}"
+      "removeAriaLabel": "Supprimer {{name}}",
+      "clearSearch": "Effacer la recherche"
     }
   },
   "contributionSettings": {

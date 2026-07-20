@@ -590,7 +590,8 @@
       "noResults": "No matching results",
       "loading": "Loading…",
       "loadMore": "Loading more…",
-      "removeAriaLabel": "Remove {{name}}"
+      "removeAriaLabel": "Remove {{name}}",
+      "clearSearch": "Clear search"
     }
   },
   "contributionSettings": {

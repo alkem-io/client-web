@@ -590,7 +590,8 @@
       "noResults": "Geen overeenkomende resultaten",
       "loading": "Laden…",
       "loadMore": "Meer laden…",
-      "removeAriaLabel": "{{name}} verwijderen"
+      "removeAriaLabel": "{{name}} verwijderen",
+      "clearSearch": "Zoekopdracht wissen"
     }
   },
   "contributionSettings": {

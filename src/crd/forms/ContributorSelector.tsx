@@ -63,6 +63,13 @@ export type ContributorSelectorProps = {
   ineligibleLabel?: string;
 
   /**
+   * Aria-label for the clear-search "✕" button. The button is shown (for the
+   * collection selection picker — `allowEmailInvites=false`) whenever there is a
+   * query; provide this label to enable it.
+   */
+  clearSearchAriaLabel?: string;
+
+  /**
    * Where the selected-entry chips render relative to the search input.
    * `'below'` (default) keeps the invite-flow layout; `'above'` places the chips
    * on top so the search-results dropdown (which drops below the input) never
@@ -110,11 +117,15 @@ export function ContributorSelector({
   removeAriaLabel,
   validationErrorLabel,
   ineligibleLabel,
+  clearSearchAriaLabel,
   chipsPosition = 'below',
   className,
 }: ContributorSelectorProps) {
   const trimmedQuery = searchQuery.trim();
   const showResults = trimmedQuery.length > 0;
+  // A clear "✕" button for the collection picker (the invite flow keeps its "Add"
+  // button in that corner instead). Enabled once a clear-label is supplied.
+  const showClear = !allowEmailInvites && trimmedQuery.length > 0 && Boolean(clearSearchAriaLabel);
   // Exclude users already selected — covers user/org/vc/subspace picks that
   // overlap with the userId-keyed result set.
   const selectedUserIds = new Set(
@@ -151,6 +162,15 @@ export function ContributorSelector({
     if (!allowEmailInvites || !onAddEmails) return;
     if (trimmedQuery.length === 0) return;
     onAddEmails(searchQuery);
+  };
+
+  const handleClear = () => onSearchChange('');
+
+  // Selecting a result clears the query so the next search starts fresh and a
+  // fully-picked set doesn't leave a stale "no matching results" dropdown open.
+  const handleResultSelect = (userId: string) => {
+    onSelectUser(userId);
+    onSearchChange('');
   };
 
   const chipsBlock =
@@ -273,7 +293,7 @@ export function ContributorSelector({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           aria-label={searchAriaLabel}
-          className={cn('pl-9', allowEmailInvites && trimmedQuery.length > 0 && 'pr-20')}
+          className={cn('pl-9', allowEmailInvites && trimmedQuery.length > 0 && 'pr-20', showClear && 'pr-9')}
           autoComplete="off"
         />
 
@@ -290,6 +310,17 @@ export function ContributorSelector({
           </Button>
         )}
 
+        {showClear && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex size-6 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:outline-none"
+            aria-label={clearSearchAriaLabel}
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+        )}
+
         {showResults && (
           <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-md border border-border bg-popover shadow-md max-h-60 overflow-y-auto">
             {loading && visibleResults.length === 0 ? (
@@ -304,7 +335,7 @@ export function ContributorSelector({
                   <li key={user.userId}>
                     <button
                       type="button"
-                      onClick={() => onSelectUser(user.userId)}
+                      onClick={() => handleResultSelect(user.userId)}
                       className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
                     >
                       <Avatar className="size-8">

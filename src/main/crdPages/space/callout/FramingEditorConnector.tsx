@@ -650,6 +650,7 @@ export function FramingEditorConnector({
                 loading={contributorCandidatesLoading}
                 allowEmailInvites={false}
                 chipsPosition="above"
+                clearSearchAriaLabel={t('forms.selection.clearSearch')}
                 ineligibleLabel={t('forms.selection.noLongerAvailable')}
                 placeholder={t('forms.selection.searchPlaceholder')}
                 searchAriaLabel={t('forms.selection.searchAriaLabel')}
@@ -728,6 +729,7 @@ export function FramingEditorConnector({
               loading={subspaceCandidatesLoading}
               allowEmailInvites={false}
               chipsPosition="above"
+              clearSearchAriaLabel={t('forms.selection.clearSearch')}
               ineligibleLabel={t('forms.selection.noLongerAvailable')}
               placeholder={t('forms.selection.searchSubspacePlaceholder')}
               searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
