@@ -18,7 +18,7 @@ type ContributorCollectionConnectorProps = {
 
 export function ContributorCollectionConnector({ calloutId, className }: ContributorCollectionConnectorProps) {
   const navigate = useNavigate();
-  const { types, defaultType, defaultView, counts, getCards, ensureLoaded, isLoading, loading } =
+  const { types, defaultType, defaultView, counts, getCards, ensureLoaded, isLoading, loading, isCustomSelection } =
     useCrdSpaceContributors(calloutId);
 
   const [activeType, setActiveType] = useState<ContributorTypeId | null>(null);
@@ -47,6 +47,7 @@ export function ContributorCollectionConnector({ calloutId, className }: Contrib
       counts={counts}
       cards={getCards(resolvedType)}
       loading={loading || isLoading(resolvedType)}
+      isCustomSelection={isCustomSelection}
       onContributorClick={href => navigate(href)}
     />
   );

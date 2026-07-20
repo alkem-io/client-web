@@ -865,6 +865,11 @@ export type CalloutPostCreatedFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutSelectionSettingsKeySpecifier = ('mode' | 'selectedIds' | CalloutSelectionSettingsKeySpecifier)[];
+export type CalloutSelectionSettingsFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedIds?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutSettingsKeySpecifier = ('contribution' | 'framing' | 'visibility' | CalloutSettingsKeySpecifier)[];
 export type CalloutSettingsFieldPolicy = {
   contribution?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -887,11 +892,13 @@ export type CalloutSettingsContributionFieldPolicy = {
 export type CalloutSettingsFramingKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
+  | 'selection'
   | CalloutSettingsFramingKeySpecifier
 )[];
 export type CalloutSettingsFramingFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
+  selection?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutsSetKeySpecifier = (
   | 'authorization'
@@ -1426,6 +1433,15 @@ export type CreateCalloutFramingDataFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutSelectionSettingsDataKeySpecifier = (
+  | 'mode'
+  | 'selectedIds'
+  | CreateCalloutSelectionSettingsDataKeySpecifier
+)[];
+export type CreateCalloutSelectionSettingsDataFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedIds?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutSettingsContributionDataKeySpecifier = (
   | 'allowedTypes'
   | 'canAddContributions'
@@ -1453,11 +1469,13 @@ export type CreateCalloutSettingsDataFieldPolicy = {
 export type CreateCalloutSettingsFramingDataKeySpecifier = (
   | 'commentsEnabled'
   | 'contributors'
+  | 'selection'
   | CreateCalloutSettingsFramingDataKeySpecifier
 )[];
 export type CreateCalloutSettingsFramingDataFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
+  selection?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutsSetDataKeySpecifier = ('calloutsData' | CreateCalloutsSetDataKeySpecifier)[];
 export type CreateCalloutsSetDataFieldPolicy = {
@@ -6066,6 +6084,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);
     fields?: CalloutPostCreatedFieldPolicy;
   };
+  CalloutSelectionSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutSelectionSettingsKeySpecifier | (() => undefined | CalloutSelectionSettingsKeySpecifier);
+    fields?: CalloutSelectionSettingsFieldPolicy;
+  };
   CalloutSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutSettingsKeySpecifier | (() => undefined | CalloutSettingsKeySpecifier);
     fields?: CalloutSettingsFieldPolicy;
@@ -6291,6 +6313,13 @@ export type StrictTypedTypePolicies = {
   CreateCalloutFramingData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutFramingDataKeySpecifier | (() => undefined | CreateCalloutFramingDataKeySpecifier);
     fields?: CreateCalloutFramingDataFieldPolicy;
+  };
+  CreateCalloutSelectionSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutSelectionSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutSelectionSettingsDataKeySpecifier);
+    fields?: CreateCalloutSelectionSettingsDataFieldPolicy;
   };
   CreateCalloutSettingsContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

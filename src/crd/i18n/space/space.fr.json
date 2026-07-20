@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "Le $t(common.callout) a été créé mais le téléchargement de l'aperçu a échoué. Vous pouvez réessayer depuis la boîte de dialogue d'édition du $t(common.callout).",
     "pollOptionsSaveFailed": "Certaines modifications des options du sondage n'ont pas pu être enregistrées. Vous pouvez réessayer depuis cette boîte de dialogue.",
     "referencesSaveFailed": "Une ou plusieurs nouvelles références n'ont pas pu être enregistrées. Les autres modifications n'ont pas été appliquées. Veuillez réessayer.",
+    "updateFailed": "Les modifications du $t(common.callout) n'ont pas pu être enregistrées. Veuillez réessayer.",
     "contributors": "Contributeurs",
     "subspaces": "Sous-espaces"
   },
@@ -570,7 +571,28 @@
     "removeOption": "Supprimer l'option",
     "allowComments": "Autoriser les commentaires",
     "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout).",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Sélection manuelle",
+      "contributors": {
+        "autoDescription": "Affichez les contributeurs de cette communauté comme une collection qui se met à jour automatiquement.",
+        "customDescription": "Affiche uniquement les contributeurs que vous sélectionnez."
+      },
+      "spaces": {
+        "autoDescription": "Affiche automatiquement tous les sous-espaces et se met à jour lorsqu’ils sont ajoutés ou supprimés.",
+        "customDescription": "Affiche uniquement les sous-espaces que vous sélectionnez ci-dessous."
+      },
+      "noLongerAvailable": "Plus disponible",
+      "searchPlaceholder": "Rechercher des membres…",
+      "searchAriaLabel": "Rechercher des membres",
+      "searchSubspacePlaceholder": "Rechercher des sous-espaces…",
+      "searchSubspaceAriaLabel": "Rechercher des sous-espaces",
+      "noResults": "Aucun résultat correspondant",
+      "loading": "Chargement…",
+      "loadMore": "Chargement de plus…",
+      "removeAriaLabel": "Supprimer {{name}}",
+      "clearSearch": "Effacer la recherche"
+    }
   },
   "contributionSettings": {
     "heading": "Réponses",
@@ -724,7 +746,38 @@
         "unauthenticated": "Connectez-vous pour modifier ce document.",
         "contentUpdatePolicy": "Vous n'avez pas l'autorisation de modifier ce document. Demandez au propriétaire de changer les paramètres de partage.",
         "noMembership": "Seuls les membres de cet espace peuvent modifier ce document. Rejoignez l'espace pour contribuer."
+      },
+      "disconnect": {
+        "atRisk": "Déconnecté — les modifications récentes n’ont peut-être pas été enregistrées",
+        "status": "Déconnecté",
+        "cause": {
+          "network": "Vous semblez être hors ligne.",
+          "tokenExpiry": "Votre session d’édition a expiré.",
+          "service": "Un service est temporairement indisponible.",
+          "unknown": "Connexion perdue.",
+          "unloading": "Le document est encore en cours de fermeture d’une session précédente. Réessayez dans un instant."
+        },
+        "reconnect": "Se reconnecter",
+        "reload": "Recharger",
+        "terminal": {
+          "notFound": "Ce document n’est plus disponible.",
+          "forbidden": "Vous n’avez plus accès à ce document.",
+          "generic": "Ce document ne peut pas être rouvert."
+        },
+        "warning": {
+          "reconnectTitle": "Reconnecter l’éditeur ?",
+          "reconnectBody": "Cela met fin à la session d’édition en cours et rouvre le document sur place — la page ne sera pas rechargée. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
+          "reconnectConfirm": "Reconnecter",
+          "reloadTitle": "Recharger la page ?",
+          "reloadBody": "Cela recharge toute la page et rouvre le document à zéro. Les modifications effectuées depuis le dernier enregistrement pourraient être perdues ; copiez ce dont vous avez besoin d’abord.",
+          "reloadConfirm": "Recharger la page",
+          "cancel": "Annuler"
+        },
+        "reconnecting": "Reconnexion…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Un service est indisponible. Veuillez enregistrer votre travail en cours, car les données non enregistrées pourraient être perdues."
     }
   },
   "mediaGallery": {
@@ -945,7 +998,6 @@
     },
     "config": {
       "title": "Contributeurs",
-      "description": "Affichez les contributeurs de cette communauté comme une collection qui se met à jour automatiquement.",
       "typesLabel": "Types de contributeur",
       "typesHint": "Sélectionnez au moins un type à inclure.",
       "defaultTypeLabel": "Type par défaut",
