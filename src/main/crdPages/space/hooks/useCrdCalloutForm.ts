@@ -56,6 +56,20 @@ export type CalloutFormValues = {
    * `settings.framing.contributors` on create/update; prefilled on edit.
    */
   contributorCollection: ContributorCollectionConfig;
+  /**
+   * Selection mode for collection callouts (feature 025). Only meaningful when
+   * `framingChip === 'contributors'` or `framingChip === 'spaces'`.
+   * - `'auto'`: self-updating collection (default).
+   * - `'custom'`: curated subset (selectedIds).
+   */
+  selectionMode: 'auto' | 'custom';
+  /**
+   * Selected ids for custom selection mode (feature 025). Kept in form state
+   * even when mode is 'auto' so toggling back restores the list (non-destructive
+   * toggle, FR-019). Submitted to the server on save; ignored server-side in AUTO
+   * mode but preserved for re-enabling custom later.
+   */
+  selectedIds: string[];
   memoMarkdown: string;
   linkUrl: string;
   linkDisplayName: string;
@@ -151,6 +165,9 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
     defaultType: 'user',
     defaultView: 'list',
   },
+  // Selection defaults: AUTO mode, no ids (feature 025 FR-002 default).
+  selectionMode: 'auto',
+  selectedIds: [],
   memoMarkdown: '',
   linkUrl: '',
   linkDisplayName: '',

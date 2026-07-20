@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
     "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
     "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
+    "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
     "contributors": "Contributors",
     "subspaces": "Subspaces"
   },
@@ -570,7 +571,28 @@
     "removeOption": "Optie verwijderen",
     "allowComments": "Reacties toestaan",
     "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing.",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Handmatige selectie",
+      "contributors": {
+        "autoDescription": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
+        "customDescription": "Toont alleen de contributors die je selecteert."
+      },
+      "spaces": {
+        "autoDescription": "Toont automatisch alle subspaces en wordt bijgewerkt wanneer ze worden toegevoegd of verwijderd.",
+        "customDescription": "Toont alleen de subspaces die je hieronder selecteert."
+      },
+      "noLongerAvailable": "Niet meer beschikbaar",
+      "searchPlaceholder": "Leden zoeken…",
+      "searchAriaLabel": "Leden zoeken",
+      "searchSubspacePlaceholder": "Subspaces zoeken…",
+      "searchSubspaceAriaLabel": "Subspaces zoeken",
+      "noResults": "Geen overeenkomende resultaten",
+      "loading": "Laden…",
+      "loadMore": "Meer laden…",
+      "removeAriaLabel": "{{name}} verwijderen",
+      "clearSearch": "Zoekopdracht wissen"
+    }
   },
   "contributionSettings": {
     "heading": "Reacties",
@@ -936,7 +958,6 @@
     },
     "config": {
       "title": "Contributors",
-      "description": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
       "typesLabel": "Typen contributor",
       "typesHint": "Selecteer ten minste één type.",
       "defaultTypeLabel": "Standaardtype",

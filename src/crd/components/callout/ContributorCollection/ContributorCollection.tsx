@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, List, Loader2, Map as MapIcon, Maximize2, Search, Users } from 'lucide-react';
-import { type ComponentType, lazy, Suspense, useState } from 'react';
+import { type ComponentType, lazy, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { cn } from '@/crd/lib/utils';
@@ -60,6 +60,12 @@ type ContributorCollectionProps = {
   /** Whether the active type's set is currently loading. */
   loading: boolean;
   onContributorClick?: (href: string) => void;
+  /**
+   * When true (custom/manual selection), the secondary All | Lead | Member role
+   * filter is suppressed — the admin curated a specific list, so the lead/member
+   * split filter is not meaningful (feature 025).
+   */
+  isCustomSelection?: boolean;
   className?: string;
 };
 
@@ -72,6 +78,7 @@ export function ContributorCollection({
   cards,
   loading,
   onContributorClick,
+  isCustomSelection = false,
   className,
 }: ContributorCollectionProps) {
   const { t } = useTranslation('crd-space');
@@ -88,7 +95,29 @@ export function ContributorCollection({
   // Expanded (near-full-window) map dialog.
   const [mapExpanded, setMapExpanded] = useState(false);
 
-  const showMapControl = isLocatable(activeType);
+  const countFor = (type: ContributorTypeId): number => counts[COUNT_BY_TYPE[type]];
+
+  // Resolved types: only the configured types that have a non-zero count.
+  // Used to drive the type switch (AC4/FR-012): segments render only for non-zero types;
+  // the switch is hidden when fewer than 2 types have resolved data (US4-AS1/AS2).
+  const resolvedTypes = types.filter(type => countFor(type) > 0);
+
+  // T009 (US4-AS4): when the caller-supplied activeType resolves to zero, fall back to
+  // the first resolved non-empty type — read-time only, nothing persisted.
+  // Canonical order is the same as the configured `types` array (consumer controls order).
+  const effectiveActiveType: ContributorTypeId =
+    countFor(activeType) > 0 ? activeType : (resolvedTypes[0] ?? activeType);
+
+  // Notify the consumer when the T009 fallback fires so it loads the fallback
+  // type's cards — without this, `cards` stays bound to the drained `activeType`
+  // while only the tab highlight moves (qual-client-2 / US4-AS4).
+  useEffect(() => {
+    if (effectiveActiveType !== activeType) {
+      onActiveTypeChange(effectiveActiveType);
+    }
+  }, [effectiveActiveType, activeType, onActiveTypeChange]);
+
+  const showMapControl = isLocatable(effectiveActiveType);
   // Auto-heal to list on the VC segment (the map control is hidden there — FR-010).
   const effectiveView: ContributorViewId = showMapControl ? view : 'list';
 
@@ -98,7 +127,9 @@ export function ContributorCollection({
   // but not on a members-only Virtual Contributors segment.
   const leadCount = allCards.filter(c => c.roleLabel === 'lead').length;
   const memberCount = allCards.filter(c => c.roleLabel === 'member').length;
-  const showRoleFilter = leadCount > 0 && memberCount > 0;
+  // Custom selection: the admin curated a fixed list, so the lead/member split
+  // filter is not offered (feature 025).
+  const showRoleFilter = leadCount > 0 && memberCount > 0 && !isCustomSelection;
   const roleScoped = roleFilter === 'all' ? allCards : allCards.filter(c => c.roleLabel === roleFilter);
 
   // Client-side name search (case-insensitive substring on display name),
@@ -116,8 +147,6 @@ export function ContributorCollection({
     setPage(0);
     setRoleFilter('all');
   };
-
-  const countFor = (type: ContributorTypeId): number => counts[COUNT_BY_TYPE[type]];
 
   const typeLabel = (type: ContributorTypeId): string => t(`contributors.types.${type}` as 'contributors.types.user');
 
@@ -156,22 +185,25 @@ export function ContributorCollection({
     <section className={cn('space-y-4', className)} aria-label={t('contributors.title')}>
       {/* Filter row — type switch + role filter share one horizontal line when
           there's room (each is full-width below `sm`, so phones stack them;
-          `flex-wrap` degrades gracefully if the pair ever outgrows the row). */}
-      {(types.length > 1 || showRoleFilter) && (
+          `flex-wrap` degrades gracefully if the pair ever outgrows the row).
+          The type switch is gated on ≥2 *resolved* (non-zero count) types —
+          AC4/FR-012 — so a multi-type config where only one type has data
+          still renders without the switch (US4-AS1/AS2). */}
+      {(resolvedTypes.length >= 2 || showRoleFilter) && (
         <div className="flex flex-wrap items-center gap-4">
-          {/* Segmented type switch — shown only when >1 type (FR-009a). Counts are
-              always visible on each segment. */}
-          {types.length > 1 && (
+          {/* Segmented type switch — shown only when ≥2 resolved types (FR-009a).
+              Segments are rendered only for types with countFor > 0 (no empty segments). */}
+          {resolvedTypes.length >= 2 && (
             <Tabs
               className="w-full sm:w-auto"
-              value={activeType}
+              value={effectiveActiveType}
               onValueChange={v => handleTypeChange(v as ContributorTypeId)}
             >
               {/* Full-width + horizontally scrollable below `sm` so the type labels
                   (with counts) never clip on narrow screens; equal-width segments
                   from `sm` up. */}
               <TabsList className="w-full max-w-full justify-start overflow-x-auto sm:w-fit sm:justify-center">
-                {types.map(type => (
+                {resolvedTypes.map(type => (
                   <TabsTrigger key={type} value={type} className="flex-none sm:flex-1">
                     <span>{typeLabel(type)}</span>
                     <span className="ml-1.5 rounded-full bg-background/60 px-1.5 text-caption text-muted-foreground">
@@ -250,11 +282,11 @@ export function ContributorCollection({
 
       {/* Per-type count line — the type-switch segments and the role filter both
           already show counts, so this is only needed (to avoid a count-less view)
-          when neither is present: a single configured type with no lead/member mix. */}
-      {types.length === 1 && !showRoleFilter && (
+          when neither is present: fewer than 2 resolved types and no lead/member mix. */}
+      {resolvedTypes.length < 2 && !showRoleFilter && (
         <p className="text-caption text-muted-foreground" aria-live="off">
-          {t(`contributors.counts.${COUNT_BY_TYPE[activeType]}` as 'contributors.counts.users', {
-            count: countFor(activeType),
+          {t(`contributors.counts.${COUNT_BY_TYPE[effectiveActiveType]}` as 'contributors.counts.users', {
+            count: countFor(effectiveActiveType),
           })}
         </p>
       )}

@@ -2,6 +2,7 @@ import type { CalloutContentQuery } from '@/core/apollo/generated/graphql-schema
 import {
   CalloutContributionType,
   CalloutFramingType,
+  CalloutSelectionMode,
   PollResultsDetail,
   PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
@@ -95,6 +96,9 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     // Contributor-collection config prefill (feature 008). Falls back to the
     // default (all types) when the callout is not a contributors framing.
     contributorCollection: contributorCollectionFromServer(settings.framing.contributors),
+    // Selection settings prefill (feature 025). Absent selection ⇒ AUTO (FR-016).
+    selectionMode: settings.framing.selection?.mode === CalloutSelectionMode.Custom ? 'custom' : 'auto',
+    selectedIds: settings.framing.selection?.selectedIds ?? [],
     memoMarkdown: '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',
