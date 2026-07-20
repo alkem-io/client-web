@@ -80,8 +80,9 @@ function buildIcsContent(events: ExportableEvent[]): string {
       const dtEnd = addDays(event.startDate, (event.durationDays ?? 0) + 1);
       lines.push(`DTSTART;VALUE=DATE:${formatDateOnly(event.startDate)}`, `DTEND;VALUE=DATE:${formatDateOnly(dtEnd)}`);
     } else {
-      // Timed event — DTEND combines durationDays + durationMinutes via the
-      // shared helper so multi-day timed events export the correct end.
+      // Timed event — DTEND is start + the full span (durationMinutes, the
+      // authoritative duration) via the shared helper, so multi-day timed events
+      // export the correct end.
       const endDate = endDateFromDuration(event.startDate, event.durationMinutes ?? 60);
       lines.push(`DTSTART:${formatDateTimeUtc(event.startDate)}`, `DTEND:${formatDateTimeUtc(endDate)}`);
     }
