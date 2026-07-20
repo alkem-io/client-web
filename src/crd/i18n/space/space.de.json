@@ -573,9 +573,15 @@
     "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
-      "label": "Automatische Auswahl",
-      "autoDescription": "Die Sammlung wird automatisch mit berechtigten Mitgliedern und Unterräumen aktualisiert.",
-      "customDescription": "Die Sammlung zeigt eine feste, manuell kuratierte Liste.",
+      "label": "Manuelle Auswahl",
+      "contributors": {
+        "autoDescription": "Zeigen Sie die Mitwirkenden dieser Community als selbst aktualisierende Sammlung an.",
+        "customDescription": "Zeigt nur die von Ihnen ausgewählten Mitwirkenden an."
+      },
+      "spaces": {
+        "autoDescription": "Zeigt automatisch alle Subspaces an und aktualisiert sich, wenn sie hinzugefügt oder entfernt werden.",
+        "customDescription": "Zeigt nur die unten ausgewählten Subspaces an."
+      },
       "noLongerAvailable": "Nicht mehr verfügbar",
       "searchPlaceholder": "Mitglieder suchen…",
       "searchAriaLabel": "Mitglieder suchen",
@@ -951,7 +957,6 @@
     },
     "config": {
       "title": "Mitwirkende",
-      "description": "Zeigen Sie die Mitwirkenden dieser Community als selbst aktualisierende Sammlung an.",
       "typesLabel": "Mitwirkenden-Typen",
       "typesHint": "Wählen Sie mindestens einen Typ aus.",
       "defaultTypeLabel": "Standardtyp",

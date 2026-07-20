@@ -573,9 +573,15 @@
     "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
-      "label": "Automatic selection",
-      "autoDescription": "Collection updates automatically with eligible members and subspaces.",
-      "customDescription": "Collection shows a fixed, manually curated list.",
+      "label": "Manual selection",
+      "contributors": {
+        "autoDescription": "Show this community’s contributors as a self-updating collection.",
+        "customDescription": "Shows only the contributors you select."
+      },
+      "spaces": {
+        "autoDescription": "Automatically shows all subspaces and updates as they are added or removed.",
+        "customDescription": "Shows only the subspaces you select below."
+      },
       "noLongerAvailable": "No longer available",
       "searchPlaceholder": "Search members…",
       "searchAriaLabel": "Search members",
@@ -951,7 +957,6 @@
     },
     "config": {
       "title": "Contributors",
-      "description": "Show this community’s contributors as a self-updating collection.",
       "typesLabel": "Contributor types",
       "typesHint": "Select at least one type to include.",
       "defaultTypeLabel": "Default type",

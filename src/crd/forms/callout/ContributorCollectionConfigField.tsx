@@ -71,8 +71,6 @@ export function ContributorCollectionConfigField({
 
   return (
     <div className="space-y-4">
-      <p className="text-body text-muted-foreground">{t('contributors.config.description')}</p>
-
       {/* Contributor types (multi-select; >=1 required) */}
       <fieldset className="space-y-2">
         <legend className="text-label text-muted-foreground uppercase">{t('contributors.config.typesLabel')}</legend>

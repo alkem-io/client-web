@@ -573,9 +573,15 @@
     "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre del aviso.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
-      "label": "Selección automática",
-      "autoDescription": "La colección se actualiza automáticamente con los miembros y subespacios elegibles.",
-      "customDescription": "La colección muestra una lista fija y seleccionada manualmente.",
+      "label": "Selección manual",
+      "contributors": {
+        "autoDescription": "Muestra los colaboradores de esta comunidad como una colección que se actualiza sola.",
+        "customDescription": "Muestra solo los colaboradores que selecciones."
+      },
+      "spaces": {
+        "autoDescription": "Muestra automáticamente todos los subespacios y se actualiza cuando se añaden o se eliminan.",
+        "customDescription": "Muestra solo los subespacios que selecciones a continuación."
+      },
       "noLongerAvailable": "Ya no disponible",
       "searchPlaceholder": "Buscar miembros…",
       "searchAriaLabel": "Buscar miembros",
@@ -951,7 +957,6 @@
     },
     "config": {
       "title": "Colaboradores",
-      "description": "Muestra los colaboradores de esta comunidad como una colección que se actualiza sola.",
       "typesLabel": "Tipos de colaborador",
       "typesHint": "Selecciona al menos un tipo para incluir.",
       "defaultTypeLabel": "Tipo predeterminado",

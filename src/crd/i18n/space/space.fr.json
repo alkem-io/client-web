@@ -573,9 +573,15 @@
     "allowCommentsDescription": "Les membres peuvent publier des commentaires sur le cadrage du $t(common.callout).",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
-      "label": "Sélection automatique",
-      "autoDescription": "La collection se met à jour automatiquement avec les membres et sous-espaces éligibles.",
-      "customDescription": "La collection affiche une liste fixe et sélectionnée manuellement.",
+      "label": "Sélection manuelle",
+      "contributors": {
+        "autoDescription": "Affichez les contributeurs de cette communauté comme une collection qui se met à jour automatiquement.",
+        "customDescription": "Affiche uniquement les contributeurs que vous sélectionnez."
+      },
+      "spaces": {
+        "autoDescription": "Affiche automatiquement tous les sous-espaces et se met à jour lorsqu’ils sont ajoutés ou supprimés.",
+        "customDescription": "Affiche uniquement les sous-espaces que vous sélectionnez ci-dessous."
+      },
       "noLongerAvailable": "Plus disponible",
       "searchPlaceholder": "Rechercher des membres…",
       "searchAriaLabel": "Rechercher des membres",
@@ -951,7 +957,6 @@
     },
     "config": {
       "title": "Contributeurs",
-      "description": "Affichez les contributeurs de cette communauté comme une collection qui se met à jour automatiquement.",
       "typesLabel": "Types de contributeur",
       "typesHint": "Sélectionnez au moins un type à inclure.",
       "defaultTypeLabel": "Type par défaut",

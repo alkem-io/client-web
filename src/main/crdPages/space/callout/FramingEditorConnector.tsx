@@ -636,6 +636,9 @@ export function FramingEditorConnector({
           <CalloutSelectionField
             mode={selectionMode}
             onModeChange={next => onSelectionModeChange?.(next)}
+            label={t('forms.selection.label')}
+            autoDescription={t('forms.selection.contributors.autoDescription')}
+            customDescription={t('forms.selection.contributors.customDescription')}
             pickerSlot={
               <ContributorSelector
                 selectedContributors={contributorChips}
@@ -711,6 +714,9 @@ export function FramingEditorConnector({
         <CalloutSelectionField
           mode={selectionMode}
           onModeChange={next => onSelectionModeChange?.(next)}
+          label={t('forms.selection.label')}
+          autoDescription={t('forms.selection.spaces.autoDescription')}
+          customDescription={t('forms.selection.spaces.customDescription')}
           pickerSlot={
             <ContributorSelector
               selectedContributors={subspaceChips}

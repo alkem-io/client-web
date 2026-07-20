@@ -573,9 +573,15 @@
     "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing.",
     "titleCharacterCount": "{{current}}/{{max}}",
     "selection": {
-      "label": "Automatische selectie",
-      "autoDescription": "De collectie wordt automatisch bijgewerkt met in aanmerking komende leden en Subspaces.",
-      "customDescription": "De collectie toont een vaste, handmatig samengestelde lijst.",
+      "label": "Handmatige selectie",
+      "contributors": {
+        "autoDescription": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
+        "customDescription": "Toont alleen de contributors die je selecteert."
+      },
+      "spaces": {
+        "autoDescription": "Toont automatisch alle subspaces en wordt bijgewerkt wanneer ze worden toegevoegd of verwijderd.",
+        "customDescription": "Toont alleen de subspaces die je hieronder selecteert."
+      },
       "noLongerAvailable": "Niet meer beschikbaar",
       "searchPlaceholder": "Leden zoeken…",
       "searchAriaLabel": "Leden zoeken",
@@ -951,7 +957,6 @@
     },
     "config": {
       "title": "Contributors",
-      "description": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
       "typesLabel": "Typen contributor",
       "typesHint": "Selecteer ten minste één type.",
       "defaultTypeLabel": "Standaardtype",
