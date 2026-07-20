@@ -64,7 +64,12 @@ export function deriveEventWireFields(input: {
   let durationDays = 0;
   let multipleDays = false;
   if (input.wholeDay) {
-    // Span = the whole-day date range; ignore any carried-over sub-day duration.
+    // A whole-day event's span is its date range, so durationMinutes is the offset
+    // between the two date pickers (End date − Start date) — NOT the event's length.
+    // A single-day whole-day event (End date === Start date) is therefore 0, and
+    // that is a correct, genuine all-day day: the ICS/Google/Outlook export appends
+    // the RFC 5545 exclusive +1 day, so 0 covers exactly one day (1440 would cover
+    // two). Any carried-over sub-day duration is discarded.
     durationMinutes = Math.max(0, Math.round((endDate.getTime() - startDate.getTime()) / 60000));
     durationDays = Math.floor(durationMinutes / (24 * 60));
     multipleDays = durationDays > 0;
