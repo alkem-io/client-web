@@ -721,6 +721,7 @@ export function FramingEditorConnector({
               onRemoveContributor={handleSubspaceRemove}
               loading={subspaceCandidatesLoading}
               allowEmailInvites={false}
+              chipsPosition="above"
               ineligibleLabel={t('forms.selection.noLongerAvailable')}
               placeholder={t('forms.selection.searchSubspacePlaceholder')}
               searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}

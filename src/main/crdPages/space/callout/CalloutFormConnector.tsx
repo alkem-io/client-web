@@ -709,9 +709,10 @@ function CalloutFormConnectorInner({
 
     let result: Awaited<ReturnType<typeof updateCalloutContent>>;
     try {
-      // A selection/framing change alters the rendered collection, whose data comes
-      // from separate queries; refetch them (and wait) so the collection reflects the
-      // save in-session instead of only after a reload.
+      // A selection/framing change alters the rendered callout view + its collection,
+      // whose data comes from separate queries; refetch the callout details and the
+      // collection queries (and wait) so the view reflects the save in-session instead
+      // of only after a reload.
       const collectionRefetch =
         input.framing?.type === CalloutFramingType.Contributors
           ? ['ContributorCollectionConfig', 'ContributorCollectionByType']
@@ -720,7 +721,7 @@ function CalloutFormConnectorInner({
             : [];
       result = await updateCalloutContent({
         variables: { calloutData: input },
-        refetchQueries: ['CalloutsSetTags', ...collectionRefetch],
+        refetchQueries: ['CalloutsSetTags', 'CalloutDetails', ...collectionRefetch],
         awaitRefetchQueries: collectionRefetch.length > 0,
       });
     } catch (err) {

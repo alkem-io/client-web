@@ -84,7 +84,21 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
   // the auto-load fires at most once even when its fetch fails — see the effect.
   const eagerLoadedRef = useRef(false);
 
-  const [fetchByType] = useContributorCollectionByTypeLazyQuery();
+  const [fetchByType, { data: byTypeData, variables: byTypeVars }] = useContributorCollectionByTypeLazyQuery();
+
+  // Keep the per-type card cache in sync with the active lazy observer's data.
+  // This fires on the initial fetch AND whenever `refetchQueries` (e.g. after a
+  // callout selection save) re-runs the active `ContributorCollectionByType`
+  // observer — so the mounted collection reflects the saved change in-session,
+  // without needing a remount/reload. `ensureLoaded`'s one-shot `.then` alone
+  // never re-fires on a refetch, which is why the view used to stay stale.
+  const byTypeItems = byTypeData?.lookup.callout?.framing.contributors;
+  const byTypeServerType = byTypeVars?.type;
+  useEffect(() => {
+    if (!byTypeItems || !byTypeServerType) return;
+    const type = contributorTypeFromServer(byTypeServerType);
+    setCardsByType(prev => ({ ...prev, [type]: byTypeItems.map(mapContributorItemToCard) }));
+  }, [byTypeItems, byTypeServerType]);
 
   const ensureLoaded = (type: ContributorTypeId) => {
     if (!calloutId || requestedRef.current.has(type)) return;
