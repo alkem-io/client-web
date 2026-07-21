@@ -9,6 +9,7 @@ import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 import CrdOrganizationProfilePage from './publicProfile/CrdOrganizationProfilePage';
 
 const CrdOrgSettingsRoutes = lazyWithGlobalErrorHandler(() => import('./settings/CrdOrgSettingsRoutes'));
+const CrdOrganizationCreatePage = lazyWithGlobalErrorHandler(() => import('./form/CrdOrganizationCreatePage'));
 
 const OrgSettingsDispatch = () => (
   <Suspense fallback={<Loading />}>
@@ -26,6 +27,18 @@ const CrdOrganizationProviderWithOutlet = () => (
 
 export const CrdOrganizationRoutes = () => (
   <Routes>
+    {/* Static segment — react-router ranks it above `:organizationNameId`, so an
+        organization whose nameID is literally "new" is the only casualty. */}
+    <Route
+      path="new"
+      element={
+        <CrdLayoutWrapper>
+          <Suspense fallback={<Loading />}>
+            <CrdOrganizationCreatePage />
+          </Suspense>
+        </CrdLayoutWrapper>
+      }
+    />
     <Route path={`:${nameOfUrl.organizationNameId}/*`} element={<CrdOrganizationProviderWithOutlet />}>
       <Route index={true} element={<CrdOrganizationProfilePage />} />
       <Route path="settings/*" element={<OrgSettingsDispatch />} />

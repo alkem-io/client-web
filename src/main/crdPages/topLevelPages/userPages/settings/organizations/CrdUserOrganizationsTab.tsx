@@ -16,10 +16,12 @@ import useOrganizationEnrichment from './useOrganizationEnrichment';
 import { filterOrganizations, mapUserOrganizations, type OrgRow } from './userOrganizationsMapper';
 
 /**
- * Per research §3 (Decision #3) — heavy create flows navigate to existing
- * MUI admin routes. The org-creation route already exists in the codebase.
+ * The standalone create route, gated on the same `CreateOrganization` platform
+ * privilege as the button below. It deliberately does NOT point at
+ * `/admin/organizations/new`: that whole tree additionally requires
+ * `PlatformAdmin`, so non-admin creators were bounced to `/restricted`.
  */
-const CREATE_ORGANIZATION_URL = '/admin/organizations/new';
+const CREATE_ORGANIZATION_URL = '/organization/new';
 
 type PendingDisassociate = { id: string; displayName: string; roleSetId: string };
 
