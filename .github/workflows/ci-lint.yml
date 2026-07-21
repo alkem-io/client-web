@@ -20,7 +20,7 @@ jobs:
         run: git clean -fdx -e node_modules -e .pnpm-store
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
@@ -56,7 +56,7 @@ jobs:
         run: git clean -fdx -e node_modules -e .pnpm-store
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
@@ -95,7 +95,7 @@ jobs:
         run: git clean -fdx -e node_modules -e .pnpm-store
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
@@ -134,7 +134,7 @@ jobs:
         run: git clean -fdx -e node_modules -e .pnpm-store
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        uses: pnpm/action-setup@v4
         with:
           dest: ${{ runner.temp }}/setup-pnpm
 
