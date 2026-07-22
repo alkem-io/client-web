@@ -1,4 +1,4 @@
-import type { ImportedDataState } from '@alkemio/excalidraw/dist/types/excalidraw/data/types';
+import type { ImportedDataState } from '@alkemio/excalidraw/data/types';
 
 const EmptyWhiteboard: ImportedDataState = {
   type: 'excalidraw',

@@ -22,11 +22,19 @@ import {
   useCalloutContentQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
+  useSubspacesInSpaceQuery,
   useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
+  useUpdatePollStatusMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutFramingType,
+  CalloutVisibility,
+  LicenseEntitlementType,
+  PollStatus,
+} from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
+import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
@@ -48,6 +56,7 @@ import {
   COLLABORA_IMPORT_MAX_BYTES,
 } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
 import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
+import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
@@ -78,6 +87,7 @@ import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsTo
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
  * The full create-mode framing chip set, in display order. `contributors`
@@ -103,6 +113,9 @@ const DEFAULT_FRAMING_CHIPS: FramingChipId[] = [
  * `allowedFramingChips`. Filtered out of the default allow-list for non-admins.
  */
 const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
+
+/** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
+const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -196,7 +209,9 @@ function CalloutFormConnectorInner({
   // Space context — `permissions.canUpdate` is the space-admin signal that gates
   // the contributors framing chip; `entitlements` gates the office-documents chip
   // (read further below). `spaceContextLoading` is the entitlements query flag.
-  const { entitlements, permissions, loading: spaceContextLoading } = useSpace();
+  const { space, entitlements, permissions, loading: spaceContextLoading } = useSpace();
+  const roleSetId = space.about.membership?.roleSetID;
+  const { spaceId } = useUrlResolver();
 
   // The "Contributors" (008) and "Subspaces" (013) framing chips are admin-only
   // (FR-004a) and offered only in space/community (collaboration) callout contexts
@@ -225,6 +240,39 @@ function CalloutFormConnectorInner({
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
   const { values, errors, setField, validate, reset, prefill, dirty } = form;
+
+  // Feature 025: contributor candidates for the custom-selection picker (T005).
+  // Only fetched when the contributors chip is active AND the dialog is open.
+  const isContributorsChip = values.framingChip === 'contributors';
+  const isSpacesChip = values.framingChip === 'spaces';
+  const {
+    candidates: contributorCandidates,
+    loading: contributorCandidatesLoading,
+    resolveChips: resolveContributorChips,
+    refetch: refetchContributorCandidates,
+  } = useSelectionCandidates({
+    roleSetId,
+    // contributorTypes governs what the PICKER displays (FR-005); eligibility
+    // checking inside useSelectionCandidates uses all types (FR-011).
+    contributorTypes: values.contributorCollection.types,
+    skip: !open || !isContributorsChip || !roleSetId,
+  });
+
+  // Feature 025: subspace candidates for the spaces chip (T006).
+  // Reuses `useSubspacesInSpaceQuery` (already-shipped, host-scoped — R-6).
+  const {
+    data: subspacesData,
+    loading: subspaceCandidatesLoading,
+    refetch: refetchSubspaceCandidates,
+  } = useSubspacesInSpaceQuery({
+    variables: { spaceId: spaceId ?? '' },
+    skip: !open || !isSpacesChip || !spaceId,
+  });
+  const subspaceCandidates = (subspacesData?.lookup.space?.subspaces ?? []).map(s => ({
+    id: s.id,
+    displayName: s.about.profile?.displayName ?? s.id,
+    avatarUrl: s.about.profile?.avatar?.uri ?? undefined,
+  }));
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
@@ -267,6 +315,17 @@ function CalloutFormConnectorInner({
 
   const { handleCreateCallout, loading: creating } = useCalloutCreation({ calloutsSetId });
   const [updateCalloutContent, { loading: updating }] = useUpdateCalloutContentMutation();
+
+  // Inline-rename state for the framing Collabora document, owned here (not in the
+  // edit box) so the form's Save button commits any pending rename alongside the
+  // rest of the edit. Instantiated with empty ids for non-document callouts, where
+  // it stays idle (`editing` never opens, so `save()` is never invoked).
+  const editCollaboraDocument = mode === 'edit' ? editCallout?.framing.collaboraDocument : undefined;
+  const collaboraRename = useRenameCollaboraDocument({
+    collaboraDocumentId: editCollaboraDocument?.id ?? '',
+    displayName: editCollaboraDocument?.profile?.displayName ?? '',
+    canRename: true,
+  });
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   const { uploadVisuals: uploadWhiteboardVisuals } = useUploadWhiteboardVisuals();
@@ -424,7 +483,38 @@ function CalloutFormConnectorInner({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
-    const { input, whiteboardPreviewImages, collaboraUploadFile } = mapFormToCalloutCreationInput(values, {
+    // Strip ineligible (stale) selectedIds before serialising — mirrors the update
+    // path (tasks T005/T006; the server rejects out-of-scope ids on create too).
+    // Same loading guard as in saveEdit: if candidates aren't loaded yet, skip
+    // the strip and let the server be the authority (corr-client-3 / qual-client-1).
+    const isCollectionChipForCreate = values.framingChip === 'contributors' || values.framingChip === 'spaces';
+    // Unresolved = still loading OR skipped for a missing id (see saveEdit).
+    const candidatesUnresolvedForCreate =
+      isCollectionChipForCreate &&
+      values.selectionMode === 'custom' &&
+      (values.framingChip === 'contributors'
+        ? contributorCandidatesLoading || !roleSetId
+        : subspaceCandidatesLoading || !spaceId);
+
+    const eligibleSelectedIdsForCreate = (() => {
+      if (values.selectionMode !== 'custom') return values.selectedIds;
+      if (candidatesUnresolvedForCreate) return values.selectedIds;
+      if (values.framingChip === 'contributors') {
+        const chips = resolveContributorChips(values.selectedIds);
+        return omitIneligibleIds(values.selectedIds, chips);
+      }
+      if (values.framingChip === 'spaces') {
+        const candidateIds = new Set(subspaceCandidates.map(c => c.id));
+        return values.selectedIds.filter(id => candidateIds.has(id));
+      }
+      return values.selectedIds;
+    })();
+    const valuesForCreate =
+      eligibleSelectedIdsForCreate !== values.selectedIds
+        ? { ...values, selectedIds: eligibleSelectedIdsForCreate }
+        : values;
+
+    const { input, whiteboardPreviewImages, collaboraUploadFile } = mapFormToCalloutCreationInput(valuesForCreate, {
       visibility,
       whiteboardFallbackDisplayName: t('callout.whiteboard'),
       collaboraFallbackDisplayName: t('callout.defaultDocumentName'),
@@ -488,6 +578,29 @@ function CalloutFormConnectorInner({
   const pollId = editData?.lookup.callout?.framing.poll?.id ?? values.editMeta?.pollId;
   const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '' });
 
+  // Poll open/closed status. Unlike the option edits (which are diffed and flushed
+  // on save), the status toggle applies immediately on confirm — matching the
+  // pre-CRD MUI behaviour. The mutation returns `...PollDetails`, so the Apollo
+  // cache updates `framing.poll.status` and the form re-renders from it; there is
+  // no local status field to keep in sync.
+  const pollStatus = editData?.lookup.callout?.framing.poll?.status;
+  const [updatePollStatus] = useUpdatePollStatusMutation();
+
+  const handlePollStatusChange = async (status: 'open' | 'closed') => {
+    if (!pollId) return;
+    const nextStatus = status === 'closed' ? PollStatus.Closed : PollStatus.Open;
+    try {
+      await updatePollStatus({ variables: { statusData: { pollID: pollId, status: nextStatus } } });
+      notify(
+        status === 'closed' ? t('pollForm.statusChange.closeSuccess') : t('pollForm.statusChange.reopenSuccess'),
+        'success'
+      );
+    } catch (err) {
+      logError(new Error('Poll status change failed', { cause: err as Error }));
+      notify(t('pollForm.statusChange.failed'), 'error');
+    }
+  };
+
   const runPollOptionDiff = async () => {
     if (!pollId) return;
     const diff = diffPollOptions(originalPollOptions, values.pollOptions);
@@ -530,6 +643,15 @@ function CalloutFormConnectorInner({
     if (!calloutId) return;
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
+
+    // Commit a pending framing-document rename as part of Save (the edit box has
+    // no ✓ of its own). Only when the input is open; unchanged is a no-op inside
+    // the hook. On validation/save failure keep the dialog open — the box shows
+    // the inline error — and abort the rest of the save.
+    if (collaboraRename.editing) {
+      const renamed = await collaboraRename.save();
+      if (!renamed) return;
+    }
 
     // New references added in edit mode have no server id yet, so they can't
     // travel through `UpdateReferenceInput` (which requires `ID`). Persist them
@@ -580,16 +702,81 @@ function CalloutFormConnectorInner({
       }
     }
 
-    const { input, whiteboardPreviewImages } = mapFormToCalloutUpdateInput(values, { calloutId });
+    // Strip ineligible (stale) selectedIds before serialising — the server strictly
+    // rejects out-of-scope ids (spec FR-006/SC-005, tasks T005/T006).
+    // For Contributors framing: resolve chips against the live candidate set so
+    // ids whose member has since left the community are filtered out.
+    // For Spaces framing: any id not present in subspaceCandidates is stale.
+    //
+    // SAFETY GUARD (corr-client-3 / qual-client-1): if the relevant candidate
+    // query is still in flight (cache miss, slow network) the candidate set is
+    // empty and stripping against it would wipe every stored id — silently
+    // destroying the admin's curated list.  When candidates are not yet loaded
+    // we skip the strip and let the server be the authority (server rejects
+    // foreign / non-member ids on every write anyway — FR-006).
+    const isCollectionChip = values.framingChip === 'contributors' || values.framingChip === 'spaces';
+    // The candidate set is "unresolved" while it is still loading OR while its query
+    // was skipped for a missing id (roleSetId / spaceId) — in that state the candidate
+    // list is empty, so stripping would wrongly erase the whole custom selection.
+    const candidatesUnresolved =
+      isCollectionChip &&
+      values.selectionMode === 'custom' &&
+      (values.framingChip === 'contributors'
+        ? contributorCandidatesLoading || !roleSetId
+        : subspaceCandidatesLoading || !spaceId);
+
+    const eligibleSelectedIds = (() => {
+      if (values.selectionMode !== 'custom') return values.selectedIds;
+      // Skip the strip while the candidate set is unresolved.
+      if (candidatesUnresolved) return values.selectedIds;
+      if (values.framingChip === 'contributors') {
+        const chips = resolveContributorChips(values.selectedIds);
+        return omitIneligibleIds(values.selectedIds, chips);
+      }
+      if (values.framingChip === 'spaces') {
+        const candidateIds = new Set(subspaceCandidates.map(c => c.id));
+        return values.selectedIds.filter(id => candidateIds.has(id));
+      }
+      return values.selectedIds;
+    })();
+    const valuesForUpdate =
+      eligibleSelectedIds !== values.selectedIds ? { ...values, selectedIds: eligibleSelectedIds } : values;
+
+    const { input, whiteboardPreviewImages } = mapFormToCalloutUpdateInput(valuesForUpdate, { calloutId });
 
     let result: Awaited<ReturnType<typeof updateCalloutContent>>;
     try {
+      // A selection/framing change alters the rendered callout view + its collection,
+      // whose data comes from separate queries; refetch the callout details and the
+      // collection queries (and wait) so the view reflects the save in-session instead
+      // of only after a reload.
+      const collectionRefetch =
+        input.framing?.type === CalloutFramingType.Contributors
+          ? ['ContributorCollectionConfig', 'ContributorCollectionByType']
+          : input.framing?.type === CalloutFramingType.Spaces
+            ? ['SpaceCollectionSubspaces']
+            : [];
       result = await updateCalloutContent({
         variables: { calloutData: input },
-        refetchQueries: ['CalloutsSetTags'],
+        refetchQueries: ['CalloutsSetTags', 'CalloutDetails', ...collectionRefetch],
+        awaitRefetchQueries: collectionRefetch.length > 0,
       });
     } catch (err) {
       logError(new Error('Callout update mutation failed', { cause: err as Error }));
+      // Surface the failure so the admin knows the save did not go through (T005
+      // mid-race rejection recovery / spec Edge Case 'Concurrent churn').
+      notify(t('callout.updateFailed'), 'error');
+      // Reload membership/subspace data so any concurrent change (e.g. a member
+      // who left between load and save) is reflected.  On the next save attempt
+      // the updated candidate set will strip the now-departed entry and the re-
+      // save can succeed (corr-client-2 / T005 concurrent-churn recovery).
+      if (values.selectionMode === 'custom') {
+        if (values.framingChip === 'contributors') {
+          refetchContributorCandidates();
+        } else if (values.framingChip === 'spaces') {
+          void refetchSubspaceCandidates();
+        }
+      }
       return;
     }
     const updated = result.data?.updateCallout;
@@ -691,6 +878,8 @@ function CalloutFormConnectorInner({
           value: values.title,
           onChange: v => setField('title', v),
           error: errors.title,
+          maxLength: SMALL_TEXT_LENGTH,
+          counterThreshold: TITLE_COUNTER_THRESHOLD,
         }}
         descriptionSlot={
           <MarkdownEditor
@@ -731,6 +920,11 @@ function CalloutFormConnectorInner({
                 editMemoId={values.editMeta?.memoId}
                 editWhiteboard={mode === 'edit' ? editCallout?.framing.whiteboard : undefined}
                 editWhiteboardShareUrl={mode === 'edit' ? editCallout?.framing.profile.url : undefined}
+                editCollaboraDocumentId={mode === 'edit' ? editCallout?.framing.collaboraDocument?.id : undefined}
+                editCollaboraDocumentDisplayName={
+                  mode === 'edit' ? editCallout?.framing.collaboraDocument?.profile?.displayName : undefined
+                }
+                collaboraRename={editCollaboraDocument ? collaboraRename : undefined}
                 framingType={values.framingChip}
                 linkUrl={values.linkUrl}
                 onLinkUrlChange={v => setField('linkUrl', v)}
@@ -752,6 +946,10 @@ function CalloutFormConnectorInner({
                 onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
                 pollShowVoterAvatars={values.pollShowVoterAvatars}
                 onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
+                // Only an existing poll has a status to toggle — a poll being created is
+                // always open, so the toggle stays hidden until there is a `pollId`.
+                pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
+                onPollStatusChange={handlePollStatusChange}
                 whiteboardContent={values.whiteboardContent}
                 whiteboardPreviewSettings={values.whiteboardPreviewSettings}
                 whiteboardConfigured={values.whiteboardConfigured}
@@ -791,6 +989,15 @@ function CalloutFormConnectorInner({
                 contributorCollection={values.contributorCollection}
                 onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
                 contributorCollectionError={errors.contributorCollection}
+                selectionMode={values.selectionMode}
+                onSelectionModeChange={next => setField('selectionMode', next)}
+                selectedIds={values.selectedIds}
+                onSelectedIdsChange={ids => setField('selectedIds', ids)}
+                contributorCandidates={contributorCandidates}
+                resolveContributorChips={resolveContributorChips}
+                contributorCandidatesLoading={contributorCandidatesLoading}
+                subspaceCandidates={subspaceCandidates}
+                subspaceCandidatesLoading={subspaceCandidatesLoading}
               />
             </div>
           )

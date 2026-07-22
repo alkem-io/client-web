@@ -1,6 +1,6 @@
-import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw/dist/types/element/src';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type { DataURL, SocketId } from '@alkemio/excalidraw/dist/types/excalidraw/types';
+import type { isInvisiblySmallElement as ExcalidrawIsInvisiblySmallElement } from '@alkemio/excalidraw/element/index';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/element/types';
+import type { DataURL, SocketId } from '@alkemio/excalidraw/types';
 import type { Socket } from 'socket.io-client';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { TagCategoryValues, warn } from '@/core/logging/sentry/log';

@@ -1,3 +1,8 @@
+// The two independent sound preferences. Declared here rather than imported from
+// the CRD view type: `src/domain` must not depend on `src/crd`. Structurally
+// identical, so the two line up at the boundary without a cast.
+export type SoundSettingKey = 'chatMessage' | 'inAppNotification';
+
 // Notification channel settings
 export interface NotificationChannels {
   email: boolean;
@@ -65,6 +70,32 @@ export interface VCNotificationSettings {
   adminSpaceCommunityInvitation?: NotificationChannels;
 }
 
+// Sound playback settings — a flat boolean pair, NOT a per-channel matrix.
+export interface SoundNotificationSettings {
+  chatMessage?: boolean;
+  inAppNotification?: boolean;
+}
+
+// A single on/off switch row (e.g. a sound toggle), distinct from the
+// 3-channel `NotificationRow` used by the per-event notification matrices.
+export interface NotificationSwitchRow {
+  /** Stable key used by the mutation builder (the sound key). Narrowed to the two
+   * valid keys so an invalid one cannot reach the mutation payload. */
+  property: SoundSettingKey;
+  /** Pre-localized human label. */
+  label: string;
+  /** Resolved on/off state (server value + optimistic override applied). */
+  enabled: boolean;
+}
+
+// A group of single-switch rows (the "Sounds" group).
+export interface NotificationSwitchGroup {
+  groupId: string;
+  title: string;
+  description: string;
+  rows: NotificationSwitchRow[];
+}
+
 // Complete notification settings
 export interface NotificationSettings {
   space?: SpaceNotificationSettings;
@@ -74,4 +105,5 @@ export interface NotificationSettings {
   platform?: PlatformNotificationSettings;
   platformAdmin?: PlatformAdminNotificationSettings;
   virtualContributor?: VCNotificationSettings;
+  sound?: SoundNotificationSettings;
 }

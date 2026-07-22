@@ -3,25 +3,22 @@ import type {
   reconcileElements as ExcalidrawReconcileElements,
   restoreElements as ExcalidrawRestoreElements,
 } from '@alkemio/excalidraw';
-import type { Mutable } from '@alkemio/excalidraw/dist/types/common/src/utility-types';
+import type { zoomToFitBounds as ExcalidrawZoomToFitBounds } from '@alkemio/excalidraw/actions/actionCanvas';
+import type { Mutable } from '@alkemio/excalidraw/common/utility-types';
+import type { ReconciledExcalidrawElement, RemoteExcalidrawElement } from '@alkemio/excalidraw/data/reconcile';
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   hashElementsVersion as ExcalidrawHashElementsVersion,
   newElementWith as ExcalidrawNewElementWith,
-} from '@alkemio/excalidraw/dist/types/element/src';
-import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/dist/types/element/src/types';
-import type { zoomToFitBounds as ExcalidrawZoomToFitBounds } from '@alkemio/excalidraw/dist/types/excalidraw/actions/actionCanvas';
-import type {
-  ReconciledExcalidrawElement,
-  RemoteExcalidrawElement,
-} from '@alkemio/excalidraw/dist/types/excalidraw/data/reconcile';
+} from '@alkemio/excalidraw/element/index';
+import type { ExcalidrawElement, OrderedExcalidrawElement } from '@alkemio/excalidraw/element/types';
 import type {
   Collaborator,
   ExcalidrawImperativeAPI,
   Gesture,
   OnUserFollowedPayload,
   SocketId,
-} from '@alkemio/excalidraw/dist/types/excalidraw/types';
+} from '@alkemio/excalidraw/types';
 import { throttle } from 'lodash-es';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';

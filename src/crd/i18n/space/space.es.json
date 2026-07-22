@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "El aviso se creó, pero la carga de la imagen de vista previa falló. Puedes reintentarlo desde el diálogo de edición del aviso.",
     "pollOptionsSaveFailed": "No se pudieron guardar uno o varios cambios de las opciones de la encuesta. Puedes reintentarlo desde este diálogo.",
     "referencesSaveFailed": "No se pudieron guardar una o varias referencias nuevas. Los demás cambios no se aplicaron. Por favor, inténtalo de nuevo.",
+    "updateFailed": "No se pudieron guardar los cambios en el $t(common.callout). Por favor, inténtalo de nuevo.",
     "contributors": "Colaboradores",
     "subspaces": "Subespacios"
   },
@@ -551,6 +552,7 @@
     "publishedLabel": "Publicado",
     "draftLabel": "Borrador",
     "notifyMembers": "Notificar a los miembros del espacio",
+    "titleRequiredHint": "Añade un título a tu $t(common.callout) para continuar",
     "saveDraft": "Guardar borrador",
     "save": "Guardar",
     "publish": "Publicar",
@@ -568,7 +570,29 @@
     "addOption": "Añadir opción",
     "removeOption": "Eliminar opción",
     "allowComments": "Permitir comentarios",
-    "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre del aviso."
+    "allowCommentsDescription": "Los miembros pueden publicar comentarios en el encuadre del aviso.",
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Selección manual",
+      "contributors": {
+        "autoDescription": "Muestra los colaboradores de esta comunidad como una colección que se actualiza sola.",
+        "customDescription": "Muestra solo los colaboradores que selecciones."
+      },
+      "spaces": {
+        "autoDescription": "Muestra automáticamente todos los subespacios y se actualiza cuando se añaden o se eliminan.",
+        "customDescription": "Muestra solo los subespacios que selecciones a continuación."
+      },
+      "noLongerAvailable": "Ya no disponible",
+      "searchPlaceholder": "Buscar miembros…",
+      "searchAriaLabel": "Buscar miembros",
+      "searchSubspacePlaceholder": "Buscar subespacios…",
+      "searchSubspaceAriaLabel": "Buscar subespacios",
+      "noResults": "Sin resultados coincidentes",
+      "loading": "Cargando…",
+      "loadMore": "Cargando más…",
+      "removeAriaLabel": "Eliminar {{name}}",
+      "clearSearch": "Borrar búsqueda"
+    }
   },
   "contributionSettings": {
     "heading": "Respuestas",
@@ -682,6 +706,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Nombre del documento",
+      "edit": "Cambiar nombre",
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "saving": "Guardando…",
+      "errors": {
+        "blank": "Introduce un nombre.",
+        "tooShort": "El nombre debe tener al menos {{min}} caracteres.",
+        "tooLong": "El nombre no puede superar los {{max}} caracteres.",
+        "invalid": "Introduce un nombre válido.",
+        "saveFailed": "No se pudo cambiar el nombre del documento. Inténtalo de nuevo."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Error de Collabora: {{message}}",
@@ -708,7 +746,38 @@
         "unauthenticated": "Inicia sesión para editar este documento.",
         "contentUpdatePolicy": "No tienes permiso para editar este documento. Pide al propietario que cambie los ajustes de uso compartido.",
         "noMembership": "Solo los miembros de este espacio pueden editar este documento. Únete al espacio para contribuir."
+      },
+      "disconnect": {
+        "atRisk": "Desconectado — es posible que los cambios recientes no se hayan guardado",
+        "status": "Desconectado",
+        "cause": {
+          "network": "Parece que no tienes conexión.",
+          "tokenExpiry": "Tu sesión de edición ha caducado.",
+          "service": "Un servicio no está disponible temporalmente.",
+          "unknown": "Se perdió la conexión.",
+          "unloading": "El documento aún se está cerrando de una sesión anterior. Inténtalo de nuevo en un momento."
+        },
+        "reconnect": "Reconectar",
+        "reload": "Recargar",
+        "terminal": {
+          "notFound": "Este documento ya no está disponible.",
+          "forbidden": "Ya no tienes acceso a este documento.",
+          "generic": "Este documento no se puede volver a abrir."
+        },
+        "warning": {
+          "reconnectTitle": "¿Volver a conectar el editor?",
+          "reconnectBody": "Esto cierra la sesión de edición actual y vuelve a abrir el documento en el sitio, sin recargar la página. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
+          "reconnectConfirm": "Volver a conectar",
+          "reloadTitle": "¿Recargar la página?",
+          "reloadBody": "Esto recarga toda la página y vuelve a abrir el documento desde cero. Los cambios realizados desde el último guardado podrían perderse; copia lo que necesites primero.",
+          "reloadConfirm": "Recargar la página",
+          "cancel": "Cancelar"
+        },
+        "reconnecting": "Reconectando…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Un servicio no está disponible. Guarda cualquier trabajo pendiente, ya que los datos sin guardar podrían perderse."
     }
   },
   "mediaGallery": {
@@ -861,8 +930,17 @@
     "settings.hideResultsUntilVoted": "Ocultar resultados hasta que el usuario vote",
     "settings.showVoterAvatars": "Mostrar avatares de los votantes",
     "settings.close": "Cerrar",
-    "openPoll": "La encuesta está abierta",
-    "closePoll": "La encuesta está cerrada",
+    "closePoll": "Cerrar encuesta",
+    "reopenPoll": "Reabrir encuesta",
+    "closePollHint": {
+      "open": "Esta encuesta está abierta a votos",
+      "closed": "Ya nadie podrá votar en esta encuesta"
+    },
+    "statusChange": {
+      "closeSuccess": "La encuesta ahora está cerrada.",
+      "reopenSuccess": "La encuesta ahora está abierta a votos.",
+      "failed": "No se pudo cambiar el estado de la encuesta. Inténtalo de nuevo."
+    },
     "closePollConfirm": {
       "title": "¿Cerrar esta encuesta?",
       "description": "Cerrar la encuesta impedirá nuevos votos y bloqueará la edición. Puedes reabrirla más tarde.",
@@ -920,7 +998,6 @@
     },
     "config": {
       "title": "Colaboradores",
-      "description": "Muestra los colaboradores de esta comunidad como una colección que se actualiza sola.",
       "typesLabel": "Tipos de colaborador",
       "typesHint": "Selecciona al menos un tipo para incluir.",
       "defaultTypeLabel": "Tipo predeterminado",

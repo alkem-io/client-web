@@ -1,5 +1,6 @@
 import {
   type SearchResultCalloutFragment,
+  type SearchResultCollaboraDocumentFragment,
   type SearchResultMemoFragment,
   type SearchResultOrganizationFragment,
   type SearchResultPostFragment,
@@ -24,10 +25,14 @@ type CalloutResult = TypedSearchResult<SearchResultType.Callout, SearchResultCal
 type PostResult = TypedSearchResult<SearchResultType.Post, SearchResultPostFragment>;
 type WhiteboardResult = TypedSearchResult<SearchResultType.Whiteboard, SearchResultWhiteboardFragment>;
 type MemoResult = TypedSearchResult<SearchResultType.Memo, SearchResultMemoFragment>;
+type CollaboraDocumentResult = TypedSearchResult<
+  SearchResultType.CollaboraDocument,
+  SearchResultCollaboraDocumentFragment
+>;
 type UserResult = TypedSearchResult<SearchResultType.User, SearchResultUserFragment>;
 type OrgResult = TypedSearchResult<SearchResultType.Organization, SearchResultOrganizationFragment>;
 
-export type PostType = 'post' | 'whiteboard' | 'memo';
+export type PostType = 'post' | 'whiteboard' | 'memo' | 'collaboraDocument';
 
 export type PostResultCardData = {
   id: string;
@@ -163,8 +168,10 @@ export function mapPostResults(
 
   const mappedFraming: PostResultCardData[] = framingResults
     .filter(
-      (r): r is WhiteboardResult | MemoResult =>
-        r.type === SearchResultType.Whiteboard || r.type === SearchResultType.Memo
+      (r): r is WhiteboardResult | MemoResult | CollaboraDocumentResult =>
+        r.type === SearchResultType.Whiteboard ||
+        r.type === SearchResultType.Memo ||
+        r.type === SearchResultType.CollaboraDocument
     )
     .map(result => {
       if (result.type === SearchResultType.Whiteboard) {
@@ -180,6 +187,25 @@ export function mapPostResults(
           spaceName: r.space.about.profile.displayName,
 
           href: r.whiteboard.profile.url,
+        };
+      }
+
+      if (result.type === SearchResultType.CollaboraDocument) {
+        const r = result as CollaboraDocumentResult;
+        // A document-content match renders as a standard card with NO excerpt and NO
+        // match-source indicator (FR-013, US3) — indistinguishable from a title match.
+        // `href` opens the document / its Collabora editor in one action (reused route).
+        return {
+          id: r.id,
+          title: r.collaboraDocument.profile.displayName,
+          snippet: '',
+          type: 'collaboraDocument' as PostType,
+          bannerUrl: undefined,
+          author: { name: r.collaboraDocument.createdBy?.profile?.displayName ?? unknownLabel },
+          date: formatDate(r.collaboraDocument.createdDate),
+          spaceName: r.space.about.profile.displayName,
+
+          href: r.collaboraDocument.profile.url,
         };
       }
 
@@ -209,12 +235,32 @@ export function mapResponseResults(
 
   return contributionResults
     .filter(
-      (r): r is PostResult | MemoResult | WhiteboardResult =>
-        r.type === SearchResultType.Post || r.type === SearchResultType.Memo || r.type === SearchResultType.Whiteboard
+      (r): r is PostResult | MemoResult | WhiteboardResult | CollaboraDocumentResult =>
+        r.type === SearchResultType.Post ||
+        r.type === SearchResultType.Memo ||
+        r.type === SearchResultType.Whiteboard ||
+        r.type === SearchResultType.CollaboraDocument
     )
     .map(result => {
       const spaceName = result.space.about.profile.displayName;
       const parentPostTitle = result.callout.framing.profile.displayName;
+
+      if (result.type === SearchResultType.CollaboraDocument) {
+        const r = result as CollaboraDocumentResult;
+        // Standard card, no excerpt, no match-source indicator (FR-013, US3).
+        return {
+          id: r.id,
+          title: r.collaboraDocument.profile.displayName,
+          snippet: '',
+          type: 'collaboraDocument' as PostType,
+          author: { name: r.collaboraDocument.createdBy?.profile?.displayName ?? unknownLabel },
+          date: formatDate(r.collaboraDocument.createdDate),
+          parentPostTitle,
+          spaceName,
+
+          href: r.collaboraDocument.profile.url,
+        };
+      }
 
       if (result.type === SearchResultType.Post) {
         const r = result as PostResult;

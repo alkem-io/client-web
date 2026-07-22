@@ -5,7 +5,8 @@
     "unreadLabel": "Tienes mensajes sin leer"
   },
   "panel": {
-    "title": "Chat"
+    "title": "Chat",
+    "settings": "Configuración de notificaciones"
   },
   "actions": {
     "cancel": "Cancelar"

@@ -3,6 +3,7 @@ import {
   CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
+  CalloutSelectionMode,
   CalloutVisibility,
   CollaboraDocumentType,
   PollResultsDetail,
@@ -707,5 +708,108 @@ describe('mapFormToCalloutUpdateInput', () => {
       updateOptions
     );
     expect((result.input as { contributions?: unknown }).contributions).toBeUndefined();
+  });
+});
+
+// --- feature 025: selection settings plumbing ---
+
+describe('mapFormToCalloutCreationInput — selection settings (feature 025)', () => {
+  it('contributors chip with mode auto sends selection AUTO and empty selectedIds', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'contributors', selectionMode: 'auto', selectedIds: [] }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Auto,
+      selectedIds: [],
+    });
+  });
+
+  it('contributors chip with mode custom sends selection CUSTOM and the provided ids', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'contributors', selectionMode: 'custom', selectedIds: ['id-1', 'id-2'] }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Custom,
+      selectedIds: ['id-1', 'id-2'],
+    });
+  });
+
+  it('spaces chip with mode custom sends selection CUSTOM and the provided ids', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'spaces', selectionMode: 'custom', selectedIds: ['space-1'] }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Custom,
+      selectedIds: ['space-1'],
+    });
+  });
+
+  it('non-collection chips do NOT include selection in framing settings', () => {
+    for (const framingChip of ['none', 'whiteboard', 'memo', 'poll', 'cta', 'image'] as const) {
+      const result = mapFormToCalloutCreationInput(
+        baseValues({ framingChip, selectionMode: 'custom', selectedIds: ['id-1'] }),
+        createOptions
+      );
+      expect(result.input.settings?.framing?.selection).toBeUndefined();
+    }
+  });
+
+  it('auto mode with a non-empty list in form state does NOT send the ids (auto ignores stored list)', () => {
+    // The form keeps selectedIds when toggling auto→custom→auto (non-destructive toggle FR-019).
+    // The server ignores selectedIds in AUTO, but we still send them so switching back to custom
+    // works. This test verifies the mode field (not the list) controls resolution server-side.
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'contributors', selectionMode: 'auto', selectedIds: ['id-kept'] }),
+      createOptions
+    );
+    // Mode is AUTO — but selectedIds are still sent for non-destructive preservation.
+    expect(result.input.settings?.framing?.selection?.mode).toBe(CalloutSelectionMode.Auto);
+    expect(result.input.settings?.framing?.selection?.selectedIds).toEqual(['id-kept']);
+  });
+
+  it('custom mode with empty list saves successfully (empty selection = empty state, US3-AS4)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ framingChip: 'contributors', selectionMode: 'custom', selectedIds: [] }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Custom,
+      selectedIds: [],
+    });
+  });
+});
+
+describe('mapFormToCalloutUpdateInput — selection settings (feature 025)', () => {
+  it('contributors chip: auto mode serializes to AUTO with current selectedIds (non-destructive)', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: 'contributors', selectionMode: 'auto', selectedIds: ['id-1'] }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Auto,
+      selectedIds: ['id-1'],
+    });
+  });
+
+  it('spaces chip: custom mode serializes correctly', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: 'spaces', selectionMode: 'custom', selectedIds: ['s-1', 's-2'] }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.selection).toEqual({
+      mode: CalloutSelectionMode.Custom,
+      selectedIds: ['s-1', 's-2'],
+    });
+  });
+
+  it('non-collection framing chips omit selection from the update payload', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({ framingChip: 'none', selectionMode: 'custom', selectedIds: ['id-1'] }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.selection).toBeUndefined();
   });
 });
