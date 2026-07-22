@@ -883,7 +883,7 @@ export enum AuthorizationCredential {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
-  ServiceAdmin = 'SERVICE_ADMIN',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
@@ -1006,6 +1006,7 @@ export enum AuthorizationPrivilege {
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PublicShare = 'PUBLIC_SHARE',
   Read = 'READ',
@@ -2781,7 +2782,7 @@ export enum CredentialType {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
-  ServiceAdmin = 'SERVICE_ADMIN',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
@@ -7532,9 +7533,9 @@ export enum RoleName {
   Owner = 'OWNER',
   PlatformAssistantAccess = 'PLATFORM_ASSISTANT_ACCESS',
   PlatformBetaTester = 'PLATFORM_BETA_TESTER',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
   Registered = 'REGISTERED',
-  ServiceAdmin = 'SERVICE_ADMIN',
 }
 
 export type RoleSet = {

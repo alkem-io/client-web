@@ -77,7 +77,7 @@
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
     "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
     "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
-    "SERVICE_ADMIN": "Service Admin"
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Volledige administratieve controle over het hele platform.",
@@ -90,7 +90,7 @@
     "PLATFORM_BETA_TESTER": "Toegang tot bètafuncties vóór algemene release.",
     "PLATFORM_VC_CAMPAIGN": "Deelname aan de Virtual Contributor-campagne.",
     "PLATFORM_ASSISTANT_ACCESS": "Toegang tot de AI-assistent.",
-    "SERVICE_ADMIN": "Alleen onderhoudsbewerkingen op serviceniveau — momenteel autorisatie-resets. Geeft geen andere administratieve rechten; de reikwijdte kan in de toekomst worden uitgebreid."
+    "PLATFORM_OPERATIONS_ADMIN": "Alleen operationele en onderhoudsacties: resets van autorisatie en licentierechten, zoek-/AI-ingestie en herindexering, onderhoud van de AI-server, datamigraties, onderhoud van notificaties en communicatie, en verversing van geolocatie. Geeft geen andere administratieve rechten en geen toegang tot persoonsgegevens van gebruikers."
   },
   "roleMembers": {
     "currentMembers": "Huidige leden",
