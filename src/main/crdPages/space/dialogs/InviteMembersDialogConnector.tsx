@@ -272,7 +272,9 @@ export function InviteMembersDialogConnector({
       const matched =
         invitee.kind === 'user'
           ? take(r => r.invitation?.actor?.id === invitee.userId)
-          : take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase());
+          : invitee.kind === 'email'
+            ? take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase())
+            : undefined;
       const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
       if (!legacyResult) {
         return { invitee, outcome: 'error' as const };
@@ -301,14 +303,16 @@ export function InviteMembersDialogConnector({
     // unlocked it, abort silently rather than send an invite without the
     // baseline Member role.
     if (!extraRoles.includes('Member')) return;
-    const validInvitees = selectedContributors.filter(c => c.kind === 'user' || c.validationError === undefined);
+    const validInvitees = selectedContributors.filter(
+      c => c.kind === 'user' || (c.kind === 'email' && c.validationError === undefined)
+    );
     if (validInvitees.length === 0) return;
 
     const invitedContributorIds: string[] = [];
     const invitedUserEmails: string[] = [];
     for (const invitee of validInvitees) {
       if (invitee.kind === 'user') invitedContributorIds.push(invitee.userId);
-      else invitedUserEmails.push(invitee.email);
+      else if (invitee.kind === 'email') invitedUserEmails.push(invitee.email);
     }
 
     startTransition(async () => {

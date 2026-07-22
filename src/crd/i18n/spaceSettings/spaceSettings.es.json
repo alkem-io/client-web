@@ -38,18 +38,7 @@
       "description": "Tus cambios de Diseño no guardados se revertirán al último estado guardado. Esta acción no se puede deshacer.",
       "confirm": "Descartar cambios"
     },
-    "postDescriptionDisplay": {
-      "title": "Visualización de descripciones de publicaciones",
-      "switchLabel": "Contraer descripciones de publicaciones por defecto",
-      "description": "Contrae las descripciones de publicaciones por defecto. Cuando está activado, las descripciones muestran un enlace \"Leer más\" en lugar del texto completo."
-    },
     "column": {
-      "titleAriaLabel": "Título de la columna",
-      "descriptionAriaLabel": "Descripción de la columna",
-      "editTitle": "Editar título de la columna",
-      "editDescription": "Editar descripción de la columna",
-      "confirm": "Confirmar",
-      "cancel": "Cancelar",
       "titlePlaceholder": "Título de la columna",
       "descriptionPlaceholder": "Describe esta columna…",
       "menu": "Acciones de columna",
@@ -68,7 +57,8 @@
         "menuLabel": "Editar detalles",
         "dialogTitle": "Editar detalles: fase del flujo",
         "titleLabel": "Título",
-        "editTitle": "Editar título",
+        "titleTooShort": "El título debe tener al menos 3 caracteres",
+        "titleDuplicate": "Ya existe una fase con este nombre.",
         "insertEmoji": "Insertar emoji",
         "descriptionLabel": "Descripción",
         "descriptionPlaceholder": "Descripción",
@@ -102,6 +92,37 @@
           "title": "¿Ocultar esta fase?",
           "description": "Esto solo oculta la fase del menú. No elimina el acceso a su contenido: cualquier persona con un enlace a la fase, o a una publicación dentro de ella, todavía puede abrirla.",
           "confirm": "Ocultar",
+          "cancel": "Cancelar"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Descripción del Post",
+          "collapsedHint": "Los Posts comienzan contraídos — los miembros los expanden para leer.",
+          "expandedHint": "Los Posts están completamente expandidos por defecto.",
+          "switchLabel": "Contraer descripciones de Posts"
+        },
+        "publishDetails": {
+          "label": "Detalles del publicador",
+          "onHint": "El nombre, avatar y fecha del autor se muestran en cada Post.",
+          "offHint": "El nombre, avatar y fecha del autor están ocultos en los Posts de esta fase.",
+          "switchLabel": "Mostrar detalles del publicador"
+        },
+        "cancel": "Cancelar",
+        "saving": "Guardando…",
+        "save": "Guardar"
+      },
+      "postTemplate": {
+        "menuLabel": "Plantilla de Post",
+        "dialogTitle": "Plantilla de Post: {{phaseName}}",
+        "choose": "Elegir plantilla…",
+        "clear": "Eliminar plantilla",
+        "clearConfirm": {
+          "title": "¿Eliminar la plantilla de Post?",
+          "description": "Se eliminará la plantilla de Post predeterminada para esta fase. Los nuevos Posts en esta fase no usarán ninguna plantilla predeterminada. Los Posts existentes no se verán afectados.",
+          "confirm": "Eliminar plantilla",
           "cancel": "Cancelar"
         }
       }

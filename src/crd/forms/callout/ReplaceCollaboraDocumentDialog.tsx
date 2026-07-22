@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react';
+import { AlertTriangle, Loader2 } from 'lucide-react';
 import { useId } from 'react';
 import { Button } from '@/crd/primitives/button';
 import {
@@ -98,7 +98,15 @@ export function ReplaceCollaboraDocumentDialog({
       <DialogContent className="z-[90] sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
         <DialogHeader className="shrink-0">
           <DialogTitle>{labels.dialogTitle}</DialogTitle>
-          <DialogDescription>{labels.description}</DialogDescription>
+          {/* The overwrite is irreversible, so the warning is a prominent
+              warning banner rather than muted description text — a caution, not an
+              error, matching CRD's other warning banners (e.g. WhiteboardCollabSettings).
+              It stays the Radix DialogDescription so it remains the dialog's accessible
+              description; the banner styling overrides the muted base via cn(). */}
+          <DialogDescription className="flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 p-3 text-caption text-foreground">
+            <AlertTriangle className="size-4 shrink-0 text-warning" aria-hidden="true" />
+            <span>{labels.description}</span>
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 flex-1 min-h-0 overflow-y-auto">

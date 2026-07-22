@@ -1,8 +1,14 @@
 import { useCallback, useState } from 'react';
 import { refetchUserSettingsQuery, useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { NotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
-import { buildNotificationUpdate, type ChannelType, type NotificationGroupId } from './notificationPayloadBuilders';
-import { overrideKey } from './userNotificationsMapper';
+import {
+  buildNotificationUpdate,
+  buildSoundUpdate,
+  type ChannelType,
+  type NotificationGroupId,
+  type SoundKey,
+} from './notificationPayloadBuilders';
+import { overrideKey, soundOverrideKey } from './userNotificationsMapper';
 
 export type UseUserNotificationsTabDataParams = {
   userId: string | undefined;
@@ -13,6 +19,8 @@ export type UseUserNotificationsTabDataResult = {
   /** Map<key, boolean> applied on top of server values for instant UI feedback. */
   overrides: Map<string, boolean>;
   onToggle: (group: NotificationGroupId, property: string, type: ChannelType, next: boolean) => Promise<void>;
+  /** Toggle a single sound preference; same optimistic-override + revert flow as `onToggle`. */
+  onToggleSound: (key: SoundKey, next: boolean) => Promise<void>;
 };
 
 /**
@@ -83,7 +91,35 @@ export const useUserNotificationsTabData = ({
     [userId, serverSettings, updateUserSettings, setOverride, clearOverride]
   );
 
-  return { overrides, onToggle };
+  const onToggleSound = useCallback(
+    async (key: SoundKey, next: boolean) => {
+      if (!userId) return;
+      const overrideK = soundOverrideKey(key);
+      // 1) Optimistic flip.
+      setOverride(overrideK, next);
+      try {
+        // Emit only the changed key — the server merges field-by-field, so the
+        // sibling sound preference is left untouched.
+        const settings = buildSoundUpdate(key, next);
+        await updateUserSettings({
+          variables: {
+            settingsData: { userID: userId, settings },
+          },
+          refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
+          awaitRefetchQueries: true,
+        });
+        // 2) Success → drop the override.
+        clearOverride(overrideK);
+      } catch (err) {
+        // 3) Hard failure → rollback + bubble for toast.
+        clearOverride(overrideK);
+        throw err;
+      }
+    },
+    [userId, updateUserSettings, setOverride, clearOverride]
+  );
+
+  return { overrides, onToggle, onToggleSound };
 };
 
 export default useUserNotificationsTabData;

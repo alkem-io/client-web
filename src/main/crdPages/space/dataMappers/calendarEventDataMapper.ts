@@ -20,6 +20,7 @@ import type {
   CalendarEventImportUrlsQuery,
   CalendarEventInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { fromWholeDayWire } from '@/core/utils/time/wholeDayDate';
 
 // -----------------------------------------------------------------------------
 // CRD prop types (re-declared here per project convention — no barrel imports
@@ -108,11 +109,18 @@ export type AddToCalendarLinks = {
 // US6 (T035). This T005 task scaffolds the module + types only.
 // -----------------------------------------------------------------------------
 
+// A whole-day event's startDate is UTC-midnight of its calendar date; render it
+// as a local "floating" date so the day is correct for any viewer timezone. Timed
+// events keep their real instant.
+function toDisplayDate(startDate: string | Date, wholeDay: boolean): Date {
+  return wholeDay ? fromWholeDayWire(startDate) : new Date(startDate);
+}
+
 export function mapCalendarEventInfoToSidebarItem(event: CalendarEventInfoFragment): SidebarEventItem {
   return {
     id: event.id,
     title: event.profile.displayName,
-    startDate: event.startDate ? new Date(event.startDate) : undefined,
+    startDate: event.startDate ? toDisplayDate(event.startDate, event.wholeDay) : undefined,
     url: event.profile.url,
   };
 }
@@ -122,7 +130,7 @@ export function mapCalendarEventInfoToListItem(event: CalendarEventInfoFragment)
     id: event.id,
     title: event.profile.displayName,
     description: event.profile.description,
-    startDate: event.startDate ? new Date(event.startDate) : undefined,
+    startDate: event.startDate ? toDisplayDate(event.startDate, event.wholeDay) : undefined,
     durationMinutes: event.durationMinutes,
     durationDays: event.durationDays,
     wholeDay: event.wholeDay,
@@ -180,7 +188,7 @@ export function mapCalendarEventDetailsToDetailData(
       uri: ref.uri,
       description: ref.description,
     })),
-    startDate: event.startDate ? new Date(event.startDate) : undefined,
+    startDate: event.startDate ? toDisplayDate(event.startDate, event.wholeDay) : undefined,
     durationMinutes: event.durationMinutes,
     durationDays: event.durationDays,
     wholeDay: event.wholeDay,
