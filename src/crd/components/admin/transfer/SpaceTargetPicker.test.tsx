@@ -82,6 +82,12 @@ describe('SpaceTargetPicker', () => {
     expect(btn?.getAttribute('aria-pressed')).toBe('true');
   });
 
+  test('the results container uses group role with accessible name', () => {
+    renderPicker();
+    const group = screen.getByRole('group', { name: 'Pick a space' });
+    expect(group).toBeDefined();
+  });
+
   test('disabled prop disables all buttons', () => {
     renderPicker({ disabled: true });
     const buttons = screen.getAllByRole('button');

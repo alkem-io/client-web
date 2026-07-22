@@ -19856,7 +19856,9 @@ export const MoveSpaceL1ToL0Document = gql`
   ) {
     id
     about {
+      id
       profile {
+        id
         url
       }
     }
@@ -19913,7 +19915,9 @@ export const MoveSpaceL1ToL2Document = gql`
   ) {
     id
     about {
+      id
       profile {
+        id
         url
       }
     }
@@ -20142,7 +20146,9 @@ export const MoveSpaceL2ToL1Document = gql`
     id
     level
     about {
+      id
       profile {
+        id
         url
       }
     }

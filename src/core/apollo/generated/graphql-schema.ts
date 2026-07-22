@@ -26812,7 +26812,7 @@ export type MoveSpaceL1ToL0Mutation = {
   moveSpaceL1ToSpaceL0: {
     __typename?: 'Space';
     id: string;
-    about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; url: string } };
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
   };
 };
 
@@ -26828,7 +26828,7 @@ export type MoveSpaceL1ToL2Mutation = {
   moveSpaceL1ToSpaceL2: {
     __typename?: 'Space';
     id: string;
-    about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; url: string } };
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
   };
 };
 
@@ -26891,7 +26891,7 @@ export type MoveSpaceL2ToL1Mutation = {
     __typename?: 'Space';
     id: string;
     level: SpaceLevel;
-    about: { __typename?: 'SpaceAbout'; profile: { __typename?: 'Profile'; url: string } };
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
   };
 };
 

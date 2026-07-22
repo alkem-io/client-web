@@ -111,7 +111,9 @@ mutation MoveSpaceL1ToL0(
   ) {
     id
     about {
+      id
       profile {
+        id
         url
       }
     }
@@ -134,7 +136,9 @@ mutation MoveSpaceL1ToL2(
   ) {
     id
     about {
+      id
       profile {
+        id
         url
       }
     }
@@ -191,7 +195,9 @@ mutation MoveSpaceL2ToL1(
     id
     level
     about {
+      id
       profile {
+        id
         url
       }
     }

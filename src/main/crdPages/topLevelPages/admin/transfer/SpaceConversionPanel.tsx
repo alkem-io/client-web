@@ -44,6 +44,9 @@ export function SpaceConversionPanel() {
 
   const [parentId, setParentId] = useState('');
   const [pendingOp, setPendingOp] = useState<PendingOp>(null);
+  // US1 (L1→L0) has its own dedicated state — decoupled from US3's moveTargetL0Id
+  const [moveL1L0TargetId, setMoveL1L0TargetId] = useState('');
+  // US2 (L2→L1) and US3 (L1→L2) share these; they are mutually exclusive by level
   const [moveTargetL0Id, setMoveTargetL0Id] = useState('');
   const [moveTargetL1Id, setMoveTargetL1Id] = useState('');
   const [moveError, setMoveError] = useState<string | undefined>(undefined);
@@ -59,6 +62,7 @@ export function SpaceConversionPanel() {
 
   // Reset move state when a new space is resolved
   const onResolve = (url: string) => {
+    setMoveL1L0TargetId('');
     setMoveTargetL0Id('');
     setMoveTargetL1Id('');
     setMoveError(undefined);
@@ -84,9 +88,9 @@ export function SpaceConversionPanel() {
   const confirmMove = async () => {
     setMoveError(undefined);
     try {
-      if (pendingOp === 'movel1l0' && moveTargetL0Id) {
+      if (pendingOp === 'movel1l0' && moveL1L0TargetId) {
         await moveL1ToL0(
-          moveTargetL0Id,
+          moveL1L0TargetId,
           autoInvite || undefined,
           autoInvite && invitationMessage ? invitationMessage : undefined
         );
@@ -114,7 +118,7 @@ export function SpaceConversionPanel() {
 
   const moveConfirmDisabled =
     mutationLoading ||
-    (pendingOp === 'movel1l0' && !moveTargetL0Id) ||
+    (pendingOp === 'movel1l0' && !moveL1L0TargetId) ||
     ((pendingOp === 'movel1l2' || pendingOp === 'movel2l1') && !moveTargetL1Id);
 
   return (
@@ -212,11 +216,8 @@ export function SpaceConversionPanel() {
                   <span className="text-body-emphasis">{t('transfer.spaceMove.targetL0Label')}</span>
                   <SpaceTargetPicker
                     items={targetL0Spaces}
-                    value={moveTargetL0Id}
-                    onValueChange={id => {
-                      setMoveTargetL0Id(id);
-                      setMoveTargetL1Id('');
-                    }}
+                    value={moveL1L0TargetId}
+                    onValueChange={setMoveL1L0TargetId}
                     excludeIds={targetL0ExcludeIds}
                     placeholder={t('transfer.spaceMove.targetL0Placeholder')}
                     emptyLabel={t('transfer.spaceMove.targetL0Empty')}
@@ -227,7 +228,7 @@ export function SpaceConversionPanel() {
                     <Button
                       type="button"
                       variant="destructive"
-                      disabled={mutationLoading || !moveTargetL0Id}
+                      disabled={mutationLoading || !moveL1L0TargetId}
                       onClick={() => setPendingOp('movel1l0')}
                     >
                       {t('transfer.spaceMove.moveL1ToL0Label')}

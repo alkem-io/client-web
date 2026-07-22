@@ -96,8 +96,8 @@ describe('SpaceConversionPanel — Move section', () => {
       const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      // First select a target L0 space in the picker (first picker for movel1l0 flow)
-      const firstPicker = screen.getAllByRole('listbox')[0];
+      // First select a target L0 space in the picker (first group = US1 movel1l0 picker)
+      const firstPicker = screen.getAllByRole('group')[0];
       const targetBtn = within(firstPicker).getByText('Other Top-Level Space');
       await user.click(targetBtn);
 
@@ -118,7 +118,7 @@ describe('SpaceConversionPanel — Move section', () => {
       render(<SpaceConversionPanel />);
 
       // Select target L0
-      const firstPicker = screen.getAllByRole('listbox')[0];
+      const firstPicker = screen.getAllByRole('group')[0];
       await user.click(within(firstPicker).getByText('Other Top-Level Space'));
 
       const moveBtn = screen.getAllByRole('button').find(b => b.textContent === 'transfer.spaceMove.moveL1ToL0Label');
@@ -137,9 +137,9 @@ describe('SpaceConversionPanel — Move section', () => {
       const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      // Select target L0 in the first picker
-      const listboxes = screen.getAllByRole('listbox');
-      await user.click(within(listboxes[0]).getByText('Other Top-Level Space'));
+      // Select target L0 in the first group (US1 picker — decoupled from US3)
+      const groups = screen.getAllByRole('group');
+      await user.click(within(groups[0]).getByText('Other Top-Level Space'));
 
       const moveBtn = screen.getAllByRole('button').find(b => b.textContent === 'transfer.spaceMove.moveL1ToL0Label');
       await user.click(moveBtn as HTMLElement);
@@ -155,8 +155,8 @@ describe('SpaceConversionPanel — Move section', () => {
       const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      const listboxes = screen.getAllByRole('listbox');
-      await user.click(within(listboxes[0]).getByText('Other Top-Level Space'));
+      const groups = screen.getAllByRole('group');
+      await user.click(within(groups[0]).getByText('Other Top-Level Space'));
 
       const moveBtn = screen.getAllByRole('button').find(b => b.textContent === 'transfer.spaceMove.moveL1ToL0Label');
       await user.click(moveBtn as HTMLElement);
@@ -173,8 +173,8 @@ describe('SpaceConversionPanel — Move section', () => {
       const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      const listboxes = screen.getAllByRole('listbox');
-      await user.click(within(listboxes[0]).getByText('Other Top-Level Space'));
+      const groups = screen.getAllByRole('group');
+      await user.click(within(groups[0]).getByText('Other Top-Level Space'));
 
       const moveBtn = screen.getAllByRole('button').find(b => b.textContent === 'transfer.spaceMove.moveL1ToL0Label');
       await user.click(moveBtn as HTMLElement);
@@ -192,14 +192,26 @@ describe('SpaceConversionPanel — Move section', () => {
     });
 
     test('picker exclusions respected: own-l0 excluded (US1-AS3)', () => {
-      resolvedL1();
+      // Include an item whose id is in targetL0ExcludeIds so the filter is actually exercised
+      hookState = {
+        ...hookDefaults,
+        space: { id: 'l1-id', level: 'L1' },
+        resolvedLevel: 'L1',
+        levelZeroSpaceId: 'own-l0',
+        accountOwnerName: 'Test Owner',
+        siblingSubspaces: [{ id: 'sibling-l1', name: 'Sibling Subspace' }],
+        targetL0Spaces: [
+          { id: 'own-l0', displayName: 'Own L0 Space' },
+          { id: 'other-l0', displayName: 'Other Top-Level Space' },
+          { id: 'another-l0', displayName: 'Another Space' },
+        ],
+        targetL0ExcludeIds: ['own-l0'],
+      };
       render(<SpaceConversionPanel />);
-      const listboxes = screen.getAllByRole('listbox');
-      // 'own-l0' should not appear in the picker (excluded via targetL0ExcludeIds)
-      // Our mock data only has 'other-l0' and 'another-l0'; 'own-l0' is in excludeIds
-      // Both other-l0 and another-l0 appear, own-l0 does not
-      const itemTexts = Array.from(listboxes[0].querySelectorAll('button')).map(b => b.textContent);
-      expect(itemTexts).not.toContain('Own L0');
+      const groups = screen.getAllByRole('group');
+      // The US1 picker (groups[0]) must not show the excluded item, but must show non-excluded items
+      expect(within(groups[0]).queryByText('Own L0 Space')).toBeNull();
+      expect(within(groups[0]).getByText('Other Top-Level Space')).toBeDefined();
     });
 
     test('FR-015: success state shows new location link after move', () => {
@@ -217,10 +229,10 @@ describe('SpaceConversionPanel — Move section', () => {
     test('shows two-stage picker for L2 space', () => {
       resolvedL2();
       render(<SpaceConversionPanel />);
-      const listboxes = screen.getAllByRole('listbox');
+      const groups = screen.getAllByRole('group');
       // At least one L0 picker
-      expect(listboxes.length).toBeGreaterThanOrEqual(1);
-      expect(within(listboxes[0]).getByText('Other Top-Level Space')).toBeDefined();
+      expect(groups.length).toBeGreaterThanOrEqual(1);
+      expect(within(groups[0]).getByText('Other Top-Level Space')).toBeDefined();
     });
 
     test('FR-009: confirm dialog for L2→L1 has destructive description', async () => {
@@ -236,13 +248,24 @@ describe('SpaceConversionPanel — Move section', () => {
       const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      // Select L0 then L1
-      const listboxes = screen.getAllByRole('listbox');
-      await user.click(within(listboxes[0]).getByText('Other Top-Level Space'));
+      // Step 1: select an L0 target (reveals the L1 picker)
+      const groups = screen.getAllByRole('group');
+      await user.click(within(groups[0]).getByText('Other Top-Level Space'));
 
-      // After L0 selection, a second picker may be shown. Let's click the move button
+      // Step 2: select an L1 target (picker is now visible)
+      const updatedGroups = screen.getAllByRole('group');
+      const l1Picker = updatedGroups[updatedGroups.length - 1];
+      await user.click(within(l1Picker).getByText('Target L1 Subspace'));
+
+      // Step 3: click the Move L2→L1 button (now enabled)
       const moveBtn = screen.getAllByRole('button').find(b => b.textContent === 'transfer.spaceMove.moveL2ToL1Label');
       expect(moveBtn).toBeDefined();
+      await user.click(moveBtn as HTMLElement);
+
+      // Step 4: confirm dialog must show destructive description (FR-009)
+      const dialog = screen.getByRole('alertdialog');
+      expect(within(dialog).getByText('transfer.spaceMove.confirmDescription')).toBeDefined();
+      expect(within(dialog).getByText('transfer.spaceMove.confirmTitle')).toBeDefined();
     });
 
     test('error from server rejection (US2-AS3 same-L0) is shown in panel', async () => {
@@ -254,12 +277,12 @@ describe('SpaceConversionPanel — Move section', () => {
       render(<SpaceConversionPanel />);
 
       // Step 1: select an L0 target (this reveals the L1 picker)
-      const listboxes = screen.getAllByRole('listbox');
-      await user.click(within(listboxes[0]).getByText('Other Top-Level Space'));
+      const groups = screen.getAllByRole('group');
+      await user.click(within(groups[0]).getByText('Other Top-Level Space'));
 
       // Step 2: select an L1 target (picker is now visible because moveTargetL0Id is set)
-      const updatedListboxes = screen.getAllByRole('listbox');
-      const l1Picker = updatedListboxes[updatedListboxes.length - 1];
+      const updatedGroups = screen.getAllByRole('group');
+      const l1Picker = updatedGroups[updatedGroups.length - 1];
       await user.click(within(l1Picker).getByText('Target L1 Subspace'));
 
       // Step 3: click the Move L2→L1 button (now enabled)
@@ -293,16 +316,14 @@ describe('SpaceConversionPanel — Move section', () => {
       const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      // Step 1: select an L0 target in the L1→L2 section (second listbox group)
-      // Both L0 pickers share moveTargetL0Id state; use the second listbox which
-      // belongs to the L1→L2 section and triggers handleMoveL0Select
-      const listboxes = screen.getAllByRole('listbox');
-      // listboxes[0] = L1→L0 picker, listboxes[1] = L1→L2 L0 picker
-      await user.click(within(listboxes[1]).getByText('Other Top-Level Space'));
+      // Step 1: select an L0 target in the L1→L2 section (second group)
+      // groups[0] = US1 L1→L0 picker (now has its own state), groups[1] = US3 L1→L2 L0 picker
+      const groups = screen.getAllByRole('group');
+      await user.click(within(groups[1]).getByText('Other Top-Level Space'));
 
       // Step 2: select an L1 target (picker appears after L0 selection)
-      const updatedListboxes = screen.getAllByRole('listbox');
-      const l1Picker = updatedListboxes[updatedListboxes.length - 1];
+      const updatedGroups = screen.getAllByRole('group');
+      const l1Picker = updatedGroups[updatedGroups.length - 1];
       await user.click(within(l1Picker).getByText('Target L1 Subspace'));
 
       // Step 3: click the Move L1→L2 button (now enabled)

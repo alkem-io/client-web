@@ -41,10 +41,10 @@ export function SpaceTargetPicker({
   return (
     <div className="flex flex-col gap-2">
       <SearchField value={search} onValueChange={setSearch} placeholder={placeholder} ariaLabel={placeholder} />
+      {/* biome-ignore lint/a11y/useSemanticElements: role="group" is correct here — children are aria-pressed toggle buttons, not form controls. <fieldset> is for form-control grouping and is not a valid substitute for a button-group container. */}
       <div
-        role="listbox"
+        role="group"
         aria-label={placeholder}
-        tabIndex={0}
         className="flex max-h-48 flex-col gap-0.5 overflow-y-auto rounded-lg border border-border bg-background p-1"
       >
         {loading && (
