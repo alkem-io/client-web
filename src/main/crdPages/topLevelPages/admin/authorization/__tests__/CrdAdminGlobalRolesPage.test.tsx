@@ -34,7 +34,7 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', () => ({
       'GLOBAL_SUPPORT_MANAGER',
       'PLATFORM_BETA_TESTER',
       'PLATFORM_VC_CAMPAIGN',
-      'SERVICE_ADMIN',
+      'PLATFORM_OPERATIONS_ADMIN',
     ],
   },
   default: () => ({

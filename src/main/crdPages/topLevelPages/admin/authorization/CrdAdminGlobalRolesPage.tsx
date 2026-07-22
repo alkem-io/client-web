@@ -90,7 +90,7 @@ const CrdAdminGlobalRolesPage = () => {
     [RoleName.GlobalSpacesReader]: t('roles.GLOBAL_SPACES_READER'),
     [RoleName.GlobalPlatformManager]: t('roles.GLOBAL_PLATFORM_MANAGER'),
     [RoleName.GlobalSupportManager]: t('roles.GLOBAL_SUPPORT_MANAGER'),
-    [RoleName.ServiceAdmin]: t('roles.SERVICE_ADMIN'),
+    [RoleName.PlatformOperationsAdmin]: t('roles.PLATFORM_OPERATIONS_ADMIN'),
     [RoleName.PlatformBetaTester]: t('roles.PLATFORM_BETA_TESTER'),
     [RoleName.PlatformVcCampaign]: t('roles.PLATFORM_VC_CAMPAIGN'),
     [RoleName.PlatformAssistantAccess]: t('roles.PLATFORM_ASSISTANT_ACCESS'),
