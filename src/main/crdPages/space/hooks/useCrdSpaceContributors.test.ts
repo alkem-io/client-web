@@ -9,7 +9,9 @@ const mockFetchByType = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useContributorCollectionConfigQuery: (opts: unknown) => mockUseConfigQuery(opts),
-  useContributorCollectionByTypeLazyQuery: () => [mockFetchByType],
+  // Apollo's useLazyQuery returns [execute, resultObject]; the hook reads the
+  // result's `data`/`variables` to sync refetched cards, so provide both.
+  useContributorCollectionByTypeLazyQuery: () => [mockFetchByType, { data: undefined, variables: undefined }],
 }));
 
 import { useCrdSpaceContributors } from './useCrdSpaceContributors';

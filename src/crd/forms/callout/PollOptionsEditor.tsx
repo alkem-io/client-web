@@ -6,13 +6,13 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { BarChart3, GripVertical, Plus, Trash2 } from 'lucide-react';
+import { BarChart3, GripVertical, Lock, LockOpen, Plus, Trash2 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { Switch } from '@/crd/primitives/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 export const MIN_POLL_OPTIONS = 2;
 export const MAX_POLL_OPTIONS = 10;
@@ -174,9 +174,36 @@ export function PollOptionsEditor({
 
   return (
     <div className={cn('space-y-3 p-4 border rounded-xl bg-muted/30', className)}>
-      <div className="flex items-center gap-2 mb-2">
-        <BarChart3 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-        <span className="text-body-emphasis">{t('callout.poll')}</span>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+          <span className="text-body-emphasis">{t('callout.poll')}</span>
+        </div>
+
+        {/* The lock is both the state indicator and the toggle: the icon shows what the
+            poll IS (open padlock / closed padlock) while the label names what clicking
+            DOES. The tooltip describes the current state, so all three never collide. */}
+        {pollStatus && onStatusChange && (
+          <Tooltip>
+            <TooltipTrigger asChild={true}>
+              <button
+                type="button"
+                onClick={() => onStatusChange(pollStatus === 'closed' ? 'open' : 'closed')}
+                className="flex items-center gap-1.5 rounded-md px-2 py-1 text-caption text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+              >
+                {pollStatus === 'closed' ? (
+                  <Lock className="w-3.5 h-3.5" aria-hidden="true" />
+                ) : (
+                  <LockOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                )}
+                {pollStatus === 'closed' ? t('pollForm.reopenPoll') : t('pollForm.closePoll')}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {pollStatus === 'closed' ? t('pollForm.closePollHint.closed') : t('pollForm.closePollHint.open')}
+            </TooltipContent>
+          </Tooltip>
+        )}
       </div>
 
       <div className="space-y-1">
@@ -233,19 +260,7 @@ export function PollOptionsEditor({
           {isClosed && <span className="text-caption text-muted-foreground">{t('poll.status.closed')}</span>}
         </div>
 
-        <div className="flex items-center gap-2">
-          {pollStatus && onStatusChange && (
-            <div className="flex items-center gap-2 cursor-pointer text-caption text-muted-foreground">
-              <Switch
-                checked={pollStatus === 'open'}
-                onCheckedChange={checked => onStatusChange(checked ? 'open' : 'closed')}
-                aria-label={pollStatus === 'open' ? t('pollForm.openPoll') : t('pollForm.closePoll')}
-              />
-              {pollStatus === 'open' ? t('pollForm.openPoll') : t('pollForm.closePoll')}
-            </div>
-          )}
-          {settingsSlot}
-        </div>
+        <div className="flex items-center gap-2">{settingsSlot}</div>
       </div>
       <ConfirmationDialog
         open={pendingDeleteIndex !== null}

@@ -8,6 +8,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { MentionSuggestionItem } from './MentionSuggestionItem';
+import { MENTION_MARKUP, mapPlainIndexToMarkupIndex } from './mentionMarkup';
 import type { CommentAuthor, CrdMentionSearch, CrdMentionSuggestion } from './types';
 
 type CommentInputProps = {
@@ -34,7 +35,6 @@ type CommentInputProps = {
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
 
 const MAX_ROWS = 5;
-const MENTION_MARKUP = '[@__display__](__id__)';
 
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
@@ -146,9 +146,19 @@ export function CommentInput({
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const next = `${content.slice(0, start)}${insertion}${content.slice(end)}`;
+    // With mentions on, `content` holds react-mentions markup (`[@Name](id)`)
+    // while the textarea's selection indexes the plain text it renders
+    // (`@Name`). Splicing markup at a raw selection index lands inside a
+    // mention — the insertion either joins the display name or disappears into
+    // the id, which is never rendered. Map the indices first.
+    const start = mentionsEnabled
+      ? mapPlainIndexToMarkupIndex(content, textarea.selectionStart)
+      : { markupIndex: textarea.selectionStart, plainIndex: textarea.selectionStart };
+    const end = mentionsEnabled
+      ? mapPlainIndexToMarkupIndex(content, textarea.selectionEnd)
+      : { markupIndex: textarea.selectionEnd, plainIndex: textarea.selectionEnd };
+
+    const next = `${content.slice(0, start.markupIndex)}${insertion}${content.slice(end.markupIndex)}`;
 
     if (next.length > maxLength) return;
 
@@ -156,7 +166,7 @@ export function CommentInput({
 
     requestAnimationFrame(() => {
       textarea.focus();
-      const cursor = start + insertion.length;
+      const cursor = start.plainIndex + insertion.length;
       textarea.setSelectionRange(cursor, cursor);
     });
   };

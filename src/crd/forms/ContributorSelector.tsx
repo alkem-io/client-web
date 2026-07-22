@@ -13,8 +13,18 @@ export type ContributorSelectorUserResult = {
   location?: string;
 };
 
+/**
+ * A selected entry in the picker — supports users (existing invite flow),
+ * organizations, virtual contributors, and subspaces (feature 025 collection
+ * selection picker). Entries that are no longer eligible (member left, subspace
+ * deleted) carry `eligible: false` so the consumer can display a "no longer
+ * available" chip state and omit them on save.
+ */
 export type ContributorSelectorInvitee =
-  | { kind: 'user'; userId: string; displayName: string; avatarUrl?: string; location?: string }
+  | { kind: 'user'; userId: string; displayName: string; avatarUrl?: string; location?: string; eligible?: boolean }
+  | { kind: 'organization'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
+  | { kind: 'virtualContributor'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
+  | { kind: 'subspace'; id: string; displayName: string; avatarUrl?: string; eligible?: boolean }
   | { kind: 'email'; email: string; validationError?: 'invalid' | 'duplicate' };
 
 type ValidationErrorKind = 'invalid' | 'duplicate';
@@ -45,6 +55,27 @@ export type ContributorSelectorProps = {
   loadMoreLabel: string;
   removeAriaLabel: (label: string) => string;
   validationErrorLabel: (kind: ValidationErrorKind) => string;
+  /**
+   * Label shown in the tooltip on entries with `eligible: false`
+   * (feature 025 — member left, subspace deleted). Only required when the
+   * component is used as the collection selection picker (not invite flow).
+   */
+  ineligibleLabel?: string;
+
+  /**
+   * Aria-label for the clear-search "✕" button. The button is shown (for the
+   * collection selection picker — `allowEmailInvites=false`) whenever there is a
+   * query; provide this label to enable it.
+   */
+  clearSearchAriaLabel?: string;
+
+  /**
+   * Where the selected-entry chips render relative to the search input.
+   * `'below'` (default) keeps the invite-flow layout; `'above'` places the chips
+   * on top so the search-results dropdown (which drops below the input) never
+   * covers them — used by the feature-025 collection selection picker.
+   */
+  chipsPosition?: 'above' | 'below';
 
   className?: string;
 };
@@ -85,10 +116,18 @@ export function ContributorSelector({
   loadMoreLabel,
   removeAriaLabel,
   validationErrorLabel,
+  ineligibleLabel,
+  clearSearchAriaLabel,
+  chipsPosition = 'below',
   className,
 }: ContributorSelectorProps) {
   const trimmedQuery = searchQuery.trim();
   const showResults = trimmedQuery.length > 0;
+  // A clear "✕" button for the collection picker (the invite flow keeps its "Add"
+  // button in that corner instead). Enabled once a clear-label is supplied.
+  const showClear = !allowEmailInvites && trimmedQuery.length > 0 && Boolean(clearSearchAriaLabel);
+  // Exclude users already selected — covers user/org/vc/subspace picks that
+  // overlap with the userId-keyed result set.
   const selectedUserIds = new Set(
     selectedContributors.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
   );
@@ -125,8 +164,123 @@ export function ContributorSelector({
     onAddEmails(searchQuery);
   };
 
+  const handleClear = () => onSearchChange('');
+
+  // Selecting a result clears the query so the next search starts fresh and a
+  // fully-picked set doesn't leave a stale "no matching results" dropdown open.
+  const handleResultSelect = (userId: string) => {
+    onSelectUser(userId);
+    onSearchChange('');
+  };
+
+  const chipsBlock =
+    selectedContributors.length > 0 ? (
+      <ul className="flex flex-wrap gap-2">
+        {selectedContributors.map((contributor, index) => {
+          // Resolve display text and validation state per kind.
+          let labelText: string;
+          let validationError: 'invalid' | 'duplicate' | undefined;
+          let avatarUrl: string | undefined;
+          let chipKey: string;
+          let ineligible = false;
+
+          if (contributor.kind === 'user') {
+            labelText = contributor.displayName;
+            avatarUrl = contributor.avatarUrl;
+            chipKey = `user-${contributor.userId}`;
+            ineligible = contributor.eligible === false;
+          } else if (contributor.kind === 'organization') {
+            labelText = contributor.displayName;
+            avatarUrl = contributor.avatarUrl;
+            chipKey = `org-${contributor.id}`;
+            ineligible = contributor.eligible === false;
+          } else if (contributor.kind === 'virtualContributor') {
+            labelText = contributor.displayName;
+            avatarUrl = contributor.avatarUrl;
+            chipKey = `vc-${contributor.id}`;
+            ineligible = contributor.eligible === false;
+          } else if (contributor.kind === 'subspace') {
+            labelText = contributor.displayName;
+            avatarUrl = contributor.avatarUrl;
+            chipKey = `subspace-${contributor.id}`;
+            ineligible = contributor.eligible === false;
+          } else {
+            // email
+            labelText = contributor.email;
+            validationError = contributor.validationError;
+            chipKey = `email-${contributor.email}-${validationError ?? 'ok'}-${index}`;
+          }
+
+          const hasAvatarBased = contributor.kind !== 'email';
+          const isError = !!validationError || ineligible;
+
+          return (
+            <li key={chipKey}>
+              <span
+                className={cn(
+                  'inline-flex items-center gap-2 pr-1 pl-1 py-1 rounded-full border bg-background',
+                  isError ? 'border-destructive' : 'border-border'
+                )}
+              >
+                {hasAvatarBased ? (
+                  <Avatar className="size-6">
+                    {avatarUrl && <AvatarImage src={avatarUrl} alt="" />}
+                    <AvatarFallback className="text-badge">{getInitials(labelText)}</AvatarFallback>
+                  </Avatar>
+                ) : (
+                  <span
+                    className={cn(
+                      'inline-flex size-6 items-center justify-center rounded-full',
+                      validationError ? 'bg-destructive/10 text-destructive' : 'bg-muted text-muted-foreground'
+                    )}
+                    aria-hidden="true"
+                  >
+                    <Mail className="size-3.5" />
+                  </span>
+                )}
+                <span
+                  className={cn(
+                    'text-control max-w-[14rem] truncate',
+                    ineligible && 'text-muted-foreground line-through'
+                  )}
+                  title={labelText}
+                >
+                  {labelText}
+                </span>
+                {(validationError || ineligible) && (
+                  <Tooltip>
+                    <TooltipTrigger asChild={true}>
+                      <span
+                        role="img"
+                        aria-label={validationError ? validationErrorLabel(validationError) : (ineligibleLabel ?? '')}
+                        className="inline-flex size-5 items-center justify-center text-destructive"
+                      >
+                        <AlertCircle className="size-4" aria-hidden="true" />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {validationError ? validationErrorLabel(validationError) : (ineligibleLabel ?? '')}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                <button
+                  type="button"
+                  onClick={() => onRemoveContributor(index)}
+                  className="rounded-full p-0.5 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+                  aria-label={removeAriaLabel(labelText)}
+                >
+                  <X className="size-3" aria-hidden="true" />
+                </button>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    ) : null;
+
   return (
     <div className={cn('flex flex-col gap-2', className)}>
+      {chipsPosition === 'above' && chipsBlock}
       <div className="relative">
         <Search
           className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none"
@@ -139,7 +293,7 @@ export function ContributorSelector({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           aria-label={searchAriaLabel}
-          className={cn('pl-9', allowEmailInvites && trimmedQuery.length > 0 && 'pr-20')}
+          className={cn('pl-9', allowEmailInvites && trimmedQuery.length > 0 && 'pr-20', showClear && 'pr-9')}
           autoComplete="off"
         />
 
@@ -156,6 +310,17 @@ export function ContributorSelector({
           </Button>
         )}
 
+        {showClear && (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="absolute right-1 top-1/2 -translate-y-1/2 inline-flex size-6 items-center justify-center rounded-full text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:bg-accent focus-visible:outline-none"
+            aria-label={clearSearchAriaLabel}
+          >
+            <X className="size-4" aria-hidden="true" />
+          </button>
+        )}
+
         {showResults && (
           <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-md border border-border bg-popover shadow-md max-h-60 overflow-y-auto">
             {loading && visibleResults.length === 0 ? (
@@ -170,7 +335,7 @@ export function ContributorSelector({
                   <li key={user.userId}>
                     <button
                       type="button"
-                      onClick={() => onSelectUser(user.userId)}
+                      onClick={() => handleResultSelect(user.userId)}
                       className="flex w-full items-center gap-3 px-3 py-2 text-left hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
                     >
                       <Avatar className="size-8">
@@ -196,71 +361,7 @@ export function ContributorSelector({
           </div>
         )}
       </div>
-
-      {selectedContributors.length > 0 && (
-        <ul className="flex flex-wrap gap-2">
-          {selectedContributors.map((contributor, index) => {
-            const labelText = contributor.kind === 'user' ? contributor.displayName : contributor.email;
-            const validationError = contributor.kind === 'email' ? contributor.validationError : undefined;
-            const chipKey =
-              contributor.kind === 'user'
-                ? `user-${contributor.userId}`
-                : `email-${contributor.email}-${validationError ?? 'ok'}-${index}`;
-            return (
-              <li key={chipKey}>
-                <span
-                  className={cn(
-                    'inline-flex items-center gap-2 pr-1 pl-1 py-1 rounded-full border bg-background',
-                    validationError ? 'border-destructive' : 'border-border'
-                  )}
-                >
-                  {contributor.kind === 'user' ? (
-                    <Avatar className="size-6">
-                      {contributor.avatarUrl && <AvatarImage src={contributor.avatarUrl} alt="" />}
-                      <AvatarFallback className="text-badge">{getInitials(contributor.displayName)}</AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <span
-                      className={cn(
-                        'inline-flex size-6 items-center justify-center rounded-full',
-                        validationError ? 'bg-destructive/10 text-destructive' : 'bg-muted text-muted-foreground'
-                      )}
-                      aria-hidden="true"
-                    >
-                      <Mail className="size-3.5" />
-                    </span>
-                  )}
-                  <span className="text-control max-w-[14rem] truncate" title={labelText}>
-                    {labelText}
-                  </span>
-                  {validationError && (
-                    <Tooltip>
-                      <TooltipTrigger asChild={true}>
-                        <span
-                          role="img"
-                          aria-label={validationErrorLabel(validationError)}
-                          className="inline-flex size-5 items-center justify-center text-destructive"
-                        >
-                          <AlertCircle className="size-4" aria-hidden="true" />
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent>{validationErrorLabel(validationError)}</TooltipContent>
-                    </Tooltip>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => onRemoveContributor(index)}
-                    className="rounded-full p-0.5 hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-                    aria-label={removeAriaLabel(labelText)}
-                  >
-                    <X className="size-3" aria-hidden="true" />
-                  </button>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      {chipsPosition === 'below' && chipsBlock}
     </div>
   );
 }

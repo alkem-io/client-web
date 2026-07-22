@@ -7,12 +7,15 @@ type CrdSubspaceIndexDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   calloutsSetId: string | undefined;
+  /** Flow state names in innovation-flow order, so the index groups match the tab strip. */
+  phaseNames: string[];
 };
 
 export function CrdSubspaceIndexDialogConnector({
   open,
   onOpenChange,
   calloutsSetId,
+  phaseNames,
 }: CrdSubspaceIndexDialogConnectorProps) {
   const { t } = useTranslation('crd-subspace');
 
@@ -32,10 +35,18 @@ export function CrdSubspaceIndexDialogConnector({
       arr.push(c);
       map.set(state, arr);
     });
-    return Array.from(map.entries()).map(([state, items]) => ({
-      state,
-      items: [...(items ?? [])].sort((a, b) => a.sortOrder - b.sortOrder),
-    }));
+    // Groups follow the innovation-flow order shown in the tab strip; any state
+    // no longer in the flow (or the "—" bucket) trails behind it.
+    const orderOf = (state: string) => {
+      const index = phaseNames.indexOf(state);
+      return index === -1 ? Number.MAX_SAFE_INTEGER : index;
+    };
+    return Array.from(map.entries())
+      .map(([state, items]) => ({
+        state,
+        items: [...(items ?? [])].sort((a, b) => a.sortOrder - b.sortOrder),
+      }))
+      .sort((a, b) => orderOf(a.state) - orderOf(b.state));
   })();
 
   return (

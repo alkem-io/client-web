@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
     "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
     "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
+    "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
     "contributors": "Contributors",
     "subspaces": "Subspaces"
   },
@@ -570,7 +571,28 @@
     "removeOption": "Optie verwijderen",
     "allowComments": "Reacties toestaan",
     "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing.",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Handmatige selectie",
+      "contributors": {
+        "autoDescription": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
+        "customDescription": "Toont alleen de contributors die je selecteert."
+      },
+      "spaces": {
+        "autoDescription": "Toont automatisch alle subspaces en wordt bijgewerkt wanneer ze worden toegevoegd of verwijderd.",
+        "customDescription": "Toont alleen de subspaces die je hieronder selecteert."
+      },
+      "noLongerAvailable": "Niet meer beschikbaar",
+      "searchPlaceholder": "Leden zoeken…",
+      "searchAriaLabel": "Leden zoeken",
+      "searchSubspacePlaceholder": "Subspaces zoeken…",
+      "searchSubspaceAriaLabel": "Subspaces zoeken",
+      "noResults": "Geen overeenkomende resultaten",
+      "loading": "Laden…",
+      "loadMore": "Meer laden…",
+      "removeAriaLabel": "{{name}} verwijderen",
+      "clearSearch": "Zoekopdracht wissen"
+    }
   },
   "contributionSettings": {
     "heading": "Reacties",
@@ -724,7 +746,38 @@
         "unauthenticated": "Meld je aan om dit document te bewerken.",
         "contentUpdatePolicy": "Je hebt geen toestemming om dit document te bewerken. Vraag de eigenaar om de deelinstellingen te wijzigen.",
         "noMembership": "Alleen leden van deze space kunnen dit document bewerken. Word lid om bij te dragen."
+      },
+      "disconnect": {
+        "atRisk": "Verbinding verbroken — recente wijzigingen zijn mogelijk niet opgeslagen",
+        "status": "Verbinding verbroken",
+        "cause": {
+          "network": "Je lijkt offline te zijn.",
+          "tokenExpiry": "Je bewerkingssessie is verlopen.",
+          "service": "Een service is tijdelijk niet beschikbaar.",
+          "unknown": "Verbinding verloren.",
+          "unloading": "Het document wordt nog afgesloten van een vorige sessie. Probeer het zo meteen opnieuw."
+        },
+        "reconnect": "Opnieuw verbinden",
+        "reload": "Herladen",
+        "terminal": {
+          "notFound": "Dit document is niet meer beschikbaar.",
+          "forbidden": "Je hebt geen toegang meer tot dit document.",
+          "generic": "Dit document kan niet opnieuw worden geopend."
+        },
+        "warning": {
+          "reconnectTitle": "Editor opnieuw verbinden?",
+          "reconnectBody": "Hiermee wordt de huidige bewerkingssessie beëindigd en het document ter plekke opnieuw geopend — de pagina wordt niet opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reconnectConfirm": "Opnieuw verbinden",
+          "reloadTitle": "Pagina opnieuw laden?",
+          "reloadBody": "Hiermee wordt de hele pagina opnieuw geladen en het document helemaal opnieuw geopend. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reloadConfirm": "Pagina opnieuw laden",
+          "cancel": "Annuleren"
+        },
+        "reconnecting": "Opnieuw verbinden…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Een service is niet beschikbaar. Sla lopend werk op, want niet-opgeslagen gegevens kunnen verloren gaan."
     }
   },
   "mediaGallery": {
@@ -877,8 +930,17 @@
     "settings.hideResultsUntilVoted": "Resultaten verbergen tot gebruiker heeft gestemd",
     "settings.showVoterAvatars": "Avatars van stemmers tonen",
     "settings.close": "Sluiten",
-    "openPoll": "Peiling is open",
-    "closePoll": "Peiling is gesloten",
+    "closePoll": "Peiling sluiten",
+    "reopenPoll": "Peiling heropenen",
+    "closePollHint": {
+      "open": "Deze peiling staat open voor stemmen",
+      "closed": "Niemand kan nog op deze peiling stemmen"
+    },
+    "statusChange": {
+      "closeSuccess": "De peiling is nu gesloten.",
+      "reopenSuccess": "De peiling staat nu open voor stemmen.",
+      "failed": "De status van de peiling kon niet worden gewijzigd. Probeer het opnieuw."
+    },
     "closePollConfirm": {
       "title": "Deze peiling sluiten?",
       "description": "Het sluiten van de peiling voorkomt nieuwe stemmen en vergrendelt bewerking. Je kunt deze later heropenen.",
@@ -936,7 +998,6 @@
     },
     "config": {
       "title": "Contributors",
-      "description": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
       "typesLabel": "Typen contributor",
       "typesHint": "Selecteer ten minste één type.",
       "defaultTypeLabel": "Standaardtype",
