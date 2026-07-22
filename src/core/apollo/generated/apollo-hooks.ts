@@ -19855,6 +19855,11 @@ export const MoveSpaceL1ToL0Document = gql`
     moveData: {spaceL1ID: $spaceL1ID, targetSpaceL0ID: $targetSpaceL0ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
   ) {
     id
+    about {
+      profile {
+        url
+      }
+    }
   }
 }
     `;
@@ -19907,6 +19912,11 @@ export const MoveSpaceL1ToL2Document = gql`
     moveData: {spaceL1ID: $spaceL1ID, targetSpaceL1ID: $targetSpaceL1ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
   ) {
     id
+    about {
+      profile {
+        url
+      }
+    }
   }
 }
     `;
@@ -20124,6 +20134,64 @@ export function refetchSpaceMoveTargetL1SubspacesQuery(
 ) {
   return { query: SpaceMoveTargetL1SubspacesDocument, variables: variables };
 }
+export const MoveSpaceL2ToL1Document = gql`
+    mutation MoveSpaceL2ToL1($spaceL2ID: UUID!, $targetSpaceL1ID: UUID!, $autoInvite: Boolean, $invitationMessage: String) {
+  moveSpaceL2ToSpaceL1(
+    moveData: {spaceL2ID: $spaceL2ID, targetSpaceL1ID: $targetSpaceL1ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
+  ) {
+    id
+    level
+    about {
+      profile {
+        url
+      }
+    }
+  }
+}
+    `;
+export type MoveSpaceL2ToL1MutationFn = Apollo.MutationFunction<
+  SchemaTypes.MoveSpaceL2ToL1Mutation,
+  SchemaTypes.MoveSpaceL2ToL1MutationVariables
+>;
+
+/**
+ * __useMoveSpaceL2ToL1Mutation__
+ *
+ * To run a mutation, you first call `useMoveSpaceL2ToL1Mutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveSpaceL2ToL1Mutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveSpaceL2ToL1Mutation, { data, loading, error }] = useMoveSpaceL2ToL1Mutation({
+ *   variables: {
+ *      spaceL2ID: // value for 'spaceL2ID'
+ *      targetSpaceL1ID: // value for 'targetSpaceL1ID'
+ *      autoInvite: // value for 'autoInvite'
+ *      invitationMessage: // value for 'invitationMessage'
+ *   },
+ * });
+ */
+export function useMoveSpaceL2ToL1Mutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MoveSpaceL2ToL1Mutation,
+    SchemaTypes.MoveSpaceL2ToL1MutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MoveSpaceL2ToL1Mutation, SchemaTypes.MoveSpaceL2ToL1MutationVariables>(
+    MoveSpaceL2ToL1Document,
+    options
+  );
+}
+export type MoveSpaceL2ToL1MutationHookResult = ReturnType<typeof useMoveSpaceL2ToL1Mutation>;
+export type MoveSpaceL2ToL1MutationResult = Apollo.MutationResult<SchemaTypes.MoveSpaceL2ToL1Mutation>;
+export type MoveSpaceL2ToL1MutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MoveSpaceL2ToL1Mutation,
+  SchemaTypes.MoveSpaceL2ToL1MutationVariables
+>;
 export const SpaceMoveSourceSubspacesDocument = gql`
     query SpaceMoveSourceSubspaces($spaceId: UUID!) {
   lookup {
