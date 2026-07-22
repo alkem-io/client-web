@@ -250,17 +250,29 @@ describe('SpaceConversionPanel — Move section', () => {
       const serverError = new Error('Same-L0 lateral not supported');
       moveL2ToL1.mockRejectedValueOnce(serverError);
 
-      // Trigger the move and expect error display handled in confirmMove
-      // We test via the hook throwing and the panel not crashing
       const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      // Select L0
+      // Step 1: select an L0 target (this reveals the L1 picker)
       const listboxes = screen.getAllByRole('listbox');
       await user.click(within(listboxes[0]).getByText('Other Top-Level Space'));
 
-      // Look for L1 picker items (since selectedTargetL0Id is initially empty in hook, targetL1Subspaces shows)
-      // Wait for any L1 items rendered
+      // Step 2: select an L1 target (picker is now visible because moveTargetL0Id is set)
+      const updatedListboxes = screen.getAllByRole('listbox');
+      const l1Picker = updatedListboxes[updatedListboxes.length - 1];
+      await user.click(within(l1Picker).getByText('Target L1 Subspace'));
+
+      // Step 3: click the Move L2→L1 button (now enabled)
+      const moveBtn = screen.getAllByRole('button').find(b => b.textContent === 'transfer.spaceMove.moveL2ToL1Label');
+      expect(moveBtn).toBeDefined();
+      await user.click(moveBtn as HTMLElement);
+
+      // Step 4: confirm in the dialog
+      const dialog = screen.getByRole('alertdialog');
+      await user.click(within(dialog).getByText('transfer.spaceMove.move'));
+
+      // Step 5: the rejected error message must be surfaced in the panel
+      expect(await screen.findByText('Same-L0 lateral not supported')).toBeInTheDocument();
     });
   });
 
@@ -278,11 +290,36 @@ describe('SpaceConversionPanel — Move section', () => {
       const serverError = new Error('Cannot exceed maximum nesting depth');
       moveL1ToL2.mockRejectedValueOnce(serverError);
 
+      const user = userEvent.setup();
       render(<SpaceConversionPanel />);
 
-      // The test ensures the panel does not crash — error is set via setMoveError
-      // In the test env, the ConfirmationDialog's onConfirm calls confirmMove which catches
-      expect(true).toBe(true);
+      // Step 1: select an L0 target in the L1→L2 section (second listbox group)
+      // Both L0 pickers share moveTargetL0Id state; use the second listbox which
+      // belongs to the L1→L2 section and triggers handleMoveL0Select
+      const listboxes = screen.getAllByRole('listbox');
+      // listboxes[0] = L1→L0 picker, listboxes[1] = L1→L2 L0 picker
+      await user.click(within(listboxes[1]).getByText('Other Top-Level Space'));
+
+      // Step 2: select an L1 target (picker appears after L0 selection)
+      const updatedListboxes = screen.getAllByRole('listbox');
+      const l1Picker = updatedListboxes[updatedListboxes.length - 1];
+      await user.click(within(l1Picker).getByText('Target L1 Subspace'));
+
+      // Step 3: click the Move L1→L2 button (now enabled)
+      const moveBtns = screen
+        .getAllByRole('button')
+        .filter(b => b.textContent === 'transfer.spaceMove.moveL1ToL2Label');
+      // The button is the last occurrence (the label text also appears as a section heading span)
+      const moveBtn = moveBtns[moveBtns.length - 1];
+      expect(moveBtn).toBeDefined();
+      await user.click(moveBtn as HTMLElement);
+
+      // Step 4: confirm in the dialog
+      const dialog = screen.getByRole('alertdialog');
+      await user.click(within(dialog).getByText('transfer.spaceMove.move'));
+
+      // Step 5: the rejected error message must be surfaced in the panel
+      expect(await screen.findByText('Cannot exceed maximum nesting depth')).toBeInTheDocument();
     });
   });
 
