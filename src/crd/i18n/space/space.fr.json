@@ -22,7 +22,7 @@
     "inactive": "Cet Espace est actuellement inactif."
   },
   "knowledge": {
-    "searchPlaceholder": "Rechercher dans la base de connaissances...",
+    "searchPlaceholder": "Rechercher...",
     "searchLabel": "Rechercher dans la base de connaissances",
     "noResults": "Aucun résultat",
     "search": {

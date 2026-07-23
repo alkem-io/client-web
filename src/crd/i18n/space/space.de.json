@@ -22,7 +22,7 @@
     "inactive": "Dieser Bereich ist derzeit inaktiv."
   },
   "knowledge": {
-    "searchPlaceholder": "Wissensdatenbank durchsuchen...",
+    "searchPlaceholder": "Suchen...",
     "searchLabel": "Wissensdatenbank durchsuchen",
     "noResults": "Keine Treffer",
     "search": {
