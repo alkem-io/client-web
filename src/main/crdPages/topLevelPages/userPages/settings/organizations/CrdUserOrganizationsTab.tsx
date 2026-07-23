@@ -6,22 +6,14 @@ import {
   useUserOrganizationIdsQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
-import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { type OrgRowData, UserOrganizationsTabView } from '@/crd/components/user/settings/UserOrganizationsTabView';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import CreateOrganizationDialog from '@/main/crdPages/topLevelPages/organizationPages/form/CreateOrganizationDialog';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import useOrganizationEnrichment from './useOrganizationEnrichment';
 import { filterOrganizations, mapUserOrganizations, type OrgRow } from './userOrganizationsMapper';
-
-/**
- * The standalone create route, gated on the same `CreateOrganization` platform
- * privilege as the button below. It deliberately does NOT point at
- * `/admin/organizations/new`: that whole tree additionally requires
- * `PlatformAdmin`, so non-admin creators were bounced to `/restricted`.
- */
-const CREATE_ORGANIZATION_URL = '/organization/new';
 
 type PendingDisassociate = { id: string; displayName: string; roleSetId: string };
 
@@ -36,12 +28,12 @@ type PendingDisassociate = { id: string; displayName: string; roleSetId: string 
  */
 const CrdUserOrganizationsTab = () => {
   const { t } = useTranslation('crd-contributorSettings');
-  const navigate = useNavigate();
   const notify = useNotification();
   const { userId } = useUserPageRouteContext();
   const { platformPrivilegeWrapper } = useCurrentUserContext();
   const showCreateButton =
     platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.CreateOrganization) ?? false;
+  const [createOpen, setCreateOpen] = useState(false);
 
   const { data, loading } = useUserOrganizationIdsQuery({
     variables: { userId: userId ?? '' },
@@ -100,9 +92,10 @@ const CrdUserOrganizationsTab = () => {
         onSearchChange={setSearch}
         onClearFilters={onClearFilters}
         showCreateButton={showCreateButton}
-        onCreateOrganization={() => navigate(CREATE_ORGANIZATION_URL)}
+        onCreateOrganization={() => setCreateOpen(true)}
         onDisassociate={onDisassociate}
       />
+      <CreateOrganizationDialog open={createOpen} onOpenChange={setCreateOpen} />
       <ConfirmationDialog
         open={Boolean(pendingDisassociate)}
         onOpenChange={open => {

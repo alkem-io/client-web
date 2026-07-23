@@ -6,8 +6,8 @@ const ADMIN_ORGANIZATIONS_URL = '/admin/organizations';
 
 /**
  * Routes the Organizations admin section: list (index), create (`new`), and
- * edit (`:orgId/edit`). The form page is shared with the standalone
- * `/organization/new` route; here it returns to the admin list on cancel/edit.
+ * edit (`:orgId/edit`). The form page returns to the admin list on cancel/edit.
+ * Non-admin creation uses `CreateOrganizationDialog` (user settings), not a route.
  */
 export const CrdAdminOrganizationsRoutes = () => (
   <Routes>

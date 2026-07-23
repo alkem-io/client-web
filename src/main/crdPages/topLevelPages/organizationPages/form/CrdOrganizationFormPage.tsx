@@ -19,21 +19,16 @@ import { useSeededFormState } from '@/main/crdPages/utils/useSeededFormState';
 import { EMPTY_ORG_FORM, mapOrgToFormValues, toCreateInput, toUpdateInput } from './orgFormMapper';
 
 type CrdOrganizationFormPageProps = {
-  /**
-   * Where Cancel / discard / a completed edit returns to. Omit to go back in
-   * history — used by the standalone `/organization/new` route, which can be
-   * reached from more than one place.
-   */
-  returnUrl?: string;
+  /** Where Cancel / discard / a completed edit returns to (the admin list). */
+  returnUrl: string;
 };
 
 /**
- * Organization create / edit page, shared by the platform-admin section
- * (`/admin/organizations/new` + `/:orgId/edit`) and the standalone create route
- * (`/organization/new`, open to holders of the `CreateOrganization` platform
- * privilege). Builds the single-submit input via the mapper; a successful
- * create lands on the new organization's profile, an edit returns to
- * `returnUrl`. A discard guard confirms before leaving with unsaved changes.
+ * Platform-admin organization create / edit page (`/admin/organizations/new` +
+ * `/:orgId/edit`). Builds the single-submit input via the mapper; a successful
+ * create lands on the new organization's profile, an edit returns to `returnUrl`
+ * (the admin list). A discard guard confirms before leaving with unsaved
+ * changes. Non-admin creation uses `CreateOrganizationDialog` instead.
  */
 const CrdOrganizationFormPage = ({ returnUrl }: CrdOrganizationFormPageProps) => {
   const { t } = useTranslation('crd-admin');
@@ -65,7 +60,7 @@ const CrdOrganizationFormPage = ({ returnUrl }: CrdOrganizationFormPageProps) =>
   const [updateOrg, { loading: updating }] = useUpdateOrganizationMutation();
   const submitting = creating || updating;
 
-  const goBack = () => (returnUrl ? navigate(returnUrl) : navigate(-1));
+  const goBack = () => navigate(returnUrl);
 
   const handleSubmit = () => {
     // Navigate/notify only on success; the global Apollo error handler surfaces
