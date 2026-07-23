@@ -2,6 +2,7 @@ import {
   CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
+  CalloutSelectionMode,
   CalloutVisibility,
   PollResultsDetail,
   PollResultsVisibility,
@@ -200,6 +201,17 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
         // when a locatable type remains).
         ...(framingType === CalloutFramingType.Contributors
           ? { contributors: contributorCollectionToServer(values.contributorCollection) }
+          : {}),
+        // Selection settings (feature 025) — sent for BOTH collection kinds.
+        // AUTO is the server default, but sending it explicitly keeps payloads
+        // consistent. Template capture will strip selectedIds server-side (FR-017/S10).
+        ...(framingType === CalloutFramingType.Contributors || framingType === CalloutFramingType.Spaces
+          ? {
+              selection: {
+                mode: values.selectionMode === 'custom' ? CalloutSelectionMode.Custom : CalloutSelectionMode.Auto,
+                selectedIds: values.selectedIds,
+              },
+            }
           : {}),
       },
       contribution: contributionSettings,
@@ -450,6 +462,16 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
       // update for the CONTRIBUTORS framing, healed to the server invariants.
       ...(framingType === CalloutFramingType.Contributors
         ? { contributors: contributorCollectionToServer(values.contributorCollection) }
+        : {}),
+      // Selection settings (feature 025) — sent for both collection kinds on update.
+      // Non-collection framing types never send selection (server rejects, FR-013 / S8).
+      ...(framingType === CalloutFramingType.Contributors || framingType === CalloutFramingType.Spaces
+        ? {
+            selection: {
+              mode: values.selectionMode === 'custom' ? CalloutSelectionMode.Custom : CalloutSelectionMode.Auto,
+              selectedIds: values.selectedIds,
+            },
+          }
         : {}),
     },
   };

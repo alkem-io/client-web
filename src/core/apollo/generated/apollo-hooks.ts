@@ -1064,6 +1064,10 @@ export const CalloutSettingsFullFragmentDoc = gql`
       defaultContributorType
       defaultView
     }
+    selection {
+      mode
+      selectedIds
+    }
   }
   visibility
 }
@@ -8262,6 +8266,79 @@ export type CollaboraEditorUrlQueryResult = Apollo.QueryResult<
 export function refetchCollaboraEditorUrlQuery(variables: SchemaTypes.CollaboraEditorUrlQueryVariables) {
   return { query: CollaboraEditorUrlDocument, variables: variables };
 }
+export const CollaboraServiceAvailableDocument = gql`
+    query CollaboraServiceAvailable($collaboraDocumentId: UUID!) {
+  collaboraServiceAvailable(collaboraDocumentID: $collaboraDocumentId)
+}
+    `;
+
+/**
+ * __useCollaboraServiceAvailableQuery__
+ *
+ * To run a query within a React component, call `useCollaboraServiceAvailableQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollaboraServiceAvailableQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollaboraServiceAvailableQuery({
+ *   variables: {
+ *      collaboraDocumentId: // value for 'collaboraDocumentId'
+ *   },
+ * });
+ */
+export function useCollaboraServiceAvailableQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  > &
+    ({ variables: SchemaTypes.CollaboraServiceAvailableQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >(CollaboraServiceAvailableDocument, options);
+}
+export function useCollaboraServiceAvailableLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >(CollaboraServiceAvailableDocument, options);
+}
+export function useCollaboraServiceAvailableSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.CollaboraServiceAvailableQuery,
+        SchemaTypes.CollaboraServiceAvailableQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.CollaboraServiceAvailableQuery,
+    SchemaTypes.CollaboraServiceAvailableQueryVariables
+  >(CollaboraServiceAvailableDocument, options);
+}
+export type CollaboraServiceAvailableQueryHookResult = ReturnType<typeof useCollaboraServiceAvailableQuery>;
+export type CollaboraServiceAvailableLazyQueryHookResult = ReturnType<typeof useCollaboraServiceAvailableLazyQuery>;
+export type CollaboraServiceAvailableSuspenseQueryHookResult = ReturnType<
+  typeof useCollaboraServiceAvailableSuspenseQuery
+>;
+export type CollaboraServiceAvailableQueryResult = Apollo.QueryResult<
+  SchemaTypes.CollaboraServiceAvailableQuery,
+  SchemaTypes.CollaboraServiceAvailableQueryVariables
+>;
+export function refetchCollaboraServiceAvailableQuery(variables: SchemaTypes.CollaboraServiceAvailableQueryVariables) {
+  return { query: CollaboraServiceAvailableDocument, variables: variables };
+}
 export const CreateCollaboraDocumentOnCalloutDocument = gql`
     mutation CreateCollaboraDocumentOnCallout($calloutId: UUID!, $collaboraDocument: CreateCollaboraDocumentInput!) {
   createContributionOnCallout(
@@ -13623,7 +13700,7 @@ export function refetchOrganizationAuthorizationQuery(variables: SchemaTypes.Org
 export const RolesOrganizationDocument = gql`
     query rolesOrganization($organizationId: UUID!) {
   rolesOrganization(
-    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO, INACTIVE]}}
+    rolesData: {actorID: $organizationId, filter: {visibilities: [ACTIVE, DEMO]}}
   ) {
     id
     spaces {
@@ -28253,6 +28330,9 @@ export const ContributorCollectionConfigDocument = gql`
             contributorTypes
             defaultContributorType
             defaultView
+          }
+          selection {
+            mode
           }
         }
       }

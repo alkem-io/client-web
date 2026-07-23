@@ -1298,6 +1298,20 @@ export type CalloutPostCreated = {
   sortOrder: Scalars['Float']['output'];
 };
 
+/** The selection mode for a collection callout (Contributors or Subspaces). AUTO (default) returns the full computed set; CUSTOM restricts to the admin-curated selectedIds list. */
+export enum CalloutSelectionMode {
+  Auto = 'AUTO',
+  Custom = 'CUSTOM',
+}
+
+export type CalloutSelectionSettings = {
+  __typename?: 'CalloutSelectionSettings';
+  /** The selection mode: AUTO (full computed set) or CUSTOM (admin-curated subset). */
+  mode: CalloutSelectionMode;
+  /** The selected actor/space IDs in CUSTOM mode (0–500 entries). Ignored when mode is AUTO. */
+  selectedIds: Array<Scalars['ID']['output']>;
+};
+
 export type CalloutSettings = {
   __typename?: 'CalloutSettings';
   /** Callout Contribution Settings. */
@@ -1326,6 +1340,8 @@ export type CalloutSettingsFraming = {
   commentsEnabled: Scalars['Boolean']['output'];
   /** Configuration for a contributor-collection callout. Present only when framing.type = CONTRIBUTORS. */
   contributors?: Maybe<CalloutContributorsSettings>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Absent / null ⇒ AUTO (full computed set). */
+  selection?: Maybe<CalloutSelectionSettings>;
 };
 
 export enum CalloutVisibility {
@@ -1426,7 +1442,7 @@ export enum CollaboraDocumentType {
 
 export type CollaboraEditorUrlResult = {
   __typename?: 'CollaboraEditorUrlResult';
-  /** The time-to-live of the access token in seconds. */
+  /** When the access token expires, as an absolute Unix timestamp in milliseconds (the WOPI access_token_ttl passed through from the WOPI host); 0 means it does not expire. */
   accessTokenTTL: Scalars['Float']['output'];
   /** The URL to open the document in the Collabora editor. */
   editorUrl: Scalars['String']['output'];
@@ -2081,6 +2097,21 @@ export type CreateCalloutOnCalloutsSetInput = {
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type CreateCalloutSelectionSettingsData = {
+  __typename?: 'CreateCalloutSelectionSettingsData';
+  /** The selection mode (AUTO or CUSTOM). Defaults to AUTO when omitted. */
+  mode?: Maybe<CalloutSelectionMode>;
+  /** The curated selection of actor/space IDs (CUSTOM mode). At most 500. Deduplicated by the server. */
+  selectedIds?: Maybe<Array<Scalars['ID']['output']>>;
+};
+
+export type CreateCalloutSelectionSettingsInput = {
+  /** The selection mode (AUTO or CUSTOM). Defaults to AUTO when omitted. */
+  mode?: InputMaybe<CalloutSelectionMode>;
+  /** The curated selection of actor/space IDs (CUSTOM mode). At most 500. Deduplicated by the server. */
+  selectedIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
 export type CreateCalloutSettingsContributionData = {
   __typename?: 'CreateCalloutSettingsContributionData';
   /** Allowed Contribution types. */
@@ -2118,6 +2149,8 @@ export type CreateCalloutSettingsFramingData = {
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
   contributors?: Maybe<CreateCalloutContributorsSettingsData>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
+  selection?: Maybe<CreateCalloutSelectionSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
@@ -2125,6 +2158,8 @@ export type CreateCalloutSettingsFramingInput = {
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
   contributors?: InputMaybe<CreateCalloutContributorsSettingsInput>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
+  selection?: InputMaybe<CreateCalloutSelectionSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -7073,6 +7108,8 @@ export type Query = {
   aiServer: AiServer;
   /** Retrieves the editor URL for the specified CollaboraDocument. */
   collaboraEditorUrl: CollaboraEditorUrlResult;
+  /** Whether the WOPI save service backing this CollaboraDocument is currently reachable. A side-effect-free health check — unlike collaboraEditorUrl it issues no access token and records no analytics — used to surface a save-path outage in the editor. */
+  collaboraServiceAvailable: Scalars['Boolean']['output'];
   /** Active Spaces only, order by most active in the past X days. */
   exploreSpaces: Array<Space>;
   /** Allow creation of inputs based on existing entities in the domain model */
@@ -7161,6 +7198,10 @@ export type QueryActorsWithCredentialArgs = {
 };
 
 export type QueryCollaboraEditorUrlArgs = {
+  collaboraDocumentID: Scalars['UUID']['input'];
+};
+
+export type QueryCollaboraServiceAvailableArgs = {
   collaboraDocumentID: Scalars['UUID']['input'];
 };
 
@@ -8973,6 +9014,13 @@ export type UpdateCalloutPublishInfoInput = {
   publisherID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type UpdateCalloutSelectionSettingsInput = {
+  /** The selection mode (AUTO or CUSTOM). When omitted, the stored mode is unchanged. */
+  mode?: InputMaybe<CalloutSelectionMode>;
+  /** Replaces the curated selection in full (CUSTOM mode). At most 500 entries. Deduplicated by the server. When omitted, the stored list is unchanged. */
+  selectedIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
 export type UpdateCalloutSettingsContributionInput = {
   /** Indicate who can add more contributions to the callout. */
   canAddContributions?: InputMaybe<CalloutAllowedActors>;
@@ -8987,6 +9035,8 @@ export type UpdateCalloutSettingsFramingInput = {
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
   contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
+  selection?: InputMaybe<UpdateCalloutSelectionSettingsInput>;
 };
 
 export type UpdateCalloutSettingsInput = {
@@ -14363,6 +14413,9 @@ export type CalloutContentQuery = {
                     defaultView: ContributorCollectionView;
                   }
                 | undefined;
+              selection?:
+                | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
+                | undefined;
             };
           };
         }
@@ -14813,6 +14866,9 @@ export type UpdateCalloutContentMutation = {
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
             }
+          | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
       };
     };
@@ -15293,6 +15349,9 @@ export type UpdateCalloutVisibilityMutation = {
               defaultView: ContributorCollectionView;
             }
           | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
+          | undefined;
       };
     };
     createdBy?:
@@ -15354,6 +15413,9 @@ export type CalloutSettingsFullFragment = {
           defaultContributorType: ActorType;
           defaultView: ContributorCollectionView;
         }
+      | undefined;
+    selection?:
+      | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
       | undefined;
   };
 };
@@ -15652,6 +15714,12 @@ export type CollaboraEditorUrlQuery = {
   __typename?: 'Query';
   collaboraEditorUrl: { __typename?: 'CollaboraEditorUrlResult'; editorUrl: string; accessTokenTTL: number };
 };
+
+export type CollaboraServiceAvailableQueryVariables = Exact<{
+  collaboraDocumentId: Scalars['UUID']['input'];
+}>;
+
+export type CollaboraServiceAvailableQuery = { __typename?: 'Query'; collaboraServiceAvailable: boolean };
 
 export type CreateCollaboraDocumentOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
@@ -17092,6 +17160,9 @@ export type CreateCalloutMutation = {
               defaultView: ContributorCollectionView;
             }
           | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
+          | undefined;
       };
     };
     createdBy?:
@@ -17743,6 +17814,9 @@ export type CalloutDetailsQuery = {
                     defaultView: ContributorCollectionView;
                   }
                 | undefined;
+              selection?:
+                | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
+                | undefined;
             };
           };
           createdBy?:
@@ -18253,6 +18327,9 @@ export type CalloutDetailsFragment = {
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
           }
+        | undefined;
+      selection?:
+        | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
     };
   };
@@ -32610,6 +32687,13 @@ export type TemplateContentQuery = {
                           defaultView: ContributorCollectionView;
                         }
                       | undefined;
+                    selection?:
+                      | {
+                          __typename?: 'CalloutSelectionSettings';
+                          mode: CalloutSelectionMode;
+                          selectedIds: Array<string>;
+                        }
+                      | undefined;
                   };
                 };
                 contributionDefaults: {
@@ -33357,6 +33441,9 @@ export type CalloutTemplateContentFragment = {
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
           }
+        | undefined;
+      selection?:
+        | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
     };
   };
@@ -34135,6 +34222,9 @@ export type UpdateCalloutTemplateMutation = {
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
             }
+          | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
       };
     };
@@ -35623,6 +35713,7 @@ export type ContributorCollectionConfigQuery = {
                     defaultView: ContributorCollectionView;
                   }
                 | undefined;
+              selection?: { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode } | undefined;
             };
           };
         }

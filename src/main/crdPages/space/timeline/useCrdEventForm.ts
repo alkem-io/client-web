@@ -2,9 +2,12 @@ import { isBefore, isSameDay, startOfDay } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MARKDOWN_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
+import { wholeDaySpanMinutes } from '@/core/utils/time/wholeDayDate';
 import type { EventFormValues } from '../dataMappers/calendarEventDataMapper';
 
 export type EventFormErrors = Partial<Record<keyof EventFormValues, string>>;
+
+const DEFAULT_DURATION_MINUTES = 30;
 
 /**
  * Builds a fresh defaults snapshot. Must be a factory rather than a
@@ -20,7 +23,7 @@ function getDefaultValues(): EventFormValues {
     startDate: new Date(),
     endDate: new Date(),
     wholeDay: false,
-    durationMinutes: 30,
+    durationMinutes: DEFAULT_DURATION_MINUTES,
     description: '',
     locationCity: '',
     tags: [],
@@ -81,14 +84,30 @@ export function useCrdEventForm(initialValues?: Partial<EventFormValues>): UseCr
       // whole-day events carry a calendar date, not a time-of-day. The end date
       // is the last day the event covers (inclusive); the exclusive +1 day that
       // ICS/Google/Outlook need is added at export time, not stored here, so a
-      // single-day whole-day event keeps the same start and end date.
-      if (key === 'wholeDay' && value === true) {
-        if (prev.startDate) {
-          next.startDate = startOfDay(prev.startDate);
+      // single-day whole-day event keeps the same start and end date. The duration
+      // becomes a pure function of the date range (0 for a single day) — no stale
+      // sub-day value survives (that is what the export/calendar actually use).
+      if (key === 'wholeDay') {
+        if (value === true) {
+          if (prev.startDate) {
+            next.startDate = startOfDay(prev.startDate);
+          }
+          if (prev.endDate) {
+            next.endDate = startOfDay(prev.endDate);
+          }
+          next.durationMinutes = wholeDaySpanMinutes(next.startDate, next.endDate);
+        } else {
+          // Back to a timed event: reset to a sane sub-day default so a whole-day
+          // span never leaks into the duration picker.
+          next.durationMinutes = DEFAULT_DURATION_MINUTES;
         }
-        if (prev.endDate) {
-          next.endDate = startOfDay(prev.endDate);
-        }
+      }
+
+      // Keep a whole-day event's duration in sync with its date range whenever a
+      // date changes (the duration field is hidden for whole-day, so this is the
+      // only thing that keeps it correct in the form).
+      if ((key === 'startDate' || key === 'endDate') && next.wholeDay) {
+        next.durationMinutes = wholeDaySpanMinutes(next.startDate, next.endDate);
       }
 
       return next;

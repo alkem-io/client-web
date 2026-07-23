@@ -293,6 +293,7 @@
     "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
     "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
     "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
+    "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
     "contributors": "Contributors",
     "subspaces": "Subspaces"
   },
@@ -570,7 +571,28 @@
     "removeOption": "Remove option",
     "allowComments": "Allow comments",
     "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing.",
-    "titleCharacterCount": "{{current}}/{{max}}"
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Manual selection",
+      "contributors": {
+        "autoDescription": "Show this community’s contributors as a self-updating collection.",
+        "customDescription": "Shows only the contributors you select."
+      },
+      "spaces": {
+        "autoDescription": "Automatically shows all subspaces and updates as they are added or removed.",
+        "customDescription": "Shows only the subspaces you select below."
+      },
+      "noLongerAvailable": "No longer available",
+      "searchPlaceholder": "Search members…",
+      "searchAriaLabel": "Search members",
+      "searchSubspacePlaceholder": "Search subspaces…",
+      "searchSubspaceAriaLabel": "Search subspaces",
+      "noResults": "No matching results",
+      "loading": "Loading…",
+      "loadMore": "Loading more…",
+      "removeAriaLabel": "Remove {{name}}",
+      "clearSearch": "Clear search"
+    }
   },
   "contributionSettings": {
     "heading": "Responses",
@@ -716,7 +738,38 @@
         "unauthenticated": "Sign in to edit this document.",
         "contentUpdatePolicy": "You don't have permission to edit this document. Ask the owner to change the share settings.",
         "noMembership": "Only members of this space can edit this document. Join the space to contribute."
+      },
+      "disconnect": {
+        "atRisk": "Disconnected — recent changes may not be saved",
+        "status": "Disconnected",
+        "cause": {
+          "network": "You appear to be offline.",
+          "tokenExpiry": "Your editing session expired.",
+          "service": "A service is temporarily unavailable.",
+          "unknown": "Connection lost.",
+          "unloading": "The document is still closing from a previous session. Try again in a moment."
+        },
+        "reconnect": "Reconnect",
+        "reload": "Reload",
+        "terminal": {
+          "notFound": "This document is no longer available.",
+          "forbidden": "You no longer have access to this document.",
+          "generic": "This document can't be reopened."
+        },
+        "warning": {
+          "reconnectTitle": "Reconnect the editor?",
+          "reconnectBody": "This drops the current editing session and reopens the document in place — the page won't reload. Anything changed since the last save may be lost, so copy what you need first.",
+          "reconnectConfirm": "Reconnect",
+          "reloadTitle": "Reload the page?",
+          "reloadBody": "This reloads the whole page and reopens the document from scratch. Anything changed since the last save may be lost, so copy what you need first.",
+          "reloadConfirm": "Reload page",
+          "cancel": "Cancel"
+        },
+        "reconnecting": "Reconnecting…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "A service is unavailable. Please save any pending work as unsaved data may be lost."
     }
   },
   "callToAction": {
@@ -877,8 +930,17 @@
     "settings.hideResultsUntilVoted": "Hide results until user votes",
     "settings.showVoterAvatars": "Show voter avatars",
     "settings.close": "Close",
-    "openPoll": "Poll is open",
-    "closePoll": "Poll is closed",
+    "closePoll": "Close poll",
+    "reopenPoll": "Reopen poll",
+    "closePollHint": {
+      "open": "This poll is open for votes",
+      "closed": "No one will be able to vote on this poll anymore"
+    },
+    "statusChange": {
+      "closeSuccess": "The poll is now closed.",
+      "reopenSuccess": "The poll is now open for votes.",
+      "failed": "The poll status could not be changed. Please try again."
+    },
     "closePollConfirm": {
       "title": "Close this poll?",
       "description": "Closing the poll will prevent new votes and lock editing. You can reopen it later.",
@@ -936,7 +998,6 @@
     },
     "config": {
       "title": "Contributors",
-      "description": "Show this community’s contributors as a self-updating collection.",
       "typesLabel": "Contributor types",
       "typesHint": "Select at least one type to include.",
       "defaultTypeLabel": "Default type",

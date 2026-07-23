@@ -295,7 +295,12 @@ function ResultView({
 }
 
 function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcomeLabel: string }) {
-  const labelText = result.invitee.kind === 'user' ? result.invitee.displayName : result.invitee.email;
+  const labelText =
+    result.invitee.kind === 'user'
+      ? result.invitee.displayName
+      : result.invitee.kind === 'email'
+        ? result.invitee.email
+        : result.invitee.displayName;
   const isNeutral =
     result.outcome === 'alreadyInvited' ||
     result.outcome === 'alreadyMember' ||
