@@ -9,9 +9,12 @@ on:
 env:
   NODE_VERSION: '24.14.0'
 
+permissions:
+  contents: read
+
 jobs:
   setup:
-    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    runs-on: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')) && 'arc-trusted-linux-x64' || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -47,7 +50,7 @@ jobs:
 
   typecheck:
     needs: setup
-    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    runs-on: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')) && 'arc-trusted-linux-x64' || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -86,7 +89,7 @@ jobs:
 
   lint:
     needs: setup
-    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    runs-on: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')) && 'arc-trusted-linux-x64' || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -125,7 +128,7 @@ jobs:
 
   eslint-compiler:
     needs: setup
-    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    runs-on: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')) && 'arc-trusted-linux-x64' || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
