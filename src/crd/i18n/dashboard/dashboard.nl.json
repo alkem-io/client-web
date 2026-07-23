@@ -36,7 +36,7 @@
         "label": "Mijn rol",
         "all": "Alle rollen",
         "member": "Lid",
-        "lead": "Leider",
+        "lead": "Lead",
         "admin": "Beheerder"
       }
     },
@@ -94,7 +94,7 @@
     },
     "role": {
       "admin": "Beheerder",
-      "lead": "Leider",
+      "lead": "Lead",
       "member": "Lid"
     },
     "empty": {
