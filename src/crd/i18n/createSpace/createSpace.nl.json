@@ -18,7 +18,7 @@
       "confirm": "Template toepassen",
       "cancel": "Mijn wijzigingen behouden"
     },
-    "invalidFlow": "Deze Template kan niet worden gebruikt om een Space te maken — er is een innovatieflow met 4 fasen nodig."
+    "invalidFlow": "Deze Template kan niet worden gebruikt om een Space te maken — er is een innovation flow met 4 fasen nodig."
   },
   "displayName": {
     "label": "Naam",

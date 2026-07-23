@@ -237,7 +237,7 @@
       "subspaceFallbackL1": "Subspace ({{id}}…)",
       "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
       "ledBy": "Geleid door:",
-      "ledByAria": "{{count}} community-leiders",
+      "ledByAria": "{{count}} community-Leads",
       "leadsMore": "en nog {{count}}"
     },
     "security": {
@@ -297,7 +297,7 @@
         },
         "spaceAdmin": {
           "title": "Space-beheerdermeldingen",
-          "description": "Meldingen voor Spaces waarvoor je beheerder of lead bent."
+          "description": "Meldingen voor Spaces waarvoor je beheerder of Lead bent."
         },
         "user": {
           "title": "Gebruikersmeldingen",

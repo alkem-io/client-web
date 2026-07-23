@@ -22,7 +22,7 @@
     "inactive": "Това пространство е неактивно в момента."
   },
   "knowledge": {
-    "searchPlaceholder": "Търсене в базата знания...",
+    "searchPlaceholder": "Търсене...",
     "searchLabel": "Търсене в базата знания",
     "noResults": "Няма съвпадения",
     "search": {
