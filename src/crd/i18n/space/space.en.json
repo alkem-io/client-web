@@ -22,7 +22,7 @@
     "inactive": "This Space is currently inactive."
   },
   "knowledge": {
-    "searchPlaceholder": "Search the knowledge base...",
+    "searchPlaceholder": "Search...",
     "searchLabel": "Search the knowledge base",
     "noResults": "No matches",
     "search": {

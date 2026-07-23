@@ -6,12 +6,14 @@ import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErr
 import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationHandler';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
+import { ALKEMIO_COOKIE_NAME, useMigrateConsentCookieToApex } from '@/main/cookies/useAlkemioCookies';
 
 const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
+  // Collapse a pre-fix host-only consent cookie into the shared apex cookie (#9695).
+  useMigrateConsentCookieToApex();
   const { userModel } = useCurrentUserContext();
 
   useUserScope(userModel);
