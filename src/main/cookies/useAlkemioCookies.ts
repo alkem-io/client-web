@@ -1,6 +1,10 @@
+import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 
 export const ALKEMIO_COOKIE_NAME = 'accepted_cookies';
+// localStorage marker so the host-only -> apex consent migration runs at most once per
+// browser, rather than re-writing the cookie (and sliding its 150-day expiry) on every load.
+const CONSENT_APEX_MIGRATED_KEY = 'alkemio.consentCookieApexMigrated';
 export const AlkemioCookieTypes = {
   technical: 'technical',
   analysis: 'analysis',
@@ -31,6 +35,28 @@ const createCookieOptions = () => {
   const date = new Date();
   date.setDate(date.getDate() + 150);
   return { expires: date, path: '/', domain: apexCookieDomain() };
+};
+
+// One-time migration for #9695. Users who accepted before the apex-domain fix hold a
+// host-only `accepted_cookies` on the platform host, so welcome.alkem.io still can't read
+// it — and because the banner only shows while consent is absent (App.tsx), they never
+// re-trigger a write to self-heal. On first load after the fix, re-persist that consent at
+// the apex and drop the host-only duplicate so it can no longer shadow the apex cookie.
+// No-op on localhost/IP (no shared parent domain) and once the migration has already run.
+export const useMigrateConsentCookieToApex = () => {
+  const [cookies, setCookie, removeCookie] = useCookies([ALKEMIO_COOKIE_NAME]);
+  const consent = cookies[ALKEMIO_COOKIE_NAME];
+
+  useEffect(() => {
+    if (consent === undefined || consent === null) return;
+    if (apexCookieDomain() === undefined) return;
+    if (window.localStorage.getItem(CONSENT_APEX_MIGRATED_KEY)) return;
+
+    // Delete the host-only copy (no domain) first, then re-write the same value at the apex.
+    removeCookie(ALKEMIO_COOKIE_NAME, { path: '/' });
+    setCookie(ALKEMIO_COOKIE_NAME, consent, createCookieOptions());
+    window.localStorage.setItem(CONSENT_APEX_MIGRATED_KEY, '1');
+  }, [consent, removeCookie, setCookie]);
 };
 
 export const useAlkemioCookies = () => {
