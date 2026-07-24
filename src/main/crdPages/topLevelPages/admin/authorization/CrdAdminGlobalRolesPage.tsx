@@ -96,6 +96,21 @@ const CrdAdminGlobalRolesPage = () => {
     [RoleName.PlatformAssistantAccess]: t('roles.PLATFORM_ASSISTANT_ACCESS'),
   };
 
+  const roleDescriptions: Record<RoleName, string> = {
+    ...({} as Record<RoleName, string>),
+    [RoleName.GlobalAdmin]: t('roleDescriptions.GLOBAL_ADMIN'),
+    [RoleName.GlobalSupport]: t('roleDescriptions.GLOBAL_SUPPORT'),
+    [RoleName.GlobalLicenseManager]: t('roleDescriptions.GLOBAL_LICENSE_MANAGER'),
+    [RoleName.GlobalCommunityReader]: t('roleDescriptions.GLOBAL_COMMUNITY_READER'),
+    [RoleName.GlobalSpacesReader]: t('roleDescriptions.GLOBAL_SPACES_READER'),
+    [RoleName.GlobalPlatformManager]: t('roleDescriptions.GLOBAL_PLATFORM_MANAGER'),
+    [RoleName.GlobalSupportManager]: t('roleDescriptions.GLOBAL_SUPPORT_MANAGER'),
+    [RoleName.PlatformOperationsAdmin]: t('roleDescriptions.PLATFORM_OPERATIONS_ADMIN'),
+    [RoleName.PlatformBetaTester]: t('roleDescriptions.PLATFORM_BETA_TESTER'),
+    [RoleName.PlatformVcCampaign]: t('roleDescriptions.PLATFORM_VC_CAMPAIGN'),
+    [RoleName.PlatformAssistantAccess]: t('roleDescriptions.PLATFORM_ASSISTANT_ACCESS'),
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
@@ -115,7 +130,7 @@ const CrdAdminGlobalRolesPage = () => {
 
       <RoleMembersEditor
         roleLabel={roleLabels[selectedRole]}
-        roleDescription={t(`roleDescriptions.${selectedRole}`)}
+        roleDescription={roleDescriptions[selectedRole]}
         members={filteredMembers}
         availableUsers={available}
         memberSearchTerm={memberSearch}
