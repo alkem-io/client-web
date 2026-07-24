@@ -12,6 +12,8 @@ import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 
 const PLATFORM_ROLES = RELEVANT_ROLES.Platform;
 
+type PlatformRole = (typeof PLATFORM_ROLES)[number];
+
 /**
  * CRD global-admin Global Authorization (Roles) section. Reuses the MUI-free
  * role-set data hooks verbatim: `usePlatformRoleSetQuery` (role set id),
@@ -81,8 +83,7 @@ const CrdAdminGlobalRolesPage = () => {
     email: user.email ?? undefined,
   }));
 
-  const roleLabels: Record<RoleName, string> = {
-    ...({} as Record<RoleName, string>),
+  const roleLabels: Record<PlatformRole, string> = {
     [RoleName.GlobalAdmin]: t('roles.GLOBAL_ADMIN'),
     [RoleName.GlobalSupport]: t('roles.GLOBAL_SUPPORT'),
     [RoleName.GlobalLicenseManager]: t('roles.GLOBAL_LICENSE_MANAGER'),
@@ -96,8 +97,7 @@ const CrdAdminGlobalRolesPage = () => {
     [RoleName.PlatformAssistantAccess]: t('roles.PLATFORM_ASSISTANT_ACCESS'),
   };
 
-  const roleDescriptions: Record<RoleName, string> = {
-    ...({} as Record<RoleName, string>),
+  const roleDescriptions: Record<PlatformRole, string> = {
     [RoleName.GlobalAdmin]: t('roleDescriptions.GLOBAL_ADMIN'),
     [RoleName.GlobalSupport]: t('roleDescriptions.GLOBAL_SUPPORT'),
     [RoleName.GlobalLicenseManager]: t('roleDescriptions.GLOBAL_LICENSE_MANAGER'),
