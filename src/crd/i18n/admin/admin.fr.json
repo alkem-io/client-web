@@ -77,7 +77,19 @@
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
     "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
     "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
-    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+    "PLATFORM_ROLES_ADMIN": "Administrateur des rôles de la plateforme",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Accès complet au contenu de la plateforme",
+    "PLATFORM_RESOURCE_ADMIN": "Administrateur des ressources de la plateforme",
+    "PLATFORM_SETTINGS_ADMIN": "Administrateur des paramètres de la plateforme",
+    "PLATFORM_USERS_ADMIN": "Administrateur des utilisateurs de la plateforme",
+    "PLATFORM_SUPPORT": "Support de la plateforme",
+    "PLATFORM_LICENSE_MANAGER": "Gestionnaire de licences de la plateforme",
+    "PLATFORM_SPACES_READER": "Lecteur des espaces de la plateforme",
+    "PLATFORM_AUDIT_READER": "Lecteur d'audit de la plateforme",
+    "FEATURE_BETA_TESTER": "Fonctionnalité : testeur bêta",
+    "FEATURE_VIRTUAL_ASSISTANT": "Fonctionnalité : assistant virtuel",
+    "FEATURE_ORGANIZATION_CREATOR": "Fonctionnalité : créateur d'organisations"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Contrôle administratif complet sur l'ensemble de la plateforme.",
@@ -90,7 +102,19 @@
     "PLATFORM_BETA_TESTER": "Accès aux fonctionnalités bêta avant leur diffusion générale.",
     "PLATFORM_VC_CAMPAIGN": "Participation à la campagne Virtual Contributor.",
     "PLATFORM_ASSISTANT_ACCESS": "Accès à l'assistant IA.",
-    "PLATFORM_OPERATIONS_ADMIN": "Actions opérationnelles et de maintenance uniquement : réinitialisations d'autorisation et de droits de licence, ingestion et réindexation recherche/AI, entretien du serveur AI, migrations de données, entretien des notifications et communications, et actualisation de la géolocalisation. N'accorde aucun autre pouvoir administratif ni aucun accès aux données personnelles des utilisateurs."
+    "PLATFORM_OPERATIONS_ADMIN": "Actions opérationnelles et de maintenance uniquement : réinitialisations d'autorisation et de droits de licence, ingestion et réindexation recherche/AI, entretien du serveur AI, migrations de données, entretien des notifications et communications, et actualisation de la géolocalisation. N'accorde aucun autre pouvoir administratif ni aucun accès aux données personnelles des utilisateurs.",
+    "PLATFORM_ROLES_ADMIN": "Attribue et révoque chaque rôle de plateforme — Platform … et Feature … —, consulte la liste des titulaires des 13 rôles, et définit ou efface le marqueur de profil de service requis par Platform Spaces Reader. Ne touche ni au contenu, ni aux paramètres, ni aux actions opérationnelles, ni aux dossiers utilisateurs, ni au support, et ne consulte jamais le journal d'audit.",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Accès complet à tout le contenu de la plateforme. Destiné à très peu de titulaires, uniquement le temps nécessaire. N'attribue pas de rôles, ne modifie pas les paramètres, n'effectue pas d'actions opérationnelles, ne gère pas les dossiers utilisateurs, ne déplace pas de ressources, ne gère pas le forum, ne modifie pas la visibilité des espaces, ne renomme pas les entités et n'agit pas comme support.",
+    "PLATFORM_RESOURCE_ADMIN": "Déplace un espace, un hub d'innovation, un pack d'innovation ou un contributeur virtuel vers un autre compte ; promeut, rétrograde ou déplace un espace entre niveaux ; et déplace une publication vers un autre espace. N'attribue pas de rôles, ne modifie pas les paramètres, n'effectue pas d'actions opérationnelles, ne gère pas les dossiers utilisateurs, n'a pas d'accès complet au contenu, ne gère pas le forum et n'agit pas comme support.",
+    "PLATFORM_SETTINGS_ADMIN": "Gère les paramètres de la plateforme, les intégrations et la configuration des notifications, et définit les plans de licence ainsi que leurs correspondances de droits. N'attribue pas de rôles, ne modifie pas le contenu, n'effectue pas d'actions opérationnelles, ne gère pas les dossiers utilisateurs, n'utilise pas les licences et n'agit pas comme support.",
+    "PLATFORM_USERS_ADMIN": "Modifie l'e-mail de connexion d'un utilisateur, supprime ou réinitialise l'identité ou le compte d'un utilisateur, consulte les données personnelles nécessaires à cet effet, et attribue les rôles Feature … (y compris la lecture de leurs listes de titulaires). N'attribue pas les rôles Platform …, ne consulte pas les listes de titulaires des rôles Platform …, ne modifie pas le contenu ni les paramètres, ne réinitialise pas l'autorisation et n'agit pas comme support.",
+    "PLATFORM_SUPPORT": "Agit en tant qu'administrateur au sein d'un espace autorisant le support de la plateforme, modifie les propres packs d'innovation, packs de modèles et hubs d'innovation d'une organisation (ainsi que les modèles qu'ils contiennent) pour assister le propriétaire, crée et supprime des organisations, et gère le forum de la plateforme. N'attribue pas de rôles, n'a pas d'accès complet au contenu, ne modifie pas les paramètres, n'effectue pas d'actions opérationnelles, ne gère pas les dossiers utilisateurs, ne déplace pas ces ressources, ne supprime pas le pack ou le hub lui-même, et n'agit pas dans un espace n'ayant pas activé le support.",
+    "PLATFORM_LICENSE_MANAGER": "Attribue et révoque des plans de licence sur les comptes et les espaces, et modifie la visibilité des espaces. Ne définit pas les plans de licence et n'a aucun autre pouvoir administratif.",
+    "PLATFORM_SPACES_READER": "Accès en lecture seule à tous les espaces. Réservé aux comptes de service uniquement — l'attribution à un utilisateur humain est refusée.",
+    "PLATFORM_AUDIT_READER": "Consulte le journal d'audit de la plateforme (données personnelles masquées) et les listes de titulaires des 13 rôles, afin que le journal puisse être interprété par rapport à l'état en direct. N'effectue aucune action administrative, ne peut ni écrire, ni modifier, ni supprimer les enregistrements d'audit, et est mutuellement exclusif avec tout autre rôle Platform … .",
+    "FEATURE_BETA_TESTER": "Confère un droit de licence bêta ou d'essai. N'inclut pas la création d'organisations.",
+    "FEATURE_VIRTUAL_ASSISTANT": "Donne accès à l'assistant virtuel.",
+    "FEATURE_ORGANIZATION_CREATOR": "Permet de créer des organisations. N'inclut pas la suppression d'organisations."
   },
   "roleMembers": {
     "currentMembers": "Membres actuels",
@@ -103,8 +127,12 @@
     "noResults": "Aucun utilisateur trouvé.",
     "loading": "Chargement…",
     "removeTitle": "Supprimer {{name}} ?",
-    "removeDescription": "Cela révoque le rôle de cet utilisateur.",
-    "roleLabel": "Rôle"
+    "removeDescription": "Cela révoque le rôle de ce membre.",
+    "removeOrganization": "Supprimer l'organisation",
+    "roleLabel": "Rôle",
+    "organizations": "Organisations",
+    "currentOrganizations": "Organisations actuelles",
+    "addOrganizations": "Ajouter des organisations"
   },
   "authPolicies": {
     "idLabel": "ID de politique d’autorisation",

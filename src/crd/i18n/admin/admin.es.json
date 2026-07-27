@@ -77,7 +77,19 @@
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
     "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
     "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
-    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+    "PLATFORM_ROLES_ADMIN": "Administrador de roles de la plataforma",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Acceso total al contenido de la plataforma",
+    "PLATFORM_RESOURCE_ADMIN": "Administrador de recursos de la plataforma",
+    "PLATFORM_SETTINGS_ADMIN": "Administrador de configuración de la plataforma",
+    "PLATFORM_USERS_ADMIN": "Administrador de usuarios de la plataforma",
+    "PLATFORM_SUPPORT": "Soporte de la plataforma",
+    "PLATFORM_LICENSE_MANAGER": "Gestor de licencias de la plataforma",
+    "PLATFORM_SPACES_READER": "Lector de espacios de la plataforma",
+    "PLATFORM_AUDIT_READER": "Lector de auditoría de la plataforma",
+    "FEATURE_BETA_TESTER": "Función: Beta Tester",
+    "FEATURE_VIRTUAL_ASSISTANT": "Función: Asistente virtual",
+    "FEATURE_ORGANIZATION_CREATOR": "Función: Creador de organizaciones"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Control administrativo total sobre toda la plataforma.",
@@ -90,7 +102,19 @@
     "PLATFORM_BETA_TESTER": "Acceso a funciones beta antes de su lanzamiento general.",
     "PLATFORM_VC_CAMPAIGN": "Participación en la campaña de Virtual Contributor.",
     "PLATFORM_ASSISTANT_ACCESS": "Acceso al asistente de IA.",
-    "PLATFORM_OPERATIONS_ADMIN": "Solo acciones operativas y de mantenimiento: restablecimientos de autorización y de derechos de licencia, ingesta y reindexación de búsqueda/AI, mantenimiento del servidor de AI, migraciones de datos, mantenimiento de notificaciones y comunicaciones, y actualización de geolocalización. No otorga otros poderes administrativos ni acceso a los datos personales de los usuarios."
+    "PLATFORM_OPERATIONS_ADMIN": "Solo acciones operativas y de mantenimiento: restablecimientos de autorización y de derechos de licencia, ingesta y reindexación de búsqueda/AI, mantenimiento del servidor de AI, migraciones de datos, mantenimiento de notificaciones y comunicaciones, y actualización de geolocalización. No otorga otros poderes administrativos ni acceso a los datos personales de los usuarios.",
+    "PLATFORM_ROLES_ADMIN": "Asigna y revoca todos los roles de la plataforma —Platform … y Feature …—, lee la lista de titulares de los 13 roles, y establece o borra el marcador de perfil de servicio que requiere Platform Spaces Reader. No afecta al contenido, la configuración, las acciones operativas ni los registros de usuario, y nunca lee el registro de auditoría.",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Acceso total a todo el contenido de la plataforma. Pensado para muy pocos titulares, solo durante el tiempo necesario. No asigna roles, no cambia la configuración, no realiza acciones operativas, no gestiona registros de usuario, no traslada recursos, no gestiona el foro, no cambia la visibilidad de los espacios, no renombra entidades ni actúa como soporte.",
+    "PLATFORM_RESOURCE_ADMIN": "Traslada un espacio, un hub de innovación, un paquete de innovación o un colaborador virtual a otra cuenta; promueve, degrada o traslada un espacio entre niveles; y traslada una publicación a otro espacio. No asigna roles, no cambia la configuración, no realiza acciones operativas, no gestiona registros de usuario, no tiene acceso total al contenido, no gestiona el foro ni actúa como soporte.",
+    "PLATFORM_SETTINGS_ADMIN": "Gestiona la configuración de la plataforma, las integraciones y la configuración de notificaciones, y define los planes de licencia y sus asignaciones de derechos. No asigna roles, no edita contenido, no realiza acciones operativas, no gestiona registros de usuario, no utiliza licencias ni actúa como soporte.",
+    "PLATFORM_USERS_ADMIN": "Cambia el correo de inicio de sesión de un usuario, elimina o restablece la identidad o la cuenta de un usuario, lee los datos personales necesarios para ello y asigna los roles Feature … (incluida la lectura de sus listas de titulares). No asigna roles Platform …, no lee las listas de titulares de roles Platform …, no edita contenido ni configuración, no restablece la autorización ni actúa como soporte.",
+    "PLATFORM_SUPPORT": "Actúa como administrador dentro de un espacio que habilita el soporte de la plataforma, edita los propios paquetes de innovación, paquetes de plantillas y hubs de innovación de una organización (y las plantillas que contienen) para ayudar al propietario, crea y elimina organizaciones, y gestiona el foro de la plataforma. No asigna roles, no tiene acceso total al contenido, no cambia la configuración, no realiza acciones operativas, no gestiona registros de usuario, no traslada esos recursos, no elimina el propio paquete o hub, ni actúa en un espacio que no haya habilitado el soporte.",
+    "PLATFORM_LICENSE_MANAGER": "Asigna y revoca planes de licencia en cuentas y espacios, y cambia la visibilidad de los espacios. No define planes de licencia ni tiene ningún otro poder administrativo.",
+    "PLATFORM_SPACES_READER": "Acceso de solo lectura a todos los espacios. Reservado únicamente para cuentas de servicio: se rechaza su concesión a un usuario humano.",
+    "PLATFORM_AUDIT_READER": "Lee el registro de auditoría de la plataforma (con los datos personales enmascarados) y las listas de titulares de los 13 roles, de modo que el registro pueda interpretarse frente al estado en vivo. No realiza ninguna acción administrativa, no puede escribir, alterar ni eliminar registros de auditoría, y es mutuamente excluyente con cualquier otro rol Platform … .",
+    "FEATURE_BETA_TESTER": "Otorga un derecho de licencia beta o de prueba. No incluye la creación de organizaciones.",
+    "FEATURE_VIRTUAL_ASSISTANT": "Concede acceso al asistente virtual.",
+    "FEATURE_ORGANIZATION_CREATOR": "Permite crear organizaciones. No incluye la eliminación de organizaciones."
   },
   "roleMembers": {
     "currentMembers": "Miembros actuales",
@@ -103,8 +127,12 @@
     "noResults": "No se encontraron usuarios.",
     "loading": "Cargando…",
     "removeTitle": "¿Eliminar a {{name}}?",
-    "removeDescription": "Esto revoca el rol de este usuario.",
-    "roleLabel": "Rol"
+    "removeDescription": "Esto revoca el rol de este miembro.",
+    "removeOrganization": "Eliminar organización",
+    "roleLabel": "Rol",
+    "organizations": "Organizaciones",
+    "currentOrganizations": "Organizaciones actuales",
+    "addOrganizations": "Añadir organizaciones"
   },
   "authPolicies": {
     "idLabel": "ID de política de autorización",

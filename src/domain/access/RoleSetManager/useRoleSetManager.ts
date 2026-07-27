@@ -13,23 +13,66 @@ import useRoleSetManagerRolesAssignment, {
   type useRoleSetManagerRolesAssignmentProvided,
 } from './RolesAssignment/useRoleSetManagerRolesAssignment';
 
+// The 10 `Platform …` administration roles — assignable only by a holder of
+// `GRANT_GLOBAL_ADMINS` (Slice A spelling of `PLATFORM_ROLES_ASSIGN`, FR-012).
+const PLATFORM_ADMIN_ROLES = [
+  RoleName.PlatformRolesAdmin,
+  RoleName.PlatformContentFullAccess,
+  RoleName.PlatformResourceAdmin,
+  RoleName.PlatformSettingsAdmin,
+  RoleName.PlatformOperationsAdmin,
+  RoleName.PlatformUsersAdmin,
+  RoleName.PlatformSupport,
+  RoleName.PlatformLicenseManager,
+  RoleName.PlatformSpacesReader,
+  RoleName.PlatformAuditReader,
+] as const;
+
+// The 3 `Feature …` roles — assignable by a holder of `FEATURE_ROLE_ASSIGN`
+// (Platform Users Admin) or by anyone who can assign the full Platform set.
+const FEATURE_ROLES = [
+  RoleName.FeatureBetaTester,
+  RoleName.FeatureVirtualAssistant,
+  RoleName.FeatureOrganizationCreator,
+] as const;
+
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
   Organization: [RoleName.Owner, RoleName.Admin, RoleName.Associate],
-  Platform: [
-    RoleName.GlobalAdmin,
-    RoleName.GlobalSupport,
-    RoleName.GlobalLicenseManager,
-    RoleName.GlobalCommunityReader,
-    RoleName.GlobalSpacesReader,
-    RoleName.GlobalPlatformManager,
-    RoleName.GlobalSupportManager,
-    RoleName.PlatformOperationsAdmin,
-    RoleName.PlatformBetaTester,
-    RoleName.PlatformVcCampaign,
-    RoleName.PlatformAssistantAccess,
-  ],
+  Platform: [...PLATFORM_ADMIN_ROLES, ...FEATURE_ROLES],
 } as const;
+
+/**
+ * FR-012: which role *set* an operator may offer/assign, read from `myPrivileges`
+ * on the platform role-set. This is the **only** client-side authorization
+ * decision this feature makes — no assignment rule (holder kind, spaces-reader,
+ * audit-reader exclusion, last-roles-admin) is reimplemented here. The server
+ * remains the sole enforcement point; this filter only decides what to *offer*
+ * and, as a consequence, keeps the holder-list read from ever spanning both
+ * role sets in one request (FR-032).
+ */
+export const getOfferedPlatformRoles = (
+  myPrivileges: AuthorizationPrivilege[] | undefined
+): (typeof RELEVANT_ROLES.Platform)[number][] => {
+  if (!myPrivileges) {
+    return [];
+  }
+  if (myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins)) {
+    return [...RELEVANT_ROLES.Platform];
+  }
+  if (myPrivileges.includes(AuthorizationPrivilege.FeatureRoleAssign)) {
+    return [...FEATURE_ROLES];
+  }
+  return [];
+};
+
+/**
+ * SC-009 / FR-002: only the 3 `Feature …` roles may be held by an organization.
+ * A `platform-*` role's organization section is never rendered — the server
+ * rejects such a grant twice over (assignment rule 2, and
+ * `organizationPolicy.maximum = 0`), so offering it would be predicting a rule.
+ */
+export const isFeaturePlatformRole = (role: RoleName): boolean => (FEATURE_ROLES as readonly RoleName[]).includes(role);
 
 export interface RoleSetMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
   roles: RoleName[];
@@ -87,16 +130,19 @@ const useRoleSetManager = ({
   onChange,
   skip,
 }: useRoleSetManagerParams): useRoleSetManagerProvided => {
-  if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
-    skip = true;
-  }
+  // The authorization (myPrivileges) query only needs the roleSetId — it must
+  // NOT wait on `relevantRoles`, because a caller filtering the offered role
+  // set by assigner capability (FR-012) needs `myPrivileges` *before* it knows
+  // which roles it may even ask to see. The holder-list query below is the one
+  // that depends on `relevantRoles` being resolved.
+  const skipAuthorization = skip || !roleSetId;
+  const skipAssignment = skip || !roleSetId || !relevantRoles || relevantRoles.length === 0;
 
-  // TODO: Additional Auth Check
   const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
-    skip: skip || !roleSetId,
+    skip: skipAuthorization,
   });
   const platformPrivileges = roleSetDetails?.platform.authorization?.myPrivileges;
   const myPrivileges = roleSetDetails?.lookup.roleSet?.authorization?.myPrivileges;
@@ -107,7 +153,7 @@ const useRoleSetManager = ({
     false;
 
   const validRoles = roleSetDetails?.lookup.roleSet?.roleNames;
-  if (!skip && !loadingRoleSet && validRoles) {
+  if (!skipAssignment && !loadingRoleSet && validRoles) {
     if (relevantRoles.some(role => !validRoles.includes(role))) {
       throw new Error(
         `RoleSet ${roleSetId} doesn't provide specified role ${relevantRoles.join(',')} != ${validRoles.join(',')}`
@@ -128,7 +174,7 @@ const useRoleSetManager = ({
       includeVirtualContributors: fetchContributors && contributorTypes.includes(ActorType.VirtualContributor),
       includeRoleDefinitions: fetchRoleDefinitions,
     },
-    skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
+    skip: skipAssignment || !canReadRoleSet || loadingRoleSet,
   });
 
   const data = (() => {
@@ -229,6 +275,8 @@ const useRoleSetManager = ({
     removeRoleFromUser,
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
+    assignPlatformRoleToOrganization,
+    removePlatformRoleFromOrganization,
     assignRoleToOrganization,
     removeRoleFromOrganization,
     assignRoleToVirtualContributor,
@@ -251,10 +299,12 @@ const useRoleSetManager = ({
 
     assignRoleToUser: onMutationCall(assignRoleToUser),
     assignPlatformRoleToUser: onMutationCall(assignPlatformRoleToUser),
+    assignPlatformRoleToOrganization: onMutationCall(assignPlatformRoleToOrganization),
     assignRoleToOrganization: onMutationCall(assignRoleToOrganization),
     assignRoleToVirtualContributor: onMutationCall(assignRoleToVirtualContributor),
     removeRoleFromUser: onMutationCall(removeRoleFromUser),
     removePlatformRoleFromUser: onMutationCall(removePlatformRoleFromUser),
+    removePlatformRoleFromOrganization: onMutationCall(removePlatformRoleFromOrganization),
     removeRoleFromOrganization: onMutationCall(removeRoleFromOrganization),
     removeRoleFromVirtualContributor: onMutationCall(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
