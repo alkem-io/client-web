@@ -81,7 +81,7 @@ describe('ChatMessageBubble', () => {
   test('first-of-run (showAuthor) renders the visible name row + VC badge when applicable', () => {
     const vcMessage: ChatMessage = {
       ...baseMessage,
-      author: { ...baseMessage.author!, isVirtualContributor: true },
+      author: { id: 'u1', name: 'Alice Smith', avatarUrl: 'https://example.com/alice.png', isVirtualContributor: true },
     };
     const { getByText, container } = render(
       <ChatMessageBubble message={vcMessage} avatarGutter={true} showAvatar={true} showAuthor={true} />

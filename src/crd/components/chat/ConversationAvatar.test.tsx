@@ -82,7 +82,9 @@ describe('ConversationAvatar', () => {
       />
     );
     expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
-    container.querySelectorAll('img').forEach(img => expect(img).toHaveAttribute('alt', ''));
+    container.querySelectorAll('img').forEach(img => {
+      expect(img).toHaveAttribute('alt', '');
+    });
     expect(container.querySelectorAll('button, a')).toHaveLength(0);
   });
 });
