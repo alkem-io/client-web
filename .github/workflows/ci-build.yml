@@ -6,9 +6,12 @@ on:
   pull_request:
     branches: [develop, main]
 
+permissions:
+  contents: read
+
 jobs:
   build:
-    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    runs-on: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')) && 'arc-trusted-linux-x64' || 'ubuntu-latest' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
