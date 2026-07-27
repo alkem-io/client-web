@@ -6,6 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
 import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
+import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
@@ -104,6 +105,22 @@ export const UnifiedChatPanelConnector = () => {
   );
 
   const view = selectedConversationId ? 'thread' : 'list';
+
+  // Header identity is derived from the same mapped list item the conversation
+  // list renders for this conversation — header ≡ list row by construction
+  // (research D4), so the two surfaces can never disagree (US2/US3).
+  const selectedListItem = listItems.find(item => item.id === selectedConversationId);
+  const titleAvatar =
+    view === 'thread' && selectedListItem ? (
+      <ConversationAvatar
+        size="sm"
+        displayName={selectedListItem.displayName}
+        avatarUrl={selectedListItem.avatarUrl}
+        isGroup={selectedListItem.isGroup}
+        isGuidance={selectedListItem.isGuidance}
+        memberAvatars={selectedListItem.memberAvatars}
+      />
+    ) : undefined;
 
   const threadHeader: ChatThreadHeader | undefined = selectedConversation
     ? {
@@ -272,6 +289,7 @@ export const UnifiedChatPanelConnector = () => {
           navigate(buildUserNotificationSettingsUrl());
         }}
         settingsLabel={t('panel.settings')}
+        titleAvatar={titleAvatar}
         headerActions={view === 'thread' ? headerActions : undefined}
       >
         {view === 'thread' ? (
