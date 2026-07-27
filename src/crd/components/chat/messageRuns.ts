@@ -10,7 +10,7 @@ export type MessageRunFlags = {
 };
 
 /**
- * Computes WhatsApp-style run-grouping flags for a group thread's incoming
+ * Computes messaging-app-style run-grouping flags for a group thread's incoming
  * messages: the first message of a consecutive-sender run shows the avatar
  * and name, later messages in the run are indented under it. Own messages,
  * authorless (system) messages, and non-group threads never carry an avatar
