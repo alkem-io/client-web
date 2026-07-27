@@ -1,14 +1,7 @@
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { initials } from './initials';
 import type { ChatMemberAvatar } from './types';
-
-const initials = (name: string) =>
-  name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(word => word[0]?.toUpperCase() ?? '')
-    .join('') || '?';
 
 const SIZE_CLASS = {
   sm: 'size-8',
