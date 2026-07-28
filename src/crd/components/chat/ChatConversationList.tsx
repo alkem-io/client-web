@@ -139,8 +139,14 @@ export function ChatConversationList({
                       )}
                     </span>
                     <span className="flex items-center justify-between gap-2">
-                      <span className="truncate text-caption text-muted-foreground">
-                        {item.lastMessagePreview ?? ''}
+                      <span className="min-w-0 truncate text-caption text-muted-foreground">
+                        {item.draftPreview ? (
+                          <>
+                            <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
+                          </>
+                        ) : (
+                          (item.lastMessagePreview ?? '')
+                        )}
                       </span>
                       {hasUnread && (
                         <Badge className="h-5 min-w-5 justify-center px-1.5 text-badge">{item.unreadCount}</Badge>

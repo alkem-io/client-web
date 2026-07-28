@@ -18,6 +18,7 @@ import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Avatar, AvatarImage } from '@/crd/primitives/avatar';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
+import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import {
@@ -53,6 +54,7 @@ export const UnifiedChatPanelConnector = () => {
     setNewlyCreatedConversationId,
   } = useUserMessagingContext();
   const { guidanceVcId } = useUnifiedChatContext();
+  const { drafts, getDraft, setDraft, clearDraft } = useConversationDrafts();
 
   const newChat = useNewChat((conversationId, roomId) => {
     setNewlyCreatedConversationId(conversationId);
@@ -99,9 +101,13 @@ export const UnifiedChatPanelConnector = () => {
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
-  const listItems = conversations.map(conversation =>
-    mapConversationToListItem(conversation, { currentUserId, formatTimestamp })
-  );
+  const listItems = conversations.map(conversation => {
+    const item = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
+    const draft = drafts[conversation.id];
+    // A draft replaces the last-message preview but leaves the ordering and the
+    // timestamp alone — the conversation does not jump the list for it.
+    return draft ? { ...item, draftPreview: draft.trim() } : item;
+  });
 
   const view = selectedConversationId ? 'thread' : 'list';
 
@@ -285,11 +291,25 @@ export const UnifiedChatPanelConnector = () => {
             canReact={Boolean(selectedConversation) && !isGuidanceThread}
             // Background-tracked, but only shown while the guidance thread is open.
             isAwaitingGuidanceResponse={isGuidanceThread && guidanceResponse.awaiting}
-            onSendMessage={message => {
+            // Keyed by conversation, so re-pointing the open thread (guidance
+            // clear) swaps the draft instead of carrying it into the new one.
+            draft={selectedConversationId ? getDraft(selectedConversationId) : ''}
+            onDraftChange={value => {
+              if (selectedConversationId) {
+                setDraft(selectedConversationId, value);
+              }
+            }}
+            onSendMessage={async message => {
               if (isGuidanceThread) {
                 guidanceResponse.markSent();
               }
-              return handleSendMessage(message);
+              // Pin the id: the selection can move while the mutation is in flight.
+              const conversationId = selectedConversationId;
+              const sent = await handleSendMessage(message);
+              if (sent && conversationId) {
+                clearDraft(conversationId);
+              }
+              return sent;
             }}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}

@@ -18,6 +18,8 @@ export type ChatListItem = {
   /** Members for the group composite avatar (excludes the current user). */
   memberAvatars?: ChatMemberAvatar[];
   lastMessagePreview?: string;
+  /** Unsent text for this conversation — shown instead of `lastMessagePreview`. */
+  draftPreview?: string;
   /** Pre-formatted relative-time display string for the last message. */
   lastMessageTimestamp?: string;
   unreadCount: number;
