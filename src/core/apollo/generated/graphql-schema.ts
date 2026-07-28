@@ -1708,6 +1708,8 @@ export type Config = {
   featureFlags: Array<PlatformFeatureFlag>;
   /** Integration with a 3rd party Geo information service */
   geo: Geo;
+  /** Language configuration: eligible set for proactive offers and the platform default. */
+  language: LanguageConfig;
   /** Platform related locations. */
   locations: PlatformLocations;
   /** Sentry (client monitoring) related configuration. */
@@ -3722,6 +3724,8 @@ export type Invitation = {
   nextEvents: Array<Scalars['String']['output']>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
+  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
@@ -3739,6 +3743,8 @@ export type InviteForEntryRoleOnRoleSetInput = {
   invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
+  /** Optional language the inviter expects the invitees to prefer (single value for the whole batch — FR-014a; must be in the eligible set at compose time — DL-8). Recorded per-invitation so per-invitee granularity later is a UI change, not a migration (FR-014b). */
+  suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
   /** The welcome message to send */
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
 };
@@ -3779,6 +3785,14 @@ export type KratosIdentity = {
   lastName?: Maybe<Scalars['String']['output']>;
   /** The current verification status of the email address. */
   verificationStatus: Scalars['String']['output'];
+};
+
+export type LanguageConfig = {
+  __typename?: 'LanguageConfig';
+  /** The platform-wide default interface language. */
+  default: Scalars['String']['output'];
+  /** Languages the platform proactively detects, offers, and allows as invitation suggestions — subset of the supported set; empty = all proactive offers disabled. */
+  eligible: Array<Scalars['String']['output']>;
 };
 
 export type LatestReleaseDiscussion = {
@@ -6634,6 +6648,8 @@ export type PlatformInvitation = {
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
+  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
@@ -9583,6 +9599,10 @@ export type UpdateUserSettingsEntityInput = {
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
+  /** Set the user's interface language preference. Must be a value from the supported languages set. Any language write also latches languageOfferAnswered=true (FR-023 invariant). */
+  language?: InputMaybe<Scalars['String']['input']>;
+  /** Mark that this User has answered the one-time language offer. One-way latch: setting false is rejected (FR-005a). */
+  languageOfferAnswered?: InputMaybe<Scalars['Boolean']['input']>;
   /** Settings related to this users Notifications preferences. */
   notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
   /** Settings related to Privacy. */
@@ -10109,6 +10129,10 @@ export type UserSettings = {
   homeSpace: UserSettingsHomeSpace;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The interface language chosen by this User. Null = the User has never chosen a language (distinct from having chosen the platform default). */
+  language?: Maybe<Scalars['String']['output']>;
+  /** Whether this User has answered the one-time language offer (global across all languages — FR-005a). Latched true by any language write. */
+  languageOfferAnswered: Scalars['Boolean']['output'];
   /** The notification settings for this User. */
   notification: UserSettingsNotification;
   /** The privacy settings for this User */
@@ -11052,6 +11076,7 @@ export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
   extraRoles: Array<RoleName> | RoleName;
+  suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type InviteForEntryRoleOnRoleSetMutation = {
@@ -11332,6 +11357,7 @@ export type UserPendingMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        suggestedLanguage?: string | undefined;
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -22703,6 +22729,7 @@ export type PendingMembershipsMembershipsFragment = {
       __typename?: 'Invitation';
       id: string;
       welcomeMessage?: string | undefined;
+      suggestedLanguage?: string | undefined;
       createdBy?:
         | {
             __typename?: 'User';
@@ -22718,6 +22745,7 @@ export type PendingMembershipInvitationFragment = {
   __typename?: 'Invitation';
   id: string;
   welcomeMessage?: string | undefined;
+  suggestedLanguage?: string | undefined;
   createdBy?:
     | {
         __typename?: 'User';
@@ -23379,6 +23407,8 @@ export type UpdateUserSettingsMutation = {
     settings: {
       __typename?: 'UserSettings';
       id: string;
+      language?: string | undefined;
+      languageOfferAnswered: boolean;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
@@ -24142,6 +24172,7 @@ export type InvitationDataFragment = {
     __typename?: 'Invitation';
     id: string;
     welcomeMessage?: string | undefined;
+    suggestedLanguage?: string | undefined;
     state: string;
     createdDate: Date;
     createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -24177,6 +24208,8 @@ export type CurrentUserLightQuery = {
             __typename?: 'UserSettings';
             id: string;
             designVersion: number;
+            language?: string | undefined;
+            languageOfferAnswered: boolean;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
@@ -25092,6 +25125,7 @@ export type VcMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        suggestedLanguage?: string | undefined;
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -26057,6 +26091,7 @@ export type ConfigurationQuery = {
     __typename?: 'Platform';
     configuration: {
       __typename?: 'Config';
+      language: { __typename?: 'LanguageConfig'; eligible: Array<string>; default: string };
       authentication: {
         __typename?: 'AuthenticationConfig';
         providers: Array<{
@@ -26112,6 +26147,7 @@ export type ConfigurationQuery = {
 
 export type ConfigurationFragment = {
   __typename?: 'Config';
+  language: { __typename?: 'LanguageConfig'; eligible: Array<string>; default: string };
   authentication: {
     __typename?: 'AuthenticationConfig';
     providers: Array<{
