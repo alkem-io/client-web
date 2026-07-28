@@ -14,6 +14,7 @@ import { GuestReturnNotice } from '@/crd/components/auth/GuestReturnNotice';
 import { SignUpCard } from '@/crd/components/auth/SignUpCard';
 import { cn } from '@/crd/lib/utils';
 import { useGuestSessionReturn } from '@/domain/collaboration/whiteboard/guestAccess/hooks/useGuestSessionReturn';
+import { markSignupInitiated } from '@/domain/language/useAnonymousLanguageCarry';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
@@ -53,6 +54,9 @@ function CrdSignUpPage() {
   const { arm } = useSignUpRoundTrip();
   useEffect(() => {
     setReturnUrl(returnUrl);
+    // Set the signup-initiated marker so that useAnonymousLanguageCarry can
+    // distinguish a fresh signup from a kiosk sign-in (DL-11 / R-4).
+    markSignupInitiated();
     if (returnUrl) {
       // Arm here rather than on `/registration/success`: this page is guaranteed
       // to render, whereas that one is reached only if Kratos is configured to
