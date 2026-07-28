@@ -14,6 +14,8 @@ export type RoleMember = {
 type RoleMembersEditorProps = {
   /** Translated name of the role being edited. */
   roleLabel: string;
+  /** Translated description of the role's scope; omitted → no description rendered. */
+  roleDescription?: string;
   /** Current members, already filtered by `memberSearchTerm` upstream. */
   members: RoleMember[];
   availableUsers: RoleMember[];
@@ -42,6 +44,7 @@ const memberLabel = (member: RoleMember) =>
  */
 export function RoleMembersEditor({
   roleLabel,
+  roleDescription,
   members,
   availableUsers,
   memberSearchTerm,
@@ -66,6 +69,7 @@ export function RoleMembersEditor({
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-section-title">{roleLabel}</h2>
+      {roleDescription && <p className="text-body text-muted-foreground">{roleDescription}</p>}
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
         {/* Current members */}
