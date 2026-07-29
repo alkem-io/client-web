@@ -125,6 +125,8 @@
     "remove": "Entfernen",
     "noMembers": "Keine Mitglieder in dieser Rolle.",
     "noResults": "Keine Benutzer gefunden.",
+    "noAssignablePrivilege": "Sie haben keine Berechtigung, eine Plattformrolle zuzuweisen oder anzuzeigen.",
+    "holdersUnavailable": "Die aktuellen Inhaber dieser Rolle konnten nicht geladen werden.",
     "loading": "Wird geladen…",
     "removeTitle": "{{name}} entfernen?",
     "removeDescription": "Dadurch wird diesem Mitglied die Rolle entzogen.",

@@ -125,6 +125,8 @@
     "remove": "Remove",
     "noMembers": "No members in this role.",
     "noResults": "No users found.",
+    "noAssignablePrivilege": "You don't have permission to assign or view any platform role.",
+    "holdersUnavailable": "Unable to load the current holders of this role.",
     "loading": "Loading…",
     "removeTitle": "Remove {{name}}?",
     "removeDescription": "This revokes the role from this member.",

@@ -125,6 +125,8 @@
     "remove": "Verwijderen",
     "noMembers": "Geen leden in deze rol.",
     "noResults": "Geen gebruikers gevonden.",
+    "noAssignablePrivilege": "U heeft geen rechten om een platformrol toe te wijzen of te bekijken.",
+    "holdersUnavailable": "Kan de huidige houders van deze rol niet laden.",
     "loading": "Laden…",
     "removeTitle": "{{name}} verwijderen?",
     "removeDescription": "Hiermee wordt de rol bij dit lid ingetrokken.",

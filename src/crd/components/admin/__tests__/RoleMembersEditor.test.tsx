@@ -76,4 +76,17 @@ describe('RoleMembersEditor', () => {
     expect(screen.getByText('roleMembers.noMembers')).toBeInTheDocument();
     expect(screen.getByText('roleMembers.noResults')).toBeInTheDocument();
   });
+
+  // sec-client-web-2: "holder read denied/unreachable" must render distinctly
+  // from a genuine "no holders" result.
+  test('shows an explicit unavailable message instead of noMembers when holdersUnavailable', () => {
+    render(<RoleMembersEditor {...baseProps} members={[]} holdersUnavailable={true} />);
+    expect(screen.getByRole('alert')).toHaveTextContent('roleMembers.holdersUnavailable');
+    expect(screen.queryByText('roleMembers.noMembers')).toBeNull();
+  });
+
+  test('does not show the unavailable message when there are members', () => {
+    render(<RoleMembersEditor {...baseProps} holdersUnavailable={true} />);
+    expect(screen.queryByText('roleMembers.holdersUnavailable')).toBeNull();
+  });
 });

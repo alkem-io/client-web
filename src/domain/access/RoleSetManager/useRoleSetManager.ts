@@ -74,6 +74,15 @@ export const getOfferedPlatformRoles = (
  */
 export const isFeaturePlatformRole = (role: RoleName): boolean => (FEATURE_ROLES as readonly RoleName[]).includes(role);
 
+// FR-032/A20/A20b: privileges that authorize reading a role set's holder list.
+// `READ` is an additive legacy admitter (GLOBAL_ADMIN / GLOBAL_SUPPORT cascade),
+// not the sole gate — see `canReadRoleSet` below.
+const HOLDER_READ_PRIVILEGES: readonly AuthorizationPrivilege[] = [
+  AuthorizationPrivilege.Read,
+  AuthorizationPrivilege.PlatformRoleHoldersRead,
+  AuthorizationPrivilege.FeatureRoleHoldersRead,
+];
+
 export interface RoleSetMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
   roles: RoleName[];
   isContactable: boolean;
@@ -109,6 +118,14 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
   loading: boolean;
   updating: boolean;
   refetchRoleSetAssignment: () => Promise<unknown>;
+  /**
+   * True once the holder-list read has been attempted (roles were requested,
+   * `myPrivileges` has loaded) and the operator's privileges don't cover it, or
+   * the read itself errored — as opposed to a genuinely empty holder list.
+   * Callers use this to render an explicit "unavailable" state rather than a
+   * silent "no members" (sec-client-web-2).
+   */
+  holdersUnavailable: boolean;
 }
 
 type useRoleSetManagerParams = {
@@ -147,8 +164,16 @@ const useRoleSetManager = ({
   const platformPrivileges = roleSetDetails?.platform.authorization?.myPrivileges;
   const myPrivileges = roleSetDetails?.lookup.roleSet?.authorization?.myPrivileges;
 
+  // FR-032/A20/A20b: the server authorizes the holder-list read on
+  // `PLATFORM_ROLE_HOLDERS_READ` / `FEATURE_ROLE_HOLDERS_READ` — none of the 13
+  // target roles' assigners hold plain `READ` on the platform role-set. `READ`
+  // is kept as an additive legacy admitter (GLOBAL_ADMIN / GLOBAL_SUPPORT
+  // cascade rules still grant it), never the sole gate. This is a correction of
+  // the existing client-side read precondition to the privilege FR-032 defines
+  // — not a new, second rule; the assigner filter in getOfferedPlatformRoles
+  // above still decides which roles are ever asked for.
   const canReadRoleSet =
-    (myPrivileges?.includes(AuthorizationPrivilege.Read) &&
+    (myPrivileges?.some(privilege => HOLDER_READ_PRIVILEGES.includes(privilege)) &&
       platformPrivileges?.includes(AuthorizationPrivilege.ReadUsers)) ??
     false;
 
@@ -164,6 +189,7 @@ const useRoleSetManager = ({
   const {
     data: roleSetData,
     loading: loadingRoleSetData,
+    error: roleSetDataError,
     refetch: refetchRoleSetAssignment,
   } = useRoleSetRoleAssignmentQuery({
     variables: {
@@ -176,6 +202,12 @@ const useRoleSetManager = ({
     },
     skip: skipAssignment || !canReadRoleSet || loadingRoleSet,
   });
+
+  // sec-client-web-2: a role subset was actually requested (relevantRoles
+  // non-empty) but the read is unreachable — either myPrivileges doesn't cover
+  // it or the query itself errored (e.g. a rejected/forbidden read). Distinct
+  // from "the request ran and found zero holders".
+  const holdersUnavailable = !skipAssignment && !loadingRoleSet && (!canReadRoleSet || Boolean(roleSetDataError));
 
   const data = (() => {
     const roleSet = roleSetData?.lookup.roleSet;
@@ -309,6 +341,7 @@ const useRoleSetManager = ({
     removeRoleFromVirtualContributor: onMutationCall(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
     refetchRoleSetAssignment,
+    holdersUnavailable,
   };
 };
 

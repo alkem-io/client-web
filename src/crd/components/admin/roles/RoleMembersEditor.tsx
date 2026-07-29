@@ -63,6 +63,13 @@ type RoleMembersEditorProps = {
   hasMore?: boolean;
   onLoadMore?: () => void;
   organizationSection?: RoleOrganizationSection;
+  /**
+   * True when the holder-list read could not be attempted or was rejected —
+   * as opposed to a genuine "no holders" result. Renders an explicit
+   * unavailable message instead of the misleading `noMembers` empty state
+   * (sec-client-web-2).
+   */
+  holdersUnavailable?: boolean;
 };
 
 const memberLabel = (member: RoleMember) =>
@@ -85,6 +92,7 @@ type MemberColumnsProps = {
   updating?: boolean;
   hasMore?: boolean;
   onLoadMore?: () => void;
+  holdersUnavailable?: boolean;
 };
 
 /** Shared current-members / available-to-add column pair — reused for both the
@@ -106,6 +114,7 @@ function MemberColumns({
   updating = false,
   hasMore = false,
   onLoadMore,
+  holdersUnavailable = false,
 }: MemberColumnsProps) {
   const { t } = useTranslation('crd-admin');
 
@@ -122,8 +131,12 @@ function MemberColumns({
           />
         )}
         {members.length === 0 ? (
-          <p className="text-body text-muted-foreground">
-            {memberSearchTerm ? t('roleMembers.noResults') : t('roleMembers.noMembers')}
+          <p role={holdersUnavailable ? 'alert' : undefined} className="text-body text-muted-foreground">
+            {holdersUnavailable
+              ? t('roleMembers.holdersUnavailable')
+              : memberSearchTerm
+                ? t('roleMembers.noResults')
+                : t('roleMembers.noMembers')}
           </p>
         ) : (
           <ul className="flex flex-col gap-2">
@@ -228,6 +241,7 @@ export function RoleMembersEditor({
   hasMore = false,
   onLoadMore,
   organizationSection,
+  holdersUnavailable = false,
 }: RoleMembersEditorProps) {
   const { t } = useTranslation('crd-admin');
   const [pendingRemove, setPendingRemove] = useState<PendingRemoval | null>(null);
@@ -267,6 +281,7 @@ export function RoleMembersEditor({
         updating={updating}
         hasMore={hasMore}
         onLoadMore={onLoadMore}
+        holdersUnavailable={holdersUnavailable}
       />
 
       {organizationSection && (
@@ -286,6 +301,7 @@ export function RoleMembersEditor({
             updating={updating}
             hasMore={organizationSection.hasMore}
             onLoadMore={organizationSection.onLoadMore}
+            holdersUnavailable={holdersUnavailable}
           />
         </>
       )}

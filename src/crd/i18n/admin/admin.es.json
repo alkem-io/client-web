@@ -125,6 +125,8 @@
     "remove": "Eliminar",
     "noMembers": "No hay miembros en este rol.",
     "noResults": "No se encontraron usuarios.",
+    "noAssignablePrivilege": "No tiene permiso para asignar o ver ningún rol de la plataforma.",
+    "holdersUnavailable": "No se pudieron cargar los titulares actuales de este rol.",
     "loading": "Cargando…",
     "removeTitle": "¿Eliminar a {{name}}?",
     "removeDescription": "Esto revoca el rol de este miembro.",

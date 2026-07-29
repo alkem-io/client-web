@@ -27,6 +27,12 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 // drive it directly rather than mocking `getOfferedPlatformRoles` itself, so the
 // real filter (from useRoleSetManager.ts) is what's under test here (T008).
 let mockMyPrivileges: AuthorizationPrivilege[] = [AuthorizationPrivilege.GrantGlobalAdmins];
+// corr-client-web-3: distinguishes "still fetching myPrivileges" from "fetched,
+// offers nothing" — the phase-1 `useRoleSetManager({ relevantRoles: [] })` call.
+let mockLoadingPrivileges = false;
+// sec-client-web-2: the holder-list read was attempted but is unreachable
+// (privilege gap or query error) — distinct from a genuinely empty list.
+let mockHoldersUnavailable = false;
 
 const usersByRole = {
   PLATFORM_ROLES_ADMIN: [{ id: 'u1', profile: { displayName: 'Alice' }, email: 'alice@x.io' }],
@@ -44,7 +50,11 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', async importOriginal
   const actual = await importOriginal<typeof import('@/domain/access/RoleSetManager/useRoleSetManager')>();
   return {
     ...actual,
-    default: () => ({
+    // The page calls this hook twice: once with `relevantRoles: []` (phase 1,
+    // myPrivileges only) and once with the offered set (phase 2, holder data).
+    // `mockLoadingPrivileges` only applies to the phase-1 call, mirroring the
+    // real hook where the myPrivileges query doesn't wait on relevantRoles.
+    default: ({ relevantRoles }: { relevantRoles: readonly unknown[] }) => ({
       myPrivileges: mockMyPrivileges,
       usersByRole,
       organizationsByRole,
@@ -52,8 +62,9 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', async importOriginal
       removePlatformRoleFromUser,
       assignPlatformRoleToOrganization,
       removePlatformRoleFromOrganization,
-      loading: false,
+      loading: relevantRoles.length === 0 ? mockLoadingPrivileges : false,
       updating: false,
+      holdersUnavailable: mockHoldersUnavailable,
     }),
   };
 });
@@ -82,6 +93,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
   mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
+  mockLoadingPrivileges = false;
+  mockHoldersUnavailable = false;
 });
 
 describe('CrdAdminGlobalRolesPage', () => {
@@ -178,11 +191,52 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(within(nav).getAllByRole('button')).toHaveLength(13);
     });
 
-    test('a holder of neither assignment privilege is offered no roles', () => {
+    // corr-client-web-3: a holder of neither privilege gets an explicit,
+    // translated empty state — not a blank nav indistinguishable from a
+    // broken page.
+    test('a holder of neither assignment privilege sees an explicit empty state, no nav', () => {
       mockMyPrivileges = [];
       render(<CrdAdminGlobalRolesPage />);
-      const nav = screen.getByRole('navigation');
-      expect(within(nav).queryAllByRole('button')).toHaveLength(0);
+      expect(screen.queryByRole('navigation')).toBeNull();
+      expect(screen.getByText('roleMembers.noAssignablePrivilege')).toBeInTheDocument();
+    });
+  });
+
+  // corr-client-web-3: the loading and empty states must be distinguishable —
+  // neither renders an indistinguishable blank panel.
+  describe('loading and empty states (corr-client-web-3)', () => {
+    test('shows a loading indicator while myPrivileges is still loading, no nav yet', () => {
+      mockLoadingPrivileges = true;
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByRole('status')).toBeInTheDocument();
+      expect(screen.queryByRole('navigation')).toBeNull();
+      expect(screen.queryByText('roleMembers.noAssignablePrivilege')).toBeNull();
+    });
+
+    test('once loaded, a holder of an assignment privilege sees the nav, not the loading indicator', () => {
+      mockLoadingPrivileges = false;
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.queryByRole('status')).toBeNull();
+      expect(screen.getByRole('navigation')).toBeInTheDocument();
+    });
+  });
+
+  // sec-client-web-2: "read denied/unreachable" must not look like "no holders".
+  describe('holder read unavailable (sec-client-web-2)', () => {
+    test('renders an explicit unavailable message instead of the misleading noMembers state', () => {
+      mockHoldersUnavailable = true;
+      mockPathname = '/admin/authorization/roles/PLATFORM_AUDIT_READER';
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByRole('alert')).toHaveTextContent('roleMembers.holdersUnavailable');
+      expect(screen.queryByText('roleMembers.noMembers')).toBeNull();
+    });
+
+    test('renders the normal noMembers state when the read is not flagged unavailable', () => {
+      mockHoldersUnavailable = false;
+      mockPathname = '/admin/authorization/roles/PLATFORM_AUDIT_READER';
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByText('roleMembers.noMembers')).toBeInTheDocument();
+      expect(screen.queryByText('roleMembers.holdersUnavailable')).toBeNull();
     });
   });
 

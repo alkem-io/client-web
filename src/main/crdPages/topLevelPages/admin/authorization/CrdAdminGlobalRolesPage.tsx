@@ -1,11 +1,12 @@
 import { ApolloError } from '@apollo/client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { type RoleMember, RoleMembersEditor } from '@/crd/components/admin/roles/RoleMembersEditor';
+import { Loading } from '@/crd/components/common/Loading';
 import { Button } from '@/crd/primitives/button';
 import useRoleSetAvailableOrganizationsOnPlatform from '@/domain/access/AvailableContributors/useRoleSetAvailableOrganizationsOnPlatform';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
@@ -60,12 +61,11 @@ const CrdAdminGlobalRolesPage = () => {
   const roleSetId = data?.platform.roleSet.id;
 
   // Phase 1: myPrivileges, independent of which roles are offered (FR-032).
-  const { myPrivileges } = useRoleSetManager({ roleSetId, relevantRoles: [] });
-
-  const [offeredRoles, setOfferedRoles] = useState<PlatformRole[]>([]);
-  useEffect(() => {
-    setOfferedRoles(getOfferedPlatformRoles(myPrivileges));
-  }, [myPrivileges]);
+  // `loadingPrivileges` distinguishes "still fetching" from "fetched, offers
+  // nothing" so the page never renders an indistinguishable blank panel for
+  // either case (corr-client-web-3).
+  const { myPrivileges, loading: loadingPrivileges } = useRoleSetManager({ roleSetId, relevantRoles: [] });
+  const offeredRoles = getOfferedPlatformRoles(myPrivileges);
 
   const segments = pathname.split('/').filter(Boolean);
   const rolesIdx = segments.indexOf('roles');
@@ -82,6 +82,7 @@ const CrdAdminGlobalRolesPage = () => {
     removePlatformRoleFromOrganization,
     loading,
     updating,
+    holdersUnavailable,
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: offeredRoles,
@@ -187,88 +188,102 @@ const CrdAdminGlobalRolesPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
-        {offeredRoles.map(role => (
-          <Button
-            key={role}
-            type="button"
-            variant={role === selectedRole ? 'default' : 'outline'}
-            size="sm"
-            aria-pressed={role === selectedRole}
-            onClick={() => selectRole(role)}
-          >
-            {roleLabels[role]}
-          </Button>
-        ))}
-      </nav>
+      {loadingPrivileges ? (
+        // corr-client-web-3: the first paint (offeredRoles starts empty until
+        // myPrivileges resolves) must not look identical to "no privilege".
+        <Loading />
+      ) : offeredRoles.length === 0 ? (
+        // corr-client-web-3: an operator holding neither GRANT_GLOBAL_ADMINS nor
+        // FEATURE_ROLE_ASSIGN gets an explicit, translated empty state instead
+        // of a blank panel indistinguishable from a broken page.
+        <p className="text-body text-muted-foreground">{t('roleMembers.noAssignablePrivilege')}</p>
+      ) : (
+        <>
+          <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
+            {offeredRoles.map(role => (
+              <Button
+                key={role}
+                type="button"
+                variant={role === selectedRole ? 'default' : 'outline'}
+                size="sm"
+                aria-pressed={role === selectedRole}
+                onClick={() => selectRole(role)}
+              >
+                {roleLabels[role]}
+              </Button>
+            ))}
+          </nav>
 
-      {selectedRole && (
-        <RoleMembersEditor
-          roleLabel={roleLabels[selectedRole]}
-          roleDescription={roleDescriptions[selectedRole]}
-          errorMessage={assignmentError}
-          members={filteredMembers}
-          availableUsers={available}
-          memberSearchTerm={memberSearch}
-          onMemberSearchTermChange={setMemberSearch}
-          searchTerm={searchInput}
-          onSearchTermChange={setSearchInput}
-          onAdd={async userId => {
-            setAssignmentError(undefined);
-            try {
-              await assignPlatformRoleToUser(userId, selectedRole);
-            } catch (error) {
-              setAssignmentError(extractErrorMessage(error));
-            }
-          }}
-          onRemove={async userId => {
-            setAssignmentError(undefined);
-            try {
-              await removePlatformRoleFromUser(userId, selectedRole);
-            } catch (error) {
-              setAssignmentError(extractErrorMessage(error));
-            }
-          }}
-          loadingMembers={loading}
-          loadingAvailable={loadingAvailable}
-          updating={updating}
-          hasMore={hasMore}
-          onLoadMore={() => {
-            void fetchMore();
-          }}
-          organizationSection={
-            showOrganizationSection
-              ? {
-                  members: organizationMembers,
-                  availableOrganizations: availableOrganizationMembers,
-                  searchTerm: orgSearchInput,
-                  onSearchTermChange: setOrgSearchInput,
-                  onAdd: async organizationId => {
-                    setAssignmentError(undefined);
-                    try {
-                      await assignPlatformRoleToOrganization(organizationId, selectedRole);
-                    } catch (error) {
-                      setAssignmentError(extractErrorMessage(error));
-                    }
-                  },
-                  onRemove: async organizationId => {
-                    setAssignmentError(undefined);
-                    try {
-                      await removePlatformRoleFromOrganization(organizationId, selectedRole);
-                    } catch (error) {
-                      setAssignmentError(extractErrorMessage(error));
-                    }
-                  },
-                  loadingMembers: loading,
-                  loadingAvailable: loadingAvailableOrganizations,
-                  hasMore: hasMoreOrganizations,
-                  onLoadMore: () => {
-                    void fetchMoreOrganizations();
-                  },
+          {selectedRole && (
+            <RoleMembersEditor
+              roleLabel={roleLabels[selectedRole]}
+              roleDescription={roleDescriptions[selectedRole]}
+              errorMessage={assignmentError}
+              members={filteredMembers}
+              availableUsers={available}
+              memberSearchTerm={memberSearch}
+              onMemberSearchTermChange={setMemberSearch}
+              searchTerm={searchInput}
+              onSearchTermChange={setSearchInput}
+              onAdd={async userId => {
+                setAssignmentError(undefined);
+                try {
+                  await assignPlatformRoleToUser(userId, selectedRole);
+                } catch (error) {
+                  setAssignmentError(extractErrorMessage(error));
                 }
-              : undefined
-          }
-        />
+              }}
+              onRemove={async userId => {
+                setAssignmentError(undefined);
+                try {
+                  await removePlatformRoleFromUser(userId, selectedRole);
+                } catch (error) {
+                  setAssignmentError(extractErrorMessage(error));
+                }
+              }}
+              loadingMembers={loading}
+              loadingAvailable={loadingAvailable}
+              updating={updating}
+              holdersUnavailable={holdersUnavailable}
+              hasMore={hasMore}
+              onLoadMore={() => {
+                void fetchMore();
+              }}
+              organizationSection={
+                showOrganizationSection
+                  ? {
+                      members: organizationMembers,
+                      availableOrganizations: availableOrganizationMembers,
+                      searchTerm: orgSearchInput,
+                      onSearchTermChange: setOrgSearchInput,
+                      onAdd: async organizationId => {
+                        setAssignmentError(undefined);
+                        try {
+                          await assignPlatformRoleToOrganization(organizationId, selectedRole);
+                        } catch (error) {
+                          setAssignmentError(extractErrorMessage(error));
+                        }
+                      },
+                      onRemove: async organizationId => {
+                        setAssignmentError(undefined);
+                        try {
+                          await removePlatformRoleFromOrganization(organizationId, selectedRole);
+                        } catch (error) {
+                          setAssignmentError(extractErrorMessage(error));
+                        }
+                      },
+                      loadingMembers: loading,
+                      loadingAvailable: loadingAvailableOrganizations,
+                      hasMore: hasMoreOrganizations,
+                      onLoadMore: () => {
+                        void fetchMoreOrganizations();
+                      },
+                    }
+                  : undefined
+              }
+            />
+          )}
+        </>
       )}
     </div>
   );

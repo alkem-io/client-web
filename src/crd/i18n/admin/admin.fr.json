@@ -125,6 +125,8 @@
     "remove": "Supprimer",
     "noMembers": "Aucun membre dans ce rôle.",
     "noResults": "Aucun utilisateur trouvé.",
+    "noAssignablePrivilege": "Vous n'avez pas la permission d'attribuer ou de consulter un rôle de la plateforme.",
+    "holdersUnavailable": "Impossible de charger les titulaires actuels de ce rôle.",
     "loading": "Chargement…",
     "removeTitle": "Supprimer {{name}} ?",
     "removeDescription": "Cela révoque le rôle de ce membre.",
