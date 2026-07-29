@@ -41,22 +41,20 @@ export default [
       'no-restricted-syntax': [
         'error',
         {
-          selector: 'CallExpression[callee.name="useMemo"]',
+          // Matches both the bare `useMemo(...)` and namespaced `React.useMemo(...)` forms.
+          selector: 'CallExpression:matches([callee.name="useMemo"], [callee.property.name="useMemo"])',
           message:
             'useMemo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
         },
         {
-          selector: 'CallExpression[callee.name="useCallback"]',
+          selector:
+            'CallExpression:matches([callee.name="useCallback"], [callee.property.name="useCallback"])',
           message:
             'useCallback is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
         },
         {
-          selector: 'CallExpression[callee.name="memo"]',
-          message:
-            'React.memo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
-        },
-        {
-          selector: 'CallExpression[callee.object.name="React"][callee.property.name="memo"]',
+          // Matches both `memo(...)` and `React.memo(...)`.
+          selector: 'CallExpression:matches([callee.name="memo"], [callee.property.name="memo"])',
           message:
             'React.memo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
         },

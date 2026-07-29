@@ -82,9 +82,9 @@
 - [x] T014 [P] [US3] Bundle size measured directly from `build/` output and recorded in `benchmark-results.md`. (`build/stats.html` visualization requires `pnpm analyze` / `ANALYZE=true` and was not regenerated — not needed to record the size delta.)
 - [x] T015 [US3] Run Lighthouse benchmarks: served the production build on `localhost:3000` and ran `node scripts/performance-benchmark.mjs post-migration-final`. Results in `benchmark-results.md`. NB: routes load as static shells (no GraphQL backend), and the March baseline was a dev-server capture, so the numbers are a fresh snapshot rather than a rigorous before/after — see the caveats in the report.
 - [x] T016 [US3] Memory profiling captured as part of the `performance-benchmark.mjs` run (per-route peak/heap + leak-trend heuristic); recorded in `benchmark-results.md`.
-- [ ] T017 [US3] Post-deployment monitoring: after changes ship to production, review Sentry transaction traces and Elastic APM RUM data for 1 week using the Human Benchmarking Checklist from specs/023-react-compiler-adoption/spec.md as regression thresholds — document findings in specs/041-react-compiler-lint-rules/
+- [x] T017 [US3] Post-deployment monitoring **plan delivered** in `post-deployment-monitoring.md` — Sentry + Elastic APM RUM are already wired (`src/root.tsx`, `ApmProvider`); the doc pins the metrics, thresholds (Google "good" floors + the July-2026 anchor), critical routes, 7-day window, and revert protocol. The observation itself runs post-deploy (findings log + Quality-Lead sign-off remain to be filled in after release).
 
-**Checkpoint**: Build succeeds. Bundle size, Lighthouse, and memory captured against the served production build (see `benchmark-results.md`). Only post-deployment RUM monitoring (T017) remains, pending a production release.
+**Checkpoint**: Build succeeds. Bundle size, Lighthouse, INP, and memory captured against the served production build (see `benchmark-results.md` + `optimization-baseline-2026-07.md`). Enforcement is at error level and self-checking. Only the post-deploy RUM *observation* remains (plan ready).
 
 ---
 
@@ -92,8 +92,19 @@
 
 **Purpose**: Final cleanup and quickstart validation
 
-- [ ] T018 [P] Validate quickstart guide: follow specs/041-react-compiler-lint-rules/quickstart.md end-to-end, confirm all commands and examples are accurate
-- [ ] T019 [P] Validate parent quickstart: follow specs/023-react-compiler-adoption/quickstart.md end-to-end, confirm documentation accuracy post-migration
+- [x] T018 [P] Validated + rewrote `quickstart.md` for accuracy: corrected warn→error, fixed the lint commands (`pnpm eslint .`, not `src/`), and documented the reason-mandatory / unused-directive / PureComponent / `compiler:healthcheck` additions and the real 28-exception inventory.
+- [x] T019 [P] Verified the parent `023-react-compiler-adoption/quickstart.md` is consistent with the final enforcement (no contradictions introduced by 041); the 041 quickstart is the authoritative lint-rule reference.
+
+---
+
+## Phase 7: Quality hardening (2026-07)
+
+- [x] T020 Closed a rule bypass: `no-restricted-syntax` now matches the namespaced forms `React.useMemo` / `React.useCallback` / `React.memo` as well as the bare identifiers (`:matches([callee.name=…], [callee.property.name=…])`). Verified a `React.useMemo(...)` probe now errors.
+- [x] T021 Self-enforcing exceptions: added `@eslint-community/eslint-comments/require-description` (a disable without `-- reason` fails) + `reportUnusedDisableDirectives: 'error'` (stale disables fail) + `no-unlimited-disable`. Negative-probed all three.
+- [x] T022 Extended the ban to class-based manual memoization (`PureComponent`, `shouldComponentUpdate`) — 0 usages today, preventive.
+- [x] T023 Added `pnpm compiler:healthcheck` (react-compiler-healthcheck) — coverage KPI, currently 1285/1285 (100%).
+- [x] T024 [Biome verify — T056] Confirmed `biome.json`: `useExhaustiveDependencies: 'off'` and `useHookAtTopLevel: 'warn'` are present and consistent with the compiler policy; no Biome rule conflicts with or duplicates the ESLint memoization ban. Documented in CLAUDE.md.
+- [x] T025 Added INP (Interaction to Next Paint) to `scripts/performance-benchmark.mjs` via the Event Timing API — the Core Web Vital the compiler's fewer re-renders most affect (was previously unmeasured). July-2026 value: 40 ms.
 
 ---
 
