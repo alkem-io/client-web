@@ -45,6 +45,11 @@ export type SubspaceHeaderProps = {
    * here because it is sized for cards (~416×256) and would be visibly blurry when stretched.
    */
   bannerUrl?: string;
+  /**
+   * Author-supplied alternative text for the banner image (from the L0 root's
+   * BANNER visual). Falls back to a generic label when the author left it empty.
+   */
+  bannerAlt?: string;
   /** Accent colour for the gradient fallback when `bannerUrl` is missing — derived from the L0 root id. */
   color: string;
 
@@ -75,6 +80,7 @@ export function SubspaceHeader({
   subspaceColor,
   subspaceAvatarUrl,
   bannerUrl,
+  bannerAlt,
   color,
   actions,
   overlayHeader = false,
@@ -93,19 +99,25 @@ export function SubspaceHeader({
           edge-to-edge full-bleed banner. */}
       <div className={cn('w-full', !fullWidth && 'lg:px-8')}>
         <div className="grid grid-cols-12 gap-6">
-          <div
-            className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}
-            role="img"
-            aria-label={t('a11y.subspaceBanner', { name: title })}
-          >
-            <div
-              className={cn('absolute inset-0 bg-cover bg-center', !bannerUrl && 'bg-muted')}
-              style={
-                bannerUrl
-                  ? { backgroundImage: `url(${bannerUrl})` }
-                  : { background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` }
-              }
-            />
+          {/* A real <img> rather than a CSS background — see the matching note in
+              SpaceHeader: LCP discoverability plus somewhere for the alt text. */}
+          <div className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}>
+            {bannerUrl ? (
+              <img
+                src={bannerUrl}
+                alt={bannerAlt || t('a11y.subspaceBanner', { name: title })}
+                className="absolute inset-0 size-full object-cover object-center"
+                fetchPriority="high"
+                decoding="async"
+              />
+            ) : (
+              <div
+                className="absolute inset-0"
+                style={{ background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` }}
+                role="img"
+                aria-label={t('a11y.subspaceBanner', { name: title })}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -202,6 +202,7 @@ export default function CrdSpacePageLayout() {
                 title={space.about.profile.displayName}
                 tagline={space.about.profile.tagline ?? undefined}
                 bannerUrl={space.about.profile.banner?.uri}
+                bannerAlt={space.about.profile.banner?.alternativeText ?? undefined}
                 color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
                 actions={headerActions}
                 overlayHeader={enableBannerOverlay}

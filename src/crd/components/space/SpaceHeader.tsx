@@ -28,6 +28,11 @@ type SpaceHeaderProps = {
   title: string;
   tagline?: string;
   bannerUrl?: string;
+  /**
+   * Author-supplied alternative text for the banner image. Falls back to a
+   * generic "Space banner for X" label when the author left it empty.
+   */
+  bannerAlt?: string;
   /** Deterministic accent colour shown as a gradient when `bannerUrl` is missing. */
   color?: string;
   isHomeSpace?: boolean;
@@ -52,6 +57,7 @@ export function SpaceHeader({
   title,
   tagline,
   bannerUrl,
+  bannerAlt,
   color,
   isHomeSpace,
   actions,
@@ -71,17 +77,29 @@ export function SpaceHeader({
           edge-to-edge full-bleed banner. */}
       <div className={cn('w-full', !fullWidth && 'lg:px-8')}>
         <div className="grid grid-cols-12 gap-6">
-          <div
-            className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}
-            role="img"
-            aria-label={t('a11y.spaceBanner', { name: title })}
-          >
-            <div
-              className={cn('absolute inset-0 bg-cover bg-center', !bannerUrl && !color && 'bg-muted')}
-              style={
-                bannerUrl ? { backgroundImage: `url(${bannerUrl})` } : color ? backgroundGradient(color) : undefined
-              }
-            />
+          {/* A real <img> rather than a CSS background: the banner is the page's
+              LCP element, and a background-image is only discoverable after the
+              CSSOM is built. `fetchPriority` + eager decoding let the preload
+              scanner start it immediately, and it gives the author-supplied alt
+              text somewhere to live. `object-cover`/`object-center` are the
+              exact equivalents of the previous `bg-cover`/`bg-center`. */}
+          <div className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}>
+            {bannerUrl ? (
+              <img
+                src={bannerUrl}
+                alt={bannerAlt || t('a11y.spaceBanner', { name: title })}
+                className="absolute inset-0 size-full object-cover object-center"
+                fetchPriority="high"
+                decoding="async"
+              />
+            ) : (
+              <div
+                className={cn('absolute inset-0', !color && 'bg-muted')}
+                style={color ? backgroundGradient(color) : undefined}
+                role="img"
+                aria-label={t('a11y.spaceBanner', { name: title })}
+              />
+            )}
           </div>
         </div>
       </div>

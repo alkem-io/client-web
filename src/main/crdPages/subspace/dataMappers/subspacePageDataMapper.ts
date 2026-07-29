@@ -17,7 +17,7 @@ type ProfileLike = {
   displayName?: string | null;
   tagline?: string | null;
   avatar?: { uri?: string | null } | null;
-  banner?: { uri?: string | null } | null;
+  banner?: { uri?: string | null; alternativeText?: string | null } | null;
   url?: string | null;
 };
 
@@ -35,7 +35,7 @@ export type SubspaceBannerSourceData = {
 
 export type SubspaceBannerProps = Pick<
   SubspaceHeaderProps,
-  'title' | 'tagline' | 'subspaceInitials' | 'subspaceColor' | 'subspaceAvatarUrl' | 'bannerUrl' | 'color'
+  'title' | 'tagline' | 'subspaceInitials' | 'subspaceColor' | 'subspaceAvatarUrl' | 'bannerUrl' | 'bannerAlt' | 'color'
 >;
 
 export function mapSubspaceBanner({
@@ -53,6 +53,7 @@ export function mapSubspaceBanner({
     subspaceColor: pickColorFromId(subspaceId || title),
     subspaceAvatarUrl: subspaceProfile?.avatar?.uri ?? undefined,
     bannerUrl: levelZeroProfile?.banner?.uri || undefined,
+    bannerAlt: levelZeroProfile?.banner?.alternativeText || undefined,
     color: pickColorFromId(levelZeroSpaceId ?? levelZeroName),
   };
 }
