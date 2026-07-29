@@ -17,12 +17,12 @@
   },
   "visibility": {
     "archived": "Deze Space is gearchiveerd en alleen-lezen.",
-    "archivedContact": "Neem contact op met de Space-leider voor meer informatie.",
+    "archivedContact": "Neem contact op met de Space-Lead voor meer informatie.",
     "demo": "Dit is een demo-Space voor testdoeleinden.",
     "inactive": "Deze Space is momenteel inactief."
   },
   "knowledge": {
-    "searchPlaceholder": "Zoek in de kennisbank...",
+    "searchPlaceholder": "Zoeken...",
     "searchLabel": "Zoek in de kennisbank",
     "noResults": "Geen resultaten",
     "search": {
@@ -64,9 +64,9 @@
     "events": "Evenementen",
     "noEvents": "Geen aankomende evenementen",
     "showCalendar": "Kalender tonen",
-    "spaceLead": "Space-leider",
-    "spaceLeads": "Space-leiders",
-    "contactLead": "Leiders contacteren",
+    "spaceLead": "Space-Lead",
+    "spaceLeads": "Space-Leads",
+    "contactLead": "Leads contacteren",
     "invite": "Uitnodigen",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Communityrichtlijnen",
@@ -325,7 +325,7 @@
     "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
-    "filterLead": "Leider",
+    "filterLead": "Lead",
     "filterOrganization": "Organisatie",
     "noMembers": "Geen leden gevonden",
     "previousPage": "Vorige",
@@ -337,7 +337,7 @@
       "clearFilters": "Filters wissen"
     },
     "role": {
-      "lead": "Leider",
+      "lead": "Lead",
       "member": "Lid",
       "organization": "Organisatie"
     }
@@ -372,9 +372,9 @@
     "editMembers": "Leden bewerken",
     "editProfile": "Space-profiel bewerken",
     "manageCommunity": "Community beheren",
-    "leads": "Leiders",
-    "leadUsers": "Leidende gebruikers",
-    "leadOrganizations": "Leidende organisaties",
+    "leads": "Leads",
+    "leadUsers": "Lead-gebruikers",
+    "leadOrganizations": "Lead-organisaties",
     "guidelines": "Communityrichtlijnen",
     "guidelinesAdminsOnly": "Alleen beheerders kunnen deze sectie zien. Voeg communityrichtlijnen toe zodat leden weten wat ze kunnen verwachten.",
     "references": "Referenties",

@@ -42,6 +42,8 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
+    /** T013 — Suggested language for the invitee (FR-014/FR-015). Omit to leave absent. */
+    suggestedLanguage?: string;
   }) => Promise<InvitationResultModel[]>;
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
   deleteInvitation: (invitationId: string) => Promise<unknown>;
@@ -205,12 +207,14 @@ const useRoleSetApplicationsAndInvitations = ({
     invitedUserEmails,
     welcomeMessage,
     extraRoles,
+    suggestedLanguage,
   }: {
     roleSetId: string;
     invitedContributorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
+    suggestedLanguage?: string;
   }) => {
     // Filter out the Member role as it's not an extra role
     const filteredExtraRoles = (extraRoles ?? []).filter(role => role !== RoleName.Member);
@@ -222,6 +226,7 @@ const useRoleSetApplicationsAndInvitations = ({
         invitedUserEmails,
         welcomeMessage,
         extraRoles: filteredExtraRoles,
+        suggestedLanguage,
       },
       onCompleted: () => refetch(),
     });

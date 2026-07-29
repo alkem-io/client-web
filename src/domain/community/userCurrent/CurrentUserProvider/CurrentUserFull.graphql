@@ -29,6 +29,7 @@ fragment InvitationData on CommunityInvitationResult {
   invitation {
     id
     welcomeMessage
+    suggestedLanguage
     createdBy {
       id
     }

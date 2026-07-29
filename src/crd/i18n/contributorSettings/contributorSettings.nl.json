@@ -237,7 +237,7 @@
       "subspaceFallbackL1": "Subspace ({{id}}…)",
       "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
       "ledBy": "Geleid door:",
-      "ledByAria": "{{count}} community-leiders",
+      "ledByAria": "{{count}} community-Leads",
       "leadsMore": "en nog {{count}}"
     },
     "security": {
@@ -269,6 +269,12 @@
         "description": "Schakel tussen het nieuwe (CRD) en het klassieke (MUI) ontwerp. Deze voorkeur wordt lokaal op dit apparaat opgeslagen.",
         "toggleLabel": "Gebruik het nieuwe ontwerp (CRD)",
         "reloadCaption": "De pagina wordt opnieuw geladen na de wijziging."
+      },
+      "language": {
+        "title": "Taal",
+        "label": "Interfacetaal",
+        "description": "De taal die in heel Alkemio wordt gebruikt. Wijzigingen gelden voor al je apparaten.",
+        "error": "Taalvoorkeur kon niet worden opgeslagen — probeer het opnieuw."
       }
     },
     "notifications": {
@@ -297,7 +303,7 @@
         },
         "spaceAdmin": {
           "title": "Space-beheerdermeldingen",
-          "description": "Meldingen voor Spaces waarvoor je beheerder of lead bent."
+          "description": "Meldingen voor Spaces waarvoor je beheerder of Lead bent."
         },
         "user": {
           "title": "Gebruikersmeldingen",

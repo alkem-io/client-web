@@ -12,25 +12,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -883,6 +873,7 @@ export enum AuthorizationCredential {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
@@ -1005,6 +996,7 @@ export enum AuthorizationPrivilege {
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PublicShare = 'PUBLIC_SHARE',
   Read = 'READ',
@@ -1716,6 +1708,8 @@ export type Config = {
   featureFlags: Array<PlatformFeatureFlag>;
   /** Integration with a 3rd party Geo information service */
   geo: Geo;
+  /** Language configuration: eligible set for proactive offers and the platform default. */
+  language: LanguageConfig;
   /** Platform related locations. */
   locations: PlatformLocations;
   /** Sentry (client monitoring) related configuration. */
@@ -2823,6 +2817,7 @@ export enum CredentialType {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
@@ -3729,6 +3724,8 @@ export type Invitation = {
   nextEvents: Array<Scalars['String']['output']>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
+  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
@@ -3746,6 +3743,8 @@ export type InviteForEntryRoleOnRoleSetInput = {
   invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
+  /** Optional language the inviter expects the invitees to prefer (single value for the whole batch — FR-014a; must be in the eligible set at compose time — DL-8). Recorded per-invitation so per-invitee granularity later is a UI change, not a migration (FR-014b). */
+  suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
   /** The welcome message to send */
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
 };
@@ -3786,6 +3785,14 @@ export type KratosIdentity = {
   lastName?: Maybe<Scalars['String']['output']>;
   /** The current verification status of the email address. */
   verificationStatus: Scalars['String']['output'];
+};
+
+export type LanguageConfig = {
+  __typename?: 'LanguageConfig';
+  /** The platform-wide default interface language. */
+  default: Scalars['String']['output'];
+  /** Languages the platform proactively detects, offers, and allows as invitation suggestions — subset of the supported set; empty = all proactive offers disabled. */
+  eligible: Array<Scalars['String']['output']>;
 };
 
 export type LatestReleaseDiscussion = {
@@ -4797,6 +4804,17 @@ export type MoveSpaceL1ToSpaceL2Input = {
   targetSpaceL1ID: Scalars['UUID']['input'];
 };
 
+export type MoveSpaceL2ToSpaceL1Input = {
+  /** Send invitations to former community members who are also in the target L0 community. */
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Custom invitation message. Used only when autoInvite is true. */
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+  /** The L2 subspace to move (stays L2). */
+  spaceL2ID: Scalars['UUID']['input'];
+  /** The target L1 subspace in a different L0 (new parent for the moved L2). */
+  targetSpaceL1ID: Scalars['UUID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
@@ -5033,6 +5051,8 @@ export type Mutation = {
   moveSpaceL1ToSpaceL0: Space;
   /** Move an L1 subspace to become an L2 sub-subspace under a target L1 in a different L0 space.       The space is demoted from level 1 to level 2. All community roles are cleared.       Requires platform admin privileges. */
   moveSpaceL1ToSpaceL2: Space;
+  /** Move an L2 sub-subspace to become an L2 subspace under a target L1 in a different L0 space.       The subspace stays at level 2 but changes both its parent L1 and its top-level L0.       All community roles (including admins) are cleared and pending invitations dropped.       Platform access rules are recomputed from the new parent hierarchy.       Requires platform admin privileges. */
+  moveSpaceL2ToSpaceL1: Space;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
@@ -5661,6 +5681,10 @@ export type MutationMoveSpaceL1ToSpaceL0Args = {
 
 export type MutationMoveSpaceL1ToSpaceL2Args = {
   moveData: MoveSpaceL1ToSpaceL2Input;
+};
+
+export type MutationMoveSpaceL2ToSpaceL1Args = {
+  moveData: MoveSpaceL2ToSpaceL1Input;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -6624,6 +6648,8 @@ export type PlatformInvitation = {
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
+  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
@@ -7583,6 +7609,7 @@ export enum RoleName {
   Owner = 'OWNER',
   PlatformAssistantAccess = 'PLATFORM_ASSISTANT_ACCESS',
   PlatformBetaTester = 'PLATFORM_BETA_TESTER',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
   Registered = 'REGISTERED',
 }
@@ -9572,6 +9599,10 @@ export type UpdateUserSettingsEntityInput = {
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
+  /** Set the user's interface language preference. Must be a value from the supported languages set. Any language write also latches languageOfferAnswered=true (FR-023 invariant). */
+  language?: InputMaybe<Scalars['String']['input']>;
+  /** Mark that this User has answered the one-time language offer. One-way latch: setting false is rejected (FR-005a). */
+  languageOfferAnswered?: InputMaybe<Scalars['Boolean']['input']>;
   /** Settings related to this users Notifications preferences. */
   notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
   /** Settings related to Privacy. */
@@ -10098,6 +10129,10 @@ export type UserSettings = {
   homeSpace: UserSettingsHomeSpace;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The interface language chosen by this User. Null = the User has never chosen a language (distinct from having chosen the platform default). */
+  language?: Maybe<Scalars['String']['output']>;
+  /** Whether this User has answered the one-time language offer (global across all languages — FR-005a). Latched true by any language write. */
+  languageOfferAnswered: Scalars['Boolean']['output'];
   /** The notification settings for this User. */
   notification: UserSettingsNotification;
   /** The privacy settings for this User */
@@ -11041,6 +11076,7 @@ export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
   extraRoles: Array<RoleName> | RoleName;
+  suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type InviteForEntryRoleOnRoleSetMutation = {
@@ -11321,6 +11357,7 @@ export type UserPendingMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        suggestedLanguage?: string | undefined;
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -22692,6 +22729,7 @@ export type PendingMembershipsMembershipsFragment = {
       __typename?: 'Invitation';
       id: string;
       welcomeMessage?: string | undefined;
+      suggestedLanguage?: string | undefined;
       createdBy?:
         | {
             __typename?: 'User';
@@ -22707,6 +22745,7 @@ export type PendingMembershipInvitationFragment = {
   __typename?: 'Invitation';
   id: string;
   welcomeMessage?: string | undefined;
+  suggestedLanguage?: string | undefined;
   createdBy?:
     | {
         __typename?: 'User';
@@ -23368,6 +23407,8 @@ export type UpdateUserSettingsMutation = {
     settings: {
       __typename?: 'UserSettings';
       id: string;
+      language?: string | undefined;
+      languageOfferAnswered: boolean;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
@@ -24131,6 +24172,7 @@ export type InvitationDataFragment = {
     __typename?: 'Invitation';
     id: string;
     welcomeMessage?: string | undefined;
+    suggestedLanguage?: string | undefined;
     state: string;
     createdDate: Date;
     createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -24166,6 +24208,8 @@ export type CurrentUserLightQuery = {
             __typename?: 'UserSettings';
             id: string;
             designVersion: number;
+            language?: string | undefined;
+            languageOfferAnswered: boolean;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
@@ -25081,6 +25125,7 @@ export type VcMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        suggestedLanguage?: string | undefined;
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -26046,6 +26091,7 @@ export type ConfigurationQuery = {
     __typename?: 'Platform';
     configuration: {
       __typename?: 'Config';
+      language: { __typename?: 'LanguageConfig'; eligible: Array<string>; default: string };
       authentication: {
         __typename?: 'AuthenticationConfig';
         providers: Array<{
@@ -26101,6 +26147,7 @@ export type ConfigurationQuery = {
 
 export type ConfigurationFragment = {
   __typename?: 'Config';
+  language: { __typename?: 'LanguageConfig'; eligible: Array<string>; default: string };
   authentication: {
     __typename?: 'AuthenticationConfig';
     providers: Array<{
@@ -26802,7 +26849,11 @@ export type MoveSpaceL1ToL0MutationVariables = Exact<{
 
 export type MoveSpaceL1ToL0Mutation = {
   __typename?: 'Mutation';
-  moveSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
+  moveSpaceL1ToSpaceL0: {
+    __typename?: 'Space';
+    id: string;
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
+  };
 };
 
 export type MoveSpaceL1ToL2MutationVariables = Exact<{
@@ -26814,7 +26865,11 @@ export type MoveSpaceL1ToL2MutationVariables = Exact<{
 
 export type MoveSpaceL1ToL2Mutation = {
   __typename?: 'Mutation';
-  moveSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
+  moveSpaceL1ToSpaceL2: {
+    __typename?: 'Space';
+    id: string;
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
+  };
 };
 
 export type SpaceMoveTargetL0SpacesQueryVariables = Exact<{
@@ -26860,6 +26915,23 @@ export type SpaceMoveTargetL1SubspacesQuery = {
           }>;
         }
       | undefined;
+  };
+};
+
+export type MoveSpaceL2ToL1MutationVariables = Exact<{
+  spaceL2ID: Scalars['UUID']['input'];
+  targetSpaceL1ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL2ToL1Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL2ToSpaceL1: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
   };
 };
 

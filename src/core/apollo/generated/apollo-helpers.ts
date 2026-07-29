@@ -1186,6 +1186,7 @@ export type ConfigKeySpecifier = (
   | 'defaultVisualTypeConstraints'
   | 'featureFlags'
   | 'geo'
+  | 'language'
   | 'locations'
   | 'sentry'
   | 'storage'
@@ -1197,6 +1198,7 @@ export type ConfigFieldPolicy = {
   defaultVisualTypeConstraints?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   geo?: FieldPolicy<any> | FieldReadFunction<any>;
+  language?: FieldPolicy<any> | FieldReadFunction<any>;
   locations?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2271,6 +2273,7 @@ export type InvitationKeySpecifier = (
   | 'lifecycle'
   | 'nextEvents'
   | 'state'
+  | 'suggestedLanguage'
   | 'updatedDate'
   | 'welcomeMessage'
   | InvitationKeySpecifier
@@ -2287,6 +2290,7 @@ export type InvitationFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
+  suggestedLanguage?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2325,6 +2329,11 @@ export type KratosIdentityFieldPolicy = {
   isVerified?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   verificationStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LanguageConfigKeySpecifier = ('default' | 'eligible' | LanguageConfigKeySpecifier)[];
+export type LanguageConfigFieldPolicy = {
+  default?: FieldPolicy<any> | FieldReadFunction<any>;
+  eligible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
 export type LatestReleaseDiscussionFieldPolicy = {
@@ -2968,6 +2977,7 @@ export type MutationKeySpecifier = (
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
   | 'moveSpaceL1ToSpaceL2'
+  | 'moveSpaceL2ToSpaceL1'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
@@ -3188,6 +3198,7 @@ export type MutationFieldPolicy = {
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3615,6 +3626,7 @@ export type PlatformInvitationKeySpecifier = (
   | 'profileCreated'
   | 'roleSetExtraRoles'
   | 'roleSetInvitedToParent'
+  | 'suggestedLanguage'
   | 'updatedDate'
   | 'welcomeMessage'
   | PlatformInvitationKeySpecifier
@@ -3631,6 +3643,7 @@ export type PlatformInvitationFieldPolicy = {
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetExtraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
+  suggestedLanguage?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -5413,6 +5426,8 @@ export type UserSettingsKeySpecifier = (
   | 'designVersion'
   | 'homeSpace'
   | 'id'
+  | 'language'
+  | 'languageOfferAnswered'
   | 'notification'
   | 'privacy'
   | 'updatedDate'
@@ -5426,6 +5441,8 @@ export type UserSettingsFieldPolicy = {
   designVersion?: FieldPolicy<any> | FieldReadFunction<any>;
   homeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  language?: FieldPolicy<any> | FieldReadFunction<any>;
+  languageOfferAnswered?: FieldPolicy<any> | FieldReadFunction<any>;
   notification?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6711,6 +6728,10 @@ export type StrictTypedTypePolicies = {
   KratosIdentity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | KratosIdentityKeySpecifier | (() => undefined | KratosIdentityKeySpecifier);
     fields?: KratosIdentityFieldPolicy;
+  };
+  LanguageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LanguageConfigKeySpecifier | (() => undefined | LanguageConfigKeySpecifier);
+    fields?: LanguageConfigFieldPolicy;
   };
   LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);

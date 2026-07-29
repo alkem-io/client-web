@@ -5,13 +5,16 @@ import { useUserScope } from '@/core/analytics/SentryTransactionScopeContext';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { CrdNotificationHandler } from '@/core/ui/notifications/CrdNotificationHandler';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { LanguageOfferProvider } from '@/domain/language/LanguageOfferContext';
 import { useConfig } from '@/domain/platform/config/useConfig';
-import { ALKEMIO_COOKIE_NAME } from '@/main/cookies/useAlkemioCookies';
+import { ALKEMIO_COOKIE_NAME, useMigrateConsentCookieToApex } from '@/main/cookies/useAlkemioCookies';
 
 const CookieConsent = lazyWithGlobalErrorHandler(() => import('@/main/cookies/CrdCookieConsent'));
 
 const App = () => {
   const [cookies] = useCookies([ALKEMIO_COOKIE_NAME]);
+  // Collapse a pre-fix host-only consent cookie into the shared apex cookie (#9695).
+  useMigrateConsentCookieToApex();
   const { userModel } = useCurrentUserContext();
 
   useUserScope(userModel);
@@ -36,7 +39,10 @@ const App = () => {
   }, []);
 
   return (
-    <>
+    // LanguageOfferProvider is hoisted here — above all CrdLayoutWrapper route groups —
+    // so in-memory anonymous choice survives client-side navigation between route groups
+    // without requiring localStorage (corr-client-4 / SC-004 / FR-013b-i).
+    <LanguageOfferProvider>
       <div
         className="flex flex-col flex-grow"
         style={cookieConsentHeight ? { paddingBottom: `${cookieConsentHeight}px` } : undefined}
@@ -53,7 +59,7 @@ const App = () => {
         </Suspense>
       )}
       <CrdNotificationHandler />
-    </>
+    </LanguageOfferProvider>
   );
 };
 

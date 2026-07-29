@@ -1514,6 +1514,7 @@ export const PendingMembershipInvitationFragmentDoc = gql`
     fragment PendingMembershipInvitation on Invitation {
   id
   welcomeMessage
+  suggestedLanguage
   createdBy {
     id
     profile {
@@ -1866,6 +1867,7 @@ export const InvitationDataFragmentDoc = gql`
   invitation {
     id
     welcomeMessage
+    suggestedLanguage
     createdBy {
       id
     }
@@ -2047,6 +2049,10 @@ ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 ${AccountResourceProfileFragmentDoc}`;
 export const ConfigurationFragmentDoc = gql`
     fragment Configuration on Config {
+  language {
+    eligible
+    default
+  }
   authentication {
     providers {
       name
@@ -5058,9 +5064,9 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutationVariables
 >;
 export const InviteForEntryRoleOnRoleSetDocument = gql`
-    mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedActorIds: [UUID!]!, $invitedUserEmails: [String!]!, $welcomeMessage: String, $extraRoles: [RoleName!]!) {
+    mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedActorIds: [UUID!]!, $invitedUserEmails: [String!]!, $welcomeMessage: String, $extraRoles: [RoleName!]!, $suggestedLanguage: String) {
   inviteForEntryRoleOnRoleSet(
-    invitationData: {invitedActorIDs: $invitedActorIds, invitedUserEmails: $invitedUserEmails, roleSetID: $roleSetId, welcomeMessage: $welcomeMessage, extraRoles: $extraRoles}
+    invitationData: {invitedActorIDs: $invitedActorIds, invitedUserEmails: $invitedUserEmails, roleSetID: $roleSetId, welcomeMessage: $welcomeMessage, extraRoles: $extraRoles, suggestedLanguage: $suggestedLanguage}
   ) {
     type
     invitation {
@@ -5105,6 +5111,7 @@ export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  *      invitedUserEmails: // value for 'invitedUserEmails'
  *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRoles: // value for 'extraRoles'
+ *      suggestedLanguage: // value for 'suggestedLanguage'
  *   },
  * });
  */
@@ -15087,6 +15094,8 @@ export const UpdateUserSettingsDocument = gql`
     id
     settings {
       id
+      language
+      languageOfferAnswered
       homeSpace {
         spaceID
         autoRedirect
@@ -15455,6 +15464,8 @@ export const CurrentUserLightDocument = gql`
       settings {
         id
         designVersion
+        language
+        languageOfferAnswered
       }
       account {
         id
@@ -19855,6 +19866,13 @@ export const MoveSpaceL1ToL0Document = gql`
     moveData: {spaceL1ID: $spaceL1ID, targetSpaceL0ID: $targetSpaceL0ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
   ) {
     id
+    about {
+      id
+      profile {
+        id
+        url
+      }
+    }
   }
 }
     `;
@@ -19907,6 +19925,13 @@ export const MoveSpaceL1ToL2Document = gql`
     moveData: {spaceL1ID: $spaceL1ID, targetSpaceL1ID: $targetSpaceL1ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
   ) {
     id
+    about {
+      id
+      profile {
+        id
+        url
+      }
+    }
   }
 }
     `;
@@ -20124,6 +20149,66 @@ export function refetchSpaceMoveTargetL1SubspacesQuery(
 ) {
   return { query: SpaceMoveTargetL1SubspacesDocument, variables: variables };
 }
+export const MoveSpaceL2ToL1Document = gql`
+    mutation MoveSpaceL2ToL1($spaceL2ID: UUID!, $targetSpaceL1ID: UUID!, $autoInvite: Boolean, $invitationMessage: String) {
+  moveSpaceL2ToSpaceL1(
+    moveData: {spaceL2ID: $spaceL2ID, targetSpaceL1ID: $targetSpaceL1ID, autoInvite: $autoInvite, invitationMessage: $invitationMessage}
+  ) {
+    id
+    level
+    about {
+      id
+      profile {
+        id
+        url
+      }
+    }
+  }
+}
+    `;
+export type MoveSpaceL2ToL1MutationFn = Apollo.MutationFunction<
+  SchemaTypes.MoveSpaceL2ToL1Mutation,
+  SchemaTypes.MoveSpaceL2ToL1MutationVariables
+>;
+
+/**
+ * __useMoveSpaceL2ToL1Mutation__
+ *
+ * To run a mutation, you first call `useMoveSpaceL2ToL1Mutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveSpaceL2ToL1Mutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveSpaceL2ToL1Mutation, { data, loading, error }] = useMoveSpaceL2ToL1Mutation({
+ *   variables: {
+ *      spaceL2ID: // value for 'spaceL2ID'
+ *      targetSpaceL1ID: // value for 'targetSpaceL1ID'
+ *      autoInvite: // value for 'autoInvite'
+ *      invitationMessage: // value for 'invitationMessage'
+ *   },
+ * });
+ */
+export function useMoveSpaceL2ToL1Mutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MoveSpaceL2ToL1Mutation,
+    SchemaTypes.MoveSpaceL2ToL1MutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MoveSpaceL2ToL1Mutation, SchemaTypes.MoveSpaceL2ToL1MutationVariables>(
+    MoveSpaceL2ToL1Document,
+    options
+  );
+}
+export type MoveSpaceL2ToL1MutationHookResult = ReturnType<typeof useMoveSpaceL2ToL1Mutation>;
+export type MoveSpaceL2ToL1MutationResult = Apollo.MutationResult<SchemaTypes.MoveSpaceL2ToL1Mutation>;
+export type MoveSpaceL2ToL1MutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MoveSpaceL2ToL1Mutation,
+  SchemaTypes.MoveSpaceL2ToL1MutationVariables
+>;
 export const SpaceMoveSourceSubspacesDocument = gql`
     query SpaceMoveSourceSubspaces($spaceId: UUID!) {
   lookup {

@@ -9,8 +9,9 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
+let mockPathname = '/admin/authorization/roles/GLOBAL_ADMIN';
 vi.mock('react-router-dom', () => ({
-  useLocation: () => ({ pathname: '/admin/authorization/roles/GLOBAL_ADMIN' }),
+  useLocation: () => ({ pathname: mockPathname }),
 }));
 
 const navigateMock = vi.fn();
@@ -32,8 +33,10 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', () => ({
       'GLOBAL_SPACES_READER',
       'GLOBAL_PLATFORM_MANAGER',
       'GLOBAL_SUPPORT_MANAGER',
+      'PLATFORM_OPERATIONS_ADMIN',
       'PLATFORM_BETA_TESTER',
       'PLATFORM_VC_CAMPAIGN',
+      'PLATFORM_ASSISTANT_ACCESS',
     ],
   },
   default: () => ({
@@ -55,13 +58,25 @@ vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableUsers', () => 
   }),
 }));
 
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockPathname = '/admin/authorization/roles/GLOBAL_ADMIN';
+});
 
 describe('CrdAdminGlobalRolesPage', () => {
-  test('offers all nine global roles as selectable tabs', () => {
+  test('offers all eleven global roles as selectable tabs', () => {
     render(<CrdAdminGlobalRolesPage />);
     const nav = screen.getByRole('navigation');
-    expect(within(nav).getAllByRole('button')).toHaveLength(9);
+    expect(within(nav).getAllByRole('button')).toHaveLength(11);
+  });
+
+  test('renders the Platform Operations Admin label and its role description when selected', () => {
+    mockPathname = '/admin/authorization/roles/PLATFORM_OPERATIONS_ADMIN';
+    render(<CrdAdminGlobalRolesPage />);
+    const nav = screen.getByRole('navigation');
+    const tab = within(nav).getByRole('button', { name: 'roles.PLATFORM_OPERATIONS_ADMIN' });
+    expect(tab).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('roleDescriptions.PLATFORM_OPERATIONS_ADMIN')).toBeInTheDocument();
   });
 
   test('lists the current members and available users for the selected role', () => {

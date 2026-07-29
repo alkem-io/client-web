@@ -55,7 +55,7 @@
       },
       "editDetails": {
         "menuLabel": "Details bewerken",
-        "dialogTitle": "Details bewerken: stroomfase",
+        "dialogTitle": "Details bewerken: Innovation Flow-fase",
         "titleLabel": "Titel",
         "titleTooShort": "De titel moet minimaal 3 tekens lang zijn",
         "titleDuplicate": "Er bestaat al een fase met deze naam.",
@@ -131,7 +131,7 @@
       "button": "Fase toevoegen",
       "dialog": {
         "title": "Voeg een nieuwe fase toe",
-        "description": "Maak een nieuwe innovatiestroomfase. Je kunt deze later hernoemen of verwijderen.",
+        "description": "Maak een nieuwe Innovation Flow-fase. Je kunt deze later hernoemen of verwijderen.",
         "nameLabel": "Naam van de fase",
         "namePlaceholder": "bv. Ontdekking",
         "descriptionLabel": "Beschrijving (optioneel)",
@@ -158,15 +158,15 @@
       }
     },
     "replaceFlow": {
-      "button": "Innovatieflow vervangen",
+      "button": "Innovation Flow vervangen",
       "loading": "Nieuwe flow laden…",
-      "error": "Het vervangen van de innovatieflow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
+      "error": "Het vervangen van de innovation flow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
       "applyDialog": {
         "title": "Nieuwe template toepassen",
-        "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovatieflow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
+        "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovation flow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
         "option1": {
           "label": "Vervangen door nieuwe flow",
-          "description": "Hiermee wordt je huidige innovatieflow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."
+          "description": "Hiermee wordt je huidige innovation flow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."
         },
         "option2": {
           "label": "Vervangen en template-Posts aan bestaande toevoegen",
@@ -174,7 +174,7 @@
         },
         "option3": {
           "label": "Flow vervangen zonder template-Posts toe te voegen",
-          "description": "Vervang alleen de innovatieflow zonder template-Posts toe te voegen."
+          "description": "Vervang alleen de innovation flow zonder template-Posts toe te voegen."
         },
         "apply": "Toepassen",
         "cancel": "Annuleren",
@@ -265,8 +265,8 @@
       "role": {
         "lead": "Lead",
         "member": "Lid",
-        "promoteToLead": "Maak lead",
-        "demoteFromLead": "Verwijder als lead"
+        "promoteToLead": "Maak Lead",
+        "demoteFromLead": "Verwijder als Lead"
       },
       "actions": "Acties",
       "empty": "Geen leden gevonden.",
@@ -288,9 +288,9 @@
     },
     "memberSettings": {
       "title": "Lidinstellingen",
-      "lead": "Dit lid is een <b>lead</b>: Leads worden weergegeven als de hosts van de community.",
+      "lead": "Dit lid is een <b>Lead</b>: Leads worden weergegeven als de hosts van de community.",
       "admin": "Dit lid is een <b>admin</b>: zij kunnen deze community en alle inhoud en deelnemers ervan beheren.",
-      "maxLeadsWarning": "Let op dat er een <b>maximum aantal leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
+      "maxLeadsWarning": "Let op dat er een <b>maximum aantal Leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
       "section": {
         "role": "Rol",
         "authorization": "Autorisatie",
@@ -312,7 +312,7 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
       "add": "Organisatie toevoegen",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
@@ -615,7 +615,7 @@
   },
   "updates": {
     "pageHeader": {
-      "title": "Updates van de leads",
+      "title": "Updates van de Leads",
       "subtitle": "Plaats aankondigingen, mijlpalen en voortgangsupdates die zichtbaar zijn voor alle leden van de Space."
     },
     "composer": {

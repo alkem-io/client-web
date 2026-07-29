@@ -354,6 +354,7 @@ export default function CrdSubspacePageLayout() {
         open={activeDialog === 'index'}
         onOpenChange={open => setActiveDialog(open ? 'index' : null)}
         calloutsSetId={data.calloutsSetId}
+        phaseNames={data.phases.map(phase => phase.label)}
       />
 
       <CrdSubspaceSubspacesDialogConnector
