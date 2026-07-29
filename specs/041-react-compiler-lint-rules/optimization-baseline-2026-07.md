@@ -1,6 +1,6 @@
 # Platform Optimization Baseline — July 2026 (post-CRD + post-linter)
 
-**Captured**: 2026-07-21
+**Captured**: 2026-07-21 · **re-measured 2026-07-29** after the T026 migration (all figures below are the re-run)
 **Machine**: local (macOS, arm64), Node 24.14.0 (Volta), pnpm 10.17.1, production `pnpm build` served on `localhost:3000`
 **Supersedes**: the March-2026 pre-migration baseline as the reference anchor for future comparisons (see §4 methodology).
 
@@ -23,16 +23,18 @@ of those, and is the number future work should measure against.
 **Reading the trend honestly:** offset 3 is +7.5% JS vs offset 0 *despite* the MUI
 removal (offset 2) that cut ~0.9 MB. The net growth is ~4 months of product features
 (new CRD pages, domains, callouts, notifications, whiteboard/collab work) outweighing the
-MUI savings — **not** a regression introduced by React Compiler or the linter change, which
-is comment-only and build-neutral. This anchor exists precisely so the *next* comparison
-isolates future changes instead of re-measuring four months of drift.
+MUI savings — **not** a regression introduced by React Compiler or the linter change. The
+041 work (enforcement + the T026 removal of 17 manual memoizations) is **bundle-neutral**:
+the compiler substitutes the memoization it removes, so JS moved only +1.4 KB (+0.009%). This
+anchor exists precisely so the *next* comparison isolates future changes instead of
+re-measuring four months of drift.
 
 ## 2. July-2026 production snapshot
 
 ### Bundle (raw, measured from `build/`)
 | Metric | Value |
 |---|---|
-| Total JS | **15.26 MB** (15,997,321 B) across **516** chunks |
+| Total JS | **15.26 MB** (15,998,752 B) across **516** chunks |
 | Total CSS | 0.37 MB (387,244 B), 5 files |
 | Largest JS chunk | 1.82 MB (`subset-shared` — shared font subset) |
 
@@ -41,15 +43,15 @@ Routes render as static shells (no GraphQL backend); see §4 caveats.
 
 | Route | Performance | LCP |
 |---|---|---|
-| Home (`/`) | **95 / 100** | 1325 ms |
-| Welcome Space | **95 / 100** | 1317 ms |
-| Spaces | **95 / 100** | 1314 ms |
+| Home (`/`) | **95 / 100** | 1327 ms |
+| Welcome Space | **94 / 100** | 1355 ms |
+| Spaces | **94 / 100** | 1353 ms |
 
 ### Runtime / interaction (NEW this offset)
 | Metric | Value | Good threshold |
 |---|---|---|
-| **INP** (worst interaction, Event Timing API) | **40 ms** (mean 40 ms over 3 interactions) | < 200 ms |
-| Total Blocking Time | 38 ms | < 200 ms |
+| **INP** (worst interaction, Event Timing API) | **32 ms** (mean 32 ms over 3 interactions) | < 200 ms |
+| Total Blocking Time | 37 ms | < 200 ms |
 | Long tasks (> 50 ms) | 1 | — |
 
 INP is introduced here because it is the Core Web Vital most directly affected by the React
@@ -61,8 +63,8 @@ interaction ≈ the p98 INP that field data reports.
 ### Memory (3-cycle leak detection)
 | Metric | Value |
 |---|---|
-| Peak heap per route | ~26.3–26.6 MB |
-| Growth over 3 cycles | ~0.0% (stable) |
+| Peak heap per route | ~26.4–26.7 MB |
+| Growth over 3 cycles | −0.04% (stable) |
 | Leak risk | **LOW** — no leak |
 
 ### React Compiler coverage (NEW this offset)

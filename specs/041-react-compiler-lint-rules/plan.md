@@ -65,7 +65,7 @@ biome.json                  # Read-only verification (useExhaustiveDependencies:
 ### T1: Add ESLint no-restricted-syntax rules [DONE]
 
 **File**: `eslint.config.mjs`
-**Change**: Add `no-restricted-syntax` rule at warn level with 4 AST selectors for `useMemo`, `useCallback`, `memo()`, `React.memo()`. Each selector includes a descriptive message explaining the React Compiler handles memoization.
+**Change**: Add `no-restricted-syntax` rule for `useMemo`, `useCallback`, `memo()`/`React.memo()`. Each selector uses `:matches([callee.name=…], [callee.property.name=…])` so it rejects both the bare (`useMemo(...)`) and namespaced (`React.useMemo(...)`, `React.useCallback(...)`) call forms; two further selectors ban the class-based equivalents `PureComponent` / `shouldComponentUpdate`. Each includes a descriptive message explaining the React Compiler handles memoization. (Shipped at error level; started at warn — see tasks T003/T006/T020.)
 **Validation**: `pnpm eslint src/` produces 0 errors, 48 warnings (all from documented exceptions + pending T040-T042).
 
 ### T2: Update CLAUDE.md [DONE]

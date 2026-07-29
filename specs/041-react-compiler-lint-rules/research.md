@@ -16,18 +16,19 @@
 
 ## R2: AST Selectors for Memoization Patterns
 
-**Decision**: Four AST selectors cover all patterns:
+**Decision**: Three combined AST selectors cover both the bare-identifier and the namespaced (`React.*`) call forms:
 
 | Pattern | Selector |
 | ------- | -------- |
-| `useMemo(...)` | `CallExpression[callee.name="useMemo"]` |
-| `useCallback(...)` | `CallExpression[callee.name="useCallback"]` |
-| `memo(...)` | `CallExpression[callee.name="memo"]` |
-| `React.memo(...)` | `CallExpression[callee.object.name="React"][callee.property.name="memo"]` |
+| `useMemo(...)` / `React.useMemo(...)` | `CallExpression:matches([callee.name="useMemo"], [callee.property.name="useMemo"])` |
+| `useCallback(...)` / `React.useCallback(...)` | `CallExpression:matches([callee.name="useCallback"], [callee.property.name="useCallback"])` |
+| `memo(...)` / `React.memo(...)` | `CallExpression:matches([callee.name="memo"], [callee.property.name="memo"])` |
 
-**Rationale**: These selectors match the named import pattern used throughout the codebase (`import { useMemo, useCallback, memo } from 'react'`). The `React.memo` selector covers the namespace import pattern. Together they catch all four call-site variations.
+Two further selectors ban the class-based equivalents (`PureComponent`, `shouldComponentUpdate`).
 
-**Validation**: Running ESLint with these selectors against the current codebase produces 48 warnings — all from documented exceptions (MarkdownInput ecosystem) and not-yet-migrated files (T040-T042). Zero false positives detected.
+**Rationale**: `callee.name` catches the named-import form (`import { useMemo } from 'react'`); `callee.property.name` catches the namespace form (`React.useMemo(...)`), closing a bypass where a namespaced call would otherwise slip through. Together they catch every call-site variation.
+
+**Validation**: `pnpm eslint .` against the current codebase is clean (0 errors, 0 warnings) at **error** level — the 11 remaining genuine exceptions each carry an `eslint-disable … -- <reason>` comment, and a probe confirms both bare and namespaced (`React.useMemo`) new usages are rejected. Zero false positives detected.
 
 ## R3: Warn vs Error Level Strategy
 

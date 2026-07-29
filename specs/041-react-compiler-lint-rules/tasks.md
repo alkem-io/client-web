@@ -3,7 +3,7 @@
 **Input**: Design documents from `/specs/041-react-compiler-lint-rules/`
 **Prerequisites**: plan.md (required), spec.md (required), research.md, quickstart.md
 
-**Tests**: No test tasks generated — the existing test suite (592 tests) and ESLint validation serve as regression gates. Each task validates with `pnpm vitest run` and/or `pnpm eslint src/`.
+**Tests**: No test tasks generated — the existing test suite (1940 passed, 2 skipped across 232 test files) and ESLint validation serve as regression gates. Each task validates with `pnpm vitest run` and/or `pnpm eslint src/`.
 
 **Organization**: Tasks grouped by user story. US1 (P1) is the core deliverable. US2 (P2) is documentation. US3 (P3) is validation (partially deferred pending backend availability).
 
@@ -42,7 +42,7 @@
 
 ### Implementation
 
-- [x] T003 [US1] Add `no-restricted-syntax` rule at warn level to eslint.config.mjs with 4 AST selectors: `CallExpression[callee.name="useMemo"]`, `CallExpression[callee.name="useCallback"]`, `CallExpression[callee.name="memo"]`, `CallExpression[callee.object.name="React"][callee.property.name="memo"]` — each with descriptive message
+- [x] T003 [US1] Add `no-restricted-syntax` rule to eslint.config.mjs for `useMemo`/`useCallback`/`memo`/`React.memo` — each selector uses `:matches([callee.name=…], [callee.property.name=…])` so it rejects both the bare and namespaced (`React.useMemo`/`React.useCallback`/`React.memo`) forms (namespaced coverage added in T020), each with a descriptive message. (Started at warn; moved to error in T006.)
 - [x] T004 [US1] Validate rules against full codebase: run `pnpm eslint .` — confirmed 0 errors, 28 warnings (all from documented exceptions + pending domain migrations); `pnpm lint` (typecheck + biome ci + eslint) exits 0
 - [x] T005 [US1] Validate documented exceptions: confirm collaborative editor / MarkdownInput ecosystem files produce warnings (not errors) and can be suppressed with eslint-disable
 - [x] T006 [US1] Transition rules from warn to **error** in eslint.config.mjs — done. Chosen path: instead of blocking on external domain migrations, every one of the 28 remaining usages was annotated with an `eslint-disable-next-line no-restricted-syntax -- <reason>` comment (T007), so `pnpm eslint .` is clean at error level (0 errors, 0 warnings). Any *new*, unannotated `useMemo`/`useCallback`/`memo`/`React.memo` now fails `pnpm eslint .` — and therefore the pre-commit hook (which runs `pnpm eslint .`) blocks the commit. Verified with a negative probe.

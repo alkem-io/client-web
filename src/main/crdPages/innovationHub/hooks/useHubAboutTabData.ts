@@ -142,6 +142,14 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     };
   }, []);
 
+  // Mirror committed `values` into a ref so imperative handlers (onSaveSection) can read the
+  // freshest edit synchronously. Synced here after render — never mutated during render (the
+  // setState updaters must stay pure). Guarded so the pre-seed null render can't clobber the
+  // value the seed effect wrote above.
+  useEffect(() => {
+    if (values) valuesRef.current = values;
+  }, [values]);
+
   const dirty: Partial<Record<HubAboutSectionKey, boolean>> = (() => {
     if (!values || !saved) return {};
     return {
@@ -159,9 +167,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const next = { ...base, ...patch };
-      valuesRef.current = next;
-      return next;
+      return { ...base, ...patch };
     });
     // Clear any previous validation error for fields the user just edited.
     setErrors(prev => {
@@ -267,9 +273,7 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
           setValues(prev => {
             const base = prev ?? valuesRef.current;
             if (!base) return prev;
-            const next: HubAboutFormValues = { ...base, bannerImageUrl: uploaded.uri };
-            valuesRef.current = next;
-            return next;
+            return { ...base, bannerImageUrl: uploaded.uri };
           });
         }
       })
