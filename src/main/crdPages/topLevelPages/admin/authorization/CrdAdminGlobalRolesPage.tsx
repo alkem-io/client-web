@@ -5,12 +5,14 @@ import { useLocation } from 'react-router-dom';
 import { usePlatformRoleSetQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
+import { LegacyRoleHoldersPanel } from '@/crd/components/admin/roles/LegacyRoleHoldersPanel';
 import { type RoleMember, RoleMembersEditor } from '@/crd/components/admin/roles/RoleMembersEditor';
 import { Loading } from '@/crd/components/common/Loading';
 import { Button } from '@/crd/primitives/button';
 import useRoleSetAvailableOrganizationsOnPlatform from '@/domain/access/AvailableContributors/useRoleSetAvailableOrganizationsOnPlatform';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
 import useRoleSetManager, {
+  getOfferedLegacyPlatformRoles,
   getOfferedPlatformRoles,
   isFeaturePlatformRole,
   type RELEVANT_ROLES,
@@ -57,7 +59,7 @@ const CrdAdminGlobalRolesPage = () => {
 
   const [assignmentError, setAssignmentError] = useState<string | undefined>();
 
-  const { data } = usePlatformRoleSetQuery();
+  const { data, loading: loadingRoleSetId } = usePlatformRoleSetQuery();
   const roleSetId = data?.platform.roleSet.id;
 
   // Phase 1: myPrivileges, independent of which roles are offered (FR-032).
@@ -66,6 +68,17 @@ const CrdAdminGlobalRolesPage = () => {
   // either case (corr-client-web-3).
   const { myPrivileges, loading: loadingPrivileges } = useRoleSetManager({ roleSetId, relevantRoles: [] });
   const offeredRoles = getOfferedPlatformRoles(myPrivileges);
+  const legacyRoles = getOfferedLegacyPlatformRoles(myPrivileges);
+
+  // corr-client-web-4: `roleSetId` itself may still be unresolved (cold cache,
+  // or a post-mutation cache eviction re-triggering the read) while
+  // `useRoleSetManager`'s own authorization query is skipped for lack of an
+  // id and reports `loading: false` regardless — that would render the "no
+  // assignable privilege" empty state for a privileged operator on every
+  // first paint and after every successful assign/remove. Fold the id
+  // query's own `loading` into the same gate so "id not resolved yet" reads
+  // as loading, never as "fetched, offers nothing".
+  const privilegesPending = loadingRoleSetId || loadingPrivileges;
 
   const segments = pathname.split('/').filter(Boolean);
   const rolesIdx = segments.indexOf('roles');
@@ -85,10 +98,23 @@ const CrdAdminGlobalRolesPage = () => {
     holdersUnavailable,
   } = useRoleSetManager({
     roleSetId,
-    relevantRoles: offeredRoles,
+    // sec-client-web-1: the legacy roles ride the same holder-list read so
+    // their current holders are visible to revoke — the whole point of
+    // restoring this surface.
+    relevantRoles: [...offeredRoles, ...legacyRoles],
     contributorTypes: [ActorType.User, ActorType.Organization],
     fetchContributors: true,
   });
+
+  const legacyRoleGroups = legacyRoles.map(role => ({
+    role,
+    roleLabel: t(`roles.${role}`),
+    holders: (usersByRole?.[role] ?? []).map(user => ({
+      id: user.id,
+      displayName: user.profile?.displayName ?? '',
+      email: user.email ?? undefined,
+    })),
+  }));
 
   const currentUsers = (selectedRole && usersByRole?.[selectedRole]) ?? [];
   const members: RoleMember[] = currentUsers.map(user => ({
@@ -188,9 +214,10 @@ const CrdAdminGlobalRolesPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      {loadingPrivileges ? (
-        // corr-client-web-3: the first paint (offeredRoles starts empty until
-        // myPrivileges resolves) must not look identical to "no privilege".
+      {privilegesPending ? (
+        // corr-client-web-3/4: the first paint (offeredRoles starts empty
+        // until myPrivileges resolves, and roleSetId itself may still be
+        // in flight) must not look identical to "no privilege".
         <Loading />
       ) : offeredRoles.length === 0 ? (
         // corr-client-web-3: an operator holding neither GRANT_GLOBAL_ADMINS nor
@@ -281,6 +308,21 @@ const CrdAdminGlobalRolesPage = () => {
                     }
                   : undefined
               }
+            />
+          )}
+
+          {legacyRoles.length > 0 && (
+            <LegacyRoleHoldersPanel
+              groups={legacyRoleGroups}
+              removing={updating}
+              onRemove={async (role, memberId) => {
+                setAssignmentError(undefined);
+                try {
+                  await removePlatformRoleFromUser(memberId, role as RoleName);
+                } catch (error) {
+                  setAssignmentError(extractErrorMessage(error));
+                }
+              }}
             />
           )}
         </>

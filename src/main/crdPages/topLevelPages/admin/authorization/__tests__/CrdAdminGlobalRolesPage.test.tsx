@@ -1,3 +1,4 @@
+import { ApolloError } from '@apollo/client';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -19,8 +20,16 @@ vi.mock('react-router-dom', () => ({
 const navigateMock = vi.fn();
 vi.mock('@/core/routing/useNavigate', () => ({ default: () => navigateMock }));
 
+// corr-client-web-4: `usePlatformRoleSetQuery`'s own `loading` must fold into
+// the page's overall "privileges pending" gate — a cold cache (or a
+// post-mutation cache eviction re-triggering the read) must not read as "no
+// assignable privilege".
+let mockLoadingRoleSetId = false;
+let mockRoleSetData: { platform: { roleSet: { id: string } } } | undefined = {
+  platform: { roleSet: { id: 'rs1' } },
+};
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
-  usePlatformRoleSetQuery: () => ({ data: { platform: { roleSet: { id: 'rs1' } } } }),
+  usePlatformRoleSetQuery: () => ({ data: mockRoleSetData, loading: mockLoadingRoleSetId }),
 }));
 
 // FR-012: `myPrivileges` is the only signal the offered-role filter reads. Tests
@@ -34,9 +43,14 @@ let mockLoadingPrivileges = false;
 // (privilege gap or query error) — distinct from a genuinely empty list.
 let mockHoldersUnavailable = false;
 
-const usersByRole = {
+type MockUsersByRole = Record<string, Array<{ id: string; profile: { displayName: string }; email?: string }>>;
+const baseUsersByRole: MockUsersByRole = {
   PLATFORM_ROLES_ADMIN: [{ id: 'u1', profile: { displayName: 'Alice' }, email: 'alice@x.io' }],
 };
+// Mutable so the legacy-roles-panel tests (sec-client-web-1) can layer in a
+// legacy holder without leaking a second "remove" button into every other
+// test's default (PLATFORM_ROLES_ADMIN) scenario.
+let usersByRole: MockUsersByRole = baseUsersByRole;
 const organizationsByRole = {
   FEATURE_BETA_TESTER: [{ id: 'o1', profile: { displayName: 'Acme Org' } }],
 };
@@ -95,6 +109,9 @@ beforeEach(() => {
   mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
   mockLoadingPrivileges = false;
   mockHoldersUnavailable = false;
+  mockLoadingRoleSetId = false;
+  mockRoleSetData = { platform: { roleSet: { id: 'rs1' } } };
+  usersByRole = baseUsersByRole;
 });
 
 describe('CrdAdminGlobalRolesPage', () => {
@@ -255,6 +272,140 @@ describe('CrdAdminGlobalRolesPage', () => {
       mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
       render(<CrdAdminGlobalRolesPage />);
       expect(screen.queryByText('roleMembers.organizations')).toBeNull();
+    });
+  });
+
+  // qual-clientweb-3: T007a's add/remove wiring for the organization holder
+  // kind had no coverage beyond "the names render" — pin that the two
+  // organization mutations are called with the right (id, role) pair, and
+  // that neither falls through to the user mutation.
+  describe('organization holder kind — mutation wiring (qual-clientweb-3)', () => {
+    test('adding an available organization calls assignPlatformRoleToOrganization, never the user mutation', async () => {
+      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      render(<CrdAdminGlobalRolesPage />);
+      const addOrganizationsHeading = screen.getByText('roleMembers.addOrganizations');
+      const addOrganizationsSection = addOrganizationsHeading.closest('section');
+      if (!addOrganizationsSection) throw new Error('organization "add" section not found');
+      await userEvent.click(within(addOrganizationsSection).getByRole('button', { name: 'roleMembers.add' }));
+      expect(assignPlatformRoleToOrganization).toHaveBeenCalledWith('o2', 'FEATURE_BETA_TESTER');
+      expect(assignPlatformRoleToUser).not.toHaveBeenCalled();
+    });
+
+    test('removing an organization (after confirm) calls removePlatformRoleFromOrganization, never the user mutation', async () => {
+      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      render(<CrdAdminGlobalRolesPage />);
+      // FEATURE_BETA_TESTER has no mocked user holders, so the sole "remove"
+      // button rendered in this scenario belongs to the organization column.
+      await userEvent.click(screen.getByRole('button', { name: 'roleMembers.remove' }));
+      const dialog = screen.getByRole('alertdialog');
+      // Organization removals use the distinct `removeOrganization` confirm
+      // label (RoleMembersEditor.tsx:~254) — pinning it here also guards
+      // that the confirm dialog's holder-kind discrimination stays wired.
+      await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.removeOrganization' }));
+      expect(removePlatformRoleFromOrganization).toHaveBeenCalledWith('o1', 'FEATURE_BETA_TESTER');
+      expect(removePlatformRoleFromUser).not.toHaveBeenCalled();
+    });
+  });
+
+  // qual-clientweb-2: FR-012's verbatim server-rejection surfacing (T007) had
+  // no coverage at any level — pin the exact wiring: a rejected mutation sets
+  // the inline error, and `extractErrorMessage` prefers `graphQLErrors[0].message`.
+  describe('assignment rejection surfacing (qual-clientweb-2)', () => {
+    test('renders the exact server rejection message on a rejected grant', async () => {
+      assignPlatformRoleToUser.mockRejectedValueOnce(
+        new ApolloError({ graphQLErrors: [{ message: 'Assigner capability: you may not grant this role.' }] })
+      );
+      render(<CrdAdminGlobalRolesPage />);
+      await userEvent.click(screen.getByRole('button', { name: 'roleMembers.add' }));
+      expect(await screen.findByRole('alert')).toHaveTextContent('Assigner capability: you may not grant this role.');
+    });
+
+    test('renders the exact server rejection message on a rejected revoke', async () => {
+      removePlatformRoleFromUser.mockRejectedValueOnce(
+        new ApolloError({ graphQLErrors: [{ message: 'Last Roles Admin: cannot remove the final holder.' }] })
+      );
+      render(<CrdAdminGlobalRolesPage />);
+      await userEvent.click(screen.getByRole('button', { name: 'roleMembers.remove' }));
+      const dialog = screen.getByRole('alertdialog');
+      await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
+      expect(await screen.findByRole('alert')).toHaveTextContent('Last Roles Admin: cannot remove the final holder.');
+    });
+  });
+
+  // sec-client-web-1: the legacy platform credentials remain live,
+  // authoritative privileged access through the Slice A -> Slice B window.
+  // This panel is the restored revoke-only console surface for that window.
+  describe('legacy platform roles panel (sec-client-web-1)', () => {
+    // Layered on top of `baseUsersByRole` only for this block, so the other
+    // describe blocks' "exactly one remove button" assumptions stay intact.
+    const withLegacyHolder = () => {
+      usersByRole = {
+        ...baseUsersByRole,
+        GLOBAL_ADMIN: [{ id: 'u3', profile: { displayName: 'Legacy Holder' }, email: 'legacy@x.io' }],
+      };
+    };
+
+    test('shows the panel with its current holder for a GRANT_GLOBAL_ADMINS holder', () => {
+      withLegacyHolder();
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByText('roleMembers.legacyRolesHeading')).toBeInTheDocument();
+      expect(screen.getByText('Legacy Holder (legacy@x.io)')).toBeInTheDocument();
+    });
+
+    test('shows the "no holders" state when no legacy role has a current holder', () => {
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByText('roleMembers.legacyRolesHeading')).toBeInTheDocument();
+      expect(screen.getByText('roleMembers.legacyRolesNoHolders')).toBeInTheDocument();
+    });
+
+    test('hides the panel for a holder of only FEATURE_ROLE_ASSIGN', () => {
+      withLegacyHolder();
+      mockMyPrivileges = [AuthorizationPrivilege.FeatureRoleAssign];
+      mockPathname = '/admin/authorization/roles/FEATURE_BETA_TESTER';
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.queryByText('roleMembers.legacyRolesHeading')).toBeNull();
+    });
+
+    test('never renders an "add" affordance', () => {
+      withLegacyHolder();
+      render(<CrdAdminGlobalRolesPage />);
+      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
+      if (!legacySection) throw new Error('legacy roles section not found');
+      expect(within(legacySection).queryByRole('button', { name: 'roleMembers.add' })).toBeNull();
+    });
+
+    test('revoking a legacy holder (after confirm) calls removePlatformRoleFromUser with the legacy role name', async () => {
+      withLegacyHolder();
+      render(<CrdAdminGlobalRolesPage />);
+      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
+      if (!legacySection) throw new Error('legacy roles section not found');
+      await userEvent.click(within(legacySection).getByRole('button', { name: 'roleMembers.remove' }));
+      const dialog = screen.getByRole('alertdialog');
+      await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
+      expect(removePlatformRoleFromUser).toHaveBeenCalledWith('u3', 'GLOBAL_ADMIN');
+    });
+  });
+
+  // corr-client-web-4: `roleSetId` itself can still be unresolved while
+  // `useRoleSetManager`'s own authorization query is skipped for lack of an
+  // id and reports `loading: false` regardless.
+  describe('roleSetId still resolving (corr-client-web-4)', () => {
+    test('shows loading while usePlatformRoleSetQuery is in flight, even though loadingPrivileges reports false', () => {
+      mockLoadingRoleSetId = true;
+      mockRoleSetData = undefined;
+      mockLoadingPrivileges = false;
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.getByRole('status')).toBeInTheDocument();
+      expect(screen.queryByRole('navigation')).toBeNull();
+      expect(screen.queryByText('roleMembers.noAssignablePrivilege')).toBeNull();
+    });
+
+    test('once resolved, a privileged operator sees the nav, not the loading indicator', () => {
+      mockLoadingRoleSetId = false;
+      mockRoleSetData = { platform: { roleSet: { id: 'rs1' } } };
+      render(<CrdAdminGlobalRolesPage />);
+      expect(screen.queryByRole('status')).toBeNull();
+      expect(screen.getByRole('navigation')).toBeInTheDocument();
     });
   });
 });
