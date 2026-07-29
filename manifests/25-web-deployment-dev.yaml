@@ -16,6 +16,12 @@ spec:
       labels:
         app: alkemio-web
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: alkemio-web
           image: rg.nl-ams.scw.cloud/alkemio/alkemio-web:latest
@@ -27,4 +33,28 @@ spec:
                 name: alkemio-config
           ports:
             - name: web
-              containerPort: 80
+              containerPort: 8080
+          # The hardened image (workspace#033) runs as UID 101. These fields must
+          # stay in step with the dev-orchestration kustomize base, which applies
+          # the same workload from the other direction.
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
