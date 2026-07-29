@@ -5581,6 +5581,8 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'
+  | 'conversationMessageDirect'
+  | 'conversationMessageGroup'
   | 'membership'
   | 'mentioned'
   | 'messageReceived'
@@ -5588,6 +5590,8 @@ export type UserSettingsNotificationUserKeySpecifier = (
 )[];
 export type UserSettingsNotificationUserFieldPolicy = {
   commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationMessageDirect?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationMessageGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
