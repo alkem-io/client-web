@@ -962,6 +962,9 @@
     }
   },
   "fullscreen": "Volledig scherm in-/uitschakelen",
+  "imageCrop": {
+    "tooSmall": "Het geselecteerde gebied is {{actualWidth}}×{{actualHeight}}px. Minimaal {{requiredWidth}}×{{requiredHeight}}px is vereist — kies een grotere afbeelding."
+  },
   "innovationHub": {
     "outsideOfSpace": {
       "forum": "Dit is het algemene Alkemio $t(common.forum), los van de <strong>{{space}}</strong> $t(common.space). Neem een kijkje bij de bestaande discussies of start een eigen discussie!"

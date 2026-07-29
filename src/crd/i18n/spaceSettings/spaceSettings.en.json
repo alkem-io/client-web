@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Space Branding",
-      "description": "Upload an avatar, a page banner (1536×256), and a card banner (416×256).",
+      "description": "Upload an avatar, a page banner (3840×640), and a card banner (416×256).",
       "noImage": "No image",
       "upload": "Upload",
       "avatar": {
@@ -895,7 +895,7 @@
         "hint": "The space logo."
       },
       "pageBanner": {
-        "title": "Page Banner (1536 × 256px)",
+        "title": "Page Banner (3840 × 640px)",
         "hint": "Shown at the top of the Space page."
       },
       "cardBanner": {

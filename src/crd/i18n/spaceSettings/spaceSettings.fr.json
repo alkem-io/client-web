@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Identité visuelle de l'espace",
-      "description": "Téléversez un avatar, une bannière de page (1536×256) et une bannière de carte (416×256).",
+      "description": "Téléversez un avatar, une bannière de page (3840×640) et une bannière de carte (416×256).",
       "noImage": "Aucune image",
       "upload": "Téléverser",
       "avatar": {
@@ -895,7 +895,7 @@
         "hint": "Le logo de l'espace."
       },
       "pageBanner": {
-        "title": "Bannière de page (1536 × 256px)",
+        "title": "Bannière de page (3840 × 640px)",
         "hint": "Affichée en haut de la page de l'espace."
       },
       "cardBanner": {

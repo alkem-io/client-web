@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 import Resizer from 'react-image-file-resizer';
 import 'react-image-crop/dist/ReactCrop.css';
@@ -37,6 +38,22 @@ type ImageCropDialogProps = {
 };
 
 /**
+ * Real pixels the current crop would yield, or undefined before the image has
+ * loaded / a crop has been completed. `crop` is in displayed pixels, so it has
+ * to be scaled back up by the image's natural-to-displayed ratio.
+ */
+export function naturalCropSize(
+  image: HTMLImageElement | null,
+  crop: PixelCrop | undefined
+): { width: number; height: number } | undefined {
+  if (!image || !crop || !image.width || !image.height) return undefined;
+  return {
+    width: Math.round(crop.width * (image.naturalWidth / image.width)),
+    height: Math.round(crop.height * (image.naturalHeight / image.height)),
+  };
+}
+
+/**
  * ImageCropDialog — CRD-native image crop + resize dialog.
  *
  * Uses `react-image-crop` for the crop UI and `react-image-file-resizer`
@@ -61,6 +78,10 @@ export function ImageCropDialog({
   title,
   description,
 }: ImageCropDialogProps) {
+  // The too-small warning is a design-system message about pixel dimensions,
+  // not business text, so it lives in `crd-common` rather than being threaded
+  // through all nine consumers as yet another label prop.
+  const { t } = useTranslation();
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [altText, setAltText] = useState('');
@@ -83,8 +104,17 @@ export function ImageCropDialog({
     }
   }
 
+  // The resizer upscales to reach `minWidth`/`minHeight` (args 9-10), which
+  // would turn a too-small source into an interpolated image that passes server
+  // validation but looks soft. Block it here instead, while the user can still
+  // pick a bigger file.
+  const cropSize = naturalCropSize(imgRef.current, completedCrop);
+  const requiredWidth = config.minWidth ?? 0;
+  const requiredHeight = config.minHeight ?? 0;
+  const tooSmall = Boolean(cropSize && (cropSize.width < requiredWidth || cropSize.height < requiredHeight));
+
   const handleSave = async () => {
-    if (!imgRef.current || !completedCrop) return;
+    if (!imgRef.current || !completedCrop || tooSmall) return;
     setSaving(true);
     try {
       const croppedFile = await getCroppedImg(imgRef.current, completedCrop, config, file?.name ?? 'image.png');
@@ -150,6 +180,17 @@ export function ImageCropDialog({
             </div>
           )}
 
+          {tooSmall && cropSize && (
+            <p role="alert" className="text-body text-destructive">
+              {t('imageCrop.tooSmall', {
+                requiredWidth,
+                requiredHeight,
+                actualWidth: cropSize.width,
+                actualHeight: cropSize.height,
+              })}
+            </p>
+          )}
+
           <div className="flex flex-col gap-1">
             <label htmlFor="crop-alt-text" className="text-body-emphasis">
               {altTextLabel}
@@ -167,7 +208,7 @@ export function ImageCropDialog({
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
             {cancelLabel}
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving || !completedCrop} aria-busy={saving}>
+          <Button type="button" onClick={handleSave} disabled={saving || !completedCrop || tooSmall} aria-busy={saving}>
             {saving ? savingLabel : saveLabel}
           </Button>
         </DialogFooter>
@@ -187,6 +228,12 @@ export function ImageCropDialog({
  * upscales, and the server rejects uploads below the visual's lower bound
  * (e.g. `Upload image has a width resolution of '169' which is not in the
  * allowed range of 190 - 410 pixels`).
+ *
+ * The canvas is sized to the crop's **natural** pixels only. It deliberately
+ * does NOT multiply by `devicePixelRatio`: `scaleX`/`scaleY` already convert
+ * from displayed to natural pixels, so a DPR factor on top would interpolate
+ * the source up to 2-3x its real resolution — more bytes, no more detail, and
+ * a soft image once the visual's `maxWidth` is large enough to let it through.
  */
 async function getCroppedImg(
   image: HTMLImageElement,
@@ -195,33 +242,25 @@ async function getCroppedImg(
   fileName: string
 ): Promise<File> {
   const canvas = document.createElement('canvas');
-  const pixelRatio = window.devicePixelRatio || 1;
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
+  const sourceWidth = crop.width * scaleX;
+  const sourceHeight = crop.height * scaleY;
 
-  // Render the crop at devicePixelRatio for HiDPI clarity (matches MUI).
-  canvas.width = crop.width * pixelRatio * scaleX;
-  canvas.height = crop.height * pixelRatio * scaleY;
+  canvas.width = sourceWidth;
+  canvas.height = sourceHeight;
 
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas context unavailable');
-  ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
   ctx.imageSmoothingQuality = 'high';
 
-  ctx.drawImage(
-    image,
-    crop.x * scaleX,
-    crop.y * scaleY,
-    crop.width * scaleX,
-    crop.height * scaleY,
-    0,
-    0,
-    crop.width * scaleX,
-    crop.height * scaleY
-  );
+  ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
 
+  // Quality 1 on a banner-sized canvas produces a multi-megabyte JPEG that is
+  // visually indistinguishable from 0.92 — the whole point of raising the
+  // dimension ceiling is more pixels, not more bytes per pixel.
   const blob = await new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('Canvas toBlob failed'))), 'image/jpeg', 1);
+    canvas.toBlob(b => (b ? resolve(b) : reject(new Error('Canvas toBlob failed'))), 'image/jpeg', 0.92);
   });
 
   // Resizer arguments — keep max >= min so the resizer never receives a

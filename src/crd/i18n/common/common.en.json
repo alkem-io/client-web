@@ -962,6 +962,9 @@
     }
   },
   "fullscreen": "Toggle full screen",
+  "imageCrop": {
+    "tooSmall": "Selected area is {{actualWidth}}×{{actualHeight}}px. At least {{requiredWidth}}×{{requiredHeight}}px is required — please choose a larger image."
+  },
   "innovationHub": {
     "outsideOfSpace": {
       "forum": "This is the general Alkemio $t(common.forum), outside of the <strong>{{space}}</strong> $t(common.space). You are very much invited to explore and contribute!"

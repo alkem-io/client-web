@@ -32,12 +32,15 @@ const EMPTY_VALUES: CreateSpaceFormValues = {
   acceptedTerms: false,
 };
 
+// Mirrors DEFAULT_VISUAL_CONSTRAINTS[BANNER] in the server
+// (src/domain/common/visual/visual.constraints.ts). The real app reads these at
+// runtime from platform.configuration.defaultVisualTypeConstraints.
 const BANNER_CONSTRAINTS: CreateSpaceVisualConstraints = {
-  maxWidth: 1920,
+  maxWidth: 3840,
   maxHeight: 640,
-  minWidth: 384,
-  minHeight: 128,
-  aspectRatio: 3,
+  minWidth: 1536,
+  minHeight: 256,
+  aspectRatio: 6,
   allowedTypes: ['image/png', 'image/jpeg'],
 };
 

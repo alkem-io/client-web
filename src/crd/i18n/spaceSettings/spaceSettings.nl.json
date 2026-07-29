@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Branding van de Space",
-      "description": "Upload een avatar, een paginabanner (1536×256) en een kaartbanner (416×256).",
+      "description": "Upload een avatar, een paginabanner (3840×640) en een kaartbanner (416×256).",
       "noImage": "Geen afbeelding",
       "upload": "Uploaden",
       "avatar": {
@@ -895,7 +895,7 @@
         "hint": "Het logo van de Space."
       },
       "pageBanner": {
-        "title": "Paginabanner (1536 × 256px)",
+        "title": "Paginabanner (3840 × 640px)",
         "hint": "Wordt weergegeven boven aan de Space-pagina."
       },
       "cardBanner": {

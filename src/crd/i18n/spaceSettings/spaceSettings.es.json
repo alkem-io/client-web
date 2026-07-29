@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Branding del espacio",
-      "description": "Sube un avatar, un banner de página (1536×256) y un banner de tarjeta (416×256).",
+      "description": "Sube un avatar, un banner de página (3840×640) y un banner de tarjeta (416×256).",
       "noImage": "Sin imagen",
       "upload": "Subir",
       "avatar": {
@@ -895,7 +895,7 @@
         "hint": "El logo del espacio."
       },
       "pageBanner": {
-        "title": "Banner de página (1536 × 256px)",
+        "title": "Banner de página (3840 × 640px)",
         "hint": "Se muestra en la parte superior de la página del espacio."
       },
       "cardBanner": {
