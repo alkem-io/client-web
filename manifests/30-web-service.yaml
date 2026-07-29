@@ -8,9 +8,15 @@ spec:
     - protocol: TCP
       name: web
       # port stays 80 (what the IngressRoute targets); only the hop to the
-      # container follows it to 8080 — the hardened image (workspace#033) runs
-      # unprivileged as UID 101 and cannot bind a privileged port.
+      # container moves — the hardened image (workspace#033) runs unprivileged
+      # as UID 101 and cannot bind a privileged port.
+      #
+      # targetPort is the NAMED port, not the number 8080, deliberately:
+      # Kubernetes resolves a named targetPort against each backing pod's own
+      # containerPort, so during the rollout old pods (web=80) and new pods
+      # (web=8080) are both reachable through this one Service. A numeric 8080
+      # would blackhole every old pod the moment it is applied.
       port: 80
-      targetPort: 8080
+      targetPort: web
   selector:
     app: alkemio-web

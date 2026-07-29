@@ -16,6 +16,11 @@ spec:
       labels:
         app: alkemio-web
     spec:
+      # The SPA never calls the Kubernetes API, but the default ServiceAccount is
+      # bound cluster-wide to pods/exec + pods/log — mounting its token into an
+      # internet-facing pod is a free privilege-escalation step for anyone who
+      # gets code execution here.
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 101
@@ -26,8 +31,6 @@ spec:
         - name: alkemio-web
           image: rg.nl-ams.scw.cloud/alkemio/alkemio-web:latest
           envFrom:
-            - secretRef:
-                name: alkemio-secrets
             - configMapRef:
                 name: alkemio-config
           ports:
