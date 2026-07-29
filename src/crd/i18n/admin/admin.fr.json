@@ -134,7 +134,10 @@
     "roleLabel": "Rôle",
     "organizations": "Organisations",
     "currentOrganizations": "Organisations actuelles",
-    "addOrganizations": "Ajouter des organisations"
+    "addOrganizations": "Ajouter des organisations",
+    "legacyRolesHeading": "Rôles hérités (révocation uniquement)",
+    "legacyRolesDescription": "Ces rôles sont retirés du modèle de rôles de la plateforme et ne peuvent plus être attribués. Les détenteurs existants sont affichés ici afin de pouvoir leur retirer le rôle ; c'est le seul moyen, dans la console, de supprimer une habilitation héritée avant qu'elle ne soit définitivement supprimée.",
+    "legacyRolesNoHolders": "Personne ne détient actuellement de rôle hérité."
   },
   "authPolicies": {
     "idLabel": "ID de politique d’autorisation",

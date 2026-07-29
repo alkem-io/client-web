@@ -134,7 +134,10 @@
     "roleLabel": "Rol",
     "organizations": "Organisaties",
     "currentOrganizations": "Huidige organisaties",
-    "addOrganizations": "Organisaties toevoegen"
+    "addOrganizations": "Organisaties toevoegen",
+    "legacyRolesHeading": "Verouderde rollen (alleen intrekken)",
+    "legacyRolesDescription": "Deze rollen zijn uit het rollenmodel van het platform teruggetrokken en kunnen niet meer worden toegekend. Bestaande houders worden hier getoond zodat de rol kan worden ingetrokken — dit is de enige manier in de console om een verouderd recht te verwijderen voordat het volledig wordt gewist.",
+    "legacyRolesNoHolders": "Momenteel heeft niemand een verouderde rol."
   },
   "authPolicies": {
     "idLabel": "Autorisatiebeleid-ID",

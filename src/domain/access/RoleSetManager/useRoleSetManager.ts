@@ -36,10 +36,34 @@ const FEATURE_ROLES = [
   RoleName.FeatureOrganizationCreator,
 ] as const;
 
+// sec-client-web-1: the ten legacy platform credentials remain the platform's
+// live, authoritative privileged access until Slice B retires them — Slice A
+// is strictly additive server-side. Dropping them from the offered set
+// entirely (T004) left no in-console way to revoke a compromised or
+// offboarded legacy holder during the Slice A -> Slice B window, forcing an
+// incident response onto hand-crafted GraphQL or direct DB access. Kept here
+// as a separate, clearly-labelled, remove-only group: offered only to a
+// GRANT_GLOBAL_ADMINS holder (the same capability that could grant them
+// originally), never rendered with an add affordance, and deleted in the same
+// commit that retires the credentials in Slice B.
+const LEGACY_PLATFORM_ROLES = [
+  RoleName.GlobalAdmin,
+  RoleName.GlobalSupport,
+  RoleName.GlobalLicenseManager,
+  RoleName.GlobalCommunityReader,
+  RoleName.GlobalSpacesReader,
+  RoleName.GlobalPlatformManager,
+  RoleName.GlobalSupportManager,
+  RoleName.PlatformBetaTester,
+  RoleName.PlatformVcCampaign,
+  RoleName.PlatformAssistantAccess,
+] as const;
+
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
   Organization: [RoleName.Owner, RoleName.Admin, RoleName.Associate],
   Platform: [...PLATFORM_ADMIN_ROLES, ...FEATURE_ROLES],
+  LegacyPlatform: LEGACY_PLATFORM_ROLES,
 } as const;
 
 /**
@@ -62,6 +86,27 @@ export const getOfferedPlatformRoles = (
   }
   if (myPrivileges.includes(AuthorizationPrivilege.FeatureRoleAssign)) {
     return [...FEATURE_ROLES];
+  }
+  return [];
+};
+
+/**
+ * sec-client-web-1: the legacy platform credentials, offered strictly for
+ * revocation (never grant) and only to a GRANT_GLOBAL_ADMINS holder — the
+ * incident-response surface for the Slice A -> Slice B window. Deliberately
+ * mirrors `getOfferedPlatformRoles`'s single client-side authorization
+ * decision (read `myPrivileges`, reimplement no server rule); it does not
+ * fall back to `FEATURE_ROLE_ASSIGN` because a Feature-role assigner never
+ * held the legacy god-mode credentials in the first place.
+ */
+export const getOfferedLegacyPlatformRoles = (
+  myPrivileges: AuthorizationPrivilege[] | undefined
+): (typeof RELEVANT_ROLES.LegacyPlatform)[number][] => {
+  if (!myPrivileges) {
+    return [];
+  }
+  if (myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins)) {
+    return [...RELEVANT_ROLES.LegacyPlatform];
   }
   return [];
 };

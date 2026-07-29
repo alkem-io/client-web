@@ -134,7 +134,10 @@
     "roleLabel": "Role",
     "organizations": "Organisations",
     "currentOrganizations": "Current organisations",
-    "addOrganizations": "Add organisations"
+    "addOrganizations": "Add organisations",
+    "legacyRolesHeading": "Legacy roles (revoke only)",
+    "legacyRolesDescription": "These roles are retired from the platform's role model and can no longer be granted. Existing holders are shown here so they can be revoked; this is the only in-console path to remove a legacy credential before it is deleted entirely.",
+    "legacyRolesNoHolders": "No one currently holds a legacy role."
   },
   "authPolicies": {
     "idLabel": "Authorisation Policy ID",

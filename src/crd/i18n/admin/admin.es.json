@@ -134,7 +134,10 @@
     "roleLabel": "Rol",
     "organizations": "Organizaciones",
     "currentOrganizations": "Organizaciones actuales",
-    "addOrganizations": "Añadir organizaciones"
+    "addOrganizations": "Añadir organizaciones",
+    "legacyRolesHeading": "Roles heredados (solo revocación)",
+    "legacyRolesDescription": "Estos roles se han retirado del modelo de roles de la plataforma y ya no se pueden conceder. Los titulares existentes se muestran aquí para poder revocarlos; esta es la única vía en la consola para eliminar una credencial heredada antes de que se elimine por completo.",
+    "legacyRolesNoHolders": "Actualmente nadie tiene un rol heredado."
   },
   "authPolicies": {
     "idLabel": "ID de política de autorización",

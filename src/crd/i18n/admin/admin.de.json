@@ -134,7 +134,10 @@
     "roleLabel": "Rolle",
     "organizations": "Organisationen",
     "currentOrganizations": "Aktuelle Organisationen",
-    "addOrganizations": "Organisationen hinzufügen"
+    "addOrganizations": "Organisationen hinzufügen",
+    "legacyRolesHeading": "Veraltete Rollen (nur Entzug)",
+    "legacyRolesDescription": "Diese Rollen wurden aus dem Rollenmodell der Plattform zurückgezogen und können nicht mehr vergeben werden. Bestehende Inhaber werden hier angezeigt, damit ihnen die Rolle entzogen werden kann — dies ist der einzige Weg in der Konsole, eine veraltete Berechtigung zu entfernen, bevor sie vollständig gelöscht wird.",
+    "legacyRolesNoHolders": "Derzeit besitzt niemand eine veraltete Rolle."
   },
   "authPolicies": {
     "idLabel": "Autorisierungsrichtlinien-ID",
