@@ -17599,6 +17599,9 @@ export const PlatformLevelAuthorizationDocument = gql`
     roleSet {
       id
       myRoles
+      authorization {
+        myPrivileges
+      }
     }
     authorization {
       myPrivileges

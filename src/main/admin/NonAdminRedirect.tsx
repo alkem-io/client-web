@@ -7,7 +7,13 @@ import Loading from '@/core/ui/loading/Loading';
 interface NonAdminRedirectProps {
   privileges: AuthorizationPrivilege[] | undefined;
   loading?: boolean;
-  adminPrivilege: AuthorizationPrivilege;
+  /**
+   * The privilege(s) that admit an operator to this admin area. A single value
+   * keeps the original one-privilege behaviour; an array admits any one of them
+   * (027-platform-role-redesign: the decomposed platform roles each carry their
+   * own privilege, so "admin" is no longer a single credential).
+   */
+  adminPrivilege: AuthorizationPrivilege | AuthorizationPrivilege[];
   ancestorFallback?: ClosestAncestor;
 }
 
@@ -24,8 +30,10 @@ const NonAdminRedirect = ({
     return <Loading text="Loading user privileges" />;
   }
 
+  const admitting = Array.isArray(adminPrivilege) ? adminPrivilege : [adminPrivilege];
+
   const isAdmin = privileges?.some(
-    privilege => privilege === adminPrivilege || privilege === AuthorizationPrivilege.PlatformAdmin
+    privilege => admitting.includes(privilege) || privilege === AuthorizationPrivilege.PlatformAdmin
   );
 
   if (isAdmin) {
