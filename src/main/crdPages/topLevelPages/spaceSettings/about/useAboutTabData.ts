@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState, useTransition } from 'react';
 import {
   useCreateReferenceOnProfileMutation,
+  useDefaultVisualTypeConstraintsQuery,
   useDeleteReferenceMutation,
   useSpaceAboutDetailsQuery,
   useUpdateSpaceMutation,
+  useUpdateVisualMutation,
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import type { UpdateSpaceInput } from '@/core/apollo/generated/graphql-schema';
+import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
 import type {
   AboutFormValues,
   AboutReference,
   AboutSectionKey,
   AboutSectionSaveStatus,
+  AboutVisualAspectRatioBounds,
   SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
@@ -34,6 +37,10 @@ export type UseAboutTabDataResult = {
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
   onUploadCardBanner: (file: File) => void;
+  /** Server-defined range the page banner's aspect ratio may be set to. Null while loading. */
+  pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null;
+  /** Persist a new page banner aspect ratio (fired on slider release). */
+  onChangePageBannerAspectRatio: (aspectRatio: number) => void;
   pendingCrop: PendingCrop | null;
   onCropComplete: (croppedFile: File, altText: string) => void;
   onCropCancel: () => void;
@@ -96,8 +103,20 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const [updateSpace] = useUpdateSpaceMutation();
   const [uploadVisual] = useUploadVisualMutation();
+  const [updateVisual] = useUpdateVisualMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
+
+  // The allowed ratio range is a property of the visual TYPE, so it comes from
+  // the platform config rather than from this space's own visual row.
+  const { data: bannerConstraintsData } = useDefaultVisualTypeConstraintsQuery({
+    variables: { visualType: VisualType.Banner },
+    skip: level !== 'L0',
+  });
+  const bannerConstraints = bannerConstraintsData?.platform.configuration.defaultVisualTypeConstraints;
+  const pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null = bannerConstraints
+    ? { min: bannerConstraints.minAspectRatio, max: bannerConstraints.maxAspectRatio }
+    : null;
 
   // Reference file upload (paperclip) — the space settings tab is always rendered inside the
   // ambient space StorageConfigContextProvider, so the bucket resolves from context.
@@ -234,6 +253,30 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   };
 
   const onCropCancel = () => setPendingCrop(null);
+
+  /**
+   * Persist the page banner's shape. `uri` is required by UpdateVisualInput, so
+   * the current one is echoed back unchanged — this mutation only moves the
+   * ratio. The local form value is updated optimistically so the upload preview
+   * and the page header agree immediately.
+   */
+  const onChangePageBannerAspectRatio = (aspectRatio: number) => {
+    const current = valuesRef.current;
+    if (!current?.pageBanner.id) return;
+
+    setValues(prev => {
+      const base = prev ?? current;
+      const next: AboutFormValues = { ...base, pageBanner: { ...base.pageBanner, aspectRatio } };
+      valuesRef.current = next;
+      return next;
+    });
+
+    void updateVisual({
+      variables: {
+        input: { visualID: current.pageBanner.id, uri: current.pageBanner.uri ?? '', aspectRatio },
+      },
+    });
+  };
 
   // ────────────────── Per-section save ──────────────────
 
@@ -407,6 +450,8 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onUploadAvatar: onUploadAvatarWithCrop,
     onUploadPageBanner: onUploadPageBannerWithCrop,
     onUploadCardBanner: onUploadCardBannerWithCrop,
+    pageBannerAspectRatioBounds,
+    onChangePageBannerAspectRatio,
     pendingCrop,
     onCropComplete,
     onCropCancel,

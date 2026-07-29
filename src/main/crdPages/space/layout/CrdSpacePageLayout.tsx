@@ -28,6 +28,7 @@ import {
 } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
+import { clampBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
@@ -203,6 +204,7 @@ export default function CrdSpacePageLayout() {
                 tagline={space.about.profile.tagline ?? undefined}
                 bannerUrl={space.about.profile.banner?.uri}
                 bannerAlt={space.about.profile.banner?.alternativeText ?? undefined}
+                bannerAspectRatio={clampBannerAspectRatio(space.about.profile.banner?.aspectRatio)}
                 color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
                 actions={headerActions}
                 overlayHeader={enableBannerOverlay}

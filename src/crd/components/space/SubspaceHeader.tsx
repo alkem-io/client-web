@@ -1,5 +1,6 @@
 import { Activity, FoldHorizontal, Menu, Settings, Share2, UnfoldHorizontal, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
@@ -41,7 +42,7 @@ export type SubspaceHeaderProps = {
   /**
    * Page banner image — sourced from the L0 root of the ancestry chain (NOT from the immediate
    * parent for L2). L1/L2 subspaces do not have a settable page banner, so the L0 root's BANNER
-   * visual (stored at ~1920×320) is used. The subspace's own cardBanner is intentionally NOT used
+   * visual (up to 3840px wide) is used. The subspace's own cardBanner is intentionally NOT used
    * here because it is sized for cards (~416×256) and would be visibly blurry when stretched.
    */
   bannerUrl?: string;
@@ -50,6 +51,11 @@ export type SubspaceHeaderProps = {
    * BANNER visual). Falls back to a generic label when the author left it empty.
    */
   bannerAlt?: string;
+  /**
+   * Width / height ratio of the banner strip. Like the image itself this is
+   * inherited from the L0 root, so a subspace matches its parent space's shape.
+   */
+  bannerAspectRatio?: number;
   /** Accent colour for the gradient fallback when `bannerUrl` is missing — derived from the L0 root id. */
   color: string;
 
@@ -81,6 +87,7 @@ export function SubspaceHeader({
   subspaceAvatarUrl,
   bannerUrl,
   bannerAlt,
+  bannerAspectRatio = DEFAULT_BANNER_ASPECT_RATIO,
   color,
   actions,
   overlayHeader = false,
@@ -101,7 +108,10 @@ export function SubspaceHeader({
         <div className="grid grid-cols-12 gap-6">
           {/* A real <img> rather than a CSS background — see the matching note in
               SpaceHeader: LCP discoverability plus somewhere for the alt text. */}
-          <div className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}>
+          <div
+            className={cn('relative col-span-12 overflow-hidden', contentColumnClass(fullWidth))}
+            style={{ aspectRatio: bannerAspectRatio }}
+          >
             {bannerUrl ? (
               <img
                 src={bannerUrl}

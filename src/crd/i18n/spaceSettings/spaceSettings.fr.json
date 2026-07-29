@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Identité visuelle de l'espace",
-      "description": "Téléversez un avatar, une bannière de page (3840×640) et une bannière de carte (416×256).",
+      "description": "Téléversez un avatar, une bannière de page (3840px) et une bannière de carte (416×256).",
       "noImage": "Aucune image",
       "upload": "Téléverser",
       "avatar": {
@@ -895,8 +895,13 @@
         "hint": "Le logo de l'espace."
       },
       "pageBanner": {
-        "title": "Bannière de page (3840 × 640px)",
-        "hint": "Affichée en haut de la page de l'espace."
+        "title": "Bannière de page",
+        "hint": "Affichée en haut de la page de l'espace.",
+        "shape": {
+          "hint": "Des valeurs plus élevées donnent une bande de bannière plus basse et plus large. S'applique à ce Space et à tous ses Subspaces.",
+          "label": "Forme de la bannière",
+          "value": "{{ratio}}:1"
+        }
       },
       "cardBanner": {
         "title": "Bannière de carte (416 × 256px)",

@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Space-Branding",
-      "description": "Laden Sie einen Avatar, einen Seiten-Banner (3840×640) und einen Karten-Banner (416×256) hoch.",
+      "description": "Laden Sie einen Avatar, einen Seiten-Banner (3840px) und einen Karten-Banner (416×256) hoch.",
       "noImage": "Kein Bild",
       "upload": "Hochladen",
       "avatar": {
@@ -895,8 +895,13 @@
         "hint": "Das Logo des Spaces."
       },
       "pageBanner": {
-        "title": "Seiten-Banner (3840 × 640px)",
-        "hint": "Wird oben auf der Space-Seite angezeigt."
+        "title": "Seiten-Banner",
+        "hint": "Wird oben auf der Space-Seite angezeigt.",
+        "shape": {
+          "hint": "Höhere Werte ergeben einen flacheren, breiteren Bannerstreifen. Gilt für diesen Space und alle seine Subspaces.",
+          "label": "Bannerform",
+          "value": "{{ratio}}:1"
+        }
       },
       "cardBanner": {
         "title": "Karten-Banner (416 × 256px)",

@@ -12,15 +12,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
+  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -3724,7 +3734,7 @@ export type Invitation = {
   nextEvents: Array<Scalars['String']['output']>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
-  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
   suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -3743,7 +3753,7 @@ export type InviteForEntryRoleOnRoleSetInput = {
   invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
-  /** Optional language the inviter expects the invitees to prefer (single value for the whole batch — FR-014a; must be in the eligible set at compose time — DL-8). Recorded per-invitation so per-invitee granularity later is a UI change, not a migration (FR-014b). */
+  /** Optional language the inviter expects the invitees to prefer (single value for the whole batch). Must be in the eligible set at compose time. Recorded per-invitation so per-invitee granularity later is a UI change, not a migration. */
   suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
   /** The welcome message to send */
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
@@ -5137,7 +5147,7 @@ export type Mutation = {
   unsubscribeFromPushNotifications: PushSubscription;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
-  /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires platform-admin. */
+  /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires the platform-operations-admin privilege. */
   updateAssistantActorCapabilities: VirtualAssistant;
   /** Update the baseline License Plan on the specified Account. */
   updateBaselineLicensePlanOnAccount: Account;
@@ -5239,7 +5249,7 @@ export type Mutation = {
   updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates one of the Setting on an Virtual Contributor */
   updateVirtualContributorSettings: VirtualContributor;
-  /** Updates the image URI for the specified Visual. */
+  /** Updates the image URI, alternative text and/or display aspect ratio for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
@@ -6648,7 +6658,7 @@ export type PlatformInvitation = {
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
-  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
   suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -9599,9 +9609,9 @@ export type UpdateUserSettingsEntityInput = {
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
-  /** Set the user's interface language preference. Must be a value from the supported languages set. Any language write also latches languageOfferAnswered=true (FR-023 invariant). */
+  /** Set the user's interface language preference. Must be a value from the supported languages set. Any language write also latches languageOfferAnswered=true. */
   language?: InputMaybe<Scalars['String']['input']>;
-  /** Mark that this User has answered the one-time language offer. One-way latch: setting false is rejected (FR-005a). */
+  /** Mark that this User has answered the one-time language offer. One-way latch: setting false is rejected. */
   languageOfferAnswered?: InputMaybe<Scalars['Boolean']['input']>;
   /** Settings related to this users Notifications preferences. */
   notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
@@ -9788,6 +9798,8 @@ export type UpdateVirtualContributorSettingsPrivacyInput = {
 
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']['input']>;
+  /** The width / height ratio to display this visual at. Must fall within the visual type’s minAspectRatio - maxAspectRatio range; types with a fixed shape accept only their single allowed value. */
+  aspectRatio?: InputMaybe<Scalars['Float']['input']>;
   uri: Scalars['String']['input'];
   visualID: Scalars['String']['input'];
 };
@@ -10131,7 +10143,7 @@ export type UserSettings = {
   id: Scalars['UUID']['output'];
   /** The interface language chosen by this User. Null = the User has never chosen a language (distinct from having chosen the platform default). */
   language?: Maybe<Scalars['String']['output']>;
-  /** Whether this User has answered the one-time language offer (global across all languages — FR-005a). Latched true by any language write. */
+  /** Whether this User has answered the one-time language offer (global across all languages). Latched true by any language write. */
   languageOfferAnswered: Scalars['Boolean']['output'];
   /** The notification settings for this User. */
   notification: UserSettingsNotification;
@@ -10533,10 +10545,14 @@ export type VisualConstraints = {
   allowedTypes: Array<Scalars['String']['output']>;
   /** Dimensions ratio width / height. */
   aspectRatio: Scalars['Float']['output'];
+  /** Maximum dimensions ratio width / height that this visual may be set to. Equal to minAspectRatio when the shape is fixed. */
+  maxAspectRatio: Scalars['Float']['output'];
   /** Maximum height resolution. */
   maxHeight: Scalars['Float']['output'];
   /** Maximum width resolution. */
   maxWidth: Scalars['Float']['output'];
+  /** Minimum dimensions ratio width / height that this visual may be set to. Equal to maxAspectRatio when the shape is fixed. */
+  minAspectRatio: Scalars['Float']['output'];
   /** Minimum height resolution. */
   minHeight: Scalars['Float']['output'];
   /** Minimum width resolution. */
@@ -10669,6 +10685,8 @@ export type DefaultVisualTypeConstraintsQuery = {
         minHeight: number;
         minWidth: number;
         aspectRatio: number;
+        minAspectRatio: number;
+        maxAspectRatio: number;
         allowedTypes: Array<string>;
       };
     };
@@ -10706,6 +10724,7 @@ export type InnovationPackProfilePageQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -10835,6 +10854,7 @@ export type AdminInnovationPackQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -10916,7 +10936,14 @@ export type InnovationPackProviderProfileWithAvatarFragment = {
         displayName: string;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       }
     | undefined;
@@ -10963,7 +10990,14 @@ export type InnovationPackCardFragment = {
           displayName: string;
           url: string;
           avatar?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
         }
       | undefined;
@@ -11318,6 +11352,7 @@ export type UserPendingMembershipsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             cardBanner?:
@@ -11327,6 +11362,7 @@ export type UserPendingMembershipsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           };
@@ -11380,7 +11416,14 @@ export type AvailableUserForRoleSetFragment = {
           | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
           | undefined;
         visual?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       }
     | undefined;
@@ -11401,7 +11444,14 @@ export type AvailableUsersForRoleSetPaginatedFragment = {
             | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
             | undefined;
           visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
         }
       | undefined;
@@ -11438,6 +11488,7 @@ export type PlatformRoleAvailableUsersQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           }
@@ -11483,6 +11534,7 @@ export type AvailableUsersForEntryRoleQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -11531,6 +11583,7 @@ export type AvailableUsersForElevatedRoleQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -11569,6 +11622,7 @@ export type AvailableOrganizationsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           }
@@ -11697,7 +11751,14 @@ export type RoleSetMemberUserFragment = {
         displayName: string;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         location?:
           | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
@@ -11727,7 +11788,14 @@ export type RoleSetMemberOrganizationFragment = {
         description?: string | undefined;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagsets?:
           | Array<{
@@ -11758,7 +11826,14 @@ export type RoleSetMemberVirtualContributorFragment = {
         displayName: string;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagsets?:
           | Array<{
@@ -11844,6 +11919,7 @@ export type RoleSetRoleAssignmentQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     location?:
@@ -11883,6 +11959,7 @@ export type RoleSetRoleAssignmentQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagsets?:
@@ -11927,6 +12004,7 @@ export type RoleSetRoleAssignmentQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagsets?:
@@ -12032,6 +12110,7 @@ export type AccountInformationQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -12059,6 +12138,7 @@ export type AccountInformationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -12080,6 +12160,7 @@ export type AccountInformationQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -12113,6 +12194,7 @@ export type AccountInformationQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               avatar?:
@@ -12122,6 +12204,7 @@ export type AccountInformationQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -12138,7 +12221,14 @@ export type AccountItemProfileFragment = {
   description?: string | undefined;
   url: string;
   avatar?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
 };
 
@@ -12193,6 +12283,7 @@ export type InnovationFlowSettingsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -12317,6 +12408,7 @@ export type InnovationFlowDetailsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -12473,7 +12565,14 @@ export type InnovationFlowDetailsFragment = {
       | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
       | undefined;
     bannerNarrow?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
   currentState?: { __typename?: 'InnovationFlowState'; id: string } | undefined;
@@ -12523,7 +12622,14 @@ export type InnovationFlowProfileFragment = {
     | Array<{ __typename?: 'Reference'; id: string; name: string; description?: string | undefined; uri: string }>
     | undefined;
   bannerNarrow?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
 };
 
@@ -13349,6 +13455,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13358,6 +13465,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13421,6 +13529,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13430,6 +13539,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13497,6 +13607,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13506,6 +13617,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13574,6 +13686,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13583,6 +13696,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13655,6 +13769,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13664,6 +13779,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13727,6 +13843,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13736,6 +13853,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13808,6 +13926,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13817,6 +13936,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13884,6 +14004,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13893,6 +14014,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -13965,6 +14087,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -13974,6 +14097,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -14047,6 +14171,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -14056,6 +14181,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -14127,6 +14253,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -14136,6 +14263,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -14204,6 +14332,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -14213,6 +14342,7 @@ export type ActivityLogOnCollaborationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -14587,6 +14717,7 @@ export type UpdateCalloutContentMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -14659,6 +14790,7 @@ export type UpdateCalloutContentMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -14852,6 +14984,7 @@ export type UpdateCalloutContentMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         tagsets?:
@@ -15069,6 +15202,7 @@ export type UpdateCalloutVisibilityMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -15141,6 +15275,7 @@ export type UpdateCalloutVisibilityMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -15334,6 +15469,7 @@ export type UpdateCalloutVisibilityMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         tagsets?:
@@ -15511,6 +15647,7 @@ export type CalloutContributionQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -15531,6 +15668,7 @@ export type CalloutContributionQuery = {
                                   uri: string;
                                   name: VisualType;
                                   alternativeText?: string | undefined;
+                                  aspectRatio: number;
                                 }
                               | undefined;
                           }
@@ -15563,6 +15701,7 @@ export type CalloutContributionQuery = {
                                   uri: string;
                                   name: VisualType;
                                   alternativeText?: string | undefined;
+                                  aspectRatio: number;
                                 }
                               | undefined;
                           }
@@ -15593,6 +15732,7 @@ export type CalloutContributionQuery = {
                                   uri: string;
                                   name: VisualType;
                                   alternativeText?: string | undefined;
+                                  aspectRatio: number;
                                 }
                               | undefined;
                           }
@@ -15612,6 +15752,7 @@ export type CalloutContributionQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }>;
                   tagset?:
                     | {
@@ -15659,6 +15800,7 @@ export type CalloutContributionQuery = {
                                   uri: string;
                                   name: VisualType;
                                   alternativeText?: string | undefined;
+                                  aspectRatio: number;
                                 }
                               | undefined;
                           }
@@ -15880,6 +16022,7 @@ export type CalloutContributionCommentsQuery = {
                                       uri: string;
                                       name: VisualType;
                                       alternativeText?: string | undefined;
+                                      aspectRatio: number;
                                     }
                                   | undefined;
                                 tagsets?:
@@ -16033,6 +16176,7 @@ export type CreateMemoOnCalloutMutation = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -16092,6 +16236,7 @@ export type CalloutPostCreatedSubscription = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -16181,6 +16326,7 @@ export type CalloutContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -16208,6 +16354,7 @@ export type CalloutContributionsQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                             }
@@ -16240,6 +16387,7 @@ export type CalloutContributionsQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                             }
@@ -16287,6 +16435,7 @@ export type CalloutContributionsQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                             }
@@ -16334,6 +16483,7 @@ export type CalloutContributionsQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                             }
@@ -16393,7 +16543,14 @@ export type CalloutContributionsWhiteboardCardFragment = {
     url: string;
     displayName: string;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
   authorization?:
@@ -16416,6 +16573,7 @@ export type CalloutContributionsWhiteboardCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -16447,6 +16605,7 @@ export type CalloutContributionsMemoCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -16493,6 +16652,7 @@ export type CalloutContributionsPostCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -16531,6 +16691,7 @@ export type CalloutContributionsCollaboraDocumentCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -16549,7 +16710,14 @@ export type ContributionAuthorFragment = {
         displayName: string;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       }
     | undefined;
@@ -16653,6 +16821,7 @@ export type CreateWhiteboardOnCalloutMutation = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -16880,6 +17049,7 @@ export type CreateCalloutMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -16952,6 +17122,7 @@ export type CreateCalloutMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -17145,6 +17316,7 @@ export type CreateCalloutMutation = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         tagsets?:
@@ -17482,6 +17654,7 @@ export type CalloutDetailsQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                             }
@@ -17564,6 +17737,7 @@ export type CalloutDetailsQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                             }
@@ -17799,6 +17973,7 @@ export type CalloutDetailsQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                               tagsets?:
@@ -18048,6 +18223,7 @@ export type CalloutDetailsFragment = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -18120,6 +18296,7 @@ export type CalloutDetailsFragment = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -18313,6 +18490,7 @@ export type CalloutDetailsFragment = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       tagsets?:
@@ -18517,6 +18695,7 @@ export type MemoDetailsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -18612,6 +18791,7 @@ export type MemoDetailsFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -19680,6 +19860,7 @@ export type WhiteboardDetailsFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -19800,6 +19981,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         }
@@ -19909,6 +20091,7 @@ export type CollaborationWithWhiteboardDetailsFragment = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         }
@@ -20041,6 +20224,7 @@ export type WhiteboardFromCalloutQuery = {
                                     uri: string;
                                     name: VisualType;
                                     alternativeText?: string | undefined;
+                                    aspectRatio: number;
                                   }
                                 | undefined;
                             }
@@ -20245,12 +20429,29 @@ export type TagsetDetailsFragment = {
   type: TagsetType;
 };
 
+export type UpdateVisualMutationVariables = Exact<{
+  input: UpdateVisualInput;
+}>;
+
+export type UpdateVisualMutation = {
+  __typename?: 'Mutation';
+  updateVisual: {
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    name: VisualType;
+    alternativeText?: string | undefined;
+    aspectRatio: number;
+  };
+};
+
 export type VisualModelFragment = {
   __typename?: 'Visual';
   id: string;
   uri: string;
   name: VisualType;
   alternativeText?: string | undefined;
+  aspectRatio: number;
 };
 
 export type VisualModelFullFragment = {
@@ -20346,6 +20547,7 @@ export type CreateDiscussionMutation = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagsets?:
@@ -20431,6 +20633,7 @@ export type UpdateDiscussionMutation = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagsets?:
@@ -20519,6 +20722,7 @@ export type DiscussionDetailsFragment = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagsets?:
@@ -20580,6 +20784,7 @@ export type PlatformDiscussionsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -20614,7 +20819,14 @@ export type DiscussionCardFragment = {
     description?: string | undefined;
     tagline?: string | undefined;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
   comments: {
@@ -20704,6 +20916,7 @@ export type PlatformDiscussionQuery = {
                                   uri: string;
                                   name: VisualType;
                                   alternativeText?: string | undefined;
+                                  aspectRatio: number;
                                 }
                               | undefined;
                             tagsets?:
@@ -20763,6 +20976,7 @@ export type ForumDiscussionUpdatedSubscription = {
         uri: string;
         name: VisualType;
         alternativeText?: string | undefined;
+        aspectRatio: number;
       }>;
     };
     comments: { __typename?: 'Room'; id: string; messagesCount: number };
@@ -20841,6 +21055,7 @@ export type MessageDetailsFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagsets?:
@@ -20921,6 +21136,7 @@ export type CommentsWithMessagesFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagsets?:
@@ -20980,6 +21196,7 @@ export type ForumMentionableContributorsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -21006,6 +21223,7 @@ export type ForumMentionableContributorsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -21032,6 +21250,7 @@ export type ForumMentionableContributorsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -21058,6 +21277,7 @@ export type ForumMentionableContributorsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -21084,6 +21304,7 @@ export type ForumMentionableContributorsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -21110,6 +21331,7 @@ export type ForumMentionableContributorsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -21136,6 +21358,7 @@ export type ForumMentionableContributorsQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -21216,6 +21439,7 @@ export type MentionableContributorsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -21247,6 +21471,7 @@ export type MentionableContributorsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -21278,6 +21503,7 @@ export type MentionableContributorsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -21309,6 +21535,7 @@ export type MentionableContributorsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -21340,6 +21567,7 @@ export type MentionableContributorsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -21371,6 +21599,7 @@ export type MentionableContributorsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -21402,6 +21631,7 @@ export type MentionableContributorsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -21489,6 +21719,7 @@ export type RoomEventsSubscription = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         tagsets?:
@@ -21596,6 +21827,7 @@ export type CommunityUpdatesQuery = {
                                   uri: string;
                                   name: VisualType;
                                   alternativeText?: string | undefined;
+                                  aspectRatio: number;
                                 }
                               | undefined;
                             tagsets?:
@@ -21860,7 +22092,14 @@ export type BasicOrganizationDetailsFragment = {
         url: string;
         displayName: string;
         visual?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       }
     | undefined;
@@ -21952,7 +22191,14 @@ export type ContributorDetailsFragment = {
         url: string;
         description?: string | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagsets?:
           | Array<{
@@ -22004,6 +22250,7 @@ export type AccountResourcesInfoQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 avatar?:
@@ -22013,6 +22260,7 @@ export type AccountResourcesInfoQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -22035,6 +22283,7 @@ export type AccountResourcesInfoQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -22056,6 +22305,7 @@ export type AccountResourcesInfoQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -22089,6 +22339,7 @@ export type AccountResourcesInfoQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               avatar?:
@@ -22098,6 +22349,7 @@ export type AccountResourcesInfoQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -22114,7 +22366,14 @@ export type AccountResourceProfileFragment = {
   tagline?: string | undefined;
   url: string;
   avatar?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
 };
 
@@ -22172,6 +22431,7 @@ export type AssociatedOrganizationQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
@@ -22204,7 +22464,14 @@ export type OrganizationInfoFragment = {
         description?: string | undefined;
         tagline?: string | undefined;
         avatar?:
-          | { __typename?: 'Visual'; alternativeText?: string | undefined; id: string; uri: string; name: VisualType }
+          | {
+              __typename?: 'Visual';
+              alternativeText?: string | undefined;
+              id: string;
+              uri: string;
+              name: VisualType;
+              aspectRatio: number;
+            }
           | undefined;
         tagsets?:
           | Array<{
@@ -22271,6 +22538,7 @@ export type OrganizationInfoQuery = {
                       id: string;
                       uri: string;
                       name: VisualType;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagsets?:
@@ -22654,6 +22922,7 @@ export type PendingMembershipsSpaceQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -22663,6 +22932,7 @@ export type PendingMembershipsSpaceQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagset?:
@@ -22800,6 +23070,7 @@ export type SpaceContributionDetailsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -22809,6 +23080,7 @@ export type SpaceContributionDetailsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
@@ -22833,6 +23105,7 @@ export type SpaceContributionDetailsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       location?:
@@ -22863,6 +23136,7 @@ export type SpaceContributionDetailsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       location?:
@@ -22912,6 +23186,7 @@ export type UserSelectorQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           }
@@ -22938,7 +23213,14 @@ export type UserSelectorUserInformationFragment = {
           | { __typename?: 'Location'; id: string; city?: string | undefined; country?: string | undefined }
           | undefined;
         visual?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       }
     | undefined;
@@ -23016,7 +23298,14 @@ export type UserDetailsLightFragment = {
         displayName: string;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       }
     | undefined;
@@ -24247,6 +24536,7 @@ export type CurrentUserLightQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -24463,6 +24753,7 @@ export type VirtualContributorProfileQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 references?:
@@ -24512,6 +24803,7 @@ export type VirtualContributorProviderQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagsets?: Array<{ __typename?: 'Tagset'; id: string; tags: Array<string> }> | undefined;
@@ -24568,6 +24860,7 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -24577,6 +24870,7 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -24586,6 +24880,7 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -24653,6 +24948,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 references?:
@@ -24684,6 +24980,7 @@ export type VirtualContributorProfileWithModelCardQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -24736,7 +25033,14 @@ export type VirtualContributorFullFragment = {
         description?: string | undefined;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagsets?:
           | Array<{
@@ -25231,6 +25535,7 @@ export type InnovationHubByIdQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -25256,6 +25561,7 @@ export type InnovationHubByIdQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -25304,6 +25610,7 @@ export type DashboardSpacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -25325,6 +25632,7 @@ export type DashboardSpacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -25338,10 +25646,24 @@ export type DashboardSpacesQuery = {
         url: string;
         tagline?: string | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagset?:
           | {
@@ -25930,6 +26252,7 @@ export type InnovationHubQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -25955,6 +26278,7 @@ export type InnovationHubQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -26033,6 +26357,7 @@ export type InnovationHubHomeInnovationHubFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -26058,6 +26383,7 @@ export type InnovationHubHomeInnovationHubFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -26649,6 +26975,7 @@ export type PlatformAdminVirtualContributorsListQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           }
@@ -27494,6 +27821,7 @@ export type SpaceAboutBaseQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -27503,6 +27831,7 @@ export type SpaceAboutBaseQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -27512,6 +27841,7 @@ export type SpaceAboutBaseQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -27577,6 +27907,7 @@ export type SpaceAboutDetailsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       location?:
@@ -27606,6 +27937,7 @@ export type SpaceAboutDetailsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       location?:
@@ -27638,6 +27970,7 @@ export type SpaceAboutDetailsQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         location?:
@@ -27747,7 +28080,14 @@ export type SpaceAboutCardAvatarFragment = {
     displayName: string;
     url: string;
     avatar?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -27762,10 +28102,24 @@ export type SpaceAboutCardBannerFragment = {
     url: string;
     tagline?: string | undefined;
     avatar?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     cardBanner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     tagset?:
       | {
@@ -27810,6 +28164,7 @@ export type SpaceAboutDetailsFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             location?:
@@ -27834,6 +28189,7 @@ export type SpaceAboutDetailsFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             location?:
@@ -27861,6 +28217,7 @@ export type SpaceAboutDetailsFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               location?:
@@ -27956,13 +28313,34 @@ export type SpaceAboutLightFragment = {
     description?: string | undefined;
     tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
     avatar?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     cardBanner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
   membership: {
@@ -27978,13 +28356,34 @@ export type SpaceAboutLightFragment = {
 export type SubspaceVisualsFragment = {
   __typename?: 'Profile';
   avatar?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
   cardBanner?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
   banner?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
 };
 
@@ -28011,13 +28410,34 @@ export type SpaceAboutTileFragment = {
     tagline?: string | undefined;
     url: string;
     avatar?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     cardBanner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -28097,13 +28517,34 @@ export type CreateSpaceMutation = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -28144,10 +28585,24 @@ export type CreateSubspaceMutation = {
         displayName: string;
         tagline?: string | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagset?:
           | {
@@ -28160,7 +28615,14 @@ export type CreateSubspaceMutation = {
             }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
@@ -28184,6 +28646,7 @@ export type CreateSubspaceMutation = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -28205,6 +28668,7 @@ export type CreateSubspaceMutation = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -28219,13 +28683,34 @@ export type ProfileVisualsFragment = {
   __typename?: 'Profile';
   id: string;
   banner?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
   cardBanner?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
   avatar?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
 };
 
@@ -28261,6 +28746,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -28270,6 +28756,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagset?:
@@ -28310,6 +28797,7 @@ export type SpaceDashboardNavigationSubspacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -28372,6 +28860,7 @@ export type SpaceCardQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -28381,6 +28870,7 @@ export type SpaceCardQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -28453,6 +28943,7 @@ export type SpaceSubspaceCardsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -28462,6 +28953,7 @@ export type SpaceSubspaceCardsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -28500,6 +28992,7 @@ export type SpaceSubspaceCardsQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -28521,6 +29014,7 @@ export type SpaceSubspaceCardsQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -28540,6 +29034,7 @@ export type SpaceSubspaceCardsQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -28549,6 +29044,7 @@ export type SpaceSubspaceCardsQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -28597,6 +29093,7 @@ export type SpaceCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -28618,6 +29115,7 @@ export type SpaceCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -28631,10 +29129,24 @@ export type SpaceCardFragment = {
       url: string;
       tagline?: string | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -28683,6 +29195,7 @@ export type SubspaceCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -28704,6 +29217,7 @@ export type SubspaceCardFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -28717,10 +29231,24 @@ export type SubspaceCardFragment = {
       url: string;
       tagline?: string | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -28772,6 +29300,7 @@ export type SubspacesOnSpaceFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -28793,6 +29322,7 @@ export type SubspacesOnSpaceFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -28806,10 +29336,24 @@ export type SubspacesOnSpaceFragment = {
         url: string;
         tagline?: string | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagset?:
           | {
@@ -28870,6 +29414,7 @@ export type UpdateSpaceMutation = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -28894,6 +29439,7 @@ export type UpdateSpaceMutation = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -28921,6 +29467,7 @@ export type UpdateSpaceMutation = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   location?:
@@ -29037,6 +29584,7 @@ export type SpaceInfoFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               location?:
@@ -29061,6 +29609,7 @@ export type SpaceInfoFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               location?:
@@ -29088,6 +29637,7 @@ export type SpaceInfoFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -29206,6 +29756,7 @@ export type SubspacesInSpaceQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -29215,6 +29766,7 @@ export type SubspacesInSpaceQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -29276,6 +29828,7 @@ export type SubspaceCreatedSubscription = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -29297,6 +29850,7 @@ export type SubspaceCreatedSubscription = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -29310,10 +29864,24 @@ export type SubspaceCreatedSubscription = {
           url: string;
           tagline?: string | undefined;
           avatar?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           cardBanner?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           tagset?:
             | {
@@ -29436,6 +30004,7 @@ export type SubspacePageQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -29445,6 +30014,7 @@ export type SubspacePageQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -29454,6 +30024,7 @@ export type SubspacePageQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -29505,13 +30076,34 @@ export type SubspacePageSpaceFragment = {
       description?: string | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
@@ -29560,6 +30152,7 @@ export type SpaceTabQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -29569,6 +30162,7 @@ export type SpaceTabQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -29578,6 +30172,7 @@ export type SpaceTabQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -29669,6 +30264,7 @@ export type SpacePageQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       location?:
@@ -29698,6 +30294,7 @@ export type SpacePageQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       location?:
@@ -29816,6 +30413,7 @@ export type SpacePageQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         location?:
@@ -29924,6 +30522,7 @@ export type SpacePageFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               location?:
@@ -29948,6 +30547,7 @@ export type SpacePageFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               location?:
@@ -30055,6 +30655,7 @@ export type SpacePageFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -30201,6 +30802,7 @@ export type SpaceAccountQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         location?:
@@ -30230,6 +30832,7 @@ export type SpaceAccountQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -30239,6 +30842,7 @@ export type SpaceAccountQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -30248,6 +30852,7 @@ export type SpaceAccountQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -30330,6 +30935,7 @@ export type CommunityApplicationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   location?:
@@ -30377,6 +30983,7 @@ export type CommunityInvitationQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   location?:
@@ -30431,6 +31038,7 @@ export type AvailableVirtualContributorsInLibraryQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagsets?:
@@ -30525,6 +31133,7 @@ export type AvailableVirtualContributorsInSpaceAccountQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagsets?:
@@ -30628,6 +31237,7 @@ export type AvailableVirtualContributorsInSpaceQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                         tagsets?:
@@ -30715,7 +31325,14 @@ export type AvailableVirtualContributorsForRoleSetPaginatedFragment = {
           description?: string | undefined;
           url: string;
           avatar?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           tagsets?:
             | Array<{
@@ -31251,6 +31868,7 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         };
@@ -31331,6 +31949,7 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                           uri: string;
                                           name: VisualType;
                                           alternativeText?: string | undefined;
+                                          aspectRatio: number;
                                         }
                                       | undefined;
                                   };
@@ -31982,6 +32601,7 @@ export type ImportTemplateDialogQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -32078,6 +32698,7 @@ export type ImportTemplateDialogAccountTemplatesQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     };
@@ -32156,6 +32777,7 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           };
@@ -32239,6 +32861,7 @@ export type AllTemplatesInTemplatesSetQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -32271,6 +32894,7 @@ export type AllTemplatesInTemplatesSetQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -32303,6 +32927,7 @@ export type AllTemplatesInTemplatesSetQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -32355,6 +32980,7 @@ export type AllTemplatesInTemplatesSetQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -32381,6 +33007,7 @@ export type AllTemplatesInTemplatesSetQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       cardBanner?:
@@ -32390,6 +33017,7 @@ export type AllTemplatesInTemplatesSetQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     };
@@ -32419,6 +33047,7 @@ export type AllTemplatesInTemplatesSetQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -32619,6 +33248,7 @@ export type TemplateContentQuery = {
                                           uri: string;
                                           name: VisualType;
                                           alternativeText?: string | undefined;
+                                          aspectRatio: number;
                                         }
                                       | undefined;
                                   }
@@ -32910,6 +33540,7 @@ export type TemplateContentQuery = {
                                       uri: string;
                                       name: VisualType;
                                       alternativeText?: string | undefined;
+                                      aspectRatio: number;
                                     }
                                   | undefined;
                               };
@@ -32954,6 +33585,7 @@ export type TemplateContentQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -32963,6 +33595,7 @@ export type TemplateContentQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -33010,6 +33643,7 @@ export type TemplateContentQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       cardBanner?:
@@ -33019,6 +33653,7 @@ export type TemplateContentQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       banner?:
@@ -33028,6 +33663,7 @@ export type TemplateContentQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     };
@@ -33130,6 +33766,7 @@ export type SpaceTemplateContentQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         };
@@ -33174,6 +33811,7 @@ export type SpaceTemplateContentQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -33183,6 +33821,7 @@ export type SpaceTemplateContentQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -33230,6 +33869,7 @@ export type SpaceTemplateContentQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -33239,6 +33879,7 @@ export type SpaceTemplateContentQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -33248,6 +33889,7 @@ export type SpaceTemplateContentQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -33385,6 +34027,7 @@ export type CalloutTemplateContentFragment = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -33631,6 +34274,7 @@ export type SpaceTemplateContentFragment = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -33666,10 +34310,24 @@ export type SpaceTemplateContentFragment = {
           }>
         | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   };
@@ -33706,13 +34364,34 @@ export type SpaceTemplateContentFragment = {
         tagline?: string | undefined;
         url: string;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -33789,6 +34468,7 @@ export type SpaceTemplateContent_CollaborationFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -33825,10 +34505,24 @@ export type SpaceTemplateContent_AboutFragment = {
         }>
       | undefined;
     avatar?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     cardBanner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -33864,13 +34558,34 @@ export type SpaceTemplateContent_SubspacesFragment = {
     tagline?: string | undefined;
     url: string;
     avatar?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     cardBanner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -33915,7 +34630,14 @@ export type TemplateProfileInfoFragment = {
         }
       | undefined;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -33955,7 +34677,14 @@ export type CalloutTemplateFragment = {
         }
       | undefined;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -33982,7 +34711,14 @@ export type PostTemplateFragment = {
         }
       | undefined;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -34009,6 +34745,7 @@ export type SpaceTemplateFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             cardBanner?:
@@ -34018,6 +34755,7 @@ export type SpaceTemplateFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           };
@@ -34041,7 +34779,14 @@ export type SpaceTemplateFragment = {
         }
       | undefined;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -34068,7 +34813,14 @@ export type WhiteboardTemplateFragment = {
         }
       | undefined;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -34115,7 +34867,14 @@ export type CommunityGuidelinesTemplateFragment = {
         }
       | undefined;
     visual?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+          aspectRatio: number;
+        }
       | undefined;
   };
 };
@@ -34370,7 +35129,14 @@ export type TemplatesSetTemplatesFragment = {
           }
         | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   }>;
@@ -34396,7 +35162,14 @@ export type TemplatesSetTemplatesFragment = {
           }
         | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   }>;
@@ -34422,7 +35195,14 @@ export type TemplatesSetTemplatesFragment = {
           }
         | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   }>;
@@ -34468,7 +35248,14 @@ export type TemplatesSetTemplatesFragment = {
           }
         | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   }>;
@@ -34494,6 +35281,7 @@ export type TemplatesSetTemplatesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -34503,6 +35291,7 @@ export type TemplatesSetTemplatesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -34526,7 +35315,14 @@ export type TemplatesSetTemplatesFragment = {
           }
         | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   }>;
@@ -34837,6 +35633,7 @@ export type CalendarEventDetailsQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                           tagsets?:
@@ -34991,6 +35788,7 @@ export type CalendarEventDetailsFragment = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagsets?:
@@ -35160,6 +35958,7 @@ export type CreateCalendarEventMutation = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagsets?:
@@ -35308,6 +36107,7 @@ export type UpdateCalendarEventMutation = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagsets?:
@@ -35572,6 +36372,7 @@ export type InnovationLibraryPacksPaginatedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -35631,6 +36432,7 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     };
@@ -35660,6 +36462,7 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -35882,6 +36685,7 @@ export type SpaceCollectionSubspacesQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         }
@@ -35903,6 +36707,7 @@ export type SpaceCollectionSubspacesQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         }
@@ -35922,6 +36727,7 @@ export type SpaceCollectionSubspacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -35931,6 +36737,7 @@ export type SpaceCollectionSubspacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -36054,6 +36861,7 @@ export type FlowStateSearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -36063,6 +36871,7 @@ export type FlowStateSearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -36072,6 +36881,7 @@ export type FlowStateSearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -36185,6 +36995,7 @@ export type SpaceExplorerSearchQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                           location?:
@@ -36215,6 +37026,7 @@ export type SpaceExplorerSearchQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                           location?:
@@ -36243,6 +37055,7 @@ export type SpaceExplorerSearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -36252,6 +37065,7 @@ export type SpaceExplorerSearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   tagset?:
@@ -36309,6 +37123,7 @@ export type SpaceExplorerSearchSpaceFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -36334,6 +37149,7 @@ export type SpaceExplorerSearchSpaceFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -36351,10 +37167,24 @@ export type SpaceExplorerSearchSpaceFragment = {
         url: string;
         tagline?: string | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagset?:
           | {
@@ -36398,10 +37228,24 @@ export type SpaceExplorerMemberSpacesQuery = {
           url: string;
           tagline?: string | undefined;
           avatar?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           cardBanner?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           tagset?:
             | {
@@ -36433,6 +37277,7 @@ export type SpaceExplorerMemberSpacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -36454,6 +37299,7 @@ export type SpaceExplorerMemberSpacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -36489,6 +37335,7 @@ export type SpaceExplorerMemberSpacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -36514,6 +37361,7 @@ export type SpaceExplorerMemberSpacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 location?:
@@ -36531,10 +37379,24 @@ export type SpaceExplorerMemberSpacesQuery = {
         url: string;
         tagline?: string | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         tagset?:
           | {
@@ -36593,6 +37455,7 @@ export type SpaceExplorerAllSpacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   location?:
@@ -36618,6 +37481,7 @@ export type SpaceExplorerAllSpacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   location?:
@@ -36635,10 +37499,24 @@ export type SpaceExplorerAllSpacesQuery = {
           url: string;
           tagline?: string | undefined;
           avatar?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           cardBanner?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           tagset?:
             | {
@@ -36687,10 +37565,24 @@ export type SpaceExplorerSubspacesQuery = {
           url: string;
           tagline?: string | undefined;
           avatar?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           cardBanner?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
           tagset?:
             | {
@@ -36722,6 +37614,7 @@ export type SpaceExplorerSubspacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -36743,6 +37636,7 @@ export type SpaceExplorerSubspacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -36786,6 +37680,7 @@ export type SpaceExplorerSpaceFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               location?:
@@ -36811,6 +37706,7 @@ export type SpaceExplorerSpaceFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               location?:
@@ -36828,10 +37724,24 @@ export type SpaceExplorerSpaceFragment = {
       url: string;
       tagline?: string | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -36863,10 +37773,24 @@ export type SpaceExplorerSubspaceFragment = {
       url: string;
       tagline?: string | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -36898,6 +37822,7 @@ export type SpaceExplorerSubspaceFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -36919,6 +37844,7 @@ export type SpaceExplorerSubspaceFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -36960,6 +37886,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -36969,6 +37896,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -36978,6 +37906,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -37092,6 +38021,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -37120,6 +38050,7 @@ export type InAppNotificationReceivedSubscription = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -37148,6 +38079,7 @@ export type InAppNotificationReceivedSubscription = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -37188,6 +38120,7 @@ export type InAppNotificationReceivedSubscription = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -37248,6 +38181,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37257,6 +38191,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37266,6 +38201,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37315,6 +38251,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37324,6 +38261,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37333,6 +38271,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37381,6 +38320,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37390,6 +38330,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37399,6 +38340,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37456,6 +38398,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37465,6 +38408,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37474,6 +38418,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37523,6 +38468,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37532,6 +38478,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37541,6 +38488,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37591,6 +38539,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37600,6 +38549,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37609,6 +38559,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37650,6 +38601,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37659,6 +38611,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37668,6 +38621,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37708,6 +38662,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37717,6 +38672,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37726,6 +38682,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37748,6 +38705,7 @@ export type InAppNotificationReceivedSubscription = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -37788,6 +38746,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37797,6 +38756,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37806,6 +38766,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37831,6 +38792,7 @@ export type InAppNotificationReceivedSubscription = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -37872,6 +38834,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37881,6 +38844,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37890,6 +38854,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -37936,6 +38901,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -37945,6 +38911,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -37954,6 +38921,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -38000,6 +38968,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -38009,6 +38978,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -38018,6 +38988,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -38058,6 +39029,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -38067,6 +39039,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -38076,6 +39049,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -38103,6 +39077,7 @@ export type InAppNotificationReceivedSubscription = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -38144,6 +39119,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -38153,6 +39129,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -38162,6 +39139,7 @@ export type InAppNotificationReceivedSubscription = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -38184,6 +39162,7 @@ export type InAppNotificationReceivedSubscription = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -38230,6 +39209,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -38258,6 +39238,7 @@ export type InAppNotificationsQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         }
@@ -38286,6 +39267,7 @@ export type InAppNotificationsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -38326,6 +39308,7 @@ export type InAppNotificationsQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         }
@@ -38386,6 +39369,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38395,6 +39379,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38404,6 +39389,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38453,6 +39439,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38462,6 +39449,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38471,6 +39459,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38519,6 +39508,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38528,6 +39518,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38537,6 +39528,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38594,6 +39586,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38603,6 +39596,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38612,6 +39606,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38661,6 +39656,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38670,6 +39666,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38679,6 +39676,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38729,6 +39727,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38738,6 +39737,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38747,6 +39747,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38788,6 +39789,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38797,6 +39799,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38806,6 +39809,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38846,6 +39850,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38855,6 +39860,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38864,6 +39870,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38886,6 +39893,7 @@ export type InAppNotificationsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -38926,6 +39934,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -38935,6 +39944,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -38944,6 +39954,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -38969,6 +39980,7 @@ export type InAppNotificationsQuery = {
                               uri: string;
                               name: VisualType;
                               alternativeText?: string | undefined;
+                              aspectRatio: number;
                             }
                           | undefined;
                       }
@@ -39010,6 +40022,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -39019,6 +40032,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -39028,6 +40042,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -39074,6 +40089,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -39083,6 +40099,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -39092,6 +40109,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -39138,6 +40156,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -39147,6 +40166,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -39156,6 +40176,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -39196,6 +40217,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -39205,6 +40227,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -39214,6 +40237,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -39241,6 +40265,7 @@ export type InAppNotificationsQuery = {
                                 uri: string;
                                 name: VisualType;
                                 alternativeText?: string | undefined;
+                                aspectRatio: number;
                               }
                             | undefined;
                         }
@@ -39282,6 +40307,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -39291,6 +40317,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     banner?:
@@ -39300,6 +40327,7 @@ export type InAppNotificationsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   };
@@ -39322,6 +40350,7 @@ export type InAppNotificationsQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     }
@@ -39374,6 +40403,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -39402,6 +40432,7 @@ export type InAppNotificationAllTypesFragment = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -39430,6 +40461,7 @@ export type InAppNotificationAllTypesFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -39470,6 +40502,7 @@ export type InAppNotificationAllTypesFragment = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -39530,6 +40563,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39539,6 +40573,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -39548,6 +40583,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -39597,6 +40633,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39606,6 +40643,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -39615,6 +40653,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -39663,6 +40702,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39672,6 +40712,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -39681,6 +40722,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -39738,6 +40780,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39747,6 +40790,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -39756,6 +40800,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -39805,6 +40850,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39814,6 +40860,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -39823,6 +40870,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -39873,6 +40921,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39882,6 +40931,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -39891,6 +40941,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -39932,6 +40983,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39941,6 +40993,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -39950,6 +41003,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -39990,6 +41044,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -39999,6 +41054,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -40008,6 +41064,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -40030,6 +41087,7 @@ export type InAppNotificationAllTypesFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -40070,6 +41128,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -40079,6 +41138,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -40088,6 +41148,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -40113,6 +41174,7 @@ export type InAppNotificationAllTypesFragment = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -40154,6 +41216,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -40163,6 +41226,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -40172,6 +41236,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -40218,6 +41283,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -40227,6 +41293,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -40236,6 +41303,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -40282,6 +41350,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -40291,6 +41360,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -40300,6 +41370,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -40340,6 +41411,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -40349,6 +41421,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -40358,6 +41431,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -40385,6 +41459,7 @@ export type InAppNotificationAllTypesFragment = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -40426,6 +41501,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -40435,6 +41511,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               banner?:
@@ -40444,6 +41521,7 @@ export type InAppNotificationAllTypesFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -40466,6 +41544,7 @@ export type InAppNotificationAllTypesFragment = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               }
@@ -40510,13 +41589,34 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -40550,13 +41650,34 @@ export type InAppNotificationSpaceCommunityActorFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -40572,7 +41693,14 @@ export type InAppNotificationSpaceCommunityActorFragment = {
           displayName: string;
           url: string;
           visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
         }
       | undefined;
@@ -40604,13 +41732,34 @@ export type SpaceNotificationFragment = {
           }
         | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   };
@@ -40648,6 +41797,7 @@ export type InAppNotificationPayloadOrganizationMessageDirectFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -40670,7 +41820,14 @@ export type InAppNotificationPayloadOrganizationMessageRoomFragment = {
           displayName: string;
           url: string;
           visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
         }
       | undefined;
@@ -40698,6 +41855,7 @@ export type InAppNotificationPayloadPlatformGlobalRoleChangeFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -40734,13 +41892,34 @@ export type InAppNotificationPayloadSpaceFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -40800,13 +41979,34 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -40831,6 +42031,7 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           }
@@ -40867,13 +42068,34 @@ export type InAppNotificationPayloadSpaceCommunicationUpdateFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -40908,13 +42130,34 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirectFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -40948,13 +42191,34 @@ export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -40988,13 +42252,34 @@ export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -41029,13 +42314,34 @@ export type InAppNotificationPayloadVirtualContributorFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -41051,7 +42357,14 @@ export type InAppNotificationPayloadVirtualContributorFragment = {
           displayName: string;
           url: string;
           visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
         }
       | undefined;
@@ -41078,6 +42391,7 @@ export type InAppNotificationPayloadUserMessageDirectFragment = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             }
@@ -41121,13 +42435,34 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -41178,13 +42513,34 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -41227,13 +42583,34 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -41273,13 +42650,34 @@ export type InAppNotificationPayloadSpaceCollaborationPollFragment = {
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -41322,13 +42720,34 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragment =
             }
           | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
     };
@@ -41603,6 +43022,7 @@ export type SearchQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       cardBanner?:
@@ -41612,6 +43032,7 @@ export type SearchQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       banner?:
@@ -41621,6 +43042,7 @@ export type SearchQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     };
@@ -41666,6 +43088,7 @@ export type SearchQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }>;
                 };
               };
@@ -41776,6 +43199,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -41785,6 +43209,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -41794,6 +43219,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -41871,6 +43297,7 @@ export type SearchQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -41916,6 +43343,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -41925,6 +43353,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -41934,6 +43363,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -41981,6 +43411,7 @@ export type SearchQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -42026,6 +43457,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -42035,6 +43467,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -42044,6 +43477,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -42100,6 +43534,7 @@ export type SearchQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -42145,6 +43580,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -42154,6 +43590,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -42163,6 +43600,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -42224,6 +43662,7 @@ export type SearchQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -42269,6 +43708,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -42278,6 +43718,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -42287,6 +43728,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -42334,6 +43776,7 @@ export type SearchQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -42379,6 +43822,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -42388,6 +43832,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -42397,6 +43842,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -42450,6 +43896,7 @@ export type SearchQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -42496,6 +43943,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -42505,6 +43953,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -42514,6 +43963,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -42562,6 +44012,7 @@ export type SearchQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -42607,6 +44058,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -42616,6 +44068,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -42625,6 +44078,7 @@ export type SearchQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -42706,6 +44160,7 @@ export type SearchQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -42751,6 +44206,7 @@ export type SearchQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                   }
@@ -42782,7 +44238,14 @@ export type SearchResultPostFragment = {
       displayName: string;
       description?: string | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -42822,13 +44285,34 @@ export type SearchResultPostFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -42872,13 +44356,34 @@ export type PostParentFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -42929,7 +44434,14 @@ export type SearchResultUserFragment = {
               }>
             | undefined;
           visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
         }
       | undefined;
@@ -43017,13 +44529,34 @@ export type SearchResultCalloutFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43057,13 +44590,34 @@ export type CalloutParentFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43104,7 +44658,14 @@ export type SearchResultOrganizationFragment = {
               }>
             | undefined;
           visual?:
-            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | {
+                __typename?: 'Visual';
+                id: string;
+                uri: string;
+                name: VisualType;
+                alternativeText?: string | undefined;
+                aspectRatio: number;
+              }
             | undefined;
         }
       | undefined;
@@ -43130,7 +44691,14 @@ export type SearchResultProfileFragment = {
       }>
     | undefined;
   visual?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
 };
 
@@ -43176,6 +44744,7 @@ export type SearchResultSpaceFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             cardBanner?:
@@ -43185,6 +44754,7 @@ export type SearchResultSpaceFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             banner?:
@@ -43194,6 +44764,7 @@ export type SearchResultSpaceFragment = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           };
@@ -43239,6 +44810,7 @@ export type SearchResultSpaceFragment = {
           uri: string;
           name: VisualType;
           alternativeText?: string | undefined;
+          aspectRatio: number;
         }>;
       };
     };
@@ -43259,7 +44831,14 @@ export type SearchResultMemoFragment = {
       displayName: string;
       description?: string | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -43298,13 +44877,34 @@ export type SearchResultMemoFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43348,13 +44948,34 @@ export type MemoParentFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43391,7 +45012,14 @@ export type SearchResultWhiteboardFragment = {
       displayName: string;
       description?: string | undefined;
       preview?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -43430,13 +45058,34 @@ export type SearchResultWhiteboardFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43480,13 +45129,34 @@ export type WhiteboardParentFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43524,7 +45194,14 @@ export type SearchResultCollaboraDocumentFragment = {
       displayName: string;
       description?: string | undefined;
       visual?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -43563,13 +45240,34 @@ export type SearchResultCollaboraDocumentFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43613,13 +45311,34 @@ export type CollaboraDocumentParentFragment = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         avatar?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         cardBanner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+              aspectRatio: number;
+            }
           | undefined;
       };
       membership: {
@@ -43717,6 +45436,7 @@ export type DashboardWithMembershipsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             avatar?:
@@ -43726,6 +45446,7 @@ export type DashboardWithMembershipsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             cardBanner?:
@@ -43735,6 +45456,7 @@ export type DashboardWithMembershipsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             tagset?:
@@ -43781,6 +45503,7 @@ export type DashboardWithMembershipsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               avatar?:
@@ -43790,6 +45513,7 @@ export type DashboardWithMembershipsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -43799,6 +45523,7 @@ export type DashboardWithMembershipsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagset?:
@@ -43841,13 +45566,34 @@ export type DashboardSpaceMembershipFragment = {
       url: string;
       tagline?: string | undefined;
       spaceBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -43899,6 +45645,7 @@ export type PendingInvitationsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             cardBanner?:
@@ -43908,6 +45655,7 @@ export type PendingInvitationsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             banner?:
@@ -43917,6 +45665,7 @@ export type PendingInvitationsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
           };
@@ -43983,6 +45732,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -43992,6 +45742,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44055,6 +45806,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44064,6 +45816,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44131,6 +45884,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44140,6 +45894,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44212,6 +45967,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44221,6 +45977,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44293,6 +46050,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44302,6 +46060,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44365,6 +46124,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44374,6 +46134,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44446,6 +46207,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44455,6 +46217,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44522,6 +46285,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44531,6 +46295,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44603,6 +46368,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44612,6 +46378,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44685,6 +46452,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44694,6 +46462,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44765,6 +46534,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44774,6 +46544,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44842,6 +46613,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     cardBanner?:
@@ -44851,6 +46623,7 @@ export type LatestContributionsQuery = {
                           uri: string;
                           name: VisualType;
                           alternativeText?: string | undefined;
+                          aspectRatio: number;
                         }
                       | undefined;
                     tagset?:
@@ -44919,6 +46692,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -44928,6 +46702,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -44967,6 +46742,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -44976,6 +46752,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45019,6 +46796,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45028,6 +46806,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45072,6 +46851,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45081,6 +46861,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45129,6 +46910,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45138,6 +46920,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45177,6 +46960,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45186,6 +46970,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45234,6 +47019,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45243,6 +47029,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45286,6 +47073,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45295,6 +47083,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45343,6 +47132,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45352,6 +47142,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45401,6 +47192,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45410,6 +47202,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45457,6 +47250,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45466,6 +47260,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45510,6 +47305,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -45519,6 +47315,7 @@ export type LatestContributionsGroupedQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -45540,10 +47337,24 @@ export type ActivityLogSpaceVisualsFragment = {
       id: string;
       displayName: string;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
   };
@@ -45610,6 +47421,7 @@ export type MyMembershipsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             cardBanner?:
@@ -45619,6 +47431,7 @@ export type MyMembershipsQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             tagset?:
@@ -45670,6 +47483,7 @@ export type MyMembershipsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -45679,6 +47493,7 @@ export type MyMembershipsQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagset?:
@@ -45730,6 +47545,7 @@ export type MyMembershipsQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -45739,6 +47555,7 @@ export type MyMembershipsQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -45784,10 +47601,24 @@ export type SpaceMembershipFragment = {
       url: string;
       tagline?: string | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       tagset?:
         | {
@@ -45841,6 +47672,7 @@ export type MyResourcesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -45850,6 +47682,7 @@ export type MyResourcesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 tagset?:
@@ -45881,6 +47714,7 @@ export type MyResourcesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 }
@@ -45901,6 +47735,7 @@ export type MyResourcesQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -45921,6 +47756,7 @@ export type MyResourcesQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               avatar?:
@@ -45930,6 +47766,7 @@ export type MyResourcesQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
             };
@@ -45945,7 +47782,14 @@ export type ShortAccountItemFragment = {
   displayName: string;
   url: string;
   avatar?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+        aspectRatio: number;
+      }
     | undefined;
 };
 
@@ -46040,6 +47884,7 @@ export type NewVirtualContributorMySpacesQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       cardBanner?:
@@ -46049,6 +47894,7 @@ export type NewVirtualContributorMySpacesQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                       banner?:
@@ -46058,6 +47904,7 @@ export type NewVirtualContributorMySpacesQuery = {
                             uri: string;
                             name: VisualType;
                             alternativeText?: string | undefined;
+                            aspectRatio: number;
                           }
                         | undefined;
                     };
@@ -46133,6 +47980,7 @@ export type AllSpaceSubspacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   cardBanner?:
@@ -46142,6 +47990,7 @@ export type AllSpaceSubspacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                   banner?:
@@ -46151,6 +48000,7 @@ export type AllSpaceSubspacesQuery = {
                         uri: string;
                         name: VisualType;
                         alternativeText?: string | undefined;
+                        aspectRatio: number;
                       }
                     | undefined;
                 };
@@ -46201,6 +48051,7 @@ export type AllSpaceSubspacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 cardBanner?:
@@ -46210,6 +48061,7 @@ export type AllSpaceSubspacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
                 banner?:
@@ -46219,6 +48071,7 @@ export type AllSpaceSubspacesQuery = {
                       uri: string;
                       name: VisualType;
                       alternativeText?: string | undefined;
+                      aspectRatio: number;
                     }
                   | undefined;
               };
@@ -46271,13 +48124,34 @@ export type SpaceProfileCommunityDetailsFragment = {
       description?: string | undefined;
       tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
       avatar?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       cardBanner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+            aspectRatio: number;
+          }
         | undefined;
     };
     membership: {
@@ -46333,6 +48207,7 @@ export type HomeSpaceLookupQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               cardBanner?:
@@ -46342,6 +48217,7 @@ export type HomeSpaceLookupQuery = {
                     uri: string;
                     name: VisualType;
                     alternativeText?: string | undefined;
+                    aspectRatio: number;
                   }
                 | undefined;
               tagset?:
@@ -46404,6 +48280,7 @@ export type RecentSpacesQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             cardBanner?:
@@ -46413,6 +48290,7 @@ export type RecentSpacesQuery = {
                   uri: string;
                   name: VisualType;
                   alternativeText?: string | undefined;
+                  aspectRatio: number;
                 }
               | undefined;
             tagset?:

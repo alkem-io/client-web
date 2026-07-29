@@ -1,0 +1,5 @@
+mutation UpdateVisual($input: UpdateVisualInput!) {
+  updateVisual(updateData: $input) {
+    ...VisualModel
+  }
+}

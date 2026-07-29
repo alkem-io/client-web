@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Branding van de Space",
-      "description": "Upload een avatar, een paginabanner (3840×640) en een kaartbanner (416×256).",
+      "description": "Upload een avatar, een paginabanner (3840px breed) en een kaartbanner (416×256).",
       "noImage": "Geen afbeelding",
       "upload": "Uploaden",
       "avatar": {
@@ -895,8 +895,13 @@
         "hint": "Het logo van de Space."
       },
       "pageBanner": {
-        "title": "Paginabanner (3840 × 640px)",
-        "hint": "Wordt weergegeven boven aan de Space-pagina."
+        "title": "Paginabanner",
+        "hint": "Wordt weergegeven boven aan de Space-pagina.",
+        "shape": {
+          "hint": "Hogere waarden geven een lagere, bredere bannerstrook. Geldt voor deze Space en al zijn Subspaces.",
+          "label": "Bannervorm",
+          "value": "{{ratio}}:1"
+        }
       },
       "cardBanner": {
         "title": "Kaartbanner (416 × 256px)",

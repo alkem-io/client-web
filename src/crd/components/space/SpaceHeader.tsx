@@ -1,6 +1,7 @@
 import { Activity, FoldHorizontal, Home, Settings, Share2, UnfoldHorizontal, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
+import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
@@ -33,6 +34,12 @@ type SpaceHeaderProps = {
    * generic "Space banner for X" label when the author left it empty.
    */
   bannerAlt?: string;
+  /**
+   * Width / height ratio of the banner strip, chosen per space by an admin.
+   * The server bounds it (BANNER: 6-10); 6 is the historic shape and the
+   * fallback when the value has not loaded yet.
+   */
+  bannerAspectRatio?: number;
   /** Deterministic accent colour shown as a gradient when `bannerUrl` is missing. */
   color?: string;
   isHomeSpace?: boolean;
@@ -58,6 +65,7 @@ export function SpaceHeader({
   tagline,
   bannerUrl,
   bannerAlt,
+  bannerAspectRatio = DEFAULT_BANNER_ASPECT_RATIO,
   color,
   isHomeSpace,
   actions,
@@ -83,7 +91,10 @@ export function SpaceHeader({
               scanner start it immediately, and it gives the author-supplied alt
               text somewhere to live. `object-cover`/`object-center` are the
               exact equivalents of the previous `bg-cover`/`bg-center`. */}
-          <div className={cn('relative col-span-12 aspect-[6/1] overflow-hidden', contentColumnClass(fullWidth))}>
+          <div
+            className={cn('relative col-span-12 overflow-hidden', contentColumnClass(fullWidth))}
+            style={{ aspectRatio: bannerAspectRatio }}
+          >
             {bannerUrl ? (
               <img
                 src={bannerUrl}

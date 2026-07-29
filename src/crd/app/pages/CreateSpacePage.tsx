@@ -39,7 +39,7 @@ const BANNER_CONSTRAINTS: CreateSpaceVisualConstraints = {
   maxWidth: 3840,
   maxHeight: 640,
   minWidth: 1536,
-  minHeight: 256,
+  minHeight: 154,
   aspectRatio: 6,
   allowedTypes: ['image/png', 'image/jpeg'],
 };

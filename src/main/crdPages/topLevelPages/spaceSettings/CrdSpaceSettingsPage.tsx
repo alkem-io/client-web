@@ -402,6 +402,8 @@ export default function CrdSpaceSettingsPage() {
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
+                  pageBannerAspectRatioBounds={about.pageBannerAspectRatioBounds ?? undefined}
+                  onChangePageBannerAspectRatio={about.onChangePageBannerAspectRatio}
                   onReferencesChange={about.onReferencesChange}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}

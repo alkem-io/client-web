@@ -1,5 +1,5 @@
 import { ImageIcon } from 'lucide-react';
-import { useId, useRef } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
@@ -8,6 +8,7 @@ import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard'
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { BANNER_ASPECT_RATIO_STEP, DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
@@ -16,6 +17,7 @@ import type {
   AboutSectionKey,
   AboutSectionSaveStatus,
   AboutVisual,
+  AboutVisualAspectRatioBounds,
   SpaceCardPreview,
   SpaceSettingsLevel,
 } from './SpaceSettingsAboutView.types';
@@ -37,6 +39,16 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
   onUploadCardBanner: (file: File) => void;
+  /**
+   * Range the page banner's aspect ratio may be set to, from the server's
+   * visual constraints. Omit to hide the shape control entirely.
+   */
+  pageBannerAspectRatioBounds?: AboutVisualAspectRatioBounds;
+  /**
+   * Commit a new page banner ratio. Fired on release / blur rather than on
+   * every drag tick, so a drag is one mutation instead of forty.
+   */
+  onChangePageBannerAspectRatio?: (aspectRatio: number) => void;
   /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
@@ -66,6 +78,8 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     dirtyByField,
     saveStatusByField,
     onChange,
+    pageBannerAspectRatioBounds,
+    onChangePageBannerAspectRatio,
     onUploadAvatar,
     onUploadPageBanner,
     onUploadCardBanner,
@@ -83,6 +97,12 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   //   - L1/L2: avatar + cardBanner — L1/L2 have NO settable page banner (they inherit L0 root's)
   const showPageBanner = level === 'L0';
   const showAvatar = level !== 'L0';
+
+  // Live value while the shape slider is being dragged, so the upload preview
+  // reshapes immediately instead of waiting for the mutation to round-trip.
+  const [pageBannerRatioPreview, setPageBannerRatioPreview] = useState<number | undefined>(undefined);
+  const committedPageBannerRatio = pageBanner.aspectRatio ?? DEFAULT_BANNER_ASPECT_RATIO;
+  const pageBannerRatio = pageBannerRatioPreview ?? committedPageBannerRatio;
 
   return (
     <div className={cn('flex flex-col gap-0', className)}>
@@ -147,7 +167,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 <BannerUpload
                   visual={avatar}
                   onUpload={onUploadAvatar}
-                  aspect="aspect-square"
+                  aspectRatio={1}
                   widthClass="max-w-[160px]"
                   t={t}
                 />
@@ -158,8 +178,18 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             {showPageBanner && (
               <div className="mt-4">
                 <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
-                <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspect="aspect-[6/1]" t={t} />
+                <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspectRatio={pageBannerRatio} t={t} />
                 <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
+                {pageBannerAspectRatioBounds && onChangePageBannerAspectRatio && (
+                  <BannerShapeSlider
+                    value={pageBannerRatio}
+                    committedValue={committedPageBannerRatio}
+                    bounds={pageBannerAspectRatioBounds}
+                    onPreview={setPageBannerRatioPreview}
+                    onCommit={onChangePageBannerAspectRatio}
+                    t={t}
+                  />
+                )}
               </div>
             )}
 
@@ -168,7 +198,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               <BannerUpload
                 visual={cardBanner}
                 onUpload={onUploadCardBanner}
-                aspect="aspect-video"
+                aspectRatio={16 / 9}
                 widthClass="max-w-[260px]"
                 t={t}
               />
@@ -409,16 +439,78 @@ function FieldFooter({
   );
 }
 
+/**
+ * Page-banner shape control. A native range input rather than a Radix slider:
+ * it is keyboard- and screen-reader-accessible with no extra dependency, and
+ * `accent-primary` themes it in one utility.
+ *
+ * `onPreview` fires on every tick (cheap, local); `onCommit` only on release,
+ * so dragging across the range is one mutation rather than one per 0.1 step.
+ */
+function BannerShapeSlider({
+  value,
+  committedValue,
+  bounds,
+  onPreview,
+  onCommit,
+  t,
+}: {
+  value: number;
+  committedValue: number;
+  bounds: AboutVisualAspectRatioBounds;
+  onPreview: (ratio: number) => void;
+  onCommit: (ratio: number) => void;
+  t: TFn;
+}) {
+  const inputId = useId();
+  const commit = (raw: string) => {
+    const next = Number(raw);
+    if (Number.isFinite(next) && next !== committedValue) onCommit(next);
+  };
+  const formatted = value.toFixed(1);
+
+  return (
+    <div className="mt-4">
+      <label htmlFor={inputId} className="text-body-emphasis">
+        {t('about.branding.pageBanner.shape.label')}
+      </label>
+      <div className="mt-2 flex items-center gap-3">
+        <input
+          id={inputId}
+          type="range"
+          min={bounds.min}
+          max={bounds.max}
+          step={BANNER_ASPECT_RATIO_STEP}
+          value={value}
+          onChange={e => onPreview(Number(e.target.value))}
+          onPointerUp={e => commit(e.currentTarget.value)}
+          onKeyUp={e => commit(e.currentTarget.value)}
+          onBlur={e => commit(e.currentTarget.value)}
+          aria-valuetext={t('about.branding.pageBanner.shape.value', { ratio: formatted })}
+          className="w-full max-w-[320px] accent-primary"
+        />
+        <span className="text-caption tabular-nums whitespace-nowrap">
+          {t('about.branding.pageBanner.shape.value', { ratio: formatted })}
+        </span>
+      </div>
+      <FieldHint>{t('about.branding.pageBanner.shape.hint')}</FieldHint>
+    </div>
+  );
+}
+
 function BannerUpload({
   visual,
   onUpload,
-  aspect,
+  aspectRatio,
   widthClass,
   t,
 }: {
   visual: AboutVisual;
   onUpload: (file: File) => void;
-  aspect: string;
+  /** Numeric width / height. Inline rather than an `aspect-[x/y]` class because
+   *  the page banner's value is chosen at runtime and Tailwind's JIT scanner
+   *  needs class literals at build time. */
+  aspectRatio: number;
   widthClass?: string;
   t: TFn;
 }) {
@@ -430,7 +522,10 @@ function BannerUpload({
     if (e.target) e.target.value = '';
   };
   return (
-    <div className={cn('group relative mt-2 overflow-hidden rounded-md', aspect, widthClass ?? 'w-full')}>
+    <div
+      className={cn('group relative mt-2 overflow-hidden rounded-md', widthClass ?? 'w-full')}
+      style={{ aspectRatio }}
+    >
       {visual.uri ? (
         <>
           <img src={visual.uri} alt={visual.altText ?? ''} className="h-full w-full object-cover" />

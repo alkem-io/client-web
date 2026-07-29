@@ -887,7 +887,7 @@
     },
     "branding": {
       "title": "Branding del espacio",
-      "description": "Sube un avatar, un banner de página (3840×640) y un banner de tarjeta (416×256).",
+      "description": "Sube un avatar, un banner de página (3840px) y un banner de tarjeta (416×256).",
       "noImage": "Sin imagen",
       "upload": "Subir",
       "avatar": {
@@ -895,8 +895,13 @@
         "hint": "El logo del espacio."
       },
       "pageBanner": {
-        "title": "Banner de página (3840 × 640px)",
-        "hint": "Se muestra en la parte superior de la página del espacio."
+        "title": "Banner de página",
+        "hint": "Se muestra en la parte superior de la página del espacio.",
+        "shape": {
+          "hint": "Los valores más altos dan una franja de banner más baja y ancha. Se aplica a este Space y a todos sus Subspaces.",
+          "label": "Forma del banner",
+          "value": "{{ratio}}:1"
+        }
       },
       "cardBanner": {
         "title": "Banner de tarjeta (416 × 256px)",
