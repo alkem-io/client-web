@@ -107,6 +107,31 @@ curl -fsS "http://localhost:$HOST_PORT/robots.txt" | grep -q 'Disallow' ||
   fail "robots.txt was not written by env.sh"
 pass "robots.txt written at startup"
 
+# --- cold-start timing (feeds the k8s probe delays) ------------------------
+# The manifests' initialDelaySeconds are justified by this number, so measure it
+# rather than asserting it in prose. Fresh container, first HTTP 200.
+TIMING_CONTAINER="client-smoke-timing-$$"
+docker rm -f "$TIMING_CONTAINER" >/dev/null 2>&1 || true
+START_NS="$(date +%s%N)"
+docker run -d --name "$TIMING_CONTAINER" -p "$((HOST_PORT + 1)):8080" "$IMAGE" >/dev/null
+STARTUP_MS=""
+for _ in $(seq 1 300); do
+  if curl -fsS "http://localhost:$((HOST_PORT + 1))/" >/dev/null 2>&1; then
+    STARTUP_MS="$(( ($(date +%s%N) - START_NS) / 1000000 ))"
+    break
+  fi
+  sleep 0.1
+done
+docker rm -f "$TIMING_CONTAINER" >/dev/null 2>&1 || true
+[ -n "$STARTUP_MS" ] || fail "container never served a 200 within 30s"
+echo "STARTUP_MS=$STARTUP_MS"
+# The probes use initialDelaySeconds 5 (liveness) / 3 (readiness); anything in
+# that ballpark is fine, but a multi-second regression means the delays need a
+# second look rather than a silent pass.
+[ "$STARTUP_MS" -lt 3000 ] ||
+  fail "cold start ${STARTUP_MS}ms exceeds the 3s readiness initialDelay the manifests assume"
+pass "cold start ${STARTUP_MS}ms (probe initialDelays 3s/5s have headroom)"
+
 # --- size record ----------------------------------------------------------
 IMAGE_SIZE_BYTES="$(docker image inspect "$IMAGE" --format '{{.Size}}')"
 echo "IMAGE_DIGEST=$(docker image inspect "$IMAGE" --format '{{.Id}}')"
