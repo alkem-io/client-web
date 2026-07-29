@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { refetchUserSettingsQuery, useUpdateUserSettingsMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { NotificationSettings } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
 import {
@@ -48,80 +48,70 @@ export const useUserNotificationsTabData = ({
   const [overrides, setOverrides] = useState<Map<string, boolean>>(() => new Map());
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
-  // eslint-disable-next-line no-restricted-syntax -- referenced in onToggle/onToggleSound dependency arrays; retained pending React Compiler migration verification (T006).
-  const setOverride = useCallback((key: string, value: boolean) => {
+  const setOverride = (key: string, value: boolean) => {
     setOverrides(prev => {
       const next = new Map(prev);
       next.set(key, value);
       return next;
     });
-  }, []);
+  };
 
-  // eslint-disable-next-line no-restricted-syntax -- referenced in onToggle/onToggleSound dependency arrays; retained pending React Compiler migration verification (T006).
-  const clearOverride = useCallback((key: string) => {
+  const clearOverride = (key: string) => {
     setOverrides(prev => {
       if (!prev.has(key)) return prev;
       const next = new Map(prev);
       next.delete(key);
       return next;
     });
-  }, []);
+  };
 
-  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
-  const onToggle = useCallback(
-    async (group: NotificationGroupId, property: string, type: ChannelType, next: boolean) => {
-      if (!userId) return;
-      const key = overrideKey(group, property, type);
-      // 1) Optimistic flip.
-      setOverride(key, next);
-      try {
-        const notification = buildNotificationUpdate(serverSettings, group, property, type, next);
-        await updateUserSettings({
-          variables: {
-            settingsData: { userID: userId, settings: { notification } },
-          },
-          refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
-          awaitRefetchQueries: true,
-        });
-        // 2) Success → drop the override (server now matches what the user wanted).
-        clearOverride(key);
-      } catch (err) {
-        // 3) Hard failure → rollback + bubble for toast.
-        clearOverride(key);
-        throw err;
-      }
-    },
-    [userId, serverSettings, updateUserSettings, setOverride, clearOverride]
-  );
+  const onToggle = async (group: NotificationGroupId, property: string, type: ChannelType, next: boolean) => {
+    if (!userId) return;
+    const key = overrideKey(group, property, type);
+    // 1) Optimistic flip.
+    setOverride(key, next);
+    try {
+      const notification = buildNotificationUpdate(serverSettings, group, property, type, next);
+      await updateUserSettings({
+        variables: {
+          settingsData: { userID: userId, settings: { notification } },
+        },
+        refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
+        awaitRefetchQueries: true,
+      });
+      // 2) Success → drop the override (server now matches what the user wanted).
+      clearOverride(key);
+    } catch (err) {
+      // 3) Hard failure → rollback + bubble for toast.
+      clearOverride(key);
+      throw err;
+    }
+  };
 
-  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
-  const onToggleSound = useCallback(
-    async (key: SoundKey, next: boolean) => {
-      if (!userId) return;
-      const overrideK = soundOverrideKey(key);
-      // 1) Optimistic flip.
-      setOverride(overrideK, next);
-      try {
-        // Emit only the changed key — the server merges field-by-field, so the
-        // sibling sound preference is left untouched.
-        const settings = buildSoundUpdate(key, next);
-        await updateUserSettings({
-          variables: {
-            settingsData: { userID: userId, settings },
-          },
-          refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
-          awaitRefetchQueries: true,
-        });
-        // 2) Success → drop the override.
-        clearOverride(overrideK);
-      } catch (err) {
-        // 3) Hard failure → rollback + bubble for toast.
-        clearOverride(overrideK);
-        throw err;
-      }
-    },
-    [userId, updateUserSettings, setOverride, clearOverride]
-  );
+  const onToggleSound = async (key: SoundKey, next: boolean) => {
+    if (!userId) return;
+    const overrideK = soundOverrideKey(key);
+    // 1) Optimistic flip.
+    setOverride(overrideK, next);
+    try {
+      // Emit only the changed key — the server merges field-by-field, so the
+      // sibling sound preference is left untouched.
+      const settings = buildSoundUpdate(key, next);
+      await updateUserSettings({
+        variables: {
+          settingsData: { userID: userId, settings },
+        },
+        refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
+        awaitRefetchQueries: true,
+      });
+      // 2) Success → drop the override.
+      clearOverride(overrideK);
+    } catch (err) {
+      // 3) Hard failure → rollback + bubble for toast.
+      clearOverride(overrideK);
+      throw err;
+    }
+  };
 
   return { overrides, onToggle, onToggleSound };
 };

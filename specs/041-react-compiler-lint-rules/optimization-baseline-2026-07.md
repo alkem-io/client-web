@@ -68,14 +68,16 @@ interaction ≈ the p98 INP that field data reports.
 ### React Compiler coverage (NEW this offset)
 | Metric | Value |
 |---|---|
-| Components successfully compiled | **1285 / 1285 (100%)** (`src/`, excl. generated) |
+| Components successfully compiled | **1286 / 1286 (100%)** (`src/`, excl. generated) |
 | Incompatible library usage | none |
-| Manual-memoization exceptions remaining | **28** across 13 files (all `eslint-disable`-annotated with a reason) |
+| Manual-memoization exceptions remaining | **11** across 8 files (all `eslint-disable`-annotated with a reason) |
 
 `pnpm compiler:healthcheck` produces the coverage number; it is the KPI that says the
-no-manual-memoization policy is actually yielding compiler-generated memoization. The 28
-exceptions are the ceiling to drive down over time (genuine third-party/lifecycle cases will
-remain; the CRD-hook handler ones are follow-up migration candidates).
+no-manual-memoization policy is actually yielding compiler-generated memoization. The
+exception count was driven from 28 → **11** by removing the 17 non-essential CRD-hook
+memoizations (the compiler handles them; coverage stayed 100%). The remaining 11 are
+irreducible third-party/lifecycle cases (Yjs/TipTap, Apollo links/client, Excalidraw
+debounce + effect-dep stability, a ref callback) that the compiler cannot substitute for.
 
 ## 3. How to reproduce
 

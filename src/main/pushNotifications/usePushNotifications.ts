@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useSubscribeToPushNotificationsMutation,
   useUnsubscribeFromPushNotificationsMutation,
@@ -76,8 +76,7 @@ export function usePushNotifications(): PushNotificationState {
       });
   }, [isSupported, isServerEnabled]);
 
-  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
-  const subscribe = useCallback(async () => {
+  const subscribe = async () => {
     if (!isSupported || !vapidPublicKey) return;
 
     setLoading(true);
@@ -134,10 +133,9 @@ export function usePushNotifications(): PushNotificationState {
     } finally {
       setLoading(false);
     }
-  }, [isSupported, vapidPublicKey, subscribeMutation]);
+  };
 
-  // eslint-disable-next-line no-restricted-syntax -- hook handler API returned to the consumer; retained pending React Compiler migration verification (T006).
-  const unsubscribe = useCallback(async () => {
+  const unsubscribe = async () => {
     setLoading(true);
     try {
       const subscriptionId = currentSubscriptionId ?? localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY);
@@ -168,7 +166,7 @@ export function usePushNotifications(): PushNotificationState {
     } finally {
       setLoading(false);
     }
-  }, [currentSubscriptionId, unsubscribeMutation]);
+  };
 
   return {
     isSupported,

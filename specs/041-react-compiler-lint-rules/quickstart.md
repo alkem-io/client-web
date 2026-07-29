@@ -58,18 +58,19 @@ pnpm compiler:healthcheck   # % of src/ components the compiler optimizes (KPI; 
 
 ## Documented Exceptions
 
-The rule is at **error** level with every remaining usage annotated — currently **28
-`no-restricted-syntax` exceptions across 13 files** (plus one `react-compiler` exception in
-`GlobalErrorContext.tsx`). They fall into two groups:
+The rule is at **error** level with every remaining usage annotated — **11
+`no-restricted-syntax` exceptions across 8 files** (plus one `react-compiler` exception in
+`GlobalErrorContext.tsx`). All are **genuinely necessary** (real technical reason in the
+comment): the collaborative editor (Yjs `Y.Doc`, TipTap provider/extensions in
+`useCollaboration.ts`), Apollo `onError` links and `ApolloClient` stability
+(`src/core/apollo/**`), Excalidraw `debounce` wrappers and effect-dependency object stability
+(`src/domain/common/whiteboard/excalidraw/**`), and the cookie-consent ref callback
+(`App.tsx`).
 
-- **Genuinely necessary** (real technical reason in the comment): the collaborative editor
-  (Yjs `Y.Doc`, TipTap provider/extensions in `useCollaboration.ts`), Apollo `onError` links
-  and `ApolloClient` stability (`src/core/apollo/**`), Excalidraw `debounce` wrappers and
-  effect-dependency object stability (`src/domain/common/whiteboard/excalidraw/**`), the
-  cookie-consent ref callback (`App.tsx`).
-- **Retained pending React Compiler migration** (CRD-hook handler APIs in
-  `src/main/crdPages/**` and `src/main/pushNotifications/**`): technically redundant with the
-  compiler; a follow-up migration can remove them and shrink the exception surface.
+> The earlier "retained pending migration" CRD-hook memoizations (17 usages in
+> `src/main/crdPages/**`, `src/main/pushNotifications/**`, and `useAccountSearch.ts`) were
+> **removed** — the compiler memoizes them automatically (verified: `compiler:healthcheck`
+> stayed at 100% and all tests pass). Only irreducible third-party/lifecycle cases remain.
 
 > Note: `src/crd/app/**` (prototype/demo pages) is excluded from ESLint (`ignores` in
 > `eslint.config.mjs`), so the policy does not apply there.

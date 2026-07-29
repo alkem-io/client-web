@@ -105,6 +105,7 @@
 - [x] T023 Added `pnpm compiler:healthcheck` (react-compiler-healthcheck) — coverage KPI, currently 1285/1285 (100%).
 - [x] T024 [Biome verify — T056] Confirmed `biome.json`: `useExhaustiveDependencies: 'off'` and `useHookAtTopLevel: 'warn'` are present and consistent with the compiler policy; no Biome rule conflicts with or duplicates the ESLint memoization ban. Documented in CLAUDE.md.
 - [x] T025 Added INP (Interaction to Next Paint) to `scripts/performance-benchmark.mjs` via the Event Timing API — the Core Web Vital the compiler's fewer re-renders most affect (was previously unmeasured). July-2026 value: 40 ms.
+- [x] T026 Completed the deferred migration (was T006's "follow-up"): **removed** the 17 non-essential CRD-hook memoizations (`useAccountSearch` ×1, `useHubSpacesTabData` ×5, `useHubAboutTabData` ×5, `useUserNotificationsTabData` ×4, `usePushNotifications` ×2) so the compiler handles them. Exception surface **28 → 11 across 8 files**; the remaining 11 are irreducible third-party/lifecycle cases. Verified: typecheck + `eslint .` clean, `compiler:healthcheck` 1286/1286 (100%, no bailouts), full suite 1940 passed (only the pre-existing `budgetMeter` locale failure).
 
 ---
 
@@ -163,6 +164,6 @@
 - [Story] label maps task to specific user story for traceability
 - T006-T007 are blocked on external work (remaining domain memoization migrations) — they should be completed in a follow-up once those land and `pnpm eslint .` reports zero `no-restricted-syntax` warnings outside documented exception files
 - T017 is deferred — it requires a production deployment + one week of observation
-- The 28 ESLint warnings are all warn-level (0 errors): collaborative editor / MarkdownInput ecosystem (permanent exceptions) + a handful of pending domain hooks
+- Final state: the rule is **error**-level with **11** `no-restricted-syntax` exceptions across 8 files (all genuine third-party/lifecycle), plus 1 `react-compiler` exception in `GlobalErrorContext.tsx`. `pnpm eslint .` is clean (0 errors, 0 warnings).
 - Commit after each logical group of tasks
 - PR description MUST note that Lighthouse/memory validation (T015-T016) is deferred pending backend availability and must complete before production release per Constitution Principle V (Experience Quality & Safeguards)
