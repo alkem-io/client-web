@@ -190,5 +190,28 @@
       "joinAriaLabel": "Unirse a {{spaceName}}"
     },
     "applicationAriaLabel": "Ver solicitud pendiente para {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Fijados y actividad reciente",
+      "mostActivity": "Mayor actividad",
+      "leadAdmin": "Lidero y administro",
+      "host": "Alojo"
+    },
+    "showMore": "Mostrar más"
+  },
+  "welcome": {
+    "title": "Bienvenido a Alkemio",
+    "message": "Aún no formas parte de ningún Espacio. Explora el Espacio de bienvenida para ver lo que es posible, o consulta la documentación para empezar.",
+    "welcomeSpaceLink": "Visitar el Espacio de bienvenida",
+    "documentationLink": "Documentación",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Solicitudes e invitaciones pendientes"
+  },
+  "explore": {
+    "title": "Explorar Espacios",
+    "exploreAll": "Explorar todos los Espacios"
   }
 }

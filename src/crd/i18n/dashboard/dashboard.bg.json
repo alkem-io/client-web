@@ -190,5 +190,28 @@
       "joinAriaLabel": "Присъедини се към {{spaceName}}"
     },
     "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Закачени и последна активност",
+      "mostActivity": "Най-голяма активност",
+      "leadAdmin": "Ръководя и администрирам",
+      "host": "Домакинствам"
+    },
+    "showMore": "Покажи още"
+  },
+  "welcome": {
+    "title": "Добре дошли в Alkemio",
+    "message": "Все още не участвате в нито едно пространство. Разгледайте приветственото пространство, за да видите какво е възможно, или прегледайте документацията, за да започнете.",
+    "welcomeSpaceLink": "Посетете приветственото пространство",
+    "documentationLink": "Документация",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Чакащи заявки и покани"
+  },
+  "explore": {
+    "title": "Разгледай пространства",
+    "exploreAll": "Разгледай всички пространства"
   }
 }

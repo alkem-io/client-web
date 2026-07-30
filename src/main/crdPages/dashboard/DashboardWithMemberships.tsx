@@ -1,25 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  refetchUserSettingsQuery,
+  useDashboardExploreSpacesQuery,
   useHomeSpaceLookupQuery,
   useLatestContributionsQuery,
   useLatestContributionsSpacesFlatQuery,
   useMyMembershipsQuery,
+  useNonActivityHostedSpacesQuery,
   useRecentSpacesQuery,
+  useUpdateUserSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
   ActivityFeedRoles,
   LicenseEntitlementType,
   RoleName,
+  type UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
+import { CollapsibleSpaceSection } from '@/crd/components/dashboard/CollapsibleSpaceSection';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
+import type { MembershipRole } from '@/crd/components/dashboard/MyMemberships/types';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -29,7 +36,12 @@ import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
 import {
   mapActivityToFeedItems,
+  mapHostedSpacesToPanelItems,
+  mapHostSection,
+  mapLastActiveSection,
+  mapLeadAdminSection,
   mapMembershipsToPanelItems,
+  mapMostActivitySection,
   mapRecentSpacesToCompactCards,
   type RecentSpaceEntry,
 } from './dashboardDataMappers';
@@ -50,6 +62,13 @@ type DashboardWithMembershipsProps = {
 
 const EXCLUDED_ACTIVITY_TYPES = [ActivityEventType.CalloutWhiteboardContentModified];
 const ACTIVITY_PAGE_SIZE = 20;
+const SECTION_ACTIVITY_DAYS = 7;
+const SECTION_ITEM_CAP = 4;
+const LEAD_ADMIN_ROLES: MembershipRole[] = ['admin', 'lead'];
+// Legacy device-local view choice + a per-device flag so the account preference is
+// seeded from it at most once (FR-026).
+const LEGACY_VIEW_KEY = 'dashboardView';
+const SEED_FLAG_KEY = 'dashboardViewSeeded';
 
 export default function DashboardWithMemberships({
   dialogState,
@@ -58,19 +77,52 @@ export default function DashboardWithMemberships({
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
   const navigate = useNavigate();
-  const { platformRoles, accountEntitlements, accountId } = useCurrentUserContext();
+  const { platformRoles, accountEntitlements, accountId, userModel } = useCurrentUserContext();
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createVcOpen, setCreateVcOpen] = useState(false);
+  const [sectionPanel, setSectionPanel] = useState<'lead-admin' | 'host' | null>(null);
 
-  // Activity view toggle — persisted in localStorage
-  const [activityEnabled, setActivityEnabledState] = useState(() => {
-    const cached = localStorage.getItem('dashboardView');
-    return cached !== 'SPACES';
-  });
-  const setActivityEnabled = (enabled: boolean) => {
-    localStorage.setItem('dashboardView', enabled ? 'ACTIVITY' : 'SPACES');
-    setActivityEnabledState(enabled);
+  // Activity view toggle — persisted per-user in UserSettings.dashboard.activityView.
+  // Default: Activity view on (true) when the user has never set it (FR-024). A local
+  // override gives the toggle instant feedback ahead of the mutation resolving.
+  const user = userModel as UserDetailsFragment | undefined;
+  const userId = user?.id;
+  const settingActivityView = user?.settings?.dashboard?.activityView;
+  const [activityOverride, setActivityOverride] = useState<boolean | null>(null);
+  const activityEnabled = activityOverride ?? settingActivityView ?? true;
+
+  const [updateUserSettings] = useUpdateUserSettingsMutation();
+
+  const persistActivityView = (enabled: boolean) => {
+    if (!userId) return;
+    updateUserSettings({
+      variables: { settingsData: { userID: userId, settings: { dashboard: { activityView: enabled } } } },
+      refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
+    }).catch(() => {
+      // Persist failed — drop the override so the UI reflects the server value again
+      // (FR: the user still sees their toggled view for the session).
+      setActivityOverride(null);
+    });
   };
+
+  const setActivityEnabled = (enabled: boolean) => {
+    setActivityOverride(enabled);
+    persistActivityView(enabled);
+  };
+
+  // Seed-once (FR-026): on the first post-release load with no explicitly-set account
+  // preference, migrate a legacy localStorage "SPACES" choice into the setting. An
+  // ACTIVITY / unset legacy value already matches the default, so no write is needed.
+  useEffect(() => {
+    if (!userId) return;
+    if (localStorage.getItem(SEED_FLAG_KEY)) return;
+    const legacy = localStorage.getItem(LEGACY_VIEW_KEY);
+    if (legacy === 'SPACES' && settingActivityView !== false) {
+      setActivityOverride(false);
+      persistActivityView(false);
+    }
+    localStorage.setItem(SEED_FLAG_KEY, '1');
+  }, [userId, settingActivityView]);
 
   // Recent spaces
   const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
@@ -85,12 +137,11 @@ export default function DashboardWithMemberships({
   const myRecentSpaces = recentSpacesData?.me.mySpaces ?? [];
   const recentSpacesEmpty = !recentSpacesLoading && myRecentSpaces.length === 0;
 
-  // Memberships — drives the "Explore all" panel and, when the user has no recent
-  // contributions (empty mySpaces), serves as the fallback source for Recent spaces.
-  // Skipped while recent spaces are still loading: the fallback is only needed once
-  // mySpaces has resolved to empty.
+  // Memberships — drives the "Explore all" panel, the non-activity Lead & Administer
+  // section, and (when the user has no recent contributions) the Recent-spaces fallback.
+  const needMemberships = dialogState.openDialog === 'memberships' || !activityEnabled || recentSpacesEmpty;
   const { data: myMembershipsData, loading: membershipsLoading } = useMyMembershipsQuery({
-    skip: dialogState.openDialog !== 'memberships' && (recentSpacesLoading || !recentSpacesEmpty),
+    skip: !needMemberships,
   });
 
   const recentSpaces = (() => {
@@ -105,6 +156,24 @@ export default function DashboardWithMemberships({
     const all = homeSpace ? [{ space: homeSpace }, ...filtered] : filtered;
     return mapRecentSpacesToCompactCards(all, homeSpaceId);
   })();
+
+  // Non-activity home sections (024)
+  const { data: exploreData } = useDashboardExploreSpacesQuery({
+    variables: { daysOld: SECTION_ACTIVITY_DAYS, limit: SECTION_ITEM_CAP },
+    skip: activityEnabled,
+  });
+  const { data: hostedData, loading: hostedLoading } = useNonActivityHostedSpacesQuery({
+    skip: activityEnabled,
+  });
+
+  const hierarchicalMemberships = myMembershipsData?.me?.spaceMembershipsHierarchical ?? [];
+  const hostedSpaces = hostedData?.me.user?.account?.spaces ?? [];
+
+  const lastActiveItems = mapLastActiveSection(myRecentSpaces, homeSpaceData?.lookup.space ?? undefined, homeSpaceId);
+  const mostActivityItems = mapMostActivitySection(exploreData?.exploreSpaces ?? []);
+  const leadAdminItems = mapLeadAdminSection(hierarchicalMemberships);
+  const hostItems = mapHostSection(hostedSpaces);
+  const hostedPanelItems = mapHostedSpacesToPanelItems(hostedSpaces);
 
   // Sidebar
   const sidebarData = useDashboardSidebar({
@@ -244,18 +313,20 @@ export default function DashboardWithMemberships({
           />
         }
       >
-        <RecentSpaces
-          spaces={recentSpaces}
-          loading={recentSpacesLoading || (recentSpacesEmpty && membershipsLoading)}
-          hasHomeSpace={!!homeSpaceId}
-          homeSpaceSettingsHref={membershipSettingsUrl}
-          onExploreAllClick={dialogState.openMemberships}
-          onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
-        />
+        {activityEnabled && (
+          <RecentSpaces
+            spaces={recentSpaces}
+            loading={recentSpacesLoading || (recentSpacesEmpty && membershipsLoading)}
+            hasHomeSpace={!!homeSpaceId}
+            homeSpaceSettingsHref={membershipSettingsUrl}
+            onExploreAllClick={dialogState.openMemberships}
+            onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
+          />
+        )}
 
         {showCampaign && <CampaignBanner onAction={() => setCreateVcOpen(true)} />}
 
-        {activityEnabled && (
+        {activityEnabled ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ActivityFeed
               variant="spaces"
@@ -284,6 +355,44 @@ export default function DashboardWithMemberships({
               onShowMore={dialogState.openMyActivity}
               maxItems={7}
             />
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* Section 1 always renders (empty pin slot when no home Space). */}
+            <CollapsibleSpaceSection
+              title={t('nonActivity.sections.pinnedLastActive')}
+              items={lastActiveItems}
+              maxVisible={SECTION_ITEM_CAP}
+              loading={recentSpacesLoading}
+              emptyPinSlot={!homeSpaceId && membershipSettingsUrl ? { settingsHref: membershipSettingsUrl } : undefined}
+              onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
+            />
+
+            {mostActivityItems.length > 0 && (
+              <CollapsibleSpaceSection
+                title={t('nonActivity.sections.mostActivity')}
+                items={mostActivityItems}
+                maxVisible={SECTION_ITEM_CAP}
+              />
+            )}
+
+            {leadAdminItems.length > 0 && (
+              <CollapsibleSpaceSection
+                title={t('nonActivity.sections.leadAdmin')}
+                items={leadAdminItems}
+                maxVisible={SECTION_ITEM_CAP}
+                showMore={{ onShowMore: () => setSectionPanel('lead-admin') }}
+              />
+            )}
+
+            {hostItems.length > 0 && (
+              <CollapsibleSpaceSection
+                title={t('nonActivity.sections.host')}
+                items={hostItems}
+                maxVisible={SECTION_ITEM_CAP}
+                showMore={{ onShowMore: () => setSectionPanel('host') }}
+              />
+            )}
           </div>
         )}
       </DashboardLayout>
@@ -351,6 +460,35 @@ export default function DashboardWithMemberships({
         loading={membershipsLoading}
         onNavigate={href => {
           dialogState.closeDialog();
+          navigate(href);
+        }}
+        browseAllHref={URL_SPACE_EXPLORER}
+      />
+
+      {/* Section 3 "show more" — memberships scoped to Lead / Admin */}
+      <MyMembershipsPanel
+        open={sectionPanel === 'lead-admin'}
+        onClose={() => setSectionPanel(null)}
+        items={membershipsItems}
+        loading={membershipsLoading}
+        title={t('nonActivity.sections.leadAdmin')}
+        restrictToRoles={LEAD_ADMIN_ROLES}
+        onNavigate={href => {
+          setSectionPanel(null);
+          navigate(href);
+        }}
+        browseAllHref={URL_SPACE_EXPLORER}
+      />
+
+      {/* Section 4 "show more" — the member's hosted account Spaces */}
+      <MyMembershipsPanel
+        open={sectionPanel === 'host'}
+        onClose={() => setSectionPanel(null)}
+        items={hostedPanelItems}
+        loading={hostedLoading}
+        title={t('nonActivity.sections.host')}
+        onNavigate={href => {
+          setSectionPanel(null);
           navigate(href);
         }}
         browseAllHref={URL_SPACE_EXPLORER}

@@ -12,7 +12,7 @@ import {
   User,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { ActivityEventType, type SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { ApplicationCardData } from '@/crd/components/dashboard/ApplicationsBlock';
@@ -561,3 +561,146 @@ export const mapApplicationsToCards = (applications: ApplicationEntry[]): Applic
     color: pickColorFromId(application.spacePendingMembershipInfo.id),
   }));
 };
+
+// ── Non-activity home sections (024) ────────────────────────────────────────
+
+/** A Space shape carrying the card-banner `about` block (SpaceAboutCardBanner). */
+type CardBannerSpace = {
+  id: string;
+  about: {
+    isContentPublic?: boolean;
+    profile: {
+      displayName: string;
+      url: string;
+      cardBanner?: { uri: string };
+    };
+  };
+};
+
+const spaceToCompactCard = (space: CardBannerSpace, homeSpaceId?: string): CompactSpaceCardData => ({
+  id: space.id,
+  name: space.about.profile.displayName,
+  href: space.about.profile.url,
+  bannerUrl: space.about.profile.cardBanner?.uri || undefined,
+  isPrivate: !space.about.isContentPublic,
+  isHomeSpace: space.id === homeSpaceId,
+  initials: getInitials(space.about.profile.displayName),
+  color: pickColorFromId(space.id),
+});
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+type LastActiveSpaceEntry = {
+  space: CardBannerSpace;
+  latestActivity?: { createdDate?: string | Date } | null;
+};
+
+/**
+ * Section 1 — Pinned & Last Active. The home Space (L0) is pinned first, followed by
+ * the Spaces the member has been personally active in within the last 30 days, ordered
+ * most-recent-first. The home Space is never duplicated among the recent items. The
+ * caller caps the visible count (the pin slot counts toward the cap).
+ */
+export const mapLastActiveSection = (
+  mySpaces: LastActiveSpaceEntry[],
+  homeSpace: CardBannerSpace | undefined,
+  homeSpaceId: string | undefined,
+  now: Date = new Date()
+): CompactSpaceCardData[] => {
+  const cutoff = now.getTime() - 30 * MS_PER_DAY;
+
+  const recent = mySpaces
+    .filter(entry => entry.space.id !== homeSpaceId)
+    .map(entry => {
+      const raw = entry.latestActivity?.createdDate;
+      const time = raw ? new Date(raw).getTime() : Number.NaN;
+      return { space: entry.space, time };
+    })
+    .filter(entry => !Number.isNaN(entry.time) && entry.time >= cutoff)
+    .sort((a, b) => b.time - a.time)
+    .map(entry => spaceToCompactCard(entry.space, homeSpaceId));
+
+  const homeCard = homeSpace ? [spaceToCompactCard(homeSpace, homeSpaceId)] : [];
+  return [...homeCard, ...recent];
+};
+
+/**
+ * Section 2 — Most Activity. Platform-wide discovery ranking (public Spaces + the
+ * member's private Spaces) already ordered and de-zeroed server-side by `exploreSpaces`.
+ */
+export const mapMostActivitySection = (spaces: CardBannerSpace[]): CompactSpaceCardData[] =>
+  spaces.map(space => spaceToCompactCard(space));
+
+type ActivityScoredSpace = CardBannerSpace & {
+  level: SpaceLevel;
+  activityScore: number;
+  community?: { roleSet?: { myRoles?: string[] } };
+};
+
+type HierarchicalMembershipEntry = {
+  space: ActivityScoredSpace;
+  childMemberships?: HierarchicalMembershipEntry[];
+};
+
+const isLeadOrAdmin = (space: ActivityScoredSpace): boolean => {
+  const roles = space.community?.roleSet?.myRoles ?? [];
+  return roles.includes(RoleName.Lead) || roles.includes(RoleName.Admin);
+};
+
+// Highest activity first; zero-activity Spaces therefore sort last (0 is the lowest score).
+const byActivityScoreDesc = (a: ActivityScoredSpace, b: ActivityScoredSpace): number =>
+  b.activityScore - a.activityScore;
+
+/**
+ * Section 3 — I Lead & Administer. Flattens the membership hierarchy to L0 + L1 Spaces
+ * where the member's role includes Lead or Admin, ordered by all-actor activity score
+ * (highest first, zero-activity last).
+ */
+export const mapLeadAdminSection = (memberships: HierarchicalMembershipEntry[]): CompactSpaceCardData[] => {
+  const flattened: ActivityScoredSpace[] = [];
+  for (const entry of memberships) {
+    if (entry.space.level === SpaceLevel.L0 || entry.space.level === SpaceLevel.L1) {
+      flattened.push(entry.space);
+    }
+    for (const child of entry.childMemberships ?? []) {
+      if (child.space.level === SpaceLevel.L0 || child.space.level === SpaceLevel.L1) {
+        flattened.push(child.space);
+      }
+    }
+  }
+
+  return flattened
+    .filter(isLeadOrAdmin)
+    .sort(byActivityScoreDesc)
+    .map(space => spaceToCompactCard(space));
+};
+
+/**
+ * Section 4 — I Host. The Spaces on the member's personal account, ordered by all-actor
+ * activity score (highest first, zero-activity last).
+ */
+export const mapHostSection = (spaces: ActivityScoredSpace[]): CompactSpaceCardData[] =>
+  [...spaces]
+    .filter(space => space.level === SpaceLevel.L0 || space.level === SpaceLevel.L1)
+    .sort(byActivityScoreDesc)
+    .map(space => spaceToCompactCard(space));
+
+/**
+ * Hosted account Spaces mapped to flat memberships-panel items (no membership role), ordered
+ * by activity score — used by the Section 4 "show more" panel. Account Spaces are not
+ * memberships, so the panel is given a pre-scoped flat list rather than a role filter.
+ */
+export const mapHostedSpacesToPanelItems = (spaces: ActivityScoredSpace[]): MembershipItem[] =>
+  [...spaces]
+    .filter(space => space.level === SpaceLevel.L0 || space.level === SpaceLevel.L1)
+    .sort(byActivityScoreDesc)
+    .map(space => ({
+      id: space.id,
+      name: space.about.profile.displayName,
+      href: space.about.profile.url,
+      isPrivate: !space.about.isContentPublic,
+      roles: [],
+      initials: getInitials(space.about.profile.displayName),
+      color: pickColorFromId(space.id),
+      image: space.about.profile.cardBanner?.uri || undefined,
+    }));

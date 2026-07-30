@@ -190,5 +190,28 @@
       "joinAriaLabel": "Toetreden tot {{spaceName}}"
     },
     "applicationAriaLabel": "Openstaande aanvraag voor {{spaceName}} bekijken"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Vastgepind & Laatst actief",
+      "mostActivity": "Meeste activiteit",
+      "leadAdmin": "Lead & beheer",
+      "host": "Ik host"
+    },
+    "showMore": "Meer tonen"
+  },
+  "welcome": {
+    "title": "Welkom bij Alkemio",
+    "message": "Je maakt nog geen deel uit van Spaces. Verken de Welcome Space om te zien wat er mogelijk is, of bekijk de documentatie om te beginnen.",
+    "welcomeSpaceLink": "Bezoek de Welcome Space",
+    "documentationLink": "Documentatie",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Openstaande aanvragen & uitnodigingen"
+  },
+  "explore": {
+    "title": "Spaces verkennen",
+    "exploreAll": "Alle Spaces verkennen"
   }
 }

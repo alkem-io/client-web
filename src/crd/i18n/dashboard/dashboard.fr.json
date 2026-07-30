@@ -190,5 +190,28 @@
       "joinAriaLabel": "Rejoindre {{spaceName}}"
     },
     "applicationAriaLabel": "Voir la candidature en attente pour {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Épinglés et activité récente",
+      "mostActivity": "Plus d’activité",
+      "leadAdmin": "Je dirige et administre",
+      "host": "J’héberge"
+    },
+    "showMore": "Afficher plus"
+  },
+  "welcome": {
+    "title": "Bienvenue sur Alkemio",
+    "message": "Vous ne faites encore partie d’aucun Espace. Explorez l’Espace de bienvenue pour découvrir les possibilités, ou consultez la documentation pour commencer.",
+    "welcomeSpaceLink": "Visiter l’Espace de bienvenue",
+    "documentationLink": "Documentation",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Demandes et invitations en attente"
+  },
+  "explore": {
+    "title": "Explorer les Espaces",
+    "exploreAll": "Explorer tous les Espaces"
   }
 }
