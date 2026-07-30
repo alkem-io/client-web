@@ -14,6 +14,16 @@ type LegacyRoleHoldersPanelProps = {
   groups: LegacyRoleGroup[];
   onRemove: (role: string, memberId: string) => void;
   removing?: boolean;
+  /**
+   * spec-clientweb-4/qual-clientweb-4: true when the legacy holder-list read
+   * could not be attempted or was rejected — as opposed to a genuine "no
+   * holders" result. Without this, a denied/errored read renders the exact
+   * same "no one currently holds a legacy role" text as a real empty
+   * result, hiding a live legacy god-mode credential from the operator
+   * doing incident response (sec-client-web-2's silent-void class, applied
+   * here to the panel that exists specifically to catch it).
+   */
+  holdersUnavailable?: boolean;
 };
 
 type PendingRemoval = {
@@ -33,7 +43,12 @@ const memberLabel = (member: RoleMember) =>
  * is being retired; the only action offered is revoking an existing holder,
  * which is the incident-response capability the round-1 fix restores.
  */
-export function LegacyRoleHoldersPanel({ groups, onRemove, removing = false }: LegacyRoleHoldersPanelProps) {
+export function LegacyRoleHoldersPanel({
+  groups,
+  onRemove,
+  removing = false,
+  holdersUnavailable = false,
+}: LegacyRoleHoldersPanelProps) {
   const { t } = useTranslation('crd-admin');
   const [pendingRemove, setPendingRemove] = useState<PendingRemoval | null>(null);
 
@@ -45,7 +60,9 @@ export function LegacyRoleHoldersPanel({ groups, onRemove, removing = false }: L
       <p className="text-body text-muted-foreground">{t('roleMembers.legacyRolesDescription')}</p>
 
       {groupsWithHolders.length === 0 ? (
-        <p className="text-body text-muted-foreground">{t('roleMembers.legacyRolesNoHolders')}</p>
+        <p role={holdersUnavailable ? 'alert' : undefined} className="text-body text-muted-foreground">
+          {holdersUnavailable ? t('roleMembers.holdersUnavailable') : t('roleMembers.legacyRolesNoHolders')}
+        </p>
       ) : (
         groupsWithHolders.map(group => (
           <div key={group.role} className="flex flex-col gap-2">

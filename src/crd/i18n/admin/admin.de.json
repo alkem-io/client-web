@@ -126,6 +126,7 @@
     "noMembers": "Keine Mitglieder in dieser Rolle.",
     "noResults": "Keine Benutzer gefunden.",
     "noAssignablePrivilege": "Sie haben keine Berechtigung, eine Plattformrolle zuzuweisen oder anzuzeigen.",
+    "readOnlyNotice": "Sie können die Inhaber dieser Rolle einsehen, aber nicht hinzufügen oder entfernen.",
     "holdersUnavailable": "Die aktuellen Inhaber dieser Rolle konnten nicht geladen werden.",
     "loading": "Wird geladen…",
     "removeTitle": "{{name}} entfernen?",

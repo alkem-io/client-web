@@ -70,6 +70,13 @@ type RoleMembersEditorProps = {
    * (sec-client-web-2).
    */
   holdersUnavailable?: boolean;
+  /**
+   * corr-client-web-7: true when the operator can view this role's holders
+   * but not manage them (a legacy holder-list-read privilege, not a manage
+   * privilege). Hides the add/remove affordances on both the user and
+   * organization holder-kind columns — current holders still render.
+   */
+  readOnly?: boolean;
 };
 
 const memberLabel = (member: RoleMember) =>
@@ -93,6 +100,7 @@ type MemberColumnsProps = {
   hasMore?: boolean;
   onLoadMore?: () => void;
   holdersUnavailable?: boolean;
+  readOnly?: boolean;
 };
 
 /** Shared current-members / available-to-add column pair — reused for both the
@@ -115,11 +123,12 @@ function MemberColumns({
   hasMore = false,
   onLoadMore,
   holdersUnavailable = false,
+  readOnly = false,
 }: MemberColumnsProps) {
   const { t } = useTranslation('crd-admin');
 
   return (
-    <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+    <div className={readOnly ? 'flex flex-col gap-8' : 'grid grid-cols-1 gap-8 lg:grid-cols-2'}>
       {/* Current members */}
       <section className="flex flex-col gap-3">
         <h3 className="text-subheader font-semibold">{titleCurrent}</h3>
@@ -146,62 +155,67 @@ function MemberColumns({
                 className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2"
               >
                 <span className="text-body break-words">{memberLabel(member)}</span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="text-destructive hover:text-destructive"
-                  disabled={updating}
-                  onClick={() => onRequestRemove(member)}
-                >
-                  {t('roleMembers.remove')}
-                </Button>
+                {!readOnly && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="text-destructive hover:text-destructive"
+                    disabled={updating}
+                    onClick={() => onRequestRemove(member)}
+                  >
+                    {t('roleMembers.remove')}
+                  </Button>
+                )}
               </li>
             ))}
           </ul>
         )}
       </section>
 
-      {/* Add members */}
-      <section className="flex flex-col gap-3">
-        <h3 className="text-subheader font-semibold">{titleAdd}</h3>
-        <SearchField
-          value={searchTerm}
-          onValueChange={onSearchTermChange}
-          placeholder={t('roleMembers.searchPlaceholder')}
-        />
-        {available.length === 0 ? (
-          <p className="text-body text-muted-foreground">
-            {loadingAvailable ? t('roleMembers.loading') : t('roleMembers.noResults')}
-          </p>
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {available.map(candidate => (
-              <li
-                key={candidate.id}
-                className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2"
-              >
-                <span className="text-body break-words">{memberLabel(candidate)}</span>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label={t('roleMembers.add')}
-                  disabled={updating}
-                  onClick={() => onAdd(candidate.id)}
+      {/* Add members — never rendered in read-only mode (corr-client-web-7):
+          nothing here can ever be granted by a view-only operator. */}
+      {!readOnly && (
+        <section className="flex flex-col gap-3">
+          <h3 className="text-subheader font-semibold">{titleAdd}</h3>
+          <SearchField
+            value={searchTerm}
+            onValueChange={onSearchTermChange}
+            placeholder={t('roleMembers.searchPlaceholder')}
+          />
+          {available.length === 0 ? (
+            <p className="text-body text-muted-foreground">
+              {loadingAvailable ? t('roleMembers.loading') : t('roleMembers.noResults')}
+            </p>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {available.map(candidate => (
+                <li
+                  key={candidate.id}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-border px-3 py-2"
                 >
-                  <Plus aria-hidden="true" className="size-4" />
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-        {hasMore && onLoadMore && (
-          <Button type="button" variant="outline" onClick={onLoadMore} disabled={loadingAvailable}>
-            {t('table.loadMore')}
-          </Button>
-        )}
-      </section>
+                  <span className="text-body break-words">{memberLabel(candidate)}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t('roleMembers.add')}
+                    disabled={updating}
+                    onClick={() => onAdd(candidate.id)}
+                  >
+                    <Plus aria-hidden="true" className="size-4" />
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          )}
+          {hasMore && onLoadMore && (
+            <Button type="button" variant="outline" onClick={onLoadMore} disabled={loadingAvailable}>
+              {t('table.loadMore')}
+            </Button>
+          )}
+        </section>
+      )}
 
       {loadingMembers && (
         <output className="sr-only" aria-live="polite">
@@ -242,6 +256,7 @@ export function RoleMembersEditor({
   onLoadMore,
   organizationSection,
   holdersUnavailable = false,
+  readOnly = false,
 }: RoleMembersEditorProps) {
   const { t } = useTranslation('crd-admin');
   const [pendingRemove, setPendingRemove] = useState<PendingRemoval | null>(null);
@@ -282,6 +297,7 @@ export function RoleMembersEditor({
         hasMore={hasMore}
         onLoadMore={onLoadMore}
         holdersUnavailable={holdersUnavailable}
+        readOnly={readOnly}
       />
 
       {organizationSection && (
@@ -302,6 +318,7 @@ export function RoleMembersEditor({
             hasMore={organizationSection.hasMore}
             onLoadMore={organizationSection.onLoadMore}
             holdersUnavailable={holdersUnavailable}
+            readOnly={readOnly}
           />
         </>
       )}

@@ -91,13 +91,28 @@ export const getOfferedPlatformRoles = (
 };
 
 /**
+ * sec-client-web-4/spec-clientweb-3: the legacy `global-*` revoke branch is
+ * checked server-side against a resolver-local, hardcoded `[GLOBAL_ADMIN]`
+ * policy for `GRANT_GLOBAL_ADMINS` — NOT against `roleSet.authorization`,
+ * whose `GRANT_GLOBAL_ADMINS` credential rule T034 deliberately widens to
+ * also admit `PLATFORM_ROLES_ADMIN`. Gating this panel on `GRANT_GLOBAL_ADMINS`
+ * therefore offers a Remove button to an operator (a bare Platform Roles
+ * Admin) whose click the server always rejects. Plain `READ` + `GRANT` on the
+ * platform role-set is what the legacy resolver branches actually honour
+ * (held by `GLOBAL_ADMIN` / `GLOBAL_SUPPORT`, not by `PLATFORM_ROLES_ADMIN`),
+ * so gate on that pair instead — it is the closest client-observable signal
+ * to "this operator is a legacy PlatformAdmin-equivalent holder".
+ */
+const isLegacyPlatformAdminEquivalent = (myPrivileges: AuthorizationPrivilege[]): boolean =>
+  myPrivileges.includes(AuthorizationPrivilege.Read) && myPrivileges.includes(AuthorizationPrivilege.Grant);
+
+/**
  * sec-client-web-1: the legacy platform credentials, offered strictly for
- * revocation (never grant) and only to a GRANT_GLOBAL_ADMINS holder — the
- * incident-response surface for the Slice A -> Slice B window. Deliberately
- * mirrors `getOfferedPlatformRoles`'s single client-side authorization
- * decision (read `myPrivileges`, reimplement no server rule); it does not
- * fall back to `FEATURE_ROLE_ASSIGN` because a Feature-role assigner never
- * held the legacy god-mode credentials in the first place.
+ * revocation (never grant) and only to a legacy PlatformAdmin-equivalent
+ * holder (plain `READ` + `GRANT` — see `isLegacyPlatformAdminEquivalent`) —
+ * the incident-response surface for the Slice A -> Slice B window.
+ * Deliberately mirrors `getOfferedPlatformRoles`'s single client-side
+ * authorization decision (read `myPrivileges`, reimplement no server rule).
  */
 export const getOfferedLegacyPlatformRoles = (
   myPrivileges: AuthorizationPrivilege[] | undefined
@@ -105,10 +120,47 @@ export const getOfferedLegacyPlatformRoles = (
   if (!myPrivileges) {
     return [];
   }
-  if (myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins)) {
+  if (isLegacyPlatformAdminEquivalent(myPrivileges)) {
     return [...RELEVANT_ROLES.LegacyPlatform];
   }
   return [];
+};
+
+/**
+ * corr-client-web-7: `getOfferedPlatformRoles` decides who may *manage*
+ * (grant/revoke) the 13 target roles — but a legacy holder-list-read
+ * privilege (plain `READ`, or `PLATFORM_ROLE_HOLDERS_READ` /
+ * `FEATURE_ROLE_HOLDERS_READ`) authorizes *reading* those roles' holders
+ * without authorizing management. Before this feature, GLOBAL_SUPPORT and
+ * GLOBAL_LICENSE_MANAGER could reach this page and see holder lists; folding
+ * them straight into `noAssignablePrivilege` withdraws that read visibility
+ * with no server-side change behind it. This is a separate, narrower offer:
+ * a role appears here only when the operator can actually have its holder
+ * list read (mirrors the server's per-role-family read gate — plain `READ`
+ * is the legacy additive admitter for both families, same as
+ * `HOLDER_READ_PRIVILEGES` above), and the caller renders it read-only
+ * (view only, no add/remove) rather than predicting a management rule.
+ */
+export const getViewOnlyPlatformRoles = (
+  myPrivileges: AuthorizationPrivilege[] | undefined
+): (typeof RELEVANT_ROLES.Platform)[number][] => {
+  if (!myPrivileges) {
+    return [];
+  }
+  const roles: (typeof RELEVANT_ROLES.Platform)[number][] = [];
+  if (
+    myPrivileges.includes(AuthorizationPrivilege.Read) ||
+    myPrivileges.includes(AuthorizationPrivilege.PlatformRoleHoldersRead)
+  ) {
+    roles.push(...PLATFORM_ADMIN_ROLES);
+  }
+  if (
+    myPrivileges.includes(AuthorizationPrivilege.Read) ||
+    myPrivileges.includes(AuthorizationPrivilege.FeatureRoleHoldersRead)
+  ) {
+    roles.push(...FEATURE_ROLES);
+  }
+  return roles;
 };
 
 /**

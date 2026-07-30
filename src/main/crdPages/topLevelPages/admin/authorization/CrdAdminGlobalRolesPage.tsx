@@ -14,6 +14,7 @@ import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useR
 import useRoleSetManager, {
   getOfferedLegacyPlatformRoles,
   getOfferedPlatformRoles,
+  getViewOnlyPlatformRoles,
   isFeaturePlatformRole,
   type RELEVANT_ROLES,
 } from '@/domain/access/RoleSetManager/useRoleSetManager';
@@ -38,10 +39,18 @@ const extractErrorMessage = (error: unknown): string => {
  *
  * FR-012: the offered role set is filtered by the operator's own assignment
  * privilege (`myPrivileges` on the platform role-set) — never a second,
- * client-side copy of any assignment rule. That same filter is what keeps the
- * holder-list read from ever spanning both role sets in one request (FR-032):
- * `myPrivileges` is fetched independently of `relevantRoles` first, and only
- * the resulting offered set is then used to fetch holder lists.
+ * client-side copy of any assignment rule. `myPrivileges` is fetched
+ * independently of `relevantRoles` first, and only the resulting offered set
+ * is then used to fetch holder lists.
+ *
+ * spec-clientweb-2/sec-client-web-3 (FR-032): the legacy roles and the 13
+ * target roles are read via two SEPARATE `useRoleSetManager` calls, never
+ * folded into one `relevantRoles` array. The server fails a holder-list read
+ * closed AS A WHOLE (T051a) when it spans both role families and the caller
+ * lacks the privilege for even one requested role — so mixing them in one
+ * request degrades every role's holder list the moment a Platform Roles
+ * Admin (who lacks plain `READ`) opens the page. Two calls mean a denial on
+ * one call degrades only its own panel.
  */
 const CrdAdminGlobalRolesPage = () => {
   const { t } = useTranslation('crd-admin');
@@ -67,7 +76,13 @@ const CrdAdminGlobalRolesPage = () => {
   // nothing" so the page never renders an indistinguishable blank panel for
   // either case (corr-client-web-3).
   const { myPrivileges, loading: loadingPrivileges } = useRoleSetManager({ roleSetId, relevantRoles: [] });
-  const offeredRoles = getOfferedPlatformRoles(myPrivileges);
+  const manageableRoles = getOfferedPlatformRoles(myPrivileges);
+  // corr-client-web-7: no manage privilege at all (neither GRANT_GLOBAL_ADMINS
+  // nor FEATURE_ROLE_ASSIGN) doesn't mean nothing to offer — a legacy
+  // holder-list-read privilege (GLOBAL_SUPPORT, GLOBAL_LICENSE_MANAGER) still
+  // authorizes *viewing* the same 13 roles' holders, just not managing them.
+  const readOnly = manageableRoles.length === 0;
+  const offeredRoles = readOnly ? getViewOnlyPlatformRoles(myPrivileges) : manageableRoles;
   const legacyRoles = getOfferedLegacyPlatformRoles(myPrivileges);
 
   // corr-client-web-4: `roleSetId` itself may still be unresolved (cold cache,
@@ -85,7 +100,8 @@ const CrdAdminGlobalRolesPage = () => {
   const roleFromUrl = rolesIdx >= 0 && rolesIdx < segments.length - 1 ? segments[rolesIdx + 1] : undefined;
   const selectedRole = offeredRoles.find(role => role === roleFromUrl) ?? offeredRoles[0];
 
-  // Phase 2: holder lists + mutations, scoped to the offered set only.
+  // Phase 2: holder lists + mutations for the 13 target roles, scoped to the
+  // offered set only.
   const {
     usersByRole,
     organizationsByRole,
@@ -98,18 +114,30 @@ const CrdAdminGlobalRolesPage = () => {
     holdersUnavailable,
   } = useRoleSetManager({
     roleSetId,
-    // sec-client-web-1: the legacy roles ride the same holder-list read so
-    // their current holders are visible to revoke — the whole point of
-    // restoring this surface.
-    relevantRoles: [...offeredRoles, ...legacyRoles],
+    relevantRoles: offeredRoles,
     contributorTypes: [ActorType.User, ActorType.Organization],
+    fetchContributors: true,
+  });
+
+  // Phase 3: the legacy roles' holder list is a SEPARATE request (see the
+  // docblock above) — its own privilege gate, its own denial, its own
+  // `holdersUnavailable`, never combined with the target-role read.
+  const {
+    usersByRole: legacyUsersByRole,
+    removePlatformRoleFromUser: removeLegacyPlatformRoleFromUser,
+    updating: legacyUpdating,
+    holdersUnavailable: legacyHoldersUnavailable,
+  } = useRoleSetManager({
+    roleSetId,
+    relevantRoles: legacyRoles,
+    contributorTypes: [ActorType.User],
     fetchContributors: true,
   });
 
   const legacyRoleGroups = legacyRoles.map(role => ({
     role,
     roleLabel: t(`roles.${role}`),
-    holders: (usersByRole?.[role] ?? []).map(user => ({
+    holders: (legacyUsersByRole?.[role] ?? []).map(user => ({
       id: user.id,
       displayName: user.profile?.displayName ?? '',
       email: user.email ?? undefined,
@@ -139,7 +167,10 @@ const CrdAdminGlobalRolesPage = () => {
     loading: loadingAvailable,
   } = useRoleSetAvailableUsers({
     roleSetId,
-    skip: !roleSetId,
+    // corr-client-web-7: a view-only holder (legacy READ-only holder-list
+    // access, no manage privilege) never gets an "add" affordance — don't
+    // fetch candidates that can never be shown.
+    skip: !roleSetId || readOnly,
     mode: 'platform',
     filter: searchTerm,
     usersAlreadyInRole: currentUsers,
@@ -165,7 +196,7 @@ const CrdAdminGlobalRolesPage = () => {
     hasMore: hasMoreOrganizations,
     loading: loadingAvailableOrganizations,
   } = useRoleSetAvailableOrganizationsOnPlatform({
-    skip: !roleSetId || !showOrganizationSection,
+    skip: !roleSetId || !showOrganizationSection || readOnly,
     filter: orgSearchTerm,
     organizationsAlreadyInRole: currentOrganizations,
   });
@@ -219,106 +250,122 @@ const CrdAdminGlobalRolesPage = () => {
         // until myPrivileges resolves, and roleSetId itself may still be
         // in flight) must not look identical to "no privilege".
         <Loading />
-      ) : offeredRoles.length === 0 ? (
-        // corr-client-web-3: an operator holding neither GRANT_GLOBAL_ADMINS nor
-        // FEATURE_ROLE_ASSIGN gets an explicit, translated empty state instead
-        // of a blank panel indistinguishable from a broken page.
+      ) : offeredRoles.length === 0 && legacyRoles.length === 0 ? (
+        // corr-client-web-3/corr-client-web-7: an operator holding none of
+        // GRANT_GLOBAL_ADMINS, FEATURE_ROLE_ASSIGN, a legacy holder-list-read
+        // privilege, or legacy PlatformAdmin-equivalent access gets an
+        // explicit, translated empty state instead of a blank panel
+        // indistinguishable from a broken page.
         <p className="text-body text-muted-foreground">{t('roleMembers.noAssignablePrivilege')}</p>
       ) : (
         <>
-          <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
-            {offeredRoles.map(role => (
-              <Button
-                key={role}
-                type="button"
-                variant={role === selectedRole ? 'default' : 'outline'}
-                size="sm"
-                aria-pressed={role === selectedRole}
-                onClick={() => selectRole(role)}
-              >
-                {roleLabels[role]}
-              </Button>
-            ))}
-          </nav>
+          {offeredRoles.length > 0 && (
+            <>
+              <nav aria-label={t('roleMembers.roleLabel')} className="flex flex-wrap gap-2">
+                {offeredRoles.map(role => (
+                  <Button
+                    key={role}
+                    type="button"
+                    variant={role === selectedRole ? 'default' : 'outline'}
+                    size="sm"
+                    aria-pressed={role === selectedRole}
+                    onClick={() => selectRole(role)}
+                  >
+                    {roleLabels[role]}
+                  </Button>
+                ))}
+              </nav>
 
-          {selectedRole && (
-            <RoleMembersEditor
-              roleLabel={roleLabels[selectedRole]}
-              roleDescription={roleDescriptions[selectedRole]}
-              errorMessage={assignmentError}
-              members={filteredMembers}
-              availableUsers={available}
-              memberSearchTerm={memberSearch}
-              onMemberSearchTermChange={setMemberSearch}
-              searchTerm={searchInput}
-              onSearchTermChange={setSearchInput}
-              onAdd={async userId => {
-                setAssignmentError(undefined);
-                try {
-                  await assignPlatformRoleToUser(userId, selectedRole);
-                } catch (error) {
-                  setAssignmentError(extractErrorMessage(error));
-                }
-              }}
-              onRemove={async userId => {
-                setAssignmentError(undefined);
-                try {
-                  await removePlatformRoleFromUser(userId, selectedRole);
-                } catch (error) {
-                  setAssignmentError(extractErrorMessage(error));
-                }
-              }}
-              loadingMembers={loading}
-              loadingAvailable={loadingAvailable}
-              updating={updating}
-              holdersUnavailable={holdersUnavailable}
-              hasMore={hasMore}
-              onLoadMore={() => {
-                void fetchMore();
-              }}
-              organizationSection={
-                showOrganizationSection
-                  ? {
-                      members: organizationMembers,
-                      availableOrganizations: availableOrganizationMembers,
-                      searchTerm: orgSearchInput,
-                      onSearchTermChange: setOrgSearchInput,
-                      onAdd: async organizationId => {
-                        setAssignmentError(undefined);
-                        try {
-                          await assignPlatformRoleToOrganization(organizationId, selectedRole);
-                        } catch (error) {
-                          setAssignmentError(extractErrorMessage(error));
-                        }
-                      },
-                      onRemove: async organizationId => {
-                        setAssignmentError(undefined);
-                        try {
-                          await removePlatformRoleFromOrganization(organizationId, selectedRole);
-                        } catch (error) {
-                          setAssignmentError(extractErrorMessage(error));
-                        }
-                      },
-                      loadingMembers: loading,
-                      loadingAvailable: loadingAvailableOrganizations,
-                      hasMore: hasMoreOrganizations,
-                      onLoadMore: () => {
-                        void fetchMoreOrganizations();
-                      },
+              {readOnly && (
+                // corr-client-web-7: a legacy holder-list-read privilege
+                // (GLOBAL_SUPPORT, GLOBAL_LICENSE_MANAGER) authorizes viewing
+                // these roles' holders, not managing them — say so rather
+                // than silently hiding the add/remove affordances.
+                <output className="text-body text-muted-foreground">{t('roleMembers.readOnlyNotice')}</output>
+              )}
+
+              {selectedRole && (
+                <RoleMembersEditor
+                  roleLabel={roleLabels[selectedRole]}
+                  roleDescription={roleDescriptions[selectedRole]}
+                  errorMessage={assignmentError}
+                  members={filteredMembers}
+                  availableUsers={available}
+                  memberSearchTerm={memberSearch}
+                  onMemberSearchTermChange={setMemberSearch}
+                  searchTerm={searchInput}
+                  onSearchTermChange={setSearchInput}
+                  onAdd={async userId => {
+                    setAssignmentError(undefined);
+                    try {
+                      await assignPlatformRoleToUser(userId, selectedRole);
+                    } catch (error) {
+                      setAssignmentError(extractErrorMessage(error));
                     }
-                  : undefined
-              }
-            />
+                  }}
+                  onRemove={async userId => {
+                    setAssignmentError(undefined);
+                    try {
+                      await removePlatformRoleFromUser(userId, selectedRole);
+                    } catch (error) {
+                      setAssignmentError(extractErrorMessage(error));
+                    }
+                  }}
+                  loadingMembers={loading}
+                  loadingAvailable={loadingAvailable}
+                  updating={updating}
+                  holdersUnavailable={holdersUnavailable}
+                  hasMore={hasMore}
+                  readOnly={readOnly}
+                  onLoadMore={() => {
+                    void fetchMore();
+                  }}
+                  organizationSection={
+                    showOrganizationSection
+                      ? {
+                          members: organizationMembers,
+                          availableOrganizations: availableOrganizationMembers,
+                          searchTerm: orgSearchInput,
+                          onSearchTermChange: setOrgSearchInput,
+                          onAdd: async organizationId => {
+                            setAssignmentError(undefined);
+                            try {
+                              await assignPlatformRoleToOrganization(organizationId, selectedRole);
+                            } catch (error) {
+                              setAssignmentError(extractErrorMessage(error));
+                            }
+                          },
+                          onRemove: async organizationId => {
+                            setAssignmentError(undefined);
+                            try {
+                              await removePlatformRoleFromOrganization(organizationId, selectedRole);
+                            } catch (error) {
+                              setAssignmentError(extractErrorMessage(error));
+                            }
+                          },
+                          loadingMembers: loading,
+                          loadingAvailable: loadingAvailableOrganizations,
+                          hasMore: hasMoreOrganizations,
+                          onLoadMore: () => {
+                            void fetchMoreOrganizations();
+                          },
+                        }
+                      : undefined
+                  }
+                />
+              )}
+            </>
           )}
 
           {legacyRoles.length > 0 && (
             <LegacyRoleHoldersPanel
               groups={legacyRoleGroups}
-              removing={updating}
+              removing={legacyUpdating}
+              holdersUnavailable={legacyHoldersUnavailable}
               onRemove={async (role, memberId) => {
                 setAssignmentError(undefined);
                 try {
-                  await removePlatformRoleFromUser(memberId, role as RoleName);
+                  await removeLegacyPlatformRoleFromUser(memberId, role as RoleName);
                 } catch (error) {
                   setAssignmentError(extractErrorMessage(error));
                 }

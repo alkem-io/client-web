@@ -126,6 +126,7 @@
     "noMembers": "Aucun membre dans ce rôle.",
     "noResults": "Aucun utilisateur trouvé.",
     "noAssignablePrivilege": "Vous n'avez pas la permission d'attribuer ou de consulter un rôle de la plateforme.",
+    "readOnlyNotice": "Vous pouvez consulter les titulaires de ce rôle, mais vous ne pouvez pas les ajouter ni les supprimer.",
     "holdersUnavailable": "Impossible de charger les titulaires actuels de ce rôle.",
     "loading": "Chargement…",
     "removeTitle": "Supprimer {{name}} ?",

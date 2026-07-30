@@ -126,6 +126,7 @@
     "noMembers": "Geen leden in deze rol.",
     "noResults": "Geen gebruikers gevonden.",
     "noAssignablePrivilege": "U heeft geen rechten om een platformrol toe te wijzen of te bekijken.",
+    "readOnlyNotice": "U kunt de houders van deze rol bekijken, maar niet toevoegen of verwijderen.",
     "holdersUnavailable": "Kan de huidige houders van deze rol niet laden.",
     "loading": "Laden…",
     "removeTitle": "{{name}} verwijderen?",

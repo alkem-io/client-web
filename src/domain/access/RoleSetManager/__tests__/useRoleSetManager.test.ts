@@ -33,7 +33,12 @@ vi.mock('../RolesAssignment/useRoleSetManagerRolesAssignment', () => ({
   }),
 }));
 
-import useRoleSetManager from '../useRoleSetManager';
+import useRoleSetManager, {
+  getOfferedLegacyPlatformRoles,
+  getOfferedPlatformRoles,
+  getViewOnlyPlatformRoles,
+  RELEVANT_ROLES,
+} from '../useRoleSetManager';
 
 const roleSetId = 'rs1';
 const relevantRoles = [RoleName.PlatformRolesAdmin];
@@ -151,5 +156,81 @@ describe('useRoleSetManager — holdersUnavailable (sec-client-web-2)', () => {
     const { result } = renderHook(() => useRoleSetManager({ roleSetId, relevantRoles: [] }));
 
     expect(result.current.holdersUnavailable).toBe(false);
+  });
+});
+
+// sec-client-web-4/spec-clientweb-3/corr-client-web-6: the legacy revoke
+// panel must be offered only to an operator the server's legacy resolver
+// branches actually let revoke — plain READ + GRANT, not GRANT_GLOBAL_ADMINS
+// (which T034 also widens to PLATFORM_ROLES_ADMIN, who the legacy branches
+// reject).
+describe('getOfferedLegacyPlatformRoles — legacy-revoke gate (sec-client-web-4/spec-clientweb-3)', () => {
+  test('offers nothing for undefined privileges', () => {
+    expect(getOfferedLegacyPlatformRoles(undefined)).toEqual([]);
+  });
+
+  test('offers nothing for a bare GRANT_GLOBAL_ADMINS holder (a Platform Roles Admin, no plain READ/GRANT)', () => {
+    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.GrantGlobalAdmins])).toEqual([]);
+  });
+
+  test('offers nothing when only one of READ/GRANT is present', () => {
+    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.Read])).toEqual([]);
+    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.Grant])).toEqual([]);
+  });
+
+  test('offers all ten legacy roles for a legacy PlatformAdmin-equivalent holder (plain READ + GRANT)', () => {
+    expect(getOfferedLegacyPlatformRoles([AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant])).toEqual([
+      ...RELEVANT_ROLES.LegacyPlatform,
+    ]);
+  });
+});
+
+// corr-client-web-7: a legacy holder-list-read privilege authorizes viewing
+// the 13 target roles' holders even without a manage privilege — scoped per
+// role family so a holder of only one read privilege is never sent a request
+// for the role family it doesn't cover (would reproduce the FR-032
+// fail-closed-as-a-whole bug one level down).
+describe('getViewOnlyPlatformRoles — read-only offer (corr-client-web-7)', () => {
+  test('offers nothing for undefined privileges', () => {
+    expect(getViewOnlyPlatformRoles(undefined)).toEqual([]);
+  });
+
+  test('offers nothing for a holder of neither read privilege', () => {
+    expect(getViewOnlyPlatformRoles([AuthorizationPrivilege.GrantGlobalAdmins])).toEqual([]);
+  });
+
+  test('plain READ (legacy admitter) offers both role families', () => {
+    const roles = getViewOnlyPlatformRoles([AuthorizationPrivilege.Read]);
+    for (const role of RELEVANT_ROLES.Platform) {
+      expect(roles).toContain(role);
+    }
+  });
+
+  test('PLATFORM_ROLE_HOLDERS_READ alone offers only the 10 admin roles, not the 3 feature roles', () => {
+    const roles = getViewOnlyPlatformRoles([AuthorizationPrivilege.PlatformRoleHoldersRead]);
+    expect(roles).toEqual(expect.arrayContaining(RELEVANT_ROLES.Platform.slice(0, 10)));
+    expect(roles).not.toEqual(expect.arrayContaining([RELEVANT_ROLES.Platform[10]]));
+  });
+
+  test('FEATURE_ROLE_HOLDERS_READ alone offers only the 3 feature roles', () => {
+    const roles = getViewOnlyPlatformRoles([AuthorizationPrivilege.FeatureRoleHoldersRead]);
+    expect(roles).toEqual(RELEVANT_ROLES.Platform.slice(10));
+  });
+
+  test('both holder-read privileges together offer the full 13', () => {
+    const roles = getViewOnlyPlatformRoles([
+      AuthorizationPrivilege.PlatformRoleHoldersRead,
+      AuthorizationPrivilege.FeatureRoleHoldersRead,
+    ]);
+    expect(roles).toHaveLength(13);
+  });
+});
+
+// FR-012: getOfferedPlatformRoles itself is unchanged by this fix round —
+// pinned here so a future edit to the read-only fallback in
+// CrdAdminGlobalRolesPage.tsx can't silently widen who gets manage access.
+describe('getOfferedPlatformRoles — manage gate unchanged', () => {
+  test('a legacy PlatformAdmin-equivalent holder (READ + GRANT, no GRANT_GLOBAL_ADMINS) is offered no manage roles', () => {
+    expect(getOfferedPlatformRoles([AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant])).toEqual([]);
   });
 });

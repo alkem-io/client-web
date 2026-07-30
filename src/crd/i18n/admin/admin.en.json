@@ -126,6 +126,7 @@
     "noMembers": "No members in this role.",
     "noResults": "No users found.",
     "noAssignablePrivilege": "You don't have permission to assign or view any platform role.",
+    "readOnlyNotice": "You can view this role's holders but not add or remove them.",
     "holdersUnavailable": "Unable to load the current holders of this role.",
     "loading": "Loading…",
     "removeTitle": "Remove {{name}}?",
