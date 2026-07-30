@@ -22,11 +22,9 @@ import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
 import { ActivityFeed } from '@/crd/components/dashboard/ActivityFeed';
 import { CampaignBanner } from '@/crd/components/dashboard/CampaignBanner';
-import { CollapsibleSpaceSection } from '@/crd/components/dashboard/CollapsibleSpaceSection';
 import { DashboardLayout } from '@/crd/components/dashboard/DashboardLayout';
 import { DashboardSidebar } from '@/crd/components/dashboard/DashboardSidebar';
 import { MyMembershipsPanel } from '@/crd/components/dashboard/MyMemberships/MyMembershipsPanel';
-import type { MembershipRole } from '@/crd/components/dashboard/MyMemberships/types';
 import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -46,6 +44,7 @@ import {
   mapRecentSpacesToCompactCards,
   type RecentSpaceEntry,
 } from './dashboardDataMappers';
+import { NonActivityHomeSections } from './NonActivityHomeSections';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
 
@@ -65,7 +64,6 @@ const EXCLUDED_ACTIVITY_TYPES = [ActivityEventType.CalloutWhiteboardContentModif
 const ACTIVITY_PAGE_SIZE = 20;
 const SECTION_ACTIVITY_DAYS = 7;
 const SECTION_ITEM_CAP = 4;
-const LEAD_ADMIN_ROLES: MembershipRole[] = ['admin', 'lead'];
 
 export default function DashboardWithMemberships({
   dialogState,
@@ -77,7 +75,6 @@ export default function DashboardWithMemberships({
   const { platformRoles, accountEntitlements, accountId, userModel } = useCurrentUserContext();
   const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
   const [createVcOpen, setCreateVcOpen] = useState(false);
-  const [sectionPanel, setSectionPanel] = useState<'lead-admin' | 'host' | null>(null);
 
   // Activity view toggle — persisted per-user in UserSettings.dashboard.activityView.
   // Default: Activity view on (true) when the user has never set it (FR-024). A local
@@ -354,43 +351,20 @@ export default function DashboardWithMemberships({
             />
           </div>
         ) : (
-          <div className="space-y-8">
-            {/* Section 1 always renders (empty pin slot when no home Space). */}
-            <CollapsibleSpaceSection
-              title={t('nonActivity.sections.pinnedLastActive')}
-              items={lastActiveItems}
-              maxVisible={SECTION_ITEM_CAP}
-              loading={recentSpacesLoading}
-              emptyPinSlot={!homeSpaceId && membershipSettingsUrl ? { settingsHref: membershipSettingsUrl } : undefined}
-              onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
-            />
-
-            {mostActivityItems.length > 0 && (
-              <CollapsibleSpaceSection
-                title={t('nonActivity.sections.mostActivity')}
-                items={mostActivityItems}
-                maxVisible={SECTION_ITEM_CAP}
-              />
-            )}
-
-            {leadAdminItems.length > 0 && (
-              <CollapsibleSpaceSection
-                title={t('nonActivity.sections.leadAdmin')}
-                items={leadAdminItems}
-                maxVisible={SECTION_ITEM_CAP}
-                showMore={{ onShowMore: () => setSectionPanel('lead-admin') }}
-              />
-            )}
-
-            {hostItems.length > 0 && (
-              <CollapsibleSpaceSection
-                title={t('nonActivity.sections.host')}
-                items={hostItems}
-                maxVisible={SECTION_ITEM_CAP}
-                showMore={{ onShowMore: () => setSectionPanel('host') }}
-              />
-            )}
-          </div>
+          <NonActivityHomeSections
+            pinnedLastActive={lastActiveItems}
+            mostActivity={mostActivityItems}
+            leadAdmin={leadAdminItems}
+            host={hostItems}
+            membershipsItems={membershipsItems}
+            hostedPanelItems={hostedPanelItems}
+            pinnedLoading={recentSpacesLoading}
+            membershipsLoading={membershipsLoading}
+            hostedLoading={hostedLoading}
+            homeSpaceId={homeSpaceId}
+            membershipSettingsUrl={membershipSettingsUrl}
+            onNavigate={navigate}
+          />
         )}
       </DashboardLayout>
       {accountId && (
@@ -457,35 +431,6 @@ export default function DashboardWithMemberships({
         loading={membershipsLoading}
         onNavigate={href => {
           dialogState.closeDialog();
-          navigate(href);
-        }}
-        browseAllHref={URL_SPACE_EXPLORER}
-      />
-
-      {/* Section 3 "show more" — memberships scoped to Lead / Admin */}
-      <MyMembershipsPanel
-        open={sectionPanel === 'lead-admin'}
-        onClose={() => setSectionPanel(null)}
-        items={membershipsItems}
-        loading={membershipsLoading}
-        title={t('nonActivity.sections.leadAdmin')}
-        restrictToRoles={LEAD_ADMIN_ROLES}
-        onNavigate={href => {
-          setSectionPanel(null);
-          navigate(href);
-        }}
-        browseAllHref={URL_SPACE_EXPLORER}
-      />
-
-      {/* Section 4 "show more" — the member's hosted account Spaces */}
-      <MyMembershipsPanel
-        open={sectionPanel === 'host'}
-        onClose={() => setSectionPanel(null)}
-        items={hostedPanelItems}
-        loading={hostedLoading}
-        title={t('nonActivity.sections.host')}
-        onNavigate={href => {
-          setSectionPanel(null);
           navigate(href);
         }}
         browseAllHref={URL_SPACE_EXPLORER}

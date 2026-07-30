@@ -642,6 +642,10 @@ type HierarchicalMembershipEntry = {
   childMemberships?: HierarchicalMembershipEntry[];
 };
 
+// Sections include L0 (top-level) and L1 (first-level subspaces) only — not deeper.
+const isL0OrL1 = (space: { level: SpaceLevel }): boolean =>
+  space.level === SpaceLevel.L0 || space.level === SpaceLevel.L1;
+
 const isLeadOrAdmin = (space: ActivityScoredSpace): boolean => {
   const roles = space.community?.roleSet?.myRoles ?? [];
   return roles.includes(RoleName.Lead) || roles.includes(RoleName.Admin);
@@ -651,6 +655,11 @@ const isLeadOrAdmin = (space: ActivityScoredSpace): boolean => {
 const byActivityScoreDesc = (a: ActivityScoredSpace, b: ActivityScoredSpace): number =>
   b.activityScore - a.activityScore;
 
+// Account (hosted) Spaces restricted to L0/L1 and ordered by activity — the shared basis for
+// both the Section 4 cards and its "show more" panel items.
+const sortedHostedSpaces = (spaces: ActivityScoredSpace[]): ActivityScoredSpace[] =>
+  [...spaces].filter(isL0OrL1).sort(byActivityScoreDesc);
+
 /**
  * Section 3 — I Lead & Administer. Flattens the membership hierarchy to L0 + L1 Spaces
  * where the member's role includes Lead or Admin, ordered by all-actor activity score
@@ -659,11 +668,11 @@ const byActivityScoreDesc = (a: ActivityScoredSpace, b: ActivityScoredSpace): nu
 export const mapLeadAdminSection = (memberships: HierarchicalMembershipEntry[]): CompactSpaceCardData[] => {
   const flattened: ActivityScoredSpace[] = [];
   for (const entry of memberships) {
-    if (entry.space.level === SpaceLevel.L0 || entry.space.level === SpaceLevel.L1) {
+    if (isL0OrL1(entry.space)) {
       flattened.push(entry.space);
     }
     for (const child of entry.childMemberships ?? []) {
-      if (child.space.level === SpaceLevel.L0 || child.space.level === SpaceLevel.L1) {
+      if (isL0OrL1(child.space)) {
         flattened.push(child.space);
       }
     }
@@ -680,10 +689,7 @@ export const mapLeadAdminSection = (memberships: HierarchicalMembershipEntry[]):
  * activity score (highest first, zero-activity last).
  */
 export const mapHostSection = (spaces: ActivityScoredSpace[]): CompactSpaceCardData[] =>
-  [...spaces]
-    .filter(space => space.level === SpaceLevel.L0 || space.level === SpaceLevel.L1)
-    .sort(byActivityScoreDesc)
-    .map(space => spaceToCompactCard(space));
+  sortedHostedSpaces(spaces).map(space => spaceToCompactCard(space));
 
 /**
  * Hosted account Spaces mapped to flat memberships-panel items (no membership role), ordered
@@ -691,16 +697,13 @@ export const mapHostSection = (spaces: ActivityScoredSpace[]): CompactSpaceCardD
  * memberships, so the panel is given a pre-scoped flat list rather than a role filter.
  */
 export const mapHostedSpacesToPanelItems = (spaces: ActivityScoredSpace[]): MembershipItem[] =>
-  [...spaces]
-    .filter(space => space.level === SpaceLevel.L0 || space.level === SpaceLevel.L1)
-    .sort(byActivityScoreDesc)
-    .map(space => ({
-      id: space.id,
-      name: space.about.profile.displayName,
-      href: space.about.profile.url,
-      isPrivate: !space.about.isContentPublic,
-      roles: [],
-      initials: getInitials(space.about.profile.displayName),
-      color: pickColorFromId(space.id),
-      image: space.about.profile.cardBanner?.uri || undefined,
-    }));
+  sortedHostedSpaces(spaces).map(space => ({
+    id: space.id,
+    name: space.about.profile.displayName,
+    href: space.about.profile.url,
+    isPrivate: !space.about.isContentPublic,
+    roles: [],
+    initials: getInitials(space.about.profile.displayName),
+    color: pickColorFromId(space.id),
+    image: space.about.profile.cardBanner?.uri || undefined,
+  }));

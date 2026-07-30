@@ -1,7 +1,11 @@
 import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDashboardExploreSpacesQuery, usePendingInvitationsQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useDashboardExploreSpacesQuery,
+  useDashboardWelcomeSpaceQuery,
+  usePendingInvitationsQuery,
+} from '@/core/apollo/generated/apollo-hooks';
 import { LicenseEntitlementType, RoleName } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ApplicationsBlock } from '@/crd/components/dashboard/ApplicationsBlock';
@@ -37,6 +41,8 @@ type DashboardWithoutMembershipsProps = {
 
 const EXPLORE_LIMIT = 8;
 const EXPLORE_ACTIVITY_DAYS = 7;
+// Well-known nameID of the platform welcome Space (the `/welcome-space` route).
+const WELCOME_SPACE_NAMEID = 'welcome-space';
 
 export default function DashboardWithoutMemberships({
   dialogState,
@@ -81,18 +87,16 @@ export default function DashboardWithoutMemberships({
   const { data: exploreData, loading: exploreLoading } = useDashboardExploreSpacesQuery({
     variables: { daysOld: EXPLORE_ACTIVITY_DAYS, limit: EXPLORE_LIMIT },
   });
+  // The welcome Space is resolved by its well-known nameID so it can be shown first even
+  // when it isn't among the most-active ranking (new users need it most). FR-020.
+  const { data: welcomeData } = useDashboardWelcomeSpaceQuery({ variables: { nameId: WELCOME_SPACE_NAMEID } });
   const exploreCards = (() => {
-    const cards = mapMostActivitySection(exploreData?.exploreSpaces ?? []);
-    // Splice the welcome Space to the front when it is present in the ranking. Its id is
-    // not resolved here (no dedicated lookup), so we match on its stable route; when it is
-    // not among the active Spaces the block degrades gracefully to the ranking order.
-    const welcomeHref = buildWelcomeSpaceUrl();
-    const welcomeIndex = cards.findIndex(card => card.href === welcomeHref);
-    if (welcomeIndex > 0) {
-      const [welcome] = cards.splice(welcomeIndex, 1);
-      cards.unshift(welcome);
-    }
-    return cards;
+    const ranked = mapMostActivitySection(exploreData?.exploreSpaces ?? []);
+    const welcomeSpace = welcomeData?.lookupByName.space;
+    if (!welcomeSpace) return ranked;
+    const [welcomeCard] = mapMostActivitySection([welcomeSpace]);
+    // Welcome Space always first; drop any duplicate from the ranking, then cap the row.
+    return [welcomeCard, ...ranked.filter(card => card.id !== welcomeCard.id)].slice(0, EXPLORE_LIMIT);
   })();
 
   // Campaign

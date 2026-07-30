@@ -28059,6 +28059,86 @@ export type DashboardExploreSpacesQueryResult = Apollo.QueryResult<
 export function refetchDashboardExploreSpacesQuery(variables?: SchemaTypes.DashboardExploreSpacesQueryVariables) {
   return { query: DashboardExploreSpacesDocument, variables: variables };
 }
+export const DashboardWelcomeSpaceDocument = gql`
+    query DashboardWelcomeSpace($nameId: NameID!) {
+  lookupByName {
+    space(NAMEID: $nameId) {
+      id
+      level
+      about {
+        ...SpaceAboutCardBanner
+        isContentPublic
+      }
+    }
+  }
+}
+    ${SpaceAboutCardBannerFragmentDoc}`;
+
+/**
+ * __useDashboardWelcomeSpaceQuery__
+ *
+ * To run a query within a React component, call `useDashboardWelcomeSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardWelcomeSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardWelcomeSpaceQuery({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useDashboardWelcomeSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.DashboardWelcomeSpaceQuery,
+    SchemaTypes.DashboardWelcomeSpaceQueryVariables
+  > &
+    ({ variables: SchemaTypes.DashboardWelcomeSpaceQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardWelcomeSpaceQuery, SchemaTypes.DashboardWelcomeSpaceQueryVariables>(
+    DashboardWelcomeSpaceDocument,
+    options
+  );
+}
+export function useDashboardWelcomeSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DashboardWelcomeSpaceQuery,
+    SchemaTypes.DashboardWelcomeSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.DashboardWelcomeSpaceQuery, SchemaTypes.DashboardWelcomeSpaceQueryVariables>(
+    DashboardWelcomeSpaceDocument,
+    options
+  );
+}
+export function useDashboardWelcomeSpaceSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.DashboardWelcomeSpaceQuery,
+        SchemaTypes.DashboardWelcomeSpaceQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.DashboardWelcomeSpaceQuery,
+    SchemaTypes.DashboardWelcomeSpaceQueryVariables
+  >(DashboardWelcomeSpaceDocument, options);
+}
+export type DashboardWelcomeSpaceQueryHookResult = ReturnType<typeof useDashboardWelcomeSpaceQuery>;
+export type DashboardWelcomeSpaceLazyQueryHookResult = ReturnType<typeof useDashboardWelcomeSpaceLazyQuery>;
+export type DashboardWelcomeSpaceSuspenseQueryHookResult = ReturnType<typeof useDashboardWelcomeSpaceSuspenseQuery>;
+export type DashboardWelcomeSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardWelcomeSpaceQuery,
+  SchemaTypes.DashboardWelcomeSpaceQueryVariables
+>;
+export function refetchDashboardWelcomeSpaceQuery(variables: SchemaTypes.DashboardWelcomeSpaceQueryVariables) {
+  return { query: DashboardWelcomeSpaceDocument, variables: variables };
+}
 export const NonActivityHostedSpacesDocument = gql`
     query NonActivityHostedSpaces {
   me {
