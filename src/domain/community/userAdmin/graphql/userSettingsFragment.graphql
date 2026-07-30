@@ -173,6 +173,16 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+      conversationMessageDirect {
+        email
+        inApp
+        push
+      }
+      conversationMessageGroup {
+        email
+        inApp
+        push
+      }
     }
     virtualContributor {
       adminSpaceCommunityInvitation {

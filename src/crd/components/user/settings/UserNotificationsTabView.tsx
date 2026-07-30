@@ -13,6 +13,12 @@ export type NotificationRowData = {
   property: string;
   label: string;
   channels: { inApp: boolean; email: boolean; push: boolean };
+  /**
+   * When set, the in-app cell renders as a disabled OFF switch with this
+   * caption instead of the normal interactive switch (affordance only —
+   * enforcement is server-side).
+   */
+  inAppLockedCaption?: string;
 };
 
 export type NotificationGroupData = {
@@ -265,45 +271,57 @@ function NotificationGroupSection({
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          {group.rows.map((row, idx) => (
-            <div
-              key={row.property}
-              className={cn(
-                'flex flex-col gap-4 p-4 transition-colors hover:bg-muted/10 md:flex-row md:items-center md:justify-between md:px-6',
-                idx !== group.rows.length - 1 && 'border-b border-border/50'
-              )}
-            >
-              <p className="flex-1 pr-4 text-body-emphasis leading-normal">{row.label}</p>
-              <div className="flex items-center justify-end gap-6 md:gap-12">
-                <ChannelSwitch
-                  checked={row.channels.inApp}
-                  onChange={next => onToggle(group.groupId, row.property, 'inApp', next)}
-                  ariaLabel={t('user.notifications.toggleAria', {
-                    channel: t('user.notifications.columns.inApp'),
-                    label: row.label,
-                  })}
-                />
-                <ChannelSwitch
-                  checked={row.channels.email}
-                  onChange={next => onToggle(group.groupId, row.property, 'email', next)}
-                  ariaLabel={t('user.notifications.toggleAria', {
-                    channel: t('user.notifications.columns.email'),
-                    label: row.label,
-                  })}
-                />
-                {showPushColumn ? (
+          {group.rows.map((row, idx) => {
+            const inAppLocked = Boolean(row.inAppLockedCaption);
+            return (
+              <div
+                key={row.property}
+                className={cn(
+                  'flex flex-col gap-4 p-4 transition-colors hover:bg-muted/10 md:flex-row md:items-center md:justify-between md:px-6',
+                  idx !== group.rows.length - 1 && 'border-b border-border/50'
+                )}
+              >
+                <div className="flex-1 pr-4">
+                  <p className="text-body-emphasis leading-normal">{row.label}</p>
+                  {row.inAppLockedCaption ? (
+                    <p className="mt-1 text-caption text-muted-foreground">{row.inAppLockedCaption}</p>
+                  ) : null}
+                </div>
+                <div className="flex items-center justify-end gap-6 md:gap-12">
                   <ChannelSwitch
-                    checked={row.channels.push}
-                    onChange={next => onToggle(group.groupId, row.property, 'push', next)}
+                    checked={!inAppLocked && row.channels.inApp}
+                    disabled={inAppLocked}
+                    onChange={next => onToggle(group.groupId, row.property, 'inApp', next)}
+                    ariaLabel={
+                      row.inAppLockedCaption ??
+                      t('user.notifications.toggleAria', {
+                        channel: t('user.notifications.columns.inApp'),
+                        label: row.label,
+                      })
+                    }
+                  />
+                  <ChannelSwitch
+                    checked={row.channels.email}
+                    onChange={next => onToggle(group.groupId, row.property, 'email', next)}
                     ariaLabel={t('user.notifications.toggleAria', {
-                      channel: t('user.notifications.columns.push'),
+                      channel: t('user.notifications.columns.email'),
                       label: row.label,
                     })}
                   />
-                ) : null}
+                  {showPushColumn ? (
+                    <ChannelSwitch
+                      checked={row.channels.push}
+                      onChange={next => onToggle(group.groupId, row.property, 'push', next)}
+                      ariaLabel={t('user.notifications.toggleAria', {
+                        channel: t('user.notifications.columns.push'),
+                        label: row.label,
+                      })}
+                    />
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </CardContent>
       </Card>
     </section>
@@ -323,14 +341,16 @@ function ChannelSwitch({
   checked,
   onChange,
   ariaLabel,
+  disabled,
 }: {
   checked: boolean;
   onChange: (next: boolean) => void;
   ariaLabel: string;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex w-12 justify-center">
-      <Switch checked={checked} onCheckedChange={onChange} aria-label={ariaLabel} />
+      <Switch checked={checked} onCheckedChange={onChange} aria-label={ariaLabel} disabled={disabled} />
     </div>
   );
 }

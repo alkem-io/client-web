@@ -23449,6 +23449,18 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
             push: boolean;
           };
+          conversationMessageDirect: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          conversationMessageGroup: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           membership: {
             __typename?: 'UserSettingsNotificationUserMembership';
             spaceCommunityInvitationReceived: {
@@ -23834,6 +23846,18 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
         push: boolean;
       };
+      conversationMessageDirect: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      conversationMessageGroup: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -24061,6 +24085,18 @@ export type UserSettingsQuery = {
                   push: boolean;
                 };
                 messageReceived: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageDirect: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageGroup: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
