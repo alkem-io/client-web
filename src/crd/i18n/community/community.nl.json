@@ -16,6 +16,8 @@
       "inviteToRoleLabel": "Uitnodigen als:",
       "rolePopoverHelper": "Member wordt altijd toegekend bij het accepteren van de uitnodiging.",
       "rolePopoverAriaLabel": "Kies rollen voor de genodigden",
+      "suggestedLanguageLabel": "Voorgestelde taal voor de genodigde",
+      "suggestedLanguagePlaceholder": "Geen voorkeur",
       "sendButtonLabel": "Verstuur",
       "sendingButtonLabel": "Versturen…",
       "backButtonLabel": "Terug",

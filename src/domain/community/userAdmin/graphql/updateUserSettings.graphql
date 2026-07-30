@@ -3,6 +3,8 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
     id
     settings {
       id
+      language
+      languageOfferAnswered
       homeSpace {
         spaceID
         autoRedirect
