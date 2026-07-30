@@ -35,7 +35,15 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 // FR-012: `myPrivileges` is the only signal the offered-role filter reads. Tests
 // drive it directly rather than mocking `getOfferedPlatformRoles` itself, so the
 // real filter (from useRoleSetManager.ts) is what's under test here (T008).
-let mockMyPrivileges: AuthorizationPrivilege[] = [AuthorizationPrivilege.GrantGlobalAdmins];
+// corr-client-web-8: a Platform Roles Admin holds BOTH `GRANT_GLOBAL_ADMINS`
+// and `FEATURE_ROLE_ASSIGN` server-side — the default persona for tests that
+// don't override privileges is that combined holder, so they still see all 13
+// target roles. A bare `GRANT_GLOBAL_ADMINS` holder (legacy `global-admin`) is
+// exercised explicitly in the assigner-capability-filter describe block below.
+let mockMyPrivileges: AuthorizationPrivilege[] = [
+  AuthorizationPrivilege.GrantGlobalAdmins,
+  AuthorizationPrivilege.FeatureRoleAssign,
+];
 // corr-client-web-3: distinguishes "still fetching myPrivileges" from "fetched,
 // offers nothing" — the phase-1 `useRoleSetManager({ relevantRoles: [] })` call.
 let mockLoadingPrivileges = false;
@@ -148,7 +156,7 @@ vi.mock('@/domain/access/AvailableContributors/useRoleSetAvailableOrganizationsO
 beforeEach(() => {
   vi.clearAllMocks();
   mockPathname = '/admin/authorization/roles/PLATFORM_ROLES_ADMIN';
-  mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
+  mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.FeatureRoleAssign];
   mockLoadingPrivileges = false;
   mockHoldersUnavailable = false;
   mockLegacyHoldersUnavailable = false;
@@ -244,11 +252,26 @@ describe('CrdAdminGlobalRolesPage', () => {
       expect(within(nav).queryByRole('button', { name: 'roles.PLATFORM_ROLES_ADMIN' })).toBeNull();
     });
 
-    test('a holder of GRANT_GLOBAL_ADMINS is offered all 13 roles', () => {
-      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
+    test('a holder of GRANT_GLOBAL_ADMINS and FEATURE_ROLE_ASSIGN (Platform Roles Admin) is offered all 13 roles', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins, AuthorizationPrivilege.FeatureRoleAssign];
       render(<CrdAdminGlobalRolesPage />);
       const nav = screen.getByRole('navigation');
       expect(within(nav).getAllByRole('button')).toHaveLength(13);
+    });
+
+    // corr-client-web-8: a bare GRANT_GLOBAL_ADMINS holder (the legacy
+    // `global-admin` credential) does NOT hold FEATURE_ROLE_ASSIGN server-side —
+    // it must be offered only the 10 `Platform …` roles, never the 3 `Feature …`
+    // roles the server would reject on assign/revoke.
+    test('a bare holder of GRANT_GLOBAL_ADMINS (legacy global-admin) is offered only the 10 platform admin roles', () => {
+      mockMyPrivileges = [AuthorizationPrivilege.GrantGlobalAdmins];
+      render(<CrdAdminGlobalRolesPage />);
+      const nav = screen.getByRole('navigation');
+      const buttons = within(nav).getAllByRole('button');
+      expect(buttons).toHaveLength(10);
+      expect(within(nav).queryByRole('button', { name: 'roles.FEATURE_BETA_TESTER' })).toBeNull();
+      expect(within(nav).queryByRole('button', { name: 'roles.FEATURE_VIRTUAL_ASSISTANT' })).toBeNull();
+      expect(within(nav).queryByRole('button', { name: 'roles.FEATURE_ORGANIZATION_CREATOR' })).toBeNull();
     });
 
     // corr-client-web-3: a holder of neither privilege gets an explicit,
@@ -461,6 +484,32 @@ describe('CrdAdminGlobalRolesPage', () => {
       const dialog = screen.getByRole('alertdialog');
       await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
       expect(removePlatformRoleFromUser).toHaveBeenCalledWith('u3', 'GLOBAL_ADMIN');
+    });
+
+    // qual-clientweb-8: a rejected legacy revoke must render its message inside
+    // the legacy section itself (as its own `role="alert"`), never inside the
+    // unrelated, currently-selected target-role editor elsewhere on the page.
+    test('a rejected legacy revoke renders the server message inside the legacy section, not the target-role editor', async () => {
+      withLegacyHolder();
+      mockMyPrivileges = legacyAdminPrivileges;
+      removePlatformRoleFromUser.mockRejectedValueOnce(
+        new ApolloError({ graphQLErrors: [{ message: 'Legacy policy: you may not revoke this role.' }] })
+      );
+      render(<CrdAdminGlobalRolesPage />);
+      const legacySection = screen.getByText('roleMembers.legacyRolesHeading').closest('section');
+      if (!legacySection) throw new Error('legacy roles section not found');
+      await userEvent.click(within(legacySection).getByRole('button', { name: 'roleMembers.remove' }));
+      const dialog = screen.getByRole('alertdialog');
+      await userEvent.click(within(dialog).getByRole('button', { name: 'roleMembers.remove' }));
+
+      const errorMessage = 'Legacy policy: you may not revoke this role.';
+      const legacyAlert = await within(legacySection).findByText(errorMessage);
+      expect(legacyAlert).toHaveAttribute('role', 'alert');
+
+      // The message must appear exactly once — inside the legacy section —
+      // never duplicated into the (unrelated) currently-selected target-role
+      // editor elsewhere on the page.
+      expect(screen.getAllByText(errorMessage)).toHaveLength(1);
     });
   });
 

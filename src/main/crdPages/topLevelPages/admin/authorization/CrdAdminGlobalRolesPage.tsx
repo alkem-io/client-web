@@ -67,6 +67,9 @@ const CrdAdminGlobalRolesPage = () => {
   const [memberSearch, setMemberSearch] = useState('');
 
   const [assignmentError, setAssignmentError] = useState<string | undefined>();
+  // qual-clientweb-8: a rejected legacy revoke must surface inside the legacy
+  // panel itself, never inside the (unrelated) target-role editor's error slot.
+  const [legacyError, setLegacyError] = useState<string | undefined>();
 
   const { data, loading: loadingRoleSetId } = usePlatformRoleSetQuery();
   const roleSetId = data?.platform.roleSet.id;
@@ -362,12 +365,13 @@ const CrdAdminGlobalRolesPage = () => {
               groups={legacyRoleGroups}
               removing={legacyUpdating}
               holdersUnavailable={legacyHoldersUnavailable}
+              errorMessage={legacyError}
               onRemove={async (role, memberId) => {
-                setAssignmentError(undefined);
+                setLegacyError(undefined);
                 try {
                   await removeLegacyPlatformRoleFromUser(memberId, role as RoleName);
                 } catch (error) {
-                  setAssignmentError(extractErrorMessage(error));
+                  setLegacyError(extractErrorMessage(error));
                 }
               }}
             />

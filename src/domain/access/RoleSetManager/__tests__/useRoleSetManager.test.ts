@@ -226,11 +226,35 @@ describe('getViewOnlyPlatformRoles — read-only offer (corr-client-web-7)', () 
   });
 });
 
-// FR-012: getOfferedPlatformRoles itself is unchanged by this fix round —
-// pinned here so a future edit to the read-only fallback in
+// FR-012: pinned here so a future edit to the read-only fallback in
 // CrdAdminGlobalRolesPage.tsx can't silently widen who gets manage access.
 describe('getOfferedPlatformRoles — manage gate unchanged', () => {
   test('a legacy PlatformAdmin-equivalent holder (READ + GRANT, no GRANT_GLOBAL_ADMINS) is offered no manage roles', () => {
     expect(getOfferedPlatformRoles([AuthorizationPrivilege.Read, AuthorizationPrivilege.Grant])).toEqual([]);
+  });
+});
+
+// corr-client-web-8: the two assigner privileges gate DISJOINT role families
+// server-side and must be UNIONED, not short-circuited — a legacy
+// `global-admin` (GRANT_GLOBAL_ADMINS only, no FEATURE_ROLE_ASSIGN) must be
+// offered exactly the 10 `Platform …` roles, never the 3 `Feature …` roles the
+// server would reject.
+describe('getOfferedPlatformRoles — per-family union (corr-client-web-8)', () => {
+  test('GRANT_GLOBAL_ADMINS alone offers only the 10 platform admin roles, not the 3 feature roles', () => {
+    const roles = getOfferedPlatformRoles([AuthorizationPrivilege.GrantGlobalAdmins]);
+    expect(roles).toEqual(RELEVANT_ROLES.Platform.slice(0, 10));
+  });
+
+  test('FEATURE_ROLE_ASSIGN alone offers only the 3 feature roles', () => {
+    const roles = getOfferedPlatformRoles([AuthorizationPrivilege.FeatureRoleAssign]);
+    expect(roles).toEqual(RELEVANT_ROLES.Platform.slice(10));
+  });
+
+  test('both privileges together offer the full 13 (platform-roles-admin, T005/SC-009)', () => {
+    const roles = getOfferedPlatformRoles([
+      AuthorizationPrivilege.GrantGlobalAdmins,
+      AuthorizationPrivilege.FeatureRoleAssign,
+    ]);
+    expect(roles).toHaveLength(13);
   });
 });

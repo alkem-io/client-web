@@ -74,6 +74,16 @@ export const RELEVANT_ROLES = {
  * remains the sole enforcement point; this filter only decides what to *offer*
  * and, as a consequence, keeps the holder-list read from ever spanning both
  * role sets in one request (FR-032).
+ *
+ * corr-client-web-8: the two privileges gate DISJOINT role families server-side
+ * (platform.role.assignment.rules.service.ts `assignerPrivilegeFor` — the 3
+ * `Feature …` roles require `FEATURE_ROLE_ASSIGN`, the 10 `Platform …` roles
+ * require `GRANT_GLOBAL_ADMINS`) and must therefore be UNIONED, not
+ * short-circuited. A legacy `global-admin` holds `GRANT_GLOBAL_ADMINS` but not
+ * `FEATURE_ROLE_ASSIGN` — short-circuiting on the first privilege used to offer
+ * them all 13 roles including the 3 Feature roles, which the server then
+ * rejected on every assign/revoke. `platform-roles-admin` holds both
+ * privileges, so it still gets the full 13 (T005/SC-009 unaffected).
  */
 export const getOfferedPlatformRoles = (
   myPrivileges: AuthorizationPrivilege[] | undefined
@@ -81,13 +91,14 @@ export const getOfferedPlatformRoles = (
   if (!myPrivileges) {
     return [];
   }
+  const roles: (typeof RELEVANT_ROLES.Platform)[number][] = [];
   if (myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins)) {
-    return [...RELEVANT_ROLES.Platform];
+    roles.push(...PLATFORM_ADMIN_ROLES);
   }
   if (myPrivileges.includes(AuthorizationPrivilege.FeatureRoleAssign)) {
-    return [...FEATURE_ROLES];
+    roles.push(...FEATURE_ROLES);
   }
-  return [];
+  return roles;
 };
 
 /**

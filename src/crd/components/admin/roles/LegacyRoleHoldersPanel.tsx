@@ -24,6 +24,15 @@ type LegacyRoleHoldersPanelProps = {
    * here to the panel that exists specifically to catch it).
    */
   holdersUnavailable?: boolean;
+  /**
+   * qual-clientweb-8: a rejected legacy revoke (e.g. the server's resolver-local
+   * legacy policy check fails for this operator) must surface its message
+   * INSIDE this panel — not in a different, unrelated target-role editor
+   * elsewhere on the page. Rendered as its own `role="alert"` region so the
+   * operator looking at the legacy section actually sees why the revoke did
+   * nothing.
+   */
+  errorMessage?: string;
 };
 
 type PendingRemoval = {
@@ -48,6 +57,7 @@ export function LegacyRoleHoldersPanel({
   onRemove,
   removing = false,
   holdersUnavailable = false,
+  errorMessage,
 }: LegacyRoleHoldersPanelProps) {
   const { t } = useTranslation('crd-admin');
   const [pendingRemove, setPendingRemove] = useState<PendingRemoval | null>(null);
@@ -58,6 +68,12 @@ export function LegacyRoleHoldersPanel({
     <section className="flex flex-col gap-4" aria-label={t('roleMembers.legacyRolesHeading')}>
       <h2 className="text-section-title">{t('roleMembers.legacyRolesHeading')}</h2>
       <p className="text-body text-muted-foreground">{t('roleMembers.legacyRolesDescription')}</p>
+
+      {errorMessage && (
+        <p role="alert" className="text-body text-destructive">
+          {errorMessage}
+        </p>
+      )}
 
       {groupsWithHolders.length === 0 ? (
         <p role={holdersUnavailable ? 'alert' : undefined} className="text-body text-muted-foreground">
