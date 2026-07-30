@@ -937,6 +937,11 @@
     }
   },
   "delete": "Supprimer",
+  "downNoticeBanner": {
+    "a11yLabel": "Avis de maintenance planifiée",
+    "dismiss": "Fermer l'avis",
+    "message": "Maintenance planifiée le vendredi 31 juillet à 21h00 CEST. La plateforme pourrait être brièvement indisponible."
+  },
   "edit": "Modifier",
   "error": "Erreur",
   "filters": {
