@@ -282,6 +282,7 @@
       "helpBanner": "Modifiez vos préférences de notification. Les changements sont enregistrés automatiquement.",
       "toggleAria": "Activer/désactiver la notification {{channel}} pour : {{label}}",
       "toggleError": "Impossible d'enregistrer la préférence — réessayez",
+      "inAppLockedChat": "Les messages de chat s'affichent toujours dans le panneau de chat, les notifications dans l'app pour cette ligne ne peuvent donc pas être désactivées",
       "columns": {
         "activity": "Activité",
         "inApp": "Dans l'app",
@@ -354,6 +355,8 @@
           "commentReply": "Recevoir une notification lorsque quelqu'un répond à mon commentaire",
           "mentioned": "Recevoir une notification lorsque je suis mentionné",
           "messageReceived": "Recevoir une notification lorsque quelqu'un m'envoie un message direct",
+          "conversationMessageDirect": "Recevoir une notification lorsque quelqu'un m'envoie un message de chat direct (1:1)",
+          "conversationMessageGroup": "Recevoir une notification lorsque quelqu'un publie dans un chat de groupe dont je suis membre",
           "membershipInvitationReceived": "Recevoir une notification lorsque quelqu'un m'invite à rejoindre une communauté",
           "membershipCommunityJoined": "Recevoir une notification lorsque je rejoins un nouveau Space"
         },
