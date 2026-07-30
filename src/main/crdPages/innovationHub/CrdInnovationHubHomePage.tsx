@@ -51,7 +51,7 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
   useEnableSpaceFullWidth();
   // Mirror the Spaces home: a banner-overlay topbar that goes transparent over
   // the banner until the user scrolls. The page slides under by `-mt-16`.
-  // Suppressed while the site-wide incident banner shows so the hero doesn't
+  // Suppressed while the site-wide planned-maintenance notice shows so the hero doesn't
   // slide up over the notice under the header.
   const { visible: downNoticeVisible } = useDownNoticeBanner();
   useEnableBannerOverlay(!downNoticeVisible);
