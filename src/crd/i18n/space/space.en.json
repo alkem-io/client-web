@@ -1005,6 +1005,16 @@
       "defaultViewLabel": "Default display",
       "viewList": "List",
       "viewMap": "Map"
+    },
+    "mapView": {
+      "helper": "Choose the starting position everyone sees on the map, or let it fit to your contributors automatically.",
+      "stateAutomatic": "Map view: automatic",
+      "stateFixed": "Map view: fixed",
+      "useCurrent": "Use current view",
+      "resetAuto": "Reset to automatic",
+      "mapAriaLabel": "Contributor map preview — pan and zoom to set the fixed view",
+      "captureHint": "Pan and zoom the map, then click 'Use current view' to fix the starting position.",
+      "controlAriaLabel": "Map view settings"
     }
   },
   "spaceCollection": {
