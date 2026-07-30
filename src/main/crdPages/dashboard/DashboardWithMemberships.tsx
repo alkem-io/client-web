@@ -34,6 +34,7 @@ import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpac
 import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
 import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
+import { LEGACY_VIEW_KEY, resolveActivityView, SEED_FLAG_KEY, shouldSeedFromLegacy } from './activityViewPreference';
 import {
   mapActivityToFeedItems,
   mapHostedSpacesToPanelItems,
@@ -65,10 +66,6 @@ const ACTIVITY_PAGE_SIZE = 20;
 const SECTION_ACTIVITY_DAYS = 7;
 const SECTION_ITEM_CAP = 4;
 const LEAD_ADMIN_ROLES: MembershipRole[] = ['admin', 'lead'];
-// Legacy device-local view choice + a per-device flag so the account preference is
-// seeded from it at most once (FR-026).
-const LEGACY_VIEW_KEY = 'dashboardView';
-const SEED_FLAG_KEY = 'dashboardViewSeeded';
 
 export default function DashboardWithMemberships({
   dialogState,
@@ -89,7 +86,7 @@ export default function DashboardWithMemberships({
   const userId = user?.id;
   const settingActivityView = user?.settings?.dashboard?.activityView;
   const [activityOverride, setActivityOverride] = useState<boolean | null>(null);
-  const activityEnabled = activityOverride ?? settingActivityView ?? true;
+  const activityEnabled = resolveActivityView(activityOverride, settingActivityView);
 
   const [updateUserSettings] = useUpdateUserSettingsMutation();
 
@@ -117,7 +114,7 @@ export default function DashboardWithMemberships({
     if (!userId) return;
     if (localStorage.getItem(SEED_FLAG_KEY)) return;
     const legacy = localStorage.getItem(LEGACY_VIEW_KEY);
-    if (legacy === 'SPACES' && settingActivityView !== false) {
+    if (shouldSeedFromLegacy(legacy, settingActivityView)) {
       setActivityOverride(false);
       persistActivityView(false);
     }
