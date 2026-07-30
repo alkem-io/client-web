@@ -32,7 +32,7 @@ export function useEnableBannerOverlay(enabled = true) {
 
   // Publish the requested state. The provider's equality guard turns repeated
   // equal updates into no-ops, so re-renders are cheap. `enabled` lets a page
-  // opt out (e.g. when the incident banner is shown) without unmounting.
+  // opt out (e.g. when the planned-maintenance notice banner is shown) without unmounting.
   useEffect(() => {
     setActive(enabled);
   }, [setActive, enabled]);
