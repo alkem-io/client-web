@@ -70,7 +70,7 @@ export default function CrdSpacePageLayout() {
   // discard-changes dialog (owned by the page) never opens.
   const settingsDirtyGuard = useDirtyTabGuard();
   // Read here (before any early return) so the hook order stays stable. The
-  // site-wide incident banner sits directly under the header; suppress the hero
+  // site-wide maintenance notice sits directly under the header; suppress the hero
   // overlay while it shows so the hero doesn't slide up over the notice.
   const { visible: downNoticeVisible } = useDownNoticeBanner();
   const handleSettingsTabChange = async (next: SpaceSettingsTabId) => {
