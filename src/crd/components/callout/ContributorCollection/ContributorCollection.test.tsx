@@ -9,6 +9,7 @@
  */
 import { render, screen } from '@testing-library/react';
 import { describe, expect, test, vi } from 'vitest';
+import type { ContributorMapFixedView } from '@/crd/components/map/ContributorMap';
 import type { ContributorCardData } from './ContributorCard';
 import type { ContributorCollectionCounts } from './ContributorCollection';
 import { ContributorCollection } from './ContributorCollection';
@@ -187,5 +188,83 @@ describe('ContributorCollection — T009 default-segment fallback (US4-AS4)', ()
     // The count line should display for the resolved user type (effectiveActiveType = user).
     // i18n key: contributors.counts.users with { count: 4 }
     expect(screen.getByText('contributors.counts.users:{"count":4}')).toBeInTheDocument();
+  });
+});
+
+// fixedView orthogonality assertions
+
+const FIXED_VIEW: ContributorMapFixedView = { longitude: 4.9, latitude: 52.37, zoom: 10 };
+
+describe('ContributorCollection — fixedView orthogonality', () => {
+  test('cards rendered are identical whether fixedView is set or absent', () => {
+    const cards = [makeCard('u1', 'Alice'), makeCard('u2', 'Bob')];
+    const counts = makeCounts(2, 0, 0);
+
+    const { unmount } = render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        counts={counts}
+        cards={cards}
+        loading={false}
+      />
+    );
+    const namesWithout = screen.getAllByText(/Alice|Bob/).map(el => el.textContent);
+    unmount();
+
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        fixedView={FIXED_VIEW}
+        counts={counts}
+        cards={cards}
+        loading={false}
+      />
+    );
+    const namesWith = screen.getAllByText(/Alice|Bob/).map(el => el.textContent);
+
+    expect(namesWith).toEqual(namesWithout);
+  });
+
+  test('fixedView absent means no fixedView set on the component (automatic framing — list mode smoke)', () => {
+    // Smoke: the component renders correctly with no fixedView prop in list mode.
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        counts={makeCounts(1, 0, 0)}
+        cards={[makeCard('u1', 'Alice')]}
+        loading={false}
+      />
+    );
+    // Alice's card is visible — rendering succeeds with no fixedView (automatic path).
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+  });
+
+  test('list view renders normally when fixedView is set (map not mounted in list mode)', () => {
+    render(
+      <ContributorCollection
+        types={['user']}
+        activeType="user"
+        onActiveTypeChange={noop}
+        defaultView="list"
+        fixedView={FIXED_VIEW}
+        counts={makeCounts(2, 0, 0)}
+        cards={[makeCard('u1', 'Alice'), makeCard('u2', 'Bob')]}
+        loading={false}
+      />
+    );
+    // Cards are rendered in list mode.
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    // Map is not mounted in list mode.
+    expect(screen.queryByTestId('contributor-map')).not.toBeInTheDocument();
   });
 });

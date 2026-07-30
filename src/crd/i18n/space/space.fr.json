@@ -1005,6 +1005,16 @@
       "defaultViewLabel": "Affichage par défaut",
       "viewList": "Liste",
       "viewMap": "Carte"
+    },
+    "mapView": {
+      "helper": "Choisissez la position initiale que tout le monde voit sur la carte, ou laissez-la s'ajuster automatiquement à vos contributeurs.",
+      "stateAutomatic": "Vue carte : automatique",
+      "stateFixed": "Vue carte : fixe",
+      "useCurrent": "Utiliser la vue actuelle",
+      "resetAuto": "Réinitialiser en automatique",
+      "mapAriaLabel": "Aperçu de la carte des contributeurs — faites glisser et zoomez pour définir la vue fixe",
+      "captureHint": "Faites glisser et zoomez la carte, puis cliquez sur « Utiliser la vue actuelle » pour fixer la position de départ.",
+      "controlAriaLabel": "Paramètres de vue carte"
     }
   },
   "spaceCollection": {

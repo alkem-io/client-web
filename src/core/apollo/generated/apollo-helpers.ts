@@ -806,16 +806,29 @@ export type CalloutContributionsCountOutputFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributorsMapViewKeySpecifier = (
+  | 'latitude'
+  | 'longitude'
+  | 'zoom'
+  | CalloutContributorsMapViewKeySpecifier
+)[];
+export type CalloutContributorsMapViewFieldPolicy = {
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  zoom?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutContributorsSettingsKeySpecifier = (
   | 'contributorTypes'
   | 'defaultContributorType'
   | 'defaultView'
+  | 'mapView'
   | CalloutContributorsSettingsKeySpecifier
 )[];
 export type CalloutContributorsSettingsFieldPolicy = {
   contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+  mapView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
@@ -1382,16 +1395,29 @@ export type CreateCalloutContributionDefaultsDataFieldPolicy = {
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutContributorsMapViewDataKeySpecifier = (
+  | 'latitude'
+  | 'longitude'
+  | 'zoom'
+  | CreateCalloutContributorsMapViewDataKeySpecifier
+)[];
+export type CreateCalloutContributorsMapViewDataFieldPolicy = {
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  zoom?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutContributorsSettingsDataKeySpecifier = (
   | 'contributorTypes'
   | 'defaultContributorType'
   | 'defaultView'
+  | 'mapView'
   | CreateCalloutContributorsSettingsDataKeySpecifier
 )[];
 export type CreateCalloutContributorsSettingsDataFieldPolicy = {
   contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+  mapView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutDataKeySpecifier = (
   | 'classification'
@@ -6086,6 +6112,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CalloutContributionsCountOutputKeySpecifier);
     fields?: CalloutContributionsCountOutputFieldPolicy;
   };
+  CalloutContributorsMapView?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributorsMapViewKeySpecifier
+      | (() => undefined | CalloutContributorsMapViewKeySpecifier);
+    fields?: CalloutContributorsMapViewFieldPolicy;
+  };
   CalloutContributorsSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -6315,6 +6348,13 @@ export type StrictTypedTypePolicies = {
       | CreateCalloutContributionDefaultsDataKeySpecifier
       | (() => undefined | CreateCalloutContributionDefaultsDataKeySpecifier);
     fields?: CreateCalloutContributionDefaultsDataFieldPolicy;
+  };
+  CreateCalloutContributorsMapViewData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributorsMapViewDataKeySpecifier
+      | (() => undefined | CreateCalloutContributorsMapViewDataKeySpecifier);
+    fields?: CreateCalloutContributorsMapViewDataFieldPolicy;
   };
   CreateCalloutContributorsSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
