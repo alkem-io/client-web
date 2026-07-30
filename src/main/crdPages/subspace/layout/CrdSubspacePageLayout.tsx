@@ -140,7 +140,7 @@ export default function CrdSubspacePageLayout() {
   useSetBreadcrumbs(baseTrail.length > 0 ? [...baseTrail, ...settingsTrail] : []);
 
   // Read before the early return so hook order stays stable; used below to
-  // suppress the hero overlay while the site-wide incident banner shows.
+  // suppress the hero overlay while the site-wide maintenance notice shows.
   const { visible: downNoticeVisible } = useDownNoticeBanner();
 
   if (data.loading) {
