@@ -28,6 +28,7 @@ import {
   mapMessageToChatMessage,
 } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
+import { useChatDeepLinkSelect } from './useChatDeepLink';
 import { useGroupSettings } from './useGroupSettings';
 import { useGuidanceResponseState } from './useGuidanceResponseState';
 import { useNewChat } from './useNewChat';
@@ -61,6 +62,10 @@ export const UnifiedChatPanelConnector = () => {
   });
 
   const { conversations, isLoading } = useUnifiedConversations();
+  // `?chat={conversationID}` deep link (contract C-6 / US1) — selects the
+  // conversation once this list resolves, then strips the param regardless
+  // of match (unknown/inaccessible id degrades to the default list, no error UI).
+  useChatDeepLinkSelect(conversations, isLoading);
   const { messages: rawMessages, isLoading: messagesLoading } = useConversationMessages(selectedConversationId);
 
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
