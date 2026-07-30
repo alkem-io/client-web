@@ -282,7 +282,7 @@
       "helpBanner": "Bewerk je meldingsvoorkeuren. Wijzigingen worden automatisch opgeslagen.",
       "toggleAria": "Schakel {{channel}}-melding voor: {{label}}",
       "toggleError": "Voorkeur niet opgeslagen — probeer opnieuw",
-      "inAppLockedChat": "Chatberichten verschijnen altijd in het chatpaneel, dus in-app-meldingen voor deze rij kunnen niet worden uitgeschakeld",
+      "inAppLockedChat": "Chatberichten verschijnen al direct in het chatpaneel, dus voor deze rij worden geen in-app-meldingen verzonden",
       "columns": {
         "activity": "Activiteit",
         "inApp": "In-app",

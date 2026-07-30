@@ -273,6 +273,7 @@ function NotificationGroupSection({
         <CardContent className="p-0">
           {group.rows.map((row, idx) => {
             const inAppLocked = Boolean(row.inAppLockedCaption);
+            const inAppCaptionId = `${group.groupId}-${row.property}-inapp-caption`;
             return (
               <div
                 key={row.property}
@@ -284,7 +285,9 @@ function NotificationGroupSection({
                 <div className="flex-1 pr-4">
                   <p className="text-body-emphasis leading-normal">{row.label}</p>
                   {row.inAppLockedCaption ? (
-                    <p className="mt-1 text-caption text-muted-foreground">{row.inAppLockedCaption}</p>
+                    <p id={inAppCaptionId} className="mt-1 text-caption text-muted-foreground">
+                      {row.inAppLockedCaption}
+                    </p>
                   ) : null}
                 </div>
                 <div className="flex items-center justify-end gap-6 md:gap-12">
@@ -292,13 +295,11 @@ function NotificationGroupSection({
                     checked={!inAppLocked && row.channels.inApp}
                     disabled={inAppLocked}
                     onChange={next => onToggle(group.groupId, row.property, 'inApp', next)}
-                    ariaLabel={
-                      row.inAppLockedCaption ??
-                      t('user.notifications.toggleAria', {
-                        channel: t('user.notifications.columns.inApp'),
-                        label: row.label,
-                      })
-                    }
+                    ariaLabel={t('user.notifications.toggleAria', {
+                      channel: t('user.notifications.columns.inApp'),
+                      label: row.label,
+                    })}
+                    ariaDescribedBy={inAppLocked ? inAppCaptionId : undefined}
                   />
                   <ChannelSwitch
                     checked={row.channels.email}
@@ -341,16 +342,24 @@ function ChannelSwitch({
   checked,
   onChange,
   ariaLabel,
+  ariaDescribedBy,
   disabled,
 }: {
   checked: boolean;
   onChange: (next: boolean) => void;
   ariaLabel: string;
+  ariaDescribedBy?: string;
   disabled?: boolean;
 }) {
   return (
     <div className="flex w-12 justify-center">
-      <Switch checked={checked} onCheckedChange={onChange} aria-label={ariaLabel} disabled={disabled} />
+      <Switch
+        checked={checked}
+        onCheckedChange={onChange}
+        aria-label={ariaLabel}
+        aria-describedby={ariaDescribedBy}
+        disabled={disabled}
+      />
     </div>
   );
 }

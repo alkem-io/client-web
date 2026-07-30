@@ -282,7 +282,7 @@
       "helpBanner": "Bearbeite deine Benachrichtigungseinstellungen. Änderungen werden automatisch gespeichert.",
       "toggleAria": "{{channel}}-Benachrichtigung umschalten für: {{label}}",
       "toggleError": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
-      "inAppLockedChat": "Chatnachrichten werden immer im Chat-Panel angezeigt, daher können In-App-Benachrichtigungen für diese Zeile nicht deaktiviert werden",
+      "inAppLockedChat": "Chatnachrichten erscheinen bereits live im Chat-Panel, daher werden für diese Zeile keine In-App-Benachrichtigungen gesendet",
       "columns": {
         "activity": "Aktivität",
         "inApp": "In-App",

@@ -282,7 +282,7 @@
       "helpBanner": "Edit your notification preferences. Changes are saved automatically.",
       "toggleAria": "Toggle {{channel}} notification for: {{label}}",
       "toggleError": "Couldn't save preference — try again",
-      "inAppLockedChat": "Chat messages always show up in the chat panel, so in-app notifications for this row can't be turned off",
+      "inAppLockedChat": "Chat messages already appear live in the chat panel, so in-app notifications aren't sent for this row",
       "columns": {
         "activity": "Activity",
         "inApp": "In-App",

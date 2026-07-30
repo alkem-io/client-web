@@ -282,7 +282,7 @@
       "helpBanner": "Modifiez vos préférences de notification. Les changements sont enregistrés automatiquement.",
       "toggleAria": "Activer/désactiver la notification {{channel}} pour : {{label}}",
       "toggleError": "Impossible d'enregistrer la préférence — réessayez",
-      "inAppLockedChat": "Les messages de chat s'affichent toujours dans le panneau de chat, les notifications dans l'app pour cette ligne ne peuvent donc pas être désactivées",
+      "inAppLockedChat": "Les messages de chat s'affichent déjà en direct dans le panneau de chat, aucune notification dans l'app n'est donc envoyée pour cette ligne",
       "columns": {
         "activity": "Activité",
         "inApp": "Dans l'app",
