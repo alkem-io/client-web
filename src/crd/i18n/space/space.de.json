@@ -1005,6 +1005,16 @@
       "defaultViewLabel": "Standardanzeige",
       "viewList": "Liste",
       "viewMap": "Karte"
+    },
+    "mapView": {
+      "helper": "Wähle die Startansicht, die alle auf der Karte sehen, oder überlasse die Anpassung automatisch deinen Mitwirkenden.",
+      "stateAutomatic": "Kartenansicht: automatisch",
+      "stateFixed": "Kartenansicht: fest",
+      "useCurrent": "Aktuelle Ansicht verwenden",
+      "resetAuto": "Auf automatisch zurücksetzen",
+      "mapAriaLabel": "Mitwirkenden-Kartenvorschau — Verschieben und Zoomen, um die feste Ansicht festzulegen",
+      "captureHint": "Verschieben und zoomen Sie die Karte und klicken Sie dann auf 'Aktuelle Ansicht verwenden', um die Startposition festzulegen.",
+      "controlAriaLabel": "Kartenansicht-Einstellungen"
     }
   },
   "spaceCollection": {

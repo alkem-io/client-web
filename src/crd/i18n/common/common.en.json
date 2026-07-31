@@ -937,6 +937,11 @@
     }
   },
   "delete": "Delete",
+  "downNoticeBanner": {
+    "a11yLabel": "Planned maintenance notice",
+    "dismiss": "Dismiss notice",
+    "message": "Planned maintenance Friday 31 July, 21:00 CEST. The platform may be briefly unavailable."
+  },
   "edit": "Edit",
   "error": "Error",
   "filters": {
