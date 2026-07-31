@@ -89,7 +89,15 @@ export default function DashboardWithoutMemberships({
   });
   // The welcome Space is resolved by its well-known nameID so it can be shown first even
   // when it isn't among the most-active ranking (new users need it most). FR-020.
-  const { data: welcomeData } = useDashboardWelcomeSpaceQuery({ variables: { nameId: WELCOME_SPACE_NAMEID } });
+  // `lookupByName.space` throws (rather than returning null) when no Space has this
+  // nameID — e.g. local/demo environments without a configured welcome Space. Treat that
+  // as absence: skip the global error notification/Sentry report and fall through to the
+  // `!welcomeSpace` fallback below.
+  const { data: welcomeData } = useDashboardWelcomeSpaceQuery({
+    variables: { nameId: WELCOME_SPACE_NAMEID },
+    errorPolicy: 'ignore',
+    context: { skipGlobalErrorHandler: true },
+  });
   const exploreCards = (() => {
     const ranked = mapMostActivitySection(exploreData?.exploreSpaces ?? []);
     const welcomeSpace = welcomeData?.lookupByName.space;
