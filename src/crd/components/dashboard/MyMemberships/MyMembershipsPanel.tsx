@@ -70,6 +70,9 @@ export function MyMembershipsPanel({
   const scopedItems = restrictToRoles ? restrictTreeToRoles(items, restrictToRoles) : items;
 
   // Expand all nodes by default when panel opens so the full tree is visible.
+  // Depend on the stable `items`/`restrictToRoles` inputs — NOT the derived
+  // `scopedItems`, which is a fresh array every render in the restrictToRoles path
+  // and would loop the effect (setState → re-render → new ref → setState → …).
   useEffect(() => {
     if (open) {
       setExpandedIds(new Set(collectAllIds(scopedItems)));
@@ -77,7 +80,8 @@ export function MyMembershipsPanel({
       setRoleFilter('all');
       setVisibilityFilter('all');
     }
-  }, [open, scopedItems]);
+    // scopedItems is derived from (items, restrictToRoles); both are the real deps.
+  }, [open, items, restrictToRoles]);
 
   const filteredTree = filterTree(scopedItems, search, roleFilter, visibilityFilter);
   const filteredCount = countTreeItems(filteredTree);
