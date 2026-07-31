@@ -1645,6 +1645,9 @@ export const UserDetailsLightFragmentDoc = gql`
       spaceID
       autoRedirect
     }
+    dashboard {
+      activityView
+    }
     notification {
       sound {
         chatMessage
@@ -30741,6 +30744,10 @@ export const PendingInvitationsDocument = gql`
         }
         createdBy {
           id
+          profile {
+            id
+            displayName
+          }
         }
         state
         createdDate

@@ -16,7 +16,6 @@ import {
   ActivityFeedRoles,
   LicenseEntitlementType,
   RoleName,
-  type UserDetailsFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { ActivityDialog } from '@/crd/components/dashboard/ActivityDialog';
@@ -79,9 +78,8 @@ export default function DashboardWithMemberships({
   // Activity view toggle — persisted per-user in UserSettings.dashboard.activityView.
   // Default: Activity view on (true) when the user has never set it (FR-024). A local
   // override gives the toggle instant feedback ahead of the mutation resolving.
-  const user = userModel as UserDetailsFragment | undefined;
-  const userId = user?.id;
-  const settingActivityView = user?.settings?.dashboard?.activityView;
+  const userId = userModel?.id;
+  const settingActivityView = userModel?.settings?.dashboard?.activityView;
   const [activityOverride, setActivityOverride] = useState<boolean | null>(null);
   const activityEnabled = resolveActivityView(activityOverride, settingActivityView);
 

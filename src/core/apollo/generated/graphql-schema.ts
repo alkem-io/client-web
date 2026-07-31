@@ -23114,6 +23114,7 @@ export type UserDetailsLightFragment = {
     __typename?: 'UserSettings';
     id: string;
     homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
     notification: {
       __typename?: 'UserSettingsNotification';
       sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -24309,6 +24310,7 @@ export type CurrentUserLightQuery = {
             language?: string | undefined;
             languageOfferAnswered: boolean;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -44219,7 +44221,13 @@ export type PendingInvitationsQuery = {
         state: string;
         createdDate: Date;
         actor: { __typename?: 'Actor'; type: ActorType };
-        createdBy?: { __typename?: 'User'; id: string } | undefined;
+        createdBy?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+            }
+          | undefined;
       };
     }>;
   };
