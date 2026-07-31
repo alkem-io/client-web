@@ -25,16 +25,29 @@ describe('CollapsibleSpaceSection', () => {
     expect(screen.getByText('Space b')).toBeInTheDocument();
   });
 
-  it('shows a total-count badge including the empty pin slot', () => {
+  it('shows no count badge on a capped section with no "show more"', () => {
     render(
       <CollapsibleSpaceSection
         title="Pinned"
-        items={[card('a')]}
+        items={[card('a'), card('b')]}
         emptyPinSlot={{ settingsHref: '/settings/membership' }}
       />
     );
-    // 1 item + 1 pin slot = 2
-    expect(screen.getByText('2')).toBeInTheDocument();
+    // No showMore → no count (nothing hidden the user can reach)
+    expect(screen.queryByText('2')).not.toBeInTheDocument();
+  });
+
+  it('shows the total-count badge only when "show more" is available', () => {
+    render(
+      <CollapsibleSpaceSection
+        title="Lead & Admin"
+        items={[card('a'), card('b'), card('c'), card('d'), card('e')]}
+        maxVisible={4}
+        showMore={{ onShowMore: vi.fn() }}
+      />
+    );
+    // 5 total, 4 visible, show-more present → badge shows the total (5)
+    expect(screen.getByText('5')).toBeInTheDocument();
   });
 
   it('caps visible items and shows a "show more" trigger that calls onShowMore', () => {

@@ -43,7 +43,6 @@ export function CollapsibleSpaceSection({
   const slotsForCards = Math.max(0, maxVisible - (emptyPinSlot ? 1 : 0));
   const visibleItems = items.slice(0, slotsForCards);
   const showMoreVisible = !!showMore && items.length > slotsForCards;
-  const totalCount = items.length + (emptyPinSlot ? 1 : 0);
 
   return (
     <section className={cn('space-y-4', className)}>
@@ -51,9 +50,12 @@ export function CollapsibleSpaceSection({
         <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
           <div className="flex items-center gap-2">
             <h2 className="text-section-title">{title}</h2>
-            {totalCount > 0 && (
+            {/* The count is shown only alongside a "show more" — i.e. when there are
+                items beyond the visible cap the user can reach. Capped sections with
+                no overflow (Pinned & Last Active, Most Activity) show no count. */}
+            {showMoreVisible && (
               <Badge variant="secondary" className="shrink-0">
-                {totalCount}
+                {items.length}
               </Badge>
             )}
           </div>
