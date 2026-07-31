@@ -71,7 +71,7 @@ export type InvitationCardData = {
   spaceName: string;
   spaceHref: string;
   spaceAvatarUrl?: string;
-  role: string;
+  inviterName?: string;
   color: string;
 };
 
@@ -513,7 +513,15 @@ type InvitationEntry = {
       };
     };
   };
-  contributorType?: string;
+  invitation: {
+    createdBy?: {
+      id: string;
+      profile: {
+        id: string;
+        displayName: string;
+      };
+    } | null;
+  };
 };
 
 export const mapInvitationsToCards = (invitations: InvitationEntry[]): InvitationCardData[] => {
@@ -528,7 +536,7 @@ export const mapInvitationsToCards = (invitations: InvitationEntry[]): Invitatio
       invitation.spacePendingMembershipInfo.level,
       invitation.spacePendingMembershipInfo.about.profile
     ),
-    role: invitation.contributorType ?? '',
+    inviterName: invitation.invitation.createdBy?.profile.displayName,
     color: pickColorFromId(invitation.spacePendingMembershipInfo.id),
   }));
 };

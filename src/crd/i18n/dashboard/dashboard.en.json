@@ -143,7 +143,8 @@
     "loading": "Loading invitations",
     "accept": "Accept",
     "decline": "Decline",
-    "noInvitations": "No pending invitations"
+    "noInvitations": "No pending invitations",
+    "invitedBy": "Invited by {{name}}"
   },
   "applications": {
     "title": "Pending Applications",

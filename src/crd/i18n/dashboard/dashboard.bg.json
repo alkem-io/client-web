@@ -143,7 +143,8 @@
     "loading": "Зареждане на покани",
     "accept": "Приеми",
     "decline": "Откажи",
-    "noInvitations": "Няма чакащи покани"
+    "noInvitations": "Няма чакащи покани",
+    "invitedBy": "Поканен(а) от {{name}}"
   },
   "applications": {
     "title": "Чакащи заявления",
