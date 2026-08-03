@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react';
-import type { ReactNode } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import type { ChatMessage } from './types';
 
@@ -7,19 +6,8 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-// Radix only mounts AvatarPrimitive.Image once the browser reports the image as
-// loaded, which never happens in jsdom (same approach as ApplicationsBlock.test.tsx).
-vi.mock('@/crd/primitives/avatar', () => ({
-  Avatar: ({ children, className, ...rest }: { children: ReactNode; className?: string }) => (
-    <div className={className} {...rest}>
-      {children}
-    </div>
-  ),
-  AvatarImage: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
-  AvatarFallback: ({ children, className }: { children: ReactNode; className?: string }) => (
-    <span className={className}>{children}</span>
-  ),
-}));
+// Shared jsdom-safe avatar double from src/crd/primitives/__mocks__/avatar.tsx.
+vi.mock('@/crd/primitives/avatar');
 
 const { ChatMessageBubble } = await import('./ChatMessageBubble');
 

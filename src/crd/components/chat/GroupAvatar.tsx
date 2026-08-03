@@ -1,23 +1,19 @@
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
+import { AVATAR_SIZE_CLASS, type AvatarSize } from './avatarSizes';
 import { initials } from './initials';
 import type { ChatMemberAvatar } from './types';
 
-const SIZE_CLASS = {
-  sm: 'size-8',
-  md: 'size-10',
-  lg: 'size-12',
-} as const;
-
 type GroupAvatarProps = {
   members: ChatMemberAvatar[];
-  size?: keyof typeof SIZE_CLASS;
+  size?: AvatarSize;
   className?: string;
 };
 
 /**
  * Composite avatar for a conversation: a single avatar for 1 member, or a 2×2
- * grid of up to 4 member avatars for a group.
+ * grid of up to 4 member avatars for a group. Always decorative (`aria-hidden`) —
+ * the group name is the adjacent accessible text wherever it renders.
  */
 export function GroupAvatar({ members, size = 'md', className }: GroupAvatarProps) {
   const shown = members.slice(0, 4);
@@ -25,7 +21,7 @@ export function GroupAvatar({ members, size = 'md', className }: GroupAvatarProp
   if (shown.length <= 1) {
     const member = shown[0];
     return (
-      <Avatar className={cn(SIZE_CLASS[size], className)}>
+      <Avatar aria-hidden="true" className={cn(AVATAR_SIZE_CLASS[size], className)}>
         {member?.avatarUrl && <AvatarImage src={member.avatarUrl} alt="" />}
         <AvatarFallback className="text-caption">{member ? initials(member.name) : '?'}</AvatarFallback>
       </Avatar>
@@ -34,7 +30,11 @@ export function GroupAvatar({ members, size = 'md', className }: GroupAvatarProp
 
   return (
     <div
-      className={cn('grid shrink-0 grid-cols-2 grid-rows-2 overflow-hidden rounded-full', SIZE_CLASS[size], className)}
+      className={cn(
+        'grid shrink-0 grid-cols-2 grid-rows-2 overflow-hidden rounded-full',
+        AVATAR_SIZE_CLASS[size],
+        className
+      )}
       aria-hidden="true"
     >
       {shown.map(member => (
