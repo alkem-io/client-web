@@ -937,6 +937,11 @@
     }
   },
   "delete": "Verwijderen",
+  "downNoticeBanner": {
+    "a11yLabel": "Melding over gepland onderhoud",
+    "dismiss": "Melding sluiten",
+    "message": "Gepland onderhoud vrijdag 31 juli, 21:00 CEST. Het platform kan korte tijd onbereikbaar zijn."
+  },
   "edit": "Bewerken",
   "error": "Fout",
   "filters": {

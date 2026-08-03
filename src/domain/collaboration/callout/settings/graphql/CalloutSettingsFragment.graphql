@@ -11,6 +11,11 @@ fragment CalloutSettingsFull on CalloutSettings {
       contributorTypes
       defaultContributorType
       defaultView
+      mapView {
+        longitude
+        latitude
+        zoom
+      }
     }
     selection {
       mode

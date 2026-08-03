@@ -30,12 +30,31 @@ import { useTranslateDescriptor } from './useKratosMessageCopy';
 // them on a registration form they can never complete.
 const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
 
+type CrdSignUpPageProps = {
+  /**
+   * `/sign_up` and `/registration` can resolve to the very same Kratos flow
+   * id (Kratos bounces a validation error on a later field back to
+   * `/registration?flow=<id>`). When that happens, this step's mount
+   * re-hydrates `accepted` as `true` from sessionStorage — which is exactly
+   * the point of persisting it across the re-render — but the checkbox
+   * itself is still a plain toggle, so a stray second click on what is
+   * already checked just unchecks it (ordinary checkbox semantics), silently
+   * disabling submit with no visible error. Passing `true` here makes
+   * further toggling a no-op once the *initial* hydration for this mount
+   * found terms already accepted — it never locks a value the user sets
+   * during the current mount, only one carried over from a prior step. The
+   * checkbox stays a normal, non-`disabled` form field throughout (so its
+   * `checked` value keeps posting to Kratos with the rest of the form).
+   */
+  lockAcceptedTerms?: boolean;
+};
+
 /**
  * Shared sign-up page logic. Drives the Kratos registration flow and persists
  * the accept-terms checkbox per flow id, because Kratos resets that trait on a
  * validation-error re-render (mirrors the MUI `RegistrationPage` workaround).
  */
-function CrdSignUpPage() {
+function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
   useTransactionScope({ type: 'authentication' });
   const { t } = useTranslation();
   usePageTitle(t('pages.titles.signUp'));
@@ -69,15 +88,29 @@ function CrdSignUpPage() {
   usePasskeyScript(registrationFlow?.ui?.nodes);
 
   const [accepted, setAccepted] = useState(false);
+  // Set once, from this mount's initial sessionStorage hydration only — never
+  // touched by `handleAcceptedChange` — so it captures "was already accepted
+  // before this step loaded" as distinct from "the user just ticked it here".
+  const [wasPreAccepted, setWasPreAccepted] = useState(false);
   const storageKey = registrationFlow ? `crd-auth-accepted-terms-${registrationFlow.id}` : undefined;
 
   useEffect(() => {
     if (storageKey) {
-      setAccepted(sessionStorage.getItem(storageKey) === 'true');
+      const stored = sessionStorage.getItem(storageKey) === 'true';
+      setAccepted(stored);
+      setWasPreAccepted(stored);
     }
   }, [storageKey]);
 
+  // Once this step's own mount found terms already accepted (carried over
+  // from an earlier step of the same Kratos flow), further checkbox
+  // interaction is a no-op — see `lockAcceptedTerms` above.
+  const acceptedTermsLocked = Boolean(lockAcceptedTerms && wasPreAccepted);
+
   const handleAcceptedChange = (value: boolean) => {
+    if (acceptedTermsLocked) {
+      return;
+    }
     setAccepted(value);
     if (storageKey) {
       sessionStorage.setItem(storageKey, String(value));
@@ -152,7 +185,11 @@ export function RegistrationCrdRoute() {
         path="/"
         element={
           <NotAuthenticatedRoute>
-            <CrdSignUpPage />
+            {/* Reached from `/sign_up` on the same Kratos flow id (e.g. after a
+                validation error on a later field) — lock the checkbox once it
+                re-hydrates as already accepted, instead of leaving it a live
+                toggle a stray click can silently uncheck (see `lockAcceptedTerms`). */}
+            <CrdSignUpPage lockAcceptedTerms={true} />
           </NotAuthenticatedRoute>
         }
       />

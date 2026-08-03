@@ -813,3 +813,87 @@ describe('mapFormToCalloutUpdateInput — selection settings (feature 025)', () 
     expect(result.input.settings?.framing?.selection).toBeUndefined();
   });
 });
+
+// --- mapView write-path plumbing ---
+
+describe('mapFormToCalloutCreationInput — mapView', () => {
+  it('contributors framing with a captured mapView sends the view object in contributors settings', () => {
+    const view = { longitude: 4.9, latitude: 52.37, zoom: 10 };
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'contributors',
+        contributorCollection: { ...EMPTY_CALLOUT_FORM_VALUES.contributorCollection, mapView: view },
+      }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.contributors?.mapView).toEqual({
+      longitude: 4.9,
+      latitude: 52.37,
+      zoom: 10,
+    });
+  });
+
+  it('contributors framing with mapView=null sends null (automatic framing — clears any stored view)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'contributors',
+        contributorCollection: { ...EMPTY_CALLOUT_FORM_VALUES.contributorCollection, mapView: null },
+      }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.contributors?.mapView).toBeNull();
+  });
+
+  it('non-contributors framing (spaces) does not include contributors in the payload', () => {
+    const view = { longitude: 4.9, latitude: 52.37, zoom: 10 };
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'spaces',
+        contributorCollection: { ...EMPTY_CALLOUT_FORM_VALUES.contributorCollection, mapView: view },
+      }),
+      createOptions
+    );
+    expect(result.input.settings?.framing?.contributors).toBeUndefined();
+  });
+});
+
+describe('mapFormToCalloutUpdateInput — mapView', () => {
+  it('update with a captured view sends the mapView object', () => {
+    const view = { longitude: 13.4, latitude: 52.5, zoom: 12 };
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({
+        framingChip: 'contributors',
+        contributorCollection: { ...EMPTY_CALLOUT_FORM_VALUES.contributorCollection, mapView: view },
+      }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.contributors?.mapView).toEqual({
+      longitude: 13.4,
+      latitude: 52.5,
+      zoom: 12,
+    });
+  });
+
+  it('update with mapView=null sends explicit null (reset-to-automatic)', () => {
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({
+        framingChip: 'contributors',
+        contributorCollection: { ...EMPTY_CALLOUT_FORM_VALUES.contributorCollection, mapView: null },
+      }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.contributors?.mapView).toBeNull();
+  });
+
+  it('non-contributors framing update omits contributors from the payload', () => {
+    const view = { longitude: 0, latitude: 0, zoom: 5 };
+    const result = mapFormToCalloutUpdateInput(
+      baseValues({
+        framingChip: 'none',
+        contributorCollection: { ...EMPTY_CALLOUT_FORM_VALUES.contributorCollection, mapView: view },
+      }),
+      updateOptions
+    );
+    expect(result.input.settings?.framing?.contributors).toBeUndefined();
+  });
+});
