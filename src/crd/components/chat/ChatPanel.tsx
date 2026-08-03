@@ -70,7 +70,11 @@ export function ChatPanel({
             <ChevronLeft aria-hidden="true" className="size-5" />
           </button>
         )}
-        {titleAvatar && <span className="shrink-0">{titleAvatar}</span>}
+        {titleAvatar && (
+          <span aria-hidden="true" className="shrink-0">
+            {titleAvatar}
+          </span>
+        )}
         <span className="text-subsection-title min-w-0 flex-1 truncate px-1">{title}</span>
         {headerActions}
         {onGoToSettings && (

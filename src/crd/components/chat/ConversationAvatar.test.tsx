@@ -1,21 +1,9 @@
 import { render } from '@testing-library/react';
-import type { ReactNode } from 'react';
 import { describe, expect, test, vi } from 'vitest';
 import { ConversationAvatar } from './ConversationAvatar';
 
-// Radix only mounts AvatarPrimitive.Image once the browser reports the image as
-// loaded, which never happens in jsdom. Swap it for a plain <img> so the props
-// this component (and the GroupAvatar it composes) pass down are observable
-// (same approach as ApplicationsBlock.test.tsx).
-vi.mock('@/crd/primitives/avatar', () => ({
-  Avatar: ({ children, className }: { children: ReactNode; className?: string }) => (
-    <div className={className}>{children}</div>
-  ),
-  AvatarImage: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
-  AvatarFallback: ({ children, className }: { children: ReactNode; className?: string }) => (
-    <span className={className}>{children}</span>
-  ),
-}));
+// Shared jsdom-safe avatar double from src/crd/primitives/__mocks__/avatar.tsx.
+vi.mock('@/crd/primitives/avatar');
 
 describe('ConversationAvatar', () => {
   test('guidance branch renders the bot circle, no image', () => {
@@ -39,8 +27,8 @@ describe('ConversationAvatar', () => {
     );
     const img = container.querySelector('img');
     expect(img).toHaveAttribute('src', 'https://example.com/group.png');
-    // Composite grid root carries aria-hidden — absent when the single-photo branch is used.
-    expect(container.querySelector('[aria-hidden="true"]')).not.toBeInTheDocument();
+    // Single photo avatar — the composite would render one avatar per member.
+    expect(container.querySelectorAll('[data-testid="avatar"]')).toHaveLength(1);
   });
 
   test('group without avatarUrl renders the composite for 2-4 members, initials for those without a photo', () => {
@@ -55,8 +43,7 @@ describe('ConversationAvatar', () => {
         ]}
       />
     );
-    const composite = container.querySelector('[aria-hidden="true"]');
-    expect(composite).toBeInTheDocument();
+    expect(container.querySelectorAll('[data-testid="avatar"]')).toHaveLength(2);
     expect(container.querySelectorAll('img')).toHaveLength(1);
     expect(getByText('BJ')).toBeInTheDocument();
   });
@@ -69,9 +56,25 @@ describe('ConversationAvatar', () => {
     expect(getByText('JD')).toBeInTheDocument();
   });
 
-  test('a11y: composite root is aria-hidden, avatar images have empty alt, no interactive elements', () => {
-    const { container } = render(
+  test('a11y: every branch is decorative (aria-hidden root), avatar images have empty alt, no interactive elements', () => {
+    const branches = [
+      <ConversationAvatar key="guidance" displayName="Guidance" isGroup={false} isGuidance={true} />,
       <ConversationAvatar
+        key="single"
+        displayName="Jane Doe"
+        isGroup={false}
+        isGuidance={false}
+        avatarUrl="https://example.com/jane.png"
+      />,
+      <ConversationAvatar
+        key="group-photo"
+        displayName="Team"
+        isGroup={true}
+        isGuidance={false}
+        avatarUrl="https://example.com/group.png"
+      />,
+      <ConversationAvatar
+        key="composite"
         displayName="Team"
         isGroup={true}
         isGuidance={false}
@@ -79,12 +82,16 @@ describe('ConversationAvatar', () => {
           { id: '1', name: 'Alice', avatarUrl: 'https://example.com/alice.png' },
           { id: '2', name: 'Bob', avatarUrl: 'https://example.com/bob.png' },
         ]}
-      />
-    );
-    expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
-    container.querySelectorAll('img').forEach(img => {
-      expect(img).toHaveAttribute('alt', '');
-    });
-    expect(container.querySelectorAll('button, a')).toHaveLength(0);
+      />,
+    ];
+
+    for (const branch of branches) {
+      const { container } = render(branch);
+      expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true');
+      container.querySelectorAll('img').forEach(img => {
+        expect(img).toHaveAttribute('alt', '');
+      });
+      expect(container.querySelectorAll('button, a')).toHaveLength(0);
+    }
   });
 });
