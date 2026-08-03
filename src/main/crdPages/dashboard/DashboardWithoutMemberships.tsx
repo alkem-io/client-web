@@ -63,7 +63,7 @@ export default function DashboardWithoutMemberships({
   });
 
   // Invitations
-  const { count: pendingCount } = usePendingInvitationsCount();
+  const { count: pendingCount, loading: pendingCountLoading } = usePendingInvitationsCount();
   const { data: invitationsData, loading: invitationsLoading } = usePendingInvitationsQuery({
     skip: pendingCount === 0,
   });
@@ -74,13 +74,16 @@ export default function DashboardWithoutMemberships({
 
   // Applications. No count query exists for these, so the block is driven by the
   // list itself and renders nothing until it resolves non-empty.
-  const { applications } = usePendingMemberships({ skip: false });
+  const { applications, loading: applicationsLoading } = usePendingMemberships({ skip: false });
   const applicationCards = mapApplicationsToCards(applications ?? []);
   const hasApplications = applicationCards.length > 0;
 
   // Combined pending total (FR-015): applications + invitations.
   const pendingTotal = applicationCards.length + pendingCount;
   const hasPending = pendingTotal > 0;
+  // Both pending sources must resolve before choosing pending-vs-welcome, else a
+  // user with pending items briefly sees the welcome block before it swaps out.
+  const pendingLoading = pendingCountLoading || applicationsLoading;
 
   // Explore Spaces — compact block: up to 8 most-active Spaces (welcome Space first when
   // it is among them), no search/filter chrome (FR-020).
@@ -93,7 +96,7 @@ export default function DashboardWithoutMemberships({
   // nameID — e.g. local/demo environments without a configured welcome Space. Treat that
   // as absence: skip the global error notification/Sentry report and fall through to the
   // `!welcomeSpace` fallback below.
-  const { data: welcomeData } = useDashboardWelcomeSpaceQuery({
+  const { data: welcomeData, loading: welcomeLoading } = useDashboardWelcomeSpaceQuery({
     variables: { nameId: WELCOME_SPACE_NAMEID },
     errorPolicy: 'ignore',
     context: { skipGlobalErrorHandler: true },
@@ -123,7 +126,7 @@ export default function DashboardWithoutMemberships({
           />
         }
       >
-        {hasPending ? (
+        {pendingLoading ? null : hasPending ? (
           <section className="space-y-4">
             <div className="flex items-center gap-2">
               <h2 className="text-section-title">{t('pending.title')}</h2>
@@ -171,7 +174,7 @@ export default function DashboardWithoutMemberships({
           </div>
 
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {exploreLoading && exploreCards.length === 0
+            {(exploreLoading || welcomeLoading) && exploreCards.length === 0
               ? // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
                 Array.from({ length: EXPLORE_LIMIT }).map((_, i) => (
                   <li key={i}>

@@ -91,8 +91,8 @@ export default function DashboardWithMemberships({
       variables: { settingsData: { userID: userId, settings: { dashboard: { activityView: enabled } } } },
       refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
     }).catch(() => {
-      // Persist failed — drop the override so the UI reflects the server value again
-      // (FR: the user still sees their toggled view for the session).
+      // Persist failed — drop the local override so the UI falls back to the
+      // last-known server value rather than showing a change that didn't save.
       setActivityOverride(null);
     });
   };
