@@ -65,7 +65,7 @@ type ChatThreadViewProps = {
   isAwaitingGuidanceResponse?: boolean; // loader bubble + disabled input
 };
 ```
-- Composer = reused `CommentInput` (mentions OFF for DM/group). Auto-scroll reproduces `pendingScrollRef` logic. Renders `ChatMessageBubble` per message.
+- Composer = reused `CommentInput` (mentions OFF for DM/group), rendered with `refocusAfterSubmit` so focus returns to the input once the composer re-enables after a send (FR-014a) — covers both the Enter path (the in-flight `disabled` blurs the textarea) and the send-button path (focus lands on the button, which then disables). Auto-scroll reproduces `pendingScrollRef` logic. Renders `ChatMessageBubble` per message.
 
 ## ChatMessageBubble
 ```ts

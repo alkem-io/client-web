@@ -87,6 +87,7 @@ export function ChatThreadView({
             currentUser={currentUser}
             onSubmit={onSendMessage}
             disabled={isSending || isAwaitingGuidanceResponse}
+            refocusAfterSubmit={true}
           />
         </div>
       )}
