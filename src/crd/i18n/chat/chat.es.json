@@ -54,7 +54,8 @@
     "empty": "Aún no hay conversaciones",
     "emptyHint": "Inicia un mensaje nuevo para empezar a chatear.",
     "noResults": "Ninguna conversación coincide con tu búsqueda.",
-    "loading": "Cargando conversaciones"
+    "loading": "Cargando conversaciones",
+    "draft": "Borrador:"
   },
   "guidance": {
     "beta": "Beta",

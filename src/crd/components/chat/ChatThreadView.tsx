@@ -16,6 +16,12 @@ type ChatThreadViewProps = {
   canReact?: boolean;
   /** Guidance only: the assistant is generating a reply — show a loader, disable input. */
   isAwaitingGuidanceResponse?: boolean;
+  /**
+   * Composer text, owned by the consumer so an unsent draft outlives this view.
+   * Omit both to let the composer keep its own text (preview surfaces).
+   */
+  draft?: string;
+  onDraftChange?: (value: string) => void;
   onSendMessage?: (content: string) => void;
   onAddReaction?: (messageId: string, emoji: string) => void;
   onRemoveReaction?: (messageId: string, emoji: string) => void;
@@ -34,6 +40,8 @@ export function ChatThreadView({
   isSending,
   canReact,
   isAwaitingGuidanceResponse,
+  draft,
+  onDraftChange,
   onSendMessage,
   onAddReaction,
   onRemoveReaction,
@@ -87,6 +95,8 @@ export function ChatThreadView({
             currentUser={currentUser}
             onSubmit={onSendMessage}
             disabled={isSending || isAwaitingGuidanceResponse}
+            value={draft}
+            onValueChange={onDraftChange}
           />
         </div>
       )}
