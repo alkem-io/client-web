@@ -194,12 +194,13 @@
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Vastgepind & Laatst actief",
-      "mostActivity": "Meeste activiteit",
-      "leadAdmin": "Lead & beheer",
-      "host": "Ik host"
+      "pinnedLastActive": "Laatst actief",
+      "mostActivity": "Spaces met de meeste activiteit",
+      "leadAdmin": "Spaces die ik leid en beheer",
+      "host": "Spaces die ik host"
     },
-    "showMore": "Meer tonen"
+    "showMore_one": "Meer tonen: {{count}} Space",
+    "showMore_other": "Meer tonen: {{count}} Spaces"
   },
   "welcome": {
     "title": "Welkom bij Alkemio",

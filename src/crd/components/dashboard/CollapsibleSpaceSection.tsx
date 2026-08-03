@@ -1,8 +1,7 @@
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Badge } from '@/crd/primitives/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/crd/primitives/collapsible';
 import type { CompactSpaceCardData } from './CompactSpaceCard';
 import { CompactSpaceCard, CompactSpaceCardSkeleton } from './CompactSpaceCard';
@@ -48,17 +47,7 @@ export function CollapsibleSpaceSection({
     <section className={cn('space-y-4', className)}>
       <Collapsible open={open} onOpenChange={setOpen}>
         <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
-          <div className="flex items-center gap-2">
-            <h2 className="text-subsection-title">{title}</h2>
-            {/* The count is shown only alongside a "show more" — i.e. when there are
-                items beyond the visible cap the user can reach. Capped sections with
-                no overflow (Pinned & Last Active, Most Activity) show no count. */}
-            {showMoreVisible && (
-              <Badge variant="secondary" className="shrink-0">
-                {items.length}
-              </Badge>
-            )}
-          </div>
+          <h2 className="text-subsection-title">{title}</h2>
           <ChevronDown
             className="size-5 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180"
             aria-hidden="true"
@@ -95,9 +84,10 @@ export function CollapsibleSpaceSection({
               <button
                 type="button"
                 onClick={showMore.onShowMore}
-                className="text-body-emphasis text-primary transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-4 py-2 text-control transition-colors hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
               >
-                {t('nonActivity.showMore')}
+                {t('nonActivity.showMore', { count: items.length })}
+                <ChevronRight className="size-4" aria-hidden="true" />
               </button>
             </div>
           )}

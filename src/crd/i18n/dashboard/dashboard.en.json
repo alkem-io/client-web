@@ -194,12 +194,13 @@
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Pinned & Last Active",
-      "mostActivity": "Most Activity",
-      "leadAdmin": "I Lead & Administer",
-      "host": "I Host"
+      "pinnedLastActive": "Last Active In",
+      "mostActivity": "Spaces with Most Activity",
+      "leadAdmin": "Spaces I Lead & Administer",
+      "host": "Spaces I Host"
     },
-    "showMore": "Show more"
+    "showMore_one": "Show More: {{count}} Space",
+    "showMore_other": "Show More: {{count}} Spaces"
   },
   "welcome": {
     "title": "Welcome to Alkemio",

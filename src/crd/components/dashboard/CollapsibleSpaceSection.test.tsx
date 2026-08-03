@@ -37,7 +37,7 @@ describe('CollapsibleSpaceSection', () => {
     expect(screen.queryByText('2')).not.toBeInTheDocument();
   });
 
-  it('shows the total-count badge only when "show more" is available', () => {
+  it('puts no numeric badge in the header — the count lives in the "show more" button', () => {
     render(
       <CollapsibleSpaceSection
         title="Lead & Admin"
@@ -46,8 +46,9 @@ describe('CollapsibleSpaceSection', () => {
         showMore={{ onShowMore: vi.fn() }}
       />
     );
-    // 5 total, 4 visible, show-more present → badge shows the total (5)
-    expect(screen.getByText('5')).toBeInTheDocument();
+    // No standalone header count (prototype puts "Show More: N Spaces" in the button)
+    expect(screen.queryByText('5')).not.toBeInTheDocument();
+    expect(screen.getByText('nonActivity.showMore')).toBeInTheDocument();
   });
 
   it('caps visible items and shows a "show more" trigger that calls onShowMore', () => {
