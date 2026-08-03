@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import type { CommentAuthor } from '@/crd/components/comment/types';
 import { ChatMessageBubble } from './ChatMessageBubble';
+import { computeMessageRunFlags } from './messageRuns';
 import type { ChatMessage, ChatThreadHeader } from './types';
 
 type ChatThreadViewProps = {
@@ -41,6 +42,7 @@ export function ChatThreadView({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
+  const runFlags = computeMessageRunFlags(messages, conversation?.isGroup ?? false);
 
   // Keep the latest message in view as the thread loads / receives messages.
   useEffect(() => {
@@ -55,11 +57,13 @@ export function ChatThreadView({
             {t('thread.loading')}
           </output>
         ) : (
-          messages.map(message => (
+          messages.map((message, index) => (
             <ChatMessageBubble
               key={message.id}
               message={message}
-              showAuthor={conversation?.isGroup}
+              showAuthor={runFlags[index].showAuthor}
+              showAvatar={runFlags[index].showAvatar}
+              avatarGutter={runFlags[index].avatarGutter}
               canReact={canReact}
               onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
               onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
