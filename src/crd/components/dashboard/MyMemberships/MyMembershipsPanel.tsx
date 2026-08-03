@@ -58,6 +58,7 @@ export function MyMembershipsPanel({
   browseAllHref,
   title,
   restrictToRoles,
+  hideRoleFilter,
 }: MyMembershipsPanelProps) {
   const { t } = useTranslation('crd-dashboard');
   const [search, setSearch] = useState('');
@@ -158,7 +159,7 @@ export function MyMembershipsPanel({
           </div>
 
           {/* Role filter — hidden when the panel is already scoped to a role set */}
-          {!restrictToRoles && (
+          {!restrictToRoles && !hideRoleFilter && (
             <Select value={roleFilter} onValueChange={setRoleFilter}>
               <SelectTrigger className="w-[130px] shrink-0" aria-label={t('myMembershipsPanel.filter.role.label')}>
                 <SelectValue />

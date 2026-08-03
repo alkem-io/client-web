@@ -1,3 +1,4 @@
+import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CollapsibleSpaceSection } from '@/crd/components/dashboard/CollapsibleSpaceSection';
@@ -54,6 +55,17 @@ export function NonActivityHomeSections({
 
   return (
     <>
+      {/* Top-level affordance to the full explore-all-Spaces page (FR-021: members keep this). */}
+      <div className="flex justify-end">
+        <button
+          type="button"
+          onClick={() => onNavigate(URL_SPACE_EXPLORER)}
+          className="flex items-center gap-1 text-body-emphasis text-primary transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+        >
+          {t('explore.exploreAll')} <ArrowRight className="size-4" aria-hidden="true" />
+        </button>
+      </div>
+
       <div className="space-y-8">
         {/* Section 1 always renders (empty pin slot when no home Space). */}
         <CollapsibleSpaceSection
@@ -114,6 +126,7 @@ export function NonActivityHomeSections({
         items={hostedPanelItems}
         loading={hostedLoading}
         title={t('nonActivity.sections.host')}
+        hideRoleFilter={true}
         onNavigate={href => {
           setOpenPanel(null);
           onNavigate(href);

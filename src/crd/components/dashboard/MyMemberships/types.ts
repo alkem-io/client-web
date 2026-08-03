@@ -28,4 +28,9 @@ export type MyMembershipsPanelProps = {
    * "show more" for the Lead & Administer section.
    */
   restrictToRoles?: MembershipRole[];
+  /**
+   * Hides the role filter without role-scoping the items — for sections whose items
+   * carry no meaningful membership role (e.g. "I Host": account Spaces, not memberships).
+   */
+  hideRoleFilter?: boolean;
 };

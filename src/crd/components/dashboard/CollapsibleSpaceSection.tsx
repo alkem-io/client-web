@@ -49,7 +49,7 @@ export function CollapsibleSpaceSection({
       <Collapsible open={open} onOpenChange={setOpen}>
         <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 rounded-sm focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
           <div className="flex items-center gap-2">
-            <h2 className="text-section-title">{title}</h2>
+            <h2 className="text-subsection-title">{title}</h2>
             {/* The count is shown only alongside a "show more" — i.e. when there are
                 items beyond the visible cap the user can reach. Capped sections with
                 no overflow (Pinned & Last Active, Most Activity) show no count. */}
