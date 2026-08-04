@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, List, Loader2, Map as MapIcon, Maximize2, Search, Users } from 'lucide-react';
 import { type ComponentType, lazy, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
+import type { ContributorMapFixedView, ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
@@ -53,6 +53,11 @@ type ContributorCollectionProps = {
   onActiveTypeChange: (type: ContributorTypeId) => void;
   /** Default display, used to initialise the view toggle. */
   defaultView: ContributorViewId;
+  /**
+   * Admin-fixed initial map view. null/absent = automatic framing.
+   * Passed through to `ContributorMap` unchanged — the map component guards it.
+   */
+  fixedView?: ContributorMapFixedView | null;
   /** Always-visible per-type counts (total eligible set; stable while searching). */
   counts: ContributorCollectionCounts;
   /** Cards for the active type, or `undefined` while loading. */
@@ -74,6 +79,7 @@ export function ContributorCollection({
   activeType,
   onActiveTypeChange,
   defaultView,
+  fixedView,
   counts,
   cards,
   loading,
@@ -309,6 +315,7 @@ export function ContributorCollection({
                 pins={pins}
                 fitKey={fitKey}
                 ariaLabel={t('contributors.viewMap')}
+                fixedView={fixedView ?? undefined}
                 onPinClick={onContributorClick}
               />
             </Suspense>
@@ -343,6 +350,7 @@ export function ContributorCollection({
                   pins={pins}
                   fitKey={fitKey}
                   ariaLabel={t('contributors.viewMap')}
+                  fixedView={fixedView ?? undefined}
                   onPinClick={onContributorClick}
                   className="h-full border-0"
                 />

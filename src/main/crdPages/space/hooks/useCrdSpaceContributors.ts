@@ -6,6 +6,7 @@ import {
 import { ActorType, CalloutSelectionMode } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import type { ContributorCollectionCounts } from '@/crd/components/callout/ContributorCollection/ContributorCollection';
+import type { ContributorMapFixedView } from '@/crd/components/map/ContributorMap';
 import type { ContributorTypeId, ContributorViewId } from '@/crd/forms/callout/types';
 import {
   contributorCollectionFromServer,
@@ -36,6 +37,12 @@ export type UseCrdSpaceContributorsResult = {
   defaultType: ContributorTypeId;
   /** The default display mode from the callout config. */
   defaultView: ContributorViewId;
+  /**
+   * Admin-fixed initial map view. null = automatic framing.
+   * Already read-guarded by `contributorCollectionFromServer` — invalid stored
+   * values are coerced to null at the mapping boundary.
+   */
+  fixedView: ContributorMapFixedView | null;
   /** Always-visible per-type counts (total eligible set). */
   counts: ContributorCollectionCounts;
   /** Cards for the requested type, or `undefined` until that type is fetched. */
@@ -149,6 +156,9 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
     types: config.types,
     defaultType,
     defaultView: config.defaultView,
+    // The read-guard in contributorCollectionFromServer already
+    // coerces invalid stored values to null — no additional guard needed here.
+    fixedView: config.mapView,
     counts,
     getCards: (type: ContributorTypeId) => cardsByType[type],
     ensureLoaded,
