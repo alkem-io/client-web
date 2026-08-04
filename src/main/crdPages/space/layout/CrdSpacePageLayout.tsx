@@ -49,6 +49,7 @@ import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm'
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
+import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
@@ -229,6 +230,19 @@ export default function CrdSpacePageLayout() {
             )
           }
         >
+          {/* Join/apply entry point for viewers who aren't yet members of this
+            (root) space — mirrors `CrdSubspacePageLayout`, which mounts the
+            same connector for L1/L2. Without it, non-members had no way to
+            apply from a public, application-required top-level space. */}
+          {!isOnSettings && (
+            <SpaceApplyButtonConnector
+              spaceId={space.id}
+              spaceProfileUrl={spaceUrl}
+              communityName={spaceDisplayName}
+              className="mb-6"
+            />
+          )}
+
           <Suspense fallback={<LoadingSpinner />}>
             <Outlet context={{ activeTabIndex, totalTabs: sectionCount }} />
           </Suspense>
