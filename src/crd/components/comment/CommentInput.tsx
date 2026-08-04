@@ -166,11 +166,13 @@ export function CommentInput({
 
   // A disabled textarea can't take focus, so the refocus waits out the
   // in-flight send (`disabled`) and fires on the re-enable render.
+  // `preventScroll` because the composer was in view when the user submitted —
+  // if they scrolled away during a slow send, focus shouldn't yank them back.
   useEffect(() => {
     if (!pendingRefocus || disabled) return;
 
     setPendingRefocus(false);
-    textareaRef.current?.focus();
+    textareaRef.current?.focus({ preventScroll: true });
   }, [pendingRefocus, disabled]);
 
   const handleSubmit = () => {
