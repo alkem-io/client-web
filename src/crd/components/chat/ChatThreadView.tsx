@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CommentInput } from '@/crd/components/comment/CommentInput';
 import type { CommentAuthor } from '@/crd/components/comment/types';
 import { ChatMessageBubble } from './ChatMessageBubble';
+import { computeMessageRunFlags } from './messageRuns';
 import type { ChatMessage, ChatThreadHeader } from './types';
 
 type ChatThreadViewProps = {
@@ -15,6 +16,12 @@ type ChatThreadViewProps = {
   canReact?: boolean;
   /** Guidance only: the assistant is generating a reply — show a loader, disable input. */
   isAwaitingGuidanceResponse?: boolean;
+  /**
+   * Composer text, owned by the consumer so an unsent draft outlives this view.
+   * Omit both to let the composer keep its own text (preview surfaces).
+   */
+  draft?: string;
+  onDraftChange?: (value: string) => void;
   onSendMessage?: (content: string) => void;
   onAddReaction?: (messageId: string, emoji: string) => void;
   onRemoveReaction?: (messageId: string, emoji: string) => void;
@@ -33,6 +40,8 @@ export function ChatThreadView({
   isSending,
   canReact,
   isAwaitingGuidanceResponse,
+  draft,
+  onDraftChange,
   onSendMessage,
   onAddReaction,
   onRemoveReaction,
@@ -41,6 +50,7 @@ export function ChatThreadView({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
+  const runFlags = computeMessageRunFlags(messages, conversation?.isGroup ?? false);
 
   // Keep the latest message in view as the thread loads / receives messages.
   useEffect(() => {
@@ -55,11 +65,13 @@ export function ChatThreadView({
             {t('thread.loading')}
           </output>
         ) : (
-          messages.map(message => (
+          messages.map((message, index) => (
             <ChatMessageBubble
               key={message.id}
               message={message}
-              showAuthor={conversation?.isGroup}
+              showAuthor={runFlags[index].showAuthor}
+              showAvatar={runFlags[index].showAvatar}
+              avatarGutter={runFlags[index].avatarGutter}
               canReact={canReact}
               onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
               onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
@@ -83,6 +95,8 @@ export function ChatThreadView({
             currentUser={currentUser}
             onSubmit={onSendMessage}
             disabled={isSending || isAwaitingGuidanceResponse}
+            value={draft}
+            onValueChange={onDraftChange}
           />
         </div>
       )}

@@ -17,6 +17,14 @@ type CommentInputProps = {
   disabled?: boolean;
   maxLength?: number;
   /**
+   * Controlled text. When provided, the consumer owns the value *and* the
+   * clearing after a submit — the input no longer empties itself, so a send that
+   * fails leaves the typed message in place. Omit for the default self-contained
+   * behaviour (clears on submit).
+   */
+  value?: string;
+  onValueChange?: (value: string) => void;
+  /**
    * Async `@`-lookup callback wired by the integration layer. When omitted the
    * input falls back to a plain textarea (standalone preview + any non-space
    * surface that can't provide a contributor search).
@@ -92,13 +100,25 @@ export function CommentInput({
   onSubmit,
   disabled,
   maxLength = 2000,
+  value,
+  onValueChange,
   mentionSearch,
   autoFocus,
 }: CommentInputProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [content, setContent] = useState('');
+  const [uncontrolledContent, setUncontrolledContent] = useState('');
+
+  const controlled = value !== undefined;
+  const content = controlled ? value : uncontrolledContent;
+  const setContent = (next: string) => {
+    if (controlled) {
+      onValueChange?.(next);
+    } else {
+      setUncontrolledContent(next);
+    }
+  };
 
   const trimmedContent = content.trim();
   const canSend = !disabled && trimmedContent.length > 0;
@@ -139,7 +159,10 @@ export function CommentInput({
     if (!canSend) return;
 
     onSubmit(trimmedContent);
-    setContent('');
+    // Controlled: the consumer clears once the submit actually succeeded.
+    if (!controlled) {
+      setContent('');
+    }
   };
 
   const insertAtCursor = (insertion: string) => {

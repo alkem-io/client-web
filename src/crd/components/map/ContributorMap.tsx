@@ -14,6 +14,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
  * Markers + popups are MapLibre child components styled with shadcn/Tailwind
  * tokens (`theme.css`). Only contributors with valid coordinates are plotted;
  * the caller lists the rest under "no location data".
+ *
+ * Adds optional `fixedView` (admin-chosen camera) and `onViewChange`
+ * (capture callback). `isRenderableMapView` and `resolveView` are exported pure
+ * functions for use in tests and the capture UI.
  */
 
 const POSITRON_STYLE = 'https://tiles.openfreemap.org/styles/positron';
@@ -28,6 +32,43 @@ export type ContributorMapPin = {
   longitude: number;
 };
 
+/**
+ * Admin-fixed initial map view. Absent/null ⇒ automatic framing.
+ * Mirrors the server shape (longitude, latitude, zoom) — three floats.
+ */
+export type ContributorMapFixedView = {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+};
+
+/**
+ * Guard predicate. Returns true ONLY when all three
+ * values are finite numbers within MapLibre's safe ranges:
+ *  - latitude ∈ [−90, 90]
+ *  - longitude ∈ [−180, 180]
+ *  - zoom ∈ [0, 22]
+ *
+ * MapLibre throws at mount on any out-of-range value (especially lat > ±90),
+ * which would crash the map for every viewer — including anonymous ones. An
+ * invalid stored view always falls back to automatic framing; no clamping.
+ */
+export function isRenderableMapView(v: ContributorMapFixedView | null | undefined): v is ContributorMapFixedView {
+  if (!v) return false;
+  const { longitude, latitude, zoom } = v;
+  return (
+    Number.isFinite(longitude) &&
+    Number.isFinite(latitude) &&
+    Number.isFinite(zoom) &&
+    latitude >= -90 &&
+    latitude <= 90 &&
+    longitude >= -180 &&
+    longitude <= 180 &&
+    zoom >= 0 &&
+    zoom <= 22
+  );
+}
+
 type ContributorMapProps = {
   pins: ContributorMapPin[];
   /** Accessible label for the map region (consumer i18n's it). */
@@ -39,6 +80,18 @@ type ContributorMapProps = {
    * view would stay frozen on the first type's bounds.
    */
   fitKey?: string;
+  /**
+   * Admin-fixed initial camera. When present and valid
+   * (`isRenderableMapView`), the map opens on this view instead of the automatic
+   * fit-to-pins framing. Invalid stored values fall back to automatic framing
+   * (never throw). Viewers can still pan/zoom freely after mount.
+   */
+  fixedView?: ContributorMapFixedView;
+  /**
+   * Called with the current camera whenever the map loads or the user finishes
+   * panning/zooming. Used by the capture control to read the view.
+   */
+  onViewChange?: (view: ContributorMapFixedView) => void;
   onPinClick?: (href: string) => void;
   className?: string;
 };
@@ -84,6 +137,21 @@ function initialView(pins: ContributorMapPin[]): MapInitialView {
   };
 }
 
+/**
+ * Shared view resolver. Returns the fixed view when valid
+ * (`isRenderableMapView`), otherwise falls back to `initialView(pins)`.
+ * Feeds BOTH the mount `initialViewState` AND the `fitKey` effect re-frame.
+ */
+export function resolveView(
+  fixedView: ContributorMapFixedView | null | undefined,
+  pins: ContributorMapPin[]
+): MapInitialView {
+  if (isRenderableMapView(fixedView)) {
+    return { longitude: fixedView.longitude, latitude: fixedView.latitude, zoom: fixedView.zoom };
+  }
+  return initialView(pins);
+}
+
 // MapLibre renders the compact attribution EXPANDED by default; collapse it on
 // load so it starts as a small "ⓘ" toggle (the license-required OpenStreetMap /
 // OpenFreeMap attribution stays — clicking ⓘ expands it).
@@ -96,35 +164,78 @@ function collapseAttribution(target: { getContainer(): HTMLElement }) {
   }
 }
 
-export default function ContributorMap({ pins, ariaLabel, fitKey, onPinClick, className }: ContributorMapProps) {
+export default function ContributorMap({
+  pins,
+  ariaLabel,
+  fitKey,
+  fixedView,
+  onViewChange,
+  onPinClick,
+  className,
+}: ContributorMapProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = pins.find(p => p.id === activeId) ?? null;
 
   const mapRef = useRef<MapRef>(null);
-  // Latest pins, read inside the fit effect without making it a dependency (we
-  // re-fit on `fitKey`, not on every pin change — so searching doesn't re-zoom).
+  // Latest pins + fixedView, read inside the fit effect without making them
+  // dependencies (we re-fit on `fitKey`, not on every pin change — so searching
+  // doesn't re-zoom).
   const pinsRef = useRef(pins);
   pinsRef.current = pins;
+  const fixedViewRef = useRef(fixedView);
+  fixedViewRef.current = fixedView;
   const isFirstFit = useRef(true);
 
-  useEffect(() => {
-    // `initialViewState` already positioned the map on mount; skip that first
-    // run and only re-fit on subsequent dataset changes (e.g. type switch).
-    if (isFirstFit.current) {
-      isFirstFit.current = false;
-      return;
-    }
+  // Re-frame the already-mounted map to the resolved view. `initialViewState`
+  // only applies on mount, so every post-mount change must move the map here.
+  // Reads the latest pins/fixedView from refs (above), so it is never stale.
+  const reframe = () => {
     const map = mapRef.current;
     if (!map) {
       return;
     }
-    const view = initialView(pinsRef.current);
+    const view = resolveView(fixedViewRef.current, pinsRef.current);
     if ('bounds' in view) {
       map.fitBounds(view.bounds, view.fitBoundsOptions);
     } else {
       map.easeTo({ center: [view.longitude, view.latitude], zoom: view.zoom });
     }
+  };
+
+  useEffect(() => {
+    // `initialViewState` already positioned the map on mount; skip that first
+    // run and only re-fit on subsequent dataset changes (e.g. type switch). When
+    // a valid fixed view is set, resolveView keeps it instead of re-fitting to
+    // the new type's pin bounds.
+    if (isFirstFit.current) {
+      isFirstFit.current = false;
+      return;
+    }
+    reframe();
   }, [fitKey]);
+
+  // Re-frame live when the stored fixed view itself changes. An
+  // admin saving a new view (or resetting to automatic) updates `fixedView`
+  // after the map is already mounted — without this the change would only show
+  // after a page reload. Keyed on the view's identity so free panning/searching
+  // (which leaves `fixedView` untouched) never triggers a re-frame.
+  const fixedViewKey = fixedView ? `${fixedView.longitude},${fixedView.latitude},${fixedView.zoom}` : 'auto';
+  const isFirstViewSync = useRef(true);
+  useEffect(() => {
+    if (isFirstViewSync.current) {
+      isFirstViewSync.current = false;
+      return;
+    }
+    reframe();
+  }, [fixedViewKey]);
+
+  // Report the current camera to the capture control.
+  const handleViewChange = () => {
+    const map = mapRef.current;
+    if (!onViewChange || !map) return;
+    const center = map.getCenter();
+    onViewChange({ longitude: center.lng, latitude: center.lat, zoom: map.getZoom() });
+  };
 
   return (
     <section
@@ -133,14 +244,18 @@ export default function ContributorMap({ pins, ariaLabel, fitKey, onPinClick, cl
     >
       <MapLibreMap
         ref={mapRef}
-        initialViewState={initialView(pins)}
+        initialViewState={resolveView(fixedView, pins)}
         mapStyle={POSITRON_STYLE}
         style={{ width: '100%', height: '100%' }}
         // Disable the default (expanded) control and add an explicit COMPACT one;
         // `onLoad` then collapses it so the attribution starts as a small "ⓘ"
         // toggle in the corner (license-required attribution is kept, not removed).
         attributionControl={false}
-        onLoad={e => collapseAttribution(e.target)}
+        onLoad={e => {
+          collapseAttribution(e.target);
+          handleViewChange();
+        }}
+        onMoveEnd={handleViewChange}
       >
         <AttributionControl compact={true} position="bottom-right" />
         {pins.map(pin => (

@@ -37,6 +37,7 @@ import { error as logError } from '@/core/logging/sentry/log';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
+import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
@@ -80,6 +81,7 @@ import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUp
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
 import { healContributorCollection } from './contributorCollectionMapper';
@@ -273,6 +275,25 @@ function CalloutFormConnectorInner({
     displayName: s.about.profile?.displayName ?? s.id,
     avatarUrl: s.about.profile?.avatar?.uri ?? undefined,
   }));
+
+  // Contributor map pins for the map-view capture control.
+  // Edit mode only: derive from the default-type contributor cards. In create mode
+  // calloutId is undefined so the hook skips cleanly (the no-op path).
+  const { defaultType: mapPinsDefaultType, getCards: getMapPinCards } = useCrdSpaceContributors(
+    mode === 'edit' && isContributorsChip ? calloutId : undefined
+  );
+  const contributorMapPins: ContributorMapPin[] = (getMapPinCards(mapPinsDefaultType) ?? [])
+    .filter(card => card.latitude !== undefined && card.longitude !== undefined)
+    .map(card => ({
+      id: card.id,
+      name: card.name,
+      avatarUrl: card.avatarUrl,
+      roleLabel: card.roleLabel,
+      href: card.href,
+      latitude: card.latitude as number,
+      longitude: card.longitude as number,
+    }));
+
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
@@ -987,7 +1008,15 @@ function CalloutFormConnectorInner({
                     : undefined
                 }
                 contributorCollection={values.contributorCollection}
-                onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
+                onContributorCollectionChange={v =>
+                  setField(
+                    'contributorCollection',
+                    // Preserve the current mapView when the CRD type-config field
+                    // changes (it only emits types/defaultType/defaultView — the
+                    // capture control handles mapView separately).
+                    healContributorCollection({ ...v, mapView: values.contributorCollection.mapView })
+                  )
+                }
                 contributorCollectionError={errors.contributorCollection}
                 selectionMode={values.selectionMode}
                 onSelectionModeChange={next => setField('selectionMode', next)}
@@ -998,6 +1027,14 @@ function CalloutFormConnectorInner({
                 contributorCandidatesLoading={contributorCandidatesLoading}
                 subspaceCandidates={subspaceCandidates}
                 subspaceCandidatesLoading={subspaceCandidatesLoading}
+                contributorMapPins={contributorMapPins}
+                contributorMapView={values.contributorCollection.mapView}
+                onContributorMapViewChange={view =>
+                  setField('contributorCollection', {
+                    ...values.contributorCollection,
+                    mapView: view,
+                  })
+                }
               />
             </div>
           )

@@ -8,7 +8,7 @@ type CookieConsentBannerProps = {
   /** Forwarded to the root element so the consumer can measure the banner height and pad the page. */
   ref?: Ref<HTMLDivElement>;
   onAcceptAll: () => void;
-  /** Confirm the granular choice. Technical cookies are always accepted; only the analysis opt-in varies. */
+  /** Confirm the granular choice. Technical cookies are always accepted; analysis opt-in varies. */
   onConfirm: (analysisAccepted: boolean) => void;
 };
 
@@ -16,6 +16,7 @@ type CookieConsentBannerProps = {
  * Cookie consent banner. Two-step flow mirroring the legacy MUI version: a general
  * accept-all prompt, and a settings view where the analysis cookie can be toggled.
  * Purely presentational — persistence and analytics wiring live in the consumer.
+ * Anonymous language preference is session-only (no preference cookie category).
  */
 export function CookieConsentBanner({ ref, onAcceptAll, onConfirm }: CookieConsentBannerProps) {
   const { t } = useTranslation('crd-layout');

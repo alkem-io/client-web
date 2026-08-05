@@ -1005,6 +1005,16 @@
       "defaultViewLabel": "Visualización predeterminada",
       "viewList": "Lista",
       "viewMap": "Mapa"
+    },
+    "mapView": {
+      "helper": "Elige la posición inicial que todos ven en el mapa, o deja que se ajuste automáticamente a tus colaboradores.",
+      "stateAutomatic": "Vista del mapa: automática",
+      "stateFixed": "Vista del mapa: fija",
+      "useCurrent": "Usar la vista actual",
+      "resetAuto": "Restablecer a automático",
+      "mapAriaLabel": "Vista previa del mapa de colaboradores — desplace y aplique zoom para establecer la vista fija",
+      "captureHint": "Desplace y aplique zoom al mapa y luego haga clic en 'Usar la vista actual' para fijar la posición inicial.",
+      "controlAriaLabel": "Configuración de la vista del mapa"
     }
   },
   "spaceCollection": {
