@@ -38,6 +38,13 @@ type CommentInputProps = {
    * input leaves this off so the page doesn't jump to the box on load.
    */
   autoFocus?: boolean;
+  /**
+   * Chat-composer behaviour: return focus to the textarea after a submit, once
+   * the input is enabled again. Submitting drops focus either way — Enter
+   * blurs the textarea when `disabled` kicks in for the in-flight send, and
+   * clicking Send parks focus on a button that then disables itself.
+   */
+  refocusAfterSubmit?: boolean;
 };
 
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
@@ -104,10 +111,12 @@ export function CommentInput({
   onValueChange,
   mentionSearch,
   autoFocus,
+  refocusAfterSubmit,
 }: CommentInputProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [pendingRefocus, setPendingRefocus] = useState(false);
   const [uncontrolledContent, setUncontrolledContent] = useState('');
 
   const controlled = value !== undefined;
@@ -155,9 +164,23 @@ export function CommentInput({
     textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [autoFocus]);
 
+  // A disabled textarea can't take focus, so the refocus waits out the
+  // in-flight send (`disabled`) and fires on the re-enable render.
+  // `preventScroll` because the composer was in view when the user submitted —
+  // if they scrolled away during a slow send, focus shouldn't yank them back.
+  useEffect(() => {
+    if (!pendingRefocus || disabled) return;
+
+    setPendingRefocus(false);
+    textareaRef.current?.focus({ preventScroll: true });
+  }, [pendingRefocus, disabled]);
+
   const handleSubmit = () => {
     if (!canSend) return;
 
+    if (refocusAfterSubmit) {
+      setPendingRefocus(true);
+    }
     onSubmit(trimmedContent);
     // Controlled: the consumer clears once the submit actually succeeded.
     if (!controlled) {
