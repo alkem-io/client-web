@@ -54,7 +54,8 @@
     "empty": "Aucune conversation pour le moment",
     "emptyHint": "Commencez un nouveau message pour discuter.",
     "noResults": "Aucune conversation ne correspond à votre recherche.",
-    "loading": "Chargement des conversations"
+    "loading": "Chargement des conversations",
+    "draft": "Brouillon :"
   },
   "guidance": {
     "beta": "Bêta",

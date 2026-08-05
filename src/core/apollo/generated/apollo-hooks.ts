@@ -1063,6 +1063,11 @@ export const CalloutSettingsFullFragmentDoc = gql`
       contributorTypes
       defaultContributorType
       defaultView
+      mapView {
+        longitude
+        latitude
+        zoom
+      }
     }
     selection {
       mode
@@ -1514,6 +1519,7 @@ export const PendingMembershipInvitationFragmentDoc = gql`
     fragment PendingMembershipInvitation on Invitation {
   id
   welcomeMessage
+  suggestedLanguage
   createdBy {
     id
     profile {
@@ -1866,6 +1872,7 @@ export const InvitationDataFragmentDoc = gql`
   invitation {
     id
     welcomeMessage
+    suggestedLanguage
     createdBy {
       id
     }
@@ -2047,6 +2054,10 @@ ${InnovationPackProviderProfileWithAvatarFragmentDoc}
 ${AccountResourceProfileFragmentDoc}`;
 export const ConfigurationFragmentDoc = gql`
     fragment Configuration on Config {
+  language {
+    eligible
+    default
+  }
   authentication {
     providers {
       name
@@ -5058,9 +5069,9 @@ export type InvitationStateEventMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.InvitationStateEventMutationVariables
 >;
 export const InviteForEntryRoleOnRoleSetDocument = gql`
-    mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedActorIds: [UUID!]!, $invitedUserEmails: [String!]!, $welcomeMessage: String, $extraRoles: [RoleName!]!) {
+    mutation InviteForEntryRoleOnRoleSet($roleSetId: UUID!, $invitedActorIds: [UUID!]!, $invitedUserEmails: [String!]!, $welcomeMessage: String, $extraRoles: [RoleName!]!, $suggestedLanguage: String) {
   inviteForEntryRoleOnRoleSet(
-    invitationData: {invitedActorIDs: $invitedActorIds, invitedUserEmails: $invitedUserEmails, roleSetID: $roleSetId, welcomeMessage: $welcomeMessage, extraRoles: $extraRoles}
+    invitationData: {invitedActorIDs: $invitedActorIds, invitedUserEmails: $invitedUserEmails, roleSetID: $roleSetId, welcomeMessage: $welcomeMessage, extraRoles: $extraRoles, suggestedLanguage: $suggestedLanguage}
   ) {
     type
     invitation {
@@ -5105,6 +5116,7 @@ export type InviteForEntryRoleOnRoleSetMutationFn = Apollo.MutationFunction<
  *      invitedUserEmails: // value for 'invitedUserEmails'
  *      welcomeMessage: // value for 'welcomeMessage'
  *      extraRoles: // value for 'extraRoles'
+ *      suggestedLanguage: // value for 'suggestedLanguage'
  *   },
  * });
  */
@@ -15087,6 +15099,8 @@ export const UpdateUserSettingsDocument = gql`
     id
     settings {
       id
+      language
+      languageOfferAnswered
       homeSpace {
         spaceID
         autoRedirect
@@ -15455,6 +15469,8 @@ export const CurrentUserLightDocument = gql`
       settings {
         id
         designVersion
+        language
+        languageOfferAnswered
       }
       account {
         id
@@ -28404,6 +28420,11 @@ export const ContributorCollectionConfigDocument = gql`
             contributorTypes
             defaultContributorType
             defaultView
+            mapView {
+              longitude
+              latitude
+              zoom
+            }
           }
           selection {
             mode

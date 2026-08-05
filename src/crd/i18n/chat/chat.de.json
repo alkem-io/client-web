@@ -54,7 +54,8 @@
     "empty": "Noch keine Unterhaltungen",
     "emptyHint": "Beginnen Sie eine neue Nachricht, um zu chatten.",
     "noResults": "Keine Unterhaltungen entsprechen Ihrer Suche.",
-    "loading": "Unterhaltungen werden geladen"
+    "loading": "Unterhaltungen werden geladen",
+    "draft": "Entwurf:"
   },
   "guidance": {
     "beta": "Beta",

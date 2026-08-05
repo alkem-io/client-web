@@ -13,6 +13,7 @@ import {
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
+import { LanguageOfferBannerConnector } from '@/domain/language/LanguageOfferBannerConnector';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
@@ -83,6 +84,8 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 
   return (
     <MarkdownConfigProvider iframeAllowedUrls={iframeAllowedUrls}>
+      {/* Language offer banner — shown AFTER cookie consent resolves, never pre-empting it (R-9). */}
+      <LanguageOfferBannerConnector />
       <CrdLayout
         user={user}
         authenticated={isAuthenticated}
@@ -129,6 +132,8 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 }
 
 export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
+  // LanguageOfferProvider is NOT here — it is hoisted to App (corr-client-4 fix) so the
+  // in-memory anonymous choice survives navigation between route groups within one session.
   return (
     <BreadcrumbsProvider>
       <BannerOverlayProvider>

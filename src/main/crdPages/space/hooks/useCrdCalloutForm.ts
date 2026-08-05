@@ -159,11 +159,12 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   framingChip: 'none',
   framingCommentsEnabled: true,
   // Default contributor-collection config mirrors the server migration default:
-  // all three types, default type USER, default view LIST.
+  // all three types, default type USER, default view LIST, no fixed map view.
   contributorCollection: {
     types: ['user', 'organization', 'virtualContributor'],
     defaultType: 'user',
     defaultView: 'list',
+    mapView: null,
   },
   // Selection defaults: AUTO mode, no ids (feature 025 FR-002 default).
   selectionMode: 'auto',

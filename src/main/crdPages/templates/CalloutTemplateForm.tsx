@@ -156,7 +156,14 @@ export function CalloutTemplateForm({
           collaboraDocumentType={values.collaboraDocumentType}
           onCollaboraDocumentTypeChange={v => setField('collaboraDocumentType', v)}
           contributorCollection={values.contributorCollection}
-          onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
+          onContributorCollectionChange={v =>
+            setField(
+              'contributorCollection',
+              // Preserve mapView — the CRD type-config field
+              // only emits types/defaultType/defaultView.
+              healContributorCollection({ ...v, mapView: values.contributorCollection.mapView })
+            )
+          }
           contributorCollectionError={errors.contributorCollection}
         />
       </div>

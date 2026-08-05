@@ -54,7 +54,8 @@
     "empty": "No conversations yet",
     "emptyHint": "Start a new message to begin chatting.",
     "noResults": "No conversations match your search.",
-    "loading": "Loading conversations"
+    "loading": "Loading conversations",
+    "draft": "Draft:"
   },
   "guidance": {
     "beta": "Beta",

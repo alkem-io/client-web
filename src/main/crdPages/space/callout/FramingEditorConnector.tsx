@@ -1,11 +1,12 @@
-import { FileText, Presentation, Settings, Sheet, StickyNote } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Crop, FileText, Presentation, Settings, Sheet, StickyNote, Wand2 } from 'lucide-react';
+import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
 import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import type { ContributorMapFixedView, ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
 import { ContributorSelector } from '@/crd/forms/ContributorSelector';
 import { CalloutSelectionField } from '@/crd/forms/callout/CalloutSelectionField';
@@ -26,6 +27,11 @@ import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
+
+// Lazy-load ContributorMap so the MapLibre GL chunk stays out of
+// the dialog bundle until the map-view control is first opened.
+const LazyContributorMap = lazy(() => import('@/crd/components/map/ContributorMap'));
+
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
@@ -249,6 +255,24 @@ type FramingEditorConnectorProps = {
    */
   subspaceCandidates?: { id: string; displayName: string; avatarUrl?: string }[];
   subspaceCandidatesLoading?: boolean;
+  /**
+   * Map pins for the map-view capture control.
+   * In edit mode: the default-type contributor cards derived by `CalloutFormConnector`.
+   * In create mode: empty (pinless preview).
+   */
+  contributorMapPins?: ContributorMapPin[];
+  /**
+   * Current fixed map view from the form state. null = automatic framing.
+   * Passed in from `CalloutFormConnector` so the control can show the current state
+   * without having access to the full `ContributorCollectionConfig` (which includes mapView
+   * but is not the type flowing through `ContributorCollectionConfigField`).
+   */
+  contributorMapView?: ContributorMapFixedView | null;
+  /**
+   * Callback to update the fixed map view.
+   * Called with the new view (object = fix it, null = reset to automatic).
+   */
+  onContributorMapViewChange?: (view: ContributorMapFixedView | null) => void;
 };
 
 export function FramingEditorConnector({
@@ -308,6 +332,9 @@ export function FramingEditorConnector({
   contributorCandidatesLoading = false,
   subspaceCandidates = [],
   subspaceCandidatesLoading = false,
+  contributorMapPins = [],
+  contributorMapView = null,
+  onContributorMapViewChange,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -319,6 +346,10 @@ export function FramingEditorConnector({
   // Must live at function top-level (Rules of Hooks — no hooks inside switch cases).
   const [contributorSearchQuery, setContributorSearchQuery] = useState('');
   const [subspaceSearchQuery, setSubspaceSearchQuery] = useState('');
+  // Map-view capture control state.
+  // Must live at function top-level (Rules of Hooks — no state inside switch cases).
+  const [mapViewControlOpen, setMapViewControlOpen] = useState(false);
+  const [capturedView, setCapturedView] = useState<ContributorMapFixedView | null>(null);
   const whiteboardPreviewUrl = useWhiteboardPreviewBlobUrl(whiteboardPreviewImages);
 
   switch (framingType) {
@@ -678,6 +709,80 @@ export function FramingEditorConnector({
             error={contributorCollectionError}
             restrictToUsers={selectionMode === 'custom'}
           />
+          {/* Map-view capture control. Only shown when the config has
+              at least one locatable type. Virtual contributors are
+              not geocoded and therefore cannot anchor a meaningful fixed view. */}
+          {/* Only render when the parent wired a change handler. The callout TEMPLATE
+              editor does not (the map view is intentionally not persisted on templates), so showing the
+              capture control there would be a dead-end control. */}
+          {onContributorMapViewChange && contributorCollection.types.some(tp => tp !== 'virtualContributor') && (
+            <div className="space-y-2">
+              <button
+                type="button"
+                className="flex items-center gap-2 text-body-emphasis cursor-pointer hover:text-foreground transition-colors"
+                aria-expanded={mapViewControlOpen}
+                onClick={() => {
+                  // Clear a camera captured in a previous open session so a stale view
+                  // can't be applied after a close/reopen cycle.
+                  setCapturedView(null);
+                  setMapViewControlOpen(prev => !prev);
+                }}
+                aria-label={t('contributors.mapView.controlAriaLabel')}
+              >
+                {/* Mirror the whiteboard preview-selection icons: automatic ⇒ Wand2, a
+                    chosen (custom) framing ⇒ Crop (see PreviewSettingsDialog). Not a pin. */}
+                {contributorMapView ? (
+                  <Crop className="size-4 shrink-0" aria-hidden="true" />
+                ) : (
+                  <Wand2 className="size-4 shrink-0" aria-hidden="true" />
+                )}
+                <span>
+                  {contributorMapView ? t('contributors.mapView.stateFixed') : t('contributors.mapView.stateAutomatic')}
+                </span>
+              </button>
+              <p className="text-caption text-muted-foreground">{t('contributors.mapView.helper')}</p>
+              {mapViewControlOpen && (
+                <div className="space-y-2">
+                  <p className="text-caption text-muted-foreground">{t('contributors.mapView.captureHint')}</p>
+                  <div className="h-48 rounded-md overflow-hidden border border-border">
+                    <Suspense fallback={<Loading />}>
+                      <LazyContributorMap
+                        pins={contributorMapPins}
+                        fixedView={contributorMapView ?? undefined}
+                        onViewChange={setCapturedView}
+                        ariaLabel={t('contributors.mapView.mapAriaLabel')}
+                      />
+                    </Suspense>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={!capturedView}
+                      onClick={() => {
+                        if (capturedView) {
+                          onContributorMapViewChange?.(capturedView);
+                        }
+                      }}
+                    >
+                      {t('contributors.mapView.useCurrent')}
+                    </Button>
+                    {contributorMapView && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onContributorMapViewChange?.(null)}
+                      >
+                        {t('contributors.mapView.resetAuto')}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       );
     }
