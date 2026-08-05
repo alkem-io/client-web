@@ -2,8 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { AdminShell, type AdminShellSection } from '@/crd/components/admin/AdminShell';
-import { ADMIN_SECTIONS, type AdminSectionId } from './adminSections';
+import type { AdminSectionId } from './adminSections';
 import { useAdminSection } from './useAdminSection';
+import { useVisibleAdminSections } from './useVisibleAdminSections';
 
 /**
  * Hosts the CRD global-admin shell — sticky title + section tab strip + outlet
@@ -31,7 +32,12 @@ const CrdAdminShellPage = () => {
     transfer: t('sections.transfer'),
   };
 
-  const sections: ReadonlyArray<AdminShellSection<AdminSectionId>> = ADMIN_SECTIONS.map(section => ({
+  // Only the sections this user can actually operate. A `platform-roles-admin`
+  // saw all nine before 027 decomposed the admin role, eight of which led to
+  // pages whose every action the server rejects.
+  const { sections: visibleSections } = useVisibleAdminSections();
+
+  const sections: ReadonlyArray<AdminShellSection<AdminSectionId>> = visibleSections.map(section => ({
     id: section.id,
     label: sectionLabels[section.id],
     icon: section.icon,
