@@ -95,6 +95,7 @@ export function ChatThreadView({
             currentUser={currentUser}
             onSubmit={onSendMessage}
             disabled={isSending || isAwaitingGuidanceResponse}
+            refocusAfterSubmit={true}
             value={draft}
             onValueChange={onDraftChange}
           />
