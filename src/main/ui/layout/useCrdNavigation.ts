@@ -23,7 +23,11 @@ const STATIC_NAVIGATION_HREFS = {
 
 export function useCrdNavigation() {
   const { t, i18n } = useTranslation();
-  const { t: tContributorSettings } = useTranslation('crd-contributorSettings');
+  // crd-layout, not crd-contributorSettings: this hook backs the header on
+  // every page, and crd-layout is already eagerly loaded app-wide (unlike a
+  // feature namespace, which useTranslation would otherwise lazy-fetch here
+  // on every render just to have one rarely-hit error string ready).
+  const { t: tLayout } = useTranslation('crd-layout');
   const { pathname, search } = useLocation();
   const { locations } = useConfig();
   const canonicalDomain = locations?.domain;
@@ -80,7 +84,7 @@ export function useCrdNavigation() {
       });
       void i18n.changeLanguage(code);
     } catch {
-      notify(tContributorSettings('user.settings.language.error'), 'error');
+      notify(tLayout('header.changeLanguageError'), 'error');
     }
   };
 
