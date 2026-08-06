@@ -94,6 +94,27 @@ if (item.collaboraDocument) {
 }
 ```
 
+### `DocumentContributionConnector` props (corrected, research R10)
+
+```ts
+type DocumentContributionConnectorProps = {
+  open: boolean;
+  contributionId: string;
+  /** Threaded from the parent's `callout.authorization?.myPrivileges` — required for
+   *  `canRenameCollaboraDocument`'s document-OR-callout OR-rule to evaluate correctly;
+   *  omitting it would silently drop the "callout admin can rename any response" half
+   *  of that rule (caught during /speckit.analyze, see research.md R10). */
+  calloutPrivileges: AuthorizationPrivilege[] | undefined;
+  onClose: () => void;
+  onDelete: (contributionId: string, title: string) => void;
+};
+```
+
+`canDelete` is derived inside the connector from `lookup.contribution.authorization.myPrivileges`
+(the `CalloutContribution` wrapper's own privileges — matching the existing
+`WhiteboardContributionConnector`/`canDeleteSelectedWhiteboard` precedent), **not** from the
+nested `collaboraDocument.authorization`.
+
 ### GraphQL: `ImportCollaboraDocument` mutation (new operation file)
 
 `src/domain/collaboration/calloutContributions/collaboraDocument/graphql/ImportCollaboraDocument.graphql`

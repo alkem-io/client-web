@@ -76,6 +76,12 @@ specs/116-document-responses/
 src/domain/collaboration/calloutContributions/collaboraDocument/graphql/
 └── ImportCollaboraDocument.graphql               # NEW — mutation, reuses the existing CalloutContributionsCollaboraDocumentCard fragment
 
+# Shared error-message mapping — extracted so the framing-upload flow (existing) and the new
+# response-upload flow (this story) render identical, DRY inline error copy (research R9)
+src/domain/collaboration/calloutContributions/collaboraDocument/
+├── deriveCollaboraImportErrorMessage.ts           # NEW — extracted from CalloutFormConnector.tsx's inline switch
+└── deriveCollaboraImportErrorMessage.spec.ts      # NEW — table-driven coverage of all ValidationError kinds
+
 # Response-type plumbing (create/edit post form)
 src/crd/forms/callout/
 ├── types.ts                                      # MODIFIED — ResponseType gains 'document'
@@ -94,11 +100,12 @@ src/main/crdPages/space/dataMappers/
 # New add / open / render connectors (mirror the existing per-type family)
 src/main/crdPages/space/callout/
 ├── DocumentContributionAddConnector.tsx            # NEW — upload-only add flow (DocumentImportZone + validateCollaboraImportFile + useImportCollaboraDocumentMutation)
-├── DocumentContributionConnector.tsx               # NEW — fetch-by-id wrapper (useCalloutContributionQuery, includeCollaboraDocument: true), renders the overlay
+├── DocumentContributionConnector.tsx               # NEW — fetch-by-id wrapper (useCalloutContributionQuery, includeCollaboraDocument: true; receives calloutPrivileges from its parent so rename's document-OR-callout rule works — see data-model.md), renders the overlay
 ├── CollaboraContributionEditorOverlay.tsx          # NEW — fullscreen Collabora editor for a CONTRIBUTION document (sibling of CollaboraFramingEditorOverlay; different refetchQueries; adds onDelete/canDelete)
 ├── ContributionGridConnector.tsx                   # MODIFIED — 'document' case → ContributionDocumentCard
 ├── ContributionsPreviewConnector.tsx               # MODIFIED — addConnector switch + addLabel + local ContributionCard switch gain the CollaboraDocument case
-└── CalloutDetailDialogConnector.tsx                # MODIFIED — trailingSlot switch, documentContributionId/documentEditorOpen state, handleContributionClick branch, documentOverlay render, confirmDeleteContribution.kind extended to include 'document'
+├── CalloutFormConnector.tsx                        # MODIFIED (behavior-preserving) — calls the extracted deriveCollaboraImportErrorMessage helper instead of its inline switch
+└── CalloutDetailDialogConnector.tsx                # MODIFIED — trailingSlot switch, documentContributionId/documentEditorOpen state, handleContributionClick branch, documentOverlay render (passing callout.authorization?.myPrivileges through), confirmDeleteContribution.kind extended to include 'document'
 
 # New CRD card
 src/crd/components/contribution/

@@ -70,6 +70,20 @@ spec's Clarifications section already resolved at the product level.
 
 **Alternatives considered**: None — this is a mechanical inventory step, not a design decision.
 
+## R9: Shared error-message mapping across the framing and response upload flows
+
+**Decision**: Extract the `collaboraImportError.kind → i18n key` switch currently inlined in `CalloutFormConnector.tsx` (`collaboraImportErrorMessage`, covering `extension`/`size`/`multiple-files`/`folder`) into a new shared pure helper, `deriveCollaboraImportErrorMessage.ts`, in the same domain folder as `validateCollaboraImportFile.ts`. Both the existing framing-upload flow and the new `DocumentContributionAddConnector` (US2) call the same helper.
+
+**Rationale**: Once a second consumer of `validateCollaboraImportFile`'s `ValidationError` union exists (this story), leaving the kind→message mapping duplicated inline in two components would directly violate constitution Architecture Std 6f (DRY: "When the same logic appears in multiple components within a feature domain, create a shared hook or helper") and would risk the two flows' error copy silently drifting apart over time. The extraction is a small, behavior-preserving refactor — `CalloutFormConnector.tsx`'s framing-upload UX is unchanged; only the message computation moves.
+
+**Alternatives considered**: Duplicating the switch inside the new `DocumentContributionAddConnector` — rejected for the DRY reason above. Leaving `CalloutFormConnector.tsx`'s inline switch untouched and building a second, slightly-different one for responses — rejected; both flows validate the exact same `ValidationError` union against the exact same P1 format/size constants, so a second implementation would be a pure duplicate, not a genuinely different concern.
+
+## R10: Rename-permission wiring for a contribution document (correction from analysis pass)
+
+**Decision**: `DocumentContributionConnector` receives a `calloutPrivileges?: AuthorizationPrivilege[]` prop from its parent (`CalloutDetailDialogConnector`, which already holds `callout.authorization?.myPrivileges` in scope for the framing case), and passes it through to `canRenameCollaboraDocument({ documentPrivileges, calloutPrivileges, includeContentEditors: true })` alongside the contribution's own `collaboraDocument.authorization.myPrivileges`. `canDelete` is derived separately, from `lookup.contribution.authorization.myPrivileges` (the `CalloutContribution` wrapper's own privileges) — matching the existing `WhiteboardContributionConnector`/`canDeleteSelectedWhiteboard` precedent exactly, not the nested document's privileges.
+
+**Rationale**: `canRenameCollaboraDocument`'s whole reason to exist is its OR-rule — a user may rename if they can edit the *document* OR the *callout*. Threading only `documentPrivileges` (as an earlier draft of this plan implicitly assumed by not passing `calloutPrivileges` at all) would silently drop the callout half of that rule for contribution documents specifically, breaking parity with the framing case (FR-013/FR-015 require identical rename-permission behavior) — an admin with `UPDATE` on the callout but no direct `UPDATE`/`UPDATE_CONTENT` on one specific response's document would incorrectly lose the ability to rename it. Caught and corrected during the `/speckit.analyze` pass (finding F2); see `data-model.md` for the corrected prop shape.
+
 ## Summary of resolved unknowns (Technical Context)
 
 No item in the Technical Context below required `[NEEDS CLARIFICATION]` — every dependency is already present in the repo (confirmed by direct inspection above) and no new runtime package is introduced.
