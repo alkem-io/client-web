@@ -23,7 +23,7 @@ description: "Task list for 116-postcard-file-thumbnail (story #9872)"
 
 **Purpose**: Confirm the worktree builds and the existing suite is green before changes.
 
-- [ ] T001 Verify deps installed and baseline gates pass in the worktree: `pnpm install` (if needed), `pnpm vitest run` (record baseline pass count), `pnpm lint`.
+- [X] T001 Verify deps installed and baseline gates pass in the worktree: `pnpm install` (if needed), `pnpm vitest run` (record baseline pass count), `pnpm lint`.
 
 ---
 
@@ -31,7 +31,7 @@ description: "Task list for 116-postcard-file-thumbnail (story #9872)"
 
 **Purpose**: Confirm the existing building blocks this story extends are present and unchanged before touching them — no new i18n keys, no new dependencies are needed (research.md R4/R5).
 
-- [ ] T002 Confirm reusable infra is present and unchanged: `CalloutCollaboraPreview`'s existing `iconByType`/`typeLabelKey` maps, `CollaboraDocumentPreviewType`, `mapCollaboraDocumentTypeToPreviewType` (in `calloutDataMapper.ts`), the existing `callout.documentText`/`documentSpreadsheet`/`documentPresentation` i18n keys (all six locales, `src/crd/i18n/space/space.<lang>.json`), and `PostCardData.framingImageUrl`'s whiteboard precedent in `PostCard.tsx`. No code change — verification only.
+- [X] T002 Confirm reusable infra is present and unchanged: `CalloutCollaboraPreview`'s existing `iconByType`/`typeLabelKey` maps, `CollaboraDocumentPreviewType`, `mapCollaboraDocumentTypeToPreviewType` (in `calloutDataMapper.ts`), the existing `callout.documentText`/`documentSpreadsheet`/`documentPresentation` i18n keys (all six locales, `src/crd/i18n/space/space.<lang>.json`), and `PostCardData.framingImageUrl`'s whiteboard precedent in `PostCard.tsx`. No code change — verification only.
 
 **Checkpoint**: Building blocks confirmed; no i18n or dependency work needed for this story.
 
@@ -45,11 +45,11 @@ description: "Task list for 116-postcard-file-thumbnail (story #9872)"
 
 ### Tests for User Story 1 (write first, expect FAIL before impl)
 
-- [ ] T003 [US1] Create `src/crd/components/callout/CalloutCollaboraPreview.test.tsx` per the contract's test list items 1–3, 7, 8 (per-type badge text + icon color for `text`/`spreadsheet`/`presentation`; `onReplace` gating regression; `size="compact"`/`size="default"` render without throwing). Expect the color assertions to FAIL (component not yet changed).
+- [X] T003 [US1] Create `src/crd/components/callout/CalloutCollaboraPreview.test.tsx` per the contract's test list items 1–3, 7, 8 (per-type badge text + icon color for `text`/`spreadsheet`/`presentation`; `onReplace` gating regression; `size="compact"`/`size="default"` render without throwing). Expect the color assertions to FAIL (component not yet changed).
 
 ### Implementation for User Story 1
 
-- [ ] T004 [US1] Edit `src/crd/components/callout/CalloutCollaboraPreview.tsx`: add a `colorByType: Record<CollaboraDocumentPreviewType, string>` map (`text → 'text-blue-600'`, `spreadsheet → 'text-green-600'`, `presentation → 'text-orange-600'`) alongside the existing `iconByType`; apply `colorByType[documentType]` to both the centered fallback `Icon` (replacing `text-muted-foreground/50`) and the badge `Icon` (previously uncolored). Leave the outer box, background, hover overlay, and buttons untouched (FR-003). Makes T003's color assertions PASS.
+- [X] T004 [US1] Edit `src/crd/components/callout/CalloutCollaboraPreview.tsx`: add a `colorByType: Record<CollaboraDocumentPreviewType, string>` map (`text → 'text-blue-600'`, `spreadsheet → 'text-green-600'`, `presentation → 'text-orange-600'`) alongside the existing `iconByType`; apply `colorByType[documentType]` to both the centered fallback `Icon` (replacing `text-muted-foreground/50`) and the badge `Icon` (previously uncolored). Leave the outer box, background, hover overlay, and buttons untouched (FR-003). Makes T003's color assertions PASS.
 
 **Checkpoint**: Feed card shows type-differentiated colors; T003 fully green; hover/click/Replace-file behaviour unchanged.
 
