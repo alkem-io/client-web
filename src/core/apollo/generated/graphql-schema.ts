@@ -12,15 +12,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
+  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -1213,6 +1223,17 @@ export type CalloutContributionsCountOutput = {
   whiteboard: Scalars['Float']['output'];
 };
 
+/** Admin-fixed initial map view for a Contributors-collection callout's map. Absent/null ⇒ automatic framing (fit to plotted contributors; Europe fallback). */
+export type CalloutContributorsMapView = {
+  __typename?: 'CalloutContributorsMapView';
+  /** Map center latitude. Finite, within [-90, 90]. */
+  latitude: Scalars['Float']['output'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['output'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['output'];
+};
+
 export type CalloutContributorsSettings = {
   __typename?: 'CalloutContributorsSettings';
   /** The contributor types included in this contributor-collection callout. At least one. */
@@ -1221,6 +1242,8 @@ export type CalloutContributorsSettings = {
   defaultContributorType: ActorType;
   /** The default display mode (list or map). */
   defaultView: ContributorCollectionView;
+  /** Admin-fixed initial map view. Absent/null ⇒ automatic framing (fit to plotted contributors; Europe fallback). */
+  mapView?: Maybe<CalloutContributorsMapView>;
 };
 
 export enum CalloutDescriptionDisplayMode {
@@ -1996,6 +2019,25 @@ export type CreateCalloutContributionInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
+export type CreateCalloutContributorsMapViewData = {
+  __typename?: 'CreateCalloutContributorsMapViewData';
+  /** Map center latitude. Finite, within [-90, 90]. */
+  latitude: Scalars['Float']['output'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['output'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['output'];
+};
+
+export type CreateCalloutContributorsMapViewInput = {
+  /** Map center latitude. Finite, within [-90, 90]. */
+  latitude: Scalars['Float']['input'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['input'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['input'];
+};
+
 export type CreateCalloutContributorsSettingsData = {
   __typename?: 'CreateCalloutContributorsSettingsData';
   /** The contributor types to include. At least one type is required. */
@@ -2004,6 +2046,8 @@ export type CreateCalloutContributorsSettingsData = {
   defaultContributorType?: Maybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: Maybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. When omitted, the callout opens on automatic framing. */
+  mapView?: Maybe<CreateCalloutContributorsMapViewData>;
 };
 
 export type CreateCalloutContributorsSettingsInput = {
@@ -2013,6 +2057,8 @@ export type CreateCalloutContributorsSettingsInput = {
   defaultContributorType?: InputMaybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: InputMaybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. When omitted, the callout opens on automatic framing. */
+  mapView?: InputMaybe<CreateCalloutContributorsMapViewInput>;
 };
 
 export type CreateCalloutData = {
@@ -3724,7 +3770,7 @@ export type Invitation = {
   nextEvents: Array<Scalars['String']['output']>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
-  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
   suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -3743,7 +3789,7 @@ export type InviteForEntryRoleOnRoleSetInput = {
   invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
-  /** Optional language the inviter expects the invitees to prefer (single value for the whole batch — FR-014a; must be in the eligible set at compose time — DL-8). Recorded per-invitation so per-invitee granularity later is a UI change, not a migration (FR-014b). */
+  /** Optional language the inviter expects the invitees to prefer (single value for the whole batch). Must be in the eligible set at compose time. Recorded per-invitation so per-invitee granularity later is a UI change, not a migration. */
   suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
   /** The welcome message to send */
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
@@ -5137,7 +5183,7 @@ export type Mutation = {
   unsubscribeFromPushNotifications: PushSubscription;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
-  /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires platform-admin. */
+  /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires the platform-operations-admin privilege. */
   updateAssistantActorCapabilities: VirtualAssistant;
   /** Update the baseline License Plan on the specified Account. */
   updateBaselineLicensePlanOnAccount: Account;
@@ -6648,7 +6694,7 @@ export type PlatformInvitation = {
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
-  /** Optional language the inviter expects the invitee to prefer (FR-014b — recorded per invitation; DL-1 ruling: present on both Invitation and PlatformInvitation). */
+  /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
   suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
@@ -8998,6 +9044,8 @@ export type UpdateCalloutContributorsSettingsInput = {
   defaultContributorType?: InputMaybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: InputMaybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. Omitted ⇒ stored view unchanged; explicit null ⇒ clear to automatic framing. */
+  mapView?: InputMaybe<CreateCalloutContributorsMapViewInput>;
 };
 
 export type UpdateCalloutEntityInput = {
@@ -9599,9 +9647,9 @@ export type UpdateUserSettingsEntityInput = {
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
-  /** Set the user's interface language preference. Must be a value from the supported languages set. Any language write also latches languageOfferAnswered=true (FR-023 invariant). */
+  /** Set the user's interface language preference. Must be a value from the supported languages set. Any language write also latches languageOfferAnswered=true. */
   language?: InputMaybe<Scalars['String']['input']>;
-  /** Mark that this User has answered the one-time language offer. One-way latch: setting false is rejected (FR-005a). */
+  /** Mark that this User has answered the one-time language offer. One-way latch: setting false is rejected. */
   languageOfferAnswered?: InputMaybe<Scalars['Boolean']['input']>;
   /** Settings related to this users Notifications preferences. */
   notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
@@ -10131,7 +10179,7 @@ export type UserSettings = {
   id: Scalars['UUID']['output'];
   /** The interface language chosen by this User. Null = the User has never chosen a language (distinct from having chosen the platform default). */
   language?: Maybe<Scalars['String']['output']>;
-  /** Whether this User has answered the one-time language offer (global across all languages — FR-005a). Latched true by any language write. */
+  /** Whether this User has answered the one-time language offer (global across all languages). Latched true by any language write. */
   languageOfferAnswered: Scalars['Boolean']['output'];
   /** The notification settings for this User. */
   notification: UserSettingsNotification;
@@ -14448,6 +14496,9 @@ export type CalloutContentQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
                 | undefined;
               selection?:
@@ -14902,6 +14953,9 @@ export type UpdateCalloutContentMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -15384,6 +15438,9 @@ export type UpdateCalloutVisibilityMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -15449,6 +15506,9 @@ export type CalloutSettingsFullFragment = {
           contributorTypes: Array<ActorType>;
           defaultContributorType: ActorType;
           defaultView: ContributorCollectionView;
+          mapView?:
+            | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+            | undefined;
         }
       | undefined;
     selection?:
@@ -17195,6 +17255,9 @@ export type CreateCalloutMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -17849,6 +17912,9 @@ export type CalloutDetailsQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
                 | undefined;
               selection?:
@@ -18363,6 +18429,9 @@ export type CalloutDetailsFragment = {
             contributorTypes: Array<ActorType>;
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
+            mapView?:
+              | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+              | undefined;
           }
         | undefined;
       selection?:
@@ -32757,6 +32826,14 @@ export type TemplateContentQuery = {
                           contributorTypes: Array<ActorType>;
                           defaultContributorType: ActorType;
                           defaultView: ContributorCollectionView;
+                          mapView?:
+                            | {
+                                __typename?: 'CalloutContributorsMapView';
+                                longitude: number;
+                                latitude: number;
+                                zoom: number;
+                              }
+                            | undefined;
                         }
                       | undefined;
                     selection?:
@@ -33512,6 +33589,9 @@ export type CalloutTemplateContentFragment = {
             contributorTypes: Array<ActorType>;
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
+            mapView?:
+              | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+              | undefined;
           }
         | undefined;
       selection?:
@@ -34293,6 +34373,9 @@ export type UpdateCalloutTemplateMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -35783,6 +35866,9 @@ export type ContributorCollectionConfigQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
                 | undefined;
               selection?: { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode } | undefined;

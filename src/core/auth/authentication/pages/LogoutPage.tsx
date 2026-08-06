@@ -5,6 +5,7 @@ import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
 import { useReturnUrl, useSignUpRoundTrip } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import Loading from '@/core/ui/loading/Loading';
 import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
+import { clearMessagingDrafts } from '@/main/userMessaging/messagingDrafts';
 
 async function cleanupPushSubscription(
   unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0]
@@ -57,6 +58,7 @@ const LogoutPage = () => {
       cleanupPushSubscription(unsubscribeMutation).finally(() => {
         clearReturnUrl();
         clearArmed();
+        clearMessagingDrafts();
         window.location.replace(outcome.url);
       });
       return;
@@ -66,6 +68,7 @@ const LogoutPage = () => {
     cleanupPushSubscription(unsubscribeMutation).finally(() => {
       clearReturnUrl();
       clearArmed();
+      clearMessagingDrafts();
       window.location.replace('/home');
     });
   }, [outcome]);
