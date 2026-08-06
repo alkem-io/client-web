@@ -8,6 +8,10 @@ const map: Record<CollaboraDocumentType, CollaboraDocumentPreviewType> = {
   // Drawing isn't surfaced in the type picker yet; treat it as a generic
   // text document so the preview falls back to the FileText icon.
   [CollaboraDocumentType.Drawing]: 'text',
+  // PDF isn't surfaced in the type picker or the P1 upload accept list
+  // (collaboraImportFormats.ts) yet either; same generic-text fallback as
+  // Drawing until a first-class PDF surface exists.
+  [CollaboraDocumentType.Pdf]: 'text',
 };
 
 export function toCollaboraPreviewType(
