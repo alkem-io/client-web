@@ -968,6 +968,7 @@
   },
   "fullscreen": "Basculer en mode plein écran",
   "imageCrop": {
+    "previewAlt": "Aperçu du recadrage",
     "tooSmall": "La zone sélectionnée fait {{actualWidth}}×{{actualHeight}}px. Au moins {{requiredWidth}}×{{requiredHeight}}px sont requis — veuillez choisir une image plus grande.",
     "aspectRatio": {
       "label": "Format d'image : {{ratio}}:1",

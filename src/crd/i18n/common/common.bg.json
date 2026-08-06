@@ -968,6 +968,7 @@
   },
   "fullscreen": "Превключи на цял екран",
   "imageCrop": {
+    "previewAlt": "Преглед на изрязването",
     "tooSmall": "Избраната област е {{actualWidth}}×{{actualHeight}}px. Изискват се поне {{requiredWidth}}×{{requiredHeight}}px — моля, изберете по-голямо изображение.",
     "aspectRatio": {
       "label": "Съотношение на екрана: {{ratio}}:1",

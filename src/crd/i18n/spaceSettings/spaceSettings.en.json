@@ -892,7 +892,8 @@
       "upload": "Upload",
       "avatar": {
         "title": "Avatar",
-        "hint": "The space logo."
+        "hint": "The space logo.",
+        "recrop": "Crop current avatar"
       },
       "pageBanner": {
         "title": "Page Banner",
@@ -901,11 +902,13 @@
           "hint": "Higher values give a shorter, wider banner strip. Applies to this Space and all of its Subspaces.",
           "label": "Banner shape",
           "value": "{{ratio}}:1"
-        }
+        },
+        "recrop": "Crop current page banner"
       },
       "cardBanner": {
         "title": "Card Banner (416 × 256px)",
-        "hint": "Shown in search results and space cards."
+        "hint": "Shown in search results and space cards.",
+        "recrop": "Crop current card banner"
       },
       "cropDialog": {
         "save": "Save",

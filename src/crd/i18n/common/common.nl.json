@@ -968,6 +968,7 @@
   },
   "fullscreen": "Volledig scherm in-/uitschakelen",
   "imageCrop": {
+    "previewAlt": "Voorbeeld van uitsnede",
     "tooSmall": "Het geselecteerde gebied is {{actualWidth}}×{{actualHeight}}px. Minimaal {{requiredWidth}}×{{requiredHeight}}px is vereist — kies een grotere afbeelding.",
     "aspectRatio": {
       "label": "Beeldverhouding: {{ratio}}:1",

@@ -968,6 +968,7 @@
   },
   "fullscreen": "Toggle full screen",
   "imageCrop": {
+    "previewAlt": "Crop preview",
     "tooSmall": "Selected area is {{actualWidth}}×{{actualHeight}}px. At least {{requiredWidth}}×{{requiredHeight}}px is required — please choose a larger image.",
     "aspectRatio": {
       "label": "Aspect Ratio: {{ratio}}:1",

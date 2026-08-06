@@ -1,4 +1,4 @@
-import { ImageIcon } from 'lucide-react';
+import { CropIcon, ImageIcon } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
@@ -12,6 +12,7 @@ import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import type {
   AboutFormValues,
   AboutSectionKey,
@@ -161,6 +162,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   widthClass="max-w-[160px]"
                   t={t}
                   onRecrop={() => onRecropVisual?.('avatar')}
+                  recropLabel={t('about.branding.avatar.recrop')}
                 />
                 <FieldHint>{t('about.branding.avatar.hint')}</FieldHint>
               </div>
@@ -175,6 +177,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   aspectRatio={pageBannerRatio}
                   t={t}
                   onRecrop={() => onRecropVisual?.('pageBanner')}
+                  recropLabel={t('about.branding.pageBanner.recrop')}
                 />
                 <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
               </div>
@@ -189,6 +192,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 widthClass="max-w-[260px]"
                 t={t}
                 onRecrop={() => onRecropVisual?.('cardBanner')}
+                recropLabel={t('about.branding.cardBanner.recrop')}
               />
               <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
             </div>
@@ -434,6 +438,7 @@ function BannerUpload({
   widthClass,
   t,
   onRecrop,
+  recropLabel,
 }: {
   visual: AboutVisual;
   onUpload: (file: File) => void;
@@ -445,6 +450,8 @@ function BannerUpload({
   t: TFn;
   /** Trigger re-cropping of an existing visual. */
   onRecrop?: () => void;
+  /** Accessible name + tooltip for the re-crop button, named per visual by the caller. */
+  recropLabel?: string;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -468,12 +475,27 @@ function BannerUpload({
               <ImageIcon aria-hidden="true" className="mr-2 size-4" />
               {t('about.branding.changeBanner')}
             </Button>
-            {onRecrop && (
-              <Button type="button" variant="secondary" onClick={onRecrop} className="shadow-lg text-sm">
-                {t('about.branding.recrop', { defaultValue: 'Re-crop' })}
-              </Button>
-            )}
           </div>
+          {/* Re-crop sits outside the hover overlay, pinned to the corner: it acts
+              on the image already there, so it stays reachable (and its tooltip
+              usable) rather than being one of two stacked centre buttons. */}
+          {onRecrop && recropLabel && (
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  onClick={onRecrop}
+                  aria-label={recropLabel}
+                  className="absolute top-2 right-2 shadow-lg opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+                >
+                  <CropIcon aria-hidden="true" className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{recropLabel}</TooltipContent>
+            </Tooltip>
+          )}
         </>
       ) : (
         <button

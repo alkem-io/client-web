@@ -892,7 +892,8 @@
       "upload": "Hochladen",
       "avatar": {
         "title": "Avatar",
-        "hint": "Das Logo des Spaces."
+        "hint": "Das Logo des Spaces.",
+        "recrop": "Aktuellen Avatar zuschneiden"
       },
       "pageBanner": {
         "title": "Seiten-Banner",
@@ -901,11 +902,13 @@
           "hint": "Höhere Werte ergeben einen flacheren, breiteren Bannerstreifen. Gilt für diesen Space und alle seine Subspaces.",
           "label": "Bannerform",
           "value": "{{ratio}}:1"
-        }
+        },
+        "recrop": "Aktuelles Seitenbanner zuschneiden"
       },
       "cardBanner": {
         "title": "Karten-Banner (416 × 256px)",
-        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt."
+        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
+        "recrop": "Aktuelles Kartenbanner zuschneiden"
       },
       "cropDialog": {
         "save": "Speichern",

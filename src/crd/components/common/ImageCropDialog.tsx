@@ -1,6 +1,13 @@
-import { useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
+import ReactCrop, {
+  type Crop,
+  centerCrop,
+  convertToPixelCrop,
+  makeAspectCrop,
+  type PercentCrop,
+  type PixelCrop,
+} from 'react-image-crop';
 import Resizer from 'react-image-file-resizer';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Button } from '@/crd/primitives/button';
@@ -58,37 +65,39 @@ export function naturalCropSize(
 }
 
 /**
- * When aspect ratio changes, recalculate crop dimensions to maintain the new ratio.
- * Keeps width constant, adjusts height to match newAspectRatio.
- * Anchors to top-left, expands downward first, then upward if needed.
- * Works with both percentage and pixel units based on the image dimensions provided.
+ * The largest crop of `ratio` that fits the displayed image, centred.
+ *
+ * `makeAspectCrop` / `centerCrop` come from `react-image-crop` itself, and are
+ * used rather than hand-rolled arithmetic because a `%` crop has **two bases**:
+ * `width` is a share of the box width, `height` a share of the box height. So
+ * `height = width / ratio` in percent space is only correct on a square image —
+ * on anything else it skews the crop by the image's own aspect ratio. The
+ * library does the % → px → % round trip, and clamps on both axes so the crop
+ * can never extend past the image (which would leave the canvas untouched
+ * outside the bitmap and encode as black bars in the JPEG).
+ *
+ * Changing the ratio re-centres at maximum size rather than trying to preserve
+ * the user's pan: the alternative shrinks the crop on every clamp, so dragging
+ * the slider back and forth ratchets it smaller and never recovers.
  */
-function recalculateCropForAspectRatio(
-  currentCrop: Crop,
-  newAspectRatio: number,
-  image: HTMLImageElement | null
-): Crop {
-  if (!currentCrop.width || !image) return currentCrop;
+export function centeredAspectCrop(image: HTMLImageElement, ratio: number): PercentCrop {
+  return centerCrop(
+    makeAspectCrop({ unit: '%', width: 100 }, ratio, image.width, image.height),
+    image.width,
+    image.height
+  );
+}
 
-  const { y = 0, width } = currentCrop;
-  const maxBound = currentCrop.unit === '%' ? 100 : image.width;
-
-  // Keep width, recalculate height for new aspect ratio
-  const newHeight = width / newAspectRatio;
-  let newY = y;
-
-  // Try to expand downward first
-  if (y + newHeight > maxBound) {
-    // Hit bottom boundary, shift upward
-    newY = Math.max(0, maxBound - newHeight);
-  }
-
-  return {
-    ...currentCrop,
-    height: newHeight,
-    y: newY,
-    unit: currentCrop.unit,
-  };
+/**
+ * The ratio the dialog opens on — the configured one, held inside the slider's
+ * bounds when a slider is shown. Without the clamp a configured ratio outside
+ * `aspectRatioBounds` leaves the range input's thumb clamped by the DOM while
+ * state keeps the out-of-range value, so the label, the thumb and the crop all
+ * disagree.
+ */
+function initialAspectRatio({ aspectRatio, aspectRatioBounds }: ImageCropConfig): number | undefined {
+  if (!aspectRatioBounds) return aspectRatio;
+  return Math.min(Math.max(aspectRatio ?? aspectRatioBounds.min, aspectRatioBounds.min), aspectRatioBounds.max);
 }
 
 /**
@@ -120,30 +129,39 @@ export function ImageCropDialog({
   // not business text, so it lives in `crd-common` rather than being threaded
   // through all nine consumers as yet another label prop.
   const { t } = useTranslation();
-  const inputId = useId();
+  const sliderId = useId();
+  const altTextId = useId();
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [altText, setAltText] = useState('');
-  const [selectedAspectRatio, setSelectedAspectRatio] = useState<number | undefined>(config.aspectRatio);
+  const [selectedAspectRatio, setSelectedAspectRatio] = useState<number | undefined>(() => initialAspectRatio(config));
   const [saving, setSaving] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [imgSrc, setImgSrc] = useState<string>('');
 
-  // Generate a preview URL when the file changes.
+  // Drop the previous file's editing state as soon as a new file arrives, so
+  // the dialog never shows the old crop while the new preview loads.
   const prevFileRef = useRef<File | undefined>(undefined);
   if (file !== prevFileRef.current) {
     prevFileRef.current = file;
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImgSrc(url);
-      setCrop(undefined);
-      setCompletedCrop(undefined);
-      setAltText('');
-      setSelectedAspectRatio(config.aspectRatio);
-    } else {
-      setImgSrc('');
-    }
+    setCrop(undefined);
+    setCompletedCrop(undefined);
+    setAltText('');
+    setSelectedAspectRatio(initialAspectRatio(config));
   }
+
+  // The preview URL is a side effect and owns a resource, so it belongs in an
+  // effect: created during render it leaks one object URL per StrictMode
+  // double-invoke, and nothing ever revokes it.
+  useEffect(() => {
+    if (!file) {
+      setImgSrc('');
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setImgSrc(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   // The resizer upscales to reach `minWidth`/`minHeight` (args 9-10), which
   // would turn a too-small source into an interpolated image that passes server
@@ -156,16 +174,24 @@ export function ImageCropDialog({
 
   const currentAspectRatio = selectedAspectRatio ?? config.aspectRatio;
 
+  // `onComplete` fires only on pointer/keyboard interaction with the crop box
+  // (plus the very first undefined → crop transition — see `componentDidUpdate`
+  // in react-image-crop). A programmatic crop change must therefore set
+  // `completedCrop` itself: it is the only value Save and the too-small check
+  // read, so leaving it stale saves the pre-slider crop under the post-slider
+  // ratio, and the visual is then rendered at a ratio its pixels don't have.
+  const applyCrop = (next: PercentCrop) => {
+    const image = imgRef.current;
+    if (!image) return;
+    setCrop(next);
+    setCompletedCrop(convertToPixelCrop(next, image.width, image.height));
+  };
+
   const handleSave = async () => {
     if (!imgRef.current || !completedCrop || tooSmall) return;
     setSaving(true);
     try {
-      const croppedFile = await getCroppedImg(
-        imgRef.current,
-        completedCrop,
-        { ...config, aspectRatio: currentAspectRatio },
-        file?.name ?? 'image.png'
-      );
+      const croppedFile = await getCroppedImg(imgRef.current, completedCrop, config, file?.name ?? 'image.png');
       onSave({ file: croppedFile, altText, aspectRatio: selectedAspectRatio });
     } catch {
       // If crop fails, fall back to the original file.
@@ -184,7 +210,14 @@ export function ImageCropDialog({
         if (!nextOpen) onCancel();
       }}
     >
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      {/*
+       * Widths are `sm:`-prefixed: `DialogContent`'s base class carries
+       * `sm:max-w-lg`, and an unprefixed `max-w-*` loses to it on source order
+       * at every breakpoint above 640px. Cropping is the one dialog that wants
+       * as much of the screen as it can get, so it steps up to the largest
+       * ladder in the design system.
+       */}
+      <DialogContent className="w-full sm:max-w-2xl md:max-w-3xl lg:max-w-5xl xl:max-w-6xl max-h-[92vh] flex flex-col overflow-hidden">
         <DialogHeader className="shrink-0">
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
@@ -198,42 +231,27 @@ export function ImageCropDialog({
                 onChange={c => setCrop(c)}
                 onComplete={c => setCompletedCrop(c)}
                 aspect={currentAspectRatio}
-                className="max-h-[60vh]"
+                // ReactCrop's own CSS chains `max-height: inherit` down to the
+                // child wrapper and the <img>, so this cap has to be a viewport
+                // unit — a percentage or flex-fill has nothing to resolve
+                // against and collapses the preview.
+                className="max-h-[68vh]"
               >
                 <img
                   ref={imgRef}
                   src={imgSrc}
-                  alt="Crop preview"
-                  className="max-h-[60vh] object-contain"
+                  alt={t('imageCrop.previewAlt')}
+                  className="max-h-[68vh] object-contain"
                   onLoad={() => {
-                    // Set an initial crop that fits the aspect ratio constraint.
-                    // For re-crop, we want to show most of the image and let user adjust.
-                    if (!crop && imgRef.current) {
-                      const { naturalWidth, naturalHeight } = imgRef.current;
-                      const ar = selectedAspectRatio ?? config.aspectRatio;
-
-                      if (ar) {
-                        // Calculate crop to fit aspect ratio within image bounds.
-                        let cropW = naturalWidth;
-                        let cropH = cropW / ar;
-
-                        // If crop is taller than image, constrain by height instead.
-                        if (cropH > naturalHeight) {
-                          cropH = naturalHeight;
-                          cropW = cropH * ar;
-                        }
-
-                        // Convert to percentages of image dimensions.
-                        const pctW = (cropW / naturalWidth) * 100;
-                        const pctH = (cropH / naturalHeight) * 100;
-                        const x = (100 - pctW) / 2;
-                        const y = (100 - pctH) / 2;
-                        setCrop({ unit: '%', width: pctW, height: pctH, x, y });
-                      } else {
-                        // No aspect ratio constraint—show full image.
-                        setCrop({ unit: '%', width: 100, height: 100, x: 0, y: 0 });
-                      }
-                    }
+                    // Start on the largest crop the constraint allows, centred;
+                    // with no constraint, the whole image.
+                    const image = imgRef.current;
+                    if (crop || !image) return;
+                    applyCrop(
+                      currentAspectRatio
+                        ? centeredAspectCrop(image, currentAspectRatio)
+                        : { unit: '%', width: 100, height: 100, x: 0, y: 0 }
+                    );
                   }}
                 />
               </ReactCrop>
@@ -253,14 +271,13 @@ export function ImageCropDialog({
 
           {config.aspectRatioBounds && (
             <div className="flex flex-col gap-2">
-              <label htmlFor={inputId} className="text-body-emphasis">
+              <label htmlFor={sliderId} className="text-body-emphasis">
                 {t('imageCrop.aspectRatio.label', {
-                  defaultValue: 'Aspect Ratio: {{ratio}}:1',
                   ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
                 })}
               </label>
               <input
-                id={inputId}
+                id={sliderId}
                 type="range"
                 min={config.aspectRatioBounds.min}
                 max={config.aspectRatioBounds.max}
@@ -270,38 +287,27 @@ export function ImageCropDialog({
                   const ratio = Number(e.target.value);
                   setSelectedAspectRatio(ratio);
                   config.onAspectRatioChange?.(ratio);
-                  // Force crop recalculation when aspect ratio changes
-                  if (crop) {
-                    setCrop(recalculateCropForAspectRatio(crop, ratio, imgRef.current));
-                  }
+                  const image = imgRef.current;
+                  if (image) applyCrop(centeredAspectCrop(image, ratio));
                 }}
                 aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', {
-                  defaultValue: 'Aspect ratio: {{ratio}}',
                   ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
                 })}
                 className="w-full accent-primary"
               />
               <div className="flex justify-between">
-                <span className="text-caption text-muted-foreground">
-                  {t('imageCrop.aspectRatio.hintLeft', {
-                    defaultValue: 'Left: taller image crop',
-                  })}
-                </span>
-                <span className="text-caption text-muted-foreground">
-                  {t('imageCrop.aspectRatio.hintRight', {
-                    defaultValue: 'Right: shorter image crop',
-                  })}
-                </span>
+                <span className="text-caption text-muted-foreground">{t('imageCrop.aspectRatio.hintLeft')}</span>
+                <span className="text-caption text-muted-foreground">{t('imageCrop.aspectRatio.hintRight')}</span>
               </div>
             </div>
           )}
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="crop-alt-text" className="text-body-emphasis">
+            <label htmlFor={altTextId} className="text-body-emphasis">
               {altTextLabel}
             </label>
             <Input
-              id="crop-alt-text"
+              id={altTextId}
               value={altText}
               onChange={e => setAltText(e.target.value)}
               placeholder={altTextPlaceholder}

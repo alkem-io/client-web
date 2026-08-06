@@ -892,7 +892,8 @@
       "upload": "Uploaden",
       "avatar": {
         "title": "Avatar",
-        "hint": "Het logo van de Space."
+        "hint": "Het logo van de Space.",
+        "recrop": "Huidige avatar bijsnijden"
       },
       "pageBanner": {
         "title": "Paginabanner",
@@ -901,11 +902,13 @@
           "hint": "Hogere waarden geven een lagere, bredere bannerstrook. Geldt voor deze Space en al zijn Subspaces.",
           "label": "Bannervorm",
           "value": "{{ratio}}:1"
-        }
+        },
+        "recrop": "Huidige page banner bijsnijden"
       },
       "cardBanner": {
         "title": "Kaartbanner (416 × 256px)",
-        "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten."
+        "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
+        "recrop": "Huidige card banner bijsnijden"
       },
       "cropDialog": {
         "save": "Opslaan",

@@ -1,7 +1,7 @@
 import { Activity, FoldHorizontal, Home, Settings, Share2, UnfoldHorizontal, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
-import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
+import { bannerPlaceholderSize, DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
@@ -76,6 +76,7 @@ export function SpaceHeader({
   const { t } = useTranslation('crd-space');
   const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
+  const bannerPlaceholder = bannerPlaceholderSize(bannerAspectRatio);
 
   return (
     <div className={cn('flex flex-col bg-background', overlayHeader && '-mt-16', className)}>
@@ -89,24 +90,31 @@ export function SpaceHeader({
               LCP element, and a background-image is only discoverable after the
               CSSOM is built. `fetchPriority` + eager decoding let the preload
               scanner start it immediately, and it gives the author-supplied alt
-              text somewhere to live. `object-cover`/`object-center` are the
-              exact equivalents of the previous `bg-cover`/`bg-center`. */}
-          <div
-            className={cn('relative col-span-12 overflow-hidden', contentColumnClass(fullWidth))}
-            style={{ aspectRatio: bannerAspectRatio }}
-          >
+              text somewhere to live.
+
+              The banner takes its height from the image, not from a fixed box.
+              The admin already crops the banner to the shape they want, so
+              pinning the wrapper to `aspectRatio` only re-cropped that choice
+              away — a shorter banner never actually got shorter, it just lost
+              more of its pixels to `object-cover`. With `h-auto` and no forced
+              ratio the rendered height is whatever the image is, which is what
+              buying back the vertical space depends on. `bannerAspectRatio`
+              survives as the pre-load size hint and as the gradient's shape. */}
+          <div className={cn('col-span-12 overflow-hidden', contentColumnClass(fullWidth))}>
             {bannerUrl ? (
               <img
                 src={bannerUrl}
                 alt={bannerAlt || t('a11y.spaceBanner', { name: title })}
-                className="absolute inset-0 size-full object-cover object-center"
+                width={bannerPlaceholder.width}
+                height={bannerPlaceholder.height}
+                className="w-full h-auto object-contain"
                 fetchPriority="high"
                 decoding="async"
               />
             ) : (
               <div
-                className={cn('absolute inset-0', !color && 'bg-muted')}
-                style={color ? backgroundGradient(color) : undefined}
+                className={cn('w-full', !color && 'bg-muted')}
+                style={{ aspectRatio: bannerAspectRatio, ...(color ? backgroundGradient(color) : {}) }}
                 role="img"
                 aria-label={t('a11y.spaceBanner', { name: title })}
               />

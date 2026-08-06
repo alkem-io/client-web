@@ -968,6 +968,7 @@
   },
   "fullscreen": "Vollbild umschalten",
   "imageCrop": {
+    "previewAlt": "Zuschnitt-Vorschau",
     "tooSmall": "Der ausgewählte Bereich ist {{actualWidth}}×{{actualHeight}}px groß. Mindestens {{requiredWidth}}×{{requiredHeight}}px sind erforderlich – bitte wählen Sie ein größeres Bild.",
     "aspectRatio": {
       "label": "Seitenverhältnis: {{ratio}}:1",

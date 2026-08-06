@@ -892,7 +892,8 @@
       "upload": "Téléverser",
       "avatar": {
         "title": "Avatar",
-        "hint": "Le logo de l'espace."
+        "hint": "Le logo de l'espace.",
+        "recrop": "Recadrer l'avatar actuel"
       },
       "pageBanner": {
         "title": "Bannière de page",
@@ -901,11 +902,13 @@
           "hint": "Des valeurs plus élevées donnent une bande de bannière plus basse et plus large. S'applique à ce Space et à tous ses Subspaces.",
           "label": "Forme de la bannière",
           "value": "{{ratio}}:1"
-        }
+        },
+        "recrop": "Recadrer la bannière de page actuelle"
       },
       "cardBanner": {
         "title": "Bannière de carte (416 × 256px)",
-        "hint": "Affichée dans les résultats de recherche et les cartes d'espace."
+        "hint": "Affichée dans les résultats de recherche et les cartes d'espace.",
+        "recrop": "Recadrer la bannière de carte actuelle"
       },
       "cropDialog": {
         "save": "Enregistrer",

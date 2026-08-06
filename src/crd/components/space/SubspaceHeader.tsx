@@ -1,6 +1,6 @@
 import { Activity, FoldHorizontal, Menu, Settings, Share2, UnfoldHorizontal, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
+import { bannerPlaceholderSize, DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
@@ -97,6 +97,7 @@ export function SubspaceHeader({
   const { t } = useTranslation('crd-subspace');
   const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
   const safeSettingsHref = safeHttpUrl(actions.settingsHref);
+  const bannerPlaceholder = bannerPlaceholderSize(bannerAspectRatio);
 
   return (
     <div className={cn('flex flex-col bg-background', overlayHeader && '-mt-16', className)}>
@@ -107,23 +108,29 @@ export function SubspaceHeader({
       <div className={cn('w-full', !fullWidth && 'lg:px-8')}>
         <div className="grid grid-cols-12 gap-6">
           {/* A real <img> rather than a CSS background — see the matching note in
-              SpaceHeader: LCP discoverability plus somewhere for the alt text. */}
-          <div
-            className={cn('relative col-span-12 overflow-hidden', contentColumnClass(fullWidth))}
-            style={{ aspectRatio: bannerAspectRatio }}
-          >
+              SpaceHeader: LCP discoverability plus somewhere for the alt text.
+              The height comes from the image for the same reason, and it has to
+              match SpaceHeader exactly: this is the L0 root's banner, so the
+              identical image would otherwise render at two different heights
+              depending on whether you are on the space or a subspace. */}
+          <div className={cn('col-span-12 overflow-hidden', contentColumnClass(fullWidth))}>
             {bannerUrl ? (
               <img
                 src={bannerUrl}
                 alt={bannerAlt || t('a11y.subspaceBanner', { name: title })}
-                className="absolute inset-0 size-full object-cover object-center"
+                width={bannerPlaceholder.width}
+                height={bannerPlaceholder.height}
+                className="w-full h-auto object-contain"
                 fetchPriority="high"
                 decoding="async"
               />
             ) : (
               <div
-                className="absolute inset-0"
-                style={{ background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))` }}
+                className="w-full"
+                style={{
+                  aspectRatio: bannerAspectRatio,
+                  background: `linear-gradient(135deg, ${color}, color-mix(in srgb, ${color} 70%, black))`,
+                }}
                 role="img"
                 aria-label={t('a11y.subspaceBanner', { name: title })}
               />
