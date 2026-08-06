@@ -5,7 +5,7 @@ import type {
   SubspaceSidebarData,
   SubspaceVirtualContributorData,
 } from '@/crd/components/space/SubspaceSidebar';
-import { clampBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
+import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
 import { getInitials } from '../../space/dataMappers/spacePageDataMapper';
@@ -65,7 +65,7 @@ export function mapSubspaceBanner({
     bannerAlt: levelZeroProfile?.banner?.alternativeText || undefined,
     // Inherited from the L0 root along with the image itself, so a subspace
     // banner is always the same shape as its parent space's.
-    bannerAspectRatio: clampBannerAspectRatio(levelZeroProfile?.banner?.aspectRatio ?? undefined),
+    bannerAspectRatio: resolveBannerAspectRatio(levelZeroProfile?.banner?.aspectRatio ?? undefined),
     color: pickColorFromId(levelZeroSpaceId ?? levelZeroName),
   };
 }

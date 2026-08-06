@@ -42,12 +42,19 @@ export function bannerPlaceholderSize(aspectRatio: number): { width: number; hei
   return { width, height: Math.max(1, Math.round(width / aspectRatio)) };
 }
 
-/** Clamp an arbitrary stored/user value into the allowed banner ratio range. */
-export function clampBannerAspectRatio(
-  ratio: number | undefined,
-  min: number = MIN_BANNER_ASPECT_RATIO,
-  max: number = MAX_BANNER_ASPECT_RATIO
-): number {
+/**
+ * The ratio to render a stored banner at: the value the server recorded, or the
+ * default when there isn't a usable one.
+ *
+ * Deliberately does **not** clamp into `MIN`/`MAX`. Those two constants are a
+ * fallback for the *edit* control while the server's real bounds are loading;
+ * the authoritative range lives in platform config and ops can widen it. Read
+ * paths that clamped to the local constants would keep reserving a 6:1 box for
+ * a legitimately 4:1 banner — the render and the editor would disagree about
+ * what is legal, and the page would shift on load. The server validates the
+ * ratio on write, so what it hands back is by definition in range.
+ */
+export function resolveBannerAspectRatio(ratio: number | undefined | null): number {
   if (!ratio || !Number.isFinite(ratio)) return DEFAULT_BANNER_ASPECT_RATIO;
-  return Math.min(Math.max(ratio, min), max);
+  return ratio;
 }

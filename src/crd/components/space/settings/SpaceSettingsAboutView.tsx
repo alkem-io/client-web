@@ -90,10 +90,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   const showPageBanner = level === 'L0';
   const showAvatar = level !== 'L0';
 
-  // The pageBannerRatio is now only persisted via the crop dialog (ImageCropDialog)
-  // as part of the selectedAspectRatio state in that component.
-  const committedPageBannerRatio = pageBanner.aspectRatio ?? DEFAULT_BANNER_ASPECT_RATIO;
-  const pageBannerRatio = committedPageBannerRatio;
+  // The shape is chosen in the crop dialog, not here — this only sizes the
+  // preview box to whatever the visual currently is.
+  const pageBannerRatio = pageBanner.aspectRatio ?? DEFAULT_BANNER_ASPECT_RATIO;
 
   return (
     <div className={cn('flex flex-col gap-0', className)}>
@@ -175,6 +174,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   visual={pageBanner}
                   onUpload={onUploadPageBanner}
                   aspectRatio={pageBannerRatio}
+                  fit="contain"
                   t={t}
                   onRecrop={() => onRecropVisual?.('pageBanner')}
                   recropLabel={t('about.branding.pageBanner.recrop')}
@@ -435,6 +435,7 @@ function BannerUpload({
   visual,
   onUpload,
   aspectRatio,
+  fit = 'cover',
   widthClass,
   t,
   onRecrop,
@@ -442,6 +443,11 @@ function BannerUpload({
 }: {
   visual: AboutVisual;
   onUpload: (file: File) => void;
+  /** Must match how the page that displays this visual renders it, or the
+   *  preview lies: the page banner is `object-contain` (never cropped), so a
+   *  `cover` preview would show the admin a crop the page does not apply and
+   *  invite them to re-crop a banner that was rendering fine. */
+  fit?: 'cover' | 'contain';
   /** Numeric width / height. Inline rather than an `aspect-[x/y]` class because
    *  the page banner's value is chosen at runtime and Tailwind's JIT scanner
    *  needs class literals at build time. */
@@ -462,12 +468,21 @@ function BannerUpload({
   };
   return (
     <div
-      className={cn('group relative mt-2 overflow-hidden rounded-md', widthClass ?? 'w-full')}
+      // `min-h-14` keeps the box tall enough for the controls it contains. At
+      // the widest allowed banner shape (10:1) a full-width settings card on a
+      // phone works out under 30px, which clips the "Change banner" label and
+      // hides the corner crop button entirely — the controls would disappear at
+      // exactly the shapes this feature exists to offer.
+      className={cn('group relative mt-2 min-h-14 overflow-hidden rounded-md', widthClass ?? 'w-full')}
       style={{ aspectRatio }}
     >
       {visual.uri ? (
         <>
-          <img src={visual.uri} alt={visual.altText ?? ''} className="h-full w-full object-cover" />
+          <img
+            src={visual.uri}
+            alt={visual.altText ?? ''}
+            className={cn('h-full w-full', fit === 'contain' ? 'object-contain' : 'object-cover')}
+          />
           {/* Touch devices have no hover, so the change action is always visible on mobile;
               on md+ it fades in only on hover or keyboard focus to keep the image readable. */}
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">

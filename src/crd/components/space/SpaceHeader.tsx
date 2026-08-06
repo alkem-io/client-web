@@ -107,7 +107,13 @@ export function SpaceHeader({
                 alt={bannerAlt || t('a11y.spaceBanner', { name: title })}
                 width={bannerPlaceholder.width}
                 height={bannerPlaceholder.height}
-                className="w-full h-auto object-contain"
+                // `max-h` is a floor under the worst case, not a shape: a banner
+                // stored before the server derived `aspectRatio` from the pixels
+                // can be far taller than any ratio the editor allows (a 4:3 phone
+                // photo would fill the viewport), and `h-auto` alone would let it.
+                // A legitimate banner is at most width/6 tall, so this never
+                // engages for one.
+                className="w-full h-auto max-h-[50vh] object-contain"
                 fetchPriority="high"
                 decoding="async"
               />

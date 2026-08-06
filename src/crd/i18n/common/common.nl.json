@@ -974,7 +974,8 @@
       "label": "Beeldverhouding: {{ratio}}:1",
       "ariaLabel": "Beeldverhouding: {{ratio}}",
       "hintLeft": "Links: hoger beeldsnijden",
-      "hintRight": "Rechts: lager beeldsnijden"
+      "hintRight": "Rechts: lager beeldsnijden",
+      "name": "Bannervorm"
     }
   },
   "innovationHub": {

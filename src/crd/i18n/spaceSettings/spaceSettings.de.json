@@ -897,12 +897,7 @@
       },
       "pageBanner": {
         "title": "Seiten-Banner",
-        "hint": "Wird oben auf der Space-Seite angezeigt.",
-        "shape": {
-          "hint": "Höhere Werte ergeben einen flacheren, breiteren Bannerstreifen. Gilt für diesen Space und alle seine Subspaces.",
-          "label": "Bannerform",
-          "value": "{{ratio}}:1"
-        },
+        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1536 × 154px.",
         "recrop": "Aktuelles Seitenbanner zuschneiden"
       },
       "cardBanner": {
@@ -918,7 +913,8 @@
         "altText": "Beschreibung",
         "altTextPlaceholder": "Dieses Bild beschreiben…"
       },
-      "changeBanner": "Banner ändern"
+      "changeBanner": "Banner ändern",
+      "recropFailed": "Dieses Bild konnte nicht zum Zuschneiden geladen werden. Bitte erneut versuchen."
     },
     "location": {
       "title": "Standort",

@@ -30,6 +30,17 @@ export type ImageCropConfig = {
   aspectRatioBounds?: { min: number; max: number };
   /** Callback when aspect ratio is adjusted (for preview). */
   onAspectRatioChange?: (ratio: number) => void;
+  /**
+   * Refuse to save a crop smaller than `minWidth`/`minHeight` instead of letting
+   * the resizer upscale it.
+   *
+   * Off by default, and deliberately opt-in: the resizer's upscale path is the
+   * long-standing behaviour for every consumer of this dialog (avatars, card
+   * banners, chat photos), and turning the check into a hard block for all of
+   * them would silently make small-but-valid uploads unsaveable with no recourse
+   * but Cancel. The warning below shows either way.
+   */
+  blockBelowMinSize?: boolean;
 };
 
 type ImageCropDialogProps = {
@@ -43,6 +54,8 @@ type ImageCropDialogProps = {
   cancelLabel: string;
   altTextLabel: string;
   altTextPlaceholder: string;
+  /** Alt text the visual already has, so re-cropping does not silently blank it. */
+  initialAltText?: string;
   title: string;
   description?: string;
 };
@@ -159,6 +172,7 @@ export function ImageCropDialog({
   cancelLabel,
   altTextLabel,
   altTextPlaceholder,
+  initialAltText = '',
   title,
   description,
 }: ImageCropDialogProps) {
@@ -170,7 +184,7 @@ export function ImageCropDialog({
   const altTextId = useId();
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-  const [altText, setAltText] = useState('');
+  const [altText, setAltText] = useState(initialAltText);
   const [selectedAspectRatio, setSelectedAspectRatio] = useState<number | undefined>(() => initialAspectRatio(config));
   const [saving, setSaving] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -178,12 +192,17 @@ export function ImageCropDialog({
 
   // Drop the previous file's editing state as soon as a new file arrives, so
   // the dialog never shows the old crop while the new preview loads.
-  const prevFileRef = useRef<File | undefined>(undefined);
-  if (file !== prevFileRef.current) {
-    prevFileRef.current = file;
+  //
+  // The previous file is held in state rather than a ref: React may discard a
+  // render and replay it, and a ref written during render keeps the new value
+  // across that replay, so the resets would be skipped on the render that
+  // actually commits. State and the resets commit together.
+  const [prevFile, setPrevFile] = useState<File | undefined>(undefined);
+  if (file !== prevFile) {
+    setPrevFile(file);
     setCrop(undefined);
     setCompletedCrop(undefined);
-    setAltText('');
+    setAltText(initialAltText);
     setSelectedAspectRatio(initialAspectRatio(config));
   }
 
@@ -201,13 +220,15 @@ export function ImageCropDialog({
   }, [file]);
 
   // The resizer upscales to reach `minWidth`/`minHeight` (args 9-10), which
-  // would turn a too-small source into an interpolated image that passes server
-  // validation but looks soft. Block it here instead, while the user can still
-  // pick a bigger file.
+  // turns a too-small source into an interpolated image that passes server
+  // validation but looks soft. Always say so; only refuse the save where the
+  // consumer asked for it (`blockBelowMinSize`), since for everything else the
+  // upscale is the behaviour that has always shipped.
   const cropSize = naturalCropSize(imgRef.current, completedCrop);
   const requiredWidth = config.minWidth ?? 0;
   const requiredHeight = config.minHeight ?? 0;
   const tooSmall = Boolean(cropSize && (cropSize.width < requiredWidth || cropSize.height < requiredHeight));
+  const blockSave = tooSmall && Boolean(config.blockBelowMinSize);
 
   const currentAspectRatio = selectedAspectRatio ?? config.aspectRatio;
 
@@ -228,7 +249,7 @@ export function ImageCropDialog({
   };
 
   const handleSave = async () => {
-    if (!imgRef.current || !completedCrop || tooSmall) return;
+    if (!imgRef.current || !completedCrop || blockSave) return;
     setSaving(true);
     try {
       const croppedFile = await getCroppedImg(imgRef.current, completedCrop, config, file?.name ?? 'image.png');
@@ -268,7 +289,13 @@ export function ImageCropDialog({
             <div className="flex shrink-0 justify-center overflow-hidden rounded-md bg-muted">
               <ReactCrop
                 crop={crop}
-                onChange={c => setCrop(c)}
+                // Second argument, not the first: `onChange` hands over
+                // (PixelCrop, PercentCrop) in that order, and `crop` has to stay
+                // in `%` for the reason `applyCrop` documents — a drag that wrote
+                // displayed pixels here would be stranded by the next re-layout,
+                // since react-image-crop v10 does not rescale it itself.
+                // `completedCrop` is the pixel one, which is what Save reads.
+                onChange={(_, percentCrop) => setCrop(percentCrop)}
                 onComplete={c => setCompletedCrop(c)}
                 aspect={currentAspectRatio}
                 // ReactCrop's own CSS chains `max-height: inherit` down to the
@@ -316,6 +343,12 @@ export function ImageCropDialog({
               </label>
               <input
                 id={sliderId}
+                // The visible <label> carries the live value, which makes it a
+                // moving target as an accessible name — AT would re-announce the
+                // whole name on every arrow key and never say what the control
+                // actually is. A static name here wins over the label element;
+                // the value is announced separately via `aria-valuetext`.
+                aria-label={t('imageCrop.aspectRatio.name')}
                 type="range"
                 min={config.aspectRatioBounds.min}
                 max={config.aspectRatioBounds.max}
@@ -362,7 +395,12 @@ export function ImageCropDialog({
           <Button type="button" variant="ghost" onClick={onCancel} disabled={saving}>
             {cancelLabel}
           </Button>
-          <Button type="button" onClick={handleSave} disabled={saving || !completedCrop || tooSmall} aria-busy={saving}>
+          <Button
+            type="button"
+            onClick={handleSave}
+            disabled={saving || !completedCrop || blockSave}
+            aria-busy={saving}
+          >
             {saving ? savingLabel : saveLabel}
           </Button>
         </DialogFooter>
@@ -399,9 +437,15 @@ async function getCroppedImg(
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
 
-  // Round to integers to match validation bounds and avoid truncation during canvas coercion.
-  const sourceWidth = Math.round(crop.width * scaleX);
-  const sourceHeight = Math.round(crop.height * scaleY);
+  // Round to integers to match validation bounds and avoid truncation during
+  // canvas coercion, then hold the rectangle inside the bitmap. Origin and
+  // extent round independently, so both can round up and put `x + width` a pixel
+  // past `naturalWidth`; `drawImage` renders that overhang as transparent black,
+  // which the JPEG encoder bakes in as an opaque black edge on the saved image.
+  const sourceX = Math.max(0, Math.min(Math.round(crop.x * scaleX), image.naturalWidth));
+  const sourceY = Math.max(0, Math.min(Math.round(crop.y * scaleY), image.naturalHeight));
+  const sourceWidth = Math.min(Math.round(crop.width * scaleX), image.naturalWidth - sourceX);
+  const sourceHeight = Math.min(Math.round(crop.height * scaleY), image.naturalHeight - sourceY);
 
   canvas.width = sourceWidth;
   canvas.height = sourceHeight;
@@ -410,17 +454,7 @@ async function getCroppedImg(
   if (!ctx) throw new Error('Canvas context unavailable');
   ctx.imageSmoothingQuality = 'high';
 
-  ctx.drawImage(
-    image,
-    Math.round(crop.x * scaleX),
-    Math.round(crop.y * scaleY),
-    sourceWidth,
-    sourceHeight,
-    0,
-    0,
-    sourceWidth,
-    sourceHeight
-  );
+  ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
 
   // Quality 1 on a banner-sized canvas produces a multi-megabyte JPEG that is
   // visually indistinguishable from 0.92 — the whole point of raising the
@@ -446,7 +480,10 @@ async function getCroppedImg(
       maxWidth,
       maxHeight,
       'JPEG',
-      100,
+      // Must match the `toBlob` quality above: the resizer re-encodes, so a
+      // higher value here just inflates the file the 0.92 pass deliberately
+      // kept small, without recovering detail that encode already discarded.
+      92,
       0,
       (result: unknown) => {
         if (result instanceof File) {

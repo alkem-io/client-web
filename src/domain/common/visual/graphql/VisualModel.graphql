@@ -3,5 +3,4 @@ fragment VisualModel on Visual {
   uri
   name
   alternativeText
-  aspectRatio
 }

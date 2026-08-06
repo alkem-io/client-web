@@ -897,18 +897,13 @@
       },
       "pageBanner": {
         "title": "Paginabanner",
-        "hint": "Wordt weergegeven boven aan de Space-pagina.",
-        "shape": {
-          "hint": "Hogere waarden geven een lagere, bredere bannerstrook. Geldt voor deze Space en al zijn Subspaces.",
-          "label": "Bannervorm",
-          "value": "{{ratio}}:1"
-        },
-        "recrop": "Huidige page banner bijsnijden"
+        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1536 × 154px.",
+        "recrop": "Huidige paginabanner bijsnijden"
       },
       "cardBanner": {
         "title": "Kaartbanner (416 × 256px)",
         "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
-        "recrop": "Huidige card banner bijsnijden"
+        "recrop": "Huidige kaartbanner bijsnijden"
       },
       "cropDialog": {
         "save": "Opslaan",
@@ -918,7 +913,8 @@
         "altText": "Beschrijving",
         "altTextPlaceholder": "Beschrijf deze afbeelding…"
       },
-      "changeBanner": "Banner wijzigen"
+      "changeBanner": "Banner wijzigen",
+      "recropFailed": "Kan deze afbeelding niet laden om bij te snijden. Probeer het opnieuw."
     },
     "location": {
       "title": "Locatie",

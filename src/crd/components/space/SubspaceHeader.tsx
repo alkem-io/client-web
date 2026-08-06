@@ -120,7 +120,9 @@ export function SubspaceHeader({
                 alt={bannerAlt || t('a11y.subspaceBanner', { name: title })}
                 width={bannerPlaceholder.width}
                 height={bannerPlaceholder.height}
-                className="w-full h-auto object-contain"
+                // Same worst-case cap as SpaceHeader — see the note there. It has
+                // to match, for the same reason the height rule does.
+                className="w-full h-auto max-h-[50vh] object-contain"
                 fetchPriority="high"
                 decoding="async"
               />

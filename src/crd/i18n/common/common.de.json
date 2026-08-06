@@ -974,7 +974,8 @@
       "label": "Seitenverhältnis: {{ratio}}:1",
       "ariaLabel": "Seitenverhältnis: {{ratio}}",
       "hintLeft": "Links: höherer Bildzuschnitt",
-      "hintRight": "Rechts: niedrigerer Bildzuschnitt"
+      "hintRight": "Rechts: niedrigerer Bildzuschnitt",
+      "name": "Bannerform"
     }
   },
   "innovationHub": {

@@ -134,13 +134,11 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
                 id: '',
                 uri: '',
                 name: VisualType.Card,
-                aspectRatio: 1.6,
               },
               avatar: {
                 id: '',
                 uri: '',
                 name: VisualType.Avatar,
-                aspectRatio: 1,
               },
               tagset: {
                 id: '-1',

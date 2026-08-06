@@ -897,12 +897,7 @@
       },
       "pageBanner": {
         "title": "Banner de página",
-        "hint": "Se muestra en la parte superior de la página del espacio.",
-        "shape": {
-          "hint": "Los valores más altos dan una franja de banner más baja y ancha. Se aplica a este Space y a todos sus Subspaces.",
-          "label": "Forma del banner",
-          "value": "{{ratio}}:1"
-        },
+        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1536 × 154px.",
         "recrop": "Recortar el banner de página actual"
       },
       "cardBanner": {
@@ -918,7 +913,8 @@
         "altText": "Descripción",
         "altTextPlaceholder": "Describe esta imagen…"
       },
-      "changeBanner": "Cambiar banner"
+      "changeBanner": "Cambiar banner",
+      "recropFailed": "No se pudo cargar esta imagen para recortarla. Inténtalo de nuevo."
     },
     "location": {
       "title": "Ubicación",

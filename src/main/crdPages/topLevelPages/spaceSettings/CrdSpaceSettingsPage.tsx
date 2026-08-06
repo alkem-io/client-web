@@ -716,6 +716,7 @@ export default function CrdSpaceSettingsPage() {
         title={t('about.branding.cropDialog.title')}
         altTextLabel={t('about.branding.cropDialog.altText')}
         altTextPlaceholder={t('about.branding.cropDialog.altTextPlaceholder')}
+        initialAltText={about.pendingCrop?.altText}
       />
 
       <ConfirmationDialog

@@ -897,12 +897,7 @@
       },
       "pageBanner": {
         "title": "Page Banner",
-        "hint": "Shown at the top of the Space page.",
-        "shape": {
-          "hint": "Higher values give a shorter, wider banner strip. Applies to this Space and all of its Subspaces.",
-          "label": "Banner shape",
-          "value": "{{ratio}}:1"
-        },
+        "hint": "Shown at the top of the Space page. Use an image at least 1536 × 154px.",
         "recrop": "Crop current page banner"
       },
       "cardBanner": {
@@ -918,7 +913,8 @@
         "altText": "Description",
         "altTextPlaceholder": "Describe this image…"
       },
-      "changeBanner": "Change Banner"
+      "changeBanner": "Change Banner",
+      "recropFailed": "Could not load this image for cropping. Please try again."
     },
     "location": {
       "title": "Location",

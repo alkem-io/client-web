@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   bannerPlaceholderSize,
-  clampBannerAspectRatio,
   DEFAULT_BANNER_ASPECT_RATIO,
   MAX_BANNER_ASPECT_RATIO,
   MIN_BANNER_ASPECT_RATIO,
+  resolveBannerAspectRatio,
 } from './bannerAspectRatio';
 
 describe('bannerPlaceholderSize', () => {
@@ -30,17 +30,26 @@ describe('bannerPlaceholderSize', () => {
   });
 });
 
-describe('clampBannerAspectRatio', () => {
-  it('holds values inside the server bounds', () => {
-    expect(clampBannerAspectRatio(4)).toBe(MIN_BANNER_ASPECT_RATIO);
-    expect(clampBannerAspectRatio(12)).toBe(MAX_BANNER_ASPECT_RATIO);
-    expect(clampBannerAspectRatio(7.5)).toBe(7.5);
+describe('resolveBannerAspectRatio', () => {
+  it('returns what the server stored, unclamped', () => {
+    expect(resolveBannerAspectRatio(MIN_BANNER_ASPECT_RATIO)).toBe(MIN_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(MAX_BANNER_ASPECT_RATIO)).toBe(MAX_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(7.5)).toBe(7.5);
+  });
+
+  // The local MIN/MAX are a loading-time fallback for the editor, not a render
+  // rule: ops can widen the range in platform config, and a read path that
+  // clamped would reserve a differently-shaped box than the image really is.
+  it('does not clamp a value outside the local fallback bounds', () => {
+    expect(resolveBannerAspectRatio(4)).toBe(4);
+    expect(resolveBannerAspectRatio(12)).toBe(12);
   });
 
   it('falls back to the default for missing or unusable values', () => {
-    expect(clampBannerAspectRatio(undefined)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
-    expect(clampBannerAspectRatio(0)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
-    expect(clampBannerAspectRatio(Number.NaN)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
-    expect(clampBannerAspectRatio(Number.POSITIVE_INFINITY)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(undefined)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(null)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(0)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(Number.NaN)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(Number.POSITIVE_INFINITY)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
   });
 });

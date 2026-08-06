@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useTransition } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   useCreateReferenceOnProfileMutation,
   useDefaultVisualTypeConstraintsQuery,
@@ -8,6 +9,8 @@ import {
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
   AboutFormValues,
   AboutReference,
@@ -17,6 +20,7 @@ import type {
   SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
+import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
 import { buildPreviewCard, mapSpaceToAboutFormValues } from './aboutMapper';
@@ -100,6 +104,9 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   );
   const savedFlashTimers = useRef<Partial<Record<AboutSectionKey, ReturnType<typeof setTimeout>>>>({});
 
+  const { t } = useTranslation('crd-spaceSettings');
+  const notify = useNotification();
+
   const [updateSpace] = useUpdateSpaceMutation();
   const [uploadVisual] = useUploadVisualMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
@@ -112,9 +119,17 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     skip: level !== 'L0',
   });
   const bannerConstraints = bannerConstraintsData?.platform.configuration.defaultVisualTypeConstraints;
-  const pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null = bannerConstraints
-    ? { min: bannerConstraints.minAspectRatio, max: bannerConstraints.maxAspectRatio }
-    : null;
+  // Fall back to the local mirror of the server defaults rather than to `null`.
+  // `null` reads as "this visual has no adjustable shape" and silently removes
+  // the slider, so a failed or still-loading platform-config query would take
+  // the whole feature away for the session with nothing shown to explain it.
+  const pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null =
+    level === 'L0'
+      ? {
+          min: bannerConstraints?.minAspectRatio ?? MIN_BANNER_ASPECT_RATIO,
+          max: bannerConstraints?.maxAspectRatio ?? MAX_BANNER_ASPECT_RATIO,
+        }
+      : null;
 
   // Reference file upload (paperclip) — the space settings tab is always rendered inside the
   // ambient space StorageConfigContextProvider, so the bucket resolves from context.
@@ -190,6 +205,10 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const uploadVisualForField = async (
     key: 'avatar' | 'pageBanner' | 'cardBanner',
     file: File,
+    // Passed explicitly rather than read back off `valuesRef`: the caller queues
+    // a `setValues` for this same alt text, and that updater runs at render, not
+    // at dispatch, so the ref still holds the pre-edit value at this point.
+    altText: string,
     aspectRatio?: number
   ) => {
     const current = valuesRef.current;
@@ -197,7 +216,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     if (!visual?.id) return;
     startTransition(() => {
       void uploadVisual({
-        variables: { file, uploadData: { visualID: visual.id, alternativeText: visual.altText ?? undefined } },
+        variables: { file, uploadData: { visualID: visual.id, alternativeText: altText || undefined } },
       }).then(result => {
         const uploaded = result.data?.uploadImageOnVisual;
         if (uploaded) {
@@ -248,15 +267,33 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       maxWidth: visualRaw?.maxWidth,
       minWidth: visualRaw?.minWidth,
       aspectRatioBounds,
+      // Only the page banner refuses an undersized source: it is the page's
+      // largest image, where upscaling is most visible. The avatar and card
+      // banner keep the resizer's upscale path they have always had.
+      blockBelowMinSize: key === 'pageBanner',
     };
   };
 
+  // A newly picked file replaces the image, not its description, so the dialog
+  // opens on the alt text the visual already has.
+  const currentAltText = (key: 'avatar' | 'pageBanner' | 'cardBanner') => values?.[key]?.altText ?? '';
+
   const onUploadAvatarWithCrop = (file: File) =>
-    setPendingCrop({ key: 'avatar', file, config: buildCropConfig('avatar') });
+    setPendingCrop({ key: 'avatar', file, config: buildCropConfig('avatar'), altText: currentAltText('avatar') });
   const onUploadPageBannerWithCrop = (file: File) =>
-    setPendingCrop({ key: 'pageBanner', file, config: buildCropConfig('pageBanner') });
+    setPendingCrop({
+      key: 'pageBanner',
+      file,
+      config: buildCropConfig('pageBanner'),
+      altText: currentAltText('pageBanner'),
+    });
   const onUploadCardBannerWithCrop = (file: File) =>
-    setPendingCrop({ key: 'cardBanner', file, config: buildCropConfig('cardBanner') });
+    setPendingCrop({
+      key: 'cardBanner',
+      file,
+      config: buildCropConfig('cardBanner'),
+      altText: currentAltText('cardBanner'),
+    });
 
   // Re-crop an already-uploaded visual (existing file with URI).
   const onRecropVisual = (key: 'avatar' | 'pageBanner' | 'cardBanner') => {
@@ -268,10 +305,14 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       .then(blob => {
         const fileName = visual.uri?.split('/').pop() ?? `${key}.jpg`;
         const file = new File([blob], fileName, { type: blob.type || 'image/jpeg' });
-        setPendingCrop({ key, file, config: buildCropConfig(key) });
+        setPendingCrop({ key, file, config: buildCropConfig(key), altText: currentAltText(key) });
       })
       .catch(() => {
-        // Silently fail if unable to load visual for re-crop
+        // The image is fetched from the storage host, so this fails on CORS, on
+        // a 403 for a private space's document, or on any network blip. Without
+        // a message the crop button is simply inert and the admin cannot tell it
+        // apart from a slow load.
+        notify(t('about.branding.recropFailed'), 'error');
       });
   };
 
@@ -290,7 +331,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       valuesRef.current = next;
       return next;
     });
-    void uploadVisualForField(key, croppedFile, aspectRatio);
+    void uploadVisualForField(key, croppedFile, altText, aspectRatio);
   };
 
   const onCropCancel = () => setPendingCrop(null);
@@ -507,18 +548,18 @@ function mergeSavedSection(buffer: AboutFormValues, fresh: AboutFormValues, sect
   }
 }
 
-export type CropConfig = {
-  aspectRatio?: number;
-  maxHeight?: number;
-  minHeight?: number;
-  maxWidth?: number;
-  minWidth?: number;
-  aspectRatioBounds?: { min: number; max: number };
-};
+/**
+ * Alias rather than a re-declaration: this value goes straight into
+ * `ImageCropDialog`'s `config` prop, and the hand-copied version this replaces
+ * had already fallen a field behind the dialog it configures.
+ */
+export type CropConfig = ImageCropConfig;
 
 export type PendingCrop = {
   key: 'avatar' | 'pageBanner' | 'cardBanner';
   file: File;
   config: CropConfig;
+  /** The visual's current alt text, so the dialog opens with it instead of blank. */
+  altText: string;
   selectedAspectRatio?: number;
 };

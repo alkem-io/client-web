@@ -897,12 +897,7 @@
       },
       "pageBanner": {
         "title": "Bannière de page",
-        "hint": "Affichée en haut de la page de l'espace.",
-        "shape": {
-          "hint": "Des valeurs plus élevées donnent une bande de bannière plus basse et plus large. S'applique à ce Space et à tous ses Subspaces.",
-          "label": "Forme de la bannière",
-          "value": "{{ratio}}:1"
-        },
+        "hint": "Affichée en haut de la page du Space. Utilisez une image d'au moins 1536 × 154px.",
         "recrop": "Recadrer la bannière de page actuelle"
       },
       "cardBanner": {
@@ -918,7 +913,8 @@
         "altText": "Description",
         "altTextPlaceholder": "Décrivez cette image…"
       },
-      "changeBanner": "Changer la bannière"
+      "changeBanner": "Changer la bannière",
+      "recropFailed": "Impossible de charger cette image pour le recadrage. Veuillez réessayer."
     },
     "location": {
       "title": "Localisation",

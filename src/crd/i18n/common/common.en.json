@@ -974,7 +974,8 @@
       "label": "Aspect Ratio: {{ratio}}:1",
       "ariaLabel": "Aspect ratio: {{ratio}}",
       "hintLeft": "Left: taller image crop",
-      "hintRight": "Right: shorter image crop"
+      "hintRight": "Right: shorter image crop",
+      "name": "Banner shape"
     }
   },
   "innovationHub": {
