@@ -128,7 +128,28 @@ describe('service worker push — notification tag (FR-024)', () => {
       badge: '/icons/badge-72.png',
       data: { url: '/messages?chat=abc' },
       tag: 'digest',
+      renotify: true,
     });
+  });
+
+  // Replacing a notification with an existing tag is SILENT unless `renotify`
+  // is set: no sound, no vibration, no re-banner. Without it, a user who never
+  // dismissed the first digest was never alerted again on that track.
+  it('sets renotify with a payload tag, so a replacing digest still alerts', () => {
+    firePush({ title: 'A', body: 'a', url: '/x', eventType: 'DIGEST', tag: 'messaging-direct-digest' });
+
+    expect(showNotification).toHaveBeenCalledWith(
+      'A',
+      expect.objectContaining({ tag: 'messaging-direct-digest', renotify: true })
+    );
+  });
+
+  // `renotify` without a `tag` throws a TypeError, and the legacy unique-tag
+  // path never replaces anything, so it must stay off there.
+  it('leaves renotify off on the legacy unique-tag path', () => {
+    firePush({ title: 'Invite', body: 'b', url: '/invite', eventType: 'COMMUNITY_INVITATION' });
+
+    expect(showNotification).toHaveBeenCalledWith('Invite', expect.objectContaining({ renotify: false }));
   });
 
   it('ignores a push with no data at all', () => {

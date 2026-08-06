@@ -90,6 +90,14 @@ self.addEventListener('push', event => {
       // unique-per-delivery construction, so non-messaging pushes are
       // unaffected and still stack.
       tag: tag || `${eventType}-${Date.now()}`,
+      // Replacing a notification that carries an existing tag is SILENT by
+      // default — no sound, no vibration, no re-banner. Without this, a user
+      // who left the first digest sitting in the tray was never alerted again
+      // for that track: the text just quietly mutated on a notification they
+      // had already looked past. Only set when the sender supplied the tag;
+      // the legacy unique-tag path never replaces anything, and `renotify`
+      // without a `tag` throws a TypeError.
+      renotify: Boolean(tag),
     })
   );
 });

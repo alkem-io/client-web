@@ -15,21 +15,33 @@ export const CHAT_DEEP_LINK_PARAM = 'chat';
  * per param instance — conversation SELECTION and stripping the param happen
  * downstream, once the panel connector's conversation list resolves
  * (`useChatDeepLinkSelect`).
+ *
+ * "Once per param instance" is why the latch stores the consumed ID rather than
+ * a boolean. This hook's host (`UnifiedChatLauncher`) is mounted for the whole
+ * session, so a boolean latched the FIRST deep link forever: the service worker
+ * navigating an existing tab to `/?chat=B` re-ran this effect and returned
+ * early, and every push notification after the first opened nothing. The ID is
+ * cleared once the param is gone (stripped downstream), so a later link to the
+ * SAME conversation is treated as a new instance and works too.
  */
 export const useChatDeepLinkOpen = () => {
   const { search } = useLocation();
   const { isEnabled, setIsOpen } = useUserMessagingContext();
-  const consumedRef = useRef(false);
+  const consumedIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (consumedRef.current || !isEnabled) {
+    if (!isEnabled) {
       return;
     }
     const chatId = new URLSearchParams(search).get(CHAT_DEEP_LINK_PARAM);
     if (!chatId) {
+      consumedIdRef.current = null;
       return;
     }
-    consumedRef.current = true;
+    if (consumedIdRef.current === chatId) {
+      return;
+    }
+    consumedIdRef.current = chatId;
     setIsOpen(true);
   }, [search, isEnabled, setIsOpen]);
 };
@@ -42,21 +54,27 @@ export const useChatDeepLinkOpen = () => {
  * same mechanism the calendar deep link uses). An unknown/inaccessible id
  * strips the param the same way and leaves the default list open — no error
  * UI (contract C-6, risk R-13). A URL with no `chat` param is a no-op: the
- * effect returns before touching history.
+ * effect returns before touching history (and clears the latch, so a repeat
+ * link to the same conversation is a fresh instance).
+ *
+ * The latch stores the consumed ID for the same reason as `useChatDeepLinkOpen`
+ * above: while the panel stays open this hook stays mounted, so a boolean would
+ * have made every deep link after the first select nothing.
  */
 export const useChatDeepLinkSelect = (conversations: UnifiedConversation[], isLoadingConversations: boolean) => {
   const { pathname, search } = useLocation();
   const navigate = useNavigate();
   const { setSelectedConversationId, setSelectedRoomId } = useUserMessagingContext();
-  const consumedRef = useRef(false);
+  const consumedIdRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (consumedRef.current || isLoadingConversations) {
-      return;
-    }
     const params = new URLSearchParams(search);
     const chatId = params.get(CHAT_DEEP_LINK_PARAM);
     if (!chatId) {
+      consumedIdRef.current = null;
+      return;
+    }
+    if (consumedIdRef.current === chatId || isLoadingConversations) {
       return;
     }
 
@@ -67,7 +85,7 @@ export const useChatDeepLinkSelect = (conversations: UnifiedConversation[], isLo
     }
     // Unknown/inaccessible id: no selection made — default list stays shown, no error UI.
 
-    consumedRef.current = true;
+    consumedIdRef.current = chatId;
     params.delete(CHAT_DEEP_LINK_PARAM);
     const nextSearch = params.toString();
     navigate(`${pathname}${nextSearch ? `?${nextSearch}` : ''}`, { replace: true });

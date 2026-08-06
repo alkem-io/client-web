@@ -12,6 +12,19 @@ vi.mock('@/core/routing/useNavigate', () => ({
   default: () => navigateMock,
 }));
 
+// The location is driven directly rather than through MemoryRouter, because the
+// latch regressions only reproduce when the URL changes WITHOUT remounting —
+// remounting resets the ref and would make the test pass against the old code.
+let mockPathname = '/';
+let mockSearch = '';
+vi.mock('react-router-dom', async importOriginal => {
+  const actual = await importOriginal<typeof import('react-router-dom')>();
+  return {
+    ...actual,
+    useLocation: () => ({ pathname: mockPathname, search: mockSearch, hash: '', state: null, key: 'test' }),
+  };
+});
+
 const setIsOpenMock = vi.fn();
 const setSelectedConversationIdMock = vi.fn();
 const setSelectedRoomIdMock = vi.fn();
@@ -26,9 +39,13 @@ vi.mock('@/main/userMessaging/UserMessagingContext', () => ({
   useUserMessagingContext: () => mockContext,
 }));
 
-const wrapperAt =
-  (path: string) =>
-  ({ children }: { children: ReactNode }) => <MemoryRouter initialEntries={[path]}>{children}</MemoryRouter>;
+/** Points the mocked location at `path` and returns a router wrapper for it. */
+const wrapperAt = (path: string) => {
+  const [pathname, search] = path.split('?');
+  mockPathname = pathname || '/';
+  mockSearch = search ? `?${search}` : '';
+  return ({ children }: { children: ReactNode }) => <MemoryRouter initialEntries={[path]}>{children}</MemoryRouter>;
+};
 
 const conversation = (overrides: Partial<UnifiedConversation> = {}): UnifiedConversation => ({
   id: 'conv-1',
@@ -73,6 +90,53 @@ describe('useChatDeepLinkOpen', () => {
     mockContext.isEnabled = false;
     renderHook(() => useChatDeepLinkOpen(), { wrapper: wrapperAt('/?chat=conv-1') });
     expect(setIsOpenMock).not.toHaveBeenCalled();
+  });
+
+  // Regression: this hook's host (UnifiedChatLauncher) is mounted for the whole
+  // session, so a boolean latch consumed only the FIRST deep link ever. Clicking
+  // a second push notification navigates the SAME tab to /?chat=<other>, and the
+  // panel never opened again.
+  it('opens again for a different chat id within the same mount', () => {
+    const { rerender } = renderHook(() => useChatDeepLinkOpen(), {
+      wrapper: wrapperAt('/?chat=conv-1'),
+    });
+    expect(setIsOpenMock).toHaveBeenCalledTimes(1);
+
+    // The param is stripped downstream once consumed, then the next push arrives.
+    setIsOpenMock.mockClear();
+    mockSearch = '';
+    rerender();
+    mockSearch = '?chat=conv-2';
+    rerender();
+
+    expect(setIsOpenMock).toHaveBeenCalledWith(true);
+  });
+
+  it('opens again for a REPEAT link to the same conversation', () => {
+    const { rerender } = renderHook(() => useChatDeepLinkOpen(), {
+      wrapper: wrapperAt('/?chat=conv-1'),
+    });
+    expect(setIsOpenMock).toHaveBeenCalledTimes(1);
+
+    setIsOpenMock.mockClear();
+    mockSearch = '';
+    rerender();
+    mockSearch = '?chat=conv-1';
+    rerender();
+
+    expect(setIsOpenMock).toHaveBeenCalledWith(true);
+  });
+
+  it('does not re-open while the same param is still on the URL', () => {
+    const { rerender } = renderHook(() => useChatDeepLinkOpen(), {
+      wrapper: wrapperAt('/?chat=conv-1'),
+    });
+    expect(setIsOpenMock).toHaveBeenCalledTimes(1);
+
+    rerender();
+    rerender();
+
+    expect(setIsOpenMock).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -120,5 +184,30 @@ describe('useChatDeepLinkSelect', () => {
 
     expect(navigateMock).not.toHaveBeenCalled();
     expect(setSelectedConversationIdMock).not.toHaveBeenCalled();
+  });
+
+  // Regression: while the panel stays open this hook stays mounted, so a boolean
+  // latch meant the second push notification of a session selected nothing even
+  // though the panel was already open.
+  it('selects again for a different chat id within the same mount', () => {
+    const conversations = [
+      conversation({ id: 'conv-1', roomId: 'room-1' }),
+      conversation({ id: 'conv-2', roomId: 'room-2' }),
+    ];
+    const { rerender } = renderHook(() => useChatDeepLinkSelect(conversations, false), {
+      wrapper: wrapperAt('/?chat=conv-1'),
+    });
+    expect(setSelectedConversationIdMock).toHaveBeenCalledWith('conv-1');
+
+    // The hook strips the param itself; reflect that, then deliver the next link.
+    setSelectedConversationIdMock.mockClear();
+    setSelectedRoomIdMock.mockClear();
+    mockSearch = '';
+    rerender();
+    mockSearch = '?chat=conv-2';
+    rerender();
+
+    expect(setSelectedConversationIdMock).toHaveBeenCalledWith('conv-2');
+    expect(setSelectedRoomIdMock).toHaveBeenCalledWith('room-2');
   });
 });
