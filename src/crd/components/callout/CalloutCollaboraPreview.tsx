@@ -1,4 +1,5 @@
 import { FileText, Presentation, RefreshCw, Sheet } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -15,6 +16,14 @@ type CalloutCollaboraPreviewProps = {
    * edit rights (FR-002).
    */
   onReplace?: () => void;
+  /**
+   * Real rendered preview image, when the backend eventually supplies one (no
+   * source exists yet — always `undefined` in production today, workspace
+   * story client-web#9872 P3). When present and loadable, replaces the
+   * type-icon treatment; falls back to the type-icon treatment if it fails to
+   * load.
+   */
+  previewImageUrl?: string;
   /** `default` = aspect-video (used inside the callout detail dialog);
    *  `compact` = shorter fixed height for the space feed card. */
   size?: 'default' | 'compact';
@@ -46,6 +55,7 @@ export function CalloutCollaboraPreview({
   documentType,
   onOpen,
   onReplace,
+  previewImageUrl,
   size = 'default',
   className,
 }: CalloutCollaboraPreviewProps) {
@@ -54,6 +64,8 @@ export function CalloutCollaboraPreview({
   const accentColor = colorByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.documentText');
   const compact = size === 'compact';
+  const [imageErrored, setImageErrored] = useState(false);
+  const showImage = Boolean(previewImageUrl) && !imageErrored;
 
   return (
     <div
@@ -64,7 +76,16 @@ export function CalloutCollaboraPreview({
       )}
     >
       <div className="w-full h-full flex items-center justify-center bg-muted">
-        <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', accentColor)} aria-hidden="true" />
+        {showImage ? (
+          <img
+            src={previewImageUrl}
+            alt={typeLabel}
+            className="w-full h-full object-cover"
+            onError={() => setImageErrored(true)}
+          />
+        ) : (
+          <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', accentColor)} aria-hidden="true" />
+        )}
       </div>
       <div className="absolute top-3 right-3">
         <span className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-caption text-foreground shadow-sm">

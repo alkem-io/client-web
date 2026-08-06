@@ -65,4 +65,47 @@ describe('CalloutCollaboraPreview', () => {
       render(<CalloutCollaboraPreview documentType="text" onOpen={() => {}} size="default" />)
     ).not.toThrow();
   });
+
+  describe('previewImageUrl (forward-compatible real-thumbnail seam, workspace story #9872 P3)', () => {
+    it('renders the preview image in place of the centered fallback icon when previewImageUrl is present', () => {
+      const { container } = render(
+        <CalloutCollaboraPreview
+          documentType="text"
+          onOpen={() => {}}
+          previewImageUrl="https://example.com/preview.png"
+        />
+      );
+
+      const img = container.querySelector('img');
+      expect(img).toBeInTheDocument();
+      expect(img).toHaveAttribute('src', 'https://example.com/preview.png');
+      // alt text reuses the existing type-label key (no new i18n key, see research.md R4)
+      expect(img).toHaveAttribute('alt', 'callout.documentText');
+
+      // Only the badge icon remains — the centered fallback icon is replaced by the image.
+      expect(container.querySelectorAll('svg').length).toBe(1);
+    });
+
+    it('falls back to the type-icon treatment when the preview image fails to load', () => {
+      const { container } = render(
+        <CalloutCollaboraPreview
+          documentType="spreadsheet"
+          onOpen={() => {}}
+          previewImageUrl="https://example.com/broken.png"
+        />
+      );
+
+      const img = container.querySelector('img');
+      expect(img).toBeInTheDocument();
+      // biome-ignore lint/style/noNonNullAssertion: presence asserted immediately above
+      fireEvent.error(img!);
+
+      expect(container.querySelector('img')).not.toBeInTheDocument();
+      const icons = container.querySelectorAll('svg');
+      expect(icons.length).toBe(2);
+      for (const icon of icons) {
+        expect(icon.getAttribute('class')).toContain('text-green-600');
+      }
+    });
+  });
 });
