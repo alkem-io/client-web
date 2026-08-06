@@ -41,7 +41,6 @@ const loadServiceWorker = () => {
   };
 
   const source = readFileSync(resolve(process.cwd(), 'public/service-worker.js'), 'utf8');
-  // eslint-disable-next-line no-new-func
   new Function('self', 'fetch', source)(selfStub, vi.fn());
 };
 
