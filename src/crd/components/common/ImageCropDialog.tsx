@@ -81,6 +81,7 @@ function recalculateCropForAspectRatio(currentCrop: Crop, newAspectRatio: number
     ...currentCrop,
     height: newHeight,
     y: newY,
+    unit: currentCrop.unit,
   };
 }
 
