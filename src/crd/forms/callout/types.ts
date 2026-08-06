@@ -30,6 +30,17 @@ export type FramingChip =
 export type ContributorTypeId = 'user' | 'organization' | 'virtualContributor';
 export type ContributorViewId = 'list' | 'map';
 
+/**
+ * Admin-fixed initial map view. Plain TS — mirrors the server
+ * `CalloutContributorsMapView` shape (three floats). `null` means automatic
+ * framing (fit to plotted contributor bounds; Europe fallback when empty).
+ */
+export type ContributorMapFixedViewConfig = {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+};
+
 export type ContributorCollectionConfig = {
   /** Selected contributor types (>=1; save is blocked on zero). */
   types: ContributorTypeId[];
@@ -37,6 +48,11 @@ export type ContributorCollectionConfig = {
   defaultType: ContributorTypeId;
   /** Default display; auto-heals to `list` when the selection is VC-only. */
   defaultView: ContributorViewId;
+  /**
+   * Admin-fixed initial map view. null = automatic framing.
+   * The heal functions never touch this field (isolated from type-healing).
+   */
+  mapView: ContributorMapFixedViewConfig | null;
 };
 
 /**
