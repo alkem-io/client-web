@@ -23,10 +23,12 @@ const STATIC_NAVIGATION_HREFS = {
 
 export function useCrdNavigation() {
   const { t, i18n } = useTranslation();
-  // crd-layout, not crd-contributorSettings: this hook backs the header on
-  // every page, and crd-layout is already eagerly loaded app-wide (unlike a
-  // feature namespace, which useTranslation would otherwise lazy-fetch here
-  // on every render just to have one rarely-hit error string ready).
+  // crd-layout, not crd-contributorSettings: this hook backs the header, so
+  // it mounts on every page load. crd-layout is already eagerly loaded
+  // app-wide; a feature namespace is not — useTranslation triggers its fetch
+  // as soon as this hook mounts (not on every re-render, just once per page
+  // load), pulling in a whole unrelated namespace just to have one
+  // rarely-hit error string ready.
   const { t: tLayout } = useTranslation('crd-layout');
   const { pathname, search } = useLocation();
   const { locations } = useConfig();
