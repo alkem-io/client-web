@@ -11,11 +11,12 @@ describe('collaboraDocumentTypeFromFilename', () => {
     ['report.docx', CollaboraDocumentType.Wordprocessing],
     ['budget.XLSX', CollaboraDocumentType.Spreadsheet],
     ['deck.pptx', CollaboraDocumentType.Presentation],
+    ['notes.pdf', CollaboraDocumentType.Pdf],
   ])('maps %s to its Collabora document type', (name, expected) => {
     expect(collaboraDocumentTypeFromFilename(name)).toBe(expected);
   });
 
-  it.each(['notes.pdf', 'legacy.doc', 'noextension'])('returns undefined for unsupported %s', name => {
+  it.each(['legacy.doc', 'noextension'])('returns undefined for unsupported %s', name => {
     expect(collaboraDocumentTypeFromFilename(name)).toBeUndefined();
   });
 });
@@ -27,12 +28,21 @@ describe('isSameCollaboraDocumentType', () => {
     expect(isSameCollaboraDocumentType('new.xlsx', 'SPREADSHEET')).toBe(true);
   });
 
+  it('is true for a PDF replacing a PDF (FR-004)', () => {
+    expect(isSameCollaboraDocumentType('new.pdf', CollaboraDocumentType.Pdf)).toBe(true);
+    expect(isSameCollaboraDocumentType('new.pdf', 'PDF')).toBe(true);
+  });
+
   it('is false when the incoming extension is a different type', () => {
     expect(isSameCollaboraDocumentType('new.xlsx', CollaboraDocumentType.Wordprocessing)).toBe(false);
   });
 
+  it('is false when a non-PDF file is used to replace a PDF document (FR-004)', () => {
+    expect(isSameCollaboraDocumentType('new.docx', CollaboraDocumentType.Pdf)).toBe(false);
+  });
+
   it('is false for an unknown extension', () => {
-    expect(isSameCollaboraDocumentType('new.pdf', CollaboraDocumentType.Wordprocessing)).toBe(false);
+    expect(isSameCollaboraDocumentType('new.rtf', CollaboraDocumentType.Wordprocessing)).toBe(false);
   });
 });
 
@@ -41,6 +51,7 @@ describe('isReplaceableCollaboraDocumentType', () => {
     CollaboraDocumentType.Wordprocessing,
     CollaboraDocumentType.Spreadsheet,
     CollaboraDocumentType.Presentation,
+    CollaboraDocumentType.Pdf,
   ])('is true for the Phase-1 type %s', type => {
     expect(isReplaceableCollaboraDocumentType(type)).toBe(true);
   });

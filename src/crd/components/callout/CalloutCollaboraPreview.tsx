@@ -1,9 +1,9 @@
-import { FileText, Presentation, RefreshCw, Sheet } from 'lucide-react';
+import { FileText, FileType, Presentation, RefreshCw, Sheet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
-export type CollaboraDocumentPreviewType = 'text' | 'spreadsheet' | 'presentation';
+export type CollaboraDocumentPreviewType = 'text' | 'spreadsheet' | 'presentation' | 'pdf';
 
 type CalloutCollaboraPreviewProps = {
   documentType: CollaboraDocumentPreviewType;
@@ -25,12 +25,24 @@ const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
   text: FileText,
   spreadsheet: Sheet,
   presentation: Presentation,
+  // Distinct from the other three so a PDF is recognizable at a glance (FR-007).
+  pdf: FileType,
 };
 
 const typeLabelKey: Record<CollaboraDocumentPreviewType, string> = {
   text: 'callout.documentText',
   spreadsheet: 'callout.documentSpreadsheet',
   presentation: 'callout.documentPresentation',
+  pdf: 'callout.documentPdf',
+};
+
+// PDF has no create/edit concept (import-only) — the open action reads as
+// view/annotate rather than "Open Document" (FR-002).
+const openLabelKey: Record<CollaboraDocumentPreviewType, string> = {
+  text: 'callout.openDocument',
+  spreadsheet: 'callout.openDocument',
+  presentation: 'callout.openDocument',
+  pdf: 'callout.openDocumentPdf',
 };
 
 export function CalloutCollaboraPreview({
@@ -43,6 +55,7 @@ export function CalloutCollaboraPreview({
   const { t } = useTranslation('crd-space');
   const Icon = iconByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.documentText');
+  const openLabel = t(openLabelKey[documentType] as 'callout.openDocument');
   const compact = size === 'compact';
 
   return (
@@ -64,7 +77,7 @@ export function CalloutCollaboraPreview({
       </div>
       <div className="absolute inset-0 flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 transition-colors">
         <Button variant="secondary" className="shadow-sm" onClick={onOpen}>
-          {t('callout.openDocument')}
+          {openLabel}
         </Button>
         {onReplace && (
           <Button variant="secondary" className="shadow-sm" onClick={onReplace}>

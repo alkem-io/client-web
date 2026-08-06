@@ -81,4 +81,13 @@ describe('CollaboraFramingConnector — Replace action gating', () => {
     expect(screen.queryByRole('button', { name: enJson.callout.documentReplace })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: enJson.callout.openDocument })).toBeInTheDocument();
   });
+
+  it('shows the Replace file action for PDF when the user has edit rights (FR-004)', () => {
+    renderConnector(
+      <CollaboraFramingConnector callout={makeCallout([AuthorizationPrivilege.Update], 'PDF')} onOpen={() => {}} />
+    );
+    expect(screen.getByRole('button', { name: enJson.callout.documentReplace })).toBeInTheDocument();
+    // PDF uses view/annotate framing rather than "Open Document" (FR-002).
+    expect(screen.getByRole('button', { name: enJson.callout.openDocumentPdf })).toBeInTheDocument();
+  });
 });

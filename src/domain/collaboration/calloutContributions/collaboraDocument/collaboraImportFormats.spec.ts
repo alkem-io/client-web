@@ -6,8 +6,8 @@ import {
 } from './collaboraImportFormats';
 
 describe('collaboraImportFormats', () => {
-  it('exposes the P1 extension list with .docx, .xlsx, .pptx', () => {
-    expect(COLLABORA_IMPORT_EXTENSIONS_P1).toEqual(['.docx', '.xlsx', '.pptx']);
+  it('exposes the P1 extension list with .docx, .xlsx, .pptx, .pdf', () => {
+    expect(COLLABORA_IMPORT_EXTENSIONS_P1).toEqual(['.docx', '.xlsx', '.pptx', '.pdf']);
   });
 
   it('caps uploads at exactly 15 MB', () => {
@@ -16,11 +16,15 @@ describe('collaboraImportFormats', () => {
   });
 
   it('produces a comma-joined accept attribute matching the picker hint', () => {
-    expect(COLLABORA_IMPORT_ACCEPT_ATTR).toBe('.docx,.xlsx,.pptx');
+    expect(COLLABORA_IMPORT_ACCEPT_ATTR).toBe('.docx,.xlsx,.pptx,.pdf');
   });
 
-  it('does not include legacy, ODF, drawing, or PDF extensions in P1', () => {
-    const banned = ['.doc', '.xls', '.ppt', '.odt', '.ods', '.odp', '.rtf', '.csv', '.odg', '.pdf'];
+  it('includes PDF in P1 (import-only, no blank-create option — FR-001/FR-003)', () => {
+    expect(COLLABORA_IMPORT_EXTENSIONS_P1).toContain('.pdf');
+  });
+
+  it('does not include legacy or ODF extensions in P1', () => {
+    const banned = ['.doc', '.xls', '.ppt', '.odt', '.ods', '.odp', '.rtf', '.csv', '.odg'];
     for (const ext of banned) {
       expect(COLLABORA_IMPORT_EXTENSIONS_P1).not.toContain(ext);
     }

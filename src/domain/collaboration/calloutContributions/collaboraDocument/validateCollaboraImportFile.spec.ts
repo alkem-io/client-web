@@ -28,7 +28,6 @@ describe('validateCollaboraImportFile', () => {
   });
 
   it.each([
-    ['.pdf', 'report.pdf'],
     ['.doc', 'legacy.doc'],
     ['.odt', 'opendoc.odt'],
     ['.txt', 'notes.txt'],
@@ -96,6 +95,15 @@ describe('validateCollaboraImportFile', () => {
     expect(result.ok).toBe(true);
   });
 
+  it('returns { ok: true, file } on a valid .pdf (import-only, FR-001)', () => {
+    const file = makeFile('report.pdf', 100_000);
+    const result = validateCollaboraImportFile([file]);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.file).toBe(file);
+    }
+  });
+
   it('checks single-file before extension (multi-file with one valid name still rejected)', () => {
     const a = makeFile('valid.docx', 100);
     const b = makeFile('invalid.pdf', 100);
@@ -103,10 +111,19 @@ describe('validateCollaboraImportFile', () => {
     expect(result).toEqual({ ok: false, error: { kind: 'multiple-files' } });
   });
 
-  it('checks extension before size (oversized .pdf rejected on extension, not size)', () => {
-    const file = makeFile('huge.pdf', COLLABORA_IMPORT_MAX_BYTES + 100);
+  it('checks extension before size (oversized unsupported file rejected on extension, not size)', () => {
+    const file = makeFile('huge.doc', COLLABORA_IMPORT_MAX_BYTES + 100);
     const result = validateCollaboraImportFile([file]);
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.kind).toBe('extension');
+  });
+
+  it('rejects an oversized .pdf with kind="size" (extension is allowed, size cap still enforced)', () => {
+    const file = makeFile('huge.pdf', COLLABORA_IMPORT_MAX_BYTES + 100);
+    const result = validateCollaboraImportFile([file]);
+    expect(result).toEqual({
+      ok: false,
+      error: { kind: 'size', bytes: COLLABORA_IMPORT_MAX_BYTES + 100, maxBytes: COLLABORA_IMPORT_MAX_BYTES },
+    });
   });
 });

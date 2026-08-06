@@ -70,6 +70,7 @@ function mapCollaboraDocumentTypeToPreviewType(type: string | undefined): Collab
   if (type === CollaboraDocumentType.Presentation) return 'presentation';
   if (type === CollaboraDocumentType.Wordprocessing) return 'text';
   if (type === CollaboraDocumentType.Drawing) return 'text';
+  if (type === CollaboraDocumentType.Pdf) return 'pdf';
   return undefined;
 }
 

@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { FileText, Presentation, ServerOff, Sheet, X } from 'lucide-react';
+import { FileText, FileType, Presentation, ServerOff, Sheet, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import { CollaboraCollabFooter } from '@/crd/components/collabora/CollaboraCollabFooter';
@@ -36,6 +36,7 @@ const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
   text: FileText,
   spreadsheet: Sheet,
   presentation: Presentation,
+  pdf: FileType,
 };
 
 /**

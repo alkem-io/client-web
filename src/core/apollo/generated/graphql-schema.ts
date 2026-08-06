@@ -1450,6 +1450,7 @@ export type CollaboraDocument = {
 
 export enum CollaboraDocumentType {
   Drawing = 'DRAWING',
+  Pdf = 'PDF',
   Presentation = 'PRESENTATION',
   Spreadsheet = 'SPREADSHEET',
   Wordprocessing = 'WORDPROCESSING',
