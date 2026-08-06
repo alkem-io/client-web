@@ -93,6 +93,22 @@ switch has no case for it and renders nothing today) — a distinct, unrelated
 gap not referenced by #9575 or #1842's checklist line, which is specifically
 about the callout **framing** preview.
 
+## Clarifications
+
+### Session 2026-08-06 (iteration 1)
+
+- **Q (Non-Functional / Accessibility): What exact color treatment differentiates the three document kinds, and does it meet the contrast rules `src/crd/CLAUDE.md` requires?**
+  **A:** Recolor the existing `lucide-react` icon (already reused in both the badge and the centered fallback within `CalloutCollaboraPreview`) per type, on the unchanged `bg-muted/30` box background: Wordprocessing/text → `text-blue-600`, Spreadsheet → `text-green-600`, Presentation → `text-orange-600`. The centered icon stays `aria-hidden` (decorative — the adjacent type-label badge already carries the accessible text), so WCAG 1.4.3 text-contrast does not strictly apply to it, but all three `-600` shades comfortably clear the 3:1 non-text-contrast bar against the light `bg-muted/30`/background — consistent with the existing draft badge's `amber-*` precedent for legible-on-light color usage. No dark-mode variant is needed: the codebase currently has no theme provider or `dark:` Tailwind usage anywhere in `src/crd/components/space/` or `src/crd/components/callout/` — CRD is light-theme only today.
+  **Rationale:** Keeps the change minimal (recolor an existing element, no new DOM), stays within the "only the box's internal content changes" boundary (FR-003), and reuses an existing accessible-badge pattern already proven in this codebase rather than inventing a new one.
+
+- **Q (Interaction / UX consistency): Does the small top-right type-label badge (icon + "Doc"/"Sheet"/"Slide" text) also adopt the accent color, or stay neutral?**
+  **A:** Yes — the badge's icon and text adopt the same per-type color (reusing the identical `iconByType`/color mapping), so the badge and the large centered fallback icon are visually one consistent language, not two independent color decisions. The badge's background/border stay the existing neutral `bg-background`/`border-border` (only the icon + text color change) — this avoids a jarring solid color block and matches how the draft badge already pairs a colored icon/text with a neutral-ish fill.
+  **Rationale:** Prevents the two icon instances in the same component from drifting out of sync in a future edit, and keeps the visual change additive/minimal rather than restyling the badge chrome.
+
+- **Q (Domain / Edge Case): `mapCollaboraDocumentTypeToPreviewType` already maps `CollaboraDocumentType.DRAWING` to the same `'text'` preview type as `WORDPROCESSING` — should Drawing get its own (fourth) color, or intentionally share Wordprocessing's?**
+  **A:** Intentionally share `'text'` (and therefore the blue accent) — this story does not change `mapCollaboraDocumentTypeToPreviewType`'s existing type-collapsing behavior. Collabora document Replace/creation is scoped to Phase-1 types only (`isReplaceableCollaboraDocumentType`, which already excludes Drawing), so introducing a fourth, Drawing-specific color for a type with no first-class creation/replace path is unwarranted speculative scope.
+  **Rationale:** Avoids scope creep into `CollaboraDocumentType`/`CollaboraDocumentPreviewType` mapping logic that is out of this story's stated ask (a card-preview visual, not a type-taxonomy change) and keeps the three-color palette aligned with the three types the story explicitly names (Docs/Sheets/Slides).
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Member recognises an OfficeDocs post at a glance in the feed (Priority: P1)
@@ -180,7 +196,7 @@ the type-icon treatment rather than a broken-image glyph.
 
 ### Edge Cases
 
-- **Unmapped/unknown `CollaboraDocumentType`**: the type→visual mapping must cover all four schema values (`WORDPROCESSING`, `SPREADSHEET`, `PRESENTATION`, `DRAWING`) with no silent fallthrough to an unstyled/undefined state; `DRAWING` already maps to the same `'text'` `CollaboraDocumentPreviewType` as `WORDPROCESSING` (existing `mapCollaboraDocumentTypeToPreviewType` behaviour, unchanged by this story).
+- **Unmapped/unknown `CollaboraDocumentType`**: the type→visual mapping must cover all four schema values (`WORDPROCESSING`, `SPREADSHEET`, `PRESENTATION`, `DRAWING`) with no silent fallthrough to an unstyled/undefined state; `DRAWING` already maps to the same `'text'` `CollaboraDocumentPreviewType` as `WORDPROCESSING` (existing `mapCollaboraDocumentTypeToPreviewType` behaviour, unchanged by this story) and therefore intentionally renders the same blue treatment as Wordprocessing, not a fourth color (see Clarifications).
 - **`framingDocumentType` is undefined**: `PostCard` already guards `post.type === 'document' && post.framingDocumentType` — if a document framing somehow has no resolvable type, nothing renders (existing behaviour, unchanged; not a regression introduced here).
 - **Preview image URL present but the image fails to load** (network error, expired signed URL): falls back to the type-icon treatment rather than a broken-image glyph (P3, FR-006).
 - **Compact (card) vs default (dialog) sizing**: the type-icon + color treatment must render correctly at both `size="compact"` (fixed height, smaller icon) and `size="default"` (aspect-video, larger icon) without layout overflow.
@@ -191,8 +207,9 @@ the type-icon treatment rather than a broken-image glyph.
 
 ### Functional Requirements
 
-- **FR-001**: The document framing preview (`CalloutCollaboraPreview`) MUST show a type-differentiated visual treatment — a distinct icon **and** accent color — for each `CollaboraDocumentPreviewType` (`text`, `spreadsheet`, `presentation`), replacing the current single flat, undifferentiated icon box.
-- **FR-002**: The type → visual (icon, accent color) mapping MUST live in one place inside `CalloutCollaboraPreview` and MUST be the only place this mapping is defined — both consumers (`PostCard` via `size="compact"`, `CollaboraFramingConnector` via `size="default"`) MUST render through it, with no duplicated or divergent per-call-site mapping.
+- **FR-001**: The document framing preview (`CalloutCollaboraPreview`) MUST show a type-differentiated visual treatment — a distinct icon color — for each `CollaboraDocumentPreviewType`: `text` → blue (`text-blue-600`), `spreadsheet` → green (`text-green-600`), `presentation` → orange (`text-orange-600`), replacing the current single flat, undifferentiated icon color. The unchanged `bg-muted/30` box background and the icon's `aria-hidden` decorative status are preserved (see Clarifications).
+- **FR-001a**: The small top-right type-label badge (icon + localized type text) MUST adopt the same per-type color as the centered fallback icon (FR-001), so both icon instances in the component render from one shared mapping; the badge's neutral background/border chrome is unchanged.
+- **FR-002**: The type → visual (icon, color) mapping MUST live in one place inside `CalloutCollaboraPreview` and MUST be the only place this mapping is defined — both consumers (`PostCard` via `size="compact"`, `CollaboraFramingConnector` via `size="default"`) and both icon instances (badge + centered fallback) MUST render through it, with no duplicated or divergent per-call-site mapping.
 - **FR-003**: The existing container geometry and interaction pattern (fixed-height compact box in the feed / `aspect-video` box in the dialog, `bg-muted/30` background, centered content, hover overlay with "Open Document," optional "Replace file") MUST remain unchanged — only the box's internal visual content changes.
 - **FR-004**: `PostCardData` MUST gain a new optional field, `framingDocumentPreviewUrl` (document framing only), threaded from `calloutDataMapper.ts` exactly like the existing whiteboard `framingImageUrl` mechanism — `undefined` today (no backend field exists yet), ready to carry a real URL the moment one exists.
 - **FR-005**: `CalloutCollaboraPreview` MUST accept an optional `previewImageUrl` prop; when present, it MUST render that image in place of the type-icon treatment (mirroring `PostCard`'s existing whiteboard image-else-icon fallback); when absent, the type-icon treatment (FR-001) MUST render.
