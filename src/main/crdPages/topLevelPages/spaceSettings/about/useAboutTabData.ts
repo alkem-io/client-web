@@ -42,8 +42,10 @@ export type UseAboutTabDataResult = {
   /** Persist a new page banner aspect ratio (fired on slider release). */
   onChangePageBannerAspectRatio: (aspectRatio: number) => void;
   pendingCrop: PendingCrop | null;
-  onCropComplete: (croppedFile: File, altText: string) => void;
+  onCropComplete: (croppedFile: File, altText: string, aspectRatio?: number) => void;
   onCropCancel: () => void;
+  /** Re-crop an already-uploaded visual. Opens the crop dialog with the existing image. */
+  onRecropVisual: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
   /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + its own delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
   /** Reference file-upload (paperclip) — uploads to the space's storage bucket. */
@@ -189,7 +191,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   // ────────────────── Image uploads (immediate) ──────────────────
 
-  const uploadVisualForField = async (key: 'avatar' | 'pageBanner' | 'cardBanner', file: File) => {
+  const uploadVisualForField = async (
+    key: 'avatar' | 'pageBanner' | 'cardBanner',
+    file: File,
+    aspectRatio?: number
+  ) => {
     const current = valuesRef.current;
     const visual = current?.[key];
     if (!visual?.id) return;
@@ -204,7 +210,12 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
             if (!base) return prev;
             const next: AboutFormValues = {
               ...base,
-              [key]: { ...base[key], uri: uploaded.uri, altText: uploaded.alternativeText ?? null },
+              [key]: {
+                ...base[key],
+                uri: uploaded.uri,
+                altText: uploaded.alternativeText ?? null,
+                ...(aspectRatio !== undefined && { aspectRatio }),
+              },
             };
             valuesRef.current = next;
             return next;
@@ -231,12 +242,16 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     const profile = space?.about.profile;
     const visualRaw = key === 'avatar' ? profile?.avatar : key === 'pageBanner' ? profile?.banner : profile?.cardBanner;
 
+    // Page banner is the only visual with adjustable aspect ratio.
+    const aspectRatioBounds = key === 'pageBanner' ? (pageBannerAspectRatioBounds ?? undefined) : undefined;
+
     return {
       aspectRatio: aspectRatio ?? visualRaw?.aspectRatio ?? 1,
       maxHeight: visualRaw?.maxHeight,
       minHeight: visualRaw?.minHeight,
       maxWidth: visualRaw?.maxWidth,
       minWidth: visualRaw?.minWidth,
+      aspectRatioBounds,
     };
   };
 
@@ -247,7 +262,24 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const onUploadCardBannerWithCrop = (file: File) =>
     setPendingCrop({ key: 'cardBanner', file, config: buildCropConfig('cardBanner') });
 
-  const onCropComplete = (croppedFile: File, altText: string) => {
+  // Re-crop an already-uploaded visual (existing file with URI).
+  const onRecropVisual = (key: 'avatar' | 'pageBanner' | 'cardBanner') => {
+    const visual = values?.[key];
+    if (!visual?.uri) return;
+    // Fetch the existing image, convert to File, and open crop dialog.
+    fetch(visual.uri)
+      .then(r => r.blob())
+      .then(blob => {
+        const fileName = visual.uri?.split('/').pop() ?? `${key}.jpg`;
+        const file = new File([blob], fileName, { type: blob.type || 'image/jpeg' });
+        setPendingCrop({ key, file, config: buildCropConfig(key) });
+      })
+      .catch(() => {
+        // Silently fail if unable to load visual for re-crop
+      });
+  };
+
+  const onCropComplete = (croppedFile: File, altText: string, aspectRatio?: number) => {
     const crop = pendingCrop;
     setPendingCrop(null);
     if (!crop) return;
@@ -255,11 +287,14 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const next: AboutFormValues = { ...base, [key]: { ...base[key], altText } };
+      const next: AboutFormValues = {
+        ...base,
+        [key]: { ...base[key], altText, ...(aspectRatio !== undefined && { aspectRatio }) },
+      };
       valuesRef.current = next;
       return next;
     });
-    void uploadVisualForField(key, croppedFile);
+    void uploadVisualForField(key, croppedFile, aspectRatio);
   };
 
   const onCropCancel = () => setPendingCrop(null);
@@ -465,6 +500,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     pendingCrop,
     onCropComplete,
     onCropCancel,
+    onRecropVisual,
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
@@ -506,10 +542,12 @@ export type CropConfig = {
   minHeight?: number;
   maxWidth?: number;
   minWidth?: number;
+  aspectRatioBounds?: { min: number; max: number };
 };
 
 export type PendingCrop = {
   key: 'avatar' | 'pageBanner' | 'cardBanner';
   file: File;
   config: CropConfig;
+  selectedAspectRatio?: number;
 };

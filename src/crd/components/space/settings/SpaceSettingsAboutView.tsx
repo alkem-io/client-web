@@ -1,5 +1,5 @@
 import { ImageIcon } from 'lucide-react';
-import { useId, useRef, useState } from 'react';
+import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
@@ -8,7 +8,7 @@ import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard'
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
-import { BANNER_ASPECT_RATIO_STEP, DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
+import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
@@ -17,7 +17,6 @@ import type {
   AboutSectionKey,
   AboutSectionSaveStatus,
   AboutVisual,
-  AboutVisualAspectRatioBounds,
   SpaceCardPreview,
   SpaceSettingsLevel,
 } from './SpaceSettingsAboutView.types';
@@ -39,16 +38,9 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
   onUploadCardBanner: (file: File) => void;
+  /** Re-crop an already-uploaded visual. */
+  onRecropVisual?: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
   /**
-   * Range the page banner's aspect ratio may be set to, from the server's
-   * visual constraints. Omit to hide the shape control entirely.
-   */
-  pageBannerAspectRatioBounds?: AboutVisualAspectRatioBounds;
-  /**
-   * Commit a new page banner ratio. Fired on release / blur rather than on
-   * every drag tick, so a drag is one mutation instead of forty.
-   */
-  onChangePageBannerAspectRatio?: (aspectRatio: number) => void;
   /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
@@ -78,11 +70,10 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     dirtyByField,
     saveStatusByField,
     onChange,
-    pageBannerAspectRatioBounds,
-    onChangePageBannerAspectRatio,
     onUploadAvatar,
     onUploadPageBanner,
     onUploadCardBanner,
+    onRecropVisual,
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
@@ -98,11 +89,10 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   const showPageBanner = level === 'L0';
   const showAvatar = level !== 'L0';
 
-  // Live value while the shape slider is being dragged, so the upload preview
-  // reshapes immediately instead of waiting for the mutation to round-trip.
-  const [pageBannerRatioPreview, setPageBannerRatioPreview] = useState<number | undefined>(undefined);
+  // The pageBannerRatio is now only persisted via the crop dialog (ImageCropDialog)
+  // as part of the selectedAspectRatio state in that component.
   const committedPageBannerRatio = pageBanner.aspectRatio ?? DEFAULT_BANNER_ASPECT_RATIO;
-  const pageBannerRatio = pageBannerRatioPreview ?? committedPageBannerRatio;
+  const pageBannerRatio = committedPageBannerRatio;
 
   return (
     <div className={cn('flex flex-col gap-0', className)}>
@@ -170,6 +160,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                   aspectRatio={1}
                   widthClass="max-w-[160px]"
                   t={t}
+                  onRecrop={() => onRecropVisual?.('avatar')}
                 />
                 <FieldHint>{t('about.branding.avatar.hint')}</FieldHint>
               </div>
@@ -178,18 +169,14 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             {showPageBanner && (
               <div className="mt-4">
                 <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
-                <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspectRatio={pageBannerRatio} t={t} />
+                <BannerUpload
+                  visual={pageBanner}
+                  onUpload={onUploadPageBanner}
+                  aspectRatio={pageBannerRatio}
+                  t={t}
+                  onRecrop={() => onRecropVisual?.('pageBanner')}
+                />
                 <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
-                {pageBannerAspectRatioBounds && onChangePageBannerAspectRatio && pageBanner.id && pageBanner.uri && (
-                  <BannerShapeSlider
-                    value={pageBannerRatio}
-                    committedValue={committedPageBannerRatio}
-                    bounds={pageBannerAspectRatioBounds}
-                    onPreview={setPageBannerRatioPreview}
-                    onCommit={onChangePageBannerAspectRatio}
-                    t={t}
-                  />
-                )}
               </div>
             )}
 
@@ -201,6 +188,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 aspectRatio={1.6}
                 widthClass="max-w-[260px]"
                 t={t}
+                onRecrop={() => onRecropVisual?.('cardBanner')}
               />
               <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
             </div>
@@ -439,71 +427,13 @@ function FieldFooter({
   );
 }
 
-/**
- * Page-banner shape control. A native range input rather than a Radix slider:
- * it is keyboard- and screen-reader-accessible with no extra dependency, and
- * `accent-primary` themes it in one utility.
- *
- * `onPreview` fires on every tick (cheap, local); `onCommit` only on release,
- * so dragging across the range is one mutation rather than one per 0.1 step.
- */
-function BannerShapeSlider({
-  value,
-  committedValue,
-  bounds,
-  onPreview,
-  onCommit,
-  t,
-}: {
-  value: number;
-  committedValue: number;
-  bounds: AboutVisualAspectRatioBounds;
-  onPreview: (ratio: number) => void;
-  onCommit: (ratio: number) => void;
-  t: TFn;
-}) {
-  const inputId = useId();
-  const commit = (raw: string) => {
-    const next = Number(raw);
-    if (Number.isFinite(next) && next !== committedValue) onCommit(next);
-  };
-  const formatted = value.toFixed(1);
-
-  return (
-    <div className="mt-4">
-      <label htmlFor={inputId} className="text-body-emphasis">
-        {t('about.branding.pageBanner.shape.label')}
-      </label>
-      <div className="mt-2 flex items-center gap-3">
-        <input
-          id={inputId}
-          type="range"
-          min={bounds.min}
-          max={bounds.max}
-          step={BANNER_ASPECT_RATIO_STEP}
-          value={value}
-          onChange={e => onPreview(Number(e.target.value))}
-          onPointerUp={e => commit(e.currentTarget.value)}
-          onKeyUp={e => commit(e.currentTarget.value)}
-          onBlur={e => commit(e.currentTarget.value)}
-          aria-valuetext={t('about.branding.pageBanner.shape.value', { ratio: formatted })}
-          className="w-full max-w-[320px] accent-primary"
-        />
-        <span className="text-caption tabular-nums whitespace-nowrap">
-          {t('about.branding.pageBanner.shape.value', { ratio: formatted })}
-        </span>
-      </div>
-      <FieldHint>{t('about.branding.pageBanner.shape.hint')}</FieldHint>
-    </div>
-  );
-}
-
 function BannerUpload({
   visual,
   onUpload,
   aspectRatio,
   widthClass,
   t,
+  onRecrop,
 }: {
   visual: AboutVisual;
   onUpload: (file: File) => void;
@@ -513,6 +443,8 @@ function BannerUpload({
   aspectRatio: number;
   widthClass?: string;
   t: TFn;
+  /** Trigger re-cropping of an existing visual. */
+  onRecrop?: () => void;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -531,11 +463,16 @@ function BannerUpload({
           <img src={visual.uri} alt={visual.altText ?? ''} className="h-full w-full object-cover" />
           {/* Touch devices have no hover, so the change action is always visible on mobile;
               on md+ it fades in only on hover or keyboard focus to keep the image readable. */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
             <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="shadow-lg">
               <ImageIcon aria-hidden="true" className="mr-2 size-4" />
               {t('about.branding.changeBanner')}
             </Button>
+            {onRecrop && (
+              <Button type="button" variant="secondary" onClick={onRecrop} className="shadow-lg text-sm">
+                {t('about.branding.recrop', { defaultValue: 'Re-crop' })}
+              </Button>
+            )}
           </div>
         </>
       ) : (

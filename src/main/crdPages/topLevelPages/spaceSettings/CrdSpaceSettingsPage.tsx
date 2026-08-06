@@ -402,8 +402,7 @@ export default function CrdSpaceSettingsPage() {
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
-                  pageBannerAspectRatioBounds={about.pageBannerAspectRatioBounds ?? undefined}
-                  onChangePageBannerAspectRatio={about.onChangePageBannerAspectRatio}
+                  onRecropVisual={about.onRecropVisual}
                   onReferencesChange={about.onReferencesChange}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
@@ -709,7 +708,7 @@ export default function CrdSpaceSettingsPage() {
         open={about.pendingCrop !== null}
         file={about.pendingCrop?.file}
         config={about.pendingCrop?.config ?? {}}
-        onSave={({ file, altText }) => about.onCropComplete(file, altText)}
+        onSave={({ file, altText, aspectRatio }) => about.onCropComplete(file, altText, aspectRatio)}
         onCancel={about.onCropCancel}
         saveLabel={t('about.branding.cropDialog.save')}
         savingLabel={t('about.branding.cropDialog.saving')}

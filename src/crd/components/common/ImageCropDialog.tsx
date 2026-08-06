@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop';
 import Resizer from 'react-image-file-resizer';
@@ -20,13 +20,17 @@ export type ImageCropConfig = {
   minWidth?: number;
   maxHeight?: number;
   minHeight?: number;
+  /** If provided, show aspect ratio slider for this visual type. */
+  aspectRatioBounds?: { min: number; max: number };
+  /** Callback when aspect ratio is adjusted (for preview). */
+  onAspectRatioChange?: (ratio: number) => void;
 };
 
 type ImageCropDialogProps = {
   open: boolean;
   file: File | undefined;
   config: ImageCropConfig;
-  onSave: (data: { file: File; altText: string }) => void;
+  onSave: (data: { file: File; altText: string; aspectRatio?: number }) => void;
   onCancel: () => void;
   saveLabel: string;
   savingLabel: string;
@@ -82,9 +86,11 @@ export function ImageCropDialog({
   // not business text, so it lives in `crd-common` rather than being threaded
   // through all nine consumers as yet another label prop.
   const { t } = useTranslation();
+  const inputId = useId();
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [altText, setAltText] = useState('');
+  const [selectedAspectRatio, setSelectedAspectRatio] = useState<number | undefined>(config.aspectRatio);
   const [saving, setSaving] = useState(false);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [imgSrc, setImgSrc] = useState<string>('');
@@ -99,6 +105,7 @@ export function ImageCropDialog({
       setCrop(undefined);
       setCompletedCrop(undefined);
       setAltText('');
+      setSelectedAspectRatio(config.aspectRatio);
     } else {
       setImgSrc('');
     }
@@ -113,16 +120,23 @@ export function ImageCropDialog({
   const requiredHeight = config.minHeight ?? 0;
   const tooSmall = Boolean(cropSize && (cropSize.width < requiredWidth || cropSize.height < requiredHeight));
 
+  const currentAspectRatio = selectedAspectRatio ?? config.aspectRatio;
+
   const handleSave = async () => {
     if (!imgRef.current || !completedCrop || tooSmall) return;
     setSaving(true);
     try {
-      const croppedFile = await getCroppedImg(imgRef.current, completedCrop, config, file?.name ?? 'image.png');
-      onSave({ file: croppedFile, altText });
+      const croppedFile = await getCroppedImg(
+        imgRef.current,
+        completedCrop,
+        { ...config, aspectRatio: currentAspectRatio },
+        file?.name ?? 'image.png'
+      );
+      onSave({ file: croppedFile, altText, aspectRatio: selectedAspectRatio });
     } catch {
       // If crop fails, fall back to the original file.
       if (file) {
-        onSave({ file, altText });
+        onSave({ file, altText, aspectRatio: selectedAspectRatio });
       }
     } finally {
       setSaving(false);
@@ -149,7 +163,7 @@ export function ImageCropDialog({
                 crop={crop}
                 onChange={c => setCrop(c)}
                 onComplete={c => setCompletedCrop(c)}
-                aspect={config.aspectRatio}
+                aspect={currentAspectRatio}
                 className="max-h-[60vh]"
               >
                 <img
@@ -202,6 +216,42 @@ export function ImageCropDialog({
               placeholder={altTextPlaceholder}
             />
           </div>
+
+          {config.aspectRatioBounds && (
+            <div className="flex flex-col gap-2">
+              <label htmlFor={inputId} className="text-body-emphasis">
+                {t('imageCrop.aspectRatio.label', { defaultValue: 'Image shape' })}
+              </label>
+              <div className="flex items-center gap-3">
+                <input
+                  id={inputId}
+                  type="range"
+                  min={config.aspectRatioBounds.min}
+                  max={config.aspectRatioBounds.max}
+                  step={0.1}
+                  value={selectedAspectRatio ?? config.aspectRatioBounds.min}
+                  onChange={e => {
+                    const ratio = Number(e.target.value);
+                    setSelectedAspectRatio(ratio);
+                    config.onAspectRatioChange?.(ratio);
+                  }}
+                  aria-valuetext={t('imageCrop.aspectRatio.value', {
+                    defaultValue: 'Aspect ratio: {{ratio}}',
+                    ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
+                  })}
+                  className="w-full max-w-[320px] accent-primary"
+                />
+                <span className="text-caption tabular-nums whitespace-nowrap">
+                  {(selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1)}
+                </span>
+              </div>
+              <p className="text-caption text-muted-foreground">
+                {t('imageCrop.aspectRatio.hint', {
+                  defaultValue: 'Left: taller • Right: wider',
+                })}
+              </p>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="shrink-0">
