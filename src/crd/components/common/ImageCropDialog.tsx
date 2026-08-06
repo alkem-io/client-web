@@ -2,10 +2,9 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, {
   type Crop,
-  centerCrop,
+  clamp,
+  convertToPercentCrop,
   convertToPixelCrop,
-  makeAspectCrop,
-  type PercentCrop,
   type PixelCrop,
 } from 'react-image-crop';
 import Resizer from 'react-image-file-resizer';
@@ -65,27 +64,65 @@ export function naturalCropSize(
 }
 
 /**
- * The largest crop of `ratio` that fits the displayed image, centred.
+ * All crop geometry here is done in **displayed pixels**, never in `%`.
  *
- * `makeAspectCrop` / `centerCrop` come from `react-image-crop` itself, and are
- * used rather than hand-rolled arithmetic because a `%` crop has **two bases**:
- * `width` is a share of the box width, `height` a share of the box height. So
- * `height = width / ratio` in percent space is only correct on a square image —
- * on anything else it skews the crop by the image's own aspect ratio. The
- * library does the % → px → % round trip, and clamps on both axes so the crop
- * can never extend past the image (which would leave the canvas untouched
- * outside the bitmap and encode as black bars in the JPEG).
- *
- * Changing the ratio re-centres at maximum size rather than trying to preserve
- * the user's pan: the alternative shrinks the crop on every clamp, so dragging
- * the slider back and forth ratchets it smaller and never recovers.
+ * A percent crop has two bases — `width` is a share of the box width, `height` a
+ * share of the box height — so `height = width / ratio` in percent space is only
+ * correct on a square image and silently skews every other one. Working in px
+ * removes that trap entirely; the `%` conversion happens once, at the edge.
  */
-export function centeredAspectCrop(image: HTMLImageElement, ratio: number): PercentCrop {
-  return centerCrop(
-    makeAspectCrop({ unit: '%', width: 100 }, ratio, image.width, image.height),
-    image.width,
-    image.height
-  );
+
+/** The largest `ratio`-shaped rectangle that fits inside the displayed image. */
+function maxCropSize(image: HTMLImageElement, ratio: number): { width: number; height: number } {
+  return image.width / image.height > ratio
+    ? { width: image.height * ratio, height: image.height }
+    : { width: image.width, height: image.width / ratio };
+}
+
+/** The whole image, for when no aspect-ratio constraint applies. */
+export function fullImageCrop(image: HTMLImageElement): PixelCrop {
+  return { unit: 'px', x: 0, y: 0, width: image.width, height: image.height };
+}
+
+/** Centred crop at the largest size `ratio` allows — the opening state. */
+export function centeredAspectCrop(image: HTMLImageElement, ratio: number): PixelCrop {
+  const { width, height } = maxCropSize(image, ratio);
+  return { unit: 'px', width, height, x: (image.width - width) / 2, y: (image.height - height) / 2 };
+}
+
+/**
+ * Reshape an existing crop to `ratio`, keeping the framing the user chose: same
+ * centre point, and the same size *relative to the largest crop the ratio
+ * allows*.
+ *
+ * Preserving the size as a **fraction of the maximum** rather than as absolute
+ * pixels is what makes this reversible. Carrying the width over literally would
+ * force a clamp whenever the new shape no longer fits, and clamping only ever
+ * shrinks — so sliding the ratio out and back would ratchet the crop smaller
+ * every trip and never restore it. A fraction survives the round trip exactly:
+ * out to 10 and back to 6 returns the size it started at.
+ *
+ * The centre can still drift when the reshaped crop has to be pushed off an
+ * edge, which is unavoidable — the alternative is letting it hang outside the
+ * image, and the canvas encodes anything outside the bitmap as black bars.
+ */
+export function reshapeCropToAspect(image: HTMLImageElement, previous: PixelCrop, ratio: number): PixelCrop {
+  if (!previous.width || !previous.height) return centeredAspectCrop(image, ratio);
+
+  const previousMax = maxCropSize(image, previous.width / previous.height);
+  const scale = previousMax.width ? Math.min(1, previous.width / previousMax.width) : 1;
+
+  const max = maxCropSize(image, ratio);
+  const width = max.width * scale;
+  const height = max.height * scale;
+
+  return {
+    unit: 'px',
+    width,
+    height,
+    x: clamp(previous.x + previous.width / 2 - width / 2, 0, image.width - width),
+    y: clamp(previous.y + previous.height / 2 - height / 2, 0, image.height - height),
+  };
 }
 
 /**
@@ -180,11 +217,14 @@ export function ImageCropDialog({
   // `completedCrop` itself: it is the only value Save and the too-small check
   // read, so leaving it stale saves the pre-slider crop under the post-slider
   // ratio, and the visual is then rendered at a ratio its pixels don't have.
-  const applyCrop = (next: PercentCrop) => {
+  const applyCrop = (next: PixelCrop) => {
     const image = imgRef.current;
     if (!image) return;
-    setCrop(next);
-    setCompletedCrop(convertToPixelCrop(next, image.width, image.height));
+    // `crop` stays in `%` so it survives the image being re-laid out (a window
+    // resize would strand pixel values); `completedCrop` is what Save reads and
+    // is always displayed pixels.
+    setCrop(convertToPercentCrop(next, image.width, image.height));
+    setCompletedCrop(next);
   };
 
   const handleSave = async () => {
@@ -248,9 +288,7 @@ export function ImageCropDialog({
                     const image = imgRef.current;
                     if (crop || !image) return;
                     applyCrop(
-                      currentAspectRatio
-                        ? centeredAspectCrop(image, currentAspectRatio)
-                        : { unit: '%', width: 100, height: 100, x: 0, y: 0 }
+                      currentAspectRatio ? centeredAspectCrop(image, currentAspectRatio) : fullImageCrop(image)
                     );
                   }}
                 />
@@ -287,8 +325,13 @@ export function ImageCropDialog({
                   const ratio = Number(e.target.value);
                   setSelectedAspectRatio(ratio);
                   config.onAspectRatioChange?.(ratio);
+                  // Reshape what the user already framed rather than starting
+                  // over — `crop` (not `completedCrop`) because it is the live
+                  // value, updated on every drag rather than only on release.
                   const image = imgRef.current;
-                  if (image) applyCrop(centeredAspectCrop(image, ratio));
+                  if (!image) return;
+                  const previous = crop && convertToPixelCrop(crop, image.width, image.height);
+                  applyCrop(previous ? reshapeCropToAspect(image, previous, ratio) : centeredAspectCrop(image, ratio));
                 }}
                 aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', {
                   ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
