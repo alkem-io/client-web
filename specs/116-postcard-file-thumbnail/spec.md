@@ -223,7 +223,7 @@ the type-icon treatment rather than a broken-image glyph.
 
 ### Key Entities *(include if feature involves data)*
 
-- **`CalloutCollaboraPreview` visual treatment**: the type → `{ icon, accentColor }` mapping plus the optional image-else-icon rendering branch; the single reusable seam both current consumers (card, dialog) and any future real-thumbnail data source render through.
+- **`CalloutCollaboraPreview` visual treatment**: the type → `{ icon, color }` mapping (implemented as the `colorByType` map, alongside the existing `iconByType`) plus the optional image-else-icon rendering branch; the single reusable seam both current consumers (card, dialog) and any future real-thumbnail data source render through.
 - **`PostCardData.framingDocumentPreviewUrl`**: new optional field (document framing only) on the existing `PostCardData` shape; mirrors `framingImageUrl`'s role for whiteboards. `undefined` in production today.
 - **`CollaboraDocumentPreviewType`**: existing client-only union (`'text' | 'spreadsheet' | 'presentation'`) derived from the GraphQL `CollaboraDocumentType` enum by `mapCollaboraDocumentTypeToPreviewType`; unchanged by this story, now driving both icon and color.
 

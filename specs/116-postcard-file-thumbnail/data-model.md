@@ -52,10 +52,13 @@ All other `PostCardData` fields are unchanged by this story.
 
 ```
 calloutDataMapper.ts: mapCalloutDetailsToPostCard(callout, t)
-  └─ framingDocumentPreviewUrl:
-       callout.framing.type === CalloutFramingType.CollaboraDocument
-         ? undefined   // no backend field exists yet (spec A-001); see Research R3
-         : undefined
+  └─ framingDocumentPreviewUrl: undefined
+       // No backend field exists yet to populate this from (spec A-001; see Research R3).
+       // Deliberately a flat `undefined` today, not a `callout.framing.type === ...`
+       // ternary like the sibling `framingImageUrl`/`framingDocumentType` fields — there
+       // is no real branch to take yet, so a conditional would be dead code. Once a
+       // backend field lands, this becomes a real ternary mirroring `framingImageUrl`'s
+       // shape exactly.
 
 PostCard.tsx (post.type === 'document' branch)
   └─ <CalloutCollaboraPreview

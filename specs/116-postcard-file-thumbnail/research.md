@@ -63,14 +63,14 @@ dependency evaluated or introduced.
   static per render) gates the fallback. Mirror this exactly from `PostCard`'s existing
   whiteboard branch: `post.framingImageUrl ? <img ... /> : <fallback icon>`.
 - **Data carrier**: `PostCardData` gains `framingDocumentPreviewUrl?: string` (document
-  framing only), populated in `calloutDataMapper.ts`'s `mapCalloutDetailsToPostCard`
-  exactly like the existing `framingImageUrl` ternary (`callout.framing.type ===
-  CalloutFramingType.Whiteboard ? ... : undefined`), except here the "real" branch has no
-  data source yet, so it is unconditionally `undefined` — `callout.framing.type ===
-  CalloutFramingType.CollaboraDocument ? undefined /* no backend field yet, see spec
-  A-001 */ : undefined`. This still satisfies FR-004 (the field exists, threaded, typed,
-  and covered by a unit test with a mocked value) without inventing a query field that
-  does not exist.
+  framing only), populated in `calloutDataMapper.ts`'s `mapCalloutDetailsToPostCard`.
+  Structurally it mirrors the existing `framingImageUrl` field's *role* (whiteboard's
+  own preview-URL carrier), but since there is no backend field to branch on yet, it is
+  assigned a flat `framingDocumentPreviewUrl: undefined` rather than a
+  `callout.framing.type === ... ? real : undefined` ternary — a ternary whose "real"
+  branch cannot exist yet would be dead code (see data-model.md). This still satisfies
+  FR-004 (the field exists, threaded, typed, and covered by a unit test with a mocked
+  value) without inventing a query field that does not exist.
 - **Rationale**: This is the literal, concrete form of "consume the generic mechanism,
   don't build a parallel one" (story AC3): when a real backend preview lands, it is
   wired by editing exactly the one ternary in `calloutDataMapper.ts` — no change to
