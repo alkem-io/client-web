@@ -47,6 +47,7 @@ import { ContributionGridConnector } from './ContributionGridConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { DocumentContributionAddConnector } from './DocumentContributionAddConnector';
+import { DocumentContributionConnector } from './DocumentContributionConnector';
 import { LinkContributionAddConnector } from './LinkContributionAddConnector';
 import { LinkContributionEditConnector } from './LinkContributionEditConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
@@ -144,7 +145,11 @@ function ContributionsSlot({
         onCreated={onContributionCreated}
       />
     ) : contributionType === CalloutContributionType.CollaboraDocument ? (
-      <DocumentContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
+      <DocumentContributionAddConnector
+        calloutId={callout.id}
+        calloutPrivileges={callout.authorization?.myPrivileges}
+        onCreated={onContributionCreated}
+      />
     ) : null
   ) : null;
 
@@ -261,10 +266,15 @@ export function CalloutDetailDialogConnector({
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
   const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
+  const initialIsDocument = contributionType === CalloutContributionType.CollaboraDocument;
 
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
     initialIsWhiteboard ? initialContributionId : undefined
   );
+  const [documentContributionId, setDocumentContributionId] = useState<string | undefined>(
+    initialIsDocument ? initialContributionId : undefined
+  );
+  const [documentEditorOpen, setDocumentEditorOpen] = useState(initialIsDocument && Boolean(initialContributionId));
   const [memoContributionId, setMemoContributionId] = useState<string | undefined>(
     initialIsMemo ? initialContributionId : undefined
   );
@@ -288,7 +298,7 @@ export function CalloutDetailDialogConnector({
   // Trash icon in the contribution-preview title bar → confirmation → delete
   // mutation (Golden Rule #9: the icon only stages the id, never mutates).
   const [confirmDeleteContribution, setConfirmDeleteContribution] = useState<
-    { id: string; title: string; kind: 'post' | 'whiteboard' } | undefined
+    { id: string; title: string; kind: 'post' | 'whiteboard' | 'document' } | undefined
   >(undefined);
   const [deletingContribution, setDeletingContribution] = useState(false);
   const notify = useNotification();
@@ -341,6 +351,11 @@ export function CalloutDetailDialogConnector({
       // becomes visible after the user closes the editor.
       setWhiteboardContributionId(initialContributionId);
       setWhiteboardEditorOpen(true);
+    } else if (contributionType === CalloutContributionType.CollaboraDocument) {
+      // Document responses open their editor directly on load too — same
+      // pattern as Whiteboard (spec FR-012).
+      setDocumentContributionId(initialContributionId);
+      setDocumentEditorOpen(true);
     }
     // Other contribution types (Link) don't have a dedicated overlay; the
     // grid card itself owns the navigation.
@@ -352,13 +367,24 @@ export function CalloutDetailDialogConnector({
   useEffect(() => {
     if (open) return;
     setWhiteboardContributionId(initialIsWhiteboard ? initialContributionId : undefined);
+    setDocumentContributionId(initialIsDocument ? initialContributionId : undefined);
     setMemoContributionId(initialIsMemo ? initialContributionId : undefined);
     setMemoId(initialMemoId);
     setPostContributionId(initialIsPost ? initialContributionId : undefined);
     setPostId(initialPostId);
     setWhiteboardEditorOpen(false);
+    setDocumentEditorOpen(false);
     setPostEditOpen(false);
-  }, [open, initialContributionId, initialIsMemo, initialIsPost, initialIsWhiteboard, initialMemoId, initialPostId]);
+  }, [
+    open,
+    initialContributionId,
+    initialIsDocument,
+    initialIsMemo,
+    initialIsPost,
+    initialIsWhiteboard,
+    initialMemoId,
+    initialPostId,
+  ]);
 
   const hasPoll = callout.framing.type === CalloutFramingType.Poll;
   const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
@@ -426,6 +452,10 @@ export function CalloutDetailDialogConnector({
       // closes the editor (since `whiteboardContributionId` stays set).
       setWhiteboardContributionId(contributionId);
       setWhiteboardEditorOpen(true);
+    } else if (contributionType === CalloutContributionType.CollaboraDocument) {
+      // Document responses open their editor directly on click, same as Whiteboard (FR-012).
+      setDocumentContributionId(contributionId);
+      setDocumentEditorOpen(true);
     }
   };
 
@@ -482,14 +512,17 @@ export function CalloutDetailDialogConnector({
         awaitRefetchQueries: true,
         refetchQueries: ['CalloutDetails', 'CalloutContributions'],
       });
-      // Clear the inline preview too — otherwise the grid refreshes without the
+      // Clear the inline preview/editor too — otherwise the grid refreshes without the
       // contribution but the preview keeps rendering its cached snapshot.
       if (confirmDeleteContribution.kind === 'post') {
         setPostContributionId(undefined);
         setPostId(undefined);
-      } else {
+      } else if (confirmDeleteContribution.kind === 'whiteboard') {
         setWhiteboardEditorOpen(false);
         setWhiteboardContributionId(undefined);
+      } else {
+        setDocumentEditorOpen(false);
+        setDocumentContributionId(undefined);
       }
       setConfirmDeleteContribution(undefined);
     } catch (err) {
@@ -625,6 +658,20 @@ export function CalloutDetailDialogConnector({
       />
     ) : null;
 
+  const documentOverlay =
+    documentEditorOpen && documentContributionId ? (
+      <DocumentContributionConnector
+        open={true}
+        contributionId={documentContributionId}
+        calloutPrivileges={callout.authorization?.myPrivileges}
+        onClose={() => {
+          setDocumentEditorOpen(false);
+          setDocumentContributionId(undefined);
+        }}
+        onDelete={(id, title) => setConfirmDeleteContribution({ id, title, kind: 'document' })}
+      />
+    ) : null;
+
   const memoOverlay =
     memoContributionId && memoId ? (
       <MemoContributionConnector
@@ -754,6 +801,7 @@ export function CalloutDetailDialogConnector({
           onShareClick={handleShareClick}
         />
         {whiteboardOverlay}
+        {documentOverlay}
         {memoOverlay}
         {postOverlay}
         {framingMemoOverlay}
@@ -814,6 +862,7 @@ export function CalloutDetailDialogConnector({
         )}
       </CalloutCommentsConnector>
       {whiteboardOverlay}
+      {documentOverlay}
       {memoOverlay}
       {postOverlay}
       {framingMemoOverlay}

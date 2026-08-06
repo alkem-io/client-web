@@ -7955,6 +7955,10 @@ export const CalloutContributionDocument = gql`
           url
           displayName
         }
+        authorization {
+          id
+          myPrivileges
+        }
         createdDate
         createdBy {
           ...ContributionAuthor

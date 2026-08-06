@@ -3,6 +3,7 @@ import { FileText } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useImportCollaboraDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
@@ -17,6 +18,7 @@ import {
 import { deriveCollaboraImportErrorMessage } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraImportErrorMessage';
 import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import { DocumentContributionConnector } from './DocumentContributionConnector';
 
 // `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
 // (uncontrolled). Passing only one would compile but leave the dialog inert in one direction.
@@ -25,9 +27,9 @@ type UncontrolledOpen = { open?: undefined; onOpenChange?: undefined };
 
 type DocumentContributionAddConnectorProps = {
   calloutId: string;
+  /** Threaded to the "just created" editor's rename-permission check (research R10). */
+  calloutPrivileges?: AuthorizationPrivilege[];
   onCreated?: () => void;
-  /** Fired with the newly-created contribution's id so a parent can open its editor immediately. */
-  onDocumentCreated?: (contributionId: string) => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
 } & (ControlledOpen | UncontrolledOpen);
@@ -38,11 +40,15 @@ type DocumentContributionAddConnectorProps = {
  * Reuses the exact same building blocks the framing document-upload flow already proved out:
  * `DocumentImportZone` for staging, `validateCollaboraImportFile` for the client-side pre-check,
  * and `deriveCollaboraImportErrorMessage` for both pre-check and server-rejection inline copy.
+ *
+ * On success, opens the newly-created document's editor immediately — mirroring
+ * `WhiteboardContributionAddConnector`'s `editingWhiteboard` pattern (own local state, own
+ * rendered overlay, no delete affordance at this ephemeral point — R5).
  */
 export function DocumentContributionAddConnector({
   calloutId,
+  calloutPrivileges,
   onCreated,
-  onDocumentCreated,
   inlineTrigger,
   open: controlledOpen,
   onOpenChange,
@@ -60,6 +66,7 @@ export function DocumentContributionAddConnector({
   const [file, setFile] = useState<File | null>(null);
   const [importError, setImportError] = useState<DocumentImportError | null>(null);
   const [importDocument] = useImportCollaboraDocumentMutation();
+  const [editingContributionId, setEditingContributionId] = useState<string | undefined>();
 
   const handleOpen = () => {
     setFile(null);
@@ -111,7 +118,7 @@ export function DocumentContributionAddConnector({
       onCreated?.();
       handleClose();
       const createdContributionId = data?.importCollaboraDocument.id;
-      if (createdContributionId) onDocumentCreated?.(createdContributionId);
+      if (createdContributionId) setEditingContributionId(createdContributionId);
     } catch (err) {
       // Map server errors the same way the framing-upload flow does (FR-010/FR-011).
       // Decisions are driven by the structured `extensions.code`, never the error's message.
@@ -176,6 +183,14 @@ export function DocumentContributionAddConnector({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {editingContributionId && (
+        <DocumentContributionConnector
+          open={true}
+          contributionId={editingContributionId}
+          calloutPrivileges={calloutPrivileges}
+          onClose={() => setEditingContributionId(undefined)}
+        />
+      )}
     </>
   );
 }

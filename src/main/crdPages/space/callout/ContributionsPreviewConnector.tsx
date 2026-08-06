@@ -124,6 +124,7 @@ export function ContributionsPreviewConnector({
           open={addOpen}
           onOpenChange={setAddOpen}
           calloutId={callout.id}
+          calloutPrivileges={callout.authorization?.myPrivileges}
         />
       ) : null
     ) : null;

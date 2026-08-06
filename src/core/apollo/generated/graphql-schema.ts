@@ -15692,6 +15692,13 @@ export type CalloutContributionQuery = {
                 documentType: CollaboraDocumentType;
                 createdDate: Date;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
                 createdBy?:
                   | {
                       __typename?: 'User';
