@@ -5,7 +5,6 @@ import {
   useDeleteReferenceMutation,
   useSpaceAboutDetailsQuery,
   useUpdateSpaceMutation,
-  useUpdateVisualMutation,
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
@@ -39,8 +38,6 @@ export type UseAboutTabDataResult = {
   onUploadCardBanner: (file: File) => void;
   /** Server-defined range the page banner's aspect ratio may be set to. Null while loading. */
   pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null;
-  /** Persist a new page banner aspect ratio (fired on slider release). */
-  onChangePageBannerAspectRatio: (aspectRatio: number) => void;
   pendingCrop: PendingCrop | null;
   onCropComplete: (croppedFile: File, altText: string, aspectRatio?: number) => void;
   onCropCancel: () => void;
@@ -105,7 +102,6 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const [updateSpace] = useUpdateSpaceMutation();
   const [uploadVisual] = useUploadVisualMutation();
-  const [updateVisual] = useUpdateVisualMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
 
@@ -299,30 +295,6 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const onCropCancel = () => setPendingCrop(null);
 
-  /**
-   * Persist the page banner's shape. `uri` is required by UpdateVisualInput, so
-   * the current one is echoed back unchanged — this mutation only moves the
-   * ratio. The local form value is updated optimistically so the upload preview
-   * and the page header agree immediately.
-   */
-  const onChangePageBannerAspectRatio = (aspectRatio: number) => {
-    const current = valuesRef.current;
-    if (!current?.pageBanner.id || !current.pageBanner.uri) return;
-
-    setValues(prev => {
-      const base = prev ?? current;
-      const next: AboutFormValues = { ...base, pageBanner: { ...base.pageBanner, aspectRatio } };
-      valuesRef.current = next;
-      return next;
-    });
-
-    void updateVisual({
-      variables: {
-        input: { visualID: current.pageBanner.id, uri: current.pageBanner.uri, aspectRatio },
-      },
-    });
-  };
-
   // ────────────────── Per-section save ──────────────────
 
   const setSectionStatus = (section: AboutSectionKey, status: AboutSectionSaveStatus) => {
@@ -496,7 +468,6 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onUploadPageBanner: onUploadPageBannerWithCrop,
     onUploadCardBanner: onUploadCardBannerWithCrop,
     pageBannerAspectRatioBounds,
-    onChangePageBannerAspectRatio,
     pendingCrop,
     onCropComplete,
     onCropCancel,
