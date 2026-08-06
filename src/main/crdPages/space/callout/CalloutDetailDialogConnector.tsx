@@ -46,6 +46,7 @@ import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
+import { DocumentContributionAddConnector } from './DocumentContributionAddConnector';
 import { LinkContributionAddConnector } from './LinkContributionAddConnector';
 import { LinkContributionEditConnector } from './LinkContributionEditConnector';
 import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
@@ -142,6 +143,8 @@ function ContributionsSlot({
         defaultDescription={defaults?.postDescription}
         onCreated={onContributionCreated}
       />
+    ) : contributionType === CalloutContributionType.CollaboraDocument ? (
+      <DocumentContributionAddConnector calloutId={callout.id} onCreated={onContributionCreated} />
     ) : null
   ) : null;
 
