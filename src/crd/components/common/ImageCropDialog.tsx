@@ -61,20 +61,26 @@ export function naturalCropSize(
  * When aspect ratio changes, recalculate crop dimensions to maintain the new ratio.
  * Keeps width constant, adjusts height to match newAspectRatio.
  * Anchors to top-left, expands downward first, then upward if needed.
+ * Works with both percentage and pixel units based on the image dimensions provided.
  */
-function recalculateCropForAspectRatio(currentCrop: Crop, newAspectRatio: number): Crop {
-  if (!currentCrop.width) return currentCrop;
+function recalculateCropForAspectRatio(
+  currentCrop: Crop,
+  newAspectRatio: number,
+  image: HTMLImageElement | null
+): Crop {
+  if (!currentCrop.width || !image) return currentCrop;
 
   const { y = 0, width } = currentCrop;
+  const maxBound = currentCrop.unit === '%' ? 100 : image.width;
 
   // Keep width, recalculate height for new aspect ratio
   const newHeight = width / newAspectRatio;
   let newY = y;
 
   // Try to expand downward first
-  if (y + newHeight > 100) {
+  if (y + newHeight > maxBound) {
     // Hit bottom boundary, shift upward
-    newY = Math.max(0, 100 - newHeight);
+    newY = Math.max(0, maxBound - newHeight);
   }
 
   return {
@@ -200,21 +206,33 @@ export function ImageCropDialog({
                   alt="Crop preview"
                   className="max-h-[60vh] object-contain"
                   onLoad={() => {
-                    // Set an initial centered crop.
-                    if (!crop && imgRef.current && config.aspectRatio) {
+                    // Set an initial crop that fits the aspect ratio constraint.
+                    // For re-crop, we want to show most of the image and let user adjust.
+                    if (!crop && imgRef.current) {
                       const { naturalWidth, naturalHeight } = imgRef.current;
-                      const ar = config.aspectRatio;
-                      let cropW = naturalWidth;
-                      let cropH = cropW / ar;
-                      if (cropH > naturalHeight) {
-                        cropH = naturalHeight;
-                        cropW = cropH * ar;
+                      const ar = selectedAspectRatio ?? config.aspectRatio;
+
+                      if (ar) {
+                        // Calculate crop to fit aspect ratio within image bounds.
+                        let cropW = naturalWidth;
+                        let cropH = cropW / ar;
+
+                        // If crop is taller than image, constrain by height instead.
+                        if (cropH > naturalHeight) {
+                          cropH = naturalHeight;
+                          cropW = cropH * ar;
+                        }
+
+                        // Convert to percentages of image dimensions.
+                        const pctW = (cropW / naturalWidth) * 100;
+                        const pctH = (cropH / naturalHeight) * 100;
+                        const x = (100 - pctW) / 2;
+                        const y = (100 - pctH) / 2;
+                        setCrop({ unit: '%', width: pctW, height: pctH, x, y });
+                      } else {
+                        // No aspect ratio constraint—show full image.
+                        setCrop({ unit: '%', width: 100, height: 100, x: 0, y: 0 });
                       }
-                      const pctW = (cropW / naturalWidth) * 100;
-                      const pctH = (cropH / naturalHeight) * 100;
-                      const x = (100 - pctW) / 2;
-                      const y = (100 - pctH) / 2;
-                      setCrop({ unit: '%', width: pctW, height: pctH, x, y });
                     }
                   }}
                 />
@@ -254,7 +272,7 @@ export function ImageCropDialog({
                   config.onAspectRatioChange?.(ratio);
                   // Force crop recalculation when aspect ratio changes
                   if (crop) {
-                    setCrop(recalculateCropForAspectRatio(crop, ratio));
+                    setCrop(recalculateCropForAspectRatio(crop, ratio, imgRef.current));
                   }
                 }}
                 aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', {
@@ -289,7 +307,6 @@ export function ImageCropDialog({
               placeholder={altTextPlaceholder}
             />
           </div>
-          <textarea style={{ width: '100%' }} readOnly={true} value={JSON.stringify(crop)} />
         </div>
 
         <DialogFooter className="shrink-0">
