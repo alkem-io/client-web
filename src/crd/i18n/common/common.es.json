@@ -968,7 +968,13 @@
   },
   "fullscreen": "Pantalla completa",
   "imageCrop": {
-    "tooSmall": "El área seleccionada es de {{actualWidth}}×{{actualHeight}}px. Se requieren al menos {{requiredWidth}}×{{requiredHeight}}px: elige una imagen más grande."
+    "tooSmall": "El área seleccionada es de {{actualWidth}}×{{actualHeight}}px. Se requieren al menos {{requiredWidth}}×{{requiredHeight}}px: elige una imagen más grande.",
+    "aspectRatio": {
+      "label": "Relación de aspecto: {{ratio}}:1",
+      "ariaLabel": "Relación de aspecto: {{ratio}}",
+      "hintLeft": "Izquierda: recorte de imagen más alto",
+      "hintRight": "Derecha: recorte de imagen más bajo"
+    }
   },
   "innovationHub": {
     "outsideOfSpace": {

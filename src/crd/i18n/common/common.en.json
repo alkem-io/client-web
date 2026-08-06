@@ -968,7 +968,13 @@
   },
   "fullscreen": "Toggle full screen",
   "imageCrop": {
-    "tooSmall": "Selected area is {{actualWidth}}×{{actualHeight}}px. At least {{requiredWidth}}×{{requiredHeight}}px is required — please choose a larger image."
+    "tooSmall": "Selected area is {{actualWidth}}×{{actualHeight}}px. At least {{requiredWidth}}×{{requiredHeight}}px is required — please choose a larger image.",
+    "aspectRatio": {
+      "label": "Aspect Ratio: {{ratio}}:1",
+      "ariaLabel": "Aspect ratio: {{ratio}}",
+      "hintLeft": "Left: taller image crop",
+      "hintRight": "Right: shorter image crop"
+    }
   },
   "innovationHub": {
     "outsideOfSpace": {

@@ -232,6 +232,51 @@ export function ImageCropDialog({
             </p>
           )}
 
+          {config.aspectRatioBounds && (
+            <div className="flex flex-col gap-2">
+              <label htmlFor={inputId} className="text-body-emphasis">
+                {t('imageCrop.aspectRatio.label', {
+                  defaultValue: 'Aspect Ratio: {{ratio}}:1',
+                  ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
+                })}
+              </label>
+              <input
+                id={inputId}
+                type="range"
+                min={config.aspectRatioBounds.min}
+                max={config.aspectRatioBounds.max}
+                step={0.1}
+                value={selectedAspectRatio ?? config.aspectRatioBounds.min}
+                onChange={e => {
+                  const ratio = Number(e.target.value);
+                  setSelectedAspectRatio(ratio);
+                  config.onAspectRatioChange?.(ratio);
+                  // Force crop recalculation when aspect ratio changes
+                  if (crop) {
+                    setCrop(recalculateCropForAspectRatio(crop, ratio));
+                  }
+                }}
+                aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', {
+                  defaultValue: 'Aspect ratio: {{ratio}}',
+                  ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
+                })}
+                className="w-full accent-primary"
+              />
+              <div className="flex justify-between">
+                <span className="text-caption text-muted-foreground">
+                  {t('imageCrop.aspectRatio.hintLeft', {
+                    defaultValue: 'Left: taller image crop',
+                  })}
+                </span>
+                <span className="text-caption text-muted-foreground">
+                  {t('imageCrop.aspectRatio.hintRight', {
+                    defaultValue: 'Right: shorter image crop',
+                  })}
+                </span>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col gap-1">
             <label htmlFor="crop-alt-text" className="text-body-emphasis">
               {altTextLabel}
@@ -243,46 +288,7 @@ export function ImageCropDialog({
               placeholder={altTextPlaceholder}
             />
           </div>
-
-          {config.aspectRatioBounds && (
-            <div className="flex flex-col gap-2">
-              <label htmlFor={inputId} className="text-body-emphasis">
-                {t('imageCrop.aspectRatio.label', { defaultValue: 'Image shape' })}
-              </label>
-              <div className="flex items-center gap-3">
-                <input
-                  id={inputId}
-                  type="range"
-                  min={config.aspectRatioBounds.min}
-                  max={config.aspectRatioBounds.max}
-                  step={0.1}
-                  value={selectedAspectRatio ?? config.aspectRatioBounds.min}
-                  onChange={e => {
-                    const ratio = Number(e.target.value);
-                    setSelectedAspectRatio(ratio);
-                    config.onAspectRatioChange?.(ratio);
-                    // Force crop recalculation when aspect ratio changes
-                    if (crop) {
-                      setCrop(recalculateCropForAspectRatio(crop, ratio));
-                    }
-                  }}
-                  aria-valuetext={t('imageCrop.aspectRatio.value', {
-                    defaultValue: 'Aspect ratio: {{ratio}}',
-                    ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
-                  })}
-                  className="w-full max-w-[320px] accent-primary"
-                />
-                <span className="text-caption tabular-nums whitespace-nowrap">
-                  {(selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1)}
-                </span>
-              </div>
-              <p className="text-caption text-muted-foreground">
-                {t('imageCrop.aspectRatio.hint', {
-                  defaultValue: 'Left: taller • Right: wider',
-                })}
-              </p>
-            </div>
-          )}
+          <textarea style={{ width: '100%' }} readOnly={true} value={JSON.stringify(crop)} />
         </div>
 
         <DialogFooter className="shrink-0">
