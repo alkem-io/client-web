@@ -58,6 +58,33 @@ export function naturalCropSize(
 }
 
 /**
+ * When aspect ratio changes, recalculate crop dimensions to maintain the new ratio.
+ * Keeps width constant, adjusts height to match newAspectRatio.
+ * Anchors to top-left, expands downward first, then upward if needed.
+ */
+function recalculateCropForAspectRatio(currentCrop: Crop, newAspectRatio: number): Crop {
+  if (!currentCrop.width) return currentCrop;
+
+  const { y = 0, width } = currentCrop;
+
+  // Keep width, recalculate height for new aspect ratio
+  const newHeight = width / newAspectRatio;
+  let newY = y;
+
+  // Try to expand downward first
+  if (y + newHeight > 100) {
+    // Hit bottom boundary, shift upward
+    newY = Math.max(0, 100 - newHeight);
+  }
+
+  return {
+    ...currentCrop,
+    height: newHeight,
+    y: newY,
+  };
+}
+
+/**
  * ImageCropDialog — CRD-native image crop + resize dialog.
  *
  * Uses `react-image-crop` for the crop UI and `react-image-file-resizer`
@@ -234,6 +261,10 @@ export function ImageCropDialog({
                     const ratio = Number(e.target.value);
                     setSelectedAspectRatio(ratio);
                     config.onAspectRatioChange?.(ratio);
+                    // Force crop recalculation when aspect ratio changes
+                    if (crop) {
+                      setCrop(recalculateCropForAspectRatio(crop, ratio));
+                    }
                   }}
                   aria-valuetext={t('imageCrop.aspectRatio.value', {
                     defaultValue: 'Aspect ratio: {{ratio}}',
