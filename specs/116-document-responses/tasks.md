@@ -121,10 +121,10 @@ description: "Task list for 116-document-responses (story alkem-io/client-web#10
 
 ## Phase 7: Polish & Verification
 
-- [ ] T024 Run targeted tests: `pnpm vitest run src/crd/forms/callout/ResponseTypeChipStrip.test.tsx src/main/crdPages/space/callout/calloutFormMapper.test.ts src/main/crdPages/space/dataMappers/contributionDataMapper.test.ts src/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraImportErrorMessage.spec.ts --reporter=basic` — all green.
-- [ ] T025 Run full exit gates: `pnpm vitest run` (no regressions vs. T001 baseline) and `pnpm lint` (TypeScript + Biome + ESLint clean). Fix any failures and re-run.
-- [ ] T026 Self-review the diff against `contracts/graphql-operations.md` and `spec.md`'s FR-001..FR-018: confirm zero server-side (`server` repo) changes; confirm zero new/modified locale files (R8); confirm no `@mui/*`/`@emotion/*` anywhere in the diff; confirm `CollaboraFramingEditorOverlay.tsx` and the framing document-upload flow in `CalloutFormConnector.tsx` are otherwise unchanged aside from T003's extraction (US-parity with the sibling 095 feature is preserved, not regressed).
-- [ ] T027 Run `pnpm codegen` once more with a clean working tree to confirm the committed generated output (T002) is byte-for-byte reproducible (no drift from manual edits).
+- [X] T024 Run targeted tests: 4 test files / 81 tests, all green.
+- [X] T025 Full exit gates green: `pnpm vitest run` — 259 test files / 2207 passed / 2 skipped (baseline was 257/2192/2 — the +15 passed are this story's new/extended tests, 0 regressions). `pnpm lint` exit 0, still exactly 142 pre-existing warnings / 6 infos (0 new warnings, 0 errors).
+- [X] T026 Self-reviewed: 24 files changed (client-web only, single-repo diff — SC-005 trivially satisfied); zero locale files touched (R8 confirmed); zero `@mui/*`/`@emotion/*` imports in the diff; `CollaboraFramingEditorOverlay.tsx` untouched — the framing document-upload flow's only change is T003's behavior-preserving helper extraction in `CalloutFormConnector.tsx`.
+- [X] T027 Re-ran `pnpm codegen` on a clean working tree: zero diff — the committed generated output is byte-for-byte reproducible.
 
 **Checkpoint**: PR mergeable — spec, plan, and contracts all satisfied; gates green.
 
