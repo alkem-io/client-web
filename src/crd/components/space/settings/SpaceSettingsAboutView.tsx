@@ -180,7 +180,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
                 <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspectRatio={pageBannerRatio} t={t} />
                 <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
-                {pageBannerAspectRatioBounds && onChangePageBannerAspectRatio && (
+                {pageBannerAspectRatioBounds && onChangePageBannerAspectRatio && pageBanner.id && pageBanner.uri && (
                   <BannerShapeSlider
                     value={pageBannerRatio}
                     committedValue={committedPageBannerRatio}
@@ -198,7 +198,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               <BannerUpload
                 visual={cardBanner}
                 onUpload={onUploadCardBanner}
-                aspectRatio={16 / 9}
+                aspectRatio={1.6}
                 widthClass="max-w-[260px]"
                 t={t}
               />

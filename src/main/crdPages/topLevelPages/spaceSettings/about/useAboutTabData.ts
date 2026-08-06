@@ -219,10 +219,20 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [pendingCrop, setPendingCrop] = useState<PendingCrop | null>(null);
 
   const buildCropConfig = (key: 'avatar' | 'pageBanner' | 'cardBanner'): CropConfig => {
+    // Read aspectRatio from local form state (values) if available,
+    // which ensures slider changes are immediately used in the crop dialog.
+    let aspectRatio: number | undefined;
+    if (values) {
+      const visual = key === 'avatar' ? values.avatar : key === 'pageBanner' ? values.pageBanner : values.cardBanner;
+      aspectRatio = visual.aspectRatio;
+    }
+
+    // Read min/max constraints from Apollo cache (they never change during editing).
     const profile = space?.about.profile;
     const visualRaw = key === 'avatar' ? profile?.avatar : key === 'pageBanner' ? profile?.banner : profile?.cardBanner;
+
     return {
-      aspectRatio: visualRaw?.aspectRatio ?? 1,
+      aspectRatio: aspectRatio ?? visualRaw?.aspectRatio ?? 1,
       maxHeight: visualRaw?.maxHeight,
       minHeight: visualRaw?.minHeight,
       maxWidth: visualRaw?.maxWidth,
@@ -262,7 +272,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
    */
   const onChangePageBannerAspectRatio = (aspectRatio: number) => {
     const current = valuesRef.current;
-    if (!current?.pageBanner.id) return;
+    if (!current?.pageBanner.id || !current.pageBanner.uri) return;
 
     setValues(prev => {
       const base = prev ?? current;
@@ -273,7 +283,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
     void updateVisual({
       variables: {
-        input: { visualID: current.pageBanner.id, uri: current.pageBanner.uri ?? '', aspectRatio },
+        input: { visualID: current.pageBanner.id, uri: current.pageBanner.uri, aspectRatio },
       },
     });
   };

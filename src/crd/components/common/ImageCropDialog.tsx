@@ -244,8 +244,10 @@ async function getCroppedImg(
   const canvas = document.createElement('canvas');
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
-  const sourceWidth = crop.width * scaleX;
-  const sourceHeight = crop.height * scaleY;
+
+  // Round to integers to match validation bounds and avoid truncation during canvas coercion.
+  const sourceWidth = Math.round(crop.width * scaleX);
+  const sourceHeight = Math.round(crop.height * scaleY);
 
   canvas.width = sourceWidth;
   canvas.height = sourceHeight;
@@ -254,7 +256,17 @@ async function getCroppedImg(
   if (!ctx) throw new Error('Canvas context unavailable');
   ctx.imageSmoothingQuality = 'high';
 
-  ctx.drawImage(image, crop.x * scaleX, crop.y * scaleY, sourceWidth, sourceHeight, 0, 0, sourceWidth, sourceHeight);
+  ctx.drawImage(
+    image,
+    Math.round(crop.x * scaleX),
+    Math.round(crop.y * scaleY),
+    sourceWidth,
+    sourceHeight,
+    0,
+    0,
+    sourceWidth,
+    sourceHeight
+  );
 
   // Quality 1 on a banner-sized canvas produces a multi-megabyte JPEG that is
   // visually indistinguishable from 0.92 — the whole point of raising the
