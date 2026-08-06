@@ -31,8 +31,8 @@ contribution types. Zero server-side changes.
 **Target Platform**: Web SPA served by Vite; same browser support matrix as the rest of the client (≥90% global per caniuse.com)
 **Project Type**: Web client only (`client-web`). Zero server (`server` repo) changes — verified against the already-shipped, already-generated GraphQL schema; SC-005.
 **Performance Goals**: SC-002 (add-document flow under 10 s end-to-end for a small file on a typical connection) — matches the equivalent framing-upload benchmark (095 spec SC-002), since both share the same upload transport.
-**Constraints**: Upload-only creation path (no blank-create for responses — hard server constraint, not a preference). Client-side pre-checks (single file, extension, size) MUST run before any network request, reusing the existing `validateCollaboraImportFile`. No new GraphQL schema, no new runtime dependency. Every new user-visible string added to `crd-space` across all six locales in this PR.
-**Scale/Scope**: Approximately 12–15 files: 1 new GraphQL operation file, 4 new components/connectors, 1 new CRD card, ~8 modified files (response-type plumbing, grid/dispatch switches, `CalloutDetailDialogConnector`), plus i18n across 6 locale files and 2–3 new/extended unit test files.
+**Constraints**: Upload-only creation path (no blank-create for responses — hard server constraint, not a preference). Client-side pre-checks (single file, extension, size) MUST run before any network request, reusing the existing `validateCollaboraImportFile`. No new GraphQL schema, no new runtime dependency, **zero new i18n keys** (R8 — full reuse of pre-scaffolded strings across all six locales).
+**Scale/Scope**: Approximately 12–14 files: 1 new GraphQL operation file, 1 new domain helper (shared error-message mapper), 4 new components/connectors, 1 new CRD card, ~7 modified files (response-type plumbing, grid/dispatch switches, `CalloutDetailDialogConnector`), and 2–3 new/extended unit test files. No locale files touched.
 
 ## Constitution Check
 
@@ -46,7 +46,7 @@ contribution types. Zero server-side changes.
 | IV. State & Side-Effect Isolation | PASS | All new mutable state (staged file, busy flag, "just-created, open its editor" id) is local component `useState`, matching the sibling add-connectors exactly. Apollo cache normalization is the default (shared fragment + `id`/`__typename`); no bespoke `update()` callback is introduced. The centralized delete-confirmation state in `CalloutDetailDialogConnector` is extended (`kind` union), not duplicated. |
 | V. Experience Quality & Safeguards | PASS | The upload zone (`DocumentImportZone`) is already WCAG 2.1 AA compliant (keyboard-operable, `aria-busy`, `role="alert"` errors) — reused unchanged. The new card follows `ContributionWhiteboardCard`'s existing accessible pattern (button semantics, `aria-hidden` decorative icon, focus-visible ring). Delete goes through the existing `ConfirmationDialog` (Golden Rule #9). Tests planned for the new pure mapping/response-type-plumbing branches. |
 | Architecture Std 2 (CRD-only) | PASS | The new `ContributionDocumentCard` lives in `src/crd/components/contribution/`, imports only from `@/crd/lib/`, `lucide-react` — no `@mui/*`/`@emotion/*` (already fully removed repo-wide). No business logic in the CRD component; data mapping happens in `contributionDataMapper.ts`. |
-| Architecture Std 3 (i18n) | PASS | New strings added to `src/crd/i18n/space/space.{en,nl,es,bg,de,fr}.json` in this PR, all six locales, key parity preserved. Existing pre-scaffolded keys (`callout.addDocument`, `contributionSettings.types.document`, the `documentImportError*` family) are reused rather than duplicated. |
+| Architecture Std 3 (i18n) | PASS | Zero locale-file changes — every string is already present and generic across all six locales (`callout.addDocument`, `contributionSettings.types.document`, the `documentImportError*` family, the entity-agnostic `deleteContribution.*`), confirmed by direct inventory (R8). Nothing to keep in parity because nothing is added. |
 | Architecture Std 5 (No barrel exports) | PASS | All new imports use explicit file paths, matching every file read during research. |
 | Architecture Std 6 (SOLID/DRY) | PASS | **SRP**: `ContributionDocumentCard` renders only; `DocumentContributionAddConnector` only stages+uploads; `DocumentContributionConnector` only fetches-by-id; `CollaboraContributionEditorOverlay` only renders the editor chrome. **OCP**: `ResponsePanel`'s switch and the grid/dispatch switches gain a case without modifying existing cases. **LSP**: n/a (no inheritance/overrides introduced). **ISP**: the new contribution-scoped editor overlay gets its own narrow prop surface (adds `onDelete`/`canDelete`, drops framing-only concerns) rather than widening the existing framing overlay's props for an irrelevant capability (R4). **DIP**: connectors depend on generated Apollo hooks (the abstraction), never on raw fetch. **DRY**: `DocumentImportZone`, `validateCollaboraImportFile`, `collaboraImportFormats.ts`, `toCollaboraPreviewType`, `canRenameCollaboraDocument`, `useRenameCollaboraDocument`, `useDeleteContributionMutation`, and the centralized delete-confirmation dialog are all reused verbatim, not re-implemented (research R3–R7). |
 
@@ -105,8 +105,9 @@ src/crd/components/contribution/
 └── ContributionDocumentCard.tsx                    # NEW — type-icon card, structurally mirrors ContributionWhiteboardCard
 
 # i18n
-src/crd/i18n/space/space.en.json                   # MODIFIED — small number of new keys (add-document dialog title, etc.); existing keys reused, not duplicated
-src/crd/i18n/space/space.{nl,es,bg,de,fr}.json      # MODIFIED — same new keys, all six locales, same PR
+# No locale file changes — every string this feature needs (addDocument, documentImportHint/
+# MaxSize/Or/RemoveFile, documentImportError*, contentType.document, deleteContribution.*) is
+# already present and generic across all six locales (confirmed by direct inventory, R8).
 ```
 
 **Structure Decision**: The new write-side GraphQL operation lives alongside
