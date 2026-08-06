@@ -937,6 +937,11 @@
     }
   },
   "delete": "Eliminar",
+  "downNoticeBanner": {
+    "a11yLabel": "Aviso de mantenimiento programado",
+    "dismiss": "Cerrar aviso",
+    "message": "Mantenimiento programado el viernes 31 de julio a las 21:00 CEST. La plataforma podría no estar disponible durante un breve periodo."
+  },
   "edit": "Editar",
   "error": "Error",
   "filters": {

@@ -937,6 +937,11 @@
     }
   },
   "delete": "Löschen",
+  "downNoticeBanner": {
+    "a11yLabel": "Hinweis zu geplanter Wartung",
+    "dismiss": "Hinweis schließen",
+    "message": "Geplante Wartung am Freitag, 31. Juli, 21:00 Uhr MESZ. Die Plattform ist möglicherweise kurzzeitig nicht erreichbar."
+  },
   "edit": "Bearbeiten",
   "error": "Fehler",
   "filters": {

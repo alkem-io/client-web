@@ -1064,6 +1064,11 @@ export const CalloutSettingsFullFragmentDoc = gql`
       contributorTypes
       defaultContributorType
       defaultView
+      mapView {
+        longitude
+        latitude
+        zoom
+      }
     }
     selection {
       mode
@@ -28462,6 +28467,11 @@ export const ContributorCollectionConfigDocument = gql`
             contributorTypes
             defaultContributorType
             defaultView
+            mapView {
+              longitude
+              latitude
+              zoom
+            }
           }
           selection {
             mode

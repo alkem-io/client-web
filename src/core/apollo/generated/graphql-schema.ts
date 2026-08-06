@@ -1223,6 +1223,17 @@ export type CalloutContributionsCountOutput = {
   whiteboard: Scalars['Float']['output'];
 };
 
+/** Admin-fixed initial map view for a Contributors-collection callout's map. Absent/null ⇒ automatic framing (fit to plotted contributors; Europe fallback). */
+export type CalloutContributorsMapView = {
+  __typename?: 'CalloutContributorsMapView';
+  /** Map center latitude. Finite, within [-90, 90]. */
+  latitude: Scalars['Float']['output'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['output'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['output'];
+};
+
 export type CalloutContributorsSettings = {
   __typename?: 'CalloutContributorsSettings';
   /** The contributor types included in this contributor-collection callout. At least one. */
@@ -1231,6 +1242,8 @@ export type CalloutContributorsSettings = {
   defaultContributorType: ActorType;
   /** The default display mode (list or map). */
   defaultView: ContributorCollectionView;
+  /** Admin-fixed initial map view. Absent/null ⇒ automatic framing (fit to plotted contributors; Europe fallback). */
+  mapView?: Maybe<CalloutContributorsMapView>;
 };
 
 export enum CalloutDescriptionDisplayMode {
@@ -2006,6 +2019,25 @@ export type CreateCalloutContributionInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
+export type CreateCalloutContributorsMapViewData = {
+  __typename?: 'CreateCalloutContributorsMapViewData';
+  /** Map center latitude. Finite, within [-90, 90]. */
+  latitude: Scalars['Float']['output'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['output'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['output'];
+};
+
+export type CreateCalloutContributorsMapViewInput = {
+  /** Map center latitude. Finite, within [-90, 90]. */
+  latitude: Scalars['Float']['input'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['input'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['input'];
+};
+
 export type CreateCalloutContributorsSettingsData = {
   __typename?: 'CreateCalloutContributorsSettingsData';
   /** The contributor types to include. At least one type is required. */
@@ -2014,6 +2046,8 @@ export type CreateCalloutContributorsSettingsData = {
   defaultContributorType?: Maybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: Maybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. When omitted, the callout opens on automatic framing. */
+  mapView?: Maybe<CreateCalloutContributorsMapViewData>;
 };
 
 export type CreateCalloutContributorsSettingsInput = {
@@ -2023,6 +2057,8 @@ export type CreateCalloutContributorsSettingsInput = {
   defaultContributorType?: InputMaybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: InputMaybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. When omitted, the callout opens on automatic framing. */
+  mapView?: InputMaybe<CreateCalloutContributorsMapViewInput>;
 };
 
 export type CreateCalloutData = {
@@ -9008,6 +9044,8 @@ export type UpdateCalloutContributorsSettingsInput = {
   defaultContributorType?: InputMaybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: InputMaybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. Omitted ⇒ stored view unchanged; explicit null ⇒ clear to automatic framing. */
+  mapView?: InputMaybe<CreateCalloutContributorsMapViewInput>;
 };
 
 export type UpdateCalloutEntityInput = {
@@ -14578,6 +14616,9 @@ export type CalloutContentQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
                 | undefined;
               selection?:
@@ -15035,6 +15076,9 @@ export type UpdateCalloutContentMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -15520,6 +15564,9 @@ export type UpdateCalloutVisibilityMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -15585,6 +15632,9 @@ export type CalloutSettingsFullFragment = {
           contributorTypes: Array<ActorType>;
           defaultContributorType: ActorType;
           defaultView: ContributorCollectionView;
+          mapView?:
+            | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+            | undefined;
         }
       | undefined;
     selection?:
@@ -17367,6 +17417,9 @@ export type CreateCalloutMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -18024,6 +18077,9 @@ export type CalloutDetailsQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
                 | undefined;
               selection?:
@@ -18541,6 +18597,9 @@ export type CalloutDetailsFragment = {
             contributorTypes: Array<ActorType>;
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
+            mapView?:
+              | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+              | undefined;
           }
         | undefined;
       selection?:
@@ -33387,6 +33446,14 @@ export type TemplateContentQuery = {
                           contributorTypes: Array<ActorType>;
                           defaultContributorType: ActorType;
                           defaultView: ContributorCollectionView;
+                          mapView?:
+                            | {
+                                __typename?: 'CalloutContributorsMapView';
+                                longitude: number;
+                                latitude: number;
+                                zoom: number;
+                              }
+                            | undefined;
                         }
                       | undefined;
                     selection?:
@@ -34155,6 +34222,9 @@ export type CalloutTemplateContentFragment = {
             contributorTypes: Array<ActorType>;
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
+            mapView?:
+              | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+              | undefined;
           }
         | undefined;
       selection?:
@@ -35052,6 +35122,9 @@ export type UpdateCalloutTemplateMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
           | undefined;
         selection?:
@@ -36586,6 +36659,9 @@ export type ContributorCollectionConfigQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
                 | undefined;
               selection?: { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode } | undefined;
