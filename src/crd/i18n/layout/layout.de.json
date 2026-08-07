@@ -20,6 +20,7 @@
     "pendingMemberships": "Ausstehende Mitgliedschaften",
     "administration": "Verwaltung",
     "changeLanguage": "Sprache ändern",
+    "changeLanguageError": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen.",
     "getHelp": "Hilfe erhalten",
     "showGrid": "Raster anzeigen",
     "hideGrid": "Raster ausblenden"
