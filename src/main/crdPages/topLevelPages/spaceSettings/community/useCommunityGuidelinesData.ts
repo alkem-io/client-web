@@ -48,8 +48,9 @@ export function useCommunityGuidelinesData(
   const [createReferenceOnProfile] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
   // The Community tab renders inside the space's ambient `StorageConfigContextProvider`, so reference
-  // file uploads land in the space's own bucket (`temporaryLocation: true`) — same path as the About tab
-  // references and the Innovation Pack form (spec 098 D24 / FR-038).
+  // file uploads land in the space's own bucket. The space already exists, so the context resolves
+  // `temporaryLocation: false` and the upload is permanent (propagated to `file_backup_outbox`,
+  // issue #10126) — same path as the About tab references and the Innovation Pack form (spec 098 D24 / FR-038).
   const { onFileUpload: onReferenceFileUpload, accept: referenceUploadAccept } = useReferenceFileUpload(
     useStorageConfigContext()
   );
