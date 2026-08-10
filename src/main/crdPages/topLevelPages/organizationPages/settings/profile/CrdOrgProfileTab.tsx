@@ -59,7 +59,9 @@ const CrdOrgProfileTabBody = ({ markdownUpload }: { markdownUpload?: MarkdownUpl
   const { organizationId } = useOrganizationContext();
   const data = useOrgProfileTabData(organizationId);
 
-  // Reference file upload (paperclip) — uploads to the organization's storage bucket.
+  // Reference file upload (paperclip) — uploads to the organization's storage bucket. The organization
+  // already exists, so `useStorageConfig` resolves `temporaryLocation: false` and the upload is
+  // permanent (propagated to `file_backup_outbox`, issue #10126).
   const { storageConfig } = useStorageConfig({ locationType: 'organization', organizationId });
   const referenceUpload = useReferenceFileUpload(storageConfig);
 
