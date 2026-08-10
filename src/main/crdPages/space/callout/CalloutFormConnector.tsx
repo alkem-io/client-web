@@ -415,7 +415,6 @@ function CalloutFormConnectorInner({
   const setCollaboraImportFile = (file: File | null) => {
     if (!file) {
       setField('collaboraUploadFile', null);
-      setField('collaboraAutoPrefilledTitle', undefined);
       return;
     }
     const validation = validateCollaboraImportFile([file]);
@@ -423,21 +422,16 @@ function CalloutFormConnectorInner({
       setCollaboraImportError(validation.error);
       // Don't stage the file when validation fails — pre-check before any network call.
       setField('collaboraUploadFile', null);
-      setField('collaboraAutoPrefilledTitle', undefined);
       return;
     }
     setCollaboraImportError(null);
     setField('collaboraUploadFile', file);
     // Auto-prefill the post title from the filename when the title is empty.
-    // Captures the prefilled value so the submit-time mapper can decide whether
-    // to send the displayName explicitly or rely on the server's filename
-    // derivation (FR-004a + FR-004b).
+    // Pure convenience default: the post title and the document's own name
+    // are independent — the server always derives the document's name from
+    // the uploaded file, regardless of what the post title ends up as (FR-004a).
     if (!values.title.trim()) {
-      const prefilled = filenameWithoutExtension(file.name);
-      setField('title', prefilled);
-      setField('collaboraAutoPrefilledTitle', prefilled);
-    } else {
-      setField('collaboraAutoPrefilledTitle', undefined);
+      setField('title', filenameWithoutExtension(file.name));
     }
   };
 
@@ -928,7 +922,6 @@ function CalloutFormConnectorInner({
                   // framing type (Edge Case in spec.md).
                   if (chip !== 'document' && values.framingChip === 'document') {
                     setField('collaboraUploadFile', null);
-                    setField('collaboraAutoPrefilledTitle', undefined);
                     setCollaboraImportError(null);
                   }
                   setField('framingChip', chip);

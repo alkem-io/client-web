@@ -10,7 +10,6 @@ import {
   type UpdateReferenceInput,
 } from '@/core/apollo/generated/graphql-schema';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
-import { deriveCollaboraDocumentDisplayName } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraDocumentDisplayName';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
@@ -294,27 +293,22 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
 
   // Collabora document framing has two creation paths:
   //   - Blank-create: send `{ displayName, documentType }` and no `file`.
-  //   - Upload: send `{}` or `{ displayName }` (per the typed-vs-prefill rule)
-  //     plus the `file` separately to `handleCreateCallout`. `documentType` is
-  //     server-derived from the file's sniffed MIME and MUST NOT be sent.
+  //   - Upload: always send `{}` plus the `file` separately to
+  //     `handleCreateCallout`. The post title and the document's own name
+  //     are independent — the server always derives the document's name
+  //     from the uploaded file. `documentType` is server-derived from the
+  //     file's sniffed MIME and MUST NOT be sent.
   // There is no edit-time counterpart on either branch; the document body is
   // edited through the Collabora overlay against the already-created document.
   if (framingType === CalloutFramingType.CollaboraDocument) {
     const postTitle = values.title.trim() || options.collaboraFallbackDisplayName;
     if (values.collaboraUploadFile) {
-      const decision = deriveCollaboraDocumentDisplayName({
-        mode: 'upload',
-        postTitle,
-        autoPrefilledTitle: values.collaboraAutoPrefilledTitle,
-      });
-      callout.framing.collaboraDocument = decision;
+      callout.framing.collaboraDocument = {};
     } else {
-      const decision = deriveCollaboraDocumentDisplayName({
-        mode: 'blank-create',
-        postTitle,
+      callout.framing.collaboraDocument = {
+        displayName: postTitle,
         documentType: values.collaboraDocumentType,
-      });
-      callout.framing.collaboraDocument = decision;
+      };
     }
   }
 

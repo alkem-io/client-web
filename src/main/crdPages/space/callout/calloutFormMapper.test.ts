@@ -237,16 +237,15 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     });
   });
 
-  it('"document" chip with uploadFile + post title equal to auto-prefill emits empty {} and propagates the file', () => {
+  it('"document" chip with uploadFile always emits empty {} regardless of post title (post title and document name are independent — server derives the name from the uploaded file)', () => {
     const stagedFile = new File([new Uint8Array(10)], 'Q3-Plan-final.docx', {
       type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     });
     const result = mapFormToCalloutCreationInput(
       baseValues({
         framingChip: 'document',
-        title: 'Q3-Plan-final', // matches auto-prefill, so server should derive from filename
+        title: 'Q3-Plan-final',
         collaboraUploadFile: stagedFile,
-        collaboraAutoPrefilledTitle: 'Q3-Plan-final',
       }),
       createOptions
     );
@@ -255,20 +254,19 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
     expect(result.collaboraUploadFile).toBe(stagedFile);
   });
 
-  it('"document" chip with uploadFile + post title typed-over auto-prefill emits { displayName } and propagates the file', () => {
+  it('"document" chip with uploadFile + a post title the author typed/edited still emits empty {} (title is never sent as the document displayName on upload)', () => {
     const stagedFile = new File([new Uint8Array(10)], 'Q3-Plan-final.docx', {
       type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     });
     const result = mapFormToCalloutCreationInput(
       baseValues({
         framingChip: 'document',
-        title: 'My Q3 Doc', // typed over the prefill
+        title: 'My Q3 Doc', // author typed a title before/after staging the file — irrelevant to the document's own name
         collaboraUploadFile: stagedFile,
-        collaboraAutoPrefilledTitle: 'Q3-Plan-final',
       }),
       createOptions
     );
-    expect(result.input.framing.collaboraDocument).toEqual({ displayName: 'My Q3 Doc' });
+    expect(result.input.framing.collaboraDocument).toEqual({});
     expect(result.collaboraUploadFile).toBe(stagedFile);
   });
 
@@ -279,7 +277,6 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
         framingChip: 'memo', // user switched to Memo
         collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
         collaboraUploadFile: null,
-        collaboraAutoPrefilledTitle: undefined,
         memoMarkdown: 'note',
       }),
       createOptions
