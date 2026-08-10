@@ -967,6 +967,17 @@
     }
   },
   "fullscreen": "Превключи на цял екран",
+  "imageCrop": {
+    "previewAlt": "Преглед на изрязването",
+    "tooSmall": "Избраната област е {{actualWidth}}×{{actualHeight}}px. Изискват се поне {{requiredWidth}}×{{requiredHeight}}px — моля, изберете по-голямо изображение.",
+    "aspectRatio": {
+      "label": "Съотношение на екрана: {{ratio}}:1",
+      "ariaLabel": "Съотношение на екрана: {{ratio}}",
+      "hintLeft": "Ляво: по-високо изрязване на изображението",
+      "hintRight": "Дясно: по-ниско изрязване на изображението",
+      "name": "Форма на банера"
+    }
+  },
   "innovationHub": {
     "outsideOfSpace": {
       "forum": "Това е общият форум на Alkemio, извън <strong>{{space}}</strong> $t(common.space). Поканени сте да изследвате и да допринесете!"
