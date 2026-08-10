@@ -40,7 +40,12 @@ export function mapSpaceToAboutFormValues(space: AboutSpace): AboutFormValues {
       ? { id: profile.avatar.id, uri: profile.avatar.uri ?? null, altText: profile.avatar.alternativeText ?? null }
       : EMPTY_VISUAL,
     pageBanner: profile.banner
-      ? { id: profile.banner.id, uri: profile.banner.uri ?? null, altText: profile.banner.alternativeText ?? null }
+      ? {
+          id: profile.banner.id,
+          uri: profile.banner.uri ?? null,
+          altText: profile.banner.alternativeText ?? null,
+          aspectRatio: profile.banner.aspectRatio ?? undefined,
+        }
       : EMPTY_VISUAL,
     cardBanner: profile.cardBanner
       ? {

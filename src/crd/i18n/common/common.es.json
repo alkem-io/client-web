@@ -967,6 +967,17 @@
     }
   },
   "fullscreen": "Pantalla completa",
+  "imageCrop": {
+    "previewAlt": "Vista previa del recorte",
+    "tooSmall": "El área seleccionada es de {{actualWidth}}×{{actualHeight}}px. Se requieren al menos {{requiredWidth}}×{{requiredHeight}}px: elige una imagen más grande.",
+    "aspectRatio": {
+      "label": "Relación de aspecto: {{ratio}}:1",
+      "ariaLabel": "Relación de aspecto: {{ratio}}",
+      "hintLeft": "Izquierda: recorte de imagen más alto",
+      "hintRight": "Derecha: recorte de imagen más bajo",
+      "name": "Forma del banner"
+    }
+  },
   "innovationHub": {
     "outsideOfSpace": {
       "forum": "Este es el $t(common.forum) general de Alkemio, fuera del <strong>{{space}}</strong> $t(common.space). ¡Estás invitado/a a explorar y contribuir!"
