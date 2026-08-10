@@ -10,6 +10,8 @@ query DefaultVisualTypeConstraints(
         minHeight
         minWidth
         aspectRatio
+        minAspectRatio
+        maxAspectRatio
         allowedTypes
       }
     }

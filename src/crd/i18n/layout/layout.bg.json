@@ -20,6 +20,7 @@
     "pendingMemberships": "Чакащи членства",
     "administration": "Администрация",
     "changeLanguage": "Смяна на езика",
+    "changeLanguageError": "Не можахме да запазим езиковата настройка — моля, опитайте отново.",
     "getHelp": "Помощ",
     "showGrid": "Покажи мрежа",
     "hideGrid": "Скрий мрежа"

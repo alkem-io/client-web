@@ -11,6 +11,9 @@ fragment userSettingsFragment on UserSettings {
     spaceID
     autoRedirect
   }
+  dashboard {
+    activityView
+  }
   notification {
     platform {
       admin {

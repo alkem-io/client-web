@@ -12,25 +12,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
-  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
-  /** An Emoji. */
   Emoji: { input: string; output: string };
-  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
-  /** A markdown string. */
   Markdown: { input: string; output: string };
-  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
-  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
-  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
-  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
-  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -1223,7 +1213,6 @@ export type CalloutContributionsCountOutput = {
   whiteboard: Scalars['Float']['output'];
 };
 
-/** Admin-fixed initial map view for a Contributors-collection callout's map. Absent/null ⇒ automatic framing (fit to plotted contributors; Europe fallback). */
 export type CalloutContributorsMapView = {
   __typename?: 'CalloutContributorsMapView';
   /** Map center latitude. Finite, within [-90, 90]. */
@@ -2021,7 +2010,7 @@ export type CreateCalloutContributionInput = {
 
 export type CreateCalloutContributorsMapViewData = {
   __typename?: 'CreateCalloutContributorsMapViewData';
-  /** Map center latitude. Finite, within [-90, 90]. */
+  /** Map center latitude. Finite, within [-90, 90]. MapLibre throws on values outside this range. */
   latitude: Scalars['Float']['output'];
   /** Map center longitude. Finite, within [-180, 180]. */
   longitude: Scalars['Float']['output'];
@@ -2030,7 +2019,7 @@ export type CreateCalloutContributorsMapViewData = {
 };
 
 export type CreateCalloutContributorsMapViewInput = {
-  /** Map center latitude. Finite, within [-90, 90]. */
+  /** Map center latitude. Finite, within [-90, 90]. MapLibre throws on values outside this range. */
   latitude: Scalars['Float']['input'];
   /** Map center longitude. Finite, within [-180, 180]. */
   longitude: Scalars['Float']['input'];
@@ -5285,7 +5274,7 @@ export type Mutation = {
   updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates one of the Setting on an Virtual Contributor */
   updateVirtualContributorSettings: VirtualContributor;
-  /** Updates the image URI for the specified Visual. */
+  /** Updates the image URI, alternative text and/or display aspect ratio for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
@@ -7439,6 +7428,8 @@ export type RelayPaginatedSpace = ActorFull & {
   account: Account;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
+  /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
+  activityScore: Scalars['Int']['output'];
   /** The Actor representing this Space. */
   actor: Actor;
   /** The authorization rules for the Actor */
@@ -8278,6 +8269,8 @@ export type Space = ActorFull & {
   account: Account;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
+  /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
+  activityScore: Scalars['Int']['output'];
   /** The Actor representing this Space. */
   actor: Actor;
   /** The authorization rules for the Actor */
@@ -9642,11 +9635,18 @@ export type UpdateUserSettingsCommunicationInput = {
   allowOtherUsersToSendMessages?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type UpdateUserSettingsDashboardInput = {
+  /** Whether the activity-feed view is shown on the home dashboard (true) or the non-activity Spaces view (false). */
+  activityView?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to the AI assistant authority for this User. */
   assistant?: InputMaybe<UpdateUserSettingsAssistantInput>;
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
+  /** Settings related to the home dashboard view. */
+  dashboard?: InputMaybe<UpdateUserSettingsDashboardInput>;
   /** Update the user's design version. Any integer accepted (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
@@ -9844,6 +9844,8 @@ export type UpdateVirtualContributorSettingsPrivacyInput = {
 
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']['input']>;
+  /** The width / height ratio to display this visual at. Must fall within the visual type’s minAspectRatio - maxAspectRatio range; types with a fixed shape accept only their single allowed value. */
+  aspectRatio?: InputMaybe<Scalars['Float']['input']>;
   uri: Scalars['String']['input'];
   visualID: Scalars['String']['input'];
 };
@@ -10179,6 +10181,8 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The home-dashboard view settings for this User. */
+  dashboard: UserSettingsDashboard;
   /** The design version this User has selected (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion: Scalars['Int']['output'];
   /** The home space settings for this User. */
@@ -10209,6 +10213,12 @@ export type UserSettingsCommunication = {
   allowOtherUsersToContactViaEmail: Scalars['Boolean']['output'];
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsDashboard = {
+  __typename?: 'UserSettingsDashboard';
+  /** Whether the activity-feed view is shown on the home dashboard (true) or the non-activity Spaces view (false). Default true preserves the historical behaviour. */
+  activityView: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsHomeSpace = {
@@ -10593,10 +10603,14 @@ export type VisualConstraints = {
   allowedTypes: Array<Scalars['String']['output']>;
   /** Dimensions ratio width / height. */
   aspectRatio: Scalars['Float']['output'];
+  /** Maximum dimensions ratio width / height that this visual may be set to. Equal to minAspectRatio when the shape is fixed. */
+  maxAspectRatio: Scalars['Float']['output'];
   /** Maximum height resolution. */
   maxHeight: Scalars['Float']['output'];
   /** Maximum width resolution. */
   maxWidth: Scalars['Float']['output'];
+  /** Minimum dimensions ratio width / height that this visual may be set to. Equal to maxAspectRatio when the shape is fixed. */
+  minAspectRatio: Scalars['Float']['output'];
   /** Minimum height resolution. */
   minHeight: Scalars['Float']['output'];
   /** Minimum width resolution. */
@@ -10729,6 +10743,8 @@ export type DefaultVisualTypeConstraintsQuery = {
         minHeight: number;
         minWidth: number;
         aspectRatio: number;
+        minAspectRatio: number;
+        maxAspectRatio: number;
         allowedTypes: Array<string>;
       };
     };
@@ -11348,6 +11364,7 @@ export type UserPendingMembershipsQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23077,6 +23094,7 @@ export type UserDetailsFragment = {
     __typename?: 'UserSettings';
     id: string;
     homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
     notification: {
       __typename?: 'UserSettingsNotification';
       sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23105,6 +23123,7 @@ export type UserDetailsLightFragment = {
     __typename?: 'UserSettings';
     id: string;
     homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
     notification: {
       __typename?: 'UserSettingsNotification';
       sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23210,6 +23229,7 @@ export type UserQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23289,6 +23309,7 @@ export type UserModelFullQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23364,6 +23385,7 @@ export type UsersModelFullQuery = {
       __typename?: 'UserSettings';
       id: string;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23468,6 +23490,7 @@ export type UpdateUserMutation = {
       __typename?: 'UserSettings';
       id: string;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23491,6 +23514,7 @@ export type UpdateUserSettingsMutation = {
       language?: string | undefined;
       languageOfferAnswered: boolean;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         user: {
@@ -23719,6 +23743,7 @@ export type UserSettingsFragmentFragment = {
   };
   privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
   homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+  dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
   notification: {
     __typename?: 'UserSettingsNotification';
     platform: {
@@ -23953,6 +23978,7 @@ export type UserSettingsQuery = {
             };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               platform: {
@@ -24262,6 +24288,7 @@ export type CurrentUserFullQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -24328,6 +24355,7 @@ export type CurrentUserLightQuery = {
             language?: string | undefined;
             languageOfferAnswered: boolean;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -35639,6 +35667,173 @@ export type UpdateUserAssistantSettingsMutation = {
   };
 };
 
+export type DashboardExploreSpacesQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  daysOld?: InputMaybe<Scalars['Float']['input']>;
+}>;
+
+export type DashboardExploreSpacesQuery = {
+  __typename?: 'Query';
+  exploreSpaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      isContentPublic: boolean;
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+  }>;
+};
+
+export type DashboardWelcomeSpaceQueryVariables = Exact<{
+  nameId: Scalars['NameID']['input'];
+}>;
+
+export type DashboardWelcomeSpaceQuery = {
+  __typename?: 'Query';
+  lookupByName: {
+    __typename?: 'LookupByNameQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type NonActivityHostedSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type NonActivityHostedSpacesQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                spaces: Array<{
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  activityScore: number;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    isContentPublic: boolean;
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type InnovationLibraryPacksPaginatedQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['UUID']['input']>;
@@ -44071,7 +44266,13 @@ export type PendingInvitationsQuery = {
         state: string;
         createdDate: Date;
         actor: { __typename?: 'Actor'; type: ActorType };
-        createdBy?: { __typename?: 'User'; id: string } | undefined;
+        createdBy?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+            }
+          | undefined;
       };
     }>;
   };
@@ -45720,6 +45921,7 @@ export type MyMembershipsQuery = {
         __typename?: 'Space';
         id: string;
         level: SpaceLevel;
+        activityScore: number;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -45780,6 +45982,7 @@ export type MyMembershipsQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          activityScore: number;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -45840,6 +46043,7 @@ export type MyMembershipsQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
+            activityScore: number;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -45903,6 +46107,7 @@ export type SpaceMembershipFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
+  activityScore: number;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -46562,6 +46767,20 @@ export type RecentSpacesQuery = {
           };
         };
       };
+      latestActivity?:
+        | { __typename?: 'ActivityLogEntryCalendarEventCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutDiscussionComment'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutLinkCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutMemoCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutPostComment'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutPostCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutPublished'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutWhiteboardCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryMemberJoined'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntrySubspaceCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryUpdateSent'; id: string; createdDate: Date }
+        | undefined;
     }>;
   };
 };

@@ -1,0 +1,19 @@
+query NonActivityHostedSpaces {
+  me {
+    user {
+      id
+      account {
+        id
+        spaces {
+          id
+          level
+          about {
+            ...SpaceAboutCardBanner
+            isContentPublic
+          }
+          activityScore
+        }
+      }
+    }
+  }
+}
