@@ -1,46 +1,47 @@
 import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { holdsPlatformAdminAreaRole, PLATFORM_ADMIN_AREA_PRIVILEGES } from '@/main/admin/NonPlatformAdminRedirect';
+import { canUseAdminArea } from './adminSectionAccess';
 
 /**
- * Reads the current user's platform-level privileges and reports whether they may
- * enter the platform admin area.
+ * The current viewer's admin-area standing.
  *
- * The actual route-level redirect for non-admins is performed by reusing the
- * proven `NonPlatformAdminRedirect` component in `CrdAdminRoutes` (exact parity,
- * no reimplementation of the redirect target). This hook exposes the same
- * decision as plain state so section-level UIs and tests can gate per-action
- * affordances without re-querying (Apollo caches the query).
+ * `isPlatformAdmin` answers exactly one question — may this viewer enter the
+ * admin area — and answers it from `adminSectionAccess`, the same module the
+ * route guard (`NonPlatformAdminRedirect`) and the nav filter
+ * (`useVisibleAdminSections`) read. That shared source is the point: this hook
+ * is what places the Administration entry in the profile menu, and a menu that
+ * disagrees with the guard produces either a dead link or an unreachable page.
  *
- * Parity is enforced by importing the admitting set from that component rather
- * than restating it: FR-012 requires the seeded Platform Roles Admin to reach the
- * admin UI, and a guard that admits at the route but denies in-page (or the
- * reverse) is exactly the drift this shared constant prevents.
+ * Both policies are unioned before asking. The assignment and holder-read
+ * privileges sit on the platform ROLE SET's authorization; `PLATFORM_ADMIN`,
+ * `PLATFORM_USERS_ADMIN` and `PLATFORM_CONTENT_FULL_ACCESS` sit on the
+ * platform's own. Reading only the platform policy denies half the model.
  */
 export const useAdminAccessGuard = () => {
   const { data, loading } = usePlatformLevelAuthorizationQuery();
 
-  // The admitting privileges are split across two policies: PLATFORM_ADMIN sits on
-  // the platform authorization, while GRANT_GLOBAL_ADMINS / FEATURE_ROLE_ASSIGN sit
-  // on the platform role set's. Union both — reading only the platform policy denies
-  // every role this feature introduces.
   const privileges = [
     ...(data?.platform.authorization?.myPrivileges ?? []),
     ...(data?.platform.roleSet.authorization?.myPrivileges ?? []),
   ];
 
-  // Same two inputs, in the same order, as the route guard: the privilege union
-  // above OR a role whose privileges are not anchored on the platform at all
-  // (Platform Resource Admin — see PLATFORM_ADMIN_AREA_ROLES). Both must be read
-  // here, not only in the component: this hook is what puts the Administration
-  // entry in the profile menu, and a menu that disagrees with the guard produces
-  // either a dead link or an unreachable page.
-  const isPlatformAdmin =
-    holdsPlatformAdminAreaRole(data?.platform.roleSet.myRoles) ||
-    privileges.some(
-      privilege =>
-        PLATFORM_ADMIN_AREA_PRIVILEGES.includes(privilege) || privilege === AuthorizationPrivilege.PlatformAdmin
-    );
+  const isPlatformAdmin = canUseAdminArea({ privileges, roles: data?.platform.roleSet.myRoles });
 
-  return { loading, isPlatformAdmin };
+  /**
+   * May the viewer change another user's login email?
+   *
+   * A capability, NOT "is an admin". `adminUserEmailChange` is gated on
+   * `PLATFORM_USERS_ADMIN` (plus the legacy catch-all) at its own resolver, so
+   * deriving the affordance from admin-area access hands a Change Email button
+   * to every other role that reaches the shell — a Platform Roles Admin today,
+   * and Platform Content Full Access once the area admits it. The button then
+   * opens a dialog whose submit the server always refuses, which is finding
+   * F8's defect shape exactly: an editor offered to a role that can edit none.
+   */
+  const canChangeUserEmail = privileges.some(
+    privilege =>
+      privilege === AuthorizationPrivilege.PlatformUsersAdmin || privilege === AuthorizationPrivilege.PlatformAdmin
+  );
+
+  return { loading, isPlatformAdmin, canChangeUserEmail };
 };
