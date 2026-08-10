@@ -44,3 +44,19 @@ jobs:
 
       - name: Build
         run: CI=false pnpm run build
+
+  # workspace#033-client-runtime-hardening: the runtime image's hardening
+  # invariants (digest-pinned bases, non-root UID 101, 8080-only, working
+  # env.sh injection) are only enforced if something actually runs the smoke
+  # script — otherwise they regress silently and surface post-merge on dev.
+  image-hardening:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Build runtime image
+        run: docker build -t client-web:pr .
+
+      - name: Assert image hardening invariants
+        run: bash .docker/client-image-smoke.sh client-web:pr

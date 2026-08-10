@@ -4386,6 +4386,8 @@ export const DefaultVisualTypeConstraintsDocument = gql`
         minHeight
         minWidth
         aspectRatio
+        minAspectRatio
+        maxAspectRatio
         allowedTypes
       }
     }

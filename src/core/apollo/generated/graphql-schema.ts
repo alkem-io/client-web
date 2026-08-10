@@ -5274,7 +5274,7 @@ export type Mutation = {
   updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates one of the Setting on an Virtual Contributor */
   updateVirtualContributorSettings: VirtualContributor;
-  /** Updates the image URI for the specified Visual. */
+  /** Updates the image URI, alternative text and/or display aspect ratio for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
@@ -9836,6 +9836,8 @@ export type UpdateVirtualContributorSettingsPrivacyInput = {
 
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']['input']>;
+  /** The width / height ratio to display this visual at. Must fall within the visual type’s minAspectRatio - maxAspectRatio range; types with a fixed shape accept only their single allowed value. */
+  aspectRatio?: InputMaybe<Scalars['Float']['input']>;
   uri: Scalars['String']['input'];
   visualID: Scalars['String']['input'];
 };
@@ -10589,10 +10591,14 @@ export type VisualConstraints = {
   allowedTypes: Array<Scalars['String']['output']>;
   /** Dimensions ratio width / height. */
   aspectRatio: Scalars['Float']['output'];
+  /** Maximum dimensions ratio width / height that this visual may be set to. Equal to minAspectRatio when the shape is fixed. */
+  maxAspectRatio: Scalars['Float']['output'];
   /** Maximum height resolution. */
   maxHeight: Scalars['Float']['output'];
   /** Maximum width resolution. */
   maxWidth: Scalars['Float']['output'];
+  /** Minimum dimensions ratio width / height that this visual may be set to. Equal to maxAspectRatio when the shape is fixed. */
+  minAspectRatio: Scalars['Float']['output'];
   /** Minimum height resolution. */
   minHeight: Scalars['Float']['output'];
   /** Minimum width resolution. */
@@ -10725,6 +10731,8 @@ export type DefaultVisualTypeConstraintsQuery = {
         minHeight: number;
         minWidth: number;
         aspectRatio: number;
+        minAspectRatio: number;
+        maxAspectRatio: number;
         allowedTypes: Array<string>;
       };
     };
