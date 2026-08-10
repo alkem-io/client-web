@@ -72,7 +72,9 @@ export function CollaboraContributionEditorOverlay({
   // never observes that write, so our own title would go stale. Re-read the contribution-list
   // queries (the grid + card sources) so the new name lands in the normalized cache.
   const refetchDocumentName = () => {
-    client.refetchQueries({ include: ['CalloutContributions', 'CalloutDetails'] });
+    // Best-effort cache refresh — the WOPI-driven rename already persisted server-side
+    // regardless of whether this refetch succeeds, so a failure here is silently dropped.
+    client.refetchQueries({ include: ['CalloutContributions', 'CalloutDetails'] }).catch(() => {});
   };
 
   const { iframeRef, onAccessTokenTTL, onFetchError, reconnectNonce, footerProps, saveOutage, recovery } =

@@ -106,7 +106,7 @@ type DocumentContributionConnectorProps = {
    *  of that rule (caught during /speckit.analyze, see research.md R10). */
   calloutPrivileges: AuthorizationPrivilege[] | undefined;
   onClose: () => void;
-  onDelete: (contributionId: string, title: string) => void;
+  onDelete?: (contributionId: string, title: string) => void;
 };
 ```
 

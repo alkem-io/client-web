@@ -18,7 +18,7 @@
 # 1. Add the new mutation operation file, then regenerate types/hooks
 pnpm codegen
 
-# 2. Typecheck + lint continuously while implementing
+# 2. Typecheck (tsc --noEmit) + Biome + ESLint, continuously while implementing
 pnpm lint
 
 # 3. Run the unit suite (fast; no backend needed for these)
@@ -70,6 +70,8 @@ pnpm vitest run
   and `contributionSettings` for `responseType: 'document'`.
 - `ResponseTypeChipStrip.test.tsx` (extended) — the new `'document'` chip
   renders, is selectable, and respects `allowedChips` filtering.
+- `deriveCollaboraImportErrorMessage.spec.ts` (new) — table-driven coverage
+  of all `ValidationError` kinds for the shared import-error mapping helper.
 
 Connector-level components (`DocumentContributionAddConnector`,
 `DocumentContributionConnector`, `CollaboraContributionEditorOverlay`) follow

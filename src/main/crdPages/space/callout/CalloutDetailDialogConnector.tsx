@@ -266,7 +266,7 @@ export function CalloutDetailDialogConnector({
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
   const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
-  const initialIsDocument = contributionType === CalloutContributionType.CollaboraDocument;
+  const initialIsDocument = open && contributionType === CalloutContributionType.CollaboraDocument;
 
   const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
     initialIsWhiteboard ? initialContributionId : undefined
@@ -338,7 +338,7 @@ export function CalloutDetailDialogConnector({
 
   // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
   useEffect(() => {
-    if (!initialContributionId) return;
+    if (!open || !initialContributionId) return;
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(initialContributionId);
       setMemoId(initialMemoId);
@@ -359,7 +359,7 @@ export function CalloutDetailDialogConnector({
     }
     // Other contribution types (Link) don't have a dedicated overlay; the
     // grid card itself owns the navigation.
-  }, [initialContributionId, initialMemoId, initialPostId, contributionType]);
+  }, [open, initialContributionId, initialMemoId, initialPostId, contributionType]);
 
   // Reset per-contribution state whenever the dialog closes so reopening
   // starts from the fresh initial values rather than stale selections from
@@ -659,7 +659,7 @@ export function CalloutDetailDialogConnector({
     ) : null;
 
   const documentOverlay =
-    documentEditorOpen && documentContributionId ? (
+    open && documentEditorOpen && documentContributionId ? (
       <DocumentContributionConnector
         open={true}
         contributionId={documentContributionId}

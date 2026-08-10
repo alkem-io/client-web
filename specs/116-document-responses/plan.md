@@ -5,7 +5,7 @@
 
 ## Summary
 
-Complete the write and render sides of `CalloutContributionType.COLLABORA_DOCUMENT`
+Complete the write and render sides of `CalloutContributionType.CollaboraDocument`
 as a fifth, first-class response type (alongside Links & Files, Posts, Memos,
 Whiteboards), closing the story's sole acceptance criterion ("Add documents
 as a response type"). The server contract (`importCollaboraDocument`
@@ -129,7 +129,7 @@ already-established pattern.
 
 ## Phase 0: Outline & Research
 
-See [research.md](research.md) for the consolidated findings (R1–R8):
+See [research.md](research.md) for the consolidated findings (R1–R10):
 the exact write mutation and why no blank-create path exists (R1); the
 already-shipped, unused read-side plumbing being activated (R2); reuse of
 the existing upload-zone and validation building blocks over the generic
