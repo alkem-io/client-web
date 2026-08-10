@@ -23,6 +23,7 @@
     "codegen": "graphql-codegen --config codegen.yml",
     "crd:dev": "vite --config src/crd/app/vite.config.ts",
     "crd:build": "vite build --config src/crd/app/vite.config.ts",
+    "compiler:healthcheck": "NODE_OPTIONS=--max-old-space-size=8192 react-compiler-healthcheck --src 'src/**/!(*.generated|apollo-hooks|graphql-schema).{ts,tsx}'",
     "format": "biome format --write .",
     "gulp": "gulp",
     "lint": "pnpm run typecheck:native && biome ci . && eslint .",
@@ -179,6 +180,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.7.2",
     "@graphql-codegen/cli": "^5.0.5",
     "@graphql-codegen/import-types-preset": "^3.0.0",
     "@graphql-codegen/typescript": "^4.1.6",
@@ -205,6 +207,7 @@
     "lighthouse": "^12.2.1",
     "lint-staged": "^13.0.3",
     "playwright": "^1.57.0",
+    "react-compiler-healthcheck": "^1.0.0",
     "rollup-plugin-visualizer": "^6.0.5",
     "serve": "^14.2.4",
     "tailwindcss": "^4.2.2",

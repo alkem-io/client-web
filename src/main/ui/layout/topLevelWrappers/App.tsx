@@ -32,6 +32,7 @@ const App = () => {
 
   // Keep useCallback: ref callback that calls setState. Without stable reference, React
   // re-invokes with null then element on every render → setCookieConsentHeight oscillates → infinite loop.
+  // eslint-disable-next-line no-restricted-syntax -- see above: a stable ref callback is required or React re-invokes it (null→element) every render, causing an infinite loop.
   const cookieConsentRef = useCallback((element: HTMLDivElement | null) => {
     const height = element?.getBoundingClientRect().height ?? 0;
     setCookieConsentHeight(height);

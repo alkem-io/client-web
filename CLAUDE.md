@@ -130,7 +130,10 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 ### State & Hooks
 
 - `useState` pairs: `const [value, setValue] = useState()`
-- **Do NOT use `useMemo`, `useCallback`, or `React.memo`** — React Compiler is enabled and handles memoization automatically. Manual memoization adds noise without benefit. Write plain expressions and let the compiler optimize.
+- **Do NOT use `useMemo`, `useCallback`, `React.memo`, `PureComponent`, or `shouldComponentUpdate`** — React Compiler is enabled and handles memoization/render bail-outs automatically. Manual memoization adds noise without benefit. Write plain expressions and let the compiler optimize. This is **hard-enforced** by the ESLint `no-restricted-syntax` rules (`eslint.config.mjs`) at **error** level: any such usage fails `pnpm lint` **and** the pre-commit hook (which runs `pnpm eslint .`), so it can't be committed. If a genuine exception is unavoidable (e.g. a third-party library requiring reference stability — the collaborative editor, Apollo links, a debounced function, a ref callback), you **must** add an `eslint-disable-next-line no-restricted-syntax -- <reason>` comment on the line directly above, stating why the compiler is insufficient.
+- The `-- <reason>` is **mandatory and itself linted**: `@eslint-community/eslint-comments/require-description` fails any `eslint-disable` that has no description, and `reportUnusedDisableDirectives` fails any disable comment that no longer suppresses anything (so exceptions can't silently rot as usages are removed). A bare disable is not acceptable and won't pass lint.
+- Biome's `useExhaustiveDependencies` is intentionally `off` (`biome.json`) — the React Compiler tracks dependencies, so manual dependency arrays are unnecessary.
+- **`pnpm compiler:healthcheck`** reports how many `src/` components the React Compiler successfully optimizes (the coverage KPI for the no-manual-memoization policy). It should stay at/near 100% — a drop means new code the compiler can't compile.
 
 ### Component Organization
 
@@ -368,6 +371,7 @@ Every top-level route renders its `Crd*` page unconditionally — there is no to
 The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) routes were product-dropped during the removal; `InnovationPacks` (`/innovation-packs/*`) was kept on its CRD pages.
 
 ## Recent Changes
+- 041-react-compiler-lint-rules: Added ESLint `no-restricted-syntax` rules (warn) prohibiting `useMemo`/`useCallback`/`memo`/`React.memo`; documented the enforcement + exception policy and the intentional `useExhaustiveDependencies: off` in CLAUDE.md
 - 114-callout-delete-context: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `react-i18next`, `lucide-react`, Apollo Client (generated hooks only — unchanged), `date-fns` (only if a date is rendered)
 - 113-innovation-hub-ui: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `lucide-react`, `react-i18next`, Apollo Client (generated hooks only — already wired, unchanged this story)
 - 112-l0-additional-tabs: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only), shadcn/ui + Tailwind v4 + Radix UI (CRD layer `@/crd/*`), `react-i18next`, `lucide-react`. **No new runtime dependencies.**

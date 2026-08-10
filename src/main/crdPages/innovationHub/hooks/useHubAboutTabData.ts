@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateInnovationHubMutation, useUploadVisualMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { InnovationHubSettingsFragment, UpdateInnovationHubInput } from '@/core/apollo/generated/graphql-schema';
@@ -142,6 +142,14 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     };
   }, []);
 
+  // Mirror committed `values` into a ref so imperative handlers (onSaveSection) can read the
+  // freshest edit synchronously. Synced here after render — never mutated during render (the
+  // setState updaters must stay pure). Guarded so the pre-seed null render can't clobber the
+  // value the seed effect wrote above.
+  useEffect(() => {
+    if (values) valuesRef.current = values;
+  }, [values]);
+
   const dirty: Partial<Record<HubAboutSectionKey, boolean>> = (() => {
     if (!values || !saved) return {};
     return {
@@ -155,13 +163,11 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
     };
   })();
 
-  const onChange = useCallback((patch: Partial<HubAboutFormValues>) => {
+  const onChange = (patch: Partial<HubAboutFormValues>) => {
     setValues(prev => {
       const base = prev ?? valuesRef.current;
       if (!base) return prev;
-      const next = { ...base, ...patch };
-      valuesRef.current = next;
-      return next;
+      return { ...base, ...patch };
     });
     // Clear any previous validation error for fields the user just edited.
     setErrors(prev => {
@@ -173,124 +179,113 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
       }
       return next;
     });
-  }, []);
+  };
 
-  const onSaveSection = useCallback(
-    (key: HubAboutSectionKey) => {
-      const current = valuesRef.current;
-      if (!hub || !current) return;
+  const onSaveSection = (key: HubAboutSectionKey) => {
+    const current = valuesRef.current;
+    if (!hub || !current) return;
 
-      const errorKey = validateSection(key, current);
-      if (errorKey) {
-        setErrors(prev => ({ ...prev, [key]: t(errorKey) }));
-        return;
-      }
+    const errorKey = validateSection(key, current);
+    if (errorKey) {
+      setErrors(prev => ({ ...prev, [key]: t(errorKey) }));
+      return;
+    }
 
-      const input = buildSectionInput(hub, key, current);
-      if (!input) return;
+    const input = buildSectionInput(hub, key, current);
+    if (!input) return;
 
-      setErrors(prev => {
-        const next = { ...prev };
-        delete next[key];
-        return next;
-      });
-      setSaveStatus(prev => ({ ...prev, [key]: 'saving' }));
+    setErrors(prev => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    setSaveStatus(prev => ({ ...prev, [key]: 'saving' }));
 
-      void updateInnovationHub({ variables: { hubData: input } })
-        .then(result => {
-          if (result.data?.updateInnovationHub.id) {
-            startTransition(() => {
-              setSaveStatus(prev => ({ ...prev, [key]: 'saved' }));
-              const previousTimer = savedFlashTimers.current[key];
-              if (previousTimer) clearTimeout(previousTimer);
-              savedFlashTimers.current[key] = setTimeout(() => {
-                setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
-              }, SAVED_FLASH_MS);
-            });
-          } else {
-            setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
-            setErrors(prev => ({ ...prev, [key]: t('settings.about.save.errorPrefix') }));
-          }
-        })
-        .catch((err: Error) => {
+    void updateInnovationHub({ variables: { hubData: input } })
+      .then(result => {
+        if (result.data?.updateInnovationHub.id) {
+          startTransition(() => {
+            setSaveStatus(prev => ({ ...prev, [key]: 'saved' }));
+            const previousTimer = savedFlashTimers.current[key];
+            if (previousTimer) clearTimeout(previousTimer);
+            savedFlashTimers.current[key] = setTimeout(() => {
+              setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
+            }, SAVED_FLASH_MS);
+          });
+        } else {
           setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
-          setErrors(prev => ({ ...prev, [key]: `${t('settings.about.save.errorPrefix')} ${err.message}` }));
-        });
-    },
-    [hub, updateInnovationHub, t]
-  );
+          setErrors(prev => ({ ...prev, [key]: t('settings.about.save.errorPrefix') }));
+        }
+      })
+      .catch((err: Error) => {
+        setSaveStatus(prev => ({ ...prev, [key]: 'idle' }));
+        setErrors(prev => ({ ...prev, [key]: `${t('settings.about.save.errorPrefix')} ${err.message}` }));
+      });
+  };
 
   // ────────────────── Banner crop + upload ──────────────────
 
-  const onBannerFileSelected = useCallback(
-    (file: File) => {
-      const visual = hub?.profile.visual;
-      if (!visual?.id) {
-        setErrors(prev => ({ ...prev, banner: t('settings.about.banner.errors.uploadFailed') }));
-        return;
-      }
-      setErrors(prev => {
-        const next = { ...prev };
-        delete next.banner;
-        return next;
-      });
-      // Open the cropper. The actual upload fires on `onBannerCropComplete`
-      // — by then the file has been resized within the visual's bounds, so the
-      // server stops rejecting oversized originals.
-      //
-      // `aspectRatio` is overridden with `HUB_BANNER_ASPECT_RATIO` (the same
-      // ratio the page displays at) so the cropper preview WYSIWYG-matches
-      // the rendered banner. The server's `visual.aspectRatio` for BANNER_WIDE
-      // is intentionally ignored on display; the width/height bounds it
-      // returns are still respected so uploads stay within accepted sizes.
-      setPendingBannerCrop({
+  const onBannerFileSelected = (file: File) => {
+    const visual = hub?.profile.visual;
+    if (!visual?.id) {
+      setErrors(prev => ({ ...prev, banner: t('settings.about.banner.errors.uploadFailed') }));
+      return;
+    }
+    setErrors(prev => {
+      const next = { ...prev };
+      delete next.banner;
+      return next;
+    });
+    // Open the cropper. The actual upload fires on `onBannerCropComplete`
+    // — by then the file has been resized within the visual's bounds, so the
+    // server stops rejecting oversized originals.
+    //
+    // `aspectRatio` is overridden with `HUB_BANNER_ASPECT_RATIO` (the same
+    // ratio the page displays at) so the cropper preview WYSIWYG-matches
+    // the rendered banner. The server's `visual.aspectRatio` for BANNER_WIDE
+    // is intentionally ignored on display; the width/height bounds it
+    // returns are still respected so uploads stay within accepted sizes.
+    setPendingBannerCrop({
+      file,
+      config: {
+        aspectRatio: HUB_BANNER_ASPECT_RATIO,
+        maxWidth: visual.maxWidth ?? undefined,
+        minWidth: visual.minWidth ?? undefined,
+        maxHeight: visual.maxHeight ?? undefined,
+        minHeight: visual.minHeight ?? undefined,
+      },
+    });
+  };
+
+  const onBannerCropComplete = ({ file, altText }: { file: File; altText: string }) => {
+    setPendingBannerCrop(null);
+    const visualId = hub?.profile.visual?.id;
+    if (!visualId) return;
+    void uploadVisual({
+      variables: {
         file,
-        config: {
-          aspectRatio: HUB_BANNER_ASPECT_RATIO,
-          maxWidth: visual.maxWidth ?? undefined,
-          minWidth: visual.minWidth ?? undefined,
-          maxHeight: visual.maxHeight ?? undefined,
-          minHeight: visual.minHeight ?? undefined,
-        },
-      });
-    },
-    [hub, t]
-  );
-
-  const onBannerCropComplete = useCallback(
-    ({ file, altText }: { file: File; altText: string }) => {
-      setPendingBannerCrop(null);
-      const visualId = hub?.profile.visual?.id;
-      if (!visualId) return;
-      void uploadVisual({
-        variables: {
-          file,
-          uploadData: { visualID: visualId, alternativeText: altText || undefined },
-        },
+        uploadData: { visualID: visualId, alternativeText: altText || undefined },
+      },
+    })
+      .then(result => {
+        const uploaded = result.data?.uploadImageOnVisual;
+        if (uploaded) {
+          setValues(prev => {
+            const base = prev ?? valuesRef.current;
+            if (!base) return prev;
+            return { ...base, bannerImageUrl: uploaded.uri };
+          });
+        }
       })
-        .then(result => {
-          const uploaded = result.data?.uploadImageOnVisual;
-          if (uploaded) {
-            setValues(prev => {
-              const base = prev ?? valuesRef.current;
-              if (!base) return prev;
-              const next: HubAboutFormValues = { ...base, bannerImageUrl: uploaded.uri };
-              valuesRef.current = next;
-              return next;
-            });
-          }
-        })
-        .catch((err: Error) => {
-          setErrors(prev => ({
-            ...prev,
-            banner: `${t('settings.about.banner.errors.uploadFailed')} ${err.message}`,
-          }));
-        });
-    },
-    [hub, uploadVisual, t]
-  );
+      .catch((err: Error) => {
+        setErrors(prev => ({
+          ...prev,
+          banner: `${t('settings.about.banner.errors.uploadFailed')} ${err.message}`,
+        }));
+      });
+  };
 
-  const onBannerCropCancel = useCallback(() => setPendingBannerCrop(null), []);
+  const onBannerCropCancel = () => setPendingBannerCrop(null);
 
   return {
     values: values ??

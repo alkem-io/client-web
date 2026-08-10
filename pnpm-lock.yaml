@@ -362,6 +362,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.6
         version: 2.4.6
+      '@eslint-community/eslint-plugin-eslint-comments':
+        specifier: ^4.7.2
+        version: 4.7.2(eslint@9.36.0(jiti@2.6.1))
       '@graphql-codegen/cli':
         specifier: ^5.0.5
         version: 5.0.7(@types/node@24.12.0)(@typescript/typescript6@6.0.2)(enquirer@2.4.1)(graphql@16.11.0)
@@ -440,6 +443,9 @@ importers:
       playwright:
         specifier: ^1.57.0
         version: 1.57.0
+      react-compiler-healthcheck:
+        specifier: ^1.0.0
+        version: 1.0.0
       rollup-plugin-visualizer:
         specifier: ^6.0.5
         version: 6.0.5(rollup@4.54.0)
@@ -1126,6 +1132,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@eslint-community/eslint-plugin-eslint-comments@4.7.2':
+    resolution: {integrity: sha512-LF03qURSwEWm2dz5wtdDCzNk+7Opl0X7q6I3undsaIuNsEiNvRV3BCtqu14Q/6Pzg1tBj44LcxpW2EpSLZStZw==}
+    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    peerDependencies:
+      eslint: ^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0
 
   '@eslint-community/eslint-utils@4.9.0':
     resolution: {integrity: sha512-ayVFHdtZ+hsq1t2Dy24wCmGXGe4q9Gu3smhLYALJrr473ZH27MsnSL+LKUlimp4BWJqMDMLmPpx/Q9R3OAlL4g==}
@@ -5291,6 +5303,10 @@ packages:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
 
+  ignore@7.0.6:
+    resolution: {integrity: sha512-BAg6QkE8W+TuQLrrw0Ugr7HegXduRuuj8/ti2kSOc+jz1dmx8/WNcjr6XGnq5YpDWxFwwaavqD0+jIUOKelTsw==}
+    engines: {node: '>= 4'}
+
   image-blob-reduce@3.0.1:
     resolution: {integrity: sha512-/VmmWgIryG/wcn4TVrV7cC4mlfUC/oyiKIfSg5eVM3Ten/c1c34RJhMYKCWTnoSMHSqXLt3tsrBR4Q2HInvN+Q==}
 
@@ -6710,6 +6726,11 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-compiler-healthcheck@1.0.0:
+    resolution: {integrity: sha512-B3YV3Z9NrABREM6f9jTfA6IuJu8x/BuXN4alrxGO9I3nSEl1+2p57KCi94T2OvveAU76/7DTeUQxqeS2AGpUIg==}
+    engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
+    hasBin: true
 
   react-cookie@8.0.1:
     resolution: {integrity: sha512-QNdAd0MLuAiDiLcDU/2s/eyKmmfMHtjPUKJ2dZ/5CcQ9QKUium4B3o61/haq6PQl/YWFqC5PO8GvxeHKhy3GFA==}
@@ -8765,6 +8786,12 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.2':
     optional: true
+
+  '@eslint-community/eslint-plugin-eslint-comments@4.7.2(eslint@9.36.0(jiti@2.6.1))':
+    dependencies:
+      escape-string-regexp: 4.0.0
+      eslint: 9.36.0(jiti@2.6.1)
+      ignore: 7.0.6
 
   '@eslint-community/eslint-utils@4.9.0(eslint@9.36.0(jiti@2.6.1))':
     dependencies:
@@ -13424,6 +13451,8 @@ snapshots:
 
   ignore@5.3.2: {}
 
+  ignore@7.0.6: {}
+
   image-blob-reduce@3.0.1:
     dependencies:
       pica: 7.1.1
@@ -15200,6 +15229,19 @@ snapshots:
       warning: 4.0.3
     optionalDependencies:
       '@types/react': 19.1.8
+
+  react-compiler-healthcheck@1.0.0:
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/parser': 7.28.5
+      chalk: 4.1.2
+      fast-glob: 3.3.3
+      ora: 5.4.1
+      yargs: 17.7.2
+      zod: 3.25.76
+      zod-validation-error: 3.5.4(zod@3.25.76)
+    transitivePeerDependencies:
+      - supports-color
 
   react-cookie@8.0.1(@types/react@19.1.8)(react@19.2.1):
     dependencies:

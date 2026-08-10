@@ -157,9 +157,9 @@ class PerformanceBenchmark {
       const client = await page.context().newCDPSession(page);
       await client.send('Performance.enable');
 
-      // Track long tasks
+      // Track long tasks + interaction latencies (Event Timing API → INP proxy)
       await page.addInitScript(() => {
-        const observer = new PerformanceObserver((list) => {
+        const longTaskObserver = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
             if (entry.duration > 50) {
               window.__longTasks = window.__longTasks || [];
@@ -170,7 +170,20 @@ class PerformanceBenchmark {
             }
           }
         });
-        observer.observe({ entryTypes: ['longtask'] });
+        longTaskObserver.observe({ entryTypes: ['longtask'] });
+
+        // INP is derived from Event Timing entries with a real interactionId. Each
+        // entry's `duration` is input→next-paint latency (the thing the React Compiler's
+        // fewer re-renders should improve).
+        window.__interactions = [];
+        const eventObserver = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            if (entry.interactionId > 0) {
+              window.__interactions.push({ duration: entry.duration, name: entry.name });
+            }
+          }
+        });
+        eventObserver.observe({ type: 'event', buffered: true, durationThreshold: 16 });
       });
 
       await page.goto(CONFIG.baseUrl, { waitUntil: 'networkidle' });
@@ -192,22 +205,39 @@ class PerformanceBenchmark {
       // Get long tasks
       const tasks = await page.evaluate(() => window.__longTasks || []);
 
-      // Measure interaction latency
-      const interactionLatency = await page.evaluate(async () => {
-        const button = document.querySelector('button');
-        if (!button) return null;
+      // Drive a handful of real interactions so the Event Timing observer captures
+      // input→next-paint latencies. Trusted Playwright input dispatches genuine events.
+      const interactiveSelectors = ['button', 'a[href]', '[role="button"]', 'input', '[tabindex]'];
+      for (const selector of interactiveSelectors) {
+        const handle = await page.$(selector);
+        if (!handle) continue;
+        try {
+          await handle.click({ timeout: 1000, trial: false });
+          await page.keyboard.press('Tab');
+          await page.waitForTimeout(120); // let a frame paint so `duration` is recorded
+        } catch {
+          // element not actionable (covered/detached) — skip, try the next selector
+        }
+      }
+      await page.waitForTimeout(200);
 
-        const start = performance.now();
-        button.click();
-        await new Promise(resolve => setTimeout(resolve, 100));
-        return performance.now() - start;
-      });
+      // INP proxy: the worst interaction latency observed this session (lab runs have few
+      // interactions, so max ≈ the p98 INP that field data would report).
+      const interactions = await page.evaluate(() => window.__interactions || []);
+      const interactionDurations = interactions.map(i => i.duration).sort((a, b) => a - b);
+      const inp = interactionDurations.length ? interactionDurations[interactionDurations.length - 1] : null;
+      const interactionLatency =
+        interactionDurations.length
+          ? interactionDurations.reduce((sum, d) => sum + d, 0) / interactionDurations.length
+          : null;
 
       return {
         memoryUsage,
         longTasksCount: tasks.length,
         totalBlockingTime: tasks.reduce((sum, task) => sum + Math.max(0, task.duration - 50), 0),
-        interactionLatency,
+        inp,
+        interactionCount: interactionDurations.length,
+        interactionLatency, // mean interaction latency (ms); was a single-click wall-clock before
         layoutDuration: metrics.metrics.find(m => m.name === 'LayoutDuration')?.value,
         scriptDuration: metrics.metrics.find(m => m.name === 'ScriptDuration')?.value,
       };
@@ -493,6 +523,16 @@ class PerformanceBenchmark {
     const leak = this.results.memory.leakAnalysis;
     if (leak) {
       console.log(`   Leak Risk: ${leak.potentialLeak ? '⚠️  HIGH' : '✅ LOW'} (${leak.trend}, ${leak.growthPercent?.toFixed(1)}% growth)`);
+    }
+
+    // Runtime / interaction summary
+    const runtime = this.results.customMetrics?.runtime;
+    if (runtime) {
+      console.log('\n⚡ Runtime:');
+      const inp = runtime.inp != null ? `${Math.round(runtime.inp)}ms` : 'n/a';
+      const mean = runtime.interactionLatency != null ? `${Math.round(runtime.interactionLatency)}ms` : 'n/a';
+      console.log(`   INP (worst interaction): ${inp} over ${runtime.interactionCount ?? 0} interactions | mean: ${mean}`);
+      console.log(`   Long tasks: ${runtime.longTasksCount} | TBT: ${Math.round(runtime.totalBlockingTime)}ms`);
     }
 
     // Bundle summary

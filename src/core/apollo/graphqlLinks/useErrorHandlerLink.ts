@@ -18,6 +18,7 @@ export const useErrorHandlerLink = () => {
 
   // onError() is an external library call the React Compiler cannot auto-memoize.
   // Use the "latest ref" pattern: create the link once, always call the latest handler.
+  // eslint-disable-next-line no-restricted-syntax -- Apollo onError link must be created once; a new link identity each render rebuilds the client's link chain.
   return useMemo(
     () =>
       onError(({ graphQLErrors, networkError, operation }) => {
