@@ -5824,8 +5824,10 @@ export type VisualFieldPolicy = {
 export type VisualConstraintsKeySpecifier = (
   | 'allowedTypes'
   | 'aspectRatio'
+  | 'maxAspectRatio'
   | 'maxHeight'
   | 'maxWidth'
+  | 'minAspectRatio'
   | 'minHeight'
   | 'minWidth'
   | VisualConstraintsKeySpecifier
@@ -5833,8 +5835,10 @@ export type VisualConstraintsKeySpecifier = (
 export type VisualConstraintsFieldPolicy = {
   allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxAspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  minAspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
 };

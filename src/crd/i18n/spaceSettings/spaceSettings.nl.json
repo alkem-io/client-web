@@ -887,20 +887,23 @@
     },
     "branding": {
       "title": "Branding van de Space",
-      "description": "Upload een avatar, een paginabanner (1536×256) en een kaartbanner (416×256).",
+      "description": "Upload een avatar, een paginabanner (3840px breed) en een kaartbanner (416×256).",
       "noImage": "Geen afbeelding",
       "upload": "Uploaden",
       "avatar": {
         "title": "Avatar",
-        "hint": "Het logo van de Space."
+        "hint": "Het logo van de Space.",
+        "recrop": "Huidige avatar bijsnijden"
       },
       "pageBanner": {
-        "title": "Paginabanner (1536 × 256px)",
-        "hint": "Wordt weergegeven boven aan de Space-pagina."
+        "title": "Paginabanner",
+        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1536 × 154px.",
+        "recrop": "Huidige paginabanner bijsnijden"
       },
       "cardBanner": {
         "title": "Kaartbanner (416 × 256px)",
-        "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten."
+        "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
+        "recrop": "Huidige kaartbanner bijsnijden"
       },
       "cropDialog": {
         "save": "Opslaan",
@@ -910,7 +913,8 @@
         "altText": "Beschrijving",
         "altTextPlaceholder": "Beschrijf deze afbeelding…"
       },
-      "changeBanner": "Banner wijzigen"
+      "changeBanner": "Banner wijzigen",
+      "recropFailed": "Kan deze afbeelding niet laden om bij te snijden. Probeer het opnieuw."
     },
     "location": {
       "title": "Locatie",
