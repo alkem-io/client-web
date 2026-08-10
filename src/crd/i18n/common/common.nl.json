@@ -967,6 +967,17 @@
     }
   },
   "fullscreen": "Volledig scherm in-/uitschakelen",
+  "imageCrop": {
+    "previewAlt": "Voorbeeld van uitsnede",
+    "tooSmall": "Het geselecteerde gebied is {{actualWidth}}×{{actualHeight}}px. Minimaal {{requiredWidth}}×{{requiredHeight}}px is vereist — kies een grotere afbeelding.",
+    "aspectRatio": {
+      "label": "Beeldverhouding: {{ratio}}:1",
+      "ariaLabel": "Beeldverhouding: {{ratio}}",
+      "hintLeft": "Links: hoger beeldsnijden",
+      "hintRight": "Rechts: lager beeldsnijden",
+      "name": "Bannervorm"
+    }
+  },
   "innovationHub": {
     "outsideOfSpace": {
       "forum": "Dit is het algemene Alkemio $t(common.forum), los van de <strong>{{space}}</strong> $t(common.space). Neem een kijkje bij de bestaande discussies of start een eigen discussie!"

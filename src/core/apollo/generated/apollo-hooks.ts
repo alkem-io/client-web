@@ -1612,6 +1612,9 @@ export const UserDetailsFragmentDoc = gql`
       spaceID
       autoRedirect
     }
+    dashboard {
+      activityView
+    }
     notification {
       sound {
         chatMessage
@@ -1641,6 +1644,9 @@ export const UserDetailsLightFragmentDoc = gql`
     homeSpace {
       spaceID
       autoRedirect
+    }
+    dashboard {
+      activityView
     }
     notification {
       sound {
@@ -1673,6 +1679,9 @@ export const UserSettingsFragmentFragmentDoc = gql`
   homeSpace {
     spaceID
     autoRedirect
+  }
+  dashboard {
+    activityView
   }
   notification {
     platform {
@@ -4267,6 +4276,7 @@ export const SpaceMembershipFragmentDoc = gql`
     fragment SpaceMembership on Space {
   id
   level
+  activityScore
   authorization {
     id
     myPrivileges
@@ -4376,6 +4386,8 @@ export const DefaultVisualTypeConstraintsDocument = gql`
         minHeight
         minWidth
         aspectRatio
+        minAspectRatio
+        maxAspectRatio
         allowedTypes
       }
     }
@@ -15160,6 +15172,9 @@ export const UpdateUserSettingsDocument = gql`
       homeSpace {
         spaceID
         autoRedirect
+      }
+      dashboard {
+        activityView
       }
       notification {
         user {
@@ -28032,6 +28047,249 @@ export type UpdateUserAssistantSettingsMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.UpdateUserAssistantSettingsMutation,
   SchemaTypes.UpdateUserAssistantSettingsMutationVariables
 >;
+export const DashboardExploreSpacesDocument = gql`
+    query DashboardExploreSpaces($limit: Float, $daysOld: Float) {
+  exploreSpaces(options: {limit: $limit, daysOld: $daysOld}) {
+    id
+    level
+    about {
+      ...SpaceAboutCardBanner
+      isContentPublic
+    }
+  }
+}
+    ${SpaceAboutCardBannerFragmentDoc}`;
+
+/**
+ * __useDashboardExploreSpacesQuery__
+ *
+ * To run a query within a React component, call `useDashboardExploreSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardExploreSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardExploreSpacesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      daysOld: // value for 'daysOld'
+ *   },
+ * });
+ */
+export function useDashboardExploreSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.DashboardExploreSpacesQuery,
+    SchemaTypes.DashboardExploreSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardExploreSpacesQuery, SchemaTypes.DashboardExploreSpacesQueryVariables>(
+    DashboardExploreSpacesDocument,
+    options
+  );
+}
+export function useDashboardExploreSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DashboardExploreSpacesQuery,
+    SchemaTypes.DashboardExploreSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.DashboardExploreSpacesQuery, SchemaTypes.DashboardExploreSpacesQueryVariables>(
+    DashboardExploreSpacesDocument,
+    options
+  );
+}
+export function useDashboardExploreSpacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.DashboardExploreSpacesQuery,
+        SchemaTypes.DashboardExploreSpacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.DashboardExploreSpacesQuery,
+    SchemaTypes.DashboardExploreSpacesQueryVariables
+  >(DashboardExploreSpacesDocument, options);
+}
+export type DashboardExploreSpacesQueryHookResult = ReturnType<typeof useDashboardExploreSpacesQuery>;
+export type DashboardExploreSpacesLazyQueryHookResult = ReturnType<typeof useDashboardExploreSpacesLazyQuery>;
+export type DashboardExploreSpacesSuspenseQueryHookResult = ReturnType<typeof useDashboardExploreSpacesSuspenseQuery>;
+export type DashboardExploreSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardExploreSpacesQuery,
+  SchemaTypes.DashboardExploreSpacesQueryVariables
+>;
+export function refetchDashboardExploreSpacesQuery(variables?: SchemaTypes.DashboardExploreSpacesQueryVariables) {
+  return { query: DashboardExploreSpacesDocument, variables: variables };
+}
+export const DashboardWelcomeSpaceDocument = gql`
+    query DashboardWelcomeSpace($nameId: NameID!) {
+  lookupByName {
+    space(NAMEID: $nameId) {
+      id
+      level
+      about {
+        ...SpaceAboutCardBanner
+        isContentPublic
+      }
+    }
+  }
+}
+    ${SpaceAboutCardBannerFragmentDoc}`;
+
+/**
+ * __useDashboardWelcomeSpaceQuery__
+ *
+ * To run a query within a React component, call `useDashboardWelcomeSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDashboardWelcomeSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDashboardWelcomeSpaceQuery({
+ *   variables: {
+ *      nameId: // value for 'nameId'
+ *   },
+ * });
+ */
+export function useDashboardWelcomeSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.DashboardWelcomeSpaceQuery,
+    SchemaTypes.DashboardWelcomeSpaceQueryVariables
+  > &
+    ({ variables: SchemaTypes.DashboardWelcomeSpaceQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.DashboardWelcomeSpaceQuery, SchemaTypes.DashboardWelcomeSpaceQueryVariables>(
+    DashboardWelcomeSpaceDocument,
+    options
+  );
+}
+export function useDashboardWelcomeSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.DashboardWelcomeSpaceQuery,
+    SchemaTypes.DashboardWelcomeSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.DashboardWelcomeSpaceQuery, SchemaTypes.DashboardWelcomeSpaceQueryVariables>(
+    DashboardWelcomeSpaceDocument,
+    options
+  );
+}
+export function useDashboardWelcomeSpaceSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.DashboardWelcomeSpaceQuery,
+        SchemaTypes.DashboardWelcomeSpaceQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.DashboardWelcomeSpaceQuery,
+    SchemaTypes.DashboardWelcomeSpaceQueryVariables
+  >(DashboardWelcomeSpaceDocument, options);
+}
+export type DashboardWelcomeSpaceQueryHookResult = ReturnType<typeof useDashboardWelcomeSpaceQuery>;
+export type DashboardWelcomeSpaceLazyQueryHookResult = ReturnType<typeof useDashboardWelcomeSpaceLazyQuery>;
+export type DashboardWelcomeSpaceSuspenseQueryHookResult = ReturnType<typeof useDashboardWelcomeSpaceSuspenseQuery>;
+export type DashboardWelcomeSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.DashboardWelcomeSpaceQuery,
+  SchemaTypes.DashboardWelcomeSpaceQueryVariables
+>;
+export function refetchDashboardWelcomeSpaceQuery(variables: SchemaTypes.DashboardWelcomeSpaceQueryVariables) {
+  return { query: DashboardWelcomeSpaceDocument, variables: variables };
+}
+export const NonActivityHostedSpacesDocument = gql`
+    query NonActivityHostedSpaces {
+  me {
+    user {
+      id
+      account {
+        id
+        spaces {
+          id
+          level
+          about {
+            ...SpaceAboutCardBanner
+            isContentPublic
+          }
+          activityScore
+        }
+      }
+    }
+  }
+}
+    ${SpaceAboutCardBannerFragmentDoc}`;
+
+/**
+ * __useNonActivityHostedSpacesQuery__
+ *
+ * To run a query within a React component, call `useNonActivityHostedSpacesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNonActivityHostedSpacesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNonActivityHostedSpacesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNonActivityHostedSpacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.NonActivityHostedSpacesQuery,
+    SchemaTypes.NonActivityHostedSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.NonActivityHostedSpacesQuery, SchemaTypes.NonActivityHostedSpacesQueryVariables>(
+    NonActivityHostedSpacesDocument,
+    options
+  );
+}
+export function useNonActivityHostedSpacesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.NonActivityHostedSpacesQuery,
+    SchemaTypes.NonActivityHostedSpacesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.NonActivityHostedSpacesQuery,
+    SchemaTypes.NonActivityHostedSpacesQueryVariables
+  >(NonActivityHostedSpacesDocument, options);
+}
+export function useNonActivityHostedSpacesSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.NonActivityHostedSpacesQuery,
+        SchemaTypes.NonActivityHostedSpacesQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.NonActivityHostedSpacesQuery,
+    SchemaTypes.NonActivityHostedSpacesQueryVariables
+  >(NonActivityHostedSpacesDocument, options);
+}
+export type NonActivityHostedSpacesQueryHookResult = ReturnType<typeof useNonActivityHostedSpacesQuery>;
+export type NonActivityHostedSpacesLazyQueryHookResult = ReturnType<typeof useNonActivityHostedSpacesLazyQuery>;
+export type NonActivityHostedSpacesSuspenseQueryHookResult = ReturnType<typeof useNonActivityHostedSpacesSuspenseQuery>;
+export type NonActivityHostedSpacesQueryResult = Apollo.QueryResult<
+  SchemaTypes.NonActivityHostedSpacesQuery,
+  SchemaTypes.NonActivityHostedSpacesQueryVariables
+>;
+export function refetchNonActivityHostedSpacesQuery(variables?: SchemaTypes.NonActivityHostedSpacesQueryVariables) {
+  return { query: NonActivityHostedSpacesDocument, variables: variables };
+}
 export const InnovationLibraryPacksPaginatedDocument = gql`
     query InnovationLibraryPacksPaginated($first: Int!, $after: UUID, $filter: LibraryInnovationPacksFilterInput) {
   platform {
@@ -30544,6 +30802,10 @@ export const PendingInvitationsDocument = gql`
         }
         createdBy {
           id
+          profile {
+            id
+            displayName
+          }
         }
         state
         createdDate
@@ -31578,6 +31840,10 @@ export const RecentSpacesDocument = gql`
         level
         visibility
         __typename
+      }
+      latestActivity {
+        id
+        createdDate
       }
     }
   }

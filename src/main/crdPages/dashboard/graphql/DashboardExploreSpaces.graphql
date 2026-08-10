@@ -1,0 +1,10 @@
+query DashboardExploreSpaces($limit: Float, $daysOld: Float) {
+  exploreSpaces(options: { limit: $limit, daysOld: $daysOld }) {
+    id
+    level
+    about {
+      ...SpaceAboutCardBanner
+      isContentPublic
+    }
+  }
+}
