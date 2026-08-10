@@ -1,10 +1,16 @@
-import { FileText, Presentation, RefreshCw, Sheet } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  type CollaboraDocumentPreviewType,
+  colorByType,
+  iconByType,
+  typeLabelKey,
+} from '@/crd/lib/collaboraDocumentPreview';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
-export type CollaboraDocumentPreviewType = 'text' | 'spreadsheet' | 'presentation';
+export type { CollaboraDocumentPreviewType } from '@/crd/lib/collaboraDocumentPreview';
 
 type CalloutCollaboraPreviewProps = {
   documentType: CollaboraDocumentPreviewType;
@@ -28,27 +34,6 @@ type CalloutCollaboraPreviewProps = {
    *  `compact` = shorter fixed height for the space feed card. */
   size?: 'default' | 'compact';
   className?: string;
-};
-
-const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
-  text: FileText,
-  spreadsheet: Sheet,
-  presentation: Presentation,
-};
-
-/** Type-differentiated accent color, applied to both the badge icon and the
- *  centered fallback icon, so a Doc/Sheet/Slide is recognisable at a glance
- *  (workspace story client-web#9872). */
-const colorByType: Record<CollaboraDocumentPreviewType, string> = {
-  text: 'text-blue-600',
-  spreadsheet: 'text-green-600',
-  presentation: 'text-orange-600',
-};
-
-const typeLabelKey: Record<CollaboraDocumentPreviewType, string> = {
-  text: 'callout.documentText',
-  spreadsheet: 'callout.documentSpreadsheet',
-  presentation: 'callout.documentPresentation',
 };
 
 export function CalloutCollaboraPreview({
