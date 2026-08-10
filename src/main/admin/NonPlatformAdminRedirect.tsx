@@ -1,6 +1,6 @@
 import type { FC, PropsWithChildren } from 'react';
 import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
 import NonAdminRedirect from './NonAdminRedirect';
 
 /**
@@ -39,6 +39,38 @@ const PLATFORM_ADMIN_AREA_PRIVILEGES = [
   AuthorizationPrivilege.FeatureRoleAssign,
 ];
 
+/**
+ * Roles admitted to the admin area that CANNOT be expressed as a platform-level
+ * privilege — the escape hatch for the anchor mismatch recorded as finding F1 of
+ * `specs/027-platform-role-redesign/live-assertion-run.md`.
+ *
+ * Platform Resource Admin owns A9 (resource moves). Its grants —
+ * `TRANSFER_RESOURCE_OFFER` / `_ACCEPT` and `MOVE_CONTRIBUTION` — are anchored on
+ * **account** and **space** policies, never on the platform's. Verified live: the
+ * role reports an empty `myPrivileges` on BOTH platform policies. So no amount of
+ * privilege reading here can see it, the route guard redirected it away from
+ * `/admin/transfer` — the one section it exists to operate — and the profile menu
+ * showed no Administration entry, since that derives from this same verdict.
+ *
+ * Gating on the role NAME rather than a privilege is a deliberate, narrow
+ * exception: the alternatives were to invent a platform-level marker privilege
+ * that gates no server surface, or to grant an account-scoped privilege on the
+ * platform policy — a lie about where it applies. The role arrives on the SAME
+ * cached query (`platform.roleSet.myRoles`), so this costs no extra request.
+ *
+ * Still an affordance, not an authorization: the server remains the sole authority
+ * for every action inside the section.
+ *
+ * Deliberately NOT extended to the other two account-anchored roles. Platform
+ * License Manager and Feature Beta Tester are equally invisible at platform level,
+ * but no admin section serves them — admitting them would open a shell with zero
+ * usable sections.
+ */
+const PLATFORM_ADMIN_AREA_ROLES = [RoleName.PlatformResourceAdmin];
+
+export const holdsPlatformAdminAreaRole = (roles: RoleName[] | undefined): boolean =>
+  (roles ?? []).some(role => PLATFORM_ADMIN_AREA_ROLES.includes(role));
+
 const NonPlatformAdminRedirect: FC<PropsWithChildren> = ({ children }) => {
   const { data, loading } = usePlatformLevelAuthorizationQuery();
 
@@ -48,11 +80,16 @@ const NonPlatformAdminRedirect: FC<PropsWithChildren> = ({ children }) => {
   ];
 
   return (
-    <NonAdminRedirect privileges={privileges} loading={loading} adminPrivilege={PLATFORM_ADMIN_AREA_PRIVILEGES}>
+    <NonAdminRedirect
+      privileges={privileges}
+      loading={loading}
+      adminPrivilege={PLATFORM_ADMIN_AREA_PRIVILEGES}
+      admitted={holdsPlatformAdminAreaRole(data?.platform.roleSet.myRoles)}
+    >
       {children}
     </NonAdminRedirect>
   );
 };
 
-export { PLATFORM_ADMIN_AREA_PRIVILEGES };
+export { PLATFORM_ADMIN_AREA_PRIVILEGES, PLATFORM_ADMIN_AREA_ROLES };
 export default NonPlatformAdminRedirect;

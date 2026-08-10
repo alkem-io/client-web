@@ -1,5 +1,5 @@
 import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, RoleName } from '@/core/apollo/generated/graphql-schema';
 import { ADMIN_SECTIONS, type AdminSectionDescriptor, type AdminSectionId } from './adminSections';
 
 /**
@@ -44,6 +44,24 @@ const SECTION_ADMITTING_PRIVILEGES: SectionPrivileges = {
   'virtual-contributors': [AuthorizationPrivilege.PlatformContentFullAccess],
 };
 
+/**
+ * Sections admitted by ROLE rather than by privilege.
+ *
+ * The Transfer mapping above could never fire for the role that owns it:
+ * `TRANSFER_RESOURCE_OFFER` / `_ACCEPT` are granted on **account** policies, so a
+ * Platform Resource Admin's platform-level `myPrivileges` is legitimately empty
+ * (live-assertion-run.md, finding F1). The privilege map stays — the legacy
+ * `PLATFORM_ADMIN` holder and any future platform-anchored grant still match it —
+ * and the role is checked in addition, never instead.
+ *
+ * Same narrow exception as `PLATFORM_ADMIN_AREA_ROLES`, and the two must stay in
+ * step: a role admitted to the area with no visible section lands in an empty
+ * shell, and a role granted a section it cannot reach is a dead entry.
+ */
+const SECTION_ADMITTING_ROLES: Partial<Record<AdminSectionId, RoleName[]>> = {
+  transfer: [RoleName.PlatformResourceAdmin],
+};
+
 export const useVisibleAdminSections = (): {
   sections: readonly AdminSectionDescriptor[];
   loading: boolean;
@@ -63,11 +81,20 @@ export const useVisibleAdminSections = (): {
     return { sections: ADMIN_SECTIONS, loading };
   }
 
+  const roles = new Set<RoleName>(data?.platform.roleSet.myRoles ?? []);
+
   const sections = ADMIN_SECTIONS.filter(section => {
     const admitting = SECTION_ADMITTING_PRIVILEGES[section.id];
+    const admittingRoles = SECTION_ADMITTING_ROLES[section.id];
     // An unmapped section stays visible rather than vanishing — a section added
     // later must not silently disappear for every non-legacy admin.
-    return !admitting || admitting.some(privilege => held.has(privilege));
+    if (!admitting && !admittingRoles) {
+      return true;
+    }
+    return (
+      (admitting?.some(privilege => held.has(privilege)) ?? false) ||
+      (admittingRoles?.some(role => roles.has(role)) ?? false)
+    );
   });
 
   return { sections, loading };

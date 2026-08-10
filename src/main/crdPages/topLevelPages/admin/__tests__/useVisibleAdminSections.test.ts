@@ -16,12 +16,20 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   usePlatformLevelAuthorizationQuery: () => usePlatformLevelAuthorizationQueryMock(),
 }));
 
-const arrange = ({ platform = [], roleSet = [] }: { platform?: string[]; roleSet?: string[] }) => {
+const arrange = ({
+  platform = [],
+  roleSet = [],
+  myRoles = [],
+}: {
+  platform?: string[];
+  roleSet?: string[];
+  myRoles?: string[];
+}) => {
   usePlatformLevelAuthorizationQueryMock.mockReturnValue({
     data: {
       platform: {
         authorization: { myPrivileges: platform },
-        roleSet: { authorization: { myPrivileges: roleSet } },
+        roleSet: { myRoles, authorization: { myPrivileges: roleSet } },
       },
     },
     loading: false,
@@ -68,6 +76,24 @@ describe('useVisibleAdminSections', () => {
 
   test('a user with no admin privileges sees no sections', () => {
     expect(arrange({})).toEqual([]);
+  });
+
+  // Finding F1: the TRANSFER_RESOURCE_OFFER mapping above can never fire for the
+  // role that owns the section — the privilege lives on account policies, and this
+  // hook reads the platform's. Both platform policies are empty in this fixture
+  // because that is what the running server returns for the role.
+  test('Platform Resource Admin sees ONLY transfer, by role, with no privileges at all (F1)', () => {
+    expect(arrange({ myRoles: ['PLATFORM_RESOURCE_ADMIN'] })).toEqual(['transfer']);
+  });
+
+  // The privilege path must survive the role path being added: a legacy holder
+  // whose transfer reach comes from PLATFORM_ADMIN still sees the section.
+  test('the transfer privilege mapping still admits without the role', () => {
+    expect(arrange({ platform: ['TRANSFER_RESOURCE_ACCEPT'] })).toEqual(['transfer']);
+  });
+
+  test('an unrelated role grants no section', () => {
+    expect(arrange({ myRoles: ['PLATFORM_LICENSE_MANAGER'] })).toEqual([]);
   });
 
   test('the assignment privileges are read from the ROLE SET, not the platform', () => {

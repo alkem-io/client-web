@@ -12,6 +12,11 @@ vi.mock('@/core/apollo/generated/graphql-schema', () => ({
     GrantGlobalAdmins: 'GRANT_GLOBAL_ADMINS',
     FeatureRoleAssign: 'FEATURE_ROLE_ASSIGN',
   },
+  RoleName: {
+    PlatformResourceAdmin: 'PLATFORM_RESOURCE_ADMIN',
+    PlatformAuditReader: 'PLATFORM_AUDIT_READER',
+    PlatformLicenseManager: 'PLATFORM_LICENSE_MANAGER',
+  },
 }));
 
 /**
@@ -23,7 +28,7 @@ vi.mock('@/core/apollo/generated/graphql-schema', () => ({
  * how the original defect survived its own test.
  */
 const queryResult = (
-  { platform = [], roleSet = [] }: { platform?: string[]; roleSet?: string[] },
+  { platform = [], roleSet = [], myRoles = [] }: { platform?: string[]; roleSet?: string[]; myRoles?: string[] },
   loading = false,
   present = true
 ) => ({
@@ -31,7 +36,7 @@ const queryResult = (
     ? {
         platform: {
           authorization: { myPrivileges: platform },
-          roleSet: { authorization: { myPrivileges: roleSet } },
+          roleSet: { myRoles, authorization: { myPrivileges: roleSet } },
         },
       }
     : undefined,
@@ -77,6 +82,29 @@ describe('useAdminAccessGuard', () => {
   test('denies a platform role that holds no assignment capability', () => {
     usePlatformLevelAuthorizationQueryMock.mockReturnValue(
       queryResult({ platform: ['PLATFORM_AUDIT_READ'], roleSet: ['PLATFORM_ROLE_HOLDERS_READ'] })
+    );
+    const { result } = renderHook(() => useAdminAccessGuard());
+    expect(result.current.isPlatformAdmin).toBe(false);
+  });
+
+  // Finding F1 (live-assertion-run.md). Verified against a running server: a
+  // PLATFORM_RESOURCE_ADMIN holder reports an EMPTY myPrivileges on both platform
+  // policies, because TRANSFER_RESOURCE_* is anchored on account policies. The
+  // fixture therefore carries no privileges at all — anything else would test a
+  // server that does not exist. Without the role check the operator is redirected
+  // off /admin/transfer, the only section it exists to run.
+  test('admits Platform Resource Admin by role, holding NO platform-level privilege (F1)', () => {
+    usePlatformLevelAuthorizationQueryMock.mockReturnValue(queryResult({ myRoles: ['PLATFORM_RESOURCE_ADMIN'] }));
+    const { result } = renderHook(() => useAdminAccessGuard());
+    expect(result.current.isPlatformAdmin).toBe(true);
+  });
+
+  // The role exception is exactly one role wide. License Manager is equally
+  // invisible at platform level, but no admin section serves it — admitting it
+  // would open an empty shell.
+  test('does NOT admit the other privilege-invisible roles', () => {
+    usePlatformLevelAuthorizationQueryMock.mockReturnValue(
+      queryResult({ myRoles: ['PLATFORM_LICENSE_MANAGER', 'FEATURE_BETA_TESTER'] })
     );
     const { result } = renderHook(() => useAdminAccessGuard());
     expect(result.current.isPlatformAdmin).toBe(false);

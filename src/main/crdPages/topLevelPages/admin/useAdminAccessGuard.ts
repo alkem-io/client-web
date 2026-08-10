@@ -1,6 +1,6 @@
 import { usePlatformLevelAuthorizationQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { PLATFORM_ADMIN_AREA_PRIVILEGES } from '@/main/admin/NonPlatformAdminRedirect';
+import { holdsPlatformAdminAreaRole, PLATFORM_ADMIN_AREA_PRIVILEGES } from '@/main/admin/NonPlatformAdminRedirect';
 
 /**
  * Reads the current user's platform-level privileges and reports whether they may
@@ -29,10 +29,18 @@ export const useAdminAccessGuard = () => {
     ...(data?.platform.roleSet.authorization?.myPrivileges ?? []),
   ];
 
-  const isPlatformAdmin = privileges.some(
-    privilege =>
-      PLATFORM_ADMIN_AREA_PRIVILEGES.includes(privilege) || privilege === AuthorizationPrivilege.PlatformAdmin
-  );
+  // Same two inputs, in the same order, as the route guard: the privilege union
+  // above OR a role whose privileges are not anchored on the platform at all
+  // (Platform Resource Admin — see PLATFORM_ADMIN_AREA_ROLES). Both must be read
+  // here, not only in the component: this hook is what puts the Administration
+  // entry in the profile menu, and a menu that disagrees with the guard produces
+  // either a dead link or an unreachable page.
+  const isPlatformAdmin =
+    holdsPlatformAdminAreaRole(data?.platform.roleSet.myRoles) ||
+    privileges.some(
+      privilege =>
+        PLATFORM_ADMIN_AREA_PRIVILEGES.includes(privilege) || privilege === AuthorizationPrivilege.PlatformAdmin
+    );
 
   return { loading, isPlatformAdmin };
 };

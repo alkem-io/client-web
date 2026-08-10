@@ -14,12 +14,21 @@ interface NonAdminRedirectProps {
    * own privilege, so "admin" is no longer a single credential).
    */
   adminPrivilege: AuthorizationPrivilege | AuthorizationPrivilege[];
+  /**
+   * An admission the caller established by other means, OR'd with the privilege
+   * check. Needed because not every admin capability is visible as a privilege on
+   * the policy being read: 027's Platform Resource Admin holds its privileges on
+   * *account* and *space* policies, so the platform-level answer for it is an
+   * honest, permanent "no privileges" — see `PLATFORM_ADMIN_AREA_ROLES`.
+   */
+  admitted?: boolean;
   ancestorFallback?: ClosestAncestor;
 }
 
 const NonAdminRedirect = ({
   privileges,
   adminPrivilege,
+  admitted = false,
   loading = false,
   ancestorFallback,
   children,
@@ -32,9 +41,9 @@ const NonAdminRedirect = ({
 
   const admitting = Array.isArray(adminPrivilege) ? adminPrivilege : [adminPrivilege];
 
-  const isAdmin = privileges?.some(
-    privilege => admitting.includes(privilege) || privilege === AuthorizationPrivilege.PlatformAdmin
-  );
+  const isAdmin =
+    admitted ||
+    privileges?.some(privilege => admitting.includes(privilege) || privilege === AuthorizationPrivilege.PlatformAdmin);
 
   if (isAdmin) {
     return <>{children}</>;
