@@ -4176,6 +4176,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
+  | 'activityScore'
   | 'actor'
   | 'authorization'
   | 'collaboration'
@@ -4209,6 +4210,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4656,6 +4658,7 @@ export type SpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
+  | 'activityScore'
   | 'actor'
   | 'authorization'
   | 'collaboration'
@@ -4689,6 +4692,7 @@ export type SpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5449,6 +5453,7 @@ export type UserSettingsKeySpecifier = (
   | 'authorization'
   | 'communication'
   | 'createdDate'
+  | 'dashboard'
   | 'designVersion'
   | 'homeSpace'
   | 'id'
@@ -5464,6 +5469,7 @@ export type UserSettingsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  dashboard?: FieldPolicy<any> | FieldReadFunction<any>;
   designVersion?: FieldPolicy<any> | FieldReadFunction<any>;
   homeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5485,6 +5491,10 @@ export type UserSettingsCommunicationKeySpecifier = (
 export type UserSettingsCommunicationFieldPolicy = {
   allowOtherUsersToContactViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsDashboardKeySpecifier = ('activityView' | UserSettingsDashboardKeySpecifier)[];
+export type UserSettingsDashboardFieldPolicy = {
+  activityView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsHomeSpaceKeySpecifier = ('autoRedirect' | 'spaceID' | UserSettingsHomeSpaceKeySpecifier)[];
 export type UserSettingsHomeSpaceFieldPolicy = {
@@ -7558,6 +7568,10 @@ export type StrictTypedTypePolicies = {
       | UserSettingsCommunicationKeySpecifier
       | (() => undefined | UserSettingsCommunicationKeySpecifier);
     fields?: UserSettingsCommunicationFieldPolicy;
+  };
+  UserSettingsDashboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserSettingsDashboardKeySpecifier | (() => undefined | UserSettingsDashboardKeySpecifier);
+    fields?: UserSettingsDashboardFieldPolicy;
   };
   UserSettingsHomeSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsHomeSpaceKeySpecifier | (() => undefined | UserSettingsHomeSpaceKeySpecifier);

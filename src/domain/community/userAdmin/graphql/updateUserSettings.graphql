@@ -9,6 +9,9 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
         spaceID
         autoRedirect
       }
+      dashboard {
+        activityView
+      }
       notification {
         user {
           mentioned {

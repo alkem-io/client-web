@@ -8,7 +8,7 @@ import { Input } from '@/crd/primitives/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import { Separator } from '@/crd/primitives/separator';
 import { Skeleton } from '@/crd/primitives/skeleton';
-import { collectAllIds, countTreeItems, filterTree } from './filterHelpers';
+import { collectAllIds, countTreeItems, filterTree, restrictTreeToRoles } from './filterHelpers';
 import { TreeNode } from './TreeNode';
 import type { MyMembershipsPanelProps } from './types';
 
@@ -56,6 +56,9 @@ export function MyMembershipsPanel({
   loading = false,
   onNavigate,
   browseAllHref,
+  title,
+  restrictToRoles,
+  hideRoleFilter,
 }: MyMembershipsPanelProps) {
   const { t } = useTranslation('crd-dashboard');
   const [search, setSearch] = useState('');
@@ -63,17 +66,25 @@ export function MyMembershipsPanel({
   const [visibilityFilter, setVisibilityFilter] = useState('all');
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
+  // When the panel is scoped to a section (e.g. Lead & Administer), narrow the source
+  // set to that role scope up front; the role filter control is hidden in that mode.
+  const scopedItems = restrictToRoles ? restrictTreeToRoles(items, restrictToRoles) : items;
+
   // Expand all nodes by default when panel opens so the full tree is visible.
+  // Depend on the stable `items`/`restrictToRoles` inputs — NOT the derived
+  // `scopedItems`, which is a fresh array every render in the restrictToRoles path
+  // and would loop the effect (setState → re-render → new ref → setState → …).
   useEffect(() => {
     if (open) {
-      setExpandedIds(new Set(collectAllIds(items)));
+      setExpandedIds(new Set(collectAllIds(scopedItems)));
       setSearch('');
       setRoleFilter('all');
       setVisibilityFilter('all');
     }
-  }, [open, items]);
+    // scopedItems is derived from (items, restrictToRoles); both are the real deps.
+  }, [open, items, restrictToRoles]);
 
-  const filteredTree = filterTree(items, search, roleFilter, visibilityFilter);
+  const filteredTree = filterTree(scopedItems, search, roleFilter, visibilityFilter);
   const filteredCount = countTreeItems(filteredTree);
 
   const hasFilters = search !== '' || roleFilter !== 'all' || visibilityFilter !== 'all';
@@ -114,7 +125,7 @@ export function MyMembershipsPanel({
 
         {/* Header */}
         <div className="px-6 pt-6 pb-4">
-          <DialogTitle className="text-section-title">{t('myMembershipsPanel.title')}</DialogTitle>
+          <DialogTitle className="text-section-title">{title ?? t('myMembershipsPanel.title')}</DialogTitle>
           <p className="text-body text-muted-foreground mt-1">
             {loading ? '\u00A0' : t('myMembershipsPanel.subtitle', { count: filteredCount })}
           </p>
@@ -147,18 +158,20 @@ export function MyMembershipsPanel({
             )}
           </div>
 
-          {/* Role filter */}
-          <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-[130px] shrink-0" aria-label={t('myMembershipsPanel.filter.role.label')}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent className="z-[200]">
-              <SelectItem value="all">{t('myMembershipsPanel.filter.role.all')}</SelectItem>
-              <SelectItem value="admin">{t('myMembershipsPanel.role.admin')}</SelectItem>
-              <SelectItem value="lead">{t('myMembershipsPanel.role.lead')}</SelectItem>
-              <SelectItem value="member">{t('myMembershipsPanel.role.member')}</SelectItem>
-            </SelectContent>
-          </Select>
+          {/* Role filter — hidden when the panel is already scoped to a role set */}
+          {!restrictToRoles && !hideRoleFilter && (
+            <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <SelectTrigger className="w-[130px] shrink-0" aria-label={t('myMembershipsPanel.filter.role.label')}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="z-[200]">
+                <SelectItem value="all">{t('myMembershipsPanel.filter.role.all')}</SelectItem>
+                <SelectItem value="admin">{t('myMembershipsPanel.role.admin')}</SelectItem>
+                <SelectItem value="lead">{t('myMembershipsPanel.role.lead')}</SelectItem>
+                <SelectItem value="member">{t('myMembershipsPanel.role.member')}</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
 
           {/* Visibility filter */}
           <Select value={visibilityFilter} onValueChange={setVisibilityFilter}>
@@ -177,7 +190,7 @@ export function MyMembershipsPanel({
         <div className="flex-1 overflow-y-auto">
           {loading ? (
             <LoadingSkeleton label={t('myMembershipsPanel.loading')} />
-          ) : items.length === 0 ? (
+          ) : scopedItems.length === 0 ? (
             <EmptyState
               icon={<Layers className="w-10 h-10" aria-hidden="true" />}
               message={t('myMembershipsPanel.empty.noSpaces')}
