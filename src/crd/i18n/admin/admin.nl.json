@@ -333,6 +333,9 @@
     "updated": "Gebruiker bijgewerkt.",
     "discardTitle": "Wijzigingen negeren?",
     "discardDescription": "Je hebt niet-opgeslagen wijzigingen. Weggaan zonder op te slaan?",
-    "discard": "Negeren"
+    "discard": "Negeren",
+    "back": "Terug",
+    "viewTitle": "{{name}} bekijken",
+    "readOnlyNotice": "Je kunt dit gebruikersrecord bekijken, maar niet bewerken. Je rol geeft leesrecht op persoonsgegevens, geen wijzigingsrecht."
   }
 }

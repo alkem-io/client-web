@@ -333,6 +333,9 @@
     "updated": "User updated.",
     "discardTitle": "Discard changes?",
     "discardDescription": "You have unsaved changes. Leave without saving?",
-    "discard": "Discard"
+    "discard": "Discard",
+    "back": "Back",
+    "viewTitle": "View {{name}}",
+    "readOnlyNotice": "You can view this user record but not edit it. Your role permits reading personal data, not changing it."
   }
 }

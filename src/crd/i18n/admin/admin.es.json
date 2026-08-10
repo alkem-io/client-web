@@ -333,6 +333,9 @@
     "updated": "Usuario actualizado.",
     "discardTitle": "¿Descartar cambios?",
     "discardDescription": "Tienes cambios sin guardar. ¿Salir sin guardar?",
-    "discard": "Descartar"
+    "discard": "Descartar",
+    "back": "Volver",
+    "viewTitle": "Ver a {{name}}",
+    "readOnlyNotice": "Puedes consultar este registro de usuario, pero no editarlo. Tu rol permite leer datos personales, no modificarlos."
   }
 }

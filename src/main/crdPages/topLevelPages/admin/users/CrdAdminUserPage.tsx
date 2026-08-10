@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useUpdateUserMutation, useUserQuery } from '@/core/apollo/generated/apollo-hooks';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -31,6 +32,14 @@ const CrdAdminUserPage = () => {
     fetchPolicy: 'cache-and-network',
   });
   const user = data?.lookup.user;
+
+  // 027: the admin area admits roles that may READ a user record without being
+  // able to UPDATE it — Platform Users Admin holds READ + PII read for the
+  // account lifecycle and no user-record CRUD (FR-003). Read the server's own
+  // verdict rather than guessing from the viewer's role: this page must reflect
+  // what the API will accept, and `updateUser` is gated on UPDATE of THIS user.
+  // Affordance only, never a permission check — the server stays the authority.
+  const canUpdate = user?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
 
   // Seeds the form from the loaded user and re-seeds if the route target changes
   // (the page instance is reused across `:userId`), so we never edit/save the
@@ -71,7 +80,11 @@ const CrdAdminUserPage = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-page-title">{t('userForm.editTitle', { name: values.displayName })}</h1>
+      <h1 className="text-page-title">
+        {canUpdate
+          ? t('userForm.editTitle', { name: values.displayName })
+          : t('userForm.viewTitle', { name: values.displayName })}
+      </h1>
 
       <UserEditForm
         values={values}
@@ -81,6 +94,8 @@ const CrdAdminUserPage = () => {
         onCancel={handleCancel}
         submitting={updating}
         countries={COUNTRIES}
+        readOnly={!canUpdate}
+        readOnlyNotice={t('userForm.readOnlyNotice')}
       />
 
       <ConfirmationDialog

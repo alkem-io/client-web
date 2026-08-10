@@ -333,6 +333,9 @@
     "updated": "Utilisateur mis à jour.",
     "discardTitle": "Abandonner les modifications ?",
     "discardDescription": "Vous avez des modifications non enregistrées. Quitter sans enregistrer ?",
-    "discard": "Abandonner"
+    "discard": "Abandonner",
+    "back": "Retour",
+    "viewTitle": "Consulter {{name}}",
+    "readOnlyNotice": "Vous pouvez consulter cette fiche utilisateur mais pas la modifier. Votre rôle autorise la lecture des données personnelles, pas leur modification."
   }
 }

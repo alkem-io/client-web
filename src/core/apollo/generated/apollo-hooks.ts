@@ -14819,6 +14819,10 @@ export const UserDocument = gql`
   lookup {
     user(ID: $id) {
       ...UserDetails
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
 }
@@ -22258,9 +22262,6 @@ export const SpaceAboutBaseDocument = gql`
       id
       level
       nameID
-      account {
-        id
-      }
       about {
         ...SpaceAboutLight
       }
@@ -22803,6 +22804,9 @@ export const SpaceEntitlementsDocument = gql`
   lookup {
     space(ID: $spaceId) {
       id
+      account {
+        id
+      }
       license {
         id
         availableEntitlements

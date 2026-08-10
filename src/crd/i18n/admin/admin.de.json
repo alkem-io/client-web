@@ -333,6 +333,9 @@
     "updated": "Benutzer aktualisiert.",
     "discardTitle": "Änderungen verwerfen?",
     "discardDescription": "Sie haben ungespeicherte Änderungen. Ohne Speichern verlassen?",
-    "discard": "Verwerfen"
+    "discard": "Verwerfen",
+    "back": "Zurück",
+    "viewTitle": "{{name}} ansehen",
+    "readOnlyNotice": "Sie können diesen Benutzerdatensatz einsehen, aber nicht bearbeiten. Ihre Rolle erlaubt das Lesen personenbezogener Daten, nicht deren Änderung."
   }
 }

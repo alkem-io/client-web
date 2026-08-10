@@ -491,6 +491,17 @@ export type ActorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminWhiteboardFilesResultKeySpecifier = (
+  | 'errors'
+  | 'results'
+  | 'warns'
+  | AdminWhiteboardFilesResultKeySpecifier
+)[];
+export type AdminWhiteboardFilesResultFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  results?: FieldPolicy<any> | FieldReadFunction<any>;
+  warns?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AiPersonaKeySpecifier = (
   | 'authorization'
   | 'bodyOfKnowledgeLastUpdated'
@@ -2904,6 +2915,7 @@ export type MutationKeySpecifier = (
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
+  | 'adminUploadFilesFromContentToStorageBucket'
   | 'adminUserAccountDelete'
   | 'adminUserEmailChange'
   | 'adminUserEmailChangeDriftResolve'
@@ -3127,6 +3139,7 @@ export type MutationFieldPolicy = {
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUploadFilesFromContentToStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChange?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChangeDriftResolve?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6033,6 +6046,13 @@ export type StrictTypedTypePolicies = {
   ActorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorRolesKeySpecifier | (() => undefined | ActorRolesKeySpecifier);
     fields?: ActorRolesFieldPolicy;
+  };
+  AdminWhiteboardFilesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminWhiteboardFilesResultKeySpecifier
+      | (() => undefined | AdminWhiteboardFilesResultKeySpecifier);
+    fields?: AdminWhiteboardFilesResultFieldPolicy;
   };
   AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);
