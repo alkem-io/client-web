@@ -5,6 +5,7 @@ import type {
   SubspaceSidebarData,
   SubspaceVirtualContributorData,
 } from '@/crd/components/space/SubspaceSidebar';
+import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
 import { getInitials } from '../../space/dataMappers/spacePageDataMapper';
@@ -17,7 +18,7 @@ type ProfileLike = {
   displayName?: string | null;
   tagline?: string | null;
   avatar?: { uri?: string | null } | null;
-  banner?: { uri?: string | null } | null;
+  banner?: { uri?: string | null; alternativeText?: string | null; aspectRatio?: number | null } | null;
   url?: string | null;
 };
 
@@ -35,7 +36,15 @@ export type SubspaceBannerSourceData = {
 
 export type SubspaceBannerProps = Pick<
   SubspaceHeaderProps,
-  'title' | 'tagline' | 'subspaceInitials' | 'subspaceColor' | 'subspaceAvatarUrl' | 'bannerUrl' | 'color'
+  | 'title'
+  | 'tagline'
+  | 'subspaceInitials'
+  | 'subspaceColor'
+  | 'subspaceAvatarUrl'
+  | 'bannerUrl'
+  | 'bannerAlt'
+  | 'bannerAspectRatio'
+  | 'color'
 >;
 
 export function mapSubspaceBanner({
@@ -53,6 +62,10 @@ export function mapSubspaceBanner({
     subspaceColor: pickColorFromId(subspaceId || title),
     subspaceAvatarUrl: subspaceProfile?.avatar?.uri ?? undefined,
     bannerUrl: levelZeroProfile?.banner?.uri || undefined,
+    bannerAlt: levelZeroProfile?.banner?.alternativeText || undefined,
+    // Inherited from the L0 root along with the image itself, so a subspace
+    // banner is always the same shape as its parent space's.
+    bannerAspectRatio: resolveBannerAspectRatio(levelZeroProfile?.banner?.aspectRatio ?? undefined),
     color: pickColorFromId(levelZeroSpaceId ?? levelZeroName),
   };
 }

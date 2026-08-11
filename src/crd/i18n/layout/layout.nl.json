@@ -20,6 +20,7 @@
     "pendingMemberships": "Openstaande lidmaatschappen",
     "administration": "Administratie",
     "changeLanguage": "Taal wijzigen",
+    "changeLanguageError": "Taalvoorkeur kon niet worden opgeslagen — probeer het opnieuw.",
     "getHelp": "Hulp krijgen",
     "showGrid": "Raster tonen",
     "hideGrid": "Raster verbergen"
