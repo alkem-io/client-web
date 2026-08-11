@@ -21,10 +21,13 @@ types), per Constitution III and the CRD-only rule.
 | `size` | `'default' \| 'compact'` | no | Unchanged, default `'default'`. |
 | `className` | `string` | no | Unchanged. |
 
-Invariant: the centered content is `previewImageUrl && !imageErrored ? <img ... /> :
-<Icon className={colorByType[documentType]} ... />` (FR-005/FR-006). The badge always
-renders `<Icon className={colorByType[documentType]} />` + `typeLabel`, regardless of
-`previewImageUrl` (badge is unaffected by the image-vs-icon branch — spec FR-001a).
+Invariant: the centered content is `previewImageUrl && previewImageUrl !== erroredUrl ?
+<img ... /> : <Icon className={colorByType[documentType]} ... />` (FR-005/FR-006). Tracking
+the errored *URL* (rather than a plain boolean) means a later render with a different
+`previewImageUrl` retries the image instead of staying stuck on the icon fallback. The
+badge always renders `<Icon className={colorByType[documentType]} />` + `typeLabel` (text
+stays `text-foreground`, unchanged), regardless of `previewImageUrl` (badge is unaffected
+by the image-vs-icon branch — spec FR-001a).
 
 ### Type → visual mapping (module-level, inside the component file)
 
@@ -50,7 +53,7 @@ All other `PostCardData` fields are unchanged by this story.
 
 ## Data flow (mapper → card → component)
 
-```
+```text
 calloutDataMapper.ts: mapCalloutDetailsToPostCard(callout, t)
   └─ framingDocumentPreviewUrl: undefined
        // No backend field exists yet to populate this from (spec A-001; see Research R3).
@@ -84,7 +87,8 @@ spec Assumptions A-001/A-002 and plan.md's Project Structure note.
 
 | Effect | Location | When | Notes |
 |--------|----------|------|-------|
-| `imageErrored` state flip | `CalloutCollaboraPreview` (`<img onError>`) | only if a future `previewImageUrl` fails to load | Visual-only local `useState`; no network/logging/persistence. Never triggered today since `previewImageUrl` is always `undefined` in production. |
+| `erroredUrl` state flip | `CalloutCollaboraPreview` (`<img onError>`) | only if a future `previewImageUrl` fails to load | Visual-only local `useState`; the state update itself makes no network/logging/persistence call. Never triggered today since `previewImageUrl` is always `undefined` in production. Resets implicitly when a later render supplies a different `previewImageUrl` (compared by value, not a sticky boolean). |
+| Browser image request | `CalloutCollaboraPreview` (`<img src={previewImageUrl}>`) | whenever `previewImageUrl` is populated and not the errored URL | Ordinary browser-initiated resource loading, not an application `fetch`/Apollo call — no explicit application network code is added by this component. |
 
 No GraphQL query changes, no new Apollo cache shape, no persisted state. The mapper
 change is a pure, synchronous field addition to an existing return object.

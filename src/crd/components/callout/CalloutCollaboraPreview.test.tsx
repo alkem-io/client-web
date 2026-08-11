@@ -107,5 +107,33 @@ describe('CalloutCollaboraPreview', () => {
         expect(icon.getAttribute('class')).toContain('text-green-600');
       }
     });
+
+    it('renders a replacement preview image after a prior URL failed', () => {
+      const { container, rerender } = render(
+        <CalloutCollaboraPreview
+          documentType="spreadsheet"
+          onOpen={() => {}}
+          previewImageUrl="https://example.com/broken.png"
+        />
+      );
+
+      const brokenImg = container.querySelector('img');
+      expect(brokenImg).toBeInTheDocument();
+      // biome-ignore lint/style/noNonNullAssertion: presence asserted immediately above
+      fireEvent.error(brokenImg!);
+      expect(container.querySelector('img')).not.toBeInTheDocument();
+
+      rerender(
+        <CalloutCollaboraPreview
+          documentType="spreadsheet"
+          onOpen={() => {}}
+          previewImageUrl="https://example.com/replacement.png"
+        />
+      );
+
+      const replacementImg = container.querySelector('img');
+      expect(replacementImg).toBeInTheDocument();
+      expect(replacementImg).toHaveAttribute('src', 'https://example.com/replacement.png');
+    });
   });
 });

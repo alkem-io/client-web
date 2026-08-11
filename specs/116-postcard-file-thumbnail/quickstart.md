@@ -22,6 +22,16 @@
   exists yet).
 - `src/main/crdPages/space/dataMappers/calloutDataMapper.test.ts` — new unit test.
 
+**Follow-up bundled into this PR** (after #10122 "Documents as a response type" merged to
+`develop` and added a second consumer of the type→visual mapping):
+- `src/crd/lib/collaboraDocumentPreview.ts` — the type→`{icon, color, labelKey}` mapping
+  extracted out of `CalloutCollaboraPreview.tsx` into a shared module (spec A-004's
+  anticipated follow-up), so both `CalloutCollaboraPreview` and the new
+  `ContributionDocumentCard` consume the same source of truth instead of drifting apart.
+- `src/crd/components/contribution/ContributionDocumentCard.tsx` — now applies
+  `colorByType` to its icon (previously always flat `text-muted-foreground/40`).
+- `src/crd/components/contribution/ContributionDocumentCard.test.tsx` — new unit tests.
+
 No GraphQL, schema, route, or dependency changes. No i18n file changes (existing
 `callout.documentText`/`documentSpreadsheet`/`documentPresentation` keys are reused as
 alt text — see research.md R4).
@@ -34,8 +44,11 @@ alt text — see research.md R4).
   renders through the same `CalloutCollaboraPreview`, so the icon/color treatment applies
   there automatically. Wiring its own `previewImageUrl` is a one-line follow-up once a
   real backend field exists (see data-model.md).
-- The `CalloutContributionType.COLLABORA_DOCUMENT` case in the contributions grid
-  (`ContributionsPreviewConnector`) — pre-existing, unrelated gap (spec Assumption A-003).
+- Rendering the `CalloutContributionType.COLLABORA_DOCUMENT` case in the contributions
+  grid was a pre-existing, unrelated gap (spec Assumption A-003) when this story was
+  originally scoped; #10122 (a separate PR) has since built that rendering
+  (`ContributionDocumentCard`). This PR only adds the shared color mapping to it — see
+  "Follow-up bundled into this PR" above.
 
 ## Local verification (exit gates)
 
@@ -48,6 +61,7 @@ pnpm vitest run     # full unit suite (must pass)
 pnpm vitest run src/crd/components/callout/CalloutCollaboraPreview.test.tsx --reporter=basic
 pnpm vitest run src/main/crdPages/space/dataMappers/calloutDataMapper.test.ts --reporter=basic
 pnpm vitest run src/crd/components/space/PostCard.test.tsx --reporter=basic
+pnpm vitest run src/crd/components/contribution/ContributionDocumentCard.test.tsx --reporter=basic
 ```
 
 ## Manual smoke test

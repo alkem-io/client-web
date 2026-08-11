@@ -50,8 +50,14 @@ dependency evaluated or introduced.
 - **Alternatives rejected**: A combined `Record<Type, {icon, color, labelKey}>` object —
   rejected as a larger diff for no behavioral gain; the three-separate-maps shape is the
   established convention in this exact file and touching it would be an unrelated
-  refactor. Extracting the mapping to a new `src/crd/lib/` module — rejected per spec
-  Assumption A-004 (single consumer today; premature extraction).
+  refactor. Extracting the mapping to a new `src/crd/lib/` module — rejected at the time
+  per spec Assumption A-004 (single consumer; premature extraction). **Follow-up (bundled
+  into this PR):** once #10122 ("Documents as a response type") merged to `develop` and
+  added `ContributionDocumentCard` as a second consumer of the same three-value type union,
+  the maps were extracted to `src/crd/lib/collaboraDocumentPreview.ts` — exactly the
+  trigger condition A-004 named for revisiting this decision. Both `CalloutCollaboraPreview`
+  and `ContributionDocumentCard` now import `iconByType`/`colorByType`/`typeLabelKey` from
+  that shared module instead of each keeping its own copy.
 
 ## R3 — Forward-compatible real-image seam
 

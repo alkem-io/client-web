@@ -4,10 +4,15 @@
 **Layer**: CRD presentational (props-only). No MUI, no business logic, no GraphQL types, no router imports.
 **Consumers**: `PostCard` (`size="compact"`, feed card), `CollaboraFramingConnector` (`size="default"`, post/callout detail dialog).
 
+**Shared mapping**: `iconByType`, `colorByType`, and `typeLabelKey` are imported from
+`src/crd/lib/collaboraDocumentPreview.ts` rather than defined locally in this file. That
+same module is also imported by `src/crd/components/contribution/ContributionDocumentCard.tsx`
+(added by #10122, a separate PR) — see spec A-004.
+
 ## Props
 
 ```ts
-export type CollaboraDocumentPreviewType = 'text' | 'spreadsheet' | 'presentation'; // unchanged
+export type CollaboraDocumentPreviewType = 'text' | 'spreadsheet' | 'presentation'; // unchanged, now defined in src/crd/lib/collaboraDocumentPreview.ts
 
 type CalloutCollaboraPreviewProps = {
   documentType: CollaboraDocumentPreviewType;
@@ -30,9 +35,11 @@ type CalloutCollaboraPreviewProps = {
   bg-muted/30 relative`, `compact ? 'h-28' : 'aspect-video'`, `className` merged via
   `cn()`.
 - Inner content area (`w-full h-full flex items-center justify-center bg-muted`):
-  - **NEW** — when `previewImageUrl` is present and has not errored: `<img
-    src={previewImageUrl} alt={typeLabel} className="w-full h-full object-cover"
-    onError={() => setImageErrored(true)} />`.
+  - **NEW** — when `previewImageUrl` is present and has not errored for its current value:
+    `<img src={previewImageUrl} alt={typeLabel} className="w-full h-full object-cover"
+    onError={() => setErroredUrl(previewImageUrl)} />`. The errored URL is tracked (not a
+    plain boolean), so if a later render supplies a *different* `previewImageUrl`, the
+    image is retried rather than staying stuck on the icon fallback.
   - Otherwise (today's only reachable production state): the type icon, **now colored**
     via `colorByType[documentType]` (`text-blue-600` / `text-green-600` /
     `text-orange-600`) instead of the previous flat `text-muted-foreground/50`; size
@@ -60,13 +67,20 @@ type CalloutCollaboraPreviewProps = {
   falls back to the type-icon treatment (BG-1/BG-2) rather than a broken-image glyph.
 - BG-5: `onReplace` presence/absence continues to gate the "Replace file" button exactly
   as before (no regression).
-- BG-6: No network, navigation, logging, or localStorage access happens inside this
-  component (all via props / handled by the integration layer) — `imageErrored` is the
-  only local state, and it is purely visual.
+- BG-6: The component makes no imperative network/API call, no navigation, no logging, and
+  no localStorage access itself (all via props / handled by the integration layer); its
+  only local state is visual (which URL, if any, failed to load). When `previewImageUrl`
+  is present, rendering the `<img>` causes the browser to issue its own resource request
+  for that URL — this is ordinary browser image loading, not application code initiating a
+  fetch. `previewImageUrl` is supplied by the integration layer (`calloutDataMapper.ts`);
+  this component does not choose or validate its origin.
 - BG-7: `DRAWING`-derived documents (which map to `documentType: 'text'` upstream) render
   identically to `WORDPROCESSING`-derived documents — same icon, same blue color — by
   construction (both are the same `'text'` value at this component's boundary; no special
   case exists or is needed here).
+- BG-8: If a `previewImageUrl` fails to load and a later render supplies a *different*
+  `previewImageUrl`, the component retries rendering the new URL rather than staying
+  stuck on the icon fallback — the errored state is keyed by URL, not a sticky boolean.
 
 ## Test contract (`CalloutCollaboraPreview.test.tsx`)
 
@@ -86,3 +100,6 @@ type CalloutCollaboraPreviewProps = {
    and calls the handler on click (regression, unchanged behavior).
 8. `size="compact"` and `size="default"` both render without throwing, with their
    respective existing height/aspect classes (regression).
+9. Renders with `previewImageUrl` set, fires `onError`, then rerenders with a
+   *different* `previewImageUrl` → the replacement image renders (BG-8, not stuck on the
+   icon fallback).

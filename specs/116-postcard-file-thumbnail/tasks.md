@@ -78,11 +78,11 @@ description: "Task list for 116-postcard-file-thumbnail (story #9872)"
 ### Tests for User Story 3 (write first, expect FAIL before impl)
 
 - [X] T006 [P] [US3] Extend `src/crd/components/callout/CalloutCollaboraPreview.test.tsx` with the contract's test list items 4–6 (image renders in place of icon when `previewImageUrl` present; `onError` falls back to icon; no `<img>` when `previewImageUrl` omitted). Expect FAIL (prop does not exist yet).
-- [X] T007 [P] [US3] Create `src/main/crdPages/space/dataMappers/calloutDataMapper.test.ts`: a minimal `CalloutDetailsModelExtended`-shaped fixture with `framing.type = CalloutFramingType.CollaboraDocument`, asserting `mapCalloutDetailsToPostCard(...).framingDocumentPreviewUrl === undefined` and `.framingDocumentType` is correctly derived (regression coverage — this mapper had no prior test file). Should PASS immediately (field doesn't exist yet, so accessing it is `undefined` — this test therefore also validates T008/T009 don't accidentally start returning a value). **Also add a second fixture case** with `collaboraDocument.documentType = CollaboraDocumentType.Drawing`, asserting `.framingDocumentType === 'text'` — pins the existing, unchanged `mapCollaboraDocumentTypeToPreviewType` DRAWING→`'text'` collapsing (spec Edge Cases / Clarifications, FR-012) at the one boundary where a `'drawing'`-flavored value could otherwise silently diverge, since `CalloutCollaboraPreview` itself never receives a `'drawing'` variant to test directly.
+- [X] T007 [P] [US3] Create `src/main/crdPages/space/dataMappers/calloutDataMapper.test.ts`: a minimal `CalloutDetailsModelExtended`-shaped fixture with `framing.type = CalloutFramingType.CollaboraDocument`, asserting `mapCalloutDetailsToPostCard(...).framingDocumentPreviewUrl === undefined` and `.framingDocumentType` is correctly derived (regression coverage — this mapper had no prior test file). Sequenced with T010 (which adds the `framingDocumentPreviewUrl: undefined` field to the mapper and its type) so this assertion is type-checked against a field that actually exists on `PostCardData`, rather than a TypeScript property error. **Also add a second fixture case** with `collaboraDocument.documentType = CollaboraDocumentType.Drawing`, asserting `.framingDocumentType === 'text'` — pins the existing, unchanged `mapCollaboraDocumentTypeToPreviewType` DRAWING→`'text'` collapsing (spec Edge Cases / Clarifications, FR-012) at the one boundary where a `'drawing'`-flavored value could otherwise silently diverge, since `CalloutCollaboraPreview` itself never receives a `'drawing'` variant to test directly.
 
 ### Implementation for User Story 3
 
-- [X] T008 [US3] Edit `src/crd/components/callout/CalloutCollaboraPreview.tsx`: add optional `previewImageUrl?: string` prop and a local `imageErrored` boolean (`useState`, visual-only, reset not required); when `previewImageUrl && !imageErrored`, render `<img src={previewImageUrl} alt={typeLabel} className="w-full h-full object-cover" onError={() => setImageErrored(true)} />` in place of the centered icon; otherwise render the icon fallback from T004. Makes T006 PASS.
+- [X] T008 [US3] Edit `src/crd/components/callout/CalloutCollaboraPreview.tsx`: add optional `previewImageUrl?: string` prop and a local `erroredUrl` state (`useState<string | undefined>`, visual-only) tracking *which* URL last failed; when `previewImageUrl && previewImageUrl !== erroredUrl`, render `<img src={previewImageUrl} alt={typeLabel} className="w-full h-full object-cover" onError={() => setErroredUrl(previewImageUrl)} />` in place of the centered icon; otherwise render the icon fallback from T004. Tracking the URL (not a plain boolean) means a later render with a *different* `previewImageUrl` retries the image instead of staying stuck on the icon fallback (fixed in review — see T014). Makes T006 PASS.
 - [X] T009 [P] [US3] Edit `src/crd/components/space/PostCard.tsx`: add `framingDocumentPreviewUrl?: string` to `PostCardData` (documented as "document framing only", mirroring `framingImageUrl`'s doc comment), and pass `previewImageUrl={post.framingDocumentPreviewUrl}` to the `CalloutCollaboraPreview` call in the `post.type === 'document'` branch.
 - [X] T010 [P] [US3] Edit `src/main/crdPages/space/dataMappers/calloutDataMapper.ts`'s `mapCalloutDetailsToPostCard`: add `framingDocumentPreviewUrl: undefined` (with a comment referencing that no backend field exists yet — see spec Assumptions A-001/A-002) alongside the existing `framingDocumentType` assignment, keeping the field's presence and typing testable even though its value is always `undefined` today. Keeps T007 PASS.
 
@@ -97,6 +97,28 @@ description: "Task list for 116-postcard-file-thumbnail (story #9872)"
 - [X] T013 Self-review the diff against the contract (`contracts/CalloutCollaboraPreview.md`): confirm BG-1 through BG-7 all hold; confirm zero new GraphQL/i18n/dependency changes (FR-010/FR-011/SC-003); confirm `CollaboraFramingConnector.tsx` is untouched (US2 by construction); confirm no `@mui/*`/`@emotion/*` anywhere in the diff.
 
 **Checkpoint**: PR mergeable — spec, plan, and contract all satisfied; gates green.
+
+---
+
+## Phase 7: Follow-up (bundled into this PR after initial Polish)
+
+**Trigger**: #10122 ("Documents as a response type," a separate PR) merged to `develop`
+after this PR was opened, adding `ContributionDocumentCard` — a second consumer of the
+type→visual mapping — plus AI code review on the updated PR.
+
+- [X] T014 Extract `iconByType`/`colorByType`/`typeLabelKey` out of `CalloutCollaboraPreview.tsx`
+  into `src/crd/lib/collaboraDocumentPreview.ts` (spec A-004's anticipated trigger); update
+  `CalloutCollaboraPreview.tsx` and `ContributionDocumentCard.tsx` to import from it, apply
+  `colorByType` to `ContributionDocumentCard`'s icon (previously flat
+  `text-muted-foreground/40`), and add `ContributionDocumentCard.test.tsx`.
+- [X] T015 Fix review finding: `CalloutCollaboraPreview`'s image-error state didn't reset
+  when `previewImageUrl` changed to a different value, so a replacement URL after a prior
+  failure would stay stuck on the icon fallback. Changed the state from a plain
+  `imageErrored` boolean to `erroredUrl: string | undefined`, compared by value against the
+  current `previewImageUrl` (BG-8). Added a rerender regression test (contract test item 9).
+
+**Checkpoint**: Shared mapping has one source of truth across both consumers; image-error
+state correctly resets on URL change; gates re-run green.
 
 ---
 

@@ -49,8 +49,8 @@ export function CalloutCollaboraPreview({
   const accentColor = colorByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.documentText');
   const compact = size === 'compact';
-  const [imageErrored, setImageErrored] = useState(false);
-  const showImage = Boolean(previewImageUrl) && !imageErrored;
+  const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
+  const showImage = Boolean(previewImageUrl) && previewImageUrl !== erroredUrl;
 
   return (
     <div
@@ -66,7 +66,7 @@ export function CalloutCollaboraPreview({
             src={previewImageUrl}
             alt={typeLabel}
             className="w-full h-full object-cover"
-            onError={() => setImageErrored(true)}
+            onError={() => setErroredUrl(previewImageUrl)}
           />
         ) : (
           <Icon className={cn(compact ? 'w-8 h-8' : 'w-12 h-12', accentColor)} aria-hidden="true" />

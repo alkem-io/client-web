@@ -376,6 +376,6 @@ The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`)
 
 ## Active Technologies
 - TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + CRD layer (`@/crd/primitives/*`, `@/crd/lib/utils` `cn()`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation`/`RefreshCw` icons, no new icon import), `react-i18next` (existing `crd-space` namespace, no new keys — see Research R4). All existing — **no new runtime dependencies**. (116-postcard-file-thumbnail)
-- N/A (frontend SPA, presentational-only change). No GraphQL query changes. (116-postcard-file-thumbnail)
+- N/A (frontend SPA; CRD presentational component plus `src/main/crdPages/` mapper field threading, no persisted storage). No GraphQL query changes. (116-postcard-file-thumbnail)
 - TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`), Node ≥24 (Volta-pinned) + `@apollo/client` (generated hooks only), `apollo-upload-client` (already wired at the transport level — `importCollaboraDocument` uploads through it, same as the framing upload path), `react-i18next`, shadcn/ui + Tailwind v4 + Radix UI (`@/crd/*`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation` icons — no new icon import) (116-document-responses)
 - N/A client-side — uploaded bytes go server-side via `importCollaboraDocument` (file-service-go), unchanged transport already used by the framing upload path (116-document-responses)
