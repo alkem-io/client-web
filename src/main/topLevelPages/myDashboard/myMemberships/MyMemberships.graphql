@@ -24,6 +24,7 @@ query MyMemberships($limit: Float) {
 fragment SpaceMembership on Space {
   id
   level
+  activityScore
   authorization {
     id
     myPrivileges

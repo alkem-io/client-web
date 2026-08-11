@@ -58,10 +58,10 @@ export type ContributorCollectionConfig = {
 /**
  * Response-type chip id. Maps to the server enum `CalloutContributionType`
  * (single value, not an array) at submit time via the calloutFormMapper.
- * Documents are scoped to post-level framing only in P1 — they MUST NOT
- * appear among Response Options (FR-015, FR-016).
+ * `'document'` maps to `CalloutContributionType.CollaboraDocument` — an
+ * upload-only response type (no blank-create path; story #10083).
  */
-export type ResponseType = 'none' | 'link' | 'post' | 'memo' | 'whiteboard';
+export type ResponseType = 'none' | 'link' | 'post' | 'memo' | 'whiteboard' | 'document';
 
 export type AllowedActors = {
   members: boolean;

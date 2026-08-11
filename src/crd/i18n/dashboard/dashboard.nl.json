@@ -143,7 +143,8 @@
     "loading": "Uitnodigingen laden",
     "accept": "Accepteren",
     "decline": "Weigeren",
-    "noInvitations": "Geen openstaande uitnodigingen"
+    "noInvitations": "Geen openstaande uitnodigingen",
+    "invitedBy": "Uitgenodigd door {{name}}"
   },
   "applications": {
     "title": "Openstaande Aanvragen",
@@ -190,5 +191,29 @@
       "joinAriaLabel": "Toetreden tot {{spaceName}}"
     },
     "applicationAriaLabel": "Openstaande aanvraag voor {{spaceName}} bekijken"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Laatst actief",
+      "mostActivity": "Spaces met de meeste activiteit",
+      "leadAdmin": "Spaces die ik leid en beheer",
+      "host": "Spaces die ik host"
+    },
+    "showMore_one": "Meer tonen: {{count}} Space",
+    "showMore_other": "Meer tonen: {{count}} Spaces"
+  },
+  "welcome": {
+    "title": "Welkom bij Alkemio",
+    "message": "Je maakt nog geen deel uit van Spaces. Verken de Welcome Space om te zien wat er mogelijk is, of bekijk de documentatie om te beginnen.",
+    "welcomeSpaceLink": "Bezoek de Welcome Space",
+    "documentationLink": "Documentatie",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Openstaande aanvragen & uitnodigingen"
+  },
+  "explore": {
+    "title": "Spaces verkennen",
+    "exploreAll": "Alle Spaces verkennen"
   }
 }

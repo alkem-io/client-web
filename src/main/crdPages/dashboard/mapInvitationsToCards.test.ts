@@ -12,7 +12,9 @@ const entry = (
     level,
     about: { profile: { displayName: 'A Space', url: '/a-space', ...profile } },
   },
-  contributorType: 'USER',
+  invitation: {
+    createdBy: { id: 'user-1', profile: { id: 'profile-1', displayName: 'Jane Doe' } },
+  },
 });
 
 describe('mapInvitationsToCards', () => {
@@ -40,11 +42,18 @@ describe('mapInvitationsToCards', () => {
     expect(l0.spaceAvatarUrl).toBeUndefined();
   });
 
-  it('carries role, href and a deterministic colour through', () => {
+  it('carries the inviter name, href and a deterministic colour through', () => {
     const [card] = mapInvitationsToCards([entry(SpaceLevel.L0, {})]);
 
-    expect(card.role).toBe('USER');
+    expect(card.inviterName).toBe('Jane Doe');
     expect(card.spaceHref).toBe('/a-space');
     expect(card.color).toMatch(/^#/);
+  });
+
+  it('omits the inviter name when the invitation has no createdBy', () => {
+    const [inv] = [entry(SpaceLevel.L0, {})];
+    const [card] = mapInvitationsToCards([{ ...inv, invitation: { createdBy: null } }]);
+
+    expect(card.inviterName).toBeUndefined();
   });
 });
