@@ -87,7 +87,7 @@ describe('CollaboraFramingConnector — Replace action gating', () => {
       <CollaboraFramingConnector callout={makeCallout([AuthorizationPrivilege.Update], 'PDF')} onOpen={() => {}} />
     );
     expect(screen.getByRole('button', { name: enJson.callout.documentReplace })).toBeInTheDocument();
-    // PDF uses view/annotate framing rather than "Open Document" (FR-002).
+    // PDF uses "View" framing rather than "Open Document".
     expect(screen.getByRole('button', { name: enJson.callout.openDocumentPdf })).toBeInTheDocument();
   });
 });

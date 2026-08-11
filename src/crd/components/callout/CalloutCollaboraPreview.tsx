@@ -37,10 +37,14 @@ type CalloutCollaboraPreviewProps = {
 };
 
 // PDF has no create/edit concept (import-only) — the open action reads as
-// view/annotate rather than "Open Document" (FR-002). Kept local rather than
-// folded into the shared `@/crd/lib/collaboraDocumentPreview` maps since the
-// open-button framing is specific to this preview's own action, not a
-// property of the document type shared across every surface that renders it.
+// "View" rather than "Open Document". Currently view-only, not
+// view/annotate: annotating a PDF and letting Collabora save it corrupts the
+// document (a Collabora background-save bug, not ours) — wopi-service forces
+// PDF WOPI tokens read-only until that's fixed upstream. Kept local rather
+// than folded into the shared `@/crd/lib/collaboraDocumentPreview` maps
+// since the open-button framing is specific to this preview's own action,
+// not a property of the document type shared across every surface that
+// renders it.
 const openLabelKey: Record<CollaboraDocumentPreviewType, string> = {
   text: 'callout.openDocument',
   spreadsheet: 'callout.openDocument',

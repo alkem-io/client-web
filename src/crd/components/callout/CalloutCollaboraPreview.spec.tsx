@@ -2,9 +2,10 @@
  * @vitest-environment jsdom
  *
  * PDF must render with a distinct icon/label from the other Collabora document
- * types (FR-007/US3) and use "view/annotate" framing rather than the
- * create/edit framing used by word-processing, spreadsheet, and presentation
- * documents (FR-002).
+ * types, and use "View" framing rather than the create/edit framing used by
+ * word-processing, spreadsheet, and presentation documents. Currently
+ * view-only (not view/annotate) pending a Collabora-side fix — see
+ * CalloutCollaboraPreview.tsx's openLabelKey comment.
  */
 import { render, screen } from '@testing-library/react';
 import i18next from 'i18next';
@@ -36,7 +37,7 @@ describe('CalloutCollaboraPreview — PDF type', () => {
     expect(screen.queryByText(enJson.callout.document)).not.toBeInTheDocument();
   });
 
-  it('uses view/annotate framing for the open action, distinct from "Open Document" (FR-002)', () => {
+  it('uses "View" framing for the open action, distinct from "Open Document"', () => {
     renderPreview(<CalloutCollaboraPreview documentType="pdf" onOpen={() => {}} />);
     expect(screen.getByRole('button', { name: enJson.callout.openDocumentPdf })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: enJson.callout.openDocument })).not.toBeInTheDocument();

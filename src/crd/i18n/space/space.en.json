@@ -225,7 +225,7 @@
     "documentPresentation": "Presentation",
     "documentPdf": "PDF",
     "openDocument": "Open Document",
-    "openDocumentPdf": "View & Annotate",
+    "openDocumentPdf": "View",
     "addDocument": "Add document",
     "defaultDocumentName": "New Document",
     "documentTypeLabel": "Document type",

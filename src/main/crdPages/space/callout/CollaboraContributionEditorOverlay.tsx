@@ -44,8 +44,10 @@ const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
   pdf: FileType,
 };
 
-// PDF has no create/edit concept (import-only) — the sr-only description reads
-// as view/annotate rather than "Open Document", mirroring the framing overlay.
+// PDF has no create/edit concept (import-only) — the sr-only description
+// reads as "View" rather than "Open Document", mirroring the framing
+// overlay. Currently view-only, not view/annotate — see
+// CalloutCollaboraPreview.tsx's openLabelKey comment for why.
 const openLabelKey: Record<CollaboraDocumentPreviewType, string> = {
   text: 'callout.openDocument',
   spreadsheet: 'callout.openDocument',
