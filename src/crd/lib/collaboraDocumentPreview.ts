@@ -16,8 +16,12 @@ export const colorByType: Record<CollaboraDocumentPreviewType, string> = {
   presentation: 'text-orange-600',
 };
 
+/** Label shown on the preview badge — 'text' uses the generic "Document" label
+ *  (`callout.document`, shared with the post-type label) rather than
+ *  `callout.documentText` ("Text Document"), which is reserved for the
+ *  create-new document-type picker (`CollaboraDocumentTypePicker`). */
 export const typeLabelKey: Record<CollaboraDocumentPreviewType, string> = {
-  text: 'callout.documentText',
+  text: 'callout.document',
   spreadsheet: 'callout.documentSpreadsheet',
   presentation: 'callout.documentPresentation',
 };

@@ -3,14 +3,14 @@ import { describe, expect, it, vi } from 'vitest';
 import { CalloutCollaboraPreview } from './CalloutCollaboraPreview';
 
 // react-i18next has no i18next instance configured in the unit test environment
-// (see src/setupTests.ts — no i18n init), so `t('callout.documentText')` resolves
+// (see src/setupTests.ts — no i18n init), so `t('callout.document')` resolves
 // to the raw key itself. Assertions below match the key text, matching the
 // convention already used by PostCard.test.tsx (`screen.getByText(/contributors/i)`
 // against the `callout.contributors` key).
 
 describe('CalloutCollaboraPreview', () => {
   it.each([
-    ['text', 'callout.documentText', 'text-blue-600'],
+    ['text', 'callout.document', 'text-blue-600'],
     ['spreadsheet', 'callout.documentSpreadsheet', 'text-green-600'],
     ['presentation', 'callout.documentPresentation', 'text-orange-600'],
   ] as const)('renders the %s badge label and applies %s to both the badge icon and the centered fallback icon', (documentType, labelKey, colorClass) => {
@@ -80,7 +80,7 @@ describe('CalloutCollaboraPreview', () => {
       expect(img).toBeInTheDocument();
       expect(img).toHaveAttribute('src', 'https://example.com/preview.png');
       // alt text reuses the existing type-label key (no new i18n key, see research.md R4)
-      expect(img).toHaveAttribute('alt', 'callout.documentText');
+      expect(img).toHaveAttribute('alt', 'callout.document');
 
       // Only the badge icon remains — the centered fallback icon is replaced by the image.
       expect(container.querySelectorAll('svg').length).toBe(1);

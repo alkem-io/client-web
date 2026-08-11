@@ -94,17 +94,21 @@ dependency evaluated or introduced.
 
 - **Decision**: No new i18n keys. The (future) preview `<img>`'s `alt` reuses the
   already-computed `typeLabel` (`t(typeLabelKey[documentType])` → the existing
-  `callout.documentText` / `callout.documentSpreadsheet` / `callout.documentPresentation`
+  `callout.document` / `callout.documentSpreadsheet` / `callout.documentPresentation`
   keys in `src/crd/i18n/space/space.<lang>.json`, all six locales, already present and
-  already used for the visible badge text).
+  already used for the visible badge text). `text` intentionally reuses the generic
+  `callout.document` key ("Document") rather than `callout.documentText` ("Text
+  Document") — the latter names Microsoft's trademarked product and is reserved for the
+  create-new document-type picker (`CollaboraDocumentTypePicker`), a different context
+  where naming the specific document kind being created is the point.
 - **Rationale**: Mirrors `PostCard`'s own whiteboard `<img alt={t('callout.whiteboard')}
   />` precedent — reusing an existing, already-localized, already-accurate label as alt
   text rather than minting a near-duplicate `*PreviewAlt` key. Zero new translation work,
   zero new parity-test surface, satisfies FR-007/FR-011 (parity is inherited from keys
   that already have it).
 - **Alternatives rejected**: A new `documentPreviewAlt` key per type — rejected as
-  redundant with `documentText`/`documentSpreadsheet`/`documentPresentation`, which
-  already say exactly "Word Document" / "Spreadsheet" / "Presentation."
+  redundant with `document`/`documentSpreadsheet`/`documentPresentation`, which already
+  say exactly "Document" / "Spreadsheet" / "Presentation."
 
 ## R5 — Contrast / color-token choice
 

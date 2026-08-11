@@ -84,7 +84,7 @@ type CalloutCollaboraPreviewProps = {
 
 ## Test contract (`CalloutCollaboraPreview.test.tsx`)
 
-1. Renders `documentType="text"` → badge text "Word Document" present; centered icon has
+1. Renders `documentType="text"` → badge text "Document" present; centered icon has
    `text-blue-600` in its class list; badge icon also has `text-blue-600`.
 2. Renders `documentType="spreadsheet"` → badge text "Spreadsheet"; both icons
    `text-green-600`.

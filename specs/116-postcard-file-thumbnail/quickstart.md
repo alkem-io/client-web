@@ -33,7 +33,7 @@
 - `src/crd/components/contribution/ContributionDocumentCard.test.tsx` — new unit tests.
 
 No GraphQL, schema, route, or dependency changes. No i18n file changes (existing
-`callout.documentText`/`documentSpreadsheet`/`documentPresentation` keys are reused as
+`callout.document`/`documentSpreadsheet`/`documentPresentation` keys are reused as
 alt text — see research.md R4).
 
 ## Not in this PR (documented, deliberately deferred)

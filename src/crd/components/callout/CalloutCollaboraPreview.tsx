@@ -47,7 +47,7 @@ export function CalloutCollaboraPreview({
   const { t } = useTranslation('crd-space');
   const Icon = iconByType[documentType];
   const accentColor = colorByType[documentType];
-  const typeLabel = t(typeLabelKey[documentType] as 'callout.documentText');
+  const typeLabel = t(typeLabelKey[documentType] as 'callout.document');
   const compact = size === 'compact';
   const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
   const showImage = Boolean(previewImageUrl) && previewImageUrl !== erroredUrl;
