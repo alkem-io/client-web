@@ -368,11 +368,11 @@ Every top-level route renders its `Crd*` page unconditionally — there is no to
 The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) routes were product-dropped during the removal; `InnovationPacks` (`/innovation-packs/*`) was kept on its CRD pages.
 
 ## Recent Changes
+- 116-document-responses: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`), Node ≥24 (Volta-pinned) + `@apollo/client` (generated hooks only), `apollo-upload-client` (already wired at the transport level — `importCollaboraDocument` uploads through it, same as the framing upload path), `react-i18next`, shadcn/ui + Tailwind v4 + Radix UI (`@/crd/*`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation` icons — no new icon import)
 - 114-callout-delete-context: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `react-i18next`, `lucide-react`, Apollo Client (generated hooks only — unchanged), `date-fns` (only if a date is rendered)
 - 113-innovation-hub-ui: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `lucide-react`, `react-i18next`, Apollo Client (generated hooks only — already wired, unchanged this story)
-- 112-l0-additional-tabs: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + Apollo Client (generated hooks only), shadcn/ui + Tailwind v4 + Radix UI (CRD layer `@/crd/*`), `react-i18next`, `lucide-react`. **No new runtime dependencies.**
 
 
 ## Active Technologies
-- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `react-i18next`, `lucide-react`, Apollo Client (generated hooks only — unchanged), `date-fns` (only if a date is rendered) (114-callout-delete-context)
-- Apollo normalized cache — **no new persistence, no new query**; one additive `CalloutDetails` fragment extension (contribution title + description stubs) + codegen (Option A: data rides the standard load) (114-callout-delete-context)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`), Node ≥24 (Volta-pinned) + `@apollo/client` (generated hooks only), `apollo-upload-client` (already wired at the transport level — `importCollaboraDocument` uploads through it, same as the framing upload path), `react-i18next`, shadcn/ui + Tailwind v4 + Radix UI (`@/crd/*`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation` icons — no new icon import) (116-document-responses)
+- N/A client-side — uploaded bytes go server-side via `importCollaboraDocument` (file-service-go), unchanged transport already used by the framing upload path (116-document-responses)
