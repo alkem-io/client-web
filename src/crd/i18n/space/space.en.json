@@ -220,7 +220,7 @@
     "createMemo": "Create new memo",
     "defaultMemoName": "New Memo",
     "memoNameLabel": "Memo title",
-    "documentText": "Word Document",
+    "documentText": "Text Document",
     "documentSpreadsheet": "Spreadsheet",
     "documentPresentation": "Presentation",
     "documentPdf": "PDF",

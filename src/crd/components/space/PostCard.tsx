@@ -105,6 +105,13 @@ export type PostCardData = {
   framingMediaGallery?: { thumbnails: MediaGalleryFeedThumbnail[]; totalCount: number };
   /** Framing-level Collabora document type (document framing only) — drives the icon + label in the feed preview */
   framingDocumentType?: CollaboraDocumentPreviewType;
+  /**
+   * Framing-level document preview image (document framing only). Mirrors
+   * `framingImageUrl`'s role for whiteboard framing — populated once the
+   * backend exposes a rendered thumbnail; `undefined` falls back to the
+   * type-icon treatment (workspace story client-web#9872 P3).
+   */
+  framingDocumentPreviewUrl?: string;
   /** Framing-level call-to-action link (Link framing only). `isValid` is false for non-http(s) or malformed URIs. */
   framingCallToAction?: { uri: string; displayName: string; isExternal: boolean; isValid: boolean };
   commentCount?: number;
@@ -500,6 +507,7 @@ export function PostCard({
           <CalloutCollaboraPreview
             documentType={post.framingDocumentType}
             onOpen={onOpenFramingDocument ?? onClick ?? (() => {})}
+            previewImageUrl={post.framingDocumentPreviewUrl}
             size="compact"
           />
         )}

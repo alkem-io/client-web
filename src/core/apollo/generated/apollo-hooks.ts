@@ -7967,6 +7967,10 @@ export const CalloutContributionDocument = gql`
           url
           displayName
         }
+        authorization {
+          id
+          myPrivileges
+        }
         createdDate
         createdBy {
           ...ContributionAuthor
@@ -8470,6 +8474,58 @@ export type DeleteCollaboraDocumentMutationResult = Apollo.MutationResult<Schema
 export type DeleteCollaboraDocumentMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.DeleteCollaboraDocumentMutation,
   SchemaTypes.DeleteCollaboraDocumentMutationVariables
+>;
+export const ImportCollaboraDocumentDocument = gql`
+    mutation ImportCollaboraDocument($file: Upload!, $uploadData: ImportCollaboraDocumentInput!) {
+  importCollaboraDocument(file: $file, uploadData: $uploadData) {
+    id
+    sortOrder
+    collaboraDocument {
+      ...CalloutContributionsCollaboraDocumentCard
+    }
+  }
+}
+    ${CalloutContributionsCollaboraDocumentCardFragmentDoc}`;
+export type ImportCollaboraDocumentMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ImportCollaboraDocumentMutation,
+  SchemaTypes.ImportCollaboraDocumentMutationVariables
+>;
+
+/**
+ * __useImportCollaboraDocumentMutation__
+ *
+ * To run a mutation, you first call `useImportCollaboraDocumentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useImportCollaboraDocumentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [importCollaboraDocumentMutation, { data, loading, error }] = useImportCollaboraDocumentMutation({
+ *   variables: {
+ *      file: // value for 'file'
+ *      uploadData: // value for 'uploadData'
+ *   },
+ * });
+ */
+export function useImportCollaboraDocumentMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ImportCollaboraDocumentMutation,
+    SchemaTypes.ImportCollaboraDocumentMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.ImportCollaboraDocumentMutation,
+    SchemaTypes.ImportCollaboraDocumentMutationVariables
+  >(ImportCollaboraDocumentDocument, options);
+}
+export type ImportCollaboraDocumentMutationHookResult = ReturnType<typeof useImportCollaboraDocumentMutation>;
+export type ImportCollaboraDocumentMutationResult = Apollo.MutationResult<SchemaTypes.ImportCollaboraDocumentMutation>;
+export type ImportCollaboraDocumentMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ImportCollaboraDocumentMutation,
+  SchemaTypes.ImportCollaboraDocumentMutationVariables
 >;
 export const ReplaceCollaboraDocumentDocument = gql`
     mutation ReplaceCollaboraDocument($file: Upload!, $replaceData: ReplaceCollaboraDocumentInput!) {

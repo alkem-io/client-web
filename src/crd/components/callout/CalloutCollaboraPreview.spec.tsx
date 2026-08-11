@@ -33,7 +33,7 @@ describe('CalloutCollaboraPreview — PDF type', () => {
   it('renders the PDF label, not a generic/fallback type label', () => {
     renderPreview(<CalloutCollaboraPreview documentType="pdf" onOpen={() => {}} />);
     expect(screen.getByText(enJson.callout.documentPdf)).toBeInTheDocument();
-    expect(screen.queryByText(enJson.callout.documentText)).not.toBeInTheDocument();
+    expect(screen.queryByText(enJson.callout.document)).not.toBeInTheDocument();
   });
 
   it('uses view/annotate framing for the open action, distinct from "Open Document" (FR-002)', () => {
@@ -43,7 +43,7 @@ describe('CalloutCollaboraPreview — PDF type', () => {
   });
 
   it.each<[CollaboraDocumentPreviewType, string]>([
-    ['text', enJson.callout.documentText],
+    ['text', enJson.callout.document],
     ['spreadsheet', enJson.callout.documentSpreadsheet],
     ['presentation', enJson.callout.documentPresentation],
   ])('leaves the other Collabora document types (%s) on the unchanged "Open Document" framing (no regression)', (documentType, expectedLabel) => {

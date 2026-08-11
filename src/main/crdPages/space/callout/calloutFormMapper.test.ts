@@ -62,6 +62,7 @@ describe('responseTypeToServer', () => {
     expect(responseTypeToServer('post')).toBe(CalloutContributionType.Post);
     expect(responseTypeToServer('memo')).toBe(CalloutContributionType.Memo);
     expect(responseTypeToServer('whiteboard')).toBe(CalloutContributionType.Whiteboard);
+    expect(responseTypeToServer('document')).toBe(CalloutContributionType.CollaboraDocument);
   });
 });
 
@@ -334,6 +335,13 @@ describe('mapFormToCalloutCreationInput — contribution settings', () => {
     );
     expect(result.input.settings?.contribution?.enabled).toBe(true);
     expect(result.input.settings?.contribution?.canAddContributions).toBe(CalloutAllowedActors.Admins);
+  });
+
+  it('responseType=document → allowedTypes:[CollaboraDocument], no contributionDefaults (no blank-create/template concept — story #10083)', () => {
+    const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'document' }), createOptions);
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.CollaboraDocument]);
+    expect(result.input.settings?.contribution?.commentsEnabled).toBe(true);
+    expect(result.input.contributionDefaults).toBeUndefined();
   });
 });
 

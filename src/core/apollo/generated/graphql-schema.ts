@@ -15720,6 +15720,13 @@ export type CalloutContributionQuery = {
                 documentType: CollaboraDocumentType;
                 createdDate: Date;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
                 createdBy?:
                   | {
                       __typename?: 'User';
@@ -15863,6 +15870,55 @@ export type DeleteCollaboraDocumentMutationVariables = Exact<{
 export type DeleteCollaboraDocumentMutation = {
   __typename?: 'Mutation';
   deleteCollaboraDocument: { __typename?: 'CollaboraDocument'; id: string };
+};
+
+export type ImportCollaboraDocumentMutationVariables = Exact<{
+  file: Scalars['Upload']['input'];
+  uploadData: ImportCollaboraDocumentInput;
+}>;
+
+export type ImportCollaboraDocumentMutation = {
+  __typename?: 'Mutation';
+  importCollaboraDocument: {
+    __typename?: 'CalloutContribution';
+    id: string;
+    sortOrder: number;
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          documentType: CollaboraDocumentType;
+          createdDate: Date;
+          profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type ReplaceCollaboraDocumentMutationVariables = Exact<{

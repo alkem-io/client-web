@@ -141,6 +141,13 @@ export function mapCalloutDetailsToPostCard(callout: CalloutDetailsModelExtended
       callout.framing.type === CalloutFramingType.CollaboraDocument
         ? mapCollaboraDocumentTypeToPreviewType(callout.framing.collaboraDocument?.documentType)
         : undefined,
+    // No backend field exists yet to populate this from (workspace story client-web#9872,
+    // spec Assumptions A-001/A-002) — deliberately a flat `undefined`, not a
+    // `callout.framing.type === ... ? real : undefined` ternary like the sibling
+    // `framingImageUrl`/`framingDocumentType` fields, since there is no real branch to
+    // take yet. Once a backend document-preview field lands, this becomes a real ternary
+    // mirroring `framingImageUrl`'s shape exactly.
+    framingDocumentPreviewUrl: undefined,
     framingCallToAction:
       callout.framing.type === CalloutFramingType.Link
         ? (() => {
