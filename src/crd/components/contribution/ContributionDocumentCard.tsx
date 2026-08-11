@@ -1,18 +1,10 @@
-import { FileText, Presentation, Sheet } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { type CollaboraDocumentPreviewType, colorByType, iconByType } from '@/crd/lib/collaboraDocumentPreview';
 import { cn } from '@/crd/lib/utils';
-
-export type ContributionDocumentType = 'text' | 'spreadsheet' | 'presentation';
-
-const iconByType: Record<ContributionDocumentType, typeof FileText> = {
-  text: FileText,
-  spreadsheet: Sheet,
-  presentation: Presentation,
-};
 
 type ContributionDocumentCardProps = {
   title: string;
-  documentType: ContributionDocumentType;
+  documentType: CollaboraDocumentPreviewType;
   author?: string;
   onClick?: () => void;
   className?: string;
@@ -34,6 +26,7 @@ export function ContributionDocumentCard({
 }: ContributionDocumentCardProps) {
   const { t } = useTranslation('crd-space');
   const Icon = iconByType[documentType];
+  const accentColor = colorByType[documentType];
 
   return (
     <button
@@ -45,7 +38,7 @@ export function ContributionDocumentCard({
       onClick={onClick}
     >
       <div className="w-full h-full flex items-center justify-center">
-        <Icon className="w-8 h-8 text-muted-foreground/40" aria-hidden="true" />
+        <Icon className={cn('w-8 h-8', accentColor)} aria-hidden="true" />
       </div>
 
       {/* Hover "Open Document" button overlay */}
