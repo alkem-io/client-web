@@ -76,6 +76,10 @@ query CalloutContribution($contributionId: UUID!, $includeLink: Boolean! = false
           url
           displayName
         }
+        authorization {
+          id
+          myPrivileges
+        }
         createdDate
         createdBy {
           ...ContributionAuthor

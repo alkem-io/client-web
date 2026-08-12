@@ -49,6 +49,7 @@ const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionTyp
   post: CalloutContributionType.Post,
   memo: CalloutContributionType.Memo,
   whiteboard: CalloutContributionType.Whiteboard,
+  document: CalloutContributionType.CollaboraDocument,
 };
 
 export const framingChipToServer = (chip: FramingChip): CalloutFramingType => FRAMING_CHIP_TO_SERVER[chip];
