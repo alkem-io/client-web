@@ -1,0 +1,43 @@
+query MyMcpApiKeys {
+  me {
+    mcpApiKeys {
+      id
+      name
+      operations
+      createdDate
+      expiresAt
+      lastUsedAt
+      lastUsedFromIp
+      status
+    }
+  }
+}
+
+mutation MintMcpApiKey($mintData: MintMcpApiKeyInput!) {
+  mintMcpApiKey(mintData: $mintData) {
+    apiKey
+    key {
+      id
+      name
+      operations
+      createdDate
+      expiresAt
+      lastUsedAt
+      lastUsedFromIp
+      status
+    }
+  }
+}
+
+mutation RevokeMcpApiKey($revokeData: RevokeMcpApiKeyInput!) {
+  revokeMcpApiKey(revokeData: $revokeData) {
+    id
+    name
+    operations
+    createdDate
+    expiresAt
+    lastUsedAt
+    lastUsedFromIp
+    status
+  }
+}
