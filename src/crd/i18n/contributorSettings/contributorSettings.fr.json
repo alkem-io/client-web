@@ -252,6 +252,84 @@
         "notEnabled": "La connexion par mot de passe n'est pas activée pour ce compte.",
         "confirmLabel": "Confirmer le nouveau mot de passe",
         "mismatch": "Les mots de passe ne correspondent pas."
+      },
+      "mcpApiKeys": {
+        "title": "Clés API MCP",
+        "description": "Créez des clés pour que des clients MCP externes (comme Claude Desktop ou Claude Code) puissent se connecter à Alkemio en votre nom.",
+        "empty": {
+          "title": "Aucune clé API pour l'instant",
+          "description": "Créez une clé pour connecter un client MCP à votre compte.",
+          "create": "Créer une clé API"
+        },
+        "list": {
+          "name": "Nom",
+          "operations": "Opérations",
+          "created": "Créée",
+          "expires": "Expire",
+          "neverExpires": "N'expire jamais",
+          "lastUsed": "Dernière utilisation",
+          "neverUsed": "Jamais utilisée",
+          "lastUsedFrom": "depuis {{address}}",
+          "status": "Statut",
+          "revoke": "Révoquer"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expirée",
+          "revoked": "Révoquée"
+        },
+        "operations": {
+          "read": "Lecture",
+          "tools": "Outils"
+        },
+        "create": {
+          "trigger": "Créer une clé API",
+          "title": "Créer une clé API MCP",
+          "description": "Choisissez un nom, les opérations autorisées et une expiration facultative.",
+          "nameLabel": "Nom",
+          "namePlaceholder": "ex. Claude Desktop",
+          "operationsLabel": "Opérations",
+          "operationsRequired": "Choisissez au moins une opération.",
+          "expiryLabel": "Expiration (facultatif)",
+          "expiryPlaceholder": "N'expire jamais",
+          "expiryPastError": "La date d'expiration doit être future.",
+          "cancel": "Annuler",
+          "submit": "Créer la clé",
+          "submitting": "Création…",
+          "capReachedError": "Vous avez atteint la limite de {{limit}} clés API actives. Révoquez-en une pour libérer de la place.",
+          "genericError": "Impossible de créer la clé API — réessayez."
+        },
+        "reveal": {
+          "title": "Clé API créée",
+          "warning": "Copiez cette clé maintenant — vous ne pourrez plus la revoir.",
+          "keyLabel": "Clé API",
+          "copy": "Copier",
+          "copied": "Copiée",
+          "copyAnnouncement": "Clé API copiée dans le presse-papiers.",
+          "manualCopyHint": "L'accès au presse-papiers n'est pas disponible — sélectionnez le champ ci-dessus et copiez manuellement.",
+          "recipeTitle": "Recette de connexion",
+          "recipeEndpointLabel": "Point de terminaison",
+          "recipeHeaderLabel": "En-tête",
+          "close": "Terminé"
+        },
+        "interrupted": {
+          "title": "Valeur de la clé indisponible",
+          "description": "La valeur de cette clé ne peut plus être affichée. Révoquez-la et créez-en une nouvelle si vous devez toujours connecter un client.",
+          "revokeAndRecreate": "Révoquer et créer une nouvelle clé"
+        },
+        "revoke": {
+          "title": "Révoquer la clé API",
+          "description": "La révocation de \"{{name}}\" l'empêchera immédiatement de s'authentifier. Cette action est irréversible.",
+          "cancel": "Annuler",
+          "confirm": "Révoquer la clé",
+          "revoking": "Révocation…",
+          "success": "\"{{name}}\" a été révoquée.",
+          "error": "Impossible de révoquer la clé — réessayez."
+        },
+        "errors": {
+          "notFound": "Cette clé API est introuvable.",
+          "loadError": "Impossible de charger vos clés API — essayez de recharger la page."
+        }
       }
     },
     "settings": {
