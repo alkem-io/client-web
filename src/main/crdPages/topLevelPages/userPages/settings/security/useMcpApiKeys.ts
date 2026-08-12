@@ -1,6 +1,7 @@
 import { ApolloError } from '@apollo/client';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import {
   useMintMcpApiKeyMutation,
   useMyMcpApiKeysQuery,
@@ -152,6 +153,9 @@ export function useMcpApiKeys(): UseMcpApiKeysResult {
       await revokeMutation({ variables: { revokeData: { keyID: key.id } } });
       if (interruptedRevealKeyId === key.id) setInterruptedRevealKeyId(undefined);
       await refetch();
+      toast.success(t('user.security.mcpApiKeys.revoke.success', { name: key.name }));
+    } catch {
+      toast.error(t('user.security.mcpApiKeys.revoke.error'));
     } finally {
       setRevokingId(undefined);
     }

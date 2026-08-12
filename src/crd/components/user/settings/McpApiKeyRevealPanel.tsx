@@ -25,9 +25,9 @@ export type McpApiKeyRevealPanelProps = {
   /** The just-minted plaintext + metadata. Rendered from props only — never fetched, never stored beyond this render. */
   data: McpApiKeyRevealData | undefined;
   /**
-   * Runtime-resolved platform base address (e.g. `https://alkem.io`) — MUST
-   * come from runtime configuration, never a literal in this component
-   * (contract `connection-recipe`, A-14).
+   * Runtime-resolved platform base address (production/acceptance/local URL,
+   * varying per environment) — MUST come from runtime configuration, never a
+   * literal in this component (contract `connection-recipe`, A-14).
    */
   baseAddress: string;
   onClose: () => void;
