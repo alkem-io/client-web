@@ -63,6 +63,7 @@
   },
   "disconnected": {
     "reconnect": "Reconnect",
+    "reloadPage": "Reload page",
     "countdown": "({{seconds}}s)",
     "close": "Close"
   },

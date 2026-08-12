@@ -336,6 +336,10 @@ const CrdWhiteboardDialog = ({
             reconnecting={connecting}
             countdownSeconds={autoReconnectSeconds}
             onReconnect={onReconnect}
+            // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
+            // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
+            // of seconds, disabling Reconnect AND pausing the auto-reconnect countdown (story #10131).
+            onReloadPage={() => window.location.reload()}
           />
         )}
       >
