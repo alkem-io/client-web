@@ -6179,6 +6179,8 @@ export enum NotificationEvent {
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
   UserCommentReply = 'USER_COMMENT_REPLY',
+  UserConversationMessageDirect = 'USER_CONVERSATION_MESSAGE_DIRECT',
+  UserConversationMessageGroup = 'USER_CONVERSATION_MESSAGE_GROUP',
   UserEmailChangeGlobalAdminNotification = 'USER_EMAIL_CHANGE_GLOBAL_ADMIN_NOTIFICATION',
   UserEmailChangeNewAddressNotification = 'USER_EMAIL_CHANGE_NEW_ADDRESS_NOTIFICATION',
   UserEmailChangeSecuritySignal = 'USER_EMAIL_CHANGE_SECURITY_SIGNAL',
@@ -6265,6 +6267,8 @@ export type NotificationRecipientsInput = {
   triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
   /** The ID of the specific user recipient for user-related notifications (e.g., invitations, mentions). */
   userID?: InputMaybe<Scalars['UUID']['input']>;
+  /** Plural recipient user IDs (e.g. conversation-message events) — resolved via a single OR-combined credentials query. Bounded to at most 100 entries; larger conversations must be fanned out by the caller in bounded batches. */
+  userIDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The ID of the Virtual Contributor to use to determine recipients. */
   virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -9764,6 +9768,10 @@ export type UpdateUserSettingsNotificationSpaceInput = {
 export type UpdateUserSettingsNotificationUserInput = {
   /** Receive a notification when someone replies to a comment I made. */
   commentReply?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageDirect?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone posts in a group chat I am a member of. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageGroup?: InputMaybe<NotificationSettingInput>;
   /** Settings related to User Membership Notifications. */
   membership?: InputMaybe<UpdateUserSettingsNotificationUserMembershipInput>;
   /** Receive a notification you are mentioned */
@@ -10332,6 +10340,10 @@ export type UserSettingsNotificationUser = {
   __typename?: 'UserSettingsNotificationUser';
   /** Receive a notification when someone replies to a comment I made. */
   commentReply: UserSettingsNotificationChannels;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageDirect: UserSettingsNotificationChannels;
+  /** Receive a notification when someone posts in a group chat I am a member of. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageGroup: UserSettingsNotificationChannels;
   /** The notifications settings for membership events for this User */
   membership: UserSettingsNotificationUserMembership;
   /** Receive a notification you are mentioned */
@@ -23577,6 +23589,18 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
             push: boolean;
           };
+          conversationMessageDirect: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          conversationMessageGroup: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           membership: {
             __typename?: 'UserSettingsNotificationUserMembership';
             spaceCommunityInvitationReceived: {
@@ -23963,6 +23987,18 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
         push: boolean;
       };
+      conversationMessageDirect: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      conversationMessageGroup: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -24191,6 +24227,18 @@ export type UserSettingsQuery = {
                   push: boolean;
                 };
                 messageReceived: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageDirect: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageGroup: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;

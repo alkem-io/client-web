@@ -470,7 +470,13 @@ export const useConversationEventsSubscription = () => {
 
     // Play the chat sound (US1). Reuses the same isViewing/isOwnMessage signals
     // that gate the unread increment, layering document.hasFocus() on for the
-    // SOUND ONLY (FR-010) — the unread increment below stays selection-based.
+    // SOUND (FR-010) — the unread increment below stays selection-based.
+    //
+    // The read RECEIPT is the signal that is now focus-gated, in
+    // useConversationView via useIsDocumentActive (FR-018b): the server cancels
+    // a pending digest on a zero unread count, so an unattended open tab must
+    // not report messages as read. That gate is reactive; this one-shot
+    // hasFocus() read is fine here because it only decides a sound.
     if (
       shouldPlayChatSound({
         isOwnMessage: Boolean(isOwnMessage),

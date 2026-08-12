@@ -282,6 +282,7 @@
       "helpBanner": "Bearbeite deine Benachrichtigungseinstellungen. Änderungen werden automatisch gespeichert.",
       "toggleAria": "{{channel}}-Benachrichtigung umschalten für: {{label}}",
       "toggleError": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
+      "inAppLockedChat": "Chatnachrichten erscheinen bereits live im Chat-Panel, daher werden für diese Zeile keine In-App-Benachrichtigungen gesendet",
       "columns": {
         "activity": "Aktivität",
         "inApp": "In-App",
@@ -354,6 +355,8 @@
           "commentReply": "Benachrichtigung erhalten, wenn jemand auf meinen Kommentar antwortet",
           "mentioned": "Benachrichtigung erhalten, wenn ich erwähnt werde",
           "messageReceived": "Benachrichtigung erhalten, wenn mir jemand eine direkte Nachricht sendet",
+          "conversationMessageDirect": "Benachrichtigung erhalten, wenn mir jemand eine direkte (1:1) Chatnachricht sendet",
+          "conversationMessageGroup": "Benachrichtigung erhalten, wenn jemand in einem Gruppenchat postet, dessen Mitglied ich bin",
           "membershipInvitationReceived": "Benachrichtigung erhalten, wenn mich jemand in eine Community einlädt",
           "membershipCommunityJoined": "Benachrichtigung erhalten, wenn ich einem neuen Space beitrete"
         },
