@@ -328,7 +328,8 @@
         },
         "errors": {
           "notFound": "Cette clé API est introuvable.",
-          "loadError": "Impossible de charger vos clés API — essayez de recharger la page."
+          "loadError": "Impossible de charger vos clés API — essayez de recharger la page.",
+          "retry": "Réessayer"
         }
       }
     },

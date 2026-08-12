@@ -328,7 +328,8 @@
         },
         "errors": {
           "notFound": "That API key could not be found.",
-          "loadError": "Couldn't load your API keys — try refreshing the page."
+          "loadError": "Couldn't load your API keys — try refreshing the page.",
+          "retry": "Try again"
         }
       }
     },

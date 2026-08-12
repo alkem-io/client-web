@@ -328,7 +328,8 @@
         },
         "errors": {
           "notFound": "Die API-sleutel kon niet worden gevonden.",
-          "loadError": "Je API-sleutels konden niet worden geladen — probeer de pagina te vernieuwen."
+          "loadError": "Je API-sleutels konden niet worden geladen — probeer de pagina te vernieuwen.",
+          "retry": "Opnieuw proberen"
         }
       }
     },

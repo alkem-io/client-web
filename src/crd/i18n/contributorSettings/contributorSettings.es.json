@@ -328,7 +328,8 @@
         },
         "errors": {
           "notFound": "No se pudo encontrar esa clave API.",
-          "loadError": "No se pudieron cargar tus claves API — intenta recargar la página."
+          "loadError": "No se pudieron cargar tus claves API — intenta recargar la página.",
+          "retry": "Reintentar"
         }
       }
     },

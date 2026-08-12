@@ -20,6 +20,10 @@ const STATUS_BADGE_VARIANT: Record<McpApiKeyStatusOption, 'default' | 'secondary
 
 export type McpApiKeysCardProps = {
   loading: boolean;
+  /** True when the key listing failed. Takes precedence over the empty state. */
+  loadError?: boolean;
+  /** Retry handler for a failed load; the retry button is hidden without it. */
+  onRetry?: () => void;
   keys: McpApiKeyRowData[];
   revokingId: string | undefined;
   /** True when a mint just succeeded but the reveal panel was dismissed before the value was copied — offers revoke-and-recreate (spec edge case). */
@@ -39,6 +43,8 @@ export type McpApiKeysCardProps = {
  */
 export function McpApiKeysCard({
   loading,
+  loadError,
+  onRetry,
   keys,
   revokingId,
   interruptedRevealKeyId,
@@ -54,6 +60,26 @@ export function McpApiKeysCard({
       <div className="flex flex-col gap-2">
         <Skeleton className="h-16 w-full" />
         <Skeleton className="h-16 w-full" />
+      </div>
+    );
+  }
+
+  // A failed load must NOT fall through to the empty state: telling a user who
+  // holds live keys that they have none is worse than showing nothing, because
+  // this card is the only surface that can revoke them.
+  if (loadError) {
+    return (
+      <div
+        role="alert"
+        className="flex flex-col items-center justify-center gap-3 rounded-md border border-dashed bg-muted/10 py-10 text-center"
+      >
+        <KeyRound aria-hidden="true" className="size-8 text-muted-foreground/50" />
+        <p className="text-body text-muted-foreground">{t('user.security.mcpApiKeys.errors.loadError')}</p>
+        {onRetry && (
+          <Button type="button" variant="outline" onClick={onRetry}>
+            {t('user.security.mcpApiKeys.errors.retry')}
+          </Button>
+        )}
       </div>
     );
   }

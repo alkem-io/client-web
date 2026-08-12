@@ -328,7 +328,8 @@
         },
         "errors": {
           "notFound": "Dieser API-Schlüssel konnte nicht gefunden werden.",
-          "loadError": "Deine API-Schlüssel konnten nicht geladen werden — bitte aktualisiere die Seite."
+          "loadError": "Deine API-Schlüssel konnten nicht geladen werden — bitte aktualisiere die Seite.",
+          "retry": "Erneut versuchen"
         }
       }
     },

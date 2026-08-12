@@ -58,6 +58,10 @@ const mapKey = (key: GraphQLMcpApiKey): McpApiKeyRowData => ({
 
 export type UseMcpApiKeysResult = {
   loading: boolean;
+  /** True when the key listing failed — the card must not show the empty state. */
+  loadError: boolean;
+  /** Re-runs the key listing after a failed load. */
+  retryLoad: () => void;
   keys: McpApiKeyRowData[];
   createDialogOpen: boolean;
   openCreateDialog: () => void;
@@ -84,7 +88,7 @@ export type UseMcpApiKeysResult = {
  */
 export function useMcpApiKeys(): UseMcpApiKeysResult {
   const { t } = useTranslation(NS);
-  const { data, loading, refetch } = useMyMcpApiKeysQuery();
+  const { data, loading, error: loadError, refetch } = useMyMcpApiKeysQuery();
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [createError, setCreateError] = useState<string | undefined>(undefined);
@@ -163,6 +167,10 @@ export function useMcpApiKeys(): UseMcpApiKeysResult {
 
   return {
     loading,
+    loadError: Boolean(loadError),
+    retryLoad: () => {
+      void refetch();
+    },
     keys,
     createDialogOpen,
     openCreateDialog,

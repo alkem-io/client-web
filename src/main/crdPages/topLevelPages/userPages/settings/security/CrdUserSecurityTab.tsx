@@ -118,6 +118,8 @@ const OwnerSecurityTabContent = () => {
     <>
       <McpApiKeysCard
         loading={mcpApiKeys.loading}
+        loadError={mcpApiKeys.loadError}
+        onRetry={mcpApiKeys.retryLoad}
         keys={mcpApiKeys.keys}
         revokingId={mcpApiKeys.revokingId}
         interruptedRevealKeyId={mcpApiKeys.interruptedRevealKeyId}
