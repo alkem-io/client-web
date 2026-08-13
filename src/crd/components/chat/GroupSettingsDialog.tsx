@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
+import { initials } from './initials';
 import type { GroupMember } from './types';
 
 type GroupSettingsDialogProps = {
@@ -28,14 +29,6 @@ type GroupSettingsDialogProps = {
   onSave: (displayName: string) => void;
   saving?: boolean;
 };
-
-const initials = (name: string) =>
-  name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(word => word[0]?.toUpperCase() ?? '')
-    .join('') || '?';
 
 /** Group settings: rename, change avatar (slot), add/remove members, leave. */
 export function GroupSettingsDialog({

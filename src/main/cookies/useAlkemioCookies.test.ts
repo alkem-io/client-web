@@ -89,6 +89,32 @@ describe('useAlkemioCookies', () => {
     expect(options.path).toBe('/');
     expect(options.expires).toBeInstanceOf(Date);
   });
+
+  it('acceptOnlySelected([analysis]) persists only technical + analysis (no preference category)', () => {
+    stubHostname('app.alkem.io');
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    result.current.acceptOnlySelected(['analysis']);
+
+    const [, value] = lastCall(setCookie);
+    const categories = JSON.parse(value as string) as string[];
+    expect(categories).toContain('technical');
+    expect(categories).toContain('analysis');
+    expect(categories).not.toContain('preference');
+  });
+
+  it('acceptAllCookies persists technical + analysis (no preference category)', () => {
+    stubHostname('app.alkem.io');
+    const { result } = renderHook(() => useAlkemioCookies());
+
+    result.current.acceptAllCookies();
+
+    const [, value] = lastCall(setCookie);
+    const categories = JSON.parse(value as string) as string[];
+    expect(categories).toContain('technical');
+    expect(categories).toContain('analysis');
+    expect(categories).not.toContain('preference');
+  });
 });
 
 // Regression test for the #9695 migration gap: users who accepted BEFORE the apex fix hold a

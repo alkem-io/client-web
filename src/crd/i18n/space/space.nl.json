@@ -193,7 +193,7 @@
     "openMemo": "Memo openen",
     "openDocument": "Document openen",
     "document": "Document",
-    "documentText": "Word-document",
+    "documentText": "Tekstdocument",
     "documentSpreadsheet": "Spreadsheet",
     "documentPresentation": "Presentatie",
     "addDocument": "Document toevoegen",
@@ -1005,6 +1005,16 @@
       "defaultViewLabel": "Standaardweergave",
       "viewList": "Lijst",
       "viewMap": "Kaart"
+    },
+    "mapView": {
+      "helper": "Kies de startpositie die iedereen op de kaart ziet, of laat deze automatisch op je bijdragers passen.",
+      "stateAutomatic": "Kaartweergave: automatisch",
+      "stateFixed": "Kaartweergave: vast",
+      "useCurrent": "Gebruik huidige weergave",
+      "resetAuto": "Herstellen naar automatisch",
+      "mapAriaLabel": "Kaartvoorvertoning van bijdragers — versleep en zoom om de vaste weergave in te stellen",
+      "captureHint": "Versleep en zoom de kaart en klik daarna op 'Gebruik huidige weergave' om de beginpositie vast te leggen.",
+      "controlAriaLabel": "Kaartweergave-instellingen"
     }
   },
   "spaceCollection": {

@@ -235,6 +235,7 @@ describe('calloutTemplateContentToFormValues', () => {
       types: ['organization'],
       defaultType: 'organization',
       defaultView: 'map',
+      mapView: null,
     });
   });
 

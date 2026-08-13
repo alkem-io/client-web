@@ -806,16 +806,29 @@ export type CalloutContributionsCountOutputFieldPolicy = {
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributorsMapViewKeySpecifier = (
+  | 'latitude'
+  | 'longitude'
+  | 'zoom'
+  | CalloutContributorsMapViewKeySpecifier
+)[];
+export type CalloutContributorsMapViewFieldPolicy = {
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  zoom?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutContributorsSettingsKeySpecifier = (
   | 'contributorTypes'
   | 'defaultContributorType'
   | 'defaultView'
+  | 'mapView'
   | CalloutContributorsSettingsKeySpecifier
 )[];
 export type CalloutContributorsSettingsFieldPolicy = {
   contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+  mapView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
@@ -1186,6 +1199,7 @@ export type ConfigKeySpecifier = (
   | 'defaultVisualTypeConstraints'
   | 'featureFlags'
   | 'geo'
+  | 'language'
   | 'locations'
   | 'sentry'
   | 'storage'
@@ -1197,6 +1211,7 @@ export type ConfigFieldPolicy = {
   defaultVisualTypeConstraints?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   geo?: FieldPolicy<any> | FieldReadFunction<any>;
+  language?: FieldPolicy<any> | FieldReadFunction<any>;
   locations?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1380,16 +1395,29 @@ export type CreateCalloutContributionDefaultsDataFieldPolicy = {
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CreateCalloutContributorsMapViewDataKeySpecifier = (
+  | 'latitude'
+  | 'longitude'
+  | 'zoom'
+  | CreateCalloutContributorsMapViewDataKeySpecifier
+)[];
+export type CreateCalloutContributorsMapViewDataFieldPolicy = {
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  zoom?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CreateCalloutContributorsSettingsDataKeySpecifier = (
   | 'contributorTypes'
   | 'defaultContributorType'
   | 'defaultView'
+  | 'mapView'
   | CreateCalloutContributorsSettingsDataKeySpecifier
 )[];
 export type CreateCalloutContributorsSettingsDataFieldPolicy = {
   contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
   defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+  mapView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutDataKeySpecifier = (
   | 'classification'
@@ -2271,6 +2299,7 @@ export type InvitationKeySpecifier = (
   | 'lifecycle'
   | 'nextEvents'
   | 'state'
+  | 'suggestedLanguage'
   | 'updatedDate'
   | 'welcomeMessage'
   | InvitationKeySpecifier
@@ -2287,6 +2316,7 @@ export type InvitationFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
+  suggestedLanguage?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2325,6 +2355,11 @@ export type KratosIdentityFieldPolicy = {
   isVerified?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   verificationStatus?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type LanguageConfigKeySpecifier = ('default' | 'eligible' | LanguageConfigKeySpecifier)[];
+export type LanguageConfigFieldPolicy = {
+  default?: FieldPolicy<any> | FieldReadFunction<any>;
+  eligible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
 export type LatestReleaseDiscussionFieldPolicy = {
@@ -3617,6 +3652,7 @@ export type PlatformInvitationKeySpecifier = (
   | 'profileCreated'
   | 'roleSetExtraRoles'
   | 'roleSetInvitedToParent'
+  | 'suggestedLanguage'
   | 'updatedDate'
   | 'welcomeMessage'
   | PlatformInvitationKeySpecifier
@@ -3633,6 +3669,7 @@ export type PlatformInvitationFieldPolicy = {
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetExtraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
+  suggestedLanguage?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -4139,6 +4176,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
+  | 'activityScore'
   | 'actor'
   | 'authorization'
   | 'collaboration'
@@ -4172,6 +4210,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4619,6 +4658,7 @@ export type SpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
+  | 'activityScore'
   | 'actor'
   | 'authorization'
   | 'collaboration'
@@ -4652,6 +4692,7 @@ export type SpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5412,9 +5453,12 @@ export type UserSettingsKeySpecifier = (
   | 'authorization'
   | 'communication'
   | 'createdDate'
+  | 'dashboard'
   | 'designVersion'
   | 'homeSpace'
   | 'id'
+  | 'language'
+  | 'languageOfferAnswered'
   | 'notification'
   | 'privacy'
   | 'updatedDate'
@@ -5425,9 +5469,12 @@ export type UserSettingsFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  dashboard?: FieldPolicy<any> | FieldReadFunction<any>;
   designVersion?: FieldPolicy<any> | FieldReadFunction<any>;
   homeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  language?: FieldPolicy<any> | FieldReadFunction<any>;
+  languageOfferAnswered?: FieldPolicy<any> | FieldReadFunction<any>;
   notification?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5444,6 +5491,10 @@ export type UserSettingsCommunicationKeySpecifier = (
 export type UserSettingsCommunicationFieldPolicy = {
   allowOtherUsersToContactViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsDashboardKeySpecifier = ('activityView' | UserSettingsDashboardKeySpecifier)[];
+export type UserSettingsDashboardFieldPolicy = {
+  activityView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsHomeSpaceKeySpecifier = ('autoRedirect' | 'spaceID' | UserSettingsHomeSpaceKeySpecifier)[];
 export type UserSettingsHomeSpaceFieldPolicy = {
@@ -5783,8 +5834,10 @@ export type VisualFieldPolicy = {
 export type VisualConstraintsKeySpecifier = (
   | 'allowedTypes'
   | 'aspectRatio'
+  | 'maxAspectRatio'
   | 'maxHeight'
   | 'maxWidth'
+  | 'minAspectRatio'
   | 'minHeight'
   | 'minWidth'
   | VisualConstraintsKeySpecifier
@@ -5792,8 +5845,10 @@ export type VisualConstraintsKeySpecifier = (
 export type VisualConstraintsFieldPolicy = {
   allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxAspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  minAspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -6071,6 +6126,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CalloutContributionsCountOutputKeySpecifier);
     fields?: CalloutContributionsCountOutputFieldPolicy;
   };
+  CalloutContributorsMapView?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributorsMapViewKeySpecifier
+      | (() => undefined | CalloutContributorsMapViewKeySpecifier);
+    fields?: CalloutContributorsMapViewFieldPolicy;
+  };
   CalloutContributorsSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -6300,6 +6362,13 @@ export type StrictTypedTypePolicies = {
       | CreateCalloutContributionDefaultsDataKeySpecifier
       | (() => undefined | CreateCalloutContributionDefaultsDataKeySpecifier);
     fields?: CreateCalloutContributionDefaultsDataFieldPolicy;
+  };
+  CreateCalloutContributorsMapViewData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributorsMapViewDataKeySpecifier
+      | (() => undefined | CreateCalloutContributorsMapViewDataKeySpecifier);
+    fields?: CreateCalloutContributorsMapViewDataFieldPolicy;
   };
   CreateCalloutContributorsSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -6713,6 +6782,10 @@ export type StrictTypedTypePolicies = {
   KratosIdentity?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | KratosIdentityKeySpecifier | (() => undefined | KratosIdentityKeySpecifier);
     fields?: KratosIdentityFieldPolicy;
+  };
+  LanguageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LanguageConfigKeySpecifier | (() => undefined | LanguageConfigKeySpecifier);
+    fields?: LanguageConfigFieldPolicy;
   };
   LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);
@@ -7495,6 +7568,10 @@ export type StrictTypedTypePolicies = {
       | UserSettingsCommunicationKeySpecifier
       | (() => undefined | UserSettingsCommunicationKeySpecifier);
     fields?: UserSettingsCommunicationFieldPolicy;
+  };
+  UserSettingsDashboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserSettingsDashboardKeySpecifier | (() => undefined | UserSettingsDashboardKeySpecifier);
+    fields?: UserSettingsDashboardFieldPolicy;
   };
   UserSettingsHomeSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsHomeSpaceKeySpecifier | (() => undefined | UserSettingsHomeSpaceKeySpecifier);

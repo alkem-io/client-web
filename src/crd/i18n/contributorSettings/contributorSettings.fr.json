@@ -269,6 +269,12 @@
         "description": "Basculez entre le nouveau design (CRD) et le design classique (MUI). Cette préférence est enregistrée localement sur cet appareil.",
         "toggleLabel": "Utiliser le nouveau design (CRD)",
         "reloadCaption": "La page se rechargera après le changement."
+      },
+      "language": {
+        "title": "Langue",
+        "label": "Langue de l'interface",
+        "description": "La langue utilisée dans toute la plateforme Alkemio. Les modifications s'appliquent sur tous vos appareils.",
+        "error": "Impossible d'enregistrer la préférence de langue — veuillez réessayer."
       }
     },
     "notifications": {

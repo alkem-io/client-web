@@ -54,7 +54,8 @@
     "empty": "Nog geen gesprekken",
     "emptyHint": "Begin een nieuw bericht om te chatten.",
     "noResults": "Geen gesprekken komen overeen met je zoekopdracht.",
-    "loading": "Gesprekken laden"
+    "loading": "Gesprekken laden",
+    "draft": "Concept:"
   },
   "guidance": {
     "beta": "Bèta",

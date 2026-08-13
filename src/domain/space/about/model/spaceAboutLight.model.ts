@@ -58,6 +58,8 @@ export type SpaceAboutLightModel = {
     banner?: {
       uri: string;
       alternativeText?: string;
+      /** Admin-chosen width / height ratio of the page banner strip (server-bounded 6-10). */
+      aspectRatio?: number;
     };
   };
 };
