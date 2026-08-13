@@ -29,11 +29,11 @@ importers:
         specifier: ^5.12.0
         version: 5.17.0
       '@excalidraw-yjs/element':
-        specifier: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@34c34210f3267b80cbadb4d83169157721603c7d
-        version: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@34c34210f3267b80cbadb4d83169157721603c7d
+        specifier: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
+        version: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
       '@excalidraw-yjs/excalidraw':
-        specifier: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@34c34210f3267b80cbadb4d83169157721603c7d
-        version: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@34c34210f3267b80cbadb4d83169157721603c7d(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
+        specifier: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
+        version: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@2e7c2f00eac501adad49c696abef1c5c2c44a4fc(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
       '@ory/kratos-client':
         specifier: 26.2.0
         version: 26.2.0
@@ -1189,28 +1189,28 @@ packages:
     resolution: {integrity: sha512-Z5kJ+wU3oA7MMIqVR9tyZRtjYPr4OC004Q4Rw7pgOKUOKkJfZ3O24nz3WYfGRpMDNmcOi3TwQOmgm7B7Tpii0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@excalidraw-yjs/common@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@34c34210f3267b80cbadb4d83169157721603c7d':
-    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@34c34210f3267b80cbadb4d83169157721603c7d}
+  '@excalidraw-yjs/common@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
+    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@2e7c2f00eac501adad49c696abef1c5c2c44a4fc}
     version: 0.18.0
 
-  '@excalidraw-yjs/element@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@34c34210f3267b80cbadb4d83169157721603c7d':
-    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@34c34210f3267b80cbadb4d83169157721603c7d}
+  '@excalidraw-yjs/element@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
+    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@2e7c2f00eac501adad49c696abef1c5c2c44a4fc}
     version: 0.18.0
 
-  '@excalidraw-yjs/excalidraw@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@34c34210f3267b80cbadb4d83169157721603c7d':
-    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@34c34210f3267b80cbadb4d83169157721603c7d}
+  '@excalidraw-yjs/excalidraw@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
+    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@2e7c2f00eac501adad49c696abef1c5c2c44a4fc}
     version: 0.18.0-864353b-alkemio-16
     peerDependencies:
       react: ^17.0.2 || ^18.2.0 || ^19.0.0
       react-dom: ^17.0.2 || ^18.2.0 || ^19.0.0
 
-  '@excalidraw-yjs/fractional-indexing@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@34c34210f3267b80cbadb4d83169157721603c7d':
-    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@34c34210f3267b80cbadb4d83169157721603c7d}
+  '@excalidraw-yjs/fractional-indexing@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
+    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@2e7c2f00eac501adad49c696abef1c5c2c44a4fc}
     version: 3.3.0
     engines: {node: ^14.13.1 || >=16.0.0}
 
-  '@excalidraw-yjs/math@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@34c34210f3267b80cbadb4d83169157721603c7d':
-    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@34c34210f3267b80cbadb4d83169157721603c7d}
+  '@excalidraw-yjs/math@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
+    resolution: {tarball: https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@2e7c2f00eac501adad49c696abef1c5c2c44a4fc}
     version: 0.18.0
 
   '@excalidraw/laser-pointer@1.3.1':
@@ -8710,27 +8710,27 @@ snapshots:
       '@eslint/core': 0.15.2
       levn: 0.4.1
 
-  '@excalidraw-yjs/common@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@34c34210f3267b80cbadb4d83169157721603c7d':
+  '@excalidraw-yjs/common@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
     dependencies:
       tinycolor2: 1.6.0
 
-  '@excalidraw-yjs/element@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@34c34210f3267b80cbadb4d83169157721603c7d':
+  '@excalidraw-yjs/element@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
     dependencies:
-      '@excalidraw-yjs/common': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@34c34210f3267b80cbadb4d83169157721603c7d
-      '@excalidraw-yjs/fractional-indexing': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@34c34210f3267b80cbadb4d83169157721603c7d
-      '@excalidraw-yjs/math': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@34c34210f3267b80cbadb4d83169157721603c7d
+      '@excalidraw-yjs/common': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
+      '@excalidraw-yjs/fractional-indexing': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
+      '@excalidraw-yjs/math': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
       yjs: 13.6.27
 
-  '@excalidraw-yjs/excalidraw@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@34c34210f3267b80cbadb4d83169157721603c7d(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
+  '@excalidraw-yjs/excalidraw@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/excalidraw@2e7c2f00eac501adad49c696abef1c5c2c44a4fc(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(immer@10.1.3)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)':
     dependencies:
       '@braintree/sanitize-url': 6.0.2
       '@codemirror/commands': 6.10.4
       '@codemirror/language': 6.12.3
       '@codemirror/state': 6.7.0
       '@codemirror/view': 6.43.2
-      '@excalidraw-yjs/common': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@34c34210f3267b80cbadb4d83169157721603c7d
-      '@excalidraw-yjs/element': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@34c34210f3267b80cbadb4d83169157721603c7d
-      '@excalidraw-yjs/math': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@34c34210f3267b80cbadb4d83169157721603c7d
+      '@excalidraw-yjs/common': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
+      '@excalidraw-yjs/element': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/element@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
+      '@excalidraw-yjs/math': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
       '@excalidraw/laser-pointer': 1.3.1
       '@excalidraw/mermaid-to-excalidraw': 2.2.2
       '@excalidraw/random-username': 1.1.0
@@ -8766,11 +8766,11 @@ snapshots:
       - '@types/react-dom'
       - immer
 
-  '@excalidraw-yjs/fractional-indexing@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@34c34210f3267b80cbadb4d83169157721603c7d': {}
+  '@excalidraw-yjs/fractional-indexing@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/fractional-indexing@2e7c2f00eac501adad49c696abef1c5c2c44a4fc': {}
 
-  '@excalidraw-yjs/math@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@34c34210f3267b80cbadb4d83169157721603c7d':
+  '@excalidraw-yjs/math@https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/math@2e7c2f00eac501adad49c696abef1c5c2c44a4fc':
     dependencies:
-      '@excalidraw-yjs/common': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@34c34210f3267b80cbadb4d83169157721603c7d
+      '@excalidraw-yjs/common': https://pkg.pr.new/alkem-io/excalidraw-yjs/@excalidraw-yjs/common@2e7c2f00eac501adad49c696abef1c5c2c44a4fc
 
   '@excalidraw/laser-pointer@1.3.1': {}
 
