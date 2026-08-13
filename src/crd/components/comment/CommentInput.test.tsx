@@ -166,6 +166,24 @@ describe('CommentInput attachments', () => {
       expect(onSubmit).not.toHaveBeenCalled();
     });
 
+    // The chips and the error alert render only when `attachmentsEnabled`. If the
+    // block did not follow that gate, a draft staged while attachments were live
+    // (e.g. a deep-linked conversation that resolves to one without a bucket) would
+    // leave Send disabled forever, with no chip to remove and no error to read.
+    test('a staged attachment does not dead-lock Send once attachments are disabled', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={false} attachments={[failed]} value="hello" />);
+
+      // Nothing on screen would explain a disabled Send here.
+      expect(screen.queryByText('broken.png')).not.toBeInTheDocument();
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'comments.send' })).toBeEnabled();
+    });
+
+    test('an in-flight upload does not dead-lock Send once attachments are disabled', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={false} attachments={[uploading]} value="hello" />);
+      expect(screen.getByRole('button', { name: 'comments.send' })).toBeEnabled();
+    });
+
     test('removing the failed chip re-enables the send', () => {
       const { rerender } = render(
         <CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready, failed]} />

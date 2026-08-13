@@ -162,11 +162,13 @@ export function CommentInput({
   // chip, and removing it re-enables sending.
   const anyFailed = attachments.some(attachment => attachment.status === 'error');
   // With attachments enabled, an attachment-only message (no text) is valid;
-  // block sending while any upload is still in flight.
+  // block sending while any upload is still in flight. Both blocks are gated on
+  // `attachmentsEnabled` because the chips and the error alert are — otherwise a
+  // draft staged just before attachments were disabled would dead-lock Send with
+  // no chip to remove and no error explaining why.
   const canSend =
     !disabled &&
-    !anyUploading &&
-    !anyFailed &&
+    !(attachmentsEnabled && (anyUploading || anyFailed)) &&
     (trimmedContent.length > 0 || (attachmentsEnabled && readyAttachmentCount > 0));
   const showCharCount = content.length >= Math.floor(maxLength * 0.8);
   const mentionsEnabled = Boolean(mentionSearch);
