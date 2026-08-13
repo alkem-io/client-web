@@ -1,43 +1,41 @@
 import { useConversationStorageConfigQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { useConfig } from '@/domain/platform/config/useConfig';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
-
-/**
- * Platform feature-flag name gating conversation media attachments (feature 013).
- * Read via `useConfig().isFeatureEnabled` — string-based, so it safely returns
- * `false` until the server advertises the flag (the plan ships it default-off).
- */
-export const CONVERSATION_ATTACHMENTS_FEATURE_FLAG = 'ATTACHMENTS';
 
 export type ConversationStorageConfigResult = {
   /** The conversation bucket config to upload attachments into, or undefined
-   *  when the feature is off or the bucket is not reachable (non-member). */
+   *  when attachments are unavailable for this conversation (feature disabled
+   *  server-side, or the viewer is not a member). */
   storageConfig: StorageConfig | undefined;
-  /** Whether the attachments feature flag is enabled for this platform. */
-  featureEnabled: boolean;
 };
 
 /**
  * Resolves the storage configuration for a conversation's attachment bucket
- * (feature 013), gated behind the attachments feature flag.
+ * (feature 013).
  *
- * The server slice (013) exposes `Conversation.storageBucket` (READ-gated to
- * conversation members, null when message attachments are disabled). When the
- * flag is on and the viewer is a member, we fetch that bucket and surface its
- * id + policy so `useConversationAttachments` can upload into it. When the flag
- * is off, no conversation is selected, or the bucket is null (non-member /
- * server flag off), this returns `storageConfig: undefined` and the composer's
- * attach affordance stays inert. The render path (Message.attachments) is
- * unaffected either way.
+ * There is deliberately NO client-side feature flag here. Attachments are gated
+ * server-side on the `communications.message_attachments.enabled` CONFIG key,
+ * which is not — and is not intended to be — a `PlatformFeatureFlagName`; the
+ * platform flag enum only carries COMMUNICATIONS, COMMUNICATIONS_DISCUSSIONS,
+ * SUBSCRIPTIONS, NOTIFICATIONS, WHITEBOARDS, MEMO, LANDING_PAGE and
+ * GUIDENCE_ENGINE. The server already collapses every reason attachments are
+ * unavailable — feature off, viewer not a conversation member, bucket not
+ * readable — into a single authoritative signal: `Conversation.storageBucket`
+ * is null. So the presence of a non-null bucket IS the gate, and adding a
+ * second client-side gate on top could only ever be wrong (as an earlier
+ * revision of this hook was: it gated on a string that is not in the enum, so
+ * `isFeatureEnabled` returned false forever and the composer never activated).
+ *
+ * When the bucket resolves, its id + policy are surfaced so
+ * `useConversationAttachments` can upload into it. When it is null (or no
+ * conversation is selected) this returns `storageConfig: undefined` and the
+ * composer's attach affordance stays inert. The render path
+ * (`Message.attachments`) is unaffected either way.
  */
 export function useConversationStorageConfig(conversationId: string | undefined): ConversationStorageConfigResult {
-  const { isFeatureEnabled } = useConfig();
-  const featureEnabled = isFeatureEnabled(CONVERSATION_ATTACHMENTS_FEATURE_FLAG);
-
   const { data } = useConversationStorageConfigQuery({
-    variables: { conversationId: conversationId! },
-    skip: !featureEnabled || !conversationId,
+    variables: { conversationId: conversationId ?? '' },
+    skip: !conversationId,
   });
 
   const bucket = data?.lookup.conversation?.storageBucket;
@@ -54,5 +52,5 @@ export function useConversationStorageConfig(conversationId: string | undefined)
       }
     : undefined;
 
-  return { storageConfig: featureEnabled ? storageConfig : undefined, featureEnabled };
+  return { storageConfig };
 }

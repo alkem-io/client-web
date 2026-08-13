@@ -83,9 +83,10 @@ export const UnifiedChatPanelConnector = () => {
     useUnifiedConversationView(selectedConversation ?? null, rawMessages);
 
   // Attachments (feature 013) — only for real (non-guidance) conversation
-  // threads. The hook fetches the conversation's storage bucket behind the
-  // ATTACHMENTS feature flag; `enabled` stays false (composer unchanged) when
-  // the flag is off or the bucket is null (non-member / server flag off).
+  // threads. The hook fetches the conversation's storage bucket; the server
+  // returns a null bucket whenever attachments are unavailable (feature off
+  // server-side, or the viewer is not a member), which is the only gate —
+  // `enabled` then stays false and the composer renders exactly as before.
   const { storageConfig: attachmentStorageConfig } = useConversationStorageConfig(selectedConversationId ?? undefined);
   const messageAttachments = useConversationAttachments(attachmentStorageConfig, selectedConversationId ?? undefined);
   // Attachments are only offered on real, uploadable threads — never the
@@ -345,7 +346,10 @@ export const UnifiedChatPanelConnector = () => {
               // for this thread — a text-only send never ships stale ids.
               const sent = await handleSendMessage(message, attachmentsEnabled ? messageAttachments.documentIds : []);
               if (sent) {
-                messageAttachments.reset();
+                // Pinned for the same reason as clearDraft below — clearing the
+                // staged attachments of whatever conversation happens to be
+                // selected NOW would discard a draft the user just started.
+                messageAttachments.reset(conversationId ?? undefined);
                 if (conversationId) {
                   clearDraft(conversationId);
                 }
