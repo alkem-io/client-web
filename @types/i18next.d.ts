@@ -25,6 +25,7 @@ import type crdInnovationHubTranslation from '@/crd/i18n/innovationHub/innovatio
 import type crdAdminTranslation from '@/crd/i18n/admin/admin.en.json';
 import type crdHelpTranslation from '@/crd/i18n/help/help.en.json';
 import type crdLanguageTranslation from '@/crd/i18n/language/language.en.json';
+import type crdReactionsTranslation from '@/crd/i18n/reactions/reactions.en.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -55,6 +56,7 @@ declare module 'i18next' {
       'crd-admin': typeof crdAdminTranslation;
       'crd-help': typeof crdHelpTranslation;
       'crd-language': typeof crdLanguageTranslation;
+      'crd-reactions': typeof crdReactionsTranslation;
     };
   }
 }
