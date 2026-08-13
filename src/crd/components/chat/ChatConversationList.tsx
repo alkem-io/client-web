@@ -1,4 +1,4 @@
-import { Search, SquarePen } from 'lucide-react';
+import { Paperclip, Search, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -129,8 +129,17 @@ export function ChatConversationList({
                           <>
                             <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
                           </>
+                        ) : item.lastMessagePreview ? (
+                          item.lastMessagePreview
+                        ) : item.lastMessageAttachmentCount ? (
+                          // Media-only last message: without this the row's
+                          // preview line would just be blank.
+                          <span className="inline-flex items-center gap-1">
+                            <Paperclip aria-hidden="true" className="size-3 shrink-0" />
+                            {t('list.attachmentPreview', { count: item.lastMessageAttachmentCount })}
+                          </span>
                         ) : (
-                          (item.lastMessagePreview ?? '')
+                          ''
                         )}
                       </span>
                       {hasUnread && (

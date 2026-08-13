@@ -18,6 +18,10 @@ export type ChatListItem = {
   /** Members for the group composite avatar (excludes the current user). */
   memberAvatars?: ChatMemberAvatar[];
   lastMessagePreview?: string;
+  /** How many media attachments the last message carried (feature 013). A
+   *  media-only message has no `lastMessagePreview`, so the row falls back to
+   *  an attachment label instead of rendering a blank line. */
+  lastMessageAttachmentCount?: number;
   /** Unsent text for this conversation — shown instead of `lastMessagePreview`. */
   draftPreview?: string;
   /** Pre-formatted relative-time display string for the last message. */

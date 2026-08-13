@@ -47192,6 +47192,16 @@ export type ConversationDetailsQuery = {
                         }
                       | undefined;
                   }>;
+                  attachments: Array<{
+                    __typename?: 'MessageAttachment';
+                    id: string;
+                    url: string;
+                    displayName: string;
+                    mimeType: string;
+                    size: number;
+                    width?: number | undefined;
+                    height?: number | undefined;
+                  }>;
                 }
               | undefined;
           };
@@ -47269,6 +47279,16 @@ export type ConversationEventsSubscription = {
                             profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                           }
                         | undefined;
+                    }>;
+                    attachments: Array<{
+                      __typename?: 'MessageAttachment';
+                      id: string;
+                      url: string;
+                      displayName: string;
+                      mimeType: string;
+                      size: number;
+                      width?: number | undefined;
+                      height?: number | undefined;
                     }>;
                   }
                 | undefined;
@@ -47548,6 +47568,16 @@ export type CreateConversationMutation = {
                   }
                 | undefined;
             }>;
+            attachments: Array<{
+              __typename?: 'MessageAttachment';
+              id: string;
+              url: string;
+              displayName: string;
+              mimeType: string;
+              size: number;
+              width?: number | undefined;
+              height?: number | undefined;
+            }>;
           }
         | undefined;
     };
@@ -47659,6 +47689,16 @@ export type UserConversationsQuery = {
                         profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
                       }
                     | undefined;
+                }>;
+                attachments: Array<{
+                  __typename?: 'MessageAttachment';
+                  id: string;
+                  url: string;
+                  displayName: string;
+                  mimeType: string;
+                  size: number;
+                  width?: number | undefined;
+                  height?: number | undefined;
                 }>;
               }
             | undefined;

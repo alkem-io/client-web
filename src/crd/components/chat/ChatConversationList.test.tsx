@@ -42,6 +42,21 @@ describe('ChatConversationList draft preview', () => {
     expect(screen.queryByText('See you tomorrow')).not.toBeInTheDocument();
   });
 
+  // A media-only message has an empty body, so the preview line used to render
+  // as a blank row with no indication anything had been sent.
+  test('a media-only last message previews its attachments instead of a blank line', () => {
+    renderList([conversation({ lastMessagePreview: '', lastMessageAttachmentCount: 2 })]);
+
+    expect(screen.getByText('list.attachmentPreview')).toBeInTheDocument();
+  });
+
+  test('text wins over the attachment label when the last message has both', () => {
+    renderList([conversation({ lastMessagePreview: 'Here you go', lastMessageAttachmentCount: 1 })]);
+
+    expect(screen.getByText('Here you go')).toBeInTheDocument();
+    expect(screen.queryByText('list.attachmentPreview')).not.toBeInTheDocument();
+  });
+
   test('a draft does not change the order of the list', () => {
     renderList([
       conversation({ id: 'conv-1', displayName: 'Ada Lovelace' }),

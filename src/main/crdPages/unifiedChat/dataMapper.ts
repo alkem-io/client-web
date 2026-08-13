@@ -114,6 +114,9 @@ export const mapConversationToListItem = (
     isGuidance: conv.isGuidance,
     memberAvatars: otherMembers.map(m => ({ id: m.id, name: m.displayName, avatarUrl: m.avatarUri })),
     lastMessagePreview: conv.lastMessage?.message,
+    // A media-only message carries no body text, so the row needs the attachment
+    // count to render something instead of an empty preview line.
+    lastMessageAttachmentCount: conv.lastMessage?.attachments.length,
     lastMessageTimestamp: conv.lastMessage ? formatTimestamp(conv.lastMessage.timestamp) : undefined,
     unreadCount: conv.unreadCount,
     pinned: conv.pinned,

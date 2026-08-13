@@ -32119,6 +32119,15 @@ export const ConversationDetailsDocument = gql`
               }
             }
           }
+          attachments {
+            id
+            url
+            displayName
+            mimeType
+            size
+            width
+            height
+          }
         }
       }
       members {
@@ -32246,6 +32255,15 @@ export const ConversationEventsDocument = gql`
                   displayName
                 }
               }
+            }
+            attachments {
+              id
+              url
+              displayName
+              mimeType
+              size
+              width
+              height
             }
           }
         }
@@ -32578,6 +32596,15 @@ export const CreateConversationDocument = gql`
             }
           }
         }
+        attachments {
+          id
+          url
+          displayName
+          mimeType
+          size
+          width
+          height
+        }
       }
     }
     members {
@@ -32908,6 +32935,15 @@ export const UserConversationsDocument = gql`
                   displayName
                 }
               }
+            }
+            attachments {
+              id
+              url
+              displayName
+              mimeType
+              size
+              width
+              height
             }
           }
         }
