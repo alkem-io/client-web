@@ -2,6 +2,7 @@ import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CommentReactions } from '@/crd/components/comment/CommentReactions';
 import { MessageAttachments } from '@/crd/components/comment/MessageAttachments';
+import { hasRenderableText } from '@/crd/components/comment/messageText';
 import { EmojiPicker } from '@/crd/components/common/EmojiPicker';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { VirtualContributorBadge } from '@/crd/components/common/VirtualContributorBadge';
@@ -45,14 +46,8 @@ export function ChatMessageBubble({
   // No reactions on optimistic/pending messages or the synthetic guidance intro (FR-016a).
   const effectiveCanReact = canReact && !message.isPending;
   const hasAttachments = Boolean(message.attachments && message.attachments.length > 0);
-  // A media event with no caption carries the filename as its body (MSC2530), so the
-  // same string arrives as both the message text and the attachment's displayName —
-  // rendering it would echo the filename above its own attachment. Element shows just
-  // the media. Only for a SINGLE attachment (with several the text is ambiguous), and
-  // compared verbatim: a real caption that happens to equal the filename is
-  // indistinguishable, and suppressing it is harmless.
-  const isFilenameEcho = message.attachments?.length === 1 && message.content === message.attachments[0].displayName;
-  const hasText = message.content.trim().length > 0 && !isFilenameEcho;
+  // Shared with CommentItem — see `hasRenderableText` for the MSC2530 filename-echo rule.
+  const hasText = hasRenderableText(message.content, message.attachments);
 
   const bubbleColumn = (
     <div className={cn('group flex flex-col gap-0.5', isOwn ? 'items-end' : 'items-start')}>

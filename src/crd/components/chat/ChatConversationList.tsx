@@ -129,7 +129,7 @@ export function ChatConversationList({
                           <>
                             <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
                           </>
-                        ) : item.lastMessagePreview ? (
+                        ) : item.lastMessagePreview?.trim() ? (
                           item.lastMessagePreview
                         ) : item.lastMessageAttachmentCount ? (
                           // Media-only last message: without this the row's

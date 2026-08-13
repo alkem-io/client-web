@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { CommentReactions } from './CommentReactions';
 import { MessageAttachments } from './MessageAttachments';
+import { hasRenderableText } from './messageText';
 import type { CommentData } from './types';
 
 type CommentItemProps = {
@@ -64,6 +65,10 @@ export function CommentItem({
   // so the hover toolbar stays next to the text.
   const isLongComment = comment.content.length > 120 || comment.content.includes('\n');
 
+  // Same rule the chat bubbles use: an empty body renders no markdown block, and a
+  // caption-less media event's filename body is not echoed above its own attachment.
+  const hasText = hasRenderableText(comment.content, comment.attachments);
+
   return (
     <div className={cn('group/comment space-y-1.5', isReply && 'ml-6 md:ml-10')}>
       <div className="flex gap-3">
@@ -98,10 +103,12 @@ export function CommentItem({
               {comment.isDeleted ? (
                 <p className="text-body italic text-muted-foreground">{t('comments.deleted')}</p>
               ) : (
-                <MarkdownContent
-                  content={comment.content}
-                  className="break-words text-body text-foreground [&_p]:mb-0 [&_p]:leading-normal [&_p]:text-foreground"
-                />
+                hasText && (
+                  <MarkdownContent
+                    content={comment.content}
+                    className="break-words text-body text-foreground [&_p]:mb-0 [&_p]:leading-normal [&_p]:text-foreground"
+                  />
+                )
               )}
             </div>
           </div>
