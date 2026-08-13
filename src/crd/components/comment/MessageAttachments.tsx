@@ -1,6 +1,7 @@
 import { Download, FileText } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatBytes } from '@/crd/lib/formatBytes';
 import { cn } from '@/crd/lib/utils';
 import type { MessageAttachment } from './types';
 
@@ -11,20 +12,6 @@ type MessageAttachmentsProps = {
   align?: 'start' | 'end';
   className?: string;
 };
-
-// Base-1024 units, so the labels are the IEC binary ones (KiB/MiB/…).
-const BYTE_UNITS = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
-
-/** Pure, self-contained byte formatter so the design-system component keeps no
- *  host-app imports. */
-function formatBytes(size: number): string {
-  if (!size || size <= 0) {
-    return '';
-  }
-  const exponent = Math.min(Math.floor(Math.log(size) / Math.log(1024)), BYTE_UNITS.length - 1);
-  const value = size / 1024 ** exponent;
-  return `${value.toFixed(exponent === 0 ? 0 : 1)} ${BYTE_UNITS[exponent]}`;
-}
 
 const isImage = (mimeType: string) => mimeType.startsWith('image/');
 
