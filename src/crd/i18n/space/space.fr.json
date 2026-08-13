@@ -866,7 +866,7 @@
       "attach": "Joindre des fichiers",
       "removeAttachment": "Retirer {{name}}",
       "uploading": "Téléversement…",
-      "uploadFailed": "Échec du téléversement",
+      "uploadFailed": "Échec du téléversement. Supprimez le fichier pour envoyer votre message.",
       "errorTooMany": "Vous pouvez joindre jusqu’à {{max}} fichiers.",
       "errorTooLarge": "{{name}} dépasse {{max}} Mo.",
       "errorUnsupportedType": "{{name}} a un type de fichier non pris en charge."

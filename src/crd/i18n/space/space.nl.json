@@ -866,7 +866,7 @@
       "attach": "Bestanden toevoegen",
       "removeAttachment": "{{name}} verwijderen",
       "uploading": "Uploaden…",
-      "uploadFailed": "Uploaden mislukt",
+      "uploadFailed": "Uploaden mislukt. Verwijder het bestand om je bericht te versturen.",
       "errorTooMany": "Je kunt maximaal {{max}} bestanden toevoegen.",
       "errorTooLarge": "{{name}} is groter dan {{max}} MB.",
       "errorUnsupportedType": "{{name}} heeft een niet-ondersteund bestandstype."

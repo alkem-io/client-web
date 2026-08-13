@@ -866,7 +866,7 @@
       "attach": "Attach files",
       "removeAttachment": "Remove {{name}}",
       "uploading": "Uploading…",
-      "uploadFailed": "Upload failed",
+      "uploadFailed": "Upload failed. Remove the file to send your message.",
       "errorTooMany": "You can attach up to {{max}} files.",
       "errorTooLarge": "{{name}} is larger than {{max}} MB.",
       "errorUnsupportedType": "{{name}} has an unsupported file type."

@@ -90,6 +90,7 @@ describe('CommentInput refocusAfterSubmit', () => {
 
 const ready: ComposerAttachment = { id: 'a1', name: 'photo.png', status: 'ready', mimeType: 'image/png' };
 const uploading: ComposerAttachment = { id: 'a2', name: 'big.pdf', status: 'uploading', mimeType: 'application/pdf' };
+const failed: ComposerAttachment = { id: 'a3', name: 'broken.png', status: 'error', mimeType: 'image/png' };
 
 describe('CommentInput attachments', () => {
   test('does not render the attach affordance unless attachments are enabled', () => {
@@ -140,5 +141,39 @@ describe('CommentInput attachments', () => {
   test('surfaces a validation/upload error as an alert', () => {
     render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachmentError="Too big" />);
     expect(screen.getByRole('alert')).toHaveTextContent('Too big');
+  });
+
+  // Regression guard for silent data loss: a failed upload has no document id,
+  // so sending would post the message WITHOUT that file and then clear the chip
+  // — the user watches their attachment disappear believing it was sent.
+  describe('a failed attachment blocks the send', () => {
+    test('the send button is disabled even when there is text to send', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[failed]} value="here you go" />);
+      expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+    });
+
+    test('the send button is disabled alongside a successfully uploaded file', () => {
+      render(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready, failed]} />);
+      expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+    });
+
+    test('Enter does not submit either — the keyboard path must not bypass the block', () => {
+      const onSubmit = vi.fn();
+      render(<CommentInput onSubmit={onSubmit} attachmentsEnabled={true} attachments={[failed]} value="here you go" />);
+
+      fireEvent.keyDown(screen.getByRole('textbox'), { key: 'Enter' });
+
+      expect(onSubmit).not.toHaveBeenCalled();
+    });
+
+    test('removing the failed chip re-enables the send', () => {
+      const { rerender } = render(
+        <CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready, failed]} />
+      );
+      expect(screen.getByRole('button', { name: 'comments.send' })).toBeDisabled();
+
+      rerender(<CommentInput onSubmit={vi.fn()} attachmentsEnabled={true} attachments={[ready]} />);
+      expect(screen.getByRole('button', { name: 'comments.send' })).toBeEnabled();
+    });
   });
 });

@@ -866,7 +866,7 @@
       "attach": "Adjuntar archivos",
       "removeAttachment": "Quitar {{name}}",
       "uploading": "Subiendo…",
-      "uploadFailed": "Error al subir",
+      "uploadFailed": "Error al subir. Elimina el archivo para enviar tu mensaje.",
       "errorTooMany": "Puedes adjuntar hasta {{max}} archivos.",
       "errorTooLarge": "{{name}} supera los {{max}} MB.",
       "errorUnsupportedType": "{{name}} tiene un tipo de archivo no admitido."

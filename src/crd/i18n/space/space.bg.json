@@ -866,7 +866,7 @@
       "attach": "Прикачване на файлове",
       "removeAttachment": "Премахване на {{name}}",
       "uploading": "Качване…",
-      "uploadFailed": "Качването е неуспешно",
+      "uploadFailed": "Качването е неуспешно. Премахнете файла, за да изпратите съобщението си.",
       "errorTooMany": "Можете да прикачите до {{max}} файла.",
       "errorTooLarge": "{{name}} е по-голям от {{max}} MB.",
       "errorUnsupportedType": "{{name}} е от неподдържан тип файл."

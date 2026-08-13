@@ -866,7 +866,7 @@
       "attach": "Dateien anhängen",
       "removeAttachment": "{{name}} entfernen",
       "uploading": "Wird hochgeladen…",
-      "uploadFailed": "Hochladen fehlgeschlagen",
+      "uploadFailed": "Hochladen fehlgeschlagen. Entfernen Sie die Datei, um Ihre Nachricht zu senden.",
       "errorTooMany": "Du kannst bis zu {{max}} Dateien anhängen.",
       "errorTooLarge": "{{name}} ist größer als {{max}} MB.",
       "errorUnsupportedType": "{{name}} hat einen nicht unterstützten Dateityp."
