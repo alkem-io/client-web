@@ -107,7 +107,12 @@ export function useConversationAttachments(
     // The conversation this batch belongs to; if it changes while an upload is
     // in flight, later resolutions/rejections must not paint the new one.
     const requestConversationId = conversationId;
-    setError(undefined);
+    // Drop a stale message, but keep the upload-failed one while a failed chip is
+    // still staged: that chip is what disables Send, so clearing its explanation
+    // would leave a dead Send button with nothing on screen to act on.
+    setError(
+      attachments.some(attachment => attachment.status === 'error') ? t('comments.attachments.uploadFailed') : undefined
+    );
     if (!storageConfig) return;
 
     const { accepted, rejected } = validateAttachments(files, {
@@ -157,10 +162,16 @@ export function useConversationAttachments(
         // Same guard as the success path: a rejection from a previous
         // conversation must not surface a spurious error on the current one.
         if (conversationIdRef.current !== requestConversationId) return;
-        setAttachments(prev =>
-          prev.map(attachment => (attachment.id === stagedId ? { ...attachment, status: 'error' } : attachment))
-        );
-        setError(t('comments.attachments.uploadFailed'));
+        setAttachments(prev => {
+          // The chip may have been removed while its upload was in flight. The
+          // "remove the file" message would then point at nothing the user can
+          // see, so raise it only while the failed chip is still on screen.
+          // Idempotent under a double-invoked updater (same value each time).
+          if (prev.some(attachment => attachment.id === stagedId)) {
+            setError(t('comments.attachments.uploadFailed'));
+          }
+          return prev.map(attachment => (attachment.id === stagedId ? { ...attachment, status: 'error' } : attachment));
+        });
       }
     }
   };

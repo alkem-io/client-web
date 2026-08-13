@@ -240,6 +240,59 @@ describe('useConversationAttachments', () => {
     expect(result.current.attachments).toHaveLength(0);
   });
 
+  // A failed chip is what disables Send, so its explanation has to outlive a later
+  // successful attach — otherwise Send stays dead with nothing on screen saying why.
+  test('a later successful attach keeps the failed-upload error while the failed chip is staged', async () => {
+    mockUploadFile
+      .mockRejectedValueOnce(new Error('boom'))
+      .mockResolvedValueOnce({ data: { uploadFileOnStorageBucket: { id: 'doc-b', url: 'https://x/doc-b' } } });
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+
+    await act(async () => {
+      await result.current.attachFiles([makeFile('a.png', 'image/png')]);
+    });
+    expect(result.current.error).toBe('comments.attachments.uploadFailed');
+
+    await act(async () => {
+      await result.current.attachFiles([makeFile('b.png', 'image/png')]);
+    });
+
+    expect(result.current.attachments.map(attachment => attachment.status)).toEqual(['error', 'ready']);
+    expect(result.current.error).toBe('comments.attachments.uploadFailed');
+  });
+
+  // The mirror case: no error may be shown once its chip is gone — "remove the file"
+  // would point at nothing the user can see.
+  test('a chip removed while its upload is in flight leaves no unactionable error behind', async () => {
+    let rejectUpload: (reason?: unknown) => void = () => {};
+    mockUploadFile.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectUpload = reject;
+        })
+    );
+    const { result } = renderHook(() => useConversationAttachments(bucketConfig));
+
+    act(() => {
+      void result.current.attachFiles([makeFile('a.png', 'image/png')]);
+    });
+    await tick();
+    expect(result.current.attachments).toHaveLength(1);
+
+    act(() => {
+      result.current.removeAttachment(result.current.attachments[0].id);
+    });
+    expect(result.current.attachments).toHaveLength(0);
+
+    await act(async () => {
+      rejectUpload(new Error('boom'));
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.attachments).toHaveLength(0);
+    expect(result.current.error).toBeUndefined();
+  });
+
   test('removeAttachment re-derives the error (clears a stale upload failure)', async () => {
     mockUploadFile.mockRejectedValue(new Error('boom'));
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
