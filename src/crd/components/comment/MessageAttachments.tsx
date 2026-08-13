@@ -84,6 +84,12 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
     return <AttachmentFileChip attachment={attachment} hint={t('messageAttachments.unavailableHint')} />;
   }
 
+  // The image's own intrinsic ratio reserves the final height *before* the bytes
+  // arrive, so nothing in the thread shifts when it lands. Note this must live on
+  // the <img> and must not be paired with an explicit height: an explicit
+  // `height` fully determines the box and `aspect-ratio` is then ignored, which
+  // is why the fixed-height fallback below is applied only when the server did
+  // not give us dimensions.
   const aspectStyle =
     attachment.width && attachment.height ? { aspectRatio: `${attachment.width} / ${attachment.height}` } : undefined;
 
@@ -92,14 +98,11 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
       href={attachment.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block overflow-hidden rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="relative block overflow-hidden rounded-lg border border-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
+      {/* Overlays the image rather than replacing it — see the `img` note below. */}
       {status === 'loading' && (
-        <output
-          aria-label={t('messageAttachments.loading')}
-          className="flex h-32 w-full animate-pulse items-center justify-center bg-muted"
-          style={aspectStyle}
-        />
+        <output aria-label={t('messageAttachments.loading')} className="absolute inset-0 animate-pulse bg-muted" />
       )}
       <img
         src={attachment.url}
@@ -107,7 +110,18 @@ function AttachmentImage({ attachment }: { attachment: MessageAttachment }) {
         loading="lazy"
         onLoad={() => setStatus('loaded')}
         onError={() => setStatus('error')}
-        className={cn('h-auto max-h-80 w-full object-cover', status !== 'loaded' && 'hidden')}
+        // Never take the image OUT of the layout while it loads. A
+        // `loading="lazy"` image that is `display: none` is never intersected by
+        // the browser's lazy-load observer, so it is never fetched, `onLoad`
+        // never fires, and the skeleton stays forever. Fade it in instead — it
+        // keeps its box (and therefore its reserved height) the whole time.
+        className={cn(
+          'block max-h-80 w-full object-cover transition-opacity duration-200',
+          // Without server dimensions there is no ratio to reserve, so fall back
+          // to a fixed placeholder height until the real image sizes itself.
+          !aspectStyle && status !== 'loaded' ? 'h-32' : 'h-auto',
+          status !== 'loaded' && 'opacity-0'
+        )}
         style={aspectStyle}
       />
     </a>

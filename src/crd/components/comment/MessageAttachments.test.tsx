@@ -104,4 +104,18 @@ describe('MessageAttachments', () => {
     fireEvent.load(screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` }));
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
+
+  // Regression guard: the image used to be `display: none` (Tailwind `hidden`)
+  // until it fired onLoad. A `loading="lazy"` image that is not in the layout is
+  // never intersected by the browser's lazy-load observer, so it never fetches,
+  // onLoad never fires, and the skeleton is permanent — i.e. NO attachment image
+  // ever rendered. It must stay in the layout and merely be transparent.
+  test('keeps the lazily-loaded image in the layout while it loads (never display:none)', () => {
+    render(<MessageAttachments attachments={[image]} />);
+    const img = screen.getByRole('img', { name: `messageAttachments.imageAlt:${image.displayName}` });
+
+    expect(img).toHaveAttribute('loading', 'lazy');
+    expect(img).not.toHaveClass('hidden');
+    expect(img.style.display).not.toBe('none');
+  });
 });
