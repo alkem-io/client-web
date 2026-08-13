@@ -5,7 +5,9 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-// Radix Popover portals need a mock in jsdom
+// Radix Popover portals need a mock in jsdom; the mock keeps both trigger and
+// content in the same DOM tree so glyph button interactions can be tested
+// without a real portal.
 vi.mock('@/crd/primitives/popover', () => ({
   Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   PopoverTrigger: ({ children, asChild: _asChild }: { children: React.ReactNode; asChild?: boolean }) => (
@@ -53,5 +55,15 @@ describe('ReactionEmojiPicker', () => {
     // The ghost Button has an aria-label from the translation key
     const trigger = screen.getByRole('button', { name: 'addReaction' });
     expect(trigger).toBeInTheDocument();
+  });
+
+  it('trigger button has no raw mouse-enter/leave handlers that would close the picker on cursor travel', () => {
+    render(<ReactionEmojiPicker allowedEmojis={['heart']} onSelect={vi.fn()} />);
+    const trigger = screen.getByRole('button', { name: 'addReaction' });
+    // The picker uses Radix built-in click toggle only; driving open state from
+    // raw onMouseLeave on a portaled popover would close the picker before the
+    // cursor reaches the glyph grid across the sideOffset gap.
+    expect(trigger.onmouseleave).toBeNull();
+    expect(trigger.onmouseenter).toBeNull();
   });
 });

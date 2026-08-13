@@ -18,8 +18,14 @@ export type ReactionEmojiPickerProps = {
 
 /**
  * A restricted emoji picker that renders exactly the server-provided allowed
- * set. Opens on hover, focus, or click/tap — all three paths are supported so
- * both mouse and touch users can access it.
+ * set. Opens on click or keyboard activation — the Radix Popover primitive
+ * handles open/close through its own built-in toggle logic, which works
+ * correctly across both mouse and touch devices without a hover-gap problem.
+ *
+ * Manual onMouseEnter/onMouseLeave handlers are intentionally absent: driving
+ * a portaled Popover from raw mouse events causes the picker to close as soon
+ * as the cursor leaves the trigger and enters the gap before the portaled
+ * content, making the glyph grid unreachable via mouse.
  *
  * This component NEVER uses the full emoji-picker-react library: it renders only
  * the platform-defined positive set. A free-form emoji search is absent by design.
@@ -49,10 +55,6 @@ export function ReactionEmojiPicker({ allowedEmojis, currentEmoji, onSelect }: R
           aria-label={t('addReaction')}
           aria-expanded={open}
           aria-haspopup="true"
-          onMouseEnter={() => setOpen(true)}
-          onMouseLeave={() => setOpen(false)}
-          onFocus={() => setOpen(true)}
-          onBlur={() => setOpen(false)}
         >
           <Smile className="size-3.5" aria-hidden="true" />
         </Button>
@@ -76,11 +78,6 @@ export function ReactionEmojiPicker({ allowedEmojis, currentEmoji, onSelect }: R
                 'flex items-center justify-center rounded-md p-1.5 text-body transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring hover:bg-muted',
                 currentEmoji === slug && 'bg-primary/10 ring-1 ring-primary/50'
               )}
-              onMouseDown={event => {
-                // Prevent the trigger's onBlur from closing the picker before the
-                // click registers.
-                event.preventDefault();
-              }}
               onClick={() => handleSelect(slug)}
               aria-label={slug}
             >
