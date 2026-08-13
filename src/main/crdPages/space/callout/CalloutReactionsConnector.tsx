@@ -1,85 +1,26 @@
-import { gql, useLazyQuery, useMutation } from '@apollo/client';
 import { useState } from 'react';
+import {
+  useAddReactionToCalloutMutation,
+  useCalloutWhoReactedLazyQuery,
+  useRemoveReactionFromCalloutMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { CalloutReactionsBar } from '@/crd/components/reactions/CalloutReactionsBar';
 import type { WhoReactedRow } from '@/crd/components/reactions/WhoReactedPopover';
-import type {
-  AddReactionToCalloutInput,
-  CalloutReactionsSummaryFragment,
-  CalloutWhoReactedRow,
-  RemoveReactionFromCalloutInput,
-} from './CalloutReactionsTypes';
-
-// GraphQL documents — built against the expected wave-1 server schema.
-// When codegen runs against the deployed server, these inline documents can
-// be replaced with the generated hooks from apollo-hooks.ts.
-
-const ADD_REACTION_MUTATION = gql`
-  mutation AddReactionToCallout($reactionData: AddReactionToCalloutInput!) {
-    addReactionToCallout(reactionData: $reactionData) {
-      id
-      reactionsSummary {
-        total
-        emojis
-        myReactionEmoji
-        allowedEmojis
-      }
-    }
-  }
-`;
-
-const REMOVE_REACTION_MUTATION = gql`
-  mutation RemoveReactionFromCallout($reactionData: RemoveReactionFromCalloutInput!) {
-    removeReactionFromCallout(reactionData: $reactionData) {
-      id
-      reactionsSummary {
-        total
-        emojis
-        myReactionEmoji
-        allowedEmojis
-      }
-    }
-  }
-`;
-
-const WHO_REACTED_QUERY = gql`
-  query CalloutWhoReacted($calloutId: UUID!) {
-    lookup {
-      callout(ID: $calloutId) {
-        id
-        reactions {
-          id
-          emoji
-          updatedDate
-          user {
-            id
-            profile {
-              id
-              displayName
-              avatar: visual(type: AVATAR) {
-                id
-                uri
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
+import type { CalloutReactionsSummaryModel } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 
 type CalloutReactionsConnectorProps = {
   calloutId: string;
   /** The callout's current reactions summary. Provided by the parent query
    *  (CalloutDetails fragment). When undefined the bar is not rendered — the
    *  server module may not yet be deployed. */
-  reactionsSummary?: CalloutReactionsSummaryFragment | null;
+  reactionsSummary?: CalloutReactionsSummaryModel | null;
   /** The callout's authorization privileges for the current viewer */
   myPrivileges?: string[];
   /**
    * Whether the callout is published. Must be true for reactions to be
    * allowed — draft and template callouts reject reactions server-side as
-   * well, so this is defense in depth on the client (FR-010).
+   * well, so this is defense in depth on the client.
    */
   isPublished: boolean;
 };
@@ -99,23 +40,12 @@ export function CalloutReactionsConnector({
 }: CalloutReactionsConnectorProps) {
   const [whoReactedRows, setWhoReactedRows] = useState<WhoReactedRow[]>([]);
 
-  // CONTRIBUTE permission + published callout required to react (FR-009, FR-010)
+  // CONTRIBUTE permission + published callout required to react
   const canReact = isPublished && myPrivileges.includes(AuthorizationPrivilege.Contribute);
 
-  const [addReaction] = useMutation<
-    { addReactionToCallout: { id: string; reactionsSummary: CalloutReactionsSummaryFragment } },
-    { reactionData: AddReactionToCalloutInput }
-  >(ADD_REACTION_MUTATION);
-
-  const [removeReaction] = useMutation<
-    { removeReactionFromCallout: { id: string; reactionsSummary: CalloutReactionsSummaryFragment } },
-    { reactionData: RemoveReactionFromCalloutInput }
-  >(REMOVE_REACTION_MUTATION);
-
-  const [fetchWhoReacted] = useLazyQuery<
-    { lookup: { callout?: { id: string; reactions: CalloutWhoReactedRow[] } | null } },
-    { calloutId: string }
-  >(WHO_REACTED_QUERY, { fetchPolicy: 'network-only' });
+  const [addReaction] = useAddReactionToCalloutMutation();
+  const [removeReaction] = useRemoveReactionFromCalloutMutation();
+  const [fetchWhoReacted] = useCalloutWhoReactedLazyQuery({ fetchPolicy: 'network-only' });
 
   // The server module may not be deployed yet (wave-2-before-wave-1 scenario).
   // Render nothing when the summary field is absent to avoid breaking the feed.
@@ -140,11 +70,11 @@ export function CalloutReactionsConnector({
         rows.map(row => ({
           id: row.id,
           emoji: row.emoji,
-          updatedDate: row.updatedDate,
+          updatedDate: row.updatedDate instanceof Date ? row.updatedDate.toISOString() : String(row.updatedDate),
           user: row.user
             ? {
-                displayName: row.user.profile.displayName,
-                avatarUrl: row.user.profile.avatar?.uri,
+                displayName: row.user.profile?.displayName ?? '',
+                avatarUrl: row.user.profile?.avatar?.uri,
               }
             : null,
         }))
