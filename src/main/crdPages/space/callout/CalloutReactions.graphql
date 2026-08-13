@@ -1,0 +1,61 @@
+# GraphQL documents for callout emoji reactions.
+# Server must have the reaction module deployed before codegen can run
+# (wave 1 constraint). Types are manually defined in CalloutReactionsTypes.ts
+# until codegen runs against the live schema.
+
+fragment CalloutReactionsSummary on Callout {
+  reactionsSummary {
+    total
+    emojis
+    myReactionEmoji
+    allowedEmojis
+  }
+}
+
+mutation AddReactionToCallout($reactionData: AddReactionToCalloutInput!) {
+  addReactionToCallout(reactionData: $reactionData) {
+    id
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+}
+
+mutation RemoveReactionFromCallout($reactionData: RemoveReactionFromCalloutInput!) {
+  removeReactionFromCallout(reactionData: $reactionData) {
+    id
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+}
+
+query CalloutWhoReacted($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      reactions {
+        id
+        emoji
+        updatedDate
+        user {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}
