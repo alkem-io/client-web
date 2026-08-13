@@ -111,6 +111,21 @@ describe('ChatMessageBubble', () => {
       const { container } = render(<ChatMessageBubble message={{ ...baseMessage, content: '   ' }} />);
       expect(bubbleOf(container)).not.toBeInTheDocument();
     });
+
+    // A caption-less media event carries the filename as its body (MSC2530), so the
+    // text would otherwise render as a line above its own attachment.
+    test('text equal to the single attachment displayName renders the attachment but no text line', () => {
+      const { container } = render(
+        <ChatMessageBubble message={{ ...baseMessage, content: 'photo.png', attachments: [attachment] }} />
+      );
+      expect(bubbleOf(container)).not.toBeInTheDocument();
+      expect(container.querySelector('img[alt]')).toBeInTheDocument();
+      // A genuine caption still renders.
+      const withCaption = render(
+        <ChatMessageBubble message={{ ...baseMessage, content: 'look at this', attachments: [attachment] }} />
+      );
+      expect(bubbleOf(withCaption.container)).toBeInTheDocument();
+    });
   });
 
   test('reactions + timestamp render inside the gutter-offset column', () => {
