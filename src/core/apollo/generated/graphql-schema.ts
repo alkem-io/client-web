@@ -18038,6 +18038,15 @@ export type CalloutDetailsQuery = {
                   | undefined;
               }
             | undefined;
+          reactionsSummary?:
+            | {
+                __typename?: 'CalloutReactionsSummary';
+                total: number;
+                emojis: Array<string>;
+                myReactionEmoji?: string | undefined;
+                allowedEmojis: Array<string>;
+              }
+            | undefined;
           classification?:
             | {
                 __typename?: 'Classification';
@@ -18555,6 +18564,92 @@ export type CalloutDetailsFragment = {
           | undefined;
       }
     | undefined;
+  reactionsSummary?:
+    | {
+        __typename?: 'CalloutReactionsSummary';
+        total: number;
+        emojis: Array<string>;
+        myReactionEmoji?: string | undefined;
+        allowedEmojis: Array<string>;
+      }
+    | undefined;
+};
+
+export type AddReactionToCalloutMutationVariables = Exact<{
+  reactionData: { calloutID: string; emoji: string };
+}>;
+
+export type AddReactionToCalloutMutation = {
+  __typename?: 'Mutation';
+  addReactionToCallout: {
+    __typename?: 'Callout';
+    id: string;
+    reactionsSummary?:
+      | {
+          __typename?: 'CalloutReactionsSummary';
+          total: number;
+          emojis: Array<string>;
+          myReactionEmoji?: string | undefined;
+          allowedEmojis: Array<string>;
+        }
+      | undefined;
+  };
+};
+
+export type RemoveReactionFromCalloutMutationVariables = Exact<{
+  reactionData: { calloutID: string };
+}>;
+
+export type RemoveReactionFromCalloutMutation = {
+  __typename?: 'Mutation';
+  removeReactionFromCallout: {
+    __typename?: 'Callout';
+    id: string;
+    reactionsSummary?:
+      | {
+          __typename?: 'CalloutReactionsSummary';
+          total: number;
+          emojis: Array<string>;
+          myReactionEmoji?: string | undefined;
+          allowedEmojis: Array<string>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutWhoReactedQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type CalloutWhoReactedQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          reactions: Array<{
+            __typename?: 'CalloutReaction';
+            id: string;
+            emoji: string;
+            updatedDate: Date;
+            user?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  };
+                }
+              | undefined;
+          }>;
+        }
+      | undefined;
+  };
 };
 
 export type AddVisualToMediaGalleryMutationVariables = Exact<{
