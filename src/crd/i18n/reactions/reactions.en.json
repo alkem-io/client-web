@@ -1,0 +1,10 @@
+{
+  "addReaction": "Add reaction",
+  "pickerTitle": "React to this post",
+  "pickerAriaLabel": "Emoji reaction picker",
+  "totalAriaLabel": "{{count}} people reacted",
+  "totalAriaLabel_one": "1 person reacted",
+  "whoReactedTitle": "Who reacted",
+  "whoReactedEmpty": "No reactions yet",
+  "removeReaction": "Remove your reaction"
+}

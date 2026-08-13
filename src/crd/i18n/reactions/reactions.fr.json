@@ -1,0 +1,10 @@
+{
+  "addReaction": "Ajouter une réaction",
+  "pickerTitle": "Réagir à cette publication",
+  "pickerAriaLabel": "Sélecteur de réactions emoji",
+  "totalAriaLabel": "{{count}} personnes ont réagi",
+  "totalAriaLabel_one": "1 personne a réagi",
+  "whoReactedTitle": "Qui a réagi",
+  "whoReactedEmpty": "Aucune réaction pour l'instant",
+  "removeReaction": "Supprimer votre réaction"
+}

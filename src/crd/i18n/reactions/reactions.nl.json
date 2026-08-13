@@ -1,0 +1,10 @@
+{
+  "addReaction": "Reageer",
+  "pickerTitle": "Reageer op dit Post",
+  "pickerAriaLabel": "Emoji-reactie picker",
+  "totalAriaLabel": "{{count}} mensen reageerden",
+  "totalAriaLabel_one": "1 persoon reageerde",
+  "whoReactedTitle": "Wie reageerde",
+  "whoReactedEmpty": "Nog geen reacties",
+  "removeReaction": "Verwijder uw reactie"
+}
