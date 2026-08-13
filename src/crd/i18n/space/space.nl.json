@@ -864,6 +864,7 @@
     "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven.",
     "attachments": {
       "attach": "Bestanden toevoegen",
+      "stagedListLabel": "Te versturen bestanden",
       "removeAttachment": "{{name}} verwijderen",
       "uploading": "Uploaden…",
       "uploadFailed": "Uploaden mislukt. Verwijder het bestand om je bericht te versturen.",

@@ -864,6 +864,7 @@
     "cantComment": "No tienes permiso para comentar, responder o reaccionar aquí.",
     "attachments": {
       "attach": "Adjuntar archivos",
+      "stagedListLabel": "Archivos para enviar",
       "removeAttachment": "Quitar {{name}}",
       "uploading": "Subiendo…",
       "uploadFailed": "Error al subir. Elimina el archivo para enviar tu mensaje.",

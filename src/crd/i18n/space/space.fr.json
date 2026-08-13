@@ -864,6 +864,7 @@
     "cantComment": "Vous n'avez pas la permission de commenter, répondre ou réagir ici.",
     "attachments": {
       "attach": "Joindre des fichiers",
+      "stagedListLabel": "Fichiers à envoyer",
       "removeAttachment": "Retirer {{name}}",
       "uploading": "Téléversement…",
       "uploadFailed": "Échec du téléversement. Supprimez le fichier pour envoyer votre message.",

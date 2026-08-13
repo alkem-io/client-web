@@ -864,6 +864,7 @@
     "cantComment": "Du hast keine Berechtigung, hier zu kommentieren, antworten oder reagieren.",
     "attachments": {
       "attach": "Dateien anhängen",
+      "stagedListLabel": "Zu sendende Dateien",
       "removeAttachment": "{{name}} entfernen",
       "uploading": "Wird hochgeladen…",
       "uploadFailed": "Hochladen fehlgeschlagen. Entfernen Sie die Datei, um Ihre Nachricht zu senden.",

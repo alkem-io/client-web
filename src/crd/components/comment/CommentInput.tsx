@@ -299,8 +299,10 @@ export function CommentInput({
       </Avatar>
 
       <div className="min-w-0 flex-1">
+        {/* The list label is distinct from the paperclip button's — sharing one makes a
+            screen reader announce "Attach files, list" then "Attach files, button". */}
         {attachmentsEnabled && attachments.length > 0 && (
-          <ul aria-label={t('comments.attachments.attach')} className="mb-1.5 flex flex-wrap gap-1.5">
+          <ul aria-label={t('comments.attachments.stagedListLabel')} className="mb-1.5 flex flex-wrap gap-1.5">
             {attachments.map(attachment => (
               <li
                 key={attachment.id}
