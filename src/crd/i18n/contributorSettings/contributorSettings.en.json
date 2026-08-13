@@ -282,6 +282,7 @@
       "helpBanner": "Edit your notification preferences. Changes are saved automatically.",
       "toggleAria": "Toggle {{channel}} notification for: {{label}}",
       "toggleError": "Couldn't save preference — try again",
+      "inAppLockedChat": "Chat messages already appear live in the chat panel, so in-app notifications aren't sent for this row",
       "columns": {
         "activity": "Activity",
         "inApp": "In-App",
@@ -354,6 +355,8 @@
           "commentReply": "Receive a notification when someone replies to my comment",
           "mentioned": "Receive a notification when I am mentioned",
           "messageReceived": "Receive a notification when someone sends me a direct message",
+          "conversationMessageDirect": "Receive a notification when someone sends me a direct (1:1) chat message",
+          "conversationMessageGroup": "Receive a notification when someone posts in a group chat I am a member of",
           "membershipInvitationReceived": "Receive a notification when someone invites me to join a community",
           "membershipCommunityJoined": "Receive a notification when I join a new Space"
         },
