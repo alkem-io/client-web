@@ -311,6 +311,7 @@ const CrdWhiteboardDialog = ({
           open,
           isOnline,
           connecting,
+          hasError,
           autoReconnectSeconds,
           lastSuccessfulSavedDate: lastSaved,
           onReconnect,
@@ -336,6 +337,9 @@ const CrdWhiteboardDialog = ({
             reconnecting={connecting}
             countdownSeconds={autoReconnectSeconds}
             onReconnect={onReconnect}
+            // Surface the reload escape hatch immediately once a reconnect attempt has failed — while
+            // online the countdown cycles `connecting`, so the notice's own stuck-timer never elapses.
+            hasError={hasError}
             // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
             // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
             // of seconds, disabling Reconnect AND pausing the auto-reconnect countdown (story #10131).
