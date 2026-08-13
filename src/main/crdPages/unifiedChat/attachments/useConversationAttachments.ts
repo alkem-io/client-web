@@ -26,8 +26,10 @@ export type UseConversationAttachmentsResult = {
   accept?: string;
   attachFiles: (files: File[]) => Promise<void>;
   removeAttachment: (id: string) => void;
-  /** Clears all staged attachments + error (call after a successful send). */
-  reset: () => void;
+  /** Clears all staged attachments + error (call after a successful send).
+   *  Pass the conversation the send belonged to so a selection change during the
+   *  in-flight mutation cannot wipe the newly-selected conversation's draft. */
+  reset: (forConversationId?: string) => void;
 };
 
 /**
@@ -181,7 +183,19 @@ export function useConversationAttachments(
     });
   };
 
-  const reset = (): void => {
+  /**
+   * Clears all staged attachments + error (call after a successful send).
+   *
+   * Pass the conversation the send belonged to: the selection can move while the
+   * send mutation is in flight, and an unpinned reset would then wipe a draft
+   * the user has already started staging in the conversation they switched TO.
+   * Same pinning the adjacent `clearDraft(conversationId)` does. Omitting the
+   * argument resets unconditionally.
+   */
+  const reset = (forConversationId?: string): void => {
+    if (forConversationId !== undefined && forConversationId !== conversationIdRef.current) {
+      return;
+    }
     setAttachments([]);
     setError(undefined);
     stagedCountRef.current = 0;
