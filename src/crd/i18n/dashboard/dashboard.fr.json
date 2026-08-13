@@ -143,7 +143,8 @@
     "loading": "Chargement des invitations",
     "accept": "Accepter",
     "decline": "Refuser",
-    "noInvitations": "Aucune invitation en attente"
+    "noInvitations": "Aucune invitation en attente",
+    "invitedBy": "Invité(e) par {{name}}"
   },
   "applications": {
     "title": "Candidatures en Attente",
@@ -190,5 +191,29 @@
       "joinAriaLabel": "Rejoindre {{spaceName}}"
     },
     "applicationAriaLabel": "Voir la candidature en attente pour {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Activité récente",
+      "mostActivity": "Espaces avec le plus d’activité",
+      "leadAdmin": "Espaces que je dirige et administre",
+      "host": "Espaces que j’héberge"
+    },
+    "showMore_one": "Afficher plus : {{count}} espace",
+    "showMore_other": "Afficher plus : {{count}} espaces"
+  },
+  "welcome": {
+    "title": "Bienvenue sur Alkemio",
+    "message": "Vous ne faites encore partie d’aucun Espace. Explorez l’Espace de bienvenue pour découvrir les possibilités, ou consultez la documentation pour commencer.",
+    "welcomeSpaceLink": "Visiter l’Espace de bienvenue",
+    "documentationLink": "Documentation",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Demandes et invitations en attente"
+  },
+  "explore": {
+    "title": "Explorer les Espaces",
+    "exploreAll": "Explorer tous les Espaces"
   }
 }

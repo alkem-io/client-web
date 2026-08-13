@@ -16,6 +16,8 @@
       "inviteToRoleLabel": "Покани като:",
       "rolePopoverHelper": "Member се предоставя винаги при приемане на поканата.",
       "rolePopoverAriaLabel": "Изберете роли за поканените",
+      "suggestedLanguageLabel": "Предложен език за поканения",
+      "suggestedLanguagePlaceholder": "Без предпочитание",
       "sendButtonLabel": "Изпрати",
       "sendingButtonLabel": "Изпращане…",
       "backButtonLabel": "Назад",

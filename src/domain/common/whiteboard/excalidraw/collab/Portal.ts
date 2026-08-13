@@ -19,7 +19,8 @@ import type { UserIdleState } from './utils';
 
 interface PortalProps {
   onRemoteSave: () => void;
-  onCloseConnection: () => void;
+  /** `hasError` is true for a failed connection attempt (`connect_error`), false for a transient drop. */
+  onCloseConnection: (hasError: boolean) => void;
   onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithOptionalUrl>;
@@ -53,7 +54,7 @@ type ExcalidrawUtils = {
 
 class Portal {
   onRemoteSave: (error?: string) => void;
-  onCloseConnection: () => void;
+  onCloseConnection: (hasError: boolean) => void;
   onRoomUserChange: (clients: SocketId[]) => void;
   getSceneElements: () => readonly ExcalidrawElement[];
   getFiles: () => Promise<BinaryFilesWithOptionalUrl>;
@@ -145,7 +146,8 @@ class Portal {
       this.socket.on('connect_error', () => {
         reject(new Error('Socket could not connect'));
         this.close();
-        this.onCloseConnection();
+        // A reconnection attempt itself failed — retrying is unlikely to self-heal, so flag it as an error.
+        this.onCloseConnection(true);
       });
 
       this.socket.on('disconnect', reason => {
@@ -155,7 +157,8 @@ class Portal {
         }
         reject(new Error('Socket disconnected'));
         this.close();
-        this.onCloseConnection();
+        // A transient drop — auto-reconnect may recover it, so this is not (yet) an error.
+        this.onCloseConnection(false);
       });
 
       // Initialize excalidrawAPI, lazy load utility functions

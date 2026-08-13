@@ -6,6 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { ChatConversationList } from '@/crd/components/chat/ChatConversationList';
 import { ChatPanel } from '@/crd/components/chat/ChatPanel';
 import { ChatThreadView } from '@/crd/components/chat/ChatThreadView';
+import { ConversationAvatar } from '@/crd/components/chat/ConversationAvatar';
 import { GroupAvatar } from '@/crd/components/chat/GroupAvatar';
 import { GroupSettingsDialog } from '@/crd/components/chat/GroupSettingsDialog';
 import { GuidanceInfoDialog } from '@/crd/components/chat/GuidanceInfoDialog';
@@ -18,6 +19,7 @@ import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { Avatar, AvatarImage } from '@/crd/primitives/avatar';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { buildUserNotificationSettingsUrl } from '@/main/routing/urlBuilders';
+import { useConversationDrafts } from '@/main/userMessaging/ConversationDraftsContext';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useConversationMessages } from '@/main/userMessaging/useConversationMessages';
 import { useConversationAttachments } from './attachments/useConversationAttachments';
@@ -30,6 +32,7 @@ import {
   mapMessageToChatMessage,
 } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';
+import { useChatDeepLinkSelect } from './useChatDeepLink';
 import { useGroupSettings } from './useGroupSettings';
 import { useGuidanceResponseState } from './useGuidanceResponseState';
 import { useNewChat } from './useNewChat';
@@ -55,6 +58,7 @@ export const UnifiedChatPanelConnector = () => {
     setNewlyCreatedConversationId,
   } = useUserMessagingContext();
   const { guidanceVcId } = useUnifiedChatContext();
+  const { drafts, getDraft, setDraft, clearDraft } = useConversationDrafts();
 
   const newChat = useNewChat((conversationId, roomId) => {
     setNewlyCreatedConversationId(conversationId);
@@ -63,6 +67,10 @@ export const UnifiedChatPanelConnector = () => {
   });
 
   const { conversations, isLoading } = useUnifiedConversations();
+  // `?chat={conversationID}` deep link (contract C-6 / US1) — selects the
+  // conversation once this list resolves, then strips the param regardless
+  // of match (unknown/inaccessible id degrades to the default list, no error UI).
+  useChatDeepLinkSelect(conversations, isLoading);
   const { messages: rawMessages, isLoading: messagesLoading } = useConversationMessages(selectedConversationId);
 
   const selectedConversation = conversations.find(conversation => conversation.id === selectedConversationId);
@@ -112,11 +120,31 @@ export const UnifiedChatPanelConnector = () => {
   const formatTimestamp = (timestampMs: number) =>
     formatDistanceToNowStrict(new Date(timestampMs), { addSuffix: true, locale });
 
-  const listItems = conversations.map(conversation =>
-    mapConversationToListItem(conversation, { currentUserId, formatTimestamp })
-  );
+  const listItems = conversations.map(conversation => {
+    const item = mapConversationToListItem(conversation, { currentUserId, formatTimestamp });
+    const draft = drafts[conversation.id];
+    // A draft replaces the last-message preview but leaves the ordering and the
+    // timestamp alone — the conversation does not jump the list for it.
+    return draft ? { ...item, draftPreview: draft.trim() } : item;
+  });
 
   const view = selectedConversationId ? 'thread' : 'list';
+
+  // Header identity is derived from the same mapped list item the conversation
+  // list renders for this conversation — header ≡ list row by construction
+  // (research D4), so the two surfaces can never disagree (US2/US3).
+  const selectedListItem = listItems.find(item => item.id === selectedConversationId);
+  const titleAvatar =
+    view === 'thread' && selectedListItem ? (
+      <ConversationAvatar
+        size="sm"
+        displayName={selectedListItem.displayName}
+        avatarUrl={selectedListItem.avatarUrl}
+        isGroup={selectedListItem.isGroup}
+        isGuidance={selectedListItem.isGuidance}
+        memberAvatars={selectedListItem.memberAvatars}
+      />
+    ) : undefined;
 
   const threadHeader: ChatThreadHeader | undefined = selectedConversation
     ? {
@@ -285,6 +313,7 @@ export const UnifiedChatPanelConnector = () => {
           navigate(buildUserNotificationSettingsUrl());
         }}
         settingsLabel={t('panel.settings')}
+        titleAvatar={titleAvatar}
         headerActions={view === 'thread' ? headerActions : undefined}
       >
         {view === 'thread' ? (
@@ -298,17 +327,30 @@ export const UnifiedChatPanelConnector = () => {
             canReact={Boolean(selectedConversation) && !isGuidanceThread}
             // Background-tracked, but only shown while the guidance thread is open.
             isAwaitingGuidanceResponse={isGuidanceThread && guidanceResponse.awaiting}
+            // Keyed by conversation, so re-pointing the open thread (guidance
+            // clear) swaps the draft instead of carrying it into the new one.
+            draft={selectedConversationId ? getDraft(selectedConversationId) : ''}
+            onDraftChange={value => {
+              if (selectedConversationId) {
+                setDraft(selectedConversationId, value);
+              }
+            }}
             onSendMessage={async message => {
               if (isGuidanceThread) {
                 guidanceResponse.markSent();
               }
+              // Pin the id: the selection can move while the mutation is in flight.
+              const conversationId = selectedConversationId;
               // Only carry document ids when attachments are actually enabled
               // for this thread — a text-only send never ships stale ids.
-              const result = await handleSendMessage(message, attachmentsEnabled ? messageAttachments.documentIds : []);
-              if (result) {
+              const sent = await handleSendMessage(message, attachmentsEnabled ? messageAttachments.documentIds : []);
+              if (sent) {
                 messageAttachments.reset();
+                if (conversationId) {
+                  clearDraft(conversationId);
+                }
               }
-              return result;
+              return sent;
             }}
             onAddReaction={onAddReaction}
             onRemoveReaction={onRemoveReaction}

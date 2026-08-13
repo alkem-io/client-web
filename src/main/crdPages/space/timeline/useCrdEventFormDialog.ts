@@ -1,7 +1,7 @@
-import { isSameDay } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type CalendarEventInfoFragment, CalendarEventType } from '@/core/apollo/generated/graphql-schema';
+import { fromWholeDayWire } from '@/core/utils/time/wholeDayDate';
 import type { CalendarEventFormData } from '@/domain/timeline/calendar/useCalendarEvents';
 import type { EventFormValues } from '../dataMappers/calendarEventDataMapper';
 import type { CrdCalendarUrlState } from './useCrdCalendarUrlState';
@@ -63,9 +63,14 @@ export type UseCrdEventFormDialogResult = {
   typeOptions: { value: string; label: string }[];
 };
 
-function buildEditInitialValues(event: CalendarEventInfoFragment): Partial<EventFormValues> {
-  const startDate = event.startDate ? new Date(event.startDate) : undefined;
-  const endDate = startDate ? new Date(startDate.getTime() + event.durationMinutes * 60_000) : undefined;
+export function buildEditInitialValues(event: CalendarEventInfoFragment): Partial<EventFormValues> {
+  const startInstant = event.startDate ? new Date(event.startDate) : undefined;
+  const endInstant = startInstant ? new Date(startInstant.getTime() + event.durationMinutes * 60_000) : undefined;
+  // Whole-day start/end are UTC-midnight bare dates: seed the form with local
+  // floating dates so the pickers show the picked calendar days for any viewer.
+  // The end is derived from the UTC instant (DST-safe) before flooring to a date.
+  const startDate = startInstant && event.wholeDay ? fromWholeDayWire(startInstant) : startInstant;
+  const endDate = endInstant && event.wholeDay ? fromWholeDayWire(endInstant) : endInstant;
   return {
     displayName: event.profile.displayName,
     type: event.type,
@@ -80,33 +85,24 @@ function buildEditInitialValues(event: CalendarEventInfoFragment): Partial<Event
   };
 }
 
-function toDomainPayload(values: EventFormValues): CalendarEventFormData | undefined {
-  const { displayName, type, startDate, endDate, wholeDay, description, locationCity, tags, visibleOnParentCalendar } =
-    values;
-  if (!startDate || !endDate || !type) return undefined;
+export function toDomainPayload(values: EventFormValues): CalendarEventFormData | undefined {
+  const { displayName, type, wholeDay, description, locationCity, tags, visibleOnParentCalendar } = values;
+  if (!values.startDate || !values.endDate || !type) return undefined;
 
-  let durationMinutes = values.durationMinutes ?? 0;
-  let durationDays = 0;
-  let multipleDays = false;
-
-  // Mirrors useCalendarEvents.createEvent (lines 103-115): when start and end
-  // are different days, recompute the duration from the date diff.
-  if (!isSameDay(startDate, endDate)) {
-    durationMinutes = Math.floor((endDate.getTime() - startDate.getTime()) / 60_000);
-    durationDays = Math.floor(durationMinutes / (24 * 60));
-    multipleDays = durationDays > 0;
-  }
-
+  // Whole-day anchoring (→ UTC-midnight) and duration derivation are finalized once
+  // at the mutation boundary (useCalendarEvents → deriveEventWireFields), so any
+  // caller stays consistent. Forward the raw picked dates + the user's duration;
+  // durationDays/multipleDays are computed there.
   return {
     displayName,
     description,
     type: type as CalendarEventType,
-    startDate,
-    endDate,
+    startDate: values.startDate,
+    endDate: values.endDate,
     wholeDay,
-    durationMinutes,
-    durationDays,
-    multipleDays,
+    durationMinutes: values.durationMinutes ?? 0,
+    durationDays: 0,
+    multipleDays: false,
     visibleOnParentCalendar,
     tags,
     references: [],

@@ -1,0 +1,20 @@
+{
+  "offer": {
+    "nl": {
+      "title": "Alkemio también está disponible en neerlandés.",
+      "accept": "Sí, usar neerlandés",
+      "decline": "No gracias, continuar en inglés",
+      "dismiss": "Descartar oferta de idioma"
+    }
+  },
+  "settings": {
+    "languageLabel": "Idioma de la interfaz",
+    "languageDescription": "El idioma utilizado en Alkemio. Los cambios se aplican en todos tus dispositivos.",
+    "languageSaveError": "No se pudo guardar la preferencia de idioma — inténtalo de nuevo."
+  },
+  "invite": {
+    "suggestedLanguageLabel": "Idioma esperado",
+    "suggestedLanguagePlaceholder": "Selecciona un idioma (opcional)",
+    "suggestedLanguageDescription": "Si el invitado quiere usar Alkemio en un idioma específico, selecciónalo aquí. La invitación en sí se mantendrá en inglés."
+  }
+}

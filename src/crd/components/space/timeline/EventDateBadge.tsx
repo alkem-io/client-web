@@ -40,7 +40,7 @@ export function EventDateBadge({
   }
 
   const isPast = isBefore(startOfDay(startDate), startOfDay(new Date()));
-  const endDate = endDateFromDuration(startDate, durationMinutes, durationDays);
+  const endDate = endDateFromDuration(startDate, durationMinutes);
   const isMultiDay = !wholeDay && (durationDays ?? 0) > 0;
   // For whole-day events with durationDays > 0, the visual span is also "multi-day"
   // even though we don't show the secondary time-range label.

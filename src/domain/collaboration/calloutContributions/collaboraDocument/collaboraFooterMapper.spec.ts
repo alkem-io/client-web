@@ -77,4 +77,113 @@ describe('mapCollaboraFooterProps', () => {
     expect(result.memberCount).toBe(2);
     expect(result.isGuest).toBe(true);
   });
+
+  describe('disconnect mapping', () => {
+    it('is not disconnected and has no cause while connected', () => {
+      const r = mapCollaboraFooterProps(baseParams);
+      expect(r.disconnected).toBe(false);
+      expect(r.disconnectCause).toBeNull();
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('flags disconnected + changesAtRisk for an edit-capable session with unsaved work', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'disconnected',
+        saveStatus: 'unsaved',
+        disconnectCause: 'network',
+      });
+      expect(r.disconnected).toBe(true);
+      expect(r.disconnectCause).toBe('network');
+      expect(r.changesAtRisk).toBe(true);
+    });
+
+    it('does not warn of at-risk changes for a read-only viewer (FR-012)', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        hasEditPrivilege: false,
+        connectionStatus: 'disconnected',
+        saveStatus: 'unsaved',
+        disconnectCause: 'service',
+      });
+      expect(r.disconnected).toBe(true);
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('does not warn of at-risk changes for a guest, and falls back to an unknown cause', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        isAuthenticated: false,
+        connectionStatus: 'disconnected',
+        saveStatus: 'unsaved',
+      });
+      expect(r.changesAtRisk).toBe(false);
+      expect(r.disconnectCause).toBe('unknown');
+    });
+
+    it('does not warn of at-risk changes when the document was cleanly saved at the drop', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'disconnected',
+        saveStatus: 'saved',
+        disconnectCause: 'tokenExpiry',
+      });
+      expect(r.disconnected).toBe(true);
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('treats the terminal state as disconnected', () => {
+      const r = mapCollaboraFooterProps({ ...baseParams, connectionStatus: 'terminal', disconnectCause: 'service' });
+      expect(r.disconnected).toBe(true);
+    });
+
+    it('suppresses the readonly reason once disconnected (the banner owns the messaging)', () => {
+      const r = mapCollaboraFooterProps({ ...baseParams, hasEditPrivilege: false, connectionStatus: 'disconnected' });
+      expect(r.readonlyReason).toBeNull();
+    });
+
+    it('maps a terminal status to a terminal, non-retryable state carrying its reason', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'terminal',
+        saveStatus: 'unsaved',
+        terminalReason: 'notFound',
+      });
+      expect(r.terminal).toBe(true);
+      expect(r.disconnected).toBe(true);
+      expect(r.terminalReason).toBe('notFound');
+      // No recovery is possible, so the "changes may not be saved" warning is not shown.
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('carries the forbidden terminal reason', () => {
+      const r = mapCollaboraFooterProps({ ...baseParams, connectionStatus: 'terminal', terminalReason: 'forbidden' });
+      expect(r.terminalReason).toBe('forbidden');
+    });
+
+    it('maps the reconnecting state as soft (not disconnected) but still surfaces the cause', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'reconnecting',
+        saveStatus: 'unsaved',
+        disconnectCause: 'network',
+      });
+      expect(r.reconnecting).toBe(true);
+      expect(r.disconnected).toBe(false);
+      expect(r.disconnectCause).toBe('network');
+      // Not a hard loss warning while self-healing.
+      expect(r.changesAtRisk).toBe(false);
+    });
+
+    it('is not terminal and has a null terminal reason for an ordinary disconnect', () => {
+      const r = mapCollaboraFooterProps({
+        ...baseParams,
+        connectionStatus: 'disconnected',
+        disconnectCause: 'network',
+        terminalReason: 'notFound',
+      });
+      expect(r.terminal).toBe(false);
+      expect(r.terminalReason).toBeNull();
+    });
+  });
 });

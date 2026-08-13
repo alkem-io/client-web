@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ContributionDocumentCard } from '@/crd/components/contribution/ContributionDocumentCard';
 import { ContributionGrid } from '@/crd/components/contribution/ContributionGrid';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
@@ -47,6 +48,16 @@ export function ContributionGridConnector({
                 markdownContent={contribution.markdownContent}
                 author={contribution.author?.name}
                 onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+              />
+            );
+          case 'document':
+            return (
+              <ContributionDocumentCard
+                key={contribution.id}
+                title={contribution.title}
+                documentType={contribution.documentType ?? 'text'}
+                author={contribution.author?.name}
+                onClick={() => onContributionClick?.(contribution.id, contribution.documentId)}
               />
             );
           default:

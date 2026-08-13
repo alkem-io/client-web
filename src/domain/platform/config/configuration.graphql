@@ -18,6 +18,10 @@ query configuration {
 }
 
 fragment Configuration on Config {
+  language {
+    eligible
+    default
+  }
   authentication {
     providers {
       name

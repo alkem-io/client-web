@@ -128,6 +128,8 @@ export const useSubspaceCreation = (mutationOptions: CreateSubspaceMutationOptio
               displayName: value.about.profile.displayName ?? '',
               tagline: value.about.profile.tagline,
               url: '',
+              // Optimistic placeholders — the real visuals arrive with the
+              // mutation result. Ratios match the server's defaults for each type.
               cardBanner: {
                 id: '',
                 uri: '',

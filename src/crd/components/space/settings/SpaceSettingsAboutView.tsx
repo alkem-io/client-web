@@ -1,4 +1,4 @@
-import { ImageIcon } from 'lucide-react';
+import { CropIcon, ImageIcon } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
@@ -8,9 +8,11 @@ import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard'
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
+import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import type {
   AboutFormValues,
   AboutSectionKey,
@@ -37,6 +39,9 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   onUploadAvatar: (file: File) => void;
   onUploadPageBanner: (file: File) => void;
   onUploadCardBanner: (file: File) => void;
+  /** Re-crop an already-uploaded visual. */
+  onRecropVisual?: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
+  /**
   /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
   /** Reference file-upload (paperclip) — passed through to the shared editor. */
@@ -69,6 +74,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onUploadAvatar,
     onUploadPageBanner,
     onUploadCardBanner,
+    onRecropVisual,
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
@@ -83,6 +89,10 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   //   - L1/L2: avatar + cardBanner — L1/L2 have NO settable page banner (they inherit L0 root's)
   const showPageBanner = level === 'L0';
   const showAvatar = level !== 'L0';
+
+  // The shape is chosen in the crop dialog, not here — this only sizes the
+  // preview box to whatever the visual currently is.
+  const pageBannerRatio = pageBanner.aspectRatio ?? DEFAULT_BANNER_ASPECT_RATIO;
 
   return (
     <div className={cn('flex flex-col gap-0', className)}>
@@ -147,9 +157,11 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 <BannerUpload
                   visual={avatar}
                   onUpload={onUploadAvatar}
-                  aspect="aspect-square"
+                  aspectRatio={1}
                   widthClass="max-w-[160px]"
                   t={t}
+                  onRecrop={() => onRecropVisual?.('avatar')}
+                  recropLabel={t('about.branding.avatar.recrop')}
                 />
                 <FieldHint>{t('about.branding.avatar.hint')}</FieldHint>
               </div>
@@ -158,7 +170,15 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
             {showPageBanner && (
               <div className="mt-4">
                 <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
-                <BannerUpload visual={pageBanner} onUpload={onUploadPageBanner} aspect="aspect-[6/1]" t={t} />
+                <BannerUpload
+                  visual={pageBanner}
+                  onUpload={onUploadPageBanner}
+                  aspectRatio={pageBannerRatio}
+                  fit="contain"
+                  t={t}
+                  onRecrop={() => onRecropVisual?.('pageBanner')}
+                  recropLabel={t('about.branding.pageBanner.recrop')}
+                />
                 <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
               </div>
             )}
@@ -168,9 +188,11 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               <BannerUpload
                 visual={cardBanner}
                 onUpload={onUploadCardBanner}
-                aspect="aspect-video"
+                aspectRatio={1.6}
                 widthClass="max-w-[260px]"
                 t={t}
+                onRecrop={() => onRecropVisual?.('cardBanner')}
+                recropLabel={t('about.branding.cardBanner.recrop')}
               />
               <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
             </div>
@@ -412,15 +434,30 @@ function FieldFooter({
 function BannerUpload({
   visual,
   onUpload,
-  aspect,
+  aspectRatio,
+  fit = 'cover',
   widthClass,
   t,
+  onRecrop,
+  recropLabel,
 }: {
   visual: AboutVisual;
   onUpload: (file: File) => void;
-  aspect: string;
+  /** Must match how the page that displays this visual renders it, or the
+   *  preview lies: the page banner is `object-contain` (never cropped), so a
+   *  `cover` preview would show the admin a crop the page does not apply and
+   *  invite them to re-crop a banner that was rendering fine. */
+  fit?: 'cover' | 'contain';
+  /** Numeric width / height. Inline rather than an `aspect-[x/y]` class because
+   *  the page banner's value is chosen at runtime and Tailwind's JIT scanner
+   *  needs class literals at build time. */
+  aspectRatio: number;
   widthClass?: string;
   t: TFn;
+  /** Trigger re-cropping of an existing visual. */
+  onRecrop?: () => void;
+  /** Accessible name + tooltip for the re-crop button, named per visual by the caller. */
+  recropLabel?: string;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -430,18 +467,50 @@ function BannerUpload({
     if (e.target) e.target.value = '';
   };
   return (
-    <div className={cn('group relative mt-2 overflow-hidden rounded-md', aspect, widthClass ?? 'w-full')}>
+    <div
+      // `min-h-14` keeps the box tall enough for the controls it contains. At
+      // the widest allowed banner shape (10:1) a full-width settings card on a
+      // phone works out under 30px, which clips the "Change banner" label and
+      // hides the corner crop button entirely — the controls would disappear at
+      // exactly the shapes this feature exists to offer.
+      className={cn('group relative mt-2 min-h-14 overflow-hidden rounded-md', widthClass ?? 'w-full')}
+      style={{ aspectRatio }}
+    >
       {visual.uri ? (
         <>
-          <img src={visual.uri} alt={visual.altText ?? ''} className="h-full w-full object-cover" />
+          <img
+            src={visual.uri}
+            alt={visual.altText ?? ''}
+            className={cn('h-full w-full', fit === 'contain' ? 'object-contain' : 'object-cover')}
+          />
           {/* Touch devices have no hover, so the change action is always visible on mobile;
               on md+ it fades in only on hover or keyboard focus to keep the image readable. */}
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
             <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="shadow-lg">
               <ImageIcon aria-hidden="true" className="mr-2 size-4" />
               {t('about.branding.changeBanner')}
             </Button>
           </div>
+          {/* Re-crop sits outside the hover overlay, pinned to the corner: it acts
+              on the image already there, so it stays reachable (and its tooltip
+              usable) rather than being one of two stacked centre buttons. */}
+          {onRecrop && recropLabel && (
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  onClick={onRecrop}
+                  aria-label={recropLabel}
+                  className="absolute top-2 right-2 shadow-lg opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+                >
+                  <CropIcon aria-hidden="true" className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{recropLabel}</TooltipContent>
+            </Tooltip>
+          )}
         </>
       ) : (
         <button

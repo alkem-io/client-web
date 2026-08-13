@@ -108,9 +108,9 @@ describe('CollaboraFramingReplaceConnector', () => {
 
   // Current document is a Wordprocessing doc, so any non-matching pick (an
   // unsupported format OR a wrong-but-allowed OfficeDocs type) must name the
-  // expected type: "Word Document (.docx)".
+  // expected type: "Text Document (.docx)".
   const sameTypeExpected = enJson.callout.documentReplaceErrorSameType
-    .replace('{{type}}', 'Word Document')
+    .replace('{{type}}', enJson.callout.documentText)
     .replace('{{ext}}', '.docx');
 
   it.each([

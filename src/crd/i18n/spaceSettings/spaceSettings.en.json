@@ -887,20 +887,23 @@
     },
     "branding": {
       "title": "Space Branding",
-      "description": "Upload an avatar, a page banner (1536×256), and a card banner (416×256).",
+      "description": "Upload an avatar, a page banner (3840px), and a card banner (416×256).",
       "noImage": "No image",
       "upload": "Upload",
       "avatar": {
         "title": "Avatar",
-        "hint": "The space logo."
+        "hint": "The space logo.",
+        "recrop": "Crop current avatar"
       },
       "pageBanner": {
-        "title": "Page Banner (1536 × 256px)",
-        "hint": "Shown at the top of the Space page."
+        "title": "Page Banner",
+        "hint": "Shown at the top of the Space page. Use an image at least 1536 × 154px.",
+        "recrop": "Crop current page banner"
       },
       "cardBanner": {
         "title": "Card Banner (416 × 256px)",
-        "hint": "Shown in search results and space cards."
+        "hint": "Shown in search results and space cards.",
+        "recrop": "Crop current card banner"
       },
       "cropDialog": {
         "save": "Save",
@@ -910,7 +913,8 @@
         "altText": "Description",
         "altTextPlaceholder": "Describe this image…"
       },
-      "changeBanner": "Change Banner"
+      "changeBanner": "Change Banner",
+      "recropFailed": "Could not load this image for cropping. Please try again."
     },
     "location": {
       "title": "Location",

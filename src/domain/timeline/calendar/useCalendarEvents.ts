@@ -13,6 +13,7 @@ import {
   type CalendarEventInfoFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { isSameDay } from '@/core/utils/time/utils';
+import { toWholeDayWire, wholeDaySpanMinutes } from '@/core/utils/time/wholeDayDate';
 import type { LocationModel } from '@/domain/common/location/LocationModel';
 import {
   mapProfileModelToCreateProfileInput,
@@ -32,6 +33,49 @@ export interface CalendarEventFormData
   location: LocationModel;
   references: ReferenceModel[];
   tags: string[];
+}
+
+/**
+ * Finalizes the calendar-event wire fields at the single mutation boundary, so
+ * every caller of create/updateEvent is consistent regardless of how the payload
+ * was built:
+ *   - whole-day start/end are anchored to UTC-midnight (bare, timezone-independent
+ *     calendar dates); timed events keep their real instant;
+ *   - a **whole-day** event's span is defined purely by its date range, so
+ *     `durationMinutes` is ALWAYS derived from the (anchored) start/end — a stale
+ *     sub-day duration from before "whole day" was toggled never survives, and a
+ *     single-day whole-day event is zero-length;
+ *   - a **timed** event's `durationMinutes` is the full span, recomputed from
+ *     start/end when they differ and kept as the user's value when they are the
+ *     same day (that is its sub-day duration).
+ */
+export function deriveEventWireFields(input: {
+  startDate: Date | number | null | undefined;
+  endDate: Date | number | null | undefined;
+  wholeDay: boolean;
+  durationMinutes: number;
+}): { startDate: Date; durationMinutes: number; durationDays: number; multipleDays: boolean } {
+  const rawStart = input.startDate != null ? new Date(input.startDate) : new Date();
+  const rawEnd = input.endDate != null ? new Date(input.endDate) : new Date();
+  const startDate = input.wholeDay ? toWholeDayWire(rawStart) : rawStart;
+  const endDate = input.wholeDay ? toWholeDayWire(rawEnd) : rawEnd;
+
+  let durationMinutes = input.durationMinutes ?? 0;
+  if (input.wholeDay) {
+    // A whole-day event's span is its date range: durationMinutes is the offset
+    // between the pickers (End − Start), NOT the event's length. A single-day
+    // whole-day event is therefore 0 — a correct, genuine all-day day, because the
+    // export appends the RFC 5545 exclusive +1 day (0 covers one day; 1440 would
+    // cover two). Any carried-over sub-day duration is discarded.
+    durationMinutes = wholeDaySpanMinutes(startDate, endDate);
+  } else if (!isSameDay(startDate, endDate)) {
+    // A multi-day timed event's span is the start→end difference. A same-day timed
+    // event keeps its provided sub-day duration.
+    durationMinutes = Math.floor((endDate.getTime() - startDate.getTime()) / 60000);
+  }
+  const durationDays = Math.floor(durationMinutes / (24 * 60));
+  const multipleDays = durationDays > 0;
+  return { startDate, durationMinutes, durationDays, multipleDays };
 }
 
 export interface CalendarEventsActions {
@@ -101,33 +145,23 @@ const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams):
   })();
 
   const createEvent = (event: CalendarEventFormData) => {
-    const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
-    const parsedStartDate = startDate ? new Date(startDate) : new Date();
-    let durationMinutes = rest.durationMinutes;
-    let durationDays = 0;
-    let multipleDays = false;
-
-    if (!isSameDay(startDate, endDate)) {
-      const parsedEndDate = endDate ? new Date(endDate) : new Date();
-      durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
-      durationDays = Math.floor(durationMinutes / (24 * 60));
-      multipleDays = durationDays > 0;
-    }
-
     if (!calendarId) {
       return Promise.reject(new Error('Calendar is not loaded yet'));
     }
+
+    const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
+    const wire = deriveEventWireFields({ startDate, endDate, wholeDay, durationMinutes: rest.durationMinutes });
 
     return createCalendarEvent({
       variables: {
         eventData: {
           calendarID: calendarId,
-          startDate: parsedStartDate,
           tags: tags,
           ...rest,
-          durationMinutes,
-          durationDays,
-          multipleDays,
+          startDate: wire.startDate,
+          durationMinutes: wire.durationMinutes,
+          durationDays: wire.durationDays,
+          multipleDays: wire.multipleDays,
           wholeDay,
           profileData: mapProfileModelToCreateProfileInput({
             description,
@@ -146,19 +180,7 @@ const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams):
 
   const updateEvent = (eventId: string, event: CalendarEventFormData, tagset: TagsetModel) => {
     const { startDate, description, tags, references, displayName, endDate, location, wholeDay, ...rest } = event;
-    const parsedStartDate = startDate ? new Date(startDate) : new Date();
-
-    // todo:b reuse
-    let durationMinutes = rest.durationMinutes;
-    let durationDays = 0;
-    let multipleDays = false;
-
-    if (!isSameDay(startDate, endDate)) {
-      const parsedEndDate = endDate ? new Date(endDate) : new Date();
-      durationMinutes = Math.floor((parsedEndDate.getTime() - parsedStartDate.getTime()) / 60000);
-      durationDays = Math.floor(durationMinutes / (24 * 60));
-      multipleDays = durationDays > 0;
-    }
+    const wire = deriveEventWireFields({ startDate, endDate, wholeDay, durationMinutes: rest.durationMinutes });
 
     const updatedTagset = { ...tagset };
     updatedTagset.tags = [...tags];
@@ -167,11 +189,11 @@ const useCalendarEvents = ({ spaceId, parentSpaceId }: UseCalendarEventsParams):
       variables: {
         eventData: {
           ID: eventId,
-          startDate: parsedStartDate,
+          startDate: wire.startDate,
           ...rest,
-          durationMinutes,
-          durationDays,
-          multipleDays,
+          durationMinutes: wire.durationMinutes,
+          durationDays: wire.durationDays,
+          multipleDays: wire.multipleDays,
           wholeDay,
           profileData: mapProfileModelToUpdateProfileInput({
             displayName: displayName,

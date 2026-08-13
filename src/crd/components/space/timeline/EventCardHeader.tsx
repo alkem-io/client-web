@@ -48,7 +48,7 @@ export function EventCardHeader({ event, loading, size = 'sm', locale = enUS }: 
     if (event.wholeDay) {
       meta.push(t('calendar.tooltip.wholeDayPrefix'));
     } else {
-      const endDate = endDateFromDuration(event.startDate, event.durationMinutes, event.durationDays);
+      const endDate = endDateFromDuration(event.startDate, event.durationMinutes);
       const sameDay = isSameDay(event.startDate, endDate);
       if (sameDay) {
         meta.push(`${format(event.startDate, 'p', { locale })} – ${format(endDate, 'p', { locale })}`);

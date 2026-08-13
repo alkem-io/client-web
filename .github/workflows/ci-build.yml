@@ -6,12 +6,15 @@ on:
   pull_request:
     branches: [develop, main]
 
+permissions:
+  contents: read
+
 jobs:
   build:
-    runs-on: [self-hosted, macOS, ARM64, apple-silicon, m4]
+    runs-on: ${{ (github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/develop')) && 'arc-trusted-linux-x64' || 'ubuntu-latest' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -19,7 +22,7 @@ jobs:
           dest: ${{ runner.temp }}/setup-pnpm
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24.14.0'
 
@@ -29,7 +32,7 @@ jobs:
         run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
       - name: Setup pnpm cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
           key: pnpm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
@@ -41,3 +44,19 @@ jobs:
 
       - name: Build
         run: CI=false pnpm run build
+
+  # workspace#033-client-runtime-hardening: the runtime image's hardening
+  # invariants (digest-pinned bases, non-root UID 101, 8080-only, working
+  # env.sh injection) are only enforced if something actually runs the smoke
+  # script — otherwise they regress silently and surface post-merge on dev.
+  image-hardening:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Build runtime image
+        run: docker build -t client-web:pr .
+
+      - name: Assert image hardening invariants
+        run: bash .docker/client-image-smoke.sh client-web:pr

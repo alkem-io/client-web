@@ -13,6 +13,7 @@ import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAn
 import emailParser from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/emailParser';
 import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
+import { useConfig } from '@/domain/platform/config/useConfig';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 
 export type InviteMembersDialogConnectorProps = {
@@ -61,10 +62,19 @@ export function InviteMembersDialogConnector({
   spaceId: spaceIdOverride,
 }: InviteMembersDialogConnectorProps) {
   const { t } = useTranslation('crd-community');
+  const { i18n } = useTranslation();
   const notify = useNotification();
   const { spaceId: resolvedSpaceId, parentSpaceId } = useUrlResolver();
   const spaceId = spaceIdOverride ?? resolvedSpaceId;
   const { userModel: currentUser } = useCurrentUserContext();
+
+  // T013 — eligible language set for the suggested-language select control.
+  const { language: languageConfig } = useConfig();
+  const eligibleLanguages = (languageConfig?.eligible ?? []).map(code => ({
+    code,
+    // biome-ignore lint/suspicious/noExplicitAny: dynamic key — code is an eligible language code from server config
+    label: String((i18n as any).t(`languages.${code}`)),
+  }));
 
   const { data: spaceData, loading: loadingSpace } = useInviteUsersDialogQuery({
     variables: { spaceId: spaceId ?? '' },
@@ -80,6 +90,7 @@ export function InviteMembersDialogConnector({
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [welcomeMessage, setWelcomeMessage] = useState('');
   const [extraRoles, setExtraRoles] = useState<InviteRole[]>(['Member']);
+  const [suggestedLanguage, setSuggestedLanguage] = useState<string | undefined>(undefined);
   const [results, setResults] = useState<InvitationResult[] | undefined>(undefined);
   const [isSending, startTransition] = useTransition();
 
@@ -272,7 +283,9 @@ export function InviteMembersDialogConnector({
       const matched =
         invitee.kind === 'user'
           ? take(r => r.invitation?.actor?.id === invitee.userId)
-          : take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase());
+          : invitee.kind === 'email'
+            ? take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase())
+            : undefined;
       const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
       if (!legacyResult) {
         return { invitee, outcome: 'error' as const };
@@ -301,14 +314,16 @@ export function InviteMembersDialogConnector({
     // unlocked it, abort silently rather than send an invite without the
     // baseline Member role.
     if (!extraRoles.includes('Member')) return;
-    const validInvitees = selectedContributors.filter(c => c.kind === 'user' || c.validationError === undefined);
+    const validInvitees = selectedContributors.filter(
+      c => c.kind === 'user' || (c.kind === 'email' && c.validationError === undefined)
+    );
     if (validInvitees.length === 0) return;
 
     const invitedContributorIds: string[] = [];
     const invitedUserEmails: string[] = [];
     for (const invitee of validInvitees) {
       if (invitee.kind === 'user') invitedContributorIds.push(invitee.userId);
-      else invitedUserEmails.push(invitee.email);
+      else if (invitee.kind === 'email') invitedUserEmails.push(invitee.email);
     }
 
     startTransition(async () => {
@@ -319,6 +334,8 @@ export function InviteMembersDialogConnector({
           invitedUserEmails,
           welcomeMessage,
           extraRoles: extraRoles.map(role => ROLE_TO_NAME[role]),
+          // T013: only include when the host explicitly chose a language (FR-015).
+          suggestedLanguage,
         });
         const built = buildResults(validInvitees, legacyResults);
         setResults(built);
@@ -359,6 +376,7 @@ export function InviteMembersDialogConnector({
       setWelcomeMessage('');
       setDefaultMessage('');
       setExtraRoles(['Member']);
+      setSuggestedLanguage(undefined);
       setResults(undefined);
       onClose();
     }
@@ -386,6 +404,9 @@ export function InviteMembersDialogConnector({
       allowEmailInvites={!onlyFromParentCommunity}
       welcomeMessage={welcomeMessage}
       onWelcomeMessageChange={setWelcomeMessage}
+      suggestedLanguage={suggestedLanguage}
+      onSuggestedLanguageChange={setSuggestedLanguage}
+      availableLanguages={eligibleLanguages}
       extraRoles={extraRoles}
       onExtraRolesChange={setExtraRoles}
       sending={isSending}
@@ -420,6 +441,10 @@ export function InviteMembersDialogConnector({
         closeButtonLabel: t('inviteMembers.dialog.closeButtonLabel'),
         closeAriaLabel: t('inviteMembers.dialog.closeAriaLabel'),
         resultOutcomeLabels,
+        suggestedLanguageLabel: t('inviteMembers.dialog.suggestedLanguageLabel'),
+        suggestedLanguagePlaceholder: t('inviteMembers.dialog.suggestedLanguagePlaceholder'),
+        // Reuse the placeholder text ("No preference") for the explicit reset option in the Select.
+        suggestedLanguageNoPreferenceLabel: t('inviteMembers.dialog.suggestedLanguagePlaceholder'),
       }}
     />
   );

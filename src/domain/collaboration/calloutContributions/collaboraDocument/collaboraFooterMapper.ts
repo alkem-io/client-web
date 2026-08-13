@@ -3,8 +3,9 @@ import type {
   CollaboraConnectedUser,
   CollaboraReadonlyReason,
   CollaboraSaveStatus,
+  CollaboraTerminalReason,
 } from '@/crd/components/collabora/CollaboraCollabFooter';
-import type { CollaboraConnectionStatus } from './useCollaboraPostMessage';
+import type { CollaboraConnectionStatus, DisconnectCause } from './useCollaboraPostMessage';
 
 export type MapCollaboraFooterParams = {
   connectionStatus: CollaboraConnectionStatus;
@@ -18,6 +19,10 @@ export type MapCollaboraFooterParams = {
   contentUpdatePolicy?: ContentUpdatePolicy;
   // The Space/Subspace context types this as plain `string` in some callers; keep the wider type.
   myMembershipStatus?: CommunityMembershipStatus | string;
+  /** Why the session dropped, from the connection monitor; drives cause-specific messaging. */
+  disconnectCause?: DisconnectCause | null;
+  /** Terminal condition (document gone / access revoked) when `connectionStatus` is `terminal`. */
+  terminalReason?: CollaboraTerminalReason;
 };
 
 export type CollaboraFooterMappedProps = {
@@ -27,6 +32,23 @@ export type CollaboraFooterMappedProps = {
   isGuest: boolean;
   readonlyReason: CollaboraReadonlyReason;
   onDelete?: () => void;
+  /** True once the session is in a hard disconnect (or terminal) state — drives the banner. */
+  disconnected: boolean;
+  /** True during the bounded self-heal window (soft transient drop) — shows a "reconnecting…" hint. */
+  reconnecting: boolean;
+  /** The disconnect cause when `disconnected` or `reconnecting`, else null. */
+  disconnectCause: DisconnectCause | null;
+  /**
+   * True only when the disconnected session could have unsaved edits — i.e. an authenticated
+   * editor whose save state was not confirmed "saved" at the drop. Gates the "recent changes
+   * may not be saved" wording so read-only viewers / guests / cleanly-saved docs never see a
+   * false data-loss warning (FR-012).
+   */
+  changesAtRisk: boolean;
+  /** True when recovery is impossible (document gone / access revoked) — no retry (FR-013). */
+  terminal: boolean;
+  /** Which terminal condition, when `terminal`; else null. */
+  terminalReason: CollaboraTerminalReason;
 };
 
 /**
@@ -50,9 +72,18 @@ export function mapCollaboraFooterProps(params: MapCollaboraFooterParams): Colla
     onDelete,
     contentUpdatePolicy,
     myMembershipStatus,
+    disconnectCause,
+    terminalReason,
   } = params;
 
   const canDelete = isContribution && hasDeletePrivileges && !!onDelete;
+
+  const terminal = connectionStatus === 'terminal';
+  const disconnected = connectionStatus === 'disconnected' || terminal;
+  const reconnecting = connectionStatus === 'reconnecting';
+  // Edit-capable session whose work wasn't confirmed saved at the drop → warn about loss. Not
+  // for a terminal state (document gone / access revoked) — there's nothing to recover.
+  const changesAtRisk = disconnected && !terminal && isAuthenticated && hasEditPrivilege && saveStatus !== 'saved';
 
   return {
     saveStatus,
@@ -67,6 +98,12 @@ export function mapCollaboraFooterProps(params: MapCollaboraFooterParams): Colla
       myMembershipStatus,
     }),
     onDelete: canDelete ? onDelete : undefined,
+    disconnected,
+    reconnecting,
+    disconnectCause: disconnected || reconnecting ? (disconnectCause ?? 'unknown') : null,
+    changesAtRisk,
+    terminal,
+    terminalReason: terminal ? (terminalReason ?? null) : null,
   };
 }
 
@@ -85,7 +122,10 @@ function resolveReadonlyReason({
   contentUpdatePolicy,
   myMembershipStatus,
 }: ResolveReadonlyReasonParams): CollaboraReadonlyReason {
-  if (connectionStatus !== 'connected') return 'connecting';
+  // While actively (re)connecting, surface the connecting hint. Once disconnected/terminal the
+  // dedicated disconnect banner owns the messaging, so no readonly reason is shown.
+  if (connectionStatus === 'connecting' || connectionStatus === 'reconnecting') return 'connecting';
+  if (connectionStatus === 'disconnected' || connectionStatus === 'terminal') return null;
   if (!isAuthenticated) return 'unauthenticated';
   if (hasEditPrivilege) return null;
   if (

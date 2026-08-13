@@ -13,17 +13,24 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { OrganizationForm } from '@/crd/components/admin/organizations/OrganizationForm';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
+import { toRoutePath } from '@/crd/lib/toRoutePath';
 import { COUNTRIES } from '@/domain/common/location/countries.constants';
 import { useSeededFormState } from '@/main/crdPages/utils/useSeededFormState';
 import { EMPTY_ORG_FORM, mapOrgToFormValues, toCreateInput, toUpdateInput } from './orgFormMapper';
 
+type CrdOrganizationFormPageProps = {
+  /** Where Cancel / discard / a completed edit returns to (the admin list). */
+  returnUrl: string;
+};
+
 /**
- * Platform-admin organization create / edit page. Reuses the existing
- * create/update/lookup hooks; builds the single-submit input via the mapper and
- * returns to the list on success. A discard guard confirms before leaving with
- * unsaved changes (via the Cancel button).
+ * Platform-admin organization create / edit page (`/admin/organizations/new` +
+ * `/:orgId/edit`). Builds the single-submit input via the mapper; a successful
+ * create lands on the new organization's profile, an edit returns to `returnUrl`
+ * (the admin list). A discard guard confirms before leaving with unsaved
+ * changes. Non-admin creation uses `CreateOrganizationDialog` instead.
  */
-const CrdAdminOrganizationFormPage = () => {
+const CrdOrganizationFormPage = ({ returnUrl }: CrdOrganizationFormPageProps) => {
   const { t } = useTranslation('crd-admin');
   const navigate = useNavigate();
   const notify = useNotification();
@@ -53,7 +60,7 @@ const CrdAdminOrganizationFormPage = () => {
   const [updateOrg, { loading: updating }] = useUpdateOrganizationMutation();
   const submitting = creating || updating;
 
-  const goToList = () => navigate('/admin/organizations');
+  const goBack = () => navigate(returnUrl);
 
   const handleSubmit = () => {
     // Navigate/notify only on success; the global Apollo error handler surfaces
@@ -61,9 +68,17 @@ const CrdAdminOrganizationFormPage = () => {
     // unhandled promise rejection.
     if (mode === 'create') {
       void createOrg({ variables: { input: toCreateInput(values) } })
-        .then(() => {
+        .then(({ data: created }) => {
           notify(t('orgForm.created'), 'success');
-          goToList();
+          // Land on the organization that was just created, from both the admin
+          // and the standalone route. `profile.url` is a full URL server-side,
+          // so it has to go through `toRoutePath` before react-router sees it.
+          const createdUrl = created?.createOrganization.profile?.url;
+          if (createdUrl) {
+            navigate(toRoutePath(createdUrl));
+          } else {
+            goBack();
+          }
         })
         .catch(() => undefined);
       return;
@@ -72,7 +87,7 @@ const CrdAdminOrganizationFormPage = () => {
       void updateOrg({ variables: { input: toUpdateInput(orgId, values) } })
         .then(() => {
           notify(t('orgForm.updated'), 'success');
-          goToList();
+          goBack();
         })
         .catch(() => undefined);
     }
@@ -81,7 +96,7 @@ const CrdAdminOrganizationFormPage = () => {
   const [discardOpen, setDiscardOpen] = useState(false);
   const handleCancel = () => {
     if (isDirty) setDiscardOpen(true);
-    else goToList();
+    else goBack();
   };
 
   if (mode === 'edit' && !seeded) {
@@ -110,10 +125,10 @@ const CrdAdminOrganizationFormPage = () => {
         title={t('orgForm.discardTitle')}
         description={t('orgForm.discardDescription')}
         confirmLabel={t('orgForm.discard')}
-        onConfirm={goToList}
+        onConfirm={goBack}
       />
     </div>
   );
 };
 
-export default CrdAdminOrganizationFormPage;
+export default CrdOrganizationFormPage;

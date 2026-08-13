@@ -22,14 +22,22 @@ import {
   useCalloutContentQuery,
   useCreateReferenceOnProfileMutation,
   useDeleteReferenceMutation,
+  useSubspacesInSpaceQuery,
   useTemplateContentLazyQuery,
   useUpdateCalloutContentMutation,
+  useUpdatePollStatusMutation,
 } from '@/core/apollo/generated/apollo-hooks';
-import { CalloutFramingType, CalloutVisibility, LicenseEntitlementType } from '@/core/apollo/generated/graphql-schema';
+import {
+  CalloutFramingType,
+  CalloutVisibility,
+  LicenseEntitlementType,
+  PollStatus,
+} from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
+import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
@@ -48,6 +56,7 @@ import {
   COLLABORA_IMPORT_EXTENSIONS_P1,
   COLLABORA_IMPORT_MAX_BYTES,
 } from '@/domain/collaboration/calloutContributions/collaboraDocument/collaboraImportFormats';
+import { deriveCollaboraImportErrorMessage } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraImportErrorMessage';
 import { filenameWithoutExtension } from '@/domain/collaboration/calloutContributions/collaboraDocument/filenameWithoutExtension';
 import { useRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import { validateCollaboraImportFile } from '@/domain/collaboration/calloutContributions/collaboraDocument/validateCollaboraImportFile';
@@ -73,6 +82,7 @@ import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUp
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useBeforeUnloadGuard } from '../hooks/useBeforeUnloadGuard';
 import { referenceRowErrors, useCrdCalloutForm } from '../hooks/useCrdCalloutForm';
+import { useCrdSpaceContributors } from '../hooks/useCrdSpaceContributors';
 import { mapFormToCalloutCreationInput, mapFormToCalloutUpdateInput } from './calloutFormMapper';
 import { type CrdCalloutRestrictions, clampFormValuesToRestrictions } from './calloutRestrictions';
 import { healContributorCollection } from './contributorCollectionMapper';
@@ -80,6 +90,7 @@ import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsTo
 import { FramingEditorConnector } from './FramingEditorConnector';
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
 import { TemplateImportConnector } from './TemplateImportConnector';
+import { omitIneligibleIds, useSelectionCandidates } from './useSelectionCandidates';
 
 /**
  * The full create-mode framing chip set, in display order. `contributors`
@@ -201,7 +212,9 @@ function CalloutFormConnectorInner({
   // Space context — `permissions.canUpdate` is the space-admin signal that gates
   // the contributors framing chip; `entitlements` gates the office-documents chip
   // (read further below). `spaceContextLoading` is the entitlements query flag.
-  const { entitlements, permissions, loading: spaceContextLoading } = useSpace();
+  const { space, entitlements, permissions, loading: spaceContextLoading } = useSpace();
+  const roleSetId = space.about.membership?.roleSetID;
+  const { spaceId } = useUrlResolver();
 
   // The "Contributors" (008) and "Subspaces" (013) framing chips are admin-only
   // (FR-004a) and offered only in space/community (collaboration) callout contexts
@@ -230,6 +243,58 @@ function CalloutFormConnectorInner({
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
   const { values, errors, setField, validate, reset, prefill, dirty } = form;
+
+  // Feature 025: contributor candidates for the custom-selection picker (T005).
+  // Only fetched when the contributors chip is active AND the dialog is open.
+  const isContributorsChip = values.framingChip === 'contributors';
+  const isSpacesChip = values.framingChip === 'spaces';
+  const {
+    candidates: contributorCandidates,
+    loading: contributorCandidatesLoading,
+    resolveChips: resolveContributorChips,
+    refetch: refetchContributorCandidates,
+  } = useSelectionCandidates({
+    roleSetId,
+    // contributorTypes governs what the PICKER displays (FR-005); eligibility
+    // checking inside useSelectionCandidates uses all types (FR-011).
+    contributorTypes: values.contributorCollection.types,
+    skip: !open || !isContributorsChip || !roleSetId,
+  });
+
+  // Feature 025: subspace candidates for the spaces chip (T006).
+  // Reuses `useSubspacesInSpaceQuery` (already-shipped, host-scoped — R-6).
+  const {
+    data: subspacesData,
+    loading: subspaceCandidatesLoading,
+    refetch: refetchSubspaceCandidates,
+  } = useSubspacesInSpaceQuery({
+    variables: { spaceId: spaceId ?? '' },
+    skip: !open || !isSpacesChip || !spaceId,
+  });
+  const subspaceCandidates = (subspacesData?.lookup.space?.subspaces ?? []).map(s => ({
+    id: s.id,
+    displayName: s.about.profile?.displayName ?? s.id,
+    avatarUrl: s.about.profile?.avatar?.uri ?? undefined,
+  }));
+
+  // Contributor map pins for the map-view capture control.
+  // Edit mode only: derive from the default-type contributor cards. In create mode
+  // calloutId is undefined so the hook skips cleanly (the no-op path).
+  const { defaultType: mapPinsDefaultType, getCards: getMapPinCards } = useCrdSpaceContributors(
+    mode === 'edit' && isContributorsChip ? calloutId : undefined
+  );
+  const contributorMapPins: ContributorMapPin[] = (getMapPinCards(mapPinsDefaultType) ?? [])
+    .filter(card => card.latitude !== undefined && card.longitude !== undefined)
+    .map(card => ({
+      id: card.id,
+      name: card.name,
+      avatarUrl: card.avatarUrl,
+      roleLabel: card.roleLabel,
+      href: card.href,
+      latitude: card.latitude as number,
+      longitude: card.longitude as number,
+    }));
+
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
@@ -379,22 +444,12 @@ function CalloutFormConnectorInner({
 
   const formatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
   const capMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
-  const collaboraImportErrorMessage: string | null = collaboraImportError
-    ? (() => {
-        switch (collaboraImportError.kind) {
-          case 'extension':
-            return t('callout.documentImportErrorUnsupported', { formats: formatList });
-          case 'size':
-            return t('callout.documentImportErrorTooLarge', { cap: capMb });
-          case 'multiple-files':
-            return t('callout.documentImportErrorMultiple');
-          case 'folder':
-            return t('callout.documentImportErrorFolder');
-          default:
-            return null;
-        }
-      })()
-    : null;
+  const collaboraImportErrorMessage: string | null = deriveCollaboraImportErrorMessage(
+    collaboraImportError,
+    t,
+    formatList,
+    capMb
+  );
 
   // Map server errors raised by the create-callout mutation to the appropriate
   // surface. FORMAT_NOT_SUPPORTED + STORAGE_UPLOAD_FAILED render inline near the
@@ -440,7 +495,38 @@ function CalloutFormConnectorInner({
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
-    const { input, whiteboardPreviewImages, collaboraUploadFile } = mapFormToCalloutCreationInput(values, {
+    // Strip ineligible (stale) selectedIds before serialising — mirrors the update
+    // path (tasks T005/T006; the server rejects out-of-scope ids on create too).
+    // Same loading guard as in saveEdit: if candidates aren't loaded yet, skip
+    // the strip and let the server be the authority (corr-client-3 / qual-client-1).
+    const isCollectionChipForCreate = values.framingChip === 'contributors' || values.framingChip === 'spaces';
+    // Unresolved = still loading OR skipped for a missing id (see saveEdit).
+    const candidatesUnresolvedForCreate =
+      isCollectionChipForCreate &&
+      values.selectionMode === 'custom' &&
+      (values.framingChip === 'contributors'
+        ? contributorCandidatesLoading || !roleSetId
+        : subspaceCandidatesLoading || !spaceId);
+
+    const eligibleSelectedIdsForCreate = (() => {
+      if (values.selectionMode !== 'custom') return values.selectedIds;
+      if (candidatesUnresolvedForCreate) return values.selectedIds;
+      if (values.framingChip === 'contributors') {
+        const chips = resolveContributorChips(values.selectedIds);
+        return omitIneligibleIds(values.selectedIds, chips);
+      }
+      if (values.framingChip === 'spaces') {
+        const candidateIds = new Set(subspaceCandidates.map(c => c.id));
+        return values.selectedIds.filter(id => candidateIds.has(id));
+      }
+      return values.selectedIds;
+    })();
+    const valuesForCreate =
+      eligibleSelectedIdsForCreate !== values.selectedIds
+        ? { ...values, selectedIds: eligibleSelectedIdsForCreate }
+        : values;
+
+    const { input, whiteboardPreviewImages, collaboraUploadFile } = mapFormToCalloutCreationInput(valuesForCreate, {
       visibility,
       whiteboardFallbackDisplayName: t('callout.whiteboard'),
       collaboraFallbackDisplayName: t('callout.defaultDocumentName'),
@@ -503,6 +589,29 @@ function CalloutFormConnectorInner({
   // --- Edit path ---------------------------------------------------------
   const pollId = editData?.lookup.callout?.framing.poll?.id ?? values.editMeta?.pollId;
   const pollMgmt = usePollOptionManagement({ pollId: pollId ?? '' });
+
+  // Poll open/closed status. Unlike the option edits (which are diffed and flushed
+  // on save), the status toggle applies immediately on confirm — matching the
+  // pre-CRD MUI behaviour. The mutation returns `...PollDetails`, so the Apollo
+  // cache updates `framing.poll.status` and the form re-renders from it; there is
+  // no local status field to keep in sync.
+  const pollStatus = editData?.lookup.callout?.framing.poll?.status;
+  const [updatePollStatus] = useUpdatePollStatusMutation();
+
+  const handlePollStatusChange = async (status: 'open' | 'closed') => {
+    if (!pollId) return;
+    const nextStatus = status === 'closed' ? PollStatus.Closed : PollStatus.Open;
+    try {
+      await updatePollStatus({ variables: { statusData: { pollID: pollId, status: nextStatus } } });
+      notify(
+        status === 'closed' ? t('pollForm.statusChange.closeSuccess') : t('pollForm.statusChange.reopenSuccess'),
+        'success'
+      );
+    } catch (err) {
+      logError(new Error('Poll status change failed', { cause: err as Error }));
+      notify(t('pollForm.statusChange.failed'), 'error');
+    }
+  };
 
   const runPollOptionDiff = async () => {
     if (!pollId) return;
@@ -605,16 +714,81 @@ function CalloutFormConnectorInner({
       }
     }
 
-    const { input, whiteboardPreviewImages } = mapFormToCalloutUpdateInput(values, { calloutId });
+    // Strip ineligible (stale) selectedIds before serialising — the server strictly
+    // rejects out-of-scope ids (spec FR-006/SC-005, tasks T005/T006).
+    // For Contributors framing: resolve chips against the live candidate set so
+    // ids whose member has since left the community are filtered out.
+    // For Spaces framing: any id not present in subspaceCandidates is stale.
+    //
+    // SAFETY GUARD (corr-client-3 / qual-client-1): if the relevant candidate
+    // query is still in flight (cache miss, slow network) the candidate set is
+    // empty and stripping against it would wipe every stored id — silently
+    // destroying the admin's curated list.  When candidates are not yet loaded
+    // we skip the strip and let the server be the authority (server rejects
+    // foreign / non-member ids on every write anyway — FR-006).
+    const isCollectionChip = values.framingChip === 'contributors' || values.framingChip === 'spaces';
+    // The candidate set is "unresolved" while it is still loading OR while its query
+    // was skipped for a missing id (roleSetId / spaceId) — in that state the candidate
+    // list is empty, so stripping would wrongly erase the whole custom selection.
+    const candidatesUnresolved =
+      isCollectionChip &&
+      values.selectionMode === 'custom' &&
+      (values.framingChip === 'contributors'
+        ? contributorCandidatesLoading || !roleSetId
+        : subspaceCandidatesLoading || !spaceId);
+
+    const eligibleSelectedIds = (() => {
+      if (values.selectionMode !== 'custom') return values.selectedIds;
+      // Skip the strip while the candidate set is unresolved.
+      if (candidatesUnresolved) return values.selectedIds;
+      if (values.framingChip === 'contributors') {
+        const chips = resolveContributorChips(values.selectedIds);
+        return omitIneligibleIds(values.selectedIds, chips);
+      }
+      if (values.framingChip === 'spaces') {
+        const candidateIds = new Set(subspaceCandidates.map(c => c.id));
+        return values.selectedIds.filter(id => candidateIds.has(id));
+      }
+      return values.selectedIds;
+    })();
+    const valuesForUpdate =
+      eligibleSelectedIds !== values.selectedIds ? { ...values, selectedIds: eligibleSelectedIds } : values;
+
+    const { input, whiteboardPreviewImages } = mapFormToCalloutUpdateInput(valuesForUpdate, { calloutId });
 
     let result: Awaited<ReturnType<typeof updateCalloutContent>>;
     try {
+      // A selection/framing change alters the rendered callout view + its collection,
+      // whose data comes from separate queries; refetch the callout details and the
+      // collection queries (and wait) so the view reflects the save in-session instead
+      // of only after a reload.
+      const collectionRefetch =
+        input.framing?.type === CalloutFramingType.Contributors
+          ? ['ContributorCollectionConfig', 'ContributorCollectionByType']
+          : input.framing?.type === CalloutFramingType.Spaces
+            ? ['SpaceCollectionSubspaces']
+            : [];
       result = await updateCalloutContent({
         variables: { calloutData: input },
-        refetchQueries: ['CalloutsSetTags'],
+        refetchQueries: ['CalloutsSetTags', 'CalloutDetails', ...collectionRefetch],
+        awaitRefetchQueries: collectionRefetch.length > 0,
       });
     } catch (err) {
       logError(new Error('Callout update mutation failed', { cause: err as Error }));
+      // Surface the failure so the admin knows the save did not go through (T005
+      // mid-race rejection recovery / spec Edge Case 'Concurrent churn').
+      notify(t('callout.updateFailed'), 'error');
+      // Reload membership/subspace data so any concurrent change (e.g. a member
+      // who left between load and save) is reflected.  On the next save attempt
+      // the updated candidate set will strip the now-departed entry and the re-
+      // save can succeed (corr-client-2 / T005 concurrent-churn recovery).
+      if (values.selectionMode === 'custom') {
+        if (values.framingChip === 'contributors') {
+          refetchContributorCandidates();
+        } else if (values.framingChip === 'spaces') {
+          void refetchSubspaceCandidates();
+        }
+      }
       return;
     }
     const updated = result.data?.updateCallout;
@@ -784,6 +958,10 @@ function CalloutFormConnectorInner({
                 onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
                 pollShowVoterAvatars={values.pollShowVoterAvatars}
                 onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
+                // Only an existing poll has a status to toggle — a poll being created is
+                // always open, so the toggle stays hidden until there is a `pollId`.
+                pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
+                onPollStatusChange={handlePollStatusChange}
                 whiteboardContent={values.whiteboardContent}
                 whiteboardPreviewSettings={values.whiteboardPreviewSettings}
                 whiteboardConfigured={values.whiteboardConfigured}
@@ -821,8 +999,33 @@ function CalloutFormConnectorInner({
                     : undefined
                 }
                 contributorCollection={values.contributorCollection}
-                onContributorCollectionChange={v => setField('contributorCollection', healContributorCollection(v))}
+                onContributorCollectionChange={v =>
+                  setField(
+                    'contributorCollection',
+                    // Preserve the current mapView when the CRD type-config field
+                    // changes (it only emits types/defaultType/defaultView — the
+                    // capture control handles mapView separately).
+                    healContributorCollection({ ...v, mapView: values.contributorCollection.mapView })
+                  )
+                }
                 contributorCollectionError={errors.contributorCollection}
+                selectionMode={values.selectionMode}
+                onSelectionModeChange={next => setField('selectionMode', next)}
+                selectedIds={values.selectedIds}
+                onSelectedIdsChange={ids => setField('selectedIds', ids)}
+                contributorCandidates={contributorCandidates}
+                resolveContributorChips={resolveContributorChips}
+                contributorCandidatesLoading={contributorCandidatesLoading}
+                subspaceCandidates={subspaceCandidates}
+                subspaceCandidatesLoading={subspaceCandidatesLoading}
+                contributorMapPins={contributorMapPins}
+                contributorMapView={values.contributorCollection.mapView}
+                onContributorMapViewChange={view =>
+                  setField('contributorCollection', {
+                    ...values.contributorCollection,
+                    mapView: view,
+                  })
+                }
               />
             </div>
           )

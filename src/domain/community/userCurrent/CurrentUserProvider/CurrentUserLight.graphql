@@ -5,6 +5,8 @@ query CurrentUserLight {
       settings {
         id
         designVersion
+        language
+        languageOfferAnswered
       }
       account {
         id

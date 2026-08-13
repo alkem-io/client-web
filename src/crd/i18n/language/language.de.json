@@ -1,0 +1,20 @@
+{
+  "offer": {
+    "nl": {
+      "title": "Alkemio ist auch auf Niederländisch verfügbar.",
+      "accept": "Ja, Niederländisch verwenden",
+      "decline": "Nein danke, auf Englisch bleiben",
+      "dismiss": "Sprachangebot ablehnen"
+    }
+  },
+  "settings": {
+    "languageLabel": "Oberflächensprache",
+    "languageDescription": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle Ihre Geräte.",
+    "languageSaveError": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen."
+  },
+  "invite": {
+    "suggestedLanguageLabel": "Erwartete Sprache",
+    "suggestedLanguagePlaceholder": "Sprache auswählen (optional)",
+    "suggestedLanguageDescription": "Wenn der Eingeladene Alkemio in einer bestimmten Sprache verwenden möchte, wählen Sie diese hier aus. Die Einladung selbst bleibt auf Englisch."
+  }
+}

@@ -8,6 +8,17 @@ export type AboutVisual = {
   id: string;
   uri: string | null;
   altText: string | null;
+  /**
+   * Width / height ratio this visual is displayed at. Fixed for avatar and card
+   * banner; admin-adjustable for the L0 page banner (see `aspectRatioBounds`).
+   */
+  aspectRatio?: number;
+};
+
+/** Inclusive range an adjustable visual's aspect ratio may be set to, from the server. */
+export type AboutVisualAspectRatioBounds = {
+  min: number;
+  max: number;
 };
 
 export type AboutReference = {

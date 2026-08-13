@@ -1,20 +1,11 @@
-import { Bot, Search, SquarePen } from 'lucide-react';
+import { Search, SquarePen } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import { Input } from '@/crd/primitives/input';
-import { GroupAvatar } from './GroupAvatar';
+import { ConversationAvatar } from './ConversationAvatar';
 import type { ChatListItem } from './types';
-
-const initials = (name: string) =>
-  name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(word => word[0]?.toUpperCase() ?? '')
-    .join('') || '?';
 
 type ChatConversationListProps = {
   /** Pre-sorted: pinned (guidance) first while search is empty. */
@@ -103,20 +94,14 @@ export function ChatConversationList({
                     selected && 'bg-accent'
                   )}
                 >
-                  {item.isGuidance ? (
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <Bot aria-hidden="true" className="size-4" />
-                    </span>
-                  ) : item.isGroup && !item.avatarUrl ? (
-                    // Group with no photo of its own → composite of member avatars.
-                    <GroupAvatar members={item.memberAvatars ?? []} size="sm" />
-                  ) : (
-                    // 1:1 chat, or a group that has its own photo.
-                    <Avatar className="size-8 shrink-0">
-                      {item.avatarUrl && <AvatarImage src={item.avatarUrl} alt="" />}
-                      <AvatarFallback className="text-caption">{initials(item.displayName)}</AvatarFallback>
-                    </Avatar>
-                  )}
+                  <ConversationAvatar
+                    size="sm"
+                    displayName={item.displayName}
+                    avatarUrl={item.avatarUrl}
+                    isGroup={item.isGroup}
+                    isGuidance={item.isGuidance}
+                    memberAvatars={item.memberAvatars}
+                  />
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="flex items-center justify-between gap-2">
                       <span className="flex min-w-0 items-center gap-1.5">
@@ -139,8 +124,14 @@ export function ChatConversationList({
                       )}
                     </span>
                     <span className="flex items-center justify-between gap-2">
-                      <span className="truncate text-caption text-muted-foreground">
-                        {item.lastMessagePreview ?? ''}
+                      <span className="min-w-0 truncate text-caption text-muted-foreground">
+                        {item.draftPreview ? (
+                          <>
+                            <span className="text-primary">{t('list.draft')}</span> {item.draftPreview}
+                          </>
+                        ) : (
+                          (item.lastMessagePreview ?? '')
+                        )}
                       </span>
                       {hasUnread && (
                         <Badge className="h-5 min-w-5 justify-center px-1.5 text-badge">{item.unreadCount}</Badge>

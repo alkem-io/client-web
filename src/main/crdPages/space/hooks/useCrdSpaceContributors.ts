@@ -3,9 +3,10 @@ import {
   useContributorCollectionByTypeLazyQuery,
   useContributorCollectionConfigQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { ActorType } from '@/core/apollo/generated/graphql-schema';
+import { ActorType, CalloutSelectionMode } from '@/core/apollo/generated/graphql-schema';
 import type { ContributorCardData } from '@/crd/components/callout/ContributorCollection/ContributorCard';
 import type { ContributorCollectionCounts } from '@/crd/components/callout/ContributorCollection/ContributorCollection';
+import type { ContributorMapFixedView } from '@/crd/components/map/ContributorMap';
 import type { ContributorTypeId, ContributorViewId } from '@/crd/forms/callout/types';
 import {
   contributorCollectionFromServer,
@@ -36,6 +37,12 @@ export type UseCrdSpaceContributorsResult = {
   defaultType: ContributorTypeId;
   /** The default display mode from the callout config. */
   defaultView: ContributorViewId;
+  /**
+   * Admin-fixed initial map view. null = automatic framing.
+   * Already read-guarded by `contributorCollectionFromServer` — invalid stored
+   * values are coerced to null at the mapping boundary.
+   */
+  fixedView: ContributorMapFixedView | null;
   /** Always-visible per-type counts (total eligible set). */
   counts: ContributorCollectionCounts;
   /** Cards for the requested type, or `undefined` until that type is fetched. */
@@ -46,6 +53,8 @@ export type UseCrdSpaceContributorsResult = {
   isLoading: (type: ContributorTypeId) => boolean;
   /** Config query loading state. */
   loading: boolean;
+  /** True when the callout's selection mode is CUSTOM (admin curated a fixed list). */
+  isCustomSelection: boolean;
 };
 
 const EMPTY_COUNTS: ContributorCollectionCounts = { users: 0, organizations: 0, virtualContributors: 0 };
@@ -68,6 +77,9 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
       }
     : EMPTY_COUNTS;
 
+  const isCustomSelection =
+    configData?.lookup.callout?.settings.framing.selection?.mode === CalloutSelectionMode.Custom;
+
   // Per-type fetched card sets. `requestedRef` tracks which types have already
   // been fetched (a ref, not state, so `ensureLoaded` reads a fresh value without
   // a render cycle). It rolls back on error so a later switch can retry.
@@ -79,7 +91,25 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
   // the auto-load fires at most once even when its fetch fails — see the effect.
   const eagerLoadedRef = useRef(false);
 
-  const [fetchByType] = useContributorCollectionByTypeLazyQuery();
+  const [fetchByType, { data: byTypeData, variables: byTypeVars }] = useContributorCollectionByTypeLazyQuery();
+
+  // Keep the per-type card cache in sync with the active lazy observer's data.
+  // This fires on the initial fetch AND whenever `refetchQueries` (e.g. after a
+  // callout selection save) re-runs the active `ContributorCollectionByType`
+  // observer — so the mounted collection reflects the saved change in-session,
+  // without needing a remount/reload. `ensureLoaded`'s one-shot `.then` alone
+  // never re-fires on a refetch, which is why the view used to stay stale.
+  const byTypeItems = byTypeData?.lookup.callout?.framing.contributors;
+  const byTypeServerType = byTypeVars?.type;
+  const byTypeCalloutId = byTypeVars?.calloutId;
+  useEffect(() => {
+    // Ignore a late response for a different callout: the lazy observer's variables
+    // must match this hook's calloutId before we write into its cache.
+    if (!byTypeServerType || byTypeCalloutId !== calloutId) return;
+    const type = contributorTypeFromServer(byTypeServerType);
+    // Normalize a missing collection to [] so stale cards are cleared, not left behind.
+    setCardsByType(prev => ({ ...prev, [type]: (byTypeItems ?? []).map(mapContributorItemToCard) }));
+  }, [byTypeItems, byTypeServerType, byTypeCalloutId, calloutId]);
 
   const ensureLoaded = (type: ContributorTypeId) => {
     if (!calloutId || requestedRef.current.has(type)) return;
@@ -126,11 +156,15 @@ export function useCrdSpaceContributors(calloutId: string | undefined): UseCrdSp
     types: config.types,
     defaultType,
     defaultView: config.defaultView,
+    // The read-guard in contributorCollectionFromServer already
+    // coerces invalid stored values to null — no additional guard needed here.
+    fixedView: config.mapView,
     counts,
     getCards: (type: ContributorTypeId) => cardsByType[type],
     ensureLoaded,
     isLoading: (type: ContributorTypeId) => loadingTypes.has(type),
     loading,
+    isCustomSelection,
   };
 }
 

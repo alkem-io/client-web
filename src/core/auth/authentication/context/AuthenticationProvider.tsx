@@ -21,11 +21,15 @@ const AuthenticationProvider = ({ children }: PropsWithChildren) => {
   const { session, isAuthenticated: kratosAuthenticated, loading: kratosLoading, verified } = useWhoami();
   const { active: oidcActive, loading: oidcLoading } = useOidcSessionStatus();
 
-  // Authenticated only when BOTH the Kratos SSO session AND the BFF's OIDC
-  // session agree. Kratos can survive an RP-side logout (multi-RP SSO is
-  // intentional) so it cannot be the sole signal. The BFF OIDC session is the
-  // authoritative gate for any call hitting /api/private/graphql.
-  const isAuthenticated = kratosAuthenticated && oidcActive;
+  // The BFF OIDC session is the authoritative gate for any call hitting
+  // /api/private/graphql, so it is also the sole signal for "logged in": a
+  // Kratos SSO session that expired or was revoked while the BFF session is
+  // still alive must NOT flip the UI to logged-out — the user still has full
+  // API access, and showing the Login button next to working CRUD controls is
+  // a lie (see client-web#9965). The reverse (Kratos alive after an RP-side
+  // logout — multi-RP SSO is intentional) is equally covered: oidcActive is
+  // false, so Kratos alone never reads as logged in.
+  const isAuthenticated = oidcActive;
   const loading = kratosLoading || oidcLoading;
 
   // After a password change Kratos refreshes its SSO session but the BFF OIDC

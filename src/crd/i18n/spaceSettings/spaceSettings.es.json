@@ -887,20 +887,23 @@
     },
     "branding": {
       "title": "Branding del espacio",
-      "description": "Sube un avatar, un banner de página (1536×256) y un banner de tarjeta (416×256).",
+      "description": "Sube un avatar, un banner de página (3840px) y un banner de tarjeta (416×256).",
       "noImage": "Sin imagen",
       "upload": "Subir",
       "avatar": {
         "title": "Avatar",
-        "hint": "El logo del espacio."
+        "hint": "El logo del espacio.",
+        "recrop": "Recortar el avatar actual"
       },
       "pageBanner": {
-        "title": "Banner de página (1536 × 256px)",
-        "hint": "Se muestra en la parte superior de la página del espacio."
+        "title": "Banner de página",
+        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1536 × 154px.",
+        "recrop": "Recortar el banner de página actual"
       },
       "cardBanner": {
         "title": "Banner de tarjeta (416 × 256px)",
-        "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio."
+        "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio.",
+        "recrop": "Recortar el banner de tarjeta actual"
       },
       "cropDialog": {
         "save": "Guardar",
@@ -910,7 +913,8 @@
         "altText": "Descripción",
         "altTextPlaceholder": "Describe esta imagen…"
       },
-      "changeBanner": "Cambiar banner"
+      "changeBanner": "Cambiar banner",
+      "recropFailed": "No se pudo cargar esta imagen para recortarla. Inténtalo de nuevo."
     },
     "location": {
       "title": "Ubicación",

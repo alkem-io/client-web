@@ -12,7 +12,7 @@
     "memberCount_other": "{{count}} leden"
   },
   "flow": {
-    "editFlow": "Innovatieflow bewerken",
+    "editFlow": "Innovation Flow bewerken",
     "addPost": "Post toevoegen",
     "emptyState": "Er zijn nog geen fasen geconfigureerd voor deze subspace.",
     "phaseTab": "Schakel naar fase {{name}}",
@@ -21,8 +21,8 @@
   },
   "sidebar": {
     "about": "Over deze SubSpace",
-    "lead": "Trekker",
-    "leads": "Trekkers",
+    "lead": "Lead",
+    "leads": "Leads",
     "collapse": "Inklappen",
     "expand": "Uitklappen",
     "quickActions": {
@@ -61,7 +61,7 @@
   },
   "a11y": {
     "subspaceBanner": "SubSpace-banner voor {{name}}",
-    "flowTabs": "Innovatieflowfasen",
+    "flowTabs": "Innovation Flow-fasen",
     "sidebarNavigation": "SubSpace-zijbalk",
     "communityDialog": "Communityleden-dialoog",
     "close": "Sluiten",

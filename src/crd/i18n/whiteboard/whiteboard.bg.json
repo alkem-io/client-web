@@ -63,6 +63,7 @@
   },
   "disconnected": {
     "reconnect": "Свържи се отново",
+    "reloadPage": "Презареди страницата",
     "countdown": "({{seconds}}с)",
     "close": "Затвори"
   },

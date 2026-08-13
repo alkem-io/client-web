@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SpaceVisibility } from '@/core/apollo/generated/graphql-schema';
 import { type AccountResourcesShape, buildUserProfileTagsets, mapHostedSpacesToCardData } from '../publicProfileMapper';
 
 const tagsetLabels = { keywords: 'Keywords', skills: 'Skills' };
@@ -84,6 +85,16 @@ describe('mapHostedSpacesToCardData', () => {
     const result = mapHostedSpacesToCardData(resources, vcType);
     expect(result.hostedSpaces).toHaveLength(1);
     expect(result.hostedSpaces[0].id).toBe('s-2');
+  });
+
+  it('keeps inactive spaces — visibility filtering is org-profile-only', () => {
+    const resources: AccountResourcesShape = {
+      spaces: [
+        { id: 'active', visibility: SpaceVisibility.Active, about: { profile: { displayName: 'A', url: '/a' } } },
+        { id: 'inactive', visibility: SpaceVisibility.Inactive, about: { profile: { displayName: 'I', url: '/i' } } },
+      ],
+    };
+    expect(mapHostedSpacesToCardData(resources, vcType).hostedSpaces.map(s => s.id)).toEqual(['active', 'inactive']);
   });
 
   it('maps a space with a banner — uses real banner over gradient fallback', () => {

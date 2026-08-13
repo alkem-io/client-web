@@ -6,17 +6,8 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
-// Radix only mounts AvatarPrimitive.Image once the browser reports the image as
-// loaded, which never happens in jsdom. Swap it for a plain <img> so the props
-// this component passes down are observable (same approach as
-// CrdRedirectToAncestorDialog.test.tsx).
-vi.mock('@/crd/primitives/avatar', () => ({
-  Avatar: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  AvatarImage: ({ src, alt, className }: { src: string; alt: string; className?: string }) => (
-    <img src={src} alt={alt} className={className} />
-  ),
-  AvatarFallback: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
-}));
+// Shared jsdom-safe avatar double from src/crd/primitives/__mocks__/avatar.tsx.
+vi.mock('@/crd/primitives/avatar');
 
 const applications = [
   {

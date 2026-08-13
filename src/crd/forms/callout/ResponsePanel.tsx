@@ -42,8 +42,7 @@ export type ResponsePanelProps = {
 
 /**
  * Dispatches on `type` to render the right sub-panel: Links, Posts, Memos,
- * Whiteboards, or Documents (placeholder). Hidden when `type === 'none'`.
- * Spec FR-30..FR-36.
+ * Whiteboards, or Documents. Hidden when `type === 'none'`. Spec FR-30..FR-36.
  */
 export function ResponsePanel(props: ResponsePanelProps) {
   const { type } = props;
@@ -57,6 +56,10 @@ export function ResponsePanel(props: ResponsePanelProps) {
     case 'memo':
       return <SimpleContributionPanel {...props} />;
     case 'whiteboard':
+      return <SimpleContributionPanel {...props} />;
+    case 'document':
+      // Documents are upload-only (no blank-create path) — no "Set Default Response"
+      // template concept applies, matching Links. ActorSwitches only.
       return <SimpleContributionPanel {...props} />;
     default:
       return null;

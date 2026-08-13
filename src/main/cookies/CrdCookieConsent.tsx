@@ -21,7 +21,9 @@ const CrdCookieConsent = ({ ref }: { ref?: Ref<HTMLDivElement> }) => {
   });
 
   const handleConfirm = (analysisAccepted: boolean) => {
-    acceptOnlySelected(analysisAccepted ? [AlkemioCookieTypes.analysis] : []);
+    const selected: string[] = [];
+    if (analysisAccepted) selected.push(AlkemioCookieTypes.analysis);
+    acceptOnlySelected(selected);
   };
 
   return <CookieConsentBanner ref={containerRef} onAcceptAll={acceptAllCookies} onConfirm={handleConfirm} />;

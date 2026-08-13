@@ -1,4 +1,12 @@
+export interface LanguageConfig {
+  /** Languages proactively offered (detection, banner, invite suggestion). Dutch-only for this release. */
+  eligible: string[];
+  /** Platform default language code (e.g. 'en'). */
+  default: string;
+}
+
 export interface Configuration {
+  language?: LanguageConfig;
   authentication: {
     providers: AuthenticationProvider[];
   };

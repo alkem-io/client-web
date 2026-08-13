@@ -12,15 +12,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
+  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -873,6 +883,7 @@ export enum AuthorizationCredential {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceLead = 'SPACE_LEAD',
   SpaceMember = 'SPACE_MEMBER',
@@ -995,6 +1006,7 @@ export enum AuthorizationPrivilege {
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
   PlatformAdmin = 'PLATFORM_ADMIN',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
   PublicShare = 'PUBLIC_SHARE',
   Read = 'READ',
@@ -1211,6 +1223,16 @@ export type CalloutContributionsCountOutput = {
   whiteboard: Scalars['Float']['output'];
 };
 
+export type CalloutContributorsMapView = {
+  __typename?: 'CalloutContributorsMapView';
+  /** Map center latitude. Finite, within [-90, 90]. */
+  latitude: Scalars['Float']['output'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['output'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['output'];
+};
+
 export type CalloutContributorsSettings = {
   __typename?: 'CalloutContributorsSettings';
   /** The contributor types included in this contributor-collection callout. At least one. */
@@ -1219,6 +1241,8 @@ export type CalloutContributorsSettings = {
   defaultContributorType: ActorType;
   /** The default display mode (list or map). */
   defaultView: ContributorCollectionView;
+  /** Admin-fixed initial map view. Absent/null ⇒ automatic framing (fit to plotted contributors; Europe fallback). */
+  mapView?: Maybe<CalloutContributorsMapView>;
 };
 
 export enum CalloutDescriptionDisplayMode {
@@ -1288,6 +1312,20 @@ export type CalloutPostCreated = {
   sortOrder: Scalars['Float']['output'];
 };
 
+/** The selection mode for a collection callout (Contributors or Subspaces). AUTO (default) returns the full computed set; CUSTOM restricts to the admin-curated selectedIds list. */
+export enum CalloutSelectionMode {
+  Auto = 'AUTO',
+  Custom = 'CUSTOM',
+}
+
+export type CalloutSelectionSettings = {
+  __typename?: 'CalloutSelectionSettings';
+  /** The selection mode: AUTO (full computed set) or CUSTOM (admin-curated subset). */
+  mode: CalloutSelectionMode;
+  /** The selected actor/space IDs in CUSTOM mode (0–500 entries). Ignored when mode is AUTO. */
+  selectedIds: Array<Scalars['ID']['output']>;
+};
+
 export type CalloutSettings = {
   __typename?: 'CalloutSettings';
   /** Callout Contribution Settings. */
@@ -1316,6 +1354,8 @@ export type CalloutSettingsFraming = {
   commentsEnabled: Scalars['Boolean']['output'];
   /** Configuration for a contributor-collection callout. Present only when framing.type = CONTRIBUTORS. */
   contributors?: Maybe<CalloutContributorsSettings>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Absent / null ⇒ AUTO (full computed set). */
+  selection?: Maybe<CalloutSelectionSettings>;
 };
 
 export enum CalloutVisibility {
@@ -1690,6 +1730,8 @@ export type Config = {
   featureFlags: Array<PlatformFeatureFlag>;
   /** Integration with a 3rd party Geo information service */
   geo: Geo;
+  /** Language configuration: eligible set for proactive offers and the platform default. */
+  language: LanguageConfig;
   /** Platform related locations. */
   locations: PlatformLocations;
   /** Sentry (client monitoring) related configuration. */
@@ -1978,6 +2020,25 @@ export type CreateCalloutContributionInput = {
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
 
+export type CreateCalloutContributorsMapViewData = {
+  __typename?: 'CreateCalloutContributorsMapViewData';
+  /** Map center latitude. Finite, within [-90, 90]. MapLibre throws on values outside this range. */
+  latitude: Scalars['Float']['output'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['output'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['output'];
+};
+
+export type CreateCalloutContributorsMapViewInput = {
+  /** Map center latitude. Finite, within [-90, 90]. MapLibre throws on values outside this range. */
+  latitude: Scalars['Float']['input'];
+  /** Map center longitude. Finite, within [-180, 180]. */
+  longitude: Scalars['Float']['input'];
+  /** Map zoom level. Finite, within [0, 22]. */
+  zoom: Scalars['Float']['input'];
+};
+
 export type CreateCalloutContributorsSettingsData = {
   __typename?: 'CreateCalloutContributorsSettingsData';
   /** The contributor types to include. At least one type is required. */
@@ -1986,6 +2047,8 @@ export type CreateCalloutContributorsSettingsData = {
   defaultContributorType?: Maybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: Maybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. When omitted, the callout opens on automatic framing. */
+  mapView?: Maybe<CreateCalloutContributorsMapViewData>;
 };
 
 export type CreateCalloutContributorsSettingsInput = {
@@ -1995,6 +2058,8 @@ export type CreateCalloutContributorsSettingsInput = {
   defaultContributorType?: InputMaybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: InputMaybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. When omitted, the callout opens on automatic framing. */
+  mapView?: InputMaybe<CreateCalloutContributorsMapViewInput>;
 };
 
 export type CreateCalloutData = {
@@ -2073,6 +2138,21 @@ export type CreateCalloutOnCalloutsSetInput = {
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type CreateCalloutSelectionSettingsData = {
+  __typename?: 'CreateCalloutSelectionSettingsData';
+  /** The selection mode (AUTO or CUSTOM). Defaults to AUTO when omitted. */
+  mode?: Maybe<CalloutSelectionMode>;
+  /** The curated selection of actor/space IDs (CUSTOM mode). At most 500. Deduplicated by the server. */
+  selectedIds?: Maybe<Array<Scalars['ID']['output']>>;
+};
+
+export type CreateCalloutSelectionSettingsInput = {
+  /** The selection mode (AUTO or CUSTOM). Defaults to AUTO when omitted. */
+  mode?: InputMaybe<CalloutSelectionMode>;
+  /** The curated selection of actor/space IDs (CUSTOM mode). At most 500. Deduplicated by the server. */
+  selectedIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
 export type CreateCalloutSettingsContributionData = {
   __typename?: 'CreateCalloutSettingsContributionData';
   /** Allowed Contribution types. */
@@ -2110,6 +2190,8 @@ export type CreateCalloutSettingsFramingData = {
   commentsEnabled?: Maybe<Scalars['Boolean']['output']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
   contributors?: Maybe<CreateCalloutContributorsSettingsData>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
+  selection?: Maybe<CreateCalloutSelectionSettingsData>;
 };
 
 export type CreateCalloutSettingsFramingInput = {
@@ -2117,6 +2199,8 @@ export type CreateCalloutSettingsFramingInput = {
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
   contributors?: InputMaybe<CreateCalloutContributorsSettingsInput>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
+  selection?: InputMaybe<CreateCalloutSelectionSettingsInput>;
 };
 
 export type CreateCalloutSettingsInput = {
@@ -2213,7 +2297,7 @@ export type CreateConversationInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   /** Optional display name for GROUP conversations. Ignored for DIRECT conversations (Synapse uses the other member name automatically). */
   displayName?: InputMaybe<Scalars['String']['input']>;
-  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs. Creator is auto-included. */
+  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs, up to 100. Creator is auto-included. */
   memberIDs: Array<Scalars['UUID']['input']>;
   /** The type of conversation to create: DIRECT for 1-on-1, GROUP for multi-party. */
   type: ConversationCreationType;
@@ -2780,6 +2864,7 @@ export enum CredentialType {
   OrganizationAdmin = 'ORGANIZATION_ADMIN',
   OrganizationAssociate = 'ORGANIZATION_ASSOCIATE',
   OrganizationOwner = 'ORGANIZATION_OWNER',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   SpaceAdmin = 'SPACE_ADMIN',
   SpaceFeatureMemoMultiUser = 'SPACE_FEATURE_MEMO_MULTI_USER',
   SpaceFeatureOfficeDocuments = 'SPACE_FEATURE_OFFICE_DOCUMENTS',
@@ -3686,6 +3771,8 @@ export type Invitation = {
   nextEvents: Array<Scalars['String']['output']>;
   /** The current state of this Lifecycle. */
   state: Scalars['String']['output'];
+  /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
+  suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
@@ -3703,6 +3790,8 @@ export type InviteForEntryRoleOnRoleSetInput = {
   invitedActorIDs: Array<Scalars['UUID']['input']>;
   invitedUserEmails: Array<Scalars['String']['input']>;
   roleSetID: Scalars['UUID']['input'];
+  /** Optional language the inviter expects the invitees to prefer (single value for the whole batch). Must be in the eligible set at compose time. Recorded per-invitation so per-invitee granularity later is a UI change, not a migration. */
+  suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
   /** The welcome message to send */
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
 };
@@ -3743,6 +3832,14 @@ export type KratosIdentity = {
   lastName?: Maybe<Scalars['String']['output']>;
   /** The current verification status of the email address. */
   verificationStatus: Scalars['String']['output'];
+};
+
+export type LanguageConfig = {
+  __typename?: 'LanguageConfig';
+  /** The platform-wide default interface language. */
+  default: Scalars['String']['output'];
+  /** Languages the platform proactively detects, offers, and allows as invitation suggestions — subset of the supported set; empty = all proactive offers disabled. */
+  eligible: Array<Scalars['String']['output']>;
 };
 
 export type LatestReleaseDiscussion = {
@@ -4784,6 +4881,17 @@ export type MoveSpaceL1ToSpaceL2Input = {
   targetSpaceL1ID: Scalars['UUID']['input'];
 };
 
+export type MoveSpaceL2ToSpaceL1Input = {
+  /** Send invitations to former community members who are also in the target L0 community. */
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Custom invitation message. Used only when autoInvite is true. */
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+  /** The L2 subspace to move (stays L2). */
+  spaceL2ID: Scalars['UUID']['input'];
+  /** The target L1 subspace in a different L0 (new parent for the moved L2). */
+  targetSpaceL1ID: Scalars['UUID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Adds an Iframe Allowed URL to the Platform Settings */
@@ -5004,7 +5112,7 @@ export type Mutation = {
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
-  /** Leave a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
+  /** Leave a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
   leaveConversation: Scalars['Boolean']['output'];
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
@@ -5020,13 +5128,15 @@ export type Mutation = {
   moveSpaceL1ToSpaceL0: Space;
   /** Move an L1 subspace to become an L2 sub-subspace under a target L1 in a different L0 space.       The space is demoted from level 1 to level 2. All community roles are cleared.       Requires platform admin privileges. */
   moveSpaceL1ToSpaceL2: Space;
+  /** Move an L2 sub-subspace to become an L2 subspace under a target L1 in a different L0 space.       The subspace stays at level 2 but changes both its parent L1 and its top-level L0.       All community roles (including admins) are cleared and pending invitations dropped.       Platform access rules are recomputed from the new parent hierarchy.       Requires platform admin privileges. */
+  moveSpaceL2ToSpaceL1: Space;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
-  /** Remove a member from a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. */
+  /** Remove a member from a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick (e.g. insufficient permissions) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
   removeConversationMember: Scalars['Boolean']['output'];
   /** Remove the default callout template from an InnovationFlowState. */
   removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
@@ -5104,7 +5214,7 @@ export type Mutation = {
   unsubscribeFromPushNotifications: PushSubscription;
   /** Update the Application Form used by this RoleSet. */
   updateApplicationFormOnRoleSet: RoleSet;
-  /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires platform-admin. */
+  /** Set the admin per-capability grant on the virtual-assistant actor, governing what it may do system-invoked (default read-only). Requires the platform-operations-admin privilege. */
   updateAssistantActorCapabilities: VirtualAssistant;
   /** Update the baseline License Plan on the specified Account. */
   updateBaselineLicensePlanOnAccount: Account;
@@ -5206,7 +5316,7 @@ export type Mutation = {
   updateVirtualContributorPlatformSettings: VirtualContributor;
   /** Updates one of the Setting on an Virtual Contributor */
   updateVirtualContributorSettings: VirtualContributor;
-  /** Updates the image URI for the specified Visual. */
+  /** Updates the image URI, alternative text and/or display aspect ratio for the specified Visual. */
   updateVisual: Visual;
   /** Updates the specified Whiteboard. */
   updateWhiteboard: Whiteboard;
@@ -5648,6 +5758,10 @@ export type MutationMoveSpaceL1ToSpaceL0Args = {
 
 export type MutationMoveSpaceL1ToSpaceL2Args = {
   moveData: MoveSpaceL1ToSpaceL2Input;
+};
+
+export type MutationMoveSpaceL2ToSpaceL1Args = {
+  moveData: MoveSpaceL2ToSpaceL1Input;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -6106,6 +6220,8 @@ export enum NotificationEvent {
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
   UserCommentReply = 'USER_COMMENT_REPLY',
+  UserConversationMessageDirect = 'USER_CONVERSATION_MESSAGE_DIRECT',
+  UserConversationMessageGroup = 'USER_CONVERSATION_MESSAGE_GROUP',
   UserEmailChangeGlobalAdminNotification = 'USER_EMAIL_CHANGE_GLOBAL_ADMIN_NOTIFICATION',
   UserEmailChangeNewAddressNotification = 'USER_EMAIL_CHANGE_NEW_ADDRESS_NOTIFICATION',
   UserEmailChangeSecuritySignal = 'USER_EMAIL_CHANGE_SECURITY_SIGNAL',
@@ -6192,6 +6308,8 @@ export type NotificationRecipientsInput = {
   triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
   /** The ID of the specific user recipient for user-related notifications (e.g., invitations, mentions). */
   userID?: InputMaybe<Scalars['UUID']['input']>;
+  /** Plural recipient user IDs (e.g. conversation-message events) — resolved via a single OR-combined credentials query. Bounded to at most 100 entries; larger conversations must be fanned out by the caller in bounded batches. */
+  userIDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The ID of the Virtual Contributor to use to determine recipients. */
   virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -6611,6 +6729,8 @@ export type PlatformInvitation = {
   roleSetExtraRoles: Array<RoleName>;
   /** Whether to also add the invited user to the parent community. */
   roleSetInvitedToParent: Scalars['Boolean']['output'];
+  /** Optional language the inviter expects the invitee to prefer; recorded per invitation. */
+  suggestedLanguage?: Maybe<Scalars['String']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
   welcomeMessage?: Maybe<Scalars['String']['output']>;
@@ -7350,6 +7470,8 @@ export type RelayPaginatedSpace = ActorFull & {
   account: Account;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
+  /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
+  activityScore: Scalars['Int']['output'];
   /** The Actor representing this Space. */
   actor: Actor;
   /** The authorization rules for the Actor */
@@ -7570,6 +7692,7 @@ export enum RoleName {
   Owner = 'OWNER',
   PlatformAssistantAccess = 'PLATFORM_ASSISTANT_ACCESS',
   PlatformBetaTester = 'PLATFORM_BETA_TESTER',
+  PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformVcCampaign = 'PLATFORM_VC_CAMPAIGN',
   Registered = 'REGISTERED',
 }
@@ -8192,6 +8315,8 @@ export type Space = ActorFull & {
   account: Account;
   /** The "highest" subscription active for this Space. */
   activeSubscription?: Maybe<SpaceSubscription>;
+  /** Count of visible activity events on this Space over the last 7 days, across all actors (excludes whiteboard-content-modified). Used to rank Spaces on the dashboard. */
+  activityScore: Scalars['Int']['output'];
   /** The Actor representing this Space. */
   actor: Actor;
   /** The authorization rules for the Actor */
@@ -8963,6 +9088,8 @@ export type UpdateCalloutContributorsSettingsInput = {
   defaultContributorType?: InputMaybe<ActorType>;
   /** The default display mode. Defaults to LIST; MAP requires a locatable contributor type. */
   defaultView?: InputMaybe<ContributorCollectionView>;
+  /** Admin-fixed initial map view. Omitted ⇒ stored view unchanged; explicit null ⇒ clear to automatic framing. */
+  mapView?: InputMaybe<CreateCalloutContributorsMapViewInput>;
 };
 
 export type UpdateCalloutEntityInput = {
@@ -9006,6 +9133,13 @@ export type UpdateCalloutPublishInfoInput = {
   publisherID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
+export type UpdateCalloutSelectionSettingsInput = {
+  /** The selection mode (AUTO or CUSTOM). When omitted, the stored mode is unchanged. */
+  mode?: InputMaybe<CalloutSelectionMode>;
+  /** Replaces the curated selection in full (CUSTOM mode). At most 500 entries. Deduplicated by the server. When omitted, the stored list is unchanged. */
+  selectedIds?: InputMaybe<Array<Scalars['ID']['input']>>;
+};
+
 export type UpdateCalloutSettingsContributionInput = {
   /** Indicate who can add more contributions to the callout. */
   canAddContributions?: InputMaybe<CalloutAllowedActors>;
@@ -9020,6 +9154,8 @@ export type UpdateCalloutSettingsFramingInput = {
   commentsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Configuration for a contributor-collection callout. Provide only when framing.type = CONTRIBUTORS. */
   contributors?: InputMaybe<UpdateCalloutContributorsSettingsInput>;
+  /** Manual-selection settings for collection callouts (CONTRIBUTORS or SPACES). Provide only when framing.type ∈ {CONTRIBUTORS, SPACES}. */
+  selection?: InputMaybe<UpdateCalloutSelectionSettingsInput>;
 };
 
 export type UpdateCalloutSettingsInput = {
@@ -9546,15 +9682,26 @@ export type UpdateUserSettingsCommunicationInput = {
   allowOtherUsersToSendMessages?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+export type UpdateUserSettingsDashboardInput = {
+  /** Whether the activity-feed view is shown on the home dashboard (true) or the non-activity Spaces view (false). */
+  activityView?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type UpdateUserSettingsEntityInput = {
   /** Settings related to the AI assistant authority for this User. */
   assistant?: InputMaybe<UpdateUserSettingsAssistantInput>;
   /** Settings related to this users Communication preferences. */
   communication?: InputMaybe<UpdateUserSettingsCommunicationInput>;
+  /** Settings related to the home dashboard view. */
+  dashboard?: InputMaybe<UpdateUserSettingsDashboardInput>;
   /** Update the user's design version. Any integer accepted (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion?: InputMaybe<Scalars['Int']['input']>;
   /** Settings related to Home Space. */
   homeSpace?: InputMaybe<UpdateUserSettingsHomeSpaceInput>;
+  /** Set the user's interface language preference. Must be a value from the supported languages set. Any language write also latches languageOfferAnswered=true. */
+  language?: InputMaybe<Scalars['String']['input']>;
+  /** Mark that this User has answered the one-time language offer. One-way latch: setting false is rejected. */
+  languageOfferAnswered?: InputMaybe<Scalars['Boolean']['input']>;
   /** Settings related to this users Notifications preferences. */
   notification?: InputMaybe<UpdateUserSettingsNotificationInput>;
   /** Settings related to Privacy. */
@@ -9602,7 +9749,7 @@ export type UpdateUserSettingsNotificationPlatformAdminInput = {
   spaceCreated?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive a notification when a user changes their login email address */
   userEmailChanged?: InputMaybe<NotificationSettingInput>;
-  /** [Admin] Receive a notification user is assigned or removed from a global role */
+  /** [Admin] Receive a notification when a user is assigned to or removed from a global role */
   userGlobalRoleChanged?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive notification when a new user signs up */
   userProfileCreated?: InputMaybe<NotificationSettingInput>;
@@ -9667,6 +9814,10 @@ export type UpdateUserSettingsNotificationSpaceInput = {
 export type UpdateUserSettingsNotificationUserInput = {
   /** Receive a notification when someone replies to a comment I made. */
   commentReply?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageDirect?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone posts in a group chat I am a member of. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageGroup?: InputMaybe<NotificationSettingInput>;
   /** Settings related to User Membership Notifications. */
   membership?: InputMaybe<UpdateUserSettingsNotificationUserMembershipInput>;
   /** Receive a notification you are mentioned */
@@ -9740,6 +9891,8 @@ export type UpdateVirtualContributorSettingsPrivacyInput = {
 
 export type UpdateVisualInput = {
   alternativeText?: InputMaybe<Scalars['String']['input']>;
+  /** The width / height ratio to display this visual at. Must fall within the visual type’s minAspectRatio - maxAspectRatio range; types with a fixed shape accept only their single allowed value. */
+  aspectRatio?: InputMaybe<Scalars['Float']['input']>;
   uri: Scalars['String']['input'];
   visualID: Scalars['String']['input'];
 };
@@ -10075,12 +10228,18 @@ export type UserSettings = {
   communication: UserSettingsCommunication;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
+  /** The home-dashboard view settings for this User. */
+  dashboard: UserSettingsDashboard;
   /** The design version this User has selected (1 = legacy design generation, deprecated and scheduled for removal; 2 = current default design generation; 3+ reserved for future generations). */
   designVersion: Scalars['Int']['output'];
   /** The home space settings for this User. */
   homeSpace: UserSettingsHomeSpace;
   /** The ID of the entity */
   id: Scalars['UUID']['output'];
+  /** The interface language chosen by this User. Null = the User has never chosen a language (distinct from having chosen the platform default). */
+  language?: Maybe<Scalars['String']['output']>;
+  /** Whether this User has answered the one-time language offer (global across all languages). Latched true by any language write. */
+  languageOfferAnswered: Scalars['Boolean']['output'];
   /** The notification settings for this User. */
   notification: UserSettingsNotification;
   /** The privacy settings for this User */
@@ -10101,6 +10260,12 @@ export type UserSettingsCommunication = {
   allowOtherUsersToContactViaEmail: Scalars['Boolean']['output'];
   /** Allow Users to send messages to this User. */
   allowOtherUsersToSendMessages: Scalars['Boolean']['output'];
+};
+
+export type UserSettingsDashboard = {
+  __typename?: 'UserSettingsDashboard';
+  /** Whether the activity-feed view is shown on the home dashboard (true) or the non-activity Spaces view (false). Default true preserves the historical behaviour. */
+  activityView: Scalars['Boolean']['output'];
 };
 
 export type UserSettingsHomeSpace = {
@@ -10221,6 +10386,10 @@ export type UserSettingsNotificationUser = {
   __typename?: 'UserSettingsNotificationUser';
   /** Receive a notification when someone replies to a comment I made. */
   commentReply: UserSettingsNotificationChannels;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageDirect: UserSettingsNotificationChannels;
+  /** Receive a notification when someone posts in a group chat I am a member of. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageGroup: UserSettingsNotificationChannels;
   /** The notifications settings for membership events for this User */
   membership: UserSettingsNotificationUserMembership;
   /** Receive a notification you are mentioned */
@@ -10481,10 +10650,14 @@ export type VisualConstraints = {
   allowedTypes: Array<Scalars['String']['output']>;
   /** Dimensions ratio width / height. */
   aspectRatio: Scalars['Float']['output'];
+  /** Maximum dimensions ratio width / height that this visual may be set to. Equal to minAspectRatio when the shape is fixed. */
+  maxAspectRatio: Scalars['Float']['output'];
   /** Maximum height resolution. */
   maxHeight: Scalars['Float']['output'];
   /** Maximum width resolution. */
   maxWidth: Scalars['Float']['output'];
+  /** Minimum dimensions ratio width / height that this visual may be set to. Equal to maxAspectRatio when the shape is fixed. */
+  minAspectRatio: Scalars['Float']['output'];
   /** Minimum height resolution. */
   minHeight: Scalars['Float']['output'];
   /** Minimum width resolution. */
@@ -10617,6 +10790,8 @@ export type DefaultVisualTypeConstraintsQuery = {
         minHeight: number;
         minWidth: number;
         aspectRatio: number;
+        minAspectRatio: number;
+        maxAspectRatio: number;
         allowedTypes: Array<string>;
       };
     };
@@ -11024,6 +11199,7 @@ export type InviteForEntryRoleOnRoleSetMutationVariables = Exact<{
   invitedUserEmails: Array<Scalars['String']['input']> | Scalars['String']['input'];
   welcomeMessage?: InputMaybe<Scalars['String']['input']>;
   extraRoles: Array<RoleName> | RoleName;
+  suggestedLanguage?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type InviteForEntryRoleOnRoleSetMutation = {
@@ -11235,6 +11411,7 @@ export type UserPendingMembershipsQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -11304,6 +11481,7 @@ export type UserPendingMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        suggestedLanguage?: string | undefined;
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -14394,7 +14572,13 @@ export type CalloutContentQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
+                | undefined;
+              selection?:
+                | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
             };
           };
@@ -14855,7 +15039,13 @@ export type UpdateCalloutContentMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
+          | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
       };
     };
@@ -15344,7 +15534,13 @@ export type UpdateCalloutVisibilityMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
+          | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
       };
     };
@@ -15406,7 +15602,13 @@ export type CalloutSettingsFullFragment = {
           contributorTypes: Array<ActorType>;
           defaultContributorType: ActorType;
           defaultView: ContributorCollectionView;
+          mapView?:
+            | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+            | undefined;
         }
+      | undefined;
+    selection?:
+      | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
       | undefined;
   };
 };
@@ -15596,6 +15798,13 @@ export type CalloutContributionQuery = {
                 documentType: CollaboraDocumentType;
                 createdDate: Date;
                 profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+                authorization?:
+                  | {
+                      __typename?: 'Authorization';
+                      id: string;
+                      myPrivileges?: Array<AuthorizationPrivilege> | undefined;
+                    }
+                  | undefined;
                 createdBy?:
                   | {
                       __typename?: 'User';
@@ -15706,6 +15915,12 @@ export type CollaboraEditorUrlQuery = {
   collaboraEditorUrl: { __typename?: 'CollaboraEditorUrlResult'; editorUrl: string; accessTokenTTL: number };
 };
 
+export type CollaboraServiceAvailableQueryVariables = Exact<{
+  collaboraDocumentId: Scalars['UUID']['input'];
+}>;
+
+export type CollaboraServiceAvailableQuery = { __typename?: 'Query'; collaboraServiceAvailable: boolean };
+
 export type CreateCollaboraDocumentOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   collaboraDocument: CreateCollaboraDocumentInput;
@@ -15733,6 +15948,55 @@ export type DeleteCollaboraDocumentMutationVariables = Exact<{
 export type DeleteCollaboraDocumentMutation = {
   __typename?: 'Mutation';
   deleteCollaboraDocument: { __typename?: 'CollaboraDocument'; id: string };
+};
+
+export type ImportCollaboraDocumentMutationVariables = Exact<{
+  file: Scalars['Upload']['input'];
+  uploadData: ImportCollaboraDocumentInput;
+}>;
+
+export type ImportCollaboraDocumentMutation = {
+  __typename?: 'Mutation';
+  importCollaboraDocument: {
+    __typename?: 'CalloutContribution';
+    id: string;
+    sortOrder: number;
+    collaboraDocument?:
+      | {
+          __typename?: 'CollaboraDocument';
+          id: string;
+          documentType: CollaboraDocumentType;
+          createdDate: Date;
+          profile: { __typename?: 'Profile'; id: string; url: string; displayName: string };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
 };
 
 export type ReplaceCollaboraDocumentMutationVariables = Exact<{
@@ -17163,7 +17427,13 @@ export type CreateCalloutMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
+          | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
       };
     };
@@ -17824,7 +18094,13 @@ export type CalloutDetailsQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
+                | undefined;
+              selection?:
+                | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
                 | undefined;
             };
           };
@@ -18345,7 +18621,13 @@ export type CalloutDetailsFragment = {
             contributorTypes: Array<ActorType>;
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
+            mapView?:
+              | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+              | undefined;
           }
+        | undefined;
+      selection?:
+        | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
     };
   };
@@ -22819,6 +23101,7 @@ export type PendingMembershipsMembershipsFragment = {
       __typename?: 'Invitation';
       id: string;
       welcomeMessage?: string | undefined;
+      suggestedLanguage?: string | undefined;
       createdBy?:
         | {
             __typename?: 'User';
@@ -22834,6 +23117,7 @@ export type PendingMembershipInvitationFragment = {
   __typename?: 'Invitation';
   id: string;
   welcomeMessage?: string | undefined;
+  suggestedLanguage?: string | undefined;
   createdBy?:
     | {
         __typename?: 'User';
@@ -23084,6 +23368,7 @@ export type UserDetailsFragment = {
     __typename?: 'UserSettings';
     id: string;
     homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
     notification: {
       __typename?: 'UserSettingsNotification';
       sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23112,6 +23397,7 @@ export type UserDetailsLightFragment = {
     __typename?: 'UserSettings';
     id: string;
     homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+    dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
     notification: {
       __typename?: 'UserSettingsNotification';
       sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23217,6 +23503,7 @@ export type UserQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23296,6 +23583,7 @@ export type UserModelFullQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23371,6 +23659,7 @@ export type UsersModelFullQuery = {
       __typename?: 'UserSettings';
       id: string;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23475,6 +23764,7 @@ export type UpdateUserMutation = {
       __typename?: 'UserSettings';
       id: string;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -23495,7 +23785,10 @@ export type UpdateUserSettingsMutation = {
     settings: {
       __typename?: 'UserSettings';
       id: string;
+      language?: string | undefined;
+      languageOfferAnswered: boolean;
       homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+      dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
       notification: {
         __typename?: 'UserSettingsNotification';
         user: {
@@ -23508,6 +23801,18 @@ export type UpdateUserSettingsMutation = {
             push: boolean;
           };
           messageReceived: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          conversationMessageDirect: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          conversationMessageGroup: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
             inApp: boolean;
@@ -23712,6 +24017,7 @@ export type UserSettingsFragmentFragment = {
   };
   privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
   homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+  dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
   notification: {
     __typename?: 'UserSettingsNotification';
     platform: {
@@ -23898,6 +24204,18 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
         push: boolean;
       };
+      conversationMessageDirect: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      conversationMessageGroup: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -23934,6 +24252,7 @@ export type UserSettingsQuery = {
             };
             privacy: { __typename?: 'UserSettingsPrivacy'; contributionRolesPubliclyVisible: boolean };
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               platform: {
@@ -24130,6 +24449,18 @@ export type UserSettingsQuery = {
                   inApp: boolean;
                   push: boolean;
                 };
+                conversationMessageDirect: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageGroup: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
               };
               virtualContributor: {
                 __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -24231,6 +24562,7 @@ export type CurrentUserFullQuery = {
             __typename?: 'UserSettings';
             id: string;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -24258,6 +24590,7 @@ export type InvitationDataFragment = {
     __typename?: 'Invitation';
     id: string;
     welcomeMessage?: string | undefined;
+    suggestedLanguage?: string | undefined;
     state: string;
     createdDate: Date;
     createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -24293,7 +24626,10 @@ export type CurrentUserLightQuery = {
             __typename?: 'UserSettings';
             id: string;
             designVersion: number;
+            language?: string | undefined;
+            languageOfferAnswered: boolean;
             homeSpace: { __typename?: 'UserSettingsHomeSpace'; spaceID?: string | undefined; autoRedirect: boolean };
+            dashboard: { __typename?: 'UserSettingsDashboard'; activityView: boolean };
             notification: {
               __typename?: 'UserSettingsNotification';
               sound: { __typename?: 'UserSettingsNotificationSound'; chatMessage: boolean; inAppNotification: boolean };
@@ -25208,6 +25544,7 @@ export type VcMembershipsQuery = {
         __typename?: 'Invitation';
         id: string;
         welcomeMessage?: string | undefined;
+        suggestedLanguage?: string | undefined;
         state: string;
         createdDate: Date;
         createdBy?: { __typename?: 'User'; id: string } | undefined;
@@ -26173,6 +26510,7 @@ export type ConfigurationQuery = {
     __typename?: 'Platform';
     configuration: {
       __typename?: 'Config';
+      language: { __typename?: 'LanguageConfig'; eligible: Array<string>; default: string };
       authentication: {
         __typename?: 'AuthenticationConfig';
         providers: Array<{
@@ -26228,6 +26566,7 @@ export type ConfigurationQuery = {
 
 export type ConfigurationFragment = {
   __typename?: 'Config';
+  language: { __typename?: 'LanguageConfig'; eligible: Array<string>; default: string };
   authentication: {
     __typename?: 'AuthenticationConfig';
     providers: Array<{
@@ -26929,7 +27268,11 @@ export type MoveSpaceL1ToL0MutationVariables = Exact<{
 
 export type MoveSpaceL1ToL0Mutation = {
   __typename?: 'Mutation';
-  moveSpaceL1ToSpaceL0: { __typename?: 'Space'; id: string };
+  moveSpaceL1ToSpaceL0: {
+    __typename?: 'Space';
+    id: string;
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
+  };
 };
 
 export type MoveSpaceL1ToL2MutationVariables = Exact<{
@@ -26941,7 +27284,11 @@ export type MoveSpaceL1ToL2MutationVariables = Exact<{
 
 export type MoveSpaceL1ToL2Mutation = {
   __typename?: 'Mutation';
-  moveSpaceL1ToSpaceL2: { __typename?: 'Space'; id: string };
+  moveSpaceL1ToSpaceL2: {
+    __typename?: 'Space';
+    id: string;
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
+  };
 };
 
 export type SpaceMoveTargetL0SpacesQueryVariables = Exact<{
@@ -26987,6 +27334,23 @@ export type SpaceMoveTargetL1SubspacesQuery = {
           }>;
         }
       | undefined;
+  };
+};
+
+export type MoveSpaceL2ToL1MutationVariables = Exact<{
+  spaceL2ID: Scalars['UUID']['input'];
+  targetSpaceL1ID: Scalars['UUID']['input'];
+  autoInvite?: InputMaybe<Scalars['Boolean']['input']>;
+  invitationMessage?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+export type MoveSpaceL2ToL1Mutation = {
+  __typename?: 'Mutation';
+  moveSpaceL2ToSpaceL1: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: { __typename?: 'SpaceAbout'; id: string; profile: { __typename?: 'Profile'; id: string; url: string } };
   };
 };
 
@@ -32812,6 +33176,21 @@ export type TemplateContentQuery = {
                           contributorTypes: Array<ActorType>;
                           defaultContributorType: ActorType;
                           defaultView: ContributorCollectionView;
+                          mapView?:
+                            | {
+                                __typename?: 'CalloutContributorsMapView';
+                                longitude: number;
+                                latitude: number;
+                                zoom: number;
+                              }
+                            | undefined;
+                        }
+                      | undefined;
+                    selection?:
+                      | {
+                          __typename?: 'CalloutSelectionSettings';
+                          mode: CalloutSelectionMode;
+                          selectedIds: Array<string>;
                         }
                       | undefined;
                   };
@@ -33560,7 +33939,13 @@ export type CalloutTemplateContentFragment = {
             contributorTypes: Array<ActorType>;
             defaultContributorType: ActorType;
             defaultView: ContributorCollectionView;
+            mapView?:
+              | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+              | undefined;
           }
+        | undefined;
+      selection?:
+        | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
         | undefined;
     };
   };
@@ -34338,7 +34723,13 @@ export type UpdateCalloutTemplateMutation = {
               contributorTypes: Array<ActorType>;
               defaultContributorType: ActorType;
               defaultView: ContributorCollectionView;
+              mapView?:
+                | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                | undefined;
             }
+          | undefined;
+        selection?:
+          | { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode; selectedIds: Array<string> }
           | undefined;
       };
     };
@@ -35590,6 +35981,173 @@ export type UpdateUserAssistantSettingsMutation = {
   };
 };
 
+export type DashboardExploreSpacesQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  daysOld?: InputMaybe<Scalars['Float']['input']>;
+}>;
+
+export type DashboardExploreSpacesQuery = {
+  __typename?: 'Query';
+  exploreSpaces: Array<{
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      isContentPublic: boolean;
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        url: string;
+        tagline?: string | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+      };
+    };
+  }>;
+};
+
+export type DashboardWelcomeSpaceQueryVariables = Exact<{
+  nameId: Scalars['NameID']['input'];
+}>;
+
+export type DashboardWelcomeSpaceQuery = {
+  __typename?: 'Query';
+  lookupByName: {
+    __typename?: 'LookupByNameQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            isContentPublic: boolean;
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              url: string;
+              tagline?: string | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+            };
+          };
+        }
+      | undefined;
+  };
+};
+
+export type NonActivityHostedSpacesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type NonActivityHostedSpacesQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    user?:
+      | {
+          __typename?: 'User';
+          id: string;
+          account?:
+            | {
+                __typename?: 'Account';
+                id: string;
+                spaces: Array<{
+                  __typename?: 'Space';
+                  id: string;
+                  level: SpaceLevel;
+                  activityScore: number;
+                  about: {
+                    __typename?: 'SpaceAbout';
+                    isContentPublic: boolean;
+                    id: string;
+                    profile: {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      tagline?: string | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      cardBanner?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                      tagset?:
+                        | {
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }
+                        | undefined;
+                    };
+                  };
+                }>;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
 export type InnovationLibraryPacksPaginatedQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['UUID']['input']>;
@@ -35865,8 +36423,12 @@ export type ContributorCollectionConfigQuery = {
                     contributorTypes: Array<ActorType>;
                     defaultContributorType: ActorType;
                     defaultView: ContributorCollectionView;
+                    mapView?:
+                      | { __typename?: 'CalloutContributorsMapView'; longitude: number; latitude: number; zoom: number }
+                      | undefined;
                   }
                 | undefined;
+              selection?: { __typename?: 'CalloutSelectionSettings'; mode: CalloutSelectionMode } | undefined;
             };
           };
         }
@@ -44050,7 +44612,13 @@ export type PendingInvitationsQuery = {
         state: string;
         createdDate: Date;
         actor: { __typename?: 'Actor'; type: ActorType };
-        createdBy?: { __typename?: 'User'; id: string } | undefined;
+        createdBy?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile?: { __typename?: 'Profile'; id: string; displayName: string } | undefined;
+            }
+          | undefined;
       };
     }>;
   };
@@ -45699,6 +46267,7 @@ export type MyMembershipsQuery = {
         __typename?: 'Space';
         id: string;
         level: SpaceLevel;
+        activityScore: number;
         authorization?:
           | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
           | undefined;
@@ -45759,6 +46328,7 @@ export type MyMembershipsQuery = {
           __typename?: 'Space';
           id: string;
           level: SpaceLevel;
+          activityScore: number;
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
@@ -45819,6 +46389,7 @@ export type MyMembershipsQuery = {
             __typename?: 'Space';
             id: string;
             level: SpaceLevel;
+            activityScore: number;
             authorization?:
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
@@ -45882,6 +46453,7 @@ export type SpaceMembershipFragment = {
   __typename?: 'Space';
   id: string;
   level: SpaceLevel;
+  activityScore: number;
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
     | undefined;
@@ -46541,6 +47113,20 @@ export type RecentSpacesQuery = {
           };
         };
       };
+      latestActivity?:
+        | { __typename?: 'ActivityLogEntryCalendarEventCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutDiscussionComment'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutLinkCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutMemoCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutPostComment'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutPostCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutPublished'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutWhiteboardContentModified'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryCalloutWhiteboardCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryMemberJoined'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntrySubspaceCreated'; id: string; createdDate: Date }
+        | { __typename?: 'ActivityLogEntryUpdateSent'; id: string; createdDate: Date }
+        | undefined;
     }>;
   };
 };

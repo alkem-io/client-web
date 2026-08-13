@@ -26,6 +26,14 @@ query ContributorCollectionConfig($calloutId: UUID!) {
             contributorTypes
             defaultContributorType
             defaultView
+            mapView {
+              longitude
+              latitude
+              zoom
+            }
+          }
+          selection {
+            mode
           }
         }
       }

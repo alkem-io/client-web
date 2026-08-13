@@ -887,20 +887,23 @@
     },
     "branding": {
       "title": "Identité visuelle de l'espace",
-      "description": "Téléversez un avatar, une bannière de page (1536×256) et une bannière de carte (416×256).",
+      "description": "Téléversez un avatar, une bannière de page (3840px) et une bannière de carte (416×256).",
       "noImage": "Aucune image",
       "upload": "Téléverser",
       "avatar": {
         "title": "Avatar",
-        "hint": "Le logo de l'espace."
+        "hint": "Le logo de l'espace.",
+        "recrop": "Recadrer l'avatar actuel"
       },
       "pageBanner": {
-        "title": "Bannière de page (1536 × 256px)",
-        "hint": "Affichée en haut de la page de l'espace."
+        "title": "Bannière de page",
+        "hint": "Affichée en haut de la page du Space. Utilisez une image d'au moins 1536 × 154px.",
+        "recrop": "Recadrer la bannière de page actuelle"
       },
       "cardBanner": {
         "title": "Bannière de carte (416 × 256px)",
-        "hint": "Affichée dans les résultats de recherche et les cartes d'espace."
+        "hint": "Affichée dans les résultats de recherche et les cartes d'espace.",
+        "recrop": "Recadrer la bannière de carte actuelle"
       },
       "cropDialog": {
         "save": "Enregistrer",
@@ -910,7 +913,8 @@
         "altText": "Description",
         "altTextPlaceholder": "Décrivez cette image…"
       },
-      "changeBanner": "Changer la bannière"
+      "changeBanner": "Changer la bannière",
+      "recropFailed": "Impossible de charger cette image pour le recadrage. Veuillez réessayer."
     },
     "location": {
       "title": "Localisation",

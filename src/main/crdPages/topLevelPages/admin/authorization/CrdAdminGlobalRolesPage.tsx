@@ -12,6 +12,8 @@ import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 
 const PLATFORM_ROLES = RELEVANT_ROLES.Platform;
 
+type PlatformRole = (typeof PLATFORM_ROLES)[number];
+
 /**
  * CRD global-admin Global Authorization (Roles) section. Reuses the MUI-free
  * role-set data hooks verbatim: `usePlatformRoleSetQuery` (role set id),
@@ -81,8 +83,7 @@ const CrdAdminGlobalRolesPage = () => {
     email: user.email ?? undefined,
   }));
 
-  const roleLabels: Record<RoleName, string> = {
-    ...({} as Record<RoleName, string>),
+  const roleLabels: Record<PlatformRole, string> = {
     [RoleName.GlobalAdmin]: t('roles.GLOBAL_ADMIN'),
     [RoleName.GlobalSupport]: t('roles.GLOBAL_SUPPORT'),
     [RoleName.GlobalLicenseManager]: t('roles.GLOBAL_LICENSE_MANAGER'),
@@ -90,9 +91,24 @@ const CrdAdminGlobalRolesPage = () => {
     [RoleName.GlobalSpacesReader]: t('roles.GLOBAL_SPACES_READER'),
     [RoleName.GlobalPlatformManager]: t('roles.GLOBAL_PLATFORM_MANAGER'),
     [RoleName.GlobalSupportManager]: t('roles.GLOBAL_SUPPORT_MANAGER'),
+    [RoleName.PlatformOperationsAdmin]: t('roles.PLATFORM_OPERATIONS_ADMIN'),
     [RoleName.PlatformBetaTester]: t('roles.PLATFORM_BETA_TESTER'),
     [RoleName.PlatformVcCampaign]: t('roles.PLATFORM_VC_CAMPAIGN'),
     [RoleName.PlatformAssistantAccess]: t('roles.PLATFORM_ASSISTANT_ACCESS'),
+  };
+
+  const roleDescriptions: Record<PlatformRole, string> = {
+    [RoleName.GlobalAdmin]: t('roleDescriptions.GLOBAL_ADMIN'),
+    [RoleName.GlobalSupport]: t('roleDescriptions.GLOBAL_SUPPORT'),
+    [RoleName.GlobalLicenseManager]: t('roleDescriptions.GLOBAL_LICENSE_MANAGER'),
+    [RoleName.GlobalCommunityReader]: t('roleDescriptions.GLOBAL_COMMUNITY_READER'),
+    [RoleName.GlobalSpacesReader]: t('roleDescriptions.GLOBAL_SPACES_READER'),
+    [RoleName.GlobalPlatformManager]: t('roleDescriptions.GLOBAL_PLATFORM_MANAGER'),
+    [RoleName.GlobalSupportManager]: t('roleDescriptions.GLOBAL_SUPPORT_MANAGER'),
+    [RoleName.PlatformOperationsAdmin]: t('roleDescriptions.PLATFORM_OPERATIONS_ADMIN'),
+    [RoleName.PlatformBetaTester]: t('roleDescriptions.PLATFORM_BETA_TESTER'),
+    [RoleName.PlatformVcCampaign]: t('roleDescriptions.PLATFORM_VC_CAMPAIGN'),
+    [RoleName.PlatformAssistantAccess]: t('roleDescriptions.PLATFORM_ASSISTANT_ACCESS'),
   };
 
   return (
@@ -114,6 +130,7 @@ const CrdAdminGlobalRolesPage = () => {
 
       <RoleMembersEditor
         roleLabel={roleLabels[selectedRole]}
+        roleDescription={roleDescriptions[selectedRole]}
         members={filteredMembers}
         availableUsers={available}
         memberSearchTerm={memberSearch}

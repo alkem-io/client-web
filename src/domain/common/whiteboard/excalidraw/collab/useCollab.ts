@@ -54,9 +54,9 @@ const useCollab = ({
 
   const [collaboratorModeReason, setCollaboratorModeReason] = useState<CollaboratorModeReasons | null>(null);
 
-  const handleCloseConnection = () => {
+  const handleCloseConnection = (hasError: boolean) => {
     try {
-      onCloseConnection();
+      onCloseConnection(hasError);
     } finally {
       setIsCollaborating(false);
     }

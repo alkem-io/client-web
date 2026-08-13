@@ -54,7 +54,8 @@
     "empty": "Nog geen gesprekken",
     "emptyHint": "Begin een nieuw bericht om te chatten.",
     "noResults": "Geen gesprekken komen overeen met je zoekopdracht.",
-    "loading": "Gesprekken laden"
+    "loading": "Gesprekken laden",
+    "draft": "Concept:"
   },
   "guidance": {
     "beta": "Bèta",
@@ -86,8 +87,8 @@
     "close": "Sluiten"
   },
   "contactLeads": {
-    "title": "Contact opnemen met de leads",
-    "explanation": "Dit bericht wordt naar elke lead afzonderlijk verzonden. Bezoek het profiel van een specifieke lead om rechtstreeks contact op te nemen.",
+    "title": "Contact opnemen met de Leads",
+    "explanation": "Dit bericht wordt naar elke Lead afzonderlijk verzonden. Bezoek het profiel van een specifieke Lead om rechtstreeks contact op te nemen.",
     "messageLabel": "Bericht",
     "messagePlaceholder": "Schrijf je bericht…",
     "recipientsLabel": "Ontvangers",

@@ -143,7 +143,8 @@
     "loading": "Einladungen werden geladen",
     "accept": "Annehmen",
     "decline": "Ablehnen",
-    "noInvitations": "Keine ausstehenden Einladungen"
+    "noInvitations": "Keine ausstehenden Einladungen",
+    "invitedBy": "Eingeladen von {{name}}"
   },
   "applications": {
     "title": "Ausstehende Bewerbungen",
@@ -190,5 +191,29 @@
       "joinAriaLabel": "{{spaceName}} beitreten"
     },
     "applicationAriaLabel": "Ausstehende Bewerbung für {{spaceName}} anzeigen"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Zuletzt aktiv",
+      "mostActivity": "Spaces mit der meisten Aktivität",
+      "leadAdmin": "Spaces, die ich leite & verwalte",
+      "host": "Spaces, die ich hoste"
+    },
+    "showMore_one": "Mehr anzeigen: {{count}} Space",
+    "showMore_other": "Mehr anzeigen: {{count}} Spaces"
+  },
+  "welcome": {
+    "title": "Willkommen bei Alkemio",
+    "message": "Du bist noch in keinem Space. Erkunde den Welcome Space, um zu sehen, was möglich ist, oder sieh dir die Dokumentation an, um loszulegen.",
+    "welcomeSpaceLink": "Welcome Space besuchen",
+    "documentationLink": "Dokumentation",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Ausstehende Anträge & Einladungen"
+  },
+  "explore": {
+    "title": "Spaces erkunden",
+    "exploreAll": "Alle Spaces erkunden"
   }
 }

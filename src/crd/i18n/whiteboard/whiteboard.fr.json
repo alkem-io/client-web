@@ -63,6 +63,7 @@
   },
   "disconnected": {
     "reconnect": "Se reconnecter",
+    "reloadPage": "Recharger la page",
     "countdown": "({{seconds}}s)",
     "close": "Fermer"
   },

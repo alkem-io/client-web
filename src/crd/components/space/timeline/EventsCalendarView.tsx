@@ -59,7 +59,7 @@ function toDayKey(date: Date): string {
   return format(startOfDay(date), 'yyyy-MM-dd');
 }
 
-function buildBuckets(events: EventListItem[]): EventBuckets {
+export function buildBuckets(events: EventListItem[]): EventBuckets {
   const startByDay = new Map<string, EventListItem[]>();
   const startDates: Date[] = [];
   const endDates: Date[] = [];
@@ -68,10 +68,9 @@ function buildBuckets(events: EventListItem[]): EventBuckets {
   for (const event of events) {
     if (!event.startDate) continue;
     const startDay = startOfDay(event.startDate);
-    // endDateFromDuration accounts for both durationDays AND durationMinutes;
-    // multi-day all-day events (durationDays > 0, durationMinutes = 0) and
-    // multi-day timed events both expand correctly into the calendar grid.
-    const endInstant = endDateFromDuration(event.startDate, event.durationMinutes, event.durationDays);
+    // durationMinutes is the full span; endDateFromDuration returns the last
+    // covered day, so the grid highlights exactly the days the event covers.
+    const endInstant = endDateFromDuration(event.startDate, event.durationMinutes);
     const endDay = startOfDay(endInstant);
 
     const startKey = toDayKey(startDay);

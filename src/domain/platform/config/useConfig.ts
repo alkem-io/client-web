@@ -23,6 +23,7 @@ export const useConfig = () => {
     sentry: context.config?.sentry,
     apm: context.config?.apm,
     geo: context.config?.geo,
+    language: context.config?.language,
     serverMetadata: context.serverMetadata,
     loading: context.loading,
     error: context.error,

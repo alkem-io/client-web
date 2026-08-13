@@ -30,6 +30,19 @@ const RedirectToLanding = () => {
       return;
     }
 
+    // On an innovation hub subdomain the hub home IS the landing page, for signed-in
+    // visitors too — it must win over the home-space redirect below, which would
+    // otherwise divert them off the hub they asked for. That redirect is also an
+    // absolute main-domain `profile.url`: `normalizeLink` only strips the origin when
+    // it matches the *current* one, so on a hub host it passes through intact and
+    // react-router resolves it as a relative path — producing
+    // `https://<hub>.alkem.io/https://alkem.io/space/<nameId>`, which the server URL
+    // resolver rejects with NotFoundError.
+    if (isOnCustomHomepage) {
+      navigate(homeRoute);
+      return;
+    }
+
     // For authenticated users, wait for redirect data and apply redirect logic
     if (isAuthenticated) {
       if (loadingHomeRedirect) {
@@ -49,9 +62,7 @@ const RedirectToLanding = () => {
       return;
     }
 
-    if (isOnCustomHomepage) {
-      navigate(homeRoute);
-    } else if (landingUrl) {
+    if (landingUrl) {
       window.location.replace(landingUrl);
     }
   }, [

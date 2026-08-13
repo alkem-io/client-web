@@ -110,6 +110,13 @@ mutation MoveSpaceL1ToL0(
     }
   ) {
     id
+    about {
+      id
+      profile {
+        id
+        url
+      }
+    }
   }
 }
 
@@ -128,6 +135,13 @@ mutation MoveSpaceL1ToL2(
     }
   ) {
     id
+    about {
+      id
+      profile {
+        id
+        url
+      }
+    }
   }
 }
 
@@ -159,6 +173,32 @@ query SpaceMoveTargetL1Subspaces($targetL0SpaceId: UUID!) {
             displayName
           }
         }
+      }
+    }
+  }
+}
+
+mutation MoveSpaceL2ToL1(
+  $spaceL2ID: UUID!
+  $targetSpaceL1ID: UUID!
+  $autoInvite: Boolean
+  $invitationMessage: String
+) {
+  moveSpaceL2ToSpaceL1(
+    moveData: {
+      spaceL2ID: $spaceL2ID
+      targetSpaceL1ID: $targetSpaceL1ID
+      autoInvite: $autoInvite
+      invitationMessage: $invitationMessage
+    }
+  ) {
+    id
+    level
+    about {
+      id
+      profile {
+        id
+        url
       }
     }
   }

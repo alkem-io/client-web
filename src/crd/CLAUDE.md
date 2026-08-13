@@ -637,6 +637,8 @@ A set of Alkemio platform terms are **brand-specific English words** that must *
 | **Layout** | "Indeling" |
 | **Virtual Contributor(s)** | "Virtuele bijdrager(s)" |
 | **host** | "Gastheer" — the org/person responsible for a Space; lowercase mid-sentence (capitalize "Host" when standalone: label/heading/button) |
+| **Innovation Flow / Innovation Flows** | "Innovatieflow" / "Innovatie Flow" / "innovatiestroom(fase)" — lowercase mid-sentence (capitalize "Innovation Flow" when standalone: label/heading/button); compounds hyphenate, e.g. "Innovation Flow-fase" |
+| **Lead / Leads** | "Leider(s)" / "Trekker(s)" — the member (person/org) responsible for a Space/Subspace community; **always capitalized** (unlike host/template, no lowercase mid-sentence form); compounds hyphenate with second element capitalized, e.g. "Space-Lead", "Lead-organisaties" |
 
 When a brand term combines with a translated word, keep the English term and hyphenate the Dutch grammar around it (e.g. `Space-leden`, `subspace-template`, `Post-index`). **Disambiguate carefully:** Dutch `Berichten` also means "Messages" (the messaging feature) — only keys whose English source uses "Post"/"Posts" get reverted; "Messages", "workspace" (`werkruimte`), "Call for whiteboards" (`Oproep`), etc. stay translated.
 

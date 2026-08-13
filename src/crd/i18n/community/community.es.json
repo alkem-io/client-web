@@ -16,6 +16,8 @@
       "inviteToRoleLabel": "Invitar como:",
       "rolePopoverHelper": "Member siempre se concede al aceptar la invitación.",
       "rolePopoverAriaLabel": "Elegir roles para los invitados",
+      "suggestedLanguageLabel": "Idioma sugerido para el invitado",
+      "suggestedLanguagePlaceholder": "Sin preferencia",
       "sendButtonLabel": "Enviar",
       "sendingButtonLabel": "Enviando…",
       "backButtonLabel": "Atrás",

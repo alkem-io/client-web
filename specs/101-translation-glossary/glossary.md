@@ -47,6 +47,10 @@ translators recognize what to avoid.
 | `virtualContributor`   | Virtual Contributor    | Virtuele bijdrager                     |
 | `virtualContributors`  | Virtual Contributors   | Virtuele bijdragers                    |
 | `host`                 | host *(lowercase)*     | Gastheer                               |
+| `innovation-flow`      | Innovation Flow *(lowercase mid-sentence)* | Innovatieflow / Innovatie Flow / innovatiestroom(fase) |
+| `innovation-flows`     | Innovation Flows       | Innovatie flows                        |
+| `lead` (`Lead`)        | Lead *(always capitalized)* | Leider / Trekker                  |
+| `leads` (`Leads`)      | Leads *(always capitalized)* | Leiders / Trekkers               |
 
 ### Notes on individual terms
 
@@ -63,6 +67,17 @@ translators recognize what to avoid.
 - **host** — the organisation or person responsible for a Space. Keep in English; never
   "Gastheer". Lowercase mid-sentence (e.g. "Contact opnemen met de host"); capitalize **"Host"**
   when it stands alone as a label, heading, or button. Currently enforced for NL only.
+- **Innovation Flow / Innovation Flows** — the phase-based collaboration flow inside a Space.
+  Never "Innovatieflow", "Innovatie Flow", or "innovatiestroom(fase)". Lowercase mid-sentence
+  (e.g. "Statussen binnen de innovation flow"); capitalize **"Innovation Flow"** when it stands
+  alone as a label, heading, or button (e.g. "Innovation Flow vervangen"). Compounds hyphenate
+  like other brand terms (e.g. "Innovation Flow-fase"). Currently enforced for NL only.
+- **Lead / Leads** — a member (person or organisation) responsible for a Space/Subspace
+  community. Never "Leider(s)" or "Trekker(s)". Unlike `host`/`template`, **always capitalized**
+  — mid-sentence and standalone alike (e.g. "Neem contact op met de Space-Lead", "Contact
+  opnemen met de Leads"). Compounds hyphenate with the second element capitalized too (e.g.
+  "Space-Lead", "Space-Leads", "Lead-organisaties", "community-Leads"). Currently enforced for
+  NL only.
 
 ## Inflection & compounds
 

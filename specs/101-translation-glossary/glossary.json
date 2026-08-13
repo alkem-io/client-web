@@ -115,6 +115,41 @@
       "addedDate": "2026-06-17",
       "source": "user-request",
       "notes": "Lowercase mid-sentence (e.g. 'Contact opnemen met de host'); capitalize ('Host') when standalone as a label, heading, or button."
+    },
+    {
+      "term": "Innovation Flow",
+      "status": "preferred",
+      "translations": { "en": "Innovation Flow", "nl": "Innovation Flow", "de": "Innovation Flow" },
+      "rationale": "Product feature term for the phase-based collaboration flow inside a Space. Keep in English; avoid localized alternatives like 'Innovatieflow', 'Innovatie Flow', or 'innovatiestroom(fase)'. Was being translated inconsistently across spaceSettings, subspace, createSpace, and common NL files. Currently enforced for NL only.",
+      "addedDate": "2026-07-22",
+      "source": "user-request",
+      "notes": "Lowercase mid-sentence (e.g. 'Statussen binnen de innovation flow'); capitalize ('Innovation Flow') when standalone as a label, heading, or button. Compounds hyphenate like other brand terms (e.g. 'Innovation Flow-fase')."
+    },
+    {
+      "term": "Innovation Flows",
+      "status": "preferred",
+      "translations": { "en": "Innovation Flows", "nl": "Innovation Flows", "de": "Innovation Flows" },
+      "rationale": "Plural of Innovation Flow; consistency with singular. Was being translated to 'Innovatie flows' in NL.",
+      "addedDate": "2026-07-22",
+      "source": "user-request"
+    },
+    {
+      "term": "Lead",
+      "status": "locked",
+      "translations": { "en": "Lead", "nl": "Lead", "de": "Lead" },
+      "rationale": "Platform role term — a member (person or organisation) responsible for a Space/Subspace community. Keep in English; avoid localized alternatives like 'Leider', 'Trekker'. Was being translated inconsistently across subspace, exploreSpaces, space, dashboard, and contributorSettings NL files. Currently enforced for NL only.",
+      "addedDate": "2026-07-22",
+      "source": "user-request",
+      "notes": "Always capitalized ('Lead'), in every position — mid-sentence or standalone (unlike 'host'/'template', which are lowercase mid-sentence). Compounds hyphenate like other brand terms, second element capitalized too (e.g. 'Space-Lead', 'Lead-organisaties')."
+    },
+    {
+      "term": "Leads",
+      "status": "locked",
+      "translations": { "en": "Leads", "nl": "Leads", "de": "Leads" },
+      "rationale": "Plural of Lead; consistency with singular. Was being translated to 'Leiders'/'Trekkers' in NL.",
+      "addedDate": "2026-07-22",
+      "source": "user-request",
+      "notes": "Always capitalized ('Leads'), in every position. Compounds hyphenate with the second element capitalized too (e.g. 'Space-Leads', 'community-Leads')."
     }
   ]
 }

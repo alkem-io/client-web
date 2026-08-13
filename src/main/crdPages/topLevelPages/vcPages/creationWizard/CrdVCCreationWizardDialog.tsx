@@ -75,10 +75,14 @@ const VCCreationWizardWithUpload = ({
   const uploadProps = canUpload ? markdownUpload : undefined;
 
   // Document-row paperclip (FR-025): uploads into the same account bucket as the
-  // markdown images, as a temporary file relocated to the VC on creation. The
-  // hook returns an undefined callback when the viewer can't upload, so the row
-  // stays link-only — matching the markdown image-upload gating above.
-  const { onFileUpload: onDocumentUpload, accept: documentUploadAccept } = useReferenceFileUpload(storageConfig);
+  // markdown images, as a temporary file relocated to the VC on creation. The VC does
+  // not exist yet, so this is a genuine pre-creation upload — pass `temporaryLocation: true`
+  // explicitly (the ambient account `storageConfig` resolves `false`, and the file is
+  // relocated onto the VC on save). The hook returns an undefined callback when the viewer
+  // can't upload, so the row stays link-only — matching the markdown image-upload gating above.
+  const { onFileUpload: onDocumentUpload, accept: documentUploadAccept } = useReferenceFileUpload(storageConfig, {
+    temporaryLocation: true,
+  });
 
   return (
     <VCCreationWizardView

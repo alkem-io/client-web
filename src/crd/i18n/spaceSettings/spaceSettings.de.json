@@ -887,20 +887,23 @@
     },
     "branding": {
       "title": "Space-Branding",
-      "description": "Laden Sie einen Avatar, einen Seiten-Banner (1536×256) und einen Karten-Banner (416×256) hoch.",
+      "description": "Laden Sie einen Avatar, einen Seiten-Banner (3840px) und einen Karten-Banner (416×256) hoch.",
       "noImage": "Kein Bild",
       "upload": "Hochladen",
       "avatar": {
         "title": "Avatar",
-        "hint": "Das Logo des Spaces."
+        "hint": "Das Logo des Spaces.",
+        "recrop": "Aktuellen Avatar zuschneiden"
       },
       "pageBanner": {
-        "title": "Seiten-Banner (1536 × 256px)",
-        "hint": "Wird oben auf der Space-Seite angezeigt."
+        "title": "Seiten-Banner",
+        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1536 × 154px.",
+        "recrop": "Aktuelles Seitenbanner zuschneiden"
       },
       "cardBanner": {
         "title": "Karten-Banner (416 × 256px)",
-        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt."
+        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
+        "recrop": "Aktuelles Kartenbanner zuschneiden"
       },
       "cropDialog": {
         "save": "Speichern",
@@ -910,7 +913,8 @@
         "altText": "Beschreibung",
         "altTextPlaceholder": "Dieses Bild beschreiben…"
       },
-      "changeBanner": "Banner ändern"
+      "changeBanner": "Banner ändern",
+      "recropFailed": "Dieses Bild konnte nicht zum Zuschneiden geladen werden. Bitte erneut versuchen."
     },
     "location": {
       "title": "Standort",
