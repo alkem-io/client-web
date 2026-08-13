@@ -1,8 +1,7 @@
 import { useUserConversationsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { RoomType } from '@/core/apollo/generated/graphql-schema';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { mapMessageAttachments } from '@/main/crdPages/utils/messageAttachmentMapper';
-import { mapMessageReactions, mapMessageSender } from '@/main/userMessaging/models';
+import { mapMessageAttachments, mapMessageReactions, mapMessageSender } from '@/main/userMessaging/models';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { isGuidanceConversation, sortUnifiedConversations, type UnifiedConversation } from './dataMapper';
 import { useUnifiedChatContext } from './UnifiedChatProvider';

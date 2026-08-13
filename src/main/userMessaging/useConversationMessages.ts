@@ -1,6 +1,5 @@
 import { useConversationMessagesQuery } from '@/core/apollo/generated/apollo-hooks';
-import { mapMessageAttachments } from '@/main/crdPages/utils/messageAttachmentMapper';
-import { mapMessageReactions, mapMessageSender } from './models';
+import { mapMessageAttachments, mapMessageReactions, mapMessageSender } from './models';
 
 export type { ConversationMessage } from './models';
 
