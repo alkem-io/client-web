@@ -21,6 +21,7 @@ import { useMediaGalleryDirectUpload } from '../hooks/useMediaGalleryDirectUploa
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
 import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
@@ -238,6 +239,15 @@ function LazyCalloutItemContent({
     includeContentEditors: true,
   });
 
+  const reactionsBar = (
+    <CalloutReactionsConnector
+      calloutId={callout.id}
+      reactionsSummary={callout.reactionsSummary}
+      myPrivileges={callout.authorization?.myPrivileges?.map(p => p as string)}
+      isPublished={!callout.draft}
+    />
+  );
+
   const contributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
@@ -308,6 +318,7 @@ function LazyCalloutItemContent({
               commentInputSlot={commentsEnabled ? commentInput : null}
               onCommentsExpandedChange={setCommentsExpanded}
               contributionsPreview={contributionsPreview}
+              reactionsSlot={reactionsBar}
             >
               {pollPreview}
               {contributorsPreview}
@@ -331,6 +342,7 @@ function LazyCalloutItemContent({
           onExpandClick={onExpandClick}
           onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
           contributionsPreview={contributionsPreview}
+          reactionsSlot={reactionsBar}
         >
           {pollPreview}
           {contributorsPreview}

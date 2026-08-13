@@ -177,6 +177,11 @@ type PostCardProps = {
   onOpenFramingDocument?: () => void;
   /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
   contributionsPreview?: ReactNode;
+  /**
+   * Reactions bar rendered in the card footer area, before the comments trigger.
+   * Provided by CalloutReactionsConnector — props-only, zero Apollo in PostCard.
+   */
+  reactionsSlot?: ReactNode;
   /** Content injected after the description/preview area, before the footer (e.g. poll) */
   children?: ReactNode;
   /**
@@ -210,6 +215,7 @@ export function PostCard({
   onExpandClick,
   onOpenFramingDocument,
   contributionsPreview,
+  reactionsSlot,
   children,
   commentsSlot,
   commentInputSlot,
@@ -531,6 +537,10 @@ export function PostCard({
           all null — a bare `children &&` check is always truthy then. Children.toArray strips
           null/undefined/booleans, so the padded wrapper only renders when something is visible. */}
       {Children.toArray(children).length > 0 && <div className="px-6 pb-4">{children}</div>}
+
+      {/* Reactions bar — rendered between content and footer when provided.
+          The connector gates visibility; this card is purely a layout slot. */}
+      {reactionsSlot && <div className="px-6 pb-2">{reactionsSlot}</div>}
 
       {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
           mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via

@@ -38,6 +38,7 @@ import {
 } from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutReactionsConnector } from './CalloutReactionsConnector';
 import { CalloutSettingsConnector } from './CalloutSettingsConnector';
 import { CalloutShareDialog } from './CalloutShareDialog';
 import { CallToActionFramingConnector } from './CallToActionFramingConnector';
@@ -438,6 +439,15 @@ export function CalloutDetailDialogConnector({
   const hasSpaces = callout.framing.type === CalloutFramingType.Spaces;
   const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
 
+  const reactionsSlot = (
+    <CalloutReactionsConnector
+      calloutId={callout.id}
+      reactionsSummary={callout.reactionsSummary}
+      myPrivileges={callout.authorization?.myPrivileges?.map(p => p as string)}
+      isPublished={!callout.draft}
+    />
+  );
+
   const handleContributionClick = (contributionId: string, clickedEntityId?: string) => {
     if (contributionType === CalloutContributionType.Memo) {
       setMemoContributionId(contributionId);
@@ -797,6 +807,7 @@ export function CalloutDetailDialogConnector({
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
           selectedContributionSlot={selectedContributionSlot}
+          reactionsSlot={reactionsSlot}
           settingsSlot={settingsSlot}
           onShareClick={handleShareClick}
         />
@@ -856,6 +867,7 @@ export function CalloutDetailDialogConnector({
             callToActionFramingSlot={callToActionFramingSlot}
             contributorsFramingSlot={contributorsFramingSlot}
             spacesFramingSlot={spacesFramingSlot}
+            reactionsSlot={reactionsSlot}
             settingsSlot={settingsSlot}
             onShareClick={handleShareClick}
           />
