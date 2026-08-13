@@ -3,7 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { useUploadFileMutation } from '@/core/apollo/generated/apollo-hooks';
 import type { ComposerAttachment } from '@/crd/components/comment/types';
 import type { StorageConfig } from '@/domain/storage/StorageBucket/useStorageConfig';
-import { type AttachmentRejection, MAX_ATTACHMENT_SIZE_BYTES, validateAttachments } from './validateAttachments';
+import { MIME_TO_EXT } from '@/main/crdPages/utils/mimeToExt';
+import {
+  type AttachmentRejection,
+  DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES,
+  MAX_ATTACHMENT_SIZE_BYTES,
+  validateAttachments,
+} from './validateAttachments';
+
+/** Browsers differ in how reliably they map a MIME type to file-picker extensions
+ *  (a permitted `.docx` shows up greyed out), so offer both the type and its known
+ *  extension(s). Types absent from the map still contribute their MIME type. */
+const mimeTypesToAccept = (mimeTypes: readonly string[]): string =>
+  mimeTypes.flatMap(mime => (MIME_TO_EXT[mime] ? [mime, MIME_TO_EXT[mime]] : [mime])).join(',');
 
 type StagedAttachment = ComposerAttachment & {
   /** Set once the upload resolves — the file-service document id sent to the room. */
@@ -73,6 +85,13 @@ export function useConversationAttachments(
 
   const enabled = Boolean(storageConfig?.canUpload);
 
+  // One source for both the picker's `accept` and the validator's allow-list, so the
+  // file chooser can never offer a type the validator rejects — nor grey out one it
+  // would have accepted.
+  const effectiveAllowedMimeTypes = storageConfig?.allowedMimeTypes?.length
+    ? storageConfig.allowedMimeTypes
+    : DEFAULT_ALLOWED_ATTACHMENT_MIME_TYPES;
+
   // Staged uploads land in the *current* conversation's temporary bucket. When
   // the selected conversation changes, drop any unsent draft so a later send
   // never carries a previous conversation's document ids — the server READ-gates
@@ -117,7 +136,7 @@ export function useConversationAttachments(
 
     const { accepted, rejected } = validateAttachments(files, {
       existingCount: stagedCountRef.current,
-      allowedMimeTypes: storageConfig.allowedMimeTypes?.length ? storageConfig.allowedMimeTypes : undefined,
+      allowedMimeTypes: effectiveAllowedMimeTypes,
       maxFileSizeBytes: storageConfig.maxFileSize || undefined,
     });
 
@@ -213,7 +232,10 @@ export function useConversationAttachments(
     pendingReservationRef.current = 0;
   };
 
-  const accept = storageConfig?.allowedMimeTypes?.length ? storageConfig.allowedMimeTypes.join(',') : undefined;
+  // The picker must offer exactly what `validateAttachments` accepts — it falls back
+  // to the curated default when the bucket declares no policy, so the picker does too
+  // (otherwise it offered everything and the validator then rejected it).
+  const accept = storageConfig ? mimeTypesToAccept(effectiveAllowedMimeTypes) : undefined;
 
   return {
     enabled,

@@ -64,7 +64,8 @@ describe('useConversationAttachments', () => {
     const { result } = renderHook(() => useConversationAttachments(bucketConfig));
 
     expect(result.current.enabled).toBe(true);
-    expect(result.current.accept).toBe('image/png');
+    // Both the mime type and its extension — some browsers only honour one of them.
+    expect(result.current.accept).toBe('image/png,.png');
 
     await act(async () => {
       await result.current.attachFiles([makeFile('a.png', 'image/png')]);
