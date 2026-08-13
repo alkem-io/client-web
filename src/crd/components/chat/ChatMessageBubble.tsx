@@ -60,7 +60,12 @@ export function ChatMessageBubble({
           business data, not UI copy (FR-016). */}
       {avatarGutter && !showAuthor && !isOwn && author && <span className="sr-only">{author.name}</span>}
       <div className={cn('flex items-center gap-1', isOwn && 'flex-row-reverse')}>
-        {(hasText || !hasAttachments) && (
+        {/* The bubble exists to hold TEXT. An attachment-only message renders
+            just its attachments below, and a message with neither text nor
+            attachments renders no bubble at all — the previous condition
+            (`hasText || !hasAttachments`) painted an empty bubble around an
+            empty MarkdownContent in that case. */}
+        {hasText && (
           <div
             className={cn(
               'max-w-[85%] rounded-2xl px-3 py-2',

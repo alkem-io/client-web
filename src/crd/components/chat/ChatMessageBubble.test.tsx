@@ -80,6 +80,39 @@ describe('ChatMessageBubble', () => {
     expect(container.textContent).toContain('virtualContributor');
   });
 
+  describe('text bubble visibility', () => {
+    const attachment = {
+      id: 'att-1',
+      url: 'https://alkem.io/storage/document/doc-1',
+      displayName: 'photo.png',
+      mimeType: 'image/png',
+      size: 1024,
+    };
+    // The text bubble is the only `rounded-2xl` element in the tree.
+    const bubbleOf = (container: HTMLElement) => container.querySelector('.rounded-2xl');
+
+    test('a message with text renders the bubble', () => {
+      const { container } = render(<ChatMessageBubble message={baseMessage} />);
+      expect(bubbleOf(container)).toBeInTheDocument();
+    });
+
+    test('an attachment-only message renders its attachments and no empty bubble', () => {
+      const { container } = render(
+        <ChatMessageBubble message={{ ...baseMessage, content: '', attachments: [attachment] }} />
+      );
+      expect(bubbleOf(container)).not.toBeInTheDocument();
+      expect(container.querySelector('img[alt]')).toBeInTheDocument();
+    });
+
+    // Regression guard: the old condition was `hasText || !hasAttachments`, so a
+    // message with NEITHER text nor attachments still painted an empty bubble
+    // wrapping an empty MarkdownContent.
+    test('a message with neither text nor attachments renders no bubble at all', () => {
+      const { container } = render(<ChatMessageBubble message={{ ...baseMessage, content: '   ' }} />);
+      expect(bubbleOf(container)).not.toBeInTheDocument();
+    });
+  });
+
   test('reactions + timestamp render inside the gutter-offset column', () => {
     const messageWithExtras: ChatMessage = {
       ...baseMessage,
