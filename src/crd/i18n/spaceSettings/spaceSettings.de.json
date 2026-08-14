@@ -321,7 +321,7 @@
       },
       "addDialog": {
         "title": "Organisation hinzufügen",
-        "description": "Wählen Sie eine Organisation aus, deren Mitglieder ohne Genehmigung diesem Space beitreten können.",
+        "description": "Diese Organisationen werden als Mitglieder in diesem Space und auf ihrem Organisationsprofil sichtbar sein.",
         "search": "Organisationen suchen…",
         "empty": "Keine Organisationen entsprechen Ihrer Suche."
       }

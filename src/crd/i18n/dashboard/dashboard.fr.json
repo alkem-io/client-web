@@ -194,7 +194,7 @@
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Activité récente",
+      "pinnedLastActive": "Épinglés & Activité récente",
       "mostActivity": "Espaces avec le plus d’activité",
       "leadAdmin": "Espaces que je dirige et administre",
       "host": "Espaces que j’héberge"
