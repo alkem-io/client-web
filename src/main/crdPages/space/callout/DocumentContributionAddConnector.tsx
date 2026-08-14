@@ -2,14 +2,22 @@ import { ApolloError } from '@apollo/client';
 import { FileText } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useImportCollaboraDocumentMutation } from '@/core/apollo/generated/apollo-hooks';
-import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import {
+  useCreateCollaboraDocumentOnCalloutMutation,
+  useImportCollaboraDocumentMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import type { AuthorizationPrivilege, CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
-import { type DocumentImportError, DocumentImportZone } from '@/crd/forms/callout/DocumentImportZone';
+import {
+  CollaboraDocumentTypePicker,
+  type CollaboraDocumentTypeValue,
+} from '@/crd/forms/callout/CollaboraDocumentTypePicker';
+import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
+import { Input } from '@/crd/primitives/input';
 import {
   COLLABORA_IMPORT_ACCEPT_ATTR,
   COLLABORA_IMPORT_EXTENSIONS_P1,
@@ -34,16 +42,20 @@ type DocumentContributionAddConnectorProps = {
   inlineTrigger?: boolean;
 } & (ControlledOpen | UncontrolledOpen);
 
+const DEFAULT_DOCUMENT_TYPE: CollaboraDocumentTypeValue = 'WORDPROCESSING';
+
 /**
- * Upload-only "Add document" flow — the server's `importCollaboraDocument` mutation has no
- * blank-create counterpart, unlike Whiteboard/Memo (spec 116-document-responses Clarifications).
- * Reuses the exact same building blocks the framing document-upload flow already proved out:
- * `DocumentImportZone` for staging, `validateCollaboraImportFile` for the client-side pre-check,
- * and `deriveCollaboraImportErrorMessage` for both pre-check and server-rejection inline copy.
+ * "Add document" flow with two creation paths, mirroring the callout-framing document editor:
+ *   - Blank-create: pick a title + a document type (Text / Spreadsheet / Presentation) and the
+ *     server provisions an empty Collabora document via `createContributionOnCallout`.
+ *   - Upload: stage an existing file (`importCollaboraDocument`), whose type is derived from the
+ *     uploaded file's sniffed MIME server-side.
+ * The two are mutually exclusive within the shared `CollaboraDocumentTypePicker`: staging a file
+ * dims the type cards, and picking a card clears the staged file.
  *
- * On success, opens the newly-created document's editor immediately — mirroring
+ * On success either path opens the newly-created contribution's editor immediately — mirroring
  * `WhiteboardContributionAddConnector`'s `editingWhiteboard` pattern (own local state, own
- * rendered overlay, no delete affordance at this ephemeral point — R5).
+ * rendered overlay, no delete affordance at this ephemeral point).
  */
 export function DocumentContributionAddConnector({
   calloutId,
@@ -55,6 +67,7 @@ export function DocumentContributionAddConnector({
 }: DocumentContributionAddConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
+  const fallbackName = t('callout.defaultDocumentName');
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const dialogOpen = isControlled ? controlledOpen : internalOpen;
@@ -63,14 +76,23 @@ export function DocumentContributionAddConnector({
     onOpenChange?.(next);
   };
 
+  const [documentName, setDocumentName] = useState(fallbackName);
+  const [documentType, setDocumentType] = useState<CollaboraDocumentTypeValue>(DEFAULT_DOCUMENT_TYPE);
   const [file, setFile] = useState<File | null>(null);
   const [importError, setImportError] = useState<DocumentImportError | null>(null);
   const [importDocument] = useImportCollaboraDocumentMutation();
+  const [createDocument] = useCreateCollaboraDocumentOnCalloutMutation();
   const [editingContributionId, setEditingContributionId] = useState<string | undefined>();
 
-  const handleOpen = () => {
+  const resetStagedState = () => {
+    setDocumentName(fallbackName);
+    setDocumentType(DEFAULT_DOCUMENT_TYPE);
     setFile(null);
     setImportError(null);
+  };
+
+  const handleOpen = () => {
+    resetStagedState();
     setDialogOpen(true);
   };
 
@@ -82,10 +104,12 @@ export function DocumentContributionAddConnector({
   // `handleOpen` does for the in-grid trigger card path.
   useEffect(() => {
     if (dialogOpen) {
+      setDocumentName(fallbackName);
+      setDocumentType(DEFAULT_DOCUMENT_TYPE);
       setFile(null);
       setImportError(null);
     }
-  }, [dialogOpen]);
+  }, [dialogOpen, fallbackName]);
 
   const formatList = COLLABORA_IMPORT_EXTENSIONS_P1.join(', ');
   const capMb = Math.round(COLLABORA_IMPORT_MAX_BYTES / (1024 * 1024));
@@ -96,7 +120,7 @@ export function DocumentContributionAddConnector({
       setFile(null);
       return;
     }
-    // Client-side pre-check BEFORE any network call (FR-006).
+    // Client-side pre-check BEFORE any network call.
     const validation = validateCollaboraImportFile([next]);
     if (!validation.ok) {
       setImportError(validation.error);
@@ -107,42 +131,84 @@ export function DocumentContributionAddConnector({
     setFile(next);
   };
 
+  const trimmedName = documentName.trim();
+
   const [handleSubmit, submitting] = useLoadingState(async () => {
-    if (!file) return;
+    if (file) {
+      // Upload path — the document type is derived server-side from the file's sniffed MIME, so it
+      // is NOT sent. The title is sent only when the user typed something other than the default;
+      // otherwise the server derives it from the uploaded filename.
+      const displayNameOverride = trimmedName && trimmedName !== fallbackName ? trimmedName : undefined;
+      try {
+        const { data } = await importDocument({
+          variables: {
+            file,
+            uploadData: { calloutID: calloutId, ...(displayNameOverride ? { displayName: displayNameOverride } : {}) },
+          },
+          refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+          awaitRefetchQueries: true,
+        });
+        onCreated?.();
+        handleClose();
+        const createdContributionId = data?.importCollaboraDocument.id;
+        if (createdContributionId) setEditingContributionId(createdContributionId);
+      } catch (err) {
+        // Map server errors the same way the framing-upload flow does.
+        // Decisions are driven by the structured `extensions.code`, never the error's message.
+        const handledCodes = ['FORMAT_NOT_SUPPORTED', 'STORAGE_UPLOAD_FAILED', 'STORAGE_SERVICE_UNAVAILABLE'] as const;
+        const code =
+          err instanceof ApolloError
+            ? err.graphQLErrors.find(gqlErr =>
+                handledCodes.includes(gqlErr.extensions?.code as (typeof handledCodes)[number])
+              )?.extensions?.code
+            : undefined;
+
+        if (code === 'FORMAT_NOT_SUPPORTED') {
+          setImportError({ kind: 'extension', received: '' });
+          return;
+        }
+        if (code === 'STORAGE_UPLOAD_FAILED') {
+          setImportError({ kind: 'size', bytes: file.size, maxBytes: COLLABORA_IMPORT_MAX_BYTES });
+          return;
+        }
+        if (code === 'STORAGE_SERVICE_UNAVAILABLE') {
+          notify(t('callout.documentImportErrorServiceUnavailable'), 'error');
+          return;
+        }
+        logError(new Error('Document contribution import failed', { cause: err as Error }));
+      }
+      return;
+    }
+
+    // Blank-create path — an empty document with the chosen title and type.
+    if (!trimmedName) return;
     try {
-      const { data } = await importDocument({
-        variables: { file, uploadData: { calloutID: calloutId } },
+      const { data } = await createDocument({
+        variables: {
+          calloutId,
+          collaboraDocument: {
+            displayName: trimmedName,
+            documentType: documentType as CollaboraDocumentType,
+          },
+        },
         refetchQueries: ['CalloutDetails', 'CalloutContributions'],
         awaitRefetchQueries: true,
       });
       onCreated?.();
       handleClose();
-      const createdContributionId = data?.importCollaboraDocument.id;
+      const createdContributionId = data?.createContributionOnCallout.id;
       if (createdContributionId) setEditingContributionId(createdContributionId);
     } catch (err) {
-      // Map server errors the same way the framing-upload flow does (FR-010/FR-011).
-      // Decisions are driven by the structured `extensions.code`, never the error's message.
-      const handledCodes = ['FORMAT_NOT_SUPPORTED', 'STORAGE_UPLOAD_FAILED', 'STORAGE_SERVICE_UNAVAILABLE'] as const;
       const code =
         err instanceof ApolloError
-          ? err.graphQLErrors.find(gqlErr =>
-              handledCodes.includes(gqlErr.extensions?.code as (typeof handledCodes)[number])
-            )?.extensions?.code
+          ? err.graphQLErrors.find(gqlErr => gqlErr.extensions?.code === 'STORAGE_SERVICE_UNAVAILABLE')?.extensions
+              ?.code
           : undefined;
-
-      if (code === 'FORMAT_NOT_SUPPORTED') {
-        setImportError({ kind: 'extension', received: '' });
-        return;
-      }
-      if (code === 'STORAGE_UPLOAD_FAILED') {
-        setImportError({ kind: 'size', bytes: file.size, maxBytes: COLLABORA_IMPORT_MAX_BYTES });
-        return;
-      }
       if (code === 'STORAGE_SERVICE_UNAVAILABLE') {
         notify(t('callout.documentImportErrorServiceUnavailable'), 'error');
         return;
       }
-      logError(new Error('Document contribution import failed', { cause: err as Error }));
+      logError(new Error('Document contribution create failed', { cause: err as Error }));
     }
   });
 
@@ -155,29 +221,46 @@ export function DocumentContributionAddConnector({
           if (!open) handleClose();
         }}
       >
-        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden" closeLabel={t('a11y.close')}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden" closeLabel={t('a11y.close')}>
           <DialogHeader className="shrink-0">
-            <DialogTitle>{t('callout.addDocument')}</DialogTitle>
+            <DialogTitle>{t('callout.createDocument')}</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
-            <DocumentImportZone
-              acceptAttr={COLLABORA_IMPORT_ACCEPT_ATTR}
-              value={file}
-              onChange={handleFileChange}
-              onError={setImportError}
-              error={importError}
-              busy={submitting}
-              labelHint={t('callout.documentImportHint')}
-              labelMaxSize={t('callout.documentImportMaxSize', { cap: capMb })}
-              labelRemoveFile={t('callout.documentImportRemoveFile')}
-              errorMessage={errorMessage}
+          <div className="flex flex-col gap-3 flex-1 min-h-0 overflow-y-auto">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="crd-create-document-name" className="text-caption text-muted-foreground">
+                {t('callout.documentNameLabel')}
+              </label>
+              <Input
+                id="crd-create-document-name"
+                value={documentName}
+                onChange={e => setDocumentName(e.target.value)}
+                autoFocus={true}
+                disabled={submitting}
+              />
+            </div>
+            <CollaboraDocumentTypePicker
+              value={documentType}
+              onChange={setDocumentType}
+              upload={{
+                acceptAttr: COLLABORA_IMPORT_ACCEPT_ATTR,
+                file,
+                onFileChange: handleFileChange,
+                onError: setImportError,
+                error: importError,
+                errorMessage,
+                busy: submitting,
+                labelHint: t('callout.documentImportHint'),
+                labelMaxSize: t('callout.documentImportMaxSize', { cap: capMb }),
+                labelRemoveFile: t('callout.documentImportRemoveFile'),
+                labelOr: t('callout.documentImportOr'),
+              }}
             />
           </div>
           <DialogFooter className="shrink-0">
             <Button variant="outline" onClick={handleClose} disabled={submitting}>
               {t('dialogs.cancel')}
             </Button>
-            <Button onClick={handleSubmit} disabled={!file || submitting} aria-busy={submitting}>
+            <Button onClick={handleSubmit} disabled={!trimmedName || submitting} aria-busy={submitting}>
               {t('dialogs.create')}
             </Button>
           </DialogFooter>

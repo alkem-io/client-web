@@ -198,6 +198,8 @@
     "documentPresentation": "Presentatie",
     "addDocument": "Document toevoegen",
     "defaultDocumentName": "Nieuw document",
+    "createDocument": "Nieuw document aanmaken",
+    "documentNameLabel": "Documenttitel",
     "documentTypeLabel": "Documenttype",
     "createNew": "Nieuw maken",
     "documentImportOr": "of",
