@@ -29570,6 +29570,188 @@ export type SpaceExplorerWelcomeSpaceQueryResult = Apollo.QueryResult<
 export function refetchSpaceExplorerWelcomeSpaceQuery(variables: SchemaTypes.SpaceExplorerWelcomeSpaceQueryVariables) {
   return { query: SpaceExplorerWelcomeSpaceDocument, variables: variables };
 }
+export const MyMcpApiKeysDocument = gql`
+    query MyMcpApiKeys {
+  me {
+    mcpApiKeys {
+      id
+      name
+      operations
+      createdDate
+      expiresAt
+      lastUsedAt
+      lastUsedFromIp
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useMyMcpApiKeysQuery__
+ *
+ * To run a query within a React component, call `useMyMcpApiKeysQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyMcpApiKeysQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyMcpApiKeysQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyMcpApiKeysQuery(
+  baseOptions?: Apollo.QueryHookOptions<SchemaTypes.MyMcpApiKeysQuery, SchemaTypes.MyMcpApiKeysQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.MyMcpApiKeysQuery, SchemaTypes.MyMcpApiKeysQueryVariables>(
+    MyMcpApiKeysDocument,
+    options
+  );
+}
+export function useMyMcpApiKeysLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.MyMcpApiKeysQuery, SchemaTypes.MyMcpApiKeysQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.MyMcpApiKeysQuery, SchemaTypes.MyMcpApiKeysQueryVariables>(
+    MyMcpApiKeysDocument,
+    options
+  );
+}
+export function useMyMcpApiKeysSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.MyMcpApiKeysQuery, SchemaTypes.MyMcpApiKeysQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.MyMcpApiKeysQuery, SchemaTypes.MyMcpApiKeysQueryVariables>(
+    MyMcpApiKeysDocument,
+    options
+  );
+}
+export type MyMcpApiKeysQueryHookResult = ReturnType<typeof useMyMcpApiKeysQuery>;
+export type MyMcpApiKeysLazyQueryHookResult = ReturnType<typeof useMyMcpApiKeysLazyQuery>;
+export type MyMcpApiKeysSuspenseQueryHookResult = ReturnType<typeof useMyMcpApiKeysSuspenseQuery>;
+export type MyMcpApiKeysQueryResult = Apollo.QueryResult<
+  SchemaTypes.MyMcpApiKeysQuery,
+  SchemaTypes.MyMcpApiKeysQueryVariables
+>;
+export function refetchMyMcpApiKeysQuery(variables?: SchemaTypes.MyMcpApiKeysQueryVariables) {
+  return { query: MyMcpApiKeysDocument, variables: variables };
+}
+export const MintMcpApiKeyDocument = gql`
+    mutation MintMcpApiKey($mintData: MintMcpApiKeyInput!) {
+  mintMcpApiKey(mintData: $mintData) {
+    apiKey
+    key {
+      id
+      name
+      operations
+      createdDate
+      expiresAt
+      lastUsedAt
+      lastUsedFromIp
+      status
+    }
+  }
+}
+    `;
+export type MintMcpApiKeyMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MintMcpApiKeyMutation,
+  SchemaTypes.MintMcpApiKeyMutationVariables
+>;
+
+/**
+ * __useMintMcpApiKeyMutation__
+ *
+ * To run a mutation, you first call `useMintMcpApiKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMintMcpApiKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [mintMcpApiKeyMutation, { data, loading, error }] = useMintMcpApiKeyMutation({
+ *   variables: {
+ *      mintData: // value for 'mintData'
+ *   },
+ * });
+ */
+export function useMintMcpApiKeyMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MintMcpApiKeyMutation,
+    SchemaTypes.MintMcpApiKeyMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MintMcpApiKeyMutation, SchemaTypes.MintMcpApiKeyMutationVariables>(
+    MintMcpApiKeyDocument,
+    options
+  );
+}
+export type MintMcpApiKeyMutationHookResult = ReturnType<typeof useMintMcpApiKeyMutation>;
+export type MintMcpApiKeyMutationResult = Apollo.MutationResult<SchemaTypes.MintMcpApiKeyMutation>;
+export type MintMcpApiKeyMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MintMcpApiKeyMutation,
+  SchemaTypes.MintMcpApiKeyMutationVariables
+>;
+export const RevokeMcpApiKeyDocument = gql`
+    mutation RevokeMcpApiKey($revokeData: RevokeMcpApiKeyInput!) {
+  revokeMcpApiKey(revokeData: $revokeData) {
+    id
+    name
+    operations
+    createdDate
+    expiresAt
+    lastUsedAt
+    lastUsedFromIp
+    status
+  }
+}
+    `;
+export type RevokeMcpApiKeyMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RevokeMcpApiKeyMutation,
+  SchemaTypes.RevokeMcpApiKeyMutationVariables
+>;
+
+/**
+ * __useRevokeMcpApiKeyMutation__
+ *
+ * To run a mutation, you first call `useRevokeMcpApiKeyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRevokeMcpApiKeyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [revokeMcpApiKeyMutation, { data, loading, error }] = useRevokeMcpApiKeyMutation({
+ *   variables: {
+ *      revokeData: // value for 'revokeData'
+ *   },
+ * });
+ */
+export function useRevokeMcpApiKeyMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RevokeMcpApiKeyMutation,
+    SchemaTypes.RevokeMcpApiKeyMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.RevokeMcpApiKeyMutation, SchemaTypes.RevokeMcpApiKeyMutationVariables>(
+    RevokeMcpApiKeyDocument,
+    options
+  );
+}
+export type RevokeMcpApiKeyMutationHookResult = ReturnType<typeof useRevokeMcpApiKeyMutation>;
+export type RevokeMcpApiKeyMutationResult = Apollo.MutationResult<SchemaTypes.RevokeMcpApiKeyMutation>;
+export type RevokeMcpApiKeyMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RevokeMcpApiKeyMutation,
+  SchemaTypes.RevokeMcpApiKeyMutationVariables
+>;
 export const UserSecurityAuthenticationMethodsDocument = gql`
     query UserSecurityAuthenticationMethods {
   me {
