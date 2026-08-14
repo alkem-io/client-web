@@ -8382,6 +8382,7 @@ export const CreateCollaboraDocumentOnCalloutDocument = gql`
   createContributionOnCallout(
     contributionData: {calloutID: $calloutId, type: COLLABORA_DOCUMENT, collaboraDocument: $collaboraDocument}
   ) {
+    id
     collaboraDocument {
       id
       documentType
