@@ -1,16 +1,23 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUserSecurityAuthenticationMethodsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import useNavigate from '@/core/routing/useNavigate';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
+import { McpApiKeyCreateDialog } from '@/crd/components/user/settings/McpApiKeyCreateDialog';
+import { McpApiKeyRevealPanel } from '@/crd/components/user/settings/McpApiKeyRevealPanel';
+import { McpApiKeysCard } from '@/crd/components/user/settings/McpApiKeysCard';
 import { UserSecurityTabView, type UserSecurityViewState } from '@/crd/components/user/settings/UserSecurityTabView';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { platformBaseAddress } from '@/main/constants/endpoints';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import PasswordChangeForm from './PasswordChangeForm';
+import useMcpApiKeys from './useMcpApiKeys';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
 
 /**
@@ -50,14 +57,19 @@ const CrdUserSecurityTab = () => {
   // platform admins who pass the shell guard — from triggering those flows
   // before the owner-only redirect above completes.
   if (!isOwner) {
-    return <UserSecurityTabView state={{ kind: 'loading' }} passwordForm={null} webauthnForm={null} />;
+    return (
+      <UserSecurityTabView state={{ kind: 'loading' }} passwordForm={null} webauthnForm={null} mcpApiKeysCard={null} />
+    );
   }
 
   return <OwnerSecurityTabContent />;
 };
 
 const OwnerSecurityTabContent = () => {
+  const { i18n } = useTranslation();
   const flowResult = useUserSecuritySettingsFlow();
+  const mcpApiKeys = useMcpApiKeys();
+  const dateLocale = resolveDateFnsLocale(i18n.language);
 
   // Load the Ory passkey script so the WebAuthn registration button can run
   // its ceremony (the script injects the `window.__oryPasskey*` globals that
@@ -102,7 +114,45 @@ const OwnerSecurityTabContent = () => {
       />
     ) : null;
 
-  return <UserSecurityTabView state={state} passwordForm={passwordForm} webauthnForm={webauthnForm} />;
+  const mcpApiKeysCard = (
+    <>
+      <McpApiKeysCard
+        loading={mcpApiKeys.loading}
+        loadError={mcpApiKeys.loadError}
+        onRetry={mcpApiKeys.retryLoad}
+        keys={mcpApiKeys.keys}
+        revokingId={mcpApiKeys.revokingId}
+        interruptedRevealKeyId={mcpApiKeys.interruptedRevealKeyId}
+        onCreate={mcpApiKeys.openCreateDialog}
+        onRevoke={mcpApiKeys.revokeKey}
+        locale={dateLocale}
+      />
+      <McpApiKeyCreateDialog
+        open={mcpApiKeys.createDialogOpen}
+        onOpenChange={next => (next ? mcpApiKeys.openCreateDialog() : mcpApiKeys.closeCreateDialog())}
+        submitting={mcpApiKeys.creating}
+        serverError={mcpApiKeys.createError}
+        onCreate={mcpApiKeys.createKey}
+        locale={dateLocale}
+      />
+      <McpApiKeyRevealPanel
+        open={Boolean(mcpApiKeys.revealData)}
+        data={mcpApiKeys.revealData}
+        baseAddress={platformBaseAddress}
+        onClose={mcpApiKeys.closeReveal}
+        onCopied={mcpApiKeys.onRevealCopied}
+      />
+    </>
+  );
+
+  return (
+    <UserSecurityTabView
+      state={state}
+      passwordForm={passwordForm}
+      webauthnForm={webauthnForm}
+      mcpApiKeysCard={mcpApiKeysCard}
+    />
+  );
 };
 
 export default CrdUserSecurityTab;

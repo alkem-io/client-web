@@ -2729,6 +2729,32 @@ export type LookupQueryResultsFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type McpApiKeyKeySpecifier = (
+  | 'createdDate'
+  | 'expiresAt'
+  | 'id'
+  | 'lastUsedAt'
+  | 'lastUsedFromIp'
+  | 'name'
+  | 'operations'
+  | 'status'
+  | McpApiKeyKeySpecifier
+)[];
+export type McpApiKeyFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  expiresAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastUsedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastUsedFromIp?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  operations?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type McpApiKeyMintResultKeySpecifier = ('apiKey' | 'key' | McpApiKeyMintResultKeySpecifier)[];
+export type McpApiKeyMintResultFieldPolicy = {
+  apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
+  key?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MeConversationsResultKeySpecifier = ('conversations' | MeConversationsResultKeySpecifier)[];
 export type MeConversationsResultFieldPolicy = {
   conversations?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2739,6 +2765,7 @@ export type MeQueryResultsKeySpecifier = (
   | 'communityInvitationsCount'
   | 'conversations'
   | 'id'
+  | 'mcpApiKeys'
   | 'mySpaces'
   | 'notifications'
   | 'notificationsUnreadCount'
@@ -2753,6 +2780,7 @@ export type MeQueryResultsFieldPolicy = {
   communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   conversations?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mcpApiKeys?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2901,6 +2929,7 @@ export type MutationKeySpecifier = (
   | 'adminLicensePolicyCreateCredentialRule'
   | 'adminLicensePolicyDeleteCredentialRule'
   | 'adminLicensePolicyUpdateCredentialRule'
+  | 'adminRevokeMcpApiKey'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
@@ -3000,6 +3029,7 @@ export type MutationKeySpecifier = (
   | 'markMessageAsReadInRoom'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
+  | 'mintMcpApiKey'
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
   | 'moveSpaceL1ToSpaceL2'
@@ -3030,6 +3060,7 @@ export type MutationKeySpecifier = (
   | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
   | 'revokeLicensePlanFromSpace'
+  | 'revokeMcpApiKey'
   | 'sendDirectMessageToUsers'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
@@ -3122,6 +3153,7 @@ export type MutationFieldPolicy = {
   adminLicensePolicyCreateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyDeleteCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyUpdateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminRevokeMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3221,6 +3253,7 @@ export type MutationFieldPolicy = {
   markMessageAsReadInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
+  mintMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3251,6 +3284,7 @@ export type MutationFieldPolicy = {
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  revokeMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   sendDirectMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3604,6 +3638,7 @@ export type PlatformAdminQueryResultsKeySpecifier = (
   | 'innovationHubs'
   | 'innovationPacks'
   | 'latestUserEmailChangeAuditEntry'
+  | 'mcpApiKeys'
   | 'organizations'
   | 'spaces'
   | 'userEmailChangeAuditEntries'
@@ -3619,6 +3654,7 @@ export type PlatformAdminQueryResultsFieldPolicy = {
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
   latestUserEmailChangeAuditEntry?: FieldPolicy<any> | FieldReadFunction<any>;
+  mcpApiKeys?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
   userEmailChangeAuditEntries?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6859,6 +6895,14 @@ export type StrictTypedTypePolicies = {
   LookupQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);
     fields?: LookupQueryResultsFieldPolicy;
+  };
+  McpApiKey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | McpApiKeyKeySpecifier | (() => undefined | McpApiKeyKeySpecifier);
+    fields?: McpApiKeyFieldPolicy;
+  };
+  McpApiKeyMintResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | McpApiKeyMintResultKeySpecifier | (() => undefined | McpApiKeyMintResultKeySpecifier);
+    fields?: McpApiKeyMintResultFieldPolicy;
   };
   MeConversationsResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeConversationsResultKeySpecifier | (() => undefined | MeConversationsResultKeySpecifier);
