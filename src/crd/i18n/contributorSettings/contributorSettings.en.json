@@ -252,6 +252,85 @@
         "notEnabled": "Password sign-in is not enabled on this account.",
         "confirmLabel": "Confirm new password",
         "mismatch": "Passwords don't match."
+      },
+      "mcpApiKeys": {
+        "title": "MCP API Keys",
+        "description": "Create keys so external MCP clients (like Claude Desktop or Claude Code) can connect to Alkemio on your behalf.",
+        "empty": {
+          "title": "No API keys yet",
+          "description": "Create a key to connect an MCP client to your account.",
+          "create": "Create API key"
+        },
+        "list": {
+          "name": "Name",
+          "operations": "Operations",
+          "created": "Created",
+          "expires": "Expires",
+          "neverExpires": "Never expires",
+          "lastUsed": "Last used",
+          "neverUsed": "Never used",
+          "lastUsedFrom": "from {{address}}",
+          "status": "Status",
+          "revoke": "Revoke"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expired",
+          "revoked": "Revoked"
+        },
+        "operations": {
+          "read": "Read",
+          "tools": "Tools"
+        },
+        "create": {
+          "trigger": "Create API key",
+          "title": "Create MCP API key",
+          "description": "Choose a name, the operations it can perform, and an optional expiry.",
+          "nameLabel": "Name",
+          "namePlaceholder": "e.g. Claude Desktop",
+          "operationsLabel": "Operations",
+          "operationsRequired": "Choose at least one operation.",
+          "expiryLabel": "Expiry (optional)",
+          "expiryPlaceholder": "Never expires",
+          "expiryPastError": "Expiry must be in the future.",
+          "cancel": "Cancel",
+          "submit": "Create key",
+          "submitting": "Creating…",
+          "capReachedError": "You've reached the limit of {{limit}} active API keys. Revoke one to free up an allowance.",
+          "genericError": "Couldn't create the API key — try again."
+        },
+        "reveal": {
+          "title": "API key created",
+          "warning": "Copy this key now — you will not be able to see it again.",
+          "keyLabel": "API key",
+          "copy": "Copy",
+          "copied": "Copied",
+          "copyAnnouncement": "API key copied to clipboard.",
+          "manualCopyHint": "Clipboard access isn't available — select the field above and copy manually.",
+          "recipeTitle": "Connection recipe",
+          "recipeEndpointLabel": "Endpoint",
+          "recipeHeaderLabel": "Header",
+          "close": "Done"
+        },
+        "interrupted": {
+          "title": "Key value unavailable",
+          "description": "This key's value can no longer be shown. Revoke it and create a new one if you still need to connect a client.",
+          "revokeAndRecreate": "Revoke and create a new key"
+        },
+        "revoke": {
+          "title": "Revoke API key",
+          "description": "Revoking \"{{name}}\" will immediately stop it from authenticating. This cannot be undone.",
+          "cancel": "Cancel",
+          "confirm": "Revoke key",
+          "revoking": "Revoking…",
+          "success": "\"{{name}}\" has been revoked.",
+          "error": "Couldn't revoke the key — try again."
+        },
+        "errors": {
+          "notFound": "That API key could not be found.",
+          "loadError": "Couldn't load your API keys — try refreshing the page.",
+          "retry": "Try again"
+        }
       }
     },
     "settings": {

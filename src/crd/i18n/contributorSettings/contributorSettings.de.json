@@ -252,6 +252,85 @@
         "notEnabled": "Die Anmeldung mit Passwort ist für dieses Konto nicht aktiviert.",
         "confirmLabel": "Neues Passwort bestätigen",
         "mismatch": "Passwörter stimmen nicht überein."
+      },
+      "mcpApiKeys": {
+        "title": "MCP-API-Schlüssel",
+        "description": "Erstelle Schlüssel, damit externe MCP-Clients (wie Claude Desktop oder Claude Code) sich in deinem Namen mit Alkemio verbinden können.",
+        "empty": {
+          "title": "Noch keine API-Schlüssel",
+          "description": "Erstelle einen Schlüssel, um einen MCP-Client mit deinem Konto zu verbinden.",
+          "create": "API-Schlüssel erstellen"
+        },
+        "list": {
+          "name": "Name",
+          "operations": "Operationen",
+          "created": "Erstellt",
+          "expires": "Läuft ab",
+          "neverExpires": "Läuft nie ab",
+          "lastUsed": "Zuletzt verwendet",
+          "neverUsed": "Nie verwendet",
+          "lastUsedFrom": "von {{address}}",
+          "status": "Status",
+          "revoke": "Widerrufen"
+        },
+        "status": {
+          "active": "Aktiv",
+          "expired": "Abgelaufen",
+          "revoked": "Widerrufen"
+        },
+        "operations": {
+          "read": "Lesen",
+          "tools": "Tools"
+        },
+        "create": {
+          "trigger": "API-Schlüssel erstellen",
+          "title": "MCP-API-Schlüssel erstellen",
+          "description": "Wähle einen Namen, die zulässigen Operationen und optional ein Ablaufdatum.",
+          "nameLabel": "Name",
+          "namePlaceholder": "z. B. Claude Desktop",
+          "operationsLabel": "Operationen",
+          "operationsRequired": "Wähle mindestens eine Operation.",
+          "expiryLabel": "Ablaufdatum (optional)",
+          "expiryPlaceholder": "Läuft nie ab",
+          "expiryPastError": "Das Ablaufdatum muss in der Zukunft liegen.",
+          "cancel": "Abbrechen",
+          "submit": "Schlüssel erstellen",
+          "submitting": "Wird erstellt…",
+          "capReachedError": "Du hast das Limit von {{limit}} aktiven API-Schlüsseln erreicht. Widerrufe einen, um Platz zu schaffen.",
+          "genericError": "Der API-Schlüssel konnte nicht erstellt werden — versuche es erneut."
+        },
+        "reveal": {
+          "title": "API-Schlüssel erstellt",
+          "warning": "Kopiere diesen Schlüssel jetzt — du wirst ihn danach nicht mehr sehen können.",
+          "keyLabel": "API-Schlüssel",
+          "copy": "Kopieren",
+          "copied": "Kopiert",
+          "copyAnnouncement": "API-Schlüssel in die Zwischenablage kopiert.",
+          "manualCopyHint": "Zwischenablagenzugriff nicht verfügbar — wähle das Feld oben aus und kopiere manuell.",
+          "recipeTitle": "Verbindungsanleitung",
+          "recipeEndpointLabel": "Endpunkt",
+          "recipeHeaderLabel": "Header",
+          "close": "Fertig"
+        },
+        "interrupted": {
+          "title": "Schlüsselwert nicht mehr verfügbar",
+          "description": "Der Wert dieses Schlüssels kann nicht mehr angezeigt werden. Widerrufe ihn und erstelle einen neuen, falls du noch einen Client verbinden musst.",
+          "revokeAndRecreate": "Widerrufen und neuen Schlüssel erstellen"
+        },
+        "revoke": {
+          "title": "API-Schlüssel widerrufen",
+          "description": "Das Widerrufen von \"{{name}}\" beendet die Authentifizierung sofort. Dies kann nicht rückgängig gemacht werden.",
+          "cancel": "Abbrechen",
+          "confirm": "Schlüssel widerrufen",
+          "revoking": "Wird widerrufen…",
+          "success": "\"{{name}}\" wurde widerrufen.",
+          "error": "Der Schlüssel konnte nicht widerrufen werden — versuche es erneut."
+        },
+        "errors": {
+          "notFound": "Dieser API-Schlüssel konnte nicht gefunden werden.",
+          "loadError": "Deine API-Schlüssel konnten nicht geladen werden — bitte aktualisiere die Seite.",
+          "retry": "Erneut versuchen"
+        }
       }
     },
     "settings": {
