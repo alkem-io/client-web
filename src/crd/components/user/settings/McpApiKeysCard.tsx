@@ -166,10 +166,17 @@ function McpApiKeyRow({
 
   return (
     <div className="flex flex-col gap-2">
+      {/* Status sits with the operation badges — badge next to badge, matched
+          in size and weight. The revoke Button (a fixed h-8 touch target) is
+          pulled out of that cluster so a passive status chip is never lined up
+          against an action control of a different height. */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex flex-col gap-1">
           <p className="text-body-emphasis">{apiKey.name}</p>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap items-center gap-1">
+            <Badge variant={STATUS_BADGE_VARIANT[apiKey.status]}>
+              {t(`user.security.mcpApiKeys.status.${apiKey.status}`)}
+            </Badge>
             {apiKey.operations.map(operation => (
               <Badge key={operation} variant="outline">
                 {t(`user.security.mcpApiKeys.operations.${operation}`)}
@@ -177,23 +184,22 @@ function McpApiKeyRow({
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Badge variant={STATUS_BADGE_VARIANT[apiKey.status]}>
-            {t(`user.security.mcpApiKeys.status.${apiKey.status}`)}
-          </Badge>
-          {canRevoke ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={onRevoke}
-              disabled={revoking}
-              aria-busy={revoking}
-            >
-              {t('user.security.mcpApiKeys.list.revoke')}
-            </Button>
-          ) : null}
-        </div>
+        {canRevoke ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            // ml-auto keeps the action right-aligned when the flex row wraps at
+            // narrow widths; without it a wrapped button lands under the badge
+            // cluster and reads as another chip rather than the row's action.
+            className="ml-auto self-start"
+            onClick={onRevoke}
+            disabled={revoking}
+            aria-busy={revoking}
+          >
+            {t('user.security.mcpApiKeys.list.revoke')}
+          </Button>
+        ) : null}
       </div>
 
       <dl className="grid grid-cols-2 gap-x-4 gap-y-1 text-caption text-muted-foreground sm:grid-cols-4">
