@@ -74,7 +74,7 @@ export type UseMcpApiKeysResult = {
   onRevealCopied: () => void;
   revokingId: string | undefined;
   interruptedRevealKeyId: string | undefined;
-  revokeKey: (key: McpApiKeyRowData) => Promise<void>;
+  revokeKey: (key: McpApiKeyRowData, options?: { recreate?: boolean }) => Promise<void>;
 };
 
 /**
@@ -151,13 +151,18 @@ export function useMcpApiKeys(): UseMcpApiKeysResult {
     setRevealData(undefined);
   };
 
-  const revokeKey = async (key: McpApiKeyRowData) => {
+  const revokeKey = async (key: McpApiKeyRowData, options?: { recreate?: boolean }) => {
     setRevokingId(key.id);
     try {
       await revokeMutation({ variables: { revokeData: { keyID: key.id } } });
       if (interruptedRevealKeyId === key.id) setInterruptedRevealKeyId(undefined);
       await refetch();
       toast.success(t('user.security.mcpApiKeys.revoke.success', { name: key.name }));
+      // The interrupted-reveal recovery is labelled "Revoke and create new
+      // key". Honour the second half of that promise — but only after the
+      // revoke actually succeeded, so a failed revoke never leaves the user
+      // creating a replacement while the compromised key is still live.
+      if (options?.recreate) setCreateDialogOpen(true);
     } catch {
       toast.error(t('user.security.mcpApiKeys.revoke.error'));
     } finally {

@@ -1,9 +1,20 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 import contributorSettingsEn from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
 import { McpApiKeyCreateDialog } from '../McpApiKeyCreateDialog';
+
+// Capture the Calendar's props so a test can drive `onSelect` directly. The
+// real picker refuses past dates via `disabled={[{ before: new Date() }]}`, so
+// this is the only way to reach the submit-time guard behind it.
+const calendarProps: { onSelect?: (date: Date | undefined) => void } = {};
+vi.mock('@/crd/primitives/calendar', () => ({
+  Calendar: (props: { onSelect?: (date: Date | undefined) => void }) => {
+    calendarProps.onSelect = props.onSelect;
+    return null;
+  },
+}));
 
 const i18n = createInstance();
 
@@ -34,23 +45,33 @@ describe('McpApiKeyCreateDialog', () => {
     expect(onCreate).not.toHaveBeenCalled();
   });
 
-  it("a past expiry is refused (client-side guard on submit, defense-in-depth behind the picker's own before-today matcher)", () => {
-    // The Calendar's `disabled={[{ before: new Date() }]}` prop already keeps
-    // a past date from being selectable through the UI; handleSubmit's
-    // `expiresAt.getTime() <= Date.now()` check is the defense-in-depth
-    // backstop this test exercises. There is no public API to inject a past
-    // Date directly into the form's internal state from outside, so this
-    // asserts the component compiles and submits cleanly with no expiry set
-    // (undefined never trips the past-expiry guard) — the guard itself is
-    // covered by the useMcpApiKeys container path in practice.
+  it('refuses a past expiry and does not call onCreate (defense-in-depth behind the picker)', () => {
+    // The Calendar's `disabled={[{ before: new Date() }]}` keeps a past date
+    // from being SELECTABLE, so this exercises the second line of defence:
+    // handleSubmit's `expiresAt.getTime() <= Date.now()` guard. Reaching it
+    // needs a past Date in the form's internal state, which the UI will not
+    // produce — so drive the Calendar's onSelect directly, which is the same
+    // entry point the picker uses.
     const onCreate = vi.fn();
     renderDialog({ onCreate });
 
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Claude Desktop' } });
     fireEvent.click(screen.getByText('Read'));
+
+    // The Calendar lives inside PopoverContent, which does not mount until the
+    // popover opens — so open it before reaching for onSelect.
+    fireEvent.click(screen.getByRole('button', { name: /expiry \(optional\)/i }));
+    expect(calendarProps.onSelect).toBeDefined();
+
+    const past = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    act(() => {
+      calendarProps.onSelect?.(past);
+    });
+
     fireEvent.click(screen.getByRole('button', { name: 'Create key' }));
 
-    expect(onCreate).toHaveBeenCalledWith({ name: 'Claude Desktop', operations: ['read'], expiresAt: undefined });
+    expect(onCreate).not.toHaveBeenCalled();
+    expect(screen.getByText(/must be in the future/i)).toBeInTheDocument();
   });
 
   it('submits with the trimmed name and selected operations when valid', () => {

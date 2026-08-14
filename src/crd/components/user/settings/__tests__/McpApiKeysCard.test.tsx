@@ -111,7 +111,19 @@ describe('McpApiKeysCard', () => {
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Revoke key' }));
-    expect(onRevoke).toHaveBeenCalledWith(baseKey);
+    expect(onRevoke).toHaveBeenCalledWith(baseKey, { recreate: false });
+  });
+
+  it('the interrupted-reveal recovery signals recreate intent through the same confirmation', () => {
+    // The button is labelled "Revoke and create new key". Without the intent
+    // reaching the container the label promises something that never happens.
+    const onRevoke = vi.fn();
+    renderCard({ keys: [baseKey], onRevoke, interruptedRevealKeyId: baseKey.id });
+
+    fireEvent.click(screen.getByRole('button', { name: /revoke and create a new key/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Revoke key' }));
+
+    expect(onRevoke).toHaveBeenCalledWith(baseKey, { recreate: true });
   });
 
   it('cancelling the revoke confirmation calls no mutation', () => {

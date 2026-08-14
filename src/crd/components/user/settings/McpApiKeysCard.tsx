@@ -29,7 +29,9 @@ export type McpApiKeysCardProps = {
   /** True when a mint just succeeded but the reveal panel was dismissed before the value was copied — offers revoke-and-recreate (spec edge case). */
   interruptedRevealKeyId: string | undefined;
   onCreate: () => void;
-  onRevoke: (key: McpApiKeyRowData) => void;
+  /** `recreate` is true when triggered from the interrupted-reveal recovery,
+   *  whose label promises a new key is created after revoking. */
+  onRevoke: (key: McpApiKeyRowData, options?: { recreate?: boolean }) => void;
   /** Resolved by the consumer from the current UI language — CRD never reads i18n directly. */
   locale?: Locale;
 };
@@ -53,7 +55,11 @@ export function McpApiKeysCard({
   locale = enUS,
 }: McpApiKeysCardProps) {
   const { t } = useTranslation(NS);
-  const [pendingRevoke, setPendingRevoke] = useState<McpApiKeyRowData | undefined>(undefined);
+  // The recreate intent has to survive the confirmation dialog, so it is held
+  // alongside the pending key rather than captured at click time.
+  const [pendingRevoke, setPendingRevoke] = useState<{ key: McpApiKeyRowData; recreate: boolean } | undefined>(
+    undefined
+  );
 
   if (loading) {
     return (
@@ -118,7 +124,7 @@ export function McpApiKeysCard({
               apiKey={key}
               revoking={revokingId === key.id}
               interrupted={interruptedRevealKeyId === key.id}
-              onRevoke={() => setPendingRevoke(key)}
+              onRevoke={options => setPendingRevoke({ key, recreate: Boolean(options?.recreate) })}
               locale={locale}
             />
           </li>
@@ -131,18 +137,18 @@ export function McpApiKeysCard({
           if (!next) setPendingRevoke(undefined);
         }}
         title={t('user.security.mcpApiKeys.revoke.title')}
-        description={t('user.security.mcpApiKeys.revoke.description', { name: pendingRevoke?.name ?? '' })}
+        description={t('user.security.mcpApiKeys.revoke.description', { name: pendingRevoke?.key.name ?? '' })}
         confirmLabel={
-          revokingId === pendingRevoke?.id
+          revokingId === pendingRevoke?.key.id
             ? t('user.security.mcpApiKeys.revoke.revoking')
             : t('user.security.mcpApiKeys.revoke.confirm')
         }
         onConfirm={() => {
-          if (pendingRevoke) onRevoke(pendingRevoke);
+          if (pendingRevoke) onRevoke(pendingRevoke.key, { recreate: pendingRevoke.recreate });
           setPendingRevoke(undefined);
         }}
         variant="destructive"
-        loading={revokingId === pendingRevoke?.id}
+        loading={revokingId === pendingRevoke?.key.id}
       />
     </div>
   );
@@ -158,7 +164,7 @@ function McpApiKeyRow({
   apiKey: McpApiKeyRowData;
   revoking: boolean;
   interrupted: boolean;
-  onRevoke: () => void;
+  onRevoke: (options?: { recreate?: boolean }) => void;
   locale: Locale;
 }) {
   const { t } = useTranslation(NS);
@@ -193,7 +199,9 @@ function McpApiKeyRow({
             // narrow widths; without it a wrapped button lands under the badge
             // cluster and reads as another chip rather than the row's action.
             className="ml-auto self-start"
-            onClick={onRevoke}
+            // Call with no argument — passing the handler directly would send
+            // the MouseEvent into the `options` slot and read as truthy intent.
+            onClick={() => onRevoke()}
             disabled={revoking}
             aria-busy={revoking}
           >
@@ -237,7 +245,13 @@ function McpApiKeyRow({
           <p className="text-body-emphasis">{t('user.security.mcpApiKeys.interrupted.title')}</p>
           <p className="text-caption text-muted-foreground">{t('user.security.mcpApiKeys.interrupted.description')}</p>
           {canRevoke ? (
-            <Button type="button" variant="outline" size="sm" className="mt-2" onClick={onRevoke}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={() => onRevoke({ recreate: true })}
+            >
               {t('user.security.mcpApiKeys.interrupted.revokeAndRecreate')}
             </Button>
           ) : null}

@@ -2,7 +2,7 @@ import type { Locale } from 'date-fns';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
-import { type FormEvent, useId, useState } from 'react';
+import { type FormEvent, useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/crd/primitives/button';
 import { Calendar } from '@/crd/primitives/calendar';
@@ -69,6 +69,20 @@ export function McpApiKeyCreateDialog({
     setExpiresAt(undefined);
     setLocalError(undefined);
   };
+
+  // Reset on `open` going false, not only via handleOpenChange: the container
+  // closes this dialog after a successful mint by flipping `open` directly,
+  // which never routes through handleOpenChange — so without this the next
+  // create starts pre-filled with the previous key's name, operations and
+  // expiry.
+  useEffect(() => {
+    if (!open) {
+      resetForm();
+      setCalendarOpen(false);
+    }
+    // resetForm only touches setState functions, which are stable.
+    // biome-ignore lint/correctness/useExhaustiveDependencies: reset is keyed on `open` alone
+  }, [open]);
 
   const handleOpenChange = (next: boolean) => {
     if (!next) resetForm();
