@@ -46,7 +46,11 @@ export function ReactionEmojiPicker({ allowedEmojis, currentEmoji, onSelect }: R
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild={true}>
-        {/* Ghost button matching the CommentItem add-reaction trigger visual */}
+        {/* Ghost button matching the CommentItem add-reaction trigger visual.
+            The picker opens on CLICK, a deliberate deviation from the Figma
+            "hover opens the picker" concept: click is consistent across desktop
+            and mobile, whereas hover has no touch equivalent — a hover-only
+            trigger is simply unreachable on a touchscreen. */}
         <Button
           type="button"
           variant="ghost"

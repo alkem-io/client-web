@@ -1,8 +1,9 @@
+import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { glyphForSlug } from './reactionEmoji';
 
-export type ReactionTotalPillProps = {
+export type ReactionTotalPillProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Distinct emoji slugs currently in use on this callout. Unknown slugs are
    *  silently skipped — never rendered as raw text. */
   emojis: string[];
@@ -11,17 +12,24 @@ export type ReactionTotalPillProps = {
   /** The slug of the viewer's current reaction, if they have one. Controls the
    *  primary-tint styling on the pill. */
   myReactionEmoji?: string | null;
-  /** Called when the viewer clicks the total pill to open the who-reacted list. */
-  onOpenWhoReacted?: () => void;
 };
 
 /**
  * Displays the distinct emoji glyphs currently in use and ONE combined total.
  * Never renders a per-emoji count — the anti-gamification guarantee.
  *
+ * Designed to be a Radix `<PopoverTrigger asChild>` child: it forwards its ref
+ * onto the native `<button>` and spreads through the props Radix injects
+ * (`onClick`, `aria-expanded`, `data-state`, …) so the popover can anchor to it
+ * and toggle open/closed. It owns no open/close logic of its own — the consumer
+ * wires the popover.
+ *
  * Hidden when total is 0 (no reactions yet — the add button is the only affordance).
  */
-export function ReactionTotalPill({ emojis, total, myReactionEmoji, onOpenWhoReacted }: ReactionTotalPillProps) {
+export const ReactionTotalPill = React.forwardRef<HTMLButtonElement, ReactionTotalPillProps>(function ReactionTotalPill(
+  { emojis, total, myReactionEmoji, className, ...rest },
+  ref
+) {
   const { t } = useTranslation('crd-reactions');
 
   if (total === 0) return null;
@@ -33,17 +41,18 @@ export function ReactionTotalPill({ emojis, total, myReactionEmoji, onOpenWhoRea
 
   return (
     <button
+      ref={ref}
       type="button"
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-caption transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+        'inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-caption transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         hasOwnReaction
           ? 'border-primary/50 bg-primary/10 text-primary hover:bg-primary/15'
           : 'border-border bg-background text-muted-foreground hover:bg-muted',
-        onOpenWhoReacted ? 'cursor-pointer' : 'cursor-default'
+        className
       )}
       aria-pressed={hasOwnReaction}
       aria-label={t('totalAriaLabel', { count: total })}
-      onClick={onOpenWhoReacted}
+      {...rest}
     >
       {/* Distinct emoji chips — known glyphs only; unknown slugs silently skipped */}
       {knownEmojis.length > 0 && (
@@ -60,4 +69,4 @@ export function ReactionTotalPill({ emojis, total, myReactionEmoji, onOpenWhoRea
       <span>{total}</span>
     </button>
   );
-}
+});

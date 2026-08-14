@@ -1,7 +1,7 @@
-import { formatDistanceToNow } from 'date-fns';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatRelativeFromNowStrict } from '@/crd/lib/dateTimeFormat';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
 import { glyphForSlug } from './reactionEmoji';
@@ -42,34 +42,30 @@ export function WhoReactedPopover({ rows, open, onOpenChange, trigger }: WhoReac
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild={true}>{trigger}</PopoverTrigger>
-      <PopoverContent side="top" align="start" className="w-72 p-3" onOpenAutoFocus={event => event.preventDefault()}>
-        <p className="mb-2 text-body-emphasis text-foreground">{t('whoReactedTitle')}</p>
+      <PopoverContent side="top" align="start" className="w-64 p-2" onOpenAutoFocus={event => event.preventDefault()}>
+        <p className="mb-1.5 px-1 text-caption font-semibold text-foreground">{t('whoReactedTitle')}</p>
         {renderableRows.length === 0 ? (
-          <p className="text-caption text-muted-foreground">{t('whoReactedEmpty')}</p>
+          <p className="px-1 text-caption text-muted-foreground">{t('whoReactedEmpty')}</p>
         ) : (
-          <ul className="space-y-2 max-h-60 overflow-y-auto">
+          <ul className="max-h-56 space-y-0.5 overflow-y-auto">
             {renderableRows.map(row => {
               const glyph = glyphForSlug(row.emoji);
-              const relativeTime = (() => {
-                try {
-                  return formatDistanceToNow(new Date(row.updatedDate), { addSuffix: true, locale });
-                } catch {
-                  return '';
-                }
-              })();
+              const relativeTime = formatRelativeFromNowStrict(row.updatedDate, locale);
 
               return (
-                <li key={row.id} className="flex items-center gap-2">
-                  <Avatar className="size-7 shrink-0">
+                <li key={row.id} className="flex items-center gap-2 rounded-md px-1 py-1">
+                  <Avatar className="size-6 shrink-0">
                     {row.user?.avatarUrl && <AvatarImage src={row.user.avatarUrl} alt={row.user.displayName} />}
                     <AvatarFallback className="text-[10px]">{row.user?.displayName.charAt(0) ?? '?'}</AvatarFallback>
                   </Avatar>
+                  {/* Name on its own line with the "when" as subtext beneath it — the
+                      display name gets the full row width instead of competing with the time. */}
                   <div className="min-w-0 flex-1">
-                    <p className="text-caption text-foreground truncate">{row.user?.displayName ?? ''}</p>
-                    <p className="text-caption text-muted-foreground">{relativeTime}</p>
+                    <p className="truncate text-caption text-foreground">{row.user?.displayName ?? ''}</p>
+                    {relativeTime && <p className="truncate text-caption text-muted-foreground">{relativeTime}</p>}
                   </div>
                   {/* Emoji glyph — no count, just the reaction identity */}
-                  <span className="text-body shrink-0" aria-hidden="true">
+                  <span className="shrink-0 text-body" aria-hidden="true">
                     {glyph}
                   </span>
                 </li>

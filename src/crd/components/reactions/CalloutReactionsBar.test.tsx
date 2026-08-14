@@ -12,8 +12,20 @@ vi.mock('@/crd/lib/dateFnsLocale', () => ({
   resolveDateFnsLocale: () => undefined,
 }));
 
+// Popover mock exposes onOpenChange via a hidden control so the bar's lazy-load
+// wiring (fire tier-2 once on first open) can be exercised without a real portal.
 vi.mock('@/crd/primitives/popover', () => ({
-  Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Popover: ({ children, onOpenChange }: { children: React.ReactNode; onOpenChange?: (open: boolean) => void }) => (
+    <div>
+      <button type="button" data-testid="popover-open" onClick={() => onOpenChange?.(true)}>
+        open
+      </button>
+      <button type="button" data-testid="popover-close" onClick={() => onOpenChange?.(false)}>
+        close
+      </button>
+      {children}
+    </div>
+  ),
   PopoverTrigger: ({ children, asChild: _asChild }: { children: React.ReactNode; asChild?: boolean }) => (
     <div>{children}</div>
   ),
@@ -104,8 +116,12 @@ describe('CalloutReactionsBar', () => {
         onRemove={vi.fn()}
       />
     );
-    const allButtons = screen.getAllByRole('button');
-    expect(allButtons).toHaveLength(1); // only the total pill
+    // Exclude the popover mock's own open/close control buttons (test artifacts,
+    // not real UI) — only the total pill should remain when canReact=false.
+    const realButtons = screen
+      .getAllByRole('button')
+      .filter(b => !b.getAttribute('data-testid')?.startsWith('popover-'));
+    expect(realButtons).toHaveLength(1); // only the total pill
   });
 
   it('calls onRemove when the viewer picks their own current emoji (un-react)', () => {
@@ -140,5 +156,39 @@ describe('CalloutReactionsBar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'rocket' }));
     expect(onAdd).toHaveBeenCalledWith('rocket');
     expect(onRemove).not.toHaveBeenCalled();
+  });
+
+  it('fires onLoadWhoReacted once, only on the first popover open (lazy tier-2)', () => {
+    const onLoadWhoReacted = vi.fn();
+    render(
+      <CalloutReactionsBar
+        summary={{ ...baseSummary, total: 3, emojis: ['heart'] }}
+        canReact={true}
+        onAdd={vi.fn()}
+        onRemove={vi.fn()}
+        onLoadWhoReacted={onLoadWhoReacted}
+      />
+    );
+    // First open triggers the lazy load
+    fireEvent.click(screen.getByTestId('popover-open'));
+    expect(onLoadWhoReacted).toHaveBeenCalledTimes(1);
+    // Close then reopen — the load must NOT fire again
+    fireEvent.click(screen.getByTestId('popover-close'));
+    fireEvent.click(screen.getByTestId('popover-open'));
+    expect(onLoadWhoReacted).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not fire onLoadWhoReacted before the popover is opened', () => {
+    const onLoadWhoReacted = vi.fn();
+    render(
+      <CalloutReactionsBar
+        summary={{ ...baseSummary, total: 3, emojis: ['heart'] }}
+        canReact={true}
+        onAdd={vi.fn()}
+        onRemove={vi.fn()}
+        onLoadWhoReacted={onLoadWhoReacted}
+      />
+    );
+    expect(onLoadWhoReacted).not.toHaveBeenCalled();
   });
 });

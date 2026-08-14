@@ -48,12 +48,17 @@ export function CalloutReactionsBar({
   whoReactedRows = [],
 }: CalloutReactionsBarProps) {
   const [whoReactedOpen, setWhoReactedOpen] = useState(false);
+  // Fire the tier-2 who-reacted query at most once — the first time the popover
+  // opens. Radix routes every open/close through `onOpenChange`, so we trigger
+  // the lazy load here rather than from the trigger's onClick.
+  const [hasLoadedWhoReacted, setHasLoadedWhoReacted] = useState(false);
 
-  const handleOpenWhoReacted = () => {
-    if (!whoReactedOpen) {
+  const handleWhoReactedOpenChange = (next: boolean) => {
+    if (next && !hasLoadedWhoReacted) {
       onLoadWhoReacted?.();
+      setHasLoadedWhoReacted(true);
     }
-    setWhoReactedOpen(true);
+    setWhoReactedOpen(next);
   };
 
   const handlePickerSelect = (slug: string) => {
@@ -76,18 +81,19 @@ export function CalloutReactionsBar({
         />
       )}
 
-      {/* Total pill with who-reacted popover on click */}
+      {/* Total pill with who-reacted popover on click. The pill is the Radix
+          trigger (asChild) — it carries no onClick of its own; the lazy load is
+          driven from the popover's onOpenChange below. */}
       {summary.total > 0 && (
         <WhoReactedPopover
           rows={whoReactedRows}
           open={whoReactedOpen}
-          onOpenChange={setWhoReactedOpen}
+          onOpenChange={handleWhoReactedOpenChange}
           trigger={
             <ReactionTotalPill
               emojis={summary.emojis}
               total={summary.total}
               myReactionEmoji={summary.myReactionEmoji}
-              onOpenWhoReacted={handleOpenWhoReacted}
             />
           }
         />
