@@ -43,7 +43,7 @@ import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { type DisabledChipMap, type FramingChipId, FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
-import { ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
+import { type DisabledResponseChipMap, ResponseTypeChipStrip } from '@/crd/forms/callout/ResponseTypeChipStrip';
 import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
@@ -314,6 +314,12 @@ function CalloutFormConnectorInner({
   const officeDocumentsEnabled =
     spaceContextLoading || entitlements.includes(LicenseEntitlementType.SpaceFlagOfficeDocuments);
   const disabledChips: DisabledChipMap | undefined = officeDocumentsEnabled
+    ? undefined
+    : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
+  // The same office-documents entitlement gates the "Document" *response* type:
+  // a callout must not offer document contributions on a space that lacks the
+  // SPACE_FLAG_OFFICE_DOCUMENTS feature, mirroring the framing gate above.
+  const responseDisabledChips: DisabledResponseChipMap | undefined = officeDocumentsEnabled
     ? undefined
     : { document: { tooltip: t('framing.officeDocumentsNotEnabled') } };
 
@@ -1035,6 +1041,7 @@ function CalloutFormConnectorInner({
             <ResponseTypeChipStrip
               value={values.responseType}
               allowedChips={responseAllowList}
+              disabledChips={responseDisabledChips}
               onChange={type => {
                 // Locked in edit mode (see framing strip) — only fires during
                 // create, so the response type can't be changed or cleared on
