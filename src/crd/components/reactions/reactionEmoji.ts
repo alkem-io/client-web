@@ -3,15 +3,19 @@
 // glyph rendering and skip any slug they don't recognise. Unknown slugs must
 // return undefined — callers are responsible for not rendering them.
 
-const SLUG_TO_GLYPH: Record<string, string> = {
-  heart: '❤️',
-  'hugging-face': '🤗',
-  'clapping-hands': '👏',
-  'light-bulb': '💡',
-  bullseye: '🎯',
-  'check-mark': '✅',
-  rocket: '🚀',
-};
+// A Map (not a plain object) so lookups are prototype-safe: a slug that
+// collides with an inherited property name — `__proto__`, `constructor`,
+// `toString` — resolves to `undefined` rather than an inherited member.
+// (A plain-object lookup would return the inherited function for those keys.)
+const SLUG_TO_GLYPH = new Map<string, string>([
+  ['heart', '❤️'],
+  ['hugging-face', '🤗'],
+  ['clapping-hands', '👏'],
+  ['light-bulb', '💡'],
+  ['bullseye', '🎯'],
+  ['check-mark', '✅'],
+  ['rocket', '🚀'],
+]);
 
 /**
  * Returns the Unicode glyph for a known reaction slug, or `undefined` for
@@ -19,7 +23,7 @@ const SLUG_TO_GLYPH: Record<string, string> = {
  * rather than rendering them as raw text.
  */
 export function glyphForSlug(slug: string): string | undefined {
-  return SLUG_TO_GLYPH[slug];
+  return SLUG_TO_GLYPH.get(slug);
 }
 
 /**
@@ -27,5 +31,5 @@ export function glyphForSlug(slug: string): string | undefined {
  * server-provided lists before passing them to presentational components.
  */
 export function isKnownSlug(slug: string): boolean {
-  return Object.hasOwn(SLUG_TO_GLYPH, slug);
+  return SLUG_TO_GLYPH.has(slug);
 }

@@ -5,6 +5,7 @@ import {
   useRemoveReactionFromCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
 import { CalloutReactionsBar } from '@/crd/components/reactions/CalloutReactionsBar';
 import type { WhoReactedRow } from '@/crd/components/reactions/WhoReactedPopover';
 import type { CalloutReactionsSummaryModel } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -51,16 +52,18 @@ export function CalloutReactionsConnector({
   // Render nothing when the summary field is absent to avoid breaking the feed.
   if (reactionsSummary === undefined || reactionsSummary === null) return null;
 
+  // The global Apollo error link surfaces the user-facing message; the local
+  // catch keeps the rejected promise from going unhandled and records it.
   const handleAdd = (slug: string) => {
-    void addReaction({
+    addReaction({
       variables: { reactionData: { calloutID: calloutId, emoji: slug } },
-    });
+    }).catch(err => logError(new Error('Add callout reaction failed', { cause: err as Error })));
   };
 
   const handleRemove = () => {
-    void removeReaction({
+    removeReaction({
       variables: { reactionData: { calloutID: calloutId } },
-    });
+    }).catch(err => logError(new Error('Remove callout reaction failed', { cause: err as Error })));
   };
 
   const handleLoadWhoReacted = () => {

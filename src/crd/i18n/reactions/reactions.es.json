@@ -6,5 +6,14 @@
   "totalAriaLabel_one": "1 persona reaccionó",
   "whoReactedTitle": "Quién reaccionó",
   "whoReactedEmpty": "Aún no hay reacciones",
-  "removeReaction": "Eliminar tu reacción"
+  "removeReaction": "Eliminar tu reacción",
+  "emoji": {
+    "heart": "Corazón",
+    "hugging-face": "Cara abrazando",
+    "clapping-hands": "Manos aplaudiendo",
+    "light-bulb": "Bombilla",
+    "bullseye": "Diana",
+    "check-mark": "Marca de verificación",
+    "rocket": "Cohete"
+  }
 }

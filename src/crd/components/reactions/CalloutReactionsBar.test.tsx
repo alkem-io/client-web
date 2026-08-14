@@ -73,8 +73,15 @@ describe('CalloutReactionsBar', () => {
     render(<CalloutReactionsBar summary={baseSummary} canReact={true} onAdd={vi.fn()} onRemove={vi.fn()} />);
     // Picker stub is rendered
     expect(screen.getByTestId('emoji-picker-stub')).toBeInTheDocument();
-    // No total pill rendered
-    expect(screen.queryByRole('button', { name: /people reacted/i })).not.toBeInTheDocument();
+    // No total pill rendered — the pill carries a totalAriaLabel accessible name
+    // (the mocked t() echoes the key), so its absence is a meaningful assertion.
+    expect(screen.queryByRole('button', { name: /totalAriaLabel/ })).not.toBeInTheDocument();
+    // Only the picker's own emoji buttons exist — no extra pill button (the
+    // popover mock adds no buttons because total===0 skips the WhoReactedPopover).
+    const realButtons = screen
+      .getAllByRole('button')
+      .filter(b => !b.getAttribute('data-testid')?.startsWith('popover-'));
+    expect(realButtons).toHaveLength(baseSummary.allowedEmojis.length);
   });
 
   it('renders the total pill when total > 0', () => {

@@ -21,6 +21,16 @@ describe('glyphForSlug', () => {
     expect(glyphForSlug('fire')).toBeUndefined();
   });
 
+  it('returns undefined for inherited-property slug names (prototype-safe)', () => {
+    // A plain-object lookup would resolve these to inherited members; the Map
+    // returns undefined so they are skipped rather than rendered as raw text.
+    expect(glyphForSlug('__proto__')).toBeUndefined();
+    expect(glyphForSlug('constructor')).toBeUndefined();
+    expect(glyphForSlug('toString')).toBeUndefined();
+    expect(glyphForSlug('hasOwnProperty')).toBeUndefined();
+    expect(glyphForSlug('valueOf')).toBeUndefined();
+  });
+
   it('covers exactly 7 slugs (the platform-defined set for this iteration)', () => {
     const knownSlugs = ['heart', 'hugging-face', 'clapping-hands', 'light-bulb', 'bullseye', 'check-mark', 'rocket'];
     for (const slug of knownSlugs) {
@@ -40,5 +50,12 @@ describe('isKnownSlug', () => {
     expect(isKnownSlug('fire')).toBe(false);
     expect(isKnownSlug('1')).toBe(false);
     expect(isKnownSlug('')).toBe(false);
+  });
+
+  it('returns false for inherited-property slug names (prototype-safe)', () => {
+    expect(isKnownSlug('__proto__')).toBe(false);
+    expect(isKnownSlug('constructor')).toBe(false);
+    expect(isKnownSlug('toString')).toBe(false);
+    expect(isKnownSlug('hasOwnProperty')).toBe(false);
   });
 });

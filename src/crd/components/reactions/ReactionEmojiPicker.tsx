@@ -83,7 +83,7 @@ export function ReactionEmojiPicker({ allowedEmojis, currentEmoji, onSelect }: R
                 currentEmoji === slug && 'bg-primary/10 ring-1 ring-primary/50'
               )}
               onClick={() => handleSelect(slug)}
-              aria-label={slug}
+              aria-label={t(`emoji.${slug}` as 'emoji.heart')}
             >
               <span aria-hidden="true">{glyph}</span>
             </button>

@@ -33,15 +33,26 @@ const cases: Array<[string, Json]> = [
 ];
 
 describe('crd-reactions i18n parity', () => {
-  it.each(cases)('%s has every key that en.json declares', (_lang, langJson) => {
+  it.each(cases)('%s has exactly the keys en.json declares (no missing, no orphans)', (_lang, langJson) => {
     const langKeys = new Set(collectKeyPaths(langJson));
     const missing: string[] = [];
+    const extra: string[] = [];
     for (const k of enKeys) {
       if (!langKeys.has(k)) missing.push(k);
     }
-    if (missing.length > 0) {
-      throw new Error(`Missing keys in ${_lang}: \n  - ${missing.join('\n  - ')}`);
+    // Also flag keys that exist ONLY in this locale — a removed English key must
+    // not linger as an orphaned translation.
+    for (const k of langKeys) {
+      if (!enKeys.has(k)) extra.push(k);
+    }
+    if (missing.length > 0 || extra.length > 0) {
+      throw new Error(
+        `Key mismatch in ${_lang}:` +
+          `\nMissing:\n  - ${missing.join('\n  - ')}` +
+          `\nUnexpected:\n  - ${extra.join('\n  - ')}`
+      );
     }
     expect(missing).toEqual([]);
+    expect(extra).toEqual([]);
   });
 });

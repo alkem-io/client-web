@@ -39,15 +39,27 @@ describe('ReactionEmojiPicker', () => {
   it('calls onSelect with the slug when an emoji is clicked', () => {
     const onSelect = vi.fn();
     render(<ReactionEmojiPicker allowedEmojis={['heart', 'rocket']} onSelect={onSelect} />);
-    const heartButton = screen.getByRole('option', { name: 'heart' });
+    // The option's accessible name is the translated per-slug key (emoji.<slug>),
+    // not the raw English slug — the mocked t() echoes the key.
+    const heartButton = screen.getByRole('option', { name: 'emoji.heart' });
     fireEvent.click(heartButton);
     expect(onSelect).toHaveBeenCalledWith('heart');
   });
 
   it('marks the current emoji as selected', () => {
     render(<ReactionEmojiPicker allowedEmojis={['heart', 'rocket']} currentEmoji="rocket" onSelect={vi.fn()} />);
-    expect(screen.getByRole('option', { name: 'rocket' })).toHaveAttribute('aria-selected', 'true');
-    expect(screen.getByRole('option', { name: 'heart' })).toHaveAttribute('aria-selected', 'false');
+    expect(screen.getByRole('option', { name: 'emoji.rocket' })).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByRole('option', { name: 'emoji.heart' })).toHaveAttribute('aria-selected', 'false');
+  });
+
+  it('labels each emoji option with its translated per-slug key, never the raw slug', () => {
+    render(<ReactionEmojiPicker allowedEmojis={['heart', 'rocket']} onSelect={vi.fn()} />);
+    // Regression guard: the accessible name must be resolved through t() so
+    // screen-reader users get a localized name rather than the English slug.
+    expect(screen.queryByRole('option', { name: 'heart' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: 'rocket' })).not.toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'emoji.heart' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'emoji.rocket' })).toBeInTheDocument();
   });
 
   it('has an accessible label on the trigger button', () => {

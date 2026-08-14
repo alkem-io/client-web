@@ -6,5 +6,14 @@
   "totalAriaLabel_one": "1 човек реагира",
   "whoReactedTitle": "Кой реагира",
   "whoReactedEmpty": "Все още няма реакции",
-  "removeReaction": "Премахни реакцията си"
+  "removeReaction": "Премахни реакцията си",
+  "emoji": {
+    "heart": "Сърце",
+    "hugging-face": "Прегръщащо лице",
+    "clapping-hands": "Аплодиращи ръце",
+    "light-bulb": "Крушка",
+    "bullseye": "Център на мишена",
+    "check-mark": "Отметка",
+    "rocket": "Ракета"
+  }
 }
