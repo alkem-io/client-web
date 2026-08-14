@@ -194,7 +194,7 @@
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Laatst actief",
+      "pinnedLastActive": "Vastgepind & Laatst actief in",
       "mostActivity": "Spaces met de meeste activiteit",
       "leadAdmin": "Spaces die ik leid en beheer",
       "host": "Spaces die ik host"
