@@ -252,6 +252,85 @@
         "notEnabled": "El inicio de sesión con contraseña no está habilitado en esta cuenta.",
         "confirmLabel": "Confirmar nueva contraseña",
         "mismatch": "Las contraseñas no coinciden."
+      },
+      "mcpApiKeys": {
+        "title": "Claves API MCP",
+        "description": "Crea claves para que clientes MCP externos (como Claude Desktop o Claude Code) puedan conectarse a Alkemio en tu nombre.",
+        "empty": {
+          "title": "Aún no hay claves API",
+          "description": "Crea una clave para conectar un cliente MCP a tu cuenta.",
+          "create": "Crear clave API"
+        },
+        "list": {
+          "name": "Nombre",
+          "operations": "Operaciones",
+          "created": "Creada",
+          "expires": "Caduca",
+          "neverExpires": "No caduca nunca",
+          "lastUsed": "Último uso",
+          "neverUsed": "Nunca usada",
+          "lastUsedFrom": "desde {{address}}",
+          "status": "Estado",
+          "revoke": "Revocar"
+        },
+        "status": {
+          "active": "Activa",
+          "expired": "Caducada",
+          "revoked": "Revocada"
+        },
+        "operations": {
+          "read": "Lectura",
+          "tools": "Herramientas"
+        },
+        "create": {
+          "trigger": "Crear clave API",
+          "title": "Crear clave API MCP",
+          "description": "Elige un nombre, las operaciones que podrá realizar y una caducidad opcional.",
+          "nameLabel": "Nombre",
+          "namePlaceholder": "p. ej. Claude Desktop",
+          "operationsLabel": "Operaciones",
+          "operationsRequired": "Elige al menos una operación.",
+          "expiryLabel": "Caducidad (opcional)",
+          "expiryPlaceholder": "No caduca nunca",
+          "expiryPastError": "La caducidad debe ser una fecha futura.",
+          "cancel": "Cancelar",
+          "submit": "Crear clave",
+          "submitting": "Creando…",
+          "capReachedError": "Has alcanzado el límite de {{limit}} claves API activas. Revoca una para liberar espacio.",
+          "genericError": "No se pudo crear la clave API — inténtalo de nuevo."
+        },
+        "reveal": {
+          "title": "Clave API creada",
+          "warning": "Copia esta clave ahora — no podrás volver a verla.",
+          "keyLabel": "Clave API",
+          "copy": "Copiar",
+          "copied": "Copiada",
+          "copyAnnouncement": "Clave API copiada al portapapeles.",
+          "manualCopyHint": "El acceso al portapapeles no está disponible — selecciona el campo de arriba y copia manualmente.",
+          "recipeTitle": "Receta de conexión",
+          "recipeEndpointLabel": "Endpoint",
+          "recipeHeaderLabel": "Encabezado",
+          "close": "Listo"
+        },
+        "interrupted": {
+          "title": "Valor de la clave no disponible",
+          "description": "El valor de esta clave ya no se puede mostrar. Revócala y crea una nueva si todavía necesitas conectar un cliente.",
+          "revokeAndRecreate": "Revocar y crear una nueva clave"
+        },
+        "revoke": {
+          "title": "Revocar clave API",
+          "description": "Al revocar \"{{name}}\" dejará de autenticar de inmediato. Esta acción no se puede deshacer.",
+          "cancel": "Cancelar",
+          "confirm": "Revocar clave",
+          "revoking": "Revocando…",
+          "success": "\"{{name}}\" ha sido revocada.",
+          "error": "No se pudo revocar la clave — inténtalo de nuevo."
+        },
+        "errors": {
+          "notFound": "No se pudo encontrar esa clave API.",
+          "loadError": "No se pudieron cargar tus claves API — intenta recargar la página.",
+          "retry": "Reintentar"
+        }
       }
     },
     "settings": {
