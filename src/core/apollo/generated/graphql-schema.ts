@@ -15959,6 +15959,7 @@ export type CreateCollaboraDocumentOnCalloutMutation = {
   __typename?: 'Mutation';
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
+    id: string;
     collaboraDocument?:
       | {
           __typename?: 'CollaboraDocument';
