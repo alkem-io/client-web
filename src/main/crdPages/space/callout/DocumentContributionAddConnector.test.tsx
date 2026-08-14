@@ -126,4 +126,35 @@ describe('DocumentContributionAddConnector — create empty document (regression
     );
     expect(createDocumentMock).not.toHaveBeenCalled();
   });
+
+  test('a staged file with an empty title still uploads (server derives the name from the file)', async () => {
+    const user = userEvent.setup();
+    importDocumentMock.mockResolvedValue({ data: { importCollaboraDocument: { id: 'contribution-8' } } });
+
+    render(<DocumentContributionAddConnector {...baseProps} />);
+
+    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const file = new File(['x'], 'report.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    });
+    await user.upload(fileInput, file);
+
+    // The user clears the default title after staging a file — the Create button
+    // must stay enabled, and the upload must omit `displayName` so the server
+    // falls back to the uploaded file name.
+    await user.clear(screen.getByLabelText('callout.documentNameLabel'));
+
+    await user.click(screen.getByRole('button', { name: 'dialogs.create' }));
+
+    await waitFor(() => expect(importDocumentMock).toHaveBeenCalledTimes(1));
+    expect(importDocumentMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          file,
+          uploadData: { calloutID: 'callout-1' },
+        },
+      })
+    );
+    expect(createDocumentMock).not.toHaveBeenCalled();
+  });
 });

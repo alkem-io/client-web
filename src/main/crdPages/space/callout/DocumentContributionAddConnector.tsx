@@ -10,6 +10,7 @@ import type { AuthorizationPrivilege, CollaboraDocumentType } from '@/core/apoll
 import { error as logError } from '@/core/logging/sentry/log';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
@@ -96,7 +97,10 @@ export function DocumentContributionAddConnector({
     setDialogOpen(true);
   };
 
-  const handleClose = () => {
+  // Direct close with no discard prompt — used by the success paths (the user's
+  // input has been committed, so there is nothing to lose). Cancel / Esc / overlay /
+  // X route through the guard's `requestClose`/`handleOpenChange` instead.
+  const closeDialog = () => {
     setDialogOpen(false);
   };
 
@@ -149,7 +153,7 @@ export function DocumentContributionAddConnector({
           awaitRefetchQueries: true,
         });
         onCreated?.();
-        handleClose();
+        closeDialog();
         const createdContributionId = data?.importCollaboraDocument.id;
         if (createdContributionId) setEditingContributionId(createdContributionId);
       } catch (err) {
@@ -195,7 +199,7 @@ export function DocumentContributionAddConnector({
         awaitRefetchQueries: true,
       });
       onCreated?.();
-      handleClose();
+      closeDialog();
       const createdContributionId = data?.createContributionOnCallout.id;
       if (createdContributionId) setEditingContributionId(createdContributionId);
     } catch (err) {
@@ -212,15 +216,20 @@ export function DocumentContributionAddConnector({
     }
   });
 
+  // The user has authored something worth guarding once they staged a file or
+  // changed the title away from its default. Route every close affordance
+  // (Cancel, Esc, overlay click, the X control) through the discard-confirm guard.
+  const isDirty = file !== null || trimmedName !== fallbackName;
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty,
+    onClose: closeDialog,
+    blockClose: submitting,
+  });
+
   return (
     <>
       {!inlineTrigger && <ContributionAddCard label={t('callout.addDocument')} icon={FileText} onClick={handleOpen} />}
-      <Dialog
-        open={dialogOpen}
-        onOpenChange={open => {
-          if (!open) handleClose();
-        }}
-      >
+      <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col overflow-hidden" closeLabel={t('a11y.close')}>
           <DialogHeader className="shrink-0">
             <DialogTitle>{t('callout.createDocument')}</DialogTitle>
@@ -257,15 +266,16 @@ export function DocumentContributionAddConnector({
             />
           </div>
           <DialogFooter className="shrink-0">
-            <Button variant="outline" onClick={handleClose} disabled={submitting}>
+            <Button variant="outline" onClick={requestClose} disabled={submitting}>
               {t('dialogs.cancel')}
             </Button>
-            <Button onClick={handleSubmit} disabled={!trimmedName || submitting} aria-busy={submitting}>
+            <Button onClick={handleSubmit} disabled={submitting || (!file && !trimmedName)} aria-busy={submitting}>
               {t('dialogs.create')}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {guardElement}
       {editingContributionId && (
         <DocumentContributionConnector
           open={true}
