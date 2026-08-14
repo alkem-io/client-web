@@ -171,6 +171,20 @@ const buildUser = (
   commentReply: channel(type, property, 'commentReply', value, server?.commentReply),
   mentioned: channel(type, property, 'mentioned', value, server?.mentioned),
   messageReceived: channel(type, property, 'messageReceived', value, server?.messageReceived),
+  conversationMessageDirect: channel(
+    type,
+    property,
+    'conversationMessageDirect',
+    value,
+    server?.conversationMessageDirect
+  ),
+  conversationMessageGroup: channel(
+    type,
+    property,
+    'conversationMessageGroup',
+    value,
+    server?.conversationMessageGroup
+  ),
   membership: {
     spaceCommunityInvitationReceived: channel(
       type,

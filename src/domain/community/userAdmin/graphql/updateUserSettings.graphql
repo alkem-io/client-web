@@ -29,6 +29,16 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             inApp
             push
           }
+          conversationMessageDirect {
+            email
+            inApp
+            push
+          }
+          conversationMessageGroup {
+            email
+            inApp
+            push
+          }
           membership {
             spaceCommunityInvitationReceived {
               email
