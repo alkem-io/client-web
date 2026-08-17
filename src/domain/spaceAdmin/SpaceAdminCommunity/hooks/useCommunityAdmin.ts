@@ -105,6 +105,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     assignRoleToVirtualContributor,
     removeRoleFromVirtualContributor,
     loading,
+    errored: erroredMembers,
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: RELEVANT_ROLES.Community,
@@ -247,7 +248,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     },
     permissions,
     loading: loading || loadingApplicationsAndInvitations,
-    errored: erroredApplicationsAndInvitations,
+    errored: erroredMembers || erroredApplicationsAndInvitations,
   };
 };
 
