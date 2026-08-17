@@ -67,13 +67,43 @@ describe('normalizeEmailCell', () => {
     expect(normalizeEmailCell(null)).toBe('');
   });
 
-  it('C1: sentinel literal never appears in CSV output', () => {
+  it('C1: sentinel literal never appears in CSV output (email cell)', () => {
     const rows: MemberExportRow[] = [
       { displayName: 'Alice', email: 'not accessible' },
       { displayName: 'Bob', email: 'NOT ACCESSIBLE' },
     ];
     const csv = buildMembersCsv(rows);
-    expect(csv.toLowerCase()).not.toContain('not accessible');
+    // Email sentinel blanked — only the word in the header remains
+    const parsed = parseCsv(csv);
+    expect(parsed[1][1]).toBe(''); // email cell for Alice
+    expect(parsed[2][1]).toBe(''); // email cell for Bob
+  });
+
+  it('A: non-email cells with sentinel text round-trip verbatim (not blanked)', () => {
+    const rows: MemberExportRow[] = [
+      { displayName: 'Not Accessible', email: 'user@example.com' },
+      { displayName: 'not accessible ', email: undefined },
+    ];
+    const csv = buildMembersCsv(rows);
+    const parsed = parseCsv(csv);
+    // displayName cells must NOT be blanked — sentinel is email-scoped only
+    expect(parsed[1][0]).toBe('Not Accessible');
+    expect(parsed[2][0]).toBe('not accessible ');
+  });
+
+  it('A: application answer with sentinel text round-trips verbatim (not blanked)', () => {
+    const apps: ApplicationExportRow[] = [
+      {
+        displayName: 'Charlie',
+        email: 'charlie@example.com',
+        questions: [{ name: 'Motivation', value: 'Not Accessible' }],
+        createdDate: '2026-01-01T00:00:00.000Z',
+      },
+    ];
+    const csv = buildApplicationsCsv(apps);
+    const parsed = parseCsv(csv);
+    const motivationIdx = parsed[0].indexOf('Motivation');
+    expect(parsed[1][motivationIdx]).toBe('Not Accessible');
   });
 });
 
@@ -209,6 +239,31 @@ describe('buildApplicationsCsv', () => {
     const parsed = parseCsv(csv);
     expect(parsed.length).toBe(1);
     expect(parsed[0]).toEqual(['displayName', 'email', 'createdDate']);
+  });
+
+  it('C: questions with names differing only in whitespace collapse to one column', () => {
+    const apps: ApplicationExportRow[] = [
+      {
+        displayName: 'Alice',
+        email: 'a@x.com',
+        questions: [{ name: 'Motivation', value: 'A motivation' }],
+        createdDate: '2026-01-01T00:00:00.000Z',
+      },
+      {
+        displayName: 'Bob',
+        email: 'b@x.com',
+        questions: [{ name: 'Motivation ', value: 'B motivation' }],
+        createdDate: '2026-01-02T00:00:00.000Z',
+      },
+    ];
+    const csv = buildApplicationsCsv(apps);
+    const parsed = parseCsv(csv);
+    // Only one 'Motivation' column in the header (trimmed)
+    expect(parsed[0].filter(h => h === 'Motivation').length).toBe(1);
+    const motivationIdx = parsed[0].indexOf('Motivation');
+    expect(motivationIdx).toBeGreaterThan(-1);
+    expect(parsed[1][motivationIdx]).toBe('A motivation');
+    expect(parsed[2][motivationIdx]).toBe('B motivation');
   });
 
   it('C8: ISO createdDate passthrough', () => {

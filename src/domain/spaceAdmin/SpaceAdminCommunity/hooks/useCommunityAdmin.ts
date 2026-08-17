@@ -78,6 +78,7 @@ export interface useCommunityAdminProvided {
     canAddVirtualContributorsFromAccount: boolean;
   };
   loading: boolean;
+  errored: boolean;
 }
 
 export interface CommunityMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
@@ -184,6 +185,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     deleteInvitation,
     deletePlatformInvitation,
     loading: loadingApplicationsAndInvitations,
+    errored: erroredApplicationsAndInvitations,
   } = useRoleSetApplicationsAndInvitations({
     roleSetId,
   });
@@ -245,6 +247,7 @@ const useCommunityAdmin = ({ roleSetId }: useCommunityAdminParams): useCommunity
     },
     permissions,
     loading: loading || loadingApplicationsAndInvitations,
+    errored: erroredApplicationsAndInvitations,
   };
 };
 

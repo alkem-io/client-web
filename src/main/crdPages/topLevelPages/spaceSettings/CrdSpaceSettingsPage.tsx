@@ -197,6 +197,7 @@ export default function CrdSpaceSettingsPage() {
     applications: community.applications,
     spaceDisplayName: spaceContext.about.profile.displayName,
     loading: community.loading,
+    errored: community.errored,
   });
   const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 

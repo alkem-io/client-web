@@ -55,22 +55,37 @@ describe('useCommunityCsvExport', () => {
     vi.clearAllMocks();
   });
 
-  it('exportDisabled follows loading', () => {
+  it('exportDisabled is true when loading', () => {
     const result = useCommunityCsvExport({
       members: [],
       applications: [],
       spaceDisplayName: 'My Space',
       loading: true,
+      errored: false,
     });
     expect(result.exportDisabled).toBe(true);
+  });
 
-    const result2 = useCommunityCsvExport({
+  it('exportDisabled is true when errored', () => {
+    const result = useCommunityCsvExport({
       members: [],
       applications: [],
       spaceDisplayName: 'My Space',
       loading: false,
+      errored: true,
     });
-    expect(result2.exportDisabled).toBe(false);
+    expect(result.exportDisabled).toBe(true);
+  });
+
+  it('exportDisabled is false only when loaded and not errored', () => {
+    const result = useCommunityCsvExport({
+      members: [],
+      applications: [],
+      spaceDisplayName: 'My Space',
+      loading: false,
+      errored: false,
+    });
+    expect(result.exportDisabled).toBe(false);
   });
 
   it('members mapping: displayName and email passed through', () => {
@@ -80,6 +95,7 @@ describe('useCommunityCsvExport', () => {
       applications: [],
       spaceDisplayName: 'My Space',
       loading: false,
+      errored: false,
     });
 
     result.exportMembers();
@@ -95,6 +111,7 @@ describe('useCommunityCsvExport', () => {
       applications,
       spaceDisplayName: 'Test Space',
       loading: false,
+      errored: false,
     });
 
     result.exportApplications();
@@ -109,20 +126,21 @@ describe('useCommunityCsvExport', () => {
     expect(downloadCsv).toHaveBeenCalled();
   });
 
-  it('exportApplications: missing user → falls back to actor profile email', () => {
+  it('D: missing user → email is undefined (actor profile email no longer used as fallback)', () => {
     const app = makeApplication({ user: undefined });
     const result = useCommunityCsvExport({
       members: [],
       applications: [app],
       spaceDisplayName: 'Test Space',
       loading: false,
+      errored: false,
     });
 
     result.exportApplications();
 
     expect(buildApplicationsCsv).toHaveBeenCalledWith([
       expect.objectContaining({
-        email: 'bob@example.com', // falls back to actor.profile.email
+        email: undefined, // user absent → no fallback to actor.profile.email
       }),
     ]);
   });
@@ -143,6 +161,7 @@ describe('useCommunityCsvExport', () => {
       applications: [app],
       spaceDisplayName: 'Test Space',
       loading: false,
+      errored: false,
     });
 
     result.exportApplications();
@@ -161,6 +180,7 @@ describe('useCommunityCsvExport', () => {
       applications: [],
       spaceDisplayName: 'My Space',
       loading: false,
+      errored: false,
     });
 
     result.exportMembers();

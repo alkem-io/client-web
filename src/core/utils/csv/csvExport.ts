@@ -34,10 +34,9 @@ function quoteCell(v: string): string {
   return v;
 }
 
-/** Full pipeline for a single cell: normalize → neutralize → quote. */
+/** Full pipeline for a single cell: neutralize → quote. Email sentinel normalization is email-scoped only. */
 function processCell(v: string | null | undefined): string {
-  const normalized = normalizeEmailCell(v);
-  const neutralized = neutralize(normalized);
+  const neutralized = neutralize(v ?? '');
   return quoteCell(neutralized);
 }
 
@@ -53,7 +52,7 @@ export function toCsv(header: string[], rows: string[][]): string {
 /** Build a CSV export of space members. */
 export function buildMembersCsv(rows: MemberExportRow[]): string {
   const header = ['displayName', 'email'];
-  const dataRows = rows.map(r => [r.displayName, r.email ?? '']);
+  const dataRows = rows.map(r => [r.displayName, normalizeEmailCell(r.email)]);
   return toCsv(header, dataRows);
 }
 
@@ -63,14 +62,16 @@ export function buildMembersCsv(rows: MemberExportRow[]): string {
  * Within-app duplicate question names: last value wins.
  */
 export function buildApplicationsCsv(rows: ApplicationExportRow[]): string {
-  // Collect all unique question names in first-encounter order (across all apps)
+  // Collect all unique question names in first-encounter order (across all apps).
+  // Trim whitespace from question names so near-identical texts collapse to one column.
   const questionNames: string[] = [];
   const questionNameSet = new Set<string>();
   for (const app of rows) {
     for (const q of app.questions) {
-      if (!questionNameSet.has(q.name)) {
-        questionNameSet.add(q.name);
-        questionNames.push(q.name);
+      const trimmedName = q.name.trim();
+      if (!questionNameSet.has(trimmedName)) {
+        questionNameSet.add(trimmedName);
+        questionNames.push(trimmedName);
       }
     }
   }
@@ -78,13 +79,14 @@ export function buildApplicationsCsv(rows: ApplicationExportRow[]): string {
   const header = ['displayName', 'email', ...questionNames, 'createdDate'];
 
   const dataRows = rows.map(app => {
-    // Build a map of question name → last value for this app
+    // Build a map of trimmed question name → last value for this app.
+    // Keying on the trimmed name matches the header column identity established above.
     const qMap = new Map<string, string>();
     for (const q of app.questions) {
-      qMap.set(q.name, q.value);
+      qMap.set(q.name.trim(), q.value);
     }
     const questionValues = questionNames.map(name => qMap.get(name) ?? '');
-    return [app.displayName, app.email ?? '', ...questionValues, app.createdDate];
+    return [app.displayName, normalizeEmailCell(app.email), ...questionValues, app.createdDate];
   });
 
   return toCsv(header, dataRows);

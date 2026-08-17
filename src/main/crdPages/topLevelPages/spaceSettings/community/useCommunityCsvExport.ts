@@ -8,6 +8,7 @@ type UseCommunityCsvExportParams = {
   applications: ApplicationModel[];
   spaceDisplayName: string | undefined;
   loading: boolean;
+  errored: boolean;
 };
 
 type UseCommunityCsvExportResult = {
@@ -21,8 +22,9 @@ export function useCommunityCsvExport({
   applications,
   spaceDisplayName,
   loading,
+  errored,
 }: UseCommunityCsvExportParams): UseCommunityCsvExportResult {
-  const exportDisabled = loading;
+  const exportDisabled = loading || errored;
 
   const exportMembers = () => {
     const rows = members.map(m => ({
@@ -37,7 +39,7 @@ export function useCommunityCsvExport({
   const exportApplications = () => {
     const rows = applications.map(app => ({
       displayName: app.actor.profile?.displayName ?? '',
-      email: app.user?.email ?? app.actor.profile?.email,
+      email: app.user?.email,
       questions: (app.questions ?? []).map(q => ({ name: q.name, value: q.value })),
       createdDate: app.createdDate instanceof Date ? app.createdDate.toISOString() : String(app.createdDate ?? ''),
     }));

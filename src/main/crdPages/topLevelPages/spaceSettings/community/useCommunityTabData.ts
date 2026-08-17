@@ -71,6 +71,7 @@ export type UseCommunityTabDataResult = {
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
   loading: boolean;
+  errored: boolean;
   pendingRemoval: CommunityPendingRemoval | null;
   confirmRemoval: () => Promise<void>;
   cancelRemoval: () => void;
@@ -368,6 +369,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
     getMemberFirstName,
     viewerId: userModel?.id,
     loading: community.loading,
+    errored: community.errored,
     pendingRemoval,
     confirmRemoval,
     cancelRemoval,
