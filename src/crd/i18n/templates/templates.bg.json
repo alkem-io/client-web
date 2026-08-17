@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Шаблони за указания на общността",
         "subtitle": "Правила и очаквания за общност."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -101,6 +105,10 @@
       "title": "Заглавие на указанията",
       "body": "Указания",
       "references": "Препратки"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "values": "Values"
     }
   },
   "picker": {
@@ -129,14 +137,16 @@
       "callout": "Създаване на шаблон за инструмент за сътрудничество",
       "whiteboard": "Създаване на шаблон за бяла дъска",
       "post": "Създаване на шаблон за публикация",
-      "communityGuidelines": "Създаване на шаблон за указания на общността"
+      "communityGuidelines": "Създаване на шаблон за указания на общността",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Редактиране на шаблон за пространство",
       "callout": "Редактиране на шаблон за инструмент за сътрудничество",
       "whiteboard": "Редактиране на шаблон за бяла дъска",
       "post": "Редактиране на шаблон за публикация",
-      "communityGuidelines": "Редактиране на шаблон за указания на общността"
+      "communityGuidelines": "Редактиране на шаблон за указания на общността",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Име на шаблон",
@@ -192,6 +202,21 @@
       "body": "Указания",
       "bodyPlaceholder": "Напишете указанията за тази общност…",
       "references": "Препратки"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "cardinalitySingle": "Single-select (one value)",
+      "cardinalityMulti": "Multi-select (one or more values)",
+      "values": "Values",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value."
     }
   },
   "references": {
@@ -344,7 +369,8 @@
         "callout": "Инструменти за сътрудничество",
         "whiteboard": "Бели дъски",
         "post": "Публикации",
-        "communityGuidelines": "Правила на общността"
+        "communityGuidelines": "Правила на общността",
+        "classification": "Classifications"
       },
       "summary": "{{first}} и още {{count}}",
       "pair": "{{first}} и {{second}}"

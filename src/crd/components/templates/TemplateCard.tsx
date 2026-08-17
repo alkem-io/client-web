@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
   Pencil,
   PenTool,
+  Tags,
   Trash2,
   Users,
 } from 'lucide-react';
@@ -32,6 +33,7 @@ const TYPE_ICON: Record<TemplateType, React.ElementType> = {
   whiteboard: PenTool,
   post: FileText,
   communityGuidelines: BookText,
+  classification: Tags,
 };
 
 export type TemplateCardProps = {

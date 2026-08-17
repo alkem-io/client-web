@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Plantillas de pautas de la comunidad",
         "subtitle": "Reglas y expectativas para una comunidad."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -101,6 +105,10 @@
       "title": "Título de las pautas",
       "body": "Pautas",
       "references": "Referencias"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "values": "Values"
     }
   },
   "picker": {
@@ -129,14 +137,16 @@
       "callout": "Crear plantilla de herramienta de colaboración",
       "whiteboard": "Crear plantilla de pizarra",
       "post": "Crear plantilla de publicación",
-      "communityGuidelines": "Crear plantilla de pautas de la comunidad"
+      "communityGuidelines": "Crear plantilla de pautas de la comunidad",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Editar plantilla de espacio",
       "callout": "Editar plantilla de herramienta de colaboración",
       "whiteboard": "Editar plantilla de pizarra",
       "post": "Editar plantilla de publicación",
-      "communityGuidelines": "Editar plantilla de pautas de la comunidad"
+      "communityGuidelines": "Editar plantilla de pautas de la comunidad",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Nombre de plantilla",
@@ -192,6 +202,21 @@
       "body": "Pautas",
       "bodyPlaceholder": "Escribe las pautas para esta comunidad…",
       "references": "Referencias"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "cardinalitySingle": "Single-select (one value)",
+      "cardinalityMulti": "Multi-select (one or more values)",
+      "values": "Values",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value."
     }
   },
   "references": {
@@ -344,7 +369,8 @@
         "callout": "Herramientas de colaboración",
         "whiteboard": "Pizarras",
         "post": "Publicaciones",
-        "communityGuidelines": "Normas de la comunidad"
+        "communityGuidelines": "Normas de la comunidad",
+        "classification": "Classifications"
       },
       "summary": "{{first}} y {{count}} más",
       "pair": "{{first}} y {{second}}"

@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Templates voor community richtlijnen",
         "subtitle": "Regels en verwachtingen voor een community."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -101,6 +105,10 @@
       "title": "Titel richtlijnen",
       "body": "Richtlijnen",
       "references": "Referenties"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "values": "Values"
     }
   },
   "picker": {
@@ -129,14 +137,16 @@
       "callout": "Samenwerkingstool-template maken",
       "whiteboard": "Whiteboard-template maken",
       "post": "Post-template maken",
-      "communityGuidelines": "Template voor community richtlijnen maken"
+      "communityGuidelines": "Template voor community richtlijnen maken",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Space-template bewerken",
       "callout": "Samenwerkingstool-template bewerken",
       "whiteboard": "Whiteboard-template bewerken",
       "post": "Post-template bewerken",
-      "communityGuidelines": "Template voor community richtlijnen bewerken"
+      "communityGuidelines": "Template voor community richtlijnen bewerken",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Template-naam",
@@ -192,6 +202,21 @@
       "body": "Richtlijnen",
       "bodyPlaceholder": "Schrijf de richtlijnen voor deze community…",
       "references": "Referenties"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "cardinalitySingle": "Single-select (one value)",
+      "cardinalityMulti": "Multi-select (one or more values)",
+      "values": "Values",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value."
     }
   },
   "references": {
@@ -344,7 +369,8 @@
         "callout": "Samenwerkingstools",
         "whiteboard": "Whiteboards",
         "post": "Posts",
-        "communityGuidelines": "Communityrichtlijnen"
+        "communityGuidelines": "Communityrichtlijnen",
+        "classification": "Classifications"
       },
       "summary": "{{first}} en {{count}} meer",
       "pair": "{{first}} en {{second}}"

@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Modèles de directives communautaires",
         "subtitle": "Règles et attentes pour une communauté."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -101,6 +105,10 @@
       "title": "Titre des directives",
       "body": "Directives",
       "references": "Références"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "values": "Values"
     }
   },
   "picker": {
@@ -129,14 +137,16 @@
       "callout": "Créer un modèle d’outil de collaboration",
       "whiteboard": "Créer un modèle de tableau blanc",
       "post": "Créer un modèle de publication",
-      "communityGuidelines": "Créer un modèle de directives communautaires"
+      "communityGuidelines": "Créer un modèle de directives communautaires",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Modifier un modèle d’espace",
       "callout": "Modifier un modèle d’outil de collaboration",
       "whiteboard": "Modifier un modèle de tableau blanc",
       "post": "Modifier un modèle de publication",
-      "communityGuidelines": "Modifier un modèle de directives communautaires"
+      "communityGuidelines": "Modifier un modèle de directives communautaires",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Nom du modèle",
@@ -192,6 +202,21 @@
       "body": "Directives",
       "bodyPlaceholder": "Écrivez les directives pour cette communauté…",
       "references": "Références"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "cardinalitySingle": "Single-select (one value)",
+      "cardinalityMulti": "Multi-select (one or more values)",
+      "values": "Values",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value."
     }
   },
   "references": {
@@ -344,7 +369,8 @@
         "callout": "Outils de collaboration",
         "whiteboard": "Tableaux blancs",
         "post": "Publications",
-        "communityGuidelines": "Règles de la communauté"
+        "communityGuidelines": "Règles de la communauté",
+        "classification": "Classifications"
       },
       "summary": "{{first}} et {{count}} de plus",
       "pair": "{{first}} et {{second}}"

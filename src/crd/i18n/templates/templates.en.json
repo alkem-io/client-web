@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Community guidelines templates",
         "subtitle": "Rules and expectations for a community."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -101,6 +105,10 @@
       "title": "Guidelines title",
       "body": "Guidelines",
       "references": "References"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "values": "Values"
     }
   },
   "picker": {
@@ -129,14 +137,16 @@
       "callout": "Create collaboration-tool template",
       "whiteboard": "Create whiteboard template",
       "post": "Create post template",
-      "communityGuidelines": "Create community-guidelines template"
+      "communityGuidelines": "Create community-guidelines template",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Edit space template",
       "callout": "Edit collaboration-tool template",
       "whiteboard": "Edit whiteboard template",
       "post": "Edit post template",
-      "communityGuidelines": "Edit community-guidelines template"
+      "communityGuidelines": "Edit community-guidelines template",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Template name",
@@ -192,6 +202,21 @@
       "body": "Guidelines",
       "bodyPlaceholder": "Write the guidelines for this community…",
       "references": "References"
+    },
+    "classification": {
+      "cardinality": "Cardinality",
+      "cardinalitySingle": "Single-select (one value)",
+      "cardinalityMulti": "Multi-select (one or more values)",
+      "values": "Values",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value."
     }
   },
   "references": {
@@ -344,7 +369,8 @@
         "callout": "Collaboration tools",
         "whiteboard": "Whiteboards",
         "post": "Posts",
-        "communityGuidelines": "Community guidelines"
+        "communityGuidelines": "Community guidelines",
+        "classification": "Classifications"
       },
       "summary": "{{first}} and {{count}} more",
       "pair": "{{first}} and {{second}}"

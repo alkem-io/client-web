@@ -30,6 +30,8 @@ export function mapGqlTemplateType(gql: GqlTemplateType): TemplateType {
       return 'post';
     case GqlTemplateType.CommunityGuidelines:
       return 'communityGuidelines';
+    case GqlTemplateType.Classification:
+      return 'classification';
     default:
       // Should be exhaustive; fall back to 'callout' for unknown future enum members.
       return 'callout';
@@ -49,6 +51,8 @@ export function toGqlTemplateType(type: TemplateType): GqlTemplateType {
       return GqlTemplateType.Post;
     case 'communityGuidelines':
       return GqlTemplateType.CommunityGuidelines;
+    case 'classification':
+      return GqlTemplateType.Classification;
   }
 }
 

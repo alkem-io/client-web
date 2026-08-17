@@ -9,6 +9,7 @@
  */
 
 import type { ReactNode } from 'react';
+import type { ClassificationCardinality, ClassificationValueData } from '@/crd/components/classification/types';
 import type { FramingChip } from '@/crd/forms/callout/types';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 
@@ -17,7 +18,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 // ---------------------------------------------------------------------------
 
 /** String-union template type used everywhere in CRD (NOT the GraphQL `TemplateType` enum). */
-export type TemplateType = 'space' | 'callout' | 'whiteboard' | 'post' | 'communityGuidelines';
+export type TemplateType = 'space' | 'callout' | 'whiteboard' | 'post' | 'communityGuidelines' | 'classification';
 
 type ContributionType = 'post' | 'whiteboard' | 'link' | 'memo';
 
@@ -28,6 +29,7 @@ export const TEMPLATE_TYPE_ORDER: readonly TemplateType[] = [
   'whiteboard',
   'post',
   'communityGuidelines',
+  'classification',
 ] as const;
 
 /**
@@ -179,6 +181,12 @@ export type TemplateContent =
       /** markdown */
       guidelinesMarkdown: string;
       references: ReferenceRow[];
+    }
+  | {
+      type: 'classification';
+      cardinality: ClassificationCardinality;
+      /** The value set, in authored order — never re-sorted (FR-002b). */
+      values: ClassificationValueData[];
     };
 
 export type TemplateContentPreviewProps = {
@@ -264,12 +272,27 @@ export type CommunityGuidelinesTemplateValues = TemplateCommonValues & {
   references: ReferenceRow[];
 };
 
+/**
+ * A value row as authored in the form: `id` is the OPTIONAL override
+ * (FR-002c) — the UI must not require it, so leaving it blank is the normal
+ * path and the id is slugified from `label` server-side.
+ */
+export type ClassificationTemplateValueRow = { id?: string; label: string };
+
+export type ClassificationTemplateValues = TemplateCommonValues & {
+  type: 'classification';
+  cardinality: ClassificationCardinality;
+  /** Authored order, preserved verbatim — never re-sorted (FR-002b). */
+  values: ClassificationTemplateValueRow[];
+};
+
 export type TemplateFormValues =
   | CalloutTemplateValues
   | WhiteboardTemplateValues
   | PostTemplateValues
   | SpaceTemplateValues
-  | CommunityGuidelinesTemplateValues;
+  | CommunityGuidelinesTemplateValues
+  | ClassificationTemplateValues;
 
 /** Per-field validation errors (any subset of the form's keys, plus indexed keys for list rows). */
 export type TemplateFormErrors = Partial<Record<string, string>>;
@@ -314,6 +337,12 @@ export type CommunityGuidelinesTemplateFormProps = {
   /** `accept` attribute for the references file picker. */
   referenceUploadAccept?: string;
 } & MarkdownUploadProps;
+export type ClassificationTemplateFormProps = {
+  value: ClassificationTemplateValues;
+  errors: TemplateFormErrors;
+  onChange: (next: ClassificationTemplateValues) => void;
+};
+
 export type SpaceTemplateFormProps = {
   value: SpaceTemplateValues;
   errors: TemplateFormErrors;
