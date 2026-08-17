@@ -361,6 +361,7 @@
       "helpBanner": "Bewerk je meldingsvoorkeuren. Wijzigingen worden automatisch opgeslagen.",
       "toggleAria": "Schakel {{channel}}-melding voor: {{label}}",
       "toggleError": "Voorkeur niet opgeslagen — probeer opnieuw",
+      "inAppLockedChat": "Chatberichten verschijnen al direct in het chatpaneel, dus voor deze rij worden geen in-app-meldingen verzonden",
       "columns": {
         "activity": "Activiteit",
         "inApp": "In-app",
@@ -433,6 +434,8 @@
           "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",
           "mentioned": "Krijg een melding wanneer ik word vermeld",
           "messageReceived": "Krijg een melding wanneer iemand mij een direct bericht stuurt",
+          "conversationMessageDirect": "Krijg een melding wanneer iemand mij een direct (1-op-1) chatbericht stuurt",
+          "conversationMessageGroup": "Krijg een melding wanneer iemand een bericht plaatst in een groepschat waarvan ik lid ben",
           "membershipInvitationReceived": "Krijg een melding wanneer iemand mij uitnodigt om lid te worden van een community",
           "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space"
         },

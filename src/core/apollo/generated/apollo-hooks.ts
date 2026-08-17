@@ -1842,6 +1842,16 @@ export const UserSettingsFragmentFragmentDoc = gql`
         inApp
         push
       }
+      conversationMessageDirect {
+        email
+        inApp
+        push
+      }
+      conversationMessageGroup {
+        email
+        inApp
+        push
+      }
     }
     virtualContributor {
       adminSpaceCommunityInvitation {
@@ -8372,6 +8382,7 @@ export const CreateCollaboraDocumentOnCalloutDocument = gql`
   createContributionOnCallout(
     contributionData: {calloutID: $calloutId, type: COLLABORA_DOCUMENT, collaboraDocument: $collaboraDocument}
   ) {
+    id
     collaboraDocument {
       id
       documentType
@@ -15189,6 +15200,16 @@ export const UpdateUserSettingsDocument = gql`
             push
           }
           messageReceived {
+            email
+            inApp
+            push
+          }
+          conversationMessageDirect {
+            email
+            inApp
+            push
+          }
+          conversationMessageGroup {
             email
             inApp
             push

@@ -321,7 +321,7 @@
       },
       "addDialog": {
         "title": "Ajouter une organisation",
-        "description": "Choisissez une organisation dont les membres peuvent rejoindre cet espace sans approbation.",
+        "description": "Ces organisations seront visibles en tant que membres dans ce Space et sur leur profil d'organisation.",
         "search": "Rechercher des organisations…",
         "empty": "Aucune organisation ne correspond à votre recherche."
       }

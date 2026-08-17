@@ -198,6 +198,8 @@
     "documentPresentation": "Презентация",
     "addDocument": "Добави документ",
     "defaultDocumentName": "Нов документ",
+    "createDocument": "Създай нов документ",
+    "documentNameLabel": "Заглавие на документа",
     "documentTypeLabel": "Тип документ",
     "createNew": "Създай нов",
     "documentImportOr": "или",
