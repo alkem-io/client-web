@@ -638,6 +638,12 @@ export type AddVisualToMediaGalleryInput = {
   visualType: VisualType;
 };
 
+export type AdminRevokeMcpApiKeyInput = {
+  keyID: Scalars['UUID']['input'];
+  /** Owner of the key. Required — it scopes the revoke and the audit subject. */
+  userID: Scalars['UUID']['input'];
+};
+
 export type AdminUserEmailChangeDriftResolveInput = {
   /** The admin-chosen canonical email. MUST equal either the old or new email recorded on the drift_detected audit entry. Both sides are force-aligned to this value. */
   canonicalEmail: Scalars['String']['input'];
@@ -4625,6 +4631,46 @@ export type LookupQueryResultsWhiteboardArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+/** Metadata for one MCP API key. The key value itself is never exposed here. */
+export type McpApiKey = {
+  __typename?: 'McpApiKey';
+  createdDate: Scalars['DateTime']['output'];
+  /** Optional expiry chosen at mint. */
+  expiresAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['UUID']['output'];
+  /** When this key last authenticated a request. */
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** Source address of the last request this key authenticated. */
+  lastUsedFromIp?: Maybe<Scalars['String']['output']>;
+  /** User-supplied label. Not unique. */
+  name: Scalars['String']['output'];
+  /** Granted operations, flattened from the stored scope. */
+  operations: Array<McpApiKeyOperation>;
+  status: McpApiKeyStatus;
+};
+
+/** Result of minting a key. The only place the plaintext is ever returned. */
+export type McpApiKeyMintResult = {
+  __typename?: 'McpApiKeyMintResult';
+  /** The plaintext key. Returned EXACTLY ONCE — it is not stored and cannot be re-derived. */
+  apiKey: Scalars['String']['output'];
+  /** Metadata for the key just created. */
+  key: McpApiKey;
+};
+
+/** Operations an MCP API key may perform. */
+export enum McpApiKeyOperation {
+  Read = 'READ',
+  Tools = 'TOOLS',
+}
+
+/** Lifecycle status of an MCP API key. REVOKED takes precedence over EXPIRED. */
+export enum McpApiKeyStatus {
+  Active = 'ACTIVE',
+  Expired = 'EXPIRED',
+  Revoked = 'REVOKED',
+}
+
 export type MeConversationsResult = {
   __typename?: 'MeConversationsResult';
   /** All conversations (direct and group) for the current authenticated user. Client handles categorization by room type and member actor types. */
@@ -4643,6 +4689,8 @@ export type MeQueryResults = {
   conversations: MeConversationsResult;
   /** The query id */
   id: Scalars['String']['output'];
+  /** The current user's MCP API keys, newest first. Includes revoked and expired keys so last-used evidence survives revocation. */
+  mcpApiKeys: Array<McpApiKey>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** Get all notifications for the logged in user. */
@@ -4824,6 +4872,15 @@ export enum MimeType {
   Xpng = 'XPNG',
 }
 
+export type MintMcpApiKeyInput = {
+  /** Optional expiry. MUST be in the future when supplied. */
+  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Label for the key. 1..128 characters after trimming. */
+  name: Scalars['String']['input'];
+  /** At least one operation. Duplicates are removed; order is not significant. */
+  operations: Array<McpApiKeyOperation>;
+};
+
 export type ModelCardAiEngineResult = {
   __typename?: 'ModelCardAiEngineResult';
   /** Access to detailed information on the underlying models specifications */
@@ -4930,6 +4987,8 @@ export type Mutation = {
   adminLicensePolicyDeleteCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Updates a CredentialRule on the LicensePolicy. */
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
+  /** Platform admin: revoke a named user's MCP API key. Idempotent. */
+  adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String']['output'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
@@ -5128,6 +5187,8 @@ export type Mutation = {
   markNotificationsAsRead: Scalars['Boolean']['output'];
   /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
+  /** Mint a new MCP API key for the current user. Returns the plaintext exactly once. */
+  mintMcpApiKey: McpApiKeyMintResult;
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
   /** Move an L1 subspace to a different L0 space. The subspace remains at level 1       but changes parent. All content moves with it. All community memberships are cleared.       Requires platform admin privileges. */
@@ -5190,6 +5251,8 @@ export type Mutation = {
   revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
   revokeLicensePlanFromSpace: Space;
+  /** Revoke one of the current user's own MCP API keys. Idempotent. */
+  revokeMcpApiKey: McpApiKey;
   /** Send a private (1:1) chat message to each of the given Users individually. Does NOT create a group conversation. Each recipient is processed independently and reported on; partial success is possible. */
   sendDirectMessageToUsers: Array<DirectMessageDeliveryResult>;
   /** Sends a reply to a message from the specified Room. */
@@ -5390,6 +5453,10 @@ export type MutationAdminLicensePolicyDeleteCredentialRuleArgs = {
 
 export type MutationAdminLicensePolicyUpdateCredentialRuleArgs = {
   updateData: UpdateLicensePolicyCredentialRuleInput;
+};
+
+export type MutationAdminRevokeMcpApiKeyArgs = {
+  revokeData: AdminRevokeMcpApiKeyInput;
 };
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
@@ -5760,6 +5827,10 @@ export type MutationMarkNotificationsAsUnreadArgs = {
   filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
+export type MutationMintMcpApiKeyArgs = {
+  mintData: MintMcpApiKeyInput;
+};
+
 export type MutationMoveContributionToCalloutArgs = {
   moveContributionData: MoveCalloutContributionInput;
 };
@@ -5877,6 +5948,10 @@ export type MutationRevokeLicensePlanFromAccountArgs = {
 
 export type MutationRevokeLicensePlanFromSpaceArgs = {
   planData: RevokeLicensePlanFromSpace;
+};
+
+export type MutationRevokeMcpApiKeyArgs = {
+  revokeData: RevokeMcpApiKeyInput;
 };
 
 export type MutationSendDirectMessageToUsersArgs = {
@@ -6637,6 +6712,8 @@ export type PlatformAdminQueryResults = {
   innovationPacks: Array<InnovationPack>;
   /** The most recent email-change audit entry for the named subject user. Returns null if no audit entry exists. */
   latestUserEmailChangeAuditEntry?: Maybe<UserEmailChangeAuditEntry>;
+  /** MCP API keys belonging to the named user. Platform admins only. Keys bound to a system actor are never returned. */
+  mcpApiKeys: Array<McpApiKey>;
   /** Retrieve all Organizations on the Platform. This is only available to Platform Admins. */
   organizations: PaginatedOrganization;
   /** Retrieve all Spaces on the Platform. This is only available to Platform Admins. */
@@ -6656,6 +6733,10 @@ export type PlatformAdminQueryResultsInnovationPacksArgs = {
 };
 
 export type PlatformAdminQueryResultsLatestUserEmailChangeAuditEntryArgs = {
+  userID: Scalars['UUID']['input'];
+};
+
+export type PlatformAdminQueryResultsMcpApiKeysArgs = {
   userID: Scalars['UUID']['input'];
 };
 
@@ -7660,6 +7741,10 @@ export type RevokeLicensePlanFromSpace = {
   licensingID?: InputMaybe<Scalars['UUID']['input']>;
   /** The ID of the Space to assign the LicensePlan to. */
   spaceID: Scalars['UUID']['input'];
+};
+
+export type RevokeMcpApiKeyInput = {
+  keyID: Scalars['UUID']['input'];
 };
 
 export type RevokeOrganizationAuthorizationCredentialInput = {
@@ -15940,6 +16025,7 @@ export type CreateCollaboraDocumentOnCalloutMutation = {
   __typename?: 'Mutation';
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
+    id: string;
     collaboraDocument?:
       | {
           __typename?: 'CollaboraDocument';
@@ -37561,6 +37647,68 @@ export type SpaceExplorerWelcomeSpaceQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type MyMcpApiKeysQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MyMcpApiKeysQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    mcpApiKeys: Array<{
+      __typename?: 'McpApiKey';
+      id: string;
+      name: string;
+      operations: Array<McpApiKeyOperation>;
+      createdDate: Date;
+      expiresAt?: Date | undefined;
+      lastUsedAt?: Date | undefined;
+      lastUsedFromIp?: string | undefined;
+      status: McpApiKeyStatus;
+    }>;
+  };
+};
+
+export type MintMcpApiKeyMutationVariables = Exact<{
+  mintData: MintMcpApiKeyInput;
+}>;
+
+export type MintMcpApiKeyMutation = {
+  __typename?: 'Mutation';
+  mintMcpApiKey: {
+    __typename?: 'McpApiKeyMintResult';
+    apiKey: string;
+    key: {
+      __typename?: 'McpApiKey';
+      id: string;
+      name: string;
+      operations: Array<McpApiKeyOperation>;
+      createdDate: Date;
+      expiresAt?: Date | undefined;
+      lastUsedAt?: Date | undefined;
+      lastUsedFromIp?: string | undefined;
+      status: McpApiKeyStatus;
+    };
+  };
+};
+
+export type RevokeMcpApiKeyMutationVariables = Exact<{
+  revokeData: RevokeMcpApiKeyInput;
+}>;
+
+export type RevokeMcpApiKeyMutation = {
+  __typename?: 'Mutation';
+  revokeMcpApiKey: {
+    __typename?: 'McpApiKey';
+    id: string;
+    name: string;
+    operations: Array<McpApiKeyOperation>;
+    createdDate: Date;
+    expiresAt?: Date | undefined;
+    lastUsedAt?: Date | undefined;
+    lastUsedFromIp?: string | undefined;
+    status: McpApiKeyStatus;
   };
 };
 

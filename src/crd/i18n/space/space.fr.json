@@ -198,6 +198,8 @@
     "documentPresentation": "Présentation",
     "addDocument": "Ajouter un document",
     "defaultDocumentName": "Nouveau document",
+    "createDocument": "Créer un nouveau document",
+    "documentNameLabel": "Titre du document",
     "documentTypeLabel": "Type de document",
     "createNew": "Créer nouveau",
     "documentImportOr": "ou",

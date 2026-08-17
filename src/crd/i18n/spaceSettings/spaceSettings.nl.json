@@ -321,7 +321,7 @@
       },
       "addDialog": {
         "title": "Organisatie toevoegen",
-        "description": "Kies een organisatie waarvan de leden zonder goedkeuring lid kunnen worden van deze Space.",
+        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
         "search": "Organisaties zoeken…",
         "empty": "Geen organisaties komen overeen met je zoekopdracht."
       }

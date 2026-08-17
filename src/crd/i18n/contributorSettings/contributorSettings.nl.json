@@ -252,6 +252,85 @@
         "notEnabled": "Aanmelden met wachtwoord is niet ingeschakeld voor dit account.",
         "confirmLabel": "Bevestig nieuw wachtwoord",
         "mismatch": "Wachtwoorden komen niet overeen."
+      },
+      "mcpApiKeys": {
+        "title": "MCP API-sleutels",
+        "description": "Maak sleutels aan zodat externe MCP-clients (zoals Claude Desktop of Claude Code) namens jou verbinding kunnen maken met Alkemio.",
+        "empty": {
+          "title": "Nog geen API-sleutels",
+          "description": "Maak een sleutel aan om een MCP-client aan je account te koppelen.",
+          "create": "API-sleutel aanmaken"
+        },
+        "list": {
+          "name": "Naam",
+          "operations": "Bewerkingen",
+          "created": "Aangemaakt",
+          "expires": "Vervalt",
+          "neverExpires": "Vervalt nooit",
+          "lastUsed": "Laatst gebruikt",
+          "neverUsed": "Nog nooit gebruikt",
+          "lastUsedFrom": "vanaf {{address}}",
+          "status": "Status",
+          "revoke": "Intrekken"
+        },
+        "status": {
+          "active": "Actief",
+          "expired": "Verlopen",
+          "revoked": "Ingetrokken"
+        },
+        "operations": {
+          "read": "Lezen",
+          "tools": "Tools"
+        },
+        "create": {
+          "trigger": "API-sleutel aanmaken",
+          "title": "MCP API-sleutel aanmaken",
+          "description": "Kies een naam, de bewerkingen die de sleutel mag uitvoeren en een optionele vervaldatum.",
+          "nameLabel": "Naam",
+          "namePlaceholder": "bijv. Claude Desktop",
+          "operationsLabel": "Bewerkingen",
+          "operationsRequired": "Kies minstens één bewerking.",
+          "expiryLabel": "Vervaldatum (optioneel)",
+          "expiryPlaceholder": "Vervalt nooit",
+          "expiryPastError": "De vervaldatum moet in de toekomst liggen.",
+          "cancel": "Annuleren",
+          "submit": "Sleutel aanmaken",
+          "submitting": "Bezig met aanmaken…",
+          "capReachedError": "Je hebt de limiet van {{limit}} actieve API-sleutels bereikt. Trek er één in om ruimte vrij te maken.",
+          "genericError": "De API-sleutel kon niet worden aangemaakt — probeer het opnieuw."
+        },
+        "reveal": {
+          "title": "API-sleutel aangemaakt",
+          "warning": "Kopieer deze sleutel nu — je kunt hem hierna niet meer bekijken.",
+          "keyLabel": "API-sleutel",
+          "copy": "Kopiëren",
+          "copied": "Gekopieerd",
+          "copyAnnouncement": "API-sleutel gekopieerd naar het klembord.",
+          "manualCopyHint": "Klembordtoegang is niet beschikbaar — selecteer het veld hierboven en kopieer handmatig.",
+          "recipeTitle": "Verbindingsrecept",
+          "recipeEndpointLabel": "Endpoint",
+          "recipeHeaderLabel": "Header",
+          "close": "Klaar"
+        },
+        "interrupted": {
+          "title": "Sleutelwaarde niet meer beschikbaar",
+          "description": "De waarde van deze sleutel kan niet meer worden getoond. Trek hem in en maak een nieuwe aan als je nog steeds een client moet verbinden.",
+          "revokeAndRecreate": "Intrekken en nieuwe sleutel aanmaken"
+        },
+        "revoke": {
+          "title": "API-sleutel intrekken",
+          "description": "Het intrekken van \"{{name}}\" zorgt ervoor dat deze onmiddellijk niet meer kan authenticeren. Dit kan niet ongedaan worden gemaakt.",
+          "cancel": "Annuleren",
+          "confirm": "Sleutel intrekken",
+          "revoking": "Bezig met intrekken…",
+          "success": "\"{{name}}\" is ingetrokken.",
+          "error": "De sleutel kon niet worden ingetrokken — probeer het opnieuw."
+        },
+        "errors": {
+          "notFound": "Die API-sleutel kon niet worden gevonden.",
+          "loadError": "Je API-sleutels konden niet worden geladen — probeer de pagina te vernieuwen.",
+          "retry": "Opnieuw proberen"
+        }
       }
     },
     "settings": {

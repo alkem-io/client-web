@@ -226,6 +226,8 @@
     "openDocument": "Open Document",
     "addDocument": "Add document",
     "defaultDocumentName": "New Document",
+    "createDocument": "Create new document",
+    "documentNameLabel": "Document title",
     "documentTypeLabel": "Document type",
     "createNew": "Create new",
     "documentImportOr": "or",
