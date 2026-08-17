@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
+import { ClassificationRemoveConfirm } from '@/crd/components/classification/ClassificationRemoveConfirm';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -35,6 +37,7 @@ import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
+import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
@@ -190,6 +193,11 @@ export default function CrdSpaceSettingsPage() {
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
   const { space: spaceContext } = useSpace();
   const { subspace } = useSubSpace();
+  // `useSpace()` always resolves the top-level (root) Space regardless of the
+  // current route's depth, so its id IS the FR-007a "top-level Space's
+  // Template Library" target — never the immediate parent's.
+  const classificationPicker = useClassificationPicker(spaceContext.id);
+  const [pendingRemoveClassificationId, setPendingRemoveClassificationId] = useState<string | null>(null);
   const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 
   // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
@@ -410,6 +418,15 @@ export default function CrdSpaceSettingsPage() {
                   onImageUpload={md.onImageUpload}
                   iframeAllowedUrls={md.iframeAllowedUrls}
                   onError={md.onError}
+                  classifications={about.classifications}
+                  onAddClassification={classificationPicker.openPicker}
+                  onSelectClassificationValues={(entryId, selectedValueIDs) =>
+                    void about.updateClassificationSelection(entryId, selectedValueIDs)
+                  }
+                  onToggleClassificationDisplay={(entryId, display) =>
+                    void about.updateClassificationDisplay(entryId, display)
+                  }
+                  onRequestRemoveClassification={setPendingRemoveClassificationId}
                 />
               ) : (
                 <LoadingSpinner />
@@ -717,6 +734,42 @@ export default function CrdSpaceSettingsPage() {
         altTextLabel={t('about.branding.cropDialog.altText')}
         altTextPlaceholder={t('about.branding.cropDialog.altTextPlaceholder')}
         initialAltText={about.pendingCrop?.altText}
+      />
+
+      <ClassificationPickerDialog
+        open={classificationPicker.open}
+        onOpenChange={open => {
+          if (!open) classificationPicker.closePicker();
+        }}
+        sources={classificationPicker.sources}
+        onSelectTemplate={templateId => {
+          void about.addClassificationFromTemplate(templateId).then(ok => {
+            if (ok) classificationPicker.closePicker();
+          });
+        }}
+        conflict={about.classificationConflict}
+        onRetryWithLabel={(templateId, displayLabel) => {
+          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
+            if (ok) classificationPicker.closePicker();
+          });
+        }}
+        onDismissConflict={about.dismissClassificationConflict}
+        submitting={about.classificationSubmitting}
+      />
+
+      <ClassificationRemoveConfirm
+        open={pendingRemoveClassificationId !== null}
+        onOpenChange={open => {
+          if (!open) setPendingRemoveClassificationId(null);
+        }}
+        displayLabel={
+          about.classifications.find(entry => entry.id === pendingRemoveClassificationId)?.displayLabel ?? ''
+        }
+        onConfirm={() => {
+          if (!pendingRemoveClassificationId) return;
+          void about.removeClassification(pendingRemoveClassificationId);
+          setPendingRemoveClassificationId(null);
+        }}
       />
 
       <ConfirmationDialog

@@ -1,6 +1,8 @@
-import { CropIcon, ImageIcon } from 'lucide-react';
+import { CropIcon, ImageIcon, Plus, Trash2 } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ClassificationValueSelector } from '@/crd/components/classification/ClassificationValueSelector';
+import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
@@ -12,6 +14,7 @@ import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
+import { Switch } from '@/crd/primitives/switch';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 import type {
   AboutFormValues,
@@ -49,6 +52,17 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   referenceUploadAccept?: string;
   onSaveSection: (section: AboutSectionKey) => void;
   className?: string;
+
+  // ── Classifications (D1) — each action commits immediately, FR-006a; never buffered ──
+  classifications: ClassificationEntryData[];
+  /** Step A — opens the template picker (owned by the connector). */
+  onAddClassification: () => void;
+  /** Step B — full-replacement selection write. */
+  onSelectClassificationValues: (entryId: string, selectedValueIDs: string[]) => void;
+  /** The shown/hidden toggle (FR-010b/FR-010d) — worded "not shown on the Space page", never "private". */
+  onToggleClassificationDisplay: (entryId: string, display: boolean) => void;
+  /** Opens the removal confirmation (owned by the connector, FR-014b). */
+  onRequestRemoveClassification: (entryId: string) => void;
 } & MarkdownUploadProps;
 
 export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
@@ -83,6 +97,11 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onImageUpload,
     iframeAllowedUrls,
     onError,
+    classifications,
+    onAddClassification,
+    onSelectClassificationValues,
+    onToggleClassificationDisplay,
+    onRequestRemoveClassification,
   } = props;
   // Canonical visual fields (see spec 100-space-header-layout § "Visual fields — canonical usage"):
   //   - L0: page banner + cardBanner only — L0 has NO avatar concept (L0 cards show title + cardBanner)
@@ -315,6 +334,72 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               onSave={() => onSaveSection('tags')}
               t={t}
             />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Classifications (D1) */}
+          <FieldSection id="classifications">
+            <div className="flex items-center justify-between">
+              <FieldLabel>{t('classifications.sectionTitle')}</FieldLabel>
+              <Button type="button" variant="outline" size="sm" onClick={onAddClassification}>
+                <Plus className="size-3.5 mr-1.5" aria-hidden="true" />
+                {t('classifications.addButton')}
+              </Button>
+            </div>
+            <FieldHint>{t('classifications.sectionDescription')}</FieldHint>
+
+            {classifications.length > 0 && (
+              <div className="mt-4 space-y-5">
+                {classifications.map(entry => (
+                  <div key={entry.id} className="rounded-lg border border-border p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="text-body-emphasis text-foreground">{entry.displayLabel}</h4>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="size-7 shrink-0"
+                        onClick={() => onRequestRemoveClassification(entry.id)}
+                        aria-label={t('classifications.remove.menuLabel')}
+                      >
+                        <Trash2 className="size-3.5 text-destructive" aria-hidden="true" />
+                      </Button>
+                    </div>
+
+                    {entry.values.length > 0 ? (
+                      <ClassificationValueSelector
+                        entryId={entry.id}
+                        cardinality={entry.cardinality}
+                        values={entry.values}
+                        selectedValueIDs={entry.selectedValueIDs}
+                        onChange={selected => onSelectClassificationValues(entry.id, selected)}
+                      />
+                    ) : (
+                      <p className="text-caption text-muted-foreground">
+                        {t('classifications.valueSelector.noneSelected')}
+                      </p>
+                    )}
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <Switch
+                        id={`classification-${entry.id}-display`}
+                        checked={entry.display}
+                        onCheckedChange={checked => onToggleClassificationDisplay(entry.id, checked)}
+                      />
+                      <label
+                        htmlFor={`classification-${entry.id}-display`}
+                        className="text-caption text-muted-foreground cursor-pointer"
+                      >
+                        {entry.display
+                          ? t('classifications.display.toggleLabel')
+                          : t('classifications.display.hiddenHint')}
+                      </label>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </FieldSection>
 
           <Separator />

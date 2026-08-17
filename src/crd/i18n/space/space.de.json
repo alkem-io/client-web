@@ -1025,5 +1025,12 @@
       "title": "Noch keine Unterbereiche",
       "description": "Dieser Bereich hat noch keine Unterbereiche."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
   }
 }

@@ -1025,5 +1025,12 @@
       "title": "No subspaces yet",
       "description": "This space has no subspaces yet."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
   }
 }

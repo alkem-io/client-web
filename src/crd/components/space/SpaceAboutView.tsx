@@ -1,6 +1,10 @@
 import { ExternalLink, Globe, type LucideIcon, MapPin, Pencil, Target, UserCheck, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  ClassificationGroupList,
+  type ClassificationGroupListEntry,
+} from '@/crd/components/classification/ClassificationGroupList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -33,6 +37,13 @@ export type SpaceAboutData = {
   leadUsers: SpaceLeadData[];
   leadOrganizations: SpaceLeadData[];
   references: CalloutReference[];
+  /**
+   * Already filtered + ordered for the CURRENT viewer (see `groupEntriesForDisplay` in
+   * `@/crd/components/classification/types`) — a read-only visitor's list already excludes
+   * hidden and zero-value entries; an editor's includes them. The About page is the only
+   * rendering surface this iteration (D2).
+   */
+  classifications: ClassificationGroupListEntry[];
 };
 
 type SpaceAboutViewProps = {
@@ -58,6 +69,8 @@ type SpaceAboutViewProps = {
   onEditReferences?: () => void;
   /** "Manage community" on the panel — navigates to settings/community. */
   onEditMembers?: () => void;
+  /** Deep-links into Settings → About's Classifications section (FR-018d — reachable and reversible). */
+  onEditClassifications?: () => void;
 };
 
 // Force light markdown colors when rendered on the dark accent panel. MarkdownContent
@@ -85,6 +98,7 @@ export function SpaceAboutView({
   onEditWho,
   onEditReferences,
   onEditMembers,
+  onEditClassifications,
 }: SpaceAboutViewProps) {
   const { t } = useTranslation('crd-space');
 
@@ -203,6 +217,18 @@ export function SpaceAboutView({
           editLabel={t('about.edit')}
         >
           <MarkdownContent content={data.who} />
+        </SectionCard>
+      )}
+
+      {/* ── Classifications (FR-018 — the only rendering surface this iteration, D2) ── */}
+      {data.classifications.length > 0 && (
+        <SectionCard
+          title={t('classifications.sectionTitle')}
+          canEdit={hasEditPrivilege}
+          onEdit={onEditClassifications}
+          editLabel={t('about.edit')}
+        >
+          <ClassificationGroupList entries={data.classifications} canEdit={hasEditPrivilege} />
         </SectionCard>
       )}
 

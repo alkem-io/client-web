@@ -1025,5 +1025,12 @@
       "title": "Все още няма подпространства",
       "description": "Това пространство все още няма подпространства."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
   }
 }

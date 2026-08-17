@@ -1,15 +1,21 @@
+import { ApolloError } from '@apollo/client';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  useAddClassificationEntryFromTemplateMutation,
   useCreateReferenceOnProfileMutation,
   useDefaultVisualTypeConstraintsQuery,
+  useDeleteClassificationEntryMutation,
   useDeleteReferenceMutation,
   useSpaceAboutDetailsQuery,
+  useUpdateClassificationEntryDisplayMutation,
+  useUpdateClassificationEntrySelectionMutation,
   useUpdateSpaceMutation,
   useUploadVisualMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import { type UpdateSpaceInput, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type {
   AboutFormValues,
@@ -23,7 +29,7 @@ import type { ReferenceRow } from '@/crd/forms/references/ReferencesEditor';
 import { MAX_BANNER_ASPECT_RATIO, MIN_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { useStorageConfigContext } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { useReferenceFileUpload } from '@/main/crdPages/utils/useReferenceFileUpload';
-import { buildPreviewCard, mapSpaceToAboutFormValues } from './aboutMapper';
+import { buildPreviewCard, mapClassificationEntries, mapSpaceToAboutFormValues } from './aboutMapper';
 
 export type { AboutFormValues };
 
@@ -60,7 +66,36 @@ export type UseAboutTabDataResult = {
   onSaveAll: () => Promise<void>;
   /** Discard all local edits back to the server-saved snapshot (guard's "Discard"). */
   onResetAll: () => void;
+
+  // ── Classifications (D1) — each action commits on its own (FR-006a) ──
+  classifications: ClassificationEntryData[];
+  /** Step A — add from a template. Resolves `false` (and sets `classificationConflict`) on a display-label collision. */
+  addClassificationFromTemplate: (templateId: string, displayLabel?: string) => Promise<boolean>;
+  /** Step B — full-replacement selection write (FR-012d). */
+  updateClassificationSelection: (entryId: string, selectedValueIDs: string[]) => Promise<void>;
+  /** The shown/hidden toggle (FR-010b) — render-only, not an access control. */
+  updateClassificationDisplay: (entryId: string, display: boolean) => Promise<void>;
+  /** Permanent removal (FR-014b) — the caller is expected to have already confirmed. */
+  removeClassification: (entryId: string) => Promise<void>;
+  /** Set after a failed add whose server error was a display-label conflict (FR-011b). */
+  classificationConflict: { templateId: string; attemptedLabel: string } | null;
+  dismissClassificationConflict: () => void;
+  classificationSubmitting: boolean;
+  /** True right after a selection write failed against a concurrently-removed entry. */
+  classificationRemovedError: boolean;
+  dismissClassificationRemovedError: () => void;
 };
+
+/**
+ * FR-011a/FR-011b's server-side display-label conflict has no dedicated error
+ * code — it is a `ValidationException` (`BAD_USER_INPUT`) like any other
+ * classification validation failure, so it is identified by its stable
+ * message text rather than a code alone.
+ */
+function isDisplayLabelConflictError(err: unknown): boolean {
+  if (!(err instanceof ApolloError)) return false;
+  return err.graphQLErrors.some(gqlErr => /display label already exists/i.test(gqlErr.message));
+}
 
 const TEMP_PREFIX = 'temp-';
 function isTempId(id: string) {
@@ -111,6 +146,10 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   const [uploadVisual] = useUploadVisualMutation();
   const [createReference] = useCreateReferenceOnProfileMutation();
   const [deleteReference] = useDeleteReferenceMutation();
+  const [addClassificationEntryFromTemplate] = useAddClassificationEntryFromTemplateMutation();
+  const [updateClassificationEntrySelection] = useUpdateClassificationEntrySelectionMutation();
+  const [updateClassificationEntryDisplay] = useUpdateClassificationEntryDisplayMutation();
+  const [deleteClassificationEntry] = useDeleteClassificationEntryMutation();
 
   // The allowed ratio range is a property of the visual TYPE, so it comes from
   // the platform config rather than from this space's own visual row.
@@ -497,6 +536,70 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
   const previewCard = values ? buildPreviewCard(spaceId, values, spaceUrl, level) : null;
 
+  // ────────────────── Classifications (D1: about.classifications[].values[]) ──────────────────
+  // Each action commits on its own, immediately (FR-006a) — never buffered with the rest of the
+  // About form. Cache normalization keeps single-entry updates in sync for free; add/remove change
+  // the array's membership, which normalization can't do on its own, so those two refetch.
+  const classifications = space ? mapClassificationEntries(space) : [];
+
+  const [classificationConflict, setClassificationConflict] = useState<{
+    templateId: string;
+    attemptedLabel: string;
+  } | null>(null);
+  const [classificationSubmitting, setClassificationSubmitting] = useState(false);
+  const [classificationRemovedError, setClassificationRemovedError] = useState(false);
+
+  /** Returns `true` on success (the caller may close the picker); `false` on a display-label conflict. */
+  const addClassificationFromTemplate = async (templateId: string, displayLabel?: string): Promise<boolean> => {
+    setClassificationSubmitting(true);
+    try {
+      await addClassificationEntryFromTemplate({
+        variables: { classificationData: { spaceID: spaceId, templateID: templateId, displayLabel } },
+      });
+      await refetch();
+      setClassificationConflict(null);
+      return true;
+    } catch (err) {
+      if (isDisplayLabelConflictError(err)) {
+        setClassificationConflict({ templateId, attemptedLabel: displayLabel ?? '' });
+        return false;
+      }
+      // Any other failure surfaces via the Apollo error link / global handler.
+      return false;
+    } finally {
+      setClassificationSubmitting(false);
+    }
+  };
+
+  const updateClassificationSelection = async (entryId: string, selectedValueIDs: string[]) => {
+    try {
+      await updateClassificationEntrySelection({
+        variables: { classificationData: { classificationEntryID: entryId, selectedValueIDs } },
+      });
+    } catch (err) {
+      // A concurrently-removed entry fails the write against a now-deleted id — refetch so the UI
+      // drops the stale entry instead of silently re-creating it (Edge Cases: concurrent removal).
+      if (err instanceof ApolloError) {
+        setClassificationRemovedError(true);
+        await refetch();
+      }
+    }
+  };
+
+  const updateClassificationDisplay = async (entryId: string, display: boolean) => {
+    await updateClassificationEntryDisplay({
+      variables: { classificationData: { classificationEntryID: entryId, display } },
+    });
+  };
+
+  const removeClassification = async (entryId: string) => {
+    await deleteClassificationEntry({ variables: { classificationData: { ID: entryId } } });
+    await refetch();
+  };
+
+  const dismissClassificationConflict = () => setClassificationConflict(null);
+  const dismissClassificationRemovedError = () => setClassificationRemovedError(false);
+
   return {
     values,
     previewCard,
@@ -520,6 +623,16 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     isDirty,
     onSaveAll,
     onResetAll,
+    classifications,
+    addClassificationFromTemplate,
+    updateClassificationSelection,
+    updateClassificationDisplay,
+    removeClassification,
+    classificationConflict,
+    dismissClassificationConflict,
+    classificationSubmitting,
+    classificationRemovedError,
+    dismissClassificationRemovedError,
   };
 }
 
