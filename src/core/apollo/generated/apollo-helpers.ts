@@ -491,6 +491,17 @@ export type ActorRolesFieldPolicy = {
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AdminWhiteboardFilesResultKeySpecifier = (
+  | 'errors'
+  | 'results'
+  | 'warns'
+  | AdminWhiteboardFilesResultKeySpecifier
+)[];
+export type AdminWhiteboardFilesResultFieldPolicy = {
+  errors?: FieldPolicy<any> | FieldReadFunction<any>;
+  results?: FieldPolicy<any> | FieldReadFunction<any>;
+  warns?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AiPersonaKeySpecifier = (
   | 'authorization'
   | 'bodyOfKnowledgeLastUpdated'
@@ -2933,6 +2944,7 @@ export type MutationKeySpecifier = (
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
+  | 'adminUploadFilesFromContentToStorageBucket'
   | 'adminUserAccountDelete'
   | 'adminUserEmailChange'
   | 'adminUserEmailChangeDriftResolve'
@@ -2946,6 +2958,7 @@ export type MutationKeySpecifier = (
   | 'assignConversationMember'
   | 'assignLicensePlanToAccount'
   | 'assignLicensePlanToSpace'
+  | 'assignPlatformRoleToOrganization'
   | 'assignPlatformRoleToUser'
   | 'assignRole'
   | 'assignRoleToOrganization'
@@ -3042,6 +3055,7 @@ export type MutationKeySpecifier = (
   | 'removeIframeAllowedURL'
   | 'removeMessageOnRoom'
   | 'removeNotificationEmailFromBlacklist'
+  | 'removePlatformRoleFromOrganization'
   | 'removePlatformRoleFromUser'
   | 'removePollOption'
   | 'removePollVote'
@@ -3157,6 +3171,7 @@ export type MutationFieldPolicy = {
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUploadFilesFromContentToStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChange?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserEmailChangeDriftResolve?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3170,6 +3185,7 @@ export type MutationFieldPolicy = {
   assignConversationMember?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   assignLicensePlanToSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  assignPlatformRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   assignPlatformRoleToUser?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRole?: FieldPolicy<any> | FieldReadFunction<any>;
   assignRoleToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3266,6 +3282,7 @@ export type MutationFieldPolicy = {
   removeIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   removeMessageOnRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeNotificationEmailFromBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
+  removePlatformRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollVote?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6083,6 +6100,13 @@ export type StrictTypedTypePolicies = {
   ActorRoles?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ActorRolesKeySpecifier | (() => undefined | ActorRolesKeySpecifier);
     fields?: ActorRolesFieldPolicy;
+  };
+  AdminWhiteboardFilesResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AdminWhiteboardFilesResultKeySpecifier
+      | (() => undefined | AdminWhiteboardFilesResultKeySpecifier);
+    fields?: AdminWhiteboardFilesResultFieldPolicy;
   };
   AiPersona?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AiPersonaKeySpecifier | (() => undefined | AiPersonaKeySpecifier);

@@ -13,23 +13,183 @@ import useRoleSetManagerRolesAssignment, {
   type useRoleSetManagerRolesAssignmentProvided,
 } from './RolesAssignment/useRoleSetManagerRolesAssignment';
 
+// The 10 `Platform …` administration roles — assignable only by a holder of
+// `GRANT_GLOBAL_ADMINS` (Slice A spelling of `PLATFORM_ROLES_ASSIGN`, FR-012).
+const PLATFORM_ADMIN_ROLES = [
+  RoleName.PlatformRolesAdmin,
+  RoleName.PlatformContentFullAccess,
+  RoleName.PlatformResourceAdmin,
+  RoleName.PlatformSettingsAdmin,
+  RoleName.PlatformOperationsAdmin,
+  RoleName.PlatformUsersAdmin,
+  RoleName.PlatformSupport,
+  RoleName.PlatformLicenseManager,
+  RoleName.PlatformSpacesReader,
+  RoleName.PlatformAuditReader,
+] as const;
+
+// The 3 `Feature …` roles — assignable by a holder of `FEATURE_ROLE_ASSIGN`
+// (Platform Users Admin) or by anyone who can assign the full Platform set.
+const FEATURE_ROLES = [
+  RoleName.FeatureBetaTester,
+  RoleName.FeatureVirtualAssistant,
+  RoleName.FeatureOrganizationCreator,
+] as const;
+
+// sec-client-web-1: the ten legacy platform credentials remain the platform's
+// live, authoritative privileged access until Slice B retires them — Slice A
+// is strictly additive server-side. Dropping them from the offered set
+// entirely (T004) left no in-console way to revoke a compromised or
+// offboarded legacy holder during the Slice A -> Slice B window, forcing an
+// incident response onto hand-crafted GraphQL or direct DB access. Kept here
+// as a separate, clearly-labelled, remove-only group: offered only to a
+// GRANT_GLOBAL_ADMINS holder (the same capability that could grant them
+// originally), never rendered with an add affordance, and deleted in the same
+// commit that retires the credentials in Slice B.
+const LEGACY_PLATFORM_ROLES = [
+  RoleName.GlobalAdmin,
+  RoleName.GlobalSupport,
+  RoleName.GlobalLicenseManager,
+  RoleName.GlobalCommunityReader,
+  RoleName.GlobalSpacesReader,
+  RoleName.GlobalPlatformManager,
+  RoleName.GlobalSupportManager,
+  RoleName.PlatformBetaTester,
+  RoleName.PlatformVcCampaign,
+  RoleName.PlatformAssistantAccess,
+] as const;
+
 export const RELEVANT_ROLES = {
   Community: [RoleName.Admin, RoleName.Lead, RoleName.Member],
   Organization: [RoleName.Owner, RoleName.Admin, RoleName.Associate],
-  Platform: [
-    RoleName.GlobalAdmin,
-    RoleName.GlobalSupport,
-    RoleName.GlobalLicenseManager,
-    RoleName.GlobalCommunityReader,
-    RoleName.GlobalSpacesReader,
-    RoleName.GlobalPlatformManager,
-    RoleName.GlobalSupportManager,
-    RoleName.PlatformOperationsAdmin,
-    RoleName.PlatformBetaTester,
-    RoleName.PlatformVcCampaign,
-    RoleName.PlatformAssistantAccess,
-  ],
+  Platform: [...PLATFORM_ADMIN_ROLES, ...FEATURE_ROLES],
+  LegacyPlatform: LEGACY_PLATFORM_ROLES,
 } as const;
+
+/**
+ * FR-012: which role *set* an operator may offer/assign, read from `myPrivileges`
+ * on the platform role-set. This is the **only** client-side authorization
+ * decision this feature makes — no assignment rule (holder kind, spaces-reader,
+ * audit-reader exclusion, last-roles-admin) is reimplemented here. The server
+ * remains the sole enforcement point; this filter only decides what to *offer*
+ * and, as a consequence, keeps the holder-list read from ever spanning both
+ * role sets in one request (FR-032).
+ *
+ * corr-client-web-8: the two privileges gate DISJOINT role families server-side
+ * (platform.role.assignment.rules.service.ts `assignerPrivilegeFor` — the 3
+ * `Feature …` roles require `FEATURE_ROLE_ASSIGN`, the 10 `Platform …` roles
+ * require `GRANT_GLOBAL_ADMINS`) and must therefore be UNIONED, not
+ * short-circuited. A legacy `global-admin` holds `GRANT_GLOBAL_ADMINS` but not
+ * `FEATURE_ROLE_ASSIGN` — short-circuiting on the first privilege used to offer
+ * them all 13 roles including the 3 Feature roles, which the server then
+ * rejected on every assign/revoke. `platform-roles-admin` holds both
+ * privileges, so it still gets the full 13 (T005/SC-009 unaffected).
+ */
+export const getOfferedPlatformRoles = (
+  myPrivileges: AuthorizationPrivilege[] | undefined
+): (typeof RELEVANT_ROLES.Platform)[number][] => {
+  if (!myPrivileges) {
+    return [];
+  }
+  const roles: (typeof RELEVANT_ROLES.Platform)[number][] = [];
+  if (myPrivileges.includes(AuthorizationPrivilege.GrantGlobalAdmins)) {
+    roles.push(...PLATFORM_ADMIN_ROLES);
+  }
+  if (myPrivileges.includes(AuthorizationPrivilege.FeatureRoleAssign)) {
+    roles.push(...FEATURE_ROLES);
+  }
+  return roles;
+};
+
+/**
+ * sec-client-web-4/spec-clientweb-3: the legacy `global-*` revoke branch is
+ * checked server-side against a resolver-local, hardcoded `[GLOBAL_ADMIN]`
+ * policy for `GRANT_GLOBAL_ADMINS` — NOT against `roleSet.authorization`,
+ * whose `GRANT_GLOBAL_ADMINS` credential rule T034 deliberately widens to
+ * also admit `PLATFORM_ROLES_ADMIN`. Gating this panel on `GRANT_GLOBAL_ADMINS`
+ * therefore offers a Remove button to an operator (a bare Platform Roles
+ * Admin) whose click the server always rejects. Plain `READ` + `GRANT` on the
+ * platform role-set is what the legacy resolver branches actually honour
+ * (held by `GLOBAL_ADMIN` / `GLOBAL_SUPPORT`, not by `PLATFORM_ROLES_ADMIN`),
+ * so gate on that pair instead — it is the closest client-observable signal
+ * to "this operator is a legacy PlatformAdmin-equivalent holder".
+ */
+const isLegacyPlatformAdminEquivalent = (myPrivileges: AuthorizationPrivilege[]): boolean =>
+  myPrivileges.includes(AuthorizationPrivilege.Read) && myPrivileges.includes(AuthorizationPrivilege.Grant);
+
+/**
+ * sec-client-web-1: the legacy platform credentials, offered strictly for
+ * revocation (never grant) and only to a legacy PlatformAdmin-equivalent
+ * holder (plain `READ` + `GRANT` — see `isLegacyPlatformAdminEquivalent`) —
+ * the incident-response surface for the Slice A -> Slice B window.
+ * Deliberately mirrors `getOfferedPlatformRoles`'s single client-side
+ * authorization decision (read `myPrivileges`, reimplement no server rule).
+ */
+export const getOfferedLegacyPlatformRoles = (
+  myPrivileges: AuthorizationPrivilege[] | undefined
+): (typeof RELEVANT_ROLES.LegacyPlatform)[number][] => {
+  if (!myPrivileges) {
+    return [];
+  }
+  if (isLegacyPlatformAdminEquivalent(myPrivileges)) {
+    return [...RELEVANT_ROLES.LegacyPlatform];
+  }
+  return [];
+};
+
+/**
+ * corr-client-web-7: `getOfferedPlatformRoles` decides who may *manage*
+ * (grant/revoke) the 13 target roles — but a legacy holder-list-read
+ * privilege (plain `READ`, or `PLATFORM_ROLE_HOLDERS_READ` /
+ * `FEATURE_ROLE_HOLDERS_READ`) authorizes *reading* those roles' holders
+ * without authorizing management. Before this feature, GLOBAL_SUPPORT and
+ * GLOBAL_LICENSE_MANAGER could reach this page and see holder lists; folding
+ * them straight into `noAssignablePrivilege` withdraws that read visibility
+ * with no server-side change behind it. This is a separate, narrower offer:
+ * a role appears here only when the operator can actually have its holder
+ * list read (mirrors the server's per-role-family read gate — plain `READ`
+ * is the legacy additive admitter for both families, same as
+ * `HOLDER_READ_PRIVILEGES` above), and the caller renders it read-only
+ * (view only, no add/remove) rather than predicting a management rule.
+ */
+export const getViewOnlyPlatformRoles = (
+  myPrivileges: AuthorizationPrivilege[] | undefined
+): (typeof RELEVANT_ROLES.Platform)[number][] => {
+  if (!myPrivileges) {
+    return [];
+  }
+  const roles: (typeof RELEVANT_ROLES.Platform)[number][] = [];
+  if (
+    myPrivileges.includes(AuthorizationPrivilege.Read) ||
+    myPrivileges.includes(AuthorizationPrivilege.PlatformRoleHoldersRead)
+  ) {
+    roles.push(...PLATFORM_ADMIN_ROLES);
+  }
+  if (
+    myPrivileges.includes(AuthorizationPrivilege.Read) ||
+    myPrivileges.includes(AuthorizationPrivilege.FeatureRoleHoldersRead)
+  ) {
+    roles.push(...FEATURE_ROLES);
+  }
+  return roles;
+};
+
+/**
+ * SC-009 / FR-002: only the 3 `Feature …` roles may be held by an organization.
+ * A `platform-*` role's organization section is never rendered — the server
+ * rejects such a grant twice over (assignment rule 2, and
+ * `organizationPolicy.maximum = 0`), so offering it would be predicting a rule.
+ */
+export const isFeaturePlatformRole = (role: RoleName): boolean => (FEATURE_ROLES as readonly RoleName[]).includes(role);
+
+// FR-032/A20/A20b: privileges that authorize reading a role set's holder list.
+// `READ` is an additive legacy admitter (GLOBAL_ADMIN / GLOBAL_SUPPORT cascade),
+// not the sole gate — see `canReadRoleSet` below.
+const HOLDER_READ_PRIVILEGES: readonly AuthorizationPrivilege[] = [
+  AuthorizationPrivilege.Read,
+  AuthorizationPrivilege.PlatformRoleHoldersRead,
+  AuthorizationPrivilege.FeatureRoleHoldersRead,
+];
 
 export interface RoleSetMemberUserFragmentWithRoles extends RoleSetMemberUserFragment {
   roles: RoleName[];
@@ -66,6 +226,14 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
   loading: boolean;
   updating: boolean;
   refetchRoleSetAssignment: () => Promise<unknown>;
+  /**
+   * True once the holder-list read has been attempted (roles were requested,
+   * `myPrivileges` has loaded) and the operator's privileges don't cover it, or
+   * the read itself errored — as opposed to a genuinely empty holder list.
+   * Callers use this to render an explicit "unavailable" state rather than a
+   * silent "no members" (sec-client-web-2).
+   */
+  holdersUnavailable: boolean;
 }
 
 type useRoleSetManagerParams = {
@@ -87,27 +255,38 @@ const useRoleSetManager = ({
   onChange,
   skip,
 }: useRoleSetManagerParams): useRoleSetManagerProvided => {
-  if (!roleSetId || !relevantRoles || relevantRoles.length === 0) {
-    skip = true;
-  }
+  // The authorization (myPrivileges) query only needs the roleSetId — it must
+  // NOT wait on `relevantRoles`, because a caller filtering the offered role
+  // set by assigner capability (FR-012) needs `myPrivileges` *before* it knows
+  // which roles it may even ask to see. The holder-list query below is the one
+  // that depends on `relevantRoles` being resolved.
+  const skipAuthorization = skip || !roleSetId;
+  const skipAssignment = skip || !roleSetId || !relevantRoles || relevantRoles.length === 0;
 
-  // TODO: Additional Auth Check
   const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
-    skip: skip || !roleSetId,
+    skip: skipAuthorization,
   });
   const platformPrivileges = roleSetDetails?.platform.authorization?.myPrivileges;
   const myPrivileges = roleSetDetails?.lookup.roleSet?.authorization?.myPrivileges;
 
+  // FR-032/A20/A20b: the server authorizes the holder-list read on
+  // `PLATFORM_ROLE_HOLDERS_READ` / `FEATURE_ROLE_HOLDERS_READ` — none of the 13
+  // target roles' assigners hold plain `READ` on the platform role-set. `READ`
+  // is kept as an additive legacy admitter (GLOBAL_ADMIN / GLOBAL_SUPPORT
+  // cascade rules still grant it), never the sole gate. This is a correction of
+  // the existing client-side read precondition to the privilege FR-032 defines
+  // — not a new, second rule; the assigner filter in getOfferedPlatformRoles
+  // above still decides which roles are ever asked for.
   const canReadRoleSet =
-    (myPrivileges?.includes(AuthorizationPrivilege.Read) &&
+    (myPrivileges?.some(privilege => HOLDER_READ_PRIVILEGES.includes(privilege)) &&
       platformPrivileges?.includes(AuthorizationPrivilege.ReadUsers)) ??
     false;
 
   const validRoles = roleSetDetails?.lookup.roleSet?.roleNames;
-  if (!skip && !loadingRoleSet && validRoles) {
+  if (!skipAssignment && !loadingRoleSet && validRoles) {
     if (relevantRoles.some(role => !validRoles.includes(role))) {
       throw new Error(
         `RoleSet ${roleSetId} doesn't provide specified role ${relevantRoles.join(',')} != ${validRoles.join(',')}`
@@ -118,6 +297,7 @@ const useRoleSetManager = ({
   const {
     data: roleSetData,
     loading: loadingRoleSetData,
+    error: roleSetDataError,
     refetch: refetchRoleSetAssignment,
   } = useRoleSetRoleAssignmentQuery({
     variables: {
@@ -128,8 +308,14 @@ const useRoleSetManager = ({
       includeVirtualContributors: fetchContributors && contributorTypes.includes(ActorType.VirtualContributor),
       includeRoleDefinitions: fetchRoleDefinitions,
     },
-    skip: skip || !canReadRoleSet || !roleSetId || loadingRoleSet || !relevantRoles || relevantRoles.length === 0,
+    skip: skipAssignment || !canReadRoleSet || loadingRoleSet,
   });
+
+  // sec-client-web-2: a role subset was actually requested (relevantRoles
+  // non-empty) but the read is unreachable — either myPrivileges doesn't cover
+  // it or the query itself errored (e.g. a rejected/forbidden read). Distinct
+  // from "the request ran and found zero holders".
+  const holdersUnavailable = !skipAssignment && !loadingRoleSet && (!canReadRoleSet || Boolean(roleSetDataError));
 
   const data = (() => {
     const roleSet = roleSetData?.lookup.roleSet;
@@ -229,6 +415,8 @@ const useRoleSetManager = ({
     removeRoleFromUser,
     assignPlatformRoleToUser,
     removePlatformRoleFromUser,
+    assignPlatformRoleToOrganization,
+    removePlatformRoleFromOrganization,
     assignRoleToOrganization,
     removeRoleFromOrganization,
     assignRoleToVirtualContributor,
@@ -251,14 +439,17 @@ const useRoleSetManager = ({
 
     assignRoleToUser: onMutationCall(assignRoleToUser),
     assignPlatformRoleToUser: onMutationCall(assignPlatformRoleToUser),
+    assignPlatformRoleToOrganization: onMutationCall(assignPlatformRoleToOrganization),
     assignRoleToOrganization: onMutationCall(assignRoleToOrganization),
     assignRoleToVirtualContributor: onMutationCall(assignRoleToVirtualContributor),
     removeRoleFromUser: onMutationCall(removeRoleFromUser),
     removePlatformRoleFromUser: onMutationCall(removePlatformRoleFromUser),
+    removePlatformRoleFromOrganization: onMutationCall(removePlatformRoleFromOrganization),
     removeRoleFromOrganization: onMutationCall(removeRoleFromOrganization),
     removeRoleFromVirtualContributor: onMutationCall(removeRoleFromVirtualContributor),
     updating: updatingRoleSet,
     refetchRoleSetAssignment,
+    holdersUnavailable,
   };
 };
 

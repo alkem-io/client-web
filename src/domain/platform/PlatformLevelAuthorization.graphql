@@ -4,6 +4,9 @@ query PlatformLevelAuthorization {
     roleSet {
       id
       myRoles
+      authorization {
+        myPrivileges
+      }
     }
     authorization {
       myPrivileges

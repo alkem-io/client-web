@@ -1,0 +1,5 @@
+mutation AssignPlatformRoleToOrganization($role: RoleName!, $contributorId: UUID!) {
+  assignPlatformRoleToOrganization(roleData: { role: $role, actorID: $contributorId }) {
+    id
+  }
+}

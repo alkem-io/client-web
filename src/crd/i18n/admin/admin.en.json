@@ -77,7 +77,19 @@
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
     "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
     "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
-    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+    "PLATFORM_ROLES_ADMIN": "Platform Roles Admin",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Platform Content Full Access",
+    "PLATFORM_RESOURCE_ADMIN": "Platform Resource Admin",
+    "PLATFORM_SETTINGS_ADMIN": "Platform Settings Admin",
+    "PLATFORM_USERS_ADMIN": "Platform Users Admin",
+    "PLATFORM_SUPPORT": "Platform Support",
+    "PLATFORM_LICENSE_MANAGER": "Platform License Manager",
+    "PLATFORM_SPACES_READER": "Platform Spaces Reader",
+    "PLATFORM_AUDIT_READER": "Platform Audit Reader",
+    "FEATURE_BETA_TESTER": "Feature Beta Tester",
+    "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtual Assistant",
+    "FEATURE_ORGANIZATION_CREATOR": "Feature Organization Creator"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Full administrative control over the entire platform.",
@@ -90,7 +102,19 @@
     "PLATFORM_BETA_TESTER": "Access to beta features before general release.",
     "PLATFORM_VC_CAMPAIGN": "Participation in the Virtual Contributor campaign.",
     "PLATFORM_ASSISTANT_ACCESS": "Access to the AI assistant.",
-    "PLATFORM_OPERATIONS_ADMIN": "Operational and maintenance actions only: authorization and license-entitlement resets, search/AI ingest and re-indexing, AI-server upkeep, data migrations, notification and communications housekeeping, and geolocation refresh. Grants no other administrative powers and no access to user personal data."
+    "PLATFORM_OPERATIONS_ADMIN": "Operational and maintenance actions only: authorization and license-entitlement resets, search/AI ingest and re-indexing, AI-server upkeep, data migrations, notification and communications housekeeping, and geolocation refresh. Grants no other administrative powers and no access to user personal data.",
+    "PLATFORM_ROLES_ADMIN": "Assigns and revokes every platform role — Platform … and Feature … — reads the holder list of all 13 roles, and sets or clears the service-profile marker that Platform Spaces Reader requires. Does not touch content, settings, operational actions, user records, or support, and never reads the audit trail.",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Full access to all platform content. Intended for very few holders, only for as long as needed. Does not assign roles, change settings, perform operational actions, manage user records, move resources, manage the forum, change space visibility, rename entities, or act as support.",
+    "PLATFORM_RESOURCE_ADMIN": "Moves a space, innovation hub, innovation pack, or virtual contributor to another account; promotes, demotes, or moves a space between levels; and moves a post to another space. Does not assign roles, change settings, perform operational actions, manage user records, hold full content access, manage the forum, or act as support.",
+    "PLATFORM_SETTINGS_ADMIN": "Manages platform settings, integrations, and notification configuration, and defines license plans and their entitlement mappings. Does not assign roles, edit content, perform operational actions, manage user records, use licenses, or act as support.",
+    "PLATFORM_USERS_ADMIN": "Changes a user's login email, deletes or resets a user's identity or account, reads the personal data needed to do so, and assigns the Feature … roles (including reading their holder lists). Does not assign Platform … roles, read the Platform … role holder lists, edit content or settings, reset authorization, or act as support.",
+    "PLATFORM_SUPPORT": "Acts as an admin inside a space that enables platform support, edits an organisation's own innovation packs, template packs and innovation hubs (and the templates inside them) to assist the owner, creates and deletes organisations, and manages the platform forum. Does not assign roles, hold full content access, change settings, perform operational actions, manage user records, move those resources, delete the pack or hub itself, or act in a space that has not enabled support.",
+    "PLATFORM_LICENSE_MANAGER": "Assigns and revokes license plans on accounts and spaces, and changes space visibility. Does not define license plans or hold any other administrative power.",
+    "PLATFORM_SPACES_READER": "Read-only access across all spaces. Reserved for service accounts only — a grant to a human user is rejected.",
+    "PLATFORM_AUDIT_READER": "Reads the platform audit trail (PII-masked) and the holder lists of all 13 roles, so the trail can be interpreted against live state. Performs no administrative action, cannot write, alter or delete audit records, and is mutually exclusive with every other Platform … role.",
+    "FEATURE_BETA_TESTER": "Carries a beta or trial license entitlement. Does not include organisation creation.",
+    "FEATURE_VIRTUAL_ASSISTANT": "Grants access to the virtual assistant.",
+    "FEATURE_ORGANIZATION_CREATOR": "Allows creating organisations. Does not include deleting organisations."
   },
   "roleMembers": {
     "currentMembers": "Current members",
@@ -101,10 +125,20 @@
     "remove": "Remove",
     "noMembers": "No members in this role.",
     "noResults": "No users found.",
+    "noAssignablePrivilege": "You don't have permission to assign or view any platform role.",
+    "readOnlyNotice": "You can view this role's holders but not add or remove them.",
+    "holdersUnavailable": "Unable to load the current holders of this role.",
     "loading": "Loading…",
     "removeTitle": "Remove {{name}}?",
-    "removeDescription": "This revokes the role from this user.",
-    "roleLabel": "Role"
+    "removeDescription": "This revokes the role from this member.",
+    "removeOrganization": "Remove organisation",
+    "roleLabel": "Role",
+    "organizations": "Organisations",
+    "currentOrganizations": "Current organisations",
+    "addOrganizations": "Add organisations",
+    "legacyRolesHeading": "Legacy roles (revoke only)",
+    "legacyRolesDescription": "These roles are retired from the platform's role model and can no longer be granted. Existing holders are shown here so they can be revoked; this is the only in-console path to remove a legacy credential before it is deleted entirely.",
+    "legacyRolesNoHolders": "No one currently holds a legacy role."
   },
   "authPolicies": {
     "idLabel": "Authorisation Policy ID",
@@ -299,6 +333,9 @@
     "updated": "User updated.",
     "discardTitle": "Discard changes?",
     "discardDescription": "You have unsaved changes. Leave without saving?",
-    "discard": "Discard"
+    "discard": "Discard",
+    "back": "Back",
+    "viewTitle": "View {{name}}",
+    "readOnlyNotice": "You can view this user record but not edit it. Your role permits reading personal data, not changing it."
   }
 }

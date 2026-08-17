@@ -77,7 +77,19 @@
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
     "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
     "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
-    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin",
+    "PLATFORM_ROLES_ADMIN": "Platform Rollenbeheerder",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Platform Volledige Inhoudstoegang",
+    "PLATFORM_RESOURCE_ADMIN": "Platform Resourcebeheerder",
+    "PLATFORM_SETTINGS_ADMIN": "Platform Instellingenbeheerder",
+    "PLATFORM_USERS_ADMIN": "Platform Gebruikersbeheerder",
+    "PLATFORM_SUPPORT": "Platform Support",
+    "PLATFORM_LICENSE_MANAGER": "Platform Licentiebeheerder",
+    "PLATFORM_SPACES_READER": "Platform Spaces-lezer",
+    "PLATFORM_AUDIT_READER": "Platform Audit-lezer",
+    "FEATURE_BETA_TESTER": "Feature Bètatester",
+    "FEATURE_VIRTUAL_ASSISTANT": "Feature Virtuele assistent",
+    "FEATURE_ORGANIZATION_CREATOR": "Feature Organisatiemaker"
   },
   "roleDescriptions": {
     "GLOBAL_ADMIN": "Volledige administratieve controle over het hele platform.",
@@ -90,7 +102,19 @@
     "PLATFORM_BETA_TESTER": "Toegang tot bètafuncties vóór algemene release.",
     "PLATFORM_VC_CAMPAIGN": "Deelname aan de Virtual Contributor-campagne.",
     "PLATFORM_ASSISTANT_ACCESS": "Toegang tot de AI-assistent.",
-    "PLATFORM_OPERATIONS_ADMIN": "Alleen operationele en onderhoudsacties: resets van autorisatie en licentierechten, zoek-/AI-ingestie en herindexering, onderhoud van de AI-server, datamigraties, onderhoud van notificaties en communicatie, en verversing van geolocatie. Geeft geen andere administratieve rechten en geen toegang tot persoonsgegevens van gebruikers."
+    "PLATFORM_OPERATIONS_ADMIN": "Alleen operationele en onderhoudsacties: resets van autorisatie en licentierechten, zoek-/AI-ingestie en herindexering, onderhoud van de AI-server, datamigraties, onderhoud van notificaties en communicatie, en verversing van geolocatie. Geeft geen andere administratieve rechten en geen toegang tot persoonsgegevens van gebruikers.",
+    "PLATFORM_ROLES_ADMIN": "Kent elke platformrol toe en trekt deze in — Platform … en Feature … —, leest de ledenlijst van alle 13 rollen, en stelt de serviceprofielmarkering in of wist deze, wat vereist is voor Platform Spaces Reader. Raakt geen inhoud, instellingen, operationele acties of gebruikersgegevens, en leest nooit het auditlogboek.",
+    "PLATFORM_CONTENT_FULL_ACCESS": "Volledige toegang tot alle platforminhoud. Bedoeld voor zeer weinig houders, alleen zolang nodig. Kent geen rollen toe, wijzigt geen instellingen, voert geen operationele acties uit, beheert geen gebruikersgegevens, verplaatst geen resources, beheert het forum niet, wijzigt de zichtbaarheid van Spaces niet, hernoemt geen entiteiten en treedt niet op als support.",
+    "PLATFORM_RESOURCE_ADMIN": "Verplaatst een Space, innovatiehub, innovatiepakket of virtuele bijdrager naar een ander account; promoveert, degradeert of verplaatst een Space tussen niveaus; en verplaatst een post naar een andere Space. Kent geen rollen toe, wijzigt geen instellingen, voert geen operationele acties uit, beheert geen gebruikersgegevens, heeft geen volledige inhoudstoegang, beheert het forum niet en treedt niet op als support.",
+    "PLATFORM_SETTINGS_ADMIN": "Beheert platforminstellingen, integraties en notificatieconfiguratie, en definieert licentieplannen en hun rechtenmappings. Kent geen rollen toe, bewerkt geen inhoud, voert geen operationele acties uit, beheert geen gebruikersgegevens, gebruikt geen licenties en treedt niet op als support.",
+    "PLATFORM_USERS_ADMIN": "Wijzigt het inlog-e-mailadres van een gebruiker, verwijdert of reset de identiteit of het account van een gebruiker, leest de daarvoor benodigde persoonsgegevens, en kent de Feature …-rollen toe (inclusief het lezen van hun ledenlijsten). Kent geen Platform …-rollen toe, leest geen Platform …-ledenlijsten, bewerkt geen inhoud of instellingen, reset geen autorisatie en treedt niet op als support.",
+    "PLATFORM_SUPPORT": "Treedt op als beheerder binnen een Space die platformsupport toestaat, bewerkt de eigen innovatiepakketten, sjabloonpakketten en innovatiehubs van een organisatie (en de sjablonen daarin) om de eigenaar te ondersteunen, maakt en verwijdert organisaties, en beheert het platformforum. Kent geen rollen toe, heeft geen volledige inhoudstoegang, wijzigt geen instellingen, voert geen operationele acties uit, beheert geen gebruikersgegevens, verplaatst deze resources niet, verwijdert het pakket of de hub zelf niet, en treedt niet op in een Space die support niet heeft ingeschakeld.",
+    "PLATFORM_LICENSE_MANAGER": "Kent licentieplannen toe aan accounts en Spaces en trekt deze in, en wijzigt de zichtbaarheid van Spaces. Definieert geen licentieplannen en heeft geen andere administratieve bevoegdheden.",
+    "PLATFORM_SPACES_READER": "Alleen-lezen toegang tot alle Spaces. Uitsluitend bedoeld voor serviceaccounts — toekenning aan een menselijke gebruiker wordt geweigerd.",
+    "PLATFORM_AUDIT_READER": "Leest het platformauditlogboek (met gemaskeerde persoonsgegevens) en de ledenlijsten van alle 13 rollen, zodat het logboek tegen de actuele status kan worden geïnterpreteerd. Voert geen enkele administratieve actie uit, kan geen auditrecords schrijven, wijzigen of verwijderen, en sluit elke andere Platform …-rol wederzijds uit.",
+    "FEATURE_BETA_TESTER": "Geeft een bèta-/proeflicentierecht. Omvat geen organisatiecreatie.",
+    "FEATURE_VIRTUAL_ASSISTANT": "Geeft toegang tot de virtuele assistent.",
+    "FEATURE_ORGANIZATION_CREATOR": "Staat het aanmaken van organisaties toe. Omvat niet het verwijderen van organisaties."
   },
   "roleMembers": {
     "currentMembers": "Huidige leden",
@@ -101,10 +125,20 @@
     "remove": "Verwijderen",
     "noMembers": "Geen leden in deze rol.",
     "noResults": "Geen gebruikers gevonden.",
+    "noAssignablePrivilege": "U heeft geen rechten om een platformrol toe te wijzen of te bekijken.",
+    "readOnlyNotice": "U kunt de houders van deze rol bekijken, maar niet toevoegen of verwijderen.",
+    "holdersUnavailable": "Kan de huidige houders van deze rol niet laden.",
     "loading": "Laden…",
     "removeTitle": "{{name}} verwijderen?",
-    "removeDescription": "Hiermee wordt de rol bij deze gebruiker ingetrokken.",
-    "roleLabel": "Rol"
+    "removeDescription": "Hiermee wordt de rol bij dit lid ingetrokken.",
+    "removeOrganization": "Organisatie verwijderen",
+    "roleLabel": "Rol",
+    "organizations": "Organisaties",
+    "currentOrganizations": "Huidige organisaties",
+    "addOrganizations": "Organisaties toevoegen",
+    "legacyRolesHeading": "Verouderde rollen (alleen intrekken)",
+    "legacyRolesDescription": "Deze rollen zijn uit het rollenmodel van het platform teruggetrokken en kunnen niet meer worden toegekend. Bestaande houders worden hier getoond zodat de rol kan worden ingetrokken — dit is de enige manier in de console om een verouderd recht te verwijderen voordat het volledig wordt gewist.",
+    "legacyRolesNoHolders": "Momenteel heeft niemand een verouderde rol."
   },
   "authPolicies": {
     "idLabel": "Autorisatiebeleid-ID",
@@ -299,6 +333,9 @@
     "updated": "Gebruiker bijgewerkt.",
     "discardTitle": "Wijzigingen negeren?",
     "discardDescription": "Je hebt niet-opgeslagen wijzigingen. Weggaan zonder op te slaan?",
-    "discard": "Negeren"
+    "discard": "Negeren",
+    "back": "Terug",
+    "viewTitle": "{{name}} bekijken",
+    "readOnlyNotice": "Je kunt dit gebruikersrecord bekijken, maar niet bewerken. Je rol geeft leesrecht op persoonsgegevens, geen wijzigingsrecht."
   }
 }

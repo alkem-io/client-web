@@ -75,7 +75,7 @@ const baseHookReturn = {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: true });
+  accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: true, canChangeUserEmail: true });
   userListHookMock.mockReturnValue(baseHookReturn);
 });
 
@@ -133,8 +133,11 @@ describe('CrdAdminUsersPage', () => {
     );
   });
 
-  test('change-email action is hidden for non-global-admins', () => {
-    accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: false });
+  // Hidden for anyone lacking PLATFORM_USERS_ADMIN — including roles that DO
+  // reach the admin area (Platform Roles Admin, Content Full Access). Gating it
+  // on admin-area access handed the button to every one of them.
+  test('change-email action is hidden without the email-change capability', () => {
+    accessGuardMock.mockReturnValue({ loading: false, isPlatformAdmin: true, canChangeUserEmail: false });
     render(<CrdAdminUsersPage />);
     expect(screen.queryByRole('button', { name: 'users.changeEmail.action' })).toBeNull();
   });

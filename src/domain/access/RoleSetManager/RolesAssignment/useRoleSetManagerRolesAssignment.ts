@@ -1,8 +1,10 @@
 import {
+  useAssignPlatformRoleToOrganizationMutation,
   useAssignPlatformRoleToUserMutation,
   useAssignRoleToOrganizationMutation,
   useAssignRoleToUserMutation,
   useAssignRoleToVirtualContributorMutation,
+  useRemovePlatformRoleFromOrganizationMutation,
   useRemovePlatformRoleFromUserMutation,
   useRemoveRoleFromOrganizationMutation,
   useRemoveRoleFromUserMutation,
@@ -19,6 +21,8 @@ type useRoleSetManagerRolesAssignmentParams = {
 export type useRoleSetManagerRolesAssignmentProvided = {
   assignPlatformRoleToUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   removePlatformRoleFromUser: (userId: string, roleName: RoleName) => Promise<unknown>;
+  assignPlatformRoleToOrganization: (organizationId: string, roleName: RoleName) => Promise<unknown>;
+  removePlatformRoleFromOrganization: (organizationId: string, roleName: RoleName) => Promise<unknown>;
   assignRoleToUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   removeRoleFromUser: (userId: string, roleName: RoleName) => Promise<unknown>;
   assignRoleToOrganization: (organizationId: string, roleName: RoleName) => Promise<unknown>;
@@ -41,11 +45,13 @@ const useRoleSetManagerRolesAssignment = ({
     }
   };
 
-  // Platform Roles:
+  // Platform Roles: the five assignment rules (contracts/graphql-contract.md) reject with
+  // distinct, rule-naming messages that the UI surfaces verbatim (FR-012) — skip the global
+  // error toast so the caller's own inline handling isn't shadowed by a generic translation.
   const [runAssignPlatformRoleToUser, { loading: assignPlatformRoleToUserLoading }] =
-    useAssignPlatformRoleToUserMutation();
+    useAssignPlatformRoleToUserMutation({ context: { skipGlobalErrorHandler: true } });
   const [runRemovePlatformRoleFromUser, { loading: removePlatformRoleFromUserLoading }] =
-    useRemovePlatformRoleFromUserMutation();
+    useRemovePlatformRoleFromUserMutation({ context: { skipGlobalErrorHandler: true } });
   const assignPlatformRoleToUser = (userId: string, role: RoleName) => {
     return runAssignPlatformRoleToUser({
       variables: {
@@ -60,6 +66,30 @@ const useRoleSetManagerRolesAssignment = ({
     return runRemovePlatformRoleFromUser({
       variables: {
         contributorId: userId,
+        role,
+      },
+      update: cache => refetchQueries(cache),
+    });
+  };
+
+  const [runAssignPlatformRoleToOrganization, { loading: assignPlatformRoleToOrganizationLoading }] =
+    useAssignPlatformRoleToOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+  const [runRemovePlatformRoleFromOrganization, { loading: removePlatformRoleFromOrganizationLoading }] =
+    useRemovePlatformRoleFromOrganizationMutation({ context: { skipGlobalErrorHandler: true } });
+  const assignPlatformRoleToOrganization = (organizationId: string, role: RoleName) => {
+    return runAssignPlatformRoleToOrganization({
+      variables: {
+        contributorId: organizationId,
+        role,
+      },
+      update: cache => refetchQueries(cache),
+    });
+  };
+
+  const removePlatformRoleFromOrganization = (organizationId: string, role: RoleName) => {
+    return runRemovePlatformRoleFromOrganization({
+      variables: {
+        contributorId: organizationId,
         role,
       },
       update: cache => refetchQueries(cache),
@@ -151,6 +181,8 @@ const useRoleSetManagerRolesAssignment = ({
   const loading =
     assignPlatformRoleToUserLoading ||
     removePlatformRoleFromUserLoading ||
+    assignPlatformRoleToOrganizationLoading ||
+    removePlatformRoleFromOrganizationLoading ||
     assignRoleToUserLoading ||
     removeRoleFromUserLoading ||
     assignRoleToOrganizationLoading ||
@@ -162,6 +194,8 @@ const useRoleSetManagerRolesAssignment = ({
   return {
     assignPlatformRoleToUser: roleSetId ? assignPlatformRoleToUser : notReady,
     removePlatformRoleFromUser: roleSetId ? removePlatformRoleFromUser : notReady,
+    assignPlatformRoleToOrganization: roleSetId ? assignPlatformRoleToOrganization : notReady,
+    removePlatformRoleFromOrganization: roleSetId ? removePlatformRoleFromOrganization : notReady,
     assignRoleToUser: roleSetId ? assignRoleToUser : notReady,
     removeRoleFromUser: roleSetId ? removeRoleFromUser : notReady,
     assignRoleToOrganization: roleSetId ? assignRoleToOrganization : notReady,

@@ -22,7 +22,9 @@ import { type AdminUserRow, mapUserToRow } from './userListMapper';
 const CrdAdminUsersPage = () => {
   const { t } = useTranslation('crd-admin');
   const navigate = useNavigate();
-  const { isPlatformAdmin } = useAdminAccessGuard();
+  // The email-change capability, not admin-area access: `adminUserEmailChange`
+  // is gated on PLATFORM_USERS_ADMIN at its own resolver (F8's defect shape).
+  const { canChangeUserEmail } = useAdminAccessGuard();
   const {
     userList,
     loading,
@@ -39,7 +41,7 @@ const CrdAdminUsersPage = () => {
     revokeLicensePlan,
   } = useAdminGlobalUserList();
 
-  const rows = userList.map(item => mapUserToRow(item, isPlatformAdmin));
+  const rows = userList.map(item => mapUserToRow(item, canChangeUserEmail));
   const availablePlans = licensePlans.map(plan => ({ id: plan.id, name: plan.name }));
 
   const [licenseRowId, setLicenseRowId] = useState<string | null>(null);
