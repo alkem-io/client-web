@@ -29,3 +29,19 @@ export const typeLabelKey: Record<CollaboraDocumentPreviewType, string> = {
   presentation: 'callout.documentPresentation',
   pdf: 'callout.documentPdf',
 };
+
+export type CollaboraOpenLabelKey = 'callout.openDocument' | 'callout.openDocumentPdf';
+
+/** i18n key for the primary "open" action's label, shared across every surface
+ *  that opens a Collabora document (preview card, framing overlay, contribution
+ *  overlay). Every type reads "Open Document" except PDF, which reads "View" —
+ *  it has no create/edit concept (import-only) and is currently view-only, not
+ *  view/annotate: annotating a PDF and letting Collabora save it corrupts the
+ *  document (a Collabora background-save bug, not ours) — wopi-service forces
+ *  PDF WOPI tokens read-only until that's fixed upstream. */
+export const openLabelKey: Record<CollaboraDocumentPreviewType, CollaboraOpenLabelKey> = {
+  text: 'callout.openDocument',
+  spreadsheet: 'callout.openDocument',
+  presentation: 'callout.openDocument',
+  pdf: 'callout.openDocumentPdf',
+};

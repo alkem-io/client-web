@@ -5,6 +5,7 @@ import {
   type CollaboraDocumentPreviewType,
   colorByType,
   iconByType,
+  openLabelKey,
   typeLabelKey,
 } from '@/crd/lib/collaboraDocumentPreview';
 import { cn } from '@/crd/lib/utils';
@@ -36,22 +37,6 @@ type CalloutCollaboraPreviewProps = {
   className?: string;
 };
 
-// PDF has no create/edit concept (import-only) — the open action reads as
-// "View" rather than "Open Document". Currently view-only, not
-// view/annotate: annotating a PDF and letting Collabora save it corrupts the
-// document (a Collabora background-save bug, not ours) — wopi-service forces
-// PDF WOPI tokens read-only until that's fixed upstream. Kept local rather
-// than folded into the shared `@/crd/lib/collaboraDocumentPreview` maps
-// since the open-button framing is specific to this preview's own action,
-// not a property of the document type shared across every surface that
-// renders it.
-const openLabelKey: Record<CollaboraDocumentPreviewType, string> = {
-  text: 'callout.openDocument',
-  spreadsheet: 'callout.openDocument',
-  presentation: 'callout.openDocument',
-  pdf: 'callout.openDocumentPdf',
-};
-
 export function CalloutCollaboraPreview({
   documentType,
   onOpen,
@@ -64,7 +49,7 @@ export function CalloutCollaboraPreview({
   const Icon = iconByType[documentType];
   const accentColor = colorByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.document');
-  const openLabel = t(openLabelKey[documentType] as 'callout.openDocument');
+  const openLabel = t(openLabelKey[documentType]);
   const compact = size === 'compact';
   const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
   const showImage = Boolean(previewImageUrl) && previewImageUrl !== erroredUrl;

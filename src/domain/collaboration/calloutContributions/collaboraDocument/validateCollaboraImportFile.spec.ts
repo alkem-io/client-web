@@ -106,7 +106,7 @@ describe('validateCollaboraImportFile', () => {
 
   it('checks single-file before extension (multi-file with one valid name still rejected)', () => {
     const a = makeFile('valid.docx', 100);
-    const b = makeFile('invalid.pdf', 100);
+    const b = makeFile('invalid.doc', 100);
     const result = validateCollaboraImportFile([a, b]);
     expect(result).toEqual({ ok: false, error: { kind: 'multiple-files' } });
   });

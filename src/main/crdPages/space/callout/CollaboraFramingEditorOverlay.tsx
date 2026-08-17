@@ -6,6 +6,7 @@ import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/Call
 import { CollaboraCollabFooter } from '@/crd/components/collabora/CollaboraCollabFooter';
 import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { CollaboraTopAlert } from '@/crd/components/collabora/CollaboraTopAlert';
+import { openLabelKey } from '@/crd/lib/collaboraDocumentPreview';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -120,7 +121,7 @@ export function CollaboraFramingEditorOverlay({
               )}
             </div>
             <DialogDescription id="collabora-editor-dialog-description" className="sr-only">
-              {t('callout.openDocument')}
+              {t(openLabelKey[documentType])}
             </DialogDescription>
             <Button variant="ghost" size="icon" onClick={handleClose} aria-label={t('contribution.close')}>
               <X className="w-5 h-5" aria-hidden="true" />

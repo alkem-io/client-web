@@ -6,6 +6,7 @@ import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/Call
 import { CollaboraCollabFooter } from '@/crd/components/collabora/CollaboraCollabFooter';
 import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { CollaboraTopAlert } from '@/crd/components/collabora/CollaboraTopAlert';
+import { openLabelKey } from '@/crd/lib/collaboraDocumentPreview';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -42,17 +43,6 @@ const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
   spreadsheet: Sheet,
   presentation: Presentation,
   pdf: FileType,
-};
-
-// PDF has no create/edit concept (import-only) — the sr-only description
-// reads as "View" rather than "Open Document", mirroring the framing
-// overlay. Currently view-only, not view/annotate — see
-// CalloutCollaboraPreview.tsx's openLabelKey comment for why.
-const openLabelKey: Record<CollaboraDocumentPreviewType, string> = {
-  text: 'callout.openDocument',
-  spreadsheet: 'callout.openDocument',
-  presentation: 'callout.openDocument',
-  pdf: 'callout.openDocumentPdf',
 };
 
 /**
@@ -131,7 +121,7 @@ export function CollaboraContributionEditorOverlay({
               )}
             </div>
             <DialogDescription id="collabora-contribution-editor-dialog-description" className="sr-only">
-              {t(openLabelKey[documentType] as 'callout.openDocument')}
+              {t(openLabelKey[documentType])}
             </DialogDescription>
             <div className="flex items-center gap-1 shrink-0">
               {canDelete && onDelete && (
