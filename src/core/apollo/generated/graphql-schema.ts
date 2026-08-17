@@ -729,6 +729,8 @@ export type Application = {
   state: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** The User who submitted this Application. */
+  user?: Maybe<User>;
 };
 
 export type ApplicationEventInput = {
@@ -1455,7 +1457,6 @@ export type CollaboraDocument = {
 
 export enum CollaboraDocumentType {
   Drawing = 'DRAWING',
-  Pdf = 'PDF',
   Presentation = 'PRESENTATION',
   Spreadsheet = 'SPREADSHEET',
   Wordprocessing = 'WORDPROCESSING',
@@ -2302,7 +2303,7 @@ export type CreateConversationInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   /** Optional display name for GROUP conversations. Ignored for DIRECT conversations (Synapse uses the other member name automatically). */
   displayName?: InputMaybe<Scalars['String']['input']>;
-  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs. Creator is auto-included. */
+  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs, up to 100. Creator is auto-included. */
   memberIDs: Array<Scalars['UUID']['input']>;
   /** The type of conversation to create: DIRECT for 1-on-1, GROUP for multi-party. */
   type: ConversationCreationType;
@@ -5140,7 +5141,7 @@ export type Mutation = {
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
-  /** Leave a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
+  /** Leave a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
   leaveConversation: Scalars['Boolean']['output'];
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
@@ -5166,7 +5167,7 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
-  /** Remove a member from a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. */
+  /** Remove a member from a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick (e.g. insufficient permissions) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
   removeConversationMember: Scalars['Boolean']['output'];
   /** Remove the default callout template from an InnovationFlowState. */
   removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
@@ -9798,7 +9799,7 @@ export type UpdateUserSettingsNotificationPlatformAdminInput = {
   spaceCreated?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive a notification when a user changes their login email address */
   userEmailChanged?: InputMaybe<NotificationSettingInput>;
-  /** [Admin] Receive a notification user is assigned or removed from a global role */
+  /** [Admin] Receive a notification when a user is assigned to or removed from a global role */
   userGlobalRoleChanged?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive notification when a new user signs up */
   userProfileCreated?: InputMaybe<NotificationSettingInput>;
@@ -11325,6 +11326,8 @@ export type CommunityApplicationsInvitationsQuery = {
               type: ActorType;
               profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
             };
+            questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+            user?: { __typename?: 'User'; id: string; email: string } | undefined;
           }>;
           invitations: Array<{
             __typename?: 'Invitation';
@@ -11364,6 +11367,8 @@ export type AdminCommunityApplicationFragment = {
     type: ActorType;
     profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
   };
+  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+  user?: { __typename?: 'User'; id: string; email: string } | undefined;
 };
 
 export type AdminCommunityInvitationFragment = {

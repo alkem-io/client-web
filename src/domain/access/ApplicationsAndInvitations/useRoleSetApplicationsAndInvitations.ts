@@ -126,6 +126,8 @@ const useRoleSetApplicationsAndInvitations = ({
               ? { ...app.actor.profile, email: getActorEmail(actorDetailsMap[app.actor.id]) }
               : undefined,
           },
+          questions: app.questions,
+          user: app.user,
         })) ?? [],
       invitations:
         data?.lookup.roleSet?.invitations.map(inv => ({

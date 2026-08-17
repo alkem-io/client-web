@@ -117,6 +117,15 @@ export const AdminCommunityApplicationFragmentDoc = gql`
   actor {
     ...AdminCommunityCandidateMember
   }
+  questions {
+    id
+    name
+    value
+  }
+  user {
+    id
+    email
+  }
 }
     ${AdminCommunityCandidateMemberFragmentDoc}`;
 export const AdminCommunityInvitationFragmentDoc = gql`

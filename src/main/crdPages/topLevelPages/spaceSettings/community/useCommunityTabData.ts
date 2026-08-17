@@ -11,6 +11,7 @@ import type {
   CommunityOrg,
   CommunityVC,
 } from '@/crd/components/space/settings/SpaceSettingsCommunityView';
+import type { ApplicationModel } from '@/domain/access/model/ApplicationModel';
 import {
   ApplicationEvent,
   ApplicationState,
@@ -36,6 +37,7 @@ export type CommunityPendingRemoval =
 
 export type UseCommunityTabDataResult = {
   members: CommunityMember[];
+  applications: ApplicationModel[];
   pendingMemberships: PendingMembership[];
   organizations: CommunityOrg[];
   virtualContributors: CommunityVC[];
@@ -77,7 +79,7 @@ export type UseCommunityTabDataResult = {
 
 // Pass the raw ISO date through to the CRD layer; the table formats the
 // display string and the tooltip timestamp itself (locale-aware, via date-fns).
-const toIsoString = (d: Date | string | undefined | null): string => {
+export const toIsoString = (d: Date | string | undefined | null): string => {
   if (!d) return '';
   if (d instanceof Date) return d.toISOString();
   return String(d);
@@ -339,6 +341,7 @@ export function useCommunityTabData(roleSetId: string): UseCommunityTabDataResul
 
   return {
     members,
+    applications: community.membershipAdmin.applications,
     pendingMemberships,
     organizations,
     virtualContributors,

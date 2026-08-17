@@ -38,6 +38,7 @@ import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
 import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
@@ -190,6 +191,13 @@ export default function CrdSpaceSettingsPage() {
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
   const { space: spaceContext } = useSpace();
   const { subspace } = useSubSpace();
+
+  const csvExport = useCommunityCsvExport({
+    members: community.members,
+    applications: community.applications,
+    spaceDisplayName: spaceContext.about.profile.displayName,
+    loading: community.loading,
+  });
   const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 
   // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
@@ -489,6 +497,8 @@ export default function CrdSpaceSettingsPage() {
                       onQuestionMoveUp={applicationForm.onQuestionMoveUp}
                       onQuestionMoveDown={applicationForm.onQuestionMoveDown}
                       onSave={applicationForm.onSave}
+                      onExportApplications={csvExport.exportApplications}
+                      exportDisabled={csvExport.exportDisabled}
                       onImageUpload={md.onImageUpload}
                       iframeAllowedUrls={md.iframeAllowedUrls}
                       onError={md.onError}
@@ -538,6 +548,8 @@ export default function CrdSpaceSettingsPage() {
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
                 onInviteUsers={() => setInviteMembersOpen(true)}
+                onExportMembers={csvExport.exportMembers}
+                exportDisabled={csvExport.exportDisabled}
               />
             )}
             {activeTab === 'subspaces' && isTabVisible('subspaces') && (
