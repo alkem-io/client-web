@@ -53,7 +53,7 @@ describe('CalloutCollaboraPreview — PDF type', () => {
     expect(screen.getByRole('button', { name: enJson.callout.openDocument })).toBeInTheDocument();
   });
 
-  it('offers Replace file for PDF the same way as other types when onReplace is provided (US2)', () => {
+  it('offers Replace file for PDF the same way as other types when onReplace is provided', () => {
     renderPreview(<CalloutCollaboraPreview documentType="pdf" onOpen={() => {}} onReplace={() => {}} />);
     expect(screen.getByRole('button', { name: enJson.callout.documentReplace })).toBeInTheDocument();
   });

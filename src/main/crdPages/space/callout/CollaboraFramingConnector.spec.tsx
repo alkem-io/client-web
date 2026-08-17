@@ -82,7 +82,7 @@ describe('CollaboraFramingConnector — Replace action gating', () => {
     expect(screen.getByRole('button', { name: enJson.callout.openDocument })).toBeInTheDocument();
   });
 
-  it('shows the Replace file action for PDF when the user has edit rights (FR-004)', () => {
+  it('shows the Replace file action for PDF when the user has edit rights', () => {
     renderConnector(
       <CollaboraFramingConnector callout={makeCallout([AuthorizationPrivilege.Update], 'PDF')} onOpen={() => {}} />
     );

@@ -436,7 +436,7 @@ function CalloutFormConnectorInner({
     // Auto-prefill the post title from the filename when the title is empty.
     // Pure convenience default: the post title and the document's own name
     // are independent — the server always derives the document's name from
-    // the uploaded file, regardless of what the post title ends up as (FR-004a).
+    // the uploaded file, regardless of what the post title ends up as.
     if (!values.title.trim()) {
       setField('title', filenameWithoutExtension(file.name));
     }

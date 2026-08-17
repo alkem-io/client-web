@@ -19,7 +19,7 @@ describe('collaboraImportFormats', () => {
     expect(COLLABORA_IMPORT_ACCEPT_ATTR).toBe('.docx,.xlsx,.pptx,.pdf');
   });
 
-  it('includes PDF in P1 (import-only, no blank-create option — FR-001/FR-003)', () => {
+  it('includes PDF in P1 (import-only, no blank-create option)', () => {
     expect(COLLABORA_IMPORT_EXTENSIONS_P1).toContain('.pdf');
   });
 

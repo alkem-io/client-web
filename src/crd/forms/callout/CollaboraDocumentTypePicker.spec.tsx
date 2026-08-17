@@ -1,10 +1,11 @@
 /**
  * @vitest-environment jsdom
  *
- * PDF is import-only (Assumptions in spec.md) — it must never gain a
- * blank-create card in this picker (FR-003). This is a regression guard: the
- * picker's `options` list must stay exactly Word/Excel/PowerPoint even though
- * PDF is now part of the P1 import allowlist elsewhere.
+ * PDF is import-only — Collabora's PDF mode has no blank-document concept —
+ * so it must never gain a blank-create card in this picker. This is a
+ * regression guard: the picker's `options` list must stay exactly
+ * Word/Excel/PowerPoint even though PDF is now part of the P1 import
+ * allowlist elsewhere.
  */
 import { render, screen } from '@testing-library/react';
 import i18next from 'i18next';
@@ -26,7 +27,7 @@ beforeAll(async () => {
   });
 });
 
-describe('CollaboraDocumentTypePicker — no blank-create PDF option (FR-003)', () => {
+describe('CollaboraDocumentTypePicker — no blank-create PDF option', () => {
   it('offers exactly the Word/Excel/PowerPoint blank-create cards, never a PDF card', () => {
     render(
       <I18nextProvider i18n={i18n}>

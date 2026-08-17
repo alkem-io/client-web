@@ -38,7 +38,7 @@ describe('mapCalloutDetailsToPostCard — Collabora document framing type mappin
     expect(result.framingDocumentType).toBe(expected);
   });
 
-  it('maps a PDF-typed contribution to the "pdf" preview type (T012 guard — not undefined/dropped)', () => {
+  it('maps a PDF-typed contribution to the "pdf" preview type, not undefined/dropped', () => {
     const result = mapCalloutDetailsToPostCard(makeCollaboraCallout(CollaboraDocumentType.Pdf), t);
     expect(result.framingDocumentType).toBe('pdf');
     expect(result.framingDocumentType).not.toBeUndefined();

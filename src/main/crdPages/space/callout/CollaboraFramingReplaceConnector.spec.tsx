@@ -255,7 +255,7 @@ describe('CollaboraFramingReplaceConnector', () => {
     expect(await screen.findByText(lockMessage)).toBeInTheDocument();
   });
 
-  it('names PDF as the current document type and narrows the picker + hint to .pdf only (FR-004)', () => {
+  it('names PDF as the current document type and narrows the picker + hint to .pdf only', () => {
     renderConnector(
       <CollaboraFramingReplaceConnector
         open={true}
@@ -272,7 +272,7 @@ describe('CollaboraFramingReplaceConnector', () => {
     expect(screen.getByText(hint)).toBeInTheDocument();
   });
 
-  it('replacing an existing PDF document with another PDF succeeds (US2)', async () => {
+  it('replacing an existing PDF document with another PDF succeeds', async () => {
     let captured: Record<string, unknown> | undefined;
     const onOpenChange = vi.fn();
     const mocks: MockedResponse[] = [
@@ -305,7 +305,7 @@ describe('CollaboraFramingReplaceConnector', () => {
     await waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false));
   });
 
-  it('rejects replacing a PDF document with a non-PDF file, client-side, without calling the mutation (FR-004)', async () => {
+  it('rejects replacing a PDF document with a non-PDF file, client-side, without calling the mutation', async () => {
     const variableMatcher = vi.fn().mockReturnValue(true);
     const mocks: MockedResponse[] = [
       {

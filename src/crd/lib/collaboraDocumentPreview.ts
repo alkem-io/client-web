@@ -6,7 +6,7 @@ export const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> =
   text: FileText,
   spreadsheet: Sheet,
   presentation: Presentation,
-  // Distinct from the other three so a PDF is recognizable at a glance (FR-007).
+  // Distinct from the other three so a PDF is recognizable at a glance.
   pdf: FileType,
 };
 

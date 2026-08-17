@@ -95,7 +95,7 @@ describe('validateCollaboraImportFile', () => {
     expect(result.ok).toBe(true);
   });
 
-  it('returns { ok: true, file } on a valid .pdf (import-only, FR-001)', () => {
+  it('returns { ok: true, file } on a valid .pdf', () => {
     const file = makeFile('report.pdf', 100_000);
     const result = validateCollaboraImportFile([file]);
     expect(result.ok).toBe(true);

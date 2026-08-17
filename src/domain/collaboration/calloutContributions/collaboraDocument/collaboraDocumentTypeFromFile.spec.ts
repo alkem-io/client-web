@@ -28,7 +28,7 @@ describe('isSameCollaboraDocumentType', () => {
     expect(isSameCollaboraDocumentType('new.xlsx', 'SPREADSHEET')).toBe(true);
   });
 
-  it('is true for a PDF replacing a PDF (FR-004)', () => {
+  it('is true for a PDF replacing a PDF', () => {
     expect(isSameCollaboraDocumentType('new.pdf', CollaboraDocumentType.Pdf)).toBe(true);
     expect(isSameCollaboraDocumentType('new.pdf', 'PDF')).toBe(true);
   });
@@ -37,7 +37,7 @@ describe('isSameCollaboraDocumentType', () => {
     expect(isSameCollaboraDocumentType('new.xlsx', CollaboraDocumentType.Wordprocessing)).toBe(false);
   });
 
-  it('is false when a non-PDF file is used to replace a PDF document (FR-004)', () => {
+  it('is false when a non-PDF file is used to replace a PDF document', () => {
     expect(isSameCollaboraDocumentType('new.docx', CollaboraDocumentType.Pdf)).toBe(false);
   });
 
