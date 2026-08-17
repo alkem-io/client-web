@@ -200,6 +200,8 @@
     "documentPdf": "PDF",
     "addDocument": "Dokument hinzufügen",
     "defaultDocumentName": "Neues Dokument",
+    "createDocument": "Neues Dokument erstellen",
+    "documentNameLabel": "Dokumenttitel",
     "documentTypeLabel": "Dokumenttyp",
     "createNew": "Neu erstellen",
     "documentImportOr": "oder",

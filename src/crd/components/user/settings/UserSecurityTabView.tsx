@@ -1,4 +1,4 @@
-import { Info, KeyRound, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Info, KeyRound, Plug, ShieldAlert, ShieldCheck } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
@@ -26,6 +26,12 @@ export type UserSecurityTabViewProps = {
    * `state.hasWebauthn === true`.
    */
   webauthnForm: ReactNode;
+  /**
+   * Slot for the MCP API Keys card (038). Provided by the integration page
+   * so the CRD view stays free of Apollo/GraphQL imports; rendered whenever
+   * `state.kind === 'ready'` — the card has its own loading/empty states.
+   */
+  mcpApiKeysCard: ReactNode;
 };
 
 /**
@@ -33,7 +39,7 @@ export type UserSecurityTabViewProps = {
  * Kratos password and passkey forms in two `SettingsCard`s; the form
  * fields themselves are NOT restyled (FR-080 — out of scope).
  */
-export function UserSecurityTabView({ state, passwordForm, webauthnForm }: UserSecurityTabViewProps) {
+export function UserSecurityTabView({ state, passwordForm, webauthnForm, mcpApiKeysCard }: UserSecurityTabViewProps) {
   const { t } = useTranslation(NS);
 
   if (state.kind === 'loading') {
@@ -80,6 +86,13 @@ export function UserSecurityTabView({ state, passwordForm, webauthnForm }: UserS
             <p>{t('user.security.notEnabled')}</p>
           </div>
         )}
+      </SettingsCard>
+      <SettingsCard
+        icon={Plug}
+        title={t('user.security.mcpApiKeys.title')}
+        description={t('user.security.mcpApiKeys.description')}
+      >
+        {mcpApiKeysCard}
       </SettingsCard>
     </div>
   );

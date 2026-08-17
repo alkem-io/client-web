@@ -12,15 +12,25 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean };
   Int: { input: number; output: number };
   Float: { input: number; output: number };
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: Date; output: Date };
+  /** An Emoji. */
   Emoji: { input: string; output: string };
+  /** A representation of a Lifecycle Definition, based on XState. It is serialized JSON. */
   LifecycleDefinition: { input: string; output: string };
+  /** A markdown string. */
   Markdown: { input: string; output: string };
+  /** An identifier that originates from the underlying messaging platform. */
   MessageID: { input: string; output: string };
+  /** A human readable identifier, 3 <= length <= 28. Used for URL paths in clients. Characters allowed: a-z,A-Z,0-9. */
   NameID: { input: string; output: string };
+  /** Cursor used for paginating search results. */
   SearchCursor: { input: string; output: string };
+  /** A uuid identifier. Length 36 characters. */
   UUID: { input: string; output: string };
+  /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
+  /** Content of a Whiteboard, as JSON. */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -619,6 +629,12 @@ export type AddVisualToMediaGalleryInput = {
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
   /** The type of visual to add (e.g. MEDIA_GALLERY_IMAGE, MEDIA_GALLERY_VIDEO). */
   visualType: VisualType;
+};
+
+export type AdminRevokeMcpApiKeyInput = {
+  keyID: Scalars['UUID']['input'];
+  /** Owner of the key. Required — it scopes the revoke and the audit subject. */
+  userID: Scalars['UUID']['input'];
 };
 
 export type AdminUserEmailChangeDriftResolveInput = {
@@ -4580,6 +4596,46 @@ export type LookupQueryResultsWhiteboardArgs = {
   ID: Scalars['UUID']['input'];
 };
 
+/** Metadata for one MCP API key. The key value itself is never exposed here. */
+export type McpApiKey = {
+  __typename?: 'McpApiKey';
+  createdDate: Scalars['DateTime']['output'];
+  /** Optional expiry chosen at mint. */
+  expiresAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['UUID']['output'];
+  /** When this key last authenticated a request. */
+  lastUsedAt?: Maybe<Scalars['DateTime']['output']>;
+  /** Source address of the last request this key authenticated. */
+  lastUsedFromIp?: Maybe<Scalars['String']['output']>;
+  /** User-supplied label. Not unique. */
+  name: Scalars['String']['output'];
+  /** Granted operations, flattened from the stored scope. */
+  operations: Array<McpApiKeyOperation>;
+  status: McpApiKeyStatus;
+};
+
+/** Result of minting a key. The only place the plaintext is ever returned. */
+export type McpApiKeyMintResult = {
+  __typename?: 'McpApiKeyMintResult';
+  /** The plaintext key. Returned EXACTLY ONCE — it is not stored and cannot be re-derived. */
+  apiKey: Scalars['String']['output'];
+  /** Metadata for the key just created. */
+  key: McpApiKey;
+};
+
+/** Operations an MCP API key may perform. */
+export enum McpApiKeyOperation {
+  Read = 'READ',
+  Tools = 'TOOLS',
+}
+
+/** Lifecycle status of an MCP API key. REVOKED takes precedence over EXPIRED. */
+export enum McpApiKeyStatus {
+  Active = 'ACTIVE',
+  Expired = 'EXPIRED',
+  Revoked = 'REVOKED',
+}
+
 export type MeConversationsResult = {
   __typename?: 'MeConversationsResult';
   /** All conversations (direct and group) for the current authenticated user. Client handles categorization by room type and member actor types. */
@@ -4598,6 +4654,8 @@ export type MeQueryResults = {
   conversations: MeConversationsResult;
   /** The query id */
   id: Scalars['String']['output'];
+  /** The current user's MCP API keys, newest first. Includes revoked and expired keys so last-used evidence survives revocation. */
+  mcpApiKeys: Array<McpApiKey>;
   /** The Spaces I am contributing to */
   mySpaces: Array<MySpaceResults>;
   /** Get all notifications for the logged in user. */
@@ -4779,6 +4837,15 @@ export enum MimeType {
   Xpng = 'XPNG',
 }
 
+export type MintMcpApiKeyInput = {
+  /** Optional expiry. MUST be in the future when supplied. */
+  expiresAt?: InputMaybe<Scalars['DateTime']['input']>;
+  /** Label for the key. 1..128 characters after trimming. */
+  name: Scalars['String']['input'];
+  /** At least one operation. Duplicates are removed; order is not significant. */
+  operations: Array<McpApiKeyOperation>;
+};
+
 export type ModelCardAiEngineResult = {
   __typename?: 'ModelCardAiEngineResult';
   /** Access to detailed information on the underlying models specifications */
@@ -4883,6 +4950,8 @@ export type Mutation = {
   adminLicensePolicyDeleteCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
   /** Updates a CredentialRule on the LicensePolicy. */
   adminLicensePolicyUpdateCredentialRule: LicensingCredentialBasedPolicyCredentialRule;
+  /** Platform admin: revoke a named user's MCP API key. Idempotent. */
+  adminRevokeMcpApiKey: McpApiKey;
   /** Ingests new data into Elasticsearch from scratch. This will delete all existing data and ingest new data from the source. This is an admin only operation. */
   adminSearchIngestFromScratch: Scalars['String']['output'];
   /** Update the Avatar on the Profile with the spedified profileID to be stored as a Document. */
@@ -5081,6 +5150,8 @@ export type Mutation = {
   markNotificationsAsRead: Scalars['Boolean']['output'];
   /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
+  /** Mint a new MCP API key for the current user. Returns the plaintext exactly once. */
+  mintMcpApiKey: McpApiKeyMintResult;
   /** Moves the specified Contribution to another Callout. */
   moveContributionToCallout: CalloutContribution;
   /** Move an L1 subspace to a different L0 space. The subspace remains at level 1       but changes parent. All content moves with it. All community memberships are cleared.       Requires platform admin privileges. */
@@ -5141,6 +5212,8 @@ export type Mutation = {
   revokeLicensePlanFromAccount: Account;
   /** Revokes the specified LicensePlan on a Space. */
   revokeLicensePlanFromSpace: Space;
+  /** Revoke one of the current user's own MCP API keys. Idempotent. */
+  revokeMcpApiKey: McpApiKey;
   /** Send a private (1:1) chat message to each of the given Users individually. Does NOT create a group conversation. Each recipient is processed independently and reported on; partial success is possible. */
   sendDirectMessageToUsers: Array<DirectMessageDeliveryResult>;
   /** Sends a reply to a message from the specified Room. */
@@ -5337,6 +5410,10 @@ export type MutationAdminLicensePolicyDeleteCredentialRuleArgs = {
 
 export type MutationAdminLicensePolicyUpdateCredentialRuleArgs = {
   updateData: UpdateLicensePolicyCredentialRuleInput;
+};
+
+export type MutationAdminRevokeMcpApiKeyArgs = {
+  revokeData: AdminRevokeMcpApiKeyInput;
 };
 
 export type MutationAdminUpdateContributorAvatarsArgs = {
@@ -5707,6 +5784,10 @@ export type MutationMarkNotificationsAsUnreadArgs = {
   filter?: InputMaybe<NotificationEventsFilterInput>;
 };
 
+export type MutationMintMcpApiKeyArgs = {
+  mintData: MintMcpApiKeyInput;
+};
+
 export type MutationMoveContributionToCalloutArgs = {
   moveContributionData: MoveCalloutContributionInput;
 };
@@ -5820,6 +5901,10 @@ export type MutationRevokeLicensePlanFromAccountArgs = {
 
 export type MutationRevokeLicensePlanFromSpaceArgs = {
   planData: RevokeLicensePlanFromSpace;
+};
+
+export type MutationRevokeMcpApiKeyArgs = {
+  revokeData: RevokeMcpApiKeyInput;
 };
 
 export type MutationSendDirectMessageToUsersArgs = {
@@ -6179,6 +6264,8 @@ export enum NotificationEvent {
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
   UserCommentReply = 'USER_COMMENT_REPLY',
+  UserConversationMessageDirect = 'USER_CONVERSATION_MESSAGE_DIRECT',
+  UserConversationMessageGroup = 'USER_CONVERSATION_MESSAGE_GROUP',
   UserEmailChangeGlobalAdminNotification = 'USER_EMAIL_CHANGE_GLOBAL_ADMIN_NOTIFICATION',
   UserEmailChangeNewAddressNotification = 'USER_EMAIL_CHANGE_NEW_ADDRESS_NOTIFICATION',
   UserEmailChangeSecuritySignal = 'USER_EMAIL_CHANGE_SECURITY_SIGNAL',
@@ -6265,6 +6352,8 @@ export type NotificationRecipientsInput = {
   triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
   /** The ID of the specific user recipient for user-related notifications (e.g., invitations, mentions). */
   userID?: InputMaybe<Scalars['UUID']['input']>;
+  /** Plural recipient user IDs (e.g. conversation-message events) — resolved via a single OR-combined credentials query. Bounded to at most 100 entries; larger conversations must be fanned out by the caller in bounded batches. */
+  userIDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The ID of the Virtual Contributor to use to determine recipients. */
   virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -6576,6 +6665,8 @@ export type PlatformAdminQueryResults = {
   innovationPacks: Array<InnovationPack>;
   /** The most recent email-change audit entry for the named subject user. Returns null if no audit entry exists. */
   latestUserEmailChangeAuditEntry?: Maybe<UserEmailChangeAuditEntry>;
+  /** MCP API keys belonging to the named user. Platform admins only. Keys bound to a system actor are never returned. */
+  mcpApiKeys: Array<McpApiKey>;
   /** Retrieve all Organizations on the Platform. This is only available to Platform Admins. */
   organizations: PaginatedOrganization;
   /** Retrieve all Spaces on the Platform. This is only available to Platform Admins. */
@@ -6595,6 +6686,10 @@ export type PlatformAdminQueryResultsInnovationPacksArgs = {
 };
 
 export type PlatformAdminQueryResultsLatestUserEmailChangeAuditEntryArgs = {
+  userID: Scalars['UUID']['input'];
+};
+
+export type PlatformAdminQueryResultsMcpApiKeysArgs = {
   userID: Scalars['UUID']['input'];
 };
 
@@ -7594,6 +7689,10 @@ export type RevokeLicensePlanFromSpace = {
   licensingID?: InputMaybe<Scalars['UUID']['input']>;
   /** The ID of the Space to assign the LicensePlan to. */
   spaceID: Scalars['UUID']['input'];
+};
+
+export type RevokeMcpApiKeyInput = {
+  keyID: Scalars['UUID']['input'];
 };
 
 export type RevokeOrganizationAuthorizationCredentialInput = {
@@ -9764,6 +9863,10 @@ export type UpdateUserSettingsNotificationSpaceInput = {
 export type UpdateUserSettingsNotificationUserInput = {
   /** Receive a notification when someone replies to a comment I made. */
   commentReply?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageDirect?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone posts in a group chat I am a member of. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageGroup?: InputMaybe<NotificationSettingInput>;
   /** Settings related to User Membership Notifications. */
   membership?: InputMaybe<UpdateUserSettingsNotificationUserMembershipInput>;
   /** Receive a notification you are mentioned */
@@ -10332,6 +10435,10 @@ export type UserSettingsNotificationUser = {
   __typename?: 'UserSettingsNotificationUser';
   /** Receive a notification when someone replies to a comment I made. */
   commentReply: UserSettingsNotificationChannels;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageDirect: UserSettingsNotificationChannels;
+  /** Receive a notification when someone posts in a group chat I am a member of. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageGroup: UserSettingsNotificationChannels;
   /** The notifications settings for membership events for this User */
   membership: UserSettingsNotificationUserMembership;
   /** Receive a notification you are mentioned */
@@ -15852,6 +15959,7 @@ export type CreateCollaboraDocumentOnCalloutMutation = {
   __typename?: 'Mutation';
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
+    id: string;
     collaboraDocument?:
       | {
           __typename?: 'CollaboraDocument';
@@ -23577,6 +23685,18 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
             push: boolean;
           };
+          conversationMessageDirect: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          conversationMessageGroup: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           membership: {
             __typename?: 'UserSettingsNotificationUserMembership';
             spaceCommunityInvitationReceived: {
@@ -23963,6 +24083,18 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
         push: boolean;
       };
+      conversationMessageDirect: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      conversationMessageGroup: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -24191,6 +24323,18 @@ export type UserSettingsQuery = {
                   push: boolean;
                 };
                 messageReceived: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageDirect: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageGroup: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -37330,6 +37474,68 @@ export type SpaceExplorerWelcomeSpaceQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type MyMcpApiKeysQueryVariables = Exact<{ [key: string]: never }>;
+
+export type MyMcpApiKeysQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    mcpApiKeys: Array<{
+      __typename?: 'McpApiKey';
+      id: string;
+      name: string;
+      operations: Array<McpApiKeyOperation>;
+      createdDate: Date;
+      expiresAt?: Date | undefined;
+      lastUsedAt?: Date | undefined;
+      lastUsedFromIp?: string | undefined;
+      status: McpApiKeyStatus;
+    }>;
+  };
+};
+
+export type MintMcpApiKeyMutationVariables = Exact<{
+  mintData: MintMcpApiKeyInput;
+}>;
+
+export type MintMcpApiKeyMutation = {
+  __typename?: 'Mutation';
+  mintMcpApiKey: {
+    __typename?: 'McpApiKeyMintResult';
+    apiKey: string;
+    key: {
+      __typename?: 'McpApiKey';
+      id: string;
+      name: string;
+      operations: Array<McpApiKeyOperation>;
+      createdDate: Date;
+      expiresAt?: Date | undefined;
+      lastUsedAt?: Date | undefined;
+      lastUsedFromIp?: string | undefined;
+      status: McpApiKeyStatus;
+    };
+  };
+};
+
+export type RevokeMcpApiKeyMutationVariables = Exact<{
+  revokeData: RevokeMcpApiKeyInput;
+}>;
+
+export type RevokeMcpApiKeyMutation = {
+  __typename?: 'Mutation';
+  revokeMcpApiKey: {
+    __typename?: 'McpApiKey';
+    id: string;
+    name: string;
+    operations: Array<McpApiKeyOperation>;
+    createdDate: Date;
+    expiresAt?: Date | undefined;
+    lastUsedAt?: Date | undefined;
+    lastUsedFromIp?: string | undefined;
+    status: McpApiKeyStatus;
   };
 };
 

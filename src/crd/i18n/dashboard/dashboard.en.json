@@ -194,7 +194,7 @@
   },
   "nonActivity": {
     "sections": {
-      "pinnedLastActive": "Last Active In",
+      "pinnedLastActive": "Pinned & Last Active In",
       "mostActivity": "Spaces with Most Activity",
       "leadAdmin": "Spaces I Lead & Administer",
       "host": "Spaces I Host"

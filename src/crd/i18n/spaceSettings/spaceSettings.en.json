@@ -321,7 +321,7 @@
       },
       "addDialog": {
         "title": "Add Organisation",
-        "description": "Pick an organisation whose members can join this space without approval.",
+        "description": "These organizations will be visible as members in this Space and on their organization profile.",
         "search": "Search organisations…",
         "empty": "No organisations match your search."
       }

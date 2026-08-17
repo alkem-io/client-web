@@ -50,7 +50,8 @@ export interface CollabProps {
   username: string;
   onRemoteSave: (_error?: string) => void; // The client has received a room saved event
   filesManager: WhiteboardFilesManager;
-  onCloseConnection: () => void;
+  /** `hasError` distinguishes a failed connection attempt from a transient drop. */
+  onCloseConnection: (hasError: boolean) => void;
   onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   onSceneInitChange: (initialized: boolean) => void;
   onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
@@ -94,7 +95,7 @@ class Collab {
 
   private lastBroadcastedOrReceivedSceneVersion: number = -1;
   private collaborators = new Map<SocketId, Collaborator>();
-  private onCloseConnection: () => void;
+  private onCloseConnection: (hasError: boolean) => void;
   private onCollaboratorModeChange: (event: CollaboratorModeEvent) => void;
   private onSceneInitChange: (initialized: boolean) => void;
   private onIncomingEmojiReaction?: OnIncomingEmojiReactionCallback;
@@ -168,9 +169,9 @@ class Collab {
     this.destroySocketClient({ isUnload: true });
   };
 
-  private handleCloseConnection = () => {
+  private handleCloseConnection = (hasError: boolean) => {
     this.setCollaborators([]);
-    this.onCloseConnection();
+    this.onCloseConnection(hasError);
     this.portal.sceneInitialized = false;
     this.onSceneInitChange(false);
   };
