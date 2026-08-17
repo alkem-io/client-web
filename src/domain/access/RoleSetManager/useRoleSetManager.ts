@@ -93,7 +93,11 @@ const useRoleSetManager = ({
   }
 
   // TODO: Additional Auth Check
-  const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
+  const {
+    data: roleSetDetails,
+    loading: loadingRoleSet,
+    error: roleSetAuthError,
+  } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
@@ -242,7 +246,7 @@ const useRoleSetManager = ({
     myPrivileges,
     roleNames: validRoles,
     loading: loadingRoleSet || loadingRoleSetData,
-    errored: !!roleSetDataError,
+    errored: !!roleSetDataError || !!roleSetAuthError,
 
     users: data.users,
     organizations: data.organizations,

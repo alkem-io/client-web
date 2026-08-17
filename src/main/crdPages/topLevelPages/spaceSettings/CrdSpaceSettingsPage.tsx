@@ -195,7 +195,7 @@ export default function CrdSpaceSettingsPage() {
   const csvExport = useCommunityCsvExport({
     members: community.members,
     applications: community.applications,
-    spaceDisplayName: spaceContext.about.profile.displayName,
+    spaceDisplayName: level === 'L0' ? spaceContext.about.profile.displayName : subspace.about.profile.displayName,
     loading: community.loading,
     errored: community.errored,
   });
