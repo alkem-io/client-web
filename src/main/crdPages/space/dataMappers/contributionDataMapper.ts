@@ -1,5 +1,6 @@
 import type { Locale } from 'date-fns';
 import { isFileAttachmentUrl } from '@/core/utils/links';
+import type { CollaboraDocumentPreviewType } from '@/crd/lib/collaboraDocumentPreview';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
 import { toCollaboraPreviewType } from '@/main/crdPages/space/callout/collaboraDocumentTypeMap';
 
@@ -31,8 +32,8 @@ type ContributionCardData = {
   linkIsFile?: boolean;
   /** For document contributions: the underlying CollaboraDocument id (different from the contribution wrapper id). Opens the editor. */
   documentId?: string;
-  /** For document contributions: drives the type-differentiated icon (Word/Sheet/Slide). */
-  documentType?: 'text' | 'spreadsheet' | 'presentation';
+  /** For document contributions: drives the type-differentiated icon (Word/Sheet/Slide/PDF). */
+  documentType?: CollaboraDocumentPreviewType;
 };
 
 export type { ContributionCardData };
