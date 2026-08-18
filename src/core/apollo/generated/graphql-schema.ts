@@ -622,6 +622,13 @@ export type AddPollOptionInput = {
   text: Scalars['String']['input'];
 };
 
+export type AddReactionToCalloutInput = {
+  /** The ID of the Callout to react to. */
+  calloutID: Scalars['UUID']['input'];
+  /** Must be one of the platform allowed emoji slugs; validated server-side (ValidationException on miss). */
+  emoji: Scalars['String']['input'];
+};
+
 export type AddVisualToMediaGalleryInput = {
   /** The ID of the media gallery. */
   mediaGalleryID: Scalars['String']['input'];
@@ -1147,6 +1154,10 @@ export type Callout = {
   publishedBy?: Maybe<User>;
   /** The Date of the publishing of this Callout. */
   publishedDate?: Maybe<Scalars['DateTime']['output']>;
+  /** Who reacted (tier-2). Bounded: 100 most recent by last change, descending. Fetch only on demand. */
+  reactions: Array<CalloutReaction>;
+  /** Cheap always-shown summary (tier-1). Dataloader-batched; safe to select on feeds. */
+  reactionsSummary: CalloutReactionsSummary;
   /** The Callout Settings associated with this Callout. */
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
@@ -1318,6 +1329,30 @@ export type CalloutPostCreated = {
   post: Post;
   /** The sorting order for this Contribution. */
   sortOrder: Scalars['Float']['output'];
+};
+
+export type CalloutReaction = {
+  __typename?: 'CalloutReaction';
+  /** Allow-list slug (e.g. "heart"). */
+  emoji: Scalars['String']['output'];
+  /** The unique identifier. */
+  id: Scalars['UUID']['output'];
+  /** When this person's reaction was made or last changed (a swap updates this). */
+  updatedDate: Scalars['DateTime']['output'];
+  /** The reactor. Null only in the deletion race window; clients skip null users. */
+  user?: Maybe<User>;
+};
+
+export type CalloutReactionsSummary = {
+  __typename?: 'CalloutReactionsSummary';
+  /** The emoji slugs a user may react with on this Callout. */
+  allowedEmojis: Array<Scalars['String']['output']>;
+  /** Distinct emoji slugs currently in use, in allow-list order. Never carries counts. */
+  emojis: Array<Scalars['String']['output']>;
+  /** The requesting user's current reaction slug; null when none or unauthenticated. */
+  myReactionEmoji?: Maybe<Scalars['String']['output']>;
+  /** Number of distinct people currently holding a reaction on this Callout. */
+  total: Scalars['Int']['output'];
 };
 
 /** The selection mode for a collection callout (Contributors or Subspaces). AUTO (default) returns the full computed set; CUSTOM restricts to the admin-curated selectedIds list. */
@@ -4927,6 +4962,8 @@ export type Mutation = {
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a new option to a Poll. Requires UPDATE privilege, or CONTRIBUTE privilege when the poll setting allowContributorsAddOptions is enabled. The new option is appended with the next available sort order. */
   addPollOption: Poll;
+  /** Adds or swaps the requesting user's single reaction on a Callout. Requires CONTRIBUTE on the Callout. The Callout must be published and not a template. The emoji must be on the platform allow-list. */
+  addReactionToCallout: Callout;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Adds a new visual to the specified media gallery. */
@@ -5183,6 +5220,8 @@ export type Mutation = {
   removePollOption: Poll;
   /** Remove the current user vote from a Poll. Requires CONTRIBUTE privilege on the Poll. If the user has not voted, returns a validation error. */
   removePollVote: Poll;
+  /** Removes the requesting user's reaction from a Callout. Idempotent — no error when no reaction exists. Self-scoped; requires only authentication (not CONTRIBUTE), so a person who left the space can still retract their own reaction. */
+  removeReactionFromCallout: Callout;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean']['output'];
   /** Removes an Actor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
@@ -5375,6 +5414,10 @@ export type MutationAddNotificationEmailToBlacklistArgs = {
 
 export type MutationAddPollOptionArgs = {
   optionData: AddPollOptionInput;
+};
+
+export type MutationAddReactionToCalloutArgs = {
+  reactionData: AddReactionToCalloutInput;
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -5843,6 +5886,10 @@ export type MutationRemovePollOptionArgs = {
 
 export type MutationRemovePollVoteArgs = {
   voteData: RemovePollVoteInput;
+};
+
+export type MutationRemoveReactionFromCalloutArgs = {
+  reactionData: RemoveReactionFromCalloutInput;
 };
 
 export type MutationRemoveReactionToMessageInRoomArgs = {
@@ -7641,6 +7688,11 @@ export type RemovePollOptionInput = {
 export type RemovePollVoteInput = {
   /** The ID of the Poll from which to remove the current user vote. */
   pollID: Scalars['UUID']['input'];
+};
+
+export type RemoveReactionFromCalloutInput = {
+  /** The ID of the Callout to remove the reaction from. */
+  calloutID: Scalars['UUID']['input'];
 };
 
 export type RemoveRoleOnRoleSetInput = {
@@ -15123,6 +15175,13 @@ export type UpdateCalloutContentMutation = {
             | undefined;
         }
       | undefined;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
   };
 };
 
@@ -15608,6 +15667,13 @@ export type UpdateCalloutVisibilityMutation = {
             | undefined;
         }
       | undefined;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
   };
 };
 
@@ -17482,6 +17548,13 @@ export type CreateCalloutMutation = {
             | undefined;
         }
       | undefined;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
   };
 };
 
@@ -18139,6 +18212,13 @@ export type CalloutDetailsQuery = {
                   | undefined;
               }
             | undefined;
+          reactionsSummary: {
+            __typename?: 'CalloutReactionsSummary';
+            total: number;
+            emojis: Array<string>;
+            myReactionEmoji?: string | undefined;
+            allowedEmojis: Array<string>;
+          };
           classification?:
             | {
                 __typename?: 'Classification';
@@ -18656,6 +18736,13 @@ export type CalloutDetailsFragment = {
           | undefined;
       }
     | undefined;
+  reactionsSummary: {
+    __typename?: 'CalloutReactionsSummary';
+    total: number;
+    emojis: Array<string>;
+    myReactionEmoji?: string | undefined;
+    allowedEmojis: Array<string>;
+  };
 };
 
 export type AddVisualToMediaGalleryMutationVariables = Exact<{
@@ -36229,6 +36316,92 @@ export type CalloutsIndexListQuery = {
                 allowedTypes: Array<CalloutContributionType>;
               };
             };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutReactionsSummaryFragment = {
+  __typename?: 'Callout';
+  reactionsSummary: {
+    __typename?: 'CalloutReactionsSummary';
+    total: number;
+    emojis: Array<string>;
+    myReactionEmoji?: string | undefined;
+    allowedEmojis: Array<string>;
+  };
+};
+
+export type AddReactionToCalloutMutationVariables = Exact<{
+  reactionData: AddReactionToCalloutInput;
+}>;
+
+export type AddReactionToCalloutMutation = {
+  __typename?: 'Mutation';
+  addReactionToCallout: {
+    __typename?: 'Callout';
+    id: string;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
+  };
+};
+
+export type RemoveReactionFromCalloutMutationVariables = Exact<{
+  reactionData: RemoveReactionFromCalloutInput;
+}>;
+
+export type RemoveReactionFromCalloutMutation = {
+  __typename?: 'Mutation';
+  removeReactionFromCallout: {
+    __typename?: 'Callout';
+    id: string;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
+  };
+};
+
+export type CalloutWhoReactedQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type CalloutWhoReactedQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          reactions: Array<{
+            __typename?: 'CalloutReaction';
+            id: string;
+            emoji: string;
+            updatedDate: Date;
+            user?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
           }>;
         }
       | undefined;
