@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
@@ -28,8 +28,13 @@ export type ClassificationPickerDialogProps = {
   onOpenChange: (open: boolean) => void;
   /** Platform-wide and Space-scoped sources, in render order. */
   sources: ClassificationPickerSource[];
-  /** Picking a template fires this — the caller commits the add immediately (FR-006a). */
-  onSelectTemplate: (templateId: string) => void;
+  /**
+   * Picking a template fires this — the caller commits the add immediately
+   * (FR-006a), with the template's own display label passed alongside its id
+   * so a display-label conflict can be reported against the label that
+   * actually collided, not an empty string.
+   */
+  onSelectTemplate: (templateId: string, displayLabel: string) => void;
   /**
    * A display-label conflict from the last attempted add (FR-011a/FR-011b) —
    * never "you already added this template", because no template identity is
@@ -61,6 +66,14 @@ export function ClassificationPickerDialog({
 }: ClassificationPickerDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [retryLabel, setRetryLabel] = useState(conflict?.attemptedLabel ?? '');
+
+  // The dialog stays mounted across opens (`open` only toggles visibility), so the
+  // `useState` initializer above only ever runs once. Without this effect a conflict
+  // arriving after mount would leave the retry field blank instead of pre-seeded with
+  // the label that collided.
+  useEffect(() => {
+    setRetryLabel(conflict?.attemptedLabel ?? '');
+  }, [conflict?.templateId, conflict?.attemptedLabel]);
 
   const anyLoading = sources.some(s => s.loading);
   const isEmpty = !anyLoading && sources.every(s => s.templates.length === 0);
@@ -148,7 +161,7 @@ export function ClassificationPickerDialog({
                         <li key={template.id}>
                           <button
                             type="button"
-                            onClick={() => onSelectTemplate(template.id)}
+                            onClick={() => onSelectTemplate(template.id, template.displayLabel)}
                             disabled={submitting}
                             className="w-full text-left rounded-lg border border-border p-3 hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                           >

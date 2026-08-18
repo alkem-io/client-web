@@ -54,7 +54,7 @@ describe('ClassificationPickerDialog', () => {
     expect(screen.queryByRole('button', { name: /create/i })).not.toBeInTheDocument();
   });
 
-  it('picking a template fires onSelectTemplate with its id (Step A commits immediately)', async () => {
+  it('picking a template fires onSelectTemplate with its id and its own display label (Step A commits immediately)', async () => {
     const onSelectTemplate = vi.fn();
     render(
       <ClassificationPickerDialog
@@ -67,7 +67,7 @@ describe('ClassificationPickerDialog', () => {
       />
     );
     await userEvent.click(screen.getByRole('button', { name: /SDGs/ }));
-    expect(onSelectTemplate).toHaveBeenCalledWith('tpl-sdgs');
+    expect(onSelectTemplate).toHaveBeenCalledWith('tpl-sdgs', 'SDGs');
   });
 
   it('surfaces a server-side display-label conflict as a prompt for a different label, never a "you already added this template" message (FR-011a, US1-AS6)', () => {
@@ -101,10 +101,42 @@ describe('ClassificationPickerDialog', () => {
       />
     );
     const input = screen.getByLabelText('Display label');
+    // The field is seeded with the label that actually collided, not blank.
+    expect(input).toHaveValue('SDGs');
     await userEvent.clear(input);
     await userEvent.type(input, 'SDGs — aspirational');
     await userEvent.click(screen.getByRole('button', { name: 'Add with this label' }));
     expect(onRetryWithLabel).toHaveBeenCalledWith('tpl-sdgs', 'SDGs — aspirational');
+  });
+
+  it('re-seeds the retry field when a conflict arrives on an already-mounted dialog (FR-011b)', () => {
+    // The dialog instance stays mounted across opens — `open` only toggles visibility — so a
+    // conflict that arrives after the initial mount must re-seed the field, not leave it blank.
+    const { rerender } = render(
+      <ClassificationPickerDialog
+        open={true}
+        onOpenChange={vi.fn()}
+        sources={[{ key: 'platform', templates: [sdgs] }]}
+        onSelectTemplate={vi.fn()}
+        conflict={null}
+        onRetryWithLabel={vi.fn()}
+        onDismissConflict={vi.fn()}
+      />
+    );
+
+    rerender(
+      <ClassificationPickerDialog
+        open={true}
+        onOpenChange={vi.fn()}
+        sources={[{ key: 'platform', templates: [sdgs] }]}
+        onSelectTemplate={vi.fn()}
+        conflict={{ templateId: 'tpl-sdgs', attemptedLabel: 'SDGs' }}
+        onRetryWithLabel={vi.fn()}
+        onDismissConflict={vi.fn()}
+      />
+    );
+
+    expect(screen.getByLabelText('Display label')).toHaveValue('SDGs');
   });
 
   it('shows the no-templates guidance and never a create affordance when neither source has any (Edge Case: no templates available)', () => {

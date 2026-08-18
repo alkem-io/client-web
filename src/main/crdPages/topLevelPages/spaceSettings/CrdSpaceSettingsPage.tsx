@@ -742,8 +742,8 @@ export default function CrdSpaceSettingsPage() {
           if (!open) classificationPicker.closePicker();
         }}
         sources={classificationPicker.sources}
-        onSelectTemplate={templateId => {
-          void about.addClassificationFromTemplate(templateId).then(ok => {
+        onSelectTemplate={(templateId, displayLabel) => {
+          void about.addClassificationFromTemplate(templateId, displayLabel).then(ok => {
             if (ok) classificationPicker.closePicker();
           });
         }}
