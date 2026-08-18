@@ -1,0 +1,19 @@
+{
+  "addReaction": "Reageer",
+  "pickerTitle": "Reageer op dit Post",
+  "pickerAriaLabel": "Emoji-reactie picker",
+  "totalAriaLabel": "{{count}} mensen reageerden",
+  "totalAriaLabel_one": "1 persoon reageerde",
+  "whoReactedTitle": "Wie reageerde",
+  "whoReactedEmpty": "Nog geen reacties",
+  "removeReaction": "Verwijder uw reactie",
+  "emoji": {
+    "heart": "Hart",
+    "hugging-face": "Knuffelend gezicht",
+    "clapping-hands": "Klappende handen",
+    "light-bulb": "Gloeilamp",
+    "bullseye": "Roos",
+    "check-mark": "Vinkje",
+    "rocket": "Raket"
+  }
+}

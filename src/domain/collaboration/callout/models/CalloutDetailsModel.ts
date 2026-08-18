@@ -13,6 +13,13 @@ import type { CalloutModelExtension, CalloutModelLight } from './CalloutModelLig
 import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import type { ContributionDefaultsModel } from './ContributionDefaultsModel';
 
+export type CalloutReactionsSummaryModel = {
+  total: number;
+  emojis: string[];
+  myReactionEmoji?: string | null;
+  allowedEmojis: string[];
+};
+
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {
     profile: {
@@ -53,6 +60,9 @@ export type CalloutDetailsModel = CalloutModelLight & {
   contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
   contributions: CalloutContributionStub[];
+  /** Tier-1 reactions summary. Optional — absent when the server reaction
+   *  module is not yet deployed. */
+  reactionsSummary?: CalloutReactionsSummaryModel | null;
 };
 
 type TitledStub = {
