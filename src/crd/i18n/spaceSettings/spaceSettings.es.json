@@ -915,6 +915,12 @@
         "altText": "Descripción",
         "altTextPlaceholder": "Describe esta imagen…"
       },
+      "recropConfirm": {
+        "title": "¿Reemplazar la imagen original?",
+        "description": "Al guardar este recorte se sube una nueva imagen y se descarta el original de forma permanente. Las áreas recortadas no se podrán recuperar más adelante.",
+        "confirm": "Reemplazar imagen",
+        "cancel": "Cancelar"
+      },
       "changeBanner": "Cambiar banner",
       "recropFailed": "No se pudo cargar esta imagen para recortarla. Inténtalo de nuevo."
     },

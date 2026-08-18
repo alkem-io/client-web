@@ -915,6 +915,12 @@
         "altText": "Description",
         "altTextPlaceholder": "Décrivez cette image…"
       },
+      "recropConfirm": {
+        "title": "Remplacer l'image d'origine ?",
+        "description": "Enregistrer ce recadrage télécharge une nouvelle image et supprime définitivement l'original. Les zones recadrées ne pourront pas être récupérées ultérieurement.",
+        "confirm": "Remplacer l'image",
+        "cancel": "Annuler"
+      },
       "changeBanner": "Changer la bannière",
       "recropFailed": "Impossible de charger cette image pour le recadrage. Veuillez réessayer."
     },

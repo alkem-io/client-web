@@ -915,6 +915,12 @@
         "altText": "Beschreibung",
         "altTextPlaceholder": "Dieses Bild beschreiben…"
       },
+      "recropConfirm": {
+        "title": "Originalbild ersetzen?",
+        "description": "Beim Speichern dieses Zuschnitts wird ein neues Bild hochgeladen und das Original dauerhaft verworfen. Die weggeschnittenen Bereiche können später nicht wiederhergestellt werden.",
+        "confirm": "Bild ersetzen",
+        "cancel": "Abbrechen"
+      },
       "changeBanner": "Banner ändern",
       "recropFailed": "Dieses Bild konnte nicht zum Zuschneiden geladen werden. Bitte erneut versuchen."
     },

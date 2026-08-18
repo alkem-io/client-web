@@ -915,6 +915,12 @@
         "altText": "Description",
         "altTextPlaceholder": "Describe this image…"
       },
+      "recropConfirm": {
+        "title": "Replace the original image?",
+        "description": "Saving this crop uploads a new image and permanently discards the original. The areas you crop out cannot be recovered later.",
+        "confirm": "Replace image",
+        "cancel": "Cancel"
+      },
       "changeBanner": "Change Banner",
       "recropFailed": "Could not load this image for cropping. Please try again."
     },

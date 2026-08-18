@@ -733,6 +733,20 @@ export default function CrdSpaceSettingsPage() {
       />
 
       <ConfirmationDialog
+        open={about.recropConfirmOpen}
+        onOpenChange={open => {
+          if (!open) about.onCancelRecropConfirm();
+        }}
+        variant="destructive"
+        title={t('about.branding.recropConfirm.title')}
+        description={t('about.branding.recropConfirm.description')}
+        confirmLabel={t('about.branding.recropConfirm.confirm')}
+        cancelLabel={t('about.branding.recropConfirm.cancel')}
+        onConfirm={about.onConfirmRecrop}
+        onCancel={about.onCancelRecropConfirm}
+      />
+
+      <ConfirmationDialog
         open={subspacesTab.pendingDelete !== null}
         onOpenChange={open => {
           if (!open) subspacesTab.cancelDelete();

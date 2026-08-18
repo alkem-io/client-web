@@ -915,6 +915,12 @@
         "altText": "Beschrijving",
         "altTextPlaceholder": "Beschrijf deze afbeelding…"
       },
+      "recropConfirm": {
+        "title": "Originele afbeelding vervangen?",
+        "description": "Als je deze bijsnijding opslaat, wordt een nieuwe afbeelding geüpload en gaat het origineel definitief verloren. De weggesneden delen kunnen later niet worden hersteld.",
+        "confirm": "Afbeelding vervangen",
+        "cancel": "Annuleren"
+      },
       "changeBanner": "Banner wijzigen",
       "recropFailed": "Kan deze afbeelding niet laden om bij te snijden. Probeer het opnieuw."
     },
