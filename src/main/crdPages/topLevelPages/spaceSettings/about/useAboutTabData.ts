@@ -69,6 +69,8 @@ export type UseAboutTabDataResult = {
 
   // ── Classifications (D1) — each action commits on its own (FR-006a) ──
   classifications: ClassificationEntryData[];
+  /** Entry ids with a selection write in flight — pass through as `disabled` on their value selector. */
+  classificationSelectionPendingIds: string[];
   /** Step A — add from a template. Resolves `false` (and sets `classificationConflict`) on a display-label collision. */
   addClassificationFromTemplate: (templateId: string, displayLabel?: string) => Promise<boolean>;
   /** Step B — full-replacement selection write (FR-012d). */
@@ -421,6 +423,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
         };
       case 'references':
         return null; // handled via dedicated create/delete/patch flow below
+      case 'classifications':
+        // Never buffered: each classification action commits on its own via its own mutation
+        // (FR-006a) — `onSaveSection('classifications')` is never called, but the key still
+        // needs an exhaustive case here.
+        return null;
     }
   };
 
@@ -540,7 +547,28 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   // Each action commits on its own, immediately (FR-006a) — never buffered with the rest of the
   // About form. Cache normalization keeps single-entry updates in sync for free; add/remove change
   // the array's membership, which normalization can't do on its own, so those two refetch.
-  const classifications = space ? mapClassificationEntries(space) : [];
+  //
+  // A selection write is a full-replacement mutation (FR-012d): the checkbox only visually ticks
+  // once the mutation round trip resolves and the cache updates. Without buffering the in-flight
+  // intent locally, two clicks inside one round trip would both compute their "next selection" off
+  // the same stale `entry.selectedValueIDs`, so the second write would silently clobber the first.
+  // `classificationSelectionOverrides` holds the latest locally-applied selection per entry while
+  // its write is in flight, so consecutive toggles compose off the last user intent, not the last
+  // server response.
+  const [classificationSelectionOverrides, setClassificationSelectionOverrides] = useState<Record<string, string[]>>(
+    {}
+  );
+
+  const classifications = space
+    ? mapClassificationEntries(space).map(entry =>
+        entry.id in classificationSelectionOverrides
+          ? { ...entry, selectedValueIDs: classificationSelectionOverrides[entry.id] }
+          : entry
+      )
+    : [];
+
+  /** Entries with a selection write currently in flight (drives the value selector's `disabled`). */
+  const classificationSelectionPendingIds = Object.keys(classificationSelectionOverrides);
 
   const [classificationConflict, setClassificationConflict] = useState<{
     templateId: string;
@@ -572,17 +600,35 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   };
 
   const updateClassificationSelection = async (entryId: string, selectedValueIDs: string[]) => {
+    // Apply the intended selection locally right away — see the `classificationSelectionOverrides`
+    // comment above the `classifications` derivation for why this has to happen before the mutation
+    // is awaited, not after it resolves.
+    setClassificationSelectionOverrides(prev => ({ ...prev, [entryId]: selectedValueIDs }));
+    setSectionStatus('classifications', { kind: 'saving' });
     try {
       await updateClassificationEntrySelection({
         variables: { classificationData: { classificationEntryID: entryId, selectedValueIDs } },
       });
+      flashSaved('classifications');
     } catch (err) {
+      setSectionStatus('classifications', { kind: 'idle' });
       // A concurrently-removed entry fails the write against a now-deleted id — refetch so the UI
       // drops the stale entry instead of silently re-creating it (Edge Cases: concurrent removal).
       if (err instanceof ApolloError) {
         setClassificationRemovedError(true);
         await refetch();
       }
+    } finally {
+      // Only clear the override if it is still the one THIS call set. A slower, earlier write
+      // resolving after a faster, later one must not wipe out the newer local selection while the
+      // later write is still in flight — array identity (not a deep-equal) is enough here because
+      // `selectedValueIDs` is the exact reference each call closed over above.
+      setClassificationSelectionOverrides(prev => {
+        if (prev[entryId] !== selectedValueIDs) return prev;
+        const next = { ...prev };
+        delete next[entryId];
+        return next;
+      });
     }
   };
 
@@ -624,6 +670,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onSaveAll,
     onResetAll,
     classifications,
+    classificationSelectionPendingIds,
     addClassificationFromTemplate,
     updateClassificationSelection,
     updateClassificationDisplay,
@@ -658,6 +705,10 @@ function mergeSavedSection(buffer: AboutFormValues, fresh: AboutFormValues, sect
       return { ...buffer, tags: fresh.tags, tagsetId: fresh.tagsetId };
     case 'references':
       return { ...buffer, references: fresh.references };
+    case 'classifications':
+      // `onSaveSection` never runs for this key (see `buildSectionPatch`) — `AboutFormValues`
+      // doesn't even carry a classifications field to merge. Exhaustive case only.
+      return buffer;
   }
 }
 

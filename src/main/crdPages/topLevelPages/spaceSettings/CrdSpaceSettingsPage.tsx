@@ -419,6 +419,7 @@ export default function CrdSpaceSettingsPage() {
                   iframeAllowedUrls={md.iframeAllowedUrls}
                   onError={md.onError}
                   classifications={about.classifications}
+                  classificationSelectionPendingIds={about.classificationSelectionPendingIds}
                   onAddClassification={classificationPicker.openPicker}
                   onSelectClassificationValues={(entryId, selectedValueIDs) =>
                     void about.updateClassificationSelection(entryId, selectedValueIDs)

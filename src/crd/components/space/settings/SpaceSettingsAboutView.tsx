@@ -55,6 +55,8 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
 
   // ── Classifications (D1) — each action commits immediately, FR-006a; never buffered ──
   classifications: ClassificationEntryData[];
+  /** Entry ids with a selection write in flight — the entry's value selector renders disabled. */
+  classificationSelectionPendingIds: string[];
   /** Step A — opens the template picker (owned by the connector). */
   onAddClassification: () => void;
   /** Step B — full-replacement selection write. */
@@ -98,6 +100,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     iframeAllowedUrls,
     onError,
     classifications,
+    classificationSelectionPendingIds,
     onAddClassification,
     onSelectClassificationValues,
     onToggleClassificationDisplay,
@@ -347,8 +350,6 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 {t('classifications.addButton')}
               </Button>
             </div>
-            <FieldHint>{t('classifications.sectionDescription')}</FieldHint>
-
             {classifications.length > 0 && (
               <div className="mt-4 space-y-5">
                 {classifications.map(entry => (
@@ -374,6 +375,7 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                         values={entry.values}
                         selectedValueIDs={entry.selectedValueIDs}
                         onChange={selected => onSelectClassificationValues(entry.id, selected)}
+                        disabled={classificationSelectionPendingIds.includes(entry.id)}
                       />
                     ) : (
                       <p className="text-caption text-muted-foreground">
@@ -400,6 +402,21 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
                 ))}
               </div>
             )}
+
+            {/*
+             * Never dirty — each classification action commits on its own, immediately (FR-006a),
+             * so there is nothing to buffer and no manual Save button to show. Reusing FieldFooter
+             * here only surfaces the transient saving/saved feedback for the in-flight selection
+             * write (see `classificationSelectionPendingIds` above), the same status shape every
+             * other About section already uses.
+             */}
+            <FieldFooter
+              hint={t('classifications.sectionDescription')}
+              dirty={false}
+              status={saveStatusByField.classifications ?? { kind: 'idle' }}
+              onSave={() => {}}
+              t={t}
+            />
           </FieldSection>
 
           <Separator />
