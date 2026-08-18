@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronUp,
+  Download,
   FileText,
   MoreHorizontal,
   Plus,
@@ -100,6 +101,8 @@ export type SpaceSettingsCommunityViewProps = {
   onPendingReject: (id: string) => void;
   onPendingDelete: (id: string) => void;
   onInviteUsers: () => void;
+  onExportMembers?: () => void;
+  exportDisabled?: boolean;
   className?: string;
 };
 
@@ -127,6 +130,8 @@ export function SpaceSettingsCommunityView({
   onPendingReject,
   onPendingDelete,
   onInviteUsers,
+  onExportMembers,
+  exportDisabled,
   className,
 }: SpaceSettingsCommunityViewProps) {
   const { t } = useTranslation('crd-spaceSettings');
@@ -196,6 +201,19 @@ export function SpaceSettingsCommunityView({
               <Button type="button" size="sm" className="gap-2" onClick={onInviteUsers}>
                 <UserPlus aria-hidden="true" className="size-4" />
                 {t('community.members.invite')}
+              </Button>
+            )}
+            {onExportMembers && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={onExportMembers}
+                disabled={exportDisabled}
+              >
+                <Download aria-hidden="true" className="size-4" />
+                {t('community.members.export')}
               </Button>
             )}
           </div>

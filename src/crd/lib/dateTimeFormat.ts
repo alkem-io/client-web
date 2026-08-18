@@ -1,5 +1,5 @@
 import type { Locale } from 'date-fns';
-import { format, formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
 
 /**
  * Reusable date/time formatters for the CRD layer. Three variants — pick the
@@ -44,6 +44,21 @@ export function formatRelativeFromNow(
   const date = toDate(input);
   if (!date) return undefined;
   return formatDistanceToNow(date, { addSuffix: true, ...(locale ? { locale } : {}) });
+}
+
+/**
+ * "1 hour ago", "5 days ago", "2 minutes ago" — strict single-unit distance,
+ * without the "about"/"less than" hedge that `formatRelativeFromNow` adds. Shorter
+ * and denser; well suited to subtext/metadata rows. Matches the strict form already
+ * used elsewhere (e.g. the unified chat panel).
+ */
+export function formatRelativeFromNowStrict(
+  input: Date | string | number | null | undefined,
+  locale?: Locale
+): string | undefined {
+  const date = toDate(input);
+  if (!date) return undefined;
+  return formatDistanceToNowStrict(date, { addSuffix: true, ...(locale ? { locale } : {}) });
 }
 
 /** "13/05/2026" — locale-aware short date, no time component. */

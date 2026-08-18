@@ -1,0 +1,19 @@
+{
+  "addReaction": "Добави реакция",
+  "pickerTitle": "Реагирай на тази публикация",
+  "pickerAriaLabel": "Избор на emoji реакция",
+  "totalAriaLabel": "{{count}} души реагираха",
+  "totalAriaLabel_one": "1 човек реагира",
+  "whoReactedTitle": "Кой реагира",
+  "whoReactedEmpty": "Все още няма реакции",
+  "removeReaction": "Премахни реакцията си",
+  "emoji": {
+    "heart": "Сърце",
+    "hugging-face": "Прегръщащо лице",
+    "clapping-hands": "Аплодиращи ръце",
+    "light-bulb": "Крушка",
+    "bullseye": "Център на мишена",
+    "check-mark": "Отметка",
+    "rocket": "Ракета"
+  }
+}

@@ -193,4 +193,10 @@ fragment CalloutDetails on Callout {
       }
     }
   }
+  reactionsSummary {
+    total
+    emojis
+    myReactionEmoji
+    allowedEmojis
+  }
 }
