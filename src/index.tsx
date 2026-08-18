@@ -12,18 +12,20 @@ root.render(<Root />);
 // `build:dev` (`vite build --mode development`), where PROD is false — that made
 // them unregister the service worker on every load and silently killed push
 // notifications (`navigator.serviceWorker.ready` never settles without a
-// registration).
+// registration). Deployed builds therefore always register, flag or no flag.
 //
-// Push REQUIRES a registration (PushManager hangs off ServiceWorkerRegistration),
-// so set VITE_ENABLE_SERVICE_WORKER=true in .env.local to opt the dev server back
-// in and test push with HMR still running.
-const enableServiceWorkerInDev = import.meta.env.VITE_ENABLE_SERVICE_WORKER === 'true';
+// On the dev server registration is ON by default too, so push works locally with
+// no setup — push REQUIRES a registration, since PushManager hangs off
+// ServiceWorkerRegistration. A developer who wants the dev server without a
+// service worker opts out with VITE_ENABLE_SERVICE_WORKER=false in .env.local
+// (gitignored). Defaulting to on-unless-'false' means a missing or stale .env
+// still leaves push working.
+const serviceWorkerEnabledInDev = import.meta.env.VITE_ENABLE_SERVICE_WORKER !== 'false';
 
-if (!import.meta.hot || enableServiceWorkerInDev) {
+if (!import.meta.hot || serviceWorkerEnabledInDev) {
   registerServiceWorker();
 } else {
-  // Dev server only: a registered service worker can cache stale bundles and mask
-  // Vite HMR/restarts — you reload but keep getting the old app. Off by default,
-  // and tear down any SW a prior build/session left behind.
+  // Dev server, explicitly opted out. Tear down any SW a prior build or session
+  // left behind, so the opt-out takes effect on the next reload.
   unregisterServiceWorker();
 }
