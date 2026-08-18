@@ -284,7 +284,8 @@
         "page": "Page {{page}} of {{total}}",
         "next": "Next page"
       },
-      "roleColumn": "Role"
+      "roleColumn": "Role",
+      "export": "Export all Member overview"
     },
     "memberSettings": {
       "title": "Member settings",
@@ -768,7 +769,8 @@
         "description": "Are you sure you want to remove this question?",
         "confirm": "Delete"
       },
-      "save": "Save"
+      "save": "Save",
+      "export": "Export All Submitted Applications"
     },
     "allowedActions": {
       "title": "Allowed Actions",

@@ -736,6 +736,8 @@ export type Application = {
   state: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** The User who submitted this Application. */
+  user?: Maybe<User>;
 };
 
 export type ApplicationEventInput = {
@@ -1490,7 +1492,6 @@ export type CollaboraDocument = {
 
 export enum CollaboraDocumentType {
   Drawing = 'DRAWING',
-  Pdf = 'PDF',
   Presentation = 'PRESENTATION',
   Spreadsheet = 'SPREADSHEET',
   Wordprocessing = 'WORDPROCESSING',
@@ -11377,6 +11378,8 @@ export type CommunityApplicationsInvitationsQuery = {
               type: ActorType;
               profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
             };
+            questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+            user?: { __typename?: 'User'; id: string; email: string } | undefined;
           }>;
           invitations: Array<{
             __typename?: 'Invitation';
@@ -11416,6 +11419,8 @@ export type AdminCommunityApplicationFragment = {
     type: ActorType;
     profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
   };
+  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+  user?: { __typename?: 'User'; id: string; email: string } | undefined;
 };
 
 export type AdminCommunityInvitationFragment = {

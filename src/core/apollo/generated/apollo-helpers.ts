@@ -544,6 +544,7 @@ export type ApplicationKeySpecifier = (
   | 'questions'
   | 'state'
   | 'updatedDate'
+  | 'user'
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
@@ -557,6 +558,7 @@ export type ApplicationFieldPolicy = {
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AssistantCapabilityKeySpecifier = (
   | 'description'
