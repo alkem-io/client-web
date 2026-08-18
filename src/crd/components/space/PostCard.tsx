@@ -177,6 +177,11 @@ type PostCardProps = {
   onOpenFramingDocument?: () => void;
   /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
   contributionsPreview?: ReactNode;
+  /**
+   * Reactions bar rendered in the card footer area, before the comments trigger.
+   * Provided by CalloutReactionsConnector — props-only, zero Apollo in PostCard.
+   */
+  reactionsSlot?: ReactNode;
   /** Content injected after the description/preview area, before the footer (e.g. poll) */
   children?: ReactNode;
   /**
@@ -210,6 +215,7 @@ export function PostCard({
   onExpandClick,
   onOpenFramingDocument,
   contributionsPreview,
+  reactionsSlot,
   children,
   commentsSlot,
   commentInputSlot,
@@ -534,25 +540,33 @@ export function PostCard({
 
       {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
           mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via
-          consumer-gated `commentInputSlot`) even after the admin disables further commenting. */}
-      {(post.commentsEnabled !== false || (post.commentCount ?? 0) > 0) &&
-        (hasCollapsibleComments ? (
+          consumer-gated `commentInputSlot`) even after the admin disables further commenting.
+          The reactions widget lives here too, bottom-right of the footer. */}
+      {post.commentsEnabled !== false || (post.commentCount ?? 0) > 0 ? (
+        hasCollapsibleComments ? (
           <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
             <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>
-              <CollapsibleTrigger asChild={true}>
-                <button
-                  type="button"
-                  className="group/comments flex w-full items-center gap-2 px-6 py-3 text-caption text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  aria-label={t(isCommentsOpen ? 'callout.collapseComments' : 'callout.expandComments')}
-                >
-                  <ChevronDown
-                    className="size-4 transition-transform duration-200 group-data-[state=open]/comments:rotate-180"
-                    aria-hidden="true"
-                  />
-                  <MessageSquare className="size-4" aria-hidden="true" />
-                  <span>{commentLabel}</span>
-                </button>
-              </CollapsibleTrigger>
+              {/* Trigger and reactions are SIBLINGS in this row — the reactions must
+                  not nest inside the trigger button (invalid HTML, and a reaction
+                  click would toggle the collapsible and swallow its popover). Row
+                  padding lives on the wrapper so both children align. */}
+              <div className="flex w-full items-center gap-2 px-6 py-3">
+                <CollapsibleTrigger asChild={true}>
+                  <button
+                    type="button"
+                    className="group/comments flex flex-1 items-center gap-2 text-caption text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={t(isCommentsOpen ? 'callout.collapseComments' : 'callout.expandComments')}
+                  >
+                    <ChevronDown
+                      className="size-4 transition-transform duration-200 group-data-[state=open]/comments:rotate-180"
+                      aria-hidden="true"
+                    />
+                    <MessageSquare className="size-4" aria-hidden="true" />
+                    <span>{commentLabel}</span>
+                  </button>
+                </CollapsibleTrigger>
+                {reactionsSlot && <div className="shrink-0">{reactionsSlot}</div>}
+              </div>
               <CollapsibleContent className="px-6 pt-4 pb-4">
                 <div className="flex flex-col gap-3">
                   {commentInputSlot}
@@ -575,8 +589,18 @@ export function PostCard({
               <MessageSquare className="w-4 h-4" aria-hidden="true" />
               <span className="text-caption">{commentLabel}</span>
             </Button>
+            {reactionsSlot && <div className="ml-auto shrink-0">{reactionsSlot}</div>}
           </CardFooter>
-        ))}
+        )
+      ) : (
+        // Comments footer suppressed (disabled + none yet) but reactions still
+        // need a home — render a minimal reactions-only footer, right-aligned.
+        reactionsSlot && (
+          <CardFooter className="!py-3 flex items-center border-t bg-muted/5 px-6">
+            <div className="ml-auto shrink-0">{reactionsSlot}</div>
+          </CardFooter>
+        )
+      )}
     </Card>
   );
 }

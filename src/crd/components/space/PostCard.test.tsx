@@ -115,3 +115,67 @@ describe('PostCard showPublishDetails', () => {
     expect(content?.childNodes.length).toBe(0);
   });
 });
+
+describe('PostCard reactionsSlot placement', () => {
+  const reactions = <div data-testid="reactions">R</div>;
+
+  it('renders reactions inside the footer, right-aligned, in the non-collapsible branch', () => {
+    // No commentsSlot → non-collapsible footer (comments Button + reactions).
+    const { container } = render(<PostCard post={basePost} reactionsSlot={reactions} />);
+    const footer = container.querySelector('[data-slot="card-footer"]');
+    expect(footer).toBeTruthy();
+    const reactionsNode = screen.getByTestId('reactions');
+    // Reactions live inside the footer (not in a standalone block above it).
+    expect(footer?.contains(reactionsNode)).toBe(true);
+    // Right-aligned via ml-auto on its wrapper.
+    expect(reactionsNode.parentElement).toHaveClass('ml-auto');
+    // It is the last child of the footer (sits after the comments button).
+    expect(footer?.lastElementChild).toBe(reactionsNode.parentElement);
+  });
+
+  it('renders reactions as a sibling of (not nested inside) the collapsible comments trigger', () => {
+    const { container } = render(
+      <PostCard post={basePost} reactionsSlot={reactions} commentsSlot={<div>thread</div>} />
+    );
+    const footer = container.querySelector('[data-slot="card-footer"]');
+    const reactionsNode = screen.getByTestId('reactions');
+    const trigger = screen.getByRole('button', { name: /expandComments|collapseComments/i });
+    expect(footer?.contains(reactionsNode)).toBe(true);
+    // The reactions must NOT be inside the trigger button — invalid HTML + a
+    // reaction click would toggle the collapsible and swallow its popover.
+    expect(trigger.contains(reactionsNode)).toBe(false);
+    // Trigger and the reactions wrapper share the same flex row wrapper:
+    // trigger.parent === reactionsWrapper.parent === the row.
+    expect(reactionsNode.parentElement?.parentElement).toBe(trigger.parentElement);
+  });
+
+  it('renders a reactions-only footer when comments are suppressed but reactions exist (edge case)', () => {
+    // commentsEnabled=false AND no existing comments AND no commentsSlot → the
+    // comments footer is suppressed, but reactions still need a home.
+    const { container } = render(
+      <PostCard post={{ ...basePost, commentsEnabled: false, commentCount: 0 }} reactionsSlot={reactions} />
+    );
+    const footer = container.querySelector('[data-slot="card-footer"]');
+    expect(footer).toBeTruthy();
+    const reactionsNode = screen.getByTestId('reactions');
+    expect(footer?.contains(reactionsNode)).toBe(true);
+    expect(reactionsNode.parentElement).toHaveClass('ml-auto');
+    // No comments affordance in this minimal footer.
+    expect(screen.queryByRole('button', { name: /Comments/i })).not.toBeInTheDocument();
+  });
+
+  it('renders no footer at all when comments are suppressed and there is no reactions slot', () => {
+    const { container } = render(<PostCard post={{ ...basePost, commentsEnabled: false, commentCount: 0 }} />);
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeNull();
+  });
+
+  it('does not render a standalone reactions block above the footer', () => {
+    // Regression guard for the old `px-6 pb-2` standalone block that was removed —
+    // the only reactions node must be the one inside the footer.
+    const { container } = render(<PostCard post={basePost} reactionsSlot={reactions} />);
+    const footer = container.querySelector('[data-slot="card-footer"]');
+    const allReactions = screen.getAllByTestId('reactions');
+    expect(allReactions).toHaveLength(1);
+    expect(footer?.contains(allReactions[0])).toBe(true);
+  });
+});
