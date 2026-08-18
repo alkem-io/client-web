@@ -284,7 +284,8 @@
         "page": "Seite {{page}} von {{total}}",
         "next": "Nächste Seite"
       },
-      "roleColumn": "Rolle"
+      "roleColumn": "Rolle",
+      "export": "Alle Mitglieder exportieren"
     },
     "memberSettings": {
       "title": "Mitgliedereinstellungen",
@@ -768,7 +769,8 @@
         "description": "Möchten Sie diese Frage wirklich entfernen?",
         "confirm": "Löschen"
       },
-      "save": "Speichern"
+      "save": "Speichern",
+      "export": "Alle eingereichten Bewerbungen exportieren"
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",

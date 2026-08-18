@@ -284,7 +284,8 @@
         "page": "Pagina {{page}} van {{total}}",
         "next": "Volgende pagina"
       },
-      "roleColumn": "Rol"
+      "roleColumn": "Rol",
+      "export": "Exporteer volledig ledenoverzicht"
     },
     "memberSettings": {
       "title": "Lidinstellingen",
@@ -768,7 +769,8 @@
         "description": "Weet je zeker dat je deze vraag wilt verwijderen?",
         "confirm": "Verwijderen"
       },
-      "save": "Opslaan"
+      "save": "Opslaan",
+      "export": "Exporteer alle ingediende aanvragen"
     },
     "allowedActions": {
       "title": "Toegestane acties",
