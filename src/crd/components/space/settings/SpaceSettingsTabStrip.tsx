@@ -1,4 +1,5 @@
 import type { ComponentType, SVGProps } from 'react';
+import { useDragScroll } from '@/crd/hooks/useDragScroll';
 import { cn } from '@/crd/lib/utils';
 
 export type SpaceSettingsTabDescriptor<TTabId extends string> = {
@@ -31,11 +32,15 @@ export function SpaceSettingsTabStrip<TTabId extends string>({
   tabs,
   className,
 }: SpaceSettingsTabStripProps<TTabId>) {
+  const dragScroll = useDragScroll<HTMLDivElement>();
+
   return (
     <div className={cn('relative', className)}>
       {/* Bottom border line that runs the full width — the active tab covers it with -mb-px */}
       <div className="absolute bottom-0 left-0 right-0 h-px bg-border" aria-hidden="true" />
       <div
+        ref={dragScroll.ref}
+        onPointerDown={dragScroll.onPointerDown}
         role="tablist"
         className="flex items-end overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
