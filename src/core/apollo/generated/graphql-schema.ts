@@ -2288,7 +2288,7 @@ export type CreateClassificationData = {
 export type CreateClassificationEntryInput = {
   cardinality: ClassificationCardinality;
   displayLabel: Scalars['String']['input'];
-  /** Optional selection to apply in the same write (FR-017a). Omitted -> selectedValueIDs: []. */
+  /** Optional selection to apply in the same write. Omitted -> selectedValueIDs: []. */
   selectedValueIDs?: InputMaybe<Array<Scalars['String']['input']>>;
   /** The Space to add the Classification to. */
   spaceID: Scalars['UUID']['input'];
@@ -8997,7 +8997,7 @@ export type Template = {
   authorization?: Maybe<Authorization>;
   /** The Callout for this Template. */
   callout?: Maybe<Callout>;
-  /** The classification vocabulary; null unless this Template is of type CLASSIFICATION — and never null when it is (S-21). */
+  /** The classification vocabulary; null unless this Template is of type CLASSIFICATION — and never null when it is. */
   classification?: Maybe<ClassificationTemplateContent>;
   /** The Community Guidelines for this Template. */
   communityGuidelines?: Maybe<CommunityGuidelines>;
