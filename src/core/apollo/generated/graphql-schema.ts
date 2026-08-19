@@ -29853,7 +29853,13 @@ export type SubspacePageQuery = {
           collaboration: {
             __typename?: 'Collaboration';
             id: string;
-            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+            calloutsSet: {
+              __typename?: 'CalloutsSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
           };
           templatesManager?:
             | {
@@ -29907,7 +29913,17 @@ export type SubspacePageSpaceFragment = {
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
-  collaboration: { __typename?: 'Collaboration'; id: string; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
+  collaboration: {
+    __typename?: 'Collaboration';
+    id: string;
+    calloutsSet: {
+      __typename?: 'CalloutsSet';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+  };
   templatesManager?:
     | {
         __typename?: 'TemplatesManager';

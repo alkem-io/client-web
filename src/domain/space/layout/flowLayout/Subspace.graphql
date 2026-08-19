@@ -30,6 +30,10 @@ fragment SubspacePageSpace on Space {
     id
     calloutsSet {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
   templatesManager {

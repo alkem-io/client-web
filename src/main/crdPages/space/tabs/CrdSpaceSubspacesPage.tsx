@@ -86,31 +86,29 @@ export default function CrdSpaceSubspacesPage() {
           onEditClick={
             permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
           }
-        />
-      </SpaceSidebarPortal>
-
-      <div className="space-y-8">
-        <SpaceTabActionHeader
-          description={tabDescription}
-          action={
+          actionsSlot={
             (canCreateCallout || (canCreate && handleCreateClick)) && (
-              <div className="flex items-center gap-2">
-                {canCreate && handleCreateClick && (
-                  <Button size="sm" className="gap-2" onClick={handleCreateClick}>
-                    <Plus className="w-4 h-4" aria-hidden="true" />
-                    {t('subspaces.createSubspace')}
-                  </Button>
-                )}
+              <>
                 {canCreateCallout && (
-                  <Button size="sm" className="gap-2" onClick={() => setCreateCalloutOpen(true)}>
+                  <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateCalloutOpen(true)}>
                     <Plus className="w-4 h-4" aria-hidden="true" />
                     {t('feed.addPost')}
                   </Button>
                 )}
-              </div>
+                {canCreate && handleCreateClick && (
+                  <Button variant="outline" className="w-full gap-2 text-body-emphasis" onClick={handleCreateClick}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('subspaces.createSubspace')}
+                  </Button>
+                )}
+              </>
             )
           }
         />
+      </SpaceSidebarPortal>
+
+      <div className="space-y-8">
+        <SpaceTabActionHeader description={tabDescription} />
 
         <CalloutListConnector
           callouts={callouts}

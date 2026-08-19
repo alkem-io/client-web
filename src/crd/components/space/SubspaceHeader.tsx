@@ -1,34 +1,10 @@
-import { Activity, FoldHorizontal, Menu, Settings, Share2, UnfoldHorizontal, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { bannerPlaceholderSize, DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
-import { safeHttpUrl } from '@/crd/lib/safeHttpUrl';
 import { cn } from '@/crd/lib/utils';
-import { Button } from '@/crd/primitives/button';
+import { HeaderActionIcons, type HeaderActionIconsData } from './HeaderActionIcons';
 
-export type SubspaceHeaderActionsData = {
-  showActivity: boolean;
-  showVideoCall: boolean;
-  showShare: boolean;
-  showSettings: boolean;
-  /** Shows the expand/collapse (full-width) toggle next to Activity. */
-  showFullWidthToggle?: boolean;
-  /** Current full-width state — drives the icon and pressed state. */
-  fullWidth?: boolean;
-  settingsHref?: string;
-  videoCallUrl?: string;
-  onActivityClick?: () => void;
-  onVideoCallClick?: () => void;
-  onShareClick?: () => void;
-  onToggleFullWidth?: () => void;
-  /**
-   * Opens the sidebar drawer. When provided, a hamburger button is shown
-   * before the other action icons — but only on tablet widths (640–1023px),
-   * where the desktop sidebar is hidden and the mobile bottom-bar hamburger is
-   * not shown. Hidden on phones (`<640px`) and desktop (`>=1024px`).
-   */
-  onMenuClick?: () => void;
-};
+export type SubspaceHeaderActionsData = HeaderActionIconsData;
 
 export type SubspaceHeaderProps = {
   /** Subspace identity */
@@ -95,8 +71,6 @@ export function SubspaceHeader({
   className,
 }: SubspaceHeaderProps) {
   const { t } = useTranslation('crd-subspace');
-  const safeVideoCallUrl = safeHttpUrl(actions.videoCallUrl);
-  const safeSettingsHref = safeHttpUrl(actions.settingsHref);
   const bannerPlaceholder = bannerPlaceholderSize(bannerAspectRatio);
 
   return (
@@ -113,7 +87,16 @@ export function SubspaceHeader({
               match SpaceHeader exactly: this is the L0 root's banner, so the
               identical image would otherwise render at two different heights
               depending on whether you are on the space or a subspace. */}
-          <div className={cn('col-span-12 overflow-hidden', contentColumnClass(fullWidth))}>
+          {/* `lg:-mx-4` bleeds the banner ~16px past the content column on each side
+              (prototype look). Full-width mode is untouched — there the banner is
+              already an edge-to-edge full bleed, wider than the content column. */}
+          <div
+            className={cn(
+              'col-span-12 overflow-hidden rounded-b-lg',
+              contentColumnClass(fullWidth),
+              !fullWidth && 'lg:-mx-4'
+            )}
+          >
             {bannerUrl ? (
               <img
                 src={bannerUrl}
@@ -141,117 +124,33 @@ export function SubspaceHeader({
         </div>
       </div>
 
-      <div className="w-full px-6 md:px-8 pt-8 pb-8">
+      <div className="w-full px-6 md:px-8 py-3">
         <div className="grid grid-cols-12 gap-6">
           <div className={cn('col-span-12 flex flex-col gap-1', contentColumnClass(fullWidth))}>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div
-                  className="shrink-0 size-14 rounded-md border-2 border-border overflow-hidden flex items-center justify-center"
-                  style={subspaceAvatarUrl ? undefined : { background: subspaceColor }}
-                >
-                  {subspaceAvatarUrl ? (
-                    <img src={subspaceAvatarUrl} alt={title} className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-subsection-title text-primary-foreground">{subspaceInitials}</span>
-                  )}
-                </div>
-                <h1 className="text-hero text-foreground truncate">{title}</h1>
-              </div>
-              <div className="shrink-0 flex items-center gap-2">
-                {actions.onMenuClick && (
-                  <div className="hidden sm:flex lg:hidden">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={actions.onMenuClick}
-                      aria-label={t('a11y.openMenu')}
-                      aria-haspopup="dialog"
-                    >
-                      <Menu className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                  </div>
-                )}
-                {actions.showActivity && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9"
-                    onClick={actions.onActivityClick}
-                    aria-label={t('actions.activity')}
-                  >
-                    <Activity className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                )}
-                {actions.showFullWidthToggle && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 hidden lg:inline-flex"
-                    onClick={actions.onToggleFullWidth}
-                    aria-pressed={actions.fullWidth}
-                    aria-label={actions.fullWidth ? t('actions.collapseWidth') : t('actions.expandWidth')}
-                  >
-                    {actions.fullWidth ? (
-                      <FoldHorizontal className="h-4 w-4" aria-hidden="true" />
-                    ) : (
-                      <UnfoldHorizontal className="h-4 w-4" aria-hidden="true" />
-                    )}
-                  </Button>
-                )}
-                {actions.showVideoCall &&
-                  (safeVideoCallUrl ? (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      aria-label={t('actions.videoCall')}
-                      asChild={true}
-                    >
-                      <a href={safeVideoCallUrl} target="_blank" rel="noopener noreferrer">
-                        <Video className="h-4 w-4" aria-hidden="true" />
-                      </a>
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-9 w-9"
-                      onClick={actions.onVideoCallClick}
-                      aria-label={t('actions.videoCall')}
-                    >
-                      <Video className="h-4 w-4" aria-hidden="true" />
-                    </Button>
-                  ))}
-                {actions.showShare && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9"
-                    onClick={actions.onShareClick}
-                    aria-label={t('actions.share')}
-                  >
-                    <Share2 className="h-4 w-4" aria-hidden="true" />
-                  </Button>
-                )}
-                {actions.showSettings && safeSettingsHref && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9"
-                    aria-label={t('actions.settings')}
-                    asChild={true}
-                  >
-                    <a href={safeSettingsHref}>
-                      <Settings className="h-4 w-4" aria-hidden="true" />
-                    </a>
-                  </Button>
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className="shrink-0 size-14 rounded-md border-2 border-border overflow-hidden flex items-center justify-center"
+                style={subspaceAvatarUrl ? undefined : { background: subspaceColor }}
+              >
+                {subspaceAvatarUrl ? (
+                  <img src={subspaceAvatarUrl} alt={title} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-subsection-title text-primary-foreground">{subspaceInitials}</span>
                 )}
               </div>
+              <h1 className="text-hero text-foreground truncate">{title}</h1>
             </div>
-
-            {tagline && <p className="text-body text-muted-foreground truncate">{tagline}</p>}
+            {/* Prototype layout: the tagline and the action icons share the second row.
+                At sm+ the icons move to the sticky flow-tabs row (rendered by the page),
+                so the in-header copy is mobile-only. */}
+            <div className="flex items-center justify-between gap-4">
+              {tagline ? (
+                <p className="text-body text-muted-foreground truncate">{tagline}</p>
+              ) : (
+                <div aria-hidden="true" />
+              )}
+              <HeaderActionIcons actions={actions} className="sm:hidden" />
+            </div>
           </div>
         </div>
       </div>

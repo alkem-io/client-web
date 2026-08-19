@@ -79,10 +79,12 @@ function DesktopTabs({
 
   return (
     <nav className={cn('w-full', className)} aria-label={t('a11y.tabNavigation')}>
-      <div className="flex items-center gap-6">
+      <div className="relative flex items-end justify-between gap-4">
+        {/* Bottom border line that runs the full width — the active tab covers it with -mb-px */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-border" aria-hidden="true" />
         <div
           ref={scrollRef}
-          className="flex items-center gap-6 overflow-x-auto scrollbar-hide overscroll-x-contain flex-1 min-w-0"
+          className="flex items-end overflow-x-auto overscroll-x-contain min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           role="tablist"
         >
           {tabs.map(tab => {
@@ -95,10 +97,10 @@ function DesktopTabs({
                 aria-selected={active}
                 data-active={active}
                 className={cn(
-                  'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'relative px-5 py-3 text-body transition-all duration-200 whitespace-nowrap select-none rounded-t-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
                   active
-                    ? 'border-primary text-primary'
-                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted'
+                    ? 'bg-background text-foreground font-semibold border border-border border-b-0 z-10 -mb-px'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-transparent'
                 )}
                 onClick={e => {
                   e.preventDefault();
@@ -110,7 +112,7 @@ function DesktopTabs({
             );
           })}
         </div>
-        {action && <div className="shrink-0 pb-2">{action}</div>}
+        {action && <div className="shrink-0 pb-3 relative z-10">{action}</div>}
       </div>
     </nav>
   );
@@ -141,6 +143,20 @@ function MobileTabBar({
       aria-label={t('a11y.mobileTabBar')}
     >
       <div className="flex items-stretch h-14">
+        {onMenuClick && (
+          <>
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+              aria-label={t('mobile.menu')}
+              aria-haspopup="dialog"
+            >
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            </button>
+            <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
+          </>
+        )}
         {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
         {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
         <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
@@ -164,20 +180,6 @@ function MobileTabBar({
             );
           })}
         </ul>
-        {onMenuClick && (
-          <>
-            <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
-            <button
-              type="button"
-              onClick={onMenuClick}
-              className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
-              aria-label={t('mobile.menu')}
-              aria-haspopup="dialog"
-            >
-              <Menu className="h-5 w-5" aria-hidden="true" />
-            </button>
-          </>
-        )}
       </div>
     </nav>
   );

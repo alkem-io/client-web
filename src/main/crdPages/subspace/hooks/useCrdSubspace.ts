@@ -4,7 +4,7 @@ import {
   useSpaceDefaultTemplatesQuery,
   useSubspacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
@@ -73,6 +73,8 @@ export type CrdSubspacePageData = {
   canRead: boolean;
   canUpdate: boolean;
   canCreateSubspace: boolean;
+  /** CreateCallout on the calloutsSet — the Add Post gate (same as the L0 tabs). */
+  canCreateCallout: boolean;
 
   /** Apply / Join CTA — pass-through from useApplicationButton */
   applicationButtonProps: ReturnType<typeof useApplicationButton>['applicationButtonProps'];
@@ -99,6 +101,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
   });
   const collaborationId = subspacePageData?.lookup.space?.collaboration.id;
   const calloutsSetId = subspacePageData?.lookup.space?.collaboration.calloutsSet.id;
+  // Same gate every L0 space tab uses for Add Post: CreateCallout on the calloutsSet.
+  const canCreateCallout =
+    subspacePageData?.lookup.space?.collaboration.calloutsSet.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.CreateCallout
+    ) ?? false;
   // The SubspacePage query already fetches templatesManager.templatesSet.id — surface it
   // so the Create-Subspace picker shows this space's own Space templates (D21).
   const templatesSetId = subspacePageData?.lookup.space?.templatesManager?.templatesSet?.id;
@@ -232,6 +239,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     // Spaces are capped at 3 levels (L0 → L1 → L2). An L2 cannot have children,
     // so creation is offered only on L1 even if the backend grants the privilege.
     canCreateSubspace: permissions.canCreateSubspace && subspace.level !== SpaceLevel.L2,
+    canCreateCallout,
 
     applicationButtonProps,
     applicationLoading,

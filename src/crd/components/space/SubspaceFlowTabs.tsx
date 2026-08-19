@@ -25,6 +25,11 @@ export type SubspaceFlowTabsProps = {
   editFlowHref?: string;
   onEditFlowClick?: () => void;
   onAddPostClick?: () => void;
+  /**
+   * Desktop-only: right-aligned slot on the flow-strip row (e.g. the header
+   * action icons riding the sticky row). Not shown on the mobile bottom bar.
+   */
+  action?: ReactNode;
   /** Controlled drawer open state for the mobile hamburger menu. */
   mobileMenuOpen?: boolean;
   onMobileMenuOpenChange?: (open: boolean) => void;
@@ -53,6 +58,7 @@ export function SubspaceFlowTabs({
   editFlowHref,
   onEditFlowClick,
   onAddPostClick,
+  action,
   mobileMenuOpen,
   onMobileMenuOpenChange,
   mobileMenuContent,
@@ -122,6 +128,7 @@ export function SubspaceFlowTabs({
         editFlowHref={editFlowHref}
         onEditFlowClick={onEditFlowClick}
         onAddPostClick={onAddPostClick}
+        action={action}
         className={className}
       />
       {drawer}
@@ -142,6 +149,7 @@ function DesktopFlowStrip({
   editFlowHref,
   onEditFlowClick,
   onAddPostClick,
+  action,
   className,
 }: {
   phases: SubspaceFlowPhase[];
@@ -152,6 +160,7 @@ function DesktopFlowStrip({
   editFlowHref?: string;
   onEditFlowClick?: () => void;
   onAddPostClick?: () => void;
+  action?: ReactNode;
   className?: string;
 }) {
   const { t } = useTranslation('crd-subspace');
@@ -243,6 +252,8 @@ function DesktopFlowStrip({
           {t('flow.addPost')}
         </Button>
       )}
+
+      {action && <div className="shrink-0 flex items-center">{action}</div>}
     </div>
   );
 }

@@ -81,6 +81,14 @@ export default function CrdSpaceDashboardPage() {
             permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
           }
           onAboutClick={() => setAboutOpen(true)}
+          actionsSlot={
+            canCreateCallout && (
+              <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateOpen(true)}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                {t('feed.addPost')}
+              </Button>
+            )
+          }
           subspaces={subspaces}
           subspacesHref={buildSpaceSectionUrl(space.about.profile.url ?? '', 3)}
           events={sidebarEvents}
@@ -99,18 +107,7 @@ export default function CrdSpaceDashboardPage() {
         />
       </SpaceSidebarPortal>
 
-      <SpaceTabActionHeader
-        description={tabDescription}
-        action={
-          canCreateCallout && (
-            <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
-              <Plus className="w-4 h-4" aria-hidden="true" />
-              {t('feed.addPost')}
-            </Button>
-          )
-        }
-        className="mb-6"
-      />
+      <SpaceTabActionHeader description={tabDescription} className="mb-6" />
 
       <CalloutListConnector
         callouts={callouts}

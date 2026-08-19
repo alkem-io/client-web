@@ -1,4 +1,4 @@
-import { Plus, UserPlus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -95,31 +95,19 @@ export default function CrdSpaceCommunityPage() {
           onVirtualContributorClick={href => navigate(href)}
           onInviteVc={handleInviteVc}
           guidelinesSlot={guidelinesSlot}
+          actionsSlot={
+            canCreateCallout && (
+              <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateOpen(true)}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                {t('crd-space:feed.addPost')}
+              </Button>
+            )
+          }
         />
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <SpaceTabActionHeader
-          description={tabDescription}
-          action={
-            (canCreateCallout || (canInvite && handleInvite)) && (
-              <div className="flex items-center gap-2">
-                {canInvite && handleInvite && (
-                  <Button size="sm" className="gap-2" onClick={handleInvite}>
-                    <UserPlus className="w-4 h-4" aria-hidden="true" />
-                    {t('crd-space:members.inviteMember')}
-                  </Button>
-                )}
-                {canCreateCallout && (
-                  <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
-                    <Plus className="w-4 h-4" aria-hidden="true" />
-                    {t('crd-space:feed.addPost')}
-                  </Button>
-                )}
-              </div>
-            )
-          }
-        />
+        <SpaceTabActionHeader description={tabDescription} />
 
         <CalloutListConnector
           callouts={callouts}

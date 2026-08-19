@@ -26,8 +26,28 @@ export function SpaceShell({ header, sidebar, tabs, children, fullWidth, classNa
 
       <div className={cn('w-full px-6 md:px-8 pb-8')}>
         <div className="grid grid-cols-12 gap-6 items-start">
+          {/* Sticky tab bar — full-width row spanning sidebar + content, pinned below the
+              h-16 platform header. Decorations are sm+ only: below sm the tabs render as a
+              fixed bottom bar, so the wrapper must not reserve sticky space. */}
+          {hasTabs && (
+            <div
+              className={cn(
+                'col-span-12',
+                !fullWidth && 'lg:col-start-2 lg:col-span-10',
+                'sm:sticky sm:top-16 sm:z-10 sm:pt-4 sm:bg-background/95 sm:backdrop-blur-[8px]'
+              )}
+            >
+              {tabs}
+            </div>
+          )}
+
           {hasSidebar && (
-            <div className={cn('hidden lg:block col-span-2', fullWidth ? 'lg:col-start-1' : 'lg:col-start-2')}>
+            <div
+              className={cn(
+                'hidden lg:block col-span-2 sticky top-[8.5rem] self-start max-h-[calc(100vh-8.5rem)] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+                fullWidth ? 'lg:col-start-1' : 'lg:col-start-2'
+              )}
+            >
               {sidebar}
             </div>
           )}
@@ -38,7 +58,6 @@ export function SpaceShell({ header, sidebar, tabs, children, fullWidth, classNa
               hasSidebar ? (fullWidth ? 'lg:col-span-10' : 'lg:col-span-8') : contentColumnClass(fullWidth)
             )}
           >
-            {hasTabs && <div className="sm:mb-6">{tabs}</div>}
             {children}
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { Layers, Layout as LayoutIcon } from 'lucide-react';
+import { Layers, Layout as LayoutIcon, Plus } from 'lucide-react';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
+import { HeaderActionIcons } from '@/crd/components/space/HeaderActionIcons';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
@@ -19,6 +20,8 @@ import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
+import { IconButton } from '@/crd/primitives/icon-button';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
@@ -38,6 +41,7 @@ import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
+import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
 import { useCrdCommunityUpdates } from '../../space/hooks/useCrdCommunityUpdates';
@@ -49,6 +53,7 @@ import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDi
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
 import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
+import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import { useSubspaceSidebarCollapsed } from '../hooks/useSubspaceSidebarCollapsed';
 
 export type SubspaceMobileMenu = {
@@ -60,6 +65,9 @@ export type SubspaceMobileMenu = {
 export type SubspaceOutletContext = {
   data: ReturnType<typeof useCrdSubspace>;
   mobileMenu: SubspaceMobileMenu;
+  /** The gray header action icons — the page renders them on the sticky
+   *  flow-tabs row (desktop) so they stay visible on scroll. */
+  headerActionIcons?: ReactNode;
 };
 
 export default function CrdSubspacePageLayout() {
@@ -79,6 +87,11 @@ export default function CrdSubspacePageLayout() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [updatesOpen, setUpdatesOpen] = useState(false);
+  const [createPostOpen, setCreatePostOpen] = useState(false);
+  // Active flow phase (URL-driven, shared with the callouts page) — the Add Post
+  // dialog pre-selects it, exactly as the old flow-tabs button did.
+  const { activePhaseId } = useCrdSubspaceFlow(data.phases, data.currentPhaseId);
+  const activePhase = data.phases.find(phase => phase.id === activePhaseId);
   const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
   const locale = useCrdSpaceLocale();
   const communityUpdates = useCrdCommunityUpdates(data.communityId);
@@ -187,6 +200,35 @@ export default function CrdSubspacePageLayout() {
       setAboutOpen(true);
     },
     onQuickActionClick: handleQuickAction,
+    // Add Post lives in the sidebar (same gate the L0 tabs use: CreateCallout on
+    // the calloutsSet, and only when the flow has phases to post into).
+    actionsSlot:
+      data.canCreateCallout && data.phases.length > 0 ? (
+        <Button
+          className="w-full gap-2 text-body-emphasis"
+          onClick={() => {
+            setMobileMenuOpen(false);
+            setCreatePostOpen(true);
+          }}
+        >
+          <Plus className="w-4 h-4" aria-hidden="true" />
+          {t('crd-subspace:flow.addPost')}
+        </Button>
+      ) : undefined,
+    // Same action, icon-only, for the collapsed rail — same gate.
+    collapsedActionsSlot:
+      data.canCreateCallout && data.phases.length > 0 ? (
+        <IconButton
+          tooltipLabel={t('crd-subspace:flow.addPost')}
+          tooltipSide="right"
+          onClick={() => {
+            setMobileMenuOpen(false);
+            setCreatePostOpen(true);
+          }}
+        >
+          <Plus className="w-4 h-4" aria-hidden="true" />
+        </IconButton>
+      ) : undefined,
     subspaces: data.subspaces,
     onShowAllSubspaces: () => {
       setMobileMenuOpen(false);
@@ -209,6 +251,20 @@ export default function CrdSubspacePageLayout() {
       />
     ),
   };
+
+  const headerActions = {
+    ...data.bannerActions,
+    showFullWidthToggle: true,
+    fullWidth,
+    onActivityClick: () => setActiveDialog('activity'),
+    onShareClick: () => setShareDialogOpen(true),
+    onToggleFullWidth: toggleFullWidth,
+    onMenuClick: () => setMobileMenuOpen(true),
+  };
+  // At sm+ the gray icons ride the sticky flow-tabs row (rendered by the
+  // callouts page via outlet context) so they stay visible on scroll; below sm
+  // the header renders its own copy.
+  const headerActionIcons = <HeaderActionIcons actions={headerActions} />;
 
   // Desktop sidebar is collapsible (persisted); the mobile drawer always shows
   // the full sidebar and has no collapse affordance.
@@ -255,15 +311,21 @@ export default function CrdSubspacePageLayout() {
               initials={data.banner.subspaceInitials}
               avatarColor={data.banner.subspaceColor}
               fullWidth={fullWidth}
-              tabs={
-                <SpaceSettingsTabStrip
-                  activeTab={activeSettingsTab}
-                  onTabChange={handleSettingsTabChange}
-                  tabs={settingsTabDescriptors}
-                />
-              }
             />
-            <main className="flex-1 w-full px-6 md:px-8 pb-8">
+            {/* Sticky settings tab row — mirrors SpaceShell's tabs slot so the
+                strip stays pinned under the h-16 platform header on scroll. */}
+            <div className="w-full px-6 md:px-8 sm:sticky sm:top-16 sm:z-10 sm:pt-4 sm:bg-background/95 sm:backdrop-blur-[8px]">
+              <div className="grid grid-cols-12 gap-6">
+                <div className={cn('col-span-12', contentColumnClass(fullWidth))}>
+                  <SpaceSettingsTabStrip
+                    activeTab={activeSettingsTab}
+                    onTabChange={handleSettingsTabChange}
+                    tabs={settingsTabDescriptors}
+                  />
+                </div>
+              </div>
+            </div>
+            <main className="flex-1 w-full px-6 md:px-8 pb-8 pt-6">
               <div className="grid grid-cols-12 gap-6 items-start">
                 <div className={cn('col-span-12 min-w-0', contentColumnClass(fullWidth))}>
                   <Suspense fallback={<LoadingSpinner />}>
@@ -304,15 +366,7 @@ export default function CrdSubspacePageLayout() {
         <SubspaceHeader
           {...data.banner}
           fullWidth={fullWidth}
-          actions={{
-            ...data.bannerActions,
-            showFullWidthToggle: true,
-            fullWidth,
-            onActivityClick: () => setActiveDialog('activity'),
-            onShareClick: () => setShareDialogOpen(true),
-            onToggleFullWidth: toggleFullWidth,
-            onMenuClick: () => setMobileMenuOpen(true),
-          }}
+          actions={headerActions}
           overlayHeader={enableBannerOverlay}
         />
 
@@ -333,7 +387,7 @@ export default function CrdSubspacePageLayout() {
               />
 
               <Suspense fallback={<LoadingSpinner />}>
-                <Outlet context={{ data, mobileMenu }} />
+                <Outlet context={{ data, mobileMenu, headerActionIcons }} />
               </Suspense>
             </div>
           </div>
@@ -364,6 +418,17 @@ export default function CrdSubspacePageLayout() {
         calloutsSetId={data.calloutsSetId}
         phaseNames={data.phases.map(phase => phase.label)}
       />
+
+      {/* Add Post — opened from the sidebar actions slot; pre-selects the active phase. */}
+      {data.canCreateCallout && data.calloutsSetId && (
+        <CalloutFormConnector
+          open={createPostOpen}
+          onOpenChange={setCreatePostOpen}
+          calloutsSetId={data.calloutsSetId}
+          activeFlowStateName={activePhase?.label}
+          defaultTemplateId={activePhase?.defaultCalloutTemplateId}
+        />
+      )}
 
       <CrdSubspaceSubspacesDialogConnector
         open={activeDialog === 'subspaces'}

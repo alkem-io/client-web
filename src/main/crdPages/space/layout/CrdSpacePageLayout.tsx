@@ -18,6 +18,7 @@ import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTra
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { MobileSidebarDrawer } from '@/crd/components/common/MobileSidebarDrawer';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
+import { HeaderActionIcons } from '@/crd/components/space/HeaderActionIcons';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
@@ -48,6 +49,7 @@ import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
@@ -63,6 +65,7 @@ export default function CrdSpacePageLayout() {
   const { pathname } = useLocation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
+  const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
   // One guard instance, shared with the Settings page (rendered via <Outlet>)
@@ -142,6 +145,8 @@ export default function CrdSpacePageLayout() {
   const settingsHref = space.about.profile.url ? buildSettingsUrl(space.about.profile.url) : undefined;
 
   const headerActions = {
+    showInfo: true,
+    onInfoClick: () => setAboutDialogOpen(true),
     showActivity: true,
     showVideoCall: isVideoCallEnabled && !!videoCallUrl,
     videoCallUrl: videoCallUrl || undefined,
@@ -196,13 +201,6 @@ export default function CrdSpacePageLayout() {
                 tagline={space.about.profile.tagline ?? null}
                 hideAvatar={true}
                 fullWidth={fullWidth}
-                tabs={
-                  <SpaceSettingsTabStrip
-                    activeTab={activeSettingsTab}
-                    onTabChange={handleSettingsTabChange}
-                    tabs={settingsTabs}
-                  />
-                }
               />
             ) : (
               <SpaceHeader
@@ -220,14 +218,24 @@ export default function CrdSpacePageLayout() {
           }
           sidebar={isOnSettings ? undefined : sidebarSlot}
           tabs={
-            isOnSettings ? undefined : (
+            isOnSettings ? (
+              // Settings tabs live in the shell's sticky tabs row too, so they
+              // stay pinned under the platform header on scroll.
+              <SpaceSettingsTabStrip
+                activeTab={activeSettingsTab}
+                onTabChange={handleSettingsTabChange}
+                tabs={settingsTabs}
+              />
+            ) : (
               <SpaceNavigationTabs
                 tabs={tabItems}
                 activeIndex={activeTabIndex}
                 onTabChange={handleTabChange}
                 isSmallScreen={isSmallScreen}
                 onMenuClick={() => setMobileMenuOpen(true)}
-                action={<div id="crd-space-tabs-action" />}
+                // The gray header icons ride the sticky tab row at sm+ so they
+                // stay visible on scroll; below sm they render in the header.
+                action={<HeaderActionIcons actions={headerActions} />}
               />
             )
           }
@@ -270,6 +278,10 @@ export default function CrdSpacePageLayout() {
           onOpenChange={setActivityDialogOpen}
           spaceId={spaceId}
         />
+
+        {/* About dialog — opened from the header info icon. Same shared
+          CrdSpaceAbout the sidebar "About this Space" button opens. */}
+        <CrdSpaceAboutDialogConnector open={aboutDialogOpen} onOpenChange={setAboutDialogOpen} />
 
         {/* Share dialog — opened from header share icon and the mobile "More" drawer.
           `entityLabel` is lowercased so the default message reads "...this space

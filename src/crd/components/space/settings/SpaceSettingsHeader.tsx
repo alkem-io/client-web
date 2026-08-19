@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
@@ -26,23 +25,21 @@ type SpaceSettingsHeaderAvatarProps =
 export type SpaceSettingsHeaderProps = SpaceSettingsHeaderAvatarProps & {
   title: string;
   tagline?: string | null;
-  /** Optional tab strip rendered below the title block; gets a full-width bottom border. */
-  tabs?: ReactNode;
   /**
-   * When true, the title block and tab strip fill all 12 grid columns instead
-   * of the default `lg:col-start-2 lg:col-span-10` inset, aligning with a
-   * full-width `SpaceShell` body. The full-width bottom border is unaffected.
+   * When true, the title block fills all 12 grid columns instead of the
+   * default `lg:col-start-2 lg:col-span-10` inset, aligning with a
+   * full-width `SpaceShell` body.
    */
   fullWidth?: boolean;
   className?: string;
 };
 
 /**
- * Compact header for the Space Settings area. Renders a title block (avatar +
- * space name + tagline) and, optionally, a tab strip below it. The tab strip's
- * bottom border spans the full viewport — the title and tabs align to the
- * shell's col-start-2 / col-span-10 grid, but the wrapping container (and its
- * bottom border) are full width. Matches the prototype's settings header.
+ * Compact header for the Space Settings area: a title block (avatar + space
+ * name + tagline) aligned to the shell's col-start-2 / col-span-10 grid.
+ * The settings tab strip is NOT part of this header — consumers render
+ * `SpaceSettingsTabStrip` in a sticky row below it (e.g. the `SpaceShell`
+ * tabs slot) so the tabs stay pinned under the platform header on scroll.
  */
 export function SpaceSettingsHeader({
   title,
@@ -51,7 +48,6 @@ export function SpaceSettingsHeader({
   initials,
   avatarColor,
   hideAvatar,
-  tabs,
   fullWidth = false,
   className,
 }: SpaceSettingsHeaderProps) {
@@ -79,15 +75,6 @@ export function SpaceSettingsHeader({
           </div>
         </div>
       </div>
-      {tabs && (
-        <div className="w-full border-b border-border">
-          <div className="w-full px-6 md:px-8">
-            <div className="grid grid-cols-12 gap-6">
-              <div className={innerColClass}>{tabs}</div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
