@@ -187,6 +187,7 @@ export default function CrdSubspacePageLayout() {
 
   const sidebarCommonProps = {
     ...data.sidebar,
+    parentSpaces: data.parentSpaceStack,
     // Only offer the edit pencil to users with Update on the subspace — otherwise it just lands
     // on the access-restricted page.
     onEditClick: data.canUpdate
