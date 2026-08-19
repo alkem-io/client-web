@@ -5,10 +5,12 @@ import {
   useSubspacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+import type { ParentSpaceStackItem } from '@/crd/components/space/ParentSpaceStack';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
 import { getInitials } from '@/crd/lib/getInitials';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import { filterVisibleStates } from '@/domain/collaboration/InnovationFlow/utils/filterVisibleStates';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
@@ -52,6 +54,8 @@ export type CrdSubspacePageData = {
   banner: SubspaceBannerProps;
   bannerActions: SubspaceHeaderActionsData;
   sidebar: SubspaceSidebarData;
+  /** Ancestor spaces (outermost first) for the sidebar's stacked parent cards. */
+  parentSpaceStack: ParentSpaceStackItem[];
   /** Nested subspaces of the current subspace — fed into the sidebar widget. */
   subspaces: Array<{
     name: string;
@@ -153,6 +157,25 @@ export function useCrdSubspace(): CrdSubspacePageData {
   });
   const levelZeroProfile = needL0Lookup ? levelZeroAboutData?.lookup.space?.about.profile : parentProfile;
 
+  // Ancestor chain for the sidebar's stacked parent cards, outermost first:
+  // L1 page → [L0]; L2 page → [L0, L1]. Card banners with the deterministic
+  // gradient as fallback; taglines are plain text (never markdown descriptions).
+  const parentStackItem = (id: string | undefined, profile: typeof parentProfile): ParentSpaceStackItem | undefined =>
+    profile?.url
+      ? {
+          name: profile.displayName,
+          initials: getInitials(profile.displayName),
+          href: profile.url,
+          bannerUrl: profile.cardBanner?.uri || undefined,
+          color: pickColorFromId(id ?? profile.displayName),
+          tagline: profile.tagline ?? undefined,
+        }
+      : undefined;
+  const parentSpaceStack = [
+    ...(needL0Lookup ? [parentStackItem(levelZeroSpaceId, levelZeroProfile)] : []),
+    parentStackItem(parentSpaceId, parentProfile),
+  ].filter((item): item is ParentSpaceStackItem => Boolean(item));
+
   // Apply / Join CTA — useApplicationButton handles parent-membership requirement
   // when parentSpaceId is supplied (per research R8).
   const { applicationButtonProps, loading: applicationLoading } = useApplicationButton({
@@ -226,6 +249,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     banner,
     bannerActions,
     sidebar,
+    parentSpaceStack,
     subspaces,
     visibility: visibilityData,
 

@@ -1027,5 +1027,8 @@
       "title": "Aún no hay subespacios",
       "description": "Este espacio aún no tiene subespacios."
     }
+  },
+  "parentStack": {
+    "goTo": "Ir a {{name}}"
   }
 }
