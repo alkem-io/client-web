@@ -80,10 +80,17 @@ fragment InAppNotificationAllTypes on InAppNotification {
     ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
       ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
     }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutReaction
+    }
     ... on InAppNotificationPayloadSpaceCollaborationPoll {
       ...InAppNotificationPayloadSpaceCollaborationPoll
     }
   }
+}
+
+fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+  type
 }
 
 fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {

@@ -793,6 +793,10 @@
           "description": "{{triggeredByName}} публикува нов $t(common.post) в {{spaceLevel}}: {{spaceName}}, с име: {{calloutName}}.",
           "subject": "{{spaceName}} – Нов $t(common.post) е публикуван „{{calloutName}}“, хвърлете един поглед!"
         },
+        "SPACE_COLLABORATION_CALLOUT_REACTION": {
+          "description": "",
+          "subject": "<b>{{triggeredByName}}</b> реагира на вашия Post с {{emoji}}"
+        },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} modified a $t(common.poll) you voted on",
           "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified"

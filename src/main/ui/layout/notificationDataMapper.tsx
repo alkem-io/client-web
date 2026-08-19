@@ -21,6 +21,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
+import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
@@ -92,6 +93,9 @@ function buildTranslationValues(
           `common.enums.discussion-category.${kebabToConstantCase(payload.discussion.category) as ForumDiscussionCategory}`
         )
       : undefined,
+    // emoji: used by SPACE_COLLABORATION_CALLOUT_REACTION — slug resolved to glyph;
+    // unknown slug yields undefined so the placeholder renders empty, never crashes
+    emoji: payload.emoji ? glyphForSlug(payload.emoji) : undefined,
   };
 }
 

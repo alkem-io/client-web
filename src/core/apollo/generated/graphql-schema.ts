@@ -3506,6 +3506,12 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostComment = InApp
   type: NotificationEventPayload;
 };
 
+export type InAppNotificationPayloadSpaceCollaborationCalloutReaction = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutReaction';
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
 export type InAppNotificationPayloadSpaceCollaborationPoll = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll';
   /** The Callout that contains the poll. */
@@ -6303,6 +6309,7 @@ export enum NotificationEvent {
   SpaceCollaborationCalloutContribution = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION',
   SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
   SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
+  SpaceCollaborationCalloutReaction = 'SPACE_COLLABORATION_CALLOUT_REACTION',
   SpaceCollaborationPollModifiedOnPollIVotedOn = 'SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON',
   SpaceCollaborationPollVoteAffectedByOptionChange = 'SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE',
   SpaceCollaborationPollVoteCastOnOwnPoll = 'SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL',
@@ -6355,6 +6362,7 @@ export enum NotificationEventPayload {
   SpaceCollaborationCallout = 'SPACE_COLLABORATION_CALLOUT',
   SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
   SpaceCollaborationCalloutPostComment = 'SPACE_COLLABORATION_CALLOUT_POST_COMMENT',
+  SpaceCollaborationCalloutReaction = 'SPACE_COLLABORATION_CALLOUT_REACTION',
   SpaceCollaborationPoll = 'SPACE_COLLABORATION_POLL',
   SpaceCommunicationMessageDirect = 'SPACE_COMMUNICATION_MESSAGE_DIRECT',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
@@ -9900,6 +9908,8 @@ export type UpdateUserSettingsNotificationSpaceInput = {
   collaborationCalloutPostContributionComment?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a callout is published */
   collaborationCalloutPublished?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone reacts to a callout you published */
+  collaborationCalloutReaction?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a poll you voted on is modified */
   collaborationPollModifiedOnPollIVotedOn?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a poll option you voted for is changed or removed */
@@ -10457,6 +10467,8 @@ export type UserSettingsNotificationSpace = {
   collaborationCalloutPostContributionComment: UserSettingsNotificationChannels;
   /** Receive a notification when a callout is published */
   collaborationCalloutPublished: UserSettingsNotificationChannels;
+  /** Receive a notification when someone reacts to a callout you published */
+  collaborationCalloutReaction: UserSettingsNotificationChannels;
   /** Receive a notification when a poll you voted on is modified */
   collaborationPollModifiedOnPollIVotedOn: UserSettingsNotificationChannels;
   /** Receive a notification when a poll option you voted for is changed or removed */
@@ -23820,6 +23832,12 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
             push: boolean;
           };
+          collaborationCalloutReaction: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           collaborationCalloutComment: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
@@ -24108,6 +24126,12 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
         push: boolean;
       };
+      collaborationCalloutReaction: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
       collaborationCalloutComment: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
@@ -24338,6 +24362,12 @@ export type UserSettingsQuery = {
                   push: boolean;
                 };
                 collaborationCalloutPublished: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                collaborationCalloutReaction: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;

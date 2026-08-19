@@ -1793,6 +1793,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
         inApp
         push
       }
+      collaborationCalloutReaction {
+        email
+        inApp
+        push
+      }
       collaborationCalloutComment {
         email
         inApp
@@ -3653,6 +3658,11 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmen
   }
 }
     ${SpaceNotificationFragmentDoc}`;
+export const InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc = gql`
+    fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+  type
+}
+    `;
 export const InAppNotificationPayloadVirtualContributorFragmentDoc = gql`
     fragment InAppNotificationPayloadVirtualContributor on InAppNotificationPayloadVirtualContributor {
   type
@@ -3807,6 +3817,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
     ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
       ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
     }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutReaction
+    }
     ... on InAppNotificationPayloadSpaceCollaborationPoll {
       ...InAppNotificationPayloadSpaceCollaborationPoll
     }
@@ -3831,6 +3844,7 @@ ${InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc}
 ${InAppNotificationPayloadUserMessageDirectFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationCalloutCommentFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
+${InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc}
 ${InAppNotificationPayloadVirtualContributorFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
@@ -15259,6 +15273,11 @@ export const UpdateUserSettingsDocument = gql`
             push
           }
           collaborationCalloutPublished {
+            email
+            inApp
+            push
+          }
+          collaborationCalloutReaction {
             email
             inApp
             push
