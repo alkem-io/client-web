@@ -17,8 +17,7 @@
       "description": "Durch das Anwenden dieser Vorlage werden der Name, der Slogan, die Beschreibung und die Tags überschrieben, die Sie bereits eingegeben haben.",
       "confirm": "Vorlage anwenden",
       "cancel": "Meine Änderungen behalten"
-    },
-    "invalidFlow": "Diese Vorlage kann nicht zum Erstellen eines Space verwendet werden — sie benötigt einen Innovationsflow mit 4 Phasen."
+    }
   },
   "displayName": {
     "label": "Name",
