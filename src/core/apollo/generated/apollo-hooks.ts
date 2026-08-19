@@ -3658,11 +3658,6 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmen
   }
 }
     ${SpaceNotificationFragmentDoc}`;
-export const InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc = gql`
-    fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
-  type
-}
-    `;
 export const InAppNotificationPayloadVirtualContributorFragmentDoc = gql`
     fragment InAppNotificationPayloadVirtualContributor on InAppNotificationPayloadVirtualContributor {
   type
@@ -3713,6 +3708,26 @@ export const InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentD
       displayName
       url
     }
+  }
+}
+    ${SpaceNotificationFragmentDoc}`;
+export const InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc = gql`
+    fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+  type
+  emoji
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+  space {
+    ...spaceNotification
   }
 }
     ${SpaceNotificationFragmentDoc}`;
@@ -3844,10 +3859,10 @@ ${InAppNotificationPayloadSpaceCommunityInvitationPlatformFragmentDoc}
 ${InAppNotificationPayloadUserMessageDirectFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationCalloutCommentFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
-${InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc}
 ${InAppNotificationPayloadVirtualContributorFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
+${InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationPollFragmentDoc}`;
 export const UrlResolverResultFragmentDoc = gql`
     fragment UrlResolverResult on UrlResolverQueryResults {

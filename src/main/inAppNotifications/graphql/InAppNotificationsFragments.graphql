@@ -91,6 +91,21 @@ fragment InAppNotificationAllTypes on InAppNotification {
 
 fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
   type
+  emoji
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+  }
+  space {
+    ...spaceNotification
+  }
 }
 
 fragment InAppNotificationPayloadSpaceCollaborationCallout on InAppNotificationPayloadSpaceCollaborationCallout {

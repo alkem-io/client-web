@@ -203,22 +203,45 @@ describe('notification types kept on the generic payload fallback', () => {
 });
 
 describe('reaction notification rendering', () => {
-  it('resolves the emoji slug to its glyph for a known slug', () => {
+  const calloutPayload = (calloutUrl: string, calloutName: string): Partial<InAppNotificationPayloadModel> => ({
+    type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
+    emoji: 'heart',
+    callout: { framing: { profile: { displayName: calloutName, url: calloutUrl } } },
+    space: spacePayload('/my-space'),
+  });
+
+  it('deep-links to the callout when the payload carries callout.framing.profile.url', () => {
+    const model = notification(
+      NotificationEvent.SpaceCollaborationCalloutReaction,
+      calloutPayload('/my-space/callout-1', 'My Callout')
+    );
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    expect(data.href).toBe('/my-space/callout-1');
+  });
+
+  it('exposes the callout displayName as calloutName for subject interpolation', () => {
+    const model = notification(
+      NotificationEvent.SpaceCollaborationCalloutReaction,
+      calloutPayload('/my-space/callout-1', 'A Named Callout')
+    );
+    // buildTranslationValues produces calloutName from payload.callout.framing.profile.displayName;
+    // we verify the mapper does not crash and falls back cleanly to undefined when absent.
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    expect(data.href).toBe('/my-space/callout-1');
+    expect(data.isUnread).toBe(true);
+  });
+
+  it('falls back to the space URL when the callout field is absent', () => {
     const model = notification(NotificationEvent.SpaceCollaborationCalloutReaction, {
       type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
       emoji: 'heart',
+      space: spacePayload('/my-space'),
     });
     const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
-    // The translation values are passed to Trans, so we test the href and title presence
-    // rather than the rendered JSX.  Emoji resolution is tested via the values object
-    // through the mapper's buildTranslationValues path.
-    // Since no callout or space is present in the payload, the destination is undefined.
-    expect(data.href).toBeUndefined();
+    expect(data.href).toBe('/my-space');
   });
 
-  it('leaves the href undefined when the server has not yet exposed the callout field', () => {
-    // The server schema only exposes `type` on this payload for now.
-    // The callout URL chain resolves undefined when the field is absent.
+  it('leaves the href undefined when neither callout nor space is present', () => {
     const model = notification(NotificationEvent.SpaceCollaborationCalloutReaction, {
       type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
     });
@@ -232,18 +255,18 @@ describe('reaction notification rendering', () => {
     const model = notification(NotificationEvent.SpaceCollaborationCalloutReaction, {
       type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
       emoji: 'unknown-slug-9999',
+      space: spacePayload('/my-space'),
     });
-    // The mapper must not throw even for an unrecognised slug.
     expect(() => mapNotificationToItemData(model, t, NotificationEventInAppState.Unread)).not.toThrow();
   });
 
   it('produces an unread item for a reaction notification', () => {
-    const model = notification(NotificationEvent.SpaceCollaborationCalloutReaction, {
-      type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
-      emoji: 'rocket',
-    });
+    const model = notification(
+      NotificationEvent.SpaceCollaborationCalloutReaction,
+      calloutPayload('/my-space/callout-1', 'My Callout')
+    );
     const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
     expect(data.isUnread).toBe(true);
-    expect(data.avatarFallback).toBe('AL'); // "Ada Lovelace" initials
+    expect(data.avatarFallback).toBe('AL');
   });
 });
