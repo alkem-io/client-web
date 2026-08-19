@@ -164,7 +164,7 @@ export function TagsInput({
       {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard users interact with the inner input directly */}
       <div
         className={cn(
-          'flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text border bg-background',
+          'flex flex-wrap items-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-md cursor-text border bg-input-background',
           tooShortError ? 'border-destructive' : 'border-border',
           className
         )}
@@ -186,7 +186,7 @@ export function TagsInput({
                 onKeyDown={handleEditKeyDown}
                 onBlur={commitEdit}
                 aria-label={formatEditTagAriaLabel ? formatEditTagAriaLabel(tag) : tag}
-                className="px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary bg-background outline-none focus:ring-2 focus:ring-ring min-w-[60px]"
+                className="px-2 py-0.5 rounded-md text-caption font-medium border border-primary text-primary bg-input-background outline-none focus:ring-2 focus:ring-ring min-w-[60px]"
                 style={{
                   width: `${Math.max(editingValue.length, 4) + 2}ch`,
                 }}

@@ -85,7 +85,7 @@ function CollaborativeMarkdownEditorLazy({
   return (
     <div
       className={cn(
-        'crd-markdown-editor flex flex-col h-full border border-border rounded-lg overflow-hidden bg-background',
+        'crd-markdown-editor flex flex-col h-full border border-border rounded-lg overflow-hidden bg-input-background',
         disabled && 'opacity-60',
         className
       )}
