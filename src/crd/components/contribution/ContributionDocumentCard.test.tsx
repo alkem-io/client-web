@@ -29,4 +29,36 @@ describe('ContributionDocumentCard', () => {
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
+
+  it('renders type icon when no previewUrl is provided', () => {
+    const { container } = render(<ContributionDocumentCard title="Doc" documentType="text" />);
+
+    expect(container.querySelector('svg')).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+  });
+
+  it('renders an image when previewUrl is provided', () => {
+    render(<ContributionDocumentCard title="Doc" documentType="text" previewUrl="https://example.com/preview.png" />);
+
+    const img = screen.getByRole('img', { name: 'Doc' });
+    expect(img).toBeInTheDocument();
+    expect(img).toHaveAttribute('src', 'https://example.com/preview.png');
+  });
+
+  it('falls back to the type icon when the preview image fails to load', () => {
+    const { container } = render(
+      <ContributionDocumentCard title="Doc" documentType="spreadsheet" previewUrl="https://example.com/broken.png" />
+    );
+
+    // Image is rendered initially
+    const img = screen.getByRole('img', { name: 'Doc' });
+    expect(img).toBeInTheDocument();
+
+    // Simulate image load error
+    fireEvent.error(img);
+
+    // After error, the icon should render and the image should be gone
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(container.querySelector('svg')).toBeInTheDocument();
+  });
 });
