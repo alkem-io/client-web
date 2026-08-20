@@ -228,10 +228,19 @@ const CollaborativeExcalidrawWrapper = ({
       actions.onSceneInitChange?.(initialized);
     },
     onUpdateRejected: () => {
-      // The server rejected this generation's update. Bump the recovery generation so
-      // <Excalidraw> remounts with a fresh scene that resyncs from the server, and tell
-      // the user their last change could not be saved.
+      // The server rejected this generation's update. Tell the user their last change
+      // could not be saved, then discard the poisoned generation:
+      // - Invalidate the API (`setExcalidrawApi(null)`): the initializeCollab effect
+      //   depends on `excalidrawApi`, so nulling it forces that effect's CLEANUP to run
+      //   NOW — destroying the old provider/socket immediately, independent of whether
+      //   the replacement editor ever mounts (React runs an effect's cleanup before any
+      //   next setup). Without this, the old socket would linger until the replacement
+      //   happened to call onExcalidrawAPI — indefinitely if that replacement failed.
+      // - Bump `recoveryGeneration` (in the <Excalidraw key>) so a fresh Scene/Y.Doc is
+      //   mounted that resyncs the server's canonical state.
       notify(t('callout.whiteboard.images.uploadFailed'), 'error');
+      setSceneInitialized(false);
+      setExcalidrawApi(null);
       setRecoveryGeneration(generation => generation + 1);
     },
     onTerminalClose: (reason: string) => {
