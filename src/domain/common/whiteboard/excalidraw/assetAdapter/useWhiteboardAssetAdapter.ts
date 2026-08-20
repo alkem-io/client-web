@@ -21,13 +21,22 @@ type UseWhiteboardAssetAdapterParams = {
   storageBucketId: string;
 };
 
+/**
+ * A single asset-operation failure, as an EVENT: a fresh object is emitted per failure, so
+ * a host effect keyed on it re-fires on EVERY failure — even two identical messages in a row.
+ * Plain string state would bail out (React `Object.is`) on a repeat identical message and the
+ * host would silently drop the second (and later) notification. Hosts translate their own
+ * user-facing copy; `message` is a diagnostic carried alongside the event.
+ */
+export type AssetOperationError = { message: string };
+
 export type WhiteboardAssetAdapter = {
   /** Stable adapter handed straight to `<Excalidraw assetAdapter>` (identity never changes). */
   assetAdapter: AssetAdapter;
-  /** Last user-facing upload (store) failure message, if any. */
-  uploadError: string | undefined;
-  /** Last user-facing resolve failure message, if any. */
-  resolveError: string | undefined;
+  /** The most recent upload (store) failure — a fresh object per failure, or `undefined`. */
+  uploadError: AssetOperationError | undefined;
+  /** The most recent resolve failure — a fresh object per failure, or `undefined`. */
+  resolveError: AssetOperationError | undefined;
 };
 
 /**
@@ -54,8 +63,8 @@ export function useWhiteboardAssetAdapter({
   const [uploadFile] = useUploadFileMutation();
   const [fetchDocument] = useWhiteboardAssetDocumentLazyQuery();
   const guestName = useContext(GuestSessionContext)?.guestName;
-  const [uploadError, setUploadError] = useState<string | undefined>(undefined);
-  const [resolveError, setResolveError] = useState<string | undefined>(undefined);
+  const [uploadError, setUploadError] = useState<AssetOperationError | undefined>(undefined);
+  const [resolveError, setResolveError] = useState<AssetOperationError | undefined>(undefined);
 
   // Latest dependencies, read by the stable operations below. Assigning during
   // render is safe here: `depsRef` never feeds render output, it only carries the
@@ -106,7 +115,7 @@ export function useWhiteboardAssetAdapter({
           return documentId;
         } catch (e) {
           controller.abort();
-          setUploadError(e instanceof Error ? e.message : 'Image upload failed');
+          setUploadError({ message: e instanceof Error ? e.message : 'Image upload failed' });
           throw e;
         } finally {
           clearUploadTimer();
@@ -133,7 +142,7 @@ export function useWhiteboardAssetAdapter({
             created: Date.now(),
           };
         } catch (e) {
-          setResolveError(e instanceof Error ? e.message : 'Image load failed');
+          setResolveError({ message: e instanceof Error ? e.message : 'Image load failed' });
           throw e;
         }
       },

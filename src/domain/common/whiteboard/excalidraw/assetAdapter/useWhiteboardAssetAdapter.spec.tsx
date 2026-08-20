@@ -59,6 +59,28 @@ describe('useWhiteboardAssetAdapter', () => {
     expect(result.current.uploadError).toBeDefined();
   });
 
+  it('(gate 10) emits a FRESH error object per failure — two identical failures are distinct events', async () => {
+    mockUpload.mockResolvedValue({ data: { uploadFileOnStorageBucket: null } }); // always "no id"
+    const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
+
+    await act(async () => {
+      await expect(result.current.assetAdapter.store(FILE)).rejects.toThrow();
+    });
+    const first = result.current.uploadError;
+    expect(first).toBeDefined();
+
+    await act(async () => {
+      await expect(result.current.assetAdapter.store(FILE)).rejects.toThrow();
+    });
+    const second = result.current.uploadError;
+
+    // Same message, but a DISTINCT object identity → a host effect keyed on it re-fires on
+    // the second failure (string state would bail on the identical value and drop the 2nd notify).
+    expect(second).toBeDefined();
+    expect(second).not.toBe(first);
+    expect(second?.message).toBe(first?.message);
+  });
+
   it('resolve looks up the document url by locator and returns the fetched bytes', async () => {
     mockFetchDoc.mockResolvedValue({
       data: { lookup: { document: { id: 'doc-1', url: 'http://x/doc', mimeType: 'image/png' } } },
@@ -124,7 +146,7 @@ describe('useWhiteboardAssetAdapter', () => {
       });
 
       expect(capturedSignal?.aborted).toBe(true);
-      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+      expect(result.current.uploadError?.message).toBe(UPLOAD_TIMEOUT_MESSAGE);
     } finally {
       vi.useRealTimers();
     }
@@ -150,7 +172,7 @@ describe('useWhiteboardAssetAdapter', () => {
         await rejects;
       });
 
-      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+      expect(result.current.uploadError?.message).toBe(UPLOAD_TIMEOUT_MESSAGE);
     } finally {
       vi.useRealTimers();
     }
@@ -195,7 +217,7 @@ describe('useWhiteboardAssetAdapter', () => {
         await vi.advanceTimersByTimeAsync(UPLOAD_TIMEOUT_MS);
         await rejects;
       });
-      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+      expect(result.current.uploadError?.message).toBe(UPLOAD_TIMEOUT_MESSAGE);
 
       // Retry: the next attempt resolves normally and clears the error.
       mockUpload.mockResolvedValueOnce({ data: { uploadFileOnStorageBucket: { id: 'doc-retry' } } });
@@ -229,7 +251,7 @@ describe('useWhiteboardAssetAdapter', () => {
         await vi.advanceTimersByTimeAsync(UPLOAD_TIMEOUT_MS);
         await rejects;
       });
-      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+      expect(result.current.uploadError?.message).toBe(UPLOAD_TIMEOUT_MESSAGE);
 
       // The server resolves LATE — after the store already rejected. The race has
       // settled, so this can neither flip the result nor clear the error (no locator).
@@ -237,7 +259,7 @@ describe('useWhiteboardAssetAdapter', () => {
         resolveUpload?.({ data: { uploadFileOnStorageBucket: { id: 'late-doc' } } });
         await vi.advanceTimersByTimeAsync(0);
       });
-      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+      expect(result.current.uploadError?.message).toBe(UPLOAD_TIMEOUT_MESSAGE);
       await expect(store).rejects.toThrow(UPLOAD_TIMEOUT_MESSAGE);
     } finally {
       vi.useRealTimers();
