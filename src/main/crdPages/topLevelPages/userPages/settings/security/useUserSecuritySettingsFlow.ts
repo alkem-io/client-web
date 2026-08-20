@@ -5,7 +5,7 @@ import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/us
 export type UserSecuritySettingsFlowResult =
   | { kind: 'loading'; refetch: () => void }
   | { kind: 'error'; error: Error; refetch: () => void }
-  | { kind: 'ready'; flow: SettingsFlow; hasWebauthn: boolean; refetch: () => void };
+  | { kind: 'ready'; flow: SettingsFlow; hasWebauthn: boolean; flowWasResumed: boolean; refetch: () => void };
 
 const hasWebauthnNode = (node: UiNode): boolean => {
   if (node.group === 'webauthn' || node.group === 'passkey') return true;
@@ -47,6 +47,16 @@ const hasWebauthnNode = (node: UiNode): boolean => {
  * password set to social-only accounts), which is config-dependent. That gate
  * is answered authoritatively by `User.authentication.methods` (EMAIL) in the
  * consuming tab. This hook only reports the passkey method and the flow.
+ *
+ * `flowWasResumed` is true exactly when a `flow` id was present on the URL at
+ * mount — i.e. Kratos itself sent the browser back here naming a specific,
+ * already-existing flow, rather than this hook provisioning a fresh one. A
+ * privileged-session re-auth interruption is the case that
+ * matters: Kratos's settings UI URL convention is `<ui_url>?flow=<id>`, and
+ * that is the URL it redirects back to once the interstitial login flow
+ * completes — so a resumed flow is how the Connected Accounts section tells
+ * "the identity check the person just completed interrupted an attempt" apart
+ * from "that attempt genuinely failed" (see `ConnectedAccountsSection`).
  */
 const useUserSecuritySettingsFlow = (returnTo?: string): UserSecuritySettingsFlowResult => {
   const [searchParams] = useSearchParams();
@@ -63,6 +73,7 @@ const useUserSecuritySettingsFlow = (returnTo?: string): UserSecuritySettingsFlo
     kind: 'ready',
     flow,
     hasWebauthn: nodes.some(hasWebauthnNode),
+    flowWasResumed: Boolean(flowId),
     refetch,
   };
 };

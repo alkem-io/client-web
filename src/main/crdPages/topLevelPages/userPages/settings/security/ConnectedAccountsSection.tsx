@@ -30,6 +30,15 @@ export type ConnectedAccountsSectionProps = {
   status: ConnectedAccountsSectionStatus;
   model: ConnectedAccountsModel;
   profileUrl: string | undefined;
+  /**
+   * True when the Settings flow driving this render is a *resumed* flow (a `flow` id was already on
+   * the URL) rather than a freshly-provisioned one. Kratos's settings UI URL convention is
+   * `<ui_url>?flow=<id>`, and that convention is what it redirects back to once a privileged-session
+   * re-auth interruption completes — so this distinguishes "the identity check the person just
+   * completed interrupted a link/unlink attempt" from "that attempt genuinely failed" when the
+   * marker fallback resolves to `'failed'`.
+   */
+  flowWasResumed: boolean;
   onRetry: () => void;
 };
 
@@ -43,7 +52,13 @@ export type ConnectedAccountsSectionProps = {
  * FR-019). When a real Kratos message *is* present, it already explains the attempt and the marker
  * path yields to it rather than double-announcing.
  */
-export function ConnectedAccountsSection({ status, model, profileUrl, onRetry }: ConnectedAccountsSectionProps) {
+export function ConnectedAccountsSection({
+  status,
+  model,
+  profileUrl,
+  flowWasResumed,
+  onRetry,
+}: ConnectedAccountsSectionProps) {
   const { t: tTyped } = useTranslation(NS);
   // Reason-key and outcome-message strings are built at runtime from the adapter's/marker's output
   // (a string, not a literal from the typed resource union) — translate via a plain signature,
@@ -76,7 +91,7 @@ export function ConnectedAccountsSection({ status, model, profileUrl, onRetry }:
     manageHref: buildSettingsTabUrl(profileUrl, 'security', row.kind === 'password' ? 'password' : 'passkeys'),
   }));
 
-  const markerMessage = useConnectedAccountsMarkerMessage({ status, messages, providers, t });
+  const markerMessage = useConnectedAccountsMarkerMessage({ status, messages, providers, flowWasResumed, t });
   const allMessages = markerMessage ? [...messages, markerMessage] : messages;
 
   const handleProviderActionSubmit = (row: ConnectedAccountsProviderRow) => {
@@ -101,6 +116,7 @@ type UseConnectedAccountsMarkerMessageArgs = {
   status: ConnectedAccountsSectionStatus;
   messages: ConnectedAccountsFlowMessage[];
   providers: ConnectedAccountsProviderRow[];
+  flowWasResumed: boolean;
   t: (key: string, options?: Record<string, unknown>) => string;
 };
 
@@ -116,6 +132,7 @@ function useConnectedAccountsMarkerMessage({
   status,
   messages,
   providers,
+  flowWasResumed,
   t,
 }: UseConnectedAccountsMarkerMessageArgs): ConnectedAccountsFlowMessage | undefined {
   const [markerMessage, setMarkerMessage] = useState<ConnectedAccountsFlowMessage | undefined>(undefined);
@@ -156,12 +173,28 @@ function useConnectedAccountsMarkerMessage({
       });
       return;
     }
+    if (flowWasResumed) {
+      // The provider state did not reach the marker's expected outcome, but this render is a
+      // *resumed* flow (a `flow` id was already on the URL) — Kratos's own convention for landing
+      // back here once a privileged-session re-auth interruption completes. Nothing
+      // has actually failed: the person just finished confirming their identity, and the original
+      // link/unlink attempt was never (re-)submitted. Calling this "failed" would be a lie; instead
+      // point back at the pending action rather than layering a red error over a routine identity
+      // check.
+      const pendingKey =
+        marker.action === 'link'
+          ? 'user.security.connectedAccounts.messages.reauthRequiredConnect'
+          : 'user.security.connectedAccounts.messages.reauthRequiredDisconnect';
+      setMarkerMessage({ id: -4, type: 'info', text: t(pendingKey, { provider: providerName }) });
+      return;
+    }
+
     const failedKey =
       marker.action === 'link'
         ? 'user.security.connectedAccounts.messages.connectFailed'
         : 'user.security.connectedAccounts.messages.disconnectFailed';
     setMarkerMessage({ id: -3, type: 'error', text: t(failedKey, { provider: providerName }) });
-  }, [status, messages, providers, t]);
+  }, [status, messages, providers, flowWasResumed, t]);
 
   return markerMessage;
 }

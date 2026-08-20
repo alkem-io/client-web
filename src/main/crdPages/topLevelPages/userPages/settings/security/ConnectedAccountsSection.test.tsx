@@ -50,7 +50,15 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('unlink', 'github');
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(<ConnectedAccountsSection status="ready" model={model} profileUrl="/user/alice" onRetry={vi.fn()} />);
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
 
     const status = screen.getByRole('status');
     expect(status).toHaveTextContent('user.security.connectedAccounts.messages.unlinked:GitHub');
@@ -60,7 +68,15 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('link', 'github');
     const model = baseModel({ providers: [githubConnected] });
 
-    render(<ConnectedAccountsSection status="ready" model={model} profileUrl="/user/alice" onRetry={vi.fn()} />);
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
 
     const status = screen.getByRole('status');
     expect(status).toHaveTextContent('user.security.connectedAccounts.messages.linked:GitHub');
@@ -72,7 +88,15 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('unlink', 'github');
     const model = baseModel({ providers: [githubConnected] });
 
-    render(<ConnectedAccountsSection status="ready" model={model} profileUrl="/user/alice" onRetry={vi.fn()} />);
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('user.security.connectedAccounts.messages.disconnectFailed:GitHub');
@@ -82,7 +106,15 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('link', 'github');
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(<ConnectedAccountsSection status="ready" model={model} profileUrl="/user/alice" onRetry={vi.fn()} />);
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('user.security.connectedAccounts.messages.connectFailed:GitHub');
@@ -95,7 +127,15 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
       messages: [{ id: 1050001, type: 'success', text: 'Your changes have been saved!' }],
     });
 
-    render(<ConnectedAccountsSection status="ready" model={model} profileUrl="/user/alice" onRetry={vi.fn()} />);
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
 
     // Exactly the real Kratos message renders — no synthetic marker message alongside it.
     const statusNodes = screen.getAllByRole('status');
@@ -107,7 +147,15 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
   it('renders nothing extra when there is no marker', () => {
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(<ConnectedAccountsSection status="ready" model={model} profileUrl="/user/alice" onRetry={vi.fn()} />);
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
 
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
@@ -117,7 +165,13 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('unlink', 'github');
 
     const { rerender } = render(
-      <ConnectedAccountsSection status="loading" model={baseModel()} profileUrl="/user/alice" onRetry={vi.fn()} />
+      <ConnectedAccountsSection
+        status="loading"
+        model={baseModel()}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
     );
     // The loading skeleton itself is a `role="status"` output, so assert on the marker text
     // specifically rather than on the role — no announcement has been derived yet.
@@ -128,10 +182,96 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
         status="ready"
         model={baseModel({ providers: [githubNotConnected] })}
         profileUrl="/user/alice"
+        flowWasResumed={false}
         onRetry={vi.fn()}
       />
     );
 
     expect(screen.getByRole('status')).toHaveTextContent('user.security.connectedAccounts.messages.unlinked:GitHub');
+  });
+});
+
+describe('ConnectedAccountsSection — privileged-session re-auth interruption', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
+  it('does not announce a failure when the marker is unresolved on a RESUMED flow — it points back at the pending action instead (role=status, not role=alert)', () => {
+    // A privileged-session refresh interrupted the unlink submit before Kratos ever processed it —
+    // the row is unchanged, and this render is a resumed flow (Kratos's `<ui_url>?flow=<id>`
+    // redirect-back convention), not a freshly-provisioned one.
+    writeConnectedAccountsMarker('unlink', 'github');
+    const model = baseModel({ providers: [githubConnected] });
+
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={true}
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.queryByText(/messages\.disconnectFailed/)).not.toBeInTheDocument();
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent('user.security.connectedAccounts.messages.reauthRequiredDisconnect:GitHub');
+  });
+
+  it('does the same for a link marker on a resumed flow', () => {
+    writeConnectedAccountsMarker('link', 'github');
+    const model = baseModel({ providers: [githubNotConnected] });
+
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={true}
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent('user.security.connectedAccounts.messages.reauthRequiredConnect:GitHub');
+  });
+
+  it('still announces the real failure/success outcome on a FRESH flow — flowWasResumed only changes the unresolved-marker case', () => {
+    writeConnectedAccountsMarker('unlink', 'github');
+    const model = baseModel({ providers: [githubConnected] });
+
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'user.security.connectedAccounts.messages.disconnectFailed:GitHub'
+    );
+  });
+
+  it('a resumed flow does not affect a marker that DID resolve — success still announces normally', () => {
+    writeConnectedAccountsMarker('unlink', 'github');
+    const model = baseModel({ providers: [githubNotConnected] });
+
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={model}
+        profileUrl="/user/alice"
+        flowWasResumed={true}
+        onRetry={vi.fn()}
+      />
+    );
+
+    const status = screen.getByRole('status');
+    expect(status).toHaveTextContent('user.security.connectedAccounts.messages.unlinked:GitHub');
   });
 });
