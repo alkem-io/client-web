@@ -16,6 +16,14 @@ export type SignUpCardProps = {
   hasAcceptedTerms: boolean;
   onAcceptedTermsChange: (accepted: boolean) => void;
   isLoading?: boolean;
+  /**
+   * When true, renders the "you may already have an account" signpost above
+   * the form (FR-013). Set by the consumer when the loaded registration flow
+   * evidences arrival via an identity provider rather than a direct choice
+   * to register (FR-014 — absent otherwise). Plain in-flow content, present
+   * at render — no live region needed, since nothing changes after mount.
+   */
+  showSignpost?: boolean;
   onProviderClick?: (providerKey: string) => void;
   onPasskeyTrigger?: (trigger: KratosPasskeyTrigger) => void;
 };
@@ -28,6 +36,7 @@ export function SignUpCard({
   hasAcceptedTerms,
   onAcceptedTermsChange,
   isLoading,
+  showSignpost,
   onProviderClick,
   onPasskeyTrigger,
 }: SignUpCardProps) {
@@ -57,45 +66,58 @@ export function SignUpCard({
           <Skeleton className="h-12 w-full" />
         </output>
       ) : (
-        <CrdKratosFlow
-          descriptor={descriptor}
-          submitDisabled={Boolean(descriptor.acceptTerms) && !hasAcceptedTerms}
-          beforeInputs={
-            <div className="flex flex-col gap-4">
-              <p className="text-body text-muted-foreground">
-                <Trans
-                  t={t}
-                  i18nKey="signUp.intro"
-                  components={{
-                    terms: policyLink(termsOfUseHref, t('signUp.openTerms')),
-                    privacy: policyLink(privacyPolicyHref, t('signUp.openPrivacy')),
-                  }}
-                />
-              </p>
-              {descriptor.acceptTerms ? (
-                <AcceptTermsCheckbox
-                  checked={hasAcceptedTerms}
-                  onChange={onAcceptedTermsChange}
-                  name={descriptor.acceptTerms.name}
-                  value={descriptor.acceptTerms.value}
-                  required={descriptor.acceptTerms.required}
-                  label={
-                    <Trans
-                      t={t}
-                      i18nKey="signUp.acceptTerms"
-                      components={{
-                        terms: policyLink(termsOfUseHref, t('signUp.openTerms')),
-                        privacy: policyLink(privacyPolicyHref, t('signUp.openPrivacy')),
-                      }}
-                    />
-                  }
-                />
-              ) : null}
+        <>
+          {showSignpost ? (
+            <div
+              data-testid="signup-signpost"
+              className="mb-5 flex flex-col gap-2 rounded-md border border-primary/15 bg-primary/5 p-4 text-body text-primary"
+            >
+              <p>{t('signUp.signpost.warning')}</p>
+              <a href={signInHref} className="text-body-emphasis underline">
+                {t('signUp.signpost.signInAction')}
+              </a>
             </div>
-          }
-          onProviderClick={onProviderClick}
-          onPasskeyTrigger={onPasskeyTrigger}
-        />
+          ) : null}
+          <CrdKratosFlow
+            descriptor={descriptor}
+            submitDisabled={Boolean(descriptor.acceptTerms) && !hasAcceptedTerms}
+            beforeInputs={
+              <div className="flex flex-col gap-4">
+                <p className="text-body text-muted-foreground">
+                  <Trans
+                    t={t}
+                    i18nKey="signUp.intro"
+                    components={{
+                      terms: policyLink(termsOfUseHref, t('signUp.openTerms')),
+                      privacy: policyLink(privacyPolicyHref, t('signUp.openPrivacy')),
+                    }}
+                  />
+                </p>
+                {descriptor.acceptTerms ? (
+                  <AcceptTermsCheckbox
+                    checked={hasAcceptedTerms}
+                    onChange={onAcceptedTermsChange}
+                    name={descriptor.acceptTerms.name}
+                    value={descriptor.acceptTerms.value}
+                    required={descriptor.acceptTerms.required}
+                    label={
+                      <Trans
+                        t={t}
+                        i18nKey="signUp.acceptTerms"
+                        components={{
+                          terms: policyLink(termsOfUseHref, t('signUp.openTerms')),
+                          privacy: policyLink(privacyPolicyHref, t('signUp.openPrivacy')),
+                        }}
+                      />
+                    }
+                  />
+                ) : null}
+              </div>
+            }
+            onProviderClick={onProviderClick}
+            onPasskeyTrigger={onPasskeyTrigger}
+          />
+        </>
       )}
     </AuthCard>
   );

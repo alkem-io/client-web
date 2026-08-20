@@ -16,8 +16,10 @@ const h = vi.hoisted(() => ({
     clearSession: vi.fn(),
   },
   noticeProps: undefined as undefined | { onBackToWhiteboard: () => void; onGoToWebsite: () => void },
-  flow: undefined as undefined | { id: string; ui: { nodes: unknown[]; messages: unknown[] } },
-  signUpCardProps: undefined as undefined | { hasAcceptedTerms: boolean; onAcceptedTermsChange: (v: boolean) => void },
+  flow: undefined as undefined | { id: string; active?: string; ui: { nodes: unknown[]; messages: unknown[] } },
+  signUpCardProps: undefined as
+    | undefined
+    | { hasAcceptedTerms: boolean; onAcceptedTermsChange: (v: boolean) => void; showSignpost?: boolean },
 }));
 
 // The unit under test is the conditional wiring — stub the heavy children with
@@ -32,7 +34,11 @@ vi.mock('@/crd/components/auth/GuestReturnNotice', () => ({
   },
 }));
 vi.mock('@/crd/components/auth/SignUpCard', () => ({
-  SignUpCard: (props: { hasAcceptedTerms: boolean; onAcceptedTermsChange: (v: boolean) => void }) => {
+  SignUpCard: (props: {
+    hasAcceptedTerms: boolean;
+    onAcceptedTermsChange: (v: boolean) => void;
+    showSignpost?: boolean;
+  }) => {
     h.signUpCardProps = props;
     return (
       <div data-testid="crd-signup-card">
@@ -222,5 +228,63 @@ describe('SignUpCrdRoute / RegistrationCrdRoute — accept-terms persistence acr
 
     fireEvent.click(checkbox); // and can still be un-checked before it was ever hydrated as true
     expect(h.signUpCardProps?.hasAcceptedTerms).toBe(false);
+  });
+});
+
+// US4 — the sign-up signpost (FR-013/FR-014): a person who presses a
+// provider button while Kratos does not yet recognise their identity lands
+// on this same registration flow. The signpost warns them they may already
+// have an account, instead of letting them silently create a second one.
+describe('SignUpCrdRoute — provider-arrival signpost (FR-013/FR-014)', () => {
+  beforeEach(() => {
+    h.guest.shouldShowNotification = false;
+    h.guest.whiteboardUrl = null;
+    h.noticeProps = undefined;
+    h.flow = undefined;
+    h.signUpCardProps = undefined;
+    sessionStorage.clear();
+  });
+
+  it('[US4/AS1] renders the signpost when the flow evidences an OIDC continuation (active === "oidc")', () => {
+    h.flow = { id: 'flow-oidc', active: 'oidc', ui: { nodes: [], messages: [] } };
+
+    renderRoute();
+
+    expect(h.signUpCardProps?.showSignpost).toBe(true);
+  });
+
+  it('[US4/AS2] does not render the signpost for a plain registration flow (no active method)', () => {
+    h.flow = { id: 'flow-plain', ui: { nodes: [], messages: [] } };
+
+    renderRoute();
+
+    expect(h.signUpCardProps?.showSignpost).toBe(false);
+  });
+
+  it('[US4] falls back to detecting an oidc-group non-submit node when `active` is unset (contract fallback evidence)', () => {
+    h.flow = {
+      id: 'flow-oidc-fallback',
+      ui: {
+        nodes: [{ group: 'oidc', attributes: { node_type: 'input', type: 'text', name: 'traits.email' } }],
+        messages: [],
+      },
+    };
+
+    renderRoute();
+
+    expect(h.signUpCardProps?.showSignpost).toBe(true);
+  });
+
+  it('the existing 4000007 (account-already-exists) redirect still wins precedence over the signpost', () => {
+    h.flow = {
+      id: 'flow-exists',
+      active: 'oidc',
+      ui: { nodes: [], messages: [{ id: 4000007, text: 'account exists', type: 'error' }] },
+    };
+
+    renderRoute();
+
+    // The account-exists branch redirects to login before SignUpCard ever mounts.
+    expect(screen.queryByTestId('crd-signup-card')).not.toBeInTheDocument();
   });
 });

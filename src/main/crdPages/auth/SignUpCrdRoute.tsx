@@ -1,7 +1,9 @@
+import type { RegistrationFlow } from '@ory/kratos-client';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useTransactionScope } from '@/core/analytics/SentryTransactionScopeContext';
+import { isInputNode, isSubmitButton } from '@/core/auth/authentication/components/Kratos/helpers';
 import { _AUTH_LOGIN_PATH, PARAM_NAME_RETURN_URL } from '@/core/auth/authentication/constants/authentication.constants';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
@@ -29,6 +31,23 @@ import { useTranslateDescriptor } from './useKratosMessageCopy';
 // in with the existing method or reset their password — instead of stranding
 // them on a registration form they can never complete.
 const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
+
+// A person who presses a provider button believing they are signing in, but
+// whose provider identity Kratos does not yet recognise, is bounced into this
+// same registration flow rather than told to sign up. Kratos stamps the
+// active strategy on a flow continued from an OIDC callback; a person who
+// chose to register directly gets a fresh flow with no active method. This
+// is the discriminator the sign-up signpost (FR-013/014) branches on.
+// Fallback: a fresh browser registration flow never carries `oidc` group
+// input (non-submit) nodes — those only appear once an OIDC continuation has
+// pre-filled provider-supplied traits — so their presence is equivalent
+// evidence if `active` is ever unset for this arrival.
+const isProviderArrivalFlow = (flow: RegistrationFlow | undefined): boolean => {
+  if (!flow) return false;
+  if (flow.active === 'oidc') return true;
+  const nodes = flow.ui?.nodes ?? [];
+  return nodes.some(node => node.group === 'oidc' && isInputNode(node) && !isSubmitButton(node));
+};
 
 type CrdSignUpPageProps = {
   /**
@@ -151,6 +170,7 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
           <SignUpCard
             descriptor={descriptor}
             isLoading={loading}
+            showSignpost={isProviderArrivalFlow(registrationFlow)}
             signInHref={
               // Carry the destination into the sign-in link so a user who
               // switches from sign-up to sign-in keeps it.

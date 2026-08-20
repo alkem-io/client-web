@@ -16,7 +16,11 @@
     "intro": "Alkemio est conçu pour servir la société. Veuillez lire et accepter les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy> avant de continuer.",
     "acceptTerms": "J'accepte les <terms>Conditions d'utilisation</terms> et la <privacy>Politique de confidentialité</privacy>.",
     "openTerms": "Ouvrir les Conditions d'utilisation dans un nouvel onglet",
-    "openPrivacy": "Ouvrir la Politique de confidentialité dans un nouvel onglet"
+    "openPrivacy": "Ouvrir la Politique de confidentialité dans un nouvel onglet",
+    "signpost": {
+      "warning": "Vous avez peut-être déjà un compte. Connectez-vous plutôt pour tout garder au même endroit.",
+      "signInAction": "Aller à la connexion"
+    }
   },
   "recovery": {
     "title": "Récupération du mot de passe",
