@@ -1019,7 +1019,9 @@
       "request-recover-password": "<strong>Een e-mail met een herstellink is verstuurd naar het opgegeven e-mailadres.</strong><br/> <br/>Als je geen e-mail hebt ontvangen, Controleer het volgende:<br/> <br/><li> <strong>Controleer de spelling</strong> van het e-mailadres.</li/><li> <strong>zorg ervoor dat je het e-mailadres gebruikt </strong> waarmee je je hebt geregistreerd.</li><li> <strong>Controleer je spam of ongewenste map</strong> </li><li> <strong>Als je je hebt geregistreerd met LinkedIn, Microsoft of een andere sociale login,</strong> dan werkt wachtwoord herstel via e-mail niet. Gebruik in plaats daarvan de respectievelijke optie voor social login.</li><br/><br/><i>Opmerking: Dit bevestigt niet dat een $t(common.account) geregistreerd is met deze e-mail.</i>",
       "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om uw wachtwoordreset te voltooien.",
       "verification-flow-continue": "Volgende",
-      "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven."
+      "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
+      "settings-changes-saved": "Je wijzigingen zijn opgeslagen!",
+      "confirm-it-is-you": "Bevestig deze actie door te verifiëren dat jij het bent."
     }
   },
   "languages": {

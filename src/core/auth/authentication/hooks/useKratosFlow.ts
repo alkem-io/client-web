@@ -36,9 +36,21 @@ interface ReturnValue<Name extends FlowTypeName> {
   refetch: () => void;
 }
 
+interface UseKratosFlowOptions {
+  /**
+   * Settings flow only (currently). Forwarded to `createBrowserSettingsFlow`
+   * so the flow's own `return_to` — which takes precedence over the
+   * configured default browser return URL — lands the person back where
+   * they started once an OIDC link callback or a re-auth interruption
+   * completes. Ignored for every other flow type.
+   */
+  returnTo?: string;
+}
+
 const useKratosFlow = <Name extends FlowTypeName>(
   flowTypeName: Name,
-  flowId: string | undefined
+  flowId: string | undefined,
+  options?: UseKratosFlowOptions
 ): ReturnValue<Name> => {
   const client = useKratosClient();
   const [flow, setFlow] = useState<ReturnFlowType[Name]>();
@@ -109,7 +121,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
       case FlowTypeName.Verification:
         return client.createBrowserVerificationFlow();
       case FlowTypeName.Settings:
-        return client.createBrowserSettingsFlow();
+        return client.createBrowserSettingsFlow(options?.returnTo ? { returnTo: options.returnTo } : undefined);
     }
   };
 
@@ -134,9 +146,11 @@ const useKratosFlow = <Name extends FlowTypeName>(
     }
   };
 
+  // `options?.returnTo` only affects the Settings flow's initial creation
+  // (`flowId` undefined); once a flow id is on the URL, `getFlow` ignores it.
   useEffect(() => {
     getOrInitializeFlow();
-  }, [client, flowId]);
+  }, [client, flowId, options?.returnTo]);
 
   return {
     flow,

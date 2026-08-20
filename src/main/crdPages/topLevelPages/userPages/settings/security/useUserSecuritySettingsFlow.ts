@@ -35,6 +35,12 @@ const hasWebauthnNode = (node: UiNode): boolean => {
  * server-side redirect or self-service URL); when absent, Kratos auto-
  * provisions a fresh Settings flow.
  *
+ * `returnTo`, when the flow is freshly provisioned, is forwarded to Kratos
+ * so it takes precedence over the configured default browser return URL —
+ * both an OIDC link's provider round trip and a re-auth (`?refresh=true`)
+ * resume land back on this same Security settings URL rather than the
+ * platform apex.
+ *
  * Note: whether the account actually *has* a password credential is NOT
  * derived from the presence of a `password` node here — Kratos exposes that
  * node whenever the password method is enabled (including offering first-time
@@ -42,11 +48,11 @@ const hasWebauthnNode = (node: UiNode): boolean => {
  * is answered authoritatively by `User.authentication.methods` (EMAIL) in the
  * consuming tab. This hook only reports the passkey method and the flow.
  */
-const useUserSecuritySettingsFlow = (): UserSecuritySettingsFlowResult => {
+const useUserSecuritySettingsFlow = (returnTo?: string): UserSecuritySettingsFlowResult => {
   const [searchParams] = useSearchParams();
   const flowId = searchParams.get('flow') ?? undefined;
 
-  const { flow, error, loading } = useKratosFlow(FlowTypeName.Settings, flowId);
+  const { flow, error, loading } = useKratosFlow(FlowTypeName.Settings, flowId, { returnTo });
 
   if (loading) return { kind: 'loading' };
   if (error) return { kind: 'error', error };

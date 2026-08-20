@@ -28,6 +28,8 @@ export const kratosMessageTranslationKeys: Record<string, string> = {
   '1040009': 'pick-password',
   '1010016': 'oidc-account-linking-conflict',
   '4010011': 'account-disabled',
+  '1050001': 'settings-changes-saved',
+  '1010003': 'confirm-it-is-you',
 };
 
 export const useKratosT = () => {

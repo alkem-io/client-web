@@ -62,12 +62,15 @@ const CrdUserSecurityTab = () => {
     );
   }
 
-  return <OwnerSecurityTabContent />;
+  return <OwnerSecurityTabContent profileUrl={profileUrl} />;
 };
 
-const OwnerSecurityTabContent = () => {
+const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string | undefined }) => {
   const { i18n } = useTranslation();
-  const flowResult = useUserSecuritySettingsFlow();
+  // The Settings flow is created with `return_to` = this same Security tab
+  // URL so an OIDC link's provider round trip and a re-auth resume both land
+  // back on the Connected Accounts section instead of the platform apex.
+  const flowResult = useUserSecuritySettingsFlow(buildSettingsTabUrl(profileUrl, 'security'));
   const mcpApiKeys = useMcpApiKeys();
   const dateLocale = resolveDateFnsLocale(i18n.language);
 

@@ -1019,7 +1019,9 @@
       "request-recover-password": "<strong>Se ha enviado un correo electrónico con un enlace de recuperación a la dirección de correo que proporcionaste.</strong><br/><br/>Si no has recibido un correo, verifica lo siguiente:<br/><br/><li><strong>Verifica la ortografía</strong> de la dirección de correo electrónico.</li><li><strong>Asegúrate de estar usando la dirección de correo electrónico</strong> con la que te registraste.</li><li><strong>Revisa tu carpeta de spam o correo no deseado</strong> en caso de que el correo haya sido filtrado.</li><li><strong>Si te registraste usando LinkedIn, Microsoft u otro inicio de sesión social,</strong> la recuperación de contraseña por correo no funcionará. Usa la opción de inicio de sesión social correspondiente.</li><br/><br/><i>Nota: Esto no confirma que una $t(common.account) esté registrada con este correo.</i>",
       "successfully-recovered-password": "Introduce una nueva contraseña en los próximos 15 minutos para completar el restablecimiento de tu contraseña",
       "verification-flow-continue": "Continuar",
-      "verification-flow-expired": "El enlace de verificación ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente"
+      "verification-flow-expired": "El enlace de verificación ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente",
+      "settings-changes-saved": "¡Tus cambios se han guardado!",
+      "confirm-it-is-you": "Confirma esta acción verificando que eres tú."
     }
   },
   "languages": {
