@@ -140,6 +140,14 @@ type CollaborativeCloseParams = {
   onPublishFailed: (report: AssetPublishReport) => void;
   /** Tear the collaborative session down: evict the cache + run the parent cancel, which unmounts the provider. */
   teardown: () => void;
+  /**
+   * Whether the editor generation captured at close-start was DISCARDED while the flush was
+   * awaited (a server update-rejected, e.g. triggered BY the flush's locator write, remounted
+   * the editor). Checked AFTER the flush, BEFORE the save: if it changed, the captured api and
+   * its scene are dead and stale relative to the recovery's server-canonical resync, so the
+   * save is aborted rather than clobbering the recovered state.
+   */
+  hasEditorChanged?: () => boolean;
 };
 
 /**
@@ -164,6 +172,7 @@ export async function closeCollaborativeWhiteboard({
   save,
   onPublishFailed,
   teardown,
+  hasEditorChanged,
 }: CollaborativeCloseParams): Promise<boolean> {
   if (excalidrawAPI) {
     const report = await excalidrawAPI.flushAssetPublication();
@@ -171,6 +180,13 @@ export async function closeCollaborativeWhiteboard({
       onPublishFailed(report);
       return false;
     }
+  }
+  // A recovery (update-rejected) that fired DURING the flush replaced the editor: the
+  // captured api is dead and its scene is stale versus the recovery's server-canonical
+  // resync. Abort BEFORE the save — never read/persist the dead api, and leave the
+  // (recovered) session up rather than tearing it down on this stale intent.
+  if (hasEditorChanged?.()) {
+    return false;
   }
   await save();
   teardown();
@@ -201,6 +217,10 @@ const CrdWhiteboardDialog = ({
   const spaceAboutProfile = spaceLevel === SpaceLevel.L0 ? space.about.profile : subspace.about.profile;
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  // Monotonic editor-generation counter, bumped each time the wrapper discards the editor
+  // (server update-rejected). A close-in-flight compares this to detect a recovery that
+  // replaced the editor mid-flush and abort the save (see `hasEditorChanged`).
+  const editorGenerationRef = useRef(0);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
 
@@ -251,8 +271,12 @@ const CrdWhiteboardDialog = ({
 
   const onClose = async () => {
     const shouldSave = !!(editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard);
+    // Snapshot the editor generation now; if a recovery (update-rejected) discards it while
+    // the flush is awaited, the captured api is dead and the save must abort.
+    const generationAtClose = editorGenerationRef.current;
     await closeCollaborativeWhiteboard({
       excalidrawAPI,
+      hasEditorChanged: () => editorGenerationRef.current !== generationAtClose,
       save: async () => {
         if (!shouldSave || !whiteboard) return;
         const excState = excalidrawAPI
@@ -357,6 +381,9 @@ const CrdWhiteboardDialog = ({
         }}
         actions={{
           onInitApi: setExcalidrawAPI,
+          onEditorInvalidated: () => {
+            editorGenerationRef.current += 1;
+          },
           onRemoteSave: (error?: string) => {
             if (error) {
               setLastSaveError(error);

@@ -63,6 +63,13 @@ export interface WhiteboardWhiteboardActions {
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
   onSceneInitChange?: (initialized: boolean) => void;
   onRemoteSave?: (error?: string) => void;
+  /**
+   * The current editor generation was DISCARDED (server update-rejected): its api is now
+   * dead and a fresh generation will resync the server-canonical scene. A consumer that
+   * captured the api for a pending save (e.g. flush-then-save on close) must abort — the
+   * captured state is stale and would clobber the recovery.
+   */
+  onEditorInvalidated?: () => void;
 }
 
 export type WhiteboardWhiteboardEvents = {};
@@ -251,6 +258,9 @@ const CollaborativeExcalidrawWrapper = ({
       setSceneInitialized(false);
       setExcalidrawApi(null);
       setRecoveryGeneration(generation => generation + 1);
+      // Tell consumers the editor generation was discarded, so a pending flush-then-save
+      // on close aborts instead of persisting the dead editor's stale content.
+      actions.onEditorInvalidated?.();
     },
     onTerminalClose: (reason: string) => {
       // A TERMINAL policy close: this attempt must not be retried. Record the reason

@@ -165,6 +165,56 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(teardown).not.toHaveBeenCalled();
   });
 
+  it('(gate 8) aborts the save when a recovery replaces the editor DURING the flush', async () => {
+    // The flush's locator write can itself trigger a server update-rejected, which discards
+    // the editor generation mid-flush. The captured api is then dead and its scene is stale
+    // vs the recovery's server-canonical resync — so the save must abort, not clobber it.
+    const { promise, resolveWith } = deferredReport();
+    const excalidrawAPI = { flushAssetPublication: vi.fn(() => promise) };
+    const save = vi.fn(async () => {});
+    const teardown = vi.fn();
+    const onPublishFailed = vi.fn();
+    let editorChanged = false;
+
+    const closing = closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      save,
+      onPublishFailed,
+      teardown,
+      hasEditorChanged: () => editorChanged,
+    });
+
+    // While the flush is in flight, an update-rejected recovery replaces the editor.
+    await Promise.resolve();
+    editorChanged = true;
+
+    // The flush then resolves CLEAN (the upload itself succeeded).
+    resolveWith(cleanReport);
+    const proceeded = await closing;
+
+    expect(proceeded).toBe(false); // aborted — the captured api is dead
+    expect(save).not.toHaveBeenCalled(); // never read/persist the dead editor's scene
+    expect(teardown).not.toHaveBeenCalled(); // the recovered session stays up
+  });
+
+  it('proceeds normally when the editor is unchanged across the flush', async () => {
+    const excalidrawAPI = { flushAssetPublication: vi.fn(async () => cleanReport) };
+    const save = vi.fn(async () => {});
+    const teardown = vi.fn();
+
+    const proceeded = await closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      save,
+      onPublishFailed: vi.fn(),
+      teardown,
+      hasEditorChanged: () => false,
+    });
+
+    expect(proceeded).toBe(true);
+    expect(save).toHaveBeenCalledOnce();
+    expect(teardown).toHaveBeenCalledOnce();
+  });
+
   it('treats a missing (unmounted) editor as nothing-to-flush and proceeds', async () => {
     const save = vi.fn(async () => {});
     const teardown = vi.fn();
