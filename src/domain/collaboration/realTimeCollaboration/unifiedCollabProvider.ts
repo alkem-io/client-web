@@ -56,18 +56,25 @@ export type ControlMessage = {
 export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
 /**
- * The disposition of a socket close, derived from `(code, reason)`. A `terminal`
- * verdict means this attempt must NOT be retried by any mechanism — the provider's
- * own backoff timer stays off AND consumers are told to stop their own retry loops
- * (e.g. the whiteboard wrapper's `useAutoReconnect`). A non-terminal verdict is a
- * transient drop the provider reconnects from with backoff. `reason` is carried
- * through so a consumer can tell `forbidden` / `document deleted` / an unrecognised
- * policy close apart from a normal transient disconnect.
+ * How a socket close should be handled — an EXPLICIT 3-way disposition, never
+ * `retry = !terminal` (a clean 1000 close is neither terminal nor something to
+ * retry):
+ * - `normal`: a clean 1000 close. NEITHER retried NOR surfaced as a reconnect
+ *   notice — no mechanism should reconnect it.
+ * - `transient`: a drop to reconnect from with backoff (and the reconnect notice):
+ *   `room-capacity-reached` (1008), 1011 (authz-backend outage), a transport error
+ *   (1006), etc.
+ * - `terminal`: a policy close this attempt must NEVER retry — `forbidden` /
+ *   `document deleted` / any unrecognised 1008 (fail closed). The provider's timer
+ *   AND consumers' retry loops (e.g. the wrapper's `useAutoReconnect`) both stay off.
+ * `reason` is carried through so a consumer can tell the terminal reasons apart.
  */
+export type CloseDisposition = 'normal' | 'transient' | 'terminal';
+
 export type CloseVerdict = {
   code: number;
   reason: string;
-  terminal: boolean;
+  disposition: CloseDisposition;
 };
 
 /**
@@ -409,13 +416,12 @@ export class UnifiedCollabProvider {
     const verdict = classifyClose(event.code, event.reason);
     this.closeListeners.forEach(listener => listener(verdict));
 
-    // Never retried by the provider's own backoff timer: a clean normal closure,
-    // or a terminal policy close (`forbidden` / `document deleted` / any
-    // unrecognised 1008, fail closed). A transient drop — 1011, a transport error
-    // (1006), or `room-capacity-reached` — reconnects with backoff as before, so
-    // an authz-backend outage (1011) stays retryable.
-    if (event.code === NORMAL_CLOSURE || verdict.terminal) return;
-    this.scheduleReconnect();
+    // ONLY a transient drop reconnects with backoff (1011, a transport error 1006,
+    // or `room-capacity-reached` — so an authz-backend outage stays retryable). A
+    // `normal` clean close and a `terminal` policy close both stay closed.
+    if (verdict.disposition === 'transient') {
+      this.scheduleReconnect();
+    }
   };
 
   private handleError = () => {
@@ -454,9 +460,11 @@ export class UnifiedCollabProvider {
       case messageYjsSyncStep2:
       case messageYjsUpdate: {
         const update = decoding.readVarUint8Array(decoder);
-        // Let a decode/apply failure ESCAPE — the provider's message handler owns
-        // decode-failure recovery (resync) and needs the throw to trigger it. Do not
-        // swallow it here.
+        // Do NOT swallow a decode/apply failure — let it escape and fail loud. There
+        // is no decode-failure resync handler and none is needed: post-cutover the
+        // coordinated ingress validation (candidate-apply + no mixed fleet) means
+        // malformed bytes have no route to a client, so a catch here would only hide
+        // a real bug.
         port.applyRemoteSceneUpdate(update, 'v1');
         break;
       }
@@ -560,19 +568,29 @@ export class UnifiedCollabProvider {
 }
 
 /**
- * Classify a WebSocket close into a retry disposition from its `(code, reason)`.
+ * Classify a WebSocket close into one of three dispositions from its `(code, reason)`:
+ * `normal` (a clean 1000 close — neither retried NOR surfaced as a terminal state),
+ * `terminal` (never retry), or `transient` (retry). The disposition is authoritative:
+ * a normal close is its OWN category, not a special-cased `terminal`, so callers must
+ * not conflate "don't retry" with "surface a terminal notice" — a clean close does
+ * neither, which is why both independent retry loops (this provider's timer and the
+ * wrapper's `useAutoReconnect`) must gate on the disposition rather than on `!terminal`.
  *
  * Only a `1008` policy close is reason-sensitive: `room-capacity-reached` is the
  * single transient reason (retrying may later find room); `forbidden` and
  * `document deleted` are terminal, and any OTHER/unknown 1008 reason is treated as
  * terminal too — FAIL CLOSED, so a policy the client does not recognise is never
- * retried blindly. Every non-1008 code is transient here (a `1000` clean closure
- * is not terminal — its no-reconnect is handled separately by the caller — and a
- * `1011` authz-backend outage or a `1006` transport drop must stay retryable).
+ * retried blindly. Every other non-1000 code is transient (a `1011` authz-backend
+ * outage or a `1006` transport drop must stay retryable).
  */
 export function classifyClose(code: number, reason: string): CloseVerdict {
-  const terminal = code === POLICY_VIOLATION && reason !== TRANSIENT_POLICY_REASON;
-  return { code, reason, terminal };
+  if (code === NORMAL_CLOSURE) {
+    return { code, reason, disposition: 'normal' };
+  }
+  if (code === POLICY_VIOLATION && reason !== TRANSIENT_POLICY_REASON) {
+    return { code, reason, disposition: 'terminal' };
+  }
+  return { code, reason, disposition: 'transient' };
 }
 
 /** Read a `[length-prefixed JSON string]` payload, returning `undefined` on malformed input. */

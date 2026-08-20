@@ -314,23 +314,24 @@ describe('UnifiedCollabProvider — reason-aware close classification', () => {
     path: '/collab',
   };
 
-  it('classifyClose: 1008 reasons split terminal vs transient, other codes are transient', () => {
+  it('classifyClose: 1000 normal, 1008 splits terminal/transient by reason, other codes transient', () => {
+    // A clean 1000 close is its OWN disposition — never retried, never a reconnect
+    // notice (NOT overloaded onto terminal=false, which would read as "retry").
+    expect(classifyClose(1000, '').disposition).toBe('normal');
     // The single transient 1008 reason.
     expect(classifyClose(1008, 'room-capacity-reached')).toEqual({
       code: 1008,
       reason: 'room-capacity-reached',
-      terminal: false,
+      disposition: 'transient',
     });
-    // Terminal 1008 reasons.
-    expect(classifyClose(1008, 'forbidden').terminal).toBe(true);
-    expect(classifyClose(1008, 'document deleted').terminal).toBe(true);
-    // Fail closed: an unrecognised 1008 reason is terminal.
-    expect(classifyClose(1008, 'some-new-policy').terminal).toBe(true);
-    expect(classifyClose(1008, '').terminal).toBe(true);
-    // Other codes are never terminal here (1000's no-reconnect is handled separately).
-    expect(classifyClose(1011, '').terminal).toBe(false);
-    expect(classifyClose(1006, '').terminal).toBe(false);
-    expect(classifyClose(1000, '').terminal).toBe(false);
+    // Terminal 1008 reasons + fail-closed unknown.
+    expect(classifyClose(1008, 'forbidden').disposition).toBe('terminal');
+    expect(classifyClose(1008, 'document deleted').disposition).toBe('terminal');
+    expect(classifyClose(1008, 'some-new-policy').disposition).toBe('terminal');
+    expect(classifyClose(1008, '').disposition).toBe('terminal');
+    // Other codes reconnect (1011 authz outage stays retryable; 1006 transport drop).
+    expect(classifyClose(1011, '').disposition).toBe('transient');
+    expect(classifyClose(1006, '').disposition).toBe('transient');
   });
 
   /** Drive a close with `(code, reason)` and report whether a NEW socket was created. */
@@ -355,38 +356,38 @@ describe('UnifiedCollabProvider — reason-aware close classification', () => {
   it('1008 "forbidden" is TERMINAL: no reconnect scheduled and a terminal verdict is emitted', () => {
     const { reconnected, verdicts } = reconnectsAfterClose(1008, 'forbidden');
     expect(reconnected).toBe(false);
-    expect(verdicts).toEqual([{ code: 1008, reason: 'forbidden', terminal: true }]);
+    expect(verdicts).toEqual([{ code: 1008, reason: 'forbidden', disposition: 'terminal' }]);
   });
 
   it('1008 "document deleted" is TERMINAL: no reconnect scheduled', () => {
     const { reconnected, verdicts } = reconnectsAfterClose(1008, 'document deleted');
     expect(reconnected).toBe(false);
-    expect(verdicts[0]).toEqual({ code: 1008, reason: 'document deleted', terminal: true });
+    expect(verdicts[0]).toEqual({ code: 1008, reason: 'document deleted', disposition: 'terminal' });
   });
 
   it('1008 unknown reason is TERMINAL (fail closed): no reconnect scheduled', () => {
     const { reconnected, verdicts } = reconnectsAfterClose(1008, 'mystery-reason');
     expect(reconnected).toBe(false);
-    expect(verdicts[0].terminal).toBe(true);
+    expect(verdicts[0].disposition).toBe('terminal');
     expect(verdicts[0].reason).toBe('mystery-reason');
   });
 
   it('1008 "room-capacity-reached" is TRANSIENT: a reconnect IS scheduled', () => {
     const { reconnected, verdicts } = reconnectsAfterClose(1008, 'room-capacity-reached');
     expect(reconnected).toBe(true);
-    expect(verdicts[0].terminal).toBe(false);
+    expect(verdicts[0].disposition).toBe('transient');
   });
 
   it('1011 (authz-backend outage) is TRANSIENT: a reconnect IS scheduled', () => {
     const { reconnected, verdicts } = reconnectsAfterClose(1011, '');
     expect(reconnected).toBe(true);
-    expect(verdicts[0].terminal).toBe(false);
+    expect(verdicts[0].disposition).toBe('transient');
   });
 
-  it('1000 (clean closure) is NOT retried and is NOT a terminal verdict', () => {
+  it('1000 (clean closure) is NORMAL: not retried, not terminal', () => {
     const { reconnected, verdicts } = reconnectsAfterClose(1000, '');
     expect(reconnected).toBe(false);
-    expect(verdicts[0].terminal).toBe(false);
+    expect(verdicts[0].disposition).toBe('normal');
   });
 });
 
@@ -537,8 +538,9 @@ describe('UnifiedCollabProvider — whiteboard scene-sync port', () => {
     socket.sent.length = 0;
 
     // WIRE.SYNC + an unknown sync sub-type (99). y-protocols `readSyncMessage` throws
-    // 'Unknown message type'; the hand-rolled scene-port path must match so the later
-    // decode-failure handler can trigger resync rather than silently diverging.
+    // 'Unknown message type'; the hand-rolled scene-port path must match — fail loud
+    // rather than silently diverging. (No resync handler catches this; none is needed —
+    // post-cutover ingress validation means malformed bytes can't reach a client.)
     const enc = encoding.createEncoder();
     encoding.writeVarUint(enc, WIRE.SYNC);
     encoding.writeVarUint(enc, 99);

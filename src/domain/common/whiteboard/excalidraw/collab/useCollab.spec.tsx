@@ -85,7 +85,7 @@ describe('useCollab — reason-aware close routing', () => {
     const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection, onTerminalClose }));
     const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
 
-    closeHandler?.({ code: 1008, reason: 'forbidden', terminal: true });
+    closeHandler?.({ code: 1008, reason: 'forbidden', disposition: 'terminal' });
 
     expect(onTerminalClose).toHaveBeenCalledTimes(1);
     expect(onTerminalClose).toHaveBeenCalledWith('forbidden');
@@ -100,9 +100,24 @@ describe('useCollab — reason-aware close routing', () => {
     const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection, onTerminalClose }));
     const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
 
-    closeHandler?.({ code: 1011, reason: '', terminal: false });
+    closeHandler?.({ code: 1011, reason: '', disposition: 'transient' });
 
     expect(onCloseConnection).toHaveBeenCalledTimes(1);
+    expect(onTerminalClose).not.toHaveBeenCalled();
+    cleanup();
+  });
+
+  it('a NORMAL (clean 1000) close calls NEITHER callback — no reconnect notice, no terminal state', () => {
+    const onCloseConnection = vi.fn();
+    const onTerminalClose = vi.fn();
+    const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection, onTerminalClose }));
+    const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
+
+    closeHandler?.({ code: 1000, reason: '', disposition: 'normal' });
+
+    // A clean close must not open the retrying notice (which would activate the
+    // wrapper's independent useAutoReconnect) NOR surface a terminal state.
+    expect(onCloseConnection).not.toHaveBeenCalled();
     expect(onTerminalClose).not.toHaveBeenCalled();
     cleanup();
   });

@@ -203,11 +203,13 @@ const useCollab = ({
     // unrecognised 1008) hands off to onTerminalClose so the consumer stops
     // retrying. The provider has already decided NOT to reconnect a terminal close.
     const handleClose = (verdict: CloseVerdict) => {
-      if (verdict.terminal) {
+      if (verdict.disposition === 'terminal') {
         onTerminalClose?.(verdict.reason);
-      } else {
+      } else if (verdict.disposition === 'transient') {
         onCloseConnection();
       }
+      // 'normal' (a clean 1000 close): NEITHER — no reconnect notice is opened, so
+      // the wrapper's independent `useAutoReconnect` timer never activates either.
     };
 
     const handleSynced = (synced: boolean) => {
