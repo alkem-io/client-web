@@ -10,6 +10,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import { Textarea } from '@/crd/primitives/textarea';
 
 export type InviteRole = 'Member' | 'Lead' | 'Admin';
@@ -52,6 +53,11 @@ export type InviteMembersDialogLabels = {
   closeButtonLabel: string;
   closeAriaLabel: string;
   resultOutcomeLabels: Record<InvitationResult['outcome'], string>;
+  /** Label for the suggested-language select (T013). */
+  suggestedLanguageLabel?: string;
+  suggestedLanguagePlaceholder?: string;
+  /** Label for the "no preference" option that clears the suggested language (FR-015: absent when untouched). */
+  suggestedLanguageNoPreferenceLabel?: string;
 };
 
 export type InviteMembersDialogProps = {
@@ -78,6 +84,16 @@ export type InviteMembersDialogProps = {
   welcomeMessage: string;
   onWelcomeMessageChange: (next: string) => void;
 
+  /**
+   * Suggested language for the invitee (T013 — FR-014 / FR-015).
+   * Hidden entirely when `availableLanguages` is empty (R-8 client kill-switch).
+   * Pass undefined to omit from the payload (FR-015: absent when untouched).
+   */
+  suggestedLanguage?: string;
+  onSuggestedLanguageChange?: (lang: string | undefined) => void;
+  /** Full list of eligible languages. When empty, the control is hidden. */
+  availableLanguages?: Array<{ code: string; label: string }>;
+
   extraRoles: InviteRole[];
   onExtraRolesChange: (next: InviteRole[]) => void;
 
@@ -100,6 +116,9 @@ export type InviteMembersDialogProps = {
 
 const LOCKED_ROLES: InviteRole[] = ['Member'];
 const OPTIONAL_ROLES: InviteRole[] = ['Lead', 'Admin'];
+
+/** Sentinel value for the "no preference" SelectItem (Radix forbids empty-string values). */
+const NO_LANGUAGE_SENTINEL = '__none__';
 
 /**
  * Pure CRD presentational dialog for inviting members. Owns only visual state:
@@ -135,6 +154,9 @@ export function InviteMembersDialog({
   allowEmailInvites = true,
   welcomeMessage,
   onWelcomeMessageChange,
+  suggestedLanguage,
+  onSuggestedLanguageChange,
+  availableLanguages = [],
   extraRoles,
   onExtraRolesChange,
   sending = false,
@@ -209,6 +231,39 @@ export function InviteMembersDialog({
                   disabled={sending}
                 />
               </div>
+
+              {/* T013 — Suggested language control. Hidden when eligible set is empty (R-8 kill-switch). */}
+              {availableLanguages.length > 0 && onSuggestedLanguageChange && (
+                <div className="flex flex-col gap-2">
+                  <label className="text-body-emphasis text-foreground" htmlFor="invite-members-language">
+                    {labels.suggestedLanguageLabel}
+                  </label>
+                  <Select
+                    value={suggestedLanguage ?? NO_LANGUAGE_SENTINEL}
+                    onValueChange={val => onSuggestedLanguageChange(val === NO_LANGUAGE_SENTINEL ? undefined : val)}
+                    disabled={sending}
+                  >
+                    <SelectTrigger
+                      id="invite-members-language"
+                      className="w-full sm:w-[200px]"
+                      aria-label={labels.suggestedLanguageLabel}
+                    >
+                      <SelectValue placeholder={labels.suggestedLanguagePlaceholder ?? ''} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {/* "No preference" option — sentinel maps to undefined so FR-015 optional-send holds */}
+                      <SelectItem value={NO_LANGUAGE_SENTINEL}>
+                        {labels.suggestedLanguageNoPreferenceLabel ?? '—'}
+                      </SelectItem>
+                      {availableLanguages.map(lang => (
+                        <SelectItem key={lang.code} value={lang.code}>
+                          {lang.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               {errorSlot}
 
@@ -295,7 +350,12 @@ function ResultView({
 }
 
 function ResultRow({ result, outcomeLabel }: { result: InvitationResult; outcomeLabel: string }) {
-  const labelText = result.invitee.kind === 'user' ? result.invitee.displayName : result.invitee.email;
+  const labelText =
+    result.invitee.kind === 'user'
+      ? result.invitee.displayName
+      : result.invitee.kind === 'email'
+        ? result.invitee.email
+        : result.invitee.displayName;
   const isNeutral =
     result.outcome === 'alreadyInvited' ||
     result.outcome === 'alreadyMember' ||

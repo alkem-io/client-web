@@ -38,6 +38,7 @@
       "documentsTitle": "Documenten",
       "documentName": "Naam",
       "documentUrl": "URL",
+      "attachDocument": "Bestand bijvoegen",
       "removeDocument": "Document verwijderen",
       "addDocument": "Document toevoegen",
       "exampleTitle": "Voorbeeld: Over Alkemio",
@@ -85,6 +86,7 @@
         "membership": "Lidmaatschap",
         "organizations": "Organisaties",
         "notifications": "Meldingen",
+        "assistant": "Assistant",
         "settings": "Instellingen",
         "security": "Beveiliging"
       },
@@ -235,7 +237,7 @@
       "subspaceFallbackL1": "Subspace ({{id}}…)",
       "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
       "ledBy": "Geleid door:",
-      "ledByAria": "{{count}} community-leiders",
+      "ledByAria": "{{count}} community-Leads",
       "leadsMore": "en nog {{count}}"
     },
     "security": {
@@ -250,6 +252,85 @@
         "notEnabled": "Aanmelden met wachtwoord is niet ingeschakeld voor dit account.",
         "confirmLabel": "Bevestig nieuw wachtwoord",
         "mismatch": "Wachtwoorden komen niet overeen."
+      },
+      "mcpApiKeys": {
+        "title": "MCP API-sleutels",
+        "description": "Maak sleutels aan zodat externe MCP-clients (zoals Claude Desktop of Claude Code) namens jou verbinding kunnen maken met Alkemio.",
+        "empty": {
+          "title": "Nog geen API-sleutels",
+          "description": "Maak een sleutel aan om een MCP-client aan je account te koppelen.",
+          "create": "API-sleutel aanmaken"
+        },
+        "list": {
+          "name": "Naam",
+          "operations": "Bewerkingen",
+          "created": "Aangemaakt",
+          "expires": "Vervalt",
+          "neverExpires": "Vervalt nooit",
+          "lastUsed": "Laatst gebruikt",
+          "neverUsed": "Nog nooit gebruikt",
+          "lastUsedFrom": "vanaf {{address}}",
+          "status": "Status",
+          "revoke": "Intrekken"
+        },
+        "status": {
+          "active": "Actief",
+          "expired": "Verlopen",
+          "revoked": "Ingetrokken"
+        },
+        "operations": {
+          "read": "Lezen",
+          "tools": "Tools"
+        },
+        "create": {
+          "trigger": "API-sleutel aanmaken",
+          "title": "MCP API-sleutel aanmaken",
+          "description": "Kies een naam, de bewerkingen die de sleutel mag uitvoeren en een optionele vervaldatum.",
+          "nameLabel": "Naam",
+          "namePlaceholder": "bijv. Claude Desktop",
+          "operationsLabel": "Bewerkingen",
+          "operationsRequired": "Kies minstens één bewerking.",
+          "expiryLabel": "Vervaldatum (optioneel)",
+          "expiryPlaceholder": "Vervalt nooit",
+          "expiryPastError": "De vervaldatum moet in de toekomst liggen.",
+          "cancel": "Annuleren",
+          "submit": "Sleutel aanmaken",
+          "submitting": "Bezig met aanmaken…",
+          "capReachedError": "Je hebt de limiet van {{limit}} actieve API-sleutels bereikt. Trek er één in om ruimte vrij te maken.",
+          "genericError": "De API-sleutel kon niet worden aangemaakt — probeer het opnieuw."
+        },
+        "reveal": {
+          "title": "API-sleutel aangemaakt",
+          "warning": "Kopieer deze sleutel nu — je kunt hem hierna niet meer bekijken.",
+          "keyLabel": "API-sleutel",
+          "copy": "Kopiëren",
+          "copied": "Gekopieerd",
+          "copyAnnouncement": "API-sleutel gekopieerd naar het klembord.",
+          "manualCopyHint": "Klembordtoegang is niet beschikbaar — selecteer het veld hierboven en kopieer handmatig.",
+          "recipeTitle": "Verbindingsrecept",
+          "recipeEndpointLabel": "Endpoint",
+          "recipeHeaderLabel": "Header",
+          "close": "Klaar"
+        },
+        "interrupted": {
+          "title": "Sleutelwaarde niet meer beschikbaar",
+          "description": "De waarde van deze sleutel kan niet meer worden getoond. Trek hem in en maak een nieuwe aan als je nog steeds een client moet verbinden.",
+          "revokeAndRecreate": "Intrekken en nieuwe sleutel aanmaken"
+        },
+        "revoke": {
+          "title": "API-sleutel intrekken",
+          "description": "Het intrekken van \"{{name}}\" zorgt ervoor dat deze onmiddellijk niet meer kan authenticeren. Dit kan niet ongedaan worden gemaakt.",
+          "cancel": "Annuleren",
+          "confirm": "Sleutel intrekken",
+          "revoking": "Bezig met intrekken…",
+          "success": "\"{{name}}\" is ingetrokken.",
+          "error": "De sleutel kon niet worden ingetrokken — probeer het opnieuw."
+        },
+        "errors": {
+          "notFound": "Die API-sleutel kon niet worden gevonden.",
+          "loadError": "Je API-sleutels konden niet worden geladen — probeer de pagina te vernieuwen.",
+          "retry": "Opnieuw proberen"
+        }
       }
     },
     "settings": {
@@ -258,6 +339,8 @@
         "title": "Communicatie en privacy",
         "allowMessagesLabel": "Andere gebruikers mogen mij directe berichten sturen",
         "allowMessagesDescription": "Wanneer uitgeschakeld, kunnen andere gebruikers geen direct-bericht-gesprek met je starten.",
+        "allowEmailContactLabel": "Sta anderen toe mij via e-mail te contacteren",
+        "allowEmailContactDescription": "Wanneer ingeschakeld, kunnen mensen die je niet via chat kunnen bereiken je een e-mail sturen op je accountadres. Je adres wordt nooit aan hen getoond.",
         "error": "Voorkeur niet opgeslagen — probeer opnieuw"
       },
       "designSystem": {
@@ -265,6 +348,12 @@
         "description": "Schakel tussen het nieuwe (CRD) en het klassieke (MUI) ontwerp. Deze voorkeur wordt lokaal op dit apparaat opgeslagen.",
         "toggleLabel": "Gebruik het nieuwe ontwerp (CRD)",
         "reloadCaption": "De pagina wordt opnieuw geladen na de wijziging."
+      },
+      "language": {
+        "title": "Taal",
+        "label": "Interfacetaal",
+        "description": "De taal die in heel Alkemio wordt gebruikt. Wijzigingen gelden voor al je apparaten.",
+        "error": "Taalvoorkeur kon niet worden opgeslagen — probeer het opnieuw."
       }
     },
     "notifications": {
@@ -272,6 +361,7 @@
       "helpBanner": "Bewerk je meldingsvoorkeuren. Wijzigingen worden automatisch opgeslagen.",
       "toggleAria": "Schakel {{channel}}-melding voor: {{label}}",
       "toggleError": "Voorkeur niet opgeslagen — probeer opnieuw",
+      "inAppLockedChat": "Chatberichten verschijnen al direct in het chatpaneel, dus voor deze rij worden geen in-app-meldingen verzonden",
       "columns": {
         "activity": "Activiteit",
         "inApp": "In-app",
@@ -293,7 +383,7 @@
         },
         "spaceAdmin": {
           "title": "Space-beheerdermeldingen",
-          "description": "Meldingen voor Spaces waarvoor je beheerder of lead bent."
+          "description": "Meldingen voor Spaces waarvoor je beheerder of Lead bent."
         },
         "user": {
           "title": "Gebruikersmeldingen",
@@ -314,6 +404,10 @@
         "virtualContributor": {
           "title": "Meldingen voor Virtual Contributors",
           "description": "Meldingen over activiteiten en toewijzingen van Virtual Contributors."
+        },
+        "sound": {
+          "title": "Meldingsgeluiden",
+          "description": "Kies of er een geluid wordt afgespeeld wanneer een chatbericht of een in-app melding binnenkomt."
         }
       },
       "rows": {
@@ -340,6 +434,8 @@
           "commentReply": "Krijg een melding wanneer iemand reageert op mijn reactie",
           "mentioned": "Krijg een melding wanneer ik word vermeld",
           "messageReceived": "Krijg een melding wanneer iemand mij een direct bericht stuurt",
+          "conversationMessageDirect": "Krijg een melding wanneer iemand mij een direct (1-op-1) chatbericht stuurt",
+          "conversationMessageGroup": "Krijg een melding wanneer iemand een bericht plaatst in een groepschat waarvan ik lid ben",
           "membershipInvitationReceived": "Krijg een melding wanneer iemand mij uitnodigt om lid te worden van een community",
           "membershipCommunityJoined": "Krijg een melding wanneer ik lid word van een nieuwe Space"
         },
@@ -360,6 +456,10 @@
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Krijg een melding wanneer een VC-beheerder wordt uitgenodigd om lid te worden van een community"
+        },
+        "sound": {
+          "chatMessage": "Speel een geluid af wanneer een chatbericht wordt ontvangen",
+          "inAppNotification": "Speel een geluid af wanneer een in-app melding wordt ontvangen"
         }
       }
     },
@@ -421,6 +521,24 @@
         "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",
         "confirm": "Verwijderen"
       }
+    },
+    "assistant": {
+      "pageTitle": "Assistant",
+      "helpBanner": "Kies wat de assistant namens jou mag doen. Leescapaciteiten staan standaard aan; capaciteiten die content wijzigen staan uit totdat je ze inschakelt. De assistant kan nooit meer dan jij zelf kunt.",
+      "empty": "Er zijn momenteel geen assistant-capaciteiten beschikbaar.",
+      "destructiveBadge": "Kan bestaande content wijzigen",
+      "toggleAria": "Schakel de capaciteit “{{capability}}” in of uit",
+      "toggleError": "We konden die wijziging niet opslaan. Probeer het opnieuw.",
+      "groups": {
+        "read": {
+          "title": "Lezen",
+          "description": "Laat de assistant content vinden en samenvatten waartoe je al toegang hebt."
+        },
+        "write": {
+          "title": "Content wijzigen",
+          "description": "Laat de assistant content voor je aanmaken of wijzigen. Je bevestigt altijd voordat er iets wordt gewijzigd."
+        }
+      }
     }
   },
   "org": {
@@ -433,13 +551,27 @@
           "hint": "Hoe je organisatie verschijnt op Alkemio.",
           "required": "Weergavenaam is verplicht"
         },
-        "nameID": { "label": "Name ID", "caption": "Kan niet worden gewijzigd na aanmaken." },
-        "tagline": { "label": "Slogan", "hint": "Een korte zin naast je organisatienaam." }
+        "nameID": {
+          "label": "Name ID",
+          "caption": "Kan niet worden gewijzigd na aanmaken."
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Een korte zin naast je organisatienaam."
+        }
       },
       "about": {
         "title": "Over",
-        "description": { "label": "Beschrijving", "hint": "Markdown wordt ondersteund." },
-        "location": { "title": "Locatie", "city": "Plaats", "country": "Land", "countryPlaceholder": "Kies een land" },
+        "description": {
+          "label": "Beschrijving",
+          "hint": "Markdown wordt ondersteund."
+        },
+        "location": {
+          "title": "Locatie",
+          "city": "Plaats",
+          "country": "Land",
+          "countryPlaceholder": "Kies een land"
+        },
         "keywords": {
           "label": "Trefwoorden",
           "hint": "Onderwerpen waaraan je organisatie werkt. Druk op Enter om toe te voegen.",
@@ -458,8 +590,14 @@
           "hint": "Openbaar contactadres voor de organisatie.",
           "invalidFormat": "Voer een geldig e-mailadres in"
         },
-        "domain": { "label": "Domein", "hint": "Het webdomein van je organisatie (zonder protocol)." },
-        "legalEntityName": { "label": "Juridische naam", "hint": "De officieel geregistreerde naam." },
+        "domain": {
+          "label": "Domein",
+          "hint": "Het webdomein van je organisatie (zonder protocol)."
+        },
+        "legalEntityName": {
+          "label": "Juridische naam",
+          "hint": "De officieel geregistreerde naam."
+        },
         "website": {
           "label": "Website",
           "hint": "Volledige URL inclusief https://",
@@ -497,11 +635,28 @@
     "account": {
       "pageTitle": "Account",
       "helpBanner": "Hier kun je de actieve resources van je organisatie bekijken en de accountlimieten beheren.",
-      "spaces": { "title": "Gehoste Spaces", "createButton": "Space aanmaken" },
-      "virtualContributors": { "title": "Virtual Contributors", "createButton": "Bijdrager toevoegen" },
-      "innovationPacks": { "title": "Template Packs", "createButton": "Nieuw pakket" },
-      "innovationHubs": { "title": "Aangepaste startpagina's", "createButton": "Nieuwe pagina" },
-      "actions": { "view": "Bekijken", "manage": "Beheren", "transfer": "Overdragen", "delete": "Verwijderen" },
+      "spaces": {
+        "title": "Gehoste Spaces",
+        "createButton": "Space aanmaken"
+      },
+      "virtualContributors": {
+        "title": "Virtual Contributors",
+        "createButton": "Bijdrager toevoegen"
+      },
+      "innovationPacks": {
+        "title": "Template Packs",
+        "createButton": "Nieuw pakket"
+      },
+      "innovationHubs": {
+        "title": "Aangepaste startpagina's",
+        "createButton": "Nieuwe pagina"
+      },
+      "actions": {
+        "view": "Bekijken",
+        "manage": "Beheren",
+        "transfer": "Overdragen",
+        "delete": "Verwijderen"
+      },
       "deleteDialog": {
         "title": "Deze resource verwijderen?",
         "description": "Hiermee wordt \"{{name}}\" definitief verwijderd. Dit kan niet ongedaan worden gemaakt.",

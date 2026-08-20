@@ -7,7 +7,7 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsTabUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
@@ -19,7 +19,6 @@ import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
 import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
-import { SpaceApplyButtonConnector } from '../SpaceApplyButtonConnector';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 
@@ -78,7 +77,9 @@ export default function CrdSpaceDashboardPage() {
           variant="home"
           description={space.about.profile.description || ''}
           leads={sidebarLeads}
-          onEditClick={permissions.canUpdate ? () => navigate(`${space.about.profile.url}/settings/about`) : undefined}
+          onEditClick={
+            permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
+          }
           onAboutClick={() => setAboutOpen(true)}
           subspaces={subspaces}
           subspacesHref={buildSpaceSectionUrl(space.about.profile.url ?? '', 3)}
@@ -97,13 +98,6 @@ export default function CrdSpaceDashboardPage() {
           }
         />
       </SpaceSidebarPortal>
-
-      <SpaceApplyButtonConnector
-        spaceId={space.id}
-        spaceProfileUrl={space.about.profile.url}
-        communityName={space.about.profile.displayName}
-        className="mb-6"
-      />
 
       <SpaceTabActionHeader
         description={tabDescription}

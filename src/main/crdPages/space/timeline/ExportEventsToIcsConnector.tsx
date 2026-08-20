@@ -72,17 +72,18 @@ function buildIcsContent(events: ExportableEvent[]): string {
 
     if (event.wholeDay) {
       // RFC 5545 §3.6.1: whole-day events use VALUE=DATE for DTSTART and an
-      // EXCLUSIVE DTEND set to the day AFTER the last covered day. A
-      // single-day all-day event has DTEND = DTSTART + 1 day; a 3-day all-day
-      // event has DTEND = DTSTART + 3 days. Without this branch a same-day
-      // all-day event collapsed to a zero-length VEVENT.
-      const days = Math.max(event.durationDays ?? 0, 1);
-      const dtEnd = addDays(event.startDate, days);
+      // EXCLUSIVE DTEND set to the day AFTER the last covered day. `durationDays`
+      // counts the day-boundaries the event crosses (a Jan 1–Jan 3 event stores
+      // 2), so the last covered day is startDate + durationDays and DTEND is one
+      // further day. A single-day all-day event (durationDays 0) gets DTEND =
+      // start + 1 — never a zero-length VEVENT.
+      const dtEnd = addDays(event.startDate, (event.durationDays ?? 0) + 1);
       lines.push(`DTSTART;VALUE=DATE:${formatDateOnly(event.startDate)}`, `DTEND;VALUE=DATE:${formatDateOnly(dtEnd)}`);
     } else {
-      // Timed event — DTEND combines durationDays + durationMinutes via the
-      // shared helper so multi-day timed events export the correct end.
-      const endDate = endDateFromDuration(event.startDate, event.durationMinutes ?? 60, event.durationDays);
+      // Timed event — DTEND is start + the full span (durationMinutes, the
+      // authoritative duration) via the shared helper, so multi-day timed events
+      // export the correct end.
+      const endDate = endDateFromDuration(event.startDate, event.durationMinutes ?? 60);
       lines.push(`DTSTART:${formatDateTimeUtc(event.startDate)}`, `DTEND:${formatDateTimeUtc(endDate)}`);
     }
 

@@ -7,7 +7,10 @@ export type DocumentImportError =
   | { kind: 'multiple-files' }
   | { kind: 'folder' }
   | { kind: 'extension'; received: string }
-  | { kind: 'size'; bytes: number; maxBytes: number };
+  | { kind: 'size'; bytes: number; maxBytes: number }
+  // Produced only by consumers that enforce a same-type rule (e.g. the Collabora
+  // replace flow, FR-006). The zone never raises this itself.
+  | { kind: 'different-type' };
 
 export type DocumentImportZoneProps = {
   /** Comma-joined extension list passed straight to `<input accept="...">`. */

@@ -24,8 +24,10 @@ export const RELEVANT_ROLES = {
     RoleName.GlobalSpacesReader,
     RoleName.GlobalPlatformManager,
     RoleName.GlobalSupportManager,
+    RoleName.PlatformOperationsAdmin,
     RoleName.PlatformBetaTester,
     RoleName.PlatformVcCampaign,
+    RoleName.PlatformAssistantAccess,
   ],
 } as const;
 
@@ -62,6 +64,7 @@ interface useRoleSetManagerProvided extends useRoleSetManagerRolesAssignmentProv
    */
   rolesDefinitions: Record<RoleName, RoleDefinition> | undefined;
   loading: boolean;
+  errored: boolean;
   updating: boolean;
   refetchRoleSetAssignment: () => Promise<unknown>;
 }
@@ -90,7 +93,11 @@ const useRoleSetManager = ({
   }
 
   // TODO: Additional Auth Check
-  const { data: roleSetDetails, loading: loadingRoleSet } = useRoleSetAuthorizationQuery({
+  const {
+    data: roleSetDetails,
+    loading: loadingRoleSet,
+    error: roleSetAuthError,
+  } = useRoleSetAuthorizationQuery({
     variables: {
       roleSetId: roleSetId!,
     },
@@ -116,6 +123,7 @@ const useRoleSetManager = ({
   const {
     data: roleSetData,
     loading: loadingRoleSetData,
+    error: roleSetDataError,
     refetch: refetchRoleSetAssignment,
   } = useRoleSetRoleAssignmentQuery({
     variables: {
@@ -238,6 +246,7 @@ const useRoleSetManager = ({
     myPrivileges,
     roleNames: validRoles,
     loading: loadingRoleSet || loadingRoleSetData,
+    errored: !!roleSetDataError || !!roleSetAuthError,
 
     users: data.users,
     organizations: data.organizations,

@@ -1,8 +1,4 @@
-import type {
-  Collaborator,
-  ExcalidrawImperativeAPI,
-  SocketId,
-} from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { Collaborator, ExcalidrawImperativeAPI, SocketId } from '@excalidraw-yjs/excalidraw/types';
 import type { Awareness } from 'y-protocols/awareness';
 
 /**

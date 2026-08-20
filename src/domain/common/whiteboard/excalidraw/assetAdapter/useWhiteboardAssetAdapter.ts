@@ -1,5 +1,5 @@
-import type { FileId } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
-import type { AssetAdapter, BinaryFileData } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { FileId } from '@excalidraw-yjs/excalidraw/element/types';
+import type { AssetAdapter, BinaryFileData } from '@excalidraw-yjs/excalidraw/types';
 import { useRef, useState } from 'react';
 import { useUploadFileMutation, useWhiteboardAssetDocumentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { encodeToBase64 } from '@/core/utils/encodeToBase64';
@@ -140,7 +140,7 @@ export function useWhiteboardAssetAdapter({
           return {
             id: fileId,
             dataURL,
-            mimeType: document.mimeType as BinaryFileData['mimeType'],
+            mimeType: document.mimeType as unknown as BinaryFileData['mimeType'],
             created: Date.now(),
           };
         } catch (e) {

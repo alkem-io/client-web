@@ -31,10 +31,12 @@ import {
   getVisibleSettingsTabs,
   useSettingsTabDescriptors,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useVisibleSettingsTabs';
+import { buildSettingsTabUrl, buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
@@ -130,9 +132,16 @@ export default function CrdSubspacePageLayout() {
         ]
       : [];
   const settingsTrail = isOnSettings
-    ? [{ label: t('tabs.settings'), href: `${data.subspaceUrl}/settings` }, { label: t(`tabs.${activeSettingsTab}`) }]
+    ? [
+        { label: t('tabs.settings'), href: buildSubspaceSettingsUrl(data.subspaceUrl) },
+        { label: t(`tabs.${activeSettingsTab}`) },
+      ]
     : [];
   useSetBreadcrumbs(baseTrail.length > 0 ? [...baseTrail, ...settingsTrail] : []);
+
+  // Read before the early return so hook order stays stable; used below to
+  // suppress the hero overlay while the site-wide maintenance notice shows.
+  const { visible: downNoticeVisible } = useDownNoticeBanner();
 
   if (data.loading) {
     return <LoadingSpinner />;
@@ -147,7 +156,7 @@ export default function CrdSubspacePageLayout() {
     setActiveDialog(id);
   };
 
-  const editFlowHref = data.subspaceUrl ? `${data.subspaceUrl}/settings/layout` : undefined;
+  const editFlowHref = data.subspaceUrl ? buildSettingsTabUrl(data.subspaceUrl, 'layout') : undefined;
 
   // Single source of truth for the create-subspace handler. Both the sidebar
   // widget (when there are 0 nested subspaces) and the Subspaces dialog footer
@@ -170,7 +179,7 @@ export default function CrdSubspacePageLayout() {
     onEditClick: data.canUpdate
       ? () => {
           setMobileMenuOpen(false);
-          navigate(`${data.subspaceUrl}/settings/about`);
+          navigate(buildSettingsTabUrl(data.subspaceUrl, 'about'));
         }
       : undefined,
     onAboutClick: () => {
@@ -273,7 +282,10 @@ export default function CrdSubspacePageLayout() {
   // active subspace home; suspended/archived shows a visibility notice that
   // would collide with -mt-16, and `isOnSettings` is already a separate
   // branch above with no banner image.
-  const enableBannerOverlay = data.visibility.status === 'active';
+  // `downNoticeVisible` (read above) suppresses the hero overlay while the
+  // site-wide incident banner shows, so the hero doesn't slide up (-mt-16) over
+  // the notice under the header.
+  const enableBannerOverlay = data.visibility.status === 'active' && !downNoticeVisible;
 
   // Sidebar + content share one 12-col track. Two orthogonal toggles move the
   // column boundaries: `sidebarCollapsed` (2-col sidebar → 1-col rail) and
@@ -350,6 +362,7 @@ export default function CrdSubspacePageLayout() {
         open={activeDialog === 'index'}
         onOpenChange={open => setActiveDialog(open ? 'index' : null)}
         calloutsSetId={data.calloutsSetId}
+        phaseNames={data.phases.map(phase => phase.label)}
       />
 
       <CrdSubspaceSubspacesDialogConnector
@@ -381,6 +394,7 @@ export default function CrdSubspacePageLayout() {
               key={data.subspaceUrl}
               url={data.subspaceUrl}
               entityLabel={t('common.subspace', { ns: 'crd-common' }).toLowerCase()}
+              onClose={() => setShareDialogOpen(false)}
             />
           ) : undefined
         }

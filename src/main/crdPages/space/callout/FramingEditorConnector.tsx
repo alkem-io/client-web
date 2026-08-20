@@ -1,15 +1,23 @@
-import { Settings, StickyNote } from 'lucide-react';
-import { Suspense, useState } from 'react';
+import { Crop, FileText, Presentation, Settings, Sheet, StickyNote, Wand2 } from 'lucide-react';
+import { lazy, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentType } from '@/core/apollo/generated/graphql-schema';
 import { InlineWhiteboardPreview } from '@/crd/components/callout/InlineWhiteboardPreview';
+import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { Loading } from '@/crd/components/common/Loading';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import type { ContributorMapFixedView, ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { WhiteboardConfigCard } from '@/crd/components/whiteboard/WhiteboardConfigCard';
+import { ContributorSelector } from '@/crd/forms/ContributorSelector';
+import { CalloutSelectionField } from '@/crd/forms/callout/CalloutSelectionField';
 import {
   CollaboraDocumentTypePicker,
   type CollaboraDocumentTypeValue,
 } from '@/crd/forms/callout/CollaboraDocumentTypePicker';
+import {
+  ContributorCollectionConfigField,
+  type ContributorCollectionConfigValue,
+} from '@/crd/forms/callout/ContributorCollectionConfigField';
 import type { DocumentImportError } from '@/crd/forms/callout/DocumentImportZone';
 import { LinkFramingFields } from '@/crd/forms/callout/LinkFramingFields';
 import { MemoFramingEditor } from '@/crd/forms/callout/MemoFramingEditor';
@@ -19,7 +27,13 @@ import { PollSettingsDialog } from '@/crd/forms/callout/PollSettingsDialog';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import type { MediaGalleryFieldVisual } from '@/crd/forms/mediaGallery/MediaGalleryField';
 import { Button } from '@/crd/primitives/button';
+
+// Lazy-load ContributorMap so the MapLibre GL chunk stays out of
+// the dialog bundle until the map-view control is first opened.
+const LazyContributorMap = lazy(() => import('@/crd/components/map/ContributorMap'));
+
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
 import {
   DefaultWhiteboardPreviewSettings,
@@ -38,6 +52,67 @@ import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
 
 const WHITEBOARD_FRAMING_TEMPLATE_ID = '__callout_framing_whiteboard';
+
+// Icon + label for the read-only existing-document box shown in edit mode.
+const collaboraDocIconByType: Record<CollaboraDocumentTypeValue, typeof FileText> = {
+  WORDPROCESSING: FileText,
+  SPREADSHEET: Sheet,
+  PRESENTATION: Presentation,
+};
+const collaboraDocLabelKeyByType: Record<
+  CollaboraDocumentTypeValue,
+  'callout.documentText' | 'callout.documentSpreadsheet' | 'callout.documentPresentation'
+> = {
+  WORDPROCESSING: 'callout.documentText',
+  SPREADSHEET: 'callout.documentSpreadsheet',
+  PRESENTATION: 'callout.documentPresentation',
+};
+
+/**
+ * Existing-document box shown in the callout edit dialog (edit mode), with inline
+ * rename. Reaching the edit dialog already requires callout-edit rights — which
+ * carry the framing document's Update privilege — so rename is permitted here.
+ *
+ * The rename state is owned by the parent form (`CalloutFormConnector`) and passed
+ * in as `rename`, so the form's Save button drives the commit (there is no separate
+ * ✓/✕ here — `showActions={false}`); the pencil just opens the input.
+ */
+function CollaboraDocumentEditBox({
+  displayName,
+  documentType,
+  rename,
+}: {
+  displayName: string;
+  documentType: CollaboraDocumentTypeValue;
+  rename: UseRenameCollaboraDocumentResult;
+}) {
+  const { t } = useTranslation('crd-space');
+  const DocIcon = collaboraDocIconByType[documentType] ?? FileText;
+  const typeLabel = t(collaboraDocLabelKeyByType[documentType] ?? 'callout.documentText');
+  return (
+    <div className="p-4 border rounded-xl bg-muted/30 flex items-center gap-3 animate-in fade-in">
+      <div className="p-2 rounded-lg bg-primary/10 text-primary">
+        <DocIcon className="w-5 h-5" aria-hidden="true" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <CollaboraDocumentDisplayName
+          displayName={displayName}
+          value={rename.draft}
+          readOnly={rename.readOnly}
+          editing={rename.editing}
+          saving={rename.saving}
+          error={rename.error}
+          showActions={false}
+          onChange={rename.changeDraft}
+          onEdit={rename.startEdit}
+          onSave={rename.save}
+          onCancel={rename.cancel}
+        />
+        <p className="text-caption text-muted-foreground">{typeLabel}</p>
+      </div>
+    </div>
+  );
+}
 
 type FramingEditorConnectorProps = {
   /**
@@ -126,6 +201,15 @@ type FramingEditorConnectorProps = {
   // create-callout mutation and cannot change after the document is created.
   collaboraDocumentType: CollaboraDocumentType;
   onCollaboraDocumentTypeChange: (next: CollaboraDocumentType) => void;
+  /** Existing Collabora document's id + display name — power the inline rename in the edit-mode box. */
+  editCollaboraDocumentId?: string;
+  editCollaboraDocumentDisplayName?: string;
+  /**
+   * Rename state for the edit-mode document box, owned by the parent form so its
+   * Save button commits the rename. Present only for a document-framing callout in
+   * edit mode; when absent, the box falls back to a read-only display.
+   */
+  collaboraRename?: UseRenameCollaboraDocumentResult;
   /**
    * Upload-zone wiring for the create-mode "or upload" path (FR-002 / FR-003).
    * Omitted in edit mode — once a Collabora document exists, replacing its bytes
@@ -144,6 +228,51 @@ type FramingEditorConnectorProps = {
     labelRemoveFile: string;
     labelOr: string;
   };
+  // Contributor-collection config (feature 008) — present for the 'contributors'
+  // framing only; editable in both create and edit (FR-004d).
+  contributorCollection?: ContributorCollectionConfigValue;
+  onContributorCollectionChange?: (value: ContributorCollectionConfigValue) => void;
+  contributorCollectionError?: string;
+  // Custom selection (feature 025) — present for 'contributors' and 'spaces' framing.
+  selectionMode?: 'auto' | 'custom';
+  onSelectionModeChange?: (next: 'auto' | 'custom') => void;
+  selectedIds?: string[];
+  onSelectedIdsChange?: (ids: string[]) => void;
+  /**
+   * Picker candidates + search for the contributors chip (feature 025, T005).
+   * Derived by `useSelectionCandidates` in `CalloutFormConnector` and passed in
+   * so `FramingEditorConnector` stays free of Apollo hooks (CRD connector rules).
+   */
+  contributorCandidates?: import('./useSelectionCandidates').SelectionCandidate[];
+  resolveContributorChips?: (
+    selectedIds: string[]
+  ) => import('@/crd/forms/ContributorSelector').ContributorSelectorInvitee[];
+  contributorCandidatesLoading?: boolean;
+  /**
+   * Subspace candidates for the spaces chip (feature 025, T006).
+   * Derived by `useCrdSpaceSubspaces` in `CalloutFormConnector` (the same data
+   * the collection renderer already has) — no new query.
+   */
+  subspaceCandidates?: { id: string; displayName: string; avatarUrl?: string }[];
+  subspaceCandidatesLoading?: boolean;
+  /**
+   * Map pins for the map-view capture control.
+   * In edit mode: the default-type contributor cards derived by `CalloutFormConnector`.
+   * In create mode: empty (pinless preview).
+   */
+  contributorMapPins?: ContributorMapPin[];
+  /**
+   * Current fixed map view from the form state. null = automatic framing.
+   * Passed in from `CalloutFormConnector` so the control can show the current state
+   * without having access to the full `ContributorCollectionConfig` (which includes mapView
+   * but is not the type flowing through `ContributorCollectionConfigField`).
+   */
+  contributorMapView?: ContributorMapFixedView | null;
+  /**
+   * Callback to update the fixed map view.
+   * Called with the new view (object = fix it, null = reset to automatic).
+   */
+  onContributorMapViewChange?: (view: ContributorMapFixedView | null) => void;
 };
 
 export function FramingEditorConnector({
@@ -187,7 +316,25 @@ export function FramingEditorConnector({
   onMediaGalleryVisualsChange,
   collaboraDocumentType,
   onCollaboraDocumentTypeChange,
+  editCollaboraDocumentId,
+  editCollaboraDocumentDisplayName,
+  collaboraRename,
   collaboraUpload,
+  contributorCollection,
+  onContributorCollectionChange,
+  contributorCollectionError,
+  selectionMode = 'auto',
+  onSelectionModeChange,
+  selectedIds = [],
+  onSelectedIdsChange,
+  contributorCandidates = [],
+  resolveContributorChips,
+  contributorCandidatesLoading = false,
+  subspaceCandidates = [],
+  subspaceCandidatesLoading = false,
+  contributorMapPins = [],
+  contributorMapView = null,
+  onContributorMapViewChange,
 }: FramingEditorConnectorProps) {
   const { t } = useTranslation('crd-space');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -195,6 +342,14 @@ export function FramingEditorConnector({
   const [pendingStatus, setPendingStatus] = useState<'open' | 'closed' | null>(null);
   const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
   const [memoDialogOpen, setMemoDialogOpen] = useState(false);
+  // Feature 025: search query state for the contributor and subspace pickers.
+  // Must live at function top-level (Rules of Hooks — no hooks inside switch cases).
+  const [contributorSearchQuery, setContributorSearchQuery] = useState('');
+  const [subspaceSearchQuery, setSubspaceSearchQuery] = useState('');
+  // Map-view capture control state.
+  // Must live at function top-level (Rules of Hooks — no state inside switch cases).
+  const [mapViewControlOpen, setMapViewControlOpen] = useState(false);
+  const [capturedView, setCapturedView] = useState<ContributorMapFixedView | null>(null);
   const whiteboardPreviewUrl = useWhiteboardPreviewBlobUrl(whiteboardPreviewImages);
 
   switch (framingType) {
@@ -330,20 +485,50 @@ export function FramingEditorConnector({
         />
       );
 
-    case 'document':
-      // Collabora document framing — type is fixed at creation time (Collabora
-      // has no server-side conversion path between text/spreadsheet/presentation),
-      // so in edit mode the picker is shown read-only as a reminder of which
-      // type was provisioned. The actual document body is edited from the post
+    case 'document': {
+      // Collabora document framing. The document body is edited from the post
       // card / detail dialog via `CollaboraFramingEditorOverlay`.
+      if (mode === 'edit') {
+        // The document already exists, so the "Create new" type picker no longer
+        // applies: show the existing document with inline rename (the pencil),
+        // consistent with the editor title bar.
+        const docType = collaboraDocumentType as CollaboraDocumentTypeValue;
+        if (editCollaboraDocumentId && collaboraRename) {
+          return (
+            <CollaboraDocumentEditBox
+              displayName={editCollaboraDocumentDisplayName ?? ''}
+              documentType={docType}
+              rename={collaboraRename}
+            />
+          );
+        }
+        // Fallback when the document id isn't available: read-only box.
+        const DocIcon = collaboraDocIconByType[docType] ?? FileText;
+        return (
+          <div className="p-4 border rounded-xl bg-muted/30 flex items-center gap-3 animate-in fade-in">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <DocIcon className="w-5 h-5" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-body-emphasis truncate">
+                {editCollaboraDocumentDisplayName || t(collaboraDocLabelKeyByType[docType] ?? 'callout.documentText')}
+              </p>
+              <p className="text-caption text-muted-foreground">
+                {t(collaboraDocLabelKeyByType[docType] ?? 'callout.documentText')}
+              </p>
+            </div>
+          </div>
+        );
+      }
+      // Create mode — type picker + upload (type is fixed at creation time).
       return (
         <CollaboraDocumentTypePicker
           value={collaboraDocumentType as CollaboraDocumentTypeValue}
           onChange={next => onCollaboraDocumentTypeChange(next as CollaboraDocumentType)}
-          readOnly={mode === 'edit'}
           upload={collaboraUpload}
         />
       );
+    }
 
     case 'image':
       return (
@@ -438,6 +623,239 @@ export function FramingEditorConnector({
           )}
         </>
       );
+
+    case 'contributors': {
+      // Contributor-collection config (feature 008). Editable in both create and
+      // edit (FR-004d). The callout renders no framing body — only its config.
+      // Fail fast on an incomplete call site rather than silently rendering
+      // nothing — these props are required whenever framingType === 'contributors'.
+      if (!contributorCollection || !onContributorCollectionChange) {
+        throw new Error(
+          "FramingEditorConnector: the 'contributors' framing requires `contributorCollection` and `onContributorCollectionChange` props."
+        );
+      }
+
+      // Feature 025: build the ContributorSelector chip list from selectedIds
+      // resolved against the candidate set (stale ids → eligible: false).
+      const contributorChips = resolveContributorChips ? resolveContributorChips(selectedIds) : [];
+      const selectedUserIds = new Set(
+        contributorChips.filter(c => c.kind === 'user').map(c => (c as { kind: 'user'; userId: string }).userId)
+      );
+      const contributorSearchResults = contributorCandidates
+        .filter(c => {
+          if (c.kind === 'user' && selectedUserIds.has(c.id)) return false;
+          if (!contributorSearchQuery.trim()) return true;
+          return c.displayName.toLowerCase().includes(contributorSearchQuery.toLowerCase());
+        })
+        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
+
+      const handleContributorSelect = (userId: string) => {
+        if (!selectedIds.includes(userId)) {
+          onSelectedIdsChange?.([...selectedIds, userId]);
+        }
+      };
+      const handleContributorRemove = (index: number) => {
+        const chip = contributorChips[index];
+        if (!chip) return;
+        const chipId = chip.kind === 'user' ? chip.userId : chip.kind !== 'email' ? chip.id : undefined;
+        if (!chipId) return;
+        onSelectedIdsChange?.(selectedIds.filter(id => id !== chipId));
+      };
+
+      return (
+        <div className="space-y-4">
+          <CalloutSelectionField
+            mode={selectionMode}
+            onModeChange={next => {
+              onSelectionModeChange?.(next);
+              // Manual contributor selection is users-only: force the config to Users so
+              // the picker offers only people and the type controls collapse (feature 025).
+              if (next === 'custom') {
+                onContributorCollectionChange({ ...contributorCollection, types: ['user'], defaultType: 'user' });
+              }
+            }}
+            label={t('forms.selection.label')}
+            autoDescription={t('forms.selection.contributors.autoDescription')}
+            customDescription={t('forms.selection.contributors.customDescription')}
+            pickerSlot={
+              <ContributorSelector
+                selectedContributors={contributorChips}
+                searchResults={contributorSearchResults}
+                searchQuery={contributorSearchQuery}
+                onSearchChange={setContributorSearchQuery}
+                onSelectUser={handleContributorSelect}
+                onRemoveContributor={handleContributorRemove}
+                loading={contributorCandidatesLoading}
+                allowEmailInvites={false}
+                chipsPosition="above"
+                clearSearchAriaLabel={t('forms.selection.clearSearch')}
+                ineligibleLabel={t('forms.selection.noLongerAvailable')}
+                placeholder={t('forms.selection.searchPlaceholder')}
+                searchAriaLabel={t('forms.selection.searchAriaLabel')}
+                noResultsLabel={t('forms.selection.noResults')}
+                loadingLabel={t('forms.selection.loading')}
+                loadMoreLabel={t('forms.selection.loadMore')}
+                removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
+                validationErrorLabel={() => ''}
+              />
+            }
+          />
+          {/* Type config. In custom mode the callout is users-only: the contributor-
+              types filter + default-type are hidden and only the default display
+              (list/map) remains, still editable. */}
+          <ContributorCollectionConfigField
+            value={contributorCollection}
+            onChange={onContributorCollectionChange}
+            error={contributorCollectionError}
+            restrictToUsers={selectionMode === 'custom'}
+          />
+          {/* Map-view capture control. Only shown when the config has
+              at least one locatable type. Virtual contributors are
+              not geocoded and therefore cannot anchor a meaningful fixed view. */}
+          {/* Only render when the parent wired a change handler. The callout TEMPLATE
+              editor does not (the map view is intentionally not persisted on templates), so showing the
+              capture control there would be a dead-end control. */}
+          {onContributorMapViewChange && contributorCollection.types.some(tp => tp !== 'virtualContributor') && (
+            <div className="space-y-2">
+              <button
+                type="button"
+                className="flex items-center gap-2 text-body-emphasis cursor-pointer hover:text-foreground transition-colors"
+                aria-expanded={mapViewControlOpen}
+                onClick={() => {
+                  // Clear a camera captured in a previous open session so a stale view
+                  // can't be applied after a close/reopen cycle.
+                  setCapturedView(null);
+                  setMapViewControlOpen(prev => !prev);
+                }}
+                aria-label={t('contributors.mapView.controlAriaLabel')}
+              >
+                {/* Mirror the whiteboard preview-selection icons: automatic ⇒ Wand2, a
+                    chosen (custom) framing ⇒ Crop (see PreviewSettingsDialog). Not a pin. */}
+                {contributorMapView ? (
+                  <Crop className="size-4 shrink-0" aria-hidden="true" />
+                ) : (
+                  <Wand2 className="size-4 shrink-0" aria-hidden="true" />
+                )}
+                <span>
+                  {contributorMapView ? t('contributors.mapView.stateFixed') : t('contributors.mapView.stateAutomatic')}
+                </span>
+              </button>
+              <p className="text-caption text-muted-foreground">{t('contributors.mapView.helper')}</p>
+              {mapViewControlOpen && (
+                <div className="space-y-2">
+                  <p className="text-caption text-muted-foreground">{t('contributors.mapView.captureHint')}</p>
+                  <div className="h-48 rounded-md overflow-hidden border border-border">
+                    <Suspense fallback={<Loading />}>
+                      <LazyContributorMap
+                        pins={contributorMapPins}
+                        fixedView={contributorMapView ?? undefined}
+                        onViewChange={setCapturedView}
+                        ariaLabel={t('contributors.mapView.mapAriaLabel')}
+                      />
+                    </Suspense>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={!capturedView}
+                      onClick={() => {
+                        if (capturedView) {
+                          onContributorMapViewChange?.(capturedView);
+                        }
+                      }}
+                    >
+                      {t('contributors.mapView.useCurrent')}
+                    </Button>
+                    {contributorMapView && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onContributorMapViewChange?.(null)}
+                      >
+                        {t('contributors.mapView.resetAuto')}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    case 'spaces': {
+      // Feature 025: custom subspace selection for a Spaces-collection callout.
+      // Candidates come from the existing `SubspacesInSpace` query data
+      // (already-shipped host-scoped query — R-6 compliant).
+      const subspaceChips = selectedIds.map(id => {
+        const found = subspaceCandidates.find(c => c.id === id);
+        if (found) {
+          return {
+            kind: 'subspace' as const,
+            id: found.id,
+            displayName: found.displayName,
+            avatarUrl: found.avatarUrl,
+            eligible: true,
+          };
+        }
+        return { kind: 'subspace' as const, id, displayName: id, eligible: false };
+      });
+
+      const subspaceSearchResults = subspaceCandidates
+        .filter(c => {
+          if (selectedIds.includes(c.id)) return false;
+          if (!subspaceSearchQuery.trim()) return true;
+          return c.displayName.toLowerCase().includes(subspaceSearchQuery.toLowerCase());
+        })
+        .map(c => ({ userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl }));
+
+      const handleSubspaceSelect = (id: string) => {
+        if (!selectedIds.includes(id)) {
+          onSelectedIdsChange?.([...selectedIds, id]);
+        }
+      };
+      const handleSubspaceRemove = (index: number) => {
+        const chip = subspaceChips[index];
+        if (!chip) return;
+        onSelectedIdsChange?.(selectedIds.filter(id => id !== chip.id));
+      };
+
+      return (
+        <CalloutSelectionField
+          mode={selectionMode}
+          onModeChange={next => onSelectionModeChange?.(next)}
+          label={t('forms.selection.label')}
+          autoDescription={t('forms.selection.spaces.autoDescription')}
+          customDescription={t('forms.selection.spaces.customDescription')}
+          pickerSlot={
+            <ContributorSelector
+              selectedContributors={subspaceChips}
+              searchResults={subspaceSearchResults}
+              searchQuery={subspaceSearchQuery}
+              onSearchChange={setSubspaceSearchQuery}
+              onSelectUser={handleSubspaceSelect}
+              onRemoveContributor={handleSubspaceRemove}
+              loading={subspaceCandidatesLoading}
+              allowEmailInvites={false}
+              chipsPosition="above"
+              clearSearchAriaLabel={t('forms.selection.clearSearch')}
+              ineligibleLabel={t('forms.selection.noLongerAvailable')}
+              placeholder={t('forms.selection.searchSubspacePlaceholder')}
+              searchAriaLabel={t('forms.selection.searchSubspaceAriaLabel')}
+              noResultsLabel={t('forms.selection.noResults')}
+              loadingLabel={t('forms.selection.loading')}
+              loadMoreLabel={t('forms.selection.loadMore')}
+              removeAriaLabel={name => t('forms.selection.removeAriaLabel', { name })}
+              validationErrorLabel={() => ''}
+            />
+          }
+        />
+      );
+    }
 
     default:
       return null;

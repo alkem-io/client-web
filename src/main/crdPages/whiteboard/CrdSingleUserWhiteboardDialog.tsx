@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
@@ -33,6 +33,8 @@ import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteb
 import { flushAndEncodeScene } from '@/domain/common/whiteboard/excalidraw/assetAdapter/flushSceneForPersist';
 import { useWhiteboardAssetAdapter } from '@/domain/common/whiteboard/excalidraw/assetAdapter/useWhiteboardAssetAdapter';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
+import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
+import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 
 export interface WhiteboardWithContent {
@@ -243,11 +245,14 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
             open={options.show}
             fullscreen={options.fullscreen}
             onClose={onClose}
+            // Escape first deselects/cancels in Excalidraw; only closes the dialog when there's nothing to clear.
+            onEscapeKeyDown={event => handleExcalidrawEscape(excalidrawAPI, event)}
             title={options.dialogTitle ?? t('common.Whiteboard')}
             titleExtra={
               options.canEdit ? <WhiteboardTemplatePickerButton onImport={handleImportTemplate} /> : undefined
             }
             headerActions={options.headerActions}
+            rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
             footer={
               <WhiteboardSaveFooter
                 onDelete={actions.onDelete ? () => actions.onDelete?.(whiteboard) : undefined}

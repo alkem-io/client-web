@@ -1,5 +1,5 @@
 import type { Locale } from 'date-fns';
-import { format, formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow, formatDistanceToNowStrict } from 'date-fns';
 
 /**
  * Reusable date/time formatters for the CRD layer. Three variants — pick the
@@ -46,35 +46,24 @@ export function formatRelativeFromNow(
   return formatDistanceToNow(date, { addSuffix: true, ...(locale ? { locale } : {}) });
 }
 
-/** "13/05/2026" — locale-aware short date, no time component. */
-export function formatShortDate(input: Date | string | number | null | undefined, locale?: Locale): string | undefined {
-  const date = toDate(input);
-  if (!date) return undefined;
-  return format(date, 'P', locale ? { locale } : undefined);
-}
-
-const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
-
 /**
- * "Smart" comment-style timestamp: relative within the last 24 hours
- * ("less than a minute ago", "about 5 hours ago"), absolute date+time
- * afterwards ("13/05/2026, 15:51:44"). Mirrors the chat-style pattern of
- * recent-wins-glanceability / older-wins-precision so the day is
- * unambiguous once the message scrolls past the immediate context.
- *
- * The 24h cutoff is calendar-agnostic: a message posted yesterday at 23:59
- * and viewed today at 00:01 reads as "1 minute ago" for a full day, which
- * matches what users expect from chat-like surfaces.
+ * "1 hour ago", "5 days ago", "2 minutes ago" — strict single-unit distance,
+ * without the "about"/"less than" hedge that `formatRelativeFromNow` adds. Shorter
+ * and denser; well suited to subtext/metadata rows. Matches the strict form already
+ * used elsewhere (e.g. the unified chat panel).
  */
-export function formatRelativeOrAbsolute(
+export function formatRelativeFromNowStrict(
   input: Date | string | number | null | undefined,
   locale?: Locale
 ): string | undefined {
   const date = toDate(input);
   if (!date) return undefined;
-  const ageMs = Date.now() - date.getTime();
-  if (ageMs >= 0 && ageMs < TWENTY_FOUR_HOURS_MS) {
-    return formatRelativeFromNow(date, locale);
-  }
-  return formatAbsoluteDateTime(date, locale);
+  return formatDistanceToNowStrict(date, { addSuffix: true, ...(locale ? { locale } : {}) });
+}
+
+/** "13/05/2026" — locale-aware short date, no time component. */
+export function formatShortDate(input: Date | string | number | null | undefined, locale?: Locale): string | undefined {
+  const date = toDate(input);
+  if (!date) return undefined;
+  return format(date, 'P', locale ? { locale } : undefined);
 }

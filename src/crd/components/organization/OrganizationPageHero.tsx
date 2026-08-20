@@ -1,4 +1,4 @@
-import { BadgeCheck, MapPin, Settings } from 'lucide-react';
+import { BadgeCheck, Mail, MapPin, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { MessagePopover } from '@/crd/components/common/MessagePopover';
 import { fallbackInitials } from '@/crd/lib/fallbackInitials';
@@ -11,6 +11,8 @@ export type OrganizationPageHeroProps = {
   avatarImageUrl: string | null;
   color: string;
   displayName: string;
+  /** Muted single line under the display-name row; `null` renders nothing. */
+  tagline: string | null;
   location: string | null;
   verified: boolean;
   /** When `null` the gear icon is hidden. */
@@ -23,6 +25,7 @@ export function OrganizationPageHero({
   avatarImageUrl,
   color,
   displayName,
+  tagline,
   location,
   verified,
   settingsHref,
@@ -59,6 +62,7 @@ export function OrganizationPageHero({
                   </TooltipProvider>
                 ) : null}
               </div>
+              {tagline ? <p className="text-body-emphasis text-muted-foreground mt-1">{tagline}</p> : null}
               {location ? (
                 <div className="flex items-center gap-2 text-muted-foreground text-body-emphasis mt-1">
                   <MapPin className="w-4 h-4" aria-hidden="true" />
@@ -69,7 +73,14 @@ export function OrganizationPageHero({
 
             <div className="flex gap-3 shrink-0">
               {onSendMessage ? (
-                <MessagePopover triggerLabel={t('orgProfile.hero.messageButton')} onSendMessage={onSendMessage} />
+                <MessagePopover
+                  triggerLabel={t('orgProfile.hero.messageButton')}
+                  triggerIcon={<Mail className="w-4 h-4" aria-hidden="true" />}
+                  onSendMessage={onSendMessage}
+                  title={t('orgProfile.hero.messageEmailTitle')}
+                  notice={t('orgProfile.hero.messageEmailNotice')}
+                  placeholder={t('orgProfile.hero.messageEmailPlaceholder')}
+                />
               ) : null}
               {settingsHref ? (
                 <Button

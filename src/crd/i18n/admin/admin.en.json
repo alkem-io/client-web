@@ -75,7 +75,22 @@
     "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
-    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Full administrative control over the entire platform.",
+    "GLOBAL_SUPPORT": "Platform management and support operations; can act as a space admin depending on space settings.",
+    "GLOBAL_LICENSE_MANAGER": "Manages licenses and plans across all accounts.",
+    "GLOBAL_COMMUNITY_READER": "Read-only access to community information across the platform.",
+    "GLOBAL_SPACES_READER": "Read-only access to all spaces and their contents.",
+    "GLOBAL_PLATFORM_MANAGER": "Manages platform-level settings and content.",
+    "GLOBAL_SUPPORT_MANAGER": "Elevated support role for managing support operations.",
+    "PLATFORM_BETA_TESTER": "Access to beta features before general release.",
+    "PLATFORM_VC_CAMPAIGN": "Participation in the Virtual Contributor campaign.",
+    "PLATFORM_ASSISTANT_ACCESS": "Access to the AI assistant.",
+    "PLATFORM_OPERATIONS_ADMIN": "Operational and maintenance actions only: authorization and license-entitlement resets, search/AI ingest and re-indexing, AI-server upkeep, data migrations, notification and communications housekeeping, and geolocation refresh. Grants no other administrative powers and no access to user personal data."
   },
   "roleMembers": {
     "currentMembers": "Current members",
@@ -153,6 +168,29 @@
       "parentPlaceholder": "Select a parent space",
       "confirmTitle": "Confirm conversion",
       "confirmDescription": "This changes the space level and may affect its community, subspaces, and URLs. It cannot be undone."
+    },
+    "spaceMove": {
+      "title": "Move Subspace",
+      "description": "Move a subspace under a different parent space across top-level spaces.",
+      "resolvedLevel": "Resolved level: {{level}}",
+      "noMoves": "No move operations are available for this space level.",
+      "moveL1ToL0Label": "Move to another top-level space",
+      "moveL1ToL2Label": "Move under a subspace of another top-level space",
+      "moveL2ToL1Label": "Move under a subspace of another top-level space",
+      "targetL0Label": "Destination top-level space",
+      "targetL1Label": "Destination subspace",
+      "targetL0Placeholder": "Select a top-level space",
+      "targetL1Placeholder": "Select a subspace",
+      "targetL0Empty": "No top-level spaces available.",
+      "targetL1Empty": "No subspaces available in the selected space.",
+      "move": "Move Subspace",
+      "confirmTitle": "Confirm move",
+      "confirmDescription": "This moves the subspace to the selected destination. All community roles including admins are cleared, pending invitations are dropped, and the announcement channel is reset. This cannot be undone.",
+      "autoInviteLabel": "Send invitations to former members who are in the destination community",
+      "invitationMessageLabel": "Personal message (optional, max 500 characters)",
+      "invitationMessagePlaceholder": "Add a personal message to the invitation…",
+      "successPrefix": "Subspace moved. New location:",
+      "newLocationLabel": "View new location"
     },
     "spaceTransfer": {
       "title": "Transfer Space",

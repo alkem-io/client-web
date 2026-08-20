@@ -3,9 +3,14 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
     id
     settings {
       id
+      language
+      languageOfferAnswered
       homeSpace {
         spaceID
         autoRedirect
+      }
+      dashboard {
+        activityView
       }
       notification {
         user {
@@ -20,6 +25,16 @@ mutation updateUserSettings($settingsData: UpdateUserSettingsInput!) {
             push
           }
           messageReceived {
+            email
+            inApp
+            push
+          }
+          conversationMessageDirect {
+            email
+            inApp
+            push
+          }
+          conversationMessageGroup {
             email
             inApp
             push

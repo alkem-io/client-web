@@ -171,6 +171,20 @@ const buildUser = (
   commentReply: channel(type, property, 'commentReply', value, server?.commentReply),
   mentioned: channel(type, property, 'mentioned', value, server?.mentioned),
   messageReceived: channel(type, property, 'messageReceived', value, server?.messageReceived),
+  conversationMessageDirect: channel(
+    type,
+    property,
+    'conversationMessageDirect',
+    value,
+    server?.conversationMessageDirect
+  ),
+  conversationMessageGroup: channel(
+    type,
+    property,
+    'conversationMessageGroup',
+    value,
+    server?.conversationMessageGroup
+  ),
   membership: {
     spaceCommunityInvitationReceived: channel(
       type,
@@ -275,3 +289,15 @@ export const buildNotificationUpdate = (
       return { virtualContributor: buildVC(server.virtualContributor, property, type, value) };
   }
 };
+
+export type SoundKey = 'chatMessage' | 'inAppNotification';
+
+/**
+ * Build the mutation payload for a single sound toggle. Emits ONLY the changed
+ * key: the server merges `notification.sound` field-by-field, so omitting the
+ * sibling key is exactly what leaves it untouched (the two are independent).
+ * Returns the full `{ notification: { sound: … } }` shape passed as `settings`.
+ */
+export const buildSoundUpdate = (key: SoundKey, next: boolean): Record<string, unknown> => ({
+  notification: { sound: { [key]: next } },
+});

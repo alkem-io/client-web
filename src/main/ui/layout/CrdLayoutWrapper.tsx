@@ -5,6 +5,7 @@ import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentic
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import useNavigate from '@/core/routing/useNavigate';
 import { BreadcrumbsTrail } from '@/crd/components/common/BreadcrumbsTrail';
+import { DownNoticeBanner } from '@/crd/components/common/DownNoticeBanner';
 import { CrdLayout } from '@/crd/layouts/CrdLayout';
 import { MarkdownConfigProvider } from '@/crd/lib/markdownConfig';
 import {
@@ -12,6 +13,7 @@ import {
   usePendingMembershipsDialog,
 } from '@/domain/community/pendingMembership/PendingMembershipsDialogContext';
 import { usePendingInvitationsCount } from '@/domain/community/pendingMembership/usePendingInvitationsCount';
+import { LanguageOfferBannerConnector } from '@/domain/language/LanguageOfferBannerConnector';
 import { useConfig } from '@/domain/platform/config/useConfig';
 import { useInAppNotificationsContext } from '@/main/inAppNotifications/InAppNotificationsContext';
 import { useInAppNotifications } from '@/main/inAppNotifications/useInAppNotifications';
@@ -21,6 +23,7 @@ import { BannerOverlayProvider, useBannerOverlay } from '@/main/ui/layout/Banner
 import { LayoutWidthProvider, useSpaceFullWidthActive } from '@/main/ui/layout/LayoutWidthContext';
 import { useCrdNavigation } from '@/main/ui/layout/useCrdNavigation';
 import { useCrdUser } from '@/main/ui/layout/useCrdUser';
+import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 import { useUnreadConversationsCount } from '@/main/userMessaging/useUnreadConversationsCount';
 
@@ -52,6 +55,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
   const { openSearch } = useSearch();
   const navigate = useNavigate();
   const [isHelpDialogOpen, setIsHelpDialogOpen] = useState(false);
+  const { visible: downNoticeVisible, dismiss: dismissDownNotice } = useDownNoticeBanner();
   const breadcrumbItems = useBreadcrumbs();
   const overlayBanner = useBannerOverlay();
   // Full-width is owned per-space by the space page; the global header reads
@@ -80,6 +84,8 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 
   return (
     <MarkdownConfigProvider iframeAllowedUrls={iframeAllowedUrls}>
+      {/* Language offer banner — shown AFTER cookie consent resolves, never pre-empting it (R-9). */}
+      <LanguageOfferBannerConnector />
       <CrdLayout
         user={user}
         authenticated={isAuthenticated}
@@ -94,6 +100,7 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
         currentLanguage={currentLanguage}
         breadcrumbs={breadcrumbItems.length > 0 ? <BreadcrumbsTrail items={breadcrumbItems} /> : undefined}
         overlayBanner={overlayBanner}
+        topBanner={downNoticeVisible ? <DownNoticeBanner onDismiss={dismissDownNotice} /> : undefined}
         fullWidth={headerFullWidth}
         onLanguageChange={handleLanguageChange}
         onLogout={handleLogout}
@@ -125,6 +132,8 @@ function CrdLayoutConnector({ children }: { children?: ReactNode }) {
 }
 
 export function CrdLayoutWrapper({ children }: { children?: ReactNode } = {}) {
+  // LanguageOfferProvider is NOT here — it is hoisted to App (corr-client-4 fix) so the
+  // in-memory anonymous choice survives navigation between route groups within one session.
   return (
     <BreadcrumbsProvider>
       <BannerOverlayProvider>

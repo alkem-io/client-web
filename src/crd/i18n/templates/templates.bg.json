@@ -52,7 +52,9 @@
     "document": "Документ",
     "cta": "Връзка",
     "image": "Галерия",
-    "poll": "Анкета"
+    "poll": "Анкета",
+    "contributors": "Сътрудници",
+    "spaces": "Подпространства"
   },
   "contributionType": {
     "post": "Публикации",
@@ -265,7 +267,7 @@
     "tagsPlaceholder": "Добавете етикет и натиснете Enter",
     "references": "Препратки",
     "listedInStore": "Видим в магазина",
-    "listedInStoreHint": "Покажи този пакет в Innovation Library.",
+    "listedInStoreHint": "Покажи този пакет в Библиотека с шаблони.",
     "searchVisibility": "Видимост при търсене",
     "searchVisibilityOptions": {
       "public": "Публичен",
@@ -319,9 +321,9 @@
     "manage": "Управление на пакета"
   },
   "library": {
-    "title": "Иновационна библиотека",
+    "title": "Библиотека с шаблони",
     "subtitle": "Открийте шаблони и Innovation Packs от платформата.",
-    "pageTitle": "Иновационна библиотека",
+    "pageTitle": "Библиотека с шаблони",
     "loadedOfTotal": "{{loaded}} от {{total}}",
     "packs": {
       "heading": "Innovation Packs",

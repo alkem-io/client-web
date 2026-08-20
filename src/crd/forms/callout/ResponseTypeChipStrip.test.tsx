@@ -16,12 +16,64 @@ describe('ResponseTypeChipStrip', () => {
     expect(group).toBeInTheDocument();
   });
 
-  test('renders the four P1 response chips (Documents are framing-only — FR-015)', () => {
+  test('renders the five response chips, including Documents (story #10083)', () => {
     render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} />);
     const chips = screen.getAllByRole('radio');
-    expect(chips).toHaveLength(4);
-    // Documents must NOT appear among Response Options in P1.
+    expect(chips).toHaveLength(5);
+    expect(screen.getByRole('radio', { name: /contributionSettings.types.document/i })).toBeInTheDocument();
+  });
+
+  test('clicking the inactive Documents chip selects it', async () => {
+    const onChange = vi.fn();
+    render(<ResponseTypeChipStrip value="none" onChange={onChange} />);
+    const document = screen.getByRole('radio', { name: /contributionSettings.types.document/i });
+    await userEvent.click(document);
+    expect(onChange).toHaveBeenCalledWith('document');
+  });
+
+  test('Documents chip is not disabled and is excludable via allowedChips like any other chip', () => {
+    render(<ResponseTypeChipStrip value="none" onChange={vi.fn()} allowedChips={['post', 'link']} />);
     expect(screen.queryByRole('radio', { name: /contributionSettings.types.document/i })).toBeNull();
+  });
+
+  test('disabledChips: the Documents chip is aria-disabled with the entitlement tooltip and cannot be selected', async () => {
+    const onChange = vi.fn();
+    render(
+      <ResponseTypeChipStrip
+        value="none"
+        onChange={onChange}
+        disabledChips={{ document: { tooltip: 'framing.officeDocumentsNotEnabled' } }}
+      />
+    );
+    const document = screen.getByRole('radio', { name: /contributionSettings.types.document/i });
+    expect(document).toHaveAttribute('aria-disabled', 'true');
+    expect(document).toHaveAttribute('title', 'framing.officeDocumentsNotEnabled');
+    await userEvent.click(document);
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  test('disabledChips gates only the named chip — the other response chips stay interactive', async () => {
+    const onChange = vi.fn();
+    render(
+      <ResponseTypeChipStrip
+        value="none"
+        onChange={onChange}
+        disabledChips={{ document: { tooltip: 'framing.officeDocumentsNotEnabled' } }}
+      />
+    );
+    const post = screen.getByRole('radio', { name: /contributionSettings.types.post/i });
+    expect(post).not.toHaveAttribute('aria-disabled', 'true');
+    await userEvent.click(post);
+    expect(onChange).toHaveBeenCalledWith('post');
+  });
+
+  test('locked mode: the Documents chip is also inert when active', async () => {
+    const onChange = vi.fn();
+    render(<ResponseTypeChipStrip value="document" onChange={onChange} locked={true} />);
+    const document = screen.getByRole('radio', { name: /contributionSettings.types.document/i, checked: true });
+    expect(document).toHaveAttribute('aria-disabled', 'true');
+    await userEvent.click(document);
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   test('clicking an inactive chip selects it', async () => {

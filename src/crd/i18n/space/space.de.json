@@ -22,9 +22,20 @@
     "inactive": "Dieser Bereich ist derzeit inaktiv."
   },
   "knowledge": {
-    "searchPlaceholder": "Wissensdatenbank durchsuchen...",
+    "searchPlaceholder": "Suchen...",
     "searchLabel": "Wissensdatenbank durchsuchen",
     "noResults": "Keine Treffer",
+    "search": {
+      "emptyTitle": "Keine Treffer",
+      "emptyDescription": "Kein Inhalt in diesem Bereich entspricht deiner Suche.",
+      "errorTitle": "Suche nicht verfügbar",
+      "errorDescription": "Bei der Suche ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "retry": "Erneut versuchen",
+      "loadingLabel": "Suchergebnisse werden geladen",
+      "appendingLabel": "Weitere Ergebnisse werden geladen",
+      "removeTerm": "Begriff {{term}} entfernen",
+      "removeTag": "Tag {{tag}} entfernen"
+    },
     "viewGrid": "Kartenansicht",
     "viewList": "Listenansicht",
     "count": {
@@ -39,6 +50,11 @@
       "document_one": "{{count}} Dokument",
       "document_other": "{{count}} Dokumente"
     }
+  },
+  "postIndexDialog": {
+    "close": "Schließen",
+    "loadingLabel": "Beitragsverzeichnis wird geladen",
+    "empty": "Noch keine Beiträge"
   },
   "sidebar": {
     "aboutSpace": "Über diesen Bereich",
@@ -176,23 +192,37 @@
     "openWhiteboard": "Whiteboard öffnen",
     "openMemo": "Memo öffnen",
     "openDocument": "Dokument öffnen",
+    "openDocumentPdf": "Ansehen",
     "document": "Dokument",
-    "documentText": "Word-Dokument",
+    "documentText": "Textdokument",
     "documentSpreadsheet": "Tabellenkalkulation",
     "documentPresentation": "Präsentation",
+    "documentPdf": "PDF",
     "addDocument": "Dokument hinzufügen",
     "defaultDocumentName": "Neues Dokument",
+    "createDocument": "Neues Dokument erstellen",
+    "documentNameLabel": "Dokumenttitel",
     "documentTypeLabel": "Dokumenttyp",
     "createNew": "Neu erstellen",
     "documentImportOr": "oder",
     "documentImportHint": "Datei hierher ziehen oder klicken zum Hochladen",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx bis zu {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf bis zu {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} bis zu {{cap}} MB",
     "documentImportRemoveFile": "Datei entfernen",
     "documentImportErrorUnsupported": "Dieser Dateityp wird nicht unterstützt. Probieren Sie {{formats}}.",
     "documentImportErrorTooLarge": "Datei ist zu groß. Maximale Größe: {{cap}} MB.",
     "documentImportErrorMultiple": "Bitte nur eine Datei gleichzeitig hochladen.",
     "documentImportErrorFolder": "Bitte eine Datei hochladen, keinen Ordner.",
     "documentImportErrorServiceUnavailable": "Der Dokumentendienst ist vorübergehend nicht verfügbar. Bitte gleich noch einmal versuchen.",
+    "documentReplace": "Datei ersetzen",
+    "documentReplaceTitle": "Datei ersetzen",
+    "documentReplaceDescription": "Das Hochladen einer Ersatzdatei überschreibt die aktuelle Datei für alle und kann nicht rückgängig gemacht werden.",
+    "documentReplaceCurrentTitleLabel": "Aktuelles Dokument",
+    "documentReplaceTitleFieldLabel": "Titel",
+    "documentReplaceConfirm": "Datei ersetzen",
+    "documentReplaceErrorSameType": "Die Ersatzdatei muss dieselbe Art von Dokument sein wie die aktuelle: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Datei ersetzt.",
+    "documentReplaceError": "Die Datei konnte nicht ersetzt werden. Bitte versuchen Sie es erneut.",
     "comments": "{{count}} Kommentare",
     "commentsZero": "0 Kommentare",
     "expandComments": "Kommentare ausklappen",
@@ -266,7 +296,10 @@
     "postUnsavedCloseCancel": "Weiter bearbeiten",
     "uploadAfterCreateFailed": "Der $t(common.Callout) wurde erstellt, aber das Hochladen des Vorschaubildes ist fehlgeschlagen. Sie können es im Bearbeitungsdialog des $t(common.callout)s erneut versuchen.",
     "pollOptionsSaveFailed": "Eine oder mehrere Änderungen an den Umfrageoptionen konnten nicht gespeichert werden. Sie können es in diesem Dialog erneut versuchen.",
-    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut."
+    "referencesSaveFailed": "Eine oder mehrere neue Referenzen konnten nicht gespeichert werden. Weitere Änderungen wurden nicht übernommen. Bitte versuchen Sie es erneut.",
+    "updateFailed": "Die Änderungen am $t(common.callout) konnten nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+    "contributors": "Mitwirkende",
+    "subspaces": "Unterbereiche"
   },
   "contribution": {
     "edit": "Bearbeiten",
@@ -393,7 +426,8 @@
     "maxLength": "Maximal {{count}} Zeichen.",
     "submitted": {
       "title": "Bewerbung eingereicht",
-      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht."
+      "body": "Deine Bewerbung für {{communityName}} wurde eingereicht.",
+      "review": "Deine Bewerbung wird geprüft. Sobald sie genehmigt ist, erhältst du eine Benachrichtigung <bell/> und kannst die Community über deine Startseite betreten."
     }
   },
   "mobile": {
@@ -440,9 +474,39 @@
   },
   "deleteCallout": {
     "title": "Diesen $t(common.Callout) löschen?",
-    "description": "„{{title}}“ wird dauerhaft gelöscht, zusammen mit seinen Beiträgen und Kommentaren. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
     "confirm": "Löschen",
+    "confirmAll": "$t(common.Callout) und alle Inhalte löschen",
+    "headerContributions_one": "{{count}} Beitrag wird gelöscht",
+    "headerContributions_other": "{{count}} Beiträge werden gelöscht",
+    "headerRich": "{{content}} wird gelöscht",
+    "headerRichContributions_one": "{{content}} und {{count}} Beitrag werden gelöscht",
+    "headerRichContributions_other": "{{content}} und {{count}} Beiträge werden gelöscht",
+    "headerRichPoll": "Die Umfrage und ihre Ergebnisse werden gelöscht",
+    "headerRichPollContributions_one": "Die Umfrage, ihre Ergebnisse und {{count}} Beitrag werden gelöscht",
+    "headerRichPollContributions_other": "Die Umfrage, ihre Ergebnisse und {{count}} Beiträge werden gelöscht",
+    "callToAction": "Handlungsaufforderung",
+    "moreContributions_one": "{{count}} weiterer Beitrag...",
+    "moreContributions_other": "{{count}} weitere Beiträge...",
+    "attachmentsNote": "einschließlich angehängter Dateien und Links",
+    "contentType": {
+      "whiteboard": "Das Whiteboard",
+      "memo": "Die Notiz",
+      "mediaGallery": "Die Mediengalerie",
+      "document": "Das Dokument"
+    },
+    "moreLinks_one": "und {{count}} weiterer Link",
+    "moreLinks_other": "und {{count}} weitere Links",
+    "comments_one": "{{count}} Kommentar wird gelöscht",
+    "comments_other": "{{count}} Kommentare werden gelöscht",
+    "success": "Der $t(common.Callout) „{{title}}“ wurde gelöscht.",
     "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+  },
+  "deleteContribution": {
+    "title": "Diesen Beitrag löschen?",
+    "description": "„{{title}}“ wird dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
+    "confirm": "Löschen",
+    "saveFailed": "Der Beitrag konnte nicht gelöscht werden. Bitte erneut versuchen."
   },
   "saveAsTemplate": {
     "saveFailed": "Die Vorlage konnte nicht gespeichert werden. Bitte erneut versuchen."
@@ -474,7 +538,8 @@
     "maxPollOptions": "Höchstens {{count}} Optionen sind erlaubt",
     "pollOptionRequired": "Der Optionstext ist erforderlich",
     "referenceTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird",
-    "linkRowTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird"
+    "linkRowTitleRequired": "Titel ist erforderlich, wenn eine URL angegeben wird",
+    "contributorTypesRequired": "Wählen Sie mindestens einen Mitwirkenden-Typ aus."
   },
   "forms": {
     "titleLabel": "Titel",
@@ -491,6 +556,7 @@
     "publishedLabel": "Veröffentlicht",
     "draftLabel": "Entwurf",
     "notifyMembers": "Bereichsmitglieder benachrichtigen",
+    "titleRequiredHint": "Fügen Sie Ihrem $t(common.callout) einen Titel hinzu, um fortzufahren",
     "saveDraft": "Entwurf speichern",
     "save": "Speichern",
     "publish": "Veröffentlichen",
@@ -508,7 +574,29 @@
     "addOption": "Option hinzufügen",
     "removeOption": "Option entfernen",
     "allowComments": "Kommentare zulassen",
-    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen."
+    "allowCommentsDescription": "Mitglieder können Kommentare im $t(common.callout)-Rahmen veröffentlichen.",
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Manuelle Auswahl",
+      "contributors": {
+        "autoDescription": "Zeigen Sie die Mitwirkenden dieser Community als selbst aktualisierende Sammlung an.",
+        "customDescription": "Zeigt nur die von Ihnen ausgewählten Mitwirkenden an."
+      },
+      "spaces": {
+        "autoDescription": "Zeigt automatisch alle Subspaces an und aktualisiert sich, wenn sie hinzugefügt oder entfernt werden.",
+        "customDescription": "Zeigt nur die unten ausgewählten Subspaces an."
+      },
+      "noLongerAvailable": "Nicht mehr verfügbar",
+      "searchPlaceholder": "Mitglieder suchen…",
+      "searchAriaLabel": "Mitglieder suchen",
+      "searchSubspacePlaceholder": "Unterräume suchen…",
+      "searchSubspaceAriaLabel": "Unterräume suchen",
+      "noResults": "Keine passenden Ergebnisse",
+      "loading": "Laden…",
+      "loadMore": "Mehr laden…",
+      "removeAriaLabel": "{{name}} entfernen",
+      "clearSearch": "Suche löschen"
+    }
   },
   "contributionSettings": {
     "heading": "Antworten",
@@ -622,6 +710,20 @@
     }
   },
   "collabora": {
+    "rename": {
+      "inputLabel": "Dokumentname",
+      "edit": "Umbenennen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "saving": "Wird gespeichert…",
+      "errors": {
+        "blank": "Bitte geben Sie einen Namen ein.",
+        "tooShort": "Der Name muss mindestens {{min}} Zeichen lang sein.",
+        "tooLong": "Der Name darf höchstens {{max}} Zeichen lang sein.",
+        "invalid": "Bitte geben Sie einen gültigen Namen ein.",
+        "saveFailed": "Das Dokument konnte nicht umbenannt werden. Bitte versuchen Sie es erneut."
+      }
+    },
     "editor": {
       "error": {
         "runtime": "Collabora-Fehler: {{message}}",
@@ -648,7 +750,38 @@
         "unauthenticated": "Melde dich an, um dieses Dokument zu bearbeiten.",
         "contentUpdatePolicy": "Du hast keine Berechtigung, dieses Dokument zu bearbeiten. Bitte den Eigentümer, die Freigabeeinstellungen zu ändern.",
         "noMembership": "Nur Mitglieder dieses Space können dieses Dokument bearbeiten. Tritt bei, um mitzuwirken."
+      },
+      "disconnect": {
+        "atRisk": "Getrennt — aktuelle Änderungen wurden möglicherweise nicht gespeichert",
+        "status": "Getrennt",
+        "cause": {
+          "network": "Du scheinst offline zu sein.",
+          "tokenExpiry": "Deine Bearbeitungssitzung ist abgelaufen.",
+          "service": "Ein Dienst ist vorübergehend nicht verfügbar.",
+          "unknown": "Verbindung verloren.",
+          "unloading": "Das Dokument wird noch aus einer vorherigen Sitzung geschlossen. Versuche es gleich noch einmal."
+        },
+        "reconnect": "Erneut verbinden",
+        "reload": "Neu laden",
+        "terminal": {
+          "notFound": "Dieses Dokument ist nicht mehr verfügbar.",
+          "forbidden": "Sie haben keinen Zugriff mehr auf dieses Dokument.",
+          "generic": "Dieses Dokument kann nicht erneut geöffnet werden."
+        },
+        "warning": {
+          "reconnectTitle": "Editor neu verbinden?",
+          "reconnectBody": "Dadurch wird die aktuelle Bearbeitungssitzung beendet und das Dokument an Ort und Stelle neu geöffnet – die Seite wird nicht neu geladen. Änderungen seit dem letzten Speichern können verloren gehen; kopiere zuerst, was du benötigst.",
+          "reconnectConfirm": "Neu verbinden",
+          "reloadTitle": "Seite neu laden?",
+          "reloadBody": "Dadurch wird die gesamte Seite neu geladen und das Dokument von Grund auf neu geöffnet. Änderungen seit dem letzten Speichern können verloren gehen; kopiere zuerst, was du benötigst.",
+          "reloadConfirm": "Seite neu laden",
+          "cancel": "Abbrechen"
+        },
+        "reconnecting": "Verbindung wird wiederhergestellt…"
       }
+    },
+    "serviceUnavailable": {
+      "message": "Ein Dienst ist nicht verfügbar. Bitte speichere ausstehende Arbeit, da nicht gespeicherte Daten verloren gehen können."
     }
   },
   "mediaGallery": {
@@ -687,6 +820,7 @@
     "label": "Vorschau des ausgewählten Beitrags",
     "edit": "Beitrag bearbeiten",
     "share": "Beitrag teilen",
+    "delete": "Beitrag löschen",
     "close": "Vorschau schließen",
     "emptyDescription": "Keine Beschreibung",
     "references": "Verweise"
@@ -701,6 +835,7 @@
     "label": "Vorschau des ausgewählten Whiteboards",
     "edit": "Whiteboard bearbeiten",
     "share": "Whiteboard teilen",
+    "delete": "Whiteboard löschen",
     "close": "Vorschau schließen",
     "openFull": "Klicken Sie, um das vollständige Whiteboard anzuzeigen"
   },
@@ -734,6 +869,7 @@
   },
   "dialogs": {
     "cancel": "Abbrechen",
+    "close": "Schließen",
     "create": "Erstellen",
     "discardChanges": {
       "title": "Änderungen verwerfen?",
@@ -798,8 +934,17 @@
     "settings.hideResultsUntilVoted": "Ergebnisse bis zur Abstimmung ausblenden",
     "settings.showVoterAvatars": "Avatare der Abstimmenden anzeigen",
     "settings.close": "Schließen",
-    "openPoll": "Umfrage ist offen",
-    "closePoll": "Umfrage ist geschlossen",
+    "closePoll": "Umfrage schließen",
+    "reopenPoll": "Umfrage wieder öffnen",
+    "closePollHint": {
+      "open": "Diese Umfrage ist für Stimmen geöffnet",
+      "closed": "Niemand kann mehr an dieser Umfrage teilnehmen"
+    },
+    "statusChange": {
+      "closeSuccess": "Die Umfrage ist jetzt geschlossen.",
+      "reopenSuccess": "Die Umfrage ist jetzt für Stimmen geöffnet.",
+      "failed": "Der Status der Umfrage konnte nicht geändert werden. Bitte versuche es erneut."
+    },
     "closePollConfirm": {
       "title": "Diese Umfrage schließen?",
       "description": "Das Schließen der Umfrage verhindert neue Stimmen und sperrt die Bearbeitung. Sie können sie später wieder öffnen.",
@@ -833,5 +978,54 @@
   },
   "activity": {
     "dialogTitle": "Letzte Aktivität"
+  },
+  "contributors": {
+    "title": "Mitwirkende",
+    "search": "Nach Namen suchen…",
+    "empty": "Keine Mitwirkenden anzuzeigen.",
+    "emptySearch": "Keine Mitwirkenden entsprechen Ihrer Suche.",
+    "noLocationData": "Keine Standortdaten",
+    "noLocationDescription": "Für diese Mitwirkenden sind keine Standortdaten hinterlegt.",
+    "viewList": "Liste",
+    "viewMap": "Karte",
+    "expandMap": "Karte vergrößern",
+    "closeMap": "Karte schließen",
+    "types": {
+      "user": "Personen",
+      "organization": "Organisationen",
+      "virtualContributor": "Virtuelle Mitwirkende"
+    },
+    "counts": {
+      "users": "{{count}} Personen",
+      "organizations": "{{count}} Organisationen",
+      "virtualContributors": "{{count}} virtuelle Mitwirkende"
+    },
+    "config": {
+      "title": "Mitwirkende",
+      "typesLabel": "Mitwirkenden-Typen",
+      "typesHint": "Wählen Sie mindestens einen Typ aus.",
+      "defaultTypeLabel": "Standardtyp",
+      "defaultTypeHint": "Der zuerst angezeigte Typ.",
+      "defaultViewLabel": "Standardanzeige",
+      "viewList": "Liste",
+      "viewMap": "Karte"
+    },
+    "mapView": {
+      "helper": "Wähle die Startansicht, die alle auf der Karte sehen, oder überlasse die Anpassung automatisch deinen Mitwirkenden.",
+      "stateAutomatic": "Kartenansicht: automatisch",
+      "stateFixed": "Kartenansicht: fest",
+      "useCurrent": "Aktuelle Ansicht verwenden",
+      "resetAuto": "Auf automatisch zurücksetzen",
+      "mapAriaLabel": "Mitwirkenden-Kartenvorschau — Verschieben und Zoomen, um die feste Ansicht festzulegen",
+      "captureHint": "Verschieben und zoomen Sie die Karte und klicken Sie dann auf 'Aktuelle Ansicht verwenden', um die Startposition festzulegen.",
+      "controlAriaLabel": "Kartenansicht-Einstellungen"
+    }
+  },
+  "spaceCollection": {
+    "search": "Unterbereiche suchen...",
+    "empty": {
+      "title": "Noch keine Unterbereiche",
+      "description": "Dieser Bereich hat noch keine Unterbereiche."
+    }
   }
 }

@@ -38,18 +38,7 @@
       "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
       "confirm": "Wijzigingen verwerpen"
     },
-    "postDescriptionDisplay": {
-      "title": "Weergave post-beschrijving",
-      "switchLabel": "Post-beschrijvingen standaard inklappen",
-      "description": "Klap post-beschrijvingen standaard in. Als dit aanstaat, tonen beschrijvingen een \"Lees meer\"-link in plaats van de volledige tekst."
-    },
     "column": {
-      "titleAriaLabel": "Kolomtitel",
-      "descriptionAriaLabel": "Kolombeschrijving",
-      "editTitle": "Kolomtitel bewerken",
-      "editDescription": "Kolombeschrijving bewerken",
-      "confirm": "Bevestigen",
-      "cancel": "Annuleren",
       "titlePlaceholder": "Kolomtitel",
       "descriptionPlaceholder": "Beschrijf deze kolom…",
       "menu": "Kolomacties",
@@ -66,9 +55,10 @@
       },
       "editDetails": {
         "menuLabel": "Details bewerken",
-        "dialogTitle": "Details bewerken: stroomfase",
+        "dialogTitle": "Details bewerken: Innovation Flow-fase",
         "titleLabel": "Titel",
-        "editTitle": "Titel bewerken",
+        "titleTooShort": "De titel moet minimaal 3 tekens lang zijn",
+        "titleDuplicate": "Er bestaat al een fase met deze naam.",
         "insertEmoji": "Emoji invoegen",
         "descriptionLabel": "Beschrijving",
         "descriptionPlaceholder": "Beschrijving",
@@ -85,6 +75,15 @@
           "cancel": "Annuleren"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Tab verwijderen",
+        "confirm": {
+          "title": "Deze tab verwijderen?",
+          "description": "Posts in deze tab worden verplaatst naar de eerste tab. Deze actie kan niet ongedaan worden gemaakt.",
+          "confirm": "Tab verwijderen",
+          "cancel": "Annuleren"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Verbergen in menu",
         "showMenuLabel": "Tonen in menu",
@@ -95,13 +94,44 @@
           "confirm": "Verbergen",
           "cancel": "Annuleren"
         }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post-beschrijving",
+          "collapsedHint": "Posts beginnen ingeklapt — leden kunnen ze uitklappen om te lezen.",
+          "expandedHint": "Posts zijn standaard volledig uitgevouwen.",
+          "switchLabel": "Post-beschrijvingen inklappen"
+        },
+        "publishDetails": {
+          "label": "Publicatiegegevens",
+          "onHint": "Naam, avatar en datum van de auteur worden getoond bij elke Post.",
+          "offHint": "Naam, avatar en datum van de auteur zijn verborgen bij Posts in deze fase.",
+          "switchLabel": "Publicatiegegevens tonen"
+        },
+        "cancel": "Annuleren",
+        "saving": "Opslaan…",
+        "save": "Opslaan"
+      },
+      "postTemplate": {
+        "menuLabel": "Post-template",
+        "dialogTitle": "Post-template: {{phaseName}}",
+        "choose": "Kies template…",
+        "clear": "Template verwijderen",
+        "clearConfirm": {
+          "title": "Post-template verwijderen?",
+          "description": "De standaard Post-template voor deze fase wordt verwijderd. Nieuwe Posts in deze fase gebruiken geen standaard template. Bestaande Posts worden niet beïnvloed.",
+          "confirm": "Template verwijderen",
+          "cancel": "Annuleren"
+        }
       }
     },
     "addPhase": {
       "button": "Fase toevoegen",
       "dialog": {
         "title": "Voeg een nieuwe fase toe",
-        "description": "Maak een nieuwe innovatiestroomfase. Je kunt deze later hernoemen of verwijderen.",
+        "description": "Maak een nieuwe Innovation Flow-fase. Je kunt deze later hernoemen of verwijderen.",
         "nameLabel": "Naam van de fase",
         "namePlaceholder": "bv. Ontdekking",
         "descriptionLabel": "Beschrijving (optioneel)",
@@ -112,16 +142,31 @@
         "confirm": "Fase toevoegen"
       }
     },
+    "addTab": {
+      "button": "Tab toevoegen",
+      "dialog": {
+        "title": "Voeg een nieuwe tab toe",
+        "description": "Maak een nieuwe tab op deze Space. Je kunt deze later hernoemen of verwijderen.",
+        "nameLabel": "Naam van de tab",
+        "namePlaceholder": "bv. Archief",
+        "descriptionLabel": "Beschrijving (optioneel)",
+        "descriptionPlaceholder": "Waarvoor dient deze tab?",
+        "duplicate": "Er bestaat al een tab met deze naam.",
+        "errorGeneric": "De tab kon niet worden gemaakt. Probeer het opnieuw.",
+        "cancel": "Annuleren",
+        "confirm": "Tab toevoegen"
+      }
+    },
     "replaceFlow": {
-      "button": "Innovatieflow vervangen",
+      "button": "Innovation Flow vervangen",
       "loading": "Nieuwe flow laden…",
-      "error": "Het vervangen van de innovatieflow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
+      "error": "Het vervangen van de innovation flow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
       "applyDialog": {
         "title": "Nieuwe template toepassen",
-        "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovatieflow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
+        "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovation flow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
         "option1": {
           "label": "Vervangen door nieuwe flow",
-          "description": "Hiermee wordt je huidige innovatieflow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."
+          "description": "Hiermee wordt je huidige innovation flow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."
         },
         "option2": {
           "label": "Vervangen en template-Posts aan bestaande toevoegen",
@@ -129,7 +174,7 @@
         },
         "option3": {
           "label": "Flow vervangen zonder template-Posts toe te voegen",
-          "description": "Vervang alleen de innovatieflow zonder template-Posts toe te voegen."
+          "description": "Vervang alleen de innovation flow zonder template-Posts toe te voegen."
         },
         "apply": "Toepassen",
         "cancel": "Annuleren",
@@ -220,8 +265,8 @@
       "role": {
         "lead": "Lead",
         "member": "Lid",
-        "promoteToLead": "Maak lead",
-        "demoteFromLead": "Verwijder als lead"
+        "promoteToLead": "Maak Lead",
+        "demoteFromLead": "Verwijder als Lead"
       },
       "actions": "Acties",
       "empty": "Geen leden gevonden.",
@@ -239,13 +284,14 @@
         "page": "Pagina {{page}} van {{total}}",
         "next": "Volgende pagina"
       },
-      "roleColumn": "Rol"
+      "roleColumn": "Rol",
+      "export": "Exporteer volledig ledenoverzicht"
     },
     "memberSettings": {
       "title": "Lidinstellingen",
-      "lead": "Dit lid is een <b>lead</b>: Leads worden weergegeven als de hosts van de community.",
+      "lead": "Dit lid is een <b>Lead</b>: Leads worden weergegeven als de hosts van de community.",
       "admin": "Dit lid is een <b>admin</b>: zij kunnen deze community en alle inhoud en deelnemers ervan beheren.",
-      "maxLeadsWarning": "Let op dat er een <b>maximum aantal leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
+      "maxLeadsWarning": "Let op dat er een <b>maximum aantal Leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
       "section": {
         "role": "Rol",
         "authorization": "Autorisatie",
@@ -267,7 +313,7 @@
       "actions": "Acties",
       "empty": "Geen organisaties.",
       "remove": "Organisatie verwijderen",
-      "description": "Overzicht van alle leden- en lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
       "add": "Organisatie toevoegen",
       "dropdown": {
         "viewProfile": "Profiel bekijken",
@@ -276,7 +322,7 @@
       },
       "addDialog": {
         "title": "Organisatie toevoegen",
-        "description": "Kies een organisatie waarvan de leden zonder goedkeuring lid kunnen worden van deze Space.",
+        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
         "search": "Organisaties zoeken…",
         "empty": "Geen organisaties komen overeen met je zoekopdracht."
       }
@@ -570,7 +616,7 @@
   },
   "updates": {
     "pageHeader": {
-      "title": "Updates van de leads",
+      "title": "Updates van de Leads",
       "subtitle": "Plaats aankondigingen, mijlpalen en voortgangsupdates die zichtbaar zijn voor alle leden van de Space."
     },
     "composer": {
@@ -723,12 +769,13 @@
         "description": "Weet je zeker dat je deze vraag wilt verwijderen?",
         "confirm": "Verwijderen"
       },
-      "save": "Opslaan"
+      "save": "Opslaan",
+      "export": "Exporteer alle ingediende aanvragen"
     },
     "allowedActions": {
       "title": "Toegestane acties",
       "description": "Kies welke acties leden in deze Space kunnen uitvoeren",
-      "subspaceAdminInvitations": "Space-uitnodigingen",
+      "subspaceAdminInvitations": "Subspace-lidmaatschap",
       "memberCreatePosts": "Posts maken",
       "videoCalls": "Videogesprekken",
       "guestContributions": "Gastbijdragen",
@@ -738,7 +785,7 @@
       "subspaceEvents": "Subspace-evenementen",
       "alkemioSupportAccess": "Alkemio-ondersteuning",
       "trustHostOrganization": "Vertrouw hostorganisatie",
-      "subspaceAdminInvitationsDescription": "Sta beheerders van Subspaces toe om platformgebruikers uit te nodigen voor hun Subspace. Gebruikers die nog geen lid van deze Space waren, worden dat zodra ze de Subspace-uitnodiging accepteren."
+      "subspaceAdminInvitationsDescription": "Laat Subspaces hun eigen leden binnenhalen. Zij worden hier ook lid."
     },
     "saveAsTemplate": {
       "title": "Opslaan als template",
@@ -754,6 +801,14 @@
         "description": "Hierdoor wordt deze subspace en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
         "confirm": "Subspace verwijderen"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Zichtbaarheid van gebruikersinformatie",
+      "description": "Bepaal wie de gebruikersinformatie van leden in deze space kan zien. Organisaties en virtual contributors volgen de zichtbaarheid van de space.",
+      "followSpace": "Volg de space-zichtbaarheid",
+      "followSpaceDescription": "Gebruikersinformatie van leden is zichtbaar volgens de zichtbaarheid van de space.",
+      "membersOnly": "Alleen leden",
+      "membersOnlyDescription": "Alleen leden van deze space kunnen de gebruikersinformatie van leden zien."
     }
   },
   "storage": {
@@ -834,20 +889,23 @@
     },
     "branding": {
       "title": "Branding van de Space",
-      "description": "Upload een avatar, een paginabanner (1536×256) en een kaartbanner (416×256).",
+      "description": "Upload een avatar, een paginabanner (3840px breed) en een kaartbanner (416×256).",
       "noImage": "Geen afbeelding",
       "upload": "Uploaden",
       "avatar": {
         "title": "Avatar",
-        "hint": "Het logo van de Space."
+        "hint": "Het logo van de Space.",
+        "recrop": "Huidige avatar bijsnijden"
       },
       "pageBanner": {
-        "title": "Paginabanner (1536 × 256px)",
-        "hint": "Wordt weergegeven boven aan de Space-pagina."
+        "title": "Paginabanner",
+        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1536 × 154px.",
+        "recrop": "Huidige paginabanner bijsnijden"
       },
       "cardBanner": {
         "title": "Kaartbanner (416 × 256px)",
-        "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten."
+        "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
+        "recrop": "Huidige kaartbanner bijsnijden"
       },
       "cropDialog": {
         "save": "Opslaan",
@@ -857,7 +915,14 @@
         "altText": "Beschrijving",
         "altTextPlaceholder": "Beschrijf deze afbeelding…"
       },
-      "changeBanner": "Banner wijzigen"
+      "recropConfirm": {
+        "title": "Originele afbeelding vervangen?",
+        "description": "Als je deze bijsnijding opslaat, wordt een nieuwe afbeelding geüpload en gaat het origineel definitief verloren. De weggesneden delen kunnen later niet worden hersteld.",
+        "confirm": "Afbeelding vervangen",
+        "cancel": "Annuleren"
+      },
+      "changeBanner": "Banner wijzigen",
+      "recropFailed": "Kan deze afbeelding niet laden om bij te snijden. Probeer het opnieuw."
     },
     "location": {
       "title": "Locatie",

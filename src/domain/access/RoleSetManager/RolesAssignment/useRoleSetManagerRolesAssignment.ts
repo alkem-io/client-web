@@ -9,7 +9,7 @@ import {
   useRemoveRoleFromVirtualContributorMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import type { RoleName } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 
 type useRoleSetManagerRolesAssignmentParams = {
   roleSetId: string | undefined;

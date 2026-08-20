@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
+import { ContributionDocumentCard } from '@/crd/components/contribution/ContributionDocumentCard';
 import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
@@ -18,6 +19,7 @@ import {
   mapAnyContributionToCardData,
   mapContributionToLinkItem,
 } from '../dataMappers/contributionDataMapper';
+import { DocumentContributionAddConnector } from './DocumentContributionAddConnector';
 import { LinkContributionAddConnector } from './LinkContributionAddConnector';
 import { LinkContributionEditConnector } from './LinkContributionEditConnector';
 import { MemoContributionAddConnector } from './MemoContributionAddConnector';
@@ -116,6 +118,14 @@ export function ContributionsPreviewConnector({
           onOpenChange={setAddOpen}
           calloutId={callout.id}
         />
+      ) : contributionType === CalloutContributionType.CollaboraDocument ? (
+        <DocumentContributionAddConnector
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
+          calloutId={callout.id}
+          calloutPrivileges={callout.authorization?.myPrivileges}
+        />
       ) : null
     ) : null;
 
@@ -131,7 +141,9 @@ export function ContributionsPreviewConnector({
           ? t('callout.addPost')
           : contributionType === CalloutContributionType.Link
             ? t('callout.addLinkOrFile')
-            : '';
+            : contributionType === CalloutContributionType.CollaboraDocument
+              ? t('callout.addDocument')
+              : '';
 
   // Link-list edit state. The "+ Add link" action lives in the section-header `+` button alongside
   // every other contribution type (see `addConnector` above); per-row Edit / Delete still need their
@@ -362,6 +374,15 @@ function ContributionCard({
         <ContributionMemoCard
           title={contribution.title}
           markdownContent={contribution.markdownContent}
+          author={contribution.author?.name}
+          onClick={onClick}
+        />
+      );
+    case CalloutContributionType.CollaboraDocument:
+      return (
+        <ContributionDocumentCard
+          title={contribution.title}
+          documentType={contribution.documentType ?? 'text'}
           author={contribution.author?.name}
           onClick={onClick}
         />

@@ -154,6 +154,7 @@ In a group conversation the user opens its settings to rename the group, change 
 #### Messaging (direct & group)
 - **FR-013**: Users MUST be able to read a conversation's message history.
 - **FR-014**: Users MUST be able to send messages in a conversation.
+- **FR-014a**: After a message is submitted from the panel composer (Enter or the send button), keyboard focus MUST return to the message input as soon as the composer is enabled again, so the user can keep typing without clicking back into the box. (The composer is disabled while a send is in flight — and, for Guidance, while awaiting the assistant's answer per FR-027 — which is what drops focus; the refocus happens on re-enable.)
 - **FR-015**: New messages and member/conversation changes from others MUST appear in real time without a manual refresh.
 - **FR-016**: Users MUST be able to add and remove reactions on messages, with changes reflected to all participants.
 - **FR-016a**: Reactions MUST be available on real, delivered messages only; they MUST NOT be offered on the synthetic Guidance introduction message or on optimistic/pending messages not yet confirmed.

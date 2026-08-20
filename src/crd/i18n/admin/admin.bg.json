@@ -75,7 +75,22 @@
     "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
-    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Пълен административен контрол върху цялата платформа.",
+    "GLOBAL_SUPPORT": "Управление на платформата и поддръжка; може да действа като администратор на пространство според настройките му.",
+    "GLOBAL_LICENSE_MANAGER": "Управлява лицензи и планове във всички акаунти.",
+    "GLOBAL_COMMUNITY_READER": "Достъп само за четене до информация за общността в цялата платформа.",
+    "GLOBAL_SPACES_READER": "Достъп само за четене до всички пространства и тяхното съдържание.",
+    "GLOBAL_PLATFORM_MANAGER": "Управлява настройки и съдържание на ниво платформа.",
+    "GLOBAL_SUPPORT_MANAGER": "Разширена роля за поддръжка за управление на операциите по поддръжка.",
+    "PLATFORM_BETA_TESTER": "Достъп до бета функции преди общото им пускане.",
+    "PLATFORM_VC_CAMPAIGN": "Участие в кампанията Virtual Contributor.",
+    "PLATFORM_ASSISTANT_ACCESS": "Достъп до AI асистента.",
+    "PLATFORM_OPERATIONS_ADMIN": "Само оперативни действия и действия по поддръжка: нулиране на оторизация и лицензионни права, поглъщане и повторно индексиране за търсене/AI, поддръжка на AI сървъра, миграции на данни, поддръжка на известия и комуникации и опресняване на геолокация. Не предоставя други административни права и няма достъп до личните данни на потребителите."
   },
   "roleMembers": {
     "currentMembers": "Текущи членове",
@@ -153,6 +168,29 @@
       "parentPlaceholder": "Изберете родителски space",
       "confirmTitle": "Потвърждаване на преобразуването",
       "confirmDescription": "Това променя нивото на space и може да засегне неговата общност, subspaces и URL адреси. Не може да бъде отменено."
+    },
+    "spaceMove": {
+      "title": "Преместване на Subspace",
+      "description": "Преместване на subspace под различен родителски space между top-level spaces.",
+      "resolvedLevel": "Разрешено ниво: {{level}}",
+      "noMoves": "Няма налични операции за преместване за това ниво на space.",
+      "moveL1ToL0Label": "Преместване в друг top-level space",
+      "moveL1ToL2Label": "Преместване под subspace на друг top-level space",
+      "moveL2ToL1Label": "Преместване под subspace на друг top-level space",
+      "targetL0Label": "Целеви top-level space",
+      "targetL1Label": "Целеви subspace",
+      "targetL0Placeholder": "Изберете top-level space",
+      "targetL1Placeholder": "Изберете subspace",
+      "targetL0Empty": "Няма налични top-level spaces.",
+      "targetL1Empty": "Няма налични subspaces в избрания space.",
+      "move": "Преместване на subspace",
+      "confirmTitle": "Потвърждаване на преместването",
+      "confirmDescription": "Това премества subspace към избраната дестинация. Всички роли в общността включително администраторите се изчистват, чакащите покани се отменят и каналът за съобщения се нулира. Не може да бъде отменено.",
+      "autoInviteLabel": "Изпращане на покани до бивши членове, които са в целевата общност",
+      "invitationMessageLabel": "Лично съобщение (незадължително, максимум 500 знака)",
+      "invitationMessagePlaceholder": "Добавете лично съобщение към поканата…",
+      "successPrefix": "Subspace преместен. Нова локация:",
+      "newLocationLabel": "Вижте новата локация"
     },
     "spaceTransfer": {
       "title": "Прехвърляне на Space",

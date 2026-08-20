@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SignUpCrdRoute } from './SignUpCrdRoute';
+import { RegistrationCrdRoute, SignUpCrdRoute } from './SignUpCrdRoute';
 
 // Shared, hoisted holder so the (hoisted) vi.mock factories can expose state we
-// control per-test: the guest-session hook return and the props the page passes
-// to GuestReturnNotice.
+// control per-test: the guest-session hook return, the props the page passes
+// to GuestReturnNotice, the mocked Kratos flow, and the props passed to SignUpCard.
 const h = vi.hoisted(() => ({
   guest: {
     shouldShowNotification: false,
@@ -16,6 +16,8 @@ const h = vi.hoisted(() => ({
     clearSession: vi.fn(),
   },
   noticeProps: undefined as undefined | { onBackToWhiteboard: () => void; onGoToWebsite: () => void },
+  flow: undefined as undefined | { id: string; ui: { nodes: unknown[]; messages: unknown[] } },
+  signUpCardProps: undefined as undefined | { hasAcceptedTerms: boolean; onAcceptedTermsChange: (v: boolean) => void },
 }));
 
 // The unit under test is the conditional wiring — stub the heavy children with
@@ -30,7 +32,19 @@ vi.mock('@/crd/components/auth/GuestReturnNotice', () => ({
   },
 }));
 vi.mock('@/crd/components/auth/SignUpCard', () => ({
-  SignUpCard: () => <div data-testid="crd-signup-card" />,
+  SignUpCard: (props: { hasAcceptedTerms: boolean; onAcceptedTermsChange: (v: boolean) => void }) => {
+    h.signUpCardProps = props;
+    return (
+      <div data-testid="crd-signup-card">
+        <input
+          type="checkbox"
+          aria-label="accept-terms"
+          checked={props.hasAcceptedTerms}
+          onChange={event => props.onAcceptedTermsChange(event.target.checked)}
+        />
+      </div>
+    );
+  },
 }));
 vi.mock('./AuthShellWrapper', () => ({
   AuthShellWrapper: ({ children }: { children: ReactNode }) => <>{children}</>,
@@ -40,12 +54,16 @@ vi.mock('@/domain/platform/config/useConfig', () => ({
   useConfig: () => ({ locations: { terms: '#', privacy: '#' } }),
 }));
 vi.mock('@/core/auth/authentication/hooks/useKratosFlow', () => ({
-  default: () => ({ flow: undefined, loading: false }),
+  default: () => ({ flow: h.flow, loading: false }),
   FlowTypeName: { Registration: 'Registration' },
 }));
 vi.mock('@/core/auth/authentication/hooks/usePasskeyScript', () => ({ default: () => ({}) }));
+vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
+  useAuthenticationContext: () => ({ isAuthenticated: false }),
+}));
 vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
   useReturnUrl: () => ({ setReturnUrl: vi.fn() }),
+  useSignUpRoundTrip: () => ({ armed: false, arm: vi.fn(), clearArmed: vi.fn() }),
 }));
 vi.mock('@/core/analytics/SentryTransactionScopeContext', () => ({ useTransactionScope: () => {} }));
 vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
@@ -70,6 +88,9 @@ describe('SignUpCrdRoute — guest return notice wiring', () => {
     h.guest.handleGoToWebsite.mockReset();
     h.guest.clearSession.mockReset();
     h.noticeProps = undefined;
+    h.flow = undefined;
+    h.signUpCardProps = undefined;
+    sessionStorage.clear();
   });
 
   it('[US1] renders the notice above the sign-up form when a guest session is active (FR-001)', () => {
@@ -119,5 +140,87 @@ describe('SignUpCrdRoute — guest return notice wiring', () => {
     // Neither rendering nor acting on the notice may end the session — only
     // successful auth (existing clearAllGuestSessionData) does.
     expect(h.guest.clearSession).not.toHaveBeenCalled();
+  });
+});
+
+// Regression: incidental-defect-signup-terms-checkbox — `/sign_up` and
+// `/registration` can resolve to the same Kratos flow id, so the second step
+// re-hydrates `accepted` as `true` from the shared sessionStorage key. Before
+// the fix, a stray click on the already-checked box on `/registration` simply
+// toggled it back to `false` (plain checkbox semantics), silently disabling
+// submit. These specs prove that once a mount hydrates as already-accepted,
+// further toggling is a no-op, while a fresh/unaccepted mount stays a fully
+// interactive checkbox.
+describe('SignUpCrdRoute / RegistrationCrdRoute — accept-terms persistence across the shared flow id', () => {
+  const storageKeyFor = (flowId: string) => `crd-auth-accepted-terms-${flowId}`;
+
+  beforeEach(() => {
+    h.guest.shouldShowNotification = false;
+    h.guest.whiteboardUrl = null;
+    h.noticeProps = undefined;
+    h.signUpCardProps = undefined;
+    sessionStorage.clear();
+  });
+
+  const renderSignUp = () =>
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <SignUpCrdRoute />
+      </MemoryRouter>
+    );
+
+  const renderRegistration = () =>
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <RegistrationCrdRoute />
+      </MemoryRouter>
+    );
+
+  it('[/sign_up] a fresh checkbox is fully interactive: ticking then re-ticking toggles normally', () => {
+    h.flow = { id: 'flow-1', ui: { nodes: [], messages: [] } };
+
+    renderSignUp();
+    const checkbox = screen.getByLabelText('accept-terms');
+
+    fireEvent.click(checkbox); // check
+    expect(h.signUpCardProps?.hasAcceptedTerms).toBe(true);
+    expect(sessionStorage.getItem(storageKeyFor('flow-1'))).toBe('true');
+
+    fireEvent.click(checkbox); // un-check — a real, first-time toggle is never locked
+    expect(h.signUpCardProps?.hasAcceptedTerms).toBe(false);
+    expect(sessionStorage.getItem(storageKeyFor('flow-1'))).toBe('false');
+  });
+
+  it('[/registration, already accepted] re-ticking the pre-checked box is a no-op, not an uncheck', () => {
+    // Simulate the carry-over from `/sign_up`: same flow id, already accepted.
+    sessionStorage.setItem(storageKeyFor('flow-1'), 'true');
+    h.flow = { id: 'flow-1', ui: { nodes: [], messages: [] } };
+
+    renderRegistration();
+    const checkbox = screen.getByLabelText('accept-terms') as HTMLInputElement;
+
+    expect(checkbox.checked).toBe(true);
+    expect(h.signUpCardProps?.hasAcceptedTerms).toBe(true);
+
+    fireEvent.click(checkbox); // the reported "re-tick" — must be a no-op
+
+    expect(h.signUpCardProps?.hasAcceptedTerms).toBe(true);
+    expect(sessionStorage.getItem(storageKeyFor('flow-1'))).toBe('true');
+  });
+
+  it('[/registration, not yet accepted] reached directly (no prior acceptance) stays fully interactive', () => {
+    h.flow = { id: 'flow-2', ui: { nodes: [], messages: [] } };
+
+    renderRegistration();
+    const checkbox = screen.getByLabelText('accept-terms') as HTMLInputElement;
+
+    expect(checkbox.checked).toBe(false);
+
+    fireEvent.click(checkbox); // first-time acceptance on this very step must work
+    expect(h.signUpCardProps?.hasAcceptedTerms).toBe(true);
+    expect(sessionStorage.getItem(storageKeyFor('flow-2'))).toBe('true');
+
+    fireEvent.click(checkbox); // and can still be un-checked before it was ever hydrated as true
+    expect(h.signUpCardProps?.hasAcceptedTerms).toBe(false);
   });
 });

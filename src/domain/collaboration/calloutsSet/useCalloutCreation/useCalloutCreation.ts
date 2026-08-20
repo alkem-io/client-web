@@ -7,8 +7,10 @@ import type {
   CalloutVisibility,
   CollaboraDocumentType,
   CreateCalloutContributionInput,
+  CreateCalloutContributorsSettingsInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
+  CreateCalloutSelectionSettingsInput,
   CreateReferenceInput,
   CreateTagsetInput,
   VisualType,
@@ -61,6 +63,10 @@ export interface CalloutCreationType {
   settings?: {
     framing?: {
       commentsEnabled?: boolean;
+      /** Contributor-collection config — set only for CONTRIBUTORS framing (feature 008). */
+      contributors?: CreateCalloutContributorsSettingsInput;
+      /** Selection mode + curated ids — for CONTRIBUTORS or SPACES framing (feature 025). */
+      selection?: CreateCalloutSelectionSettingsInput;
     };
     contribution?: {
       enabled?: boolean;

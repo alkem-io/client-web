@@ -8,7 +8,7 @@ type CookieConsentBannerProps = {
   /** Forwarded to the root element so the consumer can measure the banner height and pad the page. */
   ref?: Ref<HTMLDivElement>;
   onAcceptAll: () => void;
-  /** Confirm the granular choice. Technical cookies are always accepted; only the analysis opt-in varies. */
+  /** Confirm the granular choice. Technical cookies are always accepted; analysis opt-in varies. */
   onConfirm: (analysisAccepted: boolean) => void;
 };
 
@@ -16,6 +16,7 @@ type CookieConsentBannerProps = {
  * Cookie consent banner. Two-step flow mirroring the legacy MUI version: a general
  * accept-all prompt, and a settings view where the analysis cookie can be toggled.
  * Purely presentational — persistence and analytics wiring live in the consumer.
+ * Anonymous language preference is session-only (no preference cookie category).
  */
 export function CookieConsentBanner({ ref, onAcceptAll, onConfirm }: CookieConsentBannerProps) {
   const { t } = useTranslation('crd-layout');
@@ -25,6 +26,10 @@ export function CookieConsentBanner({ ref, onAcceptAll, onConfirm }: CookieConse
   return (
     <div
       ref={ref}
+      // Interacting with the banner must never dismiss an open modal (Radix
+      // treats clicks outside its layer as backdrop dismisses — e.g. accepting
+      // cookies used to close the subspace About dialog and lose the context).
+      data-dialog-dismiss-ignore=""
       className="crd-root pointer-events-auto fixed inset-x-0 bottom-0 z-[1500] border-t border-border bg-card text-card-foreground shadow-lg"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-4 p-4">

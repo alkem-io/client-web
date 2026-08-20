@@ -571,7 +571,9 @@ export class UnifiedCollabProvider {
 
   private sendFrame(bytes: Uint8Array): void {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(bytes);
+      // `bytes` is ArrayBuffer-backed (lib0 `toUint8Array`); the cast bridges TS 5.7+'s
+      // generic typed-array lib (`Uint8Array<ArrayBufferLike>` no longer implicitly a `BufferSource`).
+      this.ws.send(bytes as BufferSource);
     }
   }
 

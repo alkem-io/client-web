@@ -52,7 +52,9 @@
     "document": "Documento",
     "cta": "Enlace",
     "image": "Galería",
-    "poll": "Encuesta"
+    "poll": "Encuesta",
+    "contributors": "Colaboradores",
+    "spaces": "Subespacios"
   },
   "contributionType": {
     "post": "Publicaciones",
@@ -265,7 +267,7 @@
     "tagsPlaceholder": "Añade una etiqueta y pulsa Intro",
     "references": "Referencias",
     "listedInStore": "Listado en la tienda",
-    "listedInStoreHint": "Muestra este paquete en la Innovation Library.",
+    "listedInStoreHint": "Muestra este paquete en la Biblioteca de plantillas.",
     "searchVisibility": "Visibilidad en búsquedas",
     "searchVisibilityOptions": {
       "public": "Público",
@@ -319,9 +321,9 @@
     "manage": "Administrar este paquete"
   },
   "library": {
-    "title": "Biblioteca de Innovación",
+    "title": "Biblioteca de plantillas",
     "subtitle": "Descubre plantillas e Innovation Packs publicados en la plataforma.",
-    "pageTitle": "Biblioteca de Innovación",
+    "pageTitle": "Biblioteca de plantillas",
     "loadedOfTotal": "{{loaded}} de {{total}}",
     "packs": {
       "heading": "Innovation Packs",

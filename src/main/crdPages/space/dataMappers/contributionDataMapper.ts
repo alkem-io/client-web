@@ -1,10 +1,12 @@
 import type { Locale } from 'date-fns';
 import { isFileAttachmentUrl } from '@/core/utils/links';
+import type { CollaboraDocumentPreviewType } from '@/crd/lib/collaboraDocumentPreview';
 import { formatShortDate } from '@/crd/lib/dateTimeFormat';
+import { toCollaboraPreviewType } from '@/main/crdPages/space/callout/collaboraDocumentTypeMap';
 
 type ContributionCardData = {
   id: string;
-  type: 'post' | 'memo' | 'whiteboard' | 'link';
+  type: 'post' | 'memo' | 'whiteboard' | 'link' | 'document';
   title: string;
   author?: { name: string; avatarUrl?: string };
   createdDate?: string;
@@ -28,6 +30,10 @@ type ContributionCardData = {
   canDeleteLink?: boolean;
   /** For link contributions: true when `linkUrl` points to our private storage (uploaded document) rather than an external URL. */
   linkIsFile?: boolean;
+  /** For document contributions: the underlying CollaboraDocument id (different from the contribution wrapper id). Opens the editor. */
+  documentId?: string;
+  /** For document contributions: drives the type-differentiated icon (Word/Sheet/Slide/PDF). */
+  documentType?: CollaboraDocumentPreviewType;
 };
 
 export type { ContributionCardData };
@@ -52,55 +58,6 @@ export const mapContributionToLinkItem = (c: ContributionCardData): LinkListItem
   canEdit: c.canEditLink,
   canDelete: c.canDeleteLink,
 });
-
-type ContributionQueryData = {
-  id: string;
-  profile: {
-    displayName: string;
-    description?: string | null;
-    url?: string;
-    tagset?: { tags: string[] } | null;
-    visual?: { uri: string } | null;
-  };
-  createdBy?: {
-    profile?: {
-      displayName: string;
-      avatar?: { uri: string } | null;
-    } | null;
-  } | null;
-  createdDate?: string;
-  link?: {
-    uri: string;
-    profile?: {
-      description?: string | null;
-    };
-  } | null;
-};
-
-export function mapContributionToCardData(
-  contribution: ContributionQueryData,
-  type: 'post' | 'memo' | 'whiteboard' | 'link'
-): ContributionCardData {
-  return {
-    id: contribution.id,
-    type,
-    title: contribution.profile.displayName,
-    description: contribution.profile.description ?? undefined,
-    href: contribution.profile.url,
-    tags: contribution.profile.tagset?.tags ?? [],
-    previewUrl: contribution.profile.visual?.uri,
-    author: contribution.createdBy?.profile
-      ? {
-          name: contribution.createdBy.profile.displayName,
-          avatarUrl: contribution.createdBy.profile.avatar?.uri,
-        }
-      : undefined,
-    createdDate: contribution.createdDate,
-    linkUrl: contribution.link?.uri,
-    linkDescription: contribution.link?.profile?.description ?? undefined,
-    linkIsFile: contribution.link?.uri ? isFileAttachmentUrl(contribution.link.uri) : undefined,
-  };
-}
 
 /**
  * Maps a contribution from the CalloutContributions query (union of post/whiteboard/memo/link)
@@ -151,6 +108,13 @@ type AnyContributionItem = {
     uri: string;
     profile: { id?: string; displayName: string; description?: string | null };
     authorization?: { myPrivileges?: string[] };
+  } | null;
+  collaboraDocument?: {
+    id: string;
+    documentType?: string;
+    createdDate?: Date | string;
+    createdBy?: ContributionAuthorBase | null;
+    profile: { id?: string; url?: string; displayName: string };
   } | null;
 };
 
@@ -231,6 +195,20 @@ export function mapAnyContributionToCardData(
       canEditLink: privileges.includes('UPDATE'),
       canDeleteLink: privileges.includes('DELETE'),
       linkIsFile: isFileAttachmentUrl(link.uri),
+    };
+  }
+
+  if (item.collaboraDocument) {
+    const doc = item.collaboraDocument;
+    return {
+      id: item.id,
+      type: 'document',
+      title: doc.profile.displayName,
+      href: doc.profile.url,
+      documentId: doc.id,
+      documentType: toCollaboraPreviewType(doc.documentType),
+      author: extractAuthor(doc.createdBy),
+      createdDate: toDateString(doc.createdDate, locale),
     };
   }
 

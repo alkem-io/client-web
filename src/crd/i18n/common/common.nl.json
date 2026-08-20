@@ -106,6 +106,51 @@
       }
     }
   },
+  "assistant": {
+    "title": "Assistant",
+    "openButton": "Open the assistant",
+    "openInWhiteboard": "Ask the assistant about this whiteboard",
+    "scopedTo": "Working on: {{name}}",
+    "closeButton": "Close the assistant",
+    "settings": "Assistant settings",
+    "settingsWhiteboardScope": "Whiteboard capabilities — manage all in Settings → Assistant",
+    "newConversation": "New Chat",
+    "intro": "Ask me about content on the platform. I can search and summarise what you have access to.",
+    "inputPlaceholder": "Ask the assistant…",
+    "send": "Send",
+    "stop": "Stop",
+    "thinking": "Thinking…",
+    "toolActivity": {
+      "started": "{{label}}",
+      "finished": "{{label}}",
+      "error": "{{label}} failed"
+    },
+    "confirmation": {
+      "title": "Confirm these actions",
+      "description": "Nothing changes until you approve. Review what the assistant will do:",
+      "destructiveItem": "This changes existing content.",
+      "approve": "Approve",
+      "decline": "Decline",
+      "enableCapabilityLink": "Enable this capability in Settings → Assistant"
+    },
+    "a11y": {
+      "userTurn": "Your message",
+      "assistantTurn": "Assistant reply"
+    },
+    "budget": {
+      "usage": "{{used}} of {{limit}} monthly tokens · resets on the 1st",
+      "noLimit": "No monthly token limit configured",
+      "a11y": "Monthly assistant usage: {{used}} of {{limit}} tokens"
+    },
+    "errors": {
+      "capability_unavailable": "A required capability is temporarily unavailable. Please try again shortly.",
+      "permission_denied": "You don't have access to the assistant, or the capability is disabled in your settings.",
+      "usage_limit_reached": "You've reached your monthly assistant usage limit. Your allowance resets on the 1st of next month.",
+      "session_invalid": "Your session ended. Please sign in again and re-ask.",
+      "internal_error": "Something went wrong. Please try again.",
+      "transport": "The connection was interrupted. Please try again."
+    }
+  },
   "associates-view": {
     "less": "toon minder",
     "more": "...plus {{count}} meer",
@@ -400,8 +445,8 @@
     "image": "Afbeelding",
     "inApp": "In-app",
     "index": "Profiel",
-    "innovation-flow": "Innovatie Flow",
-    "innovation-flows": "Innovatie flows",
+    "innovation-flow": "Innovation Flow",
+    "innovation-flows": "Innovation Flows",
     "innovation-hub": "Innovatie Hub",
     "innovation-hubs": "Innovatie Hubs",
     "innovation-packs": "Template Packs",
@@ -412,8 +457,8 @@
     "introduction": "Inleiding",
     "knowledge-base": "Kennisbank",
     "layout": "Opmaak",
-    "lead": "lead",
-    "leads": "leads",
+    "lead": "Lead",
+    "leads": "Leads",
     "library": "Bibliotheek",
     "license": "Licentie",
     "lifecycle": "Levenscyclus",
@@ -790,7 +835,7 @@
         },
         "SPACE_LEAD_COMMUNICATION_MESSAGE": {
           "description": "",
-          "subject": "Als lead van {{spaceName}}, heb je een bericht ontvangen van {{triggeredByName}}"
+          "subject": "Als Lead van {{spaceName}}, heb je een bericht ontvangen van {{triggeredByName}}"
         },
         "USER_COMMENT_REPLY": {
           "description": "",
@@ -904,12 +949,19 @@
     }
   },
   "delete": "Verwijderen",
+  "downNoticeBanner": {
+    "a11yLabel": "Melding over gepland onderhoud",
+    "dismiss": "Melding sluiten",
+    "message": "Gepland onderhoud vrijdag 31 juli, 21:00 CEST. Het platform kan korte tijd onbereikbaar zijn."
+  },
   "edit": "Bewerken",
   "error": "Fout",
   "filters": {
     "and": "en",
     "clear": "Filters wissen",
     "filterByTag": "Filter op tag",
+    "filterByTagActive_one": "Filter op tag, {{count}} geselecteerd",
+    "filterByTagActive_other": "Filter op tag, {{count}} geselecteerd",
     "summary": "Resultaten voor {{criteria}}"
   },
   "forms": {
@@ -927,6 +979,17 @@
     }
   },
   "fullscreen": "Volledig scherm in-/uitschakelen",
+  "imageCrop": {
+    "previewAlt": "Voorbeeld van uitsnede",
+    "tooSmall": "Het geselecteerde gebied is {{actualWidth}}×{{actualHeight}}px. Minimaal {{requiredWidth}}×{{requiredHeight}}px is vereist — kies een grotere afbeelding.",
+    "aspectRatio": {
+      "label": "Beeldverhouding: {{ratio}}:1",
+      "ariaLabel": "Beeldverhouding: {{ratio}}",
+      "hintLeft": "Links: hoger beeldsnijden",
+      "hintRight": "Rechts: lager beeldsnijden",
+      "name": "Bannervorm"
+    }
+  },
   "innovationHub": {
     "outsideOfSpace": {
       "forum": "Dit is het algemene Alkemio $t(common.forum), los van de <strong>{{space}}</strong> $t(common.space). Neem een kijkje bij de bestaande discussies of start een eigen discussie!"
@@ -983,13 +1046,13 @@
     "ua": "Українська"
   },
   "lead": "Lead",
+  "leads": "Leads",
   "leadType": {
     "org": "Organisatie",
     "person": "Persoon"
   },
-  "leads": "Leads",
-  "loadMore": "Meer laden",
   "loading": "Laden",
+  "loadMore": "Meer laden",
   "member": "Lid",
   "messaging": {
     "message": "Bericht",
@@ -1039,13 +1102,13 @@
           "tooltip": "Na de verplaatsing worden alle communityrollen verwijderd. Met deze optie wordt een uitnodiging gestuurd naar leden die al tot de doel-Space behoren, zodat zij zich opnieuw bij de verplaatste subspace kunnen aansluiten zonder deze zelf te hoeven opzoeken."
         },
         "communityMembers": "Community leden",
-        "communityMembersSummary": "{{members}} leden, {{leads}} leads, {{orgs}} organisaties, {{vcs}} VC’s",
+        "communityMembersSummary": "{{members}} leden, {{leads}} Leads, {{orgs}} organisaties, {{vcs}} VC’s",
         "demote": "Degraderen",
         "demoteL1ToL2": {
           "button": "Degradeer naar Sub-subspace (L1 → L2)",
           "confirmTitle": "Subspace degraderen naar Sub-subspace?",
           "confirmWarning": "Dit zal de subspace degraderen onder de geselecteerde parent. Alle communityleden (gebruikers, organisaties en virtuele bijdragers) worden VERWIJDERD. Adminrollen worden gereset. Deze actie kan niet eenvoudig ongedaan worden gemaakt.",
-          "hint": "Alle communityleden, leads, organisaties en virtuele bijdragers worden verwijderd. Alleen gebruikersadmins blijven behouden. Dit is de meest ingrijpende conversie.",
+          "hint": "Alle communityleden, Leads, organisaties en virtuele bijdragers worden verwijderd. Alleen gebruikersadmins blijven behouden. Dit is de meest ingrijpende conversie.",
           "noTargets": "Er zijn geen andere subspaces binnen deze space die als parent kunnen dienen.",
           "targetLabel": "Verplaats onder subspace"
         },
@@ -1056,7 +1119,7 @@
           "button": "Verplaats Space (L1 → L1 cross-Space)",
           "confirmTitle": "Subspace verplaatsen naar een andere Space?",
           "confirmWarning": "Dit verplaatst de subspace en alle bijbehorende content naar de geselecteerde Space. Alle communityrollen worden verwijderd. Statussen binnen de innovation flow kunnen opnieuw worden toegewezen. Bestaande URL’s werken niet langer. Deze actie kan niet eenvoudig ongedaan worden gemaakt.",
-          "hint": "Verplaats deze subspace naar een andere Space. Deze blijft op Level 1. Alle communityleden, leads, admins, organisaties en virtual contributors worden verwijderd. Bestaande URL’s zijn niet langer geldig. Communityleden kunnen na de verplaatsing opnieuw worden uitgenodigd als hieronder daarvoor wordt gekozen.",
+          "hint": "Verplaats deze subspace naar een andere Space. Deze blijft op Level 1. Alle communityleden, Leads, admins, organisaties en virtual contributors worden verwijderd. Bestaande URL’s zijn niet langer geldig. Communityleden kunnen na de verplaatsing opnieuw worden uitgenodigd als hieronder daarvoor wordt gekozen.",
           "targetLabel": "Target Space"
         },
         "moveL1ToL2": {
@@ -1081,13 +1144,13 @@
           "button": "Promoveer naar Space (L1 → L0)",
           "confirmTitle": "Subspace promoveren tot Space?",
           "confirmWarning": "Dit zal de subspace promoveren tot een top-level space. De innovation flow wordt teruggezet naar de standaardinstellingen. Adminrollen worden gereset.",
-          "hint": "Community leden en leads blijven behouden. De innovation flow wordt teruggezet naar de standaardinstellingen van het platform. Onderliggende sub-subspaces worden automatisch gepromoveerd tot subspaces."
+          "hint": "Community leden en Leads blijven behouden. De innovation flow wordt teruggezet naar de standaardinstellingen van het platform. Onderliggende sub-subspaces worden automatisch gepromoveerd tot subspaces."
         },
         "promoteL2ToL1": {
           "button": "Promoveer naar Subpace (L2 → L1)",
           "confirmTitle": "Sub-subspace promoveren naar Subspace?",
           "confirmWarning": "Dit zal de sub-subspace promoveren tot een subspace. Adminrollen worden gereset.",
-          "hint": "Lichtgewicht conversie. Alle communityleden en leads blijven behouden. Adminrollen worden gereset."
+          "hint": "Lichtgewicht conversie. Alle communityleden en Leads blijven behouden. Adminrollen worden gereset."
         },
         "sectionDescription": "Wijzig het hiërarchieniveau van een space. Gebruik een space-URL om te zien welke bewerkingen beschikbaar zijn.",
         "sectionTitle": "Space Hiërarchie Conversie",
@@ -1356,13 +1419,12 @@
       },
       "messageLabel": "Bericht",
       "noResults": "Geen gebruikers gevonden",
+      "notice": "Elke ontvanger krijgt dit als een privébericht in hun chat.",
       "removeUser": "{{name}} verwijderen",
       "searchAriaLabel": "Gebruikers zoeken",
       "searchPlaceholder": "Zoek gebruikers op naam of e-mail",
       "searching": "Zoeken…",
-      "send": "Verzenden",
-      "sent": "Bericht succesvol verzonden.",
-      "warning": "Ontvangers zien jouw naam als afzender."
+      "send": "Verzenden"
     },
     "back": "Terug",
     "button": "Delen",

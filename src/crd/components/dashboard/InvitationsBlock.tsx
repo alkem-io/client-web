@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
@@ -12,7 +11,9 @@ type InvitationCardData = {
   spaceName: string;
   spaceHref: string;
   spaceAvatarUrl?: string;
-  role: string;
+  /** Display name of the User who sent the invitation; omitted when the
+   * inviter's profile could not be resolved. */
+  inviterName?: string;
   /** Deterministic accent colour, shown as the avatar fallback when
    * `spaceAvatarUrl` is missing. */
   color?: string;
@@ -50,9 +51,15 @@ export function InvitationsBlock({ invitations, loading, onAccept, onDecline, cl
           {invitations.map(invitation => {
             return (
               <li key={invitation.id} className="rounded-lg border border-border bg-card p-4 flex items-center gap-4">
-                <Avatar className="size-10 rounded-lg">
+                <Avatar className="size-10 shrink-0 rounded-lg">
                   {invitation.spaceAvatarUrl ? (
-                    <AvatarImage src={invitation.spaceAvatarUrl} alt={invitation.spaceName} />
+                    // `object-cover` because an L0 space supplies a wide cardBanner
+                    // here (it has no avatar); a square avatar is unaffected.
+                    <AvatarImage
+                      src={invitation.spaceAvatarUrl}
+                      alt={invitation.spaceName}
+                      className="rounded-lg object-cover"
+                    />
                   ) : null}
                   <AvatarFallback
                     className={cn('rounded-lg text-caption', invitation.color && 'text-white')}
@@ -65,14 +72,14 @@ export function InvitationsBlock({ invitations, loading, onAccept, onDecline, cl
                 <div className="flex-1 min-w-0">
                   <a
                     href={invitation.spaceHref}
-                    className="text-card-title hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm"
+                    className="text-card-title hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-sm block truncate"
                   >
                     {invitation.spaceName}
                   </a>
-                  {invitation.role && (
-                    <Badge variant="secondary" className="ml-2">
-                      {invitation.role}
-                    </Badge>
+                  {invitation.inviterName && (
+                    <p className="text-caption text-muted-foreground truncate">
+                      {t('invitations.invitedBy', { name: invitation.inviterName })}
+                    </p>
                   )}
                 </div>
 

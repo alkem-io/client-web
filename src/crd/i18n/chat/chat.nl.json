@@ -5,7 +5,8 @@
     "unreadLabel": "Je hebt ongelezen berichten"
   },
   "panel": {
-    "title": "Chat"
+    "title": "Chat",
+    "settings": "Meldingsinstellingen"
   },
   "actions": {
     "cancel": "Annuleren"
@@ -16,6 +17,7 @@
     "searchHint": "Begin te typen om mensen te zoeken",
     "noResults": "Geen mensen gevonden",
     "create": "Chat starten",
+    "createGroup": "Groepschat starten",
     "removeAria": "{{name}} verwijderen"
   },
   "group": {
@@ -52,7 +54,8 @@
     "empty": "Nog geen gesprekken",
     "emptyHint": "Begin een nieuw bericht om te chatten.",
     "noResults": "Geen gesprekken komen overeen met je zoekopdracht.",
-    "loading": "Gesprekken laden"
+    "loading": "Gesprekken laden",
+    "draft": "Concept:"
   },
   "guidance": {
     "beta": "Bèta",
@@ -74,5 +77,28 @@
     "back": "Terug naar gesprekken",
     "loading": "Berichten laden",
     "addReaction": "Reactie toevoegen"
+  },
+  "sendConfirmation": {
+    "title": "Bericht verzonden",
+    "description": "Je bericht is verzonden als een privéchat.",
+    "partialDescription": "Je bericht is verzonden, maar sommige mensen konden niet worden bereikt.",
+    "notReachedTitle": "Niet bereikt",
+    "openChat": "Chat openen",
+    "close": "Sluiten"
+  },
+  "contactLeads": {
+    "title": "Contact opnemen met de Leads",
+    "explanation": "Dit bericht wordt naar elke Lead afzonderlijk verzonden. Bezoek het profiel van een specifieke Lead om rechtstreeks contact op te nemen.",
+    "messageLabel": "Bericht",
+    "messagePlaceholder": "Schrijf je bericht…",
+    "recipientsLabel": "Ontvangers",
+    "send": "Verzenden",
+    "cancel": "Annuleren",
+    "sending": "Verzenden…",
+    "errors": {
+      "messageRequired": "Bericht mag niet leeg zijn.",
+      "messageTooLong": "Bericht mag maximaal {{max}} tekens bevatten.",
+      "sendFailed": "Kon het bericht niet verzenden. Probeer het opnieuw."
+    }
   }
 }

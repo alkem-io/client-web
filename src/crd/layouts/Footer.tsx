@@ -36,12 +36,14 @@ export function Footer({
   return (
     <footer className={cn('py-8 px-4 sm:px-6 mt-auto border-t border-border bg-card', className)}>
       <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center gap-4">
-        {/* Copyright */}
+        {/* Copyright — prefixed with the Alkemio logo so the copyright reads as
+            platform attribution, unambiguous even on branded space subdomains. */}
         <div className="md:flex-1 flex items-center gap-2 text-body text-muted-foreground">
+          <AlkemioLogo className="w-5 h-5 shrink-0" />
           <span>{t('footer.copyright')}</span>
         </div>
 
-        {/* Links + centered logo */}
+        {/* Links */}
         <nav
           aria-label="Footer"
           className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-6 text-body text-muted-foreground"
@@ -61,8 +63,6 @@ export function Footer({
               {t('footer.security')}
             </a>
           )}
-
-          <AlkemioLogo aria-hidden="true" className="w-5 h-5 opacity-40 hidden sm:block" />
 
           {onSupportClick ? (
             <button

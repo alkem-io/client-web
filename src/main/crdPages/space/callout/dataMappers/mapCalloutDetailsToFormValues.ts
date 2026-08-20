@@ -2,12 +2,14 @@ import type { CalloutContentQuery } from '@/core/apollo/generated/graphql-schema
 import {
   CalloutContributionType,
   CalloutFramingType,
+  CalloutSelectionMode,
   PollResultsDetail,
   PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
+import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 
 type CalloutData = NonNullable<CalloutContentQuery['lookup']['callout']>;
@@ -20,6 +22,8 @@ const FRAMING_TYPE_TO_CHIP: Record<CalloutFramingType, FramingChip> = {
   [CalloutFramingType.Link]: 'cta',
   [CalloutFramingType.MediaGallery]: 'image',
   [CalloutFramingType.Poll]: 'poll',
+  [CalloutFramingType.Contributors]: 'contributors',
+  [CalloutFramingType.Spaces]: 'spaces',
 };
 
 // Documents are framing-only in P1 — no `document` response type. Existing
@@ -89,6 +93,12 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     tags: findTags(framing.profile.tagsets),
     framingChip,
     framingCommentsEnabled: settings.framing.commentsEnabled,
+    // Contributor-collection config prefill (feature 008). Falls back to the
+    // default (all types) when the callout is not a contributors framing.
+    contributorCollection: contributorCollectionFromServer(settings.framing.contributors),
+    // Selection settings prefill (feature 025). Absent selection ⇒ AUTO (FR-016).
+    selectionMode: settings.framing.selection?.mode === CalloutSelectionMode.Custom ? 'custom' : 'auto',
+    selectedIds: settings.framing.selection?.selectedIds ?? [],
     memoMarkdown: '',
     linkUrl: framing.link?.uri ?? '',
     linkDisplayName: framing.link?.profile.displayName ?? '',

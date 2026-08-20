@@ -30,12 +30,12 @@ export const CrdOrganizationProfilePage = () => {
     recipientOrganizationId: organization?.id,
   });
 
-  const { activeTab, onSelectTab } = useResourceTabs();
+  const { activeTab, onSelectTab } = useResourceTabs('memberOf');
 
   const tabs: ProfileResourceTab[] = [
-    { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
-    { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
     { key: 'memberOf' as ResourceTabKey, label: t('orgProfile.tabs.memberOf') },
+    { key: 'leading' as ResourceTabKey, label: t('orgProfile.tabs.leading') },
+    { key: 'resourcesHosted' as ResourceTabKey, label: t('orgProfile.tabs.resourcesHosted') },
   ];
 
   const [leadItems, memberItems] = useFilteredMemberships(provided.contributions ?? [], [RoleType.Lead]);
@@ -101,6 +101,7 @@ export const CrdOrganizationProfilePage = () => {
         avatarImageUrl: profile?.avatar?.uri ?? null,
         color,
         displayName: profile?.displayName ?? '',
+        tagline: profile?.tagline?.trim() || null,
         location,
         verified,
         settingsHref,
@@ -119,7 +120,6 @@ export const CrdOrganizationProfilePage = () => {
           bioTitle: t('orgProfile.sidebar.bioTitle'),
           bioEmpty: t('orgProfile.sidebar.bioEmpty'),
           referencesTitle: t('orgProfile.sidebar.referencesTitle'),
-          referencesEmpty: t('orgProfile.sidebar.referencesEmpty'),
           associatesTitle: count => t('orgProfile.sidebar.associatesCount', { count }),
           associatesSignInCta: t('associates-view.sign-in', { ns: 'crd-common' }),
           associatesShowMore: count => t('associates-view.more', { ns: 'crd-common', count }),

@@ -4,9 +4,14 @@ import {
   useConvertSpaceL1ToL0Mutation,
   useConvertSpaceL1ToL2Mutation,
   useConvertSpaceL2ToL1Mutation,
+  useMoveSpaceL1ToL0Mutation,
+  useMoveSpaceL1ToL2Mutation,
+  useMoveSpaceL2ToL1Mutation,
   useSpaceConversionLookupQuery,
   useSpaceConversionSiblingSubspacesQuery,
   useSpaceConversionUrlResolveQuery,
+  useSpaceMoveTargetL0SpacesQuery,
+  useSpaceMoveTargetL1SubspacesQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { SpaceLevel, UrlResolverResultState } from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -19,6 +24,8 @@ const useSpaceConversion = () => {
   const notify = useNotification();
   const [spaceUrl, setSpaceUrl] = useState('');
   const [mutationCompleted, setMutationCompleted] = useState(false);
+  const [movedSpaceUrl, setMovedSpaceUrl] = useState<string | undefined>(undefined);
+  const [selectedTargetL0Id, setSelectedTargetL0Id] = useState('');
 
   // Step 1: Resolve URL
   const { data: resolveData, loading: resolveLoading } = useSpaceConversionUrlResolveQuery({
@@ -51,12 +58,53 @@ const useSpaceConversion = () => {
       ?.filter(s => s.id !== resolvedSpaceId)
       .map(s => ({ id: s.id, name: s.about.profile.displayName })) ?? [];
 
-  // Mutations
+  // Move target pickers (bounded page, FR-010)
+  // targetL0Spaces: for L1→L0 move — excludes current parent (levelZeroSpaceId for L1)
+  // for L2→L1 and L1→L2 moves — excludes own L0 (cross-L0 only, R-4)
+  const { data: targetL0Data, loading: targetL0Loading } = useSpaceMoveTargetL0SpacesQuery({
+    variables: { first: 100 },
+    skip: !resolvedSpaceId,
+  });
+
+  const targetL0Spaces =
+    targetL0Data?.spacesPaginated.spaces.map(s => ({
+      id: s.id,
+      displayName: s.about.profile.displayName,
+    })) ?? [];
+
+  // L0 IDs to exclude from target picker — always exclude the source's own L0 (cross-L0 only)
+  // For L1: own L0 = levelZeroSpaceId (which IS the current parent); for L2: levelZeroSpaceId
+  const targetL0ExcludeIds = levelZeroSpaceId ? [levelZeroSpaceId] : [];
+
+  // L1 subspaces of a chosen L0 (for two-stage picks: L2→L1 and L1→L2)
+  const { data: targetL1Data, loading: targetL1Loading } = useSpaceMoveTargetL1SubspacesQuery({
+    variables: { targetL0SpaceId: selectedTargetL0Id },
+    skip: !selectedTargetL0Id,
+  });
+
+  const targetL1Subspaces =
+    targetL1Data?.lookup.space?.subspaces?.map(s => ({
+      id: s.id,
+      displayName: s.about.profile.displayName,
+    })) ?? [];
+
+  // Conversion mutations
   const [promoteL1ToL0, { loading: promoteL1Loading }] = useConvertSpaceL1ToL0Mutation();
   const [demoteL1ToL2, { loading: demoteL1Loading }] = useConvertSpaceL1ToL2Mutation();
   const [promoteL2ToL1, { loading: promoteL2Loading }] = useConvertSpaceL2ToL1Mutation();
 
-  const mutationLoading = promoteL1Loading || demoteL1Loading || promoteL2Loading;
+  // Move mutations
+  const [moveL1ToL0Mut, { loading: moveL1ToL0Loading }] = useMoveSpaceL1ToL0Mutation();
+  const [moveL1ToL2Mut, { loading: moveL1ToL2Loading }] = useMoveSpaceL1ToL2Mutation();
+  const [moveL2ToL1Mut, { loading: moveL2ToL1Loading }] = useMoveSpaceL2ToL1Mutation();
+
+  const mutationLoading =
+    promoteL1Loading ||
+    demoteL1Loading ||
+    promoteL2Loading ||
+    moveL1ToL0Loading ||
+    moveL1ToL2Loading ||
+    moveL2ToL1Loading;
 
   // Error derivation
   const isLoading = resolveLoading || spaceLoading;
@@ -87,6 +135,8 @@ const useSpaceConversion = () => {
 
   const handleResolve = (url: string) => {
     setMutationCompleted(false);
+    setMovedSpaceUrl(undefined);
+    setSelectedTargetL0Id('');
     setSpaceUrl(toFullUrl(url));
   };
 
@@ -126,6 +176,59 @@ const useSpaceConversion = () => {
     }
   };
 
+  // Move handlers
+
+  const moveL1ToL0 = async (targetSpaceL0ID: string, autoInvite?: boolean, invitationMessage?: string) => {
+    if (!resolvedSpaceId) return;
+    try {
+      const result = await moveL1ToL0Mut({
+        variables: { spaceL1ID: resolvedSpaceId, targetSpaceL0ID, autoInvite, invitationMessage },
+      });
+      const url = result.data?.moveSpaceL1ToSpaceL0?.about?.profile?.url;
+      setMovedSpaceUrl(url);
+      notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setMutationCompleted(true);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
+      throw err;
+    }
+  };
+
+  const moveL1ToL2 = async (targetSpaceL1ID: string, autoInvite?: boolean, invitationMessage?: string) => {
+    if (!resolvedSpaceId) return;
+    try {
+      const result = await moveL1ToL2Mut({
+        variables: { spaceL1ID: resolvedSpaceId, targetSpaceL1ID, autoInvite, invitationMessage },
+      });
+      const url = result.data?.moveSpaceL1ToSpaceL2?.about?.profile?.url;
+      setMovedSpaceUrl(url);
+      notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setMutationCompleted(true);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
+      throw err;
+    }
+  };
+
+  const moveL2ToL1 = async (targetSpaceL1ID: string, autoInvite?: boolean, invitationMessage?: string) => {
+    if (!resolvedSpaceId) return;
+    try {
+      const result = await moveL2ToL1Mut({
+        variables: { spaceL2ID: resolvedSpaceId, targetSpaceL1ID, autoInvite, invitationMessage },
+      });
+      const url = result.data?.moveSpaceL2ToSpaceL1?.about?.profile?.url;
+      setMovedSpaceUrl(url);
+      notify(t(`${T_PREFIX}.successMessage`), 'success');
+      setMutationCompleted(true);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t(`${T_PREFIX}.errorMessage`);
+      notify(message, 'error');
+      throw err;
+    }
+  };
+
   return {
     space: mutationCompleted ? undefined : space,
     resolvedLevel: mutationCompleted ? undefined : resolvedLevel,
@@ -138,10 +241,23 @@ const useSpaceConversion = () => {
     loading: isLoading,
     mutationLoading,
     error,
+    movedSpaceUrl,
+    // Move picker data
+    targetL0Spaces,
+    targetL0Loading,
+    targetL0ExcludeIds,
+    targetL1Subspaces,
+    targetL1Loading,
+    selectedTargetL0Id,
+    setSelectedTargetL0Id,
+    // Handlers
     handleResolve,
     handlePromoteL1ToL0,
     handleDemoteL1ToL2,
     handlePromoteL2ToL1,
+    moveL1ToL0,
+    moveL1ToL2,
+    moveL2ToL1,
   };
 };
 

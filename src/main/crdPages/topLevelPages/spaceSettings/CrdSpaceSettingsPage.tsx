@@ -32,11 +32,13 @@ import { InviteMembersDialogConnector } from '@/main/crdPages/space/dialogs/Invi
 import { VirtualContributorInviteConnector } from '@/main/crdPages/space/dialogs/VirtualContributorInviteConnector';
 import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { LayoutReplaceFlowConnector } from '../../space/innovationFlow/LayoutReplaceFlowConnector';
 import { useAboutTabData } from './about/useAboutTabData';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
 import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
@@ -95,7 +97,7 @@ export default function CrdSpaceSettingsPage() {
   // guard still sees `isDirty=true` at the moment of a tab switch.
   const navigate = useNavigate();
   const about = useAboutTabData(activeTab === 'about' ? spaceId : '', spaceUrl, level);
-  const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '');
+  const layout = useLayoutTabData(activeTab === 'layout' ? spaceId : '', level);
   const community = useCommunityTabData(activeTab === 'community' ? roleSetId : '');
   const subspacesTab = useSubspacesTabData(activeTab === 'subspaces' ? spaceId : '');
   const createSubspace = useCreateSubspace(spaceId, {
@@ -189,6 +191,14 @@ export default function CrdSpaceSettingsPage() {
   const [inviteMembersOpen, setInviteMembersOpen] = useState(false);
   const { space: spaceContext } = useSpace();
   const { subspace } = useSubSpace();
+
+  const csvExport = useCommunityCsvExport({
+    members: community.members,
+    applications: community.applications,
+    spaceDisplayName: level === 'L0' ? spaceContext.about.profile.displayName : subspace.about.profile.displayName,
+    loading: community.loading,
+    errored: community.errored,
+  });
   const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 
   // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
@@ -214,6 +224,7 @@ export default function CrdSpaceSettingsPage() {
       : undefined;
   const columnMenu = useColumnMenu({
     innovationFlowId: layout.innovationFlowId,
+    collaborationId: layout.collaborationId,
     onOpenDefaultCalloutTemplatePicker: openDefaultCalloutTemplatePicker,
     callouts: layout.columns.flatMap(col =>
       col.callouts.map(c => ({ id: c.id, flowStateTagsetId: c.flowStateTagsetId, currentStateName: col.title }))
@@ -222,14 +233,24 @@ export default function CrdSpaceSettingsPage() {
     onColumnSaved: (columnId, title, description) => {
       layout.markColumnSaved(columnId, title, description);
     },
+    onLayoutSaved: (columnId, layoutInput) => {
+      layout.markLayoutSaved(columnId, layoutInput);
+    },
+    onTemplateSaved: (columnId, defaultCalloutTemplate) => {
+      layout.markTemplateSaved(columnId, defaultCalloutTemplate);
+    },
     onActivePhaseChanged: layout.markCurrentPhaseChanged,
-    onDeleteState: level !== 'L0' ? layout.onDeleteState : undefined,
+    // Delete is offered at every level now, including L0. Positional protection of the four
+    // built-in L0 tabs is enforced per-column via `column.isDeletable` (set in the layout mapper),
+    // so the menu entry never appears on those columns even though the handler is present here.
+    onDeleteState: layout.onDeleteState,
     columnCount: layout.columns.length,
     minimumNumberOfStates: layout.minimumNumberOfStates,
     // Hide/Show is available at every level (incl. L0 home tabs) — it never changes the flow
     // structure, only what members see in the menu. The CRD column menu self-gates the entry
     // on the column carrying a known `isHidden` (capability present).
     onToggleVisibility: layout.onToggleVisibility,
+    innovationFlowStates: layout.innovationFlowStates,
   });
   // When the user picks a Callout template in the layout-tab picker, set it as the chosen flow state's default.
   const selectedDefaultCalloutTemplateId = defaultCalloutTemplatePicker.selectedTemplateId;
@@ -390,6 +411,7 @@ export default function CrdSpaceSettingsPage() {
                   onUploadAvatar={about.onUploadAvatar}
                   onUploadPageBanner={about.onUploadPageBanner}
                   onUploadCardBanner={about.onUploadCardBanner}
+                  onRecropVisual={about.onRecropVisual}
                   onReferencesChange={about.onReferencesChange}
                   onReferenceFileUpload={about.onReferenceFileUpload}
                   referenceUploadAccept={about.referenceUploadAccept}
@@ -404,12 +426,16 @@ export default function CrdSpaceSettingsPage() {
             {activeTab === 'layout' && (
               <SpaceSettingsLayoutView
                 level={level}
+                // The Layout tab is only reachable by users with space-settings access, so reaching
+                // it implies the manage-tabs privilege — the same implicit gating subspaces rely on.
+                // Enables add/delete of additional tabs on L0; the four built-in tabs stay protected
+                // per-column via `column.isDeletable`.
+                canManageTabs={true}
+                entityNoun={level === 'L0' ? 'tab' : 'phase'}
                 columns={layout.columns}
-                postDescriptionDisplay={layout.postDescriptionDisplay}
                 saveBar={layout.saveBar}
                 onReorder={layout.onReorder}
                 onReorderColumns={layout.onReorderColumns}
-                onRenameColumn={layout.onRenameColumn}
                 onMoveToColumn={layout.onMoveToColumn}
                 onViewPost={calloutId => {
                   const target = layout.columns
@@ -427,11 +453,10 @@ export default function CrdSpaceSettingsPage() {
                   }
                   navigate(path);
                 }}
-                onPostDescriptionDisplayChange={layout.onPostDescriptionDisplayChange}
                 onSave={layout.onSave}
                 onDiscardChanges={() => setLayoutDiscardOpen(true)}
                 columnMenuActions={columnMenu}
-                onCreatePhase={level !== 'L0' ? layout.onCreateState : undefined}
+                onCreatePhase={layout.onCreateState}
                 maximumNumberOfStates={layout.maximumNumberOfStates}
                 isStructureMutating={layout.isStructureMutating}
                 isReplacingFlow={isReplacingFlow}
@@ -473,6 +498,8 @@ export default function CrdSpaceSettingsPage() {
                       onQuestionMoveUp={applicationForm.onQuestionMoveUp}
                       onQuestionMoveDown={applicationForm.onQuestionMoveDown}
                       onSave={applicationForm.onSave}
+                      onExportApplications={csvExport.exportApplications}
+                      exportDisabled={csvExport.exportDisabled}
                       onImageUpload={md.onImageUpload}
                       iframeAllowedUrls={md.iframeAllowedUrls}
                       onError={md.onError}
@@ -522,6 +549,8 @@ export default function CrdSpaceSettingsPage() {
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
                 onInviteUsers={() => setInviteMembersOpen(true)}
+                onExportMembers={csvExport.exportMembers}
+                exportDisabled={csvExport.exportDisabled}
               />
             )}
             {activeTab === 'subspaces' && isTabVisible('subspaces') && (
@@ -572,6 +601,8 @@ export default function CrdSpaceSettingsPage() {
               <SpaceSettingsSettingsView
                 level={level}
                 privacy={settingsTab.privacy}
+                userInfoVisibility={settingsTab.userInfoVisibility}
+                onUserInfoVisibilityChange={settingsTab.onUserInfoVisibilityChange}
                 membershipPolicy={settingsTab.membershipPolicy}
                 allowedActions={settingsTab.allowedActions}
                 hostOrganizationTrusted={settingsTab.hostOrganizationTrusted}
@@ -680,7 +711,7 @@ export default function CrdSpaceSettingsPage() {
         }}
         templates={subspacesTab.subspaceTemplateChoices}
         currentTemplateId={subspacesTab.defaultTemplateId}
-        libraryHref={`${spaceUrl}/settings/templates`}
+        libraryHref={buildSettingsTabUrl(spaceUrl, 'templates')}
         loading={subspacesTab.subspaceTemplatesLoading}
         onSave={subspacesTab.onSelectDefaultTemplate}
         saving={subspacesTab.subspaceTemplatesSaving}
@@ -690,7 +721,7 @@ export default function CrdSpaceSettingsPage() {
         open={about.pendingCrop !== null}
         file={about.pendingCrop?.file}
         config={about.pendingCrop?.config ?? {}}
-        onSave={({ file, altText }) => about.onCropComplete(file, altText)}
+        onSave={({ file, altText, aspectRatio }) => about.onCropComplete(file, altText, aspectRatio)}
         onCancel={about.onCropCancel}
         saveLabel={t('about.branding.cropDialog.save')}
         savingLabel={t('about.branding.cropDialog.saving')}
@@ -698,6 +729,21 @@ export default function CrdSpaceSettingsPage() {
         title={t('about.branding.cropDialog.title')}
         altTextLabel={t('about.branding.cropDialog.altText')}
         altTextPlaceholder={t('about.branding.cropDialog.altTextPlaceholder')}
+        initialAltText={about.pendingCrop?.altText}
+      />
+
+      <ConfirmationDialog
+        open={about.recropConfirmOpen}
+        onOpenChange={open => {
+          if (!open) about.onCancelRecropConfirm();
+        }}
+        variant="destructive"
+        title={t('about.branding.recropConfirm.title')}
+        description={t('about.branding.recropConfirm.description')}
+        confirmLabel={t('about.branding.recropConfirm.confirm')}
+        cancelLabel={t('about.branding.recropConfirm.cancel')}
+        onConfirm={about.onConfirmRecrop}
+        onCancel={about.onCancelRecropConfirm}
       />
 
       <ConfirmationDialog

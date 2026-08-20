@@ -1,10 +1,10 @@
-import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/data/types';
+import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/data/types';
 import type {
   AssetAdapter,
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
   ExcalidrawProps,
-} from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+} from '@excalidraw-yjs/excalidraw/types';
 import { fromBase64 } from 'lib0/buffer';
 import { debounce, merge } from 'lodash-es';
 import { CloudUpload } from 'lucide-react';

@@ -12,13 +12,15 @@ import {
   User,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { ActivityEventType } from '@/core/apollo/generated/graphql-schema';
+import { ActivityEventType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
+import type { ApplicationCardData } from '@/crd/components/dashboard/ApplicationsBlock';
 import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { spaceTileImageUrl } from '@/domain/space/about/utils/spaceTileImageUrl';
 
 export type CompactSpaceCardData = {
   id: string;
@@ -46,11 +48,6 @@ export type ActivityItemData = {
   rawDate?: string;
 };
 
-export type ActivityFilterOption = {
-  value: string;
-  label: string;
-};
-
 export type SidebarResourceData = {
   id: string;
   name: string;
@@ -68,23 +65,13 @@ export type SubspaceCardData = {
   isPrivate: boolean;
 };
 
-export type SpaceHierarchyCardData = {
-  id: string;
-  name: string;
-  href: string;
-  tagline?: string;
-  bannerUrl?: string;
-  isHomeSpace: boolean;
-  subspaces: SubspaceCardData[];
-};
-
 export type InvitationCardData = {
   id: string;
   spaceId: string;
   spaceName: string;
   spaceHref: string;
   spaceAvatarUrl?: string;
-  role: string;
+  inviterName?: string;
   color: string;
 };
 
@@ -211,7 +198,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         // Legacy shows the post displayName for post-comment context.
         contextName: activity.post?.profile?.displayName,
@@ -223,7 +214,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: calloutContext,
         href: activity.callout?.framing?.profile?.url,
@@ -304,7 +299,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <Mic aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         // Updates don't have their own URL; link to the space (legacy uses buildUpdatesUrl).
@@ -319,7 +318,11 @@ function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivit
       return {
         icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
         iconLabel,
-        title: markdown ? <InlineMarkdown content={markdown} clampLines={2} className="text-body" /> : '',
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
         titlePlain: markdownToPlainText(markdown),
         contextName: spaceContext,
         href: activity.callout?.framing?.profile?.url,
@@ -500,15 +503,25 @@ type InvitationEntry = {
   id: string;
   spacePendingMembershipInfo: {
     id: string;
+    level: SpaceLevel;
     about: {
       profile: {
         displayName: string;
         url: string;
         avatar?: { uri: string };
+        cardBanner?: { uri: string };
       };
     };
   };
-  contributorType?: string;
+  invitation: {
+    createdBy?: {
+      id: string;
+      profile: {
+        id: string;
+        displayName: string;
+      };
+    } | null;
+  };
 };
 
 export const mapInvitationsToCards = (invitations: InvitationEntry[]): InvitationCardData[] => {
@@ -517,66 +530,188 @@ export const mapInvitationsToCards = (invitations: InvitationEntry[]): Invitatio
     spaceId: invitation.spacePendingMembershipInfo.id,
     spaceName: invitation.spacePendingMembershipInfo.about.profile.displayName,
     spaceHref: invitation.spacePendingMembershipInfo.about.profile.url,
-    spaceAvatarUrl: invitation.spacePendingMembershipInfo.about.profile.avatar?.uri,
-    role: invitation.contributorType ?? '',
+    // Was `avatar` for every level, so an invitation to an L0 space — which has
+    // no avatar — never showed an image.
+    spaceAvatarUrl: spaceTileImageUrl(
+      invitation.spacePendingMembershipInfo.level,
+      invitation.spacePendingMembershipInfo.about.profile
+    ),
+    inviterName: invitation.invitation.createdBy?.profile.displayName,
     color: pickColorFromId(invitation.spacePendingMembershipInfo.id),
   }));
 };
 
-type DashboardSpaceMembership = {
-  space: {
+type ApplicationEntry = {
+  id: string;
+  spacePendingMembershipInfo: {
     id: string;
+    level: SpaceLevel;
     about: {
       profile: {
         displayName: string;
         url: string;
-        tagline?: string;
+        avatar?: { uri: string };
         cardBanner?: { uri: string };
-        spaceBanner?: { uri: string };
       };
     };
   };
-  childMemberships?: Array<{
-    space: {
-      id: string;
-      about: {
-        profile: {
-          displayName: string;
-          url: string;
-          cardBanner?: { uri: string };
-        };
-        isContentPublic?: boolean;
-      };
-    };
-  }>;
 };
 
-export const mapDashboardSpaces = (
-  memberships: DashboardSpaceMembership[],
-  homeSpaceId?: string
-): SpaceHierarchyCardData[] => {
-  return memberships.map(membership => {
-    const { space } = membership;
-    const profile = space.about.profile;
-
-    return {
-      id: space.id,
-      name: profile.displayName,
-      href: profile.url,
-      tagline: profile.tagline,
-      // Leave undefined when the space has no real card banner — the component will
-      // render the deterministic gradient from `color` instead of a stock default.
-      bannerUrl: profile.cardBanner?.uri || undefined,
-      isHomeSpace: space.id === homeSpaceId,
-      color: pickColorFromId(space.id),
-      subspaces: (membership.childMemberships ?? []).map(child => ({
-        id: child.space.id,
-        name: child.space.about.profile.displayName,
-        href: child.space.about.profile.url,
-        bannerUrl: child.space.about.profile.cardBanner?.uri || undefined,
-        isPrivate: !child.space.about.isContentPublic,
-        color: pickColorFromId(child.space.id),
-      })),
-    };
-  });
+export const mapApplicationsToCards = (applications: ApplicationEntry[]): ApplicationCardData[] => {
+  return applications.map(application => ({
+    id: application.id,
+    spaceName: application.spacePendingMembershipInfo.about.profile.displayName,
+    spaceHref: application.spacePendingMembershipInfo.about.profile.url,
+    spaceImageUrl: spaceTileImageUrl(
+      application.spacePendingMembershipInfo.level,
+      application.spacePendingMembershipInfo.about.profile
+    ),
+    color: pickColorFromId(application.spacePendingMembershipInfo.id),
+  }));
 };
+
+// ── Non-activity home sections (024) ────────────────────────────────────────
+
+/** A Space shape carrying the card-banner `about` block (SpaceAboutCardBanner). */
+type CardBannerSpace = {
+  id: string;
+  about: {
+    isContentPublic?: boolean;
+    profile: {
+      displayName: string;
+      url: string;
+      cardBanner?: { uri: string };
+    };
+  };
+};
+
+const spaceToCompactCard = (space: CardBannerSpace, homeSpaceId?: string): CompactSpaceCardData => ({
+  id: space.id,
+  name: space.about.profile.displayName,
+  href: space.about.profile.url,
+  bannerUrl: space.about.profile.cardBanner?.uri || undefined,
+  isPrivate: !space.about.isContentPublic,
+  isHomeSpace: space.id === homeSpaceId,
+  initials: getInitials(space.about.profile.displayName),
+  color: pickColorFromId(space.id),
+});
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+type LastActiveSpaceEntry = {
+  space: CardBannerSpace;
+  latestActivity?: { createdDate?: string | Date } | null;
+};
+
+/**
+ * Section 1 — Pinned & Last Active. The home Space (L0) is pinned first, followed by
+ * the Spaces the member has been personally active in within the last 30 days, ordered
+ * most-recent-first. The home Space is never duplicated among the recent items. The
+ * caller caps the visible count (the pin slot counts toward the cap).
+ */
+export const mapLastActiveSection = (
+  mySpaces: LastActiveSpaceEntry[],
+  homeSpace: CardBannerSpace | undefined,
+  homeSpaceId: string | undefined,
+  now: Date = new Date()
+): CompactSpaceCardData[] => {
+  const cutoff = now.getTime() - 30 * MS_PER_DAY;
+
+  const recent = mySpaces
+    .filter(entry => entry.space.id !== homeSpaceId)
+    .map(entry => {
+      const raw = entry.latestActivity?.createdDate;
+      const time = raw ? new Date(raw).getTime() : Number.NaN;
+      return { space: entry.space, time };
+    })
+    .filter(entry => !Number.isNaN(entry.time) && entry.time >= cutoff)
+    .sort((a, b) => b.time - a.time)
+    .map(entry => spaceToCompactCard(entry.space, homeSpaceId));
+
+  const homeCard = homeSpace ? [spaceToCompactCard(homeSpace, homeSpaceId)] : [];
+  return [...homeCard, ...recent];
+};
+
+/**
+ * Section 2 — Most Activity. Platform-wide discovery ranking (public Spaces + the
+ * member's private Spaces) already ordered and de-zeroed server-side by `exploreSpaces`.
+ */
+export const mapMostActivitySection = (spaces: CardBannerSpace[]): CompactSpaceCardData[] =>
+  spaces.map(space => spaceToCompactCard(space));
+
+type ActivityScoredSpace = CardBannerSpace & {
+  level: SpaceLevel;
+  activityScore: number;
+  community?: { roleSet?: { myRoles?: string[] } };
+};
+
+type HierarchicalMembershipEntry = {
+  space: ActivityScoredSpace;
+  childMemberships?: HierarchicalMembershipEntry[];
+};
+
+// Sections include L0 (top-level) and L1 (first-level subspaces) only — not deeper.
+const isL0OrL1 = (space: { level: SpaceLevel }): boolean =>
+  space.level === SpaceLevel.L0 || space.level === SpaceLevel.L1;
+
+const isLeadOrAdmin = (space: ActivityScoredSpace): boolean => {
+  const roles = space.community?.roleSet?.myRoles ?? [];
+  return roles.includes(RoleName.Lead) || roles.includes(RoleName.Admin);
+};
+
+// Highest activity first; zero-activity Spaces therefore sort last (0 is the lowest score).
+const byActivityScoreDesc = (a: ActivityScoredSpace, b: ActivityScoredSpace): number =>
+  b.activityScore - a.activityScore;
+
+// Account (hosted) Spaces restricted to L0/L1 and ordered by activity — the shared basis for
+// both the Section 4 cards and its "show more" panel items.
+const sortedHostedSpaces = (spaces: ActivityScoredSpace[]): ActivityScoredSpace[] =>
+  [...spaces].filter(isL0OrL1).sort(byActivityScoreDesc);
+
+/**
+ * Section 3 — I Lead & Administer. Flattens the membership hierarchy to L0 + L1 Spaces
+ * where the member's role includes Lead or Admin, ordered by all-actor activity score
+ * (highest first, zero-activity last).
+ */
+export const mapLeadAdminSection = (memberships: HierarchicalMembershipEntry[]): CompactSpaceCardData[] => {
+  const flattened: ActivityScoredSpace[] = [];
+  for (const entry of memberships) {
+    if (isL0OrL1(entry.space)) {
+      flattened.push(entry.space);
+    }
+    for (const child of entry.childMemberships ?? []) {
+      if (isL0OrL1(child.space)) {
+        flattened.push(child.space);
+      }
+    }
+  }
+
+  return flattened
+    .filter(isLeadOrAdmin)
+    .sort(byActivityScoreDesc)
+    .map(space => spaceToCompactCard(space));
+};
+
+/**
+ * Section 4 — I Host. The Spaces on the member's personal account, ordered by all-actor
+ * activity score (highest first, zero-activity last).
+ */
+export const mapHostSection = (spaces: ActivityScoredSpace[]): CompactSpaceCardData[] =>
+  sortedHostedSpaces(spaces).map(space => spaceToCompactCard(space));
+
+/**
+ * Hosted account Spaces mapped to flat memberships-panel items (no membership role), ordered
+ * by activity score — used by the Section 4 "show more" panel. Account Spaces are not
+ * memberships, so the panel is given a pre-scoped flat list rather than a role filter.
+ */
+export const mapHostedSpacesToPanelItems = (spaces: ActivityScoredSpace[]): MembershipItem[] =>
+  sortedHostedSpaces(spaces).map(space => ({
+    id: space.id,
+    name: space.about.profile.displayName,
+    href: space.about.profile.url,
+    isPrivate: !space.about.isContentPublic,
+    roles: [],
+    initials: getInitials(space.about.profile.displayName),
+    color: pickColorFromId(space.id),
+    image: space.about.profile.cardBanner?.uri || undefined,
+  }));

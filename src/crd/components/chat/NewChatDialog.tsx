@@ -66,7 +66,7 @@ export function NewChatDialog({
             {t('actions.cancel')}
           </Button>
           <Button onClick={onCreate} disabled={selectedUsers.length === 0 || creating} aria-busy={creating}>
-            {t('newChat.create')}
+            {selectedUsers.length > 1 ? t('newChat.createGroup') : t('newChat.create')}
           </Button>
         </DialogFooter>
       </DialogContent>

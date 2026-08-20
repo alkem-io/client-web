@@ -75,7 +75,22 @@
     "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
-    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Contrôle administratif complet sur l'ensemble de la plateforme.",
+    "GLOBAL_SUPPORT": "Gestion de la plateforme et opérations de support ; peut agir comme administrateur d'un espace selon ses paramètres.",
+    "GLOBAL_LICENSE_MANAGER": "Gère les licences et les plans sur tous les comptes.",
+    "GLOBAL_COMMUNITY_READER": "Accès en lecture seule aux informations de la communauté sur toute la plateforme.",
+    "GLOBAL_SPACES_READER": "Accès en lecture seule à tous les espaces et à leur contenu.",
+    "GLOBAL_PLATFORM_MANAGER": "Gère les paramètres et le contenu au niveau de la plateforme.",
+    "GLOBAL_SUPPORT_MANAGER": "Rôle de support avancé pour la gestion des opérations de support.",
+    "PLATFORM_BETA_TESTER": "Accès aux fonctionnalités bêta avant leur diffusion générale.",
+    "PLATFORM_VC_CAMPAIGN": "Participation à la campagne Virtual Contributor.",
+    "PLATFORM_ASSISTANT_ACCESS": "Accès à l'assistant IA.",
+    "PLATFORM_OPERATIONS_ADMIN": "Actions opérationnelles et de maintenance uniquement : réinitialisations d'autorisation et de droits de licence, ingestion et réindexation recherche/AI, entretien du serveur AI, migrations de données, entretien des notifications et communications, et actualisation de la géolocalisation. N'accorde aucun autre pouvoir administratif ni aucun accès aux données personnelles des utilisateurs."
   },
   "roleMembers": {
     "currentMembers": "Membres actuels",
@@ -153,6 +168,29 @@
       "parentPlaceholder": "Sélectionner un espace parent",
       "confirmTitle": "Confirmer la conversion",
       "confirmDescription": "Cela change le niveau de l’espace et peut affecter sa communauté, ses sous-espaces et ses URL. Cette action est irréversible."
+    },
+    "spaceMove": {
+      "title": "Déplacer le sous-espace",
+      "description": "Déplacer un sous-espace vers un espace parent différent entre espaces de premier niveau.",
+      "resolvedLevel": "Niveau résolu : {{level}}",
+      "noMoves": "Aucune opération de déplacement n’est disponible pour ce niveau d’espace.",
+      "moveL1ToL0Label": "Déplacer vers un autre espace de premier niveau",
+      "moveL1ToL2Label": "Déplacer sous un sous-espace d’un autre espace de premier niveau",
+      "moveL2ToL1Label": "Déplacer sous un sous-espace d’un autre espace de premier niveau",
+      "targetL0Label": "Espace de premier niveau cible",
+      "targetL1Label": "Sous-espace cible",
+      "targetL0Placeholder": "Sélectionner un espace de premier niveau",
+      "targetL1Placeholder": "Sélectionner un sous-espace",
+      "targetL0Empty": "Aucun espace de premier niveau disponible.",
+      "targetL1Empty": "Aucun sous-espace disponible dans l’espace sélectionné.",
+      "move": "Déplacer le sous-espace",
+      "confirmTitle": "Confirmer le déplacement",
+      "confirmDescription": "Cela déplace le sous-espace vers la destination sélectionnée. Tous les rôles de la communauté, y compris les administrateurs, sont supprimés, les invitations en attente sont annulées et le canal d’annonces est réinitialisé. Cette action est irréversible.",
+      "autoInviteLabel": "Envoyer des invitations aux anciens membres présents dans la communauté cible",
+      "invitationMessageLabel": "Message personnel (optionnel, 500 caractères max.)",
+      "invitationMessagePlaceholder": "Ajouter un message personnel à l’invitation…",
+      "successPrefix": "Sous-espace déplacé. Nouvel emplacement :",
+      "newLocationLabel": "Voir le nouvel emplacement"
     },
     "spaceTransfer": {
       "title": "Transférer l’espace",

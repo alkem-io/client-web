@@ -75,7 +75,22 @@
     "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
-    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Vollständige administrative Kontrolle über die gesamte Plattform.",
+    "GLOBAL_SUPPORT": "Plattformverwaltung und Support-Betrieb; kann je nach Space-Einstellungen als Space-Admin agieren.",
+    "GLOBAL_LICENSE_MANAGER": "Verwaltet Lizenzen und Pläne über alle Konten hinweg.",
+    "GLOBAL_COMMUNITY_READER": "Lesezugriff auf Community-Informationen der gesamten Plattform.",
+    "GLOBAL_SPACES_READER": "Lesezugriff auf alle Spaces und deren Inhalte.",
+    "GLOBAL_PLATFORM_MANAGER": "Verwaltet Einstellungen und Inhalte auf Plattformebene.",
+    "GLOBAL_SUPPORT_MANAGER": "Erweiterte Support-Rolle zur Verwaltung des Support-Betriebs.",
+    "PLATFORM_BETA_TESTER": "Zugang zu Beta-Funktionen vor der allgemeinen Freigabe.",
+    "PLATFORM_VC_CAMPAIGN": "Teilnahme an der Virtual-Contributor-Kampagne.",
+    "PLATFORM_ASSISTANT_ACCESS": "Zugang zum KI-Assistenten.",
+    "PLATFORM_OPERATIONS_ADMIN": "Ausschließlich Betriebs- und Wartungsvorgänge: Zurücksetzen von Autorisierungen und Lizenzberechtigungen, Such-/AI-Ingest und Neuindexierung, AI-Server-Wartung, Datenmigrationen, Pflege von Benachrichtigungen und Kommunikation sowie Aktualisierung der Geolokalisierung. Gewährt keine weiteren administrativen Rechte und keinen Zugriff auf personenbezogene Nutzerdaten."
   },
   "roleMembers": {
     "currentMembers": "Aktuelle Mitglieder",
@@ -153,6 +168,29 @@
       "parentPlaceholder": "Übergeordneten Space auswählen",
       "confirmTitle": "Konvertierung bestätigen",
       "confirmDescription": "Dies ändert die Space-Ebene und kann die Community, Subspaces und URLs beeinflussen. Es kann nicht rückgängig gemacht werden."
+    },
+    "spaceMove": {
+      "title": "Subspace verschieben",
+      "description": "Einen Subspace unter einen anderen übergeordneten Space über Top-Level-Spaces hinweg verschieben.",
+      "resolvedLevel": "Aufgelöste Ebene: {{level}}",
+      "noMoves": "Für diese Space-Ebene sind keine Verschiebungen verfügbar.",
+      "moveL1ToL0Label": "In einen anderen Space der obersten Ebene verschieben",
+      "moveL1ToL2Label": "Unter einen Subspace eines anderen Top-Level-Space verschieben",
+      "moveL2ToL1Label": "Unter einen Subspace eines anderen Top-Level-Space verschieben",
+      "targetL0Label": "Ziel-Top-Level-Space",
+      "targetL1Label": "Ziel-Subspace",
+      "targetL0Placeholder": "Einen Top-Level-Space auswählen",
+      "targetL1Placeholder": "Einen Subspace auswählen",
+      "targetL0Empty": "Keine Top-Level-Spaces verfügbar.",
+      "targetL1Empty": "Keine Subspaces im ausgewählten Space verfügbar.",
+      "move": "Subspace verschieben",
+      "confirmTitle": "Verschiebung bestätigen",
+      "confirmDescription": "Dadurch wird der Subspace an das ausgewählte Ziel verschoben. Alle Community-Rollen einschließlich Administratoren werden gelöscht, ausstehende Einladungen werden abgebrochen und der Ankündigungskanal wird zurückgesetzt. Dies kann nicht rückgängig gemacht werden.",
+      "autoInviteLabel": "Einladungen an frühere Mitglieder senden, die in der Ziel-Community sind",
+      "invitationMessageLabel": "Persönliche Nachricht (optional, max. 500 Zeichen)",
+      "invitationMessagePlaceholder": "Persönliche Nachricht zur Einladung hinzufügen…",
+      "successPrefix": "Subspace verschoben. Neuer Standort:",
+      "newLocationLabel": "Neuen Standort anzeigen"
     },
     "spaceTransfer": {
       "title": "Space übertragen",

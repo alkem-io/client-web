@@ -21,6 +21,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type {
   VcWizardCreatedVc,
+  VcWizardDocument,
   VcWizardEngine,
   VcWizardSelectableSpace,
   VcWizardStep,
@@ -28,7 +29,7 @@ import type {
 import {
   getDocumentCalloutRequestData,
   getPostCalloutRequestData,
-} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContent/AddContentProps';
+} from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/AddContentUtils';
 import type { UserAccountProps } from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/virtualContributorProps';
 import { hasReadPrivilege, type MappableSpace, mapSpaceToSelectable } from './vcCreationWizardMapper';
 
@@ -67,7 +68,7 @@ export const useVcCreationWizard = ({ initialAccount, onExit }: UseVcCreationWiz
       description: t('wizard.addKnowledge.exampleDescription'),
     },
   ]);
-  const [documents, setDocuments] = useState<{ name: string; url: string }[]>([]);
+  const [documents, setDocuments] = useState<VcWizardDocument[]>([]);
   const [externalConfig, setExternalConfig] = useState<{
     engine: VcWizardEngine;
     apiKey: string;

@@ -38,6 +38,7 @@
       "documentsTitle": "Documents",
       "documentName": "Nom",
       "documentUrl": "URL",
+      "attachDocument": "Joindre un fichier",
       "removeDocument": "Supprimer le document",
       "addDocument": "Ajouter un document",
       "exampleTitle": "Example: About Alkemio",
@@ -85,6 +86,7 @@
         "membership": "Adhésion",
         "organizations": "Organisations",
         "notifications": "Notifications",
+        "assistant": "Assistant",
         "settings": "Paramètres",
         "security": "Sécurité"
       },
@@ -250,6 +252,85 @@
         "notEnabled": "La connexion par mot de passe n'est pas activée pour ce compte.",
         "confirmLabel": "Confirmer le nouveau mot de passe",
         "mismatch": "Les mots de passe ne correspondent pas."
+      },
+      "mcpApiKeys": {
+        "title": "Clés API MCP",
+        "description": "Créez des clés pour que des clients MCP externes (comme Claude Desktop ou Claude Code) puissent se connecter à Alkemio en votre nom.",
+        "empty": {
+          "title": "Aucune clé API pour l'instant",
+          "description": "Créez une clé pour connecter un client MCP à votre compte.",
+          "create": "Créer une clé API"
+        },
+        "list": {
+          "name": "Nom",
+          "operations": "Opérations",
+          "created": "Créée",
+          "expires": "Expire",
+          "neverExpires": "N'expire jamais",
+          "lastUsed": "Dernière utilisation",
+          "neverUsed": "Jamais utilisée",
+          "lastUsedFrom": "depuis {{address}}",
+          "status": "Statut",
+          "revoke": "Révoquer"
+        },
+        "status": {
+          "active": "Active",
+          "expired": "Expirée",
+          "revoked": "Révoquée"
+        },
+        "operations": {
+          "read": "Lecture",
+          "tools": "Outils"
+        },
+        "create": {
+          "trigger": "Créer une clé API",
+          "title": "Créer une clé API MCP",
+          "description": "Choisissez un nom, les opérations autorisées et une expiration facultative.",
+          "nameLabel": "Nom",
+          "namePlaceholder": "ex. Claude Desktop",
+          "operationsLabel": "Opérations",
+          "operationsRequired": "Choisissez au moins une opération.",
+          "expiryLabel": "Expiration (facultatif)",
+          "expiryPlaceholder": "N'expire jamais",
+          "expiryPastError": "La date d'expiration doit être future.",
+          "cancel": "Annuler",
+          "submit": "Créer la clé",
+          "submitting": "Création…",
+          "capReachedError": "Vous avez atteint la limite de {{limit}} clés API actives. Révoquez-en une pour libérer de la place.",
+          "genericError": "Impossible de créer la clé API — réessayez."
+        },
+        "reveal": {
+          "title": "Clé API créée",
+          "warning": "Copiez cette clé maintenant — vous ne pourrez plus la revoir.",
+          "keyLabel": "Clé API",
+          "copy": "Copier",
+          "copied": "Copiée",
+          "copyAnnouncement": "Clé API copiée dans le presse-papiers.",
+          "manualCopyHint": "L'accès au presse-papiers n'est pas disponible — sélectionnez le champ ci-dessus et copiez manuellement.",
+          "recipeTitle": "Recette de connexion",
+          "recipeEndpointLabel": "Point de terminaison",
+          "recipeHeaderLabel": "En-tête",
+          "close": "Terminé"
+        },
+        "interrupted": {
+          "title": "Valeur de la clé indisponible",
+          "description": "La valeur de cette clé ne peut plus être affichée. Révoquez-la et créez-en une nouvelle si vous devez toujours connecter un client.",
+          "revokeAndRecreate": "Révoquer et créer une nouvelle clé"
+        },
+        "revoke": {
+          "title": "Révoquer la clé API",
+          "description": "La révocation de \"{{name}}\" l'empêchera immédiatement de s'authentifier. Cette action est irréversible.",
+          "cancel": "Annuler",
+          "confirm": "Révoquer la clé",
+          "revoking": "Révocation…",
+          "success": "\"{{name}}\" a été révoquée.",
+          "error": "Impossible de révoquer la clé — réessayez."
+        },
+        "errors": {
+          "notFound": "Cette clé API est introuvable.",
+          "loadError": "Impossible de charger vos clés API — essayez de recharger la page.",
+          "retry": "Réessayer"
+        }
       }
     },
     "settings": {
@@ -258,6 +339,8 @@
         "title": "Communication et confidentialité",
         "allowMessagesLabel": "Autoriser d'autres utilisateurs à m'envoyer des messages directs",
         "allowMessagesDescription": "Lorsque désactivé, les autres utilisateurs ne pourront pas démarrer une conversation par message direct avec vous.",
+        "allowEmailContactLabel": "Autoriser les autres à me contacter par e-mail",
+        "allowEmailContactDescription": "Lorsque activé, les personnes qui ne peuvent pas vous joindre par messagerie peuvent vous envoyer un e-mail à l'adresse de votre compte. Votre adresse ne leur est jamais montrée.",
         "error": "Impossible d'enregistrer la préférence — réessayez"
       },
       "designSystem": {
@@ -265,6 +348,12 @@
         "description": "Basculez entre le nouveau design (CRD) et le design classique (MUI). Cette préférence est enregistrée localement sur cet appareil.",
         "toggleLabel": "Utiliser le nouveau design (CRD)",
         "reloadCaption": "La page se rechargera après le changement."
+      },
+      "language": {
+        "title": "Langue",
+        "label": "Langue de l'interface",
+        "description": "La langue utilisée dans toute la plateforme Alkemio. Les modifications s'appliquent sur tous vos appareils.",
+        "error": "Impossible d'enregistrer la préférence de langue — veuillez réessayer."
       }
     },
     "notifications": {
@@ -272,6 +361,7 @@
       "helpBanner": "Modifiez vos préférences de notification. Les changements sont enregistrés automatiquement.",
       "toggleAria": "Activer/désactiver la notification {{channel}} pour : {{label}}",
       "toggleError": "Impossible d'enregistrer la préférence — réessayez",
+      "inAppLockedChat": "Les messages de chat s'affichent déjà en direct dans le panneau de chat, aucune notification dans l'app n'est donc envoyée pour cette ligne",
       "columns": {
         "activity": "Activité",
         "inApp": "Dans l'app",
@@ -314,6 +404,10 @@
         "virtualContributor": {
           "title": "Notifications de contributeur virtuel",
           "description": "Notifications concernant les activités et affectations des contributeurs virtuels."
+        },
+        "sound": {
+          "title": "Sons de notification",
+          "description": "Choisissez si un son est joué lorsqu'un message de chat ou une notification dans l'application arrive."
         }
       },
       "rows": {
@@ -340,6 +434,8 @@
           "commentReply": "Recevoir une notification lorsque quelqu'un répond à mon commentaire",
           "mentioned": "Recevoir une notification lorsque je suis mentionné",
           "messageReceived": "Recevoir une notification lorsque quelqu'un m'envoie un message direct",
+          "conversationMessageDirect": "Recevoir une notification lorsque quelqu'un m'envoie un message de chat direct (1:1)",
+          "conversationMessageGroup": "Recevoir une notification lorsque quelqu'un publie dans un chat de groupe dont je suis membre",
           "membershipInvitationReceived": "Recevoir une notification lorsque quelqu'un m'invite à rejoindre une communauté",
           "membershipCommunityJoined": "Recevoir une notification lorsque je rejoins un nouveau Space"
         },
@@ -360,6 +456,10 @@
         },
         "virtualContributor": {
           "adminSpaceCommunityInvitation": "Recevoir une notification lorsqu'un manager VC est invité à rejoindre une communauté"
+        },
+        "sound": {
+          "chatMessage": "Jouer un son lorsqu'un message de chat est reçu",
+          "inAppNotification": "Jouer un son lorsqu'une notification dans l'application est reçue"
         }
       }
     },
@@ -421,6 +521,24 @@
         "description": "Ceci supprimera définitivement « {{name}} ». Cette action est irréversible.",
         "confirm": "Supprimer"
       }
+    },
+    "assistant": {
+      "pageTitle": "Assistant",
+      "helpBanner": "Choisissez ce que l'assistant peut faire en votre nom. Les capacités de lecture sont activées par défaut ; les capacités qui modifient du contenu sont désactivées jusqu'à ce que vous les activiez. L'assistant ne peut jamais faire plus que vous-même.",
+      "empty": "Aucune capacité de l'assistant n'est disponible pour le moment.",
+      "destructiveBadge": "Peut modifier du contenu existant",
+      "toggleAria": "Activer ou désactiver la capacité « {{capability}} »",
+      "toggleError": "Nous n'avons pas pu enregistrer cette modification. Veuillez réessayer.",
+      "groups": {
+        "read": {
+          "title": "Lecture",
+          "description": "Laissez l'assistant trouver et résumer le contenu auquel vous avez déjà accès."
+        },
+        "write": {
+          "title": "Modifier le contenu",
+          "description": "Laissez l'assistant créer ou modifier du contenu pour vous. Vous confirmerez toujours avant qu'un changement ne soit appliqué."
+        }
+      }
     }
   },
   "org": {
@@ -433,12 +551,21 @@
           "hint": "Comment votre organisation apparaît sur Alkemio.",
           "required": "Le nom d'affichage est requis"
         },
-        "nameID": { "label": "Name ID", "caption": "Non modifiable après la création." },
-        "tagline": { "label": "Slogan", "hint": "Une courte phrase à côté du nom de votre organisation." }
+        "nameID": {
+          "label": "Name ID",
+          "caption": "Non modifiable après la création."
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Une courte phrase à côté du nom de votre organisation."
+        }
       },
       "about": {
         "title": "À propos",
-        "description": { "label": "Description", "hint": "Markdown supporté." },
+        "description": {
+          "label": "Description",
+          "hint": "Markdown supporté."
+        },
         "location": {
           "title": "Emplacement",
           "city": "Ville",
@@ -463,8 +590,14 @@
           "hint": "E-mail public de contact pour l'organisation.",
           "invalidFormat": "Entrez une adresse e-mail valide"
         },
-        "domain": { "label": "Domaine", "hint": "Le domaine web de votre organisation (sans protocole)." },
-        "legalEntityName": { "label": "Raison sociale", "hint": "Le nom officiellement enregistré." },
+        "domain": {
+          "label": "Domaine",
+          "hint": "Le domaine web de votre organisation (sans protocole)."
+        },
+        "legalEntityName": {
+          "label": "Raison sociale",
+          "hint": "Le nom officiellement enregistré."
+        },
         "website": {
           "label": "Site web",
           "hint": "URL complète, y compris https://",
@@ -493,16 +626,37 @@
         "helperText": "Recommandé : 400×400 px. JPG, PNG ou GIF.",
         "uploading": "Téléversement…"
       },
-      "verification": { "verified": "Vérifiée", "pending": "Vérification en attente", "notVerified": "Non vérifiée" }
+      "verification": {
+        "verified": "Vérifiée",
+        "pending": "Vérification en attente",
+        "notVerified": "Non vérifiée"
+      }
     },
     "account": {
       "pageTitle": "Compte",
       "helpBanner": "Vous pouvez voir les ressources actives de votre organisation et gérer les limites d'allocation.",
-      "spaces": { "title": "Spaces hébergés", "createButton": "Créer un Space" },
-      "virtualContributors": { "title": "Contributeurs virtuels", "createButton": "Ajouter un contributeur" },
-      "innovationPacks": { "title": "Packs de modèles", "createButton": "Nouveau pack" },
-      "innovationHubs": { "title": "Pages d'accueil personnalisées", "createButton": "Nouvelle page" },
-      "actions": { "view": "Voir", "manage": "Gérer", "transfer": "Transférer", "delete": "Supprimer" },
+      "spaces": {
+        "title": "Spaces hébergés",
+        "createButton": "Créer un Space"
+      },
+      "virtualContributors": {
+        "title": "Contributeurs virtuels",
+        "createButton": "Ajouter un contributeur"
+      },
+      "innovationPacks": {
+        "title": "Packs de modèles",
+        "createButton": "Nouveau pack"
+      },
+      "innovationHubs": {
+        "title": "Pages d'accueil personnalisées",
+        "createButton": "Nouvelle page"
+      },
+      "actions": {
+        "view": "Voir",
+        "manage": "Gérer",
+        "transfer": "Transférer",
+        "delete": "Supprimer"
+      },
       "deleteDialog": {
         "title": "Supprimer cette ressource ?",
         "description": "Ceci supprimera définitivement « {{name}} ». Cette action est irréversible.",

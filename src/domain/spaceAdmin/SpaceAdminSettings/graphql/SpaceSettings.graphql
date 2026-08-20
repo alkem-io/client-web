@@ -30,6 +30,7 @@ fragment SpaceSettings on SpaceSettings {
   privacy {
     mode
     allowPlatformSupportAsAdmin
+    userInformationVisibility
   }
   membership {
     policy

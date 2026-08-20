@@ -8,6 +8,7 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { MentionSuggestionItem } from './MentionSuggestionItem';
+import { MENTION_MARKUP, mapPlainIndexToMarkupIndex } from './mentionMarkup';
 import type { CommentAuthor, CrdMentionSearch, CrdMentionSuggestion } from './types';
 
 type CommentInputProps = {
@@ -15,6 +16,14 @@ type CommentInputProps = {
   onSubmit: (content: string) => void;
   disabled?: boolean;
   maxLength?: number;
+  /**
+   * Controlled text. When provided, the consumer owns the value *and* the
+   * clearing after a submit — the input no longer empties itself, so a send that
+   * fails leaves the typed message in place. Omit for the default self-contained
+   * behaviour (clears on submit).
+   */
+  value?: string;
+  onValueChange?: (value: string) => void;
   /**
    * Async `@`-lookup callback wired by the integration layer. When omitted the
    * input falls back to a plain textarea (standalone preview + any non-space
@@ -29,12 +38,18 @@ type CommentInputProps = {
    * input leaves this off so the page doesn't jump to the box on load.
    */
   autoFocus?: boolean;
+  /**
+   * Chat-composer behaviour: return focus to the textarea after a submit, once
+   * the input is enabled again. Submitting drops focus either way — Enter
+   * blurs the textarea when `disabled` kicks in for the in-flight send, and
+   * clicking Send parks focus on a button that then disables itself.
+   */
+  refocusAfterSubmit?: boolean;
 };
 
 type EnrichedSuggestion = SuggestionDataItem & CrdMentionSuggestion;
 
 const MAX_ROWS = 5;
-const MENTION_MARKUP = '[@__display__](__id__)';
 
 // react-mentions renders an overlay + textarea stack. These inline styles
 // neutralize its defaults so the textarea blends with the surrounding Tailwind
@@ -92,13 +107,27 @@ export function CommentInput({
   onSubmit,
   disabled,
   maxLength = 2000,
+  value,
+  onValueChange,
   mentionSearch,
   autoFocus,
+  refocusAfterSubmit,
 }: CommentInputProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [content, setContent] = useState('');
+  const [pendingRefocus, setPendingRefocus] = useState(false);
+  const [uncontrolledContent, setUncontrolledContent] = useState('');
+
+  const controlled = value !== undefined;
+  const content = controlled ? value : uncontrolledContent;
+  const setContent = (next: string) => {
+    if (controlled) {
+      onValueChange?.(next);
+    } else {
+      setUncontrolledContent(next);
+    }
+  };
 
   const trimmedContent = content.trim();
   const canSend = !disabled && trimmedContent.length > 0;
@@ -135,20 +164,47 @@ export function CommentInput({
     textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [autoFocus]);
 
+  // A disabled textarea can't take focus, so the refocus waits out the
+  // in-flight send (`disabled`) and fires on the re-enable render.
+  // `preventScroll` because the composer was in view when the user submitted —
+  // if they scrolled away during a slow send, focus shouldn't yank them back.
+  useEffect(() => {
+    if (!pendingRefocus || disabled) return;
+
+    setPendingRefocus(false);
+    textareaRef.current?.focus({ preventScroll: true });
+  }, [pendingRefocus, disabled]);
+
   const handleSubmit = () => {
     if (!canSend) return;
 
+    if (refocusAfterSubmit) {
+      setPendingRefocus(true);
+    }
     onSubmit(trimmedContent);
-    setContent('');
+    // Controlled: the consumer clears once the submit actually succeeded.
+    if (!controlled) {
+      setContent('');
+    }
   };
 
   const insertAtCursor = (insertion: string) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const next = `${content.slice(0, start)}${insertion}${content.slice(end)}`;
+    // With mentions on, `content` holds react-mentions markup (`[@Name](id)`)
+    // while the textarea's selection indexes the plain text it renders
+    // (`@Name`). Splicing markup at a raw selection index lands inside a
+    // mention — the insertion either joins the display name or disappears into
+    // the id, which is never rendered. Map the indices first.
+    const start = mentionsEnabled
+      ? mapPlainIndexToMarkupIndex(content, textarea.selectionStart)
+      : { markupIndex: textarea.selectionStart, plainIndex: textarea.selectionStart };
+    const end = mentionsEnabled
+      ? mapPlainIndexToMarkupIndex(content, textarea.selectionEnd)
+      : { markupIndex: textarea.selectionEnd, plainIndex: textarea.selectionEnd };
+
+    const next = `${content.slice(0, start.markupIndex)}${insertion}${content.slice(end.markupIndex)}`;
 
     if (next.length > maxLength) return;
 
@@ -156,7 +212,7 @@ export function CommentInput({
 
     requestAnimationFrame(() => {
       textarea.focus();
-      const cursor = start + insertion.length;
+      const cursor = start.plainIndex + insertion.length;
       textarea.setSelectionRange(cursor, cursor);
     });
   };

@@ -27,6 +27,27 @@ export type LayoutPoolColumn = {
    * which case the Hide/Show affordance is suppressed (graceful degradation).
    */
   isHidden?: boolean;
+  /**
+   * Whether this column (tab/phase) may be deleted. The per-column Delete affordance is shown
+   * only when the delete capability is present AND this is not `false`. The mapper sets `false`
+   * for the four built-in L0 tabs (indices 0–3) to protect them, and `true` for every other
+   * column (all subspace phases, and admin-added L0 tabs at index ≥ 4) — for subspaces the
+   * flow's min-states limit, not position, ultimately governs removal. Optional so callers that
+   * never set it (leaving it `undefined`) keep the deletable-as-before behaviour.
+   */
+  isDeletable?: boolean;
+  /**
+   * Per-phase post layout settings, used to pre-fill the Layout modal.
+   * `undefined` before the server fields are available (graceful degradation — modal
+   * opens with defaults).
+   */
+  layout?: PhaseLayoutInput;
+  /**
+   * The default Callout template currently set for this phase, if any.
+   * `undefined` means no default template is set. Used by the Post Template modal
+   * to decide whether to show the "Clear template" affordance.
+   */
+  defaultCalloutTemplate?: { id: string; displayName: string } | null;
   callouts: LayoutCallout[];
 };
 
@@ -41,14 +62,28 @@ export type LayoutSaveBarState =
   | { kind: 'saving' }
   | { kind: 'saveError'; message: string };
 
+/** Per-phase layout settings passed from the Layout modal to the column menu handler. */
+export type PhaseLayoutInput = {
+  /** When true, posts in this phase start collapsed with a read-more affordance. */
+  descriptionCollapsed: boolean;
+  /** When false, publisher name, avatar, and publish date are hidden in the feed. */
+  showPublishDetails: boolean;
+};
+
 export type ColumnMenuActions = {
   onChangeActivePhase: (columnId: LayoutColumnId) => void;
   /** Set (templateId) or clear (null) this flow state's default Callout template. Fires the mutation immediately. */
-  onSetAsDefaultCalloutTemplate: (columnId: LayoutColumnId, templateId: string | null) => void;
+  onSetAsDefaultCalloutTemplate: (columnId: LayoutColumnId, templateId: string | null) => void | Promise<void>;
   /** Open the shared template picker (Callout templates) to choose this flow state's default — the consumer hosts it. */
   onOpenDefaultCalloutTemplatePicker: (columnId: LayoutColumnId) => void;
   /** Fires mutation immediately — saves title + description to backend, cascades rename to callouts. */
   onSaveColumnDetails: (columnId: LayoutColumnId, title: string, description: string) => Promise<void>;
+  /**
+   * Persist layout settings for a phase (immediate-save, partial-update).
+   * Only the `descriptionCollapsed` and `showPublishDetails` keys are sent;
+   * other settings on the state are left unchanged.
+   */
+  onSaveLayout: (columnId: LayoutColumnId, layout: PhaseLayoutInput) => Promise<void>;
   /**
    * Phase delete (immediate-save). Only present when phase management is enabled
    * (subspaces) AND removing this phase would not violate the flow's min-states
@@ -63,5 +98,3 @@ export type ColumnMenuActions = {
    */
   onToggleVisibility?: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
 };
-
-export type LayoutPostDescriptionDisplay = 'collapsed' | 'expanded';

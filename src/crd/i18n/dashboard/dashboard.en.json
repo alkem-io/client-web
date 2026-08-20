@@ -143,7 +143,12 @@
     "loading": "Loading invitations",
     "accept": "Accept",
     "decline": "Decline",
-    "noInvitations": "No pending invitations"
+    "noInvitations": "No pending invitations",
+    "invitedBy": "Invited by {{name}}"
+  },
+  "applications": {
+    "title": "Pending Applications",
+    "pending": "Pending"
   },
   "campaign": {
     "title": "Create your Virtual Contributor",
@@ -186,5 +191,29 @@
       "joinAriaLabel": "Join {{spaceName}}"
     },
     "applicationAriaLabel": "View pending application for {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Pinned & Last Active In",
+      "mostActivity": "Spaces with Most Activity",
+      "leadAdmin": "Spaces I Lead & Administer",
+      "host": "Spaces I Host"
+    },
+    "showMore_one": "Show More: {{count}} Space",
+    "showMore_other": "Show More: {{count}} Spaces"
+  },
+  "welcome": {
+    "title": "Welcome to Alkemio",
+    "message": "You are not part of any Spaces yet. Explore the Welcome Space to see what is possible, or browse the documentation to get started.",
+    "welcomeSpaceLink": "Visit the Welcome Space",
+    "documentationLink": "Documentation",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Pending Applications & Invitations"
+  },
+  "explore": {
+    "title": "Explore Spaces",
+    "exploreAll": "Explore all Spaces"
   }
 }

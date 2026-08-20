@@ -1,4 +1,4 @@
-import type { CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import type { AuthorizationPrivilege, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import type { ReferenceModel } from '@/domain/common/reference/ReferenceModel';
 import type { TagsetModel } from '@/domain/common/tagset/TagsetModel';
@@ -12,6 +12,13 @@ import type { WhiteboardDetails } from '../../whiteboard/WhiteboardDialog/Whiteb
 import type { CalloutModelExtension, CalloutModelLight } from './CalloutModelLight';
 import type { CalloutSettingsModelFull } from './CalloutSettingsModel';
 import type { ContributionDefaultsModel } from './ContributionDefaultsModel';
+
+export type CalloutReactionsSummaryModel = {
+  total: number;
+  emojis: string[];
+  myReactionEmoji?: string | null;
+  allowedEmojis: string[];
+};
 
 export type CalloutDetailsModel = CalloutModelLight & {
   framing: {
@@ -35,6 +42,10 @@ export type CalloutDetailsModel = CalloutModelLight & {
     collaboraDocument?: {
       id: string;
       documentType: string;
+      authorization?: {
+        id?: string;
+        myPrivileges?: AuthorizationPrivilege[];
+      };
       profile?: {
         id: string;
         displayName: string;
@@ -48,7 +59,35 @@ export type CalloutDetailsModel = CalloutModelLight & {
   settings: CalloutSettingsModelFull;
   contributionDefaults: ContributionDefaultsModel;
   comments?: CommentsWithMessagesModel | undefined;
-  contributions: (Identifiable & { sortOrder: number })[];
+  contributions: CalloutContributionStub[];
+  /** Tier-1 reactions summary. Optional — absent when the server reaction
+   *  module is not yet deployed. */
+  reactionsSummary?: CalloutReactionsSummaryModel | null;
+};
+
+type TitledStub = {
+  id: string;
+  profile: {
+    id: string;
+    displayName: string;
+    /** Markdown — preview material only (rendered clamped to one line). */
+    description?: string;
+  };
+};
+
+/**
+ * Contribution stub carried by the `CalloutDetails` fragment: sort order plus
+ * a title + description-preview stub of the contributed entity (exactly one is
+ * set), so the delete confirmation can name contributions without an extra
+ * query (feature 114).
+ */
+export type CalloutContributionStub = Identifiable & {
+  sortOrder: number;
+  post?: TitledStub;
+  whiteboard?: TitledStub;
+  memo?: TitledStub;
+  link?: LinkDetails;
+  collaboraDocument?: TitledStub;
 };
 
 /**

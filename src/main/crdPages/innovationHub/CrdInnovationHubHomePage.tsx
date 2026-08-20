@@ -5,10 +5,12 @@ import { usePageTitle } from '@/core/routing/usePageTitle';
 import Loading from '@/core/ui/loading/Loading';
 import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTrail';
 import { InnovationHubHome } from '@/crd/components/innovationHub/InnovationHubHome';
+import { buildInnovationHubUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { useInnovationHubHomeData } from './hooks/useInnovationHubHomeData';
 
@@ -34,14 +36,13 @@ function useRedirectToHubSubdomain(hubSubdomain: string | undefined, isPathEntry
   useEffect(() => {
     if (!ready || !isPathEntry || !hubSubdomain) return;
     if (import.meta.env.MODE !== 'production') return;
-    const { hostname, protocol } = window.location;
+    const { hostname } = window.location;
     // Skip if we're already on the right subdomain. Heuristic: the hostname
     // starts with `${subdomain}.`. Conservative — we only redirect when the
     // current host clearly isn't the subdomain.
     if (hostname.startsWith(`${hubSubdomain}.`)) return;
-    const domain = hostname.split('.').slice(-2).join('.');
-    if (!domain) return;
-    window.location.replace(`${protocol}//${hubSubdomain}.${domain}`);
+    // Subdomain origin building lives in urlBuilders (buildInnovationHubUrl).
+    window.location.replace(buildInnovationHubUrl(hubSubdomain));
   }, [hubSubdomain, isPathEntry, ready]);
 }
 
@@ -50,13 +51,16 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
   useEnableSpaceFullWidth();
   // Mirror the Spaces home: a banner-overlay topbar that goes transparent over
   // the banner until the user scrolls. The page slides under by `-mt-16`.
-  useEnableBannerOverlay();
+  // Suppressed while the site-wide planned-maintenance notice shows so the hero doesn't
+  // slide up over the notice under the header.
+  const { visible: downNoticeVisible } = useDownNoticeBanner();
+  useEnableBannerOverlay(!downNoticeVisible);
 
   const input = innovationHubFromSubdomain
     ? ({ kind: 'bySubdomain', hub: innovationHubFromSubdomain } as const)
     : ({ kind: 'byId', id: innovationHubId ?? '' } as const);
 
-  const { data, spaces, loading, hub, spacesLoading } = useInnovationHubHomeData(input);
+  const { data, spaces, packs, virtualContributors, loading, hub, spacesLoading } = useInnovationHubHomeData(input);
   const { wide: fullWidth, toggle: toggleFullWidth } = useLayoutWidthPreference();
 
   // The URL resolver is only consulted on the `/hub/<slug>` path entry (to get the
@@ -84,9 +88,11 @@ const CrdInnovationHubHomePage = ({ innovationHubFromSubdomain }: CrdInnovationH
     <InnovationHubHome
       data={data}
       spaces={spaces}
+      packs={packs}
+      virtualContributors={virtualContributors}
       fullWidth={fullWidth}
       onToggleFullWidth={toggleFullWidth}
-      overlayHeader={true}
+      overlayHeader={!downNoticeVisible}
       spacesLoading={spacesLoading}
     />
   );

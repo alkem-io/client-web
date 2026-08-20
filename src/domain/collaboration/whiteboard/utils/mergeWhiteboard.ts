@@ -6,14 +6,10 @@
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   hashElementsVersion as ExcalidrawHashElementsVersion,
-} from '@excalidraw-yjs/excalidraw/dist/types/element/src';
-import type { ExcalidrawElement, FileId } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
-import type {
-  AssetAdapter,
-  BinaryFileData,
-  ExcalidrawImperativeAPI,
-} from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+} from '@excalidraw-yjs/excalidraw/element/index';
+import type { ExcalidrawElement, FileId } from '@excalidraw-yjs/excalidraw/element/types';
 import { decodeSnapshot, encodeSnapshot } from '@excalidraw-yjs/excalidraw/headless';
+import type { AssetAdapter, BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { parseWhiteboardContentToScene } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';

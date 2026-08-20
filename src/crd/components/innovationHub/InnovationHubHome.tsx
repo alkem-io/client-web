@@ -2,10 +2,15 @@ import { FoldHorizontal, Settings, UnfoldHorizontal } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { AlkemioLogo } from '@/crd/components/common/AlkemioLogo';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
-import { SpaceCard, type SpaceCardData, SpaceCardSkeleton } from '@/crd/components/space/SpaceCard';
+import type { VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
+import type { InnovationPackCardData } from '@/crd/components/innovationPack/types';
+import type { SpaceCardData } from '@/crd/components/space/SpaceCard';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
+import { HubPacksSection } from './HubPacksSection';
+import { HubSpacesSection } from './HubSpacesSection';
+import { HubVirtualContributorsSection } from './HubVirtualContributorsSection';
 import { InnovationHubBanner } from './InnovationHubBanner';
 
 export type InnovationHubHomeData = {
@@ -27,6 +32,10 @@ export type InnovationHubHomeProps = {
    * stable `data`) is left untouched, avoiding a full-page repaint.
    */
   spaces: SpaceCardData[];
+  /** The hub's curated Innovation Packs — the section is omitted entirely when empty (FR-007). */
+  packs: InnovationPackCardData[];
+  /** The hub's curated Virtual Contributors — the section is omitted entirely when empty (FR-007). */
+  virtualContributors: VirtualContributorCardItem[];
   onSettingsClick?: () => void;
   /**
    * Current full-width state — mirrors the Spaces "Wide layout" toggle. When
@@ -58,6 +67,8 @@ export type InnovationHubHomeProps = {
 export const InnovationHubHome = ({
   data,
   spaces,
+  packs,
+  virtualContributors,
   onSettingsClick,
   fullWidth = false,
   onToggleFullWidth,
@@ -129,38 +140,13 @@ export const InnovationHubHome = ({
               </section>
             )}
 
-            <section>
-              <h2 className="text-section-title mb-6 text-foreground">
-                {t('home.spacesSection.title', { hubName: data.name })}
-              </h2>
-              {spacesLoading && spaces.length === 0 ? (
-                <output
-                  aria-label={t('home.spacesSection.loading')}
-                  className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-                >
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders have no stable key
-                    <SpaceCardSkeleton key={i} />
-                  ))}
-                </output>
-              ) : spaces.length === 0 ? (
-                <div className="rounded-lg border border-border bg-card/50 p-8 text-center text-muted-foreground">
-                  <p className="text-body">{t('home.spacesSection.empty')}</p>
-                </div>
-              ) : (
-                <>
-                  {/* biome-ignore lint/a11y/noRedundantRoles: VoiceOver/JAWS strip implicit list semantics from a Tailwind grid `<ul>`; the role restores them */}
-                  {/* biome-ignore lint/a11y/useSemanticElements: the `<ul>` IS the semantic element — the role is reaffirming, not substituting */}
-                  <ul role="list" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {spaces.map(space => (
-                      <li key={space.id}>
-                        <SpaceCard space={space} />
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </section>
+            <HubSpacesSection spaces={spaces} hubName={data.name} spacesLoading={spacesLoading} />
+
+            {/* Curated resource bands, between the Spaces listing and the CTA footer —
+                packs first, then Virtual Contributors (FR-003). Each renders null when empty. */}
+            <HubPacksSection packs={packs} />
+
+            <HubVirtualContributorsSection virtualContributors={virtualContributors} />
 
             <section className="flex items-center gap-3 px-4 py-3 text-muted-foreground">
               <div className="size-4 shrink-0">

@@ -7,6 +7,8 @@ declare global {
       VITE_APP_IN_CONTEXT_TRANSLATION?: string;
       VITE_APP_COLLAB_URL?: string;
       VITE_APP_COLLAB_PATH?: string;
+      VITE_APP_ASSISTANT_ENABLED?: string;
+      VITE_APP_ASSISTANT_BASE_PATH?: string;
     };
   }
 }

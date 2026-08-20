@@ -38,18 +38,7 @@
       "description": "Ihre nicht gespeicherten Layout-Änderungen werden auf den zuletzt gespeicherten Stand zurückgesetzt. Dies kann nicht rückgängig gemacht werden.",
       "confirm": "Änderungen verwerfen"
     },
-    "postDescriptionDisplay": {
-      "title": "Anzeige der Beitragsbeschreibung",
-      "switchLabel": "Beitragsbeschreibungen standardmäßig einklappen",
-      "description": "Beitragsbeschreibungen standardmäßig einklappen. Wenn aktiviert, zeigen Beschreibungen einen \"Mehr lesen\"-Link statt des vollständigen Texts."
-    },
     "column": {
-      "titleAriaLabel": "Spaltentitel",
-      "descriptionAriaLabel": "Spaltenbeschreibung",
-      "editTitle": "Spaltentitel bearbeiten",
-      "editDescription": "Spaltenbeschreibung bearbeiten",
-      "confirm": "Bestätigen",
-      "cancel": "Abbrechen",
       "titlePlaceholder": "Spaltentitel",
       "descriptionPlaceholder": "Diese Spalte beschreiben…",
       "menu": "Spaltenaktionen",
@@ -68,7 +57,8 @@
         "menuLabel": "Details bearbeiten",
         "dialogTitle": "Details bearbeiten: Flow-Phase",
         "titleLabel": "Titel",
-        "editTitle": "Titel bearbeiten",
+        "titleTooShort": "Der Titel muss mindestens 3 Zeichen lang sein",
+        "titleDuplicate": "Eine Phase mit diesem Namen existiert bereits.",
         "insertEmoji": "Emoji einfügen",
         "descriptionLabel": "Beschreibung",
         "descriptionPlaceholder": "Beschreibung",
@@ -85,6 +75,15 @@
           "cancel": "Abbrechen"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Tab löschen",
+        "confirm": {
+          "title": "Diesen Tab löschen?",
+          "description": "Beiträge in diesem Tab werden in den ersten Tab verschoben. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "confirm": "Tab löschen",
+          "cancel": "Abbrechen"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Im Menü ausblenden",
         "showMenuLabel": "Im Menü anzeigen",
@@ -93,6 +92,37 @@
           "title": "Diese Phase ausblenden?",
           "description": "Dies blendet die Phase nur im Menü aus. Der Zugriff auf ihre Inhalte wird nicht entfernt: Wer einen Link zur Phase oder zu einem Beitrag darin hat, kann sie weiterhin öffnen.",
           "confirm": "Ausblenden",
+          "cancel": "Abbrechen"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post-Beschreibung",
+          "collapsedHint": "Posts starten eingeklappt — Mitglieder können sie ausklappen, um zu lesen.",
+          "expandedHint": "Posts sind standardmäßig vollständig ausgeklappt.",
+          "switchLabel": "Post-Beschreibungen einklappen"
+        },
+        "publishDetails": {
+          "label": "Autorendetails",
+          "onHint": "Name, Avatar und Datum des Autors werden bei jedem Post angezeigt.",
+          "offHint": "Name, Avatar und Datum des Autors sind bei Posts in dieser Phase ausgeblendet.",
+          "switchLabel": "Autorendetails anzeigen"
+        },
+        "cancel": "Abbrechen",
+        "saving": "Speichern…",
+        "save": "Speichern"
+      },
+      "postTemplate": {
+        "menuLabel": "Post-Vorlage",
+        "dialogTitle": "Post-Vorlage: {{phaseName}}",
+        "choose": "Vorlage auswählen…",
+        "clear": "Vorlage entfernen",
+        "clearConfirm": {
+          "title": "Post-Vorlage entfernen?",
+          "description": "Die Standard-Post-Vorlage für diese Phase wird entfernt. Neue Posts in dieser Phase verwenden keine Standardvorlage. Bestehende Posts sind nicht betroffen.",
+          "confirm": "Vorlage entfernen",
           "cancel": "Abbrechen"
         }
       }
@@ -110,6 +140,21 @@
         "errorGeneric": "Die Phase konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
         "cancel": "Abbrechen",
         "confirm": "Phase hinzufügen"
+      }
+    },
+    "addTab": {
+      "button": "Tab hinzufügen",
+      "dialog": {
+        "title": "Neuen Tab hinzufügen",
+        "description": "Erstellen Sie einen neuen Tab in diesem Space. Sie können ihn später umbenennen oder entfernen.",
+        "nameLabel": "Tab-Name",
+        "namePlaceholder": "z. B. Archiv",
+        "descriptionLabel": "Beschreibung (optional)",
+        "descriptionPlaceholder": "Wofür ist dieser Tab?",
+        "duplicate": "Ein Tab mit diesem Namen existiert bereits.",
+        "errorGeneric": "Der Tab konnte nicht erstellt werden. Bitte versuchen Sie es erneut.",
+        "cancel": "Abbrechen",
+        "confirm": "Tab hinzufügen"
       }
     },
     "replaceFlow": {
@@ -239,7 +284,8 @@
         "page": "Seite {{page}} von {{total}}",
         "next": "Nächste Seite"
       },
-      "roleColumn": "Rolle"
+      "roleColumn": "Rolle",
+      "export": "Alle Mitglieder exportieren"
     },
     "memberSettings": {
       "title": "Mitgliedereinstellungen",
@@ -276,7 +322,7 @@
       },
       "addDialog": {
         "title": "Organisation hinzufügen",
-        "description": "Wählen Sie eine Organisation aus, deren Mitglieder ohne Genehmigung diesem Space beitreten können.",
+        "description": "Diese Organisationen werden als Mitglieder in diesem Space und auf ihrem Organisationsprofil sichtbar sein.",
         "search": "Organisationen suchen…",
         "empty": "Keine Organisationen entsprechen Ihrer Suche."
       }
@@ -723,12 +769,13 @@
         "description": "Möchten Sie diese Frage wirklich entfernen?",
         "confirm": "Löschen"
       },
-      "save": "Speichern"
+      "save": "Speichern",
+      "export": "Alle eingereichten Bewerbungen exportieren"
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",
       "description": "Wählen Sie, welche Aktionen Mitglieder in diesem Space ausführen können",
-      "subspaceAdminInvitations": "Space-Einladungen",
+      "subspaceAdminInvitations": "Subspace-Mitgliedschaft",
       "memberCreatePosts": "Beiträge erstellen",
       "videoCalls": "Videoanrufe",
       "guestContributions": "Gastbeiträge",
@@ -738,7 +785,7 @@
       "subspaceEvents": "Subspace-Veranstaltungen",
       "alkemioSupportAccess": "Alkemio-Support",
       "trustHostOrganization": "Hostorganisation vertrauen",
-      "subspaceAdminInvitationsDescription": "Ermöglicht Administratoren von Subspaces, Plattform-Benutzer in ihren Subspace einzuladen. Benutzer, die noch kein Mitglied dieses Space waren, werden es, sobald sie die Subspace-Einladung annehmen."
+      "subspaceAdminInvitationsDescription": "Subspaces können eigene Mitglieder aufnehmen. Diese werden auch hier Mitglied."
     },
     "saveAsTemplate": {
       "title": "Als Vorlage speichern",
@@ -754,6 +801,14 @@
         "description": "Dadurch werden dieser Subspace und alle Inhalte dauerhaft gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.",
         "confirm": "Subspace löschen"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Sichtbarkeit der Benutzerinformationen",
+      "description": "Legen Sie fest, wer die Informationen der Mitglieder in diesem Space sehen kann. Organisationen und virtuelle Mitwirkende folgen der Sichtbarkeit des Space.",
+      "followSpace": "Sichtbarkeit des Space übernehmen",
+      "followSpaceDescription": "Die Benutzerinformationen der Mitglieder sind entsprechend der Sichtbarkeit des Space sichtbar.",
+      "membersOnly": "Nur Mitglieder",
+      "membersOnlyDescription": "Nur Mitglieder dieses Space können die Benutzerinformationen der Mitglieder sehen."
     }
   },
   "storage": {
@@ -834,20 +889,23 @@
     },
     "branding": {
       "title": "Space-Branding",
-      "description": "Laden Sie einen Avatar, einen Seiten-Banner (1536×256) und einen Karten-Banner (416×256) hoch.",
+      "description": "Laden Sie einen Avatar, einen Seiten-Banner (3840px) und einen Karten-Banner (416×256) hoch.",
       "noImage": "Kein Bild",
       "upload": "Hochladen",
       "avatar": {
         "title": "Avatar",
-        "hint": "Das Logo des Spaces."
+        "hint": "Das Logo des Spaces.",
+        "recrop": "Aktuellen Avatar zuschneiden"
       },
       "pageBanner": {
-        "title": "Seiten-Banner (1536 × 256px)",
-        "hint": "Wird oben auf der Space-Seite angezeigt."
+        "title": "Seiten-Banner",
+        "hint": "Wird oben auf der Space-Seite angezeigt. Verwenden Sie ein Bild von mindestens 1536 × 154px.",
+        "recrop": "Aktuelles Seitenbanner zuschneiden"
       },
       "cardBanner": {
         "title": "Karten-Banner (416 × 256px)",
-        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt."
+        "hint": "Wird in Suchergebnissen und Space-Karten angezeigt.",
+        "recrop": "Aktuelles Kartenbanner zuschneiden"
       },
       "cropDialog": {
         "save": "Speichern",
@@ -857,7 +915,14 @@
         "altText": "Beschreibung",
         "altTextPlaceholder": "Dieses Bild beschreiben…"
       },
-      "changeBanner": "Banner ändern"
+      "recropConfirm": {
+        "title": "Originalbild ersetzen?",
+        "description": "Beim Speichern dieses Zuschnitts wird ein neues Bild hochgeladen und das Original dauerhaft verworfen. Die weggeschnittenen Bereiche können später nicht wiederhergestellt werden.",
+        "confirm": "Bild ersetzen",
+        "cancel": "Abbrechen"
+      },
+      "changeBanner": "Banner ändern",
+      "recropFailed": "Dieses Bild konnte nicht zum Zuschneiden geladen werden. Bitte erneut versuchen."
     },
     "location": {
       "title": "Standort",

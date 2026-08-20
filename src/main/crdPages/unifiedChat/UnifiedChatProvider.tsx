@@ -1,5 +1,6 @@
 import { createContext, type ReactNode, useContext, useState } from 'react';
 import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
+import { ConversationDraftsProvider } from '@/main/userMessaging/ConversationDraftsContext';
 import { UserMessagingProvider, useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
 
 // Re-export so the still-mounted MUI UserMessagingDialog and the reused messaging
@@ -47,10 +48,15 @@ const UnifiedChatGuidanceProvider = ({ children }: { children: ReactNode }) => {
  * Provides unified-chat state. Wraps the existing UserMessagingProvider (which
  * holds isOpen/selection/unread/newly-created state) and adds Guidance-specific
  * state on top, so the legacy messaging consumers keep working unchanged.
+ *
+ * Unsent drafts sit alongside it, outside the panel, so they outlive the panel
+ * being closed.
  */
 export const UnifiedChatProvider = ({ children }: { children: ReactNode }) => (
   <UserMessagingProvider>
-    <UnifiedChatGuidanceProvider>{children}</UnifiedChatGuidanceProvider>
+    <ConversationDraftsProvider>
+      <UnifiedChatGuidanceProvider>{children}</UnifiedChatGuidanceProvider>
+    </ConversationDraftsProvider>
   </UserMessagingProvider>
 );
 

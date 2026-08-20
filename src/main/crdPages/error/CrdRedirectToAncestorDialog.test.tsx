@@ -72,15 +72,8 @@ vi.mock('@/crd/components/error/CrdRedirectDialog', () => ({
     ) : null,
 }));
 
-// Strip the Avatar/Skeleton primitives down so the slot test isn't sensitive
-// to their internals.
-vi.mock('@/crd/primitives/avatar', () => ({
-  Avatar: ({ children }: { children?: React.ReactNode }) => <div data-testid="avatar">{children}</div>,
-  AvatarFallback: ({ children }: { children?: React.ReactNode }) => (
-    <span data-testid="avatar-fallback">{children}</span>
-  ),
-  AvatarImage: ({ src }: { src?: string }) => <img alt="" data-testid="avatar-image" src={src} />,
-}));
+// Shared jsdom-safe avatar double from src/crd/primitives/__mocks__/avatar.tsx.
+vi.mock('@/crd/primitives/avatar');
 vi.mock('@/crd/primitives/skeleton', () => ({
   Skeleton: () => <div data-testid="skeleton" />,
 }));

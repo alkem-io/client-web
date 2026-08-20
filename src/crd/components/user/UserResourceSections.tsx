@@ -1,10 +1,10 @@
-import { Bot, LayoutDashboard, Package, Sparkles } from 'lucide-react';
+import { Bot, LayoutDashboard, Package } from 'lucide-react';
 import { isValidElement, type Key, type ReactNode } from 'react';
 import type { ResourceTabKey } from '@/crd/components/common/ProfileResourceTabStrip';
 import type { SimpleResourceCardItem, VirtualContributorCardItem } from '@/crd/components/common/profileTypes';
 import { SpaceGridCard, type SpaceGridCardData, type SpaceGridCardLabels } from '@/crd/components/user/SpaceGridCard';
+import { VirtualContributorCard } from '@/crd/components/virtualContributor/VirtualContributorCard';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 
 function asListItems(nodes: ReactNode[]) {
   return nodes.map((node, idx) => {
@@ -94,24 +94,7 @@ export function UserResourceSections({
             <ul role="list" className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
               {hostedVirtualContributors.map(vc => (
                 <li key={vc.id}>
-                  <a
-                    href={vc.href}
-                    className="flex items-start gap-4 p-4 rounded-lg border bg-card hover:shadow-sm transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-                  >
-                    <Avatar className="size-9 rounded-md shrink-0">
-                      {vc.avatarImageUrl ? <AvatarImage src={vc.avatarImageUrl} alt="" /> : null}
-                      <AvatarFallback className="bg-primary/10 text-primary rounded-md">
-                        <Sparkles className="w-5 h-5" aria-hidden="true" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h4 className="text-card-title text-foreground">{vc.displayName}</h4>
-                      {vc.description ? <p className="text-body text-muted-foreground mb-2">{vc.description}</p> : null}
-                      <Badge variant="secondary" className="text-badge h-5">
-                        {vc.type}
-                      </Badge>
-                    </div>
-                  </a>
+                  <VirtualContributorCard vc={vc} />
                 </li>
               ))}
             </ul>

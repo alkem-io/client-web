@@ -14,6 +14,10 @@ export const useUserProvider = (userId: string | undefined) => {
 
   return {
     userModel: userModel,
+    // READ-privilege consent flags (never the email address itself) used to
+    // decide the chat vs email-fallback contact route (FR-011).
+    isContactable: data?.lookup?.user?.isContactable ?? false,
+    isContactableViaEmail: data?.lookup?.user?.isContactableViaEmail ?? false,
     loading,
   };
 };

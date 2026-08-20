@@ -2,6 +2,7 @@ import {
   CalloutAllowedActors,
   CalloutContributionType,
   CalloutFramingType,
+  CalloutSelectionMode,
   CalloutVisibility,
   PollResultsDetail,
   PollResultsVisibility,
@@ -9,11 +10,11 @@ import {
   type UpdateReferenceInput,
 } from '@/core/apollo/generated/graphql-schema';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
-import { deriveCollaboraDocumentDisplayName } from '@/domain/collaboration/calloutContributions/collaboraDocument/deriveCollaboraDocumentDisplayName';
 import type { CalloutCreationType } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import type { MemoFieldSubmittedValues } from '@/domain/collaboration/memo/model/MemoFieldSubmittedValues';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { contributorCollectionToServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type {
   AllowedActors,
   CalloutFormValues,
@@ -35,6 +36,10 @@ const FRAMING_CHIP_TO_SERVER: Record<FramingChip, CalloutFramingType> = {
   cta: CalloutFramingType.Link,
   image: CalloutFramingType.MediaGallery,
   poll: CalloutFramingType.Poll,
+  contributors: CalloutFramingType.Contributors,
+  // Feature 013: the "Subspaces" chip. Config-free — the SPACES framing carries no
+  // settings/config; only framing profile (name/description) is sent (FR-004b).
+  spaces: CalloutFramingType.Spaces,
 };
 
 const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionType | undefined> = {
@@ -43,6 +48,7 @@ const RESPONSE_TO_CONTRIBUTION_TYPE: Record<ResponseType, CalloutContributionTyp
   post: CalloutContributionType.Post,
   memo: CalloutContributionType.Memo,
   whiteboard: CalloutContributionType.Whiteboard,
+  document: CalloutContributionType.CollaboraDocument,
 };
 
 export const framingChipToServer = (chip: FramingChip): CalloutFramingType => FRAMING_CHIP_TO_SERVER[chip];
@@ -171,8 +177,7 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
         commentsEnabled: true,
       };
 
-  // On CREATE, tags go in `framing.tags: string[]` (MUI parity — see
-  // mapProfileTagsToCreateTags + CreateCalloutDialog). The server auto-creates
+  // On CREATE, tags go in `framing.tags: string[]`. The server auto-creates
   // the default tagset; sending `framing.profile.tagsets` on create would
   // create a duplicate/conflict that the Whiteboard + MediaGallery framings
   // reject on the server.
@@ -190,6 +195,24 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
       visibility: options.visibility,
       framing: {
         commentsEnabled: values.framingCommentsEnabled,
+        // Contributor-collection config travels in the framing settings only for
+        // the CONTRIBUTORS framing (feature 008). Healed so the persisted config
+        // always satisfies the server invariants (default type ∈ types; map only
+        // when a locatable type remains).
+        ...(framingType === CalloutFramingType.Contributors
+          ? { contributors: contributorCollectionToServer(values.contributorCollection) }
+          : {}),
+        // Selection settings (feature 025) — sent for BOTH collection kinds.
+        // AUTO is the server default, but sending it explicitly keeps payloads
+        // consistent. Template capture will strip selectedIds server-side (FR-017/S10).
+        ...(framingType === CalloutFramingType.Contributors || framingType === CalloutFramingType.Spaces
+          ? {
+              selection: {
+                mode: values.selectionMode === 'custom' ? CalloutSelectionMode.Custom : CalloutSelectionMode.Auto,
+                selectedIds: values.selectedIds,
+              },
+            }
+          : {}),
       },
       contribution: contributionSettings,
     },
@@ -271,27 +294,22 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
 
   // Collabora document framing has two creation paths:
   //   - Blank-create: send `{ displayName, documentType }` and no `file`.
-  //   - Upload: send `{}` or `{ displayName }` (per the typed-vs-prefill rule)
-  //     plus the `file` separately to `handleCreateCallout`. `documentType` is
-  //     server-derived from the file's sniffed MIME and MUST NOT be sent.
+  //   - Upload: always send `{}` plus the `file` separately to
+  //     `handleCreateCallout`. The post title and the document's own name
+  //     are independent — the server always derives the document's name
+  //     from the uploaded file. `documentType` is server-derived from the
+  //     file's sniffed MIME and MUST NOT be sent.
   // There is no edit-time counterpart on either branch; the document body is
   // edited through the Collabora overlay against the already-created document.
   if (framingType === CalloutFramingType.CollaboraDocument) {
     const postTitle = values.title.trim() || options.collaboraFallbackDisplayName;
     if (values.collaboraUploadFile) {
-      const decision = deriveCollaboraDocumentDisplayName({
-        mode: 'upload',
-        postTitle,
-        autoPrefilledTitle: values.collaboraAutoPrefilledTitle,
-      });
-      callout.framing.collaboraDocument = decision;
+      callout.framing.collaboraDocument = {};
     } else {
-      const decision = deriveCollaboraDocumentDisplayName({
-        mode: 'blank-create',
-        postTitle,
+      callout.framing.collaboraDocument = {
+        displayName: postTitle,
         documentType: values.collaboraDocumentType,
-      });
-      callout.framing.collaboraDocument = decision;
+      };
     }
   }
 
@@ -433,7 +451,24 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
     : undefined;
 
   const settings: UpdateCalloutEntityInput['settings'] = {
-    framing: { commentsEnabled: values.framingCommentsEnabled },
+    framing: {
+      commentsEnabled: values.framingCommentsEnabled,
+      // Editable any time (FR-004d): re-send the contributor-collection config on
+      // update for the CONTRIBUTORS framing, healed to the server invariants.
+      ...(framingType === CalloutFramingType.Contributors
+        ? { contributors: contributorCollectionToServer(values.contributorCollection) }
+        : {}),
+      // Selection settings (feature 025) — sent for both collection kinds on update.
+      // Non-collection framing types never send selection (server rejects, FR-013 / S8).
+      ...(framingType === CalloutFramingType.Contributors || framingType === CalloutFramingType.Spaces
+        ? {
+            selection: {
+              mode: values.selectionMode === 'custom' ? CalloutSelectionMode.Custom : CalloutSelectionMode.Auto,
+              selectedIds: values.selectedIds,
+            },
+          }
+        : {}),
+    },
   };
   if (contributionSettings) settings.contribution = contributionSettings;
 

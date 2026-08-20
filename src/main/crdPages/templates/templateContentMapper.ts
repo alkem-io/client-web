@@ -71,6 +71,8 @@ export function mapGqlFramingType(gql: CalloutFramingType): FramingKind {
       return 'image';
     case CalloutFramingType.Poll:
       return 'poll';
+    case CalloutFramingType.Contributors:
+      return 'contributors';
     default:
       return 'none';
   }

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { GridOverlayProvider } from '@/crd/hooks/useGridOverlay';
 import { GridOverlay } from '@/crd/layouts/components/GridOverlay';
 import { Footer } from '@/crd/layouts/Footer';
@@ -37,6 +38,8 @@ type CrdLayoutProps = {
   fullWidth?: boolean;
   /** When true the header renders transparently over a hero banner below it. */
   overlayBanner?: boolean;
+  /** Full-width notice rendered between the header and the page content. */
+  topBanner?: ReactNode;
   children: ReactNode;
 };
 
@@ -64,10 +67,18 @@ export function CrdLayout({
   showGridToggle,
   fullWidth,
   overlayBanner,
+  topBanner,
   children,
 }: CrdLayoutProps) {
+  const { t } = useTranslation('crd-layout');
   const content = (
     <div className="crd-root flex min-h-screen flex-col bg-background text-foreground">
+      <a
+        href="#crd-main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        {t('header.skipToContent')}
+      </a>
       <Header
         user={user}
         authenticated={authenticated}
@@ -92,7 +103,10 @@ export function CrdLayout({
         fullWidth={fullWidth}
         overlayBanner={overlayBanner}
       />
-      <main className="flex-1 flex flex-col">{children}</main>
+      {topBanner}
+      <main id="crd-main-content" tabIndex={-1} className="flex-1 flex flex-col outline-none">
+        {children}
+      </main>
       <Footer
         links={footerLinks}
         languages={languages}

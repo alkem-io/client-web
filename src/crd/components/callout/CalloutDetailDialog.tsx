@@ -64,6 +64,12 @@ type CalloutDetailDialogProps = {
   collaboraFramingSlot?: ReactNode;
   /** Call-to-action link button rendered below description (e.g. CalloutLinkAction) */
   callToActionFramingSlot?: ReactNode;
+  /** Contributor collection (cards/map) rendered below description (feature 008) */
+  contributorsFramingSlot?: ReactNode;
+  /** Subspaces collection (cards) rendered below description (feature 013) */
+  spacesFramingSlot?: ReactNode;
+  /** Emoji reactions bar rendered below the framing content, above contributions. */
+  reactionsSlot?: ReactNode;
   onShareClick?: () => void;
   /**
    * 3-dots settings slot in the sticky-header cluster. Consumer injects a
@@ -96,6 +102,9 @@ export function CalloutDetailDialog({
   mediaGalleryFramingSlot,
   collaboraFramingSlot,
   callToActionFramingSlot,
+  contributorsFramingSlot,
+  spacesFramingSlot,
+  reactionsSlot,
   onShareClick,
   settingsSlot,
   commentsEnabled,
@@ -205,17 +214,14 @@ export function CalloutDetailDialog({
               {mediaGalleryFramingSlot && <div className="pt-2">{mediaGalleryFramingSlot}</div>}
               {collaboraFramingSlot && <div className="pt-2">{collaboraFramingSlot}</div>}
               {callToActionFramingSlot && <div className="pt-2">{callToActionFramingSlot}</div>}
+              {contributorsFramingSlot && <div className="pt-2">{contributorsFramingSlot}</div>}
+              {spacesFramingSlot && <div className="pt-2">{spacesFramingSlot}</div>}
               {pollSlot && <div className="pt-2">{pollSlot}</div>}
             </div>
 
-            {/* Reactions bar (sharing is consolidated to the sticky header). */}
-            {callout.reactionCount !== undefined && callout.reactionCount > 0 && (
-              <div className="flex items-center gap-4 py-4 border-y border-border">
-                <span className="text-body-emphasis text-muted-foreground">
-                  {t('calloutDialog.reactionCount', { count: callout.reactionCount })}
-                </span>
-              </div>
-            )}
+            {/* Reactions bar — provided by the connector layer; renders nothing
+                when the server module is not yet deployed (undefined summary). */}
+            {reactionsSlot && <div className="py-3 border-b border-border">{reactionsSlot}</div>}
 
             {/* Contributions section — grid stays visible even when a contribution is
                 selected, so the user can switch between responses. The inline

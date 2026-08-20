@@ -17,6 +17,8 @@ query SpaceTabs($spaceId: UUID!) {
             settings {
               allowNewCallouts
               visible
+              descriptionDisplayMode
+              showPublishDetails
             }
           }
         }

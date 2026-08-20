@@ -21,6 +21,7 @@ const SECTIONS_LABELS = {
 const SIDEBAR_LABELS = {
   aboutTitle: 'About',
   organizationsTitle: 'Organizations',
+  referencesTitle: 'Links',
   socialLinksTitle: 'Social',
   bioEmpty: 'No bio yet.',
   organizationsEmpty: 'Not part of any organization yet.',
@@ -65,7 +66,6 @@ export function UserProfileSelfDemoPage() {
         ...me.hero,
         showSettingsIcon: true,
         settingsHref: `/user/${me.slug}/settings/profile`,
-        showMessageButton: false,
       }}
       sidebar={{
         bio: me.bio,

@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { useRef, useState } from 'react';
 import {
   type CloseVerdict,
@@ -44,7 +44,10 @@ type UseCollabProps = {
    * reconnect notice and lets its auto-reconnect countdown keep retrying. A TERMINAL
    * close routes to `onTerminalClose` instead and never reaches here.
    */
-  onCloseConnection: () => void;
+  // `hasError` (#10131): true once a reconnect attempt has actually failed, false for a first
+  // transient drop that may still auto-heal. A native-Yjs `transient` close is retryable, so it
+  // reports `false`; the hard, won't-heal case is routed through `onTerminalClose` instead.
+  onCloseConnection: (hasError: boolean) => void;
   onSceneInitChange?: (initialized: boolean) => void;
   /**
    * The server rejected a local update — the scene is poisoned. The consumer must
@@ -212,7 +215,9 @@ const useCollab = ({
       if (verdict.disposition === 'terminal') {
         onTerminalClose?.(verdict.reason);
       } else if (verdict.disposition === 'transient') {
-        onCloseConnection();
+        // A transient close is retryable (the auto-reconnect loop keeps going), so it is not the
+        // hard-error "reconnect has failed" state that surfaces the #10131 Reload-page escape hatch.
+        onCloseConnection(false);
       }
       // 'normal' (a clean 1000 close): NEITHER — no reconnect notice is opened, so
       // the wrapper's independent `useAutoReconnect` timer never activates either.

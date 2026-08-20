@@ -36,6 +36,8 @@ export type UserPageHeroProps = {
   /** Deterministic colour (from `pickColorFromId(userId)`) used for the avatar fallback. */
   color: string;
   displayName: string;
+  /** Short headline shown under the name — null when empty (FR-010). */
+  tagline: string | null;
   /** "City, Country" — null when both empty. */
   location: string | null;
   /**
@@ -59,8 +61,8 @@ export type UserPageHeroProps = {
 /**
  * Re-exported for convenience; canonical type lives at
  * `src/crd/components/common/ProfileResourceTabStrip.tsx`. Both the User and
- * Organization tab strips render the same 3 tabs in the same order with
- * `resourcesHosted` as default.
+ * Organization tab strips render the same 3 tabs in the same order
+ * (`memberOf` → `leading` → `resourcesHosted`) with `memberOf` as default.
  *
  * NOTE: an earlier 5-tab design (`allResources` / `hostedSpaces` /
  * `virtualContributors` / `leading` / `memberOf`) was dropped once Template
@@ -287,6 +289,8 @@ export type UserProfileSidebarProps = {
   labels: {
     aboutTitle: string;
     organizationsTitle: string;
+    /** Heading for the non-social "Links" section (FR-010b) — rendered via the shared `ReferencesList`. */
+    referencesTitle: string;
     socialLinksTitle: string;
     bioEmpty: string;
     organizationsEmpty: string;

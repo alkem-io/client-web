@@ -38,18 +38,7 @@
       "description": "Tus cambios de Diseño no guardados se revertirán al último estado guardado. Esta acción no se puede deshacer.",
       "confirm": "Descartar cambios"
     },
-    "postDescriptionDisplay": {
-      "title": "Visualización de descripciones de publicaciones",
-      "switchLabel": "Contraer descripciones de publicaciones por defecto",
-      "description": "Contrae las descripciones de publicaciones por defecto. Cuando está activado, las descripciones muestran un enlace \"Leer más\" en lugar del texto completo."
-    },
     "column": {
-      "titleAriaLabel": "Título de la columna",
-      "descriptionAriaLabel": "Descripción de la columna",
-      "editTitle": "Editar título de la columna",
-      "editDescription": "Editar descripción de la columna",
-      "confirm": "Confirmar",
-      "cancel": "Cancelar",
       "titlePlaceholder": "Título de la columna",
       "descriptionPlaceholder": "Describe esta columna…",
       "menu": "Acciones de columna",
@@ -68,7 +57,8 @@
         "menuLabel": "Editar detalles",
         "dialogTitle": "Editar detalles: fase del flujo",
         "titleLabel": "Título",
-        "editTitle": "Editar título",
+        "titleTooShort": "El título debe tener al menos 3 caracteres",
+        "titleDuplicate": "Ya existe una fase con este nombre.",
         "insertEmoji": "Insertar emoji",
         "descriptionLabel": "Descripción",
         "descriptionPlaceholder": "Descripción",
@@ -85,6 +75,15 @@
           "cancel": "Cancelar"
         }
       },
+      "deleteTab": {
+        "menuLabel": "Eliminar pestaña",
+        "confirm": {
+          "title": "¿Eliminar esta pestaña?",
+          "description": "Las publicaciones de esta pestaña se moverán a la primera pestaña. Esta acción no se puede deshacer.",
+          "confirm": "Eliminar pestaña",
+          "cancel": "Cancelar"
+        }
+      },
       "hideShow": {
         "hideMenuLabel": "Ocultar del menú",
         "showMenuLabel": "Mostrar en el menú",
@@ -93,6 +92,37 @@
           "title": "¿Ocultar esta fase?",
           "description": "Esto solo oculta la fase del menú. No elimina el acceso a su contenido: cualquier persona con un enlace a la fase, o a una publicación dentro de ella, todavía puede abrirla.",
           "confirm": "Ocultar",
+          "cancel": "Cancelar"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Descripción del Post",
+          "collapsedHint": "Los Posts comienzan contraídos — los miembros los expanden para leer.",
+          "expandedHint": "Los Posts están completamente expandidos por defecto.",
+          "switchLabel": "Contraer descripciones de Posts"
+        },
+        "publishDetails": {
+          "label": "Detalles del publicador",
+          "onHint": "El nombre, avatar y fecha del autor se muestran en cada Post.",
+          "offHint": "El nombre, avatar y fecha del autor están ocultos en los Posts de esta fase.",
+          "switchLabel": "Mostrar detalles del publicador"
+        },
+        "cancel": "Cancelar",
+        "saving": "Guardando…",
+        "save": "Guardar"
+      },
+      "postTemplate": {
+        "menuLabel": "Plantilla de Post",
+        "dialogTitle": "Plantilla de Post: {{phaseName}}",
+        "choose": "Elegir plantilla…",
+        "clear": "Eliminar plantilla",
+        "clearConfirm": {
+          "title": "¿Eliminar la plantilla de Post?",
+          "description": "Se eliminará la plantilla de Post predeterminada para esta fase. Los nuevos Posts en esta fase no usarán ninguna plantilla predeterminada. Los Posts existentes no se verán afectados.",
+          "confirm": "Eliminar plantilla",
           "cancel": "Cancelar"
         }
       }
@@ -110,6 +140,21 @@
         "errorGeneric": "No se pudo crear la fase. Inténtalo de nuevo.",
         "cancel": "Cancelar",
         "confirm": "Añadir fase"
+      }
+    },
+    "addTab": {
+      "button": "Añadir pestaña",
+      "dialog": {
+        "title": "Añadir una nueva pestaña",
+        "description": "Crea una nueva pestaña en este Space. Puedes cambiarle el nombre o eliminarla más tarde.",
+        "nameLabel": "Nombre de la pestaña",
+        "namePlaceholder": "p. ej. Archivo",
+        "descriptionLabel": "Descripción (opcional)",
+        "descriptionPlaceholder": "¿Para qué sirve esta pestaña?",
+        "duplicate": "Ya existe una pestaña con este nombre.",
+        "errorGeneric": "No se pudo crear la pestaña. Inténtalo de nuevo.",
+        "cancel": "Cancelar",
+        "confirm": "Añadir pestaña"
       }
     },
     "replaceFlow": {
@@ -239,7 +284,8 @@
         "page": "Página {{page}} de {{total}}",
         "next": "Página siguiente"
       },
-      "roleColumn": "Rol"
+      "roleColumn": "Rol",
+      "export": "Exportar todos los miembros"
     },
     "memberSettings": {
       "title": "Configuración del miembro",
@@ -276,7 +322,7 @@
       },
       "addDialog": {
         "title": "Añadir organización",
-        "description": "Elige una organización cuyos miembros puedan unirse a este espacio sin aprobación.",
+        "description": "Estas organizaciones serán visibles como miembros en este Space y en su perfil de organización.",
         "search": "Buscar organizaciones…",
         "empty": "Ninguna organización coincide con tu búsqueda."
       }
@@ -723,12 +769,13 @@
         "description": "¿Estás seguro de que quieres eliminar esta pregunta?",
         "confirm": "Eliminar"
       },
-      "save": "Guardar"
+      "save": "Guardar",
+      "export": "Exportar todas las solicitudes enviadas"
     },
     "allowedActions": {
       "title": "Acciones permitidas",
       "description": "Elige qué acciones pueden realizar los miembros en este espacio",
-      "subspaceAdminInvitations": "Invitaciones al espacio",
+      "subspaceAdminInvitations": "Membresía de Subspace",
       "memberCreatePosts": "Crear publicaciones",
       "videoCalls": "Videollamadas",
       "guestContributions": "Contribuciones de invitados",
@@ -738,7 +785,7 @@
       "subspaceEvents": "Eventos del subespacio",
       "alkemioSupportAccess": "Soporte de Alkemio",
       "trustHostOrganization": "Confiar en la organización anfitriona",
-      "subspaceAdminInvitationsDescription": "Permite a los administradores de los Subspaces invitar a usuarios de la plataforma a su Subspace. Los usuarios que aún no eran miembros de este Space lo serán cuando acepten la invitación al Subspace."
+      "subspaceAdminInvitationsDescription": "Permite que los Subspaces incorporen sus propios miembros. También pasan a ser miembros aquí."
     },
     "saveAsTemplate": {
       "title": "Guardar como plantilla",
@@ -754,6 +801,14 @@
         "description": "Esto eliminará permanentemente este subespacio y todo su contenido. Esta acción no se puede deshacer.",
         "confirm": "Eliminar subespacio"
       }
+    },
+    "userInfoVisibility": {
+      "title": "Visibilidad de la información de usuario",
+      "description": "Controla quién puede ver la información de los usuarios miembros en este espacio. Las organizaciones y los colaboradores virtuales siguen la visibilidad del espacio.",
+      "followSpace": "Seguir la visibilidad del espacio",
+      "followSpaceDescription": "La información de los usuarios miembros es visible según la visibilidad del espacio.",
+      "membersOnly": "Solo miembros",
+      "membersOnlyDescription": "Solo los miembros de este espacio pueden ver la información de los usuarios miembros."
     }
   },
   "storage": {
@@ -834,20 +889,23 @@
     },
     "branding": {
       "title": "Branding del espacio",
-      "description": "Sube un avatar, un banner de página (1536×256) y un banner de tarjeta (416×256).",
+      "description": "Sube un avatar, un banner de página (3840px) y un banner de tarjeta (416×256).",
       "noImage": "Sin imagen",
       "upload": "Subir",
       "avatar": {
         "title": "Avatar",
-        "hint": "El logo del espacio."
+        "hint": "El logo del espacio.",
+        "recrop": "Recortar el avatar actual"
       },
       "pageBanner": {
-        "title": "Banner de página (1536 × 256px)",
-        "hint": "Se muestra en la parte superior de la página del espacio."
+        "title": "Banner de página",
+        "hint": "Se muestra en la parte superior de la página del Space. Usa una imagen de al menos 1536 × 154px.",
+        "recrop": "Recortar el banner de página actual"
       },
       "cardBanner": {
         "title": "Banner de tarjeta (416 × 256px)",
-        "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio."
+        "hint": "Se muestra en los resultados de búsqueda y las tarjetas de espacio.",
+        "recrop": "Recortar el banner de tarjeta actual"
       },
       "cropDialog": {
         "save": "Guardar",
@@ -857,7 +915,14 @@
         "altText": "Descripción",
         "altTextPlaceholder": "Describe esta imagen…"
       },
-      "changeBanner": "Cambiar banner"
+      "recropConfirm": {
+        "title": "¿Reemplazar la imagen original?",
+        "description": "Al guardar este recorte se sube una nueva imagen y se descarta el original de forma permanente. Las áreas recortadas no se podrán recuperar más adelante.",
+        "confirm": "Reemplazar imagen",
+        "cancel": "Cancelar"
+      },
+      "changeBanner": "Cambiar banner",
+      "recropFailed": "No se pudo cargar esta imagen para recortarla. Inténtalo de nuevo."
     },
     "location": {
       "title": "Ubicación",

@@ -75,7 +75,22 @@
     "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
-    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Control administrativo total sobre toda la plataforma.",
+    "GLOBAL_SUPPORT": "Gestión de la plataforma y operaciones de soporte; puede actuar como administrador de un espacio según su configuración.",
+    "GLOBAL_LICENSE_MANAGER": "Gestiona licencias y planes en todas las cuentas.",
+    "GLOBAL_COMMUNITY_READER": "Acceso de solo lectura a la información de la comunidad en toda la plataforma.",
+    "GLOBAL_SPACES_READER": "Acceso de solo lectura a todos los espacios y su contenido.",
+    "GLOBAL_PLATFORM_MANAGER": "Gestiona la configuración y el contenido a nivel de plataforma.",
+    "GLOBAL_SUPPORT_MANAGER": "Rol de soporte elevado para gestionar las operaciones de soporte.",
+    "PLATFORM_BETA_TESTER": "Acceso a funciones beta antes de su lanzamiento general.",
+    "PLATFORM_VC_CAMPAIGN": "Participación en la campaña de Virtual Contributor.",
+    "PLATFORM_ASSISTANT_ACCESS": "Acceso al asistente de IA.",
+    "PLATFORM_OPERATIONS_ADMIN": "Solo acciones operativas y de mantenimiento: restablecimientos de autorización y de derechos de licencia, ingesta y reindexación de búsqueda/AI, mantenimiento del servidor de AI, migraciones de datos, mantenimiento de notificaciones y comunicaciones, y actualización de geolocalización. No otorga otros poderes administrativos ni acceso a los datos personales de los usuarios."
   },
   "roleMembers": {
     "currentMembers": "Miembros actuales",
@@ -153,6 +168,29 @@
       "parentPlaceholder": "Selecciona un espacio principal",
       "confirmTitle": "Confirmar conversión",
       "confirmDescription": "Esto cambia el nivel del espacio y puede afectar a su comunidad, subespacios y URLs. No se puede deshacer."
+    },
+    "spaceMove": {
+      "title": "Mover subespacio",
+      "description": "Mover un subespacio a un espacio principal diferente entre espacios de nivel superior.",
+      "resolvedLevel": "Nivel resuelto: {{level}}",
+      "noMoves": "No hay operaciones de movimiento disponibles para este nivel de espacio.",
+      "moveL1ToL0Label": "Mover a otro espacio de nivel superior",
+      "moveL1ToL2Label": "Mover bajo un subespacio de otro espacio de nivel superior",
+      "moveL2ToL1Label": "Mover bajo un subespacio de otro espacio de nivel superior",
+      "targetL0Label": "Espacio de nivel superior de destino",
+      "targetL1Label": "Subespacio de destino",
+      "targetL0Placeholder": "Selecciona un espacio de nivel superior",
+      "targetL1Placeholder": "Selecciona un subespacio",
+      "targetL0Empty": "No hay espacios de nivel superior disponibles.",
+      "targetL1Empty": "No hay subespacios disponibles en el espacio seleccionado.",
+      "move": "Mover subespacio",
+      "confirmTitle": "Confirmar movimiento",
+      "confirmDescription": "Esto mueve el subespacio al destino seleccionado. Todos los roles de la comunidad incluyendo administradores son eliminados, las invitaciones pendientes se cancelan y el canal de anuncios se restablece. Esta acción no se puede deshacer.",
+      "autoInviteLabel": "Enviar invitaciones a ex miembros que estén en la comunidad de destino",
+      "invitationMessageLabel": "Mensaje personal (opcional, máx. 500 caracteres)",
+      "invitationMessagePlaceholder": "Añade un mensaje personal a la invitación…",
+      "successPrefix": "Subespacio movido. Nueva ubicación:",
+      "newLocationLabel": "Ver nueva ubicación"
     },
     "spaceTransfer": {
       "title": "Transferir espacio",

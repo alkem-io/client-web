@@ -2,6 +2,7 @@ fragment userSettingsFragment on UserSettings {
   id
   communication {
     allowOtherUsersToSendMessages
+    allowOtherUsersToContactViaEmail
   }
   privacy {
     contributionRolesPubliclyVisible
@@ -9,6 +10,9 @@ fragment userSettingsFragment on UserSettings {
   homeSpace {
     spaceID
     autoRedirect
+  }
+  dashboard {
+    activityView
   }
   notification {
     platform {
@@ -172,6 +176,16 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+      conversationMessageDirect {
+        email
+        inApp
+        push
+      }
+      conversationMessageGroup {
+        email
+        inApp
+        push
+      }
     }
     virtualContributor {
       adminSpaceCommunityInvitation {
@@ -179,6 +193,10 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+    }
+    sound {
+      chatMessage
+      inAppNotification
     }
   }
 }

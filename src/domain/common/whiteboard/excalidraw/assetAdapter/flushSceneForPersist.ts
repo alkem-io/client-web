@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { toBase64 } from 'lib0/buffer';
 
 export type FlushSceneResult = { ok: true; content: string } | { ok: false; failedCount: number };

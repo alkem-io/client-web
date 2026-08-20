@@ -106,6 +106,51 @@
       }
     }
   },
+  "assistant": {
+    "title": "Assistant",
+    "openButton": "Open the assistant",
+    "openInWhiteboard": "Ask the assistant about this whiteboard",
+    "scopedTo": "Working on: {{name}}",
+    "closeButton": "Close the assistant",
+    "settings": "Assistant settings",
+    "settingsWhiteboardScope": "Whiteboard capabilities — manage all in Settings → Assistant",
+    "newConversation": "New Chat",
+    "intro": "Ask me about content on the platform. I can search and summarise what you have access to.",
+    "inputPlaceholder": "Ask the assistant…",
+    "send": "Send",
+    "stop": "Stop",
+    "thinking": "Thinking…",
+    "toolActivity": {
+      "started": "{{label}}",
+      "finished": "{{label}}",
+      "error": "{{label}} failed"
+    },
+    "confirmation": {
+      "title": "Confirm these actions",
+      "description": "Nothing changes until you approve. Review what the assistant will do:",
+      "destructiveItem": "This changes existing content.",
+      "approve": "Approve",
+      "decline": "Decline",
+      "enableCapabilityLink": "Enable this capability in Settings → Assistant"
+    },
+    "a11y": {
+      "userTurn": "Your message",
+      "assistantTurn": "Assistant reply"
+    },
+    "budget": {
+      "usage": "{{used}} of {{limit}} monthly tokens · resets on the 1st",
+      "noLimit": "No monthly token limit configured",
+      "a11y": "Monthly assistant usage: {{used}} of {{limit}} tokens"
+    },
+    "errors": {
+      "capability_unavailable": "A required capability is temporarily unavailable. Please try again shortly.",
+      "permission_denied": "You don't have access to the assistant, or the capability is disabled in your settings.",
+      "usage_limit_reached": "You've reached your monthly assistant usage limit. Your allowance resets on the 1st of next month.",
+      "session_invalid": "Your session ended. Please sign in again and re-ask.",
+      "internal_error": "Something went wrong. Please try again.",
+      "transport": "The connection was interrupted. Please try again."
+    }
+  },
   "associates-view": {
     "less": "mostrar menos",
     "more": "...y {{count}} más",
@@ -904,12 +949,19 @@
     }
   },
   "delete": "Eliminar",
+  "downNoticeBanner": {
+    "a11yLabel": "Aviso de mantenimiento programado",
+    "dismiss": "Cerrar aviso",
+    "message": "Mantenimiento programado el viernes 31 de julio a las 21:00 CEST. La plataforma podría no estar disponible durante un breve periodo."
+  },
   "edit": "Editar",
   "error": "Error",
   "filters": {
     "and": "y",
     "clear": "Borrar filtros",
     "filterByTag": "Filtrar por etiqueta",
+    "filterByTagActive_one": "Filtrar por etiqueta, {{count}} seleccionada",
+    "filterByTagActive_other": "Filtrar por etiqueta, {{count}} seleccionadas",
     "summary": "Resultados para {{criteria}}"
   },
   "forms": {
@@ -927,6 +979,17 @@
     }
   },
   "fullscreen": "Pantalla completa",
+  "imageCrop": {
+    "previewAlt": "Vista previa del recorte",
+    "tooSmall": "El área seleccionada es de {{actualWidth}}×{{actualHeight}}px. Se requieren al menos {{requiredWidth}}×{{requiredHeight}}px: elige una imagen más grande.",
+    "aspectRatio": {
+      "label": "Relación de aspecto: {{ratio}}:1",
+      "ariaLabel": "Relación de aspecto: {{ratio}}",
+      "hintLeft": "Izquierda: recorte de imagen más alto",
+      "hintRight": "Derecha: recorte de imagen más bajo",
+      "name": "Forma del banner"
+    }
+  },
   "innovationHub": {
     "outsideOfSpace": {
       "forum": "Este es el $t(common.forum) general de Alkemio, fuera del <strong>{{space}}</strong> $t(common.space). ¡Estás invitado/a a explorar y contribuir!"
@@ -983,13 +1046,13 @@
     "ua": "Ucraniano"
   },
   "lead": "Líder",
+  "leads": "Líderes",
   "leadType": {
     "org": "Organización",
     "person": "Persona"
   },
-  "leads": "Líderes",
-  "loadMore": "Cargar más",
   "loading": "Cargando",
+  "loadMore": "Cargar más",
   "member": "Miembro",
   "messaging": {
     "message": "Mensaje",
@@ -1356,13 +1419,12 @@
       },
       "messageLabel": "Mensaje",
       "noResults": "No se encontraron usuarios",
+      "notice": "Cada destinatario lo recibe como un mensaje privado en su chat.",
       "removeUser": "Quitar a {{name}}",
       "searchAriaLabel": "Buscar usuarios",
       "searchPlaceholder": "Busca usuarios por nombre o correo",
       "searching": "Buscando…",
-      "send": "Enviar",
-      "sent": "Mensaje enviado con éxito.",
-      "warning": "Los destinatarios verán tu nombre como remitente."
+      "send": "Enviar"
     },
     "back": "Atrás",
     "button": "Compartir",

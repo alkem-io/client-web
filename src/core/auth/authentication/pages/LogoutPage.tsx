@@ -2,9 +2,10 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUnsubscribeFromPushNotificationsMutation } from '@/core/apollo/generated/apollo-hooks';
 import { useLogoutUrl } from '@/core/auth/authentication/hooks/useLogoutUrl';
-import { useReturnUrl } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
+import { useReturnUrl, useSignUpRoundTrip } from '@/core/auth/authentication/utils/useSignUpReturnUrl';
 import Loading from '@/core/ui/loading/Loading';
 import { PUSH_SUBSCRIPTION_ID_KEY, PUSH_USER_DISABLED_KEY } from '@/main/pushNotifications/constants';
+import { clearMessagingDrafts } from '@/main/userMessaging/messagingDrafts';
 
 async function cleanupPushSubscription(
   unsubscribeMutation: ReturnType<typeof useUnsubscribeFromPushNotificationsMutation>[0]
@@ -19,8 +20,13 @@ async function cleanupPushSubscription(
     }
 
     if ('serviceWorker' in navigator) {
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await registration.pushManager.getSubscription();
+      // getRegistration() resolves immediately (undefined when no SW), unlike
+      // navigator.serviceWorker.ready, which NEVER resolves without an active
+      // service worker — the SW only registers in PROD builds, so awaiting
+      // `.ready` hung the logout redirect forever on dev stacks (and would in
+      // prod for any user whose SW failed to activate).
+      const registration = await navigator.serviceWorker.getRegistration();
+      const subscription = await registration?.pushManager.getSubscription();
       if (subscription) {
         await subscription.unsubscribe();
       }
@@ -37,6 +43,7 @@ const LogoutPage = () => {
 
   const { getLogoutUrl, outcome } = useLogoutUrl();
   const { clearReturnUrl } = useReturnUrl();
+  const { clearArmed } = useSignUpRoundTrip();
   const [unsubscribeMutation] = useUnsubscribeFromPushNotificationsMutation();
 
   useEffect(() => {
@@ -50,6 +57,8 @@ const LogoutPage = () => {
       // end_session URL or the Kratos SSO logout URL.
       cleanupPushSubscription(unsubscribeMutation).finally(() => {
         clearReturnUrl();
+        clearArmed();
+        clearMessagingDrafts();
         window.location.replace(outcome.url);
       });
       return;
@@ -58,6 +67,8 @@ const LogoutPage = () => {
     // session). Land on the public home page instead of the bare placeholder.
     cleanupPushSubscription(unsubscribeMutation).finally(() => {
       clearReturnUrl();
+      clearArmed();
+      clearMessagingDrafts();
       window.location.replace('/home');
     });
   }, [outcome]);

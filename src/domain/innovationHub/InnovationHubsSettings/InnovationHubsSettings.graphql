@@ -26,11 +26,56 @@ fragment InnovationHubSettings on InnovationHub {
   id
   nameID
   subdomain
+  # The owning account — candidate pool for the Add-resource dialogs (AccountResourcesInfo).
+  account {
+    id
+  }
   profile {
     ...InnovationHubProfile
   }
   spaceListFilter {
     ...InnovationHubSpace
+  }
+  # Resolved curated lists (id + row-display selections). There is no raw-ID read
+  # surface: full-replace saves rebuild the ID array from these resolved entities,
+  # which is what self-heals dangling entries (FR-013).
+  innovationPackListFilter {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+    templatesSet {
+      id
+      calloutTemplatesCount
+      spaceTemplatesCount
+      communityGuidelinesTemplatesCount
+      postTemplatesCount
+      whiteboardTemplatesCount
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+  }
+  virtualContributorListFilter {
+    id
+    profile {
+      id
+      displayName
+      url
+    }
+    provider {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
   }
 
   spaceVisibilityFilter

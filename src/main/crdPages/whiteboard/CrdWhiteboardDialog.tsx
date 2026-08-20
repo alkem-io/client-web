@@ -1,8 +1,5 @@
-import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/data/types';
-import type {
-  AssetPublishReport,
-  ExcalidrawImperativeAPI,
-} from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/data/types';
+import type { AssetPublishReport, ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
@@ -14,7 +11,7 @@ import {
   SpaceLevel,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
-import { useApolloCache } from '@/core/apollo/utils/removeFromCache';
+import { useApolloCache } from '@/core/apollo/utils/evictFromCache';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { error as logError, error as logPreviewError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
@@ -50,12 +47,14 @@ import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteb
 import { useWhiteboardAssetAdapter } from '@/domain/common/whiteboard/excalidraw/assetAdapter/useWhiteboardAssetAdapter';
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 import { mapWhiteboardFooterProps } from './whiteboardFooterMapper';
 
@@ -400,6 +399,7 @@ const CrdWhiteboardDialog = ({
           open,
           isOnline,
           connecting,
+          hasError,
           autoReconnectSeconds,
           lastSuccessfulSavedDate: lastSaved,
           onReconnect,
@@ -425,6 +425,13 @@ const CrdWhiteboardDialog = ({
             reconnecting={connecting}
             countdownSeconds={autoReconnectSeconds}
             onReconnect={onReconnect}
+            // Surface the reload escape hatch immediately once a reconnect attempt has failed — while
+            // online the countdown cycles `connecting`, so the notice's own stuck-timer never elapses.
+            hasError={hasError}
+            // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
+            // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
+            // of seconds, disabling Reconnect AND pausing the auto-reconnect countdown (story #10131).
+            onReloadPage={() => window.location.reload()}
           />
         )}
       >
@@ -501,6 +508,8 @@ const CrdWhiteboardDialog = ({
                   open={options.show}
                   fullscreen={options.fullscreen}
                   onClose={onClose}
+                  // Escape first deselects/cancels in Excalidraw; only closes the dialog when there's nothing to clear.
+                  onEscapeKeyDown={event => handleExcalidrawEscape(excalidrawAPI, event)}
                   title={
                     <WhiteboardDisplayName
                       displayName={whiteboard.profile.displayName}
@@ -525,6 +534,7 @@ const CrdWhiteboardDialog = ({
                     ) : undefined
                   }
                   headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
+                  rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
                   footer={
                     <WhiteboardCollabFooter
                       {...footerProps}

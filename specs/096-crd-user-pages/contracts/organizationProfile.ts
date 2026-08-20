@@ -34,6 +34,11 @@ export type OrganizationPageHeroProps = {
   /** Deterministic colour (from `pickColorFromId(orgId)`) used for the avatar fallback. */
   color: string;
   displayName: string;
+  /**
+   * Muted single line under the display-name row, above the location line.
+   * `null` (empty/whitespace tagline) renders nothing (FR-020, 2026-07-08).
+   */
+  tagline: string | null;
   /** "City, Country" — null when both empty. */
   location: string | null;
   /** Verified badge shown when `verified === true` (FR-020). */
@@ -122,8 +127,8 @@ export type OrganizationProfileSidebarProps = {
   labels: {
     bioTitle: string;
     bioEmpty: string;
+    /** Heading for the non-social "Links" section — rendered via the shared `ReferencesList`, omitted when empty (FR-023, correction 2026-06-24). `referencesEmpty` was removed in the same change. */
     referencesTitle: string;
-    referencesEmpty: string;
     /**
      * Receives `totalCount` from `metrics[Associate]` and returns the localized
      * heading (e.g., "Associates (12)"). Implemented as a closure so the

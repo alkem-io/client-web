@@ -219,6 +219,22 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/help/help.de.json'),
     fr: () => import('@/crd/i18n/help/help.fr.json'),
   },
+  'crd-language': {
+    en: () => import('@/crd/i18n/language/language.en.json'),
+    es: () => import('@/crd/i18n/language/language.es.json'),
+    nl: () => import('@/crd/i18n/language/language.nl.json'),
+    bg: () => import('@/crd/i18n/language/language.bg.json'),
+    de: () => import('@/crd/i18n/language/language.de.json'),
+    fr: () => import('@/crd/i18n/language/language.fr.json'),
+  },
+  'crd-reactions': {
+    en: () => import('@/crd/i18n/reactions/reactions.en.json'),
+    es: () => import('@/crd/i18n/reactions/reactions.es.json'),
+    nl: () => import('@/crd/i18n/reactions/reactions.nl.json'),
+    bg: () => import('@/crd/i18n/reactions/reactions.bg.json'),
+    de: () => import('@/crd/i18n/reactions/reactions.de.json'),
+    fr: () => import('@/crd/i18n/reactions/reactions.fr.json'),
+  },
 };
 
 // Cache for loaded translations
@@ -287,6 +303,25 @@ i18n
         'crd-error': crdErrorEN,
       },
     },
+    // DL-10 / SC-001c / FR-004 / SC-005: reconfigure the language detector so the
+    // library never reads navigator or writes i18nextLng browser storage.
+    //
+    // Navigator is deliberately EXCLUDED from detection.order: including it would
+    // cause i18next to set i18n.language = navigator.languages[0] (e.g. 'nl') at
+    // boot, silently switching the display for anonymous visitors BEFORE they
+    // answer the offer — a direct violation of FR-004, SC-005, and DL-6.
+    //
+    // Browser-language reading for the OFFER is done explicitly by
+    // detectBrowserLanguage() in useLanguageResolution.ts; the i18next detector
+    // does not need navigator and must not touch display.
+    //
+    // The querystring source is kept for the in-context-translation tooling only.
+    // ALL browser writes are handled explicitly by the language-offer subsystem
+    // behind the new `preference` consent category.
+    detection: {
+      order: ['querystring'] as const,
+      caches: [] as string[],
+    },
     interpolation: {
       format: (value, format, _lng) => {
         if (format === 'lowercase') return value.toLowerCase();
@@ -296,5 +331,17 @@ i18n
       escapeValue: false, // React already protects from XSS unless you use dangerouslySetInnerHTML (which we shouldn't)
     },
   });
+
+// Keep the document's <html lang> attribute in sync with the active display
+// language (a11y / SEO). i18next does not fire `languageChanged` for the initial
+// value, so set it once on `initialized` and then on every subsequent change
+// (offer accept, the settings switcher, legacy reconciliation, anonymous carry).
+const syncHtmlLang = (lng: string | undefined): void => {
+  if (typeof document !== 'undefined' && lng) {
+    document.documentElement.lang = lng;
+  }
+};
+i18n.on('languageChanged', syncHtmlLang);
+i18n.on('initialized', () => syncHtmlLang(i18n.language));
 
 export default i18n;

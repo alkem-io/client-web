@@ -1,4 +1,4 @@
-import type { AppState } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { AppState } from '@excalidraw-yjs/excalidraw/types';
 import { WHITEBOARD_DEFAULTS } from './whiteboardDefaults';
 
 const useWhiteboardDefaults = (): {

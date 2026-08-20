@@ -1,5 +1,5 @@
-import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
-import type { exportToCanvas as ExcalidrawExportToCanvas } from '@excalidraw-yjs/excalidraw/dist/types/utils/src/export';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
+import type { exportToCanvas as ExcalidrawExportToCanvas } from '@excalidraw-yjs/excalidraw/utils/export';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
 import { padImage } from '@/core/utils/images/padImage';

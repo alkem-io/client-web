@@ -250,7 +250,7 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 **Why a separate phase**: like Phase 8, the original spec's choice (5-tab strip, prototype-faithful resource list) was implemented and shipped before this refinement. The change touches the contract (`ResourceTabKey` shrinks from 5 → 3 elements; `PublicProfileResources` gains 2 fields), the mapper, the view, the i18n keys, and the demo data — grouping them in one phase makes the rollback boundary clean.
 
-- [ ] T069 Update the contract types in `src/crd/components/user/UserResourceTabStrip.tsx`: shrink `ResourceTabKey` to `'resourcesHosted' | 'leading' | 'memberOf'`. Update `useResourceTabs.ts` default to `'resourcesHosted'`.
+- [ ] T069 Update the contract types in `src/crd/components/user/UserResourceTabStrip.tsx`: shrink `ResourceTabKey` to `'resourcesHosted' | 'leading' | 'memberOf'`. Update `useResourceTabs.ts` default to `'memberOf'`.
 
 - [ ] T070 Refactor `src/crd/components/user/UserResourceSections.tsx`:
   - Drop the `'allResources' | 'hostedSpaces' | 'virtualContributors'` switch branches.
@@ -266,7 +266,7 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
   - Update any call site in `CrdUserProfilePage.tsx` to forward the two new fields to the view.
 
 - [ ] T072 Update `src/main/crdPages/topLevelPages/userPages/publicProfile/CrdUserProfilePage.tsx`:
-  - Tab definitions array drops the two removed entries; default active tab is `'resourcesHosted'`.
+  - Tab definitions array drops the two removed entries; tab order is `memberOf` → `leading` → `resourcesHosted`; default active tab is `'memberOf'`.
   - Wire the two new `hostedInnovationPacks` / `hostedInnovationHubs` props from the mapper through to `UserResourceSections`.
   - Drop the `totalBadge` and `resourcesHosted` label values.
 
@@ -281,9 +281,9 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 - [ ] T074 Demo data + pages:
   - `src/crd/app/data/profiles.ts` — add 2-3 mock Template Packs and 1-2 mock Custom Homepages to `MOCK_ALEX_RIVERA` (and inherited by `MOCK_ME_USER`). Shape: `SimpleResourceCardItem`.
-  - `src/crd/app/pages/{UserProfileSelfDemoPage,UserProfileOtherDemoPage}.tsx` — drop the `tabs` array entries for hostedSpaces / virtualContributors; pass the new `hostedInnovationPacks` / `hostedInnovationHubs` props; drop the `totalBadge` and `resourcesHosted` label values; default the local `useState` to `'resourcesHosted'`.
+  - `src/crd/app/pages/{UserProfileSelfDemoPage,UserProfileOtherDemoPage}.tsx` — drop the `tabs` array entries for hostedSpaces / virtualContributors; pass the new `hostedInnovationPacks` / `hostedInnovationHubs` props; drop the `totalBadge` and `resourcesHosted` label values; default the local `useState` to `'memberOf'`.
 
-**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the User profile demo with 3 tabs, Resources Hosted active by default, all four sub-sections (Spaces / Virtual Contributors / Template Packs / Custom Homepages) rendering for `MOCK_ALEX_RIVERA`, and an empty Leading tab still showing the empty-state caption.
+**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the User profile demo with 3 tabs (Member of → Leading → Resources Hosted), Member of active by default, and — on the Resources Hosted tab — all four sub-sections (Spaces / Virtual Contributors / Template Packs / Custom Homepages) rendering for `MOCK_ALEX_RIVERA`, with an empty Leading tab still showing the empty-state caption.
 
 ---
 
@@ -329,9 +329,9 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
 
 - [ ] T081 Update `src/crd/app/data/profiles.ts` and `src/crd/app/pages/OrganizationProfileDemoPage.tsx`:
   - `MOCK_ORG_ALKEMIO`: replace the `accountResources: AccountResourcesGroup` block with 4 separate arrays (`hostedSpaces`, `hostedVirtualContributors` — keep the existing 4 spaces + 2 packs + 1 hub from the demo, add a 1-2 mock VCs to exercise the new sub-section).
-  - `OrganizationProfileDemoPage.tsx`: drop the `accountResources` prop wiring; add `useState<ResourceTabKey>('resourcesHosted')`; pass the 4 new arrays and the `tabStrip` prop.
+  - `OrganizationProfileDemoPage.tsx`: drop the `accountResources` prop wiring; add `useState<ResourceTabKey>('memberOf')`; pass the 4 new arrays and the `tabStrip` prop.
 
-**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the Org profile demo with 3 tabs, Resources Hosted active by default, all 4 sub-sections rendering for `MOCK_ORG_ALKEMIO`. Toggle to Lead Spaces / All Memberships — only that tab's content renders.
+**Verification:** `pnpm lint` clean; `pnpm vitest run` green; `pnpm crd:dev` shows the Org profile demo with 3 tabs (All Memberships → Lead Spaces → Resources Hosted), All Memberships active by default. Toggle to Resources Hosted — all 4 sub-sections render for `MOCK_ORG_ALKEMIO`; Lead Spaces / All Memberships show only that tab's content.
 
 ---
 
@@ -429,6 +429,33 @@ This is a single Vite SPA. Source paths begin at `src/`. Three integration verti
   - **Right-column skeleton** (driven by `loading.contentView`): render three section blocks — (a) a 3-column responsive grid of three card-shaped placeholders for Functionality, (b) a 3-column responsive grid of six transparency-card placeholders for AI Engine, (c) a thin `Separator` placeholder + a paragraph-shaped placeholder for Monitoring. The redesigned right column MUST NOT collapse into a single skeleton block while loading.
 
 **Verification:** `pnpm lint` clean; `pnpm vitest run` green (new T091 + T092 tests pass alongside the existing suite); `pnpm crd:dev` shows the VC demo at `/vc/datasynth-bot` with the redesigned hero (badge + Keywords chips), flat References list in the sidebar, and the three right-column sections (Functionality with mixed Check/Minus glyphs, AI Engine with 6 transparency cards in 3-col grid + the `Clock` glyph on Web Access + "Unknown" on Data Usage Disclosure, Monitoring with the `<Trans>`-rendered T&C link opening in a new tab). The Role Requirements card shows a real `<strong>` element. No `dangerouslySetInnerHTML` appears anywhere in the rendered output. Toggle CRD off — the legacy MUI VC profile page renders unchanged.
+
+---
+
+## Phase 12: User + Organization profile — tagline & references (FR-010 / FR-010b / FR-023 / FR-046 — Session 2026-06-24)
+
+> Post-implementation correction. The User hero was missing the tagline and the User sidebar was missing the non-social references; the inline references markup on the User and Org sidebars was duplicated and rendered an empty-state caption. MUI and the `useCrdEnabled` toggle have since been removed (story #9885) — there is no longer a "toggle off" path to verify.
+
+### User hero — tagline (FR-010)
+
+- [X] T098 [US1] Add a `tagline: string | null` prop to `UserPageHero` (`src/crd/components/user/UserPageHero.tsx`) and render it as a muted `text-body-emphasis text-muted-foreground` line directly under the display name `<h1>` and above the location line; render nothing when `null`. Update `UserPageHero.test.tsx` base props with `tagline: null`.
+- [X] T099 [US1] In `CrdUserProfilePage.tsx`, pass `tagline: profile?.tagline?.trim() || null` into the hero props. (`profile.tagline` is already selected by `useUserProvider` → `UserDetails` fragment / `UserModel`; no GraphQL change.)
+
+### Shared ReferencesList + User "Links" section (FR-010b / FR-046)
+
+- [X] T100 [P] Implement the shared `ReferencesList` component at `src/crd/components/common/ReferencesList.tsx`: owns the `<section>` + `text-section-title` heading + `role="list"` URL-chip list (each chip an `<a target="_blank" rel="noreferrer">` with the optional `description` as a `text-caption` line). Returns `null` when there are no items. Accepts `title`, `references: ReferenceLink[]`, and `excludeSocial?: boolean` (default `true`, filters via `excludeSocialReferences` from `SocialLinks.tsx`).
+- [X] T101 [US1] Refactor `UserProfileSidebar` to render `<ReferencesList title={labels.referencesTitle} references={refs} />` between the Tagsets block and the Social block. Add `referencesTitle` to the sidebar `labels` type; remove the now-dead inline references markup. Wire `referencesTitle: t('userProfile.sidebar.referencesTitle')` in `CrdUserProfilePage.tsx`.
+- [X] T102 Add `userProfile.sidebar.referencesTitle` ("Links") to all six `profilePages.<lang>.json` files (en/nl/es/bg/de/fr). No `referencesEmpty` key (omit-when-empty).
+
+### Organization sidebar — omit-when-empty + shared component (FR-023)
+
+- [X] T103 [US2] Refactor `OrganizationProfileSidebar` to render `<ReferencesList title={labels.referencesTitle} references={references} />` in place of its inline References section. Remove `referencesEmpty` from the sidebar `labels` type, the page wiring in `CrdOrganizationProfilePage.tsx`, and the `orgProfile.sidebar.referencesEmpty` key in all six `profilePages.<lang>.json` files.
+
+### Standalone preview demos
+
+- [X] T104 [P] Update `src/crd/app/data/profiles.ts` (add `tagline` to the Alex + Sam hero mocks) and the demo pages (`UserProfileSelfDemoPage.tsx`, `UserProfileOtherDemoPage.tsx`, `OrganizationProfileDemoPage.tsx`) — add `referencesTitle` to their `SIDEBAR_LABELS` and drop `referencesEmpty`.
+
+**Verification:** `npx tsc --noEmit` clean; `pnpm vitest run` green (User + Org profile suites pass); `keyParity.test.ts` (T005) confirms six-language parity after the key add/remove. `pnpm crd:dev` shows the User demo hero with a tagline under the name and a "Links" section in the sidebar (between Tagsets and Social) that disappears entirely when the profile has no non-social references — same on the Org demo. The VC sidebar is intentionally unchanged (still inline, still shows its "No references" empty-state; migrating it to `ReferencesList` with `excludeSocial={false}` is a deferred follow-up).
 
 ---
 

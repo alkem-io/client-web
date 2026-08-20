@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { setBaseTitle } from './documentTitle';
 
 interface UsePageTitleOptions {
   /**
@@ -37,12 +38,14 @@ export const usePageTitle = (title: string | undefined, options?: UsePageTitleOp
   const { suffix = t('pages.titles.alkemio'), skipSuffix = false } = options ?? {};
 
   useEffect(() => {
+    // Write the base title through the documentTitle singleton so the unread
+    // tab-badge prefix and the page title never race for `document.title`.
     if (skipSuffix) {
-      document.title = title || suffix;
+      setBaseTitle(title || suffix);
     } else if (!title) {
-      document.title = suffix;
+      setBaseTitle(suffix);
     } else {
-      document.title = `${title}${separator}${suffix}`;
+      setBaseTitle(`${title}${separator}${suffix}`);
     }
   }, [title, suffix, skipSuffix, separator]);
 };

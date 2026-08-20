@@ -9,6 +9,7 @@ import { MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from '@/crd/forms/callout/PollOpti
 import type {
   AllowedActors,
   ContributionDefaults,
+  ContributorCollectionConfig,
   FramingChip,
   LinkRow,
   ReferenceRow,
@@ -26,7 +27,15 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 // Re-export the form-shape types so existing `@/main/*` consumers can keep
 // importing them from this hook. New code should import directly from
 // `@/crd/forms/callout/types`.
-export type { AllowedActors, ContributionDefaults, FramingChip, LinkRow, ReferenceRow, ResponseType };
+export type {
+  AllowedActors,
+  ContributionDefaults,
+  ContributorCollectionConfig,
+  FramingChip,
+  LinkRow,
+  ReferenceRow,
+  ResponseType,
+};
 
 export type CalloutFormValues = {
   title: string;
@@ -41,6 +50,26 @@ export type CalloutFormValues = {
   // Zone 1 — framing
   framingChip: FramingChip;
   framingCommentsEnabled: boolean;
+  /**
+   * Contributor-collection callout config (feature 008). Only meaningful when
+   * `framingChip === 'contributors'`. Serialized into
+   * `settings.framing.contributors` on create/update; prefilled on edit.
+   */
+  contributorCollection: ContributorCollectionConfig;
+  /**
+   * Selection mode for collection callouts (feature 025). Only meaningful when
+   * `framingChip === 'contributors'` or `framingChip === 'spaces'`.
+   * - `'auto'`: self-updating collection (default).
+   * - `'custom'`: curated subset (selectedIds).
+   */
+  selectionMode: 'auto' | 'custom';
+  /**
+   * Selected ids for custom selection mode (feature 025). Kept in form state
+   * even when mode is 'auto' so toggling back restores the list (non-destructive
+   * toggle, FR-019). Submitted to the server on save; ignored server-side in AUTO
+   * mode but preserved for re-enabling custom later.
+   */
+  selectedIds: string[];
   memoMarkdown: string;
   linkUrl: string;
   linkDisplayName: string;
@@ -69,13 +98,6 @@ export type CalloutFormValues = {
   collaboraDocumentType: CollaboraDocumentType;
   /** Optional file staged for the upload-path of Document framing. Mutually exclusive with the blank-create card selection. */
   collaboraUploadFile: File | null;
-  /**
-   * The post title that was auto-prefilled when `collaboraUploadFile` was staged
-   * (filename minus extension). Compared against the current `title` at submit time
-   * to decide whether to send `framing.collaboraDocument.displayName` explicitly
-   * (typed/edited) or rely on the server's filename-derivation default (unchanged).
-   */
-  collaboraAutoPrefilledTitle?: string;
   // Zone 2 — responses
   responseType: ResponseType;
   allowedActors: AllowedActors;
@@ -129,6 +151,17 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   tags: [],
   framingChip: 'none',
   framingCommentsEnabled: true,
+  // Default contributor-collection config mirrors the server migration default:
+  // all three types, default type USER, default view LIST, no fixed map view.
+  contributorCollection: {
+    types: ['user', 'organization', 'virtualContributor'],
+    defaultType: 'user',
+    defaultView: 'list',
+    mapView: null,
+  },
+  // Selection defaults: AUTO mode, no ids (feature 025 FR-002 default).
+  selectionMode: 'auto',
+  selectedIds: [],
   memoMarkdown: '',
   linkUrl: '',
   linkDisplayName: '',
@@ -146,7 +179,6 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   mediaGalleryVisuals: [],
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
   collaboraUploadFile: null,
-  collaboraAutoPrefilledTitle: undefined,
   responseType: 'none',
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,
@@ -177,7 +209,8 @@ type ValidationCode =
   | 'referenceTitleRequired'
   | 'referenceUrlInvalid'
   | 'linkRowTitleRequired'
-  | 'linkRowUrlInvalid';
+  | 'linkRowUrlInvalid'
+  | 'contributorTypesRequired';
 
 export type UseCrdCalloutFormResult = {
   values: CalloutFormValues;
@@ -243,6 +276,8 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
         return t('validation.linkRowTitleRequired');
       case 'linkRowUrlInvalid':
         return t('validation.urlInvalid');
+      case 'contributorTypesRequired':
+        return t('validation.contributorTypesRequired');
       default:
         return code;
     }
@@ -277,6 +312,13 @@ export function useCrdCalloutForm(initialOverrides?: Partial<CalloutFormValues>)
         } else if (!isValidHttpUrl(rawUrl)) {
           next.linkUrl = translateValidationMessage('urlInvalid');
         }
+      }
+    }
+    if (v.framingChip === 'contributors') {
+      // FR-006a: at least one contributor type must be selected; saving with
+      // zero types is blocked by validation.
+      if (v.contributorCollection.types.length === 0) {
+        next.contributorCollection = translateValidationMessage('contributorTypesRequired');
       }
     }
     if (v.framingChip === 'poll') {

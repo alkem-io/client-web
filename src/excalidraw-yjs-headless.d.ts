@@ -10,5 +10,5 @@ declare module '@excalidraw-yjs/excalidraw/headless' {
     decodeSnapshot,
     encodeSnapshot,
     type WhiteboardSnapshot,
-  } from '@excalidraw-yjs/excalidraw/dist/types/element/src/yjs/schema';
+  } from '@excalidraw-yjs/excalidraw/element/yjs/schema';
 }

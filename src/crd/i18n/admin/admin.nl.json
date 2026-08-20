@@ -75,7 +75,22 @@
     "GLOBAL_PLATFORM_MANAGER": "Global Platform Manager",
     "GLOBAL_SUPPORT_MANAGER": "Global Support Manager",
     "PLATFORM_BETA_TESTER": "Platform Beta Tester",
-    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign"
+    "PLATFORM_VC_CAMPAIGN": "Platform VC Campaign",
+    "PLATFORM_ASSISTANT_ACCESS": "AI Assistant Access",
+    "PLATFORM_OPERATIONS_ADMIN": "Platform Operations Admin"
+  },
+  "roleDescriptions": {
+    "GLOBAL_ADMIN": "Volledige administratieve controle over het hele platform.",
+    "GLOBAL_SUPPORT": "Platformbeheer en supportactiviteiten; kan afhankelijk van Space-instellingen als Space-admin optreden.",
+    "GLOBAL_LICENSE_MANAGER": "Beheert licenties en plannen voor alle accounts.",
+    "GLOBAL_COMMUNITY_READER": "Alleen-lezen toegang tot community-informatie op het hele platform.",
+    "GLOBAL_SPACES_READER": "Alleen-lezen toegang tot alle Spaces en hun inhoud.",
+    "GLOBAL_PLATFORM_MANAGER": "Beheert instellingen en inhoud op platformniveau.",
+    "GLOBAL_SUPPORT_MANAGER": "Uitgebreide supportrol voor het beheren van supportactiviteiten.",
+    "PLATFORM_BETA_TESTER": "Toegang tot bètafuncties vóór algemene release.",
+    "PLATFORM_VC_CAMPAIGN": "Deelname aan de Virtual Contributor-campagne.",
+    "PLATFORM_ASSISTANT_ACCESS": "Toegang tot de AI-assistent.",
+    "PLATFORM_OPERATIONS_ADMIN": "Alleen operationele en onderhoudsacties: resets van autorisatie en licentierechten, zoek-/AI-ingestie en herindexering, onderhoud van de AI-server, datamigraties, onderhoud van notificaties en communicatie, en verversing van geolocatie. Geeft geen andere administratieve rechten en geen toegang tot persoonsgegevens van gebruikers."
   },
   "roleMembers": {
     "currentMembers": "Huidige leden",
@@ -153,6 +168,29 @@
       "parentPlaceholder": "Selecteer een bovenliggende space",
       "confirmTitle": "Conversie bevestigen",
       "confirmDescription": "Hiermee verandert het space-niveau en dit kan de community, subspaces en URLs beïnvloeden. Dit kan niet ongedaan worden gemaakt."
+    },
+    "spaceMove": {
+      "title": "Subspace verplaatsen",
+      "description": "Verplaats een subspace naar een andere bovenliggende space over top-level spaces heen.",
+      "resolvedLevel": "Opgelost niveau: {{level}}",
+      "noMoves": "Er zijn geen verplaatsingen beschikbaar voor dit space-niveau.",
+      "moveL1ToL0Label": "Verplaatsen naar een andere top-level space",
+      "moveL1ToL2Label": "Verplaatsen onder een subspace van een andere top-level space",
+      "moveL2ToL1Label": "Verplaatsen onder een subspace van een andere top-level space",
+      "targetL0Label": "Doel top-level space",
+      "targetL1Label": "Doel subspace",
+      "targetL0Placeholder": "Selecteer een top-level space",
+      "targetL1Placeholder": "Selecteer een subspace",
+      "targetL0Empty": "Geen top-level spaces beschikbaar.",
+      "targetL1Empty": "Geen subspaces beschikbaar in de geselecteerde space.",
+      "move": "Subspace verplaatsen",
+      "confirmTitle": "Verplaatsing bevestigen",
+      "confirmDescription": "Hiermee wordt de subspace naar de geselecteerde bestemming verplaatst. Alle communityrol­len inclusief beheerders worden verwijderd, uitstaande uitnodigingen worden ingetrokken en het aankondigingskanaal wordt gereset. Dit kan niet ongedaan worden gemaakt.",
+      "autoInviteLabel": "Uitnodigingen sturen naar voormalige leden die in de doelcommunity zitten",
+      "invitationMessageLabel": "Persoonlijk bericht (optioneel, max. 500 tekens)",
+      "invitationMessagePlaceholder": "Voeg een persoonlijk bericht toe aan de uitnodiging…",
+      "successPrefix": "Subspace verplaatst. Nieuwe locatie:",
+      "newLocationLabel": "Nieuwe locatie bekijken"
     },
     "spaceTransfer": {
       "title": "Space overdragen",

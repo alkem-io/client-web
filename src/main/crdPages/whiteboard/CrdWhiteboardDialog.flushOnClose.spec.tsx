@@ -1,4 +1,4 @@
-import type { AssetPublishReport } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { AssetPublishReport } from '@excalidraw-yjs/excalidraw/types';
 import { render, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 

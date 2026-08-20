@@ -19,5 +19,3 @@ export const useAdminAccessGuard = () => {
 
   return { loading, isPlatformAdmin };
 };
-
-export default useAdminAccessGuard;

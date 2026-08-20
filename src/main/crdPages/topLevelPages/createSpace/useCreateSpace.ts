@@ -15,16 +15,13 @@ import createNameId from '@/core/utils/nameId/createNameId';
 import type { ImageCropConfig } from '@/crd/components/common/ImageCropDialog';
 import type { CreateSpaceFieldErrors, CreateSpaceFormValues } from '@/crd/components/space/CreateSpaceDialog';
 import type { TemplateContent, TemplatePickerSelectProps } from '@/crd/components/templates/types';
+import type { VisualConstraints } from '@/domain/common/visual/model/VisualModel';
 import { useSpacePlans } from '@/domain/space/components/CreateSpace/hooks/spacePlans/useSpacePlans';
 import { useSpaceCreation } from '@/domain/space/components/CreateSpace/hooks/useSpaceCreation/useSpaceCreation';
 import { addSpaceWelcomeCache } from '@/domain/space/components/CreateSpace/utils';
 import { mapTemplateContent } from '@/main/crdPages/templates/templateContentMapper';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-import type { VisualConstraints } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/resizeImageToConstraints';
 import { useDashboardSpaces } from '@/main/topLevelPages/myDashboard/DashboardWithMemberships/DashboardSpaces/useDashboardSpaces';
-
-/** The number of innovation-flow states a Space template must have to seed an L0 Space (parity with the MUI selector). */
-const REQUIRED_FLOW_STATES = 4;
 
 export type CreatedSpaceResult = {
   id: string;
@@ -240,11 +237,10 @@ export function useCreateSpace({
   };
 
   /**
-   * Fetch the chosen Space template's content. Only templates whose captured
-   * space has a complete 4-state innovation flow may seed an L0 Space (parity
-   * with the MUI selector's `isTemplateSelectable`) — a non-conforming pick is
-   * rejected here (the picker can't pre-filter: card data carries no flow info).
-   * Otherwise: render the preview and pre-fill the form's text fields.
+   * Fetch the chosen Space template's content, render the preview and pre-fill
+   * the form's text fields. Any innovation-flow length is accepted — a Space's
+   * flow is no longer capped at four phases, and subspace creation applies its
+   * templates unconditionally too.
    */
   const applyTemplate = async (templateId: string) => {
     const requestSeq = ++templateRequestSeqRef.current;
@@ -256,15 +252,6 @@ export function useCreateSpace({
       const template = data?.lookup.template;
       if (!template) return;
       const mapped = mapTemplateContent(template, 'space');
-      const flowStateCount = mapped.type === 'space' ? mapped.phases.length : 0;
-
-      if (flowStateCount !== REQUIRED_FLOW_STATES) {
-        notify(t('template.invalidFlow'), 'warning');
-        templatePicker.clearSelection();
-        setAppliedTemplateId(null);
-        clearSelectedTemplate();
-        return;
-      }
 
       setSelectedTemplateName(template.profile.displayName);
       setSelectedTemplateContent(mapped);

@@ -3,8 +3,10 @@ import type { UserSettingsQuery } from '@/core/apollo/generated/graphql-schema';
 import type {
   NotificationChannels,
   NotificationSettings,
+  NotificationSwitchGroup,
+  SoundNotificationSettings,
 } from '@/domain/community/userAdmin/tabs/model/NotificationSettings.model';
-import type { NotificationGroupId } from './notificationPayloadBuilders';
+import type { NotificationGroupId, SoundKey } from './notificationPayloadBuilders';
 
 export type ContributorSettingsTranslator = TFunction<'crd-contributorSettings'>;
 
@@ -15,6 +17,14 @@ export type NotificationRow = {
   label: string;
   /** Resolved channel state (server values + optimistic overrides applied). Channels missing on the server default to `false`. */
   channels: NotificationChannels;
+  /**
+   * When set, the row's in-app cell renders as a disabled OFF switch with this
+   * pre-localized caption (affordance only — enforcement is server-side,
+   * contract C-5 / D-2). Used by the two conversation-message rows: chat
+   * messages already surface live in the chat panel, so in-app is permanently
+   * off for them.
+   */
+  inAppLockedCaption?: string;
 };
 
 export type NotificationGroup = {
@@ -28,6 +38,8 @@ export type NotificationGroup = {
 
 export type NotificationViewData = {
   groups: NotificationGroup[];
+  /** The "Sounds" group — single-switch rows, special-cased from the channel matrices. */
+  soundGroup: NotificationSwitchGroup;
 };
 
 export type NotificationPrivileges = {
@@ -48,6 +60,7 @@ export const extractServerSettings = (data: UserSettingsQuery | undefined): Noti
     platformAdmin: notification?.platform?.admin,
     user: notification?.user,
     virtualContributor: notification?.virtualContributor,
+    sound: notification?.sound,
   } as NotificationSettings;
 };
 
@@ -57,6 +70,39 @@ export const overrideKey = (
   property: string,
   channel: 'inApp' | 'email' | 'push'
 ): string => `${group}::${property}::${channel}`;
+
+/** Override-map key for a sound toggle (single switch, no channel). */
+export const soundOverrideKey = (key: SoundKey): string => `sound::${key}`;
+
+/** Resolve a sound row's on/off state — override, else server, else default on. */
+const resolveSoundEnabled = (
+  server: SoundNotificationSettings | undefined,
+  overrides: Map<string, boolean>,
+  key: SoundKey
+): boolean => overrides.get(soundOverrideKey(key)) ?? server?.[key] ?? true;
+
+/** Build the "Sounds" group: two independent single-switch rows (both default on). */
+const mapSoundGroup = (
+  server: SoundNotificationSettings | undefined,
+  overrides: Map<string, boolean>,
+  t: ContributorSettingsTranslator
+): NotificationSwitchGroup => ({
+  groupId: 'sound',
+  title: t('user.notifications.groups.sound.title'),
+  description: t('user.notifications.groups.sound.description'),
+  rows: [
+    {
+      property: 'chatMessage',
+      label: t('user.notifications.rows.sound.chatMessage'),
+      enabled: resolveSoundEnabled(server, overrides, 'chatMessage'),
+    },
+    {
+      property: 'inAppNotification',
+      label: t('user.notifications.rows.sound.inAppNotification'),
+      enabled: resolveSoundEnabled(server, overrides, 'inAppNotification'),
+    },
+  ],
+});
 
 /** Resolve a row's channels by applying overrides on top of the server values. */
 const resolveChannels = (
@@ -260,6 +306,23 @@ export const mapUserNotifications = (
         channels: resolveChannels(server.user?.messageReceived, overrides, 'user', 'messageReceived'),
       },
       {
+        property: 'conversationMessageDirect',
+        label: t('user.notifications.rows.user.conversationMessageDirect'),
+        channels: resolveChannels(
+          server.user?.conversationMessageDirect,
+          overrides,
+          'user',
+          'conversationMessageDirect'
+        ),
+        inAppLockedCaption: t('user.notifications.inAppLockedChat'),
+      },
+      {
+        property: 'conversationMessageGroup',
+        label: t('user.notifications.rows.user.conversationMessageGroup'),
+        channels: resolveChannels(server.user?.conversationMessageGroup, overrides, 'user', 'conversationMessageGroup'),
+        inAppLockedCaption: t('user.notifications.inAppLockedChat'),
+      },
+      {
         property: 'membership.spaceCommunityInvitationReceived',
         label: t('user.notifications.rows.user.membershipInvitationReceived'),
         channels: resolveChannels(
@@ -412,5 +475,5 @@ export const mapUserNotifications = (
     ],
   });
 
-  return { groups };
+  return { groups, soundGroup: mapSoundGroup(server.sound, overrides, t) };
 };

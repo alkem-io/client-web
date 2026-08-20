@@ -16,6 +16,7 @@ const MIME_TO_EXT: Record<string, string> = {
   'application/msword': '.doc',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
   'application/vnd.oasis.opendocument.text': '.odt',
+  'text/calendar': '.ics',
   'image/bmp': '.bmp',
   'image/jpg': '.jpg',
   'image/jpeg': '.jpg,.jpeg',
@@ -52,7 +53,12 @@ type UseReferenceFileUploadOptions = {
    * while **creating** an entity (its bucket doesn't exist yet, and a plain member has no
    * permanent `FileUpload` on the parent/space bucket). When **editing** an existing
    * entity the user can write to, pass `false` for a direct, permanent upload.
-   * Defaults to `true` (the safe create-flow value).
+   *
+   * When omitted, the value is taken from the resolved `storageConfig.temporaryLocation`
+   * (which `useStorageConfig` sets to `false` for edit flows and `true` only for the
+   * create flows that scope a temporary bucket). Hardcoding `true` here previously made
+   * edit-flow reference uploads land in temporary storage, so they were never propagated
+   * to `file_backup_outbox` (issue #10126).
    */
   temporaryLocation?: boolean;
 };
@@ -66,11 +72,16 @@ type UseReferenceFileUploadOptions = {
  */
 export function useReferenceFileUpload(
   storageConfig: StorageConfig | undefined,
-  { temporaryLocation = true }: UseReferenceFileUploadOptions = {}
+  { temporaryLocation }: UseReferenceFileUploadOptions = {}
 ): UseReferenceFileUploadResult {
   const { t } = useTranslation();
   const notify = useNotification();
   const [uploadFile] = useUploadFileMutation();
+
+  // Fall back to the value resolved by `useStorageConfig` (defaults to `false` for edit
+  // flows) rather than hardcoding `true`, so reference uploads on existing entities are
+  // permanent and get propagated to `file_backup_outbox` (issue #10126).
+  const isTemporaryLocation = temporaryLocation ?? storageConfig?.temporaryLocation ?? false;
 
   const canUpload = Boolean(storageConfig?.canUpload);
   const accept = storageConfig
@@ -94,7 +105,7 @@ export function useReferenceFileUpload(
                 file,
                 uploadData: {
                   storageBucketId: storageConfig.storageBucketId,
-                  temporaryLocation,
+                  temporaryLocation: isTemporaryLocation,
                 },
               },
             });

@@ -28,6 +28,7 @@ import {
 } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
+import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
@@ -38,11 +39,12 @@ import {
   type SpaceSettingsTabId,
   useSpaceSettingsTab,
 } from '@/main/crdPages/topLevelPages/spaceSettings/useSpaceSettingsTab';
-import { buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
+import { buildSettingsUrl, buildSpaceSectionUrl, TabbedLayoutParams } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSetBreadcrumbs } from '@/main/ui/breadcrumbs/BreadcrumbsContext';
 import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
+import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
@@ -68,6 +70,10 @@ export default function CrdSpacePageLayout() {
   // the click must consult the guard before navigating — otherwise the
   // discard-changes dialog (owned by the page) never opens.
   const settingsDirtyGuard = useDirtyTabGuard();
+  // Read here (before any early return) so the hook order stays stable. The
+  // site-wide maintenance notice sits directly under the header; suppress the hero
+  // overlay while it shows so the hero doesn't slide up over the notice.
+  const { visible: downNoticeVisible } = useDownNoticeBanner();
   const handleSettingsTabChange = async (next: SpaceSettingsTabId) => {
     if (await settingsDirtyGuard.requestSwitch(next)) {
       setActiveSettingsTab(next);
@@ -128,11 +134,12 @@ export default function CrdSpacePageLayout() {
   // the active-space home tab(s). Suspended/archived spaces show a visibility
   // notice above the banner — pulling the banner up under the header would
   // collide with it. Settings pages render `SpaceSettingsHeader` (no banner
-  // image), so they stay opaque too.
-  const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings;
+  // image), so they stay opaque too. `downNoticeVisible` additionally suppresses
+  // the overlay while the site-wide incident banner shows (read above).
+  const enableBannerOverlay = visibilityData.status === 'active' && !isOnSettings && !downNoticeVisible;
 
   const tabItems = tabs.map(tab => ({ label: tab.label, index: tab.index }));
-  const settingsHref = space.about.profile.url ? `${space.about.profile.url}/settings` : undefined;
+  const settingsHref = space.about.profile.url ? buildSettingsUrl(space.about.profile.url) : undefined;
 
   const headerActions = {
     showActivity: true,
@@ -202,6 +209,8 @@ export default function CrdSpacePageLayout() {
                 title={space.about.profile.displayName}
                 tagline={space.about.profile.tagline ?? undefined}
                 bannerUrl={space.about.profile.banner?.uri}
+                bannerAlt={space.about.profile.banner?.alternativeText ?? undefined}
+                bannerAspectRatio={resolveBannerAspectRatio(space.about.profile.banner?.aspectRatio)}
                 color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
                 actions={headerActions}
                 overlayHeader={enableBannerOverlay}
@@ -275,6 +284,7 @@ export default function CrdSpacePageLayout() {
                 key={spaceUrl}
                 url={spaceUrl}
                 entityLabel={t('common.space', { ns: 'crd-common' }).toLowerCase()}
+                onClose={() => setShareDialogOpen(false)}
               />
             ) : undefined
           }
@@ -309,7 +319,7 @@ function L0Breadcrumbs({
   const items: BreadcrumbTrailItem[] = isOnSettings
     ? [
         { label: spaceDisplayName, href: spaceUrl, icon: Layers },
-        { label: t('tabs.settings'), href: `${spaceUrl}/settings` },
+        { label: t('tabs.settings'), href: buildSettingsUrl(spaceUrl) },
         { label: t(`tabs.${activeSettingsTab}`) },
       ]
     : [{ label: spaceDisplayName, icon: Layers }];

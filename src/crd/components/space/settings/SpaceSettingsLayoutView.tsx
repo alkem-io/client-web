@@ -14,12 +14,10 @@ import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates } fro
 import { Loader2, Plus } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SpaceSettingsCard } from '@/crd/components/space/settings/SpaceSettingsCard';
 import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { Switch } from '@/crd/primitives/switch';
 import { AddPhaseDialog } from './AddPhaseDialog';
 import { LayoutCalloutRowPreview } from './LayoutCalloutRow';
 import { LayoutPoolColumn } from './LayoutPoolColumn';
@@ -28,28 +26,39 @@ import type {
   LayoutCallout,
   LayoutColumnId,
   LayoutPoolColumn as LayoutPoolColumnData,
-  LayoutPostDescriptionDisplay,
   LayoutReorderTarget,
   LayoutSaveBarState,
 } from './SpaceSettingsLayoutView.types';
 
 export type SpaceSettingsLayoutViewProps = {
   /**
-   * Space hierarchy level. Drives both phase-add visibility and column-DnD:
-   * - L0: phase add/delete + column reorder hidden — the home flow is fixed.
+   * Space hierarchy level. Drives column-DnD (reorder stays L1/L2-only) and the user-facing
+   * wording (tab vs phase):
+   * - L0: admins may add/delete additional tabs (the four built-in tabs stay protected via each
+   *   column's `isDeletable` flag); column reorder is hidden — the built-in tabs keep their order.
    * - L1/L2: admins can add/remove phases and drag columns to reorder them.
    */
   level: 'L0' | 'L1' | 'L2';
+  /**
+   * Whether the admin may add/delete tabs. When omitted, falls back to the prior `level !== 'L0'`
+   * behaviour so existing subspace callers are unaffected. The L0 settings page passes `true` for
+   * admins to enable additional-tab management; the four built-in L0 tabs remain protected via each
+   * column's `isDeletable` flag, not via this prop.
+   */
+  canManageTabs?: boolean;
+  /**
+   * User-facing noun for a column: 'tab' on L0 Spaces, 'phase' on subspaces. Drives the Add
+   * button label, the Add dialog wording, and the per-column Delete wording. Defaults to 'phase'
+   * so existing subspace callers are unchanged.
+   */
+  entityNoun?: 'tab' | 'phase';
   columns: LayoutPoolColumnData[];
-  postDescriptionDisplay: LayoutPostDescriptionDisplay;
   saveBar: LayoutSaveBarState;
   onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
   /** Column-level reorder — called with the new order of column IDs. Only invoked at L1/L2. */
   onReorderColumns?: (orderedColumnIds: LayoutColumnId[]) => void;
-  onRenameColumn: (columnId: LayoutColumnId, patch: { title?: string; description?: string }) => void;
   onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
   onViewPost: (calloutId: string) => void;
-  onPostDescriptionDisplayChange: (next: LayoutPostDescriptionDisplay) => void;
   onSave: () => void;
   onDiscardChanges: () => void;
   columnMenuActions: ColumnMenuActions;
@@ -80,23 +89,22 @@ export type SpaceSettingsLayoutViewProps = {
  * Scope:
  *  - Renders one column card per backend state (dynamic order).
  *  - Drag-and-drop reorder + cross-column move (dnd-kit with keyboard sensor).
- *  - Inline-edit column title + description with hover-reveal pencil.
+ *  - Column title + description editing via the per-column menu → Edit details.
  *  - Three-dot per-column menu: Active phase + Default post template.
  *  - Per-callout kebab (two entries: Move to + View Post).
- *  - Post description display toggle at the top (collapsed / expanded).
+ *  - Per-phase Layout modal (description collapse + publish details) via column menu.
  *  - Save Changes / Discard Changes action bar at the bottom-right.
  */
 export function SpaceSettingsLayoutView({
   level,
+  canManageTabs,
+  entityNoun = 'phase',
   columns,
-  postDescriptionDisplay,
   saveBar,
   onReorder,
   onReorderColumns,
-  onRenameColumn,
   onMoveToColumn,
   onViewPost,
-  onPostDescriptionDisplayChange,
   onSave,
   onDiscardChanges,
   columnMenuActions,
@@ -117,7 +125,11 @@ export function SpaceSettingsLayoutView({
   );
   const [activeCallout, setActiveCallout] = useState<LayoutCallout | null>(null);
   const [addPhaseOpen, setAddPhaseOpen] = useState(false);
-  const canManagePhases = level !== 'L0' && !!onCreatePhase;
+  // Capability admits L0 when the consumer passes `canManageTabs`. When omitted, fall back to the
+  // prior `level !== 'L0'` behaviour so existing subspace callers are unchanged. The four built-in
+  // L0 tabs stay protected per-column via `column.isDeletable`, not via this gate.
+  const canManagePhases = (canManageTabs ?? level !== 'L0') && !!onCreatePhase;
+  const addButtonLabel = entityNoun === 'tab' ? t('layout.addTab.button') : t('layout.addPhase.button');
   // `isReplacingFlow` also locks structural actions: starting a create-state
   // mutation while the replace-flow mutation + refetch are in flight would race
   // two structural changes against the same innovation flow, and the reseed
@@ -235,7 +247,7 @@ export function SpaceSettingsLayoutView({
               onClick={() => setAddPhaseOpen(true)}
             >
               <Plus aria-hidden="true" className="size-4" />
-              {t('layout.addPhase.button')}
+              {addButtonLabel}
             </Button>
           )}
         </div>
@@ -269,11 +281,11 @@ export function SpaceSettingsLayoutView({
                     key={column.id}
                     column={column}
                     otherColumns={otherColumns}
-                    showDescription={postDescriptionDisplay === 'expanded'}
-                    onRenameColumn={onRenameColumn}
+                    showDescription={true}
                     onMoveToColumn={onMoveToColumn}
                     onViewPost={onViewPost}
                     columnMenuActions={columnMenuActions}
+                    entityNoun={entityNoun}
                     draggable={canReorderColumns}
                     onImageUpload={onImageUpload}
                     iframeAllowedUrls={iframeAllowedUrls}
@@ -284,12 +296,7 @@ export function SpaceSettingsLayoutView({
             </div>
           </SortableContext>
           <DragOverlay dropAnimation={null}>
-            {activeCallout ? (
-              <LayoutCalloutRowPreview
-                callout={activeCallout}
-                showDescription={postDescriptionDisplay === 'expanded'}
-              />
-            ) : null}
+            {activeCallout ? <LayoutCalloutRowPreview callout={activeCallout} showDescription={true} /> : null}
           </DragOverlay>
         </DndContext>
 
@@ -307,24 +314,13 @@ export function SpaceSettingsLayoutView({
         />
       </div>
 
-      {/* Post description display toggle — below columns, saves immediately (not buffered) */}
-      <SpaceSettingsCard title={t('layout.postDescriptionDisplay.title')}>
-        <div className="flex items-start gap-3">
-          <Switch
-            checked={postDescriptionDisplay === 'collapsed'}
-            onCheckedChange={checked => onPostDescriptionDisplayChange(checked ? 'collapsed' : 'expanded')}
-            aria-label={t('layout.postDescriptionDisplay.switchLabel')}
-          />
-          <p className="text-body text-muted-foreground">{t('layout.postDescriptionDisplay.description')}</p>
-        </div>
-      </SpaceSettingsCard>
-
       {canManagePhases && onCreatePhase && (
         <AddPhaseDialog
           open={addPhaseOpen}
           onOpenChange={setAddPhaseOpen}
           onSubmit={onCreatePhase}
           existingPhaseNames={columns.map(c => c.title)}
+          entityNoun={entityNoun}
         />
       )}
     </div>

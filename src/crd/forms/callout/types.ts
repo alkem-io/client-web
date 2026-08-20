@@ -10,15 +10,58 @@
  * Framing chip id. Maps to the server `CalloutFramingType` at submit time
  * via the calloutFormMapper. `'document'` is a disabled placeholder chip.
  */
-export type FramingChip = 'none' | 'whiteboard' | 'memo' | 'document' | 'cta' | 'image' | 'poll';
+export type FramingChip =
+  | 'none'
+  | 'whiteboard'
+  | 'memo'
+  | 'document'
+  | 'cta'
+  | 'image'
+  | 'poll'
+  | 'contributors'
+  | 'spaces';
+
+/**
+ * Contributor-collection callout config (feature 008). Carried in the callout
+ * form values and serialized into `settings.framing.contributors`. Plain TS —
+ * the three contributor types are a fixed string union mirroring the server
+ * `ActorType` enum, kept design-system-agnostic here.
+ */
+export type ContributorTypeId = 'user' | 'organization' | 'virtualContributor';
+export type ContributorViewId = 'list' | 'map';
+
+/**
+ * Admin-fixed initial map view. Plain TS — mirrors the server
+ * `CalloutContributorsMapView` shape (three floats). `null` means automatic
+ * framing (fit to plotted contributor bounds; Europe fallback when empty).
+ */
+export type ContributorMapFixedViewConfig = {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+};
+
+export type ContributorCollectionConfig = {
+  /** Selected contributor types (>=1; save is blocked on zero). */
+  types: ContributorTypeId[];
+  /** Default type shown first; must be one of `types` (auto-heals to the first selected). */
+  defaultType: ContributorTypeId;
+  /** Default display; auto-heals to `list` when the selection is VC-only. */
+  defaultView: ContributorViewId;
+  /**
+   * Admin-fixed initial map view. null = automatic framing.
+   * The heal functions never touch this field (isolated from type-healing).
+   */
+  mapView: ContributorMapFixedViewConfig | null;
+};
 
 /**
  * Response-type chip id. Maps to the server enum `CalloutContributionType`
  * (single value, not an array) at submit time via the calloutFormMapper.
- * Documents are scoped to post-level framing only in P1 — they MUST NOT
- * appear among Response Options (FR-015, FR-016).
+ * `'document'` maps to `CalloutContributionType.CollaboraDocument` — an
+ * upload-only response type (no blank-create path; story #10083).
  */
-export type ResponseType = 'none' | 'link' | 'post' | 'memo' | 'whiteboard';
+export type ResponseType = 'none' | 'link' | 'post' | 'memo' | 'whiteboard' | 'document';
 
 export type AllowedActors = {
   members: boolean;

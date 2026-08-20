@@ -5,6 +5,7 @@ import { SubspaceFlowTabs } from '@/crd/components/space/SubspaceFlowTabs';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutListConnector } from '../../space/callout/CalloutListConnector';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
@@ -37,7 +38,7 @@ export default function CrdSubspaceCalloutsPage() {
   // privilege, which only admins hold, so members never saw the Add Post button on L1 even when
   // contributions were enabled for them.
 
-  const editFlowHref = subspaceUrl ? `${subspaceUrl}/settings/layout` : undefined;
+  const editFlowHref = subspaceUrl ? buildSettingsTabUrl(subspaceUrl, 'layout') : undefined;
 
   const flowTabs = (
     <SubspaceFlowTabs
