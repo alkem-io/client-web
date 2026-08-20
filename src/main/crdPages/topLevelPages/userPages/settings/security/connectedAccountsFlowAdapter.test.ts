@@ -1,6 +1,7 @@
 import type { SettingsFlow, UiNode } from '@ory/kratos-client';
 import { describe, expect, it } from 'vitest';
 import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
+import contributorSettingsEn from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
 import { adaptConnectedAccountsFlow } from './connectedAccountsFlowAdapter';
 
 const hiddenNode = (name: string, value: string): UiNode =>
@@ -35,12 +36,24 @@ const buildFlow = (nodes: UiNode[], messages: SettingsFlow['ui']['messages'] = [
     ui: { action: 'https://kratos/self-service/settings?flow=abc', method: 'POST', nodes, messages },
   }) as unknown as SettingsFlow;
 
+// Resolves a dotted i18n key (e.g. `user.security.connectedAccounts.unavailable.message`) against the
+// real shipped `contributorSettings.en.json` resource — a plain `toBeTruthy()` on the key string passes
+// even when the key names a resource path that does not exist. This is the guard against that drift.
+const resolveI18nKey = (resource: unknown, dottedKey: string): unknown =>
+  dottedKey.split('.').reduce<unknown>((node, segment) => {
+    if (node === undefined || node === null || typeof node !== 'object') return undefined;
+    return (node as Record<string, unknown>)[segment];
+  }, resource);
+
 describe('adaptConnectedAccountsFlow', () => {
   describe('fail-closed (FR-024)', () => {
     it('returns unavailable when the flow is missing', () => {
       const result = adaptConnectedAccountsFlow(undefined, [AuthenticationType.Email]);
       expect(result.status).toBe('unavailable');
-      expect(result.unavailableReasonKey).toBeTruthy();
+      // Pinned to the exact key string, and resolved against the real shipped locale resource, so a
+      // future rename of either side fails the suite instead of rendering the raw key to the user.
+      expect(result.unavailableReasonKey).toBe('user.security.connectedAccounts.unavailable.message');
+      expect(typeof resolveI18nKey(contributorSettingsEn, result.unavailableReasonKey as string)).toBe('string');
       expect(result.providers).toEqual([]);
       expect(result.credentials).toEqual([]);
     });

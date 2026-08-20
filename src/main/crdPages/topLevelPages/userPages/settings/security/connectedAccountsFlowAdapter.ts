@@ -55,7 +55,7 @@ export type ConnectedAccountsModel = {
 
 const UNAVAILABLE: ConnectedAccountsModel = {
   status: 'unavailable',
-  unavailableReasonKey: 'user.security.connectedAccounts.unavailable.reason',
+  unavailableReasonKey: 'user.security.connectedAccounts.unavailable.message',
   providers: [],
   credentials: [],
   messages: [],
