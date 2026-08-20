@@ -13,7 +13,18 @@ import {
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { serializeWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+
+// A REAL non-empty snapshot (a drawn rectangle). `drewFreshContent` decodes the content
+// semantically now (byte-equality against the non-deterministic empty encoding is gone),
+// so "the user drew content" fixtures must be genuine encoded scenes, not opaque strings.
+const drawnWhiteboardContent = serializeWhiteboardContent({
+  elements: [{ id: 'r', type: 'rectangle', x: 0, y: 0, width: 10, height: 10, index: 'a0' }],
+  assets: {},
+  appState: {},
+} as never);
+
 import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
@@ -96,13 +107,13 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
     const input = calloutFormValuesToCreateCalloutInput(
       values({
         framingChip: 'whiteboard',
-        whiteboardContent: 'cmVhbC1mcmVzaC1jb250ZW50', // base64-ish, not the empty placeholder
+        whiteboardContent: drawnWhiteboardContent, // a real, non-empty drawn scene
         editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
       }),
       fallbacks
     );
     expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
-    expect(input.framing.whiteboard?.content).toBe('cmVhbC1mcmVzaC1jb250ZW50');
+    expect(input.framing.whiteboard?.content).toBe(drawnWhiteboardContent);
   });
 
   it('does NOT send sourceWhiteboardID for a from-scratch whiteboard template (no source whiteboard id)', () => {

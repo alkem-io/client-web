@@ -23,6 +23,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import {
   allowedActorsFromServer,
   framingChipToServer,
@@ -63,7 +64,7 @@ export function calloutFormValuesToCreateCalloutInput(
   });
 
   const sourceWhiteboardId = values.editMeta?.whiteboardId;
-  const drewFreshContent = Boolean(values.whiteboardContent && values.whiteboardContent !== EmptyWhiteboardString);
+  const drewFreshContent = !isEmptyWhiteboardContent(values.whiteboardContent);
   if (
     input.framing?.whiteboard &&
     framingChipToServer(values.framingChip) === CalloutFramingType.Whiteboard &&
@@ -198,10 +199,9 @@ export function calloutTemplateContentToFormValues(
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      whiteboardContent:
-        !contributionDefaults.whiteboardContent || contributionDefaults.whiteboardContent === EmptyWhiteboardString
-          ? ''
-          : contributionDefaults.whiteboardContent,
+      whiteboardContent: isEmptyWhiteboardContent(contributionDefaults.whiteboardContent)
+        ? ''
+        : (contributionDefaults.whiteboardContent ?? ''),
     },
     prePopulateLinkRows: [],
     referenceRows:

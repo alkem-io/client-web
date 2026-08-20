@@ -1,6 +1,11 @@
 import { decodeSnapshot, encodeSnapshot, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import { describe, expect, it } from 'vitest';
-import { parseWhiteboardContentToScene, serializeWhiteboardContent } from './whiteboardContent';
+import { EmptyWhiteboardSnapshot, EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import {
+  isEmptyWhiteboardContent,
+  parseWhiteboardContentToScene,
+  serializeWhiteboardContent,
+} from './whiteboardContent';
 
 // The 006 storage boundary is a base64 Yjs-V2 snapshot, NOT Excalidraw JSON — `parseWhiteboardContentToScene`
 // decodes base64 and returns an empty scene for anything else. So the fixture content is built through the
@@ -55,5 +60,41 @@ describe('serializeWhiteboardContent', () => {
   it('serializes an empty scene to a parseable empty snapshot', () => {
     const content = serializeWhiteboardContent({ elements: [], assets: {}, appState: {} });
     expect(parseWhiteboardContentToScene(content)).toMatchObject({ elements: [] });
+  });
+});
+
+describe('isEmptyWhiteboardContent', () => {
+  it('treats missing / blank content as empty', () => {
+    expect(isEmptyWhiteboardContent(undefined)).toBe(true);
+    expect(isEmptyWhiteboardContent('')).toBe(true);
+    expect(isEmptyWhiteboardContent('   ')).toBe(true);
+  });
+
+  it('normalizes TWO INDEPENDENTLY-encoded empty snapshots — even though their bytes differ', () => {
+    // The empty encoding is non-deterministic: each encode builds a fresh Y.Doc with a
+    // random clientID, so serializing the same empty snapshot twice yields DIFFERENT
+    // base64. A byte-equality check (`content === EmptyWhiteboardString`) therefore
+    // misclassifies a freshly-encoded empty as real content — the bug this predicate fixes.
+    const a = serializeWhiteboardContent(EmptyWhiteboardSnapshot);
+    const b = serializeWhiteboardContent(EmptyWhiteboardSnapshot);
+    expect(a).not.toBe(b); // proves the non-determinism byte-equality cannot survive
+    expect(a).not.toBe(EmptyWhiteboardString);
+    // ...yet all three are recognised as empty by the semantic predicate:
+    expect(isEmptyWhiteboardContent(a)).toBe(true);
+    expect(isEmptyWhiteboardContent(b)).toBe(true);
+    expect(isEmptyWhiteboardContent(EmptyWhiteboardString)).toBe(true);
+  });
+
+  it('does NOT treat a scene with live elements as empty', () => {
+    expect(isEmptyWhiteboardContent(contentWithRect)).toBe(false);
+  });
+
+  it('does NOT treat a scene that carries assets as empty (assets are preserved)', () => {
+    const withAsset = serializeWhiteboardContent({
+      elements: [],
+      assets: { 'file-1': 'locator-1' },
+      appState: {},
+    } as unknown as WhiteboardSnapshot);
+    expect(isEmptyWhiteboardContent(withAsset)).toBe(false);
   });
 });

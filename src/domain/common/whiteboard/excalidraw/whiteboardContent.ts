@@ -35,3 +35,23 @@ export function parseWhiteboardContentToScene(content: string | undefined): Whit
 export function serializeWhiteboardContent(snapshot: WhiteboardSnapshot): string {
   return toBase64(encodeSnapshot(snapshot));
 }
+
+/**
+ * Whether stored whiteboard `content` represents an EMPTY scene — nothing the user
+ * drew. ALWAYS use this instead of `content === EmptyWhiteboardString`: the empty
+ * encoding is a Yjs snapshot whose bytes are NON-deterministic (every encode builds a
+ * fresh Y.Doc with a random clientID), so byte-equality against the module-constant
+ * `EmptyWhiteboardString` silently fails across sessions/encodes — an empty default
+ * then reads as real content and gets re-persisted. Empty here = no live (non-deleted)
+ * elements AND no assets; a bare/default appState with no drawn content still counts as
+ * empty, but user assets are preserved (an image-only scene is never treated as empty).
+ */
+export function isEmptyWhiteboardContent(content: string | undefined): boolean {
+  if (!content || content.trim() === '') {
+    return true;
+  }
+  const { elements, assets } = parseWhiteboardContentToScene(content);
+  const hasLiveElements = elements.some(element => !(element as { isDeleted?: boolean }).isDeleted);
+  const hasAssets = Object.keys(assets ?? {}).length > 0;
+  return !hasLiveElements && !hasAssets;
+}
