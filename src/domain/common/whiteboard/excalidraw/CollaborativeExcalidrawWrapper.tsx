@@ -114,6 +114,12 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 
+  // Bumped when the server rejects this generation's local update. It participates in
+  // the <Excalidraw> key so the poisoned generation is DISCARDED and a fresh Scene/Y.Doc
+  // is mounted that resyncs from the server — the rejected local state can never be
+  // resent (reconnecting the provider alone would reuse the poisoned scene).
+  const [recoveryGeneration, setRecoveryGeneration] = useState(0);
+
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
   const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
@@ -212,6 +218,13 @@ const CollaborativeExcalidrawWrapper = ({
       setSceneInitialized(initialized);
       actions.onSceneInitChange?.(initialized);
     },
+    onUpdateRejected: () => {
+      // The server rejected this generation's update. Bump the recovery generation so
+      // <Excalidraw> remounts with a fresh scene that resyncs from the server, and tell
+      // the user their last change could not be saved.
+      notify(t('callout.whiteboard.images.uploadFailed'), 'error');
+      setRecoveryGeneration(generation => generation + 1);
+    },
   });
 
   useEffect(() => {
@@ -272,7 +285,9 @@ const CollaborativeExcalidrawWrapper = ({
         <LoadingScene enabled={!isSceneInitialized} />
         {whiteboard && (
           <Excalidraw
-            key={whiteboard.id} // initializing a fresh Excalidraw for each whiteboard
+            // Keyed by whiteboard id AND recovery generation: a new whiteboard OR an
+            // `update-rejected` recovery mounts a fresh Excalidraw (a fresh Scene/Y.Doc).
+            key={`${whiteboard.id}:${recoveryGeneration}`}
             onExcalidrawAPI={handleInitializeApi}
             initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}

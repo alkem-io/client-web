@@ -34,7 +34,17 @@ export const WIRE = {
 
 /** A `WireControl` payload — server→client JSON (collaboration-service `ControlMessage`). */
 export type ControlMessage = {
-  kind: 'saved' | 'save-error' | 'read-only-state' | 'collaborator-mode' | 'room-user-change' | 'room-closed';
+  kind:
+    | 'saved'
+    | 'save-error'
+    | 'read-only-state'
+    | 'collaborator-mode'
+    | 'room-user-change'
+    | 'room-closed'
+    // The server's ingress validator rejected a local update (e.g. a bad assets-root
+    // struct). The local scene is poisoned: the client must discard this generation
+    // and resync a fresh scene from the server rather than resend the rejected state.
+    | 'update-rejected';
   version?: number;
   error?: string;
   readOnly?: boolean;

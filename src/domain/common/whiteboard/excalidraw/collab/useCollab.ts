@@ -44,6 +44,12 @@ type UseCollabProps = {
   onRemoteSave?: (error?: string) => void;
   onCloseConnection: () => void;
   onSceneInitChange?: (initialized: boolean) => void;
+  /**
+   * The server rejected a local update — the scene is poisoned. The consumer must
+   * discard this editor generation and remount a fresh one that resyncs from the
+   * server (reconnecting alone would resend the rejected state).
+   */
+  onUpdateRejected?: () => void;
 };
 
 type InitProps = {
@@ -120,6 +126,7 @@ const useCollab = ({
   onRemoteSave,
   onCloseConnection,
   onSceneInitChange,
+  onUpdateRejected,
 }: UseCollabProps): UseCollabProvided => {
   const providerRef = useRef<UnifiedCollabProvider | null>(null);
   const collabApiRef = useRef<CollabAPI | null>(null);
@@ -195,6 +202,12 @@ const useCollab = ({
           // collaborator mode so the editor toggles view-mode.
           setCollaboratorMode(message.readOnly ? 'read' : 'write');
           if (message.reason) setCollaboratorModeReason(toModeReason(message.reason));
+          break;
+        case 'update-rejected':
+          // The server rejected this generation's local update; hand off to the
+          // consumer to discard the poisoned scene and remount a fresh generation
+          // that resyncs from the server. Reconnecting this provider would resend it.
+          onUpdateRejected?.();
           break;
         default:
           break;
