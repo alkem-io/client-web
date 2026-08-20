@@ -355,6 +355,7 @@ export const InnovationFlowStatesFragmentDoc = gql`
       visible
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
     defaultCalloutTemplate {
       id
@@ -7183,6 +7184,7 @@ export const CreateStateOnInnovationFlowDocument = gql`
       allowNewCallouts
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
   }
 }
@@ -7289,6 +7291,7 @@ export const UpdateInnovationFlowStateDocument = gql`
       visible
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
   }
 }
@@ -7349,6 +7352,7 @@ export const UpdateInnovationFlowStateSettingsDocument = gql`
       visible
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
   }
 }
@@ -23619,6 +23623,7 @@ export const SpaceTabDocument = gql`
               visible
               descriptionDisplayMode
               showPublishDetails
+              sidebar
             }
             defaultCalloutTemplate {
               id
@@ -23767,6 +23772,7 @@ export const SpaceTabsDocument = gql`
               visible
               descriptionDisplayMode
               showPublishDetails
+              sidebar
             }
           }
         }

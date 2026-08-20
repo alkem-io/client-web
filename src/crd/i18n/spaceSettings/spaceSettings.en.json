@@ -114,6 +114,26 @@
         "saving": "Saving…",
         "save": "Save"
       },
+      "sidebarDialog": {
+        "title": "Sidebar widgets",
+        "help": "Choose which widgets appear in this tab's sidebar, and in what order.",
+        "emptyNote": "No widgets selected — the sidebar will be empty for this tab.",
+        "toggleAriaLabel": "Toggle {{widget}}",
+        "moveUpAriaLabel": "Move {{widget}} up",
+        "moveDownAriaLabel": "Move {{widget}} down",
+        "widgets": {
+          "intent": "Intention & Leads",
+          "about": "About this Space",
+          "subspaceLinks": "Subspaces",
+          "events": "Upcoming Events",
+          "updates": "Latest Update",
+          "contactLeads": "Contact Leads",
+          "addUser": "Invite",
+          "virtualContributors": "Virtual Contributors",
+          "guidelines": "Community Guidelines",
+          "index": "Post Index"
+        }
+      },
       "postTemplate": {
         "menuLabel": "Post Template",
         "dialogTitle": "Post Template: {{phaseName}}",

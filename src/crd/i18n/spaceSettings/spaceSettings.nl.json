@@ -114,6 +114,26 @@
         "saving": "Opslaan…",
         "save": "Opslaan"
       },
+      "sidebarDialog": {
+        "title": "Sidebar-widgets",
+        "help": "Kies welke widgets in de sidebar van dit tabblad verschijnen en in welke volgorde.",
+        "emptyNote": "Geen widgets geselecteerd — de sidebar is leeg voor dit tabblad.",
+        "toggleAriaLabel": "{{widget}} in-/uitschakelen",
+        "moveUpAriaLabel": "{{widget}} omhoog verplaatsen",
+        "moveDownAriaLabel": "{{widget}} omlaag verplaatsen",
+        "widgets": {
+          "intent": "Intentie & Leads",
+          "about": "Over deze Space",
+          "subspaceLinks": "Subspaces",
+          "events": "Aankomende evenementen",
+          "updates": "Laatste update",
+          "contactLeads": "Leads contacteren",
+          "addUser": "Uitnodigen",
+          "virtualContributors": "Virtual Contributors",
+          "guidelines": "Communityrichtlijnen",
+          "index": "Post-index"
+        }
+      },
       "postTemplate": {
         "menuLabel": "Post-template",
         "dialogTitle": "Post-template: {{phaseName}}",

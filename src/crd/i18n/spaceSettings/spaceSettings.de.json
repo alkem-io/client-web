@@ -114,6 +114,26 @@
         "saving": "Speichern…",
         "save": "Speichern"
       },
+      "sidebarDialog": {
+        "title": "Seitenleisten-Widgets",
+        "help": "Wähle aus, welche Widgets in der Seitenleiste dieses Tabs erscheinen und in welcher Reihenfolge.",
+        "emptyNote": "Keine Widgets ausgewählt — die Seitenleiste bleibt für diesen Tab leer.",
+        "toggleAriaLabel": "{{widget}} umschalten",
+        "moveUpAriaLabel": "{{widget}} nach oben verschieben",
+        "moveDownAriaLabel": "{{widget}} nach unten verschieben",
+        "widgets": {
+          "intent": "Zweck & Leiter",
+          "about": "Über diesen Bereich",
+          "subspaceLinks": "Unterbereiche",
+          "events": "Anstehende Veranstaltungen",
+          "updates": "Neueste Aktualisierung",
+          "contactLeads": "Leiter kontaktieren",
+          "addUser": "Einladen",
+          "virtualContributors": "Virtuelle Mitwirkende",
+          "guidelines": "Gemeinschaftsrichtlinien",
+          "index": "Beitragsindex"
+        }
+      },
       "postTemplate": {
         "menuLabel": "Post-Vorlage",
         "dialogTitle": "Post-Vorlage: {{phaseName}}",
