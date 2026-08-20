@@ -25,16 +25,21 @@ export function SpaceShell({ header, sidebar, tabs, children, fullWidth, classNa
       {header}
 
       <div className={cn('w-full px-6 md:px-8 pb-8')}>
-        <div className="grid grid-cols-12 gap-6 items-start">
+        {/* Row gap is sm+ only: below sm the tabs row is zero-height (the tabs render
+            as a fixed bottom bar), so a mobile row gap would just be a dead band
+            between the header and the content. */}
+        <div className="grid grid-cols-12 gap-x-6 sm:gap-y-6 items-start">
           {/* Sticky tab bar — full-width row spanning sidebar + content, pinned below the
               h-16 platform header. Decorations are sm+ only: below sm the tabs render as a
-              fixed bottom bar, so the wrapper must not reserve sticky space. */}
+              fixed bottom bar, so the wrapper must not reserve sticky space. z-30 keeps the
+              translucent row above in-content z-10 decorations (carousel arrows etc.) while
+              staying under the z-40 fixed mobile bars. */}
           {hasTabs && (
             <div
               className={cn(
                 'col-span-12',
                 !fullWidth && 'lg:col-start-2 lg:col-span-10',
-                'sm:sticky sm:top-16 sm:z-10 sm:pt-4 sm:bg-background/95 sm:backdrop-blur-[8px]'
+                'sm:sticky sm:top-16 sm:z-30 sm:pt-4 sm:bg-background/95 sm:backdrop-blur-[8px]'
               )}
             >
               {tabs}

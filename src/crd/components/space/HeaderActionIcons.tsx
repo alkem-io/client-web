@@ -130,7 +130,10 @@ export function HeaderActionIcons({ actions, className }: HeaderActionIconsProps
               <Settings className="size-3.5" aria-hidden="true" />
             </a>
           </IconButton>
-        ) : (
+        ) : actions.onSettingsClick ? (
+          // Only fall back to the click handler when one is wired — some consumers
+          // (subspace) pass just `settingsHref`, and a do-nothing button is worse
+          // than no button when that href is missing or unsafe.
           <IconButton
             variant="ghost"
             className={ACTION_ICON_BUTTON_CLASSES}
@@ -139,7 +142,7 @@ export function HeaderActionIcons({ actions, className }: HeaderActionIconsProps
           >
             <Settings className="size-3.5" aria-hidden="true" />
           </IconButton>
-        ))}
+        ) : null)}
       {/* Hamburger — tablet widths only (640–1023px): the desktop sidebar is hidden
           there and the phone bottom bar (with its own hamburger) is not shown. */}
       {actions.onMenuClick && (

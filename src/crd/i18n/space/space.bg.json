@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} членове и {{organizations}} организации в това пространство.",
-    "inviteMember": "Покани член",
     "search": "Търсене на членове или организации...",
     "filterAll": "Всички",
     "filterLead": "Ръководител",

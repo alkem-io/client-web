@@ -5,6 +5,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsTabUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
@@ -18,7 +19,6 @@ import { useCrdSpaceDashboard } from '../hooks/useCrdSpaceDashboard';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
 
@@ -107,7 +107,7 @@ export default function CrdSpaceDashboardPage() {
         />
       </SpaceSidebarPortal>
 
-      <SpaceTabActionHeader description={tabDescription} className="mb-6" />
+      <TabStateHeader description={tabDescription} className="mb-6" />
 
       <CalloutListConnector
         callouts={callouts}

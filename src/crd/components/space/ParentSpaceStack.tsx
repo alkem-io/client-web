@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
+import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
 
 export type ParentSpaceStackItem = {
   name: string;
@@ -31,8 +32,12 @@ type ParentSpaceStackProps = {
   className?: string;
 };
 
-/* Each stacking level peeks out 14px above and 10px left of the card in front. */
+/* Each stacking level peeks out 14px above and 10px left of the card in front.
+   Card size matches the front card (wrapper minus the total stack inset), so it
+   is indexed by depth like the wrapper padding — a depth-1 stack insets 10/14px,
+   a depth-2 stack 20/28px. */
 const WRAPPER_PAD = ['pt-[14px] pl-[10px]', 'pt-[28px] pl-[20px]'];
+const CARD_SIZE = ['w-[calc(100%-10px)] h-[calc(100%-14px)]', 'w-[calc(100%-20px)] h-[calc(100%-28px)]'];
 const CARD_TOP = ['top-0', 'top-[14px]'];
 const CARD_LEFT = ['left-0', 'left-[10px]'];
 
@@ -62,10 +67,11 @@ export function ParentSpaceStack({ parents, children, className }: ParentSpaceSt
             title={t('parentStack.goTo', { name: parent.name })}
             aria-label={t('parentStack.goTo', { name: parent.name })}
             className={cn(
-              'group absolute block w-[calc(100%-20px)] h-[calc(100%-28px)] rounded-xl overflow-hidden',
+              'group absolute block rounded-xl overflow-hidden',
               'border border-border bg-card shadow-sm no-underline',
               'transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-[3px]',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              CARD_SIZE[depth - 1],
               CARD_TOP[index],
               CARD_LEFT[index]
             )}
@@ -83,9 +89,11 @@ export function ParentSpaceStack({ parents, children, className }: ParentSpaceSt
             </div>
             <div className="flex flex-col gap-1 px-3 py-2">
               <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center shrink-0 size-5 rounded bg-primary">
-                  <span className="text-[8px] font-bold text-primary-foreground">{parent.initials}</span>
-                </div>
+                <Avatar className="size-5 rounded">
+                  <AvatarFallback className="rounded bg-primary text-primary-foreground text-badge">
+                    {parent.initials}
+                  </AvatarFallback>
+                </Avatar>
                 <span className="text-caption font-medium text-foreground truncate">{parent.name}</span>
                 <ArrowUpLeft
                   className="w-3 h-3 shrink-0 text-muted-foreground opacity-0 transition-opacity duration-200 group-hover:opacity-70"

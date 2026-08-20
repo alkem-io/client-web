@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
-    "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
     "filterLead": "Lead",

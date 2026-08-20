@@ -53,7 +53,7 @@ export default function CrdSubspaceCalloutsPage() {
       {isSmallScreen ? (
         flowTabs
       ) : (
-        <div className="sticky top-16 z-10 pt-4 pb-3 bg-background/95 backdrop-blur-sm">{flowTabs}</div>
+        <div className="sticky top-16 z-30 pt-4 pb-3 bg-background/95 backdrop-blur-sm">{flowTabs}</div>
       )}
 
       {/* Active phase description — collapsible (2 lines, 3 on small screens)
@@ -71,9 +71,8 @@ export default function CrdSubspaceCalloutsPage() {
         />
       )}
 
-      {/* Mobile bottom-bar clearance: only render when the fixed bar / FAB is actually shown
-          (i.e. when there are phases — otherwise SubspaceFlowTabs renders the empty state). */}
-      {phases.length > 0 && <div className="h-36 sm:hidden" aria-hidden="true" />}
+      {/* Clearance for the fixed h-14 mobile bottom bar (always rendered below sm). */}
+      <div className="h-20 sm:hidden" aria-hidden="true" />
     </div>
   );
 }

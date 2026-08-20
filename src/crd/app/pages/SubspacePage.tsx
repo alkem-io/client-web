@@ -59,9 +59,7 @@ export function SubspacePage() {
                 activePhaseId={activePhaseId}
                 onPhaseChange={setActivePhaseId}
                 canEditFlow={true}
-                canAddPost={true}
                 editFlowHref="/preview/flow-editor"
-                onAddPostClick={() => console.log('Add post')}
               />
             </div>
             <div className="space-y-4 text-body text-muted-foreground">

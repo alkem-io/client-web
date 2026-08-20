@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} membres et {{organizations}} organisations dans cet espace.",
-    "inviteMember": "Inviter un membre",
     "search": "Rechercher des membres ou organisations...",
     "filterAll": "Tous",
     "filterLead": "Responsable",

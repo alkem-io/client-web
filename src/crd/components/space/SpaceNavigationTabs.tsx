@@ -18,9 +18,9 @@ const MOBILE_TAB_LIST_CLASSES =
 const FADE_LEFT =
   '[mask-image:linear-gradient(to_right,transparent,black_2rem)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_2rem)]';
 const FADE_RIGHT =
-  '[mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%-2rem),transparent)]';
+  '[mask-image:linear-gradient(to_right,black_calc(100%_-_2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%_-_2rem),transparent)]';
 const FADE_BOTH =
-  '[mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%-2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%-2rem),transparent)]';
+  '[mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%_-_2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%_-_2rem),transparent)]';
 
 type SpaceNavigationTabsProps = {
   tabs: TabItem[];
@@ -105,7 +105,9 @@ function DesktopTabs({
     const observer = new ResizeObserver(updateOverflow);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [tabs.length]);
+    // `tabs` (not just its length) so label changes without a container resize
+    // (locale switch, async rename) also refresh the fade state.
+  }, [tabs]);
 
   return (
     <nav className={cn('w-full', className)} aria-label={t('a11y.tabNavigation')}>

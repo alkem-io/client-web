@@ -6,6 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
@@ -20,7 +21,6 @@ import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
@@ -141,7 +141,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
       </SpaceSidebarPortal>
 
       <div className="space-y-6">
-        <SpaceTabActionHeader description={tabDescription} />
+        <TabStateHeader description={tabDescription} />
 
         {/* Scoped server search (FR-014): the term submits on Enter (FR-010) and
             tag pills ride the terms (FR-004). Replaces the old client-side,

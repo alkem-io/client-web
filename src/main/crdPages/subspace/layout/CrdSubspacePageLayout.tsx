@@ -171,6 +171,10 @@ export default function CrdSubspacePageLayout() {
 
   const editFlowHref = data.subspaceUrl ? buildSettingsTabUrl(data.subspaceUrl, 'layout') : undefined;
 
+  // Add Post gate, shared by the sidebar slots and the dialog mount: CreateCallout
+  // on the calloutsSet (same as the L0 tabs) and a flow with phases to post into.
+  const canCreatePost = data.canCreateCallout && data.phases.length > 0;
+
   // Single source of truth for the create-subspace handler. Both the sidebar
   // widget (when there are 0 nested subspaces) and the Subspaces dialog footer
   // call it; `data.canCreateSubspace` is the only privilege gate.
@@ -201,35 +205,32 @@ export default function CrdSubspacePageLayout() {
       setAboutOpen(true);
     },
     onQuickActionClick: handleQuickAction,
-    // Add Post lives in the sidebar (same gate the L0 tabs use: CreateCallout on
-    // the calloutsSet, and only when the flow has phases to post into).
-    actionsSlot:
-      data.canCreateCallout && data.phases.length > 0 ? (
-        <Button
-          className="w-full gap-2 text-body-emphasis"
-          onClick={() => {
-            setMobileMenuOpen(false);
-            setCreatePostOpen(true);
-          }}
-        >
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t('crd-subspace:flow.addPost')}
-        </Button>
-      ) : undefined,
+    // Add Post lives in the sidebar (see `canCreatePost` above).
+    actionsSlot: canCreatePost ? (
+      <Button
+        className="w-full gap-2 text-body-emphasis"
+        onClick={() => {
+          setMobileMenuOpen(false);
+          setCreatePostOpen(true);
+        }}
+      >
+        <Plus className="w-4 h-4" aria-hidden="true" />
+        {t('crd-subspace:flow.addPost')}
+      </Button>
+    ) : undefined,
     // Same action, icon-only, for the collapsed rail — same gate.
-    collapsedActionsSlot:
-      data.canCreateCallout && data.phases.length > 0 ? (
-        <IconButton
-          tooltipLabel={t('crd-subspace:flow.addPost')}
-          tooltipSide="right"
-          onClick={() => {
-            setMobileMenuOpen(false);
-            setCreatePostOpen(true);
-          }}
-        >
-          <Plus className="w-4 h-4" aria-hidden="true" />
-        </IconButton>
-      ) : undefined,
+    collapsedActionsSlot: canCreatePost ? (
+      <IconButton
+        tooltipLabel={t('crd-subspace:flow.addPost')}
+        tooltipSide="right"
+        onClick={() => {
+          setMobileMenuOpen(false);
+          setCreatePostOpen(true);
+        }}
+      >
+        <Plus className="w-4 h-4" aria-hidden="true" />
+      </IconButton>
+    ) : undefined,
     subspaces: data.subspaces,
     onShowAllSubspaces: () => {
       setMobileMenuOpen(false);
@@ -315,7 +316,7 @@ export default function CrdSubspacePageLayout() {
             />
             {/* Sticky settings tab row — mirrors SpaceShell's tabs slot so the
                 strip stays pinned under the h-16 platform header on scroll. */}
-            <div className="w-full px-6 md:px-8 sm:sticky sm:top-16 sm:z-10 sm:pt-4 sm:bg-background/95 sm:backdrop-blur-[8px]">
+            <div className="w-full px-6 md:px-8 sm:sticky sm:top-16 sm:z-30 sm:pt-4 sm:bg-background/95 sm:backdrop-blur-[8px]">
               <div className="grid grid-cols-12 gap-6">
                 <div className={cn('col-span-12', contentColumnClass(fullWidth))}>
                   <SpaceSettingsTabStrip
@@ -421,7 +422,7 @@ export default function CrdSubspacePageLayout() {
       />
 
       {/* Add Post — opened from the sidebar actions slot; pre-selects the active phase. */}
-      {data.canCreateCallout && data.calloutsSetId && (
+      {canCreatePost && data.calloutsSetId && (
         <CalloutFormConnector
           open={createPostOpen}
           onOpenChange={setCreatePostOpen}

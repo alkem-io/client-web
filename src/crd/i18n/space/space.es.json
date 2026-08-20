@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} miembros y {{organizations}} organizaciones en este espacio.",
-    "inviteMember": "Invitar miembro",
     "search": "Buscar miembros u organizaciones...",
     "filterAll": "Todos",
     "filterLead": "Líder",

@@ -159,6 +159,10 @@ export default function CrdSpacePageLayout() {
     onShareClick: () => setShareDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
     onToggleFullWidth: toggleFullWidth,
+    // Tablet (640–1023px) hamburger: the desktop sidebar is hidden below lg and
+    // the phone bottom bar (which has its own trigger) only renders below sm,
+    // so this is the only way to reach the sidebar actions at those widths.
+    onMenuClick: () => setMobileMenuOpen(true),
   };
 
   if (!isLevelZero) {

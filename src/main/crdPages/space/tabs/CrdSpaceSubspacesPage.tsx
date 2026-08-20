@@ -7,6 +7,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -18,7 +19,6 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
@@ -108,7 +108,7 @@ export default function CrdSpaceSubspacesPage() {
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <SpaceTabActionHeader description={tabDescription} />
+        <TabStateHeader description={tabDescription} />
 
         <CalloutListConnector
           callouts={callouts}

@@ -7,6 +7,7 @@ import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDia
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -17,7 +18,6 @@ import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConn
 import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceCommunityPage() {
   const { t } = useTranslation(['crd-common', 'crd-space']);
@@ -107,7 +107,7 @@ export default function CrdSpaceCommunityPage() {
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <SpaceTabActionHeader description={tabDescription} />
+        <TabStateHeader description={tabDescription} />
 
         <CalloutListConnector
           callouts={callouts}
