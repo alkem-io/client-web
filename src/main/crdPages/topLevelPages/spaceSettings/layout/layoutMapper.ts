@@ -5,6 +5,7 @@ import type {
   LayoutPoolColumn,
   PhaseLayoutInput,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
+import { resolveSidebarPlan } from '@/main/crdPages/space/layout/sidebarWidgetPlan';
 
 export type { LayoutCallout, LayoutPoolColumn };
 
@@ -137,6 +138,7 @@ function readPhaseLayout(state: RawState): PhaseLayoutInput | undefined {
       | {
           descriptionDisplayMode?: CalloutDescriptionDisplayMode | null;
           showPublishDetails?: boolean | null;
+          sidebar?: string[] | null;
         }
       | undefined) ?? {};
   if (settings.descriptionDisplayMode === undefined && settings.showPublishDetails === undefined) {
@@ -145,5 +147,8 @@ function readPhaseLayout(state: RawState): PhaseLayoutInput | undefined {
   return {
     descriptionCollapsed: settings.descriptionDisplayMode === CalloutDescriptionDisplayMode.Collapsed,
     showPublishDetails: settings.showPublishDetails !== false,
+    // Unknown wire values dropped, duplicates removed, order preserved (FR-013/FR-006) —
+    // defence-in-depth mirror of the server's own read-side normalization.
+    sidebar: resolveSidebarPlan(settings.sidebar),
   };
 }

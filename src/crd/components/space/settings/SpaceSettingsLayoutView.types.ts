@@ -62,12 +62,46 @@ export type LayoutSaveBarState =
   | { kind: 'saving' }
   | { kind: 'saveError'; message: string };
 
+/**
+ * Plain, CRD-safe union of the platform's sidebar widget vocabulary
+ * (FR-001) — the client-side counterpart of the server's `SidebarWidget`
+ * enum. CRD components never import the generated GraphQL enum (D-12); the
+ * `crdPages` mapper translates between this and the wire enum.
+ */
+export type SidebarWidgetId =
+  | 'intent'
+  | 'about'
+  | 'subspaceLinks'
+  | 'events'
+  | 'updates'
+  | 'contactLeads'
+  | 'addUser'
+  | 'virtualContributors'
+  | 'guidelines'
+  | 'index';
+
+/** The full vocabulary, in the platform's canonical (FR-001 table) order. */
+export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
+  'intent',
+  'about',
+  'subspaceLinks',
+  'events',
+  'updates',
+  'contactLeads',
+  'addUser',
+  'virtualContributors',
+  'guidelines',
+  'index',
+];
+
 /** Per-phase layout settings passed from the Layout modal to the column menu handler. */
 export type PhaseLayoutInput = {
   /** When true, posts in this phase start collapsed with a read-more affordance. */
   descriptionCollapsed: boolean;
   /** When false, publisher name, avatar, and publish date are hidden in the feed. */
   showPublishDetails: boolean;
+  /** Ordered sidebar widgets configured for this phase/tab (FR-014). May be empty (FR-016). */
+  sidebar: SidebarWidgetId[];
 };
 
 export type ColumnMenuActions = {

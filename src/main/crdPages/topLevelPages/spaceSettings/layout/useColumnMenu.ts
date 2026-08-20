@@ -14,6 +14,7 @@ import type {
   LayoutColumnId,
   PhaseLayoutInput,
 } from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
+import { toWireSidebar } from '@/main/crdPages/space/layout/sidebarWidgetPlan';
 
 export type UseColumnMenuOptions = {
   innovationFlowId: string;
@@ -191,10 +192,10 @@ export function useColumnMenu({
 
   /**
    * Persist per-phase layout settings immediately (FR-013 partial update).
-   * Uses the settings-only mutation so ONLY `descriptionDisplayMode` + `showPublishDetails`
-   * are sent — every other field (allowNewCallouts/visible/displayName/description) is omitted
-   * and thus left unchanged on the server, so a concurrent hide, rename, or description edit is
-   * never clobbered by a layout save.
+   * Uses the settings-only mutation so ONLY `descriptionDisplayMode` + `showPublishDetails` +
+   * `sidebar` are sent — every other field (allowNewCallouts/visible/displayName/description) is
+   * omitted and thus left unchanged on the server, so a concurrent hide, rename, or description
+   * edit is never clobbered by a layout save (FR-014/S2).
    */
   const onSaveLayout = async (columnId: LayoutColumnId, layout: PhaseLayoutInput): Promise<void> => {
     const state = innovationFlowStates?.find(s => s.id === columnId);
@@ -211,6 +212,7 @@ export function useColumnMenu({
             ? CalloutDescriptionDisplayMode.Collapsed
             : CalloutDescriptionDisplayMode.Expanded,
           showPublishDetails: layout.showPublishDetails,
+          sidebar: toWireSidebar(layout.sidebar),
         },
       },
       // Refetch so the local column buffer's `column.layout` reflects the saved

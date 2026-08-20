@@ -1,18 +1,23 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
-import { PhaseLayoutDialog } from './PhaseLayoutDialog';
+import { PhaseLayoutDialog, type PhaseLayoutValues } from './PhaseLayoutDialog';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, opts?: Record<string, unknown>) => {
       if (opts?.phaseName) return `${key}:${String(opts.phaseName)}`;
+      if (opts?.widget) return `${key}:${String(opts.widget)}`;
       return key;
     },
   }),
 }));
 
-const defaultValues = { descriptionCollapsed: false, showPublishDetails: true };
+const defaultValues: PhaseLayoutValues = {
+  descriptionCollapsed: false,
+  showPublishDetails: true,
+  sidebar: ['intent', 'index'],
+};
 
 const renderDialog = (values = defaultValues, onSave = vi.fn(), onOpenChange = vi.fn()) =>
   render(
@@ -27,7 +32,7 @@ const renderDialog = (values = defaultValues, onSave = vi.fn(), onOpenChange = v
 
 describe('PhaseLayoutDialog', () => {
   test('renders pre-filled values — Expanded, publish details On', () => {
-    renderDialog({ descriptionCollapsed: false, showPublishDetails: true });
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: [] });
 
     const descSwitch = screen.getByRole('switch', {
       name: 'layout.column.phaseLayout.descriptionHeight.switchLabel',
@@ -41,7 +46,7 @@ describe('PhaseLayoutDialog', () => {
   });
 
   test('renders pre-filled values — Collapsed, publish details Off', () => {
-    renderDialog({ descriptionCollapsed: true, showPublishDetails: false });
+    renderDialog({ descriptionCollapsed: true, showPublishDetails: false, sidebar: [] });
 
     const descSwitch = screen.getByRole('switch', {
       name: 'layout.column.phaseLayout.descriptionHeight.switchLabel',
@@ -56,7 +61,7 @@ describe('PhaseLayoutDialog', () => {
 
   test('save emits the updated values after toggling both switches', async () => {
     const onSave = vi.fn();
-    renderDialog({ descriptionCollapsed: false, showPublishDetails: true }, onSave);
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: [] }, onSave);
 
     const descSwitch = screen.getByRole('switch', {
       name: 'layout.column.phaseLayout.descriptionHeight.switchLabel',
@@ -71,16 +76,16 @@ describe('PhaseLayoutDialog', () => {
     await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
 
     expect(onSave).toHaveBeenCalledOnce();
-    expect(onSave).toHaveBeenCalledWith({ descriptionCollapsed: true, showPublishDetails: false });
+    expect(onSave).toHaveBeenCalledWith({ descriptionCollapsed: true, showPublishDetails: false, sidebar: [] });
   });
 
   test('save without changes emits the original values unchanged', async () => {
     const onSave = vi.fn();
-    renderDialog({ descriptionCollapsed: true, showPublishDetails: false }, onSave);
+    renderDialog({ descriptionCollapsed: true, showPublishDetails: false, sidebar: [] }, onSave);
 
     await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
 
-    expect(onSave).toHaveBeenCalledWith({ descriptionCollapsed: true, showPublishDetails: false });
+    expect(onSave).toHaveBeenCalledWith({ descriptionCollapsed: true, showPublishDetails: false, sidebar: [] });
   });
 
   test('closes only AFTER the async save resolves (not before)', async () => {
@@ -152,7 +157,7 @@ describe('PhaseLayoutDialog', () => {
     // We simulate this by unmounting and re-mounting with the original values
     // after a cancel that left the internal state in a modified position.
     const onSave = vi.fn();
-    const { unmount } = renderDialog({ descriptionCollapsed: false, showPublishDetails: true }, onSave);
+    const { unmount } = renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: [] }, onSave);
 
     // Flip the switch without saving
     const descSwitch = screen.getByRole('switch', {
@@ -167,12 +172,110 @@ describe('PhaseLayoutDialog', () => {
 
     // Simulate the remount that LayoutPoolColumn performs via `key` on re-open.
     unmount();
-    renderDialog({ descriptionCollapsed: false, showPublishDetails: true }, onSave);
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: [] }, onSave);
 
     // The freshly mounted dialog must show the persisted value (Expanded = unchecked).
     const freshDescSwitch = screen.getByRole('switch', {
       name: 'layout.column.phaseLayout.descriptionHeight.switchLabel',
     });
     expect(freshDescSwitch).not.toBeChecked();
+  });
+
+  test('pre-fills the sidebar widget list from values.sidebar, selected first in saved order', () => {
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['events', 'intent'] });
+
+    const list = screen.getByRole('list');
+    const checkboxes = within(list).getAllByRole('checkbox');
+    // events, intent selected (in that order) first; every other widget follows, unchecked.
+    expect(checkboxes[0]).toHaveAccessibleName(
+      'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.events'
+    );
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).toHaveAccessibleName(
+      'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.intent'
+    );
+    expect(checkboxes[1]).toBeChecked();
+    expect(
+      checkboxes
+        .slice(2)
+        .every(checkbox => !checkbox.hasAttribute('data-state') || checkbox.getAttribute('data-state') !== 'checked')
+    ).toBe(true);
+  });
+
+  test('toggling a selected widget off removes it from the save payload', async () => {
+    const onSave = vi.fn();
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent', 'events'] }, onSave);
+
+    await userEvent.click(
+      screen.getByRole('checkbox', {
+        name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.intent',
+      })
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: ['events'] }));
+  });
+
+  test('toggling an unselected widget on appends it to the save payload', async () => {
+    const onSave = vi.fn();
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent'] }, onSave);
+
+    await userEvent.click(
+      screen.getByRole('checkbox', {
+        name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.about',
+      })
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: ['intent', 'about'] }));
+  });
+
+  test('moving a widget down changes its position in the save payload', async () => {
+    const onSave = vi.fn();
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent', 'events'] }, onSave);
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: 'layout.column.sidebarDialog.moveDownAriaLabel:layout.column.sidebarDialog.widgets.intent',
+      })
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: ['events', 'intent'] }));
+  });
+
+  test('deselecting every widget saves an empty list (FR-016)', async () => {
+    const onSave = vi.fn();
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent'] }, onSave);
+
+    await userEvent.click(
+      screen.getByRole('checkbox', {
+        name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.intent',
+      })
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
+
+    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: [] }));
+  });
+
+  test('an empty selection shows the empty-state note', () => {
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: [] });
+
+    expect(screen.getByText('layout.column.sidebarDialog.emptyNote')).toBeInTheDocument();
+  });
+
+  test('the boundary widgets have their reorder button disabled', () => {
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent', 'events', 'about'] });
+
+    expect(
+      screen.getByRole('button', {
+        name: 'layout.column.sidebarDialog.moveUpAriaLabel:layout.column.sidebarDialog.widgets.intent',
+      })
+    ).toBeDisabled();
+    expect(
+      screen.getByRole('button', {
+        name: 'layout.column.sidebarDialog.moveDownAriaLabel:layout.column.sidebarDialog.widgets.about',
+      })
+    ).toBeDisabled();
   });
 });

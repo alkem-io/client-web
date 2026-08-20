@@ -221,7 +221,7 @@ export function LayoutPoolColumn({
         open={layoutDialogOpen}
         onOpenChange={setLayoutDialogOpen}
         phaseName={column.title}
-        values={column.layout ?? { descriptionCollapsed: false, showPublishDetails: true }}
+        values={column.layout ?? { descriptionCollapsed: false, showPublishDetails: true, sidebar: [] }}
         onSave={async (layout: PhaseLayoutInput) => {
           // Await persistence and let the dialog close itself on success — a failed save
           // keeps it open (see PhaseLayoutDialog.handleSave). Rejection propagates so the

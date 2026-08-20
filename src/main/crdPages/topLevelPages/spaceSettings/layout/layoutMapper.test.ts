@@ -114,6 +114,65 @@ describe('mapCollaborationToLayoutColumns', () => {
     });
   });
 
+  describe('sidebar mapping (settings.sidebar → layout.sidebar, T010)', () => {
+    const buildWithSidebar = (sidebarByState: Record<string, string[] | undefined>): LayoutCollaboration =>
+      ({
+        id: 'collab-1',
+        authorization: { id: 'auth-1', myPrivileges: [] },
+        innovationFlow: {
+          id: 'flow-1',
+          currentState: { id: 'state-1' },
+          states: [
+            {
+              id: 'state-1',
+              displayName: 'Explore',
+              description: '',
+              sortOrder: 1,
+              settings: {
+                allowNewCallouts: true,
+                showPublishDetails: true,
+                ...('state-1' in sidebarByState && { sidebar: sidebarByState['state-1'] }),
+              },
+            },
+            {
+              id: 'state-2',
+              displayName: 'Define',
+              description: '',
+              sortOrder: 2,
+              settings: {
+                allowNewCallouts: true,
+                showPublishDetails: true,
+                ...('state-2' in sidebarByState && { sidebar: sidebarByState['state-2'] }),
+              },
+            },
+          ],
+        },
+        calloutsSet: { id: 'cset-1', callouts: [] },
+      }) as unknown as LayoutCollaboration;
+
+    test('seeds layout.sidebar from settings.sidebar, order preserved', () => {
+      const columns = mapCollaborationToLayoutColumns(
+        buildWithSidebar({ 'state-1': ['EVENTS', 'INTENT'], 'state-2': [] }),
+        'L1'
+      );
+      expect(columns.find(c => c.id === 'state-1')?.layout?.sidebar).toEqual(['events', 'intent']);
+      expect(columns.find(c => c.id === 'state-2')?.layout?.sidebar).toEqual([]);
+    });
+
+    test('drops an unrecognized stored value (FR-013)', () => {
+      const columns = mapCollaborationToLayoutColumns(
+        buildWithSidebar({ 'state-1': ['INTENT', 'NOT_A_WIDGET', 'INDEX'] }),
+        'L1'
+      );
+      expect(columns.find(c => c.id === 'state-1')?.layout?.sidebar).toEqual(['intent', 'index']);
+    });
+
+    test('absent sidebar key → layout.sidebar empty (defensive; the read normalization elsewhere supplies the real default)', () => {
+      const columns = mapCollaborationToLayoutColumns(buildWithSidebar({}), 'L1');
+      expect(columns.find(c => c.id === 'state-1')?.layout?.sidebar).toEqual([]);
+    });
+  });
+
   describe('isDeletable mapping (L0 first four protected; subspaces all deletable)', () => {
     // Six ordered states so we cover the four built-in L0 tabs (indices 0–3) plus two additional
     // tabs (indices 4–5). sortOrder is intentionally out of order to assert the mapper sorts first.
