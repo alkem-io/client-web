@@ -212,9 +212,28 @@ const useCollab = ({
       // the wrapper's independent `useAutoReconnect` timer never activates either.
     };
 
+    // Fit-to-content fires exactly ONCE per editor generation, on the first completed
+    // scene sync — never on a later resync/reconnect.
+    let didInitialFit = false;
     const handleSynced = (synced: boolean) => {
       setIsSceneInitialized(synced);
       onSceneInitChange?.(synced);
+      // The Yjs scene-sync restores elements but NOT viewport scroll/zoom, so without an
+      // initial fit the editor opens at (0,0) showing blank canvas for a drawing placed
+      // away from the origin. Mirror the single-user path (ExcalidrawWrapper), which
+      // scrolls-to-content after seeding — but only on the initial sync of this editor.
+      if (synced && !didInitialFit) {
+        didInitialFit = true;
+        const elements = excalidrawApi.getSceneElements();
+        if (elements.length > 0) {
+          excalidrawApi.scrollToContent(elements, {
+            animate: false,
+            fitToViewport: true,
+            viewportZoomFactor: 0.75,
+            maxZoom: 1,
+          });
+        }
+      }
     };
 
     const handleControl = (message: ControlMessage) => {
