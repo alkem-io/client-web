@@ -22,6 +22,18 @@ import type {
   TemplateType,
 } from '@/crd/components/templates/types';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
+
+/**
+ * The `whiteboardContent` to send on a template UPDATE: `undefined` when the content is
+ * empty. A rename-only edit opens the editor against an empty draft, so the form holds the
+ * empty placeholder; sending it would OVERWRITE the stored drawing with empty (the server
+ * update guard only skips a falsy value). Returning `undefined` makes the server no-op the
+ * content and preserve the real drawing — only a genuinely non-empty (redrawn) scene is sent.
+ */
+export function whiteboardContentForTemplateUpdate(content: string | undefined): string | undefined {
+  return isEmptyWhiteboardContent(content) ? undefined : content;
+}
 
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */
 export type TemplateContentTemplate = NonNullable<TemplateContentQuery['lookup']['template']>;

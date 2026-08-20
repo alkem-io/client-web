@@ -48,7 +48,7 @@ import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
-import { mapSpaceContentFromSpace } from './templateContentMapper';
+import { mapSpaceContentFromSpace, whiteboardContentForTemplateUpdate } from './templateContentMapper';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
@@ -671,7 +671,9 @@ export function useTemplateForms({
           variables: {
             templateId,
             profile,
-            whiteboardContent: current.whiteboardContent || undefined,
+            // Send content only when genuinely redrawn — a rename-only edit must not
+            // overwrite the stored drawing with the empty placeholder (see the helper).
+            whiteboardContent: whiteboardContentForTemplateUpdate(current.whiteboardContent),
             includeProfileVisuals: wantsPreview,
           },
         });

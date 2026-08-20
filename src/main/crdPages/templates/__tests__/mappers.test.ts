@@ -4,6 +4,8 @@ import {
   CalloutFramingType,
   TemplateType as GqlTemplateType,
 } from '@/core/apollo/generated/graphql-schema';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { serializeWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import {
   type GqlTemplateLike,
   mapGqlTemplateType,
@@ -16,8 +18,31 @@ import {
   type TemplateContentTemplate,
   templateContentIncludeVars,
   templateContentToFormValues,
+  whiteboardContentForTemplateUpdate,
 } from '../templateContentMapper';
 import { mapTemplatesSetToCategories, mapTemplatesToCards } from '../templatesManagerMapper';
+
+// ---------------------------------------------------------------------------
+// whiteboardContentForTemplateUpdate — rename-only edits must NOT overwrite content
+// ---------------------------------------------------------------------------
+
+describe('whiteboardContentForTemplateUpdate', () => {
+  it('returns undefined for empty content (rename-only), so the update no-ops it', () => {
+    expect(whiteboardContentForTemplateUpdate(undefined)).toBeUndefined();
+    expect(whiteboardContentForTemplateUpdate('')).toBeUndefined();
+    // The empty placeholder the editor draft holds — must NOT be sent (would overwrite).
+    expect(whiteboardContentForTemplateUpdate(EmptyWhiteboardString)).toBeUndefined();
+  });
+
+  it('returns the content when the user genuinely redrew (non-empty scene)', () => {
+    const drawn = serializeWhiteboardContent({
+      elements: [{ id: 'r', type: 'rectangle', x: 0, y: 0, width: 10, height: 10, index: 'a0' }],
+      assets: {},
+      appState: {},
+    } as never);
+    expect(whiteboardContentForTemplateUpdate(drawn)).toBe(drawn);
+  });
+});
 
 const tpl = (over: Partial<GqlTemplateLike> & { id: string }): GqlTemplateLike => ({
   type: GqlTemplateType.Post,
