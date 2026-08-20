@@ -48,7 +48,7 @@ const lockedRow: ConnectedAccountsProviderRow = {
   displayName: 'Microsoft',
   iconSrc: undefined,
   state: 'connected-locked',
-  lockedReason: 'user.security.connectedAccounts.locked.reason',
+  lockedReason: 'This is your only way to sign in right now — add a password or a passkey below first.',
   action: null,
 };
 
@@ -134,7 +134,7 @@ describe('ConnectedAccountsView', () => {
     expect(button).toHaveAttribute('value', 'github');
   });
 
-  it('renders the connected-locked row without a submit form and without offering a connect/disconnect claim it cannot back (FR-008)', () => {
+  it('renders the connected-locked row as a reachable-but-blocked control with its reason wired via aria-describedby (FR-008, research D7)', () => {
     render(
       <ConnectedAccountsView status="ready" onRetry={vi.fn()} providers={[lockedRow]} credentials={[]} messages={[]} />
     );
@@ -142,7 +142,52 @@ describe('ConnectedAccountsView', () => {
     expect(screen.getByText('Microsoft')).toBeInTheDocument();
     // Locked rows are enumerated as connected — never confused with not-connected.
     expect(screen.getByText('user.security.connectedAccounts.provider.connected')).toBeInTheDocument();
-    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+
+    const button = screen.getByRole('button');
+    // aria-disabled, never the native `disabled` attribute — the control stays
+    // in the tab order and reachable, unlike a truly disabled button.
+    expect(button).toHaveAttribute('aria-disabled', 'true');
+    expect(button).not.toBeDisabled();
+    expect(button).not.toHaveAttribute('name'); // no submit — this button posts nothing
+
+    const caption = screen.getByText(lockedRow.lockedReason as string);
+    expect(caption.id).toBeTruthy();
+    expect(button).toHaveAttribute('aria-describedby', caption.id);
+
+    // No submit-capable form exists for this row — disconnecting is blocked,
+    // not silently postable.
+    expect(document.querySelector('form')).not.toBeInTheDocument();
+  });
+
+  it('never calls a disconnect submit for the locked row on click — it is a no-op control', async () => {
+    const user = userEvent.setup();
+    render(
+      <ConnectedAccountsView status="ready" onRetry={vi.fn()} providers={[lockedRow]} credentials={[]} messages={[]} />
+    );
+
+    const button = screen.getByRole('button');
+    await user.click(button);
+    // Still present, still not a submit — clicking an aria-disabled control does nothing.
+    expect(button).toHaveAttribute('aria-disabled', 'true');
+    expect(document.querySelector('form')).not.toBeInTheDocument();
+  });
+
+  it('distinguishes locked from a plain connected row by more than colour: only the locked row carries a visible reason and a described-by control', () => {
+    render(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[connectedRow, lockedRow]}
+        credentials={[]}
+        messages={[]}
+      />
+    );
+
+    const [connectedButton, lockedButton] = screen.getAllByRole('button');
+    expect(connectedButton).not.toHaveAttribute('aria-disabled');
+    expect(connectedButton).toHaveAttribute('name', 'unlink');
+    expect(lockedButton).toHaveAttribute('aria-disabled', 'true');
+    expect(lockedButton).toHaveAttribute('aria-describedby');
   });
 
   it('renders inline flow messages with the correct roles (error → alert, success/info → status) (FR-012/FR-019)', () => {

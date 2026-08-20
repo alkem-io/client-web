@@ -144,6 +144,8 @@ function ProviderRow({ row }: { row: ConnectedAccountsProviderRow }) {
     row.state === 'not-connected'
       ? t('user.security.connectedAccounts.provider.notConnected')
       : t('user.security.connectedAccounts.provider.connected');
+  const isLocked = row.state === 'connected-locked';
+  const lockedReasonId = isLocked ? `connected-accounts-${row.providerId}-locked-reason` : undefined;
 
   return (
     <li className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
@@ -156,6 +158,16 @@ function ProviderRow({ row }: { row: ConnectedAccountsProviderRow }) {
         <div>
           <p className="text-body-emphasis">{row.displayName}</p>
           <p className="text-caption text-muted-foreground">{stateLabel}</p>
+          {/* Names the reason a locked row's disconnect is blocked and the next
+              step (add a password/passkey below) — FR-008. Visible on its own
+              (not only via aria-describedby), so the distinction from a plain
+              "connected" row is perceivable by any means, not colour alone
+              (FR-009). */}
+          {isLocked && row.lockedReason ? (
+            <p id={lockedReasonId} className="mt-1 text-caption text-muted-foreground">
+              {row.lockedReason}
+            </p>
+          ) : null}
         </div>
       </div>
 
@@ -181,6 +193,22 @@ function ProviderRow({ row }: { row: ConnectedAccountsProviderRow }) {
             )}
           </Button>
         </form>
+      ) : isLocked ? (
+        // Reachable-but-blocked (research D7): `aria-disabled`, never the
+        // native `disabled` attribute — a truly disabled button drops out of
+        // the tab order and out of a screen reader's forms-mode navigation,
+        // which is exactly how FR-008's "cannot explain itself" failure mode
+        // happens. This one stays focusable and its reason travels with it
+        // via `aria-describedby`.
+        <Button
+          type="button"
+          variant="outline"
+          aria-disabled="true"
+          aria-describedby={lockedReasonId}
+          className="shrink-0 cursor-not-allowed opacity-50"
+        >
+          {t('user.security.connectedAccounts.actions.disconnect')}
+        </Button>
       ) : null}
     </li>
   );
