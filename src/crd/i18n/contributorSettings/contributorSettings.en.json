@@ -331,6 +331,45 @@
           "loadError": "Couldn't load your API keys — try refreshing the page.",
           "retry": "Try again"
         }
+      },
+      "connectedAccounts": {
+        "title": "Connected Accounts",
+        "description": "Every way you can currently sign in to this account.",
+        "provider": {
+          "notConnected": "Not connected",
+          "connected": "Connected"
+        },
+        "actions": {
+          "connect": "Connect",
+          "connectAria": "Connect {{provider}}",
+          "disconnect": "Disconnect",
+          "disconnectAria": "Disconnect {{provider}}"
+        },
+        "locked": {
+          "reason": "This is your only way to sign in right now — add a password or a passkey below before you can disconnect it."
+        },
+        "unavailable": {
+          "message": "We can't show your sign-in methods right now.",
+          "retry": "Try again"
+        },
+        "messages": {
+          "changesSaved": "Your changes have been saved!",
+          "identityAlreadyLinked": "That identity is already connected to a different Alkemio account. Nothing has changed on either account."
+        },
+        "credentials": {
+          "password": {
+            "label": "Password",
+            "set": "Set",
+            "notSet": "Not set",
+            "manage": "Change password"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Set",
+            "notSet": "Not set",
+            "manage": "Manage passkeys"
+          }
+        }
       }
     },
     "settings": {

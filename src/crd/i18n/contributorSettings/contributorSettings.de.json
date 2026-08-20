@@ -331,6 +331,45 @@
           "loadError": "Deine API-Schlüssel konnten nicht geladen werden — bitte aktualisiere die Seite.",
           "retry": "Erneut versuchen"
         }
+      },
+      "connectedAccounts": {
+        "title": "Verbundene Konten",
+        "description": "Jede Möglichkeit, mit der du dich derzeit bei diesem Konto anmelden kannst.",
+        "provider": {
+          "notConnected": "Nicht verbunden",
+          "connected": "Verbunden"
+        },
+        "actions": {
+          "connect": "Verbinden",
+          "connectAria": "{{provider}} verbinden",
+          "disconnect": "Trennen",
+          "disconnectAria": "{{provider}} trennen"
+        },
+        "locked": {
+          "reason": "Dies ist derzeit deine einzige Möglichkeit, dich anzumelden — füge unten zuerst ein Passwort oder einen Passkey hinzu, bevor du die Verbindung trennen kannst."
+        },
+        "unavailable": {
+          "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen.",
+          "retry": "Erneut versuchen"
+        },
+        "messages": {
+          "changesSaved": "Deine Änderungen wurden gespeichert!",
+          "identityAlreadyLinked": "Diese Identität ist bereits mit einem anderen Alkemio-Konto verbunden. An keinem der beiden Konten wurde etwas geändert."
+        },
+        "credentials": {
+          "password": {
+            "label": "Passwort",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passwort ändern"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passkeys verwalten"
+          }
+        }
       }
     },
     "settings": {

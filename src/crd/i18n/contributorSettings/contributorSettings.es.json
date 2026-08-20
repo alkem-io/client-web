@@ -331,6 +331,45 @@
           "loadError": "No se pudieron cargar tus claves API — intenta recargar la página.",
           "retry": "Reintentar"
         }
+      },
+      "connectedAccounts": {
+        "title": "Cuentas conectadas",
+        "description": "Todas las formas en que puedes iniciar sesión en esta cuenta actualmente.",
+        "provider": {
+          "notConnected": "No conectada",
+          "connected": "Conectada"
+        },
+        "actions": {
+          "connect": "Conectar",
+          "connectAria": "Conectar {{provider}}",
+          "disconnect": "Desconectar",
+          "disconnectAria": "Desconectar {{provider}}"
+        },
+        "locked": {
+          "reason": "Esta es tu única forma de iniciar sesión ahora mismo: añade una contraseña o una passkey a continuación antes de poder desconectarla."
+        },
+        "unavailable": {
+          "message": "No podemos mostrar tus métodos de inicio de sesión en este momento.",
+          "retry": "Intentar de nuevo"
+        },
+        "messages": {
+          "changesSaved": "¡Tus cambios se han guardado!",
+          "identityAlreadyLinked": "Esa identidad ya está conectada a otra cuenta de Alkemio. No se ha modificado ninguna de las dos cuentas."
+        },
+        "credentials": {
+          "password": {
+            "label": "Contraseña",
+            "set": "Configurada",
+            "notSet": "No configurada",
+            "manage": "Cambiar contraseña"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Configurada",
+            "notSet": "No configurada",
+            "manage": "Gestionar passkeys"
+          }
+        }
       }
     },
     "settings": {

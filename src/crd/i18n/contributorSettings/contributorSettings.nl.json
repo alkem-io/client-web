@@ -331,6 +331,45 @@
           "loadError": "Je API-sleutels konden niet worden geladen — probeer de pagina te vernieuwen.",
           "retry": "Opnieuw proberen"
         }
+      },
+      "connectedAccounts": {
+        "title": "Gekoppelde accounts",
+        "description": "Elke manier waarop je nu op dit account kunt inloggen.",
+        "provider": {
+          "notConnected": "Niet gekoppeld",
+          "connected": "Gekoppeld"
+        },
+        "actions": {
+          "connect": "Koppelen",
+          "connectAria": "{{provider}} koppelen",
+          "disconnect": "Ontkoppelen",
+          "disconnectAria": "{{provider}} ontkoppelen"
+        },
+        "locked": {
+          "reason": "Dit is op dit moment je enige manier om in te loggen — voeg hieronder eerst een wachtwoord of een passkey toe voordat je dit kunt ontkoppelen."
+        },
+        "unavailable": {
+          "message": "We kunnen je inlogmethoden nu niet tonen.",
+          "retry": "Opnieuw proberen"
+        },
+        "messages": {
+          "changesSaved": "Je wijzigingen zijn opgeslagen!",
+          "identityAlreadyLinked": "Die identiteit is al gekoppeld aan een ander Alkemio-account. Er is niets veranderd op beide accounts."
+        },
+        "credentials": {
+          "password": {
+            "label": "Wachtwoord",
+            "set": "Ingesteld",
+            "notSet": "Niet ingesteld",
+            "manage": "Wachtwoord wijzigen"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Ingesteld",
+            "notSet": "Niet ingesteld",
+            "manage": "Passkeys beheren"
+          }
+        }
       }
     },
     "settings": {

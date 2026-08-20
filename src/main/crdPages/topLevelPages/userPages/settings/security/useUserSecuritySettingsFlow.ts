@@ -3,9 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 
 export type UserSecuritySettingsFlowResult =
-  | { kind: 'loading' }
-  | { kind: 'error'; error: Error }
-  | { kind: 'ready'; flow: SettingsFlow; hasWebauthn: boolean };
+  | { kind: 'loading'; refetch: () => void }
+  | { kind: 'error'; error: Error; refetch: () => void }
+  | { kind: 'ready'; flow: SettingsFlow; hasWebauthn: boolean; refetch: () => void };
 
 const hasWebauthnNode = (node: UiNode): boolean => {
   if (node.group === 'webauthn' || node.group === 'passkey') return true;
@@ -52,17 +52,18 @@ const useUserSecuritySettingsFlow = (returnTo?: string): UserSecuritySettingsFlo
   const [searchParams] = useSearchParams();
   const flowId = searchParams.get('flow') ?? undefined;
 
-  const { flow, error, loading } = useKratosFlow(FlowTypeName.Settings, flowId, { returnTo });
+  const { flow, error, loading, refetch } = useKratosFlow(FlowTypeName.Settings, flowId, { returnTo });
 
-  if (loading) return { kind: 'loading' };
-  if (error) return { kind: 'error', error };
-  if (!flow) return { kind: 'error', error: new Error('Kratos settings flow unavailable') };
+  if (loading) return { kind: 'loading', refetch };
+  if (error) return { kind: 'error', error, refetch };
+  if (!flow) return { kind: 'error', error: new Error('Kratos settings flow unavailable'), refetch };
 
   const nodes = flow.ui?.nodes ?? [];
   return {
     kind: 'ready',
     flow,
     hasWebauthn: nodes.some(hasWebauthnNode),
+    refetch,
   };
 };
 
