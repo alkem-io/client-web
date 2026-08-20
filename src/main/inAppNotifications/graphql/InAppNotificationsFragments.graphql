@@ -102,6 +102,12 @@ fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotif
         url
       }
     }
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
   }
   space {
     ...spaceNotification

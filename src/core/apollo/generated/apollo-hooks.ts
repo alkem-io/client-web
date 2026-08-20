@@ -3725,6 +3725,12 @@ export const InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDo
         url
       }
     }
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
   }
   space {
     ...spaceNotification

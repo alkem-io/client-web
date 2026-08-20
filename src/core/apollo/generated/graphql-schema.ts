@@ -38260,6 +38260,13 @@ export type InAppNotificationReceivedSubscription = {
               id: string;
               profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
             };
+            reactionsSummary: {
+              __typename?: 'CalloutReactionsSummary';
+              total: number;
+              emojis: Array<string>;
+              myReactionEmoji?: string | undefined;
+              allowedEmojis: Array<string>;
+            };
           };
           space: {
             __typename?: 'Space';
@@ -39465,6 +39472,13 @@ export type InAppNotificationsQuery = {
                   __typename?: 'CalloutFraming';
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                };
+                reactionsSummary: {
+                  __typename?: 'CalloutReactionsSummary';
+                  total: number;
+                  emojis: Array<string>;
+                  myReactionEmoji?: string | undefined;
+                  allowedEmojis: Array<string>;
                 };
               };
               space: {
@@ -40678,6 +40692,13 @@ export type InAppNotificationAllTypesFragment = {
             id: string;
             profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
           };
+          reactionsSummary: {
+            __typename?: 'CalloutReactionsSummary';
+            total: number;
+            emojis: Array<string>;
+            myReactionEmoji?: string | undefined;
+            allowedEmojis: Array<string>;
+          };
         };
         space: {
           __typename?: 'Space';
@@ -41448,6 +41469,13 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutReactionFragment = 
       __typename?: 'CalloutFraming';
       id: string;
       profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
     };
   };
   space: {
