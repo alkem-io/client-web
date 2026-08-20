@@ -139,12 +139,19 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
   });
 
+  // Upload and resolve failures get distinct copy: an UPLOAD (store) failure is not a load
+  // failure, so it must not read "could not be loaded". Mirrors the collaborative dialog.
   useEffect(() => {
-    const message = uploadError ?? resolveError;
-    if (message) {
-      notify(t('callout.whiteboard.images.singleFailure'), 'warning');
+    if (uploadError) {
+      notify(t('callout.whiteboard.images.uploadFailed'), 'warning');
     }
-  }, [uploadError, resolveError, t, notify]);
+  }, [uploadError, t, notify]);
+
+  useEffect(() => {
+    if (resolveError) {
+      notify(t('callout.whiteboard.images.downloadFailed'), 'warning');
+    }
+  }, [resolveError, t, notify]);
 
   // Keep the selected mode in sync with the persisted settings each time the dialog opens — the
   // state initializer can capture a stale `Auto` if `whiteboard` populates after this mounts.
@@ -166,8 +173,8 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
       });
       notify(
         flushed.failedCount === 1
-          ? t('callout.whiteboard.images.singleFailure')
-          : t('callout.whiteboard.images.multipleFailures', { count: flushed.failedCount }),
+          ? t('callout.whiteboard.images.uploadFailed')
+          : t('callout.whiteboard.images.uploadMultipleFailures', { count: flushed.failedCount }),
         'error'
       );
       return;

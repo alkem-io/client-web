@@ -144,6 +144,8 @@
         "maxSizeFallback": "the allowed limit",
         "multipleFailures_one": "{{count}} image could not be loaded",
         "multipleFailures_other": "{{count}} images could not be loaded",
+        "uploadMultipleFailures_one": "{{count}} image could not be uploaded",
+        "uploadMultipleFailures_other": "{{count}} images could not be uploaded",
         "retry": "Retry",
         "singleFailure": "An image could not be loaded",
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",

@@ -144,6 +144,8 @@
         "maxSizeFallback": "de toegestane limiet",
         "multipleFailures_one": "{{count}} afbeelding kon niet worden geladen",
         "multipleFailures_other": "{{count}} afbeeldingen konden niet geladen worden",
+        "uploadMultipleFailures_one": "{{count}} afbeelding kon niet worden geüpload",
+        "uploadMultipleFailures_other": "{{count}} afbeeldingen konden niet geüpload worden",
         "retry": "Probeer opnieuw",
         "singleFailure": "Een afbeelding kon niet geladen worden",
         "tooLarge": "Deze afbeelding is te groot. Maximale grootte is {{maxSize}}.",
