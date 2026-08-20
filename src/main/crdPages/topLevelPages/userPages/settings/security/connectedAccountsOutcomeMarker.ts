@@ -22,10 +22,14 @@ const STORAGE_KEY = 'alkemio.connectedAccounts.outcomeMarker';
 /**
  * How long a marker is trusted to describe the redirect that follows it (research D5's documented
  * fallback for when Kratos's `return_to` does not carry the settings flow id back). Long enough to
- * cover a provider round trip plus a re-auth resume; short enough that a marker left behind by an
- * abandoned tab never resurfaces on some unrelated later visit to the section.
+ * cover a real provider round trip plus a re-auth resume — a wallet-based provider confirmation can
+ * involve a separate device (open an app, scan, confirm with a PIN), so the bound is set to match
+ * Kratos's own settings-flow lifetime rather than an arbitrarily short clock; short enough that a
+ * marker left behind by an abandoned tab still doesn't resurface on some unrelated much-later visit
+ * to the section. `consumeConnectedAccountsMarker`'s read-once semantics — not this bound — are what
+ * actually stop a marker from resurfacing on a later, unrelated visit.
  */
-const MAX_MARKER_AGE_MS = 2 * 60 * 1000;
+const MAX_MARKER_AGE_MS = 15 * 60 * 1000;
 
 function isConnectedAccountsMarker(value: unknown): value is ConnectedAccountsMarker {
   if (typeof value !== 'object' || value === null) return false;

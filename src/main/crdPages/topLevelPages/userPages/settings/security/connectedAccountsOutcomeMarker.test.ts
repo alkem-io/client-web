@@ -8,7 +8,7 @@ import {
 } from './connectedAccountsOutcomeMarker';
 
 const STORAGE_KEY = 'alkemio.connectedAccounts.outcomeMarker';
-const TWO_MINUTES_MS = 2 * 60 * 1000;
+const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
 
 describe('connectedAccountsOutcomeMarker (FR-012 fallback — research D5)', () => {
   beforeEach(() => {
@@ -70,7 +70,7 @@ describe('connectedAccountsOutcomeMarker (FR-012 fallback — research D5)', () 
       const writtenAt = 1_000_000;
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ action: 'link', provider: 'github', ts: writtenAt }));
 
-      const marker = readConnectedAccountsMarker(writtenAt + TWO_MINUTES_MS - 1);
+      const marker = readConnectedAccountsMarker(writtenAt + FIFTEEN_MINUTES_MS - 1);
 
       expect(marker).not.toBeNull();
     });
@@ -79,9 +79,21 @@ describe('connectedAccountsOutcomeMarker (FR-012 fallback — research D5)', () 
       const writtenAt = 1_000_000;
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ action: 'link', provider: 'github', ts: writtenAt }));
 
-      const marker = readConnectedAccountsMarker(writtenAt + TWO_MINUTES_MS + 1);
+      const marker = readConnectedAccountsMarker(writtenAt + FIFTEEN_MINUTES_MS + 1);
 
       expect(marker).toBeNull();
+    });
+
+    test('a slow separate-device provider confirmation (e.g. 5 minutes) is still trusted (corr-client-web-8)', () => {
+      // A wallet-based provider confirmation involves a separate device — open an app, scan, confirm
+      // with a PIN — and can legitimately take several minutes. The bound must cover that, not just
+      // instant redirects.
+      const writtenAt = 1_000_000;
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ action: 'link', provider: 'cleverbase', ts: writtenAt }));
+
+      const marker = readConnectedAccountsMarker(writtenAt + 5 * 60 * 1000);
+
+      expect(marker).not.toBeNull();
     });
 
     test('a marker timestamped in the future is untrustworthy, not returned', () => {
@@ -113,7 +125,7 @@ describe('connectedAccountsOutcomeMarker (FR-012 fallback — research D5)', () 
       const writtenAt = 1_000_000;
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ action: 'link', provider: 'github', ts: writtenAt }));
 
-      const marker = consumeConnectedAccountsMarker(writtenAt + TWO_MINUTES_MS + 1);
+      const marker = consumeConnectedAccountsMarker(writtenAt + FIFTEEN_MINUTES_MS + 1);
 
       expect(marker).toBeNull();
       expect(sessionStorage.getItem(STORAGE_KEY)).toBeNull();
