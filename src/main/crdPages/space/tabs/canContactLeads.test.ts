@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
 /**
- * Mirrors the `canContactLeads` guard in CrdSpaceCommunityPage:
+ * Mirrors the `canContactLeads` guard in SpaceTabSidebarConnector:
  *   const canContactLeads = leadUsers.length > 0 && Boolean(communityId);
  *
  * T018a (zero-leads edge case): when a space has no eligible user leads, the

@@ -17,7 +17,15 @@ import {
   type SidebarVirtualContributorData,
 } from '../dataMappers/communityDataMapper';
 
-export function useCrdSpaceCommunity() {
+type UseCrdSpaceCommunityParams = {
+  /** Suppresses every query this hook drives — the sidebar connector passes
+   *  this when NONE of contactLeads/addUser/virtualContributors/guidelines
+   *  are configured on the active tab (FR-019); the four widgets share this
+   *  one fetch group. */
+  skip?: boolean;
+};
+
+export function useCrdSpaceCommunity({ skip }: UseCrdSpaceCommunityParams = {}) {
   const { space, permissions, entitlements } = useSpace();
 
   const {
@@ -26,11 +34,12 @@ export function useCrdSpaceCommunity() {
     flowStateForNewCallouts,
     tabDescription,
     loading: tabLoading,
-  } = useSpaceTabProvider({ tabPosition: 1 });
+  } = useSpaceTabProvider({ tabPosition: 1, skip });
 
   const calloutsSetProvided = useCalloutsSet({
     calloutsSetId,
     classificationTagsets,
+    skip,
   });
 
   const roleSetId = space.about.membership?.roleSetID;
@@ -52,6 +61,7 @@ export function useCrdSpaceCommunity() {
     relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member],
     contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
+    skip,
   });
 
   // Sidebar leads (users + organizations with the Lead role)
@@ -77,7 +87,7 @@ export function useCrdSpaceCommunity() {
   const guidelinesId = space.about.guidelines?.id || undefined;
   const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
     variables: { communityGuidelinesId: guidelinesId ?? '' },
-    skip: !guidelinesId,
+    skip: skip || !guidelinesId,
   });
   const guidelinesProfile = guidelinesData?.lookup.communityGuidelines?.profile;
   const guidelines = {

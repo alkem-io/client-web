@@ -3,10 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 
-const CrdSpaceDashboardPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceDashboardPage'));
-const CrdSpaceCommunityPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceCommunityPage'));
-const CrdSpaceSubspacesPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceSubspacesPage'));
-const CrdSpaceCustomTabPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceCustomTabPage'));
+const CrdSpaceTabPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceTabPage'));
 
 type OutletContext = {
   activeTabIndex: number;
@@ -18,10 +15,7 @@ export default function CrdSpaceTabbedPages() {
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      {activeTabIndex === 0 && <CrdSpaceDashboardPage />}
-      {activeTabIndex === 1 && <CrdSpaceCommunityPage />}
-      {activeTabIndex === 2 && <CrdSpaceSubspacesPage />}
-      {activeTabIndex >= 3 && activeTabIndex < totalTabs && <CrdSpaceCustomTabPage sectionIndex={activeTabIndex} />}
+      {activeTabIndex < totalTabs && <CrdSpaceTabPage tabPosition={activeTabIndex} />}
     </Suspense>
   );
 }
