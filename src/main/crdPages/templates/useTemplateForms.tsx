@@ -70,7 +70,8 @@ function emptyValuesFor(type: TemplateType): TemplateFormValues {
     case 'space':
       return { ...EMPTY_COMMON, type: 'space', recursive: true };
     case 'classification':
-      return { ...EMPTY_COMMON, type: 'classification', cardinality: 'MULTI_SELECT', values: [{ label: '' }] };
+      // Start with no rows — "0 values defined" until the first quick-add (product#2161 design 04).
+      return { ...EMPTY_COMMON, type: 'classification', cardinality: 'MULTI_SELECT', values: [] };
     case 'callout':
       return {
         ...EMPTY_COMMON,

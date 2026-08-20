@@ -28,8 +28,11 @@ export const TEMPLATE_TYPE_ORDER: readonly TemplateType[] = [
   'callout',
   'whiteboard',
   'post',
-  'communityGuidelines',
+  // Classification above community guidelines — product#2161 designs place the
+  // Classification Templates section directly above Community Guidelines in
+  // every library surface (space library, platform library, pack).
   'classification',
+  'communityGuidelines',
 ] as const;
 
 /**
@@ -62,6 +65,16 @@ export type TemplateCardData = {
   url?: string;
   /** Owning pack name etc. — only set in library / account-source contexts. */
   ownerLabel?: string;
+  /**
+   * Classification-only card header data (product#2161): the card renders a
+   * cardinality badge + a preview of the value set (authored order, FR-002b)
+   * instead of the banner/gradient. Ignored for every other type.
+   */
+  classification?: {
+    cardinality: ClassificationCardinality;
+    /** Value display labels, authored order — the card previews the first few. */
+    valueLabels: string[];
+  };
 };
 
 export type TemplateCategorySection = {

@@ -79,57 +79,89 @@ const baseProps = (overrides?: Partial<SpaceSettingsAboutViewProps>): SpaceSetti
   ...overrides,
 });
 
+/** Open an entry card's kebab menu (design 01 — actions live behind "…"). */
+async function openEntryMenu(label = 'SDGs') {
+  await userEvent.click(await screen.findByRole('button', { name: `Classification actions: ${label}` }));
+}
+
 describe('SpaceSettingsAboutView — Classifications block', () => {
-  it('a hidden entry (display: false) renders "Not shown on the Space page", never "private" (R-8, FR-010d)', async () => {
+  it('a hidden entry (display: false) renders a "Not shown on the Space page" badge, never "private" (R-8, FR-010d)', async () => {
     render(<SpaceSettingsAboutView {...baseProps({ classifications: [{ ...ENTRY, display: false }] })} />);
     expect(await screen.findByText('Not shown on the Space page')).toBeInTheDocument();
     expect(screen.queryByText(/private|secret|hidden from/i)).not.toBeInTheDocument();
   });
 
-  it('a shown entry (display: true) renders "Show on the Space page", and flipping the switch reports display:false', async () => {
+  it('shows the cardinality · selected-count meta line (design 01)', async () => {
+    render(<SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY] })} />);
+    expect(await screen.findByText('Multi-select · 1 selected')).toBeInTheDocument();
+  });
+
+  it('the kebab menu holds the display switch; toggling it reports display:false', async () => {
     const onToggleClassificationDisplay = vi.fn();
     render(
       <SpaceSettingsAboutView
         {...baseProps({ classifications: [{ ...ENTRY, display: true }], onToggleClassificationDisplay })}
       />
     );
-    expect(await screen.findByText('Show on the Space page')).toBeInTheDocument();
     expect(screen.queryByText('Not shown on the Space page')).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole('switch'));
+    await openEntryMenu();
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Show on the Space page' }));
     expect(onToggleClassificationDisplay).toHaveBeenCalledWith('entry-1', false);
   });
 
-  it('disables the value selector for an entry whose selection write is pending', async () => {
+  it('selected values render as chips; the chip × emits the full remaining selection (FR-012d)', async () => {
+    const onSelectClassificationValues = vi.fn();
+    render(
+      <SpaceSettingsAboutView
+        {...baseProps({
+          classifications: [{ ...ENTRY, selectedValueIDs: ['sdg-13', 'sdg-14'] }],
+          onSelectClassificationValues,
+        })}
+      />
+    );
+    await userEvent.click(await screen.findByRole('button', { name: 'Deselect 13 · Climate Action' }));
+    // Full replacement — the remaining list, not a per-value delta.
+    expect(onSelectClassificationValues).toHaveBeenCalledWith('entry-1', ['sdg-14']);
+  });
+
+  it('an entry with no selection opens the value selector as a prompting group (FR-012a)', async () => {
+    render(<SpaceSettingsAboutView {...baseProps({ classifications: [{ ...ENTRY, selectedValueIDs: [] }] })} />);
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(2);
+  });
+
+  it('"Select values…" in the kebab expands the selector; a pending write disables it', async () => {
     render(
       <SpaceSettingsAboutView
         {...baseProps({ classifications: [ENTRY], classificationSelectionPendingIds: ['entry-1'] })}
       />
     );
-    expect(await screen.findAllByRole('checkbox')).not.toHaveLength(0);
+    // Selection exists → selector starts collapsed.
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+    await openEntryMenu();
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Select values…' }));
+    expect(await screen.findAllByRole('checkbox')).toHaveLength(2);
     for (const checkbox of screen.getAllByRole('checkbox')) {
       expect(checkbox).toBeDisabled();
     }
   });
 
-  it('leaves the value selector enabled for an entry with no pending write', async () => {
-    render(
-      <SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY], classificationSelectionPendingIds: [] })} />
-    );
-    expect(await screen.findAllByRole('checkbox')).not.toHaveLength(0);
-    for (const checkbox of screen.getAllByRole('checkbox')) {
-      expect(checkbox).not.toBeDisabled();
-    }
-  });
-
-  it('the trash affordance requests removal via onRequestRemoveClassification, never removes directly', async () => {
+  it('Remove in the kebab requests removal via onRequestRemoveClassification, never removes directly', async () => {
     const onRequestRemoveClassification = vi.fn();
     render(<SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY], onRequestRemoveClassification })} />);
-    const removeButton = await screen.findByRole('button', { name: 'Remove classification' });
-    await userEvent.click(removeButton);
+    await openEntryMenu();
+    await userEvent.click(await screen.findByRole('menuitem', { name: 'Remove classification' }));
     expect(onRequestRemoveClassification).toHaveBeenCalledWith('entry-1');
     expect(onRequestRemoveClassification).toHaveBeenCalledTimes(1);
     // Removing is the connector's job (owns the confirm dialog + mutation) — the
     // view has no other classification-removal callback to fall back to.
+  });
+
+  it('the Add Classification button sits below the entry list (design 01)', async () => {
+    render(<SpaceSettingsAboutView {...baseProps({ classifications: [ENTRY] })} />);
+    const addButton = await screen.findByRole('button', { name: 'Add Classification' });
+    const card = screen.getByText('SDGs').closest('div[class*="rounded-lg"]');
+    expect(card).not.toBeNull();
+    expect(addButton.compareDocumentPosition(card as Element) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy();
   });
 });

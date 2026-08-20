@@ -1,6 +1,8 @@
+import { Search, Tags } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
+import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 import { Input } from '@/crd/primitives/input';
@@ -66,6 +68,7 @@ export function ClassificationPickerDialog({
 }: ClassificationPickerDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
   const [retryLabel, setRetryLabel] = useState(conflict?.attemptedLabel ?? '');
+  const [search, setSearch] = useState('');
 
   // The dialog stays mounted across opens (`open` only toggles visibility), so the
   // `useState` initializer above only ever runs once. Without this effect a conflict
@@ -78,8 +81,24 @@ export function ClassificationPickerDialog({
   const anyLoading = sources.some(s => s.loading);
   const isEmpty = !anyLoading && sources.every(s => s.templates.length === 0);
 
+  // Search filters both groups by name/description (design 05); group counts
+  // reflect the filtered list.
+  const query = search.trim().toLowerCase();
+  const filteredSources = sources.map(source => ({
+    ...source,
+    templates: query
+      ? source.templates.filter(
+          tpl => tpl.displayLabel.toLowerCase().includes(query) || tpl.description.toLowerCase().includes(query)
+        )
+      : source.templates,
+  }));
+  const noMatches = !anyLoading && !isEmpty && filteredSources.every(s => s.templates.length === 0);
+
   const handleOpenChange = (next: boolean) => {
-    if (!next) onDismissConflict();
+    if (!next) {
+      onDismissConflict();
+      setSearch('');
+    }
     onOpenChange(next);
   };
 
@@ -127,6 +146,17 @@ export function ClassificationPickerDialog({
         </DialogHeader>
         <p className="text-body text-muted-foreground">{t('classifications.picker.description')}</p>
 
+        <div className="relative">
+          <Search aria-hidden="true" className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder={t('classifications.picker.searchPlaceholder')}
+            aria-label={t('classifications.picker.searchPlaceholder')}
+            className="pl-9"
+          />
+        </div>
+
         <div className="flex-1 overflow-y-auto -mx-1 px-1 space-y-4">
           {anyLoading && (
             <output aria-label={t('classifications.picker.title')} className="flex flex-col gap-2">
@@ -144,15 +174,22 @@ export function ClassificationPickerDialog({
             </div>
           )}
 
+          {noMatches && (
+            <p className="text-body text-muted-foreground text-center py-4">
+              {t('classifications.picker.noMatches', { query: search.trim() })}
+            </p>
+          )}
+
           {!anyLoading &&
-            sources.map(
+            filteredSources.map(
               source =>
                 source.templates.length > 0 && (
                   <div key={source.key}>
                     <h3 className="mb-2 text-label uppercase text-muted-foreground">
                       {source.key === 'platform'
                         ? t('classifications.picker.platformSection')
-                        : t('classifications.picker.spaceSection')}
+                        : t('classifications.picker.spaceSection')}{' '}
+                      ({source.templates.length})
                     </h3>
                     {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
                     {/* biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset */}
@@ -163,14 +200,28 @@ export function ClassificationPickerDialog({
                             type="button"
                             onClick={() => onSelectTemplate(template.id, template.displayLabel)}
                             disabled={submitting}
-                            className="w-full text-left rounded-lg border border-border p-3 hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full flex items-start gap-3 text-left rounded-lg border border-border p-3 hover:bg-muted/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <span className="block text-body-emphasis text-foreground">{template.displayLabel}</span>
-                            {template.description && (
-                              <span className="block mt-0.5 text-caption text-muted-foreground">
-                                {template.description}
+                            <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                              <Tags aria-hidden="true" className="size-4 text-primary" />
+                            </span>
+                            <span className="min-w-0">
+                              <span className="flex items-center gap-2">
+                                <span className="text-body-emphasis text-foreground truncate">
+                                  {template.displayLabel}
+                                </span>
+                                <Badge variant="secondary" className="shrink-0">
+                                  {template.cardinality === 'SINGLE_SELECT'
+                                    ? t('classifications.picker.singleSelect')
+                                    : t('classifications.picker.multiSelect')}
+                                </Badge>
                               </span>
-                            )}
+                              {template.description && (
+                                <span className="block mt-0.5 text-caption text-muted-foreground">
+                                  {template.description}
+                                </span>
+                              )}
+                            </span>
                           </button>
                         </li>
                       ))}

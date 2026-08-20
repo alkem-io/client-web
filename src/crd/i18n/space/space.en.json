@@ -409,7 +409,8 @@
         "why": "Why this subspace?",
         "who": "Who is involved?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Apply",

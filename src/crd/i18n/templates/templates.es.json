@@ -47,7 +47,11 @@
     "edit": "Editar",
     "duplicate": "Duplicar",
     "delete": "Eliminar",
-    "noPreview": "Sin vista previa"
+    "noPreview": "Sin vista previa",
+    "classification": {
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única"
+    }
   },
   "framingKind": {
     "none": "Texto",
@@ -107,8 +111,11 @@
       "references": "Referencias"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "values": "Values"
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única",
+      "valueCount_one": "{{count}} valor",
+      "valueCount_other": "{{count}} valores",
+      "definedValues": "Valores definidos"
     }
   },
   "picker": {
@@ -204,9 +211,9 @@
       "references": "Referencias"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "cardinalitySingle": "Single-select (one value)",
-      "cardinalityMulti": "Multi-select (one or more values)",
+      "cardinality": "Tipo de selección",
+      "cardinalitySingle": "Selección única — los usuarios eligen un valor",
+      "cardinalityMulti": "Selección múltiple — los usuarios pueden elegir varios valores",
       "values": "Values",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
@@ -216,7 +223,11 @@
       "removeValue": "Remove value",
       "atLeastOneValue": "A value set needs at least one value.",
       "tooManyValues": "A value set can hold at most 50 values.",
-      "valuesRequired": "Add at least one value."
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Define los valores permitidos para esta clasificación. Escribe un valor y pulsa Intro.",
+      "quickAddPlaceholder": "p. ej. ODS 1 – Fin de la pobreza",
+      "valuesDefined_one": "{{count}} valor definido",
+      "valuesDefined_other": "{{count}} valores definidos"
     }
   },
   "references": {

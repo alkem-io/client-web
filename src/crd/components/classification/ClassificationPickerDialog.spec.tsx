@@ -43,15 +43,41 @@ describe('ClassificationPickerDialog', () => {
       />
     );
 
-    expect(screen.getByText('Platform-wide')).toBeInTheDocument();
-    expect(screen.getByText("This Space's library")).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Platform-wide (1)' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: "This Space's library (1)" })).toBeInTheDocument();
     expect(screen.getByText('SDGs')).toBeInTheDocument();
     expect(screen.getByText('UN Sustainable Development Goals')).toBeInTheDocument();
     expect(screen.getByText('Sector')).toBeInTheDocument();
     expect(screen.getByText('Primary industry sector')).toBeInTheDocument();
 
+    // Cardinality badge per row (design 05).
+    expect(screen.getByText('Multi')).toBeInTheDocument();
+    expect(screen.getByText('Single')).toBeInTheDocument();
+
     // No "create a template" / ad-hoc "create a classification" affordance anywhere in the dialog.
     expect(screen.queryByRole('button', { name: /create/i })).not.toBeInTheDocument();
+  });
+
+  it('search filters both groups by name/description and updates the group counts (design 05)', async () => {
+    render(
+      <ClassificationPickerDialog
+        open={true}
+        onOpenChange={vi.fn()}
+        sources={[
+          { key: 'platform', templates: [sdgs] },
+          { key: 'space', templates: [sector] },
+        ]}
+        onSelectTemplate={vi.fn()}
+        onRetryWithLabel={vi.fn()}
+        onDismissConflict={vi.fn()}
+      />
+    );
+
+    await userEvent.type(screen.getByRole('textbox', { name: 'Search templates…' }), 'sector');
+    expect(screen.getByText('Sector')).toBeInTheDocument();
+    expect(screen.queryByText('SDGs')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Platform-wide (1)' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: "This Space's library (1)" })).toBeInTheDocument();
   });
 
   it('picking a template fires onSelectTemplate with its id and its own display label (Step A commits immediately)', async () => {

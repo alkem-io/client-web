@@ -43,7 +43,7 @@ export function ClassificationValueSelector({
         onValueChange={next => onChange(next ? [next] : [])}
         disabled={disabled}
         className={cn('gap-2', className)}
-        aria-label={t('classifications.valueSelector.noneSelected')}
+        aria-label={t('classifications.entry.selectValues')}
       >
         {values.map(value => {
           const inputId = `classification-${entryId}-value-${value.id}`;
@@ -71,7 +71,7 @@ export function ClassificationValueSelector({
 
   return (
     <fieldset className={cn('flex flex-col gap-2 border-0 p-0 m-0', className)}>
-      <legend className="sr-only">{t('classifications.valueSelector.noneSelected')}</legend>
+      <legend className="sr-only">{t('classifications.entry.selectValues')}</legend>
       {values.map(value => {
         const inputId = `classification-${entryId}-value-${value.id}`;
         return (

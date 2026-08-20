@@ -47,7 +47,11 @@
     "edit": "Bewerken",
     "duplicate": "Dupliceren",
     "delete": "Verwijderen",
-    "noPreview": "Geen voorbeeld"
+    "noPreview": "Geen voorbeeld",
+    "classification": {
+      "multiSelect": "Meerkeuze",
+      "singleSelect": "Eén keuze"
+    }
   },
   "framingKind": {
     "none": "Tekst",
@@ -107,8 +111,11 @@
       "references": "Referenties"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "values": "Values"
+      "multiSelect": "Meerkeuze",
+      "singleSelect": "Eén keuze",
+      "valueCount_one": "{{count}} waarde",
+      "valueCount_other": "{{count}} waarden",
+      "definedValues": "Gedefinieerde waarden"
     }
   },
   "picker": {
@@ -204,9 +211,9 @@
       "references": "Referenties"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "cardinalitySingle": "Single-select (one value)",
-      "cardinalityMulti": "Multi-select (one or more values)",
+      "cardinality": "Selectietype",
+      "cardinalitySingle": "Eén keuze — gebruikers kiezen één waarde",
+      "cardinalityMulti": "Meerkeuze — gebruikers kunnen meerdere waarden kiezen",
       "values": "Values",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
@@ -216,7 +223,11 @@
       "removeValue": "Remove value",
       "atLeastOneValue": "A value set needs at least one value.",
       "tooManyValues": "A value set can hold at most 50 values.",
-      "valuesRequired": "Add at least one value."
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Definieer de toegestane waarden voor deze classificatie. Typ een waarde en druk op Enter.",
+      "quickAddPlaceholder": "bijv. SDG 1 – Geen armoede",
+      "valuesDefined_one": "{{count}} waarde gedefinieerd",
+      "valuesDefined_other": "{{count}} waarden gedefinieerd"
     }
   },
   "references": {

@@ -409,7 +409,8 @@
         "why": "Защо това подпространство?",
         "who": "Кой участва?"
       }
-    }
+    },
+    "tags": "Етикети"
   },
   "apply": {
     "apply": "Кандидатствай",
@@ -1031,6 +1032,6 @@
     "editHint": "Add values in Settings → About.",
     "hiddenBadge": "Not shown on the Space page",
     "editInSettings": "Edit in Settings",
-    "sectionTitle": "Classifications"
+    "sectionTitle": "Класификации"
   }
 }

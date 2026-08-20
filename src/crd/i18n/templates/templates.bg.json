@@ -47,7 +47,11 @@
     "edit": "Редактирай",
     "duplicate": "Дублирай",
     "delete": "Изтрий",
-    "noPreview": "Няма преглед"
+    "noPreview": "Няма преглед",
+    "classification": {
+      "multiSelect": "Множествен избор",
+      "singleSelect": "Единичен избор"
+    }
   },
   "framingKind": {
     "none": "Текст",
@@ -107,8 +111,11 @@
       "references": "Препратки"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "values": "Values"
+      "multiSelect": "Множествен избор",
+      "singleSelect": "Единичен избор",
+      "valueCount_one": "{{count}} стойност",
+      "valueCount_other": "{{count}} стойности",
+      "definedValues": "Дефинирани стойности"
     }
   },
   "picker": {
@@ -204,9 +211,9 @@
       "references": "Препратки"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "cardinalitySingle": "Single-select (one value)",
-      "cardinalityMulti": "Multi-select (one or more values)",
+      "cardinality": "Тип на избор",
+      "cardinalitySingle": "Единичен избор — потребителите избират една стойност",
+      "cardinalityMulti": "Множествен избор — потребителите могат да изберат няколко стойности",
       "values": "Values",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
@@ -216,7 +223,11 @@
       "removeValue": "Remove value",
       "atLeastOneValue": "A value set needs at least one value.",
       "tooManyValues": "A value set can hold at most 50 values.",
-      "valuesRequired": "Add at least one value."
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Дефинирайте позволените стойности за тази класификация. Въведете стойност и натиснете Enter.",
+      "quickAddPlaceholder": "напр. ЦУР 1 – Изкореняване на бедността",
+      "valuesDefined_one": "{{count}} дефинирана стойност",
+      "valuesDefined_other": "{{count}} дефинирани стойности"
     }
   },
   "references": {

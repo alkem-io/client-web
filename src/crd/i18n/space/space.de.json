@@ -409,7 +409,8 @@
         "why": "Warum dieser Unterbereich?",
         "who": "Wer ist beteiligt?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Bewerben",
@@ -1031,6 +1032,6 @@
     "editHint": "Add values in Settings → About.",
     "hiddenBadge": "Not shown on the Space page",
     "editInSettings": "Edit in Settings",
-    "sectionTitle": "Classifications"
+    "sectionTitle": "Klassifikationen"
   }
 }

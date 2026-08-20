@@ -127,6 +127,8 @@ export function CrdSpaceAbout({ open, onClose }: CrdSpaceAboutProps) {
       uri: r.uri,
       description: r.description ?? undefined,
     })),
+    // Freeform Tags stay visible beside Classifications (FR-013 coexistence).
+    tags: profile?.tagset?.tags ?? [],
     classifications,
   };
 

@@ -37,6 +37,8 @@ export type SpaceAboutData = {
   leadUsers: SpaceLeadData[];
   leadOrganizations: SpaceLeadData[];
   references: CalloutReference[];
+  /** Freeform Tags — rendered on the info panel so they stay visible alongside Classifications (FR-013). */
+  tags?: string[];
   /**
    * Already filtered + ordered for the CURRENT viewer (see `groupEntriesForDisplay` in
    * `@/crd/components/classification/types`) — a read-only visitor's list already excludes
@@ -106,7 +108,8 @@ export function SpaceAboutView({
   const hasLeads = leads.length > 0;
   const hasPanelEditIcons = hasEditPrivilege && Boolean(onEditDescription || onEditMembers);
   const hasMeta = Boolean(data.location) || memberCount !== undefined || Boolean(isMember);
-  const showPanel = Boolean(data.description) || hasMeta || hasLeads || hasPanelEditIcons;
+  const hasTags = (data.tags?.length ?? 0) > 0;
+  const showPanel = Boolean(data.description) || hasMeta || hasLeads || hasPanelEditIcons || hasTags;
 
   return (
     <div className={cn('max-w-3xl mx-auto space-y-6', className)}>
@@ -159,6 +162,21 @@ export function SpaceAboutView({
                   </span>
                 )}
               </div>
+            )}
+
+            {/* Freeform Tags — kept visible beside Classifications (FR-013 coexistence). */}
+            {hasTags && (
+              // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
+              // biome-ignore lint/a11y/useSemanticElements: role="list" restores semantics after Tailwind reset
+              <ul role="list" aria-label={t('about.tags')} className="flex flex-wrap gap-1.5 mt-4">
+                {data.tags?.map(tag => (
+                  <li key={tag}>
+                    <span className="inline-flex rounded-md bg-primary-foreground/15 px-2 py-0.5 text-caption text-primary-foreground">
+                      {tag}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             )}
 
             {/* Leads — name only (no per-lead location) */}

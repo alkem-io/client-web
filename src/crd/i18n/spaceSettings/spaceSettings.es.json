@@ -983,9 +983,9 @@
     }
   },
   "classifications": {
-    "sectionTitle": "Classifications",
-    "sectionDescription": "Structured classifications from reusable templates, alongside your freeform Tags.",
-    "addButton": "Add classification",
+    "sectionTitle": "Clasificaciones",
+    "sectionDescription": "Clasifica tu espacio con vocabularios estructurados (p. ej. ODS, Sector) para mejorar la visibilidad y los informes.",
+    "addButton": "Añadir clasificación",
     "picker": {
       "title": "Add a classification",
       "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
@@ -1001,7 +1001,11 @@
         "fieldLabel": "Display label",
         "retry": "Add with this label"
       },
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "searchPlaceholder": "Buscar plantillas…",
+      "noMatches": "Ninguna plantilla coincide con \"{{query}}\".",
+      "multiSelect": "Múltiple",
+      "singleSelect": "Única"
     },
     "valueSelector": {
       "noneSelected": "No values selected yet"
@@ -1016,6 +1020,15 @@
       "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
       "confirmButton": "Remove"
     },
-    "removedEntryError": "This classification was removed — refreshing the page."
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única",
+      "selectedCount_one": "{{count}} seleccionado",
+      "selectedCount_other": "{{count}} seleccionados",
+      "actions": "Acciones de clasificación: {{label}}",
+      "selectValues": "Seleccionar valores…",
+      "deselectValue": "Deseleccionar {{label}}"
+    }
   }
 }

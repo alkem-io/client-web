@@ -86,8 +86,8 @@ describe('templatesManagerMapper', () => {
       'callout',
       'whiteboard',
       'post',
-      'communityGuidelines',
       'classification',
+      'communityGuidelines',
     ]);
     expect(sections.every(s => s.templates.length === 0)).toBe(true);
   });

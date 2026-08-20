@@ -124,8 +124,8 @@ describe('useTemplatesManager — initial state', () => {
       'callout',
       'whiteboard',
       'post',
-      'communityGuidelines',
       'classification',
+      'communityGuidelines',
     ]);
     const calloutCategory = result.current.categories.find(c => c.type === 'callout');
     expect(calloutCategory?.templates.map(t => t.id)).toEqual(['c-1']);

@@ -47,7 +47,11 @@
     "edit": "Modifier",
     "duplicate": "Dupliquer",
     "delete": "Supprimer",
-    "noPreview": "Pas d’aperçu"
+    "noPreview": "Pas d’aperçu",
+    "classification": {
+      "multiSelect": "Sélection multiple",
+      "singleSelect": "Sélection unique"
+    }
   },
   "framingKind": {
     "none": "Texte",
@@ -107,8 +111,11 @@
       "references": "Références"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "values": "Values"
+      "multiSelect": "Sélection multiple",
+      "singleSelect": "Sélection unique",
+      "valueCount_one": "{{count}} valeur",
+      "valueCount_other": "{{count}} valeurs",
+      "definedValues": "Valeurs définies"
     }
   },
   "picker": {
@@ -204,9 +211,9 @@
       "references": "Références"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "cardinalitySingle": "Single-select (one value)",
-      "cardinalityMulti": "Multi-select (one or more values)",
+      "cardinality": "Type de sélection",
+      "cardinalitySingle": "Sélection unique — les utilisateurs choisissent une valeur",
+      "cardinalityMulti": "Sélection multiple — les utilisateurs peuvent choisir plusieurs valeurs",
       "values": "Values",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
@@ -216,7 +223,11 @@
       "removeValue": "Remove value",
       "atLeastOneValue": "A value set needs at least one value.",
       "tooManyValues": "A value set can hold at most 50 values.",
-      "valuesRequired": "Add at least one value."
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Définissez les valeurs autorisées pour cette classification. Saisissez une valeur et appuyez sur Entrée.",
+      "quickAddPlaceholder": "p. ex. ODD 1 – Pas de pauvreté",
+      "valuesDefined_one": "{{count}} valeur définie",
+      "valuesDefined_other": "{{count}} valeurs définies"
     }
   },
   "references": {

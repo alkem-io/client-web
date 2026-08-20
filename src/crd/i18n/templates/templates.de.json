@@ -47,7 +47,11 @@
     "edit": "Bearbeiten",
     "duplicate": "Duplizieren",
     "delete": "Löschen",
-    "noPreview": "Keine Vorschau"
+    "noPreview": "Keine Vorschau",
+    "classification": {
+      "multiSelect": "Mehrfachauswahl",
+      "singleSelect": "Einzelauswahl"
+    }
   },
   "framingKind": {
     "none": "Text",
@@ -107,8 +111,11 @@
       "references": "Referenzen"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "values": "Values"
+      "multiSelect": "Mehrfachauswahl",
+      "singleSelect": "Einzelauswahl",
+      "valueCount_one": "{{count}} Wert",
+      "valueCount_other": "{{count}} Werte",
+      "definedValues": "Definierte Werte"
     }
   },
   "picker": {
@@ -204,9 +211,9 @@
       "references": "Referenzen"
     },
     "classification": {
-      "cardinality": "Cardinality",
-      "cardinalitySingle": "Single-select (one value)",
-      "cardinalityMulti": "Multi-select (one or more values)",
+      "cardinality": "Auswahltyp",
+      "cardinalitySingle": "Einzelauswahl — Nutzer wählen einen Wert",
+      "cardinalityMulti": "Mehrfachauswahl — Nutzer können mehrere Werte wählen",
       "values": "Values",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
@@ -216,7 +223,11 @@
       "removeValue": "Remove value",
       "atLeastOneValue": "A value set needs at least one value.",
       "tooManyValues": "A value set can hold at most 50 values.",
-      "valuesRequired": "Add at least one value."
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Definiere die zulässigen Werte für diese Klassifikation. Gib einen Wert ein und drücke Enter.",
+      "quickAddPlaceholder": "z. B. SDG 1 – Keine Armut",
+      "valuesDefined_one": "{{count}} Wert definiert",
+      "valuesDefined_other": "{{count}} Werte definiert"
     }
   },
   "references": {

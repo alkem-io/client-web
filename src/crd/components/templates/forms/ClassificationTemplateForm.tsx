@@ -1,10 +1,11 @@
 import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { ClassificationCardinality } from '@/crd/components/classification/types';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
 import { Label } from '@/crd/primitives/label';
-import { RadioGroup, RadioGroupItem } from '@/crd/primitives/radio-group';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/crd/primitives/select';
 import type { ClassificationTemplateFormProps, ClassificationTemplateValueRow } from '../types';
 
 const MAX_VALUES = 50;
@@ -26,42 +27,78 @@ function moveRow(rows: ClassificationTemplateValueRow[], index: number, directio
  */
 export function ClassificationTemplateForm({ value, errors, onChange }: ClassificationTemplateFormProps) {
   const { t } = useTranslation('crd-templates');
+  const [draft, setDraft] = useState('');
 
   const setRows = (rows: ClassificationTemplateValueRow[]) => onChange({ ...value, values: rows });
   const setRow = (index: number, patch: Partial<ClassificationTemplateValueRow>) =>
     setRows(value.values.map((row, i) => (i === index ? { ...row, ...patch } : row)));
-  const addRow = () => {
-    if (value.values.length >= MAX_VALUES) return;
-    setRows([...value.values, { label: '' }]);
-  };
   const removeRow = (index: number) => setRows(value.values.filter((_, i) => i !== index));
+
+  // Quick-add ("type a value and press Enter", design 04) — appends the trimmed
+  // draft as a new row at the END of the authored order.
+  const addDraft = () => {
+    const label = draft.trim();
+    if (!label || value.values.length >= MAX_VALUES) return;
+    setRows([...value.values, { label }]);
+    setDraft('');
+  };
+
+  // "N values defined" counts only rows that would survive submission (blank
+  // labels are filtered out by the save path).
+  const definedCount = value.values.filter(row => row.label.trim().length > 0).length;
 
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label>{t('form.classification.cardinality')}</Label>
-        <RadioGroup
+        <Label id="classification-tpl-cardinality-label">{t('form.classification.cardinality')}</Label>
+        {/* Dropdown, not radios — product#2161 "Selection Type" (designs 04/09). */}
+        <Select
           value={value.cardinality}
           onValueChange={next => onChange({ ...value, cardinality: next as ClassificationCardinality })}
-          className="gap-2"
         >
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value="SINGLE_SELECT" id="classification-tpl-cardinality-single" />
-            <Label htmlFor="classification-tpl-cardinality-single" className="font-normal cursor-pointer">
-              {t('form.classification.cardinalitySingle')}
-            </Label>
-          </div>
-          <div className="flex items-center gap-2">
-            <RadioGroupItem value="MULTI_SELECT" id="classification-tpl-cardinality-multi" />
-            <Label htmlFor="classification-tpl-cardinality-multi" className="font-normal cursor-pointer">
-              {t('form.classification.cardinalityMulti')}
-            </Label>
-          </div>
-        </RadioGroup>
+          <SelectTrigger aria-labelledby="classification-tpl-cardinality-label" className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="MULTI_SELECT">{t('form.classification.cardinalityMulti')}</SelectItem>
+            <SelectItem value="SINGLE_SELECT">{t('form.classification.cardinalitySingle')}</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">
-        <Label>{t('form.classification.values')}</Label>
+        <Label htmlFor="classification-tpl-quick-add">{t('form.classification.values')}</Label>
+        <p className="text-caption text-muted-foreground">{t('form.classification.valuesHint')}</p>
+        {/* Quick-add: type a value and press Enter (design 04). Appends to the END —
+            authored order is preserved, never sorted (FR-002b). */}
+        <div className="flex items-center gap-2">
+          <Input
+            id="classification-tpl-quick-add"
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                addDraft();
+              }
+            }}
+            placeholder={t('form.classification.quickAddPlaceholder')}
+            disabled={value.values.length >= MAX_VALUES}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            onClick={addDraft}
+            disabled={!draft.trim() || value.values.length >= MAX_VALUES}
+            aria-label={t('form.classification.addValue')}
+          >
+            <Plus className="size-4" aria-hidden="true" />
+          </Button>
+        </div>
+        <p className="text-caption text-muted-foreground" aria-live="polite">
+          {t('form.classification.valuesDefined', { count: definedCount })}
+        </p>
         <div className="space-y-2">
           {value.values.map((row, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: rows have no stable id until saved, and labels aren't unique
@@ -124,10 +161,6 @@ export function ClassificationTemplateForm({ value, errors, onChange }: Classifi
           ))}
         </div>
         {errors.values && <p className="text-caption text-destructive">{errors.values}</p>}
-        <Button type="button" variant="outline" size="sm" onClick={addRow} disabled={value.values.length >= MAX_VALUES}>
-          <Plus className="size-3.5 mr-1.5" aria-hidden="true" />
-          {t('form.classification.addValue')}
-        </Button>
       </div>
     </div>
   );

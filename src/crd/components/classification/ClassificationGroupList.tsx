@@ -40,7 +40,8 @@ export function ClassificationGroupList({ entries, canEdit, onEditEntry, classNa
       {entries.map(entry => (
         <div key={entry.id} className="space-y-1.5">
           <div className="flex items-center gap-2">
-            <h3 className="text-card-title text-foreground">{entry.displayLabel}</h3>
+            {/* Body-weight label, not a card title — design 02 shows the group name as plain text above the chips. */}
+            <h3 className="text-body-emphasis text-foreground">{entry.displayLabel}</h3>
             {entry.hidden && canEdit && (
               <Badge variant="outline" className="gap-1">
                 <EyeOff className="size-3" aria-hidden="true" />

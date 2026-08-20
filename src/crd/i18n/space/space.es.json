@@ -409,7 +409,8 @@
         "why": "¿Por qué este subespacio?",
         "who": "¿Quién participa?"
       }
-    }
+    },
+    "tags": "Etiquetas"
   },
   "apply": {
     "apply": "Solicitar acceso",
@@ -1031,6 +1032,6 @@
     "editHint": "Add values in Settings → About.",
     "hiddenBadge": "Not shown on the Space page",
     "editInSettings": "Edit in Settings",
-    "sectionTitle": "Classifications"
+    "sectionTitle": "Clasificaciones"
   }
 }

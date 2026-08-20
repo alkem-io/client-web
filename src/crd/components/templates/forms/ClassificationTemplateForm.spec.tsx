@@ -10,6 +10,10 @@ import { ClassificationTemplateForm } from './ClassificationTemplateForm';
 beforeAll(async () => {
   await i18n.changeLanguage('en');
   await i18n.loadNamespaces('crd-templates');
+  // Radix Select needs these DOM APIs, which jsdom does not implement.
+  window.HTMLElement.prototype.scrollIntoView = vi.fn();
+  window.HTMLElement.prototype.hasPointerCapture = vi.fn().mockReturnValue(false);
+  window.HTMLElement.prototype.releasePointerCapture = vi.fn();
 });
 
 function baseValue(overrides: Partial<ClassificationTemplateValues> = {}): ClassificationTemplateValues {
@@ -35,20 +39,22 @@ describe('ClassificationTemplateForm', () => {
     }
   });
 
-  it('cardinality selection is required and reflects the current value', () => {
+  it('the selection-type dropdown reflects the current cardinality (design 04)', () => {
     render(
       <ClassificationTemplateForm value={baseValue({ cardinality: 'SINGLE_SELECT' })} errors={{}} onChange={vi.fn()} />
     );
-    expect(screen.getByRole('radio', { name: 'Single-select (one value)' })).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'Multi-select (one or more values)' })).not.toBeChecked();
+    expect(screen.getByRole('combobox', { name: 'Selection type' })).toHaveTextContent(
+      'Single-select — users pick one value'
+    );
   });
 
-  it('changing cardinality emits the new value', async () => {
+  it('changing the selection type emits the new cardinality', async () => {
     const onChange = vi.fn();
     render(
       <ClassificationTemplateForm value={baseValue({ cardinality: 'MULTI_SELECT' })} errors={{}} onChange={onChange} />
     );
-    await userEvent.click(screen.getByRole('radio', { name: 'Single-select (one value)' }));
+    await userEvent.click(screen.getByRole('combobox', { name: 'Selection type' }));
+    await userEvent.click(screen.getByRole('option', { name: 'Single-select — users pick one value' }));
     expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ cardinality: 'SINGLE_SELECT' }));
   });
 
@@ -64,13 +70,39 @@ describe('ClassificationTemplateForm', () => {
     expect(labelInputs.map(i => i.value)).toEqual(['Zebra', 'Alpha']);
   });
 
-  it('adding a value appends to the end, preserving order', async () => {
+  it('quick-add: typing a value and pressing Enter appends it to the end (design 04)', async () => {
     const onChange = vi.fn();
     render(
       <ClassificationTemplateForm value={baseValue({ values: [{ label: 'Alpha' }] })} errors={{}} onChange={onChange} />
     );
-    await userEvent.click(screen.getByRole('button', { name: 'Add value' }));
-    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ values: [{ label: 'Alpha' }, { label: '' }] }));
+    const quickAdd = screen.getByPlaceholderText('e.g. SDG 1 – No Poverty');
+    await userEvent.type(quickAdd, 'Beta{Enter}');
+    expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ values: [{ label: 'Alpha' }, { label: 'Beta' }] }));
+  });
+
+  it('quick-add via the + button, and a blank draft is not addable', async () => {
+    const onChange = vi.fn();
+    render(
+      <ClassificationTemplateForm value={baseValue({ values: [{ label: 'Alpha' }] })} errors={{}} onChange={onChange} />
+    );
+    const addButton = screen.getByRole('button', { name: 'Add value' });
+    expect(addButton).toBeDisabled();
+    await userEvent.type(screen.getByPlaceholderText('e.g. SDG 1 – No Poverty'), 'Gamma');
+    await userEvent.click(addButton);
+    expect(onChange).toHaveBeenCalledWith(
+      expect.objectContaining({ values: [{ label: 'Alpha' }, { label: 'Gamma' }] })
+    );
+  });
+
+  it('shows the defined-values counter', () => {
+    render(
+      <ClassificationTemplateForm
+        value={baseValue({ values: [{ label: 'Alpha' }, { label: '  ' }] })}
+        errors={{}}
+        onChange={vi.fn()}
+      />
+    );
+    expect(screen.getByText('1 value defined')).toBeInTheDocument();
   });
 
   it('removing a value drops only that row', async () => {

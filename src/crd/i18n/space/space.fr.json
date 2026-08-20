@@ -409,7 +409,8 @@
         "why": "Pourquoi ce sous-espace ?",
         "who": "Qui est impliqué ?"
       }
-    }
+    },
+    "tags": "Étiquettes"
   },
   "apply": {
     "apply": "Postuler",

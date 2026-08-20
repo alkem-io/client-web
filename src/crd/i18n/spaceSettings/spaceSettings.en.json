@@ -984,8 +984,8 @@
   },
   "classifications": {
     "sectionTitle": "Classifications",
-    "sectionDescription": "Structured classifications from reusable templates, alongside your freeform Tags.",
-    "addButton": "Add classification",
+    "sectionDescription": "Classify your space with structured vocabularies (e.g. SDGs, Sector) for discoverability and reporting.",
+    "addButton": "Add Classification",
     "picker": {
       "title": "Add a classification",
       "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
@@ -1001,7 +1001,11 @@
         "fieldLabel": "Display label",
         "retry": "Add with this label"
       },
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "searchPlaceholder": "Search templates…",
+      "noMatches": "No templates match \"{{query}}\".",
+      "multiSelect": "Multi",
+      "singleSelect": "Single"
     },
     "valueSelector": {
       "noneSelected": "No values selected yet"
@@ -1016,6 +1020,15 @@
       "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
       "confirmButton": "Remove"
     },
-    "removedEntryError": "This classification was removed — refreshing the page."
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Multi-select",
+      "singleSelect": "Single-select",
+      "selectedCount_one": "{{count}} selected",
+      "selectedCount_other": "{{count}} selected",
+      "actions": "Classification actions: {{label}}",
+      "selectValues": "Select values…",
+      "deselectValue": "Deselect {{label}}"
+    }
   }
 }
