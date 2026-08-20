@@ -56,8 +56,23 @@ export function UserSecurityTabView({
   const { t } = useTranslation(NS);
 
   if (state.kind === 'loading') {
+    // The Connected Accounts card — and the outcome live region inside it — renders here too,
+    // not just in the 'ready' branch below. Kratos's redirect back from a link/unlink attempt can
+    // land while this tab is still on its own loading gate (the flow/auth-methods query hasn't
+    // resolved yet); a live region only announces mutations that happen after it exists in the DOM,
+    // so if this branch dropped the section entirely, the very first commit that carries a Kratos
+    // outcome message would insert the region already populated and announce nothing (FR-012).
+    // `connectedAccountsSection` carries its own 'loading' status/skeleton, so this is safe to
+    // render even before it has anything to show.
     return (
       <div className="space-y-6">
+        <SettingsCard
+          icon={Link2}
+          title={t('user.security.connectedAccounts.title')}
+          description={t('user.security.connectedAccounts.description')}
+        >
+          {connectedAccountsSection}
+        </SettingsCard>
         <Skeleton className="h-64 w-full" />
       </div>
     );
