@@ -139,6 +139,32 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(teardown).not.toHaveBeenCalled(); // session stays up
   });
 
+  it('(gate 5) a TIMED-OUT store surfaces in `failed` and blocks the close (no save, no teardown)', async () => {
+    // Composition boundary: the adapter's `store` rejects with the upload-timeout
+    // error on a hung upload (unit-proven in useWhiteboardAssetAdapter.spec — gates
+    // 1-4,6). The fork's `flushAssetPublication` catches that rejection into
+    // `report.failed` (fork-owned; stubbed here as the exact report it would emit).
+    // This asserts the CLIENT close gate: given such a failed report, the close is
+    // blocked — collaborative session stays up, nothing saves, nothing tears down,
+    // so the local bytes remain available for a later retry.
+    const timedOutReport: AssetPublishReport = {
+      published: [],
+      skipped: [],
+      failed: [{ fileId: 'f1' as never, error: new Error('Image upload timed out') }],
+    };
+    const excalidrawAPI = { flushAssetPublication: vi.fn(async () => timedOutReport) };
+    const save = vi.fn(async () => {});
+    const teardown = vi.fn();
+    const onPublishFailed = vi.fn();
+
+    const proceeded = await closeCollaborativeWhiteboard({ excalidrawAPI, save, onPublishFailed, teardown });
+
+    expect(proceeded).toBe(false);
+    expect(onPublishFailed).toHaveBeenCalledWith(timedOutReport);
+    expect(save).not.toHaveBeenCalled();
+    expect(teardown).not.toHaveBeenCalled();
+  });
+
   it('treats a missing (unmounted) editor as nothing-to-flush and proceeds', async () => {
     const save = vi.fn(async () => {});
     const teardown = vi.fn();

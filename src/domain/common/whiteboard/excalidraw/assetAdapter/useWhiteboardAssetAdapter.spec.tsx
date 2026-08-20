@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { encodeToBase64 } from '@/core/utils/encodeToBase64';
 import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
-import { useWhiteboardAssetAdapter } from './useWhiteboardAssetAdapter';
+import { UPLOAD_TIMEOUT_MESSAGE, UPLOAD_TIMEOUT_MS, useWhiteboardAssetAdapter } from './useWhiteboardAssetAdapter';
 
 const mockUpload = vi.fn();
 const mockFetchDoc = vi.fn();
@@ -41,9 +41,11 @@ describe('useWhiteboardAssetAdapter', () => {
     });
 
     expect(locator).toBe('doc-1');
-    expect(mockUpload).toHaveBeenCalledWith({
-      variables: { file: expect.any(File), uploadData: { storageBucketId: 'sb-1' } },
-    });
+    expect(mockUpload).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: { file: expect.any(File), uploadData: { storageBucketId: 'sb-1' } },
+      })
+    );
     expect(result.current.uploadError).toBeUndefined();
   });
 
@@ -98,6 +100,148 @@ describe('useWhiteboardAssetAdapter', () => {
       await result.current.assetAdapter.resolve('f1' as never, 'doc-1');
     });
     expect(mockFetchFileToDataURL).toHaveBeenCalledWith('http://x/doc', { 'x-guest-name': encodeToBase64('Alice') });
+  });
+
+  // ── T030 F1: the store upload is bounded by a host timeout ────────────────
+  // A hung upload must never leave `store` pending forever — it would stall the
+  // flush-gated save/close. Fake timers drive the deadline deterministically.
+
+  it('(gate 1) a never-settling upload rejects at the deadline and aborts the fetch signal', async () => {
+    vi.useFakeTimers();
+    try {
+      let capturedSignal: AbortSignal | undefined;
+      mockUpload.mockImplementation((opts: { context?: { fetchOptions?: { signal?: AbortSignal } } }) => {
+        capturedSignal = opts.context?.fetchOptions?.signal;
+        return new Promise(() => {}); // never settles — a hung transport
+      });
+      const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
+
+      await act(async () => {
+        const store = result.current.assetAdapter.store(FILE);
+        const rejects = expect(store).rejects.toThrow(UPLOAD_TIMEOUT_MESSAGE);
+        await vi.advanceTimersByTimeAsync(UPLOAD_TIMEOUT_MS);
+        await rejects;
+      });
+
+      expect(capturedSignal?.aborted).toBe(true);
+      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('(gate 2) a transport that ignores the abort signal still settles via the timer race', async () => {
+    vi.useFakeTimers();
+    try {
+      // The mock observes the signal but deliberately never rejects on abort —
+      // proving the timer race, not the signal, is what guarantees settlement.
+      mockUpload.mockImplementation((opts: { context?: { fetchOptions?: { signal?: AbortSignal } } }) => {
+        opts.context?.fetchOptions?.signal?.addEventListener('abort', () => {
+          /* ignored on purpose */
+        });
+        return new Promise(() => {});
+      });
+      const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
+
+      await act(async () => {
+        const store = result.current.assetAdapter.store(FILE);
+        const rejects = expect(store).rejects.toThrow(UPLOAD_TIMEOUT_MESSAGE);
+        await vi.advanceTimersByTimeAsync(UPLOAD_TIMEOUT_MS);
+        await rejects;
+      });
+
+      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('(gate 3) a success before the deadline clears the timer, never aborts, and returns the id', async () => {
+    vi.useFakeTimers();
+    try {
+      let capturedSignal: AbortSignal | undefined;
+      mockUpload.mockImplementation((opts: { context?: { fetchOptions?: { signal?: AbortSignal } } }) => {
+        capturedSignal = opts.context?.fetchOptions?.signal;
+        return Promise.resolve({ data: { uploadFileOnStorageBucket: { id: 'doc-fast' } } });
+      });
+      const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
+
+      let locator = '';
+      await act(async () => {
+        locator = await result.current.assetAdapter.store(FILE);
+      });
+      expect(locator).toBe('doc-fast');
+      expect(capturedSignal?.aborted).toBe(false);
+
+      // Advancing well past the deadline must NOT abort — the timer was cleared.
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(UPLOAD_TIMEOUT_MS + 1_000);
+      });
+      expect(capturedSignal?.aborted).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('(gate 4) a store retry after a timeout succeeds — no permanent failure cache', async () => {
+    vi.useFakeTimers();
+    try {
+      mockUpload.mockImplementationOnce(() => new Promise(() => {})); // first attempt hangs
+      const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
+
+      await act(async () => {
+        const store = result.current.assetAdapter.store(FILE);
+        const rejects = expect(store).rejects.toThrow(UPLOAD_TIMEOUT_MESSAGE);
+        await vi.advanceTimersByTimeAsync(UPLOAD_TIMEOUT_MS);
+        await rejects;
+      });
+      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+
+      // Retry: the next attempt resolves normally and clears the error.
+      mockUpload.mockResolvedValueOnce({ data: { uploadFileOnStorageBucket: { id: 'doc-retry' } } });
+      let locator = '';
+      await act(async () => {
+        locator = await result.current.assetAdapter.store(FILE);
+      });
+      expect(locator).toBe('doc-retry');
+      expect(result.current.uploadError).toBeUndefined();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('(gate 6) a late upload resolution AFTER the deadline cannot become a success', async () => {
+    vi.useFakeTimers();
+    try {
+      let resolveUpload: ((v: unknown) => void) | undefined;
+      mockUpload.mockImplementation(
+        () =>
+          new Promise(resolve => {
+            resolveUpload = resolve;
+          })
+      );
+      const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
+
+      let store!: Promise<string>;
+      await act(async () => {
+        store = result.current.assetAdapter.store(FILE);
+        const rejects = expect(store).rejects.toThrow(UPLOAD_TIMEOUT_MESSAGE);
+        await vi.advanceTimersByTimeAsync(UPLOAD_TIMEOUT_MS);
+        await rejects;
+      });
+      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+
+      // The server resolves LATE — after the store already rejected. The race has
+      // settled, so this can neither flip the result nor clear the error (no locator).
+      await act(async () => {
+        resolveUpload?.({ data: { uploadFileOnStorageBucket: { id: 'late-doc' } } });
+        await vi.advanceTimersByTimeAsync(0);
+      });
+      expect(result.current.uploadError).toBe(UPLOAD_TIMEOUT_MESSAGE);
+      await expect(store).rejects.toThrow(UPLOAD_TIMEOUT_MESSAGE);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('returns a STABLE assetAdapter identity across rerenders', () => {

@@ -6,6 +6,16 @@ import { encodeToBase64 } from '@/core/utils/encodeToBase64';
 import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 import { dataUrlToFile, fetchFileToDataURL } from '../fileStore/fileConverters';
 
+/**
+ * Upload host timeout. A `store` whose upload has not settled within this window
+ * is aborted and rejected, so a hung transport can never stall the flush-gated
+ * save/close path (an unsettled `store` would block it indefinitely). 60s covers
+ * a large image on a slow connection without leaving the editor blocked forever.
+ */
+export const UPLOAD_TIMEOUT_MS = 60_000;
+/** Stable message a timed-out upload rejects with (also surfaced as `uploadError`). */
+export const UPLOAD_TIMEOUT_MESSAGE = 'Image upload timed out';
+
 type UseWhiteboardAssetAdapterParams = {
   /** The whiteboard's storage bucket — where image bytes are persisted. */
   storageBucketId: string;
@@ -58,11 +68,36 @@ export function useWhiteboardAssetAdapter({
     adapterRef.current = {
       store: async (file: BinaryFileData): Promise<string> => {
         const deps = depsRef.current;
+        // Bound the upload so a hung transport can never leave `store` pending
+        // forever — an unsettled `store` would stall the flush-gated save/close
+        // indefinitely. Two independent mechanisms cover it: an AbortController
+        // cancels the browser fetch, and a timer race rejects even if a transport
+        // ignores the signal. Whichever settles first wins; a late upload
+        // resolution after the deadline is dropped by the race, so a timed-out
+        // store can never turn into a success or publish a locator.
+        const controller = new AbortController();
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const clearUploadTimer = () => {
+          if (timer !== undefined) {
+            clearTimeout(timer);
+            timer = undefined;
+          }
+        };
         try {
           const upload = await dataUrlToFile(file.dataURL, file.id, file.mimeType);
-          const { data } = await deps.uploadFile({
-            variables: { file: upload, uploadData: { storageBucketId: deps.storageBucketId } },
+          const deadline = new Promise<never>((_, reject) => {
+            timer = setTimeout(() => {
+              controller.abort();
+              reject(new Error(UPLOAD_TIMEOUT_MESSAGE));
+            }, UPLOAD_TIMEOUT_MS);
           });
+          const { data } = await Promise.race([
+            deps.uploadFile({
+              variables: { file: upload, uploadData: { storageBucketId: deps.storageBucketId } },
+              context: { fetchOptions: { signal: controller.signal } },
+            }),
+            deadline,
+          ]);
           const documentId = data?.uploadFileOnStorageBucket?.id;
           if (!documentId) {
             throw new Error('Upload returned no document id');
@@ -70,8 +105,11 @@ export function useWhiteboardAssetAdapter({
           setUploadError(undefined);
           return documentId;
         } catch (e) {
+          controller.abort();
           setUploadError(e instanceof Error ? e.message : 'Image upload failed');
           throw e;
+        } finally {
+          clearUploadTimer();
         }
       },
       resolve: async (fileId: FileId, locator: string): Promise<BinaryFileData> => {
