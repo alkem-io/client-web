@@ -1,6 +1,7 @@
 import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { useRef, useState } from 'react';
 import {
+  type CloseVerdict,
   type ControlMessage,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
@@ -42,6 +43,12 @@ export interface CollabState {
 type UseCollabProps = {
   username: string;
   onRemoteSave?: (error?: string) => void;
+  /**
+   * A TRANSIENT disconnect (network/transport drop, 1011, or a `room-capacity-reached`
+   * policy close) — the connection is expected to come back, so the consumer opens the
+   * reconnect notice and lets its auto-reconnect countdown keep retrying. A TERMINAL
+   * close routes to `onTerminalClose` instead and never reaches here.
+   */
   onCloseConnection: () => void;
   onSceneInitChange?: (initialized: boolean) => void;
   /**
@@ -50,6 +57,13 @@ type UseCollabProps = {
    * server (reconnecting alone would resend the rejected state).
    */
   onUpdateRejected?: () => void;
+  /**
+   * A TERMINAL policy close (1008 `forbidden` / `document deleted` / any unrecognised
+   * 1008 reason, fail closed) — this attempt must NOT be retried. The consumer must
+   * stop its own auto-reconnect loop; reconnecting would just be re-rejected. `reason`
+   * is the server's close reason so the consumer can differentiate the terminal cause.
+   */
+  onTerminalClose?: (reason: string) => void;
 };
 
 type InitProps = {
@@ -127,6 +141,7 @@ const useCollab = ({
   onCloseConnection,
   onSceneInitChange,
   onUpdateRejected,
+  onTerminalClose,
 }: UseCollabProps): UseCollabProvided => {
   const providerRef = useRef<UnifiedCollabProvider | null>(null);
   const collabApiRef = useRef<CollabAPI | null>(null);
@@ -176,6 +191,21 @@ const useCollab = ({
         setIsCollaborating(true);
       } else if (status === 'disconnected') {
         setIsCollaborating(false);
+        // The close-reason routing (transient → onCloseConnection, terminal →
+        // onTerminalClose) is driven by `handleClose` off the provider's `close`
+        // verdict — NOT from here — so a terminal policy close never opens the
+        // retrying reconnect notice.
+      }
+    };
+
+    // Reason-aware close routing: a transient drop keeps the retry loop alive via
+    // onCloseConnection; a terminal policy close (forbidden / document deleted /
+    // unrecognised 1008) hands off to onTerminalClose so the consumer stops
+    // retrying. The provider has already decided NOT to reconnect a terminal close.
+    const handleClose = (verdict: CloseVerdict) => {
+      if (verdict.terminal) {
+        onTerminalClose?.(verdict.reason);
+      } else {
         onCloseConnection();
       }
     };
@@ -217,6 +247,7 @@ const useCollab = ({
     provider.on('status', handleStatus);
     provider.on('synced', handleSynced);
     provider.on('control', handleControl);
+    provider.on('close', handleClose);
     provider.connect();
     setIsConnecting(true);
 
@@ -238,6 +269,7 @@ const useCollab = ({
       provider.off('status', handleStatus);
       provider.off('synced', handleSynced);
       provider.off('control', handleControl);
+      provider.off('close', handleClose);
       awarenessRouter.destroy();
       provider.destroy();
       providerRef.current = null;

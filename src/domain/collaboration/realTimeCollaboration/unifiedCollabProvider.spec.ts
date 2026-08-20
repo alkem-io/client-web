@@ -4,7 +4,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Awareness, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import { messageYjsSyncStep2, readSyncMessage, writeSyncStep1, writeSyncStep2, writeUpdate } from 'y-protocols/sync';
 import * as Y from 'yjs';
-import { type ControlMessage, type SceneSyncPort, UnifiedCollabProvider, WIRE } from './unifiedCollabProvider';
+import {
+  type CloseVerdict,
+  type ControlMessage,
+  classifyClose,
+  type SceneSyncPort,
+  UnifiedCollabProvider,
+  WIRE,
+} from './unifiedCollabProvider';
 
 /**
  * A controllable WebSocket stand-in. `globalThis.WebSocket` is replaced with this
@@ -49,10 +56,10 @@ class MockWebSocket {
   receive(bytes: Uint8Array): void {
     this.emit('message', { data: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) });
   }
-  /** Simulate a close with a code. */
-  serverClose(code: number): void {
+  /** Simulate a close with a code and optional reason (the 1008 policy discriminator). */
+  serverClose(code: number, reason = ''): void {
     this.readyState = 3;
-    this.emit('close', { code });
+    this.emit('close', { code, reason });
   }
 
   private emit(type: string, event: unknown): void {
@@ -289,6 +296,97 @@ describe('UnifiedCollabProvider', () => {
     expect(MockWebSocket.instances).toHaveLength(0);
     expect(provider.status).toBe('connecting');
     provider.destroy();
+  });
+});
+
+/**
+ * Reason-aware 1008 close handling. On a WebSocket policy close (1008) the retry
+ * decision depends on the close REASON: `room-capacity-reached` is transient (retry);
+ * `forbidden`, `document deleted`, and any unrecognised reason (fail closed) are
+ * terminal (never retried). Other codes stay transient — 1011 (authz-backend outage)
+ * must remain retryable — while 1000 is a clean closure that is never retried.
+ */
+describe('UnifiedCollabProvider — reason-aware close classification', () => {
+  const baseOptions = {
+    documentId: 'doc-1',
+    type: 'whiteboard' as const,
+    baseUrl: 'https://collab.test',
+    path: '/collab',
+  };
+
+  it('classifyClose: 1008 reasons split terminal vs transient, other codes are transient', () => {
+    // The single transient 1008 reason.
+    expect(classifyClose(1008, 'room-capacity-reached')).toEqual({
+      code: 1008,
+      reason: 'room-capacity-reached',
+      terminal: false,
+    });
+    // Terminal 1008 reasons.
+    expect(classifyClose(1008, 'forbidden').terminal).toBe(true);
+    expect(classifyClose(1008, 'document deleted').terminal).toBe(true);
+    // Fail closed: an unrecognised 1008 reason is terminal.
+    expect(classifyClose(1008, 'some-new-policy').terminal).toBe(true);
+    expect(classifyClose(1008, '').terminal).toBe(true);
+    // Other codes are never terminal here (1000's no-reconnect is handled separately).
+    expect(classifyClose(1011, '').terminal).toBe(false);
+    expect(classifyClose(1006, '').terminal).toBe(false);
+    expect(classifyClose(1000, '').terminal).toBe(false);
+  });
+
+  /** Drive a close with `(code, reason)` and report whether a NEW socket was created. */
+  function reconnectsAfterClose(code: number, reason: string): { reconnected: boolean; verdicts: CloseVerdict[] } {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const verdicts: CloseVerdict[] = [];
+    provider.on('close', v => verdicts.push(v));
+    MockWebSocket.instances[0].open();
+
+    MockWebSocket.instances[0].serverClose(code, reason);
+    // Advance well past the longest backoff step — a scheduled reconnect would have
+    // opened a second socket by now.
+    vi.advanceTimersByTime(60_000);
+    const reconnected = MockWebSocket.instances.length > 1;
+
+    provider.destroy();
+    vi.useRealTimers();
+    return { reconnected, verdicts };
+  }
+
+  it('1008 "forbidden" is TERMINAL: no reconnect scheduled and a terminal verdict is emitted', () => {
+    const { reconnected, verdicts } = reconnectsAfterClose(1008, 'forbidden');
+    expect(reconnected).toBe(false);
+    expect(verdicts).toEqual([{ code: 1008, reason: 'forbidden', terminal: true }]);
+  });
+
+  it('1008 "document deleted" is TERMINAL: no reconnect scheduled', () => {
+    const { reconnected, verdicts } = reconnectsAfterClose(1008, 'document deleted');
+    expect(reconnected).toBe(false);
+    expect(verdicts[0]).toEqual({ code: 1008, reason: 'document deleted', terminal: true });
+  });
+
+  it('1008 unknown reason is TERMINAL (fail closed): no reconnect scheduled', () => {
+    const { reconnected, verdicts } = reconnectsAfterClose(1008, 'mystery-reason');
+    expect(reconnected).toBe(false);
+    expect(verdicts[0].terminal).toBe(true);
+    expect(verdicts[0].reason).toBe('mystery-reason');
+  });
+
+  it('1008 "room-capacity-reached" is TRANSIENT: a reconnect IS scheduled', () => {
+    const { reconnected, verdicts } = reconnectsAfterClose(1008, 'room-capacity-reached');
+    expect(reconnected).toBe(true);
+    expect(verdicts[0].terminal).toBe(false);
+  });
+
+  it('1011 (authz-backend outage) is TRANSIENT: a reconnect IS scheduled', () => {
+    const { reconnected, verdicts } = reconnectsAfterClose(1011, '');
+    expect(reconnected).toBe(true);
+    expect(verdicts[0].terminal).toBe(false);
+  });
+
+  it('1000 (clean closure) is NOT retried and is NOT a terminal verdict', () => {
+    const { reconnected, verdicts } = reconnectsAfterClose(1000, '');
+    expect(reconnected).toBe(false);
+    expect(verdicts[0].terminal).toBe(false);
   });
 });
 

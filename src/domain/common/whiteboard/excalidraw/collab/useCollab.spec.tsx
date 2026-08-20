@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { ControlMessage } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+import type { CloseVerdict, ControlMessage } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import useCollab from './useCollab';
 
 // AwarenessRouter subscribes to editor pointer/selection APIs we don't fake here.
@@ -10,17 +10,19 @@ vi.mock('./awarenessRouter', () => ({
   },
 }));
 
-// Capture the provider's registered control handler so the test can drive control
-// messages directly, without a live WebSocket / collab URL.
+// Capture the provider's registered control + close handlers so the test can drive
+// control messages and socket-close verdicts directly, without a live WebSocket.
 let controlHandler: ((message: ControlMessage) => void) | undefined;
+let closeHandler: ((verdict: CloseVerdict) => void) | undefined;
 vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', async importOriginal => {
   const actual =
     await importOriginal<typeof import('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider')>();
   class MockProvider {
     awareness = { setLocalStateField: vi.fn(), on: vi.fn(), off: vi.fn(), destroy: vi.fn() };
     ephemeralChannel = { send: vi.fn(), subscribe: vi.fn(() => () => {}) };
-    on(event: string, handler: (m: ControlMessage) => void) {
-      if (event === 'control') controlHandler = handler;
+    on(event: string, handler: (arg: never) => void) {
+      if (event === 'control') controlHandler = handler as (m: ControlMessage) => void;
+      else if (event === 'close') closeHandler = handler as (v: CloseVerdict) => void;
     }
     off() {}
     connect() {}
@@ -34,6 +36,7 @@ const fakeApi = {} as never;
 describe('useCollab — update-rejected recovery routing', () => {
   afterEach(() => {
     controlHandler = undefined;
+    closeHandler = undefined;
     vi.clearAllMocks();
   });
 
@@ -65,6 +68,42 @@ describe('useCollab — update-rejected recovery routing', () => {
 
     expect(onRemoteSave).toHaveBeenCalledTimes(1);
     expect(onUpdateRejected).not.toHaveBeenCalled();
+    cleanup();
+  });
+});
+
+describe('useCollab — reason-aware close routing', () => {
+  afterEach(() => {
+    controlHandler = undefined;
+    closeHandler = undefined;
+    vi.clearAllMocks();
+  });
+
+  it('routes a TERMINAL close to onTerminalClose (with reason), NOT onCloseConnection', () => {
+    const onCloseConnection = vi.fn();
+    const onTerminalClose = vi.fn();
+    const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection, onTerminalClose }));
+    const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
+
+    closeHandler?.({ code: 1008, reason: 'forbidden', terminal: true });
+
+    expect(onTerminalClose).toHaveBeenCalledTimes(1);
+    expect(onTerminalClose).toHaveBeenCalledWith('forbidden');
+    // A terminal close must NOT open the retrying reconnect notice.
+    expect(onCloseConnection).not.toHaveBeenCalled();
+    cleanup();
+  });
+
+  it('routes a TRANSIENT close to onCloseConnection, NOT onTerminalClose', () => {
+    const onCloseConnection = vi.fn();
+    const onTerminalClose = vi.fn();
+    const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection, onTerminalClose }));
+    const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
+
+    closeHandler?.({ code: 1011, reason: '', terminal: false });
+
+    expect(onCloseConnection).toHaveBeenCalledTimes(1);
+    expect(onTerminalClose).not.toHaveBeenCalled();
     cleanup();
   });
 });

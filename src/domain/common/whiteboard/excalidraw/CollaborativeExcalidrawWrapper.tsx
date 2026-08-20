@@ -122,6 +122,15 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
+  // Set to the server's close reason when the collaboration socket is closed with a
+  // TERMINAL 1008 policy verdict (forbidden / document deleted / any unrecognised
+  // reason, fail closed). It gates `useAutoReconnect` OFF (see `active` below) so the
+  // wrapper's own reconnect countdown never fires `restartCollaboration` — the second
+  // of the two independent retry loops. `null` for a transient drop, which keeps
+  // retrying as before. Cleared on an explicit user reconnect or once collaboration
+  // is re-established.
+  const [terminalCloseReason, setTerminalCloseReason] = useState<string | null>(null);
+
   const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
   const { t } = useTranslation();
@@ -225,6 +234,19 @@ const CollaborativeExcalidrawWrapper = ({
       notify(t('callout.whiteboard.images.uploadFailed'), 'error');
       setRecoveryGeneration(generation => generation + 1);
     },
+    onTerminalClose: (reason: string) => {
+      // A TERMINAL policy close: this attempt must not be retried. Record the reason
+      // (gates auto-reconnect OFF below) and surface the collaboration-stopped notice
+      // WITHOUT a live reconnect countdown — unlike a transient drop, the connection is
+      // not coming back on its own.
+      setTerminalCloseReason(reason);
+      setCollaborationStoppedNoticeOpen(true);
+      setSceneInitialized(false);
+      logError('WB Connection Closed (terminal policy close)', {
+        category: TagCategoryValues.WHITEBOARD,
+        label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Reason: ${reason}`,
+      });
+    },
   });
 
   useEffect(() => {
@@ -245,14 +267,19 @@ const CollaborativeExcalidrawWrapper = ({
   const isOnline = useOnlineStatus();
 
   const restartCollaboration = () => {
+    // An explicit user reconnect clears the terminal verdict so the normal machinery
+    // (auto-reconnect included) is re-enabled for the fresh attempt; a fresh terminal
+    // close would set it again and re-disable the loop.
+    setTerminalCloseReason(null);
     setCollaborationStartTime(Date.now());
   };
 
   // Single source of truth for the reconnect countdown + backoff (5s → 10s → 30s → 60s…). It counts
   // down while the notice is open and we're not yet collaborating, fires `restartCollaboration` at
-  // zero, and resets once the connection is restored.
+  // zero, and resets once the connection is restored. A TERMINAL policy close forces `active` off
+  // (`terminalCloseReason !== null`) so this second retry loop never fires `restartCollaboration`.
   const { secondsRemaining: autoReconnectSeconds } = useAutoReconnect({
-    active: collaborationStoppedNoticeOpen && !collaborating,
+    active: collaborationStoppedNoticeOpen && !collaborating && terminalCloseReason === null,
     isOnline,
     connecting,
     onReconnect: restartCollaboration,
@@ -261,6 +288,9 @@ const CollaborativeExcalidrawWrapper = ({
   useEffect(() => {
     if (!connecting && collaborating) {
       setCollaborationStoppedNoticeOpen(false);
+      // Collaboration is live again — drop any terminal verdict so a later drop is
+      // classified fresh.
+      setTerminalCloseReason(null);
     }
   }, [connecting, collaborating]);
 

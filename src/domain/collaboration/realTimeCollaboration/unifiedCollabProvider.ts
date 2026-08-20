@@ -56,6 +56,21 @@ export type ControlMessage = {
 export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
 /**
+ * The disposition of a socket close, derived from `(code, reason)`. A `terminal`
+ * verdict means this attempt must NOT be retried by any mechanism — the provider's
+ * own backoff timer stays off AND consumers are told to stop their own retry loops
+ * (e.g. the whiteboard wrapper's `useAutoReconnect`). A non-terminal verdict is a
+ * transient drop the provider reconnects from with backoff. `reason` is carried
+ * through so a consumer can tell `forbidden` / `document deleted` / an unrecognised
+ * policy close apart from a normal transient disconnect.
+ */
+export type CloseVerdict = {
+  code: number;
+  reason: string;
+  terminal: boolean;
+};
+
+/**
  * The excalidraw editor's scene-sync port: the four y-protocol operations a
  * collaboration transport needs, sourced from / sinked into the editor's scene
  * `Y.Doc` without ever touching the raw doc. It carries the editor's one-origin
@@ -76,11 +91,12 @@ export type SceneSyncPort = {
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
 
-type ProviderEvent = 'status' | 'synced' | 'control';
+type ProviderEvent = 'status' | 'synced' | 'control' | 'close';
 
 type StatusListener = (status: ConnectionStatus) => void;
 type SyncedListener = (synced: boolean) => void;
 type ControlListener = (message: ControlMessage) => void;
+type CloseListener = (verdict: CloseVerdict) => void;
 
 type UnifiedCollabProviderCommonOptions = {
   /** The collaborative document id (the room) — `/collab/<documentId>`. */
@@ -121,6 +137,17 @@ export type UnifiedCollabProviderOptions = UnifiedCollabProviderCommonOptions &
 
 const RECONNECT_BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
 const NORMAL_CLOSURE = 1000;
+/**
+ * WebSocket policy-violation close code (RFC 6455 §7.4.1). The unified collaboration
+ * service uses it for every room-policy close, discriminated by the close `reason`
+ * (collaboration-service `internal/transport/ws`): `room-capacity-reached` is
+ * transient (a later retry may find room); `forbidden` and `document deleted` are
+ * terminal, and any UNRECOGNISED 1008 reason is treated as terminal (fail closed)
+ * so a policy the client does not understand is never blindly retried forever.
+ */
+const POLICY_VIOLATION = 1008;
+/** The only 1008 reason that is transient — every other 1008 reason is terminal. */
+const TRANSIENT_POLICY_REASON = 'room-capacity-reached';
 
 /**
  * `UnifiedCollabProvider` connects a `Y.Doc` (memo or whiteboard) to the unified
@@ -159,6 +186,7 @@ export class UnifiedCollabProvider {
   private readonly statusListeners = new Set<StatusListener>();
   private readonly syncedListeners = new Set<SyncedListener>();
   private readonly controlListeners = new Set<ControlListener>();
+  private readonly closeListeners = new Set<CloseListener>();
   private readonly ephemeralListeners = new Set<(event: EphemeralEvent) => void>();
 
   constructor(options: UnifiedCollabProviderOptions) {
@@ -223,19 +251,23 @@ export class UnifiedCollabProvider {
   on(event: 'status', listener: StatusListener): void;
   on(event: 'synced', listener: SyncedListener): void;
   on(event: 'control', listener: ControlListener): void;
-  on(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener): void {
+  on(event: 'close', listener: CloseListener): void;
+  on(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener | CloseListener): void {
     if (event === 'status') this.statusListeners.add(listener as StatusListener);
     else if (event === 'synced') this.syncedListeners.add(listener as SyncedListener);
-    else this.controlListeners.add(listener as ControlListener);
+    else if (event === 'control') this.controlListeners.add(listener as ControlListener);
+    else this.closeListeners.add(listener as CloseListener);
   }
 
   off(event: 'status', listener: StatusListener): void;
   off(event: 'synced', listener: SyncedListener): void;
   off(event: 'control', listener: ControlListener): void;
-  off(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener): void {
+  off(event: 'close', listener: CloseListener): void;
+  off(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener | CloseListener): void {
     if (event === 'status') this.statusListeners.delete(listener as StatusListener);
     else if (event === 'synced') this.syncedListeners.delete(listener as SyncedListener);
-    else this.controlListeners.delete(listener as ControlListener);
+    else if (event === 'control') this.controlListeners.delete(listener as ControlListener);
+    else this.closeListeners.delete(listener as CloseListener);
   }
 
   connect(): void {
@@ -282,6 +314,7 @@ export class UnifiedCollabProvider {
     this.statusListeners.clear();
     this.syncedListeners.clear();
     this.controlListeners.clear();
+    this.closeListeners.clear();
     this.ephemeralListeners.clear();
 
     if (this.ownsAwareness) this.awareness.destroy();
@@ -369,9 +402,19 @@ export class UnifiedCollabProvider {
     this.ws = null;
     if (this.destroyed) return;
     this.setStatus('disconnected');
-    // Reconnect with backoff unless the server signalled a clean policy close
-    // (e.g. room-closed / capacity) — those should not be retried blindly.
-    if (event.code === NORMAL_CLOSURE) return;
+
+    // Classify the close from BOTH the code and the reason, then hand the verdict
+    // to consumers so a terminal policy close stops their retry loops too — not
+    // just this provider's timer.
+    const verdict = classifyClose(event.code, event.reason);
+    this.closeListeners.forEach(listener => listener(verdict));
+
+    // Never retried by the provider's own backoff timer: a clean normal closure,
+    // or a terminal policy close (`forbidden` / `document deleted` / any
+    // unrecognised 1008, fail closed). A transient drop — 1011, a transport error
+    // (1006), or `room-capacity-reached` — reconnects with backoff as before, so
+    // an authz-backend outage (1011) stays retryable.
+    if (event.code === NORMAL_CLOSURE || verdict.terminal) return;
     this.scheduleReconnect();
   };
 
@@ -514,6 +557,22 @@ export class UnifiedCollabProvider {
     this._synced = synced;
     this.syncedListeners.forEach(listener => listener(synced));
   }
+}
+
+/**
+ * Classify a WebSocket close into a retry disposition from its `(code, reason)`.
+ *
+ * Only a `1008` policy close is reason-sensitive: `room-capacity-reached` is the
+ * single transient reason (retrying may later find room); `forbidden` and
+ * `document deleted` are terminal, and any OTHER/unknown 1008 reason is treated as
+ * terminal too — FAIL CLOSED, so a policy the client does not recognise is never
+ * retried blindly. Every non-1008 code is transient here (a `1000` clean closure
+ * is not terminal — its no-reconnect is handled separately by the caller — and a
+ * `1011` authz-backend outage or a `1006` transport drop must stay retryable).
+ */
+export function classifyClose(code: number, reason: string): CloseVerdict {
+  const terminal = code === POLICY_VIOLATION && reason !== TRANSIENT_POLICY_REASON;
+  return { code, reason, terminal };
 }
 
 /** Read a `[length-prefixed JSON string]` payload, returning `undefined` on malformed input. */
