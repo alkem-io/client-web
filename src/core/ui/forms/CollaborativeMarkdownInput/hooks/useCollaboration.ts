@@ -2,6 +2,7 @@ import type { Extensions } from '@tiptap/core';
 import Collaboration from '@tiptap/extension-collaboration';
 import CollaborationCaret from '@tiptap/extension-collaboration-caret';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import type { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
@@ -34,6 +35,7 @@ interface UseCollaborationProps {
 export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => {
   const { userId, userName, cursorColor } = useUserCursor();
   const notify = useNotification();
+  const { t } = useTranslation();
   const isOnline = useOnlineStatus();
 
   const [status, setStatus] = useState<CollaborationStatus>(MemoStatus.CONNECTING);
@@ -54,9 +56,12 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   // Tiptap binding's teardown across the component boundary).
   const ydoc = useMemo(() => new Y.Doc(), [collaborationId]);
 
-  // Stable ref for notify to avoid triggering effect cleanup on identity changes
+  // Stable refs for notify + t so the provider effect does not tear down on their
+  // identity changes (t changes on every language switch).
   const notifyRef = useRef(notify);
   notifyRef.current = notify;
+  const tRef = useRef(t);
+  tRef.current = t;
 
   // Create the provider without auto-connecting; connection is started in the effect.
   const provider = useMemo(() => {
@@ -94,7 +99,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           setLastSaveTime(new Date());
           break;
         case 'save-error':
-          notifyRef.current('Unable to save changes', 'warning');
+          notifyRef.current(tRef.current('callout.memo.saveFailed'), 'warning');
           break;
         case 'read-only-state':
           setReadOnlyState({

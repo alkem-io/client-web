@@ -155,6 +155,9 @@
         "description": "Guarda la escena en Alkemio y compártela con otros.",
         "save": "Guardar en Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "No se pudieron guardar los cambios"
     }
   },
   "cancel": "Cancelar",

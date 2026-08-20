@@ -155,6 +155,9 @@
         "description": "Sla de scène op in Alkemio en deel deze met anderen.",
         "save": "Opslaan in Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Kan wijzigingen niet opslaan"
     }
   },
   "cancel": "Annuleren",

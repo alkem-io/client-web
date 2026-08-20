@@ -155,6 +155,9 @@
         "description": "Save the scene in Alkemio and share it with others.",
         "save": "Save to Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Unable to save changes"
     }
   },
   "cancel": "Cancel",

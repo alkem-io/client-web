@@ -155,6 +155,9 @@
         "description": "Enregistrez la scène dans Alkemio et partagez-la avec d'autres.",
         "save": "Enregistrer dans Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Impossible d'enregistrer les modifications"
     }
   },
   "cancel": "Annuler",
