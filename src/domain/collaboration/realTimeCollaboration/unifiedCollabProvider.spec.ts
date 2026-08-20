@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Awareness, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import { messageYjsSyncStep2, readSyncMessage, writeSyncStep1, writeSyncStep2, writeUpdate } from 'y-protocols/sync';
 import * as Y from 'yjs';
-import { type ControlMessage, UnifiedCollabProvider, WIRE } from './unifiedCollabProvider';
+import { type ControlMessage, type SceneSyncPort, UnifiedCollabProvider, WIRE } from './unifiedCollabProvider';
 
 /**
  * A controllable WebSocket stand-in. `globalThis.WebSocket` is replaced with this
@@ -288,6 +288,278 @@ describe('UnifiedCollabProvider', () => {
     const provider = new UnifiedCollabProvider({ documentId: 'd', type: 'memo' });
     expect(MockWebSocket.instances).toHaveLength(0);
     expect(provider.status).toBe('connecting');
+    provider.destroy();
+  });
+});
+
+/**
+ * Whiteboard path: sync flows through the excalidraw editor's scene-sync port
+ * instead of a raw `Y.Doc`. These tests pin BYTE-FRAME EQUIVALENCE against the
+ * memo raw-doc path — the scene-port provider must put the exact same bytes on
+ * the wire that a raw-doc provider driven over the same `Y.Doc` would.
+ */
+describe('UnifiedCollabProvider — whiteboard scene-sync port', () => {
+  const baseOptions = {
+    documentId: 'wb-1',
+    type: 'whiteboard' as const,
+    baseUrl: 'https://collab.test',
+    path: '/collab',
+  };
+
+  /** The newest MockWebSocket a just-constructed provider opened. */
+  function lastSocket(): MockWebSocket {
+    return MockWebSocket.instances[MockWebSocket.instances.length - 1];
+  }
+
+  /**
+   * A fake `SceneSyncPort` backed by a real `Y.Doc` (`sceneDoc`). It models the
+   * fork's one-origin policy precisely: remote applies carry `REMOTE_ORIGIN`, and
+   * `onLocalSceneUpdate` ignores those, so a remote apply is never echoed. Because
+   * it sources/sinks via `Y.encodeStateVector` / `Y.encodeStateAsUpdate` /
+   * `Y.applyUpdate` — exactly what the raw-doc path uses — identical doc state
+   * yields byte-identical frames.
+   */
+  function makeFakePort(sceneDoc: Y.Doc) {
+    const REMOTE_ORIGIN = Symbol('remote-scene-apply');
+    const activeCallbacks = new Set<(update: Uint8Array) => void>();
+    const port: SceneSyncPort = {
+      encodeSceneStateVector: () => Y.encodeStateVector(sceneDoc),
+      encodeSceneAsUpdate: (_format, targetStateVector) => Y.encodeStateAsUpdate(sceneDoc, targetStateVector),
+      applyRemoteSceneUpdate: update => Y.applyUpdate(sceneDoc, update, REMOTE_ORIGIN),
+      onLocalSceneUpdate: cb => {
+        const handler = (update: Uint8Array, origin: unknown) => {
+          // Remote applies (REMOTE_ORIGIN) are never delivered here — no echo.
+          if (origin !== REMOTE_ORIGIN) cb(update);
+        };
+        sceneDoc.on('update', handler);
+        activeCallbacks.add(cb);
+        return () => {
+          sceneDoc.off('update', handler);
+          activeCallbacks.delete(cb);
+        };
+      },
+    };
+    return { port, REMOTE_ORIGIN, activeCallbacks };
+  }
+
+  it('sends a SyncStep1 open frame BYTE-IDENTICAL to the raw-doc path', () => {
+    const sceneDoc = new Y.Doc();
+    sceneDoc.getMap('scene').set('el-1', { x: 10 });
+
+    // Raw-doc provider over the SAME doc → the reference frame.
+    const rawProvider = new UnifiedCollabProvider({ ...baseOptions, doc: sceneDoc });
+    const rawSocket = lastSocket();
+    rawSocket.open();
+    const rawFrame = rawSocket.sent[0];
+
+    // Scene-port provider over a fake port wrapping the SAME doc.
+    const { port } = makeFakePort(sceneDoc);
+    const sceneProvider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const sceneSocket = lastSocket();
+    sceneSocket.open();
+    const sceneFrame = sceneSocket.sent[0];
+
+    expect(readFrameType(sceneFrame)).toBe(WIRE.SYNC);
+    expect(sceneFrame).toEqual(rawFrame);
+
+    rawProvider.destroy();
+    sceneProvider.destroy();
+  });
+
+  it('replies to a server SyncStep1 with a SyncStep2 frame BYTE-IDENTICAL to the raw-doc path', () => {
+    const sceneDoc = new Y.Doc();
+    sceneDoc.getMap('scene').set('el-1', { x: 10 });
+    sceneDoc.getMap('scene').set('el-2', { x: 20 });
+
+    // A fresh peer (empty state vector) → the reply delta is the full scene state.
+    const peerDoc = new Y.Doc();
+    const serverStep1 = encoding.createEncoder();
+    encoding.writeVarUint(serverStep1, WIRE.SYNC);
+    writeSyncStep1(serverStep1, peerDoc);
+    const step1Frame = encoding.toUint8Array(serverStep1);
+
+    const rawProvider = new UnifiedCollabProvider({ ...baseOptions, doc: sceneDoc });
+    const rawSocket = lastSocket();
+    rawSocket.open();
+    rawSocket.sent.length = 0;
+    rawSocket.receive(step1Frame);
+    const rawReply = rawSocket.sent[0];
+
+    const { port } = makeFakePort(sceneDoc);
+    const sceneProvider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const sceneSocket = lastSocket();
+    sceneSocket.open();
+    sceneSocket.sent.length = 0;
+    sceneSocket.receive(step1Frame);
+    const sceneReply = sceneSocket.sent[0];
+
+    // Both replies decode as a SyncStep2 against the peer doc, and are byte-equal.
+    const dec = decoding.createDecoder(sceneReply);
+    decoding.readVarUint(dec); // strip WIRE.SYNC
+    expect(readSyncMessage(dec, encoding.createEncoder(), peerDoc, null)).toBe(messageYjsSyncStep2);
+    expect(sceneReply).toEqual(rawReply);
+
+    rawProvider.destroy();
+    sceneProvider.destroy();
+  });
+
+  it('frames a local scene edit as an Update BYTE-IDENTICAL to the raw-doc path', () => {
+    const sceneDoc = new Y.Doc();
+
+    const rawProvider = new UnifiedCollabProvider({ ...baseOptions, doc: sceneDoc });
+    const rawSocket = lastSocket();
+    rawSocket.open();
+
+    const { port } = makeFakePort(sceneDoc);
+    const sceneProvider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const sceneSocket = lastSocket();
+    sceneSocket.open();
+
+    rawSocket.sent.length = 0;
+    sceneSocket.sent.length = 0;
+
+    // One local edit fires BOTH observers with the same update bytes.
+    sceneDoc.getMap('scene').set('a', 1);
+
+    expect(readFrameType(sceneSocket.sent[0])).toBe(WIRE.SYNC);
+    expect(sceneSocket.sent[0]).toEqual(rawSocket.sent[0]);
+    // Exactly one frame each — no duplicate / echo.
+    expect(sceneSocket.sent.length).toBe(1);
+
+    rawProvider.destroy();
+    sceneProvider.destroy();
+  });
+
+  it('throws on an unknown sync sub-type — frame-for-frame parity with y-protocols', () => {
+    const sceneDoc = new Y.Doc();
+    const { port } = makeFakePort(sceneDoc);
+    const provider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const socket = lastSocket();
+    socket.open();
+    socket.sent.length = 0;
+
+    // WIRE.SYNC + an unknown sync sub-type (99). y-protocols `readSyncMessage` throws
+    // 'Unknown message type'; the hand-rolled scene-port path must match so the later
+    // decode-failure handler can trigger resync rather than silently diverging.
+    const enc = encoding.createEncoder();
+    encoding.writeVarUint(enc, WIRE.SYNC);
+    encoding.writeVarUint(enc, 99);
+    expect(() => socket.receive(encoding.toUint8Array(enc))).toThrow('Unknown message type');
+
+    provider.destroy();
+  });
+
+  it('applies a server document Update through the port (sync convergence)', () => {
+    const sceneDoc = new Y.Doc();
+    const { port } = makeFakePort(sceneDoc);
+    const provider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const socket = lastSocket();
+    socket.open();
+
+    const serverDoc = new Y.Doc();
+    serverDoc.getMap('scene').set('hello', 'world');
+    const encoder = encoding.createEncoder();
+    encoding.writeVarUint(encoder, WIRE.SYNC);
+    writeUpdate(encoder, Y.encodeStateAsUpdate(serverDoc));
+    socket.receive(encoding.toUint8Array(encoder));
+
+    expect(sceneDoc.getMap('scene').get('hello')).toBe('world');
+    provider.destroy();
+  });
+
+  it('marks synced when the server replies with a SyncStep2 (first time only)', () => {
+    const synced: boolean[] = [];
+    const sceneDoc = new Y.Doc();
+    const { port } = makeFakePort(sceneDoc);
+    const provider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    provider.on('synced', s => synced.push(s));
+    const socket = lastSocket();
+    socket.open();
+
+    const serverDoc = new Y.Doc();
+    serverDoc.getMap('scene').set('seed', true);
+    const step2 = encoding.createEncoder();
+    encoding.writeVarUint(step2, WIRE.SYNC);
+    writeSyncStep2(step2, serverDoc);
+    socket.receive(encoding.toUint8Array(step2));
+
+    expect(provider.synced).toBe(true);
+    expect(synced).toEqual([true]);
+    expect(sceneDoc.getMap('scene').get('seed')).toBe(true);
+
+    // A second SyncStep2 must NOT re-fire the synced listener.
+    const serverDoc2 = new Y.Doc();
+    serverDoc2.getMap('scene').set('more', 1);
+    const step2b = encoding.createEncoder();
+    encoding.writeVarUint(step2b, WIRE.SYNC);
+    writeSyncStep2(step2b, serverDoc2);
+    socket.receive(encoding.toUint8Array(step2b));
+
+    expect(synced).toEqual([true]);
+    provider.destroy();
+  });
+
+  it('does NOT echo a server-applied update back to the server', () => {
+    const sceneDoc = new Y.Doc();
+    const { port } = makeFakePort(sceneDoc);
+    const provider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const socket = lastSocket();
+    socket.open();
+    socket.sent.length = 0;
+
+    const serverDoc = new Y.Doc();
+    serverDoc.getMap('scene').set('x', 1);
+    const encoder = encoding.createEncoder();
+    encoding.writeVarUint(encoder, WIRE.SYNC);
+    writeUpdate(encoder, Y.encodeStateAsUpdate(serverDoc));
+    socket.receive(encoding.toUint8Array(encoder));
+
+    // Applied into the scene doc, but the remote-origin apply is never echoed.
+    expect(sceneDoc.getMap('scene').get('x')).toBe(1);
+    expect(socket.sent.length).toBe(0);
+    provider.destroy();
+  });
+
+  it('destroy() unsubscribes onLocalSceneUpdate and destroys the owned awareness doc', () => {
+    const sceneDoc = new Y.Doc();
+    const { port, activeCallbacks } = makeFakePort(sceneDoc);
+    const provider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const socket = lastSocket();
+    socket.open();
+
+    // The provider owns a SEPARATE awareness-only doc — never the scene doc.
+    const awarenessDoc = provider.doc;
+    expect(awarenessDoc).not.toBe(sceneDoc);
+    expect(activeCallbacks.size).toBe(1);
+
+    provider.destroy();
+
+    // The local-scene subscription is gone …
+    expect(activeCallbacks.size).toBe(0);
+    // … so a later local edit produces no outbound frame.
+    socket.sent.length = 0;
+    sceneDoc.getMap('scene').set('after', 1);
+    expect(socket.sent.length).toBe(0);
+    // … and the provider-owned awareness doc is destroyed.
+    expect(awarenessDoc.isDestroyed).toBe(true);
+    // The scene doc (owned by the editor) is left intact.
+    expect(sceneDoc.isDestroyed).toBe(false);
+  });
+
+  it('carries local awareness on a provider-owned awareness doc distinct from the scene', () => {
+    const sceneDoc = new Y.Doc();
+    const { port } = makeFakePort(sceneDoc);
+    const provider = new UnifiedCollabProvider({ ...baseOptions, scenePort: port });
+    const socket = lastSocket();
+    socket.open();
+    socket.sent.length = 0;
+
+    // A local awareness change broadcasts a type-1 frame and never touches the scene.
+    provider.awareness.setLocalState({ user: { name: 'Carol' } });
+    expect(socket.sent.length).toBeGreaterThan(0);
+    expect(readFrameType(socket.sent[socket.sent.length - 1])).toBe(WIRE.AWARENESS);
+    expect(sceneDoc.getMap('scene').size).toBe(0);
+
     provider.destroy();
   });
 });

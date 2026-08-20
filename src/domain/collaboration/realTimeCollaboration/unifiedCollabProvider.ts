@@ -1,7 +1,14 @@
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate, removeAwarenessStates } from 'y-protocols/awareness';
-import { messageYjsSyncStep2, readSyncMessage, writeSyncStep1, writeUpdate } from 'y-protocols/sync';
+import {
+  messageYjsSyncStep1,
+  messageYjsSyncStep2,
+  messageYjsUpdate,
+  readSyncMessage,
+  writeSyncStep1,
+  writeUpdate,
+} from 'y-protocols/sync';
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
@@ -38,6 +45,25 @@ export type ControlMessage = {
 
 export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
+/**
+ * The excalidraw editor's scene-sync port: the four y-protocol operations a
+ * collaboration transport needs, sourced from / sinked into the editor's scene
+ * `Y.Doc` without ever touching the raw doc. It carries the editor's one-origin
+ * policy — `onLocalSceneUpdate` fires only for LOCAL edits, never for updates
+ * applied via `applyRemoteSceneUpdate` — so the transport needs no echo guard.
+ * Fixed to the `'v1'` wire format (the y-protocols update encoding on the socket).
+ */
+export type SceneSyncPort = {
+  /** This replica's state vector — what it already has (`Y.encodeStateVector`). */
+  encodeSceneStateVector: () => Uint8Array;
+  /** Encode the scene as an update; pass a peer's state vector for just the delta. */
+  encodeSceneAsUpdate: (format: 'v1', targetStateVector?: Uint8Array) => Uint8Array;
+  /** Integrate a peer's update: never re-broadcast, never captured into local undo. */
+  applyRemoteSceneUpdate: (update: Uint8Array, format: 'v1') => void;
+  /** Subscribe to LOCAL scene edits (unsub returned); remote applies never fire this. */
+  onLocalSceneUpdate: (cb: (update: Uint8Array) => void, format: 'v1') => () => void;
+};
+
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
 
 type ProviderEvent = 'status' | 'synced' | 'control';
@@ -46,13 +72,11 @@ type StatusListener = (status: ConnectionStatus) => void;
 type SyncedListener = (synced: boolean) => void;
 type ControlListener = (message: ControlMessage) => void;
 
-export type UnifiedCollabProviderOptions = {
+type UnifiedCollabProviderCommonOptions = {
   /** The collaborative document id (the room) — `/collab/<documentId>`. */
   documentId: string;
   /** Document content type, selecting the room's seed convention server-side. */
   type: 'memo' | 'whiteboard';
-  /** Reuse an existing `Y.Doc` (the editor's). A fresh one is created when omitted. */
-  doc?: Y.Doc;
   /** Reuse an existing awareness (e.g. the whiteboard binding's). A fresh one is created when omitted. */
   awareness?: Awareness;
   /** Override the service base URL (defaults to the configured collab URL). */
@@ -64,6 +88,26 @@ export type UnifiedCollabProviderOptions = {
   /** Connect on construction. Defaults to true. */
   connect?: boolean;
 };
+
+/**
+ * `doc` (memo — Tiptap's editor doc) and `scenePort` (whiteboard — the excalidraw
+ * editor's scene-sync port) are MUTUALLY EXCLUSIVE. Memo drives sync over the raw
+ * `Y.Doc`; whiteboard drives it through the port and never passes a `doc` (the
+ * editor owns the scene doc). Omitting both is the memo path with a fresh doc.
+ */
+export type UnifiedCollabProviderOptions = UnifiedCollabProviderCommonOptions &
+  (
+    | {
+        /** Reuse an existing `Y.Doc` (the editor's). A fresh one is created when omitted. */
+        doc?: Y.Doc;
+        scenePort?: never;
+      }
+    | {
+        doc?: never;
+        /** Drive whiteboard sync through the excalidraw editor's scene-sync port. */
+        scenePort: SceneSyncPort;
+      }
+  );
 
 const RECONNECT_BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
 const NORMAL_CLOSURE = 1000;
@@ -90,6 +134,10 @@ export class UnifiedCollabProvider {
   private readonly url: string | null;
   private readonly ownsDoc: boolean;
   private readonly ownsAwareness: boolean;
+  /** Whiteboard mode: the editor's scene-sync port. `null` in the memo raw-doc path. */
+  private readonly scenePort: SceneSyncPort | null;
+  /** Unsubscribe handle for `scenePort.onLocalSceneUpdate` (whiteboard outbound). */
+  private unsubscribeScene: (() => void) | null = null;
 
   private ws: WebSocket | null = null;
   private _status: ConnectionStatus = 'connecting';
@@ -106,13 +154,32 @@ export class UnifiedCollabProvider {
   constructor(options: UnifiedCollabProviderOptions) {
     this.documentId = options.documentId;
     this.type = options.type;
-    this.doc = options.doc ?? new Y.Doc();
-    this.ownsDoc = !options.doc;
+    this.scenePort = options.scenePort ?? null;
+
+    if (this.scenePort) {
+      // Whiteboard: the editor owns the scene doc behind the port. This provider
+      // owns an awareness-only `Y.Doc` purely to host Awareness — a separate
+      // channel whose clientID need not match the scene doc's. No external
+      // consumer reads `provider.doc` for whiteboard content (the editor does),
+      // so an awareness-only doc here is fine.
+      this.doc = new Y.Doc();
+      this.ownsDoc = true;
+    } else {
+      this.doc = options.doc ?? new Y.Doc();
+      this.ownsDoc = !options.doc;
+    }
     this.awareness = options.awareness ?? new Awareness(this.doc);
     this.ownsAwareness = !options.awareness;
     this.url = buildCollabUrl(options);
 
-    this.doc.on('update', this.handleDocUpdate);
+    if (this.scenePort) {
+      // Outbound: local scene edits are framed as sync Updates. The port never
+      // delivers remote-applied updates here (its one-origin policy), so unlike
+      // the raw-doc path this needs no origin/echo guard.
+      this.unsubscribeScene = this.scenePort.onLocalSceneUpdate(update => this.broadcastSceneUpdate(update), 'v1');
+    } else {
+      this.doc.on('update', this.handleDocUpdate);
+    }
     this.awareness.on('update', this.handleAwarenessUpdate);
 
     if (options.connect !== false) {
@@ -191,7 +258,13 @@ export class UnifiedCollabProvider {
     this.clearReconnect();
     this.teardownSocket(NORMAL_CLOSURE);
 
-    this.doc.off('update', this.handleDocUpdate);
+    if (this.scenePort) {
+      // Whiteboard: stop listening for local scene edits.
+      this.unsubscribeScene?.();
+      this.unsubscribeScene = null;
+    } else {
+      this.doc.off('update', this.handleDocUpdate);
+    }
     this.awareness.off('update', this.handleAwarenessUpdate);
     // Drop this client's awareness state so peers see the leave immediately.
     removeAwarenessStates(this.awareness, [this.doc.clientID], 'provider-destroy');
@@ -212,7 +285,15 @@ export class UnifiedCollabProvider {
     // (+ its own SyncStep1 and an awareness snapshot). Mirrors the y-websocket client.
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.SYNC);
-    writeSyncStep1(encoder, this.doc);
+    if (this.scenePort) {
+      // Byte-identical to `writeSyncStep1(encoder, doc)` for a doc whose state
+      // vector equals `encodeSceneStateVector()`: both emit
+      // `messageYjsSyncStep1` + a var-uint8-array of the state vector.
+      encoding.writeVarUint(encoder, messageYjsSyncStep1);
+      encoding.writeVarUint8Array(encoder, this.scenePort.encodeSceneStateVector());
+    } else {
+      writeSyncStep1(encoder, this.doc);
+    }
     this.sendFrame(encoding.toUint8Array(encoder));
 
     // Announce our current local awareness state to the room.
@@ -231,9 +312,13 @@ export class UnifiedCollabProvider {
         const encoder = encoding.createEncoder();
         encoding.writeVarUint(encoder, WIRE.SYNC);
         // Drives the canonical sync state machine. A server SyncStep1 yields a
-        // SyncStep2 reply; SyncStep2 / Update are applied with `this` as origin so
-        // our doc 'update' observer does not echo them back.
-        const replyType = readSyncMessage(decoder, encoder, this.doc, this);
+        // SyncStep2 reply; SyncStep2 / Update are applied. In the raw-doc (memo)
+        // path `this` is the origin so our doc 'update' observer does not echo
+        // them back; in the scene-port (whiteboard) path the port's
+        // `applyRemoteSceneUpdate` is itself non-echoing.
+        const replyType = this.scenePort
+          ? this.readSceneSyncMessage(decoder, encoder, this.scenePort)
+          : readSyncMessage(decoder, encoder, this.doc, this);
         if (encoding.length(encoder) > 1) {
           this.sendFrame(encoding.toUint8Array(encoder));
         }
@@ -296,6 +381,50 @@ export class UnifiedCollabProvider {
     writeUpdate(encoder, update);
     this.sendFrame(encoding.toUint8Array(encoder));
   };
+
+  /**
+   * Hand-rolled y-protocols sync dispatch for the scene-port (whiteboard) path,
+   * mirroring `readSyncMessage` but sourcing/sinking via the editor's port instead
+   * of a raw `Y.Doc`. Frame-for-frame identical to the raw-doc path: a SyncStep1
+   * yields a SyncStep2 (delta) reply; SyncStep2 / Update are applied. Returns the
+   * sub-type read, so the caller's `synced` and reply-suppression logic is shared.
+   */
+  private readSceneSyncMessage(decoder: decoding.Decoder, encoder: encoding.Encoder, port: SceneSyncPort): number {
+    const messageType = decoding.readVarUint(decoder);
+    switch (messageType) {
+      case messageYjsSyncStep1: {
+        const stateVector = decoding.readVarUint8Array(decoder);
+        encoding.writeVarUint(encoder, messageYjsSyncStep2);
+        encoding.writeVarUint8Array(encoder, port.encodeSceneAsUpdate('v1', stateVector));
+        break;
+      }
+      case messageYjsSyncStep2:
+      case messageYjsUpdate: {
+        const update = decoding.readVarUint8Array(decoder);
+        // Let a decode/apply failure ESCAPE — the provider's message handler owns
+        // decode-failure recovery (resync) and needs the throw to trigger it. Do not
+        // swallow it here.
+        port.applyRemoteSceneUpdate(update, 'v1');
+        break;
+      }
+      default:
+        // Frame-for-frame parity with y-protocols `readSyncMessage`: an unknown sync
+        // sub-type is a protocol violation and throws rather than silently diverging.
+        throw new Error('Unknown message type');
+    }
+    return messageType;
+  }
+
+  /**
+   * Outbound framing for a local scene edit — identical to `handleDocUpdate`'s:
+   * `writeUpdate` frames `messageYjsUpdate` + payload under the WIRE.SYNC prefix.
+   */
+  private broadcastSceneUpdate(update: Uint8Array): void {
+    const encoder = encoding.createEncoder();
+    encoding.writeVarUint(encoder, WIRE.SYNC);
+    writeUpdate(encoder, update);
+    this.sendFrame(encoding.toUint8Array(encoder));
+  }
 
   private handleAwarenessUpdate = (
     changes: { added: number[]; updated: number[]; removed: number[] },

@@ -10,7 +10,7 @@ import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildG
 import { AwarenessRouter } from './awarenessRouter';
 import { type CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
-/** Payload Excalidraw hands to `onPointerUpdate`; routed to awareness by the binding. */
+/** Payload Excalidraw hands to `onPointerUpdate`; routed to awareness by the AwarenessRouter. */
 type PointerUpdatePayload = {
   pointer: { x: number; y: number; tool?: 'pointer' | 'laser' } | null;
   button: 'up' | 'down';
@@ -18,7 +18,7 @@ type PointerUpdatePayload = {
 };
 
 export interface CollabAPI {
-  /** Local pointer move → awareness (the binding owns cursor presence). */
+  /** Local pointer move → awareness (the AwarenessRouter owns cursor presence). */
   onPointerUpdate: (payload: PointerUpdatePayload) => void;
   /**
    * No-op: the native editor writes straight to `Scene.doc` (the editor's element
@@ -106,14 +106,14 @@ function toModeReason(reason: string | undefined): CollaboratorModeReasons | nul
 
 /**
  * Whiteboard real-time collaboration on the unified collaboration service
- * (`/collab/<roomId>?type=whiteboard`) via `UnifiedCollabProvider` +
- * `WhiteboardBinding`. The binding owns the Excalidraw scene ↔ `Y.Doc` loop
- * (per-property CRDT merge), routes cursors/selection/idle to y-protocols
- * awareness, and routes emoji/countdown to the provider's ephemeral channel —
- * replacing the legacy Socket.IO `Collab`/`Portal` element-broadcast path.
+ * (`/collab/<roomId>?type=whiteboard`) via `UnifiedCollabProvider`. The editor's
+ * scene-sync port owns the Excalidraw scene ↔ Yjs loop (per-property CRDT merge over
+ * y-protocols sync); the `AwarenessRouter` routes cursors/selection/idle to y-protocols
+ * awareness and emoji/countdown to the provider's ephemeral channel — replacing the
+ * legacy Socket.IO `Collab`/`Portal` element-broadcast path.
  *
- * Returns the same `[CollabAPI, initialize, CollabState]` shape the wrapper
- * consumed before, so the editor wiring is unchanged at the call site.
+ * Returns the same `[CollabAPI, initialize, CollabState]` shape the wrapper consumed
+ * before, so the editor wiring is unchanged at the call site.
  */
 const useCollab = ({
   username,
@@ -131,14 +131,20 @@ const useCollab = ({
   const [collaboratorModeReason, setCollaboratorModeReason] = useState<CollaboratorModeReasons | null>(null);
 
   const initialize = ({ excalidrawApi, roomId }: InitProps): (() => void) => {
-    // Native-Yjs core: the editor's `Scene` IS the `Y.Doc`. Reuse it as the
-    // provider's doc (the provider no longer mints its own, and there is no
-    // binding to bridge a scene into it) — the editor syncs straight off this doc.
-    const doc = excalidrawApi.getSceneDoc();
+    // Native-Yjs core: the editor's `Scene` IS the `Y.Doc`, but the provider drives
+    // whiteboard sync through the editor's scene-sync port (the four v1 methods)
+    // instead of subscribing to the raw doc. The editor enforces its own origin
+    // policy (a remote apply is never echoed back), and the raw doc stays private.
     const provider = new UnifiedCollabProvider({
       documentId: roomId,
       type: 'whiteboard',
-      doc,
+      scenePort: {
+        encodeSceneStateVector: () => excalidrawApi.encodeSceneStateVector(),
+        encodeSceneAsUpdate: (format, targetStateVector) =>
+          excalidrawApi.encodeSceneAsUpdate(format, targetStateVector),
+        applyRemoteSceneUpdate: (update, format) => excalidrawApi.applyRemoteSceneUpdate(update, format),
+        onLocalSceneUpdate: (cb, format) => excalidrawApi.onLocalSceneUpdate(cb, format),
+      },
       guestName: resolveGuestName(),
       connect: false,
     });
