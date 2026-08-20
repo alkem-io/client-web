@@ -152,6 +152,13 @@
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "uploadFailed": "Couldn't upload the image. Please try again."
       },
+      "session": {
+        "rateExceeded": "Du bearbeitest zu schnell – Verbindung wird wiederhergestellt…",
+        "sizeLimitExceeded": "Dieses Whiteboard hat seine Größenbeschränkung erreicht und deine letzte Änderung wurde nicht übernommen. Stelle die Verbindung wieder her, um von der zuletzt gespeicherten Version fortzufahren.",
+        "documentDeleted": "Dieses Whiteboard wurde gelöscht.",
+        "editsNotSaved": "Deine letzten Änderungen konnten nicht gespeichert werden und sind verloren gegangen. Die Zusammenarbeit wurde beendet.",
+        "serverShutdown": "Der Kollaborationsserver wird neu gestartet – Verbindung wird wiederhergestellt…"
+      },
       "export": {
         "title": "In Alkemio speichern",
         "description": "Speichern Sie die Szene in Alkemio und teilen Sie sie mit anderen.",

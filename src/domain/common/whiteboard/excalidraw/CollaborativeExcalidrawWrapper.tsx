@@ -7,12 +7,14 @@ import { debounce, merge } from 'lodash-es';
 import type React from 'react';
 import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
+import type { SessionEndCode } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
@@ -24,6 +26,15 @@ import useWhiteboardDefaults from './useWhiteboardDefaults';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
+
+/** Per-cause translated explanation shown when the server ends the session. */
+const SESSION_END_MESSAGE_KEYS: Record<SessionEndCode, TranslationKey> = {
+  'update-rate-exceeded': 'callout.whiteboard.session.rateExceeded',
+  'document-size-limit-exceeded': 'callout.whiteboard.session.sizeLimitExceeded',
+  'document-deleted': 'callout.whiteboard.session.documentDeleted',
+  'edits-not-saved': 'callout.whiteboard.session.editsNotSaved',
+  'server-shutdown': 'callout.whiteboard.session.serverShutdown',
+};
 
 const Excalidraw = lazyWithGlobalErrorHandler(async () => {
   const { Excalidraw } = await import('@excalidraw-yjs/excalidraw');
@@ -135,6 +146,12 @@ const CollaborativeExcalidrawWrapper = ({
   // is mounted that resyncs from the server — the rejected local state can never be
   // resent (reconnecting the provider alone would reuse the poisoned scene).
   const [recoveryGeneration, setRecoveryGeneration] = useState(0);
+
+  // Set by a MANUAL session-end (document-size-limit-exceeded): the current generation is
+  // poisoned and torn down, and collaboration stays OFF until the user explicitly restarts.
+  // That restart must mint a FRESH generation BEFORE reconnecting so the discarded doc is
+  // never reconnected.
+  const [manualDiscardPending, setManualDiscardPending] = useState(false);
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
@@ -277,6 +294,35 @@ const CollaborativeExcalidrawWrapper = ({
         label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Reason: ${reason}`,
       });
     },
+    onSessionEnd: ({ code, disposition }) => {
+      // A code-specific, translated explanation for the user (edits-not-saved reads as a
+      // data-loss warning, distinct from an ordinary deletion).
+      notify(t(SESSION_END_MESSAGE_KEYS[code]), disposition === 'transient' ? 'info' : 'warning');
+      setSceneInitialized(false);
+      if (disposition === 'transient') {
+        // The PROVIDER's own scheduler reconnects (1013/1001 → transient). Do NOT open the
+        // retry notice / arm useAutoReconnect — that would be a SECOND reconnect trigger.
+        return;
+      }
+      if (disposition === 'manual') {
+        // Discard/tear down the poisoned generation NOW: nulling the api runs the init
+        // effect's cleanup → the provider/socket is destroyed immediately, even if no
+        // replacement editor mounts. Keep collaboration init AND both reconnect loops OFF
+        // (collaborationStartTime=null disables init; terminalCloseReason disables the
+        // wrapper countdown; a 1008 close never reconnects the provider) until the user
+        // explicitly restarts — which mints a FRESH generation first (see restartCollaboration).
+        setExcalidrawApi(null);
+        setCollaborationStartTime(null);
+        setTerminalCloseReason(code);
+        setManualDiscardPending(true);
+        setCollaborationStoppedNoticeOpen(true);
+        actions.onEditorInvalidated?.();
+        return;
+      }
+      // terminal (document-deleted / edits-not-saved): no reconnect; surface the notice.
+      setTerminalCloseReason(code);
+      setCollaborationStoppedNoticeOpen(true);
+    },
   });
 
   useEffect(() => {
@@ -297,6 +343,13 @@ const CollaborativeExcalidrawWrapper = ({
   const isOnline = useOnlineStatus();
 
   const restartCollaboration = () => {
+    if (manualDiscardPending) {
+      // Recovering from a MANUAL session-end (size-limit): mint a FRESH generation BEFORE
+      // reconnecting, so the discarded/poisoned doc is never reconnected. The new editor
+      // mounts, hands back its api, and (with collaborationStartTime set below) connects clean.
+      setRecoveryGeneration(generation => generation + 1);
+      setManualDiscardPending(false);
+    }
     // An explicit user reconnect clears the terminal verdict so the normal machinery
     // (auto-reconnect included) is re-enabled for the fresh attempt; a fresh terminal
     // close would set it again and re-disable the loop.

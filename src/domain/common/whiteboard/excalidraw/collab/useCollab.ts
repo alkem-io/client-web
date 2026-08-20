@@ -3,6 +3,8 @@ import { useRef, useState } from 'react';
 import {
   type CloseVerdict,
   type ControlMessage,
+  classifySessionEnd,
+  type SessionEndInfo,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
@@ -57,6 +59,16 @@ type UseCollabProps = {
    * is the server's close reason so the consumer can differentiate the terminal cause.
    */
   onTerminalClose?: (reason: string) => void;
+  /**
+   * The server ended this session (a `session-end` control) with a validated tuple. The
+   * `disposition` is authoritative and decides the outcome: `transient` (the provider's own
+   * scheduler reconnects — the consumer must NOT start a second loop), `terminal` (no
+   * reconnect; `edits-not-saved` warrants a data-loss UX distinct from a deletion), or
+   * `manual` (discard the poisoned generation now, keep collaboration + both reconnect loops
+   * OFF until the user explicitly starts a fresh generation). An unknown/inconsistent tuple
+   * never reaches here — it fails closed to `onTerminalClose`.
+   */
+  onSessionEnd?: (info: SessionEndInfo) => void;
 };
 
 type InitProps = {
@@ -122,6 +134,7 @@ const useCollab = ({
   onSceneInitChange,
   onUpdateRejected,
   onTerminalClose,
+  onSessionEnd,
 }: UseCollabProps): UseCollabProvided => {
   const providerRef = useRef<UnifiedCollabProvider | null>(null);
   const collabApiRef = useRef<CollabAPI | null>(null);
@@ -165,10 +178,17 @@ const useCollab = ({
       ephemeral: provider.ephemeralChannel,
     });
 
+    // Set when a `session-end` control has already established the authoritative
+    // disposition for this connection. The socket close that follows must then be
+    // idempotent for the UI/action (it must NOT re-route to a callback), though the
+    // provider still completes its own socket teardown. Reset on a fresh connection.
+    let sessionEndHandled = false;
+
     const handleStatus = (status: 'connecting' | 'connected' | 'disconnected') => {
       setIsConnecting(status === 'connecting');
       if (status === 'connected') {
         setIsCollaborating(true);
+        sessionEndHandled = false; // a fresh connection: any prior session-end is spent
       } else if (status === 'disconnected') {
         setIsCollaborating(false);
         // The close-reason routing (transient → onCloseConnection, terminal →
@@ -183,6 +203,12 @@ const useCollab = ({
     // unrecognised 1008) hands off to onTerminalClose so the consumer stops
     // retrying. The provider has already decided NOT to reconnect a terminal close.
     const handleClose = (verdict: CloseVerdict) => {
+      if (sessionEndHandled) {
+        // A `session-end` control already established the disposition + drove the outcome;
+        // the socket close must not override or duplicate it (the provider still ran its
+        // own teardown / reconnect internally).
+        return;
+      }
       if (verdict.disposition === 'terminal') {
         onTerminalClose?.(verdict.reason);
       } else if (verdict.disposition === 'transient') {
@@ -249,6 +275,20 @@ const useCollab = ({
           // that resyncs from the server. Reconnecting this provider would resend it.
           onUpdateRejected?.();
           break;
+        case 'session-end': {
+          // The server is ending this session. Classify against the KNOWN tuple table
+          // (the authority) — never trust the wire disposition/scope on their own. The
+          // control is authoritative over the socket close that follows (idempotence via
+          // `sessionEndHandled`). An unknown/inconsistent tuple fails CLOSED to a terminal.
+          sessionEndHandled = true;
+          const info = classifySessionEnd(message);
+          if (info) {
+            onSessionEnd?.(info);
+          } else {
+            onTerminalClose?.(message.code ?? 'session-end');
+          }
+          break;
+        }
         default:
           break;
       }

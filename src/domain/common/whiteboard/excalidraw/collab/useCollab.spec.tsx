@@ -243,3 +243,88 @@ describe('useCollab — reconnect + collaborator-mode contract', () => {
     cleanup();
   });
 });
+
+describe('useCollab — session-end control (validated tuple, idempotent close)', () => {
+  afterEach(() => {
+    controlHandler = undefined;
+    closeHandler = undefined;
+    statusHandler = undefined;
+    vi.clearAllMocks();
+  });
+
+  const mount = () => {
+    const onSessionEnd = vi.fn();
+    const onTerminalClose = vi.fn();
+    const onCloseConnection = vi.fn();
+    const { result } = renderHook(() => useCollab({ username: 'T', onCloseConnection, onTerminalClose, onSessionEnd }));
+    const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'r' });
+    return { onSessionEnd, onTerminalClose, onCloseConnection, cleanup };
+  };
+
+  it.each([
+    ['update-rate-exceeded', 'member', 'transient'],
+    ['document-size-limit-exceeded', 'member', 'manual'],
+    ['document-deleted', 'document', 'terminal'],
+    ['edits-not-saved', 'document', 'terminal'],
+    ['server-shutdown', 'document', 'transient'],
+  ])('routes %s → onSessionEnd with its validated tuple', (code, scope, disposition) => {
+    const { onSessionEnd, onTerminalClose, cleanup } = mount();
+    controlHandler?.({ kind: 'session-end', code, scope, disposition } as ControlMessage);
+    expect(onSessionEnd).toHaveBeenCalledWith({ code, scope, disposition });
+    expect(onTerminalClose).not.toHaveBeenCalled();
+    cleanup();
+  });
+
+  it('fails CLOSED to onTerminalClose on an inconsistent tuple (never onSessionEnd)', () => {
+    const { onSessionEnd, onTerminalClose, cleanup } = mount();
+    controlHandler?.({
+      kind: 'session-end',
+      code: 'document-deleted',
+      scope: 'document',
+      disposition: 'transient', // inconsistent with the table (should be terminal)
+    } as ControlMessage);
+    expect(onSessionEnd).not.toHaveBeenCalled();
+    expect(onTerminalClose).toHaveBeenCalledWith('document-deleted');
+    cleanup();
+  });
+
+  it('the subsequent socket close is IDEMPOTENT — session-end wins, the close routes to no callback', () => {
+    const { onSessionEnd, onCloseConnection, onTerminalClose, cleanup } = mount();
+    controlHandler?.({
+      kind: 'session-end',
+      code: 'update-rate-exceeded',
+      scope: 'member',
+      disposition: 'transient',
+    } as ControlMessage);
+    expect(onSessionEnd).toHaveBeenCalledTimes(1);
+    // The transient socket close (1013) follows: it must NOT re-open the reconnect notice.
+    closeHandler?.({ code: 1013, reason: 'update-rate-exceeded', disposition: 'transient' });
+    expect(onCloseConnection).not.toHaveBeenCalled();
+    expect(onTerminalClose).not.toHaveBeenCalled();
+    expect(onSessionEnd).toHaveBeenCalledTimes(1);
+    cleanup();
+  });
+
+  it('a fresh connection re-arms: after reconnect a plain close routes normally again', () => {
+    const { onCloseConnection, cleanup } = mount();
+    controlHandler?.({
+      kind: 'session-end',
+      code: 'update-rate-exceeded',
+      scope: 'member',
+      disposition: 'transient',
+    } as ControlMessage);
+    statusHandler?.('connected'); // provider reconnected → the prior session-end is spent
+    closeHandler?.({ code: 1011, reason: '', disposition: 'transient' });
+    expect(onCloseConnection).toHaveBeenCalledTimes(1);
+    cleanup();
+  });
+
+  it('a removed room-closed control is inert (residue zero — falls to the default case)', () => {
+    const { onSessionEnd, onTerminalClose, onCloseConnection, cleanup } = mount();
+    controlHandler?.({ kind: 'room-closed' } as unknown as ControlMessage);
+    expect(onSessionEnd).not.toHaveBeenCalled();
+    expect(onTerminalClose).not.toHaveBeenCalled();
+    expect(onCloseConnection).not.toHaveBeenCalled();
+    cleanup();
+  });
+});

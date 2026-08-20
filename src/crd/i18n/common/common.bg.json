@@ -152,6 +152,13 @@
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "uploadFailed": "Couldn't upload the image. Please try again."
       },
+      "session": {
+        "rateExceeded": "Редактирате твърде бързо — повторно свързване…",
+        "sizeLimitExceeded": "Тази бяла дъска достигна ограничението за размер и последната ви промяна не беше приложена. Свържете се отново, за да продължите от последно запазената версия.",
+        "documentDeleted": "Тази бяла дъска беше изтрита.",
+        "editsNotSaved": "Скорошните ви промени не можаха да бъдат запазени и бяха загубени. Съвместната работа е спряна.",
+        "serverShutdown": "Сървърът за съвместна работа се рестартира — повторно свързване…"
+      },
       "export": {
         "title": "Запазване в Alkemio",
         "description": "Запазете сцената в Alkemio и я споделете с други.",

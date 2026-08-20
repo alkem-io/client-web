@@ -28,9 +28,61 @@ export const WIRE = {
   AWARENESS: 1,
   /** Custom whiteboard ephemeral events (cursor/emoji/countdown/bounds). Volatile, lossy, never persisted. */
   EPHEMERAL: 2,
-  /** Server→client JSON control (saved / save-error / read-only-state / collaborator-mode / room-user-change / room-closed). */
+  /** Server→client JSON control (saved / save-error / read-only-state / collaborator-mode / room-user-change / update-rejected / session-end). */
   CONTROL: 3,
 } as const;
+
+/**
+ * A server-authoritative session-end cause. The `disposition` (carried on the control)
+ * decides the client outcome; `code` names the cause and always equals the subsequent
+ * close reason. No Error/Reason string-branching — route on the code + disposition.
+ */
+export type SessionEndCode =
+  | 'update-rate-exceeded' // member  · transient · close 1013
+  | 'document-size-limit-exceeded' // member  · manual    · close 1008
+  | 'document-deleted' // document · terminal  · close 1008
+  | 'edits-not-saved' // document · terminal  · close 1008
+  | 'server-shutdown'; // document · transient · close 1001
+
+export type SessionEndDisposition = 'transient' | 'terminal' | 'manual';
+
+export type SessionEndScope = 'member' | 'document';
+
+export type SessionEndInfo = { code: SessionEndCode; scope: SessionEndScope; disposition: SessionEndDisposition };
+
+/**
+ * The KNOWN session-end tuples. The `code` is the key; scope + disposition are derived from
+ * THIS table (the authority), never trusted from the wire — a control whose wire scope or
+ * disposition disagrees with the table, or whose code is unknown, is rejected (fail closed).
+ */
+export const SESSION_END_TABLE: Record<SessionEndCode, { scope: SessionEndScope; disposition: SessionEndDisposition }> =
+  {
+    'update-rate-exceeded': { scope: 'member', disposition: 'transient' },
+    'document-size-limit-exceeded': { scope: 'member', disposition: 'manual' },
+    'document-deleted': { scope: 'document', disposition: 'terminal' },
+    'edits-not-saved': { scope: 'document', disposition: 'terminal' },
+    'server-shutdown': { scope: 'document', disposition: 'transient' },
+  };
+
+/**
+ * Classify a `session-end` control against {@link SESSION_END_TABLE}. Returns the
+ * authoritative tuple (from the table), or `null` when the code is unknown OR the wire
+ * scope/disposition is inconsistent with the table — the caller must then fail CLOSED
+ * (terminal, no reconnect) rather than trust an arbitrary wire string.
+ */
+export function classifySessionEnd(
+  message: Pick<ControlMessage, 'code' | 'scope' | 'disposition'>
+): SessionEndInfo | null {
+  const code = message.code;
+  const known = code ? SESSION_END_TABLE[code] : undefined;
+  if (!code || !known) {
+    return null;
+  }
+  if (message.scope !== known.scope || message.disposition !== known.disposition) {
+    return null;
+  }
+  return { code, scope: known.scope, disposition: known.disposition };
+}
 
 /** A `WireControl` payload — server→client JSON (collaboration-service `ControlMessage`). */
 export type ControlMessage = {
@@ -40,17 +92,23 @@ export type ControlMessage = {
     | 'read-only-state'
     | 'collaborator-mode'
     | 'room-user-change'
-    | 'room-closed'
     // The server's ingress validator rejected a local update (e.g. a bad assets-root
     // struct). The local scene is poisoned: the client must discard this generation
     // and resync a fresh scene from the server rather than resend the rejected state.
-    | 'update-rejected';
+    | 'update-rejected'
+    // The server is ending this session. `disposition` is AUTHORITATIVE — the socket close
+    // that follows must not override or duplicate it. `code` names the cause, `scope` its
+    // extent (a member limit vs a whole-document condition).
+    | 'session-end';
   version?: number;
   error?: string;
   readOnly?: boolean;
   reason?: string;
   mode?: 'read' | 'write';
   users?: number;
+  code?: SessionEndCode;
+  scope?: 'member' | 'document';
+  disposition?: SessionEndDisposition;
 };
 
 export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';

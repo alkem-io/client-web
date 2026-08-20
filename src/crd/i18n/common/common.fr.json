@@ -152,6 +152,13 @@
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "uploadFailed": "Couldn't upload the image. Please try again."
       },
+      "session": {
+        "rateExceeded": "Vous modifiez trop vite — reconnexion…",
+        "sizeLimitExceeded": "Ce tableau blanc a atteint sa taille limite et votre dernière modification n'a pas été appliquée. Reconnectez-vous pour continuer à partir de la dernière version enregistrée.",
+        "documentDeleted": "Ce tableau blanc a été supprimé.",
+        "editsNotSaved": "Vos modifications récentes n'ont pas pu être enregistrées et ont été perdues. La collaboration s'est arrêtée.",
+        "serverShutdown": "Le serveur de collaboration redémarre — reconnexion…"
+      },
       "export": {
         "title": "Enregistrer dans Alkemio",
         "description": "Enregistrez la scène dans Alkemio et partagez-la avec d'autres.",
