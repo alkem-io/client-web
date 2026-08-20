@@ -62,33 +62,65 @@ const isProviderArrivalFlow = (flow: RegistrationFlow | undefined): boolean => {
 /** sessionStorage marker proving the current tab's OIDC round trip was started by
  * pressing a provider button on THIS sign-up screen (as opposed to a login-screen
  * bounce). Distinct from `SIGNUP_INITIATED_MARKER`, which is set unconditionally
- * on every mount of this page and so cannot make that distinction. */
+ * on every mount of this page and so cannot make that distinction.
+ *
+ * The stored value is the id of the registration flow that was on screen at
+ * click time — not a plain boolean sentinel. Kratos preserves the flow id
+ * across the OIDC redirect (the returning `/registration?flow=<id>` is a
+ * continuation of the same flow, not a new one), so comparing the marker
+ * against the loaded flow's id scopes suppression to that exact flow: a
+ * second render of the same continuation (page reload, a validation-error
+ * bounce back to `/registration?flow=<id>`) still matches and stays
+ * suppressed, while an unrelated OIDC continuation (a different flow id —
+ * e.g. a login-screen bounce) never matches a marker left over from an
+ * earlier, abandoned provider click.
+ *
+ * DEVIATION from the pinned two-row table in
+ * `contracts/signup-signpost.md` (workspace spec, out of this repo's lane
+ * to amend): that contract only discriminates on flow shape and does not
+ * mention this origin marker, so a deliberate provider sign-up (contract
+ * row 1) is undocumented as "not shown". Flagged for the spec owner to
+ * reconcile the contract (and `tasks/client-web.md` T006) with this
+ * behaviour, which FR-014 requires. */
 export const SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER = 'alkemio.signupProviderClickOrigin';
 
 /** Set from `SignUpCard.onProviderClick`, before the form's native submit navigates
- * away to the provider. */
-function markSignUpProviderClickOrigin(): void {
+ * away to the provider. Stores the flow id that was loaded at click time; a
+ * missing flow id (still loading) leaves no marker, and the signpost falls
+ * back to plain flow-shape evidence for that trip. */
+function markSignUpProviderClickOrigin(flowId: string | undefined): void {
+  if (!flowId) {
+    return;
+  }
   try {
-    sessionStorage.setItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER, '1');
+    sessionStorage.setItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER, flowId);
   } catch {
     // sessionStorage blocked — the signpost falls back to flow-shape evidence only
   }
 }
 
-/** Reads and clears the marker in the same step, so it only ever suppresses the
- * signpost on the render that consumes the round trip it was set for — never a
- * later remount of this page (e.g. a validation-error re-render). */
-function consumeSignUpProviderClickOrigin(): boolean {
+/** Pure read — never mutates storage, so it is safe to call on every render,
+ * including a render the i18n Suspense retry (`crd-auth` is a lazy
+ * namespace) discards before commit. Consuming the marker inside a render
+ * (e.g. a `useState` initializer) is what the previous version did, and it
+ * lost the marker whenever the committing render was not the first one. */
+function readSignUpProviderClickOriginFlowId(): string | null {
   try {
-    const value = sessionStorage.getItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
-    if (value === '1') {
-      sessionStorage.removeItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
-      return true;
-    }
+    return sessionStorage.getItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
   } catch {
-    // sessionStorage blocked — treat as no marker
+    return null;
   }
-  return false;
+}
+
+/** Clears the marker. Only called from the commit-phase effect below, once the
+ * loaded flow is confirmed to no longer be an OIDC continuation — never from
+ * render. */
+function clearSignUpProviderClickOrigin(): void {
+  try {
+    sessionStorage.removeItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
+  } catch {
+    // sessionStorage blocked — nothing to clear
+  }
 }
 
 type CrdSignUpPageProps = {
@@ -148,11 +180,24 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
   const translateDescriptor = useTranslateDescriptor();
   usePasskeyScript(registrationFlow?.ui?.nodes);
 
-  // Captured once per mount (lazy initializer) so a later re-render of this same
-  // mount (e.g. a checkbox toggle) doesn't re-read — and re-clear — the marker.
-  // See `isProviderArrivalFlow` above for why this is needed alongside the
-  // flow-shape discriminator (FR-013/014).
-  const [arrivedFromSignUpProviderClick] = useState(() => consumeSignUpProviderClickOrigin());
+  // Pure read on every render (see `readSignUpProviderClickOriginFlowId`) — safe
+  // under the i18n Suspense retry below, and under any future StrictMode /
+  // `startTransition` double-render, because it never mutates storage as a
+  // side effect of rendering. See `isProviderArrivalFlow` above for why this is
+  // needed alongside the flow-shape discriminator (FR-013/014).
+  const arrivedFromSignUpProviderClick =
+    Boolean(registrationFlow) && readSignUpProviderClickOriginFlowId() === registrationFlow?.id;
+
+  // Clears the marker once the flow it was scoped to resolves as something
+  // other than an OIDC continuation (registrationFlow undefined — still
+  // loading — is deliberately excluded, so this never fires before the
+  // returning flow has actually loaded and been compared above). Runs only
+  // after commit, so it never races the render-phase read.
+  useEffect(() => {
+    if (registrationFlow && !isProviderArrivalFlow(registrationFlow)) {
+      clearSignUpProviderClickOrigin();
+    }
+  }, [registrationFlow]);
 
   const [accepted, setAccepted] = useState(false);
   // Set once, from this mount's initial sessionStorage hydration only — never
@@ -228,7 +273,7 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
             privacyPolicyHref={locations?.privacy ?? '#'}
             hasAcceptedTerms={accepted}
             onAcceptedTermsChange={handleAcceptedChange}
-            onProviderClick={() => markSignUpProviderClickOrigin()}
+            onProviderClick={() => markSignUpProviderClickOrigin(registrationFlow?.id)}
             onPasskeyTrigger={trigger => {
               invokePasskeyTrigger(trigger).catch(() => {
                 /* passkey errors are surfaced inline once passkey is wired for registration */

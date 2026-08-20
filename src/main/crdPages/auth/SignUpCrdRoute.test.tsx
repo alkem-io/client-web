@@ -297,24 +297,59 @@ describe('SignUpCrdRoute — provider-arrival signpost (FR-013/FR-014)', () => {
     expect(h.signUpCardProps?.showSignpost).toBe(true);
   });
 
-  it('[US4/FR-014] pressing a provider button on the sign-up screen marks the sessionStorage origin marker', () => {
+  it('[US4/FR-014] pressing a provider button on the sign-up screen marks the sessionStorage origin marker with the loaded flow id', () => {
     h.flow = { id: 'flow-plain', ui: { nodes: [], messages: [] } };
 
     renderRoute();
     h.signUpCardProps?.onProviderClick?.('cleverbase');
 
-    expect(sessionStorage.getItem('alkemio.signupProviderClickOrigin')).toBe('1');
+    expect(sessionStorage.getItem('alkemio.signupProviderClickOrigin')).toBe('flow-plain');
   });
 
-  it('[US4/FR-014] suppresses the signpost on the returning OIDC-continuation render when the sign-up-origin marker is set, and consumes it', () => {
-    sessionStorage.setItem('alkemio.signupProviderClickOrigin', '1');
+  it('[US4/FR-014] suppresses the signpost on the returning OIDC-continuation render when the marker matches the loaded flow id', () => {
+    sessionStorage.setItem('alkemio.signupProviderClickOrigin', 'flow-oidc');
     h.flow = { id: 'flow-oidc', active: 'oidc', ui: { nodes: [], messages: [] } };
 
     renderRoute();
 
     expect(h.signUpCardProps?.showSignpost).toBe(false);
-    // Consumed on read — a later remount of this page must not keep suppressing it.
-    expect(sessionStorage.getItem('alkemio.signupProviderClickOrigin')).toBeNull();
+  });
+
+  // corr-client-web-signpost-2: the marker read must be a pure, idempotent
+  // render-phase computation (never a read-and-clear), so it survives a
+  // discarded-then-retried render (the real-world trigger is the `crd-auth`
+  // i18n Suspense retry — see SignUpCrdRoute.suspense.test.tsx for that exact
+  // repro). Proven here at the unit level: rendering twice against the same
+  // committed marker/flow pair must suppress the signpost both times, and the
+  // marker must still be present in storage after the render (not consumed).
+  it('[US4/FR-014] the marker read is idempotent: repeated renders of the same continuation flow all suppress the signpost, and the marker is not cleared by rendering alone', () => {
+    sessionStorage.setItem('alkemio.signupProviderClickOrigin', 'flow-oidc');
+    h.flow = { id: 'flow-oidc', active: 'oidc', ui: { nodes: [], messages: [] } };
+
+    renderRoute();
+    const firstRenderShowSignpost = h.signUpCardProps?.showSignpost;
+    expect(firstRenderShowSignpost).toBe(false);
+    expect(sessionStorage.getItem('alkemio.signupProviderClickOrigin')).toBe('flow-oidc');
+
+    // A second, independent render of the very same continuation (e.g. a page
+    // reload, or a validation-error bounce back to the same flow id) — the
+    // marker must still match and still suppress.
+    renderRoute();
+    const secondRenderShowSignpost = h.signUpCardProps?.showSignpost;
+    expect(secondRenderShowSignpost).toBe(false);
+  });
+
+  // corr-client-web-signpost-3: the marker is scoped to the exact flow id it
+  // was set for, not a global one-shot sentinel — a marker left over from an
+  // earlier, abandoned provider click must never suppress the signpost for a
+  // *different* OIDC continuation (e.g. a genuine login-screen bounce).
+  it('[US4/FR-013] a stale marker from a different, earlier flow does not suppress a login-screen bounce on a new flow', () => {
+    sessionStorage.setItem('alkemio.signupProviderClickOrigin', 'flow-abandoned');
+    h.flow = { id: 'flow-oidc', active: 'oidc', ui: { nodes: [], messages: [] } };
+
+    renderRoute();
+
+    expect(h.signUpCardProps?.showSignpost).toBe(true);
   });
 
   it('[US4/FR-013] a login-screen provider bounce (no sign-up-origin marker) still shows the signpost', () => {
@@ -323,6 +358,16 @@ describe('SignUpCrdRoute — provider-arrival signpost (FR-013/FR-014)', () => {
     renderRoute();
 
     expect(h.signUpCardProps?.showSignpost).toBe(true);
+  });
+
+  it('clears a stale marker once the loaded flow resolves as a plain (non-OIDC) registration, via a commit-phase effect', async () => {
+    sessionStorage.setItem('alkemio.signupProviderClickOrigin', 'flow-old');
+    h.flow = { id: 'flow-fresh', ui: { nodes: [], messages: [] } };
+
+    renderRoute();
+
+    // The effect runs after commit (act() flushes it synchronously here).
+    expect(sessionStorage.getItem('alkemio.signupProviderClickOrigin')).toBeNull();
   });
 
   it('the existing 4000007 (account-already-exists) redirect still wins precedence over the signpost', () => {
