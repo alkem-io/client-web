@@ -1,8 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
-import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { encodeToBase64 } from '@/core/utils/encodeToBase64';
-import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
 import { UPLOAD_TIMEOUT_MESSAGE, UPLOAD_TIMEOUT_MS, useWhiteboardAssetAdapter } from './useWhiteboardAssetAdapter';
 
 const mockUpload = vi.fn();
@@ -10,6 +8,17 @@ const mockFetchDoc = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useUploadFileMutation: () => [mockUpload],
   useWhiteboardAssetDocumentLazyQuery: () => [mockFetchDoc],
+}));
+
+// The asset-fetch header comes from the single guest-identity resolver (route-gated +
+// validated). Drive it directly here; the resolver's own logic is covered by its spec.
+const { mockGuestIdentity } = vi.hoisted(() => ({
+  mockGuestIdentity: {
+    value: { isPublicRoute: false, guestName: undefined } as { isPublicRoute: boolean; guestName: string | undefined },
+  },
+}));
+vi.mock('@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity', () => ({
+  resolveWhiteboardGuestIdentity: () => mockGuestIdentity.value,
 }));
 
 const mockFetchFileToDataURL = vi.fn(
@@ -22,14 +31,11 @@ vi.mock('../fileStore/fileConverters', () => ({
 
 const FILE = { id: 'f1', dataURL: 'data:image/png;base64,AAAA', mimeType: 'image/png', created: 1 } as never;
 
-const guestWrapper =
-  (guestName: string | null) =>
-  ({ children }: { children: ReactNode }) => (
-    <GuestSessionContext.Provider value={{ guestName } as never}>{children}</GuestSessionContext.Provider>
-  );
-
 describe('useWhiteboardAssetAdapter', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockGuestIdentity.value = { isPublicRoute: false, guestName: undefined };
+  });
 
   it('store uploads the bytes to the bucket and returns the document id as the locator', async () => {
     mockUpload.mockResolvedValue({ data: { uploadFileOnStorageBucket: { id: 'doc-1', url: 'http://ignored' } } });
@@ -110,18 +116,19 @@ describe('useWhiteboardAssetAdapter', () => {
     expect(result.current.resolveError).toBeDefined();
   });
 
-  it('resolve sends the base64 x-guest-name header for a guest session', async () => {
+  it('resolve sends the base64 x-guest-name header from the resolved guest identity', async () => {
+    mockGuestIdentity.value = { isPublicRoute: true, guestName: 'Alice B' };
     mockFetchDoc.mockResolvedValue({
       data: { lookup: { document: { id: 'd', url: 'http://x/doc', mimeType: 'image/png' } } },
     });
-    const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }), {
-      wrapper: guestWrapper('Alice'),
-    });
+    const { result } = renderHook(() => useWhiteboardAssetAdapter({ storageBucketId: 'sb-1' }));
 
     await act(async () => {
       await result.current.assetAdapter.resolve('f1' as never, 'doc-1');
     });
-    expect(mockFetchFileToDataURL).toHaveBeenCalledWith('http://x/doc', { 'x-guest-name': encodeToBase64('Alice') });
+    expect(mockFetchFileToDataURL).toHaveBeenCalledWith('http://x/doc', {
+      'x-guest-name': encodeToBase64('Alice B'),
+    });
   });
 
   // ── T030 F1: the store upload is bounded by a host timeout ────────────────

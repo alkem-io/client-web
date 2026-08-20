@@ -13,7 +13,7 @@ import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import type { Identifiable } from '@/core/utils/Identifiable';
 import useOnlineStatus from '@/core/utils/onlineStatus';
-import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
+import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
@@ -179,15 +179,17 @@ const CollaborativeExcalidrawWrapper = ({
 
   const { userModel } = useCurrentUserContext();
   const username = (() => {
-    if (userModel?.profile?.displayName) {
-      return userModel.profile.displayName;
+    const { isPublicRoute, guestName } = resolveWhiteboardGuestIdentity();
+    if (isPublicRoute) {
+      // Public/guest whiteboard: broadcast the SAME validated guest identity the WS
+      // handshake and asset-fetch header use — NEVER the authenticated user's real display
+      // name (that would leak identity on a public link). A generic fallback covers a
+      // missing/invalid guest name (fail closed).
+      return guestName ?? t('common.guestUserFallback', { defaultValue: 'Guest' });
     }
-
-    const guestName = getGuestName() ?? t('common.guestUserFallback', { defaultValue: 'User' });
-    const guestSuffix = t('common.guestSuffix');
-    return guestSuffix ? `${guestName} ${guestSuffix}` : guestName;
-    // getGuestName() is intentionally omitted from dependencies - guest names are set once per session
-    // and don't change dynamically. Including it would cause unnecessary re-renders without benefit.
+    // Private route: the user is authenticated (identified by their session cookie), so
+    // their real display name is shown on their cursor.
+    return userModel?.profile?.displayName ?? t('common.guestUserFallback', { defaultValue: 'Guest' });
   })();
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);

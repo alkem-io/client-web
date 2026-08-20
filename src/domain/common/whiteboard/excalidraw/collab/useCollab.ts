@@ -5,9 +5,7 @@ import {
   type ControlMessage,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
-import { validateGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/guestNameValidator';
-import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/utils/sessionStorage';
-import { GUEST_SHARE_PATH } from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { AwarenessRouter } from './awarenessRouter';
 import { type CollaboratorMode, CollaboratorModeReasons } from './excalidrawAppConstants';
 
@@ -92,19 +90,6 @@ function cursorColorFor(name: string): string {
   return CURSOR_COLORS[Math.abs(hash) % CURSOR_COLORS.length];
 }
 
-/**
- * On the public guest-share route, resolve the validated guest display name so the
- * provider sends it as `?guestName=` on the handshake (the unified service's
- * anonymous-identity path). Off that route, an authenticated session cookie is
- * used instead, so this returns undefined. Mirrors the legacy Portal.ts guard.
- */
-function resolveGuestName(): string | undefined {
-  if (!globalThis.window?.location.pathname.startsWith(GUEST_SHARE_PATH)) return undefined;
-  const name = getGuestName();
-  if (name && validateGuestName(name).valid) return name;
-  return undefined;
-}
-
 /** Map a server collaborator-mode reason to the client enum (1:1 with control.go). */
 function toModeReason(reason: string | undefined): CollaboratorModeReasons | null {
   switch (reason) {
@@ -162,7 +147,7 @@ const useCollab = ({
         applyRemoteSceneUpdate: (update, format) => excalidrawApi.applyRemoteSceneUpdate(update, format),
         onLocalSceneUpdate: (cb, format) => excalidrawApi.onLocalSceneUpdate(cb, format),
       },
-      guestName: resolveGuestName(),
+      guestName: resolveWhiteboardGuestIdentity().guestName,
       connect: false,
     });
     providerRef.current = provider;

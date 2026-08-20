@@ -1,9 +1,9 @@
 import type { FileId } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
 import type { AssetAdapter, BinaryFileData } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
-import { useContext, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useUploadFileMutation, useWhiteboardAssetDocumentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { encodeToBase64 } from '@/core/utils/encodeToBase64';
-import { GuestSessionContext } from '@/domain/collaboration/whiteboard/guestAccess/context/GuestSessionContext';
+import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { dataUrlToFile, fetchFileToDataURL } from '../fileStore/fileConverters';
 
 /**
@@ -62,15 +62,14 @@ export function useWhiteboardAssetAdapter({
 }: UseWhiteboardAssetAdapterParams): WhiteboardAssetAdapter {
   const [uploadFile] = useUploadFileMutation();
   const [fetchDocument] = useWhiteboardAssetDocumentLazyQuery();
-  const guestName = useContext(GuestSessionContext)?.guestName;
   const [uploadError, setUploadError] = useState<AssetOperationError | undefined>(undefined);
   const [resolveError, setResolveError] = useState<AssetOperationError | undefined>(undefined);
 
   // Latest dependencies, read by the stable operations below. Assigning during
   // render is safe here: `depsRef` never feeds render output, it only carries the
   // current closures/ids into the (identity-stable) adapter.
-  const depsRef = useRef({ storageBucketId, guestName, uploadFile, fetchDocument });
-  depsRef.current = { storageBucketId, guestName, uploadFile, fetchDocument };
+  const depsRef = useRef({ storageBucketId, uploadFile, fetchDocument });
+  depsRef.current = { storageBucketId, uploadFile, fetchDocument };
 
   const adapterRef = useRef<AssetAdapter | null>(null);
   if (!adapterRef.current) {
@@ -130,8 +129,11 @@ export function useWhiteboardAssetAdapter({
             throw new Error(`No stored document for locator ${locator}`);
           }
           const headers: Record<string, string> = {};
-          if (deps.guestName) {
-            headers['x-guest-name'] = encodeToBase64(deps.guestName);
+          // Attribute the image fetch with the SAME single guest identity the WS handshake
+          // and awareness label use (route-gated + validated) — never the raw context value.
+          const guestName = resolveWhiteboardGuestIdentity().guestName;
+          if (guestName) {
+            headers['x-guest-name'] = encodeToBase64(guestName);
           }
           const dataURL = await fetchFileToDataURL(document.url, headers);
           setResolveError(undefined);

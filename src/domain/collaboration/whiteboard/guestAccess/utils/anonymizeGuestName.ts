@@ -11,10 +11,14 @@
  * collaboration while maintaining privacy.
  *
  * **Derivation Priority:**
- * 1. `firstName lastName` → "FirstName L." (e.g., "Alice B.")
+ * 1. `firstName lastName` → "FirstName L" (e.g., "Alice B")
  * 2. `firstName` only → "FirstName" (e.g., "Alice")
- * 3. `lastName` only → "L." (e.g., "B.")
+ * 3. `lastName` only → "L" (e.g., "B")
  * 4. Neither → `null` (caller should prompt for nickname)
+ *
+ * The derived name carries NO trailing period so it passes `validateGuestName` (whose
+ * alphabet excludes '.') — the same value must be usable as the guest identity across
+ * the WS handshake, the asset-fetch header, and the awareness cursor label.
  *
  * **Edge Cases:**
  * - Multi-word first names: Takes only the first word
@@ -23,10 +27,10 @@
  *
  * @example
  * ```typescript
- * anonymizeGuestName('Alice', 'Brown');      // "Alice B."
- * anonymizeGuestName('Alice Marie', 'Brown'); // "Alice B."
+ * anonymizeGuestName('Alice', 'Brown');      // "Alice B"
+ * anonymizeGuestName('Alice Marie', 'Brown'); // "Alice B"
  * anonymizeGuestName('Alice', null);          // "Alice"
- * anonymizeGuestName(null, 'Brown');          // "B."
+ * anonymizeGuestName(null, 'Brown');          // "B"
  * anonymizeGuestName('', '');                 // null
  * anonymizeGuestName('  ', '  ');             // null
  * ```
@@ -45,9 +49,12 @@ export const anonymizeGuestName = (firstName?: string | null, lastName?: string 
   if (f && l) {
     // Priority 1: First name + last initial
     // Extract first word from firstName (handles "Alice Marie" → "Alice")
+    // No trailing period: `validateGuestName`'s alphabet excludes '.', and this derived
+    // name must pass it so the same value can feed the WS guest name, the asset header,
+    // and the awareness label. (We keep the validator strict rather than allow '.').
     const firstWord = f.split(/\s+/)[0];
     const lastInitial = l.charAt(0).toUpperCase();
-    return `${firstWord} ${lastInitial}.`;
+    return `${firstWord} ${lastInitial}`;
   }
 
   if (f) {
@@ -57,8 +64,8 @@ export const anonymizeGuestName = (firstName?: string | null, lastName?: string 
   }
 
   if (l) {
-    // Priority 3: Last initial only
-    return `${l.charAt(0).toUpperCase()}.`;
+    // Priority 3: Last initial only (no trailing period — see above)
+    return l.charAt(0).toUpperCase();
   }
 
   // Priority 4: No derivation possible
