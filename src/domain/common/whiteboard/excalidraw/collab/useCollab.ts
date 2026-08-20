@@ -18,7 +18,7 @@ type PointerUpdatePayload = {
   pointersMap?: Map<number, { x: number; y: number }>;
 };
 
-export interface CollabAPI {
+export type CollabAPI = {
   /** Local pointer move → awareness (the AwarenessRouter owns cursor presence). */
   onPointerUpdate: (payload: PointerUpdatePayload) => void;
   /**
@@ -30,15 +30,15 @@ export interface CollabAPI {
   /** Broadcast an ephemeral floating emoji to other collaborators (never persisted). */
   broadcastEmojiReaction: (emoji: string, x: number, y: number) => void;
   broadcastCountdownTimer: (remainingSeconds: number, startedBy: string, active: boolean) => void;
-}
+};
 
-export interface CollabState {
+export type CollabState = {
   collaborating: boolean;
   connecting: boolean;
   mode: CollaboratorMode | null;
   modeReason: CollaboratorModeReasons | null;
   isReadOnly: boolean;
-}
+};
 
 type UseCollabProps = {
   username: string;
