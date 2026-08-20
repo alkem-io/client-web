@@ -21,11 +21,6 @@ type PointerUpdatePayload = {
 export type CollabAPI = {
   /** Local pointer move → awareness (the AwarenessRouter owns cursor presence). */
   onPointerUpdate: (payload: PointerUpdatePayload) => void;
-  /**
-   * No-op: the native editor writes straight to `Scene.doc` (the editor's element
-   * store IS the Y.Doc). Retained so the wrapper's call site stays stable.
-   */
-  syncScene: () => void;
   isCollaborating: () => boolean;
   /** Broadcast an ephemeral floating emoji to other collaborators (never persisted). */
   broadcastEmojiReaction: (emoji: string, x: number, y: number) => void;
@@ -283,7 +278,6 @@ const useCollab = ({
 
     const collabApi: CollabAPI = {
       onPointerUpdate: payload => awarenessRouter.onPointerUpdate(payload),
-      syncScene: () => {},
       isCollaborating: () => providerRef.current?.status === 'connected',
       broadcastEmojiReaction: (emoji, x, y) => {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
