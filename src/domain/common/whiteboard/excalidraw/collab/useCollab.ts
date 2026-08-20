@@ -218,11 +218,20 @@ const useCollab = ({
     const handleSynced = (synced: boolean) => {
       setIsSceneInitialized(synced);
       onSceneInitChange?.(synced);
+      if (!synced) {
+        return;
+      }
+      // Absence of a read-only/mode downgrade by the time the initial sync completes IS
+      // the write grant — the service never sends `collaborator-mode` at join, only on a
+      // later inactivity downgrade. The functional update keeps a mode a viewer
+      // `read-only-state` already set (FIFO-safe: a read-only frame that arrived first
+      // wins), and only fills in the default `write` when no downgrade has been seen.
+      setCollaboratorMode(previous => previous ?? 'write');
       // The Yjs scene-sync restores elements but NOT viewport scroll/zoom, so without an
       // initial fit the editor opens at (0,0) showing blank canvas for a drawing placed
       // away from the origin. Mirror the single-user path (ExcalidrawWrapper), which
       // scrolls-to-content after seeding — but only on the initial sync of this editor.
-      if (synced && !didInitialFit) {
+      if (!didInitialFit) {
         didInitialFit = true;
         const elements = excalidrawApi.getSceneElements();
         if (elements.length > 0) {
@@ -307,7 +316,13 @@ const useCollab = ({
     initialize,
     {
       connecting: isConnecting,
-      collaborating: isCollaborating && collaboratorMode !== null,
+      // "Collaborating" means the socket is up — decoupled from collaborator mode. The
+      // service never sends `collaborator-mode` at join, so gating this on a mode being
+      // known left it false at a normal join and, after a transient drop, kept the
+      // wrapper's independent useAutoReconnect countdown running against a HEALTHY
+      // reconnected socket (tearing it down in a loop). Mode is a separate concern,
+      // surfaced via `mode` / `isReadOnly`.
+      collaborating: isCollaborating,
       mode: collaboratorMode,
       modeReason: collaboratorModeReason,
       isReadOnly: isConnecting || !isCollaborating || collaboratorMode === 'read' || !isSceneInitialized,

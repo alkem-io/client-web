@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CloseVerdict, ControlMessage } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import useCollab from './useCollab';
@@ -15,6 +15,7 @@ vi.mock('./awarenessRouter', () => ({
 let controlHandler: ((message: ControlMessage) => void) | undefined;
 let closeHandler: ((verdict: CloseVerdict) => void) | undefined;
 let syncedHandler: ((synced: boolean) => void) | undefined;
+let statusHandler: ((status: string) => void) | undefined;
 vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', async importOriginal => {
   const actual =
     await importOriginal<typeof import('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider')>();
@@ -25,6 +26,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', as
       if (event === 'control') controlHandler = handler as (m: ControlMessage) => void;
       else if (event === 'close') closeHandler = handler as (v: CloseVerdict) => void;
       else if (event === 'synced') syncedHandler = handler as (s: boolean) => void;
+      else if (event === 'status') statusHandler = handler as (s: string) => void;
     }
     off() {}
     connect() {}
@@ -175,6 +177,69 @@ describe('useCollab — fit-to-content on initial scene sync', () => {
     syncedHandler?.(true);
 
     expect(scrollToContent).not.toHaveBeenCalled();
+    cleanup();
+  });
+});
+
+describe('useCollab — reconnect + collaborator-mode contract', () => {
+  afterEach(() => {
+    syncedHandler = undefined;
+    statusHandler = undefined;
+    controlHandler = undefined;
+    vi.clearAllMocks();
+  });
+
+  const api = { getSceneElements: () => [], scrollToContent: vi.fn() } as never;
+  const mount = () => {
+    const rendered = renderHook(() => useCollab({ username: 'T', onCloseConnection: () => {} }));
+    const cleanup = rendered.result.current[1]({ excalidrawApi: api, roomId: 'r' });
+    const stateOf = () =>
+      rendered.result.current[2] as { collaborating: boolean; mode: string | null; isReadOnly: boolean };
+    return { stateOf, cleanup };
+  };
+
+  it('collaborating becomes true on connect — WITHOUT waiting for a collaborator-mode frame', () => {
+    const { stateOf, cleanup } = mount();
+    act(() => statusHandler?.('connected'));
+    // A healthy socket is enough for the wrapper's auto-reconnect to stop; it must not
+    // hinge on a mode frame the service never sends at join.
+    expect(stateOf().collaborating).toBe(true);
+    expect(stateOf().mode).toBeNull();
+    cleanup();
+  });
+
+  it('establishes default write mode on the initial sync when no downgrade arrived (absence = grant)', () => {
+    const { stateOf, cleanup } = mount();
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(stateOf().mode).toBe('write');
+    expect(stateOf().isReadOnly).toBe(false);
+    cleanup();
+  });
+
+  it('FIFO: a viewer read-only-state arriving BEFORE the sync wins (mode stays read)', () => {
+    const { stateOf, cleanup } = mount();
+    act(() => {
+      statusHandler?.('connected');
+      controlHandler?.({ kind: 'read-only-state', readOnly: true } as ControlMessage);
+      syncedHandler?.(true);
+    });
+    expect(stateOf().mode).toBe('read');
+    expect(stateOf().isReadOnly).toBe(true);
+    cleanup();
+  });
+
+  it('a read-only downgrade arriving AFTER the sync still wins over the default write', () => {
+    const { stateOf, cleanup } = mount();
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(stateOf().mode).toBe('write');
+    act(() => controlHandler?.({ kind: 'read-only-state', readOnly: true } as ControlMessage));
+    expect(stateOf().mode).toBe('read');
     cleanup();
   });
 });
