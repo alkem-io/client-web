@@ -1,6 +1,6 @@
 {
   "addReaction": "Reageer",
-  "pickerTitle": "Reageer op dit Post",
+  "pickerTitle": "Reageer op deze post",
   "pickerAriaLabel": "Emoji-reactie picker",
   "totalAriaLabel": "{{count}} mensen reageerden",
   "totalAriaLabel_one": "1 persoon reageerde",
