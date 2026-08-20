@@ -622,6 +622,13 @@ export type AddPollOptionInput = {
   text: Scalars['String']['input'];
 };
 
+export type AddReactionToCalloutInput = {
+  /** The ID of the Callout to react to. */
+  calloutID: Scalars['UUID']['input'];
+  /** Must be one of the platform allowed emoji slugs; validated server-side (ValidationException on miss). */
+  emoji: Scalars['String']['input'];
+};
+
 export type AddVisualToMediaGalleryInput = {
   /** The ID of the media gallery. */
   mediaGalleryID: Scalars['String']['input'];
@@ -729,6 +736,8 @@ export type Application = {
   state: Scalars['String']['output'];
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
+  /** The User who submitted this Application. */
+  user?: Maybe<User>;
 };
 
 export type ApplicationEventInput = {
@@ -1145,6 +1154,10 @@ export type Callout = {
   publishedBy?: Maybe<User>;
   /** The Date of the publishing of this Callout. */
   publishedDate?: Maybe<Scalars['DateTime']['output']>;
+  /** Who reacted (tier-2). Bounded: 100 most recent by last change, descending. Fetch only on demand. */
+  reactions: Array<CalloutReaction>;
+  /** Cheap always-shown summary (tier-1). Dataloader-batched; safe to select on feeds. */
+  reactionsSummary: CalloutReactionsSummary;
   /** The Callout Settings associated with this Callout. */
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
@@ -1316,6 +1329,30 @@ export type CalloutPostCreated = {
   post: Post;
   /** The sorting order for this Contribution. */
   sortOrder: Scalars['Float']['output'];
+};
+
+export type CalloutReaction = {
+  __typename?: 'CalloutReaction';
+  /** Allow-list slug (e.g. "heart"). */
+  emoji: Scalars['String']['output'];
+  /** The unique identifier. */
+  id: Scalars['UUID']['output'];
+  /** When this person's reaction was made or last changed (a swap updates this). */
+  updatedDate: Scalars['DateTime']['output'];
+  /** The reactor. Null only in the deletion race window; clients skip null users. */
+  user?: Maybe<User>;
+};
+
+export type CalloutReactionsSummary = {
+  __typename?: 'CalloutReactionsSummary';
+  /** The emoji slugs a user may react with on this Callout. */
+  allowedEmojis: Array<Scalars['String']['output']>;
+  /** Distinct emoji slugs currently in use, in allow-list order. Never carries counts. */
+  emojis: Array<Scalars['String']['output']>;
+  /** The requesting user's current reaction slug; null when none or unauthenticated. */
+  myReactionEmoji?: Maybe<Scalars['String']['output']>;
+  /** Number of distinct people currently holding a reaction on this Callout. */
+  total: Scalars['Int']['output'];
 };
 
 /** The selection mode for a collection callout (Contributors or Subspaces). AUTO (default) returns the full computed set; CUSTOM restricts to the admin-curated selectedIds list. */
@@ -2302,7 +2339,7 @@ export type CreateConversationInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   /** Optional display name for GROUP conversations. Ignored for DIRECT conversations (Synapse uses the other member name automatically). */
   displayName?: InputMaybe<Scalars['String']['input']>;
-  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs. Creator is auto-included. */
+  /** IDs of members to add. For DIRECT: exactly 1 ID. For GROUP: 1+ IDs, up to 100. Creator is auto-included. */
   memberIDs: Array<Scalars['UUID']['input']>;
   /** The type of conversation to create: DIRECT for 1-on-1, GROUP for multi-party. */
   type: ConversationCreationType;
@@ -4926,6 +4963,8 @@ export type Mutation = {
   addNotificationEmailToBlacklist: Array<Scalars['String']['output']>;
   /** Add a new option to a Poll. Requires UPDATE privilege, or CONTRIBUTE privilege when the poll setting allowContributorsAddOptions is enabled. The new option is appended with the next available sort order. */
   addPollOption: Poll;
+  /** Adds or swaps the requesting user's single reaction on a Callout. Requires CONTRIBUTE on the Callout. The Callout must be published and not a template. The emoji must be on the platform allow-list. */
+  addReactionToCallout: Callout;
   /** Add a reaction to a message from the specified Room. */
   addReactionToMessageInRoom: Reaction;
   /** Adds a new visual to the specified media gallery. */
@@ -5140,7 +5179,7 @@ export type Mutation = {
   inviteForEntryRoleOnRoleSet: Array<RoleSetInvitationResult>;
   /** Join the specified RoleSet using the entry Role, without going through an approval process. */
   joinRoleSet: RoleSet;
-  /** Leave a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
+  /** Leave a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. If the last member leaves, the conversation is auto-deleted and a CONVERSATION_DELETED event follows. */
   leaveConversation: Scalars['Boolean']['output'];
   /** Reset the License with Entitlements on the specified Account. */
   licenseResetOnAccount: Account;
@@ -5166,7 +5205,7 @@ export type Mutation = {
   refreshVirtualContributorBodyOfKnowledge: Scalars['Boolean']['output'];
   /** Empties the CommunityGuidelines. */
   removeCommunityGuidelinesContent: CommunityGuidelines;
-  /** Remove a member from a group conversation. Returns true when the RPC is sent. Actual membership change arrives via MEMBER_REMOVED subscription event. */
+  /** Remove a member from a group conversation. Awaits the Matrix kick rather than reporting success merely because the RPC was sent: true means the kick was accepted, and the membership is then removed asynchronously — observe MEMBER_REMOVED for completion. If Matrix rejects the kick (e.g. insufficient permissions) this still returns true, because Alkemio is authoritative for its own membership and applies the removal locally instead; on that path the Matrix-side room membership may diverge until an operator reconciles it. */
   removeConversationMember: Scalars['Boolean']['output'];
   /** Remove the default callout template from an InnovationFlowState. */
   removeDefaultCalloutTemplateOnInnovationFlowState: InnovationFlowState;
@@ -5182,6 +5221,8 @@ export type Mutation = {
   removePollOption: Poll;
   /** Remove the current user vote from a Poll. Requires CONTRIBUTE privilege on the Poll. If the user has not voted, returns a validation error. */
   removePollVote: Poll;
+  /** Removes the requesting user's reaction from a Callout. Idempotent — no error when no reaction exists. Self-scoped; requires only authentication (not CONTRIBUTE), so a person who left the space can still retract their own reaction. */
+  removeReactionFromCallout: Callout;
   /** Remove a reaction on a message from the specified Room. */
   removeReactionToMessageInRoom: Scalars['Boolean']['output'];
   /** Removes an Actor (User, Organization, or Virtual Contributor) from a role in the specified RoleSet. */
@@ -5374,6 +5415,10 @@ export type MutationAddNotificationEmailToBlacklistArgs = {
 
 export type MutationAddPollOptionArgs = {
   optionData: AddPollOptionInput;
+};
+
+export type MutationAddReactionToCalloutArgs = {
+  reactionData: AddReactionToCalloutInput;
 };
 
 export type MutationAddReactionToMessageInRoomArgs = {
@@ -5844,6 +5889,10 @@ export type MutationRemovePollVoteArgs = {
   voteData: RemovePollVoteInput;
 };
 
+export type MutationRemoveReactionFromCalloutArgs = {
+  reactionData: RemoveReactionFromCalloutInput;
+};
+
 export type MutationRemoveReactionToMessageInRoomArgs = {
   reactionData: RoomRemoveReactionToMessageInput;
 };
@@ -6264,6 +6313,8 @@ export enum NotificationEvent {
   SpaceCommunityInvitationUserPlatform = 'SPACE_COMMUNITY_INVITATION_USER_PLATFORM',
   SpaceLeadCommunicationMessage = 'SPACE_LEAD_COMMUNICATION_MESSAGE',
   UserCommentReply = 'USER_COMMENT_REPLY',
+  UserConversationMessageDirect = 'USER_CONVERSATION_MESSAGE_DIRECT',
+  UserConversationMessageGroup = 'USER_CONVERSATION_MESSAGE_GROUP',
   UserEmailChangeGlobalAdminNotification = 'USER_EMAIL_CHANGE_GLOBAL_ADMIN_NOTIFICATION',
   UserEmailChangeNewAddressNotification = 'USER_EMAIL_CHANGE_NEW_ADDRESS_NOTIFICATION',
   UserEmailChangeSecuritySignal = 'USER_EMAIL_CHANGE_SECURITY_SIGNAL',
@@ -6350,6 +6401,8 @@ export type NotificationRecipientsInput = {
   triggeredBy?: InputMaybe<Scalars['UUID']['input']>;
   /** The ID of the specific user recipient for user-related notifications (e.g., invitations, mentions). */
   userID?: InputMaybe<Scalars['UUID']['input']>;
+  /** Plural recipient user IDs (e.g. conversation-message events) — resolved via a single OR-combined credentials query. Bounded to at most 100 entries; larger conversations must be fanned out by the caller in bounded batches. */
+  userIDs?: InputMaybe<Array<Scalars['UUID']['input']>>;
   /** The ID of the Virtual Contributor to use to determine recipients. */
   virtualContributorID?: InputMaybe<Scalars['UUID']['input']>;
 };
@@ -7636,6 +7689,11 @@ export type RemovePollOptionInput = {
 export type RemovePollVoteInput = {
   /** The ID of the Poll from which to remove the current user vote. */
   pollID: Scalars['UUID']['input'];
+};
+
+export type RemoveReactionFromCalloutInput = {
+  /** The ID of the Callout to remove the reaction from. */
+  calloutID: Scalars['UUID']['input'];
 };
 
 export type RemoveRoleOnRoleSetInput = {
@@ -9794,7 +9852,7 @@ export type UpdateUserSettingsNotificationPlatformAdminInput = {
   spaceCreated?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive a notification when a user changes their login email address */
   userEmailChanged?: InputMaybe<NotificationSettingInput>;
-  /** [Admin] Receive a notification user is assigned or removed from a global role */
+  /** [Admin] Receive a notification when a user is assigned to or removed from a global role */
   userGlobalRoleChanged?: InputMaybe<NotificationSettingInput>;
   /** [Admin] Receive notification when a new user signs up */
   userProfileCreated?: InputMaybe<NotificationSettingInput>;
@@ -9859,6 +9917,10 @@ export type UpdateUserSettingsNotificationSpaceInput = {
 export type UpdateUserSettingsNotificationUserInput = {
   /** Receive a notification when someone replies to a comment I made. */
   commentReply?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageDirect?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone posts in a group chat I am a member of. Note: the inApp channel is permanently OFF regardless of the stored value. */
+  conversationMessageGroup?: InputMaybe<NotificationSettingInput>;
   /** Settings related to User Membership Notifications. */
   membership?: InputMaybe<UpdateUserSettingsNotificationUserMembershipInput>;
   /** Receive a notification you are mentioned */
@@ -10427,6 +10489,10 @@ export type UserSettingsNotificationUser = {
   __typename?: 'UserSettingsNotificationUser';
   /** Receive a notification when someone replies to a comment I made. */
   commentReply: UserSettingsNotificationChannels;
+  /** Receive a notification when someone sends me a direct (1:1) chat message. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageDirect: UserSettingsNotificationChannels;
+  /** Receive a notification when someone posts in a group chat I am a member of. The inApp channel is permanently OFF (enforced platform-wide) — the stored value is retained for row-shape symmetry only. */
+  conversationMessageGroup: UserSettingsNotificationChannels;
   /** The notifications settings for membership events for this User */
   membership: UserSettingsNotificationUserMembership;
   /** Receive a notification you are mentioned */
@@ -11313,6 +11379,8 @@ export type CommunityApplicationsInvitationsQuery = {
               type: ActorType;
               profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
             };
+            questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+            user?: { __typename?: 'User'; id: string; email: string } | undefined;
           }>;
           invitations: Array<{
             __typename?: 'Invitation';
@@ -11352,6 +11420,8 @@ export type AdminCommunityApplicationFragment = {
     type: ActorType;
     profile?: { __typename?: 'Profile'; id: string; displayName: string; url: string } | undefined;
   };
+  questions: Array<{ __typename?: 'Question'; id: string; name: string; value: string }>;
+  user?: { __typename?: 'User'; id: string; email: string } | undefined;
 };
 
 export type AdminCommunityInvitationFragment = {
@@ -15106,6 +15176,13 @@ export type UpdateCalloutContentMutation = {
             | undefined;
         }
       | undefined;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
   };
 };
 
@@ -15591,6 +15668,13 @@ export type UpdateCalloutVisibilityMutation = {
             | undefined;
         }
       | undefined;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
   };
 };
 
@@ -15947,6 +16031,7 @@ export type CreateCollaboraDocumentOnCalloutMutation = {
   __typename?: 'Mutation';
   createContributionOnCallout: {
     __typename?: 'CalloutContribution';
+    id: string;
     collaboraDocument?:
       | {
           __typename?: 'CollaboraDocument';
@@ -17464,6 +17549,13 @@ export type CreateCalloutMutation = {
             | undefined;
         }
       | undefined;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
   };
 };
 
@@ -18121,6 +18213,13 @@ export type CalloutDetailsQuery = {
                   | undefined;
               }
             | undefined;
+          reactionsSummary: {
+            __typename?: 'CalloutReactionsSummary';
+            total: number;
+            emojis: Array<string>;
+            myReactionEmoji?: string | undefined;
+            allowedEmojis: Array<string>;
+          };
           classification?:
             | {
                 __typename?: 'Classification';
@@ -18638,6 +18737,13 @@ export type CalloutDetailsFragment = {
           | undefined;
       }
     | undefined;
+  reactionsSummary: {
+    __typename?: 'CalloutReactionsSummary';
+    total: number;
+    emojis: Array<string>;
+    myReactionEmoji?: string | undefined;
+    allowedEmojis: Array<string>;
+  };
 };
 
 export type AddVisualToMediaGalleryMutationVariables = Exact<{
@@ -23672,6 +23778,18 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
             push: boolean;
           };
+          conversationMessageDirect: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
+          conversationMessageGroup: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           membership: {
             __typename?: 'UserSettingsNotificationUserMembership';
             spaceCommunityInvitationReceived: {
@@ -24058,6 +24176,18 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
         push: boolean;
       };
+      conversationMessageDirect: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
+      conversationMessageGroup: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
     };
     virtualContributor: {
       __typename?: 'UserSettingsNotificationVirtualContributor';
@@ -24286,6 +24416,18 @@ export type UserSettingsQuery = {
                   push: boolean;
                 };
                 messageReceived: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageDirect: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                conversationMessageGroup: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -36175,6 +36317,92 @@ export type CalloutsIndexListQuery = {
                 allowedTypes: Array<CalloutContributionType>;
               };
             };
+          }>;
+        }
+      | undefined;
+  };
+};
+
+export type CalloutReactionsSummaryFragment = {
+  __typename?: 'Callout';
+  reactionsSummary: {
+    __typename?: 'CalloutReactionsSummary';
+    total: number;
+    emojis: Array<string>;
+    myReactionEmoji?: string | undefined;
+    allowedEmojis: Array<string>;
+  };
+};
+
+export type AddReactionToCalloutMutationVariables = Exact<{
+  reactionData: AddReactionToCalloutInput;
+}>;
+
+export type AddReactionToCalloutMutation = {
+  __typename?: 'Mutation';
+  addReactionToCallout: {
+    __typename?: 'Callout';
+    id: string;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
+  };
+};
+
+export type RemoveReactionFromCalloutMutationVariables = Exact<{
+  reactionData: RemoveReactionFromCalloutInput;
+}>;
+
+export type RemoveReactionFromCalloutMutation = {
+  __typename?: 'Mutation';
+  removeReactionFromCallout: {
+    __typename?: 'Callout';
+    id: string;
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
+  };
+};
+
+export type CalloutWhoReactedQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type CalloutWhoReactedQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          reactions: Array<{
+            __typename?: 'CalloutReaction';
+            id: string;
+            emoji: string;
+            updatedDate: Date;
+            user?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
           }>;
         }
       | undefined;

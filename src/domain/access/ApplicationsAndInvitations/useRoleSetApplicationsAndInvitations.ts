@@ -50,6 +50,7 @@ type useRoleSetApplicationsAndInvitationsProvided = {
   deletePlatformInvitation: (invitationId: string) => Promise<unknown>;
   refetch: () => Promise<unknown>;
   loading: boolean;
+  errored: boolean;
   isApplying: boolean;
 };
 
@@ -65,6 +66,7 @@ const useRoleSetApplicationsAndInvitations = ({
   const {
     data,
     loading,
+    error,
     refetch: refetchCommunityApplicationsInvitations,
   } = useCommunityApplicationsInvitationsQuery({
     // biome-ignore lint/style/noNonNullAssertion: guarded by skip
@@ -126,6 +128,8 @@ const useRoleSetApplicationsAndInvitations = ({
               ? { ...app.actor.profile, email: getActorEmail(actorDetailsMap[app.actor.id]) }
               : undefined,
           },
+          questions: app.questions,
+          user: app.user,
         })) ?? [],
       invitations:
         data?.lookup.roleSet?.invitations.map(inv => ({
@@ -240,6 +244,7 @@ const useRoleSetApplicationsAndInvitations = ({
     authorizationPrivileges: data?.lookup.roleSet?.authorization?.myPrivileges ?? [],
     refetch,
     loading,
+    errored: !!error,
     applyForEntryRoleOnRoleSet: handleApplyForEntryRoleOnRoleSet,
     applicationStateChange: handleApplicationStateChange,
     inviteContributorsOnRoleSet: handleInviteContributorsOnRoleSet,

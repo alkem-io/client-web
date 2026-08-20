@@ -1,11 +1,12 @@
 import { useApolloClient } from '@apollo/client';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { FileText, Presentation, ServerOff, Sheet, Trash2, X } from 'lucide-react';
+import { FileText, FileType, Presentation, ServerOff, Sheet, Trash2, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { CollaboraDocumentPreviewType } from '@/crd/components/callout/CalloutCollaboraPreview';
 import { CollaboraCollabFooter } from '@/crd/components/collabora/CollaboraCollabFooter';
 import { CollaboraDocumentDisplayName } from '@/crd/components/collabora/CollaboraDocumentDisplayName';
 import { CollaboraTopAlert } from '@/crd/components/collabora/CollaboraTopAlert';
+import { openLabelKey } from '@/crd/lib/collaboraDocumentPreview';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,6 +42,7 @@ const iconByType: Record<CollaboraDocumentPreviewType, typeof FileText> = {
   text: FileText,
   spreadsheet: Sheet,
   presentation: Presentation,
+  pdf: FileType,
 };
 
 /**
@@ -119,7 +121,7 @@ export function CollaboraContributionEditorOverlay({
               )}
             </div>
             <DialogDescription id="collabora-contribution-editor-dialog-description" className="sr-only">
-              {t('callout.openDocument')}
+              {t(openLabelKey[documentType])}
             </DialogDescription>
             <div className="flex items-center gap-1 shrink-0">
               {canDelete && onDelete && (

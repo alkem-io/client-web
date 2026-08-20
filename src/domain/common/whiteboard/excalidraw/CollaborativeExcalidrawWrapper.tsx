@@ -72,6 +72,8 @@ export type DisconnectNoticeRenderProps = {
   open: boolean;
   isOnline: boolean;
   connecting: boolean;
+  /** A reconnect attempt has failed (not just a transient drop) — surface an immediate reload escape hatch. */
+  hasError: boolean;
   /** Seconds until auto-reconnect, or `null` when no countdown is active (offline / not scheduled). */
   autoReconnectSeconds: number | null;
   lastSuccessfulSavedDate: Date | undefined;
@@ -109,6 +111,11 @@ const CollaborativeExcalidrawWrapper = ({
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
+
+  // True once a reconnect attempt has actually failed (`connect_error`), as opposed to a transient
+  // drop. While online the auto-reconnect countdown cycles `connecting`, so the notice's own stuck-timer
+  // never elapses — this flag lets the notice surface the "Reload page" escape hatch in that case.
+  const [connectionError, setConnectionError] = useState(false);
 
   const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
@@ -187,9 +194,10 @@ const CollaborativeExcalidrawWrapper = ({
     username,
     filesManager,
     onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
-    onCloseConnection: () => {
+    onCloseConnection: (hasError: boolean) => {
       setCollaborationStoppedNoticeOpen(true);
       setSceneInitialized(false);
+      setConnectionError(hasError);
       // The auto-reconnect countdown is driven by `useAutoReconnect` off the notice-open + connecting
       // state below — no need to schedule anything from here.
       // event if it's duplicated by the httpLink and Portal handlers, let's log this closeConnection one
@@ -250,6 +258,7 @@ const CollaborativeExcalidrawWrapper = ({
   useEffect(() => {
     if (!connecting && collaborating) {
       setCollaborationStoppedNoticeOpen(false);
+      setConnectionError(false);
     }
   }, [connecting, collaborating]);
 
@@ -308,6 +317,7 @@ const CollaborativeExcalidrawWrapper = ({
       {renderDisconnectNotice({
         open: collaborationStoppedNoticeOpen,
         isOnline,
+        hasError: connectionError,
         connecting,
         autoReconnectSeconds,
         lastSuccessfulSavedDate,

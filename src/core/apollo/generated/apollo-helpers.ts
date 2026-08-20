@@ -544,6 +544,7 @@ export type ApplicationKeySpecifier = (
   | 'questions'
   | 'state'
   | 'updatedDate'
+  | 'user'
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
@@ -557,6 +558,7 @@ export type ApplicationFieldPolicy = {
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AssistantCapabilityKeySpecifier = (
   | 'description'
@@ -721,6 +723,8 @@ export type CalloutKeySpecifier = (
   | 'posts'
   | 'publishedBy'
   | 'publishedDate'
+  | 'reactions'
+  | 'reactionsSummary'
   | 'settings'
   | 'sortOrder'
   | 'updatedDate'
@@ -743,6 +747,8 @@ export type CalloutFieldPolicy = {
   posts?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  reactions?: FieldPolicy<any> | FieldReadFunction<any>;
+  reactionsSummary?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -877,6 +883,26 @@ export type CalloutPostCreatedFieldPolicy = {
   contributionID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutReactionKeySpecifier = ('emoji' | 'id' | 'updatedDate' | 'user' | CalloutReactionKeySpecifier)[];
+export type CalloutReactionFieldPolicy = {
+  emoji?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutReactionsSummaryKeySpecifier = (
+  | 'allowedEmojis'
+  | 'emojis'
+  | 'myReactionEmoji'
+  | 'total'
+  | CalloutReactionsSummaryKeySpecifier
+)[];
+export type CalloutReactionsSummaryFieldPolicy = {
+  allowedEmojis?: FieldPolicy<any> | FieldReadFunction<any>;
+  emojis?: FieldPolicy<any> | FieldReadFunction<any>;
+  myReactionEmoji?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutSelectionSettingsKeySpecifier = ('mode' | 'selectedIds' | CalloutSelectionSettingsKeySpecifier)[];
 export type CalloutSelectionSettingsFieldPolicy = {
@@ -2917,6 +2943,7 @@ export type MutationKeySpecifier = (
   | 'addIframeAllowedURL'
   | 'addNotificationEmailToBlacklist'
   | 'addPollOption'
+  | 'addReactionToCallout'
   | 'addReactionToMessageInRoom'
   | 'addVisualToMediaGallery'
   | 'adminCommunicationEnsureAccessToCommunications'
@@ -3045,6 +3072,7 @@ export type MutationKeySpecifier = (
   | 'removePlatformRoleFromUser'
   | 'removePollOption'
   | 'removePollVote'
+  | 'removeReactionFromCallout'
   | 'removeReactionToMessageInRoom'
   | 'removeRole'
   | 'removeRoleFromOrganization'
@@ -3141,6 +3169,7 @@ export type MutationFieldPolicy = {
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addPollOption?: FieldPolicy<any> | FieldReadFunction<any>;
+  addReactionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3269,6 +3298,7 @@ export type MutationFieldPolicy = {
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollVote?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeReactionFromCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRole?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5653,6 +5683,8 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'
+  | 'conversationMessageDirect'
+  | 'conversationMessageGroup'
   | 'membership'
   | 'mentioned'
   | 'messageReceived'
@@ -5660,6 +5692,8 @@ export type UserSettingsNotificationUserKeySpecifier = (
 )[];
 export type UserSettingsNotificationUserFieldPolicy = {
   commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationMessageDirect?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationMessageGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6183,6 +6217,14 @@ export type StrictTypedTypePolicies = {
   CalloutPostCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);
     fields?: CalloutPostCreatedFieldPolicy;
+  };
+  CalloutReaction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutReactionKeySpecifier | (() => undefined | CalloutReactionKeySpecifier);
+    fields?: CalloutReactionFieldPolicy;
+  };
+  CalloutReactionsSummary?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutReactionsSummaryKeySpecifier | (() => undefined | CalloutReactionsSummaryKeySpecifier);
+    fields?: CalloutReactionsSummaryFieldPolicy;
   };
   CalloutSelectionSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutSelectionSettingsKeySpecifier | (() => undefined | CalloutSelectionSettingsKeySpecifier);

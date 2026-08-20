@@ -361,6 +361,7 @@
       "helpBanner": "Edita tus preferencias de notificación. Los cambios se guardan automáticamente.",
       "toggleAria": "Alternar notificación {{channel}} para: {{label}}",
       "toggleError": "No se pudo guardar la preferencia — inténtalo de nuevo",
+      "inAppLockedChat": "Los mensajes de chat ya aparecen en directo en el panel de chat, por lo que no se envían notificaciones en la app para esta fila",
       "columns": {
         "activity": "Actividad",
         "inApp": "En la app",
@@ -433,6 +434,8 @@
           "commentReply": "Recibir una notificación cuando alguien responde a mi comentario",
           "mentioned": "Recibir una notificación cuando soy mencionado",
           "messageReceived": "Recibir una notificación cuando alguien me envía un mensaje directo",
+          "conversationMessageDirect": "Recibir una notificación cuando alguien me envía un mensaje de chat directo (1:1)",
+          "conversationMessageGroup": "Recibir una notificación cuando alguien publica en un chat de grupo del que soy miembro",
           "membershipInvitationReceived": "Recibir una notificación cuando alguien me invita a unirme a una comunidad",
           "membershipCommunityJoined": "Recibir una notificación cuando me uno a un nuevo Space"
         },

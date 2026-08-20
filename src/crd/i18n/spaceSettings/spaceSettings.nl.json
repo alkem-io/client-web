@@ -284,7 +284,8 @@
         "page": "Pagina {{page}} van {{total}}",
         "next": "Volgende pagina"
       },
-      "roleColumn": "Rol"
+      "roleColumn": "Rol",
+      "export": "Exporteer volledig ledenoverzicht"
     },
     "memberSettings": {
       "title": "Lidinstellingen",
@@ -321,7 +322,7 @@
       },
       "addDialog": {
         "title": "Organisatie toevoegen",
-        "description": "Kies een organisatie waarvan de leden zonder goedkeuring lid kunnen worden van deze Space.",
+        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
         "search": "Organisaties zoeken…",
         "empty": "Geen organisaties komen overeen met je zoekopdracht."
       }
@@ -768,7 +769,8 @@
         "description": "Weet je zeker dat je deze vraag wilt verwijderen?",
         "confirm": "Verwijderen"
       },
-      "save": "Opslaan"
+      "save": "Opslaan",
+      "export": "Exporteer alle ingediende aanvragen"
     },
     "allowedActions": {
       "title": "Toegestane acties",
@@ -912,6 +914,12 @@
         "title": "Afbeelding bijsnijden",
         "altText": "Beschrijving",
         "altTextPlaceholder": "Beschrijf deze afbeelding…"
+      },
+      "recropConfirm": {
+        "title": "Originele afbeelding vervangen?",
+        "description": "Als je deze bijsnijding opslaat, wordt een nieuwe afbeelding geüpload en gaat het origineel definitief verloren. De weggesneden delen kunnen later niet worden hersteld.",
+        "confirm": "Afbeelding vervangen",
+        "cancel": "Annuleren"
       },
       "changeBanner": "Banner wijzigen",
       "recropFailed": "Kan deze afbeelding niet laden om bij te snijden. Probeer het opnieuw."

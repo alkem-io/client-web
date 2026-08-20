@@ -284,7 +284,8 @@
         "page": "Seite {{page}} von {{total}}",
         "next": "Nächste Seite"
       },
-      "roleColumn": "Rolle"
+      "roleColumn": "Rolle",
+      "export": "Alle Mitglieder exportieren"
     },
     "memberSettings": {
       "title": "Mitgliedereinstellungen",
@@ -321,7 +322,7 @@
       },
       "addDialog": {
         "title": "Organisation hinzufügen",
-        "description": "Wählen Sie eine Organisation aus, deren Mitglieder ohne Genehmigung diesem Space beitreten können.",
+        "description": "Diese Organisationen werden als Mitglieder in diesem Space und auf ihrem Organisationsprofil sichtbar sein.",
         "search": "Organisationen suchen…",
         "empty": "Keine Organisationen entsprechen Ihrer Suche."
       }
@@ -768,7 +769,8 @@
         "description": "Möchten Sie diese Frage wirklich entfernen?",
         "confirm": "Löschen"
       },
-      "save": "Speichern"
+      "save": "Speichern",
+      "export": "Alle eingereichten Bewerbungen exportieren"
     },
     "allowedActions": {
       "title": "Erlaubte Aktionen",
@@ -912,6 +914,12 @@
         "title": "Bild zuschneiden",
         "altText": "Beschreibung",
         "altTextPlaceholder": "Dieses Bild beschreiben…"
+      },
+      "recropConfirm": {
+        "title": "Originalbild ersetzen?",
+        "description": "Beim Speichern dieses Zuschnitts wird ein neues Bild hochgeladen und das Original dauerhaft verworfen. Die weggeschnittenen Bereiche können später nicht wiederhergestellt werden.",
+        "confirm": "Bild ersetzen",
+        "cancel": "Abbrechen"
       },
       "changeBanner": "Banner ändern",
       "recropFailed": "Dieses Bild konnte nicht zum Zuschneiden geladen werden. Bitte erneut versuchen."
