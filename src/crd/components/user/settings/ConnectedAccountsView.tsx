@@ -250,6 +250,13 @@ function ProviderRow({
           }}
         >
           <input type="hidden" name={row.action.csrf.name} defaultValue={row.action.csrf.value} />
+          {row.action.kind === 'unlink' ? (
+            // The confirmed disconnect submits this form via `form.submit()`, which — per the HTML
+            // form-submission algorithm — submits with no submitter, so the button below never
+            // contributes its name/value pair to the entry list. Carrying the same pair here as a
+            // hidden field keeps it in the submission regardless of how the form is submitted.
+            <input type="hidden" name={row.action.submitName} defaultValue={row.action.submitValue} />
+          ) : null}
           <Button
             type="submit"
             name={row.action.submitName}

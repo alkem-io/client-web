@@ -162,6 +162,26 @@ describe('ConnectedAccountsView', () => {
     expect(button).toHaveAttribute('value', 'github');
   });
 
+  it('carries the unlink payload as a hidden field so a programmatic form.submit() (no submitter) still POSTs it (corr-client-web-5, qual-client-web-6)', () => {
+    // The confirmed disconnect submits the row's form via `form.submit()`, which per the HTML
+    // form-submission algorithm never includes a submit button's name/value pair (there is no
+    // submitter). `FormData` reflects exactly what a real browser would POST, and — unlike the
+    // submit button alone — must already carry `unlink=github` from the DOM as rendered, before any
+    // submit ever happens.
+    render(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[connectedRow]}
+        credentials={[]}
+        messages={[]}
+      />
+    );
+
+    const form = screen.getByRole('button').closest('form') as HTMLFormElement;
+    expect(new FormData(form).get('unlink')).toBe('github');
+  });
+
   it('renders the connected-locked row as a reachable-but-blocked control with its reason wired via aria-describedby (FR-008, research D7)', () => {
     render(
       <ConnectedAccountsView status="ready" onRetry={vi.fn()} providers={[lockedRow]} credentials={[]} messages={[]} />
