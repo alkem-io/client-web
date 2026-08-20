@@ -19549,6 +19549,18 @@ export type UploadVisualMutation = {
   uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
 };
 
+export type WhiteboardAssetDocumentQueryVariables = Exact<{
+  documentId: Scalars['UUID']['input'];
+}>;
+
+export type WhiteboardAssetDocumentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    document?: { __typename?: 'Document'; id: string; url: string; mimeType: MimeType } | undefined;
+  };
+};
+
 export type LatestReleaseDiscussionQueryVariables = Exact<{ [key: string]: never }>;
 
 export type LatestReleaseDiscussionQuery = {

@@ -1,10 +1,8 @@
 import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
-import { toBase64 } from 'lib0/buffer';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as Y from 'yjs';
 import type { AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
@@ -32,10 +30,9 @@ import type {
   WhiteboardPreviewImage,
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
-import { SEED_ORIGIN } from '@/domain/common/whiteboard/excalidraw/collab/seedOrigin';
+import { flushAndEncodeScene } from '@/domain/common/whiteboard/excalidraw/assetAdapter/flushSceneForPersist';
+import { useWhiteboardAssetAdapter } from '@/domain/common/whiteboard/excalidraw/assetAdapter/useWhiteboardAssetAdapter';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
-import type { BinaryFileDataWithOptionalUrl } from '@/domain/common/whiteboard/excalidraw/types';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 
 export interface WhiteboardWithContent {
@@ -101,15 +98,12 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const { whiteboard } = entities;
   useRegisterFullscreenEditor(options.show);
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
-  // The editor's live `Scene.doc` (handed up by ExcalidrawWrapper via getSceneDoc) is
-  // the single in-memory representation; on save it is encoded straight to a Yjs-V2
-  // update (no snapshot/object materialization).
-  const localDocRef = useRef<Y.Doc | null>(null);
-  // Native-Yjs dirty flag: flipped by any doc `update` whose origin is NOT the load
-  // seed (`SEED_ORIGIN`) — i.e. a genuine user edit. Replaces the snapshot-hash compare;
-  // the doc never has to be materialized to decide dirtiness.
+  // Native dirty flag: flipped by the editor's first LOCAL scene update. The listener
+  // is attached in `onSceneInitialized` — AFTER the (remote) content seed — so seeding
+  // never marks the whiteboard dirty. On save the live scene is encoded straight to a
+  // Yjs-V2 update via `encodeSceneStateAsUpdate` (no snapshot/object materialization).
   const dirtyRef = useRef(false);
-  // Detacher for the doc `update` listener attached in `onInitDoc`, run on unmount.
+  // Detacher for the `onLocalSceneUpdate` subscription, run on unmount / re-seed.
   const detachDirtyListenerRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -141,26 +135,16 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     setPreviewImageBlob(blob);
   };
 
-  const filesManager = useWhiteboardFilesManager({
-    excalidrawAPI,
+  const { assetAdapter, uploadError, resolveError } = useWhiteboardAssetAdapter({
     storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
-    allowedMimeTypes: whiteboard.profile?.storageBucket.allowedMimeTypes,
-    maxFileSize: whiteboard.profile?.storageBucket.maxFileSize,
-    allowFallbackToAttached: options.allowFilesAttached,
   });
 
-  const failureState = filesManager.getFailureState();
-
   useEffect(() => {
-    if (failureState.hasFailures) {
-      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
-      const message =
-        totalFailures === 1
-          ? t('callout.whiteboard.images.singleFailure')
-          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
-      notify(message, 'warning');
+    const message = uploadError ?? resolveError;
+    if (message) {
+      notify(t('callout.whiteboard.images.singleFailure'), 'warning');
     }
-  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
+  }, [uploadError, resolveError, t, notify]);
 
   // Keep the selected mode in sync with the persisted settings each time the dialog opens — the
   // state initializer can capture a stale `Auto` if `whiteboard` populates after this mounts.
@@ -171,39 +155,26 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   }, [options.previewSettingsDialogOpen, whiteboard.previewSettings.mode]);
 
   const handleUpdate = async (wb: WhiteboardWithContent) => {
-    const doc = localDocRef.current;
-    if (!doc || !excalidrawAPI) return;
-    // Native-Yjs save: the editor's live `Scene.doc` IS the content — the element
-    // model is NEVER materialized into a scene object. Before encoding, re-home only
-    // the embedded local file BLOBS: read the editor's files (`getFiles()`), run the
-    // files-only local→remote conversion (which UPLOADS each local blob to the
-    // document's storage bucket and returns the records, consuming ONLY `.files`,
-    // never elements), and push the re-homed records back via `addFiles`. The files
-    // map is full `BinaryFileData` at runtime; the element package types it loosely,
-    // so coerce at the boundary.
-    const files = excalidrawAPI.getFiles() as unknown as Record<string, BinaryFileDataWithOptionalUrl>;
-    const {
-      whiteboard: { files: rehomedFiles },
-      unrecoverableFiles,
-    } = await filesManager.convertLocalFilesToRemoteInWhiteboard({ files });
-
-    if (rehomedFiles && Object.keys(rehomedFiles).length > 0) {
-      excalidrawAPI.addFiles(Object.values(rehomedFiles));
-    }
-
-    if (unrecoverableFiles.length > 0) {
-      logWarn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved`, {
+    if (!excalidrawAPI) return;
+    // Publish every pending image, then encode the scene (006 boundary: a base64
+    // Yjs-V2 update, NOT Excalidraw JSON — the server rejects JSON with error 12101).
+    // A failed flush means an image did NOT persist — do NOT report a successful save.
+    const flushed = await flushAndEncodeScene(excalidrawAPI);
+    if (!flushed.ok) {
+      logWarn(`Whiteboard save aborted: ${flushed.failedCount} image(s) failed to publish`, {
         category: TagCategoryValues.WHITEBOARD,
       });
+      notify(
+        flushed.failedCount === 1
+          ? t('callout.whiteboard.images.singleFailure')
+          : t('callout.whiteboard.images.multipleFailures', { count: flushed.failedCount }),
+        'error'
+      );
+      return;
     }
 
     const previewImages = await generateWhiteboardVisuals(wb, true, options.previewImagesSettings);
-    // 006 boundary: store the content as a base64-encoded Yjs-V2 update of the live
-    // doc (NOT Excalidraw JSON — the server rejects JSON with error 12101). The element
-    // model never materializes into an object on the way out.
-    const content = toBase64(Y.encodeStateAsUpdateV2(doc));
-
-    return actions.onUpdate({ ...wb, content }, previewImages);
+    return actions.onUpdate({ ...wb, content: flushed.content }, previewImages);
   };
 
   const handleSave = async () => {
@@ -213,8 +184,9 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
 
   const onClose = async () => {
     if (options.canEdit) {
-      // Native-Yjs dirty-check: `dirtyRef` was flipped by any doc `update` not carrying
-      // the load `SEED_ORIGIN` (a genuine edit) — no doc materialization, no hashing.
+      // Native dirty-check: `dirtyRef` was flipped by the editor's first LOCAL scene
+      // update (attached post-seed via `onLocalSceneUpdate`, so the seed never counts) —
+      // no doc materialization, no hashing.
       if (dirtyRef.current || formikRef.current?.dirty) {
         const discard = await new Promise<boolean>(resolve => {
           setPendingClose({ resolve });
@@ -228,7 +200,7 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const handleImportTemplate = async (whiteboardContent: string) => {
     if (excalidrawAPI && options.canEdit) {
       try {
-        await mergeWhiteboard(excalidrawAPI, whiteboardContent);
+        await mergeWhiteboard(excalidrawAPI, whiteboardContent, assetAdapter);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
@@ -280,7 +252,14 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
           >
             {!state?.loadingWhiteboardContent && whiteboard && (
               <ExcalidrawWrapper
-                entities={{ whiteboard, filesManager }}
+                entities={{
+                  whiteboard,
+                  assetAdapter,
+                  imageValidation: {
+                    allowedMimeTypes: whiteboard.profile?.storageBucket.allowedMimeTypes,
+                    maxFileSize: whiteboard.profile?.storageBucket.maxFileSize,
+                  },
+                }}
                 options={{
                   viewModeEnabled: !options.canEdit,
                   UIOptions: {
@@ -292,20 +271,16 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
                 actions={{
                   onUpdate: () => handleUpdate(whiteboard),
                   onInitApi: setExcalidrawAPI,
-                  onInitDoc: doc => {
-                    localDocRef.current = doc;
-                    // Detach any prior listener (e.g. a remount), reset, then track edits.
-                    // The load seed applies with `SEED_ORIGIN`, so it does NOT mark dirty;
-                    // only user-originated updates do.
+                  onSceneInitialized: api => {
+                    // Start edit-tracking AFTER the seed. `onLocalSceneUpdate` fires only
+                    // for genuine LOCAL edits (the remote seed does not emit one), so the
+                    // seed can never mark the whiteboard dirty. Detach any prior listener
+                    // (a remount / re-seed) and reset first.
                     detachDirtyListenerRef.current?.();
                     dirtyRef.current = false;
-                    const onDocUpdate = (_update: Uint8Array, origin: unknown) => {
-                      if (origin !== SEED_ORIGIN) {
-                        dirtyRef.current = true;
-                      }
-                    };
-                    doc.on('update', onDocUpdate);
-                    detachDirtyListenerRef.current = () => doc.off('update', onDocUpdate);
+                    detachDirtyListenerRef.current = api.onLocalSceneUpdate(() => {
+                      dirtyRef.current = true;
+                    }, 'v1');
                   },
                 }}
               />

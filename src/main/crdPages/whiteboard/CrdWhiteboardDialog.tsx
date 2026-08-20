@@ -1,5 +1,8 @@
 import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/data/types';
-import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type {
+  AssetPublishReport,
+  ExcalidrawImperativeAPI,
+} from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
@@ -44,9 +47,9 @@ import type {
   WhiteboardPreviewImage,
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
+import { useWhiteboardAssetAdapter } from '@/domain/common/whiteboard/excalidraw/assetAdapter/useWhiteboardAssetAdapter';
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
 import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -128,6 +131,52 @@ interface CrdWhiteboardDialogProps {
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
+type CollaborativeCloseParams = {
+  /** The live editor API, or `null` when the editor is already gone / unmounted. */
+  excalidrawAPI: Pick<ExcalidrawImperativeAPI, 'flushAssetPublication'> | null;
+  /** Persist preview + display name for the collaborative whiteboard (a no-op when not editing). */
+  save: () => Promise<void>;
+  /** Report that one or more images failed to publish (a non-empty `failed`). */
+  onPublishFailed: (report: AssetPublishReport) => void;
+  /** Tear the collaborative session down: evict the cache + run the parent cancel, which unmounts the provider. */
+  teardown: () => void;
+};
+
+/**
+ * Gate the collaborative whiteboard close on asset publication.
+ *
+ * The collaborative session persists through the Yjs provider, so any image the
+ * local user just added must have its opaque locator committed to the shared doc
+ * BEFORE the provider / socket is torn down. `flushAssetPublication()` publishes the
+ * pending stores and reports the outcome; a non-empty `failed` means an image did
+ * NOT persist — the saved content would reference bytes no peer can resolve — so we
+ * must NOT report a clean close. We surface the failure and leave the session up
+ * instead of tearing it down.
+ *
+ * Order is load-bearing: the flush is awaited FIRST and the teardown runs ONLY on a
+ * clean report. If the editor is already gone there is nothing to flush.
+ *
+ * @returns `true` when the close proceeded (saved + torn down), `false` when a failed
+ *          publish blocked it.
+ */
+export async function closeCollaborativeWhiteboard({
+  excalidrawAPI,
+  save,
+  onPublishFailed,
+  teardown,
+}: CollaborativeCloseParams): Promise<boolean> {
+  if (excalidrawAPI) {
+    const report = await excalidrawAPI.flushAssetPublication();
+    if (report.failed.length > 0) {
+      onPublishFailed(report);
+      return false;
+    }
+  }
+  await save();
+  teardown();
+  return true;
+}
+
 const CrdWhiteboardDialog = ({
   entities,
   actions,
@@ -166,26 +215,23 @@ const CrdWhiteboardDialog = ({
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [previewImageBlob, setPreviewImageBlob] = useState<Blob | undefined>();
 
-  const filesManager = useWhiteboardFilesManager({
-    excalidrawAPI,
+  const { assetAdapter, uploadError, resolveError } = useWhiteboardAssetAdapter({
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
-    allowedMimeTypes: whiteboard?.profile?.storageBucket.allowedMimeTypes,
-    maxFileSize: whiteboard?.profile?.storageBucket.maxFileSize,
-    allowFallbackToAttached: options.allowFilesAttached,
   });
 
-  const failureState = filesManager.getFailureState();
+  // Surface asset store/resolve failures the way the old files-manager failure state did:
+  // a user-visible notification whenever the last error message changes.
+  useEffect(() => {
+    if (uploadError) {
+      notify(t('callout.whiteboard.images.uploadFailed'), 'warning');
+    }
+  }, [uploadError, t, notify]);
 
   useEffect(() => {
-    if (failureState.hasFailures) {
-      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
-      const message =
-        totalFailures === 1
-          ? t('callout.whiteboard.images.singleFailure')
-          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
-      notify(message, 'warning');
+    if (resolveError) {
+      notify(t('callout.whiteboard.images.downloadFailed'), 'warning');
     }
-  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
+  }, [resolveError, t, notify]);
 
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
   const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
@@ -194,7 +240,7 @@ const CrdWhiteboardDialog = ({
     if (!excState || !wb?.profile?.id || !formikRef.current?.isValid) {
       return { success: false as const };
     }
-    const previewImages = !filesManager.loading.downloadingFiles ? await generateWhiteboardVisuals(wb) : undefined;
+    const previewImages = await generateWhiteboardVisuals(wb);
     const displayName = formikRef.current?.values.profile.displayName ?? wb.profile.displayName;
     return {
       success: true as const,
@@ -204,31 +250,41 @@ const CrdWhiteboardDialog = ({
   };
 
   const onClose = async () => {
-    if (editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard) {
-      const excState = excalidrawAPI
-        ? {
-            elements: excalidrawAPI.getSceneElements(),
-            appState: excalidrawAPI.getAppState(),
-            files: excalidrawAPI.getFiles(),
-          }
-        : undefined;
-      const result = await prepareWhiteboardForUpdate(whiteboard, excState);
-      if (result.success) {
-        await actions.onUpdate(result.whiteboard, result.previewImages);
-      } else {
-        logError(new Error('Error preparing whiteboard for update on close'), {
-          category: TagCategoryValues.WHITEBOARD,
-        });
-      }
-    }
-    evictFromCache(whiteboard?.id, 'Whiteboard');
-    actions.onCancel();
+    const shouldSave = !!(editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard);
+    await closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      save: async () => {
+        if (!shouldSave || !whiteboard) return;
+        const excState = excalidrawAPI
+          ? {
+              elements: excalidrawAPI.getSceneElements(),
+              appState: excalidrawAPI.getAppState(),
+              files: excalidrawAPI.getFiles(),
+            }
+          : undefined;
+        const result = await prepareWhiteboardForUpdate(whiteboard, excState);
+        if (result.success) {
+          await actions.onUpdate(result.whiteboard, result.previewImages);
+        } else {
+          logError(new Error('Error preparing whiteboard for update on close'), {
+            category: TagCategoryValues.WHITEBOARD,
+          });
+        }
+      },
+      onPublishFailed: () => {
+        notify(t('callout.whiteboard.images.uploadFailed'), 'error');
+      },
+      teardown: () => {
+        evictFromCache(whiteboard?.id, 'Whiteboard');
+        actions.onCancel();
+      },
+    });
   };
 
   const handleImportTemplate = async (whiteboardContent: string) => {
     if (excalidrawAPI) {
       try {
-        await mergeWhiteboard(excalidrawAPI, whiteboardContent);
+        await mergeWhiteboard(excalidrawAPI, whiteboardContent, assetAdapter);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
@@ -286,7 +342,15 @@ const CrdWhiteboardDialog = ({
   return (
     <>
       <CollaborativeExcalidrawWrapper
-        entities={{ whiteboard, filesManager, lastSuccessfulSavedDate }}
+        entities={{
+          whiteboard,
+          assetAdapter,
+          imageValidation: {
+            allowedMimeTypes: whiteboard.profile.storageBucket.allowedMimeTypes,
+            maxFileSize: whiteboard.profile.storageBucket.maxFileSize,
+          },
+          lastSuccessfulSavedDate,
+        }}
         collabApiRef={collabApiRef}
         options={{
           UIOptions: { canvasActions: { export: { saveFileToDisk: true } } },

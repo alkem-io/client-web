@@ -1,5 +1,6 @@
 import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/data/types';
 import type {
+  AssetAdapter,
   ExcalidrawImperativeAPI,
   ExcalidrawInitialDataState,
   ExcalidrawProps,
@@ -9,26 +10,30 @@ import { debounce, merge } from 'lodash-es';
 import { CloudUpload } from 'lucide-react';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import * as Y from 'yjs';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import Loading from '@/core/ui/loading/Loading';
 import { useNotification } from '@/core/ui/notifications/useNotification';
-import { SEED_ORIGIN } from './collab/seedOrigin';
-import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
-import type { BinaryFileDataWithOptionalUrl } from './types';
+import { generateIdFromFile } from './collab/utils';
+import { getWhiteboardImageUploadI18nParams, validateWhiteboardImageFile } from './fileStore/fileValidation';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
-import type { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
-  filesManager: WhiteboardFilesManager;
+  /** The asset boundary for image bytes — passed straight to `<Excalidraw assetAdapter>`. */
+  assetAdapter: AssetAdapter;
+  /** Image upload validation limits (from the whiteboard's storage bucket). */
+  imageValidation?: { allowedMimeTypes?: string[]; maxFileSize?: number };
 }
 
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => void;
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
-  /** Hands the parent the live local Y.Doc (the single in-memory representation) for save / dirty-check. */
-  onInitDoc?: (doc: Y.Doc) => void;
+  /**
+   * Called AFTER the stored content is seeded into the scene, handing the parent
+   * the API so it can begin tracking user edits — the seed itself must never count
+   * as one (it is applied as a remote update and emits no local change).
+   */
+  onSceneInitialized?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
 }
 
 export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
@@ -61,29 +66,31 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
  * Y.Doc-backed end-to-end via the native-Yjs core: the editor's `Scene` IS the
  * `Y.Doc`, so there is no external doc and no binding — and the element model is
  * never materialized into a scene object on this path. The stored `content` (a
- * base64-encoded Yjs-V2 snapshot) is applied STRAIGHT into the editor's live
- * `Scene.doc` via `Y.applyUpdateV2` after mount — the same native seed the
- * collaborative provider performs — so the doc is the sole representation.
- * `initialData` is just the empty tool defaults (no content elements). The parent
- * receives the editor's live doc via `getSceneDoc()` (handed up by `onInitDoc`)
- * and reads it back by encoding its V2 state for save (no `serializeAsJSON`,
- * no `decodeSnapshot`).
+ * base64-encoded Yjs-V2 snapshot) is seeded STRAIGHT into the editor's live scene
+ * after mount via `applyRemoteSceneUpdate(bytes, 'v2')` — a remote apply, so the
+ * seed emits no local change and never marks the whiteboard dirty. `initialData`
+ * is just the empty tool defaults (no content elements). The parent gets the API
+ * via `onSceneInitialized` (fired after the seed) to track edits, and reads the
+ * scene back for save via `encodeSceneStateAsUpdate('v2')` (no `serializeAsJSON`,
+ * no `decodeSnapshot`). Image bytes cross the `assetAdapter`, never the doc.
  */
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
-  const { whiteboard, filesManager } = entities;
+  const { whiteboard, assetAdapter, imageValidation } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
   const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
   const { t } = useTranslation();
   const notify = useNotification();
 
-  const { addNewFile, validateFile, loadFiles, pushFilesToExcalidraw } = filesManager;
-
   /**
-   * Validate file before adding to whiteboard.
-   * Rejects invalid files with a user-visible notification.
+   * Validate a dropped/pasted image, then return a content-hash id for it. The
+   * editor holds the bytes in its own file store and publishes them through
+   * `assetAdapter.store`; a rejected file surfaces a user-visible notification.
    */
   const handleGenerateIdForFile = async (file: File): Promise<string> => {
-    const validation = validateFile(file);
+    const validation = validateWhiteboardImageFile(file, {
+      allowedMimeTypes: imageValidation?.allowedMimeTypes,
+      maxFileSizeBytes: imageValidation?.maxFileSize,
+    });
     if (!validation.ok) {
       const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
       const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
@@ -94,36 +101,28 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
       notify(message, 'error');
       throw new Error(message);
     }
-    return addNewFile(file);
+    return generateIdFromFile(file);
   };
 
   const content = whiteboard?.content;
 
-  // The editor's `Scene` IS the `Y.Doc` (native-Yjs core) — there is no external doc,
-  // no binding, and the element model is never materialized into a scene object here.
-  // Once the API is available, seed the editor's live doc DIRECTLY from the stored
-  // content (a base64-encoded Yjs-V2 snapshot) via `Y.applyUpdateV2` — the same native
-  // seed the collaborative provider performs — tagging it with `SEED_ORIGIN` so the
-  // parent's doc-update dirty-check ignores the seed. Then hand the parent that live
-  // doc (for save / dirty-check), preload the embedded image blobs the seeded elements
-  // reference (read off the doc via `getFiles()` AFTER the apply), and scroll to fit.
+  // The editor owns its scene doc (native-Yjs core) — there is no external doc and no
+  // binding. Once the API is available, seed the scene from the stored content through
+  // the scene port as a REMOTE 'v2' update (see the effect below), then hand the parent
+  // the API to begin edit-tracking. Embedded images resolve lazily via `assetAdapter`.
   // Keyed by `whiteboard.id`, the <Excalidraw> remounts per whiteboard, so each gets a
-  // fresh empty doc that this effect seeds — no teardown needed here.
+  // fresh empty scene that this effect seeds — no teardown needed here.
   useEffect(() => {
     if (!excalidrawApi) return;
-    const doc = excalidrawApi.getSceneDoc();
+    // Seed the editor's live scene DIRECTLY from the stored content (a base64 Yjs-V2
+    // snapshot) through the scene port as a REMOTE 'v2' update, so it applies without
+    // emitting a local change — the seed must never count as a user edit. Embedded
+    // images are resolved lazily by `assetAdapter.resolve` when the editor renders them
+    // (no eager preload). Then hand the parent the API to begin edit tracking.
     if (content?.trim()) {
-      Y.applyUpdateV2(doc, fromBase64(content), SEED_ORIGIN);
+      excalidrawApi.applyRemoteSceneUpdate(fromBase64(content), 'v2');
     }
-    actions.onInitDoc?.(doc);
-
-    // Preload the embedded image blobs the seeded elements reference. After the apply,
-    // the doc's file records live in the editor's file store; load them through the
-    // files manager (download remote-only ones, cache dataURL ones) and push back.
-    // The file records are full `BinaryFileData` at runtime; the element package types
-    // them loosely, so coerce at the boundary to the files-manager's expected shape.
-    loadFiles({ files: excalidrawApi.getFiles() as unknown as Record<string, BinaryFileDataWithOptionalUrl> });
-    pushFilesToExcalidraw();
+    actions.onSceneInitialized?.(excalidrawApi);
 
     const elements = excalidrawApi.getSceneElements();
     if (elements.length > 0) {
@@ -208,9 +207,9 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
   };
 
   // `initialData` is just the empty tool defaults — NO content elements/files/appState.
-  // The stored content is seeded straight into the editor's live `Scene.doc` via
-  // `Y.applyUpdateV2` in the post-mount effect above (the native-Yjs path); the element
-  // model is never materialized into an `initialData` scene object.
+  // The stored content is seeded into the editor's scene via `applyRemoteSceneUpdate`
+  // in the post-mount effect above (the native-Yjs path); the element model is never
+  // materialized into an `initialData` scene object.
   const initialData = whiteboardDefaults as unknown as ExcalidrawInitialDataState;
 
   return (
@@ -225,6 +224,7 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
             isCollaborating={false}
             viewModeEnabled={true}
             generateIdForFile={handleGenerateIdForFile}
+            assetAdapter={assetAdapter}
             aiEnabled={false}
             {...restOptions}
           />

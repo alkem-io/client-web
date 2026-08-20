@@ -1,7 +1,5 @@
-import type { OrderedExcalidrawElement } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
 import type {
-  AppState,
-  BinaryFiles,
+  AssetAdapter,
   ExcalidrawImperativeAPI,
   ExcalidrawProps,
 } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
@@ -19,10 +17,10 @@ import { getGuestName } from '@/domain/collaboration/whiteboard/guestAccess/util
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
 import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
-import { getWhiteboardImageUploadI18nParams } from './fileStore/fileValidation';
+import { generateIdFromFile } from './collab/utils';
+import { getWhiteboardImageUploadI18nParams, validateWhiteboardImageFile } from './fileStore/fileValidation';
 import { useAutoReconnect } from './useAutoReconnect';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
-import type { WhiteboardFilesManager } from './useWhiteboardFilesManager';
 
 const FILE_IMPORT_ENABLED = true;
 const SAVE_FILE_TO_DISK = true;
@@ -54,7 +52,10 @@ const LoadingScene = ({ enabled }: { enabled: boolean }) => {
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: (Identifiable & { profile?: { url?: string } }) | undefined;
-  filesManager: WhiteboardFilesManager;
+  /** The asset boundary for image bytes — passed straight to `<Excalidraw assetAdapter>`. */
+  assetAdapter: AssetAdapter;
+  /** Image upload validation limits (from the whiteboard's storage bucket). */
+  imageValidation?: { allowedMimeTypes?: string[]; maxFileSize?: number };
   lastSuccessfulSavedDate: Date | undefined;
 }
 
@@ -115,17 +116,21 @@ const CollaborativeExcalidrawWrapper = ({
 
   const [collaborationStoppedNoticeOpen, setCollaborationStoppedNoticeOpen] = useState(false);
 
-  const { whiteboard, filesManager, lastSuccessfulSavedDate } = entities;
+  const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
   const whiteboardDefaults = useWhiteboardDefaults();
   const { t } = useTranslation();
   const notify = useNotification();
 
   /**
-   * Validate file before adding to whiteboard.
-   * Rejects invalid files with a user-visible notification.
+   * Validate a dropped/pasted image, then return a content-hash id for it. The
+   * editor holds the bytes in its own file store and publishes them through
+   * `assetAdapter.store`; a rejected file surfaces a user-visible notification.
    */
   const handleGenerateIdForFile = async (file: File): Promise<string> => {
-    const validation = filesManager.validateFile(file);
+    const validation = validateWhiteboardImageFile(file, {
+      allowedMimeTypes: imageValidation?.allowedMimeTypes,
+      maxFileSizeBytes: imageValidation?.maxFileSize,
+    });
     if (!validation.ok) {
       const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
       const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
@@ -136,7 +141,7 @@ const CollaborativeExcalidrawWrapper = ({
       notify(message, 'error');
       throw new Error(message);
     }
-    return filesManager.addNewFile(file);
+    return generateIdFromFile(file);
   };
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
@@ -224,23 +229,6 @@ const CollaborativeExcalidrawWrapper = ({
     return collabApi?.broadcastCountdownTimer?.(remainingSeconds, startedBy, active);
   };
 
-  const onChange = async (_elements: readonly OrderedExcalidrawElement[], _appState: AppState, files: BinaryFiles) => {
-    // The native-Yjs core owns the scene → Y.Doc write path: the editor's `Scene`
-    // IS the `Y.Doc` (per-property CRDT), and the attached provider syncs it. This
-    // prop handler drives the file-upload side effect: local file blobs are uploaded
-    // to the document's storage bucket, then the URL-bearing files are pushed back
-    // into Excalidraw so the next scene write stores files that carry the bucket
-    // `url` into the shared/persisted doc (a peer can fetch via URL, not only the
-    // inline dataURL). Replaces the legacy Portal's upload+broadcast of url-bearing
-    // files.
-    if (isReadOnly) return;
-    const uploaded = await filesManager.getUploadedFiles(files);
-    const hasNewUrls = Object.values(uploaded).some(file => 'url' in file && file.url);
-    if (hasNewUrls) {
-      await filesManager.pushFilesToExcalidraw();
-    }
-  };
-
   const isOnline = useOnlineStatus();
 
   const restartCollaboration = () => {
@@ -290,7 +278,7 @@ const CollaborativeExcalidrawWrapper = ({
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
             viewModeEnabled={isReadOnly}
-            onChange={onChange}
+            assetAdapter={assetAdapter}
             onPointerUpdate={collabApi?.onPointerUpdate}
             onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}
             onRequestBroadcastCountdownTimer={handleRequestBroadcastCountdownTimer}

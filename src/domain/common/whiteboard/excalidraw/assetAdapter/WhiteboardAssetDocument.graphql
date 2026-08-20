@@ -1,0 +1,9 @@
+query WhiteboardAssetDocument($documentId: UUID!) {
+  lookup {
+    document(ID: $documentId) {
+      id
+      url
+      mimeType
+    }
+  }
+}

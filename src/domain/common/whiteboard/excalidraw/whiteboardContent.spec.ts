@@ -1,4 +1,4 @@
-import { decodeSnapshot, encodeSnapshot, type WhiteboardSnapshot } from '@excalidraw-yjs/element';
+import { decodeSnapshot, encodeSnapshot, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import { describe, expect, it } from 'vitest';
 import { parseWhiteboardContentToScene, serializeWhiteboardContent } from './whiteboardContent';
 
@@ -7,28 +7,28 @@ import { parseWhiteboardContentToScene, serializeWhiteboardContent } from './whi
 // real serializer, and the snapshot-helper tests operate on the snapshot object directly.
 const snapshotWithRect = {
   elements: [{ id: 'a', type: 'rectangle', x: 0, y: 0, width: 100, height: 50, index: 'a0' }],
-  files: {},
+  assets: {},
   appState: { viewBackgroundColor: '#ffffff' },
 } as unknown as WhiteboardSnapshot;
 const contentWithRect = serializeWhiteboardContent(snapshotWithRect);
 
 describe('parseWhiteboardContentToScene', () => {
   it('returns an empty scene for undefined / empty content', () => {
-    expect(parseWhiteboardContentToScene(undefined)).toEqual({ elements: [], files: {}, appState: {} });
-    expect(parseWhiteboardContentToScene('')).toEqual({ elements: [], files: {}, appState: {} });
-    expect(parseWhiteboardContentToScene('   ')).toEqual({ elements: [], files: {}, appState: {} });
+    expect(parseWhiteboardContentToScene(undefined)).toEqual({ elements: [], assets: {}, appState: {} });
+    expect(parseWhiteboardContentToScene('')).toEqual({ elements: [], assets: {}, appState: {} });
+    expect(parseWhiteboardContentToScene('   ')).toEqual({ elements: [], assets: {}, appState: {} });
   });
 
   it('returns an empty scene for non-JSON or structurally-invalid content (no throw)', () => {
-    expect(parseWhiteboardContentToScene('not json')).toEqual({ elements: [], files: {}, appState: {} });
-    expect(parseWhiteboardContentToScene('{"foo":1}')).toEqual({ elements: [], files: {}, appState: {} });
+    expect(parseWhiteboardContentToScene('not json')).toEqual({ elements: [], assets: {}, appState: {} });
+    expect(parseWhiteboardContentToScene('{"foo":1}')).toEqual({ elements: [], assets: {}, appState: {} });
   });
 
   it('parses a valid scene into the WhiteboardSnapshot shape', () => {
     const scene = parseWhiteboardContentToScene(contentWithRect);
     expect(scene.elements).toHaveLength(1);
     expect(scene.elements[0]).toMatchObject({ id: 'a', type: 'rectangle' });
-    expect(scene.files).toEqual({});
+    expect(scene.assets).toEqual({});
     expect(scene.appState).toEqual({ viewBackgroundColor: '#ffffff' });
   });
 
@@ -53,7 +53,7 @@ describe('serializeWhiteboardContent', () => {
   });
 
   it('serializes an empty scene to a parseable empty snapshot', () => {
-    const content = serializeWhiteboardContent({ elements: [], files: {}, appState: {} });
+    const content = serializeWhiteboardContent({ elements: [], assets: {}, appState: {} });
     expect(parseWhiteboardContentToScene(content)).toMatchObject({ elements: [] });
   });
 });

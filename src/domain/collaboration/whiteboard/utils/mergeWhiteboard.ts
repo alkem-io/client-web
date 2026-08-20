@@ -1,10 +1,19 @@
-import { decodeSnapshot, encodeSnapshot } from '@excalidraw-yjs/element';
+// The snapshot codec comes from the roughjs/UI-free `/headless` entry so importing this
+// module never pulls the full editor bundle (keeps unit tests + non-editor callers light).
+// `hashElementsVersion`/`CaptureUpdateAction` are not in `/headless`, so they load lazily
+// from the full package below — only when a merge actually runs (the editor is mounted).
+
 import type {
   CaptureUpdateAction as ExcalidrawCaptureUpdateAction,
   hashElementsVersion as ExcalidrawHashElementsVersion,
 } from '@excalidraw-yjs/excalidraw/dist/types/element/src';
-import type { ExcalidrawElement } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
-import type { BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import type { ExcalidrawElement, FileId } from '@excalidraw-yjs/excalidraw/dist/types/element/src/types';
+import type {
+  AssetAdapter,
+  BinaryFileData,
+  ExcalidrawImperativeAPI,
+} from '@excalidraw-yjs/excalidraw/dist/types/excalidraw/types';
+import { decodeSnapshot, encodeSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import { v4 as uuidv4 } from 'uuid';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { parseWhiteboardContentToScene } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
@@ -132,7 +141,11 @@ const displaceElements = (displacement: { x: number; y: number }) => (element: E
   y: element.y + displacement.y,
 });
 
-const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboardContent: string) => {
+const mergeWhiteboard = async (
+  whiteboardApi: ExcalidrawImperativeAPI,
+  whiteboardContent: string,
+  assetAdapter: AssetAdapter
+) => {
   const { hashElementsVersion, CaptureUpdateAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
     () => import('@excalidraw-yjs/excalidraw')
   );
@@ -150,30 +163,71 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
     throw new WhiteboardMergeError('Whiteboard verification failed');
   }
 
-  const parsedWhiteboard = {
-    elements: templateScene.elements as unknown as ExcalidrawElement[],
-    files: templateScene.files as Record<BinaryFileData['id'], BinaryFileData>,
-  };
+  const templateElements = templateScene.elements as unknown as ExcalidrawElement[];
+  // Template images are opaque locators pointing at the TEMPLATE's storage bucket,
+  // never bytes. They must be re-homed into THIS whiteboard's bucket before the
+  // elements referencing them are inserted (see the asset-copy steps below).
+  const templateAssets = templateScene.assets as Readonly<Record<string, string>>;
 
   try {
-    // Insert missing files into current whiteboard:
+    // 1. Partition the template's images. Readiness is defined ONLY by a committed
+    //    target locator — local cache bytes without a durable locator are NOT
+    //    persisted, so a prior merge that cached bytes but failed to publish must
+    //    still be retried. `unresolvedLocatorIds` = every template image lacking a
+    //    target locator; of those, only the ones whose bytes we don't already have
+    //    cached need a fresh source resolve.
     const currentFiles = whiteboardApi.getFiles();
-    for (const fileId in parsedWhiteboard.files) {
-      if (!currentFiles[fileId]) {
-        whiteboardApi.addFiles([parsedWhiteboard.files[fileId]]);
+    const currentLocators = whiteboardApi.getSceneAssetLocators();
+    const unresolvedLocatorIds = Object.keys(templateAssets).filter(fileId => !currentLocators[fileId]);
+    const toResolveIds = unresolvedLocatorIds.filter(fileId => !currentFiles[fileId]);
+
+    // 2. Resolve EVERY still-uncached source locator to bytes BEFORE mutating the
+    //    target scene. A single failure aborts the whole merge — zero elements.
+    if (toResolveIds.length > 0) {
+      let resolvedFiles: BinaryFileData[];
+      try {
+        resolvedFiles = await Promise.all(
+          toResolveIds.map(fileId => assetAdapter.resolve(fileId as FileId, templateAssets[fileId]))
+        );
+      } catch (err) {
+        throw new WhiteboardMergeError(`Unable to resolve template images: ${err}`);
+      }
+      // 3. Hand the bytes to the editor; it re-publishes them through the SAME
+      //    adapter.store into THIS whiteboard's bucket, minting NEW target locators
+      //    keyed by the unchanged file ids. Never reuse the source locator or
+      //    upload directly.
+      whiteboardApi.addFiles(resolvedFiles);
+    }
+
+    // 4. Whenever any image lacks a target locator (freshly resolved OR cached from
+    //    a prior failed merge), block on the publish flush and REQUIRE a committed
+    //    locator for each before inserting anything. A failed store, or a flush that
+    //    reports success yet leaves no locator (replaced/unmounted mid-merge), aborts
+    //    with zero elements. A remote-won skip is a success — its locator is present.
+    if (unresolvedLocatorIds.length > 0) {
+      const report = await whiteboardApi.flushAssetPublication();
+      if (report.failed.length > 0) {
+        throw new WhiteboardMergeError(`Template image publish failed: ${report.failed.map(f => f.fileId).join(', ')}`);
+      }
+      const locatorsAfterPublish = whiteboardApi.getSceneAssetLocators();
+      const unpublished = unresolvedLocatorIds.filter(fileId => !locatorsAfterPublish[fileId]);
+      if (unpublished.length > 0) {
+        throw new WhiteboardMergeError(`Template images have no committed target locator: ${unpublished.join(', ')}`);
       }
     }
 
+    // 5. Only now that every referenced image has a committed target locator,
+    //    insert the re-id'd + displaced template elements.
     const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
-    const sceneVersion = hashElementsVersion(whiteboardApi.getSceneElementsIncludingDeleted());
+    const sceneVersion = hashElementsVersion(currentElements);
 
     const currentElementsBBox = getBoundingBox(currentElements);
-    const insertedWhiteboardBBox = getBoundingBox(parsedWhiteboard.elements);
+    const insertedWhiteboardBBox = getBoundingBox(templateElements);
     const displacement = calculateInsertionPoint(currentElementsBBox, insertedWhiteboardBBox);
 
     const replacedIds: Record<string, string> = {};
     // fractional indices does not need overwriting
-    const insertedElements = parsedWhiteboard.elements
+    const insertedElements = templateElements
       ?.map(generateNewIds(replacedIds))
       .map(replaceElementVersion(sceneVersion + 1))
       .map(replaceBoundElementsIds(replacedIds))
@@ -196,6 +250,9 @@ const mergeWhiteboard = async (whiteboardApi: ExcalidrawImperativeAPI, whiteboar
 
     return true;
   } catch (err) {
+    if (err instanceof WhiteboardMergeError) {
+      throw err;
+    }
     throw new WhiteboardMergeError(`Unable to merge whiteboards: ${err}`);
   }
 };

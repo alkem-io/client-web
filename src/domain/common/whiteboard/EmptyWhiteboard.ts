@@ -1,10 +1,10 @@
-import type { WhiteboardSnapshot } from '@excalidraw-yjs/element';
+import type { WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import { serializeWhiteboardContent } from './excalidraw/whiteboardContent';
 
-/** An empty whiteboard snapshot (`{ elements, files, appState }`). */
+/** An empty whiteboard snapshot (`{ elements, assets, appState }`). */
 export const EmptyWhiteboardSnapshot: WhiteboardSnapshot = {
   elements: [],
-  files: {},
+  assets: {},
   appState: { viewBackgroundColor: '#ffffff' },
 };
 
