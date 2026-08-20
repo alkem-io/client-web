@@ -14,13 +14,19 @@
  */
 import type { TFunction } from 'i18next';
 import { Trans } from 'react-i18next';
-import type { ForumDiscussionCategory, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import {
+  type ForumDiscussionCategory,
+  NotificationEvent,
+  type NotificationEventInAppState,
+} from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
+import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 
 const TRANS_COMPONENTS = {
   b: <strong />,
@@ -90,11 +96,44 @@ function buildTranslationValues(
 }
 
 /**
+ * Per-type destination overrides, applied before the generic payload fallback below.
+ *
+ * The fallback takes the first URL the payload happens to carry, and almost every
+ * space-scoped payload carries its space — so anything without a callout or a message
+ * lands on the space home page. That is the wrong destination whenever the notification
+ * is about an action to take elsewhere, or about an entity whose own URL the space
+ * would shadow.
+ *
+ * A type absent from this map keeps the generic fallback; only add an entry when the
+ * destination is unambiguous.
+ */
+const URL_OVERRIDES_BY_TYPE: Partial<
+  Record<NotificationEvent, (payload: InAppNotificationPayloadModel) => string | undefined>
+> = {
+  // Applications are reviewed (approved/rejected) on the Community tab of the space
+  // settings, so the space home page leaves the admin with nowhere to act.
+  [NotificationEvent.SpaceAdminCommunityApplication]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  // The subject of the notification is the contributor who joined, not the space.
+  [NotificationEvent.SpaceAdminCommunityNewMember]: payload => payload.actor?.profile?.url,
+  // Calendar payloads carry both the event and its space; the space must not win.
+  [NotificationEvent.SpaceCommunityCalendarEventCreated]: payload => payload.calendarEvent?.profile?.url,
+  [NotificationEvent.SpaceCommunityCalendarEventComment]: payload => payload.calendarEvent?.profile?.url,
+};
+
+/**
  * Resolves the URL that clicking a notification should navigate to.
  * Returns a pathname (not an absolute URL) for React Router compatibility.
  */
 function resolveNotificationUrl(notification: InAppNotificationModel): string | undefined {
   const { payload } = notification;
+
+  // An override that cannot build its URL (missing payload fields) falls through to the
+  // generic chain rather than leaving the notification unclickable.
+  const overrideUrl = URL_OVERRIDES_BY_TYPE[notification.type]?.(payload);
+  if (overrideUrl) {
+    return overrideUrl;
+  }
 
   return (
     payload.messageDetails?.parent?.url ??
