@@ -354,7 +354,11 @@
         },
         "messages": {
           "changesSaved": "Je wijzigingen zijn opgeslagen!",
-          "identityAlreadyLinked": "Die identiteit is al gekoppeld aan een ander Alkemio-account. Er is niets veranderd op beide accounts."
+          "identityAlreadyLinked": "Die identiteit is al gekoppeld aan een ander Alkemio-account. Er is niets veranderd op beide accounts.",
+          "linked": "{{provider}} gekoppeld.",
+          "unlinked": "{{provider}} ontkoppeld.",
+          "connectFailed": "{{provider}} koppelen is niet gelukt — probeer het opnieuw.",
+          "disconnectFailed": "{{provider}} ontkoppelen is niet gelukt — probeer het opnieuw."
         },
         "credentials": {
           "password": {

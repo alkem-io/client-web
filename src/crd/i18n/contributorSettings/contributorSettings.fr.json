@@ -354,7 +354,11 @@
         },
         "messages": {
           "changesSaved": "Vos modifications ont été enregistrées !",
-          "identityAlreadyLinked": "Cette identité est déjà connectée à un autre compte Alkemio. Aucun des deux comptes n'a été modifié."
+          "identityAlreadyLinked": "Cette identité est déjà connectée à un autre compte Alkemio. Aucun des deux comptes n'a été modifié.",
+          "linked": "{{provider}} connecté.",
+          "unlinked": "{{provider}} déconnecté.",
+          "connectFailed": "Impossible de connecter {{provider}} — réessayez.",
+          "disconnectFailed": "Impossible de déconnecter {{provider}} — réessayez."
         },
         "credentials": {
           "password": {

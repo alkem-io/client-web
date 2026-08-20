@@ -5,12 +5,6 @@ import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import useNavigate from '@/core/routing/useNavigate';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
-import {
-  type ConnectedAccountsCredentialRow,
-  type ConnectedAccountsFlowMessage,
-  type ConnectedAccountsProviderRow,
-  ConnectedAccountsView,
-} from '@/crd/components/user/settings/ConnectedAccountsView';
 import { McpApiKeyCreateDialog } from '@/crd/components/user/settings/McpApiKeyCreateDialog';
 import { McpApiKeyRevealPanel } from '@/crd/components/user/settings/McpApiKeyRevealPanel';
 import { McpApiKeysCard } from '@/crd/components/user/settings/McpApiKeysCard';
@@ -19,21 +13,14 @@ import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { platformBaseAddress } from '@/main/constants/endpoints';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
-import { useKratosMessageCopy } from '@/main/crdPages/auth/useKratosMessageCopy';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
+import { ConnectedAccountsSection } from './ConnectedAccountsSection';
 import { adaptConnectedAccountsFlow } from './connectedAccountsFlowAdapter';
 import PasswordChangeForm from './PasswordChangeForm';
 import useMcpApiKeys from './useMcpApiKeys';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
-
-// Kratos returns this on the settings flow when a link attempt targets an
-// identity already connected to a *different* Alkemio account (FR-006). The
-// shared `kratosMessageTranslationKeys` registry keeps this id's existing
-// login-context copy (the sign-in screen's duplicate-identity notice), so
-// this settings-context reading is applied here instead of there.
-const MESSAGE_CODE_IDENTITY_ALREADY_LINKED = 4000007;
 
 /**
  * Integration page for the User Security tab.
@@ -87,12 +74,7 @@ const CrdUserSecurityTab = () => {
 };
 
 const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string | undefined }) => {
-  const { t: tTyped, i18n } = useTranslation('crd-contributorSettings');
-  // The Connected Accounts reason/message keys are built at runtime from the
-  // adapter's output (an i18n key string, not a literal from the typed
-  // resource union) — translate via a plain signature, mirroring
-  // `useKratosMessageCopy`'s own cast for the same reason.
-  const t = tTyped as unknown as (key: string, options?: Record<string, unknown>) => string;
+  const { i18n } = useTranslation('crd-contributorSettings');
   // The Settings flow is created with `return_to` = this same Security tab
   // URL so an OIDC link's provider round trip and a re-auth resume both land
   // back on the Connected Accounts section instead of the platform apex.
@@ -156,53 +138,21 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string | undefine
     flowResult.kind === 'ready' ? flowResult.flow : undefined,
     flowResult.kind === 'error' ? undefined : authenticationMethods
   );
-  const translateKratosMessages = useKratosMessageCopy();
-  const connectedAccountsMessages: ConnectedAccountsFlowMessage[] = translateKratosMessages(
-    connectedAccountsModel.messages
-  ).map(message =>
-    message.id === MESSAGE_CODE_IDENTITY_ALREADY_LINKED
-      ? {
-          id: message.id,
-          type: message.type,
-          text: t('user.security.connectedAccounts.messages.identityAlreadyLinked'),
-        }
-      : { id: message.id, type: message.type, text: message.text }
-  );
-  const connectedAccountsProviders: ConnectedAccountsProviderRow[] = connectedAccountsModel.providers.map(row => ({
-    providerId: row.providerId,
-    displayName: row.displayName,
-    iconSrc: row.iconSrc,
-    state: row.state,
-    lockedReason: row.lockedReasonKey ? t(row.lockedReasonKey) : undefined,
-    action: row.action,
-  }));
-  const connectedAccountsCredentials: ConnectedAccountsCredentialRow[] = connectedAccountsModel.credentials.map(
-    row => ({
-      kind: row.kind,
-      present: row.present,
-      manageHref: buildSettingsTabUrl(profileUrl, 'security', row.kind === 'password' ? 'password' : 'passkeys'),
-    })
-  );
   const connectedAccountsStatus: 'loading' | 'unavailable' | 'ready' =
     flowResult.kind === 'loading' || authMethodsLoading
       ? 'loading'
       : connectedAccountsModel.status === 'unavailable'
         ? 'unavailable'
         : 'ready';
-  const connectedAccountsRetry = () => {
-    flowResult.refetch();
-    refetchAuthMethods();
-  };
   const connectedAccountsSection = (
-    <ConnectedAccountsView
+    <ConnectedAccountsSection
       status={connectedAccountsStatus}
-      unavailableReason={
-        connectedAccountsModel.unavailableReasonKey ? t(connectedAccountsModel.unavailableReasonKey) : undefined
-      }
-      onRetry={connectedAccountsRetry}
-      providers={connectedAccountsProviders}
-      credentials={connectedAccountsCredentials}
-      messages={connectedAccountsMessages}
+      model={connectedAccountsModel}
+      profileUrl={profileUrl}
+      onRetry={() => {
+        flowResult.refetch();
+        refetchAuthMethods();
+      }}
     />
   );
 

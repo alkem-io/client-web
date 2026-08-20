@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import {
@@ -224,6 +224,29 @@ describe('ConnectedAccountsView', () => {
 
     // No form/submit button rendered for either credential row.
     expect(screen.queryByRole('button')).not.toBeInTheDocument();
+  });
+
+  it('calls onProviderActionSubmit with the row when its native form submits (research D5)', () => {
+    const onProviderActionSubmit = vi.fn();
+    render(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[notConnectedRow]}
+        credentials={[]}
+        messages={[]}
+        onProviderActionSubmit={onProviderActionSubmit}
+      />
+    );
+
+    const form = screen.getByRole('button').closest('form') as HTMLFormElement;
+    // Dispatching the `submit` event directly exercises the same handler a real browser click would
+    // trigger, without going through jsdom's unimplemented `HTMLFormElement.requestSubmit` navigation
+    // machinery.
+    fireEvent.submit(form);
+
+    expect(onProviderActionSubmit).toHaveBeenCalledTimes(1);
+    expect(onProviderActionSubmit).toHaveBeenCalledWith(notConnectedRow);
   });
 
   it('is keyboard-operable: the connect button is reachable by Tab and activatable by Enter', async () => {

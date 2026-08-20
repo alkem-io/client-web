@@ -50,6 +50,13 @@ export type ConnectedAccountsViewProps = {
   providers: ConnectedAccountsProviderRow[];
   credentials: ConnectedAccountsCredentialRow[];
   messages: ConnectedAccountsFlowMessage[];
+  /**
+   * Fires synchronously when a provider row's native form is about to submit — before the browser
+   * navigates away. Must not call `preventDefault`; the form still POSTs natively (research D1).
+   * Lets the consumer record what it expects to happen so it can announce the outcome itself if the
+   * page comes back without a usable Kratos flow message (research D5 fallback).
+   */
+  onProviderActionSubmit?: (row: ConnectedAccountsProviderRow) => void;
 };
 
 /**
@@ -70,6 +77,7 @@ export function ConnectedAccountsView({
   providers,
   credentials,
   messages,
+  onProviderActionSubmit,
 }: ConnectedAccountsViewProps) {
   const { t } = useTranslation(NS);
 
@@ -112,7 +120,7 @@ export function ConnectedAccountsView({
 
       <ul className="divide-y divide-border">
         {providers.map(provider => (
-          <ProviderRow key={provider.providerId} row={provider} />
+          <ProviderRow key={provider.providerId} row={provider} onActionSubmit={onProviderActionSubmit} />
         ))}
         {credentials.map(credential => (
           <CredentialRow key={credential.kind} row={credential} />
@@ -138,7 +146,13 @@ function FlowMessage({ type, text }: { type: 'info' | 'error' | 'success'; text:
   );
 }
 
-function ProviderRow({ row }: { row: ConnectedAccountsProviderRow }) {
+function ProviderRow({
+  row,
+  onActionSubmit,
+}: {
+  row: ConnectedAccountsProviderRow;
+  onActionSubmit?: (row: ConnectedAccountsProviderRow) => void;
+}) {
   const { t } = useTranslation(NS);
   const stateLabel =
     row.state === 'not-connected'
@@ -172,7 +186,12 @@ function ProviderRow({ row }: { row: ConnectedAccountsProviderRow }) {
       </div>
 
       {row.action ? (
-        <form action={row.action.formAction} method={row.action.method} className="shrink-0">
+        <form
+          action={row.action.formAction}
+          method={row.action.method}
+          className="shrink-0"
+          onSubmit={() => onActionSubmit?.(row)}
+        >
           <input type="hidden" name={row.action.csrf.name} defaultValue={row.action.csrf.value} />
           <Button
             type="submit"

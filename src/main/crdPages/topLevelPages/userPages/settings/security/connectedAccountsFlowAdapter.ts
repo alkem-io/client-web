@@ -78,7 +78,7 @@ const isPasskeyRemoveNode = (node: UiNode): boolean => {
   return name === 'webauthn_remove' || name === 'passkey_remove';
 };
 
-const displayNameFor = (providerId: string): string => {
+export const displayNameFor = (providerId: string): string => {
   const customisation = socialProviderCustomizations[providerId];
   if (customisation) return customisation.displayName;
   // FR-025: an unconfigured-here provider still renders, with a readable
