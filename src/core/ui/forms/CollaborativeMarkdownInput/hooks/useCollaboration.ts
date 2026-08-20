@@ -41,7 +41,18 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
   const [readOnlyState, setReadOnlyState] = useState<{ readOnly: boolean; readOnlyCode?: ReadOnlyCode }>();
 
-  const ydoc = useMemo(() => new Y.Doc(), []);
+  // One Y.Doc PER collaborationId, not per component lifetime. If the memoId changes
+  // in place (deep-link/route change while the dialog stays mounted), a stale
+  // component-lifetime doc would be reused for the new room — and the provider's
+  // handshake would push the previous memo's CRDT state into the new room (cross-
+  // document corruption). Recreating the doc with the id keeps each room's doc its
+  // own: the provider below is rebuilt on the same key (so provider A is destroyed
+  // by its effect cleanup before provider B connects), and the editor rebinds via
+  // its `[ydoc, provider]` deps. The provider is constructed with `ownsDoc=false`,
+  // so its destroy() never touches the doc; the previous doc is released to GC once
+  // the old provider/editor drop it (no explicit destroy, which could race the
+  // Tiptap binding's teardown across the component boundary).
+  const ydoc = useMemo(() => new Y.Doc(), [collaborationId]);
 
   // Stable ref for notify to avoid triggering effect cleanup on identity changes
   const notifyRef = useRef(notify);
