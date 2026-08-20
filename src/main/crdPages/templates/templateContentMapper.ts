@@ -35,6 +35,21 @@ export function whiteboardContentForTemplateUpdate(content: string | undefined):
   return isEmptyWhiteboardContent(content) ? undefined : content;
 }
 
+/**
+ * The `content` + `sourceWhiteboardID` for a whiteboard-template CREATE. They are mutually
+ * exclusive (source takes precedence server-side): when the user did NOT redraw (empty
+ * content), send the SOURCE whiteboard id so the server copies its snapshot into the new
+ * template (duplicate / import-from-library) — never the empty placeholder. When they redrew,
+ * send the real content and no source. A from-scratch template has neither.
+ */
+export function whiteboardTemplateCreateFields(
+  content: string | undefined,
+  sourceWhiteboardId: string | undefined
+): { content: string | undefined; sourceWhiteboardID: string | undefined } {
+  const redrawn = whiteboardContentForTemplateUpdate(content);
+  return { content: redrawn, sourceWhiteboardID: redrawn ? undefined : sourceWhiteboardId || undefined };
+}
+
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */
 export type TemplateContentTemplate = NonNullable<TemplateContentQuery['lookup']['template']>;
 type CalloutContentGql = NonNullable<TemplateContentTemplate['callout']>;
@@ -140,9 +155,12 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
 function mapWhiteboardContent(whiteboard: WhiteboardContentGql): Extract<TemplateContent, { type: 'whiteboard' }> {
   return {
     type: 'whiteboard',
-    // #29: WS-only content; the server copies it into the template on create (see mapCalloutContent).
+    // The stored content is WS-only (unreadable here), so we seed the editor draft empty and
+    // carry the SOURCE whiteboard id — the server copies its snapshot on create (duplicate /
+    // import-from-library), rather than persisting this empty placeholder.
     whiteboardContent: EmptyWhiteboardString,
     previewImageUrl: whiteboard.profile.preview?.uri || undefined,
+    sourceWhiteboardId: whiteboard.id,
   };
 }
 
@@ -284,7 +302,12 @@ export function templateContentToFormValues(
     case 'post':
       return { ...common, type: 'post', defaultDescription: content.defaultDescription };
     case 'whiteboard':
-      return { ...common, type: 'whiteboard', whiteboardContent: content.whiteboardContent };
+      return {
+        ...common,
+        type: 'whiteboard',
+        whiteboardContent: content.whiteboardContent,
+        sourceWhiteboardId: content.sourceWhiteboardId,
+      };
     case 'communityGuidelines':
       return {
         ...common,

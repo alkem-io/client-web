@@ -151,6 +151,12 @@ export type TemplateContent =
       /** Excalidraw JSON */
       whiteboardContent: string;
       previewImageUrl?: string;
+      /**
+       * The SOURCE whiteboard's id. Its stored content is WS-only (unreadable on the client),
+       * so duplicate / import-from-library pass this id and the server copies the source's
+       * snapshot into the new template's whiteboard on create.
+       */
+      sourceWhiteboardId?: string;
     }
   | {
       type: 'post';
@@ -241,6 +247,8 @@ export type WhiteboardTemplateValues = TemplateCommonValues & {
   type: 'whiteboard';
   whiteboardContent: string;
   previewSettings?: WhiteboardPreviewSettings;
+  /** Source whiteboard id threaded to the server so it copies the source snapshot on create. */
+  sourceWhiteboardId?: string;
 };
 
 export type PostTemplateValues = TemplateCommonValues & {

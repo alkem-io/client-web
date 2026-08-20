@@ -48,7 +48,11 @@ import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
-import { mapSpaceContentFromSpace, whiteboardContentForTemplateUpdate } from './templateContentMapper';
+import {
+  mapSpaceContentFromSpace,
+  whiteboardContentForTemplateUpdate,
+  whiteboardTemplateCreateFields,
+} from './templateContentMapper';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
@@ -563,13 +567,21 @@ export function useTemplateForms({
         return;
       case 'whiteboard': {
         const wantsPreview = whiteboardTemplatePreviewImages.length > 0;
+        // Duplicate / import-from-library carry the SOURCE whiteboard id; the server copies
+        // its stored snapshot into the new template. Only when the user actually REDREW do we
+        // send real content instead (mutually exclusive — see the helper). A from-scratch
+        // template has neither.
+        const { content, sourceWhiteboardID } = whiteboardTemplateCreateFields(
+          current.whiteboardContent,
+          current.sourceWhiteboardId
+        );
         const result = await createTemplate({
           variables: {
             templatesSetId: setId,
             type: GqlTemplateType.Whiteboard,
             profileData,
             tags,
-            whiteboard: { content: current.whiteboardContent || undefined, profile: { displayName: current.name } },
+            whiteboard: { content, sourceWhiteboardID, profile: { displayName: current.name } },
             includeProfileVisuals: wantsPreview,
           },
         });

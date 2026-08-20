@@ -19,6 +19,7 @@ import {
   templateContentIncludeVars,
   templateContentToFormValues,
   whiteboardContentForTemplateUpdate,
+  whiteboardTemplateCreateFields,
 } from '../templateContentMapper';
 import { mapTemplatesSetToCategories, mapTemplatesToCards } from '../templatesManagerMapper';
 
@@ -41,6 +42,35 @@ describe('whiteboardContentForTemplateUpdate', () => {
       appState: {},
     } as never);
     expect(whiteboardContentForTemplateUpdate(drawn)).toBe(drawn);
+  });
+});
+
+describe('whiteboardTemplateCreateFields — source-copy vs redrawn content (mutually exclusive)', () => {
+  const drawn = serializeWhiteboardContent({
+    elements: [{ id: 'r', type: 'rectangle', x: 0, y: 0, width: 10, height: 10, index: 'a0' }],
+    assets: {},
+    appState: {},
+  } as never);
+
+  it('duplicate/import (not redrawn) sends the SOURCE id and no content', () => {
+    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, 'src-wb-1')).toEqual({
+      content: undefined,
+      sourceWhiteboardID: 'src-wb-1',
+    });
+  });
+
+  it('a genuine redraw sends the content and NO source (source would override it server-side)', () => {
+    expect(whiteboardTemplateCreateFields(drawn, 'src-wb-1')).toEqual({
+      content: drawn,
+      sourceWhiteboardID: undefined,
+    });
+  });
+
+  it('from-scratch (empty, no source) sends neither', () => {
+    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, undefined)).toEqual({
+      content: undefined,
+      sourceWhiteboardID: undefined,
+    });
   });
 });
 
