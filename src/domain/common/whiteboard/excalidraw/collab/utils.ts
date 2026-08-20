@@ -18,12 +18,6 @@ export const isImageElement = (element: ExcalidrawElement | null): element is Ex
   return !!element && element.type === 'image';
 };
 
-export enum UserIdleState {
-  ACTIVE = 'active',
-  AWAY = 'away',
-  IDLE = 'idle',
-}
-
 type IMAGE_MIME_TYPES =
   | 'image/svg+xml'
   | 'image/png'

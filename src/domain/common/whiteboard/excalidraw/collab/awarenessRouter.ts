@@ -6,11 +6,11 @@ import type {
 import type { Awareness } from 'y-protocols/awareness';
 
 /**
- * Ephemeral / presence routing for the native-Yjs whiteboard. Cursors,
- * selection, idle/mode go to y-protocols **awareness**; emoji reactions, the
- * countdown timer, and visible-scene-bounds go to the **ephemeral** event
- * channel. NONE of this is ever written to the scene `Y.Doc` — presence in the
- * doc would persist transient state and corrupt the merge model.
+ * Ephemeral / presence routing for the native-Yjs whiteboard. Cursors and the
+ * user identity go to y-protocols **awareness**; emoji reactions and the
+ * countdown timer go to the **ephemeral** event channel. NONE of this is ever
+ * written to the scene `Y.Doc` — presence in the doc would persist transient
+ * state and corrupt the merge model.
  *
  * Ported from the deleted `@alkemio/excalidraw-yjs-binding` (M3 native-Yjs
  * cutover): the editor's `Scene` IS the doc now, so the binding is gone, but
@@ -37,15 +37,10 @@ export type CountdownTimerPayload = {
   active: boolean;
 };
 
-export type VisibleSceneBoundsPayload = {
-  sceneBounds: [number, number, number, number];
-};
-
 /** Ephemeral event kinds carried out-of-band (never in the scene doc). */
 export type EphemeralEvent =
   | { type: 'EMOJI_REACTION'; payload: EmojiReactionPayload }
-  | { type: 'COUNTDOWN_TIMER'; payload: CountdownTimerPayload }
-  | { type: 'USER_VISIBLE_SCENE_BOUNDS'; payload: VisibleSceneBoundsPayload };
+  | { type: 'COUNTDOWN_TIMER'; payload: CountdownTimerPayload };
 
 /** Transport seam for the ephemeral channel (wired to the provider's `2` Ephemeral WS type). */
 export type EphemeralChannel = {
@@ -104,16 +99,6 @@ export class AwarenessRouter {
     this.awareness.setLocalStateField('button', payload.button);
   }
 
-  /** Local selection highlight → awareness. */
-  onSelectionChange(selectedElementIds: Record<string, true>): void {
-    this.awareness.setLocalStateField('selectedElementIds', selectedElementIds);
-  }
-
-  /** Local idle status → awareness. */
-  onIdleChange(userState: string): void {
-    this.awareness.setLocalStateField('userState', userState);
-  }
-
   /** Local user identity → awareness. */
   setUser(user: Record<string, unknown>): void {
     this.awareness.setLocalStateField('user', user);
@@ -129,11 +114,6 @@ export class AwarenessRouter {
     this.ephemeral?.send({ type: 'COUNTDOWN_TIMER', payload });
   }
 
-  /** Local visible-scene-bounds (follow mode) → ephemeral channel. */
-  broadcastVisibleSceneBounds(payload: VisibleSceneBoundsPayload): void {
-    this.ephemeral?.send({ type: 'USER_VISIBLE_SCENE_BOUNDS', payload });
-  }
-
   /** Dispatch an incoming ephemeral event to the editor. */
   private dispatchIncoming(event: EphemeralEvent): void {
     switch (event.type) {
@@ -142,9 +122,6 @@ export class AwarenessRouter {
         break;
       case 'COUNTDOWN_TIMER':
         this.api.dispatchIncomingCountdownTimer(event.payload);
-        break;
-      case 'USER_VISIBLE_SCENE_BOUNDS':
-        // follow-mode bounds are consumed by the host; no-op here.
         break;
       default:
         break;
@@ -163,8 +140,6 @@ export class AwarenessRouter {
       collaborators.set(socketId, {
         pointer: state.pointer ?? undefined,
         button: state.button ?? undefined,
-        selectedElementIds: state.selectedElementIds ?? undefined,
-        userState: state.userState ?? undefined,
         username: state.user?.username ?? undefined,
         avatarUrl: state.user?.avatarUrl ?? undefined,
         color: state.user?.color ?? undefined,
