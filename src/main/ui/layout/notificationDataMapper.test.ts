@@ -1,4 +1,5 @@
 import type { TFunction } from 'i18next';
+import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import {
   CalendarEventType,
@@ -224,11 +225,14 @@ describe('reaction notification rendering', () => {
       NotificationEvent.SpaceCollaborationCalloutReaction,
       calloutPayload('/my-space/callout-1', 'A Named Callout')
     );
-    // buildTranslationValues produces calloutName from payload.callout.framing.profile.displayName;
-    // we verify the mapper does not crash and falls back cleanly to undefined when absent.
     const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
     expect(data.href).toBe('/my-space/callout-1');
     expect(data.isUnread).toBe(true);
+    // The subject is a <Trans> element; its `values` carry the interpolation the
+    // template consumes. Assert calloutName is threaded through, so the test fails
+    // if buildTranslationValues ever omits or renames it.
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.calloutName).toBe('A Named Callout');
   });
 
   it('falls back to the space URL when the callout field is absent', () => {
@@ -257,7 +261,15 @@ describe('reaction notification rendering', () => {
       emoji: 'unknown-slug-9999',
       space: spacePayload('/my-space'),
     });
-    expect(() => mapNotificationToItemData(model, t, NotificationEventInAppState.Unread)).not.toThrow();
+    let data: ReturnType<typeof mapNotificationToItemData> | undefined;
+    expect(() => {
+      data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    }).not.toThrow();
+    // The unknown slug must resolve through glyphForSlug to undefined — never the
+    // raw wire slug — so the subject placeholder renders empty rather than
+    // leaking "unknown-slug-9999".
+    const title = data!.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.emoji).toBeUndefined();
   });
 
   it('produces an unread item for a reaction notification', () => {

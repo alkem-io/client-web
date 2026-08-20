@@ -795,7 +795,7 @@
         },
         "SPACE_COLLABORATION_CALLOUT_REACTION": {
           "description": "",
-          "subject": "<b>{{triggeredByName}}</b> hat auf deinen Post mit {{emoji}} reagiert"
+          "subject": "<b>{{triggeredByName}}</b> hat auf deinen $t(common.post) mit {{emoji}} reagiert"
         },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} modified a $t(common.poll) you voted on",
