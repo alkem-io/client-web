@@ -345,6 +345,11 @@
           "disconnect": "Disconnect",
           "disconnectAria": "Disconnect {{provider}}"
         },
+        "confirmDisconnect": {
+          "title": "Disconnect {{provider}}?",
+          "description": "You won't be able to sign in with {{provider}} anymore. If you reconnect later and the provider has changed how it identifies you, this exact connection may not come back.",
+          "confirm": "Disconnect"
+        },
         "locked": {
           "reason": "This is your only way to sign in right now — add a password or a passkey below before you can disconnect it."
         },
@@ -358,7 +363,9 @@
           "linked": "{{provider}} connected.",
           "unlinked": "{{provider}} disconnected.",
           "connectFailed": "Couldn't connect {{provider}} — try again.",
-          "disconnectFailed": "Couldn't disconnect {{provider}} — try again."
+          "disconnectFailed": "Couldn't disconnect {{provider}} — try again.",
+          "reauthRequiredConnect": "Confirm it's you, then connect {{provider}} again.",
+          "reauthRequiredDisconnect": "Confirm it's you, then disconnect {{provider}} again."
         },
         "credentials": {
           "password": {

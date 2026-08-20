@@ -345,6 +345,11 @@
           "disconnect": "Déconnecter",
           "disconnectAria": "Déconnecter {{provider}}"
         },
+        "confirmDisconnect": {
+          "title": "Déconnecter {{provider}} ?",
+          "description": "Vous ne pourrez plus vous connecter avec {{provider}}. Si vous le reconnectez plus tard et que le fournisseur a modifié la façon dont il vous identifie, cette connexion exacte pourrait ne pas être récupérable.",
+          "confirm": "Déconnecter"
+        },
         "locked": {
           "reason": "C'est actuellement votre seul moyen de vous connecter — ajoutez d'abord un mot de passe ou une clé d'accès ci-dessous avant de pouvoir le déconnecter."
         },
@@ -358,7 +363,9 @@
           "linked": "{{provider}} connecté.",
           "unlinked": "{{provider}} déconnecté.",
           "connectFailed": "Impossible de connecter {{provider}} — réessayez.",
-          "disconnectFailed": "Impossible de déconnecter {{provider}} — réessayez."
+          "disconnectFailed": "Impossible de déconnecter {{provider}} — réessayez.",
+          "reauthRequiredConnect": "Confirmez qu'il s'agit bien de vous, puis réessayez de connecter {{provider}}.",
+          "reauthRequiredDisconnect": "Confirmez qu'il s'agit bien de vous, puis réessayez de déconnecter {{provider}}."
         },
         "credentials": {
           "password": {

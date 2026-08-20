@@ -1,5 +1,7 @@
 import { AlertCircle, KeyRound, Link2, ShieldCheck } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -80,52 +82,91 @@ export function ConnectedAccountsView({
   onProviderActionSubmit,
 }: ConnectedAccountsViewProps) {
   const { t } = useTranslation(NS);
+  // Disconnecting a provider removes a sign-in method with no undo — a provider can later change how
+  // it identifies someone, which can make the exact same connection unrecoverable — so CRD Golden
+  // Rule 9 requires confirmation before it fires. `pendingDisconnect` holds the row awaiting
+  // confirmation; `formRefs` lets `onConfirm` submit that row's own native form (`form.submit()`
+  // deliberately bypasses the `submit` event/React's `onSubmit`, so it fires once, not twice, and
+  // keeps the row's action a plain native POST to the flow's own action URL). Connecting (`link`) is
+  // not destructive and is never routed through this — only `unlink` rows set `pendingDisconnect`.
+  const [pendingDisconnect, setPendingDisconnect] = useState<ConnectedAccountsProviderRow | undefined>(undefined);
+  const formRefs = useRef<Record<string, HTMLFormElement | null>>({});
 
-  if (status === 'loading') {
-    return (
-      <output aria-label={t('shared.loading')} className="flex flex-col gap-3">
-        <Skeleton className="h-14 w-full" />
-        <Skeleton className="h-14 w-full" />
-        <Skeleton className="h-14 w-full" />
-      </output>
-    );
-  }
+  const handleDisconnectConfirm = () => {
+    if (!pendingDisconnect) return;
+    onProviderActionSubmit?.(pendingDisconnect);
+    formRefs.current[pendingDisconnect.providerId]?.submit();
+    setPendingDisconnect(undefined);
+  };
 
-  if (status === 'unavailable') {
-    return (
-      <div className="flex flex-col gap-3">
-        <div
-          role="alert"
-          className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-body text-destructive"
-        >
-          <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <p>{unavailableReason}</p>
-        </div>
-        <Button type="button" variant="outline" onClick={onRetry} className="self-start">
-          {t('user.security.connectedAccounts.unavailable.retry')}
-        </Button>
-      </div>
-    );
-  }
-
+  // This wrapper — and the live region inside it — stays mounted at the same tree position across
+  // every `status` transition (loading → unavailable/ready), so screen readers observe it as one
+  // persisting region whose children mutate rather than a freshly-inserted node that already carries
+  // its final content. A live region only announces mutations that occur after it exists; a status
+  // branch that returned a differently-typed root element per status would remount this on every
+  // transition and silently drop the announcement of what just happened.
   return (
     <div className="flex flex-col gap-4">
-      {messages.length > 0 ? (
-        <div className="flex flex-col gap-2">
-          {messages.map(message => (
+      <div aria-live="polite" aria-atomic="true" className={messages.length > 0 ? 'flex flex-col gap-2' : undefined}>
+        {status === 'ready' &&
+          messages.map(message => (
             <FlowMessage key={`${message.id}-${message.text}`} type={message.type} text={message.text} />
           ))}
-        </div>
-      ) : null}
+      </div>
 
-      <ul className="divide-y divide-border">
-        {providers.map(provider => (
-          <ProviderRow key={provider.providerId} row={provider} onActionSubmit={onProviderActionSubmit} />
-        ))}
-        {credentials.map(credential => (
-          <CredentialRow key={credential.kind} row={credential} />
-        ))}
-      </ul>
+      {status === 'loading' ? (
+        <output aria-label={t('shared.loading')} className="flex flex-col gap-3">
+          <Skeleton className="h-14 w-full" />
+          <Skeleton className="h-14 w-full" />
+          <Skeleton className="h-14 w-full" />
+        </output>
+      ) : status === 'unavailable' ? (
+        <div className="flex flex-col gap-3">
+          <div
+            role="alert"
+            className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-body text-destructive"
+          >
+            <AlertCircle aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+            <p>{unavailableReason}</p>
+          </div>
+          <Button type="button" variant="outline" onClick={onRetry} className="self-start">
+            {t('user.security.connectedAccounts.unavailable.retry')}
+          </Button>
+        </div>
+      ) : (
+        <ul className="divide-y divide-border">
+          {providers.map(provider => (
+            <ProviderRow
+              key={provider.providerId}
+              row={provider}
+              onActionSubmit={onProviderActionSubmit}
+              onRequestDisconnect={setPendingDisconnect}
+              formRef={el => {
+                formRefs.current[provider.providerId] = el;
+              }}
+            />
+          ))}
+          {credentials.map(credential => (
+            <CredentialRow key={credential.kind} row={credential} />
+          ))}
+        </ul>
+      )}
+
+      <ConfirmationDialog
+        open={Boolean(pendingDisconnect)}
+        onOpenChange={next => {
+          if (!next) setPendingDisconnect(undefined);
+        }}
+        title={t('user.security.connectedAccounts.confirmDisconnect.title', {
+          provider: pendingDisconnect?.displayName ?? '',
+        })}
+        description={t('user.security.connectedAccounts.confirmDisconnect.description', {
+          provider: pendingDisconnect?.displayName ?? '',
+        })}
+        confirmLabel={t('user.security.connectedAccounts.confirmDisconnect.confirm')}
+        onConfirm={handleDisconnectConfirm}
+        variant="destructive"
+      />
     </div>
   );
 }
@@ -149,9 +190,15 @@ function FlowMessage({ type, text }: { type: 'info' | 'error' | 'success'; text:
 function ProviderRow({
   row,
   onActionSubmit,
+  onRequestDisconnect,
+  formRef,
 }: {
   row: ConnectedAccountsProviderRow;
   onActionSubmit?: (row: ConnectedAccountsProviderRow) => void;
+  /** Opens the destructive-action confirmation for an `unlink` row instead of submitting directly. */
+  onRequestDisconnect: (row: ConnectedAccountsProviderRow) => void;
+  /** Registers this row's own form element so a confirmed disconnect can submit it natively. */
+  formRef: (el: HTMLFormElement | null) => void;
 }) {
   const { t } = useTranslation(NS);
   const stateLabel =
@@ -187,10 +234,20 @@ function ProviderRow({
 
       {row.action ? (
         <form
+          ref={formRef}
           action={row.action.formAction}
           method={row.action.method}
           className="shrink-0"
-          onSubmit={() => onActionSubmit?.(row)}
+          onSubmit={event => {
+            if (row.action?.kind === 'unlink') {
+              // Destructive — confirm first (CRD Golden Rule 9). The confirmed submit later goes
+              // through `form.submit()` instead, which does not raise this event again.
+              event.preventDefault();
+              onRequestDisconnect(row);
+              return;
+            }
+            onActionSubmit?.(row);
+          }}
         >
           <input type="hidden" name={row.action.csrf.name} defaultValue={row.action.csrf.value} />
           <Button

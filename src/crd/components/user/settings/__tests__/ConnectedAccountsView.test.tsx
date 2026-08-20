@@ -63,6 +63,34 @@ describe('ConnectedAccountsView', () => {
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
+  it('mounts the outcome live region before any status settles, and keeps the same node across a status transition', () => {
+    // A live region only announces mutations that occur after it exists in the DOM — if the
+    // container carrying flow messages is only created once `status` reaches 'ready', assistive
+    // tech never observes the transition and the outcome goes unannounced.
+    const { container, rerender } = render(
+      <ConnectedAccountsView status="loading" onRetry={vi.fn()} providers={[]} credentials={[]} messages={[]} />
+    );
+    const liveRegionAtLoading = container.querySelector('[aria-live="polite"]');
+    expect(liveRegionAtLoading).toBeInTheDocument();
+    expect(liveRegionAtLoading).toBeEmptyDOMElement();
+
+    rerender(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[]}
+        credentials={[]}
+        messages={[{ id: 1050001, type: 'success', text: 'Your changes have been saved!' }]}
+      />
+    );
+
+    const liveRegionAtReady = container.querySelector('[aria-live="polite"]');
+    // Same DOM node, not a fresh element created by the 'ready' branch — its content mutated in
+    // place, which is exactly what a live region needs to be observed as a mutation.
+    expect(liveRegionAtReady).toBe(liveRegionAtLoading);
+    expect(liveRegionAtReady).toHaveTextContent('Your changes have been saved!');
+  });
+
   it('renders the fail-closed unavailable state with the reason and a retry action — no provider rows, no connect/disconnect action (FR-024, SC-009)', () => {
     const onRetry = vi.fn();
     render(
@@ -244,6 +272,94 @@ describe('ConnectedAccountsView', () => {
     // trigger, without going through jsdom's unimplemented `HTMLFormElement.requestSubmit` navigation
     // machinery.
     fireEvent.submit(form);
+
+    expect(onProviderActionSubmit).toHaveBeenCalledTimes(1);
+    expect(onProviderActionSubmit).toHaveBeenCalledWith(notConnectedRow);
+  });
+
+  it('confirms before disconnecting (CRD Golden Rule 9): submitting an unlink row opens a confirmation and does not call onProviderActionSubmit yet', () => {
+    const onProviderActionSubmit = vi.fn();
+    render(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[connectedRow]}
+        credentials={[]}
+        messages={[]}
+        onProviderActionSubmit={onProviderActionSubmit}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'user.security.connectedAccounts.actions.disconnectAria:GitHub' })
+    );
+
+    expect(onProviderActionSubmit).not.toHaveBeenCalled();
+    expect(screen.getByText('user.security.connectedAccounts.confirmDisconnect.title:GitHub')).toBeInTheDocument();
+  });
+
+  it('only calls onProviderActionSubmit once the disconnect confirmation is accepted', () => {
+    const onProviderActionSubmit = vi.fn();
+    render(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[connectedRow]}
+        credentials={[]}
+        messages={[]}
+        onProviderActionSubmit={onProviderActionSubmit}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'user.security.connectedAccounts.actions.disconnectAria:GitHub' })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'user.security.connectedAccounts.confirmDisconnect.confirm' }));
+
+    expect(onProviderActionSubmit).toHaveBeenCalledTimes(1);
+    expect(onProviderActionSubmit).toHaveBeenCalledWith(connectedRow);
+  });
+
+  it('cancelling the disconnect confirmation calls onProviderActionSubmit for neither the link nor the unlink outcome', () => {
+    const onProviderActionSubmit = vi.fn();
+    render(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[connectedRow]}
+        credentials={[]}
+        messages={[]}
+        onProviderActionSubmit={onProviderActionSubmit}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'user.security.connectedAccounts.actions.disconnectAria:GitHub' })
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+
+    expect(onProviderActionSubmit).not.toHaveBeenCalled();
+    expect(
+      screen.queryByText('user.security.connectedAccounts.confirmDisconnect.title:GitHub')
+    ).not.toBeInTheDocument();
+  });
+
+  it('does not confirm a connect (link) submit — onProviderActionSubmit fires straight from the native submit', () => {
+    const onProviderActionSubmit = vi.fn();
+    render(
+      <ConnectedAccountsView
+        status="ready"
+        onRetry={vi.fn()}
+        providers={[notConnectedRow]}
+        credentials={[]}
+        messages={[]}
+        onProviderActionSubmit={onProviderActionSubmit}
+      />
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'user.security.connectedAccounts.actions.connectAria:Cleverbase' })
+    );
 
     expect(onProviderActionSubmit).toHaveBeenCalledTimes(1);
     expect(onProviderActionSubmit).toHaveBeenCalledWith(notConnectedRow);

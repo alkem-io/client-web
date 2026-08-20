@@ -345,6 +345,11 @@
           "disconnect": "Ontkoppelen",
           "disconnectAria": "{{provider}} ontkoppelen"
         },
+        "confirmDisconnect": {
+          "title": "{{provider}} ontkoppelen?",
+          "description": "U kunt niet meer inloggen met {{provider}}. Als u later opnieuw koppelt en de provider uw identificatie inmiddels heeft gewijzigd, komt deze exacte koppeling mogelijk niet meer terug.",
+          "confirm": "Ontkoppelen"
+        },
         "locked": {
           "reason": "Dit is op dit moment je enige manier om in te loggen — voeg hieronder eerst een wachtwoord of een passkey toe voordat je dit kunt ontkoppelen."
         },
@@ -358,7 +363,9 @@
           "linked": "{{provider}} gekoppeld.",
           "unlinked": "{{provider}} ontkoppeld.",
           "connectFailed": "{{provider}} koppelen is niet gelukt — probeer het opnieuw.",
-          "disconnectFailed": "{{provider}} ontkoppelen is niet gelukt — probeer het opnieuw."
+          "disconnectFailed": "{{provider}} ontkoppelen is niet gelukt — probeer het opnieuw.",
+          "reauthRequiredConnect": "Bevestig dat jij het bent en probeer {{provider}} daarna opnieuw te koppelen.",
+          "reauthRequiredDisconnect": "Bevestig dat jij het bent en probeer {{provider}} daarna opnieuw te ontkoppelen."
         },
         "credentials": {
           "password": {
