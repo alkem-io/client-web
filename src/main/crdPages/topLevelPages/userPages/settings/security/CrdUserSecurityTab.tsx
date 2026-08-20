@@ -41,24 +41,34 @@ import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
  */
 const CrdUserSecurityTab = () => {
   const navigate = useNavigate();
-  const { userId, profileUrl } = useUserPageRouteContext();
+  const { userId, profileUrl, loading: routeContextLoading } = useUserPageRouteContext();
   const { isOwner, loading: predicateLoading } = useCanEditUserSettings({ profileUserId: userId });
+  const loading = predicateLoading || routeContextLoading;
 
   // Non-owner second-pass redirect (FR-084) — even a platform admin lands
   // on `/user/<other>/settings/profile` rather than seeing this tab.
   useEffect(() => {
-    if (predicateLoading) return;
+    if (loading) return;
     if (isOwner) return;
     if (!profileUrl) return;
     navigate(buildSettingsTabUrl(profileUrl, 'profile'), { replace: true });
-  }, [predicateLoading, isOwner, profileUrl, navigate]);
+  }, [loading, isOwner, profileUrl, navigate]);
 
-  // Mount the Kratos settings-flow and credential hooks only for owners.
-  // Both carry side effects (a Kratos Settings-flow init request, a GraphQL
-  // query); gating them behind the owner check keeps non-owners — including
-  // platform admins who pass the shell guard — from triggering those flows
-  // before the owner-only redirect above completes.
-  if (!isOwner) {
+  // Mount the Kratos settings-flow and credential hooks only once the owner
+  // check AND `profileUrl` have both resolved. `isOwner` (derived from
+  // `useCurrentUserContext`) can turn true before `profileUrl` (derived from
+  // the separately-loading `useUserProvider(userId)`) does — mounting on
+  // `isOwner` alone would create the Settings flow with an empty `returnTo`,
+  // then create a SECOND flow once `profileUrl` resolves and the URL passed
+  // to `useUserSecuritySettingsFlow` changes. That second flow can race the
+  // first (see `useKratosFlow`'s request-sequence guard) and, either way,
+  // remounts this subtree and loses the outcome announcement already shown
+  // by `ConnectedAccountsSection`. Both carry side effects (a Kratos
+  // Settings-flow init request, a GraphQL query); gating them here also
+  // keeps non-owners — including platform admins who pass the shell guard —
+  // from triggering those flows before the owner-only redirect above
+  // completes.
+  if (!isOwner || loading || !profileUrl) {
     return (
       <UserSecurityTabView
         state={{ kind: 'loading' }}
@@ -73,7 +83,7 @@ const CrdUserSecurityTab = () => {
   return <OwnerSecurityTabContent profileUrl={profileUrl} />;
 };
 
-const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string | undefined }) => {
+const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
   const { i18n } = useTranslation('crd-contributorSettings');
   // The Settings flow is created with `return_to` = this same Security tab
   // URL so an OIDC link's provider round trip and a re-auth resume both land
@@ -149,6 +159,7 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string | undefine
       status={connectedAccountsStatus}
       model={connectedAccountsModel}
       profileUrl={profileUrl}
+      flowWasResumed={flowResult.kind === 'ready' && flowResult.flowWasResumed}
       onRetry={() => {
         flowResult.refetch();
         refetchAuthMethods();
