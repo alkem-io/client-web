@@ -110,7 +110,16 @@ const CollaborativeExcalidrawWrapper = ({
   children: renderChildren,
   renderDisconnectNotice,
 }: WhiteboardWhiteboardProps) => {
-  const [excalidrawApi, setExcalidrawApi] = useState<ExcalidrawImperativeAPI | null>(null);
+  // The live editor api paired with the whiteboard id it was created under. `<Excalidraw>`
+  // is keyed by whiteboard id, so an in-place id change A→B remounts the editor — but
+  // `whiteboard.id` advances a render BEFORE editor B mounts and hands back its api, so for
+  // one render the api would be editor A's while the room is already B. Storing the id WITH
+  // the api (one state value, always consistent within a render) lets the init effect refuse
+  // the `(editor A, room B)` combination structurally, instead of pushing scene A into room B.
+  const [excalidrawApi, setExcalidrawApi] = useState<{
+    api: ExcalidrawImperativeAPI;
+    whiteboardId: string;
+  } | null>(null);
 
   const [collaborationStartTime, setCollaborationStartTime] = useState<number | null>(Date.now());
 
@@ -181,7 +190,7 @@ const CollaborativeExcalidrawWrapper = ({
   const debouncedRefresh = useMemo(
     () =>
       debounce(async () => {
-        excalidrawApi?.refresh();
+        excalidrawApi?.api.refresh();
       }, WINDOW_SCROLL_HANDLER_DEBOUNCE_INTERVAL),
     [excalidrawApi]
   );
@@ -304,18 +313,29 @@ const CollaborativeExcalidrawWrapper = ({
   }, [connecting, collaborating]);
 
   useEffect(() => {
-    if (excalidrawApi && whiteboard?.id && collaborationStartTime !== null) {
+    // Only initialize when the live api actually belongs to THIS whiteboard — never the
+    // just-unmounting editor of the previous id (which would drive a provider for the new
+    // room with the old editor's scene port and push its scene into the new room). The id
+    // is stored alongside the api, so this pair is always self-consistent within a render.
+    if (
+      excalidrawApi &&
+      whiteboard?.id &&
+      excalidrawApi.whiteboardId === whiteboard.id &&
+      collaborationStartTime !== null
+    ) {
       return initializeCollab({
-        excalidrawApi,
+        excalidrawApi: excalidrawApi.api,
         roomId: whiteboard.id,
       });
     }
   }, [excalidrawApi, whiteboard?.id, collaborationStartTime]);
 
-  const handleInitializeApi = (excalidrawApi: ExcalidrawImperativeAPI | null) => {
-    if (!excalidrawApi) return;
-    setExcalidrawApi(excalidrawApi);
-    actions.onInitApi?.(excalidrawApi);
+  const handleInitializeApi = (api: ExcalidrawImperativeAPI | null) => {
+    if (!api) return;
+    // Pair the api with the whiteboard it was created under (the editor mounted under the
+    // current, keyed whiteboard id), so the init effect can require a match.
+    setExcalidrawApi({ api, whiteboardId: whiteboard?.id ?? '' });
+    actions.onInitApi?.(api);
   };
 
   const children = (
