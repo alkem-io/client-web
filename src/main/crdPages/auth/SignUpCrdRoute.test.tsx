@@ -19,7 +19,12 @@ const h = vi.hoisted(() => ({
   flow: undefined as undefined | { id: string; active?: string; ui: { nodes: unknown[]; messages: unknown[] } },
   signUpCardProps: undefined as
     | undefined
-    | { hasAcceptedTerms: boolean; onAcceptedTermsChange: (v: boolean) => void; showSignpost?: boolean },
+    | {
+        hasAcceptedTerms: boolean;
+        onAcceptedTermsChange: (v: boolean) => void;
+        showSignpost?: boolean;
+        onProviderClick?: (providerKey: string) => void;
+      },
 }));
 
 // The unit under test is the conditional wiring — stub the heavy children with
@@ -38,6 +43,7 @@ vi.mock('@/crd/components/auth/SignUpCard', () => ({
     hasAcceptedTerms: boolean;
     onAcceptedTermsChange: (v: boolean) => void;
     showSignpost?: boolean;
+    onProviderClick?: (providerKey: string) => void;
   }) => {
     h.signUpCardProps = props;
     return (
@@ -48,6 +54,7 @@ vi.mock('@/crd/components/auth/SignUpCard', () => ({
           checked={props.hasAcceptedTerms}
           onChange={event => props.onAcceptedTermsChange(event.target.checked)}
         />
+        <button type="button" aria-label="provider-button" onClick={() => props.onProviderClick?.('cleverbase')} />
       </div>
     );
   },
@@ -254,7 +261,22 @@ describe('SignUpCrdRoute — provider-arrival signpost (FR-013/FR-014)', () => {
   });
 
   it('[US4/AS2] does not render the signpost for a plain registration flow (no active method)', () => {
-    h.flow = { id: 'flow-plain', ui: { nodes: [], messages: [] } };
+    // Realistic direct-registration node shape: a fresh browser registration
+    // flow carries default-group trait inputs plus the oidc-group *submit*
+    // buttons (which the guard's `!isSubmitButton(node)` must exclude) — not
+    // an empty node list, which every flow shape trivially satisfies and so
+    // exercises nothing about the guard.
+    h.flow = {
+      id: 'flow-plain',
+      ui: {
+        nodes: [
+          { group: 'default', attributes: { node_type: 'input', type: 'hidden', name: 'csrf_token' } },
+          { group: 'default', attributes: { node_type: 'input', type: 'email', name: 'traits.email' } },
+          { group: 'oidc', attributes: { node_type: 'input', type: 'submit', name: 'provider', value: 'github' } },
+        ],
+        messages: [],
+      },
+    };
 
     renderRoute();
 
@@ -269,6 +291,34 @@ describe('SignUpCrdRoute — provider-arrival signpost (FR-013/FR-014)', () => {
         messages: [],
       },
     };
+
+    renderRoute();
+
+    expect(h.signUpCardProps?.showSignpost).toBe(true);
+  });
+
+  it('[US4/FR-014] pressing a provider button on the sign-up screen marks the sessionStorage origin marker', () => {
+    h.flow = { id: 'flow-plain', ui: { nodes: [], messages: [] } };
+
+    renderRoute();
+    h.signUpCardProps?.onProviderClick?.('cleverbase');
+
+    expect(sessionStorage.getItem('alkemio.signupProviderClickOrigin')).toBe('1');
+  });
+
+  it('[US4/FR-014] suppresses the signpost on the returning OIDC-continuation render when the sign-up-origin marker is set, and consumes it', () => {
+    sessionStorage.setItem('alkemio.signupProviderClickOrigin', '1');
+    h.flow = { id: 'flow-oidc', active: 'oidc', ui: { nodes: [], messages: [] } };
+
+    renderRoute();
+
+    expect(h.signUpCardProps?.showSignpost).toBe(false);
+    // Consumed on read — a later remount of this page must not keep suppressing it.
+    expect(sessionStorage.getItem('alkemio.signupProviderClickOrigin')).toBeNull();
+  });
+
+  it('[US4/FR-013] a login-screen provider bounce (no sign-up-origin marker) still shows the signpost', () => {
+    h.flow = { id: 'flow-oidc', active: 'oidc', ui: { nodes: [], messages: [] } };
 
     renderRoute();
 

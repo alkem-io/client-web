@@ -42,12 +42,54 @@ const MESSAGE_CODE_ACCOUNT_EXIST_FOR_ID = 4000007;
 // input (non-submit) nodes — those only appear once an OIDC continuation has
 // pre-filled provider-supplied traits — so their presence is equivalent
 // evidence if `active` is ever unset for this arrival.
+//
+// This flow-shape evidence alone cannot tell apart "bounced here from the
+// login screen" from "pressed a provider button on THIS sign-up screen" —
+// both produce the identical `active: 'oidc'` continuation, because the
+// accept-terms trait Kratos still needs cannot come from the provider. Only
+// the former is the FR-013 case; the latter is a deliberate registration and
+// FR-014 requires the signpost to stay silent. `arrivedFromSignUpProviderClick`
+// (set by `onProviderClick` below, sessionStorage-backed so it survives the
+// full-page OIDC round trip) is the origin marker that resolves that
+// ambiguity — see `markSignUpProviderClickOrigin`/`consumeSignUpProviderClickOrigin`.
 const isProviderArrivalFlow = (flow: RegistrationFlow | undefined): boolean => {
   if (!flow) return false;
   if (flow.active === 'oidc') return true;
   const nodes = flow.ui?.nodes ?? [];
   return nodes.some(node => node.group === 'oidc' && isInputNode(node) && !isSubmitButton(node));
 };
+
+/** sessionStorage marker proving the current tab's OIDC round trip was started by
+ * pressing a provider button on THIS sign-up screen (as opposed to a login-screen
+ * bounce). Distinct from `SIGNUP_INITIATED_MARKER`, which is set unconditionally
+ * on every mount of this page and so cannot make that distinction. */
+export const SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER = 'alkemio.signupProviderClickOrigin';
+
+/** Set from `SignUpCard.onProviderClick`, before the form's native submit navigates
+ * away to the provider. */
+function markSignUpProviderClickOrigin(): void {
+  try {
+    sessionStorage.setItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER, '1');
+  } catch {
+    // sessionStorage blocked — the signpost falls back to flow-shape evidence only
+  }
+}
+
+/** Reads and clears the marker in the same step, so it only ever suppresses the
+ * signpost on the render that consumes the round trip it was set for — never a
+ * later remount of this page (e.g. a validation-error re-render). */
+function consumeSignUpProviderClickOrigin(): boolean {
+  try {
+    const value = sessionStorage.getItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
+    if (value === '1') {
+      sessionStorage.removeItem(SIGNUP_PROVIDER_CLICK_ORIGIN_MARKER);
+      return true;
+    }
+  } catch {
+    // sessionStorage blocked — treat as no marker
+  }
+  return false;
+}
 
 type CrdSignUpPageProps = {
   /**
@@ -105,6 +147,12 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
 
   const translateDescriptor = useTranslateDescriptor();
   usePasskeyScript(registrationFlow?.ui?.nodes);
+
+  // Captured once per mount (lazy initializer) so a later re-render of this same
+  // mount (e.g. a checkbox toggle) doesn't re-read — and re-clear — the marker.
+  // See `isProviderArrivalFlow` above for why this is needed alongside the
+  // flow-shape discriminator (FR-013/014).
+  const [arrivedFromSignUpProviderClick] = useState(() => consumeSignUpProviderClickOrigin());
 
   const [accepted, setAccepted] = useState(false);
   // Set once, from this mount's initial sessionStorage hydration only — never
@@ -170,7 +218,7 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
           <SignUpCard
             descriptor={descriptor}
             isLoading={loading}
-            showSignpost={isProviderArrivalFlow(registrationFlow)}
+            showSignpost={isProviderArrivalFlow(registrationFlow) && !arrivedFromSignUpProviderClick}
             signInHref={
               // Carry the destination into the sign-in link so a user who
               // switches from sign-up to sign-in keeps it.
@@ -180,6 +228,7 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
             privacyPolicyHref={locations?.privacy ?? '#'}
             hasAcceptedTerms={accepted}
             onAcceptedTermsChange={handleAcceptedChange}
+            onProviderClick={() => markSignUpProviderClickOrigin()}
             onPasskeyTrigger={trigger => {
               invokePasskeyTrigger(trigger).catch(() => {
                 /* passkey errors are surfaced inline once passkey is wired for registration */
