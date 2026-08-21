@@ -414,6 +414,7 @@
         "space": {
           "communicationUpdates": "Receive a notification when a new communication is shared on a community",
           "collaborationCalloutPublished": "Receive a notification when a callout is published in a community I am a member of",
+          "collaborationCalloutReaction": "Receive a notification when someone reacts to my post with an emoji",
           "collaborationCalloutPostContributionComment": "Receive a notification when a comment is made on a post I follow",
           "collaborationCalloutContributionCreated": "Receive a notification when a new contribution is created on a callout",
           "collaborationCalloutComment": "Receive a notification when a new comment is added to a callout I follow",

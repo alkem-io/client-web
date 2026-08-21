@@ -1,4 +1,5 @@
 import type { TFunction } from 'i18next';
+import type { ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import {
   CalendarEventType,
@@ -199,5 +200,85 @@ describe('notification types kept on the generic payload fallback', () => {
     );
 
     expect(href).toBeUndefined();
+  });
+});
+
+describe('reaction notification rendering', () => {
+  const calloutPayload = (calloutUrl: string, calloutName: string): Partial<InAppNotificationPayloadModel> => ({
+    type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
+    emoji: 'heart',
+    callout: { framing: { profile: { displayName: calloutName, url: calloutUrl } } },
+    space: spacePayload('/my-space'),
+  });
+
+  it('deep-links to the callout when the payload carries callout.framing.profile.url', () => {
+    const model = notification(
+      NotificationEvent.SpaceCollaborationCalloutReaction,
+      calloutPayload('/my-space/callout-1', 'My Callout')
+    );
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    expect(data.href).toBe('/my-space/callout-1');
+  });
+
+  it('exposes the callout displayName as calloutName for subject interpolation', () => {
+    const model = notification(
+      NotificationEvent.SpaceCollaborationCalloutReaction,
+      calloutPayload('/my-space/callout-1', 'A Named Callout')
+    );
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    expect(data.href).toBe('/my-space/callout-1');
+    expect(data.isUnread).toBe(true);
+    // The subject is a <Trans> element; its `values` carry the interpolation the
+    // template consumes. Assert calloutName is threaded through, so the test fails
+    // if buildTranslationValues ever omits or renames it.
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.calloutName).toBe('A Named Callout');
+  });
+
+  it('falls back to the space URL when the callout field is absent', () => {
+    const model = notification(NotificationEvent.SpaceCollaborationCalloutReaction, {
+      type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
+      emoji: 'heart',
+      space: spacePayload('/my-space'),
+    });
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    expect(data.href).toBe('/my-space');
+  });
+
+  it('leaves the href undefined when neither callout nor space is present', () => {
+    const model = notification(NotificationEvent.SpaceCollaborationCalloutReaction, {
+      type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
+    });
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    expect(data.href).toBeUndefined();
+  });
+
+  it('falls back gracefully when the emoji slug is unknown', () => {
+    // An unrecognised slug must not throw — glyphForSlug returns undefined and the
+    // placeholder interpolates as an empty string, which is the correct degraded state.
+    const model = notification(NotificationEvent.SpaceCollaborationCalloutReaction, {
+      type: NotificationEventPayload.SpaceCollaborationCalloutReaction,
+      emoji: 'unknown-slug-9999',
+      space: spacePayload('/my-space'),
+    });
+    let data: ReturnType<typeof mapNotificationToItemData> | undefined;
+    expect(() => {
+      data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    }).not.toThrow();
+    // The unknown slug must resolve through glyphForSlug to undefined — never the
+    // raw wire slug — so the subject placeholder renders empty rather than
+    // leaking "unknown-slug-9999".
+    const title = data!.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.emoji).toBeUndefined();
+  });
+
+  it('produces an unread item for a reaction notification', () => {
+    const model = notification(
+      NotificationEvent.SpaceCollaborationCalloutReaction,
+      calloutPayload('/my-space/callout-1', 'My Callout')
+    );
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+    expect(data.isUnread).toBe(true);
+    expect(data.avatarFallback).toBe('AL');
   });
 });

@@ -414,6 +414,7 @@
         "space": {
           "communicationUpdates": "Получавайте известие, когато се споделя ново съобщение в общност",
           "collaborationCalloutPublished": "Получавайте известие, когато бъде публикувано нещо в общност, в която съм член",
+          "collaborationCalloutReaction": "Получавайте известие, когато някой реагира на вашия Post с емоджи",
           "collaborationCalloutPostContributionComment": "Получавайте известие, когато се коментира публикация, която следвам",
           "collaborationCalloutContributionCreated": "Получавайте известие, когато бъде създаден нов принос към оповестяване",
           "collaborationCalloutComment": "Получавайте известие, когато бъде добавен нов коментар към оповестяване, което следвам",

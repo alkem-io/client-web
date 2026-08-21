@@ -2047,6 +2047,19 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPol
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier = (
+  | 'callout'
+  | 'emoji'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCollaborationCalloutReactionFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  emoji?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InAppNotificationPayloadSpaceCollaborationPollKeySpecifier = (
   | 'callout'
   | 'poll'
@@ -5645,6 +5658,7 @@ export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
   | 'collaborationCalloutPostContributionComment'
   | 'collaborationCalloutPublished'
+  | 'collaborationCalloutReaction'
   | 'collaborationPollModifiedOnPollIVotedOn'
   | 'collaborationPollVoteAffectedByOptionChange'
   | 'collaborationPollVoteCastOnOwnPoll'
@@ -5659,6 +5673,7 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
   collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPostContributionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutReaction?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollModifiedOnPollIVotedOn?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollVoteAffectedByOptionChange?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollVoteCastOnOwnPoll?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6740,6 +6755,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCollaborationCalloutReaction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCollaborationCalloutReactionFieldPolicy;
   };
   InAppNotificationPayloadSpaceCollaborationPoll?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
