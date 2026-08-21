@@ -36,6 +36,7 @@ import {
 import { error as logError } from '@/core/logging/sentry/log';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
@@ -197,6 +198,7 @@ function CalloutFormConnectorInner({
   restrictions,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
+  const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   // Restriction-driven create-mode defaults: any comment toggle that is hidden
   // must still submit `false`, so seed the empty form accordingly.
@@ -1031,6 +1033,22 @@ function CalloutFormConnectorInner({
         }
         responsesZoneSlot={
           <div className="space-y-4">
+            {mode === 'create' && isTaskBoardEnabled() && (
+              <div className="flex items-center justify-between gap-3">
+                <Label htmlFor="task-board-toggle" className="text-body-emphasis">
+                  {tTaskBoard('create.option')}
+                  <span className="block text-caption font-normal text-muted-foreground">
+                    {tTaskBoard('create.optionDescription')}
+                  </span>
+                </Label>
+                <Switch
+                  id="task-board-toggle"
+                  checked={values.taskBoard}
+                  onCheckedChange={checked => setField('taskBoard', checked)}
+                  disabled={submitting}
+                />
+              </div>
+            )}
             <ResponseTypeChipStrip
               value={values.responseType}
               allowedChips={responseAllowList}
@@ -1041,7 +1059,9 @@ function CalloutFormConnectorInner({
                 // an existing callout.
                 setField('responseType', type);
               }}
-              locked={mode === 'edit'}
+              // A Tasks board forces the POST-only contribution type, so the
+              // response chips are locked while the toggle is on.
+              locked={mode === 'edit' || values.taskBoard}
             />
             <ResponsePanel
               type={values.responseType}

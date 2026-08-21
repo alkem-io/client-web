@@ -287,6 +287,28 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
   });
 });
 
+describe('mapFormToCalloutCreationInput — Tasks board', () => {
+  it('taskBoard option sends an empty taskBoard input and forces the POST-only contribution type', () => {
+    const result = mapFormToCalloutCreationInput(baseValues({ taskBoard: true }), createOptions);
+    expect(result.input.taskBoard).toEqual({});
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('taskBoard forces POST even when a different response chip was picked', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: true, responseType: 'whiteboard' }),
+      createOptions
+    );
+    expect(result.input.taskBoard).toEqual({});
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('absent taskBoard option emits no taskBoard field', () => {
+    const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'post' }), createOptions);
+    expect(result.input.taskBoard).toBeUndefined();
+  });
+});
+
 describe('mapFormToCalloutCreationInput — contribution settings', () => {
   it('responseType=none → permissive default (enabled, empty allowedTypes, Members, comments on)', () => {
     const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'none' }), createOptions);

@@ -100,6 +100,12 @@ export type CalloutFormValues = {
   collaboraUploadFile: File | null;
   // Zone 2 — responses
   responseType: ResponseType;
+  /**
+   * Create-mode only: build this callout as a Tasks board. When set, the mapper
+   * forces the POST-only contribution type and sends `taskBoard: {}` so the
+   * server seeds the default columns. Columns are managed post-create.
+   */
+  taskBoard: boolean;
   allowedActors: AllowedActors;
   contributionCommentsEnabled: boolean;
   contributionDefaults: ContributionDefaults;
@@ -180,6 +186,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
   collaboraUploadFile: null,
   responseType: 'none',
+  taskBoard: false,
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,
   contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },

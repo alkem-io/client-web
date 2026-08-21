@@ -4,6 +4,7 @@ import {
   CalloutFramingType,
   CalloutSelectionMode,
   CalloutVisibility,
+  type CreateCalloutTaskBoardInput,
   PollResultsDetail,
   PollResultsVisibility,
   type UpdateCalloutEntityInput,
@@ -116,6 +117,12 @@ export type CalloutCreationInput = Omit<CalloutCreationType, 'framing'> & {
   framing: CalloutCreationType['framing'] & {
     memo?: MemoFieldSubmittedValues;
   };
+  /**
+   * When present, creates this callout as a Tasks board. The domain
+   * `CalloutCreationType` omits this additive field, so it lives on the local
+   * extension; the server input (`CreateCalloutOnCalloutsSetInput`) accepts it.
+   */
+  taskBoard?: CreateCalloutTaskBoardInput;
 };
 
 export type MapFormResult = {
@@ -145,7 +152,9 @@ export type MapFormResult = {
  */
 export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options: MapFormOptions): MapFormResult => {
   const framingType = framingChipToServer(values.framingChip);
-  const responseType = responseTypeToServer(values.responseType);
+  // A Tasks board is a POST-only callout regardless of the picked response chip —
+  // the server requires `allowedTypes == [POST]` alongside `taskBoard`.
+  const responseType = values.taskBoard ? CalloutContributionType.Post : responseTypeToServer(values.responseType);
   // `values.tags` is already `string[]` from `TagsInput`. Dedup defensively.
   const tagsArray = Array.from(new Set(values.tags.map(t => t.trim()).filter(Boolean)));
   const hasResponseType = responseType !== undefined;
@@ -218,6 +227,12 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     },
     sendNotification: values.notifyMembers && options.visibility !== CalloutVisibility.Draft,
   };
+
+  // Tasks board: send an empty input so the server seeds the default column set.
+  // No custom-columns UI in the MVP — columns are configured post-create.
+  if (values.taskBoard) {
+    callout.taskBoard = {};
+  }
 
   // Contribution defaults — spec FR-40..46, D5. Mirror MUI's response-type
   // filter (CreateCalloutDialog `contributionDefaults` block): only send
