@@ -2479,6 +2479,10 @@ export const SubspacePageSpaceFragmentDoc = gql`
     id
     calloutsSet {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
   templatesManager {

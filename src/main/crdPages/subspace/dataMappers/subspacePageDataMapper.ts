@@ -17,13 +17,11 @@ import { getInitials } from '../../space/dataMappers/spacePageDataMapper';
 type ProfileLike = {
   displayName?: string | null;
   tagline?: string | null;
-  avatar?: { uri?: string | null } | null;
   banner?: { uri?: string | null; alternativeText?: string | null; aspectRatio?: number | null } | null;
   url?: string | null;
 };
 
 export type SubspaceBannerSourceData = {
-  subspaceId: string;
   subspaceProfile: ProfileLike | undefined;
   /**
    * The L0 root of this subspace's ancestry chain. For an L1 this is the same as the immediate
@@ -36,19 +34,10 @@ export type SubspaceBannerSourceData = {
 
 export type SubspaceBannerProps = Pick<
   SubspaceHeaderProps,
-  | 'title'
-  | 'tagline'
-  | 'subspaceInitials'
-  | 'subspaceColor'
-  | 'subspaceAvatarUrl'
-  | 'bannerUrl'
-  | 'bannerAlt'
-  | 'bannerAspectRatio'
-  | 'color'
+  'title' | 'tagline' | 'bannerUrl' | 'bannerAlt' | 'bannerAspectRatio' | 'color'
 >;
 
 export function mapSubspaceBanner({
-  subspaceId,
   subspaceProfile,
   levelZeroSpaceId,
   levelZeroProfile,
@@ -58,9 +47,6 @@ export function mapSubspaceBanner({
   return {
     title,
     tagline: subspaceProfile?.tagline ?? undefined,
-    subspaceInitials: getInitials(title) || '??',
-    subspaceColor: pickColorFromId(subspaceId || title),
-    subspaceAvatarUrl: subspaceProfile?.avatar?.uri ?? undefined,
     bannerUrl: levelZeroProfile?.banner?.uri || undefined,
     bannerAlt: levelZeroProfile?.banner?.alternativeText || undefined,
     // Inherited from the L0 root along with the image itself, so a subspace

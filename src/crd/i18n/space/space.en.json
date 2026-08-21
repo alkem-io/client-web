@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} members and {{organizations}} organisations in this space.",
-    "inviteMember": "Invite Member",
     "search": "Search members or organisations...",
     "filterAll": "All",
     "filterLead": "Lead",
@@ -1027,5 +1026,8 @@
       "title": "No subspaces yet",
       "description": "This space has no subspaces yet."
     }
+  },
+  "parentStack": {
+    "goTo": "Go to {{name}}"
   }
 }
