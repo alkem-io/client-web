@@ -113,7 +113,9 @@ export function UserSecurityTabView({
       >
         {connectedAccountsSection}
       </SettingsCard>
-      <div id="password">
+      {/* scroll-mt offsets in-page anchor jumps (#password / #passkeys) below the sticky
+          chrome: the h-16 app header + the SettingsShell header band (~147px). */}
+      <div id="password" className="scroll-mt-60">
         <SettingsCard
           icon={KeyRound}
           title={t('user.security.password.title')}
@@ -129,7 +131,7 @@ export function UserSecurityTabView({
           )}
         </SettingsCard>
       </div>
-      <div id="passkeys">
+      <div id="passkeys" className="scroll-mt-60">
         <SettingsCard icon={ShieldCheck} title={t('user.security.title')} description={t('user.security.description')}>
           {state.hasWebauthn ? (
             <div className="mt-2">{webauthnForm}</div>
