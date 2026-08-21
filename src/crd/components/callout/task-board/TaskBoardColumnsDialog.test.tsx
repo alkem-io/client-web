@@ -46,14 +46,21 @@ function renderDialog(overrides: Partial<TaskBoardColumnsDialogProps> = {}) {
     open: true,
     onOpenChange: vi.fn(),
     columns: [{ name: 'Backlog' }, { name: 'Doing' }, { name: 'Done' }],
-    onAddColumn: vi.fn(),
-    onRenameColumn: vi.fn(),
-    onReorderColumns: vi.fn(),
+    onAddColumn: vi.fn().mockResolvedValue(undefined),
+    onRenameColumn: vi.fn().mockResolvedValue(undefined),
+    onReorderColumns: vi.fn().mockResolvedValue(undefined),
     onDeleteColumn: vi.fn(),
     ...overrides,
   };
   render(<TaskBoardColumnsDialog {...props} />);
   return props;
+}
+
+/** Clicks Save and lets the async sweep settle. */
+async function save() {
+  await act(async () => {
+    fireEvent.click(screen.getByText('columns.save'));
+  });
 }
 
 afterEach(() => {
@@ -88,12 +95,12 @@ describe('TaskBoardColumnsDialog', () => {
     expect(currentError()).toBe('columns.validation.duplicate');
   });
 
-  it('renames changed rows and reorders on Save, then closes', () => {
+  it('renames changed rows and reorders on Save, then closes', async () => {
     const props = renderDialog();
     act(() => (editorProps?.onRename as (id: string, name: string) => void)('col:Doing', 'In progress'));
     act(() => (editorProps?.onReorder as (ids: string[]) => void)(['col:Done', 'col:Backlog', 'col:Doing']));
 
-    fireEvent.click(screen.getByText('columns.save'));
+    await save();
 
     expect(props.onRenameColumn).toHaveBeenCalledWith('Doing', 'In progress');
     // Reorder uses the final names, in the dragged order.
@@ -101,20 +108,78 @@ describe('TaskBoardColumnsDialog', () => {
     expect(props.onOpenChange).toHaveBeenCalledWith(false);
   });
 
-  it('creates a newly added row on Save (no rename call for it)', () => {
+  it('sequences renames before the reorder (rename resolves first)', async () => {
+    const order: string[] = [];
+    const props = renderDialog({
+      onRenameColumn: vi.fn().mockImplementation(async () => {
+        order.push('rename');
+      }),
+      onReorderColumns: vi.fn().mockImplementation(async () => {
+        order.push('reorder');
+      }),
+    });
+    act(() => (editorProps?.onRename as (id: string, name: string) => void)('col:Doing', 'In progress'));
+    act(() => (editorProps?.onReorder as (ids: string[]) => void)(['col:Done', 'col:Backlog', 'col:Doing']));
+
+    await save();
+
+    expect(order).toEqual(['rename', 'reorder']);
+    expect(props.onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('does not emit a reorder for a pure rename (order unchanged)', async () => {
+    const props = renderDialog();
+    act(() => (editorProps?.onRename as (id: string, name: string) => void)('col:Doing', 'In progress'));
+
+    await save();
+
+    expect(props.onRenameColumn).toHaveBeenCalledWith('Doing', 'In progress');
+    expect(props.onReorderColumns).not.toHaveBeenCalled();
+    expect(props.onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('does not emit a reorder when only a column is appended', async () => {
     const props = renderDialog();
     act(() => (editorProps?.onAdd as () => void)());
     act(() => (editorProps?.onRename as (id: string, name: string) => void)('new:0', 'Review'));
-    fireEvent.click(screen.getByText('columns.save'));
+
+    await save();
+
+    expect(props.onAddColumn).toHaveBeenCalledWith('Review');
+    // A newly added row lands at the end, matching the server's post-create
+    // order, so no reorder is needed.
+    expect(props.onReorderColumns).not.toHaveBeenCalled();
+  });
+
+  it('keeps the dialog open and does not reorder when a create fails', async () => {
+    const props = renderDialog({
+      onAddColumn: vi.fn().mockRejectedValue(new Error('server rejected')),
+    });
+    act(() => (editorProps?.onAdd as () => void)());
+    act(() => (editorProps?.onRename as (id: string, name: string) => void)('new:0', 'Review'));
+    // Also reorder, so we can prove the reorder never fires after the failed create.
+    act(() => (editorProps?.onReorder as (ids: string[]) => void)(['new:0', 'col:Backlog', 'col:Doing', 'col:Done']));
+
+    await save();
+
+    expect(props.onReorderColumns).not.toHaveBeenCalled();
+    expect(props.onOpenChange).not.toHaveBeenCalledWith(false);
+  });
+
+  it('creates a newly added row on Save (no rename call for it)', async () => {
+    const props = renderDialog();
+    act(() => (editorProps?.onAdd as () => void)());
+    act(() => (editorProps?.onRename as (id: string, name: string) => void)('new:0', 'Review'));
+    await save();
 
     expect(props.onAddColumn).toHaveBeenCalledWith('Review');
     expect(props.onRenameColumn).not.toHaveBeenCalled();
   });
 
-  it('does not persist while any row is invalid', () => {
+  it('does not persist while any row is invalid', async () => {
     const props = renderDialog();
     act(() => (editorProps?.onRename as (id: string, name: string) => void)('col:Doing', ''));
-    fireEvent.click(screen.getByText('columns.save'));
+    await save();
     expect(props.onRenameColumn).not.toHaveBeenCalled();
     expect(props.onReorderColumns).not.toHaveBeenCalled();
     expect(props.onOpenChange).not.toHaveBeenCalled();

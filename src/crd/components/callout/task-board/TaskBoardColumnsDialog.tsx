@@ -25,12 +25,16 @@ export type TaskBoardColumnsDialogProps = {
   onOpenChange: (open: boolean) => void;
   /** Columns in left-to-right order; the first is the protected default. */
   columns: TaskBoardColumnModel[];
-  /** Create a new column with this name (fired on Save for each newly added row). */
-  onAddColumn: (name: string) => void;
-  /** Rename a column (current → next), one call per changed row on Save. */
-  onRenameColumn: (currentName: string, nextName: string) => void;
-  /** Persist a new left-to-right order (full name list). */
-  onReorderColumns: (orderedNames: string[]) => void;
+  /**
+   * Create a new column with this name (fired on Save for each newly added
+   * row). The returned promise MUST reject if the server rejects, so the save
+   * sweep aborts before issuing the reorder and keeps the dialog open.
+   */
+  onAddColumn: (name: string) => Promise<void>;
+  /** Rename a column (current → next), one call per changed row on Save. Rejects on server failure. */
+  onRenameColumn: (currentName: string, nextName: string) => Promise<void>;
+  /** Persist a new left-to-right order (full name list). Rejects on server failure. */
+  onReorderColumns: (orderedNames: string[]) => Promise<void>;
   /** Delete a column by name (only after the confirm dialog). */
   onDeleteColumn: (name: string) => void;
 };
@@ -60,6 +64,7 @@ export function TaskBoardColumnsDialog({
   const [rows, setRows] = useState<{ id: string; name: string; originalName?: string }[]>([]);
   const [pendingDelete, setPendingDelete] = useState<string | undefined>();
   const [nextRowId, setNextRowId] = useState(0);
+  const [saving, setSaving] = useState(false);
 
   // Reseed the draft whenever the dialog opens or the server column set changes.
   useEffect(() => {
@@ -87,24 +92,51 @@ export function TaskBoardColumnsDialog({
     deleteDisabledReason: t('columns.deleteFirstDisabled'),
   }));
 
-  const handleSave = () => {
-    if (hasErrors) return;
-    // Create new rows and commit renames first so the reorder list can
-    // reference the final names.
-    for (const row of rows) {
-      const trimmed = row.name.trim();
-      if (row.originalName === undefined) {
-        onAddColumn(trimmed);
-      } else if (trimmed !== row.originalName) {
-        onRenameColumn(row.originalName, trimmed);
-      }
-    }
-    const orderedNames = rows.map(row => row.name.trim());
-    const originalOrder = columns.map(column => column.name);
+  const handleSave = async () => {
+    if (hasErrors || saving) return;
+
+    // The reorder must be a permutation of the column list the SERVER holds
+    // AFTER the creates/renames commit but BEFORE any reorder. That baseline is
+    // the ORIGINAL columns in their original relative order (each mapped to its
+    // final, possibly-renamed name) followed by newly added columns in creation
+    // order. Comparing the admin's desired row order against that baseline BY
+    // IDENTITY (a rename does not move a row) means a pure rename — or a pure
+    // append — emits no spurious reorder; the reorder fires only when the row
+    // order genuinely diverges from the baseline.
+    const finalNameByOriginal = new Map(
+      rows.filter(row => row.originalName !== undefined).map(row => [row.originalName as string, row.name.trim()])
+    );
+    const baselineOrder = [
+      ...columns
+        .map(column => finalNameByOriginal.get(column.name))
+        .filter((name): name is string => name !== undefined),
+      ...rows.filter(row => row.originalName === undefined).map(row => row.name.trim()),
+    ];
+    const desiredOrder = rows.map(row => row.name.trim());
     const reordered =
-      orderedNames.length !== originalOrder.length || orderedNames.some((name, i) => name !== originalOrder[i]);
-    if (reordered) onReorderColumns(orderedNames);
-    onOpenChange(false);
+      desiredOrder.length !== baselineOrder.length || desiredOrder.some((name, i) => name !== baselineOrder[i]);
+
+    setSaving(true);
+    try {
+      // Sequence the sweep: every create/rename must commit before the reorder
+      // is issued, or the reorder can name a column the server does not yet
+      // hold and be rejected by its permutation check.
+      for (const row of rows) {
+        const trimmed = row.name.trim();
+        if (row.originalName === undefined) {
+          await onAddColumn(trimmed);
+        } else if (trimmed !== row.originalName) {
+          await onRenameColumn(row.originalName, trimmed);
+        }
+      }
+      if (reordered) await onReorderColumns(desiredOrder);
+      onOpenChange(false);
+    } catch {
+      // A failed step already surfaced its own toast in the consumer; keep the
+      // dialog open with the draft intact so the admin can retry.
+    } finally {
+      setSaving(false);
+    }
   };
 
   const requestDelete = (id: string) => {
@@ -158,10 +190,10 @@ export function TaskBoardColumnsDialog({
           />
 
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={saving}>
               {t('columns.cancel')}
             </Button>
-            <Button type="button" onClick={handleSave} disabled={hasErrors}>
+            <Button type="button" onClick={handleSave} disabled={hasErrors || saving} aria-busy={saving}>
               {t('columns.save')}
             </Button>
           </DialogFooter>
