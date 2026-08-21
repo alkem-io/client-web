@@ -39,7 +39,7 @@ export function TaskBoardColumn({
   return (
     <div className={cn('flex flex-col w-72 shrink-0 rounded-lg bg-muted/40 max-h-full', className)}>
       <div className="flex items-center gap-2 px-3 py-2 shrink-0">
-        <span className="text-card-title text-foreground truncate">{name}</span>
+        <span className="flex-1 min-w-0 truncate text-card-title text-foreground">{name}</span>
         <Badge variant="secondary" className="shrink-0">
           {count}
         </Badge>
@@ -54,9 +54,9 @@ export function TaskBoardColumn({
       {onAdd && (
         <div className="px-3 pt-2 pb-3 shrink-0">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="w-full justify-start gap-2 text-muted-foreground"
+            className="w-full justify-center gap-2 border-dashed bg-transparent text-muted-foreground"
             onClick={onAdd}
             aria-label={addLabel}
           >
