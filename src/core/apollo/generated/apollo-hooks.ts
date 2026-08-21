@@ -3268,6 +3268,73 @@ export const CalloutReactionsSummaryFragmentDoc = gql`
   }
 }
     `;
+export const TaskBoardCalloutFragmentDoc = gql`
+    fragment TaskBoardCallout on Callout {
+  id
+  authorization {
+    id
+    myPrivileges
+  }
+  settings {
+    contribution {
+      allowedTypes
+    }
+  }
+  classification {
+    id
+    tagsets {
+      id
+      name
+      allowedValues
+    }
+  }
+  taskColumnCounts {
+    column
+    count
+  }
+}
+    `;
+export const TaskBoardContributionFragmentDoc = gql`
+    fragment TaskBoardContribution on CalloutContribution {
+  id
+  sortOrder
+  classification {
+    id
+    tagsets {
+      id
+      name
+      tags
+    }
+  }
+  post {
+    id
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+    profile {
+      id
+      displayName
+      description
+      tagset {
+        id
+        tags
+      }
+    }
+    comments {
+      id
+      messagesCount
+    }
+  }
+}
+    `;
 export const SpaceExplorerSpaceFragmentDoc = gql`
     fragment SpaceExplorerSpace on Space {
   id
@@ -29281,6 +29348,321 @@ export type SpaceCollectionSubspacesQueryResult = Apollo.QueryResult<
 export function refetchSpaceCollectionSubspacesQuery(variables: SchemaTypes.SpaceCollectionSubspacesQueryVariables) {
   return { query: SpaceCollectionSubspacesDocument, variables: variables };
 }
+export const TaskBoardDataDocument = gql`
+    query TaskBoardData($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      ...TaskBoardCallout
+      contributions {
+        ...TaskBoardContribution
+      }
+    }
+  }
+}
+    ${TaskBoardCalloutFragmentDoc}
+${TaskBoardContributionFragmentDoc}`;
+
+/**
+ * __useTaskBoardDataQuery__
+ *
+ * To run a query within a React component, call `useTaskBoardDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTaskBoardDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTaskBoardDataQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useTaskBoardDataQuery(
+  baseOptions: Apollo.QueryHookOptions<SchemaTypes.TaskBoardDataQuery, SchemaTypes.TaskBoardDataQueryVariables> &
+    ({ variables: SchemaTypes.TaskBoardDataQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.TaskBoardDataQuery, SchemaTypes.TaskBoardDataQueryVariables>(
+    TaskBoardDataDocument,
+    options
+  );
+}
+export function useTaskBoardDataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<SchemaTypes.TaskBoardDataQuery, SchemaTypes.TaskBoardDataQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.TaskBoardDataQuery, SchemaTypes.TaskBoardDataQueryVariables>(
+    TaskBoardDataDocument,
+    options
+  );
+}
+export function useTaskBoardDataSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.TaskBoardDataQuery, SchemaTypes.TaskBoardDataQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.TaskBoardDataQuery, SchemaTypes.TaskBoardDataQueryVariables>(
+    TaskBoardDataDocument,
+    options
+  );
+}
+export type TaskBoardDataQueryHookResult = ReturnType<typeof useTaskBoardDataQuery>;
+export type TaskBoardDataLazyQueryHookResult = ReturnType<typeof useTaskBoardDataLazyQuery>;
+export type TaskBoardDataSuspenseQueryHookResult = ReturnType<typeof useTaskBoardDataSuspenseQuery>;
+export type TaskBoardDataQueryResult = Apollo.QueryResult<
+  SchemaTypes.TaskBoardDataQuery,
+  SchemaTypes.TaskBoardDataQueryVariables
+>;
+export function refetchTaskBoardDataQuery(variables: SchemaTypes.TaskBoardDataQueryVariables) {
+  return { query: TaskBoardDataDocument, variables: variables };
+}
+export const MoveTaskToColumnDocument = gql`
+    mutation MoveTaskToColumn($moveData: MoveTaskToColumnInput!) {
+  moveTaskToColumn(moveData: $moveData) {
+    ...TaskBoardContribution
+  }
+}
+    ${TaskBoardContributionFragmentDoc}`;
+export type MoveTaskToColumnMutationFn = Apollo.MutationFunction<
+  SchemaTypes.MoveTaskToColumnMutation,
+  SchemaTypes.MoveTaskToColumnMutationVariables
+>;
+
+/**
+ * __useMoveTaskToColumnMutation__
+ *
+ * To run a mutation, you first call `useMoveTaskToColumnMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMoveTaskToColumnMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moveTaskToColumnMutation, { data, loading, error }] = useMoveTaskToColumnMutation({
+ *   variables: {
+ *      moveData: // value for 'moveData'
+ *   },
+ * });
+ */
+export function useMoveTaskToColumnMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.MoveTaskToColumnMutation,
+    SchemaTypes.MoveTaskToColumnMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<SchemaTypes.MoveTaskToColumnMutation, SchemaTypes.MoveTaskToColumnMutationVariables>(
+    MoveTaskToColumnDocument,
+    options
+  );
+}
+export type MoveTaskToColumnMutationHookResult = ReturnType<typeof useMoveTaskToColumnMutation>;
+export type MoveTaskToColumnMutationResult = Apollo.MutationResult<SchemaTypes.MoveTaskToColumnMutation>;
+export type MoveTaskToColumnMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.MoveTaskToColumnMutation,
+  SchemaTypes.MoveTaskToColumnMutationVariables
+>;
+export const CreateTaskColumnOnCalloutDocument = gql`
+    mutation CreateTaskColumnOnCallout($columnData: CreateTaskColumnOnCalloutInput!) {
+  createTaskColumnOnCallout(columnData: $columnData) {
+    ...TaskBoardCallout
+  }
+}
+    ${TaskBoardCalloutFragmentDoc}`;
+export type CreateTaskColumnOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateTaskColumnOnCalloutMutation,
+  SchemaTypes.CreateTaskColumnOnCalloutMutationVariables
+>;
+
+/**
+ * __useCreateTaskColumnOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useCreateTaskColumnOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTaskColumnOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTaskColumnOnCalloutMutation, { data, loading, error }] = useCreateTaskColumnOnCalloutMutation({
+ *   variables: {
+ *      columnData: // value for 'columnData'
+ *   },
+ * });
+ */
+export function useCreateTaskColumnOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateTaskColumnOnCalloutMutation,
+    SchemaTypes.CreateTaskColumnOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateTaskColumnOnCalloutMutation,
+    SchemaTypes.CreateTaskColumnOnCalloutMutationVariables
+  >(CreateTaskColumnOnCalloutDocument, options);
+}
+export type CreateTaskColumnOnCalloutMutationHookResult = ReturnType<typeof useCreateTaskColumnOnCalloutMutation>;
+export type CreateTaskColumnOnCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateTaskColumnOnCalloutMutation>;
+export type CreateTaskColumnOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateTaskColumnOnCalloutMutation,
+  SchemaTypes.CreateTaskColumnOnCalloutMutationVariables
+>;
+export const UpdateTaskColumnOnCalloutDocument = gql`
+    mutation UpdateTaskColumnOnCallout($columnData: UpdateTaskColumnOnCalloutInput!) {
+  updateTaskColumnOnCallout(columnData: $columnData) {
+    ...TaskBoardCallout
+  }
+}
+    ${TaskBoardCalloutFragmentDoc}`;
+export type UpdateTaskColumnOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateTaskColumnOnCalloutMutation,
+  SchemaTypes.UpdateTaskColumnOnCalloutMutationVariables
+>;
+
+/**
+ * __useUpdateTaskColumnOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useUpdateTaskColumnOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTaskColumnOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTaskColumnOnCalloutMutation, { data, loading, error }] = useUpdateTaskColumnOnCalloutMutation({
+ *   variables: {
+ *      columnData: // value for 'columnData'
+ *   },
+ * });
+ */
+export function useUpdateTaskColumnOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateTaskColumnOnCalloutMutation,
+    SchemaTypes.UpdateTaskColumnOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateTaskColumnOnCalloutMutation,
+    SchemaTypes.UpdateTaskColumnOnCalloutMutationVariables
+  >(UpdateTaskColumnOnCalloutDocument, options);
+}
+export type UpdateTaskColumnOnCalloutMutationHookResult = ReturnType<typeof useUpdateTaskColumnOnCalloutMutation>;
+export type UpdateTaskColumnOnCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateTaskColumnOnCalloutMutation>;
+export type UpdateTaskColumnOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateTaskColumnOnCalloutMutation,
+  SchemaTypes.UpdateTaskColumnOnCalloutMutationVariables
+>;
+export const DeleteTaskColumnOnCalloutDocument = gql`
+    mutation DeleteTaskColumnOnCallout($columnData: DeleteTaskColumnOnCalloutInput!) {
+  deleteTaskColumnOnCallout(columnData: $columnData) {
+    ...TaskBoardCallout
+    contributions {
+      ...TaskBoardContribution
+    }
+  }
+}
+    ${TaskBoardCalloutFragmentDoc}
+${TaskBoardContributionFragmentDoc}`;
+export type DeleteTaskColumnOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteTaskColumnOnCalloutMutation,
+  SchemaTypes.DeleteTaskColumnOnCalloutMutationVariables
+>;
+
+/**
+ * __useDeleteTaskColumnOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useDeleteTaskColumnOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteTaskColumnOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteTaskColumnOnCalloutMutation, { data, loading, error }] = useDeleteTaskColumnOnCalloutMutation({
+ *   variables: {
+ *      columnData: // value for 'columnData'
+ *   },
+ * });
+ */
+export function useDeleteTaskColumnOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteTaskColumnOnCalloutMutation,
+    SchemaTypes.DeleteTaskColumnOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteTaskColumnOnCalloutMutation,
+    SchemaTypes.DeleteTaskColumnOnCalloutMutationVariables
+  >(DeleteTaskColumnOnCalloutDocument, options);
+}
+export type DeleteTaskColumnOnCalloutMutationHookResult = ReturnType<typeof useDeleteTaskColumnOnCalloutMutation>;
+export type DeleteTaskColumnOnCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteTaskColumnOnCalloutMutation>;
+export type DeleteTaskColumnOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteTaskColumnOnCalloutMutation,
+  SchemaTypes.DeleteTaskColumnOnCalloutMutationVariables
+>;
+export const UpdateTaskColumnsSortOrderOnCalloutDocument = gql`
+    mutation UpdateTaskColumnsSortOrderOnCallout($sortOrderData: UpdateTaskColumnsSortOrderOnCalloutInput!) {
+  updateTaskColumnsSortOrderOnCallout(sortOrderData: $sortOrderData) {
+    ...TaskBoardCallout
+  }
+}
+    ${TaskBoardCalloutFragmentDoc}`;
+export type UpdateTaskColumnsSortOrderOnCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutation,
+  SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutationVariables
+>;
+
+/**
+ * __useUpdateTaskColumnsSortOrderOnCalloutMutation__
+ *
+ * To run a mutation, you first call `useUpdateTaskColumnsSortOrderOnCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTaskColumnsSortOrderOnCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTaskColumnsSortOrderOnCalloutMutation, { data, loading, error }] = useUpdateTaskColumnsSortOrderOnCalloutMutation({
+ *   variables: {
+ *      sortOrderData: // value for 'sortOrderData'
+ *   },
+ * });
+ */
+export function useUpdateTaskColumnsSortOrderOnCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutation,
+    SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutation,
+    SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutationVariables
+  >(UpdateTaskColumnsSortOrderOnCalloutDocument, options);
+}
+export type UpdateTaskColumnsSortOrderOnCalloutMutationHookResult = ReturnType<
+  typeof useUpdateTaskColumnsSortOrderOnCalloutMutation
+>;
+export type UpdateTaskColumnsSortOrderOnCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutation>;
+export type UpdateTaskColumnsSortOrderOnCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutation,
+  SchemaTypes.UpdateTaskColumnsSortOrderOnCalloutMutationVariables
+>;
 export const FlowStateSearchDocument = gql`
     query FlowStateSearch($searchData: SearchInput!) {
   search(searchData: $searchData) {
