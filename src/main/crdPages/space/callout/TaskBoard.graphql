@@ -86,9 +86,16 @@ mutation CreateTaskColumnOnCallout($columnData: CreateTaskColumnOnCalloutInput!)
   }
 }
 
+# Rename re-points every task carrying the old column value to the new name
+# server-side, so the response re-selects the contributions to refresh their
+# cached task tags — otherwise the normalized cache keeps the old tag and every
+# card in the renamed column mis-groups into the first column until a reload.
 mutation UpdateTaskColumnOnCallout($columnData: UpdateTaskColumnOnCalloutInput!) {
   updateTaskColumnOnCallout(columnData: $columnData) {
     ...TaskBoardCallout
+    contributions {
+      ...TaskBoardContribution
+    }
   }
 }
 

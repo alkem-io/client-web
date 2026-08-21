@@ -29532,9 +29532,13 @@ export const UpdateTaskColumnOnCalloutDocument = gql`
     mutation UpdateTaskColumnOnCallout($columnData: UpdateTaskColumnOnCalloutInput!) {
   updateTaskColumnOnCallout(columnData: $columnData) {
     ...TaskBoardCallout
+    contributions {
+      ...TaskBoardContribution
+    }
   }
 }
-    ${TaskBoardCalloutFragmentDoc}`;
+    ${TaskBoardCalloutFragmentDoc}
+${TaskBoardContributionFragmentDoc}`;
 export type UpdateTaskColumnOnCalloutMutationFn = Apollo.MutationFunction<
   SchemaTypes.UpdateTaskColumnOnCalloutMutation,
   SchemaTypes.UpdateTaskColumnOnCalloutMutationVariables
