@@ -66,6 +66,13 @@ const buildSpace = (
     value,
     server?.collaborationCalloutPublished
   ),
+  collaborationCalloutReaction: channel(
+    type,
+    property,
+    'collaborationCalloutReaction',
+    value,
+    server?.collaborationCalloutReaction
+  ),
   collaborationCalloutPostContributionComment: channel(
     type,
     property,
@@ -121,6 +128,7 @@ const buildSpace = (
 const preserveSpace = (server: SpaceNotificationSettings | undefined) => ({
   communicationUpdates: preserve(server?.communicationUpdates),
   collaborationCalloutPublished: preserve(server?.collaborationCalloutPublished),
+  collaborationCalloutReaction: preserve(server?.collaborationCalloutReaction),
   collaborationCalloutPostContributionComment: preserve(server?.collaborationCalloutPostContributionComment),
   collaborationCalloutContributionCreated: preserve(server?.collaborationCalloutContributionCreated),
   collaborationCalloutComment: preserve(server?.collaborationCalloutComment),
