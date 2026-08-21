@@ -35,8 +35,12 @@ export type TaskBoardColumnsDialogProps = {
   onRenameColumn: (currentName: string, nextName: string) => Promise<void>;
   /** Persist a new left-to-right order (full name list). Rejects on server failure. */
   onReorderColumns: (orderedNames: string[]) => Promise<void>;
-  /** Delete a column by name (only after the confirm dialog). */
-  onDeleteColumn: (name: string) => void;
+  /**
+   * Delete a column by name. Fired during the Save sweep — never mid-edit — so a
+   * delete's refetch cannot reseed and discard the admin's other queued edits.
+   * Rejects on server failure so the sweep aborts and the dialog stays open.
+   */
+  onDeleteColumn: (name: string) => Promise<void>;
 };
 
 /**
@@ -62,6 +66,11 @@ export function TaskBoardColumnsDialog({
   // rows and reorder against the origin; freshly added rows have no
   // `originalName` and become creates on Save.
   const [rows, setRows] = useState<{ id: string; name: string; originalName?: string }[]>([]);
+  // Existing columns the admin queued for deletion. Their deletes fire only on
+  // Save (in the sweep), never immediately — so a delete's refetch can't reseed
+  // the draft and wipe queued renames/adds/reorders. Kept as original server
+  // names because that is what the delete mutation and the reorder baseline key on.
+  const [deletedOriginalNames, setDeletedOriginalNames] = useState<string[]>([]);
   const [pendingDelete, setPendingDelete] = useState<string | undefined>();
   const [nextRowId, setNextRowId] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -69,6 +78,7 @@ export function TaskBoardColumnsDialog({
   // Reseed the draft whenever the dialog opens or the server column set changes.
   useEffect(() => {
     setRows(columns.map(column => ({ id: `col:${column.name}`, name: column.name, originalName: column.name })));
+    setDeletedOriginalNames([]);
   }, [columns]);
 
   const validate = (row: { id: string; name: string }): string | undefined => {
@@ -96,13 +106,14 @@ export function TaskBoardColumnsDialog({
     if (hasErrors || saving) return;
 
     // The reorder must be a permutation of the column list the SERVER holds
-    // AFTER the creates/renames commit but BEFORE any reorder. That baseline is
-    // the ORIGINAL columns in their original relative order (each mapped to its
-    // final, possibly-renamed name) followed by newly added columns in creation
-    // order. Comparing the admin's desired row order against that baseline BY
-    // IDENTITY (a rename does not move a row) means a pure rename — or a pure
-    // append — emits no spurious reorder; the reorder fires only when the row
-    // order genuinely diverges from the baseline.
+    // AFTER the creates/renames/deletes commit but BEFORE any reorder. That
+    // baseline is the ORIGINAL columns still present (deletions dropped) in their
+    // original relative order (each mapped to its final, possibly-renamed name)
+    // followed by newly added columns in creation order. Comparing the admin's
+    // desired row order against that baseline BY IDENTITY (a rename does not move
+    // a row) means a pure rename — or a pure append, or a pure delete — emits no
+    // spurious reorder; the reorder fires only when the surviving row order
+    // genuinely diverges from the baseline.
     const finalNameByOriginal = new Map(
       rows.filter(row => row.originalName !== undefined).map(row => [row.originalName as string, row.name.trim()])
     );
@@ -118,9 +129,9 @@ export function TaskBoardColumnsDialog({
 
     setSaving(true);
     try {
-      // Sequence the sweep: every create/rename must commit before the reorder
-      // is issued, or the reorder can name a column the server does not yet
-      // hold and be rejected by its permutation check.
+      // Sequence the sweep: every create/rename/delete must commit before the
+      // reorder is issued, or the reorder can name a column the server does not
+      // yet hold (or still holds) and be rejected by its permutation check.
       for (const row of rows) {
         const trimmed = row.name.trim();
         if (row.originalName === undefined) {
@@ -128,6 +139,13 @@ export function TaskBoardColumnsDialog({
         } else if (trimmed !== row.originalName) {
           await onRenameColumn(row.originalName, trimmed);
         }
+      }
+      // Deletes run last among the value-changing ops. Each reflows its tasks to
+      // the first column server-side; deferring them here (rather than firing on
+      // the trash click) is what keeps the rest of the draft intact across the
+      // delete's refetch.
+      for (const name of deletedOriginalNames) {
+        await onDeleteColumn(name);
       }
       if (reordered) await onReorderColumns(desiredOrder);
       onOpenChange(false);
@@ -149,6 +167,15 @@ export function TaskBoardColumnsDialog({
       return;
     }
     setPendingDelete(row.originalName);
+  };
+
+  const confirmDelete = () => {
+    if (pendingDelete === undefined) return;
+    // Queue the delete for the Save sweep and drop the row from the draft. The
+    // mutation does not fire here, so no refetch reseeds the draft mid-edit.
+    setDeletedOriginalNames(prev => (prev.includes(pendingDelete) ? prev : [...prev, pendingDelete]));
+    setRows(prev => prev.filter(row => row.originalName !== pendingDelete));
+    setPendingDelete(undefined);
   };
 
   const deleteTarget = columns[0]?.name ?? '';
@@ -210,10 +237,7 @@ export function TaskBoardColumnsDialog({
         description={t('columns.delete.description', { name: pendingDelete ?? '', target: deleteTarget })}
         confirmLabel={t('columns.delete.confirm')}
         cancelLabel={t('columns.cancel')}
-        onConfirm={() => {
-          if (pendingDelete) onDeleteColumn(pendingDelete);
-          setPendingDelete(undefined);
-        }}
+        onConfirm={confirmDelete}
         onCancel={() => setPendingDelete(undefined)}
       />
     </>

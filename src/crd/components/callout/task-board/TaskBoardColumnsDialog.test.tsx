@@ -49,7 +49,7 @@ function renderDialog(overrides: Partial<TaskBoardColumnsDialogProps> = {}) {
     onAddColumn: vi.fn().mockResolvedValue(undefined),
     onRenameColumn: vi.fn().mockResolvedValue(undefined),
     onReorderColumns: vi.fn().mockResolvedValue(undefined),
-    onDeleteColumn: vi.fn(),
+    onDeleteColumn: vi.fn().mockResolvedValue(undefined),
     ...overrides,
   };
   render(<TaskBoardColumnsDialog {...props} />);
@@ -185,7 +185,7 @@ describe('TaskBoardColumnsDialog', () => {
     expect(props.onOpenChange).not.toHaveBeenCalled();
   });
 
-  it('confirms before deleting an existing column and reflows to the first', () => {
+  it('confirms before deleting an existing column and reflows to the first, firing the delete on Save', async () => {
     const props = renderDialog();
     act(() => (editorProps?.onDelete as (id: string) => void)('col:Doing'));
 
@@ -193,8 +193,72 @@ describe('TaskBoardColumnsDialog', () => {
     expect(confirmProps?.description).toContain('Doing');
     expect(confirmProps?.description).toContain('Backlog');
 
+    // Confirming only queues the delete: the mutation does NOT fire yet and the
+    // row disappears from the draft. Deferring the delete to the Save sweep is
+    // what keeps other queued edits from being clobbered by the delete refetch.
     fireEvent.click(screen.getByTestId('confirm-delete'));
+    expect(props.onDeleteColumn).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('row-col:Doing')).not.toBeInTheDocument();
+
+    await save();
     expect(props.onDeleteColumn).toHaveBeenCalledWith('Doing');
+    expect(props.onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('preserves queued rename + add across a delete, issuing all of them on Save', async () => {
+    const order: string[] = [];
+    const props = renderDialog({
+      onRenameColumn: vi.fn().mockImplementation(async () => {
+        order.push('rename');
+      }),
+      onAddColumn: vi.fn().mockImplementation(async () => {
+        order.push('add');
+      }),
+      onDeleteColumn: vi.fn().mockImplementation(async () => {
+        order.push('delete');
+      }),
+    });
+
+    // Queue a rename (Backlog→Icebox), an add (Review), then delete Doing.
+    act(() => (editorProps?.onRename as (id: string, name: string) => void)('col:Backlog', 'Icebox'));
+    act(() => (editorProps?.onAdd as () => void)());
+    act(() => (editorProps?.onRename as (id: string, name: string) => void)('new:0', 'Review'));
+    act(() => (editorProps?.onDelete as (id: string) => void)('col:Doing'));
+    fireEvent.click(screen.getByTestId('confirm-delete'));
+
+    await save();
+
+    // Every queued edit survives the delete and lands in the sweep.
+    expect(props.onRenameColumn).toHaveBeenCalledWith('Backlog', 'Icebox');
+    expect(props.onAddColumn).toHaveBeenCalledWith('Review');
+    expect(props.onDeleteColumn).toHaveBeenCalledWith('Doing');
+    // Deletes run after creates/renames.
+    expect(order).toEqual(['rename', 'add', 'delete']);
+    expect(props.onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('does not emit a reorder when a column is only deleted (surviving order unchanged)', async () => {
+    const props = renderDialog();
+    act(() => (editorProps?.onDelete as (id: string) => void)('col:Doing'));
+    fireEvent.click(screen.getByTestId('confirm-delete'));
+
+    await save();
+
+    expect(props.onDeleteColumn).toHaveBeenCalledWith('Doing');
+    expect(props.onReorderColumns).not.toHaveBeenCalled();
+  });
+
+  it('keeps the dialog open and preserves the draft when a delete fails on Save', async () => {
+    const props = renderDialog({
+      onDeleteColumn: vi.fn().mockRejectedValue(new Error('server rejected')),
+    });
+    act(() => (editorProps?.onDelete as (id: string) => void)('col:Doing'));
+    fireEvent.click(screen.getByTestId('confirm-delete'));
+
+    await save();
+
+    expect(props.onDeleteColumn).toHaveBeenCalledWith('Doing');
+    expect(props.onOpenChange).not.toHaveBeenCalledWith(false);
   });
 
   it('drops a never-persisted new row without a confirmation or a delete call', () => {

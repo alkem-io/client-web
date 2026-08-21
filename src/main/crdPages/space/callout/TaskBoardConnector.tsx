@@ -193,6 +193,9 @@ function TaskBoardBody({
           onDeleteColumn={name =>
             runColumnMutation(() => deleteColumn({ variables: { columnData: { calloutID: callout.id, name } } }))
           }
+          // The dialog fires deletes only during its Save sweep (alongside
+          // creates/renames/reorder), never on the trash click — so a delete's
+          // refetch never reseeds and discards the admin's other queued edits.
         />
       )}
       {addState !== undefined && (
