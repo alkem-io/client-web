@@ -33017,6 +33017,22 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Callout';
                 id: string;
+                classification?:
+                  | {
+                      __typename?: 'Classification';
+                      id: string;
+                      tagsets?:
+                        | Array<{
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
@@ -33801,6 +33817,22 @@ export type SpaceTemplateContentQuery = {
 export type CalloutTemplateContentFragment = {
   __typename?: 'Callout';
   id: string;
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      }
+    | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;

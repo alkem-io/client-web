@@ -2813,6 +2813,12 @@ export const MemoTemplateDetailsFragmentDoc = gql`
 export const CalloutTemplateContentFragmentDoc = gql`
     fragment CalloutTemplateContent on Callout {
   id
+  classification {
+    id
+    tagsets {
+      ...TagsetDetails
+    }
+  }
   framing {
     id
     profile {

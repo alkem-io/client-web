@@ -307,6 +307,24 @@ describe('mapFormToCalloutCreationInput — Tasks board', () => {
     const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'post' }), createOptions);
     expect(result.input.taskBoard).toBeUndefined();
   });
+
+  it('taskBoard with explicit columns sends them (board template round-trip)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: true, taskBoardColumns: [' A ', 'B', '', 'C'] }),
+      createOptions
+    );
+    // Trimmed and empty entries dropped; the template's column order is preserved.
+    expect(result.input.taskBoard).toEqual({ columns: ['A', 'B', 'C'] });
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('taskBoard columns are ignored when the board toggle is off', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: false, taskBoardColumns: ['A', 'B'], responseType: 'post' }),
+      createOptions
+    );
+    expect(result.input.taskBoard).toBeUndefined();
+  });
 });
 
 describe('mapFormToCalloutCreationInput — contribution settings', () => {

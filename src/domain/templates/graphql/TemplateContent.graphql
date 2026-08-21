@@ -65,6 +65,12 @@ query SpaceTemplateContent($spaceId: UUID!) {
 
 fragment CalloutTemplateContent on Callout {
   id
+  classification {
+    id
+    tagsets {
+      ...TagsetDetails
+    }
+  }
   framing {
     id
     profile {

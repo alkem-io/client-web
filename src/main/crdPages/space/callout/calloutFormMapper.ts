@@ -228,10 +228,12 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     sendNotification: values.notifyMembers && options.visibility !== CalloutVisibility.Draft,
   };
 
-  // Tasks board: send an empty input so the server seeds the default column set.
-  // No custom-columns UI in the MVP — columns are configured post-create.
+  // Tasks board: when the form carries explicit columns (a board template was
+  // applied), send them so the new board reproduces the template's column set;
+  // otherwise send an empty input so the server seeds the default columns.
   if (values.taskBoard) {
-    callout.taskBoard = {};
+    const columns = values.taskBoardColumns.map(column => column.trim()).filter(Boolean);
+    callout.taskBoard = columns.length > 0 ? { columns } : {};
   }
 
   // Contribution defaults — spec FR-40..46, D5. Mirror MUI's response-type

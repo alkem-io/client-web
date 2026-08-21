@@ -21,6 +21,7 @@ import {
   PollResultsVisibility,
   type UpdateCalloutEntityInput,
 } from '@/core/apollo/generated/graphql-schema';
+import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import {
@@ -127,6 +128,13 @@ export function calloutTemplateContentToFormValues(
   callout: CalloutTemplateContentFragment
 ): Partial<CalloutFormValues> {
   const { framing, settings, contributionDefaults } = callout;
+  // Board-ness lives on the callout's classification: a template saved from a
+  // Tasks board carries the reserved TASK tagset, whose `allowedValues` are the
+  // ordered columns. Restore the create-form toggle and its columns so applying
+  // the template reproduces the board (not a plain posts callout). A template
+  // without the marker leaves `taskBoard` at the form default (off).
+  const taskTagset = callout.classification?.tagsets?.find(tagset => tagset.name === TASK_TAGSET_NAME);
+  const taskBoardColumns = taskTagset?.allowedValues ?? [];
   const framingChip = FRAMING_TYPE_TO_CHIP[framing.type];
   const collaboraDocumentType = framing.collaboraDocument?.documentType;
   // `responseType` is the user's chosen contribution type — it must come from
@@ -179,6 +187,8 @@ export function calloutTemplateContentToFormValues(
         sortOrder: v.sortOrder,
       })) ?? [],
     ...(collaboraDocumentType ? { collaboraDocumentType } : {}),
+    taskBoard: Boolean(taskTagset),
+    taskBoardColumns,
     responseType,
     allowedActors: allowedActorsFromServer(settings.contribution.canAddContributions),
     contributionCommentsEnabled: settings.contribution.commentsEnabled,
