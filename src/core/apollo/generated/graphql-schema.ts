@@ -14782,6 +14782,15 @@ export type CalloutContentQuery = {
             postDescription?: string | undefined;
             whiteboardContent?: string | undefined;
           };
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                tagsets?:
+                  | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                  | undefined;
+              }
+            | undefined;
           settings: {
             __typename?: 'CalloutSettings';
             visibility: CalloutVisibility;

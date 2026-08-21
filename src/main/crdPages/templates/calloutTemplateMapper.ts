@@ -56,11 +56,14 @@ export function calloutFormValuesToCreateCalloutInput(
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
   });
   // Pick only the fields `CreateCalloutInput` accepts (drops `sendNotification` / `classification`,
-  // which are concrete-callout concerns and meaningless on a template).
+  // which are concrete-callout concerns and meaningless on a template). `taskBoard` IS forwarded:
+  // it is how board-ness (and the column list) is captured into a callout template — without it a
+  // Tasks board saved as a template would round-trip to a plain posts callout.
   return {
     framing: input.framing,
     settings: input.settings,
     contributionDefaults: input.contributionDefaults,
+    ...(input.taskBoard ? { taskBoard: input.taskBoard } : {}),
   };
 }
 

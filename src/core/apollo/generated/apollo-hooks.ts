@@ -7819,6 +7819,14 @@ export const CalloutContentDocument = gql`
         postDescription
         whiteboardContent
       }
+      classification {
+        id
+        tagsets {
+          id
+          name
+          allowedValues
+        }
+      }
       settings {
         ...CalloutSettingsFull
       }
