@@ -4,6 +4,7 @@ import {
   ArrowUp,
   ArrowUpToLine,
   Bookmark,
+  Columns3,
   Eye,
   EyeOff,
   GripVertical,
@@ -33,6 +34,8 @@ type CalloutContextMenuProps = {
   /** Tooltip explaining why Save-as-Template is disabled. */
   saveAsTemplateDisabledReason?: string;
   onEdit?: () => void;
+  /** Tasks board only: open the column-management dialog. Gated on edit capability. */
+  onManageColumns?: () => void;
   /** Replace the backing file of a Collabora (OfficeDocs) framing document. */
   onReplace?: () => void;
   onPublish?: () => void;
@@ -56,6 +59,7 @@ export function CalloutContextMenu({
   saveAsTemplateDisabled,
   saveAsTemplateDisabledReason,
   onEdit,
+  onManageColumns,
   onReplace,
   onPublish,
   onUnpublish,
@@ -87,6 +91,13 @@ export function CalloutContextMenu({
           <DropdownMenuItem onClick={onEdit}>
             <Pencil className="w-4 h-4 mr-2" aria-hidden="true" />
             {t('contextMenu.edit')}
+          </DropdownMenuItem>
+        )}
+
+        {editable && onManageColumns && (
+          <DropdownMenuItem onClick={onManageColumns}>
+            <Columns3 className="w-4 h-4 mr-2" aria-hidden="true" />
+            {t('taskBoard.manageColumns')}
           </DropdownMenuItem>
         )}
 

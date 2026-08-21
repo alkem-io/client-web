@@ -5,6 +5,7 @@
   "columns": {
     "manage": "Gérer les colonnes",
     "title": "Colonnes du tableau des tâches",
+    "description": "Ajoutez, renommez, réordonnez et supprimez les colonnes de ce tableau des tâches.",
     "add": "Ajouter une colonne",
     "namePlaceholder": "Nom de la colonne",
     "save": "Enregistrer",
@@ -20,7 +21,10 @@
       "tooLong": "Le nom doit comporter moins de 128 caractères.",
       "comma": "Les noms de colonne ne peuvent pas contenir de virgules.",
       "duplicate": "Cette colonne existe déjà."
-    }
+    },
+    "dragLabel": "Réordonner la colonne",
+    "deleteLabel": "Supprimer la colonne",
+    "saving": "Enregistrement…"
   },
   "create": {
     "option": "Tableau de tâches",

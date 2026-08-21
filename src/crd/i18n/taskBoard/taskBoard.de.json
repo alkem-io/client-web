@@ -5,6 +5,7 @@
   "columns": {
     "manage": "Spalten verwalten",
     "title": "Spalten des Aufgabenboards",
+    "description": "Spalten dieses Aufgabenboards hinzufügen, umbenennen, neu anordnen und entfernen.",
     "add": "Spalte hinzufügen",
     "namePlaceholder": "Spaltenname",
     "save": "Speichern",
@@ -20,7 +21,10 @@
       "tooLong": "Der Name muss weniger als 128 Zeichen haben.",
       "comma": "Spaltennamen dürfen keine Kommas enthalten.",
       "duplicate": "Diese Spalte existiert bereits."
-    }
+    },
+    "dragLabel": "Spalte neu anordnen",
+    "deleteLabel": "Spalte löschen",
+    "saving": "Speichern…"
   },
   "create": {
     "option": "Aufgabenboard",

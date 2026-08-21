@@ -5,6 +5,7 @@
   "columns": {
     "manage": "Manage columns",
     "title": "Task board columns",
+    "description": "Add, rename, reorder, and remove the columns of this task board.",
     "add": "Add column",
     "namePlaceholder": "Column name",
     "save": "Save",
@@ -20,7 +21,10 @@
       "tooLong": "Keep the name under 128 characters.",
       "comma": "Column names can't contain commas.",
       "duplicate": "That column already exists."
-    }
+    },
+    "dragLabel": "Reorder column",
+    "deleteLabel": "Delete column",
+    "saving": "Saving…"
   },
   "create": {
     "option": "Tasks board",

@@ -5,6 +5,7 @@
   "columns": {
     "manage": "Kolommen beheren",
     "title": "Kolommen van het taakbord",
+    "description": "Voeg kolommen van dit taakbord toe, hernoem, herorden en verwijder ze.",
     "add": "Kolom toevoegen",
     "namePlaceholder": "Kolomnaam",
     "save": "Opslaan",
@@ -20,7 +21,10 @@
       "tooLong": "Houd de naam onder de 128 tekens.",
       "comma": "Kolomnamen mogen geen komma's bevatten.",
       "duplicate": "Die kolom bestaat al."
-    }
+    },
+    "dragLabel": "Kolom herordenen",
+    "deleteLabel": "Kolom verwijderen",
+    "saving": "Opslaan…"
   },
   "create": {
     "option": "Takenbord",

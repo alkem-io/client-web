@@ -4,10 +4,28 @@ import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/g
 
 const useTaskBoardDataQuery = vi.fn();
 const moveTaskMock = vi.fn();
+const createColumnMock = vi.fn();
+const renameColumnMock = vi.fn();
+const deleteColumnMock = vi.fn();
+const reorderColumnsMock = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
   useMoveTaskToColumnMutation: () => [moveTaskMock, {}] as const,
+  useCreateTaskColumnOnCalloutMutation: () => [createColumnMock, {}] as const,
+  useUpdateTaskColumnOnCalloutMutation: () => [renameColumnMock, {}] as const,
+  useDeleteTaskColumnOnCalloutMutation: () => [deleteColumnMock, {}] as const,
+  useUpdateTaskColumnsSortOrderOnCalloutMutation: () => [reorderColumnsMock, {}] as const,
+}));
+
+// Capture the props the column-management dialog is mounted with so the wiring
+// of the four column mutations can be asserted without a real dialog render.
+let capturedColumnsProps: Record<string, unknown> | undefined;
+vi.mock('@/crd/components/callout/task-board/TaskBoardColumnsDialog', () => ({
+  TaskBoardColumnsDialog: (props: Record<string, unknown>) => {
+    capturedColumnsProps = props;
+    return props.open ? <div data-testid="columns-dialog" /> : null;
+  },
 }));
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn() } }));
@@ -87,8 +105,13 @@ function boardCallout(overrides: Record<string, unknown> = {}) {
 afterEach(() => {
   useTaskBoardDataQuery.mockReset();
   moveTaskMock.mockReset();
+  createColumnMock.mockReset();
+  renameColumnMock.mockReset();
+  deleteColumnMock.mockReset();
+  reorderColumnsMock.mockReset();
   capturedViewProps = undefined;
   capturedAddProps = undefined;
+  capturedColumnsProps = undefined;
 });
 
 describe('TaskBoardConnector', () => {
@@ -217,5 +240,57 @@ describe('TaskBoardConnector', () => {
     const dialog = screen.getByTestId('add-dialog');
     expect(dialog.getAttribute('data-column')).toBe('Done');
     expect(capturedAddProps).toMatchObject({ calloutId: 'callout-1', taskColumn: 'Done' });
+  });
+
+  it('shows the manage-columns affordance only with the UPDATE privilege', () => {
+    useTaskBoardDataQuery.mockReturnValue({
+      data: { lookup: { callout: boardCallout({ authorization: { id: 'a', myPrivileges: [] } }) } },
+    });
+    const { rerender } = render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(screen.queryByText('columns.manage')).not.toBeInTheDocument();
+
+    useTaskBoardDataQuery.mockReturnValue({
+      data: {
+        lookup: {
+          callout: boardCallout({ authorization: { id: 'a', myPrivileges: [AuthorizationPrivilege.Update] } }),
+        },
+      },
+    });
+    rerender(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(screen.getByText('columns.manage')).toBeInTheDocument();
+  });
+
+  it('feeds the dialog the columns from the task tagset and wires the four mutations', () => {
+    useTaskBoardDataQuery.mockReturnValue({
+      data: {
+        lookup: {
+          callout: boardCallout({ authorization: { id: 'a', myPrivileges: [AuthorizationPrivilege.Update] } }),
+        },
+      },
+    });
+    render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+
+    // Columns come from the tagset's allowedValues, in order.
+    expect(capturedColumnsProps?.columns).toEqual([{ name: 'Backlog' }, { name: 'Done' }]);
+
+    (capturedColumnsProps?.onAddColumn as (name: string) => void)('Review');
+    expect(createColumnMock).toHaveBeenCalledWith({
+      variables: { columnData: { calloutID: 'callout-1', name: 'Review' } },
+    });
+
+    (capturedColumnsProps?.onRenameColumn as (a: string, b: string) => void)('Done', 'Shipped');
+    expect(renameColumnMock).toHaveBeenCalledWith({
+      variables: { columnData: { calloutID: 'callout-1', currentName: 'Done', newName: 'Shipped' } },
+    });
+
+    (capturedColumnsProps?.onReorderColumns as (names: string[]) => void)(['Done', 'Backlog']);
+    expect(reorderColumnsMock).toHaveBeenCalledWith({
+      variables: { sortOrderData: { calloutID: 'callout-1', columnNames: ['Done', 'Backlog'] } },
+    });
+
+    (capturedColumnsProps?.onDeleteColumn as (name: string) => void)('Done');
+    expect(deleteColumnMock).toHaveBeenCalledWith({
+      variables: { columnData: { calloutID: 'callout-1', name: 'Done' } },
+    });
   });
 });

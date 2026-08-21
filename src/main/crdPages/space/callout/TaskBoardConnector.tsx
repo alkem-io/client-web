@@ -1,14 +1,24 @@
+import { Columns3 } from 'lucide-react';
 import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { useMoveTaskToColumnMutation, useTaskBoardDataQuery } from '@/core/apollo/generated/apollo-hooks';
+import {
+  useCreateTaskColumnOnCalloutMutation,
+  useDeleteTaskColumnOnCalloutMutation,
+  useMoveTaskToColumnMutation,
+  useTaskBoardDataQuery,
+  useUpdateTaskColumnOnCalloutMutation,
+  useUpdateTaskColumnsSortOrderOnCalloutMutation,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   type TaskBoardCalloutFragment,
   type TaskBoardContributionFragment,
 } from '@/core/apollo/generated/graphql-schema';
+import { TaskBoardColumnsDialog } from '@/crd/components/callout/task-board/TaskBoardColumnsDialog';
 import { TaskBoardView } from '@/crd/components/callout/task-board/TaskBoardView';
-import { isTaskBoard, TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
+import { getBoardColumns, isTaskBoard, TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
+import { Button } from '@/crd/primitives/button';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { applyMoveToCounts, contributionColumnTag, mapTaskBoardColumns } from './taskBoardMapper';
 
@@ -59,15 +69,22 @@ function TaskBoardBody({
 }) {
   const { t } = useTranslation('crd-taskBoard');
   const [moveTask] = useMoveTaskToColumnMutation();
+  const [createColumn] = useCreateTaskColumnOnCalloutMutation();
+  const [renameColumn] = useUpdateTaskColumnOnCalloutMutation();
+  const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation();
+  const [reorderColumns] = useUpdateTaskColumnsSortOrderOnCalloutMutation();
   // Creation dialog state: `undefined` closed; a string opens the existing post
   // creation flow pre-targeted at that column.
   const [addColumn, setAddColumn] = useState<string | undefined>();
+  const [columnsOpen, setColumnsOpen] = useState(false);
 
   const privileges = callout.authorization?.myPrivileges ?? [];
   const canMove = privileges.includes(AuthorizationPrivilege.MoveTask);
   const canAdd = privileges.includes(AuthorizationPrivilege.Contribute);
+  const canEditColumns = privileges.includes(AuthorizationPrivilege.Update);
 
   const columns = mapTaskBoardColumns(callout, contributions);
+  const columnNames = getBoardColumns({ classification: { tagsets: callout.classification?.tagsets } });
 
   const handleMoveTask = (contributionId: string, toColumn: string) => {
     const contribution = contributions.find(item => item.id === contributionId);
@@ -118,6 +135,14 @@ function TaskBoardBody({
 
   return (
     <>
+      {canEditColumns && (
+        <div className="mb-2 flex justify-end">
+          <Button type="button" variant="outline" size="sm" className="gap-2" onClick={() => setColumnsOpen(true)}>
+            <Columns3 aria-hidden="true" className="size-4" />
+            {t('columns.manage')}
+          </Button>
+        </div>
+      )}
       <TaskBoardView
         columns={columns}
         canAdd={canAdd}
@@ -128,6 +153,27 @@ function TaskBoardBody({
         onOpenTask={onOpenTask}
         onMoveTask={handleMoveTask}
       />
+      {canEditColumns && (
+        <TaskBoardColumnsDialog
+          open={columnsOpen}
+          onOpenChange={setColumnsOpen}
+          columns={columnNames.map(name => ({ name }))}
+          onAddColumn={name => {
+            void createColumn({ variables: { columnData: { calloutID: callout.id, name } } });
+          }}
+          onRenameColumn={(currentName, nextName) => {
+            void renameColumn({ variables: { columnData: { calloutID: callout.id, currentName, newName: nextName } } });
+          }}
+          onReorderColumns={orderedNames => {
+            void reorderColumns({
+              variables: { sortOrderData: { calloutID: callout.id, columnNames: orderedNames } },
+            });
+          }}
+          onDeleteColumn={name => {
+            void deleteColumn({ variables: { columnData: { calloutID: callout.id, name } } });
+          }}
+        />
+      )}
       {addColumn !== undefined && (
         // Reuse the existing post creation dialog, pre-targeted at the picked
         // column. The refetch of TaskBoardData (inside the dialog) surfaces the

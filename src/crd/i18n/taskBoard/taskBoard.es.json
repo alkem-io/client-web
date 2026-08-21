@@ -5,6 +5,7 @@
   "columns": {
     "manage": "Gestionar columnas",
     "title": "Columnas del tablero de tareas",
+    "description": "Añade, renombra, reordena y elimina las columnas de este tablero de tareas.",
     "add": "Añadir columna",
     "namePlaceholder": "Nombre de la columna",
     "save": "Guardar",
@@ -20,7 +21,10 @@
       "tooLong": "El nombre debe tener menos de 128 caracteres.",
       "comma": "Los nombres de columna no pueden contener comas.",
       "duplicate": "Esa columna ya existe."
-    }
+    },
+    "dragLabel": "Reordenar columna",
+    "deleteLabel": "Eliminar columna",
+    "saving": "Guardando…"
   },
   "create": {
     "option": "Tablero de tareas",
