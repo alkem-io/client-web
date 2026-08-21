@@ -16,7 +16,11 @@
     "intro": "Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.",
     "acceptTerms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
     "openTerms": "Open Terms of Use in a new tab",
-    "openPrivacy": "Open Privacy Policy in a new tab"
+    "openPrivacy": "Open Privacy Policy in a new tab",
+    "signpost": {
+      "warning": "You may already have an account. Sign in instead to keep everything in one place.",
+      "signInAction": "Go to sign in"
+    }
   },
   "recovery": {
     "title": "Password recovery",

@@ -16,7 +16,11 @@
     "intro": "Alkemio is ontworpen ten dienste van de samenleving. Lees en accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy> voordat je verdergaat.",
     "acceptTerms": "Ik accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
     "openTerms": "Open de Gebruiksvoorwaarden in een nieuw tabblad",
-    "openPrivacy": "Open het Privacybeleid in een nieuw tabblad"
+    "openPrivacy": "Open het Privacybeleid in een nieuw tabblad",
+    "signpost": {
+      "warning": "Mogelijk heb je al een account. Log liever in om alles op één plek te houden.",
+      "signInAction": "Ga naar inloggen"
+    }
   },
   "recovery": {
     "title": "Wachtwoordherstel",
