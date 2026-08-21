@@ -24,8 +24,22 @@ vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
 // Render a cheap sentinel for the login screen so we can assert whether it
 // mounted without pulling in the full CRD auth UI / Kratos stack.
 vi.mock('@/crd/components/auth/LoginCard', () => ({
-  LoginCard: ({ descriptor }: { descriptor?: { flowType?: string } }) => (
-    <div data-testid="crd-login-card">{descriptor?.flowType ?? 'no-descriptor'}</div>
+  LoginCard: ({
+    descriptor,
+    notice,
+  }: {
+    descriptor?: { flowType?: string };
+    notice?: { text: string; actionLabel: string; actionHref: string };
+  }) => (
+    <div data-testid="crd-login-card">
+      {descriptor?.flowType ?? 'no-descriptor'}
+      {notice ? (
+        <div data-testid="lockout-notice">
+          <span>{notice.text}</span>
+          <a href={notice.actionHref}>{notice.actionLabel}</a>
+        </div>
+      ) : null}
+    </div>
   ),
 }));
 vi.mock('./AuthShellWrapper', () => ({
@@ -53,7 +67,9 @@ vi.mock('./passkeyTrigger', () => ({
   invokePasskeyTrigger: vi.fn(),
   PasskeyTriggerError: class extends Error {},
 }));
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+}));
 
 const renderRoute = () =>
   render(
@@ -98,6 +114,35 @@ describe('LoginCrdRoute', () => {
     renderRoute();
 
     expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+  });
+
+  it('a lockout arrival renders the notice instead of redirecting into the OIDC entry', () => {
+    // The login-backoff proxy 303s a locked-out browser to a flow-less
+    // /login?lockout=true&retry_after=N. Treating that as a fresh OIDC entry
+    // discarded the params before the notice could render (the silent-lockout
+    // walk finding) — the page must stay put and explain.
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'lockout=true&retry_after=120';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    const notice = screen.getByTestId('lockout-notice');
+    expect(notice).toHaveTextContent('authentication.lockout');
+    expect(notice.querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+  });
+
+  it('a lockout arrival keeps the pending returnUrl in the retry action', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'lockout=true&retry_after=120&returnUrl=https%3A%2F%2Fsandbox-alkem.io%2Fhome';
+
+    renderRoute();
+
+    expect(screen.getByTestId('lockout-notice').querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome'
+    );
   });
 
   it('OIDC entry hands off to the apex BFF absolutely, not the current (identity) subdomain', () => {

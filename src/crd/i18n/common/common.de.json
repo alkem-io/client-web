@@ -157,7 +157,8 @@
     "sign-in": "Please sign in to see the users that are associated with this $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
+    "lockout": "Dein Konto wurde wegen zu vieler fehlgeschlagener Anmeldeversuche vorübergehend gesperrt. Versuche es in {{duration}} erneut.",
+    "lockoutRetry": "Erneut versuchen",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
@@ -1012,7 +1013,7 @@
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
-      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "oidc-account-linking-conflict": "Du hast versucht, mit {{provider}} fortzufahren, aber es existiert bereits ein Konto mit dieser E-Mail-Adresse. Melde dich unten bei diesem Konto an, um zu bestätigen, dass du es bist - {{provider}} wird dann mit dem Konto verbunden und du kannst dich künftig auf beide Arten anmelden.",
       "pick-password": "Pick a password for your $t(common.account)",
       "property-missing": "{{field}} is required.",
       "recovery-flow-expired": "Der Bestätigungslink ist abgelaufen. Bitte fordern Sie einen neuen an, indem Sie Ihre E-Mail erneut senden.",

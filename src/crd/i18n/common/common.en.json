@@ -157,7 +157,8 @@
     "sign-in": "Please sign in to see the users that are associated with this $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
+    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{duration}}.",
+    "lockoutRetry": "Try again",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
@@ -1012,7 +1013,7 @@
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
-      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "oidc-account-linking-conflict": "You tried to continue with {{provider}}, but an account with that email already exists. Sign in to that account below to confirm it's you - {{provider}} will then be connected to it, and you can use either sign-in method from now on.",
       "pick-password": "Pick a password for your $t(common.account)",
       "property-missing": "{{field}} is required.",
       "recovery-flow-expired": "This password reset link has expired. Please request a new one by submitting your email once again.",
