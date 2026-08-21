@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Download, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
@@ -28,6 +28,8 @@ export type ApplicationFormEditorProps = {
   onQuestionMoveUp: (index: number) => void;
   onQuestionMoveDown: (index: number) => void;
   onSave: () => void;
+  onExportApplications?: () => void;
+  exportDisabled?: boolean;
   className?: string;
 } & MarkdownUploadProps;
 
@@ -44,6 +46,8 @@ export function ApplicationFormEditor({
   onQuestionMoveUp,
   onQuestionMoveDown,
   onSave,
+  onExportApplications,
+  exportDisabled,
   className,
   onImageUpload,
   iframeAllowedUrls,
@@ -70,10 +74,25 @@ export function ApplicationFormEditor({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <span className="text-body-emphasis">{t('settings.applicationForm.questionsLabel')}</span>
-          <Button type="button" variant="outline" size="sm" onClick={onQuestionAdd} disabled={loading}>
-            <Plus aria-hidden="true" className="size-3.5 mr-1.5" />
-            {t('settings.applicationForm.addQuestion')}
-          </Button>
+          <div className="flex items-center gap-2">
+            {onExportApplications && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={onExportApplications}
+                disabled={exportDisabled}
+              >
+                <Download aria-hidden="true" className="size-3.5" />
+                {t('settings.applicationForm.export')}
+              </Button>
+            )}
+            <Button type="button" variant="outline" size="sm" onClick={onQuestionAdd} disabled={loading}>
+              <Plus aria-hidden="true" className="size-3.5 mr-1.5" />
+              {t('settings.applicationForm.addQuestion')}
+            </Button>
+          </div>
         </div>
 
         {questions.length === 0 && (

@@ -13,6 +13,12 @@ export type BreadcrumbTrailItem = {
   label: string;
   href?: string;
   icon?: ComponentType<{ className?: string; 'aria-hidden'?: boolean }>;
+  /**
+   * Space/subspace identity image rendered as a small rounded square before the
+   * label (L0 hops pass the cardBanner, subspaces their avatar). Falls back to
+   * initials when `src` is missing. Takes precedence over `icon`.
+   */
+  avatar?: { src?: string; initials: string };
 };
 
 type BreadcrumbsTrailProps = {
@@ -34,7 +40,20 @@ export function BreadcrumbsTrail({ items, className }: BreadcrumbsTrailProps) {
             <Fragment key={`${item.label}|${item.href ?? ''}`}>
               {index > 0 && <BreadcrumbSeparator />}
               <BreadcrumbItem>
-                {Icon && <Icon aria-hidden={true} className="size-3.5 shrink-0" />}
+                {item.avatar ? (
+                  <span
+                    aria-hidden="true"
+                    className="flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-primary/15 text-primary text-badge"
+                  >
+                    {item.avatar.src ? (
+                      <img src={item.avatar.src} alt="" className="size-full object-cover" />
+                    ) : (
+                      item.avatar.initials
+                    )}
+                  </span>
+                ) : (
+                  Icon && <Icon aria-hidden={true} className="size-3.5 shrink-0" />
+                )}
                 {isLast ? (
                   <BreadcrumbPage className="font-medium">{item.label}</BreadcrumbPage>
                 ) : item.href ? (

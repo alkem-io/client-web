@@ -192,10 +192,12 @@
     "openWhiteboard": "Whiteboard openen",
     "openMemo": "Memo openen",
     "openDocument": "Document openen",
+    "openDocumentPdf": "Bekijken",
     "document": "Document",
     "documentText": "Tekstdocument",
     "documentSpreadsheet": "Spreadsheet",
     "documentPresentation": "Presentatie",
+    "documentPdf": "PDF",
     "addDocument": "Document toevoegen",
     "defaultDocumentName": "Nieuw document",
     "createDocument": "Nieuw document aanmaken",
@@ -204,7 +206,7 @@
     "createNew": "Nieuw maken",
     "documentImportOr": "of",
     "documentImportHint": "Sleep een bestand of klik om te uploaden",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx tot {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf tot {{cap}} MB",
     "documentReplaceAccepts": "{{ext}} tot {{cap}} MB",
     "documentImportRemoveFile": "Bestand verwijderen",
     "documentImportErrorUnsupported": "Dit bestandstype wordt niet ondersteund. Probeer {{formats}}.",
@@ -324,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
-    "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
     "filterLead": "Lead",
@@ -1033,5 +1034,8 @@
     "hiddenBadge": "Not shown on the Space page",
     "editInSettings": "Edit in Settings",
     "sectionTitle": "Classificaties"
+  },
+  "parentStack": {
+    "goTo": "Ga naar {{name}}"
   }
 }

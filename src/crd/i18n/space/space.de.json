@@ -192,10 +192,12 @@
     "openWhiteboard": "Whiteboard öffnen",
     "openMemo": "Memo öffnen",
     "openDocument": "Dokument öffnen",
+    "openDocumentPdf": "Ansehen",
     "document": "Dokument",
     "documentText": "Textdokument",
     "documentSpreadsheet": "Tabellenkalkulation",
     "documentPresentation": "Präsentation",
+    "documentPdf": "PDF",
     "addDocument": "Dokument hinzufügen",
     "defaultDocumentName": "Neues Dokument",
     "createDocument": "Neues Dokument erstellen",
@@ -204,7 +206,7 @@
     "createNew": "Neu erstellen",
     "documentImportOr": "oder",
     "documentImportHint": "Datei hierher ziehen oder klicken zum Hochladen",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx bis zu {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf bis zu {{cap}} MB",
     "documentReplaceAccepts": "{{ext}} bis zu {{cap}} MB",
     "documentImportRemoveFile": "Datei entfernen",
     "documentImportErrorUnsupported": "Dieser Dateityp wird nicht unterstützt. Probieren Sie {{formats}}.",
@@ -324,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} Mitglieder und {{organizations}} Organisationen in diesem Bereich.",
-    "inviteMember": "Mitglied einladen",
     "search": "Mitglieder oder Organisationen suchen...",
     "filterAll": "Alle",
     "filterLead": "Leiter",
@@ -1033,5 +1034,8 @@
     "hiddenBadge": "Not shown on the Space page",
     "editInSettings": "Edit in Settings",
     "sectionTitle": "Klassifikationen"
+  },
+  "parentStack": {
+    "goTo": "Gehe zu {{name}}"
   }
 }

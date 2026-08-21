@@ -79,14 +79,14 @@ function SortableTile({
         {...listeners}
         {...attributes}
         disabled={disabled}
-        className="absolute top-1 left-1 size-6 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center opacity-0 group-hover/mgtile:opacity-100 focus-visible:opacity-100 transition-opacity cursor-grab touch-none text-muted-foreground hover:text-foreground disabled:cursor-default disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="absolute top-1 left-1 size-6 rounded-full bg-card/90 border border-border shadow-sm flex items-center justify-center opacity-0 group-hover/mgtile:opacity-100 focus-visible:opacity-100 transition-opacity cursor-grab touch-none text-muted-foreground hover:text-foreground disabled:cursor-default disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={dragLabel}
       >
         <GripVertical className="size-3.5" aria-hidden="true" />
       </button>
       <button
         type="button"
-        className="absolute top-1 right-1 size-6 rounded-full bg-background/90 border border-border shadow-sm flex items-center justify-center opacity-0 group-hover/mgtile:opacity-100 focus-visible:opacity-100 transition-opacity text-destructive hover:bg-destructive hover:text-destructive-foreground disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="absolute top-1 right-1 size-6 rounded-full bg-card/90 border border-border shadow-sm flex items-center justify-center opacity-0 group-hover/mgtile:opacity-100 focus-visible:opacity-100 transition-opacity text-destructive hover:bg-destructive hover:text-destructive-foreground disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         disabled={disabled}
         onClick={onDelete}
         aria-label={deleteLabel}

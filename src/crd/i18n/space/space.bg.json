@@ -192,10 +192,12 @@
     "openWhiteboard": "Отвори дъска",
     "openMemo": "Отвори бележка",
     "openDocument": "Отвори документ",
+    "openDocumentPdf": "Преглед",
     "document": "Документ",
     "documentText": "Текстов документ",
     "documentSpreadsheet": "Електронна таблица",
     "documentPresentation": "Презентация",
+    "documentPdf": "PDF",
     "addDocument": "Добави документ",
     "defaultDocumentName": "Нов документ",
     "createDocument": "Създай нов документ",
@@ -204,7 +206,7 @@
     "createNew": "Създай нов",
     "documentImportOr": "или",
     "documentImportHint": "Плъзнете файл или щракнете, за да качите",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx до {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf до {{cap}} MB",
     "documentReplaceAccepts": "{{ext}} до {{cap}} MB",
     "documentImportRemoveFile": "Премахни файла",
     "documentImportErrorUnsupported": "Този тип файл не се поддържа. Опитайте с {{formats}}.",
@@ -324,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} членове и {{organizations}} организации в това пространство.",
-    "inviteMember": "Покани член",
     "search": "Търсене на членове или организации...",
     "filterAll": "Всички",
     "filterLead": "Ръководител",
@@ -1033,5 +1034,8 @@
     "hiddenBadge": "Not shown on the Space page",
     "editInSettings": "Edit in Settings",
     "sectionTitle": "Класификации"
+  },
+  "parentStack": {
+    "goTo": "Към {{name}}"
   }
 }

@@ -5,6 +5,7 @@ import {
   type CollaboraDocumentPreviewType,
   colorByType,
   iconByType,
+  openLabelKey,
   typeLabelKey,
 } from '@/crd/lib/collaboraDocumentPreview';
 import { cn } from '@/crd/lib/utils';
@@ -48,6 +49,7 @@ export function CalloutCollaboraPreview({
   const Icon = iconByType[documentType];
   const accentColor = colorByType[documentType];
   const typeLabel = t(typeLabelKey[documentType] as 'callout.document');
+  const openLabel = t(openLabelKey[documentType]);
   const compact = size === 'compact';
   const [erroredUrl, setErroredUrl] = useState<string | undefined>(undefined);
   const showImage = Boolean(previewImageUrl) && previewImageUrl !== erroredUrl;
@@ -73,14 +75,14 @@ export function CalloutCollaboraPreview({
         )}
       </div>
       <div className="absolute top-3 right-3">
-        <span className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-caption text-foreground shadow-sm">
+        <span className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-caption text-foreground shadow-sm">
           <Icon className={cn('w-3.5 h-3.5', accentColor)} aria-hidden="true" />
           {typeLabel}
         </span>
       </div>
       <div className="absolute inset-0 flex items-center justify-center gap-2 bg-primary/10 hover:bg-primary/20 transition-colors">
         <Button variant="secondary" className="shadow-sm" onClick={onOpen}>
-          {t('callout.openDocument')}
+          {openLabel}
         </Button>
         {onReplace && (
           <Button variant="secondary" className="shadow-sm" onClick={onReplace}>

@@ -117,6 +117,15 @@ export const AdminCommunityApplicationFragmentDoc = gql`
   actor {
     ...AdminCommunityCandidateMember
   }
+  questions {
+    id
+    name
+    value
+  }
+  user {
+    id
+    email
+  }
 }
     ${AdminCommunityCandidateMemberFragmentDoc}`;
 export const AdminCommunityInvitationFragmentDoc = gql`
@@ -1200,6 +1209,12 @@ export const CalloutDetailsFragmentDoc = gql`
       }
     }
   }
+  reactionsSummary {
+    total
+    emojis
+    myReactionEmoji
+    allowedEmojis
+  }
 }
     ${TagsetDetailsFragmentDoc}
 ${ReferenceDetailsFragmentDoc}
@@ -1774,6 +1789,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
         push
       }
       collaborationCalloutPublished {
+        email
+        inApp
+        push
+      }
+      collaborationCalloutReaction {
         email
         inApp
         push
@@ -2494,6 +2514,10 @@ export const SubspacePageSpaceFragmentDoc = gql`
     id
     calloutsSet {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
   templatesManager {
@@ -3298,6 +3322,16 @@ export const UserSettingsAssistantFragmentDoc = gql`
   }
 }
     `;
+export const CalloutReactionsSummaryFragmentDoc = gql`
+    fragment CalloutReactionsSummary on Callout {
+  reactionsSummary {
+    total
+    emojis
+    myReactionEmoji
+    allowedEmojis
+  }
+}
+    `;
 export const SpaceExplorerSpaceFragmentDoc = gql`
     fragment SpaceExplorerSpace on Space {
   id
@@ -3741,6 +3775,32 @@ export const InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentD
   }
 }
     ${SpaceNotificationFragmentDoc}`;
+export const InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc = gql`
+    fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+  type
+  emoji
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+  space {
+    ...spaceNotification
+  }
+}
+    ${SpaceNotificationFragmentDoc}`;
 export const InAppNotificationPayloadSpaceCollaborationPollFragmentDoc = gql`
     fragment InAppNotificationPayloadSpaceCollaborationPoll on InAppNotificationPayloadSpaceCollaborationPoll {
   space {
@@ -3842,6 +3902,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
     ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
       ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
     }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutReaction
+    }
     ... on InAppNotificationPayloadSpaceCollaborationPoll {
       ...InAppNotificationPayloadSpaceCollaborationPoll
     }
@@ -3869,6 +3932,7 @@ ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
 ${InAppNotificationPayloadVirtualContributorFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
+${InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationPollFragmentDoc}`;
 export const UrlResolverResultFragmentDoc = gql`
     fragment UrlResolverResult on UrlResolverQueryResults {
@@ -15294,6 +15358,11 @@ export const UpdateUserSettingsDocument = gql`
             push
           }
           collaborationCalloutPublished {
+            email
+            inApp
+            push
+          }
+          collaborationCalloutReaction {
             email
             inApp
             push
@@ -29174,6 +29243,201 @@ export type CalloutsIndexListQueryResult = Apollo.QueryResult<
 >;
 export function refetchCalloutsIndexListQuery(variables: SchemaTypes.CalloutsIndexListQueryVariables) {
   return { query: CalloutsIndexListDocument, variables: variables };
+}
+export const AddReactionToCalloutDocument = gql`
+    mutation AddReactionToCallout($reactionData: AddReactionToCalloutInput!) {
+  addReactionToCallout(reactionData: $reactionData) {
+    id
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+}
+    `;
+export type AddReactionToCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddReactionToCalloutMutation,
+  SchemaTypes.AddReactionToCalloutMutationVariables
+>;
+
+/**
+ * __useAddReactionToCalloutMutation__
+ *
+ * To run a mutation, you first call `useAddReactionToCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddReactionToCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addReactionToCalloutMutation, { data, loading, error }] = useAddReactionToCalloutMutation({
+ *   variables: {
+ *      reactionData: // value for 'reactionData'
+ *   },
+ * });
+ */
+export function useAddReactionToCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddReactionToCalloutMutation,
+    SchemaTypes.AddReactionToCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AddReactionToCalloutMutation,
+    SchemaTypes.AddReactionToCalloutMutationVariables
+  >(AddReactionToCalloutDocument, options);
+}
+export type AddReactionToCalloutMutationHookResult = ReturnType<typeof useAddReactionToCalloutMutation>;
+export type AddReactionToCalloutMutationResult = Apollo.MutationResult<SchemaTypes.AddReactionToCalloutMutation>;
+export type AddReactionToCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddReactionToCalloutMutation,
+  SchemaTypes.AddReactionToCalloutMutationVariables
+>;
+export const RemoveReactionFromCalloutDocument = gql`
+    mutation RemoveReactionFromCallout($reactionData: RemoveReactionFromCalloutInput!) {
+  removeReactionFromCallout(reactionData: $reactionData) {
+    id
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+}
+    `;
+export type RemoveReactionFromCalloutMutationFn = Apollo.MutationFunction<
+  SchemaTypes.RemoveReactionFromCalloutMutation,
+  SchemaTypes.RemoveReactionFromCalloutMutationVariables
+>;
+
+/**
+ * __useRemoveReactionFromCalloutMutation__
+ *
+ * To run a mutation, you first call `useRemoveReactionFromCalloutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveReactionFromCalloutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeReactionFromCalloutMutation, { data, loading, error }] = useRemoveReactionFromCalloutMutation({
+ *   variables: {
+ *      reactionData: // value for 'reactionData'
+ *   },
+ * });
+ */
+export function useRemoveReactionFromCalloutMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.RemoveReactionFromCalloutMutation,
+    SchemaTypes.RemoveReactionFromCalloutMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.RemoveReactionFromCalloutMutation,
+    SchemaTypes.RemoveReactionFromCalloutMutationVariables
+  >(RemoveReactionFromCalloutDocument, options);
+}
+export type RemoveReactionFromCalloutMutationHookResult = ReturnType<typeof useRemoveReactionFromCalloutMutation>;
+export type RemoveReactionFromCalloutMutationResult =
+  Apollo.MutationResult<SchemaTypes.RemoveReactionFromCalloutMutation>;
+export type RemoveReactionFromCalloutMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.RemoveReactionFromCalloutMutation,
+  SchemaTypes.RemoveReactionFromCalloutMutationVariables
+>;
+export const CalloutWhoReactedDocument = gql`
+    query CalloutWhoReacted($calloutId: UUID!) {
+  lookup {
+    callout(ID: $calloutId) {
+      id
+      reactions {
+        id
+        emoji
+        updatedDate
+        user {
+          id
+          profile {
+            id
+            displayName
+            avatar: visual(type: AVATAR) {
+              id
+              uri
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCalloutWhoReactedQuery__
+ *
+ * To run a query within a React component, call `useCalloutWhoReactedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCalloutWhoReactedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCalloutWhoReactedQuery({
+ *   variables: {
+ *      calloutId: // value for 'calloutId'
+ *   },
+ * });
+ */
+export function useCalloutWhoReactedQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.CalloutWhoReactedQuery,
+    SchemaTypes.CalloutWhoReactedQueryVariables
+  > &
+    ({ variables: SchemaTypes.CalloutWhoReactedQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.CalloutWhoReactedQuery, SchemaTypes.CalloutWhoReactedQueryVariables>(
+    CalloutWhoReactedDocument,
+    options
+  );
+}
+export function useCalloutWhoReactedLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.CalloutWhoReactedQuery,
+    SchemaTypes.CalloutWhoReactedQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.CalloutWhoReactedQuery, SchemaTypes.CalloutWhoReactedQueryVariables>(
+    CalloutWhoReactedDocument,
+    options
+  );
+}
+export function useCalloutWhoReactedSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<SchemaTypes.CalloutWhoReactedQuery, SchemaTypes.CalloutWhoReactedQueryVariables>
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<SchemaTypes.CalloutWhoReactedQuery, SchemaTypes.CalloutWhoReactedQueryVariables>(
+    CalloutWhoReactedDocument,
+    options
+  );
+}
+export type CalloutWhoReactedQueryHookResult = ReturnType<typeof useCalloutWhoReactedQuery>;
+export type CalloutWhoReactedLazyQueryHookResult = ReturnType<typeof useCalloutWhoReactedLazyQuery>;
+export type CalloutWhoReactedSuspenseQueryHookResult = ReturnType<typeof useCalloutWhoReactedSuspenseQuery>;
+export type CalloutWhoReactedQueryResult = Apollo.QueryResult<
+  SchemaTypes.CalloutWhoReactedQuery,
+  SchemaTypes.CalloutWhoReactedQueryVariables
+>;
+export function refetchCalloutWhoReactedQuery(variables: SchemaTypes.CalloutWhoReactedQueryVariables) {
+  return { query: CalloutWhoReactedDocument, variables: variables };
 }
 export const ContributorCollectionConfigDocument = gql`
     query ContributorCollectionConfig($calloutId: UUID!) {

@@ -284,7 +284,8 @@
         "page": "Page {{page}} of {{total}}",
         "next": "Next page"
       },
-      "roleColumn": "Role"
+      "roleColumn": "Role",
+      "export": "Export all Member overview"
     },
     "memberSettings": {
       "title": "Member settings",
@@ -768,7 +769,8 @@
         "description": "Are you sure you want to remove this question?",
         "confirm": "Delete"
       },
-      "save": "Save"
+      "save": "Save",
+      "export": "Export All Submitted Applications"
     },
     "allowedActions": {
       "title": "Allowed Actions",
@@ -912,6 +914,12 @@
         "title": "Crop Image",
         "altText": "Description",
         "altTextPlaceholder": "Describe this image…"
+      },
+      "recropConfirm": {
+        "title": "Replace the original image?",
+        "description": "Saving this crop uploads a new image and permanently discards the original. The areas you crop out cannot be recovered later.",
+        "confirm": "Replace image",
+        "cancel": "Cancel"
       },
       "changeBanner": "Change Banner",
       "recropFailed": "Could not load this image for cropping. Please try again."

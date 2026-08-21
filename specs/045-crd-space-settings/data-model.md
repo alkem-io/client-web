@@ -510,19 +510,33 @@ Produced by `useDirtyTabGuard`. Consumed only by `CrdSpaceSettingsPage`.
 
 ---
 
-## Subspace breadcrumbs (added 2026-04-27)
+## Subspace breadcrumbs (added 2026-04-27; avatars replaced the `Layers` icon 2026-08-21)
 
-`CrdSubspacePageLayout` calls `useSetBreadcrumbs` unconditionally before any early loading return so the trail is set on every render. The trail shape:
+`CrdSubspacePageLayout` calls `useSetBreadcrumbs` unconditionally before any early loading return so the trail is set on every render. Space/subspace hops carry an `avatar` field (`BreadcrumbTrailItem.avatar?: { src?: string; initials: string }`) rendered by `BreadcrumbsTrail` as a 20px rounded-square identity image (bordered; initials on a primary-tinted background as fallback) — the L0 hop uses the L0's **cardBanner** (L0 has no avatar visual), L1/L2 hops use their **avatar** visual. The former `icon: Layers` glyph on these hops is gone. The trail shape:
 
 ```ts
 const baseTrail =
   data.parentSpaceName && data.subspaceName
     ? [
-        ...(includeL0Crumb ? [{ label: data.levelZeroSpaceName, href: data.levelZeroSpaceUrl, icon: Layers }] : []),
-        { label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers },
+        ...(includeL0Crumb
+          ? [
+              {
+                label: data.levelZeroSpaceName,
+                href: data.levelZeroSpaceUrl,
+                avatar: { src: data.levelZeroSpaceAvatarUrl, initials: getInitials(data.levelZeroSpaceName) },
+              },
+            ]
+          : []),
+        {
+          label: data.parentSpaceName,
+          href: data.parentSpaceUrl,
+          // cardBanner when the parent is the L0 (viewing an L1); avatar visual when it is an L1 (viewing an L2)
+          avatar: { src: data.parentSpaceAvatarUrl, initials: getInitials(data.parentSpaceName) },
+        },
         {
           label: data.subspaceName,
-          ...(isOnSettings ? { href: data.subspaceUrl, icon: Layers } : {}),
+          avatar: { src: data.subspaceAvatarUrl, initials: getInitials(data.subspaceName) },
+          ...(isOnSettings ? { href: data.subspaceUrl } : {}),
         },
       ]
     : [];
@@ -536,7 +550,9 @@ useSetBreadcrumbs(baseTrail.length > 0 ? [...baseTrail, ...settingsTrail] : []);
 ```
 
 - The L0 hop is included only when `levelZeroSpaceId !== parentSpaceId` (true at L2; false at L1 because L1's parent IS the L0 space).
-- The subspace hop becomes a link only when `isOnSettings` is true; otherwise it is a leaf (matches the existing non-settings behaviour).
+- The subspace hop becomes a link only when `isOnSettings` is true; otherwise it is a leaf (matches the existing non-settings behaviour). Its avatar renders in both cases.
+- The Settings and active-tab hops carry neither icon nor avatar.
+- The avatar source URLs (`levelZeroSpaceAvatarUrl`, `parentSpaceAvatarUrl`, `subspaceAvatarUrl`) are exposed by `useCrdSubspace` from the already-fetched about-details profiles — no new GraphQL fields.
 - The active-tab hop reuses the existing `crd-spaceSettings:tabs.<id>` translation keys from the tab strip — no new i18n keys.
 
 The `BreadcrumbsProvider` is mounted by `CrdLayoutWrapper` and wraps the entire route tree; `CrdSubspacePageLayout` consumes it via `useSetBreadcrumbs` from `@/main/ui/breadcrumbs/BreadcrumbsContext`.

@@ -13,6 +13,7 @@ const EXTENSION_TO_DOCUMENT_TYPE: Readonly<Record<string, CollaboraDocumentType>
   '.docx': CollaboraDocumentType.Wordprocessing,
   '.xlsx': CollaboraDocumentType.Spreadsheet,
   '.pptx': CollaboraDocumentType.Presentation,
+  '.pdf': CollaboraDocumentType.Pdf,
 };
 
 export const collaboraDocumentTypeFromFilename = (filename: string): CollaboraDocumentType | undefined => {
@@ -33,6 +34,7 @@ const DOCUMENT_TYPE_TO_EXTENSION: Readonly<Partial<Record<CollaboraDocumentType,
   [CollaboraDocumentType.Wordprocessing]: '.docx',
   [CollaboraDocumentType.Spreadsheet]: '.xlsx',
   [CollaboraDocumentType.Presentation]: '.pptx',
+  [CollaboraDocumentType.Pdf]: '.pdf',
 };
 
 export const collaboraExtensionForType = (type: CollaboraDocumentType | string): string | undefined =>
@@ -57,12 +59,14 @@ export const isReplaceableCollaboraDocumentType = (type: CollaboraDocumentType |
 export type CollaboraTypeLabelKey =
   | 'callout.documentText'
   | 'callout.documentSpreadsheet'
-  | 'callout.documentPresentation';
+  | 'callout.documentPresentation'
+  | 'callout.documentPdf';
 
 const DOCUMENT_TYPE_LABEL_KEY: Readonly<Partial<Record<CollaboraDocumentType, CollaboraTypeLabelKey>>> = {
   [CollaboraDocumentType.Wordprocessing]: 'callout.documentText',
   [CollaboraDocumentType.Spreadsheet]: 'callout.documentSpreadsheet',
   [CollaboraDocumentType.Presentation]: 'callout.documentPresentation',
+  [CollaboraDocumentType.Pdf]: 'callout.documentPdf',
 };
 
 export const collaboraTypeLabelKeyForType = (type: CollaboraDocumentType | string): CollaboraTypeLabelKey | undefined =>

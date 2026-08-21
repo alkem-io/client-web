@@ -192,10 +192,12 @@
     "openWhiteboard": "Abrir pizarra",
     "openMemo": "Abrir memo",
     "openDocument": "Abrir documento",
+    "openDocumentPdf": "Ver",
     "document": "Documento",
     "documentText": "Documento de texto",
     "documentSpreadsheet": "Hoja de cálculo",
     "documentPresentation": "Presentación",
+    "documentPdf": "PDF",
     "addDocument": "Añadir documento",
     "defaultDocumentName": "Nuevo documento",
     "createDocument": "Crear nuevo documento",
@@ -204,7 +206,7 @@
     "createNew": "Crear nuevo",
     "documentImportOr": "o",
     "documentImportHint": "Arrastra un archivo o haz clic para subirlo",
-    "documentImportMaxSize": ".docx, .xlsx, .pptx hasta {{cap}} MB",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf hasta {{cap}} MB",
     "documentReplaceAccepts": "{{ext}} hasta {{cap}} MB",
     "documentImportRemoveFile": "Eliminar archivo",
     "documentImportErrorUnsupported": "Este tipo de archivo no es compatible. Prueba con {{formats}}.",
@@ -324,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} miembros y {{organizations}} organizaciones en este espacio.",
-    "inviteMember": "Invitar miembro",
     "search": "Buscar miembros u organizaciones...",
     "filterAll": "Todos",
     "filterLead": "Líder",
@@ -1033,5 +1034,8 @@
     "hiddenBadge": "Not shown on the Space page",
     "editInSettings": "Edit in Settings",
     "sectionTitle": "Clasificaciones"
+  },
+  "parentStack": {
+    "goTo": "Ir a {{name}}"
   }
 }

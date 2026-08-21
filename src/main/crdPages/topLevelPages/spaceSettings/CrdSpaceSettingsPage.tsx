@@ -41,6 +41,7 @@ import { useClassificationPicker } from './about/useClassificationPicker';
 import { useAccountTabData } from './account/useAccountTabData';
 import { MembershipDetailDialogConnector, type ViewingMembership } from './community/MembershipDetailDialogConnector';
 import { useAddOrganizationDialog, useAddVirtualContributorDialog } from './community/useAddCommunityMemberDialog';
+import { useCommunityCsvExport } from './community/useCommunityCsvExport';
 import { useCommunityGuidelinesData } from './community/useCommunityGuidelinesData';
 import { useCommunityTabData } from './community/useCommunityTabData';
 import { useDirtyTabGuardContext } from './DirtyTabGuardContext';
@@ -198,6 +199,14 @@ export default function CrdSpaceSettingsPage() {
   // Template Library" target — never the immediate parent's.
   const classificationPicker = useClassificationPicker(spaceContext.id);
   const [pendingRemoveClassificationId, setPendingRemoveClassificationId] = useState<string | null>(null);
+
+  const csvExport = useCommunityCsvExport({
+    members: community.members,
+    applications: community.applications,
+    spaceDisplayName: level === 'L0' ? spaceContext.about.profile.displayName : subspace.about.profile.displayName,
+    loading: community.loading,
+    errored: community.errored,
+  });
   const spaceLevelEnum = level === 'L0' ? SpaceLevel.L0 : level === 'L1' ? SpaceLevel.L1 : SpaceLevel.L2;
 
   // Subspace-only (L1/L2) "Save as a template" + delete sections at the bottom of the Settings tab
@@ -507,6 +516,8 @@ export default function CrdSpaceSettingsPage() {
                       onQuestionMoveUp={applicationForm.onQuestionMoveUp}
                       onQuestionMoveDown={applicationForm.onQuestionMoveDown}
                       onSave={applicationForm.onSave}
+                      onExportApplications={csvExport.exportApplications}
+                      exportDisabled={csvExport.exportDisabled}
                       onImageUpload={md.onImageUpload}
                       iframeAllowedUrls={md.iframeAllowedUrls}
                       onError={md.onError}
@@ -556,6 +567,8 @@ export default function CrdSpaceSettingsPage() {
                 onPendingReject={community.onPendingReject}
                 onPendingDelete={community.onPendingDelete}
                 onInviteUsers={() => setInviteMembersOpen(true)}
+                onExportMembers={csvExport.exportMembers}
+                exportDisabled={csvExport.exportDisabled}
               />
             )}
             {activeTab === 'subspaces' && isTabVisible('subspaces') && (
@@ -771,6 +784,20 @@ export default function CrdSpaceSettingsPage() {
           void about.removeClassification(pendingRemoveClassificationId);
           setPendingRemoveClassificationId(null);
         }}
+      />
+
+      <ConfirmationDialog
+        open={about.recropConfirmOpen}
+        onOpenChange={open => {
+          if (!open) about.onCancelRecropConfirm();
+        }}
+        variant="destructive"
+        title={t('about.branding.recropConfirm.title')}
+        description={t('about.branding.recropConfirm.description')}
+        confirmLabel={t('about.branding.recropConfirm.confirm')}
+        cancelLabel={t('about.branding.recropConfirm.cancel')}
+        onConfirm={about.onConfirmRecrop}
+        onCancel={about.onCancelRecropConfirm}
       />
 
       <ConfirmationDialog

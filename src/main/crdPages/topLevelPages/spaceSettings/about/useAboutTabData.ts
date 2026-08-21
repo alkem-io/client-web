@@ -53,6 +53,10 @@ export type UseAboutTabDataResult = {
   onCropCancel: () => void;
   /** Re-crop an already-uploaded visual. Opens the crop dialog with the existing image. */
   onRecropVisual: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
+  /** True while a re-crop save is held behind the replace-original confirmation. */
+  recropConfirmOpen: boolean;
+  onConfirmRecrop: () => void;
+  onCancelRecropConfirm: () => void;
   /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + its own delete-confirm. */
   onReferencesChange: (rows: ReferenceRow[]) => void;
   /** Reference file-upload (paperclip) — uploads to the space's storage bucket. */
@@ -346,7 +350,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       .then(blob => {
         const fileName = visual.uri?.split('/').pop() ?? `${key}.jpg`;
         const file = new File([blob], fileName, { type: blob.type || 'image/jpeg' });
-        setPendingCrop({ key, file, config: buildCropConfig(key), altText: currentAltText(key) });
+        setPendingCrop({ key, file, config: buildCropConfig(key), altText: currentAltText(key), isRecrop: true });
       })
       .catch(() => {
         // The image is fetched from the storage host, so this fails on CORS, on
@@ -357,10 +361,18 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       });
   };
 
-  const onCropComplete = (croppedFile: File, altText: string, aspectRatio?: number) => {
-    const crop = pendingCrop;
+  // A re-crop save waiting on the replace-original confirmation. The crop
+  // dialog stays open underneath, so cancelling the confirmation drops the
+  // user back into the crop they already framed.
+  const [pendingRecropSave, setPendingRecropSave] = useState<{
+    file: File;
+    altText: string;
+    aspectRatio?: number;
+  } | null>(null);
+
+  const commitCrop = (crop: PendingCrop, croppedFile: File, altText: string, aspectRatio?: number) => {
     setPendingCrop(null);
-    if (!crop) return;
+    setPendingRecropSave(null);
     const key = crop.key;
     setValues(prev => {
       const base = prev ?? valuesRef.current;
@@ -375,7 +387,29 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     void uploadVisualForField(key, croppedFile, altText, aspectRatio);
   };
 
-  const onCropCancel = () => setPendingCrop(null);
+  const onCropComplete = (croppedFile: File, altText: string, aspectRatio?: number) => {
+    if (!pendingCrop) return;
+    if (pendingCrop.isRecrop) {
+      // Re-cropping overwrites the stored original irreversibly (#10148), so
+      // the upload waits for an explicit confirmation. A fresh upload commits
+      // straight away — the original is still on the user's disk.
+      setPendingRecropSave({ file: croppedFile, altText, aspectRatio });
+      return;
+    }
+    commitCrop(pendingCrop, croppedFile, altText, aspectRatio);
+  };
+
+  const onConfirmRecrop = () => {
+    if (!pendingCrop || !pendingRecropSave) return;
+    commitCrop(pendingCrop, pendingRecropSave.file, pendingRecropSave.altText, pendingRecropSave.aspectRatio);
+  };
+
+  const onCancelRecropConfirm = () => setPendingRecropSave(null);
+
+  const onCropCancel = () => {
+    setPendingCrop(null);
+    setPendingRecropSave(null);
+  };
 
   // ────────────────── Per-section save ──────────────────
 
@@ -662,6 +696,9 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     onCropComplete,
     onCropCancel,
     onRecropVisual,
+    recropConfirmOpen: pendingRecropSave !== null,
+    onConfirmRecrop,
+    onCancelRecropConfirm,
     onReferencesChange,
     onReferenceFileUpload,
     referenceUploadAccept,
@@ -726,4 +763,6 @@ export type PendingCrop = {
   /** The visual's current alt text, so the dialog opens with it instead of blank. */
   altText: string;
   selectedAspectRatio?: number;
+  /** True when the crop source is the already-uploaded visual, whose original the save overwrites. */
+  isRecrop?: boolean;
 };

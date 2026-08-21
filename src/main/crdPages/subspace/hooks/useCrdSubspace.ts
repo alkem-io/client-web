@@ -4,11 +4,13 @@ import {
   useSpaceDefaultTemplatesQuery,
   useSubspacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege, SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+import type { ParentSpaceStackItem } from '@/crd/components/space/ParentSpaceStack';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
 import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar';
 import { getInitials } from '@/crd/lib/getInitials';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
 import { filterVisibleStates } from '@/domain/collaboration/InnovationFlow/utils/filterVisibleStates';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
@@ -33,13 +35,19 @@ export type CrdSubspacePageData = {
   subspaceId: string;
   subspaceName: string;
   subspaceUrl: string;
+  /** This subspace's AVATAR visual — breadcrumb identity image. */
+  subspaceAvatarUrl: string | undefined;
   parentSpaceId: string | undefined;
   parentSpaceUrl: string | undefined;
   parentSpaceName: string | undefined;
+  /** Parent's identity image: its avatar at L1, or its cardBanner when the parent is the L0 (which has no avatar). */
+  parentSpaceAvatarUrl: string | undefined;
   /** L0 in the chain — only distinct from parent when viewing an L2 (else identical to parent). */
   levelZeroSpaceId: string | undefined;
   levelZeroSpaceUrl: string | undefined;
   levelZeroSpaceName: string | undefined;
+  /** L0 identity image — the cardBanner (L0 has no avatar visual). */
+  levelZeroSpaceAvatarUrl: string | undefined;
   roleSetId: string | undefined;
   communityId: string | undefined;
   collaborationId: string | undefined;
@@ -52,6 +60,8 @@ export type CrdSubspacePageData = {
   banner: SubspaceBannerProps;
   bannerActions: SubspaceHeaderActionsData;
   sidebar: SubspaceSidebarData;
+  /** Ancestor spaces (outermost first) for the sidebar's stacked parent cards. */
+  parentSpaceStack: ParentSpaceStackItem[];
   /** Nested subspaces of the current subspace — fed into the sidebar widget. */
   subspaces: Array<{
     name: string;
@@ -73,6 +83,8 @@ export type CrdSubspacePageData = {
   canRead: boolean;
   canUpdate: boolean;
   canCreateSubspace: boolean;
+  /** CreateCallout on the calloutsSet — the Add Post gate (same as the L0 tabs). */
+  canCreateCallout: boolean;
 
   /** Apply / Join CTA — pass-through from useApplicationButton */
   applicationButtonProps: ReturnType<typeof useApplicationButton>['applicationButtonProps'];
@@ -99,6 +111,11 @@ export function useCrdSubspace(): CrdSubspacePageData {
   });
   const collaborationId = subspacePageData?.lookup.space?.collaboration.id;
   const calloutsSetId = subspacePageData?.lookup.space?.collaboration.calloutsSet.id;
+  // Same gate every L0 space tab uses for Add Post: CreateCallout on the calloutsSet.
+  const canCreateCallout =
+    subspacePageData?.lookup.space?.collaboration.calloutsSet.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.CreateCallout
+    ) ?? false;
   // The SubspacePage query already fetches templatesManager.templatesSet.id — surface it
   // so the Create-Subspace picker shows this space's own Space templates (D21).
   const templatesSetId = subspacePageData?.lookup.space?.templatesManager?.templatesSet?.id;
@@ -146,6 +163,25 @@ export function useCrdSubspace(): CrdSubspacePageData {
   });
   const levelZeroProfile = needL0Lookup ? levelZeroAboutData?.lookup.space?.about.profile : parentProfile;
 
+  // Ancestor chain for the sidebar's stacked parent cards, outermost first:
+  // L1 page → [L0]; L2 page → [L0, L1]. Card banners with the deterministic
+  // gradient as fallback; taglines are plain text (never markdown descriptions).
+  const parentStackItem = (id: string | undefined, profile: typeof parentProfile): ParentSpaceStackItem | undefined =>
+    profile?.url
+      ? {
+          name: profile.displayName,
+          initials: getInitials(profile.displayName),
+          href: profile.url,
+          bannerUrl: profile.cardBanner?.uri || undefined,
+          color: pickColorFromId(id ?? profile.displayName),
+          tagline: profile.tagline ?? undefined,
+        }
+      : undefined;
+  const parentSpaceStack = [
+    ...(needL0Lookup ? [parentStackItem(levelZeroSpaceId, levelZeroProfile)] : []),
+    parentStackItem(parentSpaceId, parentProfile),
+  ].filter((item): item is ParentSpaceStackItem => Boolean(item));
+
   // Apply / Join CTA — useApplicationButton handles parent-membership requirement
   // when parentSpaceId is supplied (per research R8).
   const { applicationButtonProps, loading: applicationLoading } = useApplicationButton({
@@ -158,7 +194,6 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const subspaceUrl = subspaceProfile.url ?? '';
 
   const banner = mapSubspaceBanner({
-    subspaceId,
     subspaceProfile,
     levelZeroSpaceId,
     levelZeroProfile,
@@ -203,12 +238,18 @@ export function useCrdSubspace(): CrdSubspacePageData {
     subspaceId,
     subspaceName: banner.title,
     subspaceUrl,
+    subspaceAvatarUrl: subspaceProfile.avatar?.uri || undefined,
     parentSpaceId,
     parentSpaceUrl: parentProfile?.url ?? undefined,
     parentSpaceName: parentProfile?.displayName ?? undefined,
+    // When the immediate parent IS the L0 (viewing an L1), it has no avatar —
+    // its cardBanner is the identity image. An L1 parent (viewing an L2) uses
+    // its own avatar.
+    parentSpaceAvatarUrl: (needL0Lookup ? parentProfile?.avatar?.uri : parentProfile?.cardBanner?.uri) || undefined,
     levelZeroSpaceId,
     levelZeroSpaceUrl: levelZeroProfile?.url ?? undefined,
     levelZeroSpaceName: levelZeroProfile?.displayName ?? undefined,
+    levelZeroSpaceAvatarUrl: levelZeroProfile?.cardBanner?.uri || undefined,
     roleSetId,
     communityId,
     collaborationId,
@@ -219,6 +260,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     banner,
     bannerActions,
     sidebar,
+    parentSpaceStack,
     subspaces,
     visibility: visibilityData,
 
@@ -232,6 +274,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
     // Spaces are capped at 3 levels (L0 → L1 → L2). An L2 cannot have children,
     // so creation is offered only on L1 even if the backend grants the privilege.
     canCreateSubspace: permissions.canCreateSubspace && subspace.level !== SpaceLevel.L2,
+    canCreateCallout,
 
     applicationButtonProps,
     applicationLoading,
