@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 import { ConnectedAccountsView } from '../ConnectedAccountsView';
 import { UserSecurityTabView, type UserSecurityViewState } from '../UserSecurityTabView';
@@ -60,6 +61,51 @@ describe('UserSecurityTabView', () => {
       // by the 'ready' branch that already carries the outcome message on first paint.
       expect(liveRegionAtReady).toBe(liveRegionAtLoading);
       expect(liveRegionAtReady).toHaveTextContent('Your changes have been saved!');
+    }
+  );
+
+  it(
+    "still renders the Connected Accounts section's own unavailable reason + retry, with zero " +
+      "provider rows, when the tab's state is 'error' — a Kratos settings-flow load failure " +
+      '(network/5xx) fails the whole tab closed, but Connected Accounts must fail closed on its ' +
+      'own terms rather than disappear entirely (FR-024, spec-client-web-1)',
+    async () => {
+      const onRetry = vi.fn();
+      const connectedAccountsSection = (
+        <ConnectedAccountsView
+          status="unavailable"
+          unavailableReason="user.security.connectedAccounts.unavailable.message"
+          onRetry={onRetry}
+          providers={[]}
+          credentials={[]}
+          messages={[]}
+        />
+      );
+
+      const errorState: UserSecurityViewState = { kind: 'error' };
+      const user = userEvent.setup();
+
+      const { container } = render(
+        <UserSecurityTabView
+          state={errorState}
+          passwordForm={null}
+          webauthnForm={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={connectedAccountsSection}
+        />
+      );
+
+      expect(screen.getByText('user.security.connectedAccounts.unavailable.message')).toBeInTheDocument();
+      // Zero provider/credential rows — the unavailable branch renders neither, never a guess.
+      expect(container.querySelectorAll('li')).toHaveLength(0);
+
+      const retryButton = screen.getByRole('button', {
+        name: 'user.security.connectedAccounts.unavailable.retry',
+      });
+      expect(retryButton).toBeInTheDocument();
+
+      await user.click(retryButton);
+      expect(onRetry).toHaveBeenCalledTimes(1);
     }
   );
 });

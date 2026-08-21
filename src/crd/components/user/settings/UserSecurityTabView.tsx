@@ -79,13 +79,28 @@ export function UserSecurityTabView({
   }
 
   if (state.kind === 'error') {
+    // The Kratos settings flow itself failed to load (network/5xx) — the Change Password, Passkey,
+    // and MCP API Keys cards genuinely have nothing to render, so the generic error card below still
+    // covers those. But Connected Accounts fails closed on its own (FR-024): `connectedAccountsSection`
+    // already carries an 'unavailable' status with a plain-language reason and a retry button that
+    // re-initializes the settings flow, so dropping it here — as the bare error card alone did — would
+    // silently swallow the one actionable recovery path this tab has for a flow-load failure.
     return (
-      <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
-        <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-body text-destructive">
-          <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          <p>{t('user.security.errorDescription')}</p>
-        </div>
-      </SettingsCard>
+      <div className="space-y-6">
+        <SettingsCard
+          icon={Link2}
+          title={t('user.security.connectedAccounts.title')}
+          description={t('user.security.connectedAccounts.description')}
+        >
+          {connectedAccountsSection}
+        </SettingsCard>
+        <SettingsCard icon={ShieldAlert} title={t('user.security.title')}>
+          <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-4 text-body text-destructive">
+            <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
+            <p>{t('user.security.errorDescription')}</p>
+          </div>
+        </SettingsCard>
+      </div>
     );
   }
 
