@@ -1,6 +1,7 @@
 {
   "addTask": "Ajouter une tâche",
-  "addTaskBoard": "Ajouter une tâche",
+  "expand": "Plein écran",
+  "collapse": "Quitter le plein écran",
   "emptyColumn": "Aucune tâche pour l'instant",
   "moveError": "Impossible de déplacer la tâche. Veuillez réessayer.",
   "columns": {

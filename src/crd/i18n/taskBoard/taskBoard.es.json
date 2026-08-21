@@ -1,6 +1,7 @@
 {
   "addTask": "Añadir tarea",
-  "addTaskBoard": "Añadir tarea",
+  "expand": "Pantalla completa",
+  "collapse": "Salir de pantalla completa",
   "emptyColumn": "Aún no hay tareas",
   "moveError": "No se pudo mover la tarea. Inténtalo de nuevo.",
   "columns": {

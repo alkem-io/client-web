@@ -1,6 +1,7 @@
 {
   "addTask": "Add task",
-  "addTaskBoard": "Add task",
+  "expand": "Fullscreen",
+  "collapse": "Exit fullscreen",
   "emptyColumn": "No tasks yet",
   "moveError": "Couldn't move the task. Please try again.",
   "columns": {

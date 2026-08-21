@@ -15,7 +15,7 @@
  * payloads. Dirty tracking drives the `DiscardChangesDialog` + `useBeforeUnloadGuard`.
  */
 import { ApolloError } from '@apollo/client';
-import { Hash } from 'lucide-react';
+import { Columns3, Hash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,6 +36,7 @@ import {
 import { error as logError } from '@/core/logging/sentry/log';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { TaskColumnsDraftDialog } from '@/crd/components/callout/task-board/TaskColumnsDraftDialog';
 import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
@@ -49,6 +50,7 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -244,7 +246,7 @@ function CalloutFormConnectorInner({
   const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
-  const { values, errors, setField, validate, reset, prefill, dirty } = form;
+  const { values, errors, setField, setValues, validate, reset, prefill, dirty } = form;
 
   // Feature 025: contributor candidates for the custom-selection picker (T005).
   // Only fetched when the contributors chip is active AND the dialog is open.
@@ -299,6 +301,7 @@ function CalloutFormConnectorInner({
 
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
+  const [columnsDraftOpen, setColumnsDraftOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
   // Import-zone validation error (client pre-check OR server FORMAT_NOT_SUPPORTED /
   // STORAGE_UPLOAD_FAILED). Cleared on successful re-stage and on framing-type
@@ -1033,22 +1036,6 @@ function CalloutFormConnectorInner({
         }
         responsesZoneSlot={
           <div className="space-y-4">
-            {mode === 'create' && isTaskBoardEnabled() && (
-              <div className="flex items-center justify-between gap-3">
-                <Label htmlFor="task-board-toggle" className="text-body-emphasis">
-                  {tTaskBoard('create.option')}
-                  <span className="block text-caption font-normal text-muted-foreground">
-                    {tTaskBoard('create.optionDescription')}
-                  </span>
-                </Label>
-                <Switch
-                  id="task-board-toggle"
-                  checked={values.taskBoard}
-                  onCheckedChange={checked => setField('taskBoard', checked)}
-                  disabled={submitting}
-                />
-              </div>
-            )}
             <ResponseTypeChipStrip
               value={values.responseType}
               allowedChips={responseAllowList}
@@ -1056,12 +1043,25 @@ function CalloutFormConnectorInner({
               onChange={type => {
                 // Locked in edit mode (see framing strip) — only fires during
                 // create, so the response type can't be changed or cleared on
-                // an existing callout.
-                setField('responseType', type);
+                // an existing callout. Picking a real response type also leaves
+                // the Tasks board (they are mutually exclusive selections).
+                setValues(prev => ({ ...prev, responseType: type, taskBoard: false }));
               }}
-              // A Tasks board forces the POST-only contribution type, so the
-              // response chips are locked while the toggle is on.
-              locked={mode === 'edit' || values.taskBoard}
+              // Tasks is a sibling chip of the response types (create only), not a
+              // separate switch. Selecting it makes the callout a POST-only board;
+              // it seeds responseType='post' so the Posts config panel (members /
+              // admins / comments / defaults) renders. Deselecting clears both.
+              showTasksChip={mode === 'create' && isTaskBoardEnabled()}
+              tasksActive={values.taskBoard}
+              tasksLabel={tTaskBoard('create.option')}
+              onSelectTasks={() =>
+                setValues(prev =>
+                  prev.taskBoard
+                    ? { ...prev, taskBoard: false, responseType: 'none' }
+                    : { ...prev, taskBoard: true, responseType: 'post' }
+                )
+              }
+              locked={mode === 'edit'}
             />
             <ResponsePanel
               type={values.responseType}
@@ -1078,6 +1078,18 @@ function CalloutFormConnectorInner({
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />
+            {values.taskBoard && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setColumnsDraftOpen(true)}
+                disabled={submitting}
+              >
+                <Columns3 className="w-4 h-4" aria-hidden="true" />
+                {tTaskBoard('columns.manage')}
+              </Button>
+            )}
           </div>
         }
         moreOptionsSlot={
@@ -1116,6 +1128,12 @@ function CalloutFormConnectorInner({
         onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
       />
       <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
+      <TaskColumnsDraftDialog
+        open={columnsDraftOpen}
+        onOpenChange={setColumnsDraftOpen}
+        columns={values.taskBoardColumns}
+        onSave={columns => setField('taskBoardColumns', columns)}
+      />
       <ResponseDefaultsConnector
         open={defaultsOpen}
         onOpenChange={setDefaultsOpen}

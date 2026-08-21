@@ -74,10 +74,8 @@ function TaskBoardBody({
   const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation();
   const [reorderColumns] = useUpdateTaskColumnsSortOrderOnCalloutMutation();
   // Creation dialog state: closed when undefined. When open, `column` is the
-  // pre-targeted column for a per-column add, or undefined for the board-level
-  // (generic) add — in which case the server drops the new post in the first
-  // column. Using an explicit open flag keeps the board-level add (no column)
-  // distinct from the closed state.
+  // per-column add's pre-targeted column. Using an explicit open flag keeps an
+  // add with no column distinct from the closed state.
   const [addState, setAddState] = useState<{ column?: string } | undefined>();
   const [columnsOpen, setColumnsOpen] = useState(false);
 
@@ -165,10 +163,10 @@ function TaskBoardBody({
         canAdd={canAdd}
         canMove={canMove}
         addLabel={t('addTask')}
-        addBoardLabel={t('addTaskBoard')}
         emptyLabel={t('emptyColumn')}
+        expandLabel={t('expand')}
+        collapseLabel={t('collapse')}
         onAddTask={canAdd ? column => setAddState({ column }) : undefined}
-        onAddTaskGeneric={canAdd ? () => setAddState({}) : undefined}
         onOpenTask={onOpenTask}
         onMoveTask={handleMoveTask}
       />
@@ -199,9 +197,7 @@ function TaskBoardBody({
         />
       )}
       {addState !== undefined && (
-        // Reuse the existing post creation dialog. For a per-column add it is
-        // pre-targeted at the picked column; for the board-level (generic) add
-        // no column is passed, so the server drops the post in the first
+        // Reuse the existing post creation dialog, pre-targeted at the picked
         // column. The refetch of TaskBoardData (inside the dialog) surfaces the
         // new card under its column with updated counts.
         <PostContributionAddConnector

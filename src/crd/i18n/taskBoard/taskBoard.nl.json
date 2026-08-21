@@ -1,6 +1,7 @@
 {
   "addTask": "Taak toevoegen",
-  "addTaskBoard": "Taak toevoegen",
+  "expand": "Volledig scherm",
+  "collapse": "Volledig scherm sluiten",
   "emptyColumn": "Nog geen taken",
   "moveError": "De taak kon niet worden verplaatst. Probeer het opnieuw.",
   "columns": {

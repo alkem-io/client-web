@@ -43,19 +43,28 @@ export function TaskBoardColumn({
         <Badge variant="secondary" className="shrink-0">
           {count}
         </Badge>
-        {onAdd && (
-          <Button variant="ghost" size="icon" className="ml-auto size-6 shrink-0" onClick={onAdd} aria-label={addLabel}>
-            <Plus className="size-4" aria-hidden="true" />
-          </Button>
-        )}
       </div>
-      <div className="flex flex-col gap-2 overflow-y-auto px-3 pb-3">
+      <div className="flex flex-col gap-2 overflow-y-auto px-3">
         {isEmpty && emptyLabel ? (
           <p className="text-caption text-muted-foreground py-4 text-center">{emptyLabel}</p>
         ) : (
           children
         )}
       </div>
+      {onAdd && (
+        <div className="px-3 pt-2 pb-3 shrink-0">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-2 text-muted-foreground"
+            onClick={onAdd}
+            aria-label={addLabel}
+          >
+            <Plus className="size-4" aria-hidden="true" />
+            {addLabel}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

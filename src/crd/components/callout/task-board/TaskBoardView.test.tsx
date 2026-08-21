@@ -17,7 +17,10 @@ describe('TaskBoardView', () => {
 
   it('lays out columns in a horizontally scrolling non-wrapping row', () => {
     const { container } = render(<TaskBoardView columns={columns} />);
-    const row = container.firstChild as HTMLElement;
+    // The toolbar row (expand button) precedes the columns row now, so target the
+    // scrolling row by its class rather than assuming it is the first child.
+    const row = container.querySelector('.flex-nowrap') as HTMLElement;
+    expect(row).not.toBeNull();
     expect(row.className).toContain('overflow-x-auto');
     expect(row.className).toContain('flex-nowrap');
   });
@@ -39,21 +42,6 @@ describe('TaskBoardView', () => {
     const addButtons = screen.getAllByRole('button', { name: 'Add task' });
     fireEvent.click(addButtons[0]);
     expect(onAddTask).toHaveBeenCalledWith('Backlog');
-  });
-
-  it('shows the board-level (generic) add and fires it without a column', () => {
-    const onAddTaskGeneric = vi.fn();
-    render(
-      <TaskBoardView columns={columns} addBoardLabel="Add task" onAddTaskGeneric={onAddTaskGeneric} canAdd={true} />
-    );
-    // The header button is the first "Add task" control (no per-column add wired here).
-    fireEvent.click(screen.getByRole('button', { name: 'Add task' }));
-    expect(onAddTaskGeneric).toHaveBeenCalledTimes(1);
-  });
-
-  it('hides the board-level add in read-only mode', () => {
-    render(<TaskBoardView columns={columns} addBoardLabel="Add task" onAddTaskGeneric={vi.fn()} canAdd={false} />);
-    expect(screen.queryByRole('button', { name: 'Add task' })).not.toBeInTheDocument();
   });
 
   it('opens a task on card click', () => {

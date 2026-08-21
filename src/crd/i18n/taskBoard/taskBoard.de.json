@@ -1,6 +1,7 @@
 {
   "addTask": "Aufgabe hinzufügen",
-  "addTaskBoard": "Aufgabe hinzufügen",
+  "expand": "Vollbild",
+  "collapse": "Vollbild beenden",
   "emptyColumn": "Noch keine Aufgaben",
   "moveError": "Die Aufgabe konnte nicht verschoben werden. Bitte versuche es erneut.",
   "columns": {

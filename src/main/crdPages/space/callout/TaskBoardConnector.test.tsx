@@ -242,26 +242,12 @@ describe('TaskBoardConnector', () => {
     expect(capturedAddProps).toMatchObject({ calloutId: 'callout-1', taskColumn: 'Done' });
   });
 
-  it('opens the creation dialog with no column for the board-level (generic) add', () => {
-    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
-    render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
-
-    const onAddTaskGeneric = capturedViewProps?.onAddTaskGeneric as () => void;
-    expect(onAddTaskGeneric).toBeTypeOf('function');
-    act(() => onAddTaskGeneric());
-
-    expect(screen.getByTestId('add-dialog')).toBeInTheDocument();
-    // The board-level add passes no column ⇒ server defaults to the first column.
-    expect(capturedAddProps?.taskColumn).toBeUndefined();
-    expect(capturedAddProps).toMatchObject({ calloutId: 'callout-1' });
-  });
-
-  it('does not expose the board-level add without the CONTRIBUTE privilege', () => {
+  it('does not expose the per-column add without the CONTRIBUTE privilege', () => {
     useTaskBoardDataQuery.mockReturnValue({
       data: { lookup: { callout: boardCallout({ authorization: { id: 'a', myPrivileges: [] } }) } },
     });
     render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
-    expect(capturedViewProps?.onAddTaskGeneric).toBeUndefined();
+    expect(capturedViewProps?.onAddTask).toBeUndefined();
   });
 
   it('shows the manage-columns affordance only with the UPDATE privilege', () => {
