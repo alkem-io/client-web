@@ -18,8 +18,14 @@
     "openTerms": "Ouvrir les Conditions d'utilisation dans un nouvel onglet",
     "openPrivacy": "Ouvrir la Politique de confidentialité dans un nouvel onglet",
     "signpost": {
-      "warning": "Vous avez peut-être déjà un compte. Connectez-vous plutôt pour tout garder au même endroit.",
-      "signInAction": "Aller à la connexion"
+      "warning": "Vous essayez de vous inscrire avec {{provider}}. Si vous avez déjà un compte Alkemio avec le même e-mail, {{provider}} sera rattaché à ce compte et vous pourrez utiliser les deux méthodes de connexion.",
+      "signInAction": "Se connecter avec un autre compte"
+    },
+    "continuation": {
+      "divider": "ou",
+      "heading": "Terminez votre inscription avec {{provider}}",
+      "intro": "Ces informations ont été partagées par le fournisseur - vérifiez qu'elles sont correctes et acceptez les conditions pour terminer la création de votre compte.",
+      "cta": "Créer un compte avec {{provider}}"
     }
   },
   "recovery": {

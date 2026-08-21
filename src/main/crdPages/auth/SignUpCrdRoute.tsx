@@ -264,6 +264,9 @@ function CrdSignUpPage({ lockAcceptedTerms }: CrdSignUpPageProps) {
             descriptor={descriptor}
             isLoading={loading}
             showSignpost={isProviderArrivalFlow(registrationFlow) && !arrivedFromSignUpProviderClick}
+            // Every provider continuation gets the explanatory heading + labeled
+            // CTA, regardless of arrival origin — only the signpost is FR-014-gated.
+            providerContinuation={isProviderArrivalFlow(registrationFlow)}
             signInHref={
               // Carry the destination into the sign-in link so a user who
               // switches from sign-up to sign-in keeps it.

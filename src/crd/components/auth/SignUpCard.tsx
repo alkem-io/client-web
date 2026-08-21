@@ -3,7 +3,9 @@ import { AuthCard } from '@/crd/components/auth/AuthCard';
 import { AuthCardHeader } from '@/crd/components/auth/AuthCardHeader';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
 import type { KratosFlowDescriptor, KratosPasskeyTrigger } from '@/crd/components/auth/flowDescriptor';
+import { OrContinueWithDivider } from '@/crd/components/auth/OrContinueWithDivider';
 import { AcceptTermsCheckbox } from '@/crd/forms/AcceptTermsCheckbox';
+import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
 export type SignUpCardProps = {
@@ -24,6 +26,16 @@ export type SignUpCardProps = {
    * at render — no live region needed, since nothing changes after mount.
    */
   showSignpost?: boolean;
+  /**
+   * When true, the loaded flow is an OIDC continuation — the person came back
+   * from a provider's identity check to finish creating the account. The card
+   * then explains the form (a heading naming the provider and a sentence on
+   * where the prefilled details came from) and renders the provider submit as
+   * the form's labeled primary CTA instead of an unexplained icon circle.
+   * Unlike `showSignpost` (FR-014-gated), this is set for EVERY provider
+   * continuation regardless of how the person arrived.
+   */
+  providerContinuation?: boolean;
   onProviderClick?: (providerKey: string) => void;
   onPasskeyTrigger?: (trigger: KratosPasskeyTrigger) => void;
 };
@@ -37,10 +49,20 @@ export function SignUpCard({
   onAcceptedTermsChange,
   isLoading,
   showSignpost,
+  providerContinuation,
   onProviderClick,
   onPasskeyTrigger,
 }: SignUpCardProps) {
   const { t } = useTranslation('crd-auth');
+
+  // The continuation's provider identity (icon + brand name) comes from the
+  // flow's own OIDC submit node — no separate prop to drift out of sync.
+  const continuationNode = providerContinuation ? descriptor?.groups.oidc[0] : undefined;
+  const continuationBrand = continuationNode
+    ? t(`providers.${continuationNode.value}` as 'providers.fallback', {
+        defaultValue: continuationNode.label || continuationNode.customisation?.providerKey || '',
+      }) || t('providers.fallback')
+    : undefined;
 
   const policyLink = (href: string, ariaLabel: string) => (
     // biome-ignore lint/a11y/useAnchorContent: <Trans> injects the link text.
@@ -70,16 +92,33 @@ export function SignUpCard({
           {showSignpost ? (
             <div
               data-testid="signup-signpost"
-              className="mb-5 flex flex-col gap-2 rounded-md border border-primary/15 bg-primary/5 p-4 text-body text-primary"
+              className="mb-5 flex flex-col gap-3 rounded-md border border-primary/15 bg-primary/5 p-4 text-body text-primary"
             >
-              <p>{t('signUp.signpost.warning')}</p>
-              <a href={signInHref} className="text-body-emphasis underline">
-                {t('signUp.signpost.signInAction')}
-              </a>
+              <p>{t('signUp.signpost.warning', { provider: continuationBrand ?? t('providers.fallback') })}</p>
+              <Button asChild={true} variant="outline" className="text-control w-full">
+                <a href={signInHref}>{t('signUp.signpost.signInAction')}</a>
+              </Button>
+            </div>
+          ) : null}
+          {continuationNode ? (
+            <div className="mb-5 flex flex-col gap-2" data-testid="signup-continuation">
+              {showSignpost ? <OrContinueWithDivider label={t('signUp.continuation.divider')} /> : null}
+              <div className="flex flex-col gap-2.5">
+                <h2 className="text-subsection-title flex items-center justify-center gap-2">
+                  {t('signUp.continuation.heading', { provider: continuationBrand })}
+                  {continuationNode.customisation?.iconSrc ? (
+                    <img src={continuationNode.customisation.iconSrc} alt="" aria-hidden="true" className="size-5" />
+                  ) : null}
+                </h2>
+                <p className="text-body text-center text-muted-foreground">{t('signUp.continuation.intro')}</p>
+              </div>
             </div>
           ) : null}
           <CrdKratosFlow
             descriptor={descriptor}
+            oidcSubmitCtaLabel={
+              continuationNode ? t('signUp.continuation.cta', { provider: continuationBrand }) : undefined
+            }
             submitDisabled={Boolean(descriptor.acceptTerms) && !hasAcceptedTerms}
             beforeInputs={
               <div className="flex flex-col gap-4">

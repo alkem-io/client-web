@@ -70,3 +70,76 @@ describe('SignUpCard — provider-arrival signpost (FR-013/FR-014)', () => {
     expect(screen.queryByTestId('signup-signpost')).not.toBeInTheDocument();
   });
 });
+
+const continuationDescriptor = (): KratosFlowDescriptor => {
+  const base = descriptor();
+  return {
+    ...base,
+    groups: {
+      ...base.groups,
+      // An OIDC continuation flow has no password submit — the provider
+      // submit is the only way to finish.
+      submit: [],
+      oidc: [
+        {
+          name: 'provider',
+          value: 'github',
+          label: 'Sign up with github',
+          disabled: false,
+          customisation: { providerKey: 'github', iconSrc: '/github.svg', sortOrder: 1 },
+        },
+      ],
+    },
+  };
+};
+
+describe('SignUpCard — OIDC continuation (finish signing up with a provider)', () => {
+  test('providerContinuation renders the explanatory heading and intro', () => {
+    render(<SignUpCard {...baseProps} descriptor={continuationDescriptor()} providerContinuation={true} />);
+
+    const continuation = screen.getByTestId('signup-continuation');
+    expect(continuation).toHaveTextContent('signUp.continuation.heading');
+    expect(continuation).toHaveTextContent('signUp.continuation.intro');
+  });
+
+  test('providerContinuation renders the provider submit as a labeled CTA, not an icon circle', () => {
+    render(<SignUpCard {...baseProps} descriptor={continuationDescriptor()} providerContinuation={true} />);
+
+    const cta = screen.getByRole('button', { name: /signUp\.continuation\.cta/ });
+    expect(cta).toHaveAttribute('type', 'submit');
+    expect(cta).toHaveAttribute('name', 'provider');
+    expect(cta).toHaveAttribute('value', 'github');
+    // The icon-circle variant carries the providers.connectWith aria-label —
+    // it must not also render.
+    expect(screen.queryByRole('button', { name: 'providers.connectWith' })).not.toBeInTheDocument();
+  });
+
+  test('the divider between the signpost and the continuation form renders only when both are shown', () => {
+    const { rerender } = render(
+      <SignUpCard
+        {...baseProps}
+        descriptor={continuationDescriptor()}
+        providerContinuation={true}
+        showSignpost={true}
+      />
+    );
+    expect(screen.getByTestId('signup-continuation')).toHaveTextContent('signUp.continuation.divider');
+
+    rerender(
+      <SignUpCard
+        {...baseProps}
+        descriptor={continuationDescriptor()}
+        providerContinuation={true}
+        showSignpost={false}
+      />
+    );
+    expect(screen.getByTestId('signup-continuation')).not.toHaveTextContent('signUp.continuation.divider');
+  });
+
+  test('a plain registration flow (no continuation) renders neither heading nor CTA', () => {
+    render(<SignUpCard {...baseProps} descriptor={descriptor()} providerContinuation={false} />);
+
+    expect(screen.queryByTestId('signup-continuation')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /signUp\.continuation\.cta/ })).not.toBeInTheDocument();
+  });
+});

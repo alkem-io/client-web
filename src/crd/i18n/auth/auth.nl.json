@@ -18,8 +18,14 @@
     "openTerms": "Open de Gebruiksvoorwaarden in een nieuw tabblad",
     "openPrivacy": "Open het Privacybeleid in een nieuw tabblad",
     "signpost": {
-      "warning": "Mogelijk heb je al een account. Log liever in om alles op één plek te houden.",
-      "signInAction": "Ga naar inloggen"
+      "warning": "Je probeert je te registreren met {{provider}}. Als je al een Alkemio-account met hetzelfde e-mailadres hebt, wordt {{provider}} aan dat account gekoppeld en kun je voortaan beide inlogmethoden gebruiken.",
+      "signInAction": "Inloggen met een ander account"
+    },
+    "continuation": {
+      "divider": "of",
+      "heading": "Registratie afronden met {{provider}}",
+      "intro": "Deze gegevens zijn gedeeld door de provider - controleer of ze kloppen en accepteer de voorwaarden om je account aan te maken.",
+      "cta": "Account aanmaken met {{provider}}"
     }
   },
   "recovery": {

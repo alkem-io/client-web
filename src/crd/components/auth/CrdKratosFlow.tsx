@@ -31,6 +31,17 @@ export type CrdKratosFlowProps = {
   onProviderClick?: (providerKey: string) => void;
   /** Fired when a passkey button is activated — the consumer runs the WebAuthn ceremony. */
   onPasskeyTrigger?: (trigger: KratosPasskeyTrigger) => void;
+  /**
+   * Provider-continuation mode: when set, the flow's OIDC submit node(s)
+   * render as the form's full-width primary CTA carrying this (already
+   * translated, provider-name-included) label plus the provider's icon —
+   * instead of the icon-circle "or continue with" row. Used when the flow IS a provider continuation
+   * (e.g. finishing an OIDC registration), where the fields being confirmed
+   * belong to the provider submit: the submit is also gated on required
+   * fields and HTML5 validity like a primary submit, rather than bypassing
+   * them the way a start-a-provider-flow button does.
+   */
+  oidcSubmitCtaLabel?: string;
 };
 
 const EMAIL_FIELD_NAMES = new Set(['identifier', 'password_identifier', 'traits.email']);
@@ -52,6 +63,7 @@ export function CrdKratosFlow({
   onSubmit,
   onProviderClick,
   onPasskeyTrigger,
+  oidcSubmitCtaLabel,
 }: CrdKratosFlowProps) {
   const { t } = useTranslation('crd-auth');
   const { groups } = descriptor;
@@ -113,7 +125,20 @@ export function CrdKratosFlow({
     );
   };
 
-  const hasAlternativeMethods = groups.passkey.length > 0 || groups.oidc.length > 0;
+  // Brand-cased provider name from the `crd-auth` namespace (e.g. "GitHub")
+  // — Kratos sends provider keys lower-cased, and the prototype's node label
+  // is the lower-cased key too. Falls back to the Kratos-supplied label, then
+  // to the generic "Other provider".
+  const brandFor = (node: (typeof groups.oidc)[number]): string => {
+    const brand = t(`providers.${node.value}` as 'providers.fallback', {
+      defaultValue: node.label || node.customisation?.providerKey || '',
+    });
+    return brand || t('providers.fallback');
+  };
+
+  // In continuation mode the OIDC submit is the primary CTA, so the
+  // icon-circle alternatives row (and its divider) must not also offer it.
+  const alternativeButtons = groups.passkey.length > 0 || (groups.oidc.length > 0 && !oidcSubmitCtaLabel);
 
   // The form is `noValidate` so the OIDC submit buttons aren't blocked by native
   // required-field validation (an empty/invalid email must not stop someone
@@ -125,7 +150,9 @@ export function CrdKratosFlow({
   // `:back`) is gated; passkey buttons are `type="button"` and never reach this.
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
-    const isProviderSubmit = submitter?.name === 'provider';
+    // In continuation mode the provider submit carries the form's fields, so
+    // it does NOT get the start-a-provider-flow validation bypass.
+    const isProviderSubmit = submitter?.name === 'provider' && !oidcSubmitCtaLabel;
     const isBackSubmit = (submitter?.value ?? '').includes(':back');
     if (!isProviderSubmit && !isBackSubmit && !event.currentTarget.checkValidity()) {
       event.preventDefault();
@@ -201,6 +228,29 @@ export function CrdKratosFlow({
         </Button>
       ))}
 
+      {oidcSubmitCtaLabel
+        ? groups.oidc.map(node => (
+            <Button
+              key={`oidc-cta-${node.value}`}
+              type="submit"
+              name={node.name}
+              value={node.value}
+              disabled={formSubmitDisabled || disableInputs || node.disabled}
+              className="text-control h-12 w-full font-semibold uppercase tracking-wider"
+            >
+              {oidcSubmitCtaLabel}
+              {node.customisation?.iconSrc ? (
+                // Provider marks are drawn for light surfaces and disappear
+                // on the primary background — a white chip keeps the brand
+                // mark intact (recoloring logos violates brand guidelines).
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white">
+                  <img src={node.customisation.iconSrc} alt="" aria-hidden="true" className="size-4" />
+                </span>
+              ) : null}
+            </Button>
+          ))
+        : null}
+
       {groups.anchors.map(anchor => (
         <Button
           key={anchor.href}
@@ -211,7 +261,7 @@ export function CrdKratosFlow({
         </Button>
       ))}
 
-      {hasAlternativeMethods && (groups.submit.length > 0 || groups.anchors.length > 0) ? (
+      {alternativeButtons && (groups.submit.length > 0 || groups.anchors.length > 0) ? (
         <OrContinueWithDivider label={t('continueWith')} />
       ) : null}
 
@@ -225,7 +275,7 @@ export function CrdKratosFlow({
         <input key={`passkey-hidden-${node.name}-${node.value}`} type="hidden" name={node.name} />
       ))}
 
-      {hasAlternativeMethods ? (
+      {alternativeButtons ? (
         <div className="flex items-center justify-center gap-3">
           {groups.passkey.map(node => (
             <SocialProviderButton
@@ -236,28 +286,23 @@ export function CrdKratosFlow({
               onClick={() => onPasskeyTrigger?.(node.trigger)}
             />
           ))}
-          {groups.oidc.map(node => {
-            // Brand-cased name from the `crd-auth` namespace (e.g. "GitHub")
-            // — Kratos sends provider keys lower-cased, and the prototype's
-            // node label is the lower-cased key too. Falls back to the
-            // Kratos-supplied label, then to the generic "Other provider".
-            const brand = t(`providers.${node.value}` as 'providers.fallback', {
-              defaultValue: node.label || node.customisation?.providerKey || '',
-            });
-            const tooltip = brand || t('providers.fallback');
-            return (
-              <SocialProviderButton
-                key={`oidc-${node.value}`}
-                label={tooltip}
-                ariaLabel={t('providers.connectWith', { provider: tooltip })}
-                iconSrc={node.customisation?.iconSrc}
-                formFieldName={node.name}
-                formFieldValue={node.value}
-                disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
-                onClick={() => onProviderClick?.(node.value)}
-              />
-            );
-          })}
+          {oidcSubmitCtaLabel
+            ? null
+            : groups.oidc.map(node => {
+                const tooltip = brandFor(node);
+                return (
+                  <SocialProviderButton
+                    key={`oidc-${node.value}`}
+                    label={tooltip}
+                    ariaLabel={t('providers.connectWith', { provider: tooltip })}
+                    iconSrc={node.customisation?.iconSrc}
+                    formFieldName={node.name}
+                    formFieldValue={node.value}
+                    disabled={alternativeSubmitDisabled || disableInputs || node.disabled}
+                    onClick={() => onProviderClick?.(node.value)}
+                  />
+                );
+              })}
         </div>
       ) : null}
     </form>

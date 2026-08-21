@@ -18,8 +18,14 @@
     "openTerms": "Open Terms of Use in a new tab",
     "openPrivacy": "Open Privacy Policy in a new tab",
     "signpost": {
-      "warning": "You may already have an account. Sign in instead to keep everything in one place.",
-      "signInAction": "Go to sign in"
+      "warning": "You are trying to sign up with {{provider}}. If you already have an Alkemio account with the same email, {{provider}} will be connected to that account and you can use both sign-in methods from then on.",
+      "signInAction": "Sign in with a different account"
+    },
+    "continuation": {
+      "divider": "or",
+      "heading": "Finish signing up with {{provider}}",
+      "intro": "These details were shared by the provider - check they're right and accept the terms to finish creating your account.",
+      "cta": "Create account with {{provider}}"
     }
   },
   "recovery": {
