@@ -63,6 +63,17 @@ export class AwarenessRouter {
   private readonly ephemeral?: EphemeralChannel;
   private readonly cleanups: Array<() => void> = [];
 
+  // Pointer presence is throttled to POINTER_THROTTLE_MS (~30fps), restoring the cursor
+  // throttle the pre-native-Yjs Collab client applied (legacy parity) and keeping presence
+  // traffic bounded no matter how fast Excalidraw fires onPointerUpdate (tens/sec). The
+  // throttle is leading+trailing so the cursor moves immediately and its final position
+  // always lands; pointer+button are coalesced into ONE awareness frame per window, so a
+  // move costs one frame, not two. (The dropped throttle also exposed a since-corrected
+  // server-side all-frame disconnect; this client change does not depend on that cap.)
+  private static readonly POINTER_THROTTLE_MS = 33;
+  private pointerTimer: ReturnType<typeof setTimeout> | null = null;
+  private pendingPointer: PointerPayload | null = null;
+
   constructor(deps: AwarenessRouterDeps) {
     this.awareness = deps.awareness;
     this.api = deps.api;
@@ -89,10 +100,42 @@ export class AwarenessRouter {
     }
   }
 
-  /** Local pointer move → awareness. Never the scene doc. */
+  /**
+   * Local pointer move → awareness. Never the scene doc. Throttled leading+trailing at
+   * POINTER_THROTTLE_MS: the first move in a window emits immediately, intra-window moves
+   * are coalesced, and the latest is flushed at the trailing edge (so the resting cursor
+   * position is never lost). Bounds outbound presence to ~30fps — legacy parity.
+   */
   onPointerUpdate(payload: PointerPayload): void {
-    this.awareness.setLocalStateField('pointer', payload.pointer);
-    this.awareness.setLocalStateField('button', payload.button);
+    if (this.pointerTimer === null) {
+      this.emitPointer(payload); // leading edge — immediate
+      this.openPointerWindow();
+    } else {
+      this.pendingPointer = payload; // coalesce; the latest flushes at the trailing edge
+    }
+  }
+
+  /** Arm the trailing-edge flush; re-arm while movement continues so it stays ~30fps. */
+  private openPointerWindow(): void {
+    this.pointerTimer = setTimeout(() => {
+      this.pointerTimer = null;
+      if (this.pendingPointer !== null) {
+        const latest = this.pendingPointer;
+        this.pendingPointer = null;
+        this.emitPointer(latest); // trailing edge — the latest coalesced position
+        this.openPointerWindow();
+      }
+    }, AwarenessRouter.POINTER_THROTTLE_MS);
+  }
+
+  /**
+   * Write pointer + button in a SINGLE awareness state update so a cursor move costs one
+   * frame, not two. Merges over the current local state to preserve `user` (and any other
+   * field). Never touches the scene doc.
+   */
+  private emitPointer(payload: PointerPayload): void {
+    const current = this.awareness.getLocalState() ?? {};
+    this.awareness.setLocalState({ ...current, pointer: payload.pointer, button: payload.button });
   }
 
   /** Local user identity → awareness. */
@@ -147,6 +190,12 @@ export class AwarenessRouter {
   }
 
   destroy(): void {
+    // Cancel any pending trailing pointer flush so no presence frame lands after teardown.
+    if (this.pointerTimer !== null) {
+      clearTimeout(this.pointerTimer);
+      this.pointerTimer = null;
+    }
+    this.pendingPointer = null;
     for (const cleanup of this.cleanups) {
       cleanup();
     }
