@@ -1,5 +1,6 @@
 {
   "addTask": "Añadir tarea",
+  "addTaskBoard": "Añadir tarea",
   "emptyColumn": "Aún no hay tareas",
   "moveError": "No se pudo mover la tarea. Inténtalo de nuevo.",
   "columns": {
@@ -24,7 +25,8 @@
     },
     "dragLabel": "Reordenar columna",
     "deleteLabel": "Eliminar columna",
-    "saving": "Guardando…"
+    "saving": "Guardando…",
+    "saveError": "No se pudo guardar el cambio de columna. Inténtalo de nuevo."
   },
   "create": {
     "option": "Tablero de tareas",

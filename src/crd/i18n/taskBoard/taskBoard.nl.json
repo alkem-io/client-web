@@ -1,5 +1,6 @@
 {
   "addTask": "Taak toevoegen",
+  "addTaskBoard": "Taak toevoegen",
   "emptyColumn": "Nog geen taken",
   "moveError": "De taak kon niet worden verplaatst. Probeer het opnieuw.",
   "columns": {
@@ -24,7 +25,8 @@
     },
     "dragLabel": "Kolom herordenen",
     "deleteLabel": "Kolom verwijderen",
-    "saving": "Opslaan…"
+    "saving": "Opslaan…",
+    "saveError": "De kolomwijziging kon niet worden opgeslagen. Probeer het opnieuw."
   },
   "create": {
     "option": "Takenbord",

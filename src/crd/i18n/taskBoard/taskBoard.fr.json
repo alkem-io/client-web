@@ -1,5 +1,6 @@
 {
   "addTask": "Ajouter une tâche",
+  "addTaskBoard": "Ajouter une tâche",
   "emptyColumn": "Aucune tâche pour l'instant",
   "moveError": "Impossible de déplacer la tâche. Veuillez réessayer.",
   "columns": {
@@ -24,7 +25,8 @@
     },
     "dragLabel": "Réordonner la colonne",
     "deleteLabel": "Supprimer la colonne",
-    "saving": "Enregistrement…"
+    "saving": "Enregistrement…",
+    "saveError": "Impossible d'enregistrer la modification de la colonne. Veuillez réessayer."
   },
   "create": {
     "option": "Tableau de tâches",

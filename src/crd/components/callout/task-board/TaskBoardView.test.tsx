@@ -41,6 +41,21 @@ describe('TaskBoardView', () => {
     expect(onAddTask).toHaveBeenCalledWith('Backlog');
   });
 
+  it('shows the board-level (generic) add and fires it without a column', () => {
+    const onAddTaskGeneric = vi.fn();
+    render(
+      <TaskBoardView columns={columns} addBoardLabel="Add task" onAddTaskGeneric={onAddTaskGeneric} canAdd={true} />
+    );
+    // The header button is the first "Add task" control (no per-column add wired here).
+    fireEvent.click(screen.getByRole('button', { name: 'Add task' }));
+    expect(onAddTaskGeneric).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the board-level add in read-only mode', () => {
+    render(<TaskBoardView columns={columns} addBoardLabel="Add task" onAddTaskGeneric={vi.fn()} canAdd={false} />);
+    expect(screen.queryByRole('button', { name: 'Add task' })).not.toBeInTheDocument();
+  });
+
   it('opens a task on card click', () => {
     const onOpenTask = vi.fn();
     render(<TaskBoardView columns={columns} onOpenTask={onOpenTask} />);

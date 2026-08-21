@@ -73,9 +73,12 @@ function TaskBoardBody({
   const [renameColumn] = useUpdateTaskColumnOnCalloutMutation();
   const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation();
   const [reorderColumns] = useUpdateTaskColumnsSortOrderOnCalloutMutation();
-  // Creation dialog state: `undefined` closed; a string opens the existing post
-  // creation flow pre-targeted at that column.
-  const [addColumn, setAddColumn] = useState<string | undefined>();
+  // Creation dialog state: closed when undefined. When open, `column` is the
+  // pre-targeted column for a per-column add, or undefined for the board-level
+  // (generic) add — in which case the server drops the new post in the first
+  // column. Using an explicit open flag keeps the board-level add (no column)
+  // distinct from the closed state.
+  const [addState, setAddState] = useState<{ column?: string } | undefined>();
   const [columnsOpen, setColumnsOpen] = useState(false);
 
   const privileges = callout.authorization?.myPrivileges ?? [];
@@ -85,6 +88,20 @@ function TaskBoardBody({
 
   const columns = mapTaskBoardColumns(callout, contributions);
   const columnNames = getBoardColumns({ classification: { tagsets: callout.classification?.tagsets } });
+
+  // Surface a toast for a failed column mutation and re-throw so the dialog's
+  // save sweep aborts and keeps itself open. Column edits run in their own
+  // server transactions under a template-row lock, so the sweep must sequence
+  // creates/renames before the reorder (a reorder naming a not-yet-committed
+  // column fails the server's permutation check).
+  const runColumnMutation = async (mutate: () => Promise<unknown>): Promise<void> => {
+    try {
+      await mutate();
+    } catch (error) {
+      toast.error(t('columns.saveError'));
+      throw error;
+    }
+  };
 
   const handleMoveTask = (contributionId: string, toColumn: string) => {
     const contribution = contributions.find(item => item.id === contributionId);
@@ -148,8 +165,10 @@ function TaskBoardBody({
         canAdd={canAdd}
         canMove={canMove}
         addLabel={t('addTask')}
+        addBoardLabel={t('addTaskBoard')}
         emptyLabel={t('emptyColumn')}
-        onAddTask={canAdd ? column => setAddColumn(column) : undefined}
+        onAddTask={canAdd ? column => setAddState({ column }) : undefined}
+        onAddTaskGeneric={canAdd ? () => setAddState({}) : undefined}
         onOpenTask={onOpenTask}
         onMoveTask={handleMoveTask}
       />
@@ -158,33 +177,37 @@ function TaskBoardBody({
           open={columnsOpen}
           onOpenChange={setColumnsOpen}
           columns={columnNames.map(name => ({ name }))}
-          onAddColumn={name => {
-            void createColumn({ variables: { columnData: { calloutID: callout.id, name } } });
-          }}
-          onRenameColumn={(currentName, nextName) => {
-            void renameColumn({ variables: { columnData: { calloutID: callout.id, currentName, newName: nextName } } });
-          }}
-          onReorderColumns={orderedNames => {
-            void reorderColumns({
-              variables: { sortOrderData: { calloutID: callout.id, columnNames: orderedNames } },
-            });
-          }}
-          onDeleteColumn={name => {
-            void deleteColumn({ variables: { columnData: { calloutID: callout.id, name } } });
-          }}
+          onAddColumn={name =>
+            runColumnMutation(() => createColumn({ variables: { columnData: { calloutID: callout.id, name } } }))
+          }
+          onRenameColumn={(currentName, nextName) =>
+            runColumnMutation(() =>
+              renameColumn({ variables: { columnData: { calloutID: callout.id, currentName, newName: nextName } } })
+            )
+          }
+          onReorderColumns={orderedNames =>
+            runColumnMutation(() =>
+              reorderColumns({ variables: { sortOrderData: { calloutID: callout.id, columnNames: orderedNames } } })
+            )
+          }
+          onDeleteColumn={name =>
+            runColumnMutation(() => deleteColumn({ variables: { columnData: { calloutID: callout.id, name } } }))
+          }
         />
       )}
-      {addColumn !== undefined && (
-        // Reuse the existing post creation dialog, pre-targeted at the picked
+      {addState !== undefined && (
+        // Reuse the existing post creation dialog. For a per-column add it is
+        // pre-targeted at the picked column; for the board-level (generic) add
+        // no column is passed, so the server drops the post in the first
         // column. The refetch of TaskBoardData (inside the dialog) surfaces the
         // new card under its column with updated counts.
         <PostContributionAddConnector
           calloutId={callout.id}
-          taskColumn={addColumn}
+          taskColumn={addState.column}
           inlineTrigger={true}
-          open={addColumn !== undefined}
+          open={true}
           onOpenChange={open => {
-            if (!open) setAddColumn(undefined);
+            if (!open) setAddState(undefined);
           }}
         />
       )}

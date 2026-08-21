@@ -1,5 +1,6 @@
 {
   "addTask": "Aufgabe hinzufügen",
+  "addTaskBoard": "Aufgabe hinzufügen",
   "emptyColumn": "Noch keine Aufgaben",
   "moveError": "Die Aufgabe konnte nicht verschoben werden. Bitte versuche es erneut.",
   "columns": {
@@ -24,7 +25,8 @@
     },
     "dragLabel": "Spalte neu anordnen",
     "deleteLabel": "Spalte löschen",
-    "saving": "Speichern…"
+    "saving": "Speichern…",
+    "saveError": "Die Spaltenänderung konnte nicht gespeichert werden. Bitte versuche es erneut."
   },
   "create": {
     "option": "Aufgabenboard",

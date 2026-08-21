@@ -10,7 +10,9 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import { Plus } from 'lucide-react';
 import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
 import { TaskBoardColumn } from './TaskBoardColumn';
 import { TaskCard } from './TaskCard';
 
@@ -37,8 +39,16 @@ export type TaskBoardViewProps = {
   /** When true, cards are draggable between columns. */
   canMove?: boolean;
   addLabel?: string;
+  /** Label for the board-level (generic) add affordance in the header. */
+  addBoardLabel?: string;
   emptyLabel?: string;
   onAddTask?: (column: string) => void;
+  /**
+   * Board-level (generic) add: create a task without picking a column. The
+   * consumer creates the post with no column and the server lands it in the
+   * first column. Shown as a header button only when set and adding is allowed.
+   */
+  onAddTaskGeneric?: () => void;
   onOpenTask?: (cardId: string) => void;
   /** Called on a drop into a different column. Same-column drops do not fire. */
   onMoveTask?: (cardId: string, toColumn: string) => void;
@@ -129,8 +139,10 @@ export function TaskBoardView({
   canAdd = false,
   canMove = false,
   addLabel,
+  addBoardLabel,
   emptyLabel,
   onAddTask,
+  onAddTaskGeneric,
   onOpenTask,
   onMoveTask,
 }: TaskBoardViewProps) {
@@ -151,6 +163,14 @@ export function TaskBoardView({
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+      {canAdd && onAddTaskGeneric && (
+        <div className="mb-2 flex justify-start">
+          <Button type="button" variant="outline" size="sm" className="gap-2" onClick={onAddTaskGeneric}>
+            <Plus className="size-4" aria-hidden="true" />
+            {addBoardLabel}
+          </Button>
+        </div>
+      )}
       <div className="flex flex-row flex-nowrap gap-3 overflow-x-auto max-h-[70vh] pb-2">
         {columns.map(column => (
           <DroppableColumn

@@ -1,5 +1,6 @@
 {
   "addTask": "Add task",
+  "addTaskBoard": "Add task",
   "emptyColumn": "No tasks yet",
   "moveError": "Couldn't move the task. Please try again.",
   "columns": {
@@ -24,7 +25,8 @@
     },
     "dragLabel": "Reorder column",
     "deleteLabel": "Delete column",
-    "saving": "Saving…"
+    "saving": "Saving…",
+    "saveError": "Couldn't save the column change. Please try again."
   },
   "create": {
     "option": "Tasks board",
