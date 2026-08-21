@@ -202,12 +202,20 @@ export const adaptConnectedAccountsFlow = (
     { kind: 'passkey', present: nodes.some(isPasskeyRemoveNode) },
   ];
 
-  const messages: KratosMessage[] = (flow.ui.messages ?? []).map(message => ({
-    id: message.id,
-    type: message.type === 'error' ? 'error' : message.type === 'success' ? 'success' : 'info',
-    text: message.text,
-    context: message.context as Record<string, unknown> | undefined,
-  }));
+  // Flow-level messages belong to the method that produced them (`flow.active`)
+  // — this section owns only the `oidc` link/unlink outcomes. The same flow's
+  // password or passkey messages render in their own cards, not here. An
+  // unattributed message (`active` unset) stays visible rather than dropped
+  // (FR-012).
+  const flowMessagesBelongHere = flow.active === undefined || flow.active === 'oidc';
+  const messages: KratosMessage[] = !flowMessagesBelongHere
+    ? []
+    : (flow.ui.messages ?? []).map(message => ({
+        id: message.id,
+        type: message.type === 'error' ? 'error' : message.type === 'success' ? 'success' : 'info',
+        text: message.text,
+        context: message.context as Record<string, unknown> | undefined,
+      }));
 
   return { status: 'ready', providers, credentials, messages };
 };

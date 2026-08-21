@@ -261,5 +261,23 @@ describe('adaptConnectedAccountsFlow', () => {
         context: undefined,
       });
     });
+
+    it('keeps flow-level messages when the flow was produced by the oidc method', () => {
+      const flow = buildFlow(
+        [hiddenNode('csrf_token', 'x')],
+        [{ id: 4000007, text: 'An account with the same identifier exists already.', type: 'error' }]
+      );
+      (flow as unknown as { active: string }).active = 'oidc';
+      expect(adaptConnectedAccountsFlow(flow, []).messages).toHaveLength(1);
+    });
+
+    it("drops flow-level messages produced by another method — the shared flow's password outcome must not render in this section", () => {
+      const flow = buildFlow(
+        [hiddenNode('csrf_token', 'x')],
+        [{ id: 1050001, text: 'Your changes have been saved!', type: 'success' }]
+      );
+      (flow as unknown as { active: string }).active = 'password';
+      expect(adaptConnectedAccountsFlow(flow, []).messages).toEqual([]);
+    });
   });
 });

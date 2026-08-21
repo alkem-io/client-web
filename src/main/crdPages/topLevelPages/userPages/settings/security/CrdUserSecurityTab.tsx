@@ -132,6 +132,12 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
         descriptor={flowDescriptorAdapter(flowResult.flow, 'settings', {
           keepPasskeys: true,
           dropPasswordMethod: true,
+          // Flow-level messages render in the card owning the method that
+          // produced them (`flow.active`) — only passkey outcomes belong here.
+          dropFlowMessages:
+            flowResult.flow.active !== undefined &&
+            flowResult.flow.active !== 'webauthn' &&
+            flowResult.flow.active !== 'passkey',
         })}
         onPasskeyTrigger={trigger => {
           invokePasskeyTrigger(trigger).catch(() => undefined);
