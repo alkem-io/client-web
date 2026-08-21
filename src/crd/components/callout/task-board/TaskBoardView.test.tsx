@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { type TaskBoardColumnModel, TaskBoardView } from './TaskBoardView';
 
@@ -48,19 +48,11 @@ describe('TaskBoardView', () => {
     expect(onOpenTask).toHaveBeenCalledWith('a');
   });
 
-  it('lets a connector wrap each card via renderCard', () => {
-    render(
-      <TaskBoardView
-        columns={columns}
-        renderCard={(card, column, defaultCard) => (
-          <div data-testid={`wrap-${card.id}`} data-column={column}>
-            {defaultCard}
-          </div>
-        )}
-      />
-    );
-    const wrapped = screen.getByTestId('wrap-a');
-    expect(wrapped.getAttribute('data-column')).toBe('Backlog');
-    expect(within(wrapped).getByText('Task A')).toBeInTheDocument();
+  it('marks cards draggable only when moving is allowed', () => {
+    const { container, rerender } = render(<TaskBoardView columns={columns} canMove={false} />);
+    expect(container.querySelector('.cursor-grab')).not.toBeInTheDocument();
+
+    rerender(<TaskBoardView columns={columns} canMove={true} onMoveTask={vi.fn()} />);
+    expect(container.querySelector('.cursor-grab')).toBeInTheDocument();
   });
 });

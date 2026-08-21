@@ -3,13 +3,41 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
 const useTaskBoardDataQuery = vi.fn();
+const moveTaskMock = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
+  useMoveTaskToColumnMutation: () => [moveTaskMock, {}] as const,
 }));
+
+vi.mock('sonner', () => ({ toast: { error: vi.fn() } }));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+}));
+
+// Capture the props the connector feeds the view so the move glue can be
+// exercised without driving a real @dnd-kit pointer sequence in jsdom.
+let capturedViewProps: Record<string, unknown> | undefined;
+vi.mock('@/crd/components/callout/task-board/TaskBoardView', () => ({
+  TaskBoardView: (props: Record<string, unknown>) => {
+    capturedViewProps = props;
+    const columns = props.columns as { name: string; count: number; cards: { id: string; title: string }[] }[];
+    return (
+      <div>
+        {columns.map(column => (
+          <div key={column.name}>
+            <span>{column.name}</span>
+            <span>{column.count}</span>
+            {column.cards.map(card => (
+              <span key={card.id}>{card.title}</span>
+            ))}
+          </div>
+        ))}
+        {props.canMove ? <span data-testid="can-move" /> : null}
+      </div>
+    );
+  },
 }));
 
 import { TaskBoardConnector } from './TaskBoardConnector';
@@ -48,6 +76,8 @@ function boardCallout(overrides: Record<string, unknown> = {}) {
 
 afterEach(() => {
   useTaskBoardDataQuery.mockReset();
+  moveTaskMock.mockReset();
+  capturedViewProps = undefined;
 });
 
 describe('TaskBoardConnector', () => {
@@ -82,5 +112,72 @@ describe('TaskBoardConnector', () => {
     useTaskBoardDataQuery.mockReturnValue({ data: undefined });
     render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
     expect(screen.getByTestId('plain-preview')).toBeInTheDocument();
+  });
+
+  it('enables moving only with the MOVE_TASK privilege', () => {
+    useTaskBoardDataQuery.mockReturnValue({
+      data: {
+        lookup: {
+          callout: boardCallout({
+            authorization: { id: 'a', myPrivileges: [AuthorizationPrivilege.Contribute] },
+          }),
+        },
+      },
+    });
+    const { rerender } = render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(screen.queryByTestId('can-move')).not.toBeInTheDocument();
+
+    useTaskBoardDataQuery.mockReturnValue({
+      data: {
+        lookup: {
+          callout: boardCallout({
+            authorization: {
+              id: 'a',
+              myPrivileges: [AuthorizationPrivilege.Contribute, AuthorizationPrivilege.MoveTask],
+            },
+          }),
+        },
+      },
+    });
+    rerender(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(screen.getByTestId('can-move')).toBeInTheDocument();
+  });
+
+  it('moves a task with the mutation, optimistic tag, and count patch on a cross-column drop', () => {
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+
+    const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string) => void;
+    onMoveTask('contrib-1', 'Done');
+
+    expect(moveTaskMock).toHaveBeenCalledTimes(1);
+    const options = moveTaskMock.mock.calls[0][0];
+    expect(options.variables).toEqual({ moveData: { contributionID: 'contrib-1', column: 'Done' } });
+    // Optimistic tag reflects the destination column.
+    expect(options.optimisticResponse.moveTaskToColumn.classification.tagsets[0].tags).toEqual(['Done']);
+
+    // The cache update patches the authoritative counts: Backlog -1, Done +1.
+    const modify = vi.fn();
+    options.update({ identify: () => 'Callout:callout-1', modify });
+    const patched = modify.mock.calls[0][0].fields.taskColumnCounts([
+      { column: 'Backlog', count: 1 },
+      { column: 'Done', count: 0 },
+    ]);
+    expect(patched).toEqual([
+      { column: 'Backlog', count: 0 },
+      { column: 'Done', count: 1 },
+    ]);
+  });
+
+  it('shows an error toast when the move fails', async () => {
+    const { toast } = await import('sonner');
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+
+    const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string) => void;
+    onMoveTask('contrib-1', 'Done');
+    const options = moveTaskMock.mock.calls[0][0];
+    options.onError();
+    expect(toast.error).toHaveBeenCalledWith('moveError');
   });
 });

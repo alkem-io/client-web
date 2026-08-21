@@ -80,3 +80,26 @@ export function mapTaskBoardColumns(
 export function contributionColumnTag(contribution: TaskBoardContributionFragment): string | undefined {
   return contribution.classification?.tagsets?.find(tagset => tagset.name === TASK_TAGSET_NAME)?.tags[0];
 }
+
+export type TaskColumnCount = { column: string; count: number };
+
+/**
+ * Applies a single task move to the server-authoritative counts: one off the
+ * source column, one onto the destination. Case-insensitive on column names and
+ * clamped at zero. Returns a new array; the input is not mutated. Used to build
+ * the optimistic count update so the header badges reflect the move immediately.
+ */
+export function applyMoveToCounts(
+  counts: readonly TaskColumnCount[],
+  fromColumn: string | undefined,
+  toColumn: string
+): TaskColumnCount[] {
+  const from = fromColumn?.toLowerCase();
+  const to = toColumn.toLowerCase();
+  return counts.map(entry => {
+    const key = entry.column.toLowerCase();
+    if (from && key === from) return { ...entry, count: Math.max(0, entry.count - 1) };
+    if (key === to) return { ...entry, count: entry.count + 1 };
+    return entry;
+  });
+}

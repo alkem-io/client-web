@@ -4,7 +4,7 @@ import type {
   TaskBoardContributionFragment,
 } from '@/core/apollo/generated/graphql-schema';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
-import { contributionColumnTag, mapTaskBoardColumns } from './taskBoardMapper';
+import { applyMoveToCounts, contributionColumnTag, mapTaskBoardColumns } from './taskBoardMapper';
 
 const callout = {
   id: 'callout-1',
@@ -68,5 +68,48 @@ describe('mapTaskBoardColumns', () => {
 describe('contributionColumnTag', () => {
   it('returns the task tag', () => {
     expect(contributionColumnTag(contribution('a', 'Done'))).toBe('Done');
+  });
+});
+
+describe('applyMoveToCounts', () => {
+  const counts = [
+    { column: 'Backlog', count: 3 },
+    { column: 'Done', count: 1 },
+  ];
+
+  it('decrements the source and increments the destination', () => {
+    expect(applyMoveToCounts(counts, 'Backlog', 'Done')).toEqual([
+      { column: 'Backlog', count: 2 },
+      { column: 'Done', count: 2 },
+    ]);
+  });
+
+  it('only increments the destination when the source is unknown', () => {
+    expect(applyMoveToCounts(counts, undefined, 'Done')).toEqual([
+      { column: 'Backlog', count: 3 },
+      { column: 'Done', count: 2 },
+    ]);
+  });
+
+  it('is case-insensitive and clamps the source at zero', () => {
+    expect(
+      applyMoveToCounts(
+        [
+          { column: 'Backlog', count: 0 },
+          { column: 'Done', count: 2 },
+        ],
+        'backlog',
+        'DONE'
+      )
+    ).toEqual([
+      { column: 'Backlog', count: 0 },
+      { column: 'Done', count: 3 },
+    ]);
+  });
+
+  it('does not mutate the input', () => {
+    const original = [{ column: 'Backlog', count: 3 }];
+    applyMoveToCounts(original, 'Backlog', 'Done');
+    expect(original).toEqual([{ column: 'Backlog', count: 3 }]);
   });
 });
