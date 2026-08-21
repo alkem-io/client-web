@@ -110,6 +110,11 @@ const useKratosFlow = <Name extends FlowTypeName>(
         const error = new Error(`Error loading flow! Status: ${status}`);
         setError(error);
         logError(error, { category: TagCategoryValues.AUTH });
+      } else {
+        // A successful load supersedes any error from an earlier attempt —
+        // without this, a retry after an outage keeps reporting the stale
+        // error and the consumer never leaves its failure state.
+        setError(undefined);
       }
       setFlow(data as ReturnFlowType[Name]);
     } catch (error) {

@@ -354,7 +354,7 @@
           "reason": "C'est actuellement votre seul moyen de vous connecter — ajoutez d'abord un mot de passe ou une clé d'accès ci-dessous avant de pouvoir le déconnecter."
         },
         "unavailable": {
-          "message": "Nous ne pouvons pas afficher vos méthodes de connexion pour le moment.",
+          "message": "Nous ne pouvons pas afficher vos méthodes de connexion pour le moment. Réessayez dans un instant - pas besoin de recharger la page.",
           "retry": "Réessayer"
         },
         "messages": {

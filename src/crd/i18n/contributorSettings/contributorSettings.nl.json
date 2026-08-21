@@ -354,7 +354,7 @@
           "reason": "Dit is op dit moment je enige manier om in te loggen — voeg hieronder eerst een wachtwoord of een passkey toe voordat je dit kunt ontkoppelen."
         },
         "unavailable": {
-          "message": "We kunnen je inlogmethoden nu niet tonen.",
+          "message": "We kunnen je inlogmethoden nu niet tonen. Probeer het zo opnieuw - de pagina herladen is niet nodig.",
           "retry": "Opnieuw proberen"
         },
         "messages": {

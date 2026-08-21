@@ -354,7 +354,7 @@
           "reason": "Dies ist derzeit deine einzige Möglichkeit, dich anzumelden — füge unten zuerst ein Passwort oder einen Passkey hinzu, bevor du die Verbindung trennen kannst."
         },
         "unavailable": {
-          "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen.",
+          "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen. Versuche es gleich erneut - die Seite muss nicht neu geladen werden.",
           "retry": "Erneut versuchen"
         },
         "messages": {

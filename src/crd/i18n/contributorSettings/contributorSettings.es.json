@@ -354,7 +354,7 @@
           "reason": "Esta es tu única forma de iniciar sesión ahora mismo: añade una contraseña o una passkey a continuación antes de poder desconectarla."
         },
         "unavailable": {
-          "message": "No podemos mostrar tus métodos de inicio de sesión en este momento.",
+          "message": "No podemos mostrar tus métodos de inicio de sesión en este momento. Inténtalo de nuevo en un momento - no hace falta recargar la página.",
           "retry": "Intentar de nuevo"
         },
         "messages": {

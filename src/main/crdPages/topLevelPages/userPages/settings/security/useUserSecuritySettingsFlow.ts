@@ -1,4 +1,5 @@
 import type { SettingsFlow, UiNode } from '@ory/kratos-client';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
 
@@ -59,14 +60,43 @@ const hasWebauthnNode = (node: UiNode): boolean => {
  * from "that attempt genuinely failed" (see `ConnectedAccountsSection`).
  */
 const useUserSecuritySettingsFlow = (returnTo?: string): UserSecuritySettingsFlowResult => {
-  const [searchParams] = useSearchParams();
-  const flowId = searchParams.get('flow') ?? undefined;
+  const [searchParams, setSearchParams] = useSearchParams();
+  // Captured once at mount: Kratos reaches this page only via full-page
+  // redirects, so a resumed flow id can never legitimately change within one
+  // mount — and holding it in state (not the URL) lets the URL be cleaned
+  // below without losing the flow being rendered.
+  const [flowId, setFlowId] = useState<string | undefined>(() => searchParams.get('flow') ?? undefined);
 
   const { flow, error, loading, refetch } = useKratosFlow(FlowTypeName.Settings, flowId, { returnTo });
 
-  if (loading) return { kind: 'loading', refetch };
-  if (error) return { kind: 'error', error, refetch };
-  if (!flow) return { kind: 'error', error: new Error('Kratos settings flow unavailable'), refetch };
+  // One-shot resume: a `?flow=` id is consumed the first time its flow
+  // settles (its outcome message rendered, or its load failed). Drop it from
+  // the URL then, so a reload — or a second tab sharing the address — starts
+  // from a fresh flow showing true state instead of replaying the stale
+  // snapshot or its error forever. Kratos re-adds the param itself whenever
+  // it redirects back with something new to resume.
+  const settled = !loading && (Boolean(flow) || Boolean(error));
+  useEffect(() => {
+    if (!settled || !searchParams.has('flow')) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('flow');
+    setSearchParams(next, { replace: true });
+  }, [settled, searchParams, setSearchParams]);
+
+  // A resumed flow that must be re-requested is a dead end — the stored flow
+  // can only replay the same state — so retrying falls back to provisioning
+  // a fresh flow. Without a resumed id, a plain re-request is the retry.
+  const retry = () => {
+    if (flowId !== undefined) {
+      setFlowId(undefined);
+    } else {
+      refetch();
+    }
+  };
+
+  if (loading) return { kind: 'loading', refetch: retry };
+  if (error) return { kind: 'error', error, refetch: retry };
+  if (!flow) return { kind: 'error', error: new Error('Kratos settings flow unavailable'), refetch: retry };
 
   const nodes = flow.ui?.nodes ?? [];
   return {
@@ -74,7 +104,7 @@ const useUserSecuritySettingsFlow = (returnTo?: string): UserSecuritySettingsFlo
     flow,
     hasWebauthn: nodes.some(hasWebauthnNode),
     flowWasResumed: Boolean(flowId),
-    refetch,
+    refetch: retry,
   };
 };
 

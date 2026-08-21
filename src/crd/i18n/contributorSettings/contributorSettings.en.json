@@ -354,7 +354,7 @@
           "reason": "This is your only way to sign in right now — add a password or a passkey below before you can disconnect it."
         },
         "unavailable": {
-          "message": "We can't show your sign-in methods right now.",
+          "message": "We can't show your sign-in methods right now. Try again in a moment - no reload needed.",
           "retry": "Try again"
         },
         "messages": {
