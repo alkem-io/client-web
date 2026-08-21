@@ -11,11 +11,13 @@ Today the product exposes two unrelated chat experiences: a people-and-groups me
 
 This feature unifies them into **one chat surface**. A single floating button opens a card panel containing one conversation list. The Guidance AI assistant appears as the top, always-available conversation, above the user's people and group conversations. Everything users can do today is preserved; it is simply consolidated into one consistent place with one unread indicator.
 
+> **Amendment (2026-08-21)**: the floating launcher is now **hidden on phone-width viewports (< 640px, below `sm`)** — product decision: it is not needed on small screens. The header messages icon (which was retained in the implementation, wired to open the same unified panel) is the chat entry point there; on ≥ 640px both entries coexist, with the launcher as the primary affordance. Statements below that predate this amendment are annotated where affected.
+
 ## Design References
 
 Suggested visual designs for the unified chat (reference mockups):
 
-- **Floating button (launcher)**: [`prototype/public/crd-chat-1.png`](../../prototype/public/crd-chat-1.png) — the circular floating chat button anchored at the bottom-right of any page.
+- **Floating button (launcher)**: [`prototype/public/crd-chat-1.png`](../../prototype/public/crd-chat-1.png) — the circular floating chat button anchored at the bottom-right of any page (since 2026-08-21: on viewports ≥ 640px only).
 - **Conversation list**: [`prototype/public/crd-chat-2.png`](../../prototype/public/crd-chat-2.png) — the floating "Messages" card anchored above the launcher: header with unread count, a search field ("Search conversations…"), and a scrollable list of conversations with avatars, last-message previews, and unread badges.
 - **Conversation detail (thread)**: [`prototype/public/crd-chat-3.png`](../../prototype/public/crd-chat-3.png) — the message thread shown inside the same card: a back affordance + contact header, left/right message bubbles, a day divider with timestamps, and a message composer pinned at the bottom.
 
@@ -36,18 +38,18 @@ Suggested visual designs for the unified chat (reference mockups):
 
 ### User Story 1 - Open one chat surface and see all conversations (Priority: P1)
 
-A signed-in user clicks the floating chat button in the bottom-right corner. A card panel opens showing a single, searchable list of conversations. The Guidance AI assistant is pinned at the top of the list; below it are the user's direct (1:1) and group conversations, ordered by most recent activity. Selecting any conversation opens its message thread within the same card; a back affordance returns to the list.
+A signed-in user clicks the floating chat button in the bottom-right corner (viewports ≥ 640px; on phones the header messages icon opens the same panel — amendment 2026-08-21). A card panel opens showing a single, searchable list of conversations. The Guidance AI assistant is pinned at the top of the list; below it are the user's direct (1:1) and group conversations, ordered by most recent activity. Selecting any conversation opens its message thread within the same card; a back affordance returns to the list.
 
 **Why this priority**: This is the core consolidation. Without one entry point and one combined list, the feature does not exist. It delivers immediate value even before the secondary management flows are reworked.
 
-**Independent Test**: Sign in, click the floating button, confirm the panel opens with Guidance pinned on top and existing conversations listed below, open a conversation, read its history, and return to the list.
+**Independent Test**: Sign in, click the floating button (≥ 640px viewport; use the header messages icon on a phone viewport), confirm the panel opens with Guidance pinned on top and existing conversations listed below, open a conversation, read its history, and return to the list.
 
 **Acceptance Scenarios**:
 
 1. **Given** a signed-in user with existing conversations, **When** they click the floating chat button, **Then** a card panel opens showing the conversation list with the Guidance assistant pinned at the top.
 2. **Given** the panel is open on the list, **When** the user selects a conversation, **Then** that conversation's message thread is shown within the same panel with a way to go back to the list.
 3. **Given** the list is shown, **When** the user types in the search field, **Then** the list filters to matching conversations, including the Guidance item (Guidance is shown only when it matches the search text and loses its pinned position during an active search); **When** the search is cleared, **Then** Guidance reappears pinned at the top.
-4. **Given** the user previously used the separate messages header icon, **When** the unified chat is active, **Then** the header messages icon is no longer present and the floating button is the only entry point.
+4. **Given** the user previously used the separate messages header icon, **When** the unified chat is active, **Then** the header messages icon opens the unified panel (not the legacy surface); on ≥ 640px the floating button is the primary entry alongside it, and on phone-width viewports the header icon is the only entry (amended 2026-08-21 — the icon was originally slated for removal but is retained).
 
 ---
 
@@ -122,12 +124,12 @@ In a group conversation the user opens its settings to rename the group, change 
 
 - **Guidance disabled**: When the Guidance assistant is not available to the user (feature unavailable or the user lacks the required permission), the floating button and the people/group chat list still work, and no Guidance row appears.
 - **Group that includes the assistant**: A multi-person group that happens to include the AI assistant alongside other people is treated as a normal group conversation, not as the pinned Guidance item.
-- **No conversations yet**: A user with no conversations still sees the floating button and can start a new message; the empty list shows an appropriate empty state (with Guidance pinned on top when available).
+- **No conversations yet**: A user with no conversations still sees the floating button (≥ 640px; the header messages icon on phones) and can start a new message; the empty list shows an appropriate empty state (with Guidance pinned on top when available).
 - **Not signed in / not a registered user**: The unified chat surface is not offered to users who cannot have conversations.
 - **Removed from a group remotely**: If the user is removed from a group by someone else while the panel is open, that conversation is removed from their list in real time.
 - **Combined unread accuracy**: The single unread badge reflects unread across all conversations including Guidance; the assistant's introductory message (shown when there is no real history) must not, by itself, register as unread.
 - **Clearing Guidance while open**: Clearing the Guidance context while its thread is open resets the thread in place and keeps the conversation pinned and usable without requiring the user to reopen the panel.
-- **Mobile**: The surface must be fully usable on small screens, where the panel expands to accommodate the list and thread and the composer remains reachable.
+- **Mobile**: The surface must be fully usable on small screens, where the panel expands to accommodate the list and thread and the composer remains reachable. Entry on phones is the header messages icon — the floating launcher is hidden below 640px (amended 2026-08-21).
 - **Long wait for AI**: If the assistant is slow, the loading state must not trap the user; the input becomes usable again after the expected wait window.
 
 ## Requirements *(mandatory)*
@@ -135,13 +137,13 @@ In a group conversation the user opens its settings to rename the group, change 
 ### Functional Requirements
 
 #### Entry point & panel
-- **FR-001**: The system MUST present a single floating chat button in the bottom-right corner of the application for signed-in users who can have conversations.
-- **FR-002**: The system MUST remove the separate header messages icon; the floating button MUST be the only entry point to chat.
+- **FR-001**: The system MUST present a single floating chat button in the bottom-right corner of the application for signed-in users who can have conversations, on viewports ≥ 640px (`sm`); the button is hidden on phone-width viewports (amended 2026-08-21).
+- **FR-002** *(amended 2026-08-21; original: remove the header messages icon, launcher as sole entry)*: The header messages icon is retained and opens the same unified panel; it is the only chat entry point on phone-width viewports, where the launcher is hidden. There MUST still be exactly one chat *surface* and one combined unread count behind both entries.
 - **FR-003**: Clicking the floating button MUST open a card panel anchored near the button; clicking again or dismissing it MUST close the panel.
 - **FR-004**: The panel MUST show, in one place, a conversation list and a selected conversation's thread, swapping between list and thread within the same panel with a way to return to the list.
 - **FR-004a**: Opening the panel MUST always show the conversation list as the default view; it MUST NOT auto-select or restore a previously open conversation.
-- **FR-005**: The surface MUST be fully usable on small/mobile screens, including reading the list, reading a thread, and sending messages.
-- **FR-006**: The floating button MUST be suppressed in contexts where chat should not appear today (e.g., authentication screens and full-screen editing contexts) while remaining available on mobile within normal app pages.
+- **FR-005**: The surface MUST be fully usable on small/mobile screens, including reading the list, reading a thread, and sending messages — reached via the header messages icon there (amended 2026-08-21).
+- **FR-006**: The floating button MUST be suppressed in contexts where chat should not appear today (e.g., authentication screens and full-screen editing contexts) and on phone-width viewports (< 640px) (amended 2026-08-21; originally the launcher remained available on mobile within normal app pages).
 
 #### Unified conversation list
 - **FR-007**: The conversation list MUST include the user's direct (1:1) and group conversations and the Guidance AI conversation together in one list.
@@ -203,7 +205,7 @@ In a group conversation the user opens its settings to rename the group, change 
 ### Measurable Outcomes
 
 - **SC-001**: 100% of capabilities available in the two prior surfaces (direct & group messaging, reactions, realtime, unread, mark-as-read, new conversation creation, group settings, Guidance ask and clear-context) are available in the unified chat.
-- **SC-002**: There is exactly one chat entry point (the floating button) and exactly one unread badge for chat across the application; the separate header messages icon is absent.
+- **SC-002** *(amended 2026-08-21)*: There is exactly one chat *surface* and one combined unread count. Two entries feed it: the header messages icon (all viewports) and the floating button (≥ 640px only); on phones the header icon is the sole entry.
 - **SC-003**: The Guidance assistant appears as the top item of the conversation list 100% of the time it is available to the user, and is never shown when it is unavailable.
 - **SC-004**: From clicking the floating button, a user can reach any existing conversation's history in no more than two interactions (open panel, select conversation).
 - **SC-005**: Messages and reactions sent by another participant appear in an open conversation within 3 seconds without any manual refresh.
@@ -218,7 +220,7 @@ In a group conversation the user opens its settings to rename the group, change 
 - **A-001**: The Guidance AI conversation is already represented as a normal conversation alongside people/group conversations; surfacing it in the unified list does not require new conversation data, only ceasing to hide it and pinning it.
 - **A-002**: No backend/schema changes are required; all needed operations (listing conversations, messages, reactions, realtime, creating conversations, group membership/name/avatar changes, marking read, and clearing the assistant's context) already exist.
 - **A-003**: The single floating-card panel (anchored near the launcher), with list and thread swapping inside it, is the chosen surface — not a full-height side drawer.
-- **A-004**: Removing the header messages icon is intended; the floating button fully replaces it as the entry point.
+- **A-004** *(superseded 2026-08-21)*: ~~Removing the header messages icon is intended; the floating button fully replaces it as the entry point.~~ The header icon was retained (rewired to open the unified panel) and became load-bearing when the launcher was hidden on phone-width viewports.
 - **A-005**: The combined unread badge intentionally includes Guidance unread; the standalone Guidance badge is retired.
 - **A-006**: Mentions in direct/group messages remain disabled (matching current behavior) unless explicitly requested otherwise.
 - **A-007**: "Expected wait window" for the assistant matches the current Guidance behavior (a fixed timeout after which the loading state ends).

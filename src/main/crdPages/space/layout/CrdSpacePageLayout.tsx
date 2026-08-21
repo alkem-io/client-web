@@ -169,7 +169,8 @@ export default function CrdSpacePageLayout() {
     onToggleFullWidth: toggleFullWidth,
     // Tablet (640–1023px) hamburger: the desktop sidebar is hidden below lg and
     // the phone bottom bar (which has its own trigger) only renders below sm,
-    // so this is the only way to reach the sidebar actions at those widths.
+    // so this is the only *visible* trigger for the sidebar drawer at those
+    // widths (the left-edge swipe gesture also opens it on touch devices).
     onMenuClick: () => setMobileMenuOpen(true),
   };
 

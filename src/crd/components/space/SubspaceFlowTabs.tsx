@@ -81,8 +81,10 @@ export function SubspaceFlowTabs({
   );
 
   // Mobile renders the fixed bottom bar even with zero phases: it hosts the
-  // only drawer trigger at that width, so dropping it would strand the user
-  // with no way to reach About / leads / the sidebar actions.
+  // only *visible* drawer trigger at that width (the left-edge swipe gesture
+  // also opens the drawer, but it is a discoverable-by-accident enhancement,
+  // not an affordance), so dropping it would strand the user with no way to
+  // reach About / leads / the sidebar actions.
   if (isMobile) {
     return (
       <>
