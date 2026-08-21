@@ -35,13 +35,19 @@ export type CrdSubspacePageData = {
   subspaceId: string;
   subspaceName: string;
   subspaceUrl: string;
+  /** This subspace's AVATAR visual — breadcrumb identity image. */
+  subspaceAvatarUrl: string | undefined;
   parentSpaceId: string | undefined;
   parentSpaceUrl: string | undefined;
   parentSpaceName: string | undefined;
+  /** Parent's identity image: its avatar at L1, or its cardBanner when the parent is the L0 (which has no avatar). */
+  parentSpaceAvatarUrl: string | undefined;
   /** L0 in the chain — only distinct from parent when viewing an L2 (else identical to parent). */
   levelZeroSpaceId: string | undefined;
   levelZeroSpaceUrl: string | undefined;
   levelZeroSpaceName: string | undefined;
+  /** L0 identity image — the cardBanner (L0 has no avatar visual). */
+  levelZeroSpaceAvatarUrl: string | undefined;
   roleSetId: string | undefined;
   communityId: string | undefined;
   collaborationId: string | undefined;
@@ -188,7 +194,6 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const subspaceUrl = subspaceProfile.url ?? '';
 
   const banner = mapSubspaceBanner({
-    subspaceId,
     subspaceProfile,
     levelZeroSpaceId,
     levelZeroProfile,
@@ -233,12 +238,18 @@ export function useCrdSubspace(): CrdSubspacePageData {
     subspaceId,
     subspaceName: banner.title,
     subspaceUrl,
+    subspaceAvatarUrl: subspaceProfile.avatar?.uri || undefined,
     parentSpaceId,
     parentSpaceUrl: parentProfile?.url ?? undefined,
     parentSpaceName: parentProfile?.displayName ?? undefined,
+    // When the immediate parent IS the L0 (viewing an L1), it has no avatar —
+    // its cardBanner is the identity image. An L1 parent (viewing an L2) uses
+    // its own avatar.
+    parentSpaceAvatarUrl: (needL0Lookup ? parentProfile?.avatar?.uri : parentProfile?.cardBanner?.uri) || undefined,
     levelZeroSpaceId,
     levelZeroSpaceUrl: levelZeroProfile?.url ?? undefined,
     levelZeroSpaceName: levelZeroProfile?.displayName ?? undefined,
+    levelZeroSpaceAvatarUrl: levelZeroProfile?.cardBanner?.uri || undefined,
     roleSetId,
     communityId,
     collaborationId,

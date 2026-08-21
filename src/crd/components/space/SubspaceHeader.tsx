@@ -10,10 +10,6 @@ export type SubspaceHeaderProps = {
   /** Subspace identity */
   title: string;
   tagline?: string;
-  subspaceInitials: string;
-  /** Subspace accent colour — used for the avatar fallback. */
-  subspaceColor: string;
-  subspaceAvatarUrl?: string;
 
   /**
    * Page banner image — sourced from the L0 root of the ancestry chain (NOT from the immediate
@@ -58,9 +54,6 @@ export type SubspaceHeaderProps = {
 export function SubspaceHeader({
   title,
   tagline,
-  subspaceInitials,
-  subspaceColor,
-  subspaceAvatarUrl,
   bannerUrl,
   bannerAlt,
   bannerAspectRatio = DEFAULT_BANNER_ASPECT_RATIO,
@@ -127,19 +120,7 @@ export function SubspaceHeader({
       <div className="w-full px-6 md:px-8 py-3">
         <div className="grid grid-cols-12 gap-6">
           <div className={cn('col-span-12 flex flex-col gap-1', contentColumnClass(fullWidth))}>
-            <div className="flex items-center gap-3 min-w-0">
-              <div
-                className="shrink-0 size-14 rounded-md border-2 border-border overflow-hidden flex items-center justify-center"
-                style={subspaceAvatarUrl ? undefined : { background: subspaceColor }}
-              >
-                {subspaceAvatarUrl ? (
-                  <img src={subspaceAvatarUrl} alt={title} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-subsection-title text-primary-foreground">{subspaceInitials}</span>
-                )}
-              </div>
-              <h1 className="text-hero text-foreground truncate">{title}</h1>
-            </div>
+            <h1 className="text-hero text-foreground truncate">{title}</h1>
             {/* Prototype layout: the tagline and the action icons share the second row.
                 At sm+ the icons move to the sticky flow-tabs row (rendered by the page),
                 so the in-header copy is mobile-only. */}

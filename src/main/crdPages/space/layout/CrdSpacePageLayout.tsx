@@ -27,9 +27,11 @@ import {
   type SpaceSettingsTabDescriptor,
   SpaceSettingsTabStrip,
 } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
-import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useEdgeSwipe } from '@/crd/hooks/useEdgeSwipe';
+import { useMediaQuery, useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
+import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
@@ -107,6 +109,12 @@ export default function CrdSpacePageLayout() {
   const isOnSettings = pathname.includes('/settings');
   const spaceDisplayName = space.about.profile.displayName;
   const spaceUrl = space.about.profile.url ?? '';
+
+  // Edge-swipe from the left opens the mobile sidebar drawer — same drawer the
+  // hamburger triggers. Only armed while the drawer exists: below lg (the
+  // desktop sidebar takes over at lg+) and off settings (no drawer there).
+  const belowLg = useMediaQuery('(max-width: 1023px)');
+  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && isLevelZero && !isOnSettings });
 
   if (resolvingUrl || loadingSpace) {
     return <LoadingSpinner />;
@@ -202,8 +210,8 @@ export default function CrdSpacePageLayout() {
             isOnSettings ? (
               <SpaceSettingsHeader
                 title={space.about.profile.displayName}
+                titleHref={space.about.profile.url ?? undefined}
                 tagline={space.about.profile.tagline ?? null}
-                hideAvatar={true}
                 fullWidth={fullWidth}
               />
             ) : (
@@ -269,6 +277,7 @@ export default function CrdSpacePageLayout() {
           <L0Breadcrumbs
             spaceDisplayName={spaceDisplayName}
             spaceUrl={spaceUrl}
+            spaceCardBannerUrl={space.about.profile.cardBanner?.uri || undefined}
             isOnSettings={isOnSettings}
             activeSettingsTab={activeSettingsTab}
           />
@@ -323,22 +332,26 @@ function EnableSpaceFullWidth() {
 function L0Breadcrumbs({
   spaceDisplayName,
   spaceUrl,
+  spaceCardBannerUrl,
   isOnSettings,
   activeSettingsTab,
 }: {
   spaceDisplayName: string;
   spaceUrl: string;
+  spaceCardBannerUrl: string | undefined;
   isOnSettings: boolean;
   activeSettingsTab: SpaceSettingsTabId;
 }) {
   const { t } = useTranslation('crd-spaceSettings');
+  // L0 has no avatar visual — the cardBanner stands in as the identity image.
+  const spaceAvatar = { src: spaceCardBannerUrl, initials: getInitials(spaceDisplayName) };
   const items: BreadcrumbTrailItem[] = isOnSettings
     ? [
-        { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+        { label: spaceDisplayName, href: spaceUrl, avatar: spaceAvatar },
         { label: t('tabs.settings'), href: buildSettingsUrl(spaceUrl) },
         { label: t(`tabs.${activeSettingsTab}`) },
       ]
-    : [{ label: spaceDisplayName, icon: Layers }];
+    : [{ label: spaceDisplayName, avatar: spaceAvatar }];
   useSetBreadcrumbs(items);
   return null;
 }

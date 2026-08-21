@@ -7,7 +7,6 @@ import { SubspaceSidebar, type SubspaceQuickActionId } from '@/crd/components/sp
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { MOCK_MEMBERS } from '../data/space';
 
-const SUBSPACE_ID = 'mock-subspace-1';
 const PARENT_ID = 'mock-parent-1';
 
 const PHASES: SubspaceFlowPhase[] = [
@@ -44,8 +43,6 @@ export function SubspacePage() {
       <SubspaceHeader
         title="Renewable Energy Transition"
         tagline="Developing strategies for municipal energy transition to 100% renewables by 2030."
-        subspaceInitials="RE"
-        subspaceColor={pickColorFromId(SUBSPACE_ID)}
         color={pickColorFromId(PARENT_ID)}
         actions={ACTIONS}
       />

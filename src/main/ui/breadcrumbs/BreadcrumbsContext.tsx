@@ -12,7 +12,13 @@ function itemsEqual(a: BreadcrumbTrailItem[], b: BreadcrumbTrailItem[]): boolean
   if (a === b) return true;
   if (a.length !== b.length) return false;
   for (let i = 0; i < a.length; i++) {
-    if (a[i].label !== b[i].label || a[i].href !== b[i].href || a[i].icon !== b[i].icon) {
+    if (
+      a[i].label !== b[i].label ||
+      a[i].href !== b[i].href ||
+      a[i].icon !== b[i].icon ||
+      a[i].avatar?.src !== b[i].avatar?.src ||
+      a[i].avatar?.initials !== b[i].avatar?.initials
+    ) {
       return false;
     }
   }
