@@ -1037,6 +1037,7 @@
       "actions": "Klassifikations-Aktionen: {{label}}",
       "selectValues": "Werte auswählen…",
       "deselectValue": "{{label}} abwählen"
-    }
+    },
+    "removedConcurrently": "Diese Klassifikation wurde von jemand anderem entfernt. Die Liste wurde aktualisiert."
   }
 }

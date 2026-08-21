@@ -215,6 +215,8 @@
       "cardinalitySingle": "Sélection unique — les utilisateurs choisissent une valeur",
       "cardinalityMulti": "Sélection multiple — les utilisateurs peuvent choisir plusieurs valeurs",
       "values": "Values",
+      "moveValueUp": "Déplacer la valeur {{position}} vers le haut",
+      "moveValueDown": "Déplacer la valeur {{position}} vers le bas",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
       "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",

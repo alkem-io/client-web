@@ -131,7 +131,7 @@ export function ClassificationTemplateForm({ value, errors, onChange }: Classifi
                   className="size-6"
                   onClick={() => setRows(moveRow(value.values, index, -1))}
                   disabled={index === 0}
-                  aria-label={`${t('form.classification.values')} ${index + 1} up`}
+                  aria-label={t('form.classification.moveValueUp', { position: index + 1 })}
                 >
                   <ArrowUp className="size-3.5" aria-hidden="true" />
                 </Button>
@@ -142,7 +142,7 @@ export function ClassificationTemplateForm({ value, errors, onChange }: Classifi
                   className="size-6"
                   onClick={() => setRows(moveRow(value.values, index, 1))}
                   disabled={index === value.values.length - 1}
-                  aria-label={`${t('form.classification.values')} ${index + 1} down`}
+                  aria-label={t('form.classification.moveValueDown', { position: index + 1 })}
                 >
                   <ArrowDown className="size-3.5" aria-hidden="true" />
                 </Button>

@@ -1037,6 +1037,7 @@
       "actions": "Classificatie-acties: {{label}}",
       "selectValues": "Waarden selecteren…",
       "deselectValue": "{{label}} deselecteren"
-    }
+    },
+    "removedConcurrently": "Deze classificatie is door iemand anders verwijderd. De lijst is vernieuwd."
   }
 }

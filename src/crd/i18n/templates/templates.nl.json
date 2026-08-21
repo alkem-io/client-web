@@ -215,6 +215,8 @@
       "cardinalitySingle": "Eén keuze — gebruikers kiezen één waarde",
       "cardinalityMulti": "Meerkeuze — gebruikers kunnen meerdere waarden kiezen",
       "values": "Values",
+      "moveValueUp": "Waarde {{position}} omhoog verplaatsen",
+      "moveValueDown": "Waarde {{position}} omlaag verplaatsen",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
       "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",

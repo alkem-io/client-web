@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { ClassificationPickerDialog } from '@/crd/components/classification/ClassificationPickerDialog';
 import { ClassificationRemoveConfirm } from '@/crd/components/classification/ClassificationRemoveConfirm';
 import { ImageCropDialog } from '@/crd/components/common/ImageCropDialog';
@@ -69,6 +70,7 @@ import { getVisibleSettingsTabs } from './useVisibleSettingsTabs';
  */
 export default function CrdSpaceSettingsPage() {
   const { t, i18n } = useTranslation('crd-spaceSettings');
+  const notify = useNotification();
   const scope = useSettingsScope();
   const { id: spaceId, level, url: spaceUrl, roleSetId, communityId, accountId, loading: scopeLoading } = scope;
 
@@ -199,6 +201,16 @@ export default function CrdSpaceSettingsPage() {
   // Template Library" target — never the immediate parent's.
   const classificationPicker = useClassificationPicker(spaceContext.id);
   const [pendingRemoveClassificationId, setPendingRemoveClassificationId] = useState<string | null>(null);
+
+  // A selection write that lost to a concurrent removal refetches silently in
+  // the hook; surface the outcome once as a toast (house pattern) and reset
+  // the flag so the next occurrence toasts again.
+  useEffect(() => {
+    if (about.classificationRemovedError) {
+      notify(t('classifications.removedConcurrently'), 'error');
+      about.dismissClassificationRemovedError();
+    }
+  }, [about.classificationRemovedError]);
 
   const csvExport = useCommunityCsvExport({
     members: community.members,

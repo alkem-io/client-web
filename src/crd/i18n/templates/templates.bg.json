@@ -215,6 +215,8 @@
       "cardinalitySingle": "Единичен избор — потребителите избират една стойност",
       "cardinalityMulti": "Множествен избор — потребителите могат да изберат няколко стойности",
       "values": "Values",
+      "moveValueUp": "Премести стойност {{position}} нагоре",
+      "moveValueDown": "Премести стойност {{position}} надолу",
       "valueLabelPlaceholder": "Value label",
       "valueIdOverride": "Custom id (optional)",
       "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",

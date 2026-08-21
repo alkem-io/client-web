@@ -1037,6 +1037,7 @@
       "actions": "Classification actions: {{label}}",
       "selectValues": "Select values…",
       "deselectValue": "Deselect {{label}}"
-    }
+    },
+    "removedConcurrently": "This classification was removed by someone else. The list has been refreshed."
   }
 }
