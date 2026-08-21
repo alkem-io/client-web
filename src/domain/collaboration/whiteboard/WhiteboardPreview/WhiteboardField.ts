@@ -8,7 +8,9 @@ export interface WhiteboardFieldSubmittedValues {
    * (`CreateWhiteboardInput.sourceWhiteboardID`). A live whiteboard's content is WS-only since
    * 006-collab-content-unification, so the "Save as Template" / Duplicate flows can no longer read
    * the source scene on the client and copy it into `content`; instead they pass the source
-   * whiteboard's id and the server copies its snapshot. Takes precedence over `content` server-side.
+   * whiteboard's id and the server copies its snapshot. Mutually exclusive with `content`
+   * server-side — a create carrying both is rejected — so an emitter that sets this MUST drop
+   * `content` (including the empty placeholder).
    */
   sourceWhiteboardID?: string;
   profile: {

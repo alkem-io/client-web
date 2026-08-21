@@ -93,7 +93,7 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
   // #29 — a whiteboard-framed source's live content is WS-only and unreadable on the client, so the
   // Save-as-Template / Duplicate flows pass the source whiteboard's id and the server copies its stored
   // snapshot into the new template whiteboard.
-  it('sends sourceWhiteboardID for whiteboard framing when the source has a whiteboard and content is the empty placeholder (#29)', () => {
+  it('sends sourceWhiteboardID AND clears content (mutually exclusive) when the source has a whiteboard and content is the empty placeholder (#29)', () => {
     const input = calloutFormValuesToCreateCalloutInput(
       values({
         framingChip: 'whiteboard',
@@ -103,6 +103,10 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
       fallbacks
     );
     expect(input.framing.whiteboard?.sourceWhiteboardID).toBe('source-wb-1');
+    // The server rejects a create carrying BOTH content and sourceWhiteboardID (by
+    // presence — the empty placeholder counts). Content must be dropped so only the
+    // source pointer travels; undefined is omitted from the GraphQL variables.
+    expect(input.framing.whiteboard?.content).toBeUndefined();
   });
 
   it('does NOT send sourceWhiteboardID when the user drew fresh content (the real drawing is sent instead)', () => {

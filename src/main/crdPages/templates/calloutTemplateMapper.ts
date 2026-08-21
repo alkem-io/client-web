@@ -73,6 +73,12 @@ export function calloutFormValuesToCreateCalloutInput(
     !drewFreshContent
   ) {
     input.framing.whiteboard.sourceWhiteboardID = sourceWhiteboardId;
+    // `content` and `sourceWhiteboardID` are mutually exclusive server-side (a create
+    // carrying BOTH is rejected by presence, and the empty placeholder counts as
+    // present). The server copies the source whiteboard's stored snapshot, so the
+    // placeholder `content` mapFormToCalloutCreationInput set must be dropped entirely
+    // (the field is a required string here; omit the key so it never reaches the wire).
+    delete (input.framing.whiteboard as { content?: string }).content;
   }
 
   // Pick only the fields `CreateCalloutInput` accepts (drops `sendNotification` / `classification`,
