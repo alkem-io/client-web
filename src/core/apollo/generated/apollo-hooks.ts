@@ -9142,9 +9142,9 @@ export type CalloutPostCreatedSubscriptionHookResult = ReturnType<typeof useCall
 export type CalloutPostCreatedSubscriptionResult =
   Apollo.SubscriptionResult<SchemaTypes.CalloutPostCreatedSubscription>;
 export const CreatePostOnCalloutDocument = gql`
-    mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!) {
+    mutation CreatePostOnCallout($calloutId: UUID!, $post: CreatePostInput!, $taskColumn: String) {
   createContributionOnCallout(
-    contributionData: {calloutID: $calloutId, type: POST, post: $post}
+    contributionData: {calloutID: $calloutId, type: POST, post: $post, taskColumn: $taskColumn}
   ) {
     post {
       id
@@ -9176,6 +9176,7 @@ export type CreatePostOnCalloutMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      calloutId: // value for 'calloutId'
  *      post: // value for 'post'
+ *      taskColumn: // value for 'taskColumn'
  *   },
  * });
  */

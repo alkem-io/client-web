@@ -14,6 +14,8 @@ type PostContributionAddConnectorProps = {
   calloutId: string;
   defaultDisplayName?: string;
   defaultDescription?: string;
+  /** Tasks board only: the column the new post starts in (server defaults to the first column). */
+  taskColumn?: string;
   onCreated?: () => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
@@ -23,6 +25,7 @@ export function PostContributionAddConnector({
   calloutId,
   defaultDisplayName,
   defaultDescription,
+  taskColumn,
   onCreated,
   inlineTrigger,
   open: controlledOpen,
@@ -55,6 +58,7 @@ export function PostContributionAddConnector({
             calloutId={calloutId}
             defaultDisplayName={defaultDisplayName}
             defaultDescription={defaultDescription}
+            taskColumn={taskColumn}
             onCreated={() => {
               onCreated?.();
             }}

@@ -62,6 +62,12 @@ type CrdPostContributionDialogProps = {
   contributionId?: string;
   defaultDisplayName?: string;
   defaultDescription?: string;
+  /**
+   * create mode only: the Tasks board column the new post starts in. Only
+   * meaningful when the callout is a Tasks board; the server defaults to the
+   * first column when omitted.
+   */
+  taskColumn?: string;
   onCreated?: (post: { id: string }) => void;
   onDeleted?: () => void;
   onUpdated?: () => void;
@@ -79,6 +85,7 @@ export function CrdPostContributionDialog({
   contributionId,
   defaultDisplayName,
   defaultDescription,
+  taskColumn,
   onCreated,
   onDeleted,
   onUpdated,
@@ -244,8 +251,11 @@ export function CrdPostContributionDialog({
             },
             tags: values.tags,
           },
+          // Present only for a Tasks board; the server ignores it otherwise and
+          // defaults to the first column when omitted.
+          taskColumn,
         },
-        refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+        refetchQueries: ['CalloutDetails', 'CalloutContributions', 'TaskBoardData'],
         awaitRefetchQueries: true,
       });
       const created = createData?.createContributionOnCallout.post;

@@ -16545,6 +16545,7 @@ export type CalloutPostCreatedSubscription = {
 export type CreatePostOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   post: CreatePostInput;
+  taskColumn?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type CreatePostOnCalloutMutation = {

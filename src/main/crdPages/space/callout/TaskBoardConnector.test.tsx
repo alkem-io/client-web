@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
@@ -35,8 +35,18 @@ vi.mock('@/crd/components/callout/task-board/TaskBoardView', () => ({
           </div>
         ))}
         {props.canMove ? <span data-testid="can-move" /> : null}
+        {props.canAdd ? <span data-testid="can-add" /> : null}
       </div>
     );
+  },
+}));
+
+// Capture the props the creation connector is opened with (calloutId + taskColumn).
+let capturedAddProps: Record<string, unknown> | undefined;
+vi.mock('./PostContributionAddConnector', () => ({
+  PostContributionAddConnector: (props: Record<string, unknown>) => {
+    capturedAddProps = props;
+    return <div data-testid="add-dialog" data-column={String(props.taskColumn)} />;
   },
 }));
 
@@ -78,6 +88,7 @@ afterEach(() => {
   useTaskBoardDataQuery.mockReset();
   moveTaskMock.mockReset();
   capturedViewProps = undefined;
+  capturedAddProps = undefined;
 });
 
 describe('TaskBoardConnector', () => {
@@ -100,7 +111,9 @@ describe('TaskBoardConnector', () => {
     useTaskBoardDataQuery.mockReturnValue({
       data: {
         lookup: {
-          callout: boardCallout({ classification: { id: 'c', tagsets: [{ id: 't', name: 'flow-state', allowedValues: [] }] } }),
+          callout: boardCallout({
+            classification: { id: 'c', tagsets: [{ id: 't', name: 'flow-state', allowedValues: [] }] },
+          }),
         },
       },
     });
@@ -179,5 +192,30 @@ describe('TaskBoardConnector', () => {
     const options = moveTaskMock.mock.calls[0][0];
     options.onError();
     expect(toast.error).toHaveBeenCalledWith('moveError');
+  });
+
+  it('exposes the add affordance only with the CONTRIBUTE privilege', () => {
+    useTaskBoardDataQuery.mockReturnValue({
+      data: { lookup: { callout: boardCallout({ authorization: { id: 'a', myPrivileges: [] } }) } },
+    });
+    const { rerender } = render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(screen.queryByTestId('can-add')).not.toBeInTheDocument();
+
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    rerender(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(screen.getByTestId('can-add')).toBeInTheDocument();
+  });
+
+  it('opens the creation dialog pre-targeted at the picked column', () => {
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(screen.queryByTestId('add-dialog')).not.toBeInTheDocument();
+
+    const onAddTask = capturedViewProps?.onAddTask as (column: string) => void;
+    act(() => onAddTask('Done'));
+
+    const dialog = screen.getByTestId('add-dialog');
+    expect(dialog.getAttribute('data-column')).toBe('Done');
+    expect(capturedAddProps).toMatchObject({ calloutId: 'callout-1', taskColumn: 'Done' });
   });
 });
