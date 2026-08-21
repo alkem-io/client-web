@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type {
-  TaskBoardCalloutFragment,
-  TaskBoardContributionFragment,
-} from '@/core/apollo/generated/graphql-schema';
+import type { TaskBoardCalloutFragment, TaskBoardContributionFragment } from '@/core/apollo/generated/graphql-schema';
 import { CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 import { applyMoveToCounts, contributionColumnTag, mapTaskBoardColumns } from './taskBoardMapper';
 
