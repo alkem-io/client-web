@@ -6,6 +6,7 @@ import {
   CalloutContributionType,
   CalloutFramingType,
 } from '@/core/apollo/generated/graphql-schema';
+import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import { PostCard } from '@/crd/components/space/PostCard';
 import { PostCardSkeleton } from '@/crd/components/space/PostCardSkeleton';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -29,6 +30,7 @@ import { ContributionsPreviewConnector } from './ContributionsPreviewConnector';
 import { ContributorCollectionConnector } from './ContributorCollectionConnector';
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { TaskBoardConnector } from './TaskBoardConnector';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -252,13 +254,33 @@ function LazyCalloutItemContent({
       />
     );
 
-  const contributionsPreview = hasContributionType ? (
+  // POSTS-only callouts may be Tasks boards. Gate the (extra) board query on the
+  // cheap, already-loaded signals — POSTS-only contribution config and the build
+  // kill switch — so non-board callouts never fetch it. The connector confirms
+  // the board marker from its own query and falls back to the plain preview when
+  // absent, keeping every non-board callout byte-identical.
+  const allowedContributionTypes = callout.settings.contribution.allowedTypes;
+  const isPostsOnly =
+    allowedContributionTypes.length === 1 && allowedContributionTypes[0] === CalloutContributionType.Post;
+  const maybeTaskBoard = isPostsOnly && isTaskBoardEnabled();
+
+  const plainContributionsPreview = hasContributionType ? (
     <ContributionsPreviewConnector
       callout={callout}
       onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
     />
   ) : undefined;
+
+  const contributionsPreview = maybeTaskBoard ? (
+    <TaskBoardConnector
+      calloutId={callout.id}
+      fallback={plainContributionsPreview}
+      onOpenTask={contributionId => openDialog(contributionId)}
+    />
+  ) : (
+    plainContributionsPreview
+  );
 
   const pollPreview =
     callout.framing.type === CalloutFramingType.Poll ? <CalloutPollConnector callout={callout} /> : null;

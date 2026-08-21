@@ -1,0 +1,29 @@
+{
+  "addTask": "Añadir tarea",
+  "emptyColumn": "Aún no hay tareas",
+  "moveError": "No se pudo mover la tarea. Inténtalo de nuevo.",
+  "columns": {
+    "manage": "Gestionar columnas",
+    "title": "Columnas del tablero de tareas",
+    "add": "Añadir columna",
+    "namePlaceholder": "Nombre de la columna",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "deleteFirstDisabled": "La primera columna no se puede eliminar: las tareas se reubican en ella.",
+    "delete": {
+      "title": "Eliminar columna",
+      "description": "¿Eliminar \"{{name}}\"? Sus tareas pasan a \"{{target}}\".",
+      "confirm": "Eliminar columna"
+    },
+    "validation": {
+      "required": "Introduce un nombre de columna.",
+      "tooLong": "El nombre debe tener menos de 128 caracteres.",
+      "comma": "Los nombres de columna no pueden contener comas.",
+      "duplicate": "Esa columna ya existe."
+    }
+  },
+  "create": {
+    "option": "Tablero de tareas",
+    "optionDescription": "Un tablero de columnas para publicaciones, movidas arrastrando y soltando."
+  }
+}

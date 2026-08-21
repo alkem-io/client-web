@@ -1,0 +1,29 @@
+{
+  "addTask": "Aufgabe hinzufügen",
+  "emptyColumn": "Noch keine Aufgaben",
+  "moveError": "Die Aufgabe konnte nicht verschoben werden. Bitte versuche es erneut.",
+  "columns": {
+    "manage": "Spalten verwalten",
+    "title": "Spalten des Aufgabenboards",
+    "add": "Spalte hinzufügen",
+    "namePlaceholder": "Spaltenname",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "deleteFirstDisabled": "Die erste Spalte kann nicht entfernt werden — Aufgaben rücken in sie nach.",
+    "delete": {
+      "title": "Spalte löschen",
+      "description": "\"{{name}}\" löschen? Ihre Aufgaben wandern nach \"{{target}}\".",
+      "confirm": "Spalte löschen"
+    },
+    "validation": {
+      "required": "Gib einen Spaltennamen ein.",
+      "tooLong": "Der Name muss weniger als 128 Zeichen haben.",
+      "comma": "Spaltennamen dürfen keine Kommas enthalten.",
+      "duplicate": "Diese Spalte existiert bereits."
+    }
+  },
+  "create": {
+    "option": "Aufgabenboard",
+    "optionDescription": "Ein Board mit Spalten für Beiträge, die per Drag-and-drop verschoben werden."
+  }
+}
