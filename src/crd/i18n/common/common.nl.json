@@ -212,7 +212,8 @@
       }
     },
     "memo": {
-      "saveFailed": "Kan wijzigingen niet opslaan"
+      "saveFailed": "Kan wijzigingen niet opslaan",
+      "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw."
     }
   },
   "cancel": "Annuleren",

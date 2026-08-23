@@ -7,8 +7,11 @@ import * as Y from 'yjs';
 const order: string[] = [];
 type Inst = { documentId: string; doc: Y.Doc; connected: boolean; destroyed: boolean };
 const instances: Inst[] = [];
-// The most-recent provider's `control` listener, so a test can inject a control frame.
-let controlHandler: ((message: { kind: string }) => void) | undefined;
+// The most-recent provider's listeners, so a test can inject a control frame and drive
+// the readiness (status/synced) callbacks of whichever generation is currently wired.
+let controlHandler: ((arg: unknown) => void) | undefined;
+let statusHandler: ((arg: unknown) => void) | undefined;
+let syncedHandler: ((arg: unknown) => void) | undefined;
 const { notifySpy } = vi.hoisted(() => ({ notifySpy: vi.fn() }));
 
 vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', () => ({
@@ -23,8 +26,10 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
       instances.push(this as unknown as Inst);
       order.push(`construct:${opts.documentId}`);
     }
-    on(event: string, handler: (message: { kind: string }) => void) {
+    on(event: string, handler: (arg: unknown) => void) {
       if (event === 'control') controlHandler = handler;
+      else if (event === 'status') statusHandler = handler;
+      else if (event === 'synced') syncedHandler = handler;
     }
     connect() {
       this.connected = true;
@@ -53,6 +58,8 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     order.length = 0;
     instances.length = 0;
     controlHandler = undefined;
+    statusHandler = undefined;
+    syncedHandler = undefined;
     notifySpy.mockClear();
   });
 
@@ -91,5 +98,49 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     // The mocked t() returns the key verbatim, so this asserts the key is used
     // (and, critically, that it is NOT the old hardcoded English 'Unable to save changes').
     expect(notifySpy).toHaveBeenCalledWith('callout.memo.saveFailed', 'warning');
+  });
+
+  it('an update-rejected control DISCARDS the refused generation, DROPS readiness until the fresh doc/provider resyncs, and shows an honest notice', () => {
+    const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    expect(instances).toHaveLength(1);
+    const providerA = instances[0];
+    const docA = providerA.doc;
+    // The refused generation holds a local edit the server rejected.
+    docA.getText('content').insert(0, 'refused-edit');
+    // Bring generation A to READY (connected + synced) — the precondition the gap needs:
+    // without a readiness reset the stale ready state would survive the swap.
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(result.current.status).toBe('connected');
+    expect(result.current.synced).toBe(true);
+
+    act(() => controlHandler?.({ kind: 'update-rejected' }));
+
+    // A FRESH provider + doc replaced the refused one; the refused doc is NOT reused
+    // (B starts empty and resyncs server-canonical via its handshake).
+    expect(instances).toHaveLength(2);
+    const providerB = instances[1];
+    expect(providerB.doc).not.toBe(docA);
+    expect(providerB.doc.getText('content').toString()).toBe('');
+    // The old provider was DESTROYED and the fresh one CONNECTED (resync); destroy before the fresh connect.
+    expect(providerA.destroyed).toBe(true);
+    expect(providerB.connected).toBe(true);
+    expect(order.indexOf('destroy:room-A')).toBeLessThan(order.lastIndexOf('connect:room-A'));
+    // READINESS DROPS IMMEDIATELY (CrdMemoDialog gates edits on connected && synced) and
+    // stays down — this is the assertion that fails if setSynced(false) is omitted.
+    expect(result.current.status).not.toBe('connected');
+    expect(result.current.synced).toBe(false);
+    // Only the FRESH provider's OWN callbacks (statusHandler/syncedHandler now point at B,
+    // since A's effect cleanup unregistered A's) restore readiness — not a stale flip.
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(result.current.status).toBe('connected');
+    expect(result.current.synced).toBe(true);
+    // The user got an honest, translated rejection notice.
+    expect(notifySpy).toHaveBeenCalledWith('callout.memo.updateRejected', 'warning');
   });
 });

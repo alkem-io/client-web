@@ -43,6 +43,15 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
   const [readOnlyState, setReadOnlyState] = useState<{ readOnly: boolean; readOnlyCode?: ReadOnlyCode }>();
 
+  // Bumped when the server REJECTS a memo update (`update-rejected`). A rejected
+  // generation must be DISCARDED, not kept locally: the server refused it, so every
+  // later clock-dependent edit would stack behind a struct the server never has. Bumping
+  // this recreates the `Y.Doc` + provider below (the same mechanism as a room change), so
+  // the editor rebinds via its `[ydoc, provider]` deps and the fresh provider resyncs the
+  // server-canonical state — never reusing the refused doc. Mirrors the whiteboard's
+  // discard-generation-and-resync recovery.
+  const [recoveryGeneration, setRecoveryGeneration] = useState(0);
+
   // One Y.Doc PER collaborationId, not per component lifetime. If the memoId changes
   // in place (deep-link/route change while the dialog stays mounted), a stale
   // component-lifetime doc would be reused for the new room — and the provider's
@@ -54,7 +63,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   // so its destroy() never touches the doc; the previous doc is released to GC once
   // the old provider/editor drop it (no explicit destroy, which could race the
   // Tiptap binding's teardown across the component boundary).
-  const ydoc = useMemo(() => new Y.Doc(), [collaborationId]);
+  const ydoc = useMemo(() => new Y.Doc(), [collaborationId, recoveryGeneration]);
 
   // Stable refs for notify + t so the provider effect does not tear down on their
   // identity changes (t changes on every language switch).
@@ -106,6 +115,20 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
             readOnly: !!message.readOnly,
             readOnlyCode: controlReasonToReadOnlyCode(message.reason),
           });
+          break;
+        case 'update-rejected':
+          // The server refused this generation's update (e.g. a schema-invalid inline
+          // image on a mixed-fleet client). Tell the user their change was not saved, then
+          // DISCARD the poisoned generation — recreate the doc/provider so the fresh
+          // generation resyncs the server-canonical state (never reuse the refused doc).
+          notifyRef.current(tRef.current('callout.memo.updateRejected'), 'warning');
+          // Drop readiness FIRST so the UI blocks edits until the fresh generation actually
+          // resyncs: the destroyed provider's stale CONNECTED+synced state would otherwise
+          // leave the overlay off and allow edits against the un-resynced new doc. The new
+          // provider's own status/synced callbacks restore readiness once it has synced.
+          setSynced(false);
+          setStatus(MemoStatus.CONNECTING);
+          setRecoveryGeneration(generation => generation + 1);
           break;
         default:
           break;

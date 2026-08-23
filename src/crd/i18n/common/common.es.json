@@ -212,7 +212,8 @@
       }
     },
     "memo": {
-      "saveFailed": "No se pudieron guardar los cambios"
+      "saveFailed": "No se pudieron guardar los cambios",
+      "updateRejected": "No se pudo guardar tu último cambio. Inténtalo de nuevo."
     }
   },
   "cancel": "Cancelar",

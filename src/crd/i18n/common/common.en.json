@@ -212,7 +212,8 @@
       }
     },
     "memo": {
-      "saveFailed": "Unable to save changes"
+      "saveFailed": "Unable to save changes",
+      "updateRejected": "Your last change couldn't be saved. Please try again."
     }
   },
   "cancel": "Cancel",
