@@ -25,29 +25,49 @@ import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboar
 import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 
 /**
- * The `whiteboardContent` to send on a template UPDATE: `undefined` when the content is
- * empty. A rename-only edit opens the editor against an empty draft, so the form holds the
- * empty placeholder; sending it would OVERWRITE the stored drawing with empty (the server
- * update guard only skips a falsy value). Returning `undefined` makes the server no-op the
- * content and preserve the real drawing — only a genuinely non-empty (redrawn) scene is sent.
+ * The `whiteboardContent` to send on a template UPDATE. Non-empty (redrawn) content is always
+ * sent. Empty content is `undefined` (no-op) UNLESS the user deliberately cleared the board
+ * (`whiteboardEdited`), in which case the empty content is sent so the clear is persisted —
+ * emptiness alone must NOT be read as "untouched". A rename-only edit opens the editor against
+ * an empty draft and never touches it (`whiteboardEdited === false`), so the stored drawing is
+ * preserved; a deliberate clear (`whiteboardEdited === true`) overwrites it with the blank.
  */
-export function whiteboardContentForTemplateUpdate(content: string | undefined): string | undefined {
-  return isEmptyWhiteboardContent(content) ? undefined : content;
+export function whiteboardContentForTemplateUpdate(
+  content: string | undefined,
+  whiteboardEdited = false
+): string | undefined {
+  if (!isEmptyWhiteboardContent(content)) return content;
+  // Empty: persist the blank only when it was a deliberate clear; otherwise no-op it.
+  return whiteboardEdited ? (content ?? EmptyWhiteboardString) : undefined;
 }
 
 /**
  * The `content` + `sourceWhiteboardID` for a whiteboard-template CREATE. They are mutually
- * exclusive (source takes precedence server-side): when the user did NOT redraw (empty
- * content), send the SOURCE whiteboard id so the server copies its snapshot into the new
- * template (duplicate / import-from-library) — never the empty placeholder. When they redrew,
- * send the real content and no source. A from-scratch template has neither.
+ * exclusive (source takes precedence server-side):
+ *  - redrawn (non-empty content) → send the real content, no source.
+ *  - empty AND the user deliberately cleared it (`whiteboardEdited`) → send the empty content,
+ *    NO source, so the intentional blank is saved rather than the source snapshot re-copied.
+ *  - empty AND untouched (duplicate / import-from-library) → send the SOURCE whiteboard id so
+ *    the server copies its snapshot; never the empty placeholder.
+ *  - from-scratch (empty, untouched, no source) → neither.
+ * Emptiness alone must NOT be read as "untouched" — that made an intentional clear impossible
+ * to save (the source was silently re-copied).
  */
 export function whiteboardTemplateCreateFields(
   content: string | undefined,
-  sourceWhiteboardId: string | undefined
+  sourceWhiteboardId: string | undefined,
+  whiteboardEdited = false
 ): { content: string | undefined; sourceWhiteboardID: string | undefined } {
-  const redrawn = whiteboardContentForTemplateUpdate(content);
-  return { content: redrawn, sourceWhiteboardID: redrawn ? undefined : sourceWhiteboardId || undefined };
+  if (!isEmptyWhiteboardContent(content)) {
+    // A genuine drawing — send it; the source would override it server-side.
+    return { content, sourceWhiteboardID: undefined };
+  }
+  if (whiteboardEdited) {
+    // Deliberately cleared to blank — persist the empty content, do NOT re-copy the source.
+    return { content: content ?? EmptyWhiteboardString, sourceWhiteboardID: undefined };
+  }
+  // Untouched duplicate / import — let the server copy the source snapshot on create.
+  return { content: undefined, sourceWhiteboardID: sourceWhiteboardId || undefined };
 }
 
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */

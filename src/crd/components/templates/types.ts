@@ -249,6 +249,13 @@ export type WhiteboardTemplateValues = TemplateCommonValues & {
   previewSettings?: WhiteboardPreviewSettings;
   /** Source whiteboard id threaded to the server so it copies the source snapshot on create. */
   sourceWhiteboardId?: string;
+  /**
+   * True once the user opened the editor and saved (drew OR deliberately cleared). Distinct from
+   * `whiteboardContent` being empty: a duplicated / imported template starts empty AND
+   * `whiteboardEdited === false`, so the server copies `sourceWhiteboardId`; once the user clears
+   * it on purpose (`whiteboardEdited === true`) the blank is persisted instead. `false` on prefill.
+   */
+  whiteboardEdited?: boolean;
 };
 
 export type PostTemplateValues = TemplateCommonValues & {

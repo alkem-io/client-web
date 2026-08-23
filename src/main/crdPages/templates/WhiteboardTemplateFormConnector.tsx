@@ -83,6 +83,9 @@ export function WhiteboardTemplateFormConnector({
               onChange({
                 ...value,
                 whiteboardContent: wb.content,
+                // The user opened the editor and saved (drew OR cleared) — mark it touched so the
+                // create/update mappers won't re-copy the source snapshot over a deliberate blank.
+                whiteboardEdited: true,
                 // `WhiteboardTemplateValues.previewSettings` is the CRD layer's opaque `Record<string, unknown>`;
                 // the editor returns the real domain shape — store it as-is.
                 previewSettings: wb.previewSettings as unknown as WhiteboardTemplateValues['previewSettings'],

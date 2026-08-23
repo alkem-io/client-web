@@ -202,7 +202,8 @@
         "sizeLimitExceeded": "Esta pizarra alcanzó su límite de tamaño y tu último cambio no se aplicó. Vuelve a conectarte para continuar desde la última versión guardada.",
         "documentDeleted": "Esta pizarra ha sido eliminada.",
         "editsNotSaved": "Tus cambios recientes no se pudieron guardar y se han perdido. La colaboración se ha detenido.",
-        "serverShutdown": "El servidor de colaboración se está reiniciando: reconectando…"
+        "serverShutdown": "El servidor de colaboración se está reiniciando: reconectando…",
+        "updateRejected": "No se pudo guardar tu último cambio. Inténtalo de nuevo."
       },
       "export": {
         "title": "Guardar en Alkemio",

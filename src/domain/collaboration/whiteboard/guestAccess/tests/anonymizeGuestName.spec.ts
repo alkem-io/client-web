@@ -20,6 +20,17 @@ describe('anonymizeGuestName - Guest Name Derivation', () => {
       ['A', 'B'],
       [null, 'Brown'],
       ['Alice', null],
+      // In-word apostrophes / periods are OUTSIDE the validator alphabet (/^[\p{L}\p{N} _-]+$/u).
+      // The derived name must strip them so the guest identity still validates — otherwise the
+      // authenticated-guest path silently collapses to the generic "Guest".
+      ["O'Brien", 'Xavier'],
+      ["O'Brien", null],
+      ['Dr. Alice', 'Brown'],
+      ['Dr.', 'Brown'],
+      [null, "O'Connor"],
+      // Over-length: the validator caps at 50 chars, so the derived name must be bounded.
+      ['A'.repeat(100), 'Smith'],
+      ['A'.repeat(100), null],
     ] as const)('anonymizeGuestName(%s, %s) → valid', (first, last) => {
       const name = anonymizeGuestName(first, last);
       expect(name).not.toBeNull();
@@ -168,9 +179,11 @@ describe('anonymizeGuestName - Guest Name Derivation', () => {
       expect(result).toBe('Mary-Jane P');
     });
 
-    it('should handle names with apostrophes', () => {
+    it('should strip in-word apostrophes so the derived name passes the validator', () => {
+      // The apostrophe is outside the validator alphabet — it is stripped, the abbreviation
+      // semantics (first word + last initial) are otherwise preserved.
       const result = anonymizeGuestName("O'Brien", "O'Connor");
-      expect(result).toBe("O'Brien O");
+      expect(result).toBe('OBrien O');
     });
 
     it('should handle names with accented characters', () => {
@@ -188,10 +201,12 @@ describe('anonymizeGuestName - Guest Name Derivation', () => {
       expect(result).toBe('Alice2 B');
     });
 
-    it('should handle extremely long first names', () => {
+    it('should bound extremely long derived names to the validator length limit (50)', () => {
       const longName = 'A'.repeat(100);
       const result = anonymizeGuestName(longName, 'Smith');
-      expect(result).toBe(`${longName} S`);
+      // Capped at 50 chars so it satisfies `validateGuestName`'s length bound.
+      expect(result).toBe('A'.repeat(50));
+      expect(validateGuestName(result as string).valid).toBe(true);
     });
 
     it('should handle single character names correctly', () => {
@@ -218,8 +233,9 @@ describe('anonymizeGuestName - Guest Name Derivation', () => {
     });
 
     it('should handle professional titles as part of name (edge case)', () => {
-      // Note: We don't strip titles - caller should sanitize input
-      expect(anonymizeGuestName('Dr. Alice', 'Brown')).toBe('Dr. B');
+      // The title WORD is kept (only the first whitespace-delimited token is taken); the period
+      // is stripped because it is outside the validator alphabet, so "Dr." → "Dr".
+      expect(anonymizeGuestName('Dr. Alice', 'Brown')).toBe('Dr B');
     });
   });
 });

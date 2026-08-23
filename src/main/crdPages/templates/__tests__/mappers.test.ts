@@ -43,6 +43,16 @@ describe('whiteboardContentForTemplateUpdate', () => {
     } as never);
     expect(whiteboardContentForTemplateUpdate(drawn)).toBe(drawn);
   });
+
+  // C4 — a deliberate clear-to-blank must PERSIST on update (emptiness alone is no longer read as
+  // "untouched"); only a genuinely untouched (rename-only) draft no-ops the content.
+  it('persists a deliberate clear-to-blank on update (sends the empty content, not a no-op)', () => {
+    expect(whiteboardContentForTemplateUpdate(EmptyWhiteboardString, true)).toBe(EmptyWhiteboardString);
+  });
+
+  it('still no-ops empty content for a rename-only (untouched) update', () => {
+    expect(whiteboardContentForTemplateUpdate(EmptyWhiteboardString, false)).toBeUndefined();
+  });
 });
 
 describe('whiteboardTemplateCreateFields — source-copy vs redrawn content (mutually exclusive)', () => {
@@ -70,6 +80,23 @@ describe('whiteboardTemplateCreateFields — source-copy vs redrawn content (mut
     expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, undefined)).toEqual({
       content: undefined,
       sourceWhiteboardID: undefined,
+    });
+  });
+
+  // C4 — clearing a source-derived template to blank ON PURPOSE (whiteboardEdited=true) must send
+  // the empty content and NOT the source id, so the server saves the intentional blank instead of
+  // silently re-copying the original. Emptiness alone no longer implies "pristine / use the source".
+  it('a deliberately-cleared source-derived template sends empty content and NOT the source id', () => {
+    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, 'src-wb-1', true)).toEqual({
+      content: EmptyWhiteboardString,
+      sourceWhiteboardID: undefined,
+    });
+  });
+
+  it('an UNTOUCHED source-derived template (whiteboardEdited=false) still copies the source', () => {
+    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, 'src-wb-1', false)).toEqual({
+      content: undefined,
+      sourceWhiteboardID: 'src-wb-1',
     });
   });
 });

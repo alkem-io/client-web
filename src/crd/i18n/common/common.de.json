@@ -202,7 +202,8 @@
         "sizeLimitExceeded": "Dieses Whiteboard hat seine Größenbeschränkung erreicht und deine letzte Änderung wurde nicht übernommen. Stelle die Verbindung wieder her, um von der zuletzt gespeicherten Version fortzufahren.",
         "documentDeleted": "Dieses Whiteboard wurde gelöscht.",
         "editsNotSaved": "Deine letzten Änderungen konnten nicht gespeichert werden und sind verloren gegangen. Die Zusammenarbeit wurde beendet.",
-        "serverShutdown": "Der Kollaborationsserver wird neu gestartet – Verbindung wird wiederhergestellt…"
+        "serverShutdown": "Der Kollaborationsserver wird neu gestartet – Verbindung wird wiederhergestellt…",
+        "updateRejected": "Deine letzte Änderung konnte nicht gespeichert werden. Bitte versuche es erneut."
       },
       "export": {
         "title": "In Alkemio speichern",

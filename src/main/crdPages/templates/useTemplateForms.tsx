@@ -574,7 +574,8 @@ export function useTemplateForms({
         // template has neither.
         const { content, sourceWhiteboardID } = whiteboardTemplateCreateFields(
           current.whiteboardContent,
-          current.sourceWhiteboardId
+          current.sourceWhiteboardId,
+          current.whiteboardEdited
         );
         const result = await createTemplate({
           variables: {
@@ -684,9 +685,10 @@ export function useTemplateForms({
           variables: {
             templateId,
             profile,
-            // Send content only when genuinely redrawn — a rename-only edit must not
-            // overwrite the stored drawing with the empty placeholder (see the helper).
-            whiteboardContent: whiteboardContentForTemplateUpdate(current.whiteboardContent),
+            // Send content when genuinely redrawn, or when the user deliberately cleared it
+            // (`whiteboardEdited`) so the blank persists — a rename-only edit (untouched) must
+            // not overwrite the stored drawing with the empty placeholder (see the helper).
+            whiteboardContent: whiteboardContentForTemplateUpdate(current.whiteboardContent, current.whiteboardEdited),
             includeProfileVisuals: wantsPreview,
           },
         });

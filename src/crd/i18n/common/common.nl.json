@@ -202,7 +202,8 @@
         "sizeLimitExceeded": "Dit whiteboard heeft de maximale grootte bereikt en je laatste wijziging is niet toegepast. Maak opnieuw verbinding om verder te gaan vanaf de laatst opgeslagen versie.",
         "documentDeleted": "Dit whiteboard is verwijderd.",
         "editsNotSaved": "Je recente wijzigingen konden niet worden opgeslagen en zijn verloren gegaan. De samenwerking is gestopt.",
-        "serverShutdown": "De samenwerkingsserver wordt opnieuw opgestart — opnieuw verbinden…"
+        "serverShutdown": "De samenwerkingsserver wordt opnieuw opgestart — opnieuw verbinden…",
+        "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw."
       },
       "export": {
         "title": "Opslaan in Alkemio",

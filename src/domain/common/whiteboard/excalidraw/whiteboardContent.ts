@@ -26,6 +26,34 @@ export function parseWhiteboardContentToScene(content: string | undefined): Whit
 }
 
 /**
+ * Decode the stored whiteboard `content` (the 006 boundary: a base64-encoded Yjs-V2 snapshot)
+ * into the raw Yjs-V2 UPDATE bytes to seed the live editor with `applyRemoteSceneUpdate(bytes,
+ * 'v2')` — the single-user / preview path, which pushes bytes straight into the editor's own
+ * `Scene.doc` rather than materializing a {@link WhiteboardSnapshot}. Returns `null` for empty
+ * content OR content that does not decode to a well-formed Yjs-V2 snapshot (non-base64 / malformed
+ * update), so the caller seeds an EMPTY editable scene instead of throwing (FR-010, the same
+ * decode-with-fallback contract as {@link parseWhiteboardContentToScene}). The bytes are validated
+ * with the same `decodeSnapshot` the parser uses, so a returned buffer is guaranteed to apply
+ * without throwing. This is the persisted-content seed path ONLY — NOT the fail-loud WS
+ * scene-sync frame path (`unifiedCollabProvider.readSceneSyncMessage`), which must reject a
+ * malformed frame loudly rather than silently empty the scene.
+ */
+export function decodeWhiteboardContentUpdate(content: string | undefined): Uint8Array | null {
+  if (!content || content.trim() === '') {
+    return null;
+  }
+  try {
+    const update = fromBase64(content);
+    // Validate through the same decoder the parser uses: throws on non-base64 garbage bytes or a
+    // malformed-v2 update, so a returned buffer is safe to `applyRemoteSceneUpdate`.
+    decodeSnapshot(update);
+    return update;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Serialize a snapshot to the stored whiteboard `content` (the 006 boundary): a
  * base64-encoded Yjs-V2 update over the native element schema — the format the
  * server stores and the collaboration-service seeds a room from (NOT Excalidraw

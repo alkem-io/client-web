@@ -1,7 +1,9 @@
 import { decodeSnapshot, encodeSnapshot, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
+import { toBase64 } from 'lib0/buffer';
 import { describe, expect, it } from 'vitest';
 import { EmptyWhiteboardSnapshot, EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import {
+  decodeWhiteboardContentUpdate,
   isEmptyWhiteboardContent,
   parseWhiteboardContentToScene,
   serializeWhiteboardContent,
@@ -41,6 +43,33 @@ describe('parseWhiteboardContentToScene', () => {
     const back = decodeSnapshot(encodeSnapshot(snapshotWithRect));
     expect(back.elements).toHaveLength(1);
     expect(back.elements[0]).toMatchObject({ id: 'a', type: 'rectangle', x: 0, y: 0 });
+  });
+});
+
+describe('decodeWhiteboardContentUpdate', () => {
+  it('returns null for undefined / empty / whitespace content', () => {
+    expect(decodeWhiteboardContentUpdate(undefined)).toBeNull();
+    expect(decodeWhiteboardContentUpdate('')).toBeNull();
+    expect(decodeWhiteboardContentUpdate('   ')).toBeNull();
+  });
+
+  it('returns null for non-base64 content (FR-010 fallback, no throw)', () => {
+    // `fromBase64` is lenient (produces garbage bytes rather than throwing), so the guard is the
+    // subsequent `decodeSnapshot`, which rejects the malformed update — the helper catches it.
+    expect(decodeWhiteboardContentUpdate('!!not-base64!!')).toBeNull();
+    expect(decodeWhiteboardContentUpdate('not json')).toBeNull();
+  });
+
+  it('returns null for a valid-base64 but malformed-v2 buffer (FR-010 fallback, no throw)', () => {
+    const malformedV2 = toBase64(new Uint8Array([1, 2, 3, 4, 5]));
+    expect(decodeWhiteboardContentUpdate(malformedV2)).toBeNull();
+  });
+
+  it('returns applyable bytes for a well-formed stored snapshot', () => {
+    const bytes = decodeWhiteboardContentUpdate(contentWithRect);
+    expect(bytes).toBeInstanceOf(Uint8Array);
+    // The returned bytes are validated (decodeSnapshot succeeded), so they decode to the scene.
+    expect(parseWhiteboardContentToScene(contentWithRect).elements).toHaveLength(1);
   });
 });
 

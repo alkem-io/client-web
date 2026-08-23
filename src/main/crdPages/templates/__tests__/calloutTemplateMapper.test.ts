@@ -109,6 +109,23 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
     expect(input.framing.whiteboard?.content).toBeUndefined();
   });
 
+  // C4 — clearing a source-derived template's whiteboard to blank ON PURPOSE (whiteboardEdited=true)
+  // must send the empty content and NOT sourceWhiteboardID, so the intentional blank is saved rather
+  // than the server re-copying the source. Emptiness alone no longer classifies it as "untouched".
+  it('sends empty content and NOT sourceWhiteboardID when a source-derived whiteboard was deliberately cleared (C4)', () => {
+    const input = calloutFormValuesToCreateCalloutInput(
+      values({
+        framingChip: 'whiteboard',
+        whiteboardContent: EmptyWhiteboardString,
+        whiteboardEdited: true,
+        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
+      }),
+      fallbacks
+    );
+    expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
+    expect(input.framing.whiteboard?.content).toBe(EmptyWhiteboardString);
+  });
+
   it('does NOT send sourceWhiteboardID when the user drew fresh content (the real drawing is sent instead)', () => {
     const input = calloutFormValuesToCreateCalloutInput(
       values({

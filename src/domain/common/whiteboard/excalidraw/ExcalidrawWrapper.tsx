@@ -5,7 +5,6 @@ import type {
   ExcalidrawInitialDataState,
   ExcalidrawProps,
 } from '@excalidraw-yjs/excalidraw/types';
-import { fromBase64 } from 'lib0/buffer';
 import { debounce, merge } from 'lodash-es';
 import { CloudUpload } from 'lucide-react';
 import { Suspense, useEffect, useRef, useState } from 'react';
@@ -16,6 +15,7 @@ import { useNotification } from '@/core/ui/notifications/useNotification';
 import { generateIdFromFile } from './collab/utils';
 import { getWhiteboardImageUploadI18nParams, validateWhiteboardImageFile } from './fileStore/fileValidation';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
+import { decodeWhiteboardContentUpdate } from './whiteboardContent';
 
 export interface WhiteboardWhiteboardEntities {
   whiteboard: { id?: string; content: string } | undefined;
@@ -68,11 +68,14 @@ const Excalidraw = lazyWithGlobalErrorHandler(async () => {
  * never materialized into a scene object on this path. The stored `content` (a
  * base64-encoded Yjs-V2 snapshot) is seeded STRAIGHT into the editor's live scene
  * after mount via `applyRemoteSceneUpdate(bytes, 'v2')` — a remote apply, so the
- * seed emits no local change and never marks the whiteboard dirty. `initialData`
- * is just the empty tool defaults (no content elements). The parent gets the API
- * via `onSceneInitialized` (fired after the seed) to track edits, and reads the
- * scene back for save via `encodeSceneStateAsUpdate('v2')` (no `serializeAsJSON`,
- * no `decodeSnapshot`). Image bytes cross the `assetAdapter`, never the doc.
+ * seed emits no local change and never marks the whiteboard dirty. Decoding routes
+ * through the shared FR-010 owner (`decodeWhiteboardContentUpdate`): unreadable
+ * content (non-base64 / malformed-v2) yields an empty editable scene instead of a
+ * throw. `initialData` is just the empty tool defaults (no content elements). The
+ * parent gets the API via `onSceneInitialized` (fired after the seed, ALWAYS — even
+ * when the content was unreadable) to track edits, and reads the scene back for save
+ * via `encodeSceneStateAsUpdate('v2')` (no `serializeAsJSON`). Image bytes cross the
+ * `assetAdapter`, never the doc.
  */
 const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardProps) => {
   const { whiteboard, assetAdapter, imageValidation } = entities;
@@ -118,9 +121,14 @@ const ExcalidrawWrapper = ({ entities, actions, options }: WhiteboardWhiteboardP
     // snapshot) through the scene port as a REMOTE 'v2' update, so it applies without
     // emitting a local change — the seed must never count as a user edit. Embedded
     // images are resolved lazily by `assetAdapter.resolve` when the editor renders them
-    // (no eager preload). Then hand the parent the API to begin edit tracking.
-    if (content?.trim()) {
-      excalidrawApi.applyRemoteSceneUpdate(fromBase64(content), 'v2');
+    // (no eager preload). Decoding goes through the shared FR-010 decode-with-fallback owner
+    // (`decodeWhiteboardContentUpdate`): non-base64 / malformed-v2 content yields `null` → an
+    // EMPTY editable scene, never a throw that would escape this effect (unmounting the editor
+    // subtree to a blank and skipping `onSceneInitialized`). Then hand the parent the API to
+    // begin edit tracking — which MUST happen even when the content was unreadable.
+    const seedUpdate = decodeWhiteboardContentUpdate(content);
+    if (seedUpdate) {
+      excalidrawApi.applyRemoteSceneUpdate(seedUpdate, 'v2');
     }
     actions.onSceneInitialized?.(excalidrawApi);
 

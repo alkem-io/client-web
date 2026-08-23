@@ -48,11 +48,13 @@ export type CalloutTemplateMapperFallbacks = {
  *
  * #29 — a whiteboard-framed source's live content is WS-only and can no longer be read on the client
  * (006-collab-content-unification), so we can't carry the scene over in `framing.whiteboard.content`.
- * Instead, when the source has a whiteboard the user did NOT re-draw in this dialog (content is still
- * the empty placeholder), we pass `framing.whiteboard.sourceWhiteboardID` and let the SERVER copy the
- * source whiteboard's stored snapshot into the new template whiteboard. This also fixes Duplicate /
- * import-from-library (same mapper, same source pointer in `editMeta.whiteboardId`). If the user DID
- * draw fresh content, that real content is sent and the source pointer is omitted.
+ * Instead, when the source has a whiteboard the user did NOT TOUCH in this dialog (still the empty
+ * placeholder AND `whiteboardEdited === false`), we pass `framing.whiteboard.sourceWhiteboardID` and
+ * let the SERVER copy the source whiteboard's stored snapshot into the new template whiteboard. This
+ * also fixes Duplicate / import-from-library (same mapper, same source pointer in `editMeta.whiteboardId`).
+ * If the user drew fresh content — OR deliberately cleared the board (`whiteboardEdited === true`) — the
+ * real (possibly empty) content is sent and the source pointer is omitted, so an intentional blank is
+ * saved instead of the source being silently re-copied. Emptiness alone is NOT read as "untouched".
  */
 export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
@@ -65,12 +67,15 @@ export function calloutFormValuesToCreateCalloutInput(
   });
 
   const sourceWhiteboardId = values.editMeta?.whiteboardId;
-  const drewFreshContent = !isEmptyWhiteboardContent(values.whiteboardContent);
+  // "Untouched" means BOTH still-empty AND the user never opened/saved the editor. A deliberate
+  // clear (`whiteboardEdited === true`) is empty but must NOT re-copy the source — the intentional
+  // blank travels as `content` instead. Emptiness alone is not proof the whiteboard is pristine.
+  const isUntouchedSourceWhiteboard = isEmptyWhiteboardContent(values.whiteboardContent) && !values.whiteboardEdited;
   if (
     input.framing?.whiteboard &&
     framingChipToServer(values.framingChip) === CalloutFramingType.Whiteboard &&
     sourceWhiteboardId &&
-    !drewFreshContent
+    isUntouchedSourceWhiteboard
   ) {
     input.framing.whiteboard.sourceWhiteboardID = sourceWhiteboardId;
     // `content` and `sourceWhiteboardID` are mutually exclusive server-side (a create

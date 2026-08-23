@@ -278,7 +278,10 @@ const CollaborativeExcalidrawWrapper = ({
       //   happened to call onExcalidrawAPI — indefinitely if that replacement failed.
       // - Bump `recoveryGeneration` (in the <Excalidraw key>) so a fresh Scene/Y.Doc is
       //   mounted that resyncs the server's canonical state.
-      notify(t('callout.whiteboard.images.uploadFailed'), 'error');
+      // `onUpdateRejected` fires for ANY rejected server update (text/shape edits included), not
+      // just image uploads — so the message must speak to the change not being saved, not "image
+      // upload failed" (the old copy, which was misleading for non-image edits).
+      notify(t('callout.whiteboard.session.updateRejected'), 'error');
       setSceneInitialized(false);
       setExcalidrawApi(null);
       setRecoveryGeneration(generation => generation + 1);
