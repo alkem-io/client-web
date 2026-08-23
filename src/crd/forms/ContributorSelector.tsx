@@ -218,7 +218,7 @@ export function ContributorSelector({
             <li key={chipKey}>
               <span
                 className={cn(
-                  'inline-flex items-center gap-2 pr-1 pl-1 py-1 rounded-full border bg-background',
+                  'inline-flex items-center gap-2 pr-1 pl-1 py-1 rounded-full border bg-input-background',
                   isError ? 'border-destructive' : 'border-border'
                 )}
               >

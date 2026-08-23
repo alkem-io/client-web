@@ -112,6 +112,11 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+      collaborationCalloutReaction {
+        email
+        inApp
+        push
+      }
       collaborationCalloutComment {
         email
         inApp

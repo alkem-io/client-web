@@ -61,6 +61,8 @@
 
 **Goal**: Title and subtitle move into a new below-banner section, inside the existing inner content width, using theme text tokens (no more white-on-photo). The banner overlay content for title/tagline is removed. Subspace: single ~56px avatar inline with the title; layered parent-avatar pair, level badge, and member-avatar stack are removed entirely.
 
+> **Amendment (2026-08-21)**: the "single ~56px avatar inline with the title" delivered by this phase was later removed as well — `SubspaceHeader` now renders the bare `<h1>` (no avatar at any level), the `subspaceInitials`/`subspaceColor`/`subspaceAvatarUrl` props are deleted, and subspace identity images moved into the breadcrumb trail. Task texts below describe the state as delivered at the time.
+
 **Independent Test**: On both pages, title is `<h1 className="text-hero text-foreground truncate">`, subtitle is `<p className="text-body text-muted-foreground truncate">`, both inside `lg:col-start-2 / lg:col-span-10`. No overlaid title text on the banner. No member-avatar stack on the banner. For Subspace: no parent-tile avatar, no "Subspace"/"Sub-subspace" badge, single 56px avatar inline with the title.
 
 ### Implementation for User Story 2

@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} Mitglieder und {{organizations}} Organisationen in diesem Bereich.",
-    "inviteMember": "Mitglied einladen",
     "search": "Mitglieder oder Organisationen suchen...",
     "filterAll": "Alle",
     "filterLead": "Leiter",
@@ -1027,5 +1026,8 @@
       "title": "Noch keine Unterbereiche",
       "description": "Dieser Bereich hat noch keine Unterbereiche."
     }
+  },
+  "parentStack": {
+    "goTo": "Gehe zu {{name}}"
   }
 }

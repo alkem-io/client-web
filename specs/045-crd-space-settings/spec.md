@@ -332,7 +332,7 @@ Everything on this tab is either read-only display or routes through pre-existin
 
 ### Functional Requirements
 
-- **FR-001**: Space Settings MUST present the same CRD space hero (banner, name, tagline, member avatars) as the CRD Space Page when CRD is enabled.
+- **FR-001** *(superseded — settings header redesign; last amended 2026-08-21)*: ~~Space Settings MUST present the same CRD space hero (banner, name, tagline, member avatars) as the CRD Space Page when CRD is enabled.~~ Settings pages render the compact `SpaceSettingsHeader` instead of the hero: **title + optional tagline only — no banner, no avatar, no member avatars** (the interim subspace-settings avatar was removed 2026-08-21). The title renders as a link (`titleHref`) back to the space/subspace home page — on mobile the settings pages have no breadcrumbs, so the name is the way back.
 - **FR-002**: Space Settings MUST present a horizontal tab strip below the hero with these tabs in this order: **About, Layout, Community, Updates, Subspaces, Templates, Storage, Settings, Account**, and MUST indicate the active tab visually.
 - **FR-003**: Each tab MUST be deep-linkable — the active tab MUST be reflected in the URL, and opening a direct URL MUST land on the corresponding tab.
 - **FR-004**: The tab strip MUST collapse to a horizontally scrollable row on narrow viewports without losing any tab.
@@ -431,14 +431,14 @@ Everything on this tab is either read-only display or routes through pre-existin
 - **SC-005**: An admin cannot lose edits on any tab. On Layout (dirty buffer) switching tabs / navigating / closing is blocked by a confirm dialog. On About (autosave) any pending debounced save is flushed immediately on tab switch / navigation so no edit is ever lost silently.
 - **SC-006**: Toggling the `alkemio-crd-enabled` flag off restores the current MUI Space Settings with no visible regressions; toggling it on restores the CRD experience. Verified across all 9 tabs.
 - **SC-007**: Keyboard-only users can reach and operate every control on every tab — including the Layout grab-mode equivalent — without a mouse.
-- **SC-008**: The CRD space hero rendered in Space Settings is visually and behaviorally identical to the hero on the CRD Space Page (spec 042), verified by side-by-side screenshots with zero divergences.
+- **SC-008** *(obsolete — see FR-001 amendment)*: ~~The CRD space hero rendered in Space Settings is visually and behaviorally identical to the hero on the CRD Space Page (spec 042), verified by side-by-side screenshots with zero divergences.~~ Settings no longer embeds the hero; it renders `SpaceSettingsHeader` (linked title + tagline).
 - **SC-009**: The Layout per-column overflow menu ("Active phase", "Default post template") reaches parity with the current MUI per-step menu — verified by a side-by-side action inventory and unit tests that exercise each mutation end-to-end per column.
 - **SC-010**: Subspace settings parity — verified by visiting the L1 settings URL (`<space>/challenges/<sub>/settings`) and the L2 settings URL (`<space>/challenges/<sub>/opportunities/<subsub>/settings`) with CRD enabled and confirming, via a side-by-side action inventory against legacy MUI, that the visible tab list, the per-tab inner sections, and the destructive / mutating actions exactly match `SpaceAdminRouteL1.tsx` and `SpaceAdminRouteL2.tsx` — minus any explicitly L0-deferred capability listed in Out of Scope.
 - **SC-011**: At L1 / L2 the settings mutations target the **subspace's** community / role-set / guidelines, not the L0 root. Verified end-to-end via Apollo devtools by editing a community guideline at L1 and confirming the mutation variables match the subspace's `guidelinesId` (not the L0 space's `guidelinesId`).
 
 ## Assumptions
 
-- The CRD space hero component delivered by spec 042 is reusable as-is and requires no changes to support embedding inside Space Settings.
+- ~~The CRD space hero component delivered by spec 042 is reusable as-is and requires no changes to support embedding inside Space Settings.~~ *(Superseded — settings render the compact `SpaceSettingsHeader`, not the hero; see FR-001 amendment.)*
 - Every existing space admin Apollo query and mutation covers the retained capabilities; no new GraphQL fields or operations are required for any tab (including Subspaces Archive, which reuses `updateSpacePlatformSettings` with `SpaceVisibility.Archived`).
 - Permission checks that currently gate access to each MUI admin tab continue to apply unchanged; the CRD layer is a presentation-only change.
 - Translation strings for the CRD Space Settings area live under a new `crd-spaceSettings` i18n namespace and are authored in English only (Crowdin handles other locales, separately).

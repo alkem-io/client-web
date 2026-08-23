@@ -76,7 +76,7 @@ Verify these are NOT visible anywhere in the header:
 - ❌ Subspace level badge ("Subspace" / "Sub-subspace" pill) (was top-right on the banner)
 - ❌ Parent-avatar tile behind the Subspace avatar (was bottom-left, layered with `-mt-12`)
 
-The Subspace shows a SINGLE 56px avatar inline with its title — no second tile.
+~~The Subspace shows a SINGLE 56px avatar inline with its title — no second tile.~~ *(Amended 2026-08-21: the header shows NO avatar at any level — the bare title only. Subspace identity images moved to the breadcrumb trail.)*
 
 ## Constitutional checks
 
