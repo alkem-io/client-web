@@ -215,7 +215,8 @@
     "memo": {
       "saveFailed": "Unable to save changes",
       "updateRejected": "Your last change couldn't be saved. Please try again.",
-      "updateNotAccepted": "Your change couldn't be sent — reconnecting…"
+      "updateNotAccepted": "Your change couldn't be sent — reconnecting…",
+      "sessionEnded": "Collaboration has ended. Reload the page to continue."
     }
   },
   "cancel": "Cancel",

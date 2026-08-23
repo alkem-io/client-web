@@ -5,7 +5,7 @@ import * as Y from 'yjs';
 // Capture every UnifiedCollabProvider instance + a global lifecycle order log so the
 // test can prove room B gets a fresh doc and provider A is torn down before B connects.
 const order: string[] = [];
-type Inst = { documentId: string; doc: Y.Doc; connected: boolean; destroyed: boolean };
+type Inst = { documentId: string; doc: Y.Doc; connected: boolean; destroyed: boolean; disconnected: boolean };
 const instances: Inst[] = [];
 // The most-recent provider's listeners, so a test can inject a control frame and drive
 // the readiness (status/synced) callbacks of whichever generation is currently wired.
@@ -20,6 +20,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
     doc: Y.Doc;
     connected = false;
     destroyed = false;
+    disconnected = false;
     constructor(opts: { documentId: string; doc: Y.Doc }) {
       this.documentId = opts.documentId;
       this.doc = opts.doc;
@@ -34,6 +35,14 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
     connect() {
       this.connected = true;
       order.push(`connect:${this.documentId}`);
+    }
+    disconnect() {
+      // Mirror the real provider: disconnect clears the reconnect timer + tears down the
+      // socket (so the scheduler cannot reconnect) and drops readiness to disconnected.
+      this.disconnected = true;
+      order.push(`disconnect:${this.documentId}`);
+      syncedHandler?.(false);
+      statusHandler?.('disconnected');
     }
     destroy() {
       this.destroyed = true;
@@ -179,14 +188,21 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(providerA.destroyed).toBe(false);
   });
 
-  it('an unknown/inconsistent session-end tuple is NOT trusted (no readiness drop, no notice)', () => {
+  it('an unknown/inconsistent session-end tuple FAILS CLOSED — disconnects (no reconnect) + a terminal notice, matching the whiteboard', () => {
     const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    expect(instances).toHaveLength(1);
+    const providerA = instances[0];
     act(() => {
       statusHandler?.('connected');
       syncedHandler?.(true);
     });
+    expect(result.current.status).toBe('connected');
+    expect(result.current.synced).toBe(true);
 
-    // Inconsistent tuple (transient claimed for a code the mock table would reject) → null.
+    // Inconsistent tuple (a code the mock table rejects) → classifySessionEnd null. The
+    // rolling-deploy producer: a NEWER server emits a session-end code this client cannot
+    // classify. Trusting the transient close that follows would silently reconnect past a
+    // terminal condition and mask data loss — so the memo must fail closed, not ignore it.
     act(() =>
       controlHandler?.({
         kind: 'session-end',
@@ -196,8 +212,16 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
       })
     );
 
-    expect(result.current.status).toBe('connected');
-    expect(result.current.synced).toBe(true);
+    // Fail closed: the provider is DISCONNECTED (reconnect timer cleared, socket torn down) —
+    // readiness drops and the scheduler cannot reconnect. NO fresh provider is minted (no
+    // recovery-generation reconnect), the provider is NOT destroyed (the memo stays mounted),
+    // and the TERMINAL notice is shown — never the transient "reconnecting…" one.
+    expect(providerA.disconnected).toBe(true);
+    expect(result.current.synced).toBe(false);
+    expect(result.current.status).toBe('disconnected');
+    expect(instances).toHaveLength(1);
+    expect(providerA.destroyed).toBe(false);
+    expect(notifySpy).toHaveBeenCalledWith('callout.memo.sessionEnded', 'warning');
     expect(notifySpy).not.toHaveBeenCalledWith('callout.memo.updateNotAccepted', 'warning');
   });
 });

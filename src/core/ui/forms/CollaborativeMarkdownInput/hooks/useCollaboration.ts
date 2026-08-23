@@ -132,20 +132,31 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           setRecoveryGeneration(generation => generation + 1);
           break;
         case 'session-end': {
-          // The provider's close handler is the SOLE reconnect owner. For a VALIDATED
-          // transient session-end we only DROP UI readiness (+ show a notice) so the editor
-          // blocks further edits during the server's queue→close-after-drain window —
-          // otherwise the memo stays connected/synced and accepts edits on a session already
-          // known to have dropped a frame (unlike the whiteboard, which reacts). We do NOT
-          // connect/schedule and do NOT recreate the doc. An unknown/inconsistent tuple
-          // classifies to null → IGNORED (no readiness drop) — NOT a fail-closed teardown:
-          // the server's closed session-end table cannot emit an invalid tuple, so we simply
-          // don't trust an unexpected wire string.
+          // The server is ending this session. Classify against the KNOWN tuple table (the
+          // authority); never trust the wire disposition/scope alone. A VALIDATED transient
+          // (update-not-accepted) only DROPS UI readiness (+ a notice) so the editor blocks
+          // edits during the server's queue→close-after-drain window — the provider's close
+          // handler stays the SOLE reconnect owner, so we schedule nothing and recreate
+          // nothing. An UNKNOWN or inconsistent tuple FAILS CLOSED (terminate, no reconnect),
+          // matching the whiteboard and classifySessionEnd's contract. The concrete producer
+          // is a rolling deploy where a NEWER server emits a session-end code this client's
+          // table does not know: trusting the socket close that follows (often a transient
+          // 1013/1001) would silently reconnect past a terminal condition and MASK data loss.
+          // Disconnecting the provider tears down the socket and clears its reconnect timer,
+          // so its scheduler cannot reconnect; the user reopens the memo to retry.
           const info = classifySessionEnd(message);
-          if (info?.code === 'update-not-accepted') {
-            notifyRef.current(tRef.current('callout.memo.updateNotAccepted'), 'warning');
-            setSynced(false);
-            setStatus(MemoStatus.CONNECTING);
+          if (info) {
+            if (info.code === 'update-not-accepted') {
+              notifyRef.current(tRef.current('callout.memo.updateNotAccepted'), 'warning');
+              setSynced(false);
+              setStatus(MemoStatus.CONNECTING);
+            }
+            // Every other validated tuple is driven by the socket close that follows, whose
+            // classifyClose verdict the provider already routes (terminal → no reconnect,
+            // transient → reconnect) — no extra memo action here.
+          } else {
+            notifyRef.current(tRef.current('callout.memo.sessionEnded'), 'warning');
+            provider.disconnect();
           }
           break;
         }

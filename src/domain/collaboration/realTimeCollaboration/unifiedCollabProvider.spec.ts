@@ -208,20 +208,103 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
-  it('decodes a control frame (type 3) and emits it to control listeners', () => {
+  // Frame a CONTROL (type 3) message EXACTLY as the service does: go-yjs
+  // `protocol.WriteMessage(buf, WireControl, json.Marshal(msg))` writes
+  // `[type VarUint]` then `buf.Write(payload)` — the marshalled JSON is copied
+  // VERBATIM, with NO VarString length prefix. `writeUint8Array` (raw copy, no
+  // prefix) mirrors `buf.Write`; `writeVarUint8Array` / `writeVarString` would
+  // NOT — they add a length the real service never sends.
+  const encodeServiceControlFrame = (msg: ControlMessage): Uint8Array => {
+    const body = new TextEncoder().encode(JSON.stringify(msg));
+    const encoder = encoding.createEncoder();
+    encoding.writeVarUint(encoder, WIRE.CONTROL);
+    encoding.writeUint8Array(encoder, body);
+    return encoding.toUint8Array(encoder);
+  };
+
+  it('decodes REAL service-shaped control frames (type 3 = [type][raw JSON], no length prefix)', () => {
     const received: ControlMessage[] = [];
     const provider = new UnifiedCollabProvider(baseOptions);
     provider.on('control', m => received.push(m));
     const socket = MockWebSocket.instances[0];
     socket.open();
 
-    const control: ControlMessage = { kind: 'read-only-state', readOnly: true, reason: 'no-update-access' };
+    // A session-end control (the disposition carrier that gates memo + whiteboard
+    // recovery UX), a read-only-state, a saved ack, and the two durability-barrier
+    // replies (persisted / persist-failed) that Stage B's caller will consume — all
+    // flow through the same raw-JSON control reader.
+    const frames: ControlMessage[] = [
+      { kind: 'session-end', code: 'server-shutdown', scope: 'document', disposition: 'transient' },
+      { kind: 'read-only-state', readOnly: true, reason: 'no-update-access' },
+      { kind: 'saved', version: 7 },
+      { kind: 'persisted', requestId: 'req-1' },
+      { kind: 'persist-failed', requestId: 'req-1', error: 'store unavailable' },
+    ];
+    for (const control of frames) {
+      const frame = encodeServiceControlFrame(control);
+      // Byte 0 is the type varuint (3); byte 1 is the FIRST JSON byte `{` (0x7B) —
+      // there is no length prefix between them. This is the shape the fix reads.
+      expect(frame[0]).toBe(WIRE.CONTROL);
+      expect(frame[1]).toBe(0x7b);
+      socket.receive(frame);
+    }
+
+    expect(received).toEqual(frames);
+    provider.destroy();
+  });
+
+  it('decodes FIXED literal service-emitted bytes for the durability replies (ground-truth Go frames)', () => {
+    // These are the EXACT bytes go-yjs `protocol.WriteMessage(WireControl, json.Marshal(msg))`
+    // emits for the durability-barrier replies — captured from the service's own encoder, not
+    // re-derived through any lib0 helper. Each is `[3][raw JSON]`: byte 0 is the type varuint
+    // (WireControl = 3), byte 1 is `{` (0x7B = 123), and there is NO length prefix between them.
+    // If the client ever regresses to reading a VarString here, these decode to nothing.
+    const persistedBytes = Uint8Array.from([
+      3, 123, 34, 107, 105, 110, 100, 34, 58, 34, 112, 101, 114, 115, 105, 115, 116, 101, 100, 34, 44, 34, 114, 101,
+      113, 117, 101, 115, 116, 73, 100, 34, 58, 34, 114, 101, 113, 45, 49, 34, 125,
+    ]);
+    const persistFailedBytes = Uint8Array.from([
+      3, 123, 34, 107, 105, 110, 100, 34, 58, 34, 112, 101, 114, 115, 105, 115, 116, 45, 102, 97, 105, 108, 101, 100,
+      34, 44, 34, 114, 101, 113, 117, 101, 115, 116, 73, 100, 34, 58, 34, 114, 101, 113, 45, 49, 34, 44, 34, 101, 114,
+      114, 111, 114, 34, 58, 34, 115, 116, 111, 114, 101, 32, 117, 110, 97, 118, 97, 105, 108, 97, 98, 108, 101, 34,
+      125,
+    ]);
+    expect(persistedBytes[0]).toBe(WIRE.CONTROL);
+    expect(persistedBytes[1]).toBe(0x7b);
+
+    const received: ControlMessage[] = [];
+    const provider = new UnifiedCollabProvider(baseOptions);
+    provider.on('control', m => received.push(m));
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.receive(persistedBytes);
+    socket.receive(persistFailedBytes);
+
+    expect(received).toEqual([
+      { kind: 'persisted', requestId: 'req-1' },
+      { kind: 'persist-failed', requestId: 'req-1', error: 'store unavailable' },
+    ]);
+    provider.destroy();
+  });
+
+  it('does NOT decode an (invalid) VarString-prefixed control frame — the client reads only the Go raw contract', () => {
+    // The old manufactured shape — which the previous decoder and its test used — framed
+    // CONTROL with `writeVarString`, injecting a length prefix. That was NEVER the service
+    // contract. Against the real raw contract the frame is malformed: the reader consumes the
+    // leading length byte into the JSON text (`*{"kind":…}`) and JSON.parse fails → no control.
+    // This pins that the fix reads the Go shape, not the invalid manufactured one.
+    const received: ControlMessage[] = [];
+    const provider = new UnifiedCollabProvider(baseOptions);
+    provider.on('control', m => received.push(m));
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.CONTROL);
-    encoding.writeVarString(encoder, JSON.stringify(control));
+    encoding.writeVarString(encoder, JSON.stringify({ kind: 'saved', version: 1 }));
     socket.receive(encoding.toUint8Array(encoder));
 
-    expect(received).toEqual([control]);
+    expect(received).toEqual([]);
     provider.destroy();
   });
 
@@ -286,6 +369,41 @@ describe('UnifiedCollabProvider', () => {
     MockWebSocket.instances[1].serverClose(1000);
     vi.advanceTimersByTime(60_000);
     expect(MockWebSocket.instances.length).toBe(2);
+
+    provider.destroy();
+    vi.useRealTimers();
+  });
+
+  it('disconnect() tears down the socket and CANCELS reconnect — no new socket ever opens (the memo fail-closed seam)', () => {
+    // The real scheduler seam behind the memo's fail-closed path: on an unknown/inconsistent
+    // session-end tuple the hook calls provider.disconnect(), and THIS must guarantee no
+    // reconnect — the hook mock alone cannot prove it. Proven here against MockWebSocket +
+    // fake timers, so the hook test (invalid tuple → disconnect) and this test jointly show
+    // "fails closed, no reconnect".
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    expect(MockWebSocket.instances.length).toBe(1);
+
+    // A transient drop schedules a reconnect: the timer is PENDING (no new socket yet).
+    socket.serverClose(1006);
+    expect(MockWebSocket.instances.length).toBe(1);
+
+    // disconnect() must clear that pending reconnect and tear down the socket.
+    provider.disconnect();
+    expect(provider.status).toBe('disconnected');
+
+    // Advancing well past the max backoff (5s→10s→30s→60s…) opens NO new socket — the pending
+    // reconnect was cancelled, not merely deferred.
+    vi.advanceTimersByTime(120_000);
+    expect(MockWebSocket.instances.length).toBe(1);
+
+    // A further transient close (the socket close the server sends AFTER a session-end) cannot
+    // revive it either: disconnect detached the socket listeners, so handleClose never runs.
+    socket.serverClose(1006);
+    vi.advanceTimersByTime(120_000);
+    expect(MockWebSocket.instances.length).toBe(1);
 
     provider.destroy();
     vi.useRealTimers();

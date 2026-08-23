@@ -215,7 +215,8 @@
     "memo": {
       "saveFailed": "Impossible d'enregistrer les modifications",
       "updateRejected": "Votre dernière modification n'a pas pu être enregistrée. Veuillez réessayer.",
-      "updateNotAccepted": "Votre modification n'a pas pu être envoyée — reconnexion…"
+      "updateNotAccepted": "Votre modification n'a pas pu être envoyée — reconnexion…",
+      "sessionEnded": "La collaboration a pris fin. Rechargez la page pour continuer."
     }
   },
   "cancel": "Annuler",

@@ -1,5 +1,6 @@
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
+import * as lib0String from 'lib0/string';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate, removeAwarenessStates } from 'y-protocols/awareness';
 import {
   messageYjsSyncStep1,
@@ -101,8 +102,17 @@ export type ControlMessage = {
     // The server is ending this session. `disposition` is AUTHORITATIVE — the socket close
     // that follows must not override or duplicate it. `code` names the cause, `scope` its
     // extent (a member limit vs a whole-document condition).
-    | 'session-end';
+    | 'session-end'
+    // Durability-barrier replies: each answers ONE `persist-request` by its `requestId`.
+    // `persisted` = the requested state reached the configured stores; `persist-failed` =
+    // it could not (with `error`). The client decodes them today over the same raw-JSON
+    // control channel; the durability CALLER that consumes them lands with Stage B.
+    | 'persisted'
+    | 'persist-failed';
   version?: number;
+  /** Correlates `persisted` / `persist-failed` with the durability request that asked. */
+  requestId?: string;
+  /** Human-readable failure reason on `save-error` and `persist-failed` (never secrets). */
   error?: string;
   readOnly?: boolean;
   reason?: string;
@@ -451,7 +461,7 @@ export class UnifiedCollabProvider {
         break;
       }
       case WIRE.CONTROL: {
-        const parsed = readJsonPayload(decoder) as ControlMessage | undefined;
+        const parsed = readRawJsonPayload(decoder) as ControlMessage | undefined;
         if (parsed && typeof parsed.kind === 'string') {
           this.controlListeners.forEach(listener => listener(parsed));
         }
@@ -655,10 +665,34 @@ export function classifyClose(code: number, reason: string): CloseVerdict {
   return { code, reason, disposition: 'transient' };
 }
 
-/** Read a `[length-prefixed JSON string]` payload, returning `undefined` on malformed input. */
+/**
+ * Read a `[VarString]` JSON payload (a `writeVarString` length prefix + UTF-8
+ * bytes), returning `undefined` on malformed input. Used for EPHEMERAL (type 2):
+ * those frames are CLIENT-originated (`sendEphemeral` frames them with
+ * `writeVarString`) and the service relays them to peers verbatim, so a received
+ * ephemeral frame still carries the client's VarString length prefix.
+ */
 function readJsonPayload(decoder: decoding.Decoder): unknown {
   try {
     return JSON.parse(decoding.readVarString(decoder));
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Read a raw-JSON control payload, returning `undefined` on malformed input.
+ * CONTROL (type 3) is SERVER-originated: the service frames it via go-yjs
+ * `protocol.WriteMessage(buf, WireControl, json.Marshal(msg))`, which writes
+ * `[type VarUint][raw JSON bytes]` — the marshalled JSON is copied verbatim
+ * (`buf.Write(payload)`), with NO VarString length prefix. So after the type
+ * varuint is consumed the JSON is the entire remainder of the frame: decode the
+ * tail bytes as UTF-8 and parse. (Reading a VarString here would misread the
+ * leading `{` byte, 0x7B = 123, as a 123-byte length and drop every control.)
+ */
+function readRawJsonPayload(decoder: decoding.Decoder): unknown {
+  try {
+    return JSON.parse(lib0String.decodeUtf8(decoding.readTailAsUint8Array(decoder)));
   } catch {
     return undefined;
   }

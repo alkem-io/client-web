@@ -215,7 +215,8 @@
     "memo": {
       "saveFailed": "Kan wijzigingen niet opslaan",
       "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw.",
-      "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…"
+      "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…",
+      "sessionEnded": "De samenwerking is beëindigd. Herlaad de pagina om verder te gaan."
     }
   },
   "cancel": "Annuleren",
