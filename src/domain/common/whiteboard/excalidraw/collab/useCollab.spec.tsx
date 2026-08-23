@@ -263,6 +263,7 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
 
   it.each([
     ['update-rate-exceeded', 'member', 'transient'],
+    ['update-not-accepted', 'member', 'transient'],
     ['document-size-limit-exceeded', 'member', 'manual'],
     ['document-deleted', 'document', 'terminal'],
     ['edits-not-saved', 'document', 'terminal'],

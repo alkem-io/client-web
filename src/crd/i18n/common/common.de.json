@@ -214,7 +214,8 @@
     },
     "memo": {
       "saveFailed": "Änderungen konnten nicht gespeichert werden",
-      "updateRejected": "Deine letzte Änderung konnte nicht gespeichert werden. Bitte versuche es erneut."
+      "updateRejected": "Deine letzte Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "updateNotAccepted": "Deine Änderung konnte nicht gesendet werden – Verbindung wird wiederhergestellt…"
     }
   },
   "cancel": "Abbrechen",

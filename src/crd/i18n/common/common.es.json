@@ -214,7 +214,8 @@
     },
     "memo": {
       "saveFailed": "No se pudieron guardar los cambios",
-      "updateRejected": "No se pudo guardar tu último cambio. Inténtalo de nuevo."
+      "updateRejected": "No se pudo guardar tu último cambio. Inténtalo de nuevo.",
+      "updateNotAccepted": "No se pudo enviar tu cambio: reconectando…"
     }
   },
   "cancel": "Cancelar",

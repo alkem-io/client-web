@@ -214,7 +214,8 @@
     },
     "memo": {
       "saveFailed": "Unable to save changes",
-      "updateRejected": "Your last change couldn't be saved. Please try again."
+      "updateRejected": "Your last change couldn't be saved. Please try again.",
+      "updateNotAccepted": "Your change couldn't be sent — reconnecting…"
     }
   },
   "cancel": "Cancel",

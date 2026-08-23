@@ -41,6 +41,10 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
     }
   },
   controlReasonToReadOnlyCode: () => undefined,
+  classifySessionEnd: (m: { code?: string; scope?: string; disposition?: string }) =>
+    m.code === 'update-not-accepted' && m.scope === 'member' && m.disposition === 'transient'
+      ? { code: m.code, scope: m.scope, disposition: m.disposition }
+      : null,
 }));
 
 vi.mock('../useUserCursor', () => ({ default: () => ({ userId: 'u1', userName: 'U', cursorColor: '#000' }) }));
@@ -142,5 +146,58 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(result.current.synced).toBe(true);
     // The user got an honest, translated rejection notice.
     expect(notifySpy).toHaveBeenCalledWith('callout.memo.updateRejected', 'warning');
+  });
+
+  it('a transient update-not-accepted session-end DROPS readiness + shows a notice, WITHOUT recreating the doc/provider (the provider owns reconnect)', () => {
+    const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    expect(instances).toHaveLength(1);
+    const providerA = instances[0];
+    // Bring to READY.
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(result.current.status).toBe('connected');
+    expect(result.current.synced).toBe(true);
+
+    act(() =>
+      controlHandler?.({
+        kind: 'session-end',
+        code: 'update-not-accepted',
+        scope: 'member',
+        disposition: 'transient',
+      })
+    );
+
+    // Readiness drops immediately (editor blocks edits during the queue→drain window) + notice.
+    expect(result.current.status).not.toBe('connected');
+    expect(result.current.synced).toBe(false);
+    expect(notifySpy).toHaveBeenCalledWith('callout.memo.updateNotAccepted', 'warning');
+    // NO manual reconnect / recovery generation: the SAME provider stays (not destroyed, not
+    // replaced) — the provider's close handler is the sole reconnect owner.
+    expect(instances).toHaveLength(1);
+    expect(providerA.destroyed).toBe(false);
+  });
+
+  it('an unknown/inconsistent session-end tuple is NOT trusted (no readiness drop, no notice)', () => {
+    const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+
+    // Inconsistent tuple (transient claimed for a code the mock table would reject) → null.
+    act(() =>
+      controlHandler?.({
+        kind: 'session-end',
+        code: 'totally-made-up',
+        scope: 'member',
+        disposition: 'transient',
+      })
+    );
+
+    expect(result.current.status).toBe('connected');
+    expect(result.current.synced).toBe(true);
+    expect(notifySpy).not.toHaveBeenCalledWith('callout.memo.updateNotAccepted', 'warning');
   });
 });

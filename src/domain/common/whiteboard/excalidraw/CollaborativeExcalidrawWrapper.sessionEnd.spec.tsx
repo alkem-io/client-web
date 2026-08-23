@@ -92,6 +92,14 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     expect(h.notifications).toContain('callout.whiteboard.session.rateExceeded');
   });
 
+  it('transient update-not-accepted: reconnect notice only — no discard, no retry-notice arming', () => {
+    renderWrapper();
+    send({ code: 'update-not-accepted', scope: 'member', disposition: 'transient' });
+    expect(h.editorInvalidatedCount.value).toBe(0); // nothing discarded
+    expect(lastActive()).toBe(false); // notice not opened → useAutoReconnect NOT armed (provider reconnects)
+    expect(h.notifications).toContain('callout.whiteboard.session.updateNotAccepted');
+  });
+
   it('manual (size-limit): discards the generation + disables auto-reconnect; the restart mints a fresh generation', () => {
     renderWrapper();
     const mountsBefore = h.mountCount.value;

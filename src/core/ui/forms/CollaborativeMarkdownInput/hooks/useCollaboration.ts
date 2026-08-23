@@ -14,6 +14,7 @@ import {
 } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 import {
   type ControlMessage,
+  classifySessionEnd,
   controlReasonToReadOnlyCode,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
@@ -130,6 +131,24 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           setStatus(MemoStatus.CONNECTING);
           setRecoveryGeneration(generation => generation + 1);
           break;
+        case 'session-end': {
+          // The provider's close handler is the SOLE reconnect owner. For a VALIDATED
+          // transient session-end we only DROP UI readiness (+ show a notice) so the editor
+          // blocks further edits during the server's queue→close-after-drain window —
+          // otherwise the memo stays connected/synced and accepts edits on a session already
+          // known to have dropped a frame (unlike the whiteboard, which reacts). We do NOT
+          // connect/schedule and do NOT recreate the doc. An unknown/inconsistent tuple
+          // classifies to null → IGNORED (no readiness drop) — NOT a fail-closed teardown:
+          // the server's closed session-end table cannot emit an invalid tuple, so we simply
+          // don't trust an unexpected wire string.
+          const info = classifySessionEnd(message);
+          if (info?.code === 'update-not-accepted') {
+            notifyRef.current(tRef.current('callout.memo.updateNotAccepted'), 'warning');
+            setSynced(false);
+            setStatus(MemoStatus.CONNECTING);
+          }
+          break;
+        }
         default:
           break;
       }

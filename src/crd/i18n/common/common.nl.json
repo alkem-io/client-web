@@ -214,7 +214,8 @@
     },
     "memo": {
       "saveFailed": "Kan wijzigingen niet opslaan",
-      "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw."
+      "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw.",
+      "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…"
     }
   },
   "cancel": "Annuleren",
