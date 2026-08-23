@@ -199,6 +199,7 @@
       },
       "session": {
         "rateExceeded": "You're editing too fast — reconnecting…",
+        "updateNotAccepted": "Your change couldn't be sent — reconnecting…",
         "sizeLimitExceeded": "This whiteboard has reached its size limit and your last change was not applied. Reconnect to continue from the last saved version.",
         "documentDeleted": "This whiteboard has been deleted.",
         "editsNotSaved": "Your recent changes could not be saved and have been lost. Collaboration has stopped.",

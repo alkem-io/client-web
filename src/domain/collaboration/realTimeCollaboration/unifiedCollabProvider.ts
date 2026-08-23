@@ -39,6 +39,7 @@ export const WIRE = {
  */
 export type SessionEndCode =
   | 'update-rate-exceeded' // member  · transient · close 1013
+  | 'update-not-accepted' // member  · transient · an inbound update could not be admitted to the room command queue (not applied/saved) — reconnect/backoff
   | 'document-size-limit-exceeded' // member  · manual    · close 1008
   | 'document-deleted' // document · terminal  · close 1008
   | 'edits-not-saved' // document · terminal  · close 1008
@@ -58,6 +59,7 @@ export type SessionEndInfo = { code: SessionEndCode; scope: SessionEndScope; dis
 export const SESSION_END_TABLE: Record<SessionEndCode, { scope: SessionEndScope; disposition: SessionEndDisposition }> =
   {
     'update-rate-exceeded': { scope: 'member', disposition: 'transient' },
+    'update-not-accepted': { scope: 'member', disposition: 'transient' },
     'document-size-limit-exceeded': { scope: 'member', disposition: 'manual' },
     'document-deleted': { scope: 'document', disposition: 'terminal' },
     'edits-not-saved': { scope: 'document', disposition: 'terminal' },

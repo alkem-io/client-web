@@ -5,13 +5,14 @@ describe('classifySessionEnd — exhaustive tuple validation (fail closed)', () 
   // The single source of truth for the known code → (scope, disposition) tuples.
   const EXPECTED = [
     { code: 'update-rate-exceeded', scope: 'member', disposition: 'transient' },
+    { code: 'update-not-accepted', scope: 'member', disposition: 'transient' },
     { code: 'document-size-limit-exceeded', scope: 'member', disposition: 'manual' },
     { code: 'document-deleted', scope: 'document', disposition: 'terminal' },
     { code: 'edits-not-saved', scope: 'document', disposition: 'terminal' },
     { code: 'server-shutdown', scope: 'document', disposition: 'transient' },
   ] as const;
 
-  it('the table has exactly the five known codes', () => {
+  it('the table has exactly the six known codes', () => {
     expect(Object.keys(SESSION_END_TABLE).sort()).toEqual(EXPECTED.map(e => e.code).sort());
   });
 

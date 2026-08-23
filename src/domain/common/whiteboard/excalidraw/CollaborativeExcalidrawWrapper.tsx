@@ -26,6 +26,7 @@ const SAVE_FILE_TO_DISK = true;
 /** Per-cause translated explanation shown when the server ends the session. */
 const SESSION_END_MESSAGE_KEYS: Record<SessionEndCode, TranslationKey> = {
   'update-rate-exceeded': 'callout.whiteboard.session.rateExceeded',
+  'update-not-accepted': 'callout.whiteboard.session.updateNotAccepted',
   'document-size-limit-exceeded': 'callout.whiteboard.session.sizeLimitExceeded',
   'document-deleted': 'callout.whiteboard.session.documentDeleted',
   'edits-not-saved': 'callout.whiteboard.session.editsNotSaved',

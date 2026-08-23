@@ -199,6 +199,7 @@
       },
       "session": {
         "rateExceeded": "Vous modifiez trop vite — reconnexion…",
+        "updateNotAccepted": "Votre modification n'a pas pu être envoyée — reconnexion…",
         "sizeLimitExceeded": "Ce tableau blanc a atteint sa taille limite et votre dernière modification n'a pas été appliquée. Reconnectez-vous pour continuer à partir de la dernière version enregistrée.",
         "documentDeleted": "Ce tableau blanc a été supprimé.",
         "editsNotSaved": "Vos modifications récentes n'ont pas pu être enregistrées et ont été perdues. La collaboration s'est arrêtée.",

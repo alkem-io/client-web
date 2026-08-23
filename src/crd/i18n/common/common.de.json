@@ -199,6 +199,7 @@
       },
       "session": {
         "rateExceeded": "Du bearbeitest zu schnell – Verbindung wird wiederhergestellt…",
+        "updateNotAccepted": "Deine Änderung konnte nicht gesendet werden – Verbindung wird wiederhergestellt…",
         "sizeLimitExceeded": "Dieses Whiteboard hat seine Größenbeschränkung erreicht und deine letzte Änderung wurde nicht übernommen. Stelle die Verbindung wieder her, um von der zuletzt gespeicherten Version fortzufahren.",
         "documentDeleted": "Dieses Whiteboard wurde gelöscht.",
         "editsNotSaved": "Deine letzten Änderungen konnten nicht gespeichert werden und sind verloren gegangen. Die Zusammenarbeit wurde beendet.",

@@ -199,6 +199,7 @@
       },
       "session": {
         "rateExceeded": "Je bewerkt te snel — opnieuw verbinden…",
+        "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…",
         "sizeLimitExceeded": "Dit whiteboard heeft de maximale grootte bereikt en je laatste wijziging is niet toegepast. Maak opnieuw verbinding om verder te gaan vanaf de laatst opgeslagen versie.",
         "documentDeleted": "Dit whiteboard is verwijderd.",
         "editsNotSaved": "Je recente wijzigingen konden niet worden opgeslagen en zijn verloren gegaan. De samenwerking is gestopt.",
