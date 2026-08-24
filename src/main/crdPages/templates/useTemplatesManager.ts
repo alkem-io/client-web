@@ -109,13 +109,26 @@ export function useTemplatesManager({
   // then refetches the now-deleted id and surfaces a spurious ENTITY_NOT_FOUND toast
   // even though the delete succeeded. A one-shot query has no observer to invalidate.
   const apolloClient = useApolloClient();
-  const getTemplateContent = (options: { variables: TemplateContentQueryVariables }) =>
-    apolloClient.query<TemplateContentQuery, TemplateContentQueryVariables>({
-      query: TemplateContentDocument,
-      variables: options.variables,
-      fetchPolicy: 'network-only',
-      errorPolicy: 'all',
-    });
+  const getTemplateContent = async (options: {
+    variables: TemplateContentQueryVariables;
+  }): Promise<{ data: TemplateContentQuery | undefined }> => {
+    // Default errorPolicy ('none') rejects on a GraphQL error, so partial data never
+    // reaches copy/save. `client.query` also rejects on network errors regardless of
+    // policy — we catch both here and surface `{ data: undefined }`, the shape every
+    // caller already treats as "nothing to show" (`if (!fetched) return`, or clearing
+    // the preview spinner). A failed read therefore can neither leave a spinner stuck
+    // nor raise an unhandled rejection from the fire-and-forget callers.
+    try {
+      const result = await apolloClient.query<TemplateContentQuery, TemplateContentQueryVariables>({
+        query: TemplateContentDocument,
+        variables: options.variables,
+        fetchPolicy: 'network-only',
+      });
+      return { data: result.data };
+    } catch {
+      return { data: undefined };
+    }
+  };
   const [createTemplateFromContentSpace] = useCreateTemplateFromContentSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
