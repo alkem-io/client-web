@@ -228,8 +228,14 @@ export function CrdKratosFlow({
         </Button>
       ))}
 
+      {/* `oidcSubmitCtaLabel` is a single string naming ONE provider — `SignUpCard`
+          derives it (and the continuation heading) from `groups.oidc[0]`. Mapping every
+          OIDC node through it would render several identical buttons that all name the
+          first provider while submitting different `value`s, giving screen readers
+          duplicate accessible names for different actions. Render only the node the
+          label actually describes. */}
       {oidcSubmitCtaLabel
-        ? groups.oidc.map(node => (
+        ? groups.oidc.slice(0, 1).map(node => (
             <Button
               key={`oidc-cta-${node.value}`}
               type="submit"

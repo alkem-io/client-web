@@ -139,12 +139,19 @@ function useConnectedAccountsMarkerMessage({
   const processedRef = useRef(false);
 
   useEffect(() => {
-    if (status !== 'ready') return;
+    // Consume on the first *settled* render, not the first `ready` one. A redirect that
+    // lands while the flow or the auth-methods query is failing settles as `unavailable`,
+    // and leaving the marker in place there lets a 15-minute-old attempt announce itself
+    // on some later, unrelated visit to the section. Read it once the outcome is knowable
+    // either way, and only turn it into a message when the section can actually show the
+    // state that message claims.
+    if (status === 'loading') return;
     if (processedRef.current) return;
     processedRef.current = true;
 
     const marker = consumeConnectedAccountsMarker();
     if (!marker) return;
+    if (status !== 'ready') return;
     // A rendered Kratos flow message already explains this attempt — Kratos's ERROR returns keep
     // their flow id, so `messages` is non-empty exactly when that's the case. Don't layer a second,
     // possibly conflicting, announcement over it.

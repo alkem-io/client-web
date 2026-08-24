@@ -68,7 +68,12 @@ vi.mock('./passkeyTrigger', () => ({
   PasskeyTriggerError: class extends Error {},
 }));
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key, i18n: { language: 'en' } }),
+  useTranslation: () => ({
+    // Surfaces the interpolated `duration` so the lockout copy can be asserted on.
+    t: (key: string, options?: Record<string, unknown>) =>
+      options?.duration === undefined ? key : `${key}:${String(options.duration)}`,
+    i18n: { language: 'en' },
+  }),
 }));
 
 const renderRoute = () =>
@@ -132,6 +137,23 @@ describe('LoginCrdRoute', () => {
     expect(notice.querySelector('a')?.getAttribute('href')).toBe(
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
     );
+  });
+
+  it.each([
+    ['120', '2 minutes'],
+    ['110', '1 minute 50 seconds'],
+    // date-fns's `intervalToDuration` banks whole hours in a `hours` field this format
+    // list omits, so these two used to render "" and "1 minute" respectively — a lockout
+    // notice that says nothing about how long, or understates it by an hour.
+    ['3600', '60 minutes'],
+    ['3660', '61 minutes'],
+  ])('a lockout of %s seconds states the full remaining time', (retryAfter, expected) => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = `lockout=true&retry_after=${retryAfter}`;
+
+    renderRoute();
+
+    expect(screen.getByTestId('lockout-notice')).toHaveTextContent(`authentication.lockout:${expected}`);
   });
 
   it('a lockout arrival keeps the pending returnUrl in the retry action', () => {

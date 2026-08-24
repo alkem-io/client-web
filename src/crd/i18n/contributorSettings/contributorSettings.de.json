@@ -347,7 +347,7 @@
         },
         "confirmDisconnect": {
           "title": "{{provider}} trennen?",
-          "description": "Sie können sich nicht mehr mit {{provider}} anmelden. Wenn Sie später erneut verbinden und der Anbieter seine Art der Identifizierung geändert hat, ist genau diese Verbindung möglicherweise nicht wiederherstellbar.",
+          "description": "Du kannst dich nicht mehr mit {{provider}} anmelden. Wenn du später erneut verbindest und der Anbieter seine Art der Identifizierung geändert hat, ist genau diese Verbindung möglicherweise nicht wiederherstellbar.",
           "confirm": "Trennen"
         },
         "locked": {

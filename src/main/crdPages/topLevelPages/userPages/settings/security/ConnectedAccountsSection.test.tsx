@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ConnectedAccountsModel } from './connectedAccountsFlowAdapter';
-import { writeConnectedAccountsMarker } from './connectedAccountsOutcomeMarker';
+import { readConnectedAccountsMarker, writeConnectedAccountsMarker } from './connectedAccountsOutcomeMarker';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -40,6 +40,59 @@ const githubConnected = {
   state: 'connected' as const,
   action: null,
 };
+
+describe('ConnectedAccountsSection — marker lifetime across a failed landing', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
+  it('consumes the marker when the section settles unavailable, and announces nothing', () => {
+    // A redirect that lands while the flow or the auth-methods query is failing settles as
+    // `unavailable`. The marker used to survive that (it is trusted for 15 minutes), so a
+    // resolved attempt could announce itself on some later, unrelated visit to the section.
+    writeConnectedAccountsMarker('link', 'github');
+
+    render(
+      <ConnectedAccountsSection
+        status="unavailable"
+        model={baseModel({ status: 'unavailable' })}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(readConnectedAccountsMarker()).toBeNull();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+
+  it('does not resurrect a consumed marker on a later successful visit', () => {
+    writeConnectedAccountsMarker('link', 'github');
+
+    const { unmount } = render(
+      <ConnectedAccountsSection
+        status="unavailable"
+        model={baseModel({ status: 'unavailable' })}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
+    unmount();
+
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={baseModel({ providers: [githubConnected] })}
+        profileUrl="/user/alice"
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+});
 
 describe('ConnectedAccountsSection — marker fallback announcement (FR-012, research D5)', () => {
   beforeEach(() => {

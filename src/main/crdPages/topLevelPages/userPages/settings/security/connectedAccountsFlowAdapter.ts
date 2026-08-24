@@ -123,9 +123,14 @@ export const adaptConnectedAccountsFlow = (
   const csrfNode = nodes.find(
     (node): node is InputNode => isHiddenInput(node) && node.attributes.name === 'csrf_token'
   );
+  // Without the flow's own CSRF token every action we render would POST a request
+  // Kratos rejects: the row still says "Connect"/"Disconnect", the person presses it,
+  // and nothing happens. That is precisely the "looks actionable, isn't" state FR-024
+  // exists to prevent, so treat a missing token like a missing source and fail closed.
+  if (!csrfNode) return UNAVAILABLE;
   const csrf = {
-    name: csrfNode?.attributes.name ?? 'csrf_token',
-    value: csrfNode ? String(csrfNode.attributes.value ?? '') : '',
+    name: csrfNode.attributes.name,
+    value: String(csrfNode.attributes.value ?? ''),
   };
 
   const linkNodes = new Map<string, InputNode>();

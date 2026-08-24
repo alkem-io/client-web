@@ -19,6 +19,7 @@ import useUserPageRouteContext from '../../useUserPageRouteContext';
 import { ConnectedAccountsSection } from './ConnectedAccountsSection';
 import { adaptConnectedAccountsFlow } from './connectedAccountsFlowAdapter';
 import PasswordChangeForm from './PasswordChangeForm';
+import { passkeyOwnsFlowMessages } from './passkeyFlowMessages';
 import useMcpApiKeys from './useMcpApiKeys';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
 
@@ -134,10 +135,10 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
           dropPasswordMethod: true,
           // Flow-level messages render in the card owning the method that
           // produced them (`flow.active`) — only passkey outcomes belong here.
-          dropFlowMessages:
-            flowResult.flow.active !== undefined &&
-            flowResult.flow.active !== 'webauthn' &&
-            flowResult.flow.active !== 'passkey',
+          // `active` absent means Kratos attributed the outcome to nothing — keeping the
+          // message would be a guess, and guessing is what put a password outcome in this
+          // card before (T028). Only an explicitly passkey-owned outcome stays.
+          dropFlowMessages: !passkeyOwnsFlowMessages(flowResult.flow.active),
         })}
         onPasskeyTrigger={trigger => {
           invokePasskeyTrigger(trigger).catch(() => undefined);

@@ -65,6 +65,18 @@ describe('adaptConnectedAccountsFlow', () => {
       expect(result.providers).toEqual([]);
     });
 
+    it('returns unavailable when the flow carries no CSRF node', () => {
+      // Without the flow's token every action we render would POST a request Kratos
+      // rejects — the row would offer Connect/Disconnect and quietly do nothing. That
+      // "looks actionable, isn't" state is exactly what FR-024 fails closed against.
+      const flow = buildFlow([oidcSubmitNode('link', 'cleverbase'), oidcSubmitNode('unlink', 'github')]);
+      const result = adaptConnectedAccountsFlow(flow, [AuthenticationType.Email, AuthenticationType.Github]);
+
+      expect(result.status).toBe('unavailable');
+      expect(result.providers).toHaveLength(0);
+      expect(result.credentials).toHaveLength(0);
+    });
+
     it('returns unavailable when a provider carries both a link and an unlink node (adapter-detected inconsistency)', () => {
       const flow = buildFlow([
         hiddenNode('csrf_token', 'x'),

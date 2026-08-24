@@ -1,4 +1,4 @@
-import { formatDuration, intervalToDuration } from 'date-fns';
+import { formatDuration } from 'date-fns';
 import type { TFunction } from 'i18next';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -100,10 +100,17 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const retryAfterSeconds = Number.isFinite(retryAfterRaw) ? Math.max(0, retryAfterRaw) : 0;
   // Human-readable remaining time ("2 minutes", "1 minute 50 seconds"),
   // localized by date-fns through the same locale mapping the rest of CRD uses.
-  const lockoutDuration = formatDuration(intervalToDuration({ start: 0, end: Math.max(1, retryAfterSeconds) * 1000 }), {
-    locale: resolveDateFnsLocale(i18n.language),
-    format: ['minutes', 'seconds'],
-  });
+  // Built from total minutes/seconds rather than `intervalToDuration`: that helper
+  // carries whole hours in its own `hours` field, which this `format` list omits, so
+  // a 3600s lockout formatted to the empty string and 3660s rendered as "1 minute".
+  const lockoutTotalSeconds = Math.max(1, retryAfterSeconds);
+  const lockoutDuration = formatDuration(
+    { minutes: Math.floor(lockoutTotalSeconds / 60), seconds: lockoutTotalSeconds % 60 },
+    {
+      locale: resolveDateFnsLocale(i18n.language),
+      format: ['minutes', 'seconds'],
+    }
+  );
 
   // Email-not-verified → redirect to the verification reminder (parity with LoginPage).
   useEffect(() => {

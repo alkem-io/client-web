@@ -102,6 +102,35 @@ describe('SignUpCard — OIDC continuation (finish signing up with a provider)',
     expect(continuation).toHaveTextContent('signUp.continuation.intro');
   });
 
+  test('a continuation exposing several OIDC nodes renders one CTA — the provider the label names', () => {
+    // `oidcSubmitCtaLabel` is a single string derived from `groups.oidc[0]`; mapping every
+    // node through it produced N identical buttons that all named the first provider while
+    // submitting different values — duplicate accessible names for different actions.
+    const base = continuationDescriptor();
+    const multi: KratosFlowDescriptor = {
+      ...base,
+      groups: {
+        ...base.groups,
+        oidc: [
+          ...base.groups.oidc,
+          {
+            name: 'provider',
+            value: 'microsoft',
+            label: 'Sign up with microsoft',
+            disabled: false,
+            customisation: { providerKey: 'microsoft', iconSrc: '/microsoft.svg', sortOrder: 2 },
+          },
+        ],
+      },
+    };
+
+    render(<SignUpCard {...baseProps} descriptor={multi} providerContinuation={true} />);
+
+    const ctas = screen.getAllByRole('button').filter(button => button.getAttribute('name') === 'provider');
+    expect(ctas).toHaveLength(1);
+    expect(ctas[0]).toHaveAttribute('value', 'github');
+  });
+
   test('providerContinuation renders the provider submit as a labeled CTA, not an icon circle', () => {
     render(<SignUpCard {...baseProps} descriptor={continuationDescriptor()} providerContinuation={true} />);
 
