@@ -75,11 +75,18 @@ export function TaskBoardColumnsDialog({
   const [nextRowId, setNextRowId] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  // Reseed the draft whenever the dialog opens or the server column set changes.
+  // A value-based signature of the server column names. The effect keys on this
+  // (not the `columns` array identity) so a parent re-render that maps a fresh
+  // array of the same names — the connector does exactly this every render —
+  // does NOT reseed the draft and wipe the admin's in-progress edits.
+  const columnsSignature = columns.map(column => column.name).join(',');
+
+  // Reseed the draft on open and whenever the server column NAMES actually
+  // change (by value), never on a bare reference change.
   useEffect(() => {
     setRows(columns.map(column => ({ id: `col:${column.name}`, name: column.name, originalName: column.name })));
     setDeletedOriginalNames([]);
-  }, [columns]);
+  }, [open, columnsSignature]);
 
   const validate = (row: { id: string; name: string }): string | undefined => {
     const trimmed = row.name.trim();
@@ -132,6 +139,18 @@ export function TaskBoardColumnsDialog({
       // Sequence the sweep: every create/rename/delete must commit before the
       // reorder is issued, or the reorder can name a column the server does not
       // yet hold (or still holds) and be rejected by its permutation check.
+      //
+      // Deletes run FIRST among the value-changing ops: removing a column frees
+      // its name, so a queued rename or create can safely reuse it (e.g. delete
+      // "Doing" then rename "Done" → "Doing"). Running creates/renames first
+      // while the deleted column still exists would let the server reject the
+      // name clash, or a later delete could remove the just-created replacement.
+      // Each delete reflows its tasks to the first column server-side; deferring
+      // them to this sweep (rather than firing on the trash click) is what keeps
+      // the rest of the draft intact across the delete's refetch.
+      for (const name of deletedOriginalNames) {
+        await onDeleteColumn(name);
+      }
       for (const row of rows) {
         const trimmed = row.name.trim();
         if (row.originalName === undefined) {
@@ -139,13 +158,6 @@ export function TaskBoardColumnsDialog({
         } else if (trimmed !== row.originalName) {
           await onRenameColumn(row.originalName, trimmed);
         }
-      }
-      // Deletes run last among the value-changing ops. Each reflows its tasks to
-      // the first column server-side; deferring them here (rather than firing on
-      // the trash click) is what keeps the rest of the draft intact across the
-      // delete's refetch.
-      for (const name of deletedOriginalNames) {
-        await onDeleteColumn(name);
       }
       if (reordered) await onReorderColumns(desiredOrder);
       onOpenChange(false);
@@ -178,7 +190,10 @@ export function TaskBoardColumnsDialog({
     setPendingDelete(undefined);
   };
 
-  const deleteTarget = columns[0]?.name ?? '';
+  // The reflow target named in the confirmation is the first column as the admin
+  // currently sees it (first DRAFT row — it may have been renamed or reordered),
+  // falling back to the server's first column before the draft seeds.
+  const deleteTarget = rows[0]?.name.trim() || columns[0]?.name || '';
 
   return (
     <>

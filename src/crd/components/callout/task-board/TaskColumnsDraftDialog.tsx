@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type NameListItem, SortableNameListEditor } from '@/crd/components/common/SortableNameListEditor';
+import { useDialogCloseGuard } from '@/crd/components/dialogs/useDialogCloseGuard';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
@@ -35,12 +36,14 @@ export function TaskColumnsDraftDialog({ open, onOpenChange, columns, onSave }: 
   const [rows, setRows] = useState<{ id: string; name: string }[]>([]);
   const [nextRowId, setNextRowId] = useState(0);
 
-  // Reseed the draft whenever the dialog opens against the current form value.
+  // Seed the draft only on the closed-to-open transition, against the form value
+  // at that moment. Keying on `columns` too would reseed — and discard the
+  // admin's in-progress edits — every time a parent re-render maps a fresh array.
   useEffect(() => {
     if (open) {
       setRows(columns.map((name, index) => ({ id: `col:${index}:${name}`, name })));
     }
-  }, [open, columns]);
+  }, [open]);
 
   const validate = (row: { id: string; name: string }): string | undefined => {
     const trimmed = row.name.trim();
@@ -53,6 +56,19 @@ export function TaskColumnsDraftDialog({ open, onOpenChange, columns, onSave }: 
   };
 
   const hasErrors = rows.some(row => validate(row) !== undefined);
+
+  // Dirty when the trimmed, non-empty draft names diverge from the form value the
+  // dialog was seeded with — an unedited empty new row is not a data loss.
+  const isDirty =
+    rows
+      .map(row => row.name.trim())
+      .filter(Boolean)
+      .join(',') !== columns.join(',');
+
+  const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
+    isDirty,
+    onClose: () => onOpenChange(false),
+  });
 
   const items: NameListItem[] = rows.map((row, index) => ({
     id: row.id,
@@ -69,49 +85,52 @@ export function TaskColumnsDraftDialog({ open, onOpenChange, columns, onSave }: 
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>{t('columns.title')}</DialogTitle>
-          <DialogDescription>{t('columns.description')}</DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{t('columns.title')}</DialogTitle>
+            <DialogDescription>{t('columns.description')}</DialogDescription>
+          </DialogHeader>
 
-        <SortableNameListEditor
-          items={items}
-          addLabel={t('columns.add')}
-          dragLabel={t('columns.dragLabel')}
-          deleteLabel={t('columns.deleteLabel')}
-          nameLabel={t('columns.namePlaceholder')}
-          namePlaceholder={t('columns.namePlaceholder')}
-          errorFor={id => {
-            const row = rows.find(r => r.id === id);
-            return row ? validate(row) : undefined;
-          }}
-          onRename={(id, name) => setRows(prev => prev.map(row => (row.id === id ? { ...row, name } : row)))}
-          onReorder={orderedIds =>
-            setRows(prev =>
-              orderedIds
-                .map(id => prev.find(row => row.id === id))
-                .filter((row): row is { id: string; name: string } => row !== undefined)
-            )
-          }
-          onAdd={() => {
-            const id = `new:${nextRowId}`;
-            setNextRowId(prev => prev + 1);
-            setRows(prev => [...prev, { id, name: '' }]);
-          }}
-          onDelete={id => setRows(prev => prev.filter(row => row.id !== id))}
-        />
+          <SortableNameListEditor
+            items={items}
+            addLabel={t('columns.add')}
+            dragLabel={t('columns.dragLabel')}
+            deleteLabel={t('columns.deleteLabel')}
+            nameLabel={t('columns.namePlaceholder')}
+            namePlaceholder={t('columns.namePlaceholder')}
+            errorFor={id => {
+              const row = rows.find(r => r.id === id);
+              return row ? validate(row) : undefined;
+            }}
+            onRename={(id, name) => setRows(prev => prev.map(row => (row.id === id ? { ...row, name } : row)))}
+            onReorder={orderedIds =>
+              setRows(prev =>
+                orderedIds
+                  .map(id => prev.find(row => row.id === id))
+                  .filter((row): row is { id: string; name: string } => row !== undefined)
+              )
+            }
+            onAdd={() => {
+              const id = `new:${nextRowId}`;
+              setNextRowId(prev => prev + 1);
+              setRows(prev => [...prev, { id, name: '' }]);
+            }}
+            onDelete={id => setRows(prev => prev.filter(row => row.id !== id))}
+          />
 
-        <DialogFooter>
-          <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
-            {t('columns.cancel')}
-          </Button>
-          <Button type="button" onClick={handleSave} disabled={hasErrors}>
-            {t('columns.save')}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          <DialogFooter>
+            <Button type="button" variant="ghost" onClick={requestClose}>
+              {t('columns.cancel')}
+            </Button>
+            <Button type="button" onClick={handleSave} disabled={hasErrors}>
+              {t('columns.save')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {guardElement}
+    </>
   );
 }

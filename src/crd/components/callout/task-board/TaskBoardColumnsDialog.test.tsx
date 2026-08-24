@@ -232,8 +232,33 @@ describe('TaskBoardColumnsDialog', () => {
     expect(props.onRenameColumn).toHaveBeenCalledWith('Backlog', 'Icebox');
     expect(props.onAddColumn).toHaveBeenCalledWith('Review');
     expect(props.onDeleteColumn).toHaveBeenCalledWith('Doing');
-    // Deletes run after creates/renames.
-    expect(order).toEqual(['rename', 'add', 'delete']);
+    // Deletes run BEFORE creates/renames so a freed name can be reused.
+    expect(order).toEqual(['delete', 'rename', 'add']);
+    expect(props.onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('runs a queued delete before a rename that reuses the freed name', async () => {
+    const order: string[] = [];
+    const props = renderDialog({
+      onRenameColumn: vi.fn().mockImplementation(async () => {
+        order.push('rename');
+      }),
+      onDeleteColumn: vi.fn().mockImplementation(async () => {
+        order.push('delete');
+      }),
+    });
+
+    // Delete "Doing", then rename "Done" → "Doing" (reusing the freed name).
+    act(() => (editorProps?.onDelete as (id: string) => void)('col:Doing'));
+    fireEvent.click(screen.getByTestId('confirm-delete'));
+    act(() => (editorProps?.onRename as (id: string, name: string) => void)('col:Done', 'Doing'));
+
+    await save();
+
+    expect(props.onDeleteColumn).toHaveBeenCalledWith('Doing');
+    expect(props.onRenameColumn).toHaveBeenCalledWith('Done', 'Doing');
+    // The delete frees "Doing" before the rename claims it — order is essential.
+    expect(order).toEqual(['delete', 'rename']);
     expect(props.onOpenChange).toHaveBeenCalledWith(false);
   });
 

@@ -149,6 +149,7 @@ function SortableRow({
     transition,
   };
   const deletable = item.deletable !== false;
+  const errorId = `${item.id}-error`;
 
   return (
     <li ref={setNodeRef} style={style} className={cn('flex flex-col gap-1', isDragging && 'opacity-50')}>
@@ -168,6 +169,7 @@ function SortableRow({
           placeholder={namePlaceholder}
           aria-label={nameLabel}
           aria-invalid={Boolean(error)}
+          aria-describedby={error ? errorId : undefined}
           className="flex-1"
         />
         <Button
@@ -183,7 +185,11 @@ function SortableRow({
           <Trash2 aria-hidden="true" className="size-4" />
         </Button>
       </div>
-      {error && <p className="text-caption text-destructive pl-8">{error}</p>}
+      {error && (
+        <p id={errorId} className="text-caption text-destructive pl-8">
+          {error}
+        </p>
+      )}
     </li>
   );
 }
