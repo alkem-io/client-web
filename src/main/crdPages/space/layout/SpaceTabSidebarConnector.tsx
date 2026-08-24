@@ -7,6 +7,7 @@ import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesD
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { AboutButton } from '@/crd/components/space/sidebar/AboutButton';
 import { ContactLeadButton } from '@/crd/components/space/sidebar/ContactLeadButton';
+import { CreatePostButton } from '@/crd/components/space/sidebar/CreatePostButton';
 import { EventsSection } from '@/crd/components/space/sidebar/EventsSection';
 import { InfoBlock } from '@/crd/components/space/sidebar/InfoBlock';
 import { InviteButton } from '@/crd/components/space/sidebar/InviteButton';
@@ -44,10 +45,15 @@ type SpaceTabSidebarConnectorProps = {
   calloutsSetId: string | undefined;
   classificationTagsets: ClassificationTagsetModel[];
   tabPosition: number;
-  /** Fixed tab actions (Add Post, Create Subspace) rendered above the
-   *  configured widgets — position-keyed affordances that are not themselves
-   *  configurable widgets in this slice (A-03/D-08). The page owns their
-   *  handlers and dialogs; the sidebar only renders the buttons. */
+  /** Whether the viewer can create posts — the configurable `createPost` widget
+   *  renders its Add Post button only when true (invisible otherwise). */
+  canCreatePost: boolean;
+  /** Opens the create-post (callout) dialog, which the page owns. */
+  onCreatePost: () => void;
+  /** Fixed tab actions (Create Subspace) rendered above the configured widgets —
+   *  a position-keyed affordance that is not itself a configurable widget in this
+   *  slice (A-03/D-08). The page owns its handler and dialog; the sidebar only
+   *  renders the button. */
   actionsSlot?: ReactNode;
 };
 
@@ -62,6 +68,8 @@ export function SpaceTabSidebarConnector({
   calloutsSetId,
   classificationTagsets,
   tabPosition,
+  canCreatePost,
+  onCreatePost,
   actionsSlot,
 }: SpaceTabSidebarConnectorProps) {
   const { space, permissions } = useSpace();
@@ -136,6 +144,7 @@ export function SpaceTabSidebarConnector({
       />
     ),
     about: <AboutButton key="about" onClick={() => setAboutOpen(true)} />,
+    createPost: canCreatePost && <CreatePostButton key="createPost" onClick={onCreatePost} />,
     subspaceLinks: subspaces.length > 0 && (
       <SubspacesSection
         key="subspaceLinks"

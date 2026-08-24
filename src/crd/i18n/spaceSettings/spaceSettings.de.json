@@ -119,11 +119,11 @@
         "help": "Wähle aus, welche Widgets in der Seitenleiste dieses Tabs erscheinen und in welcher Reihenfolge.",
         "emptyNote": "Keine Widgets ausgewählt — die Seitenleiste bleibt für diesen Tab leer.",
         "toggleAriaLabel": "{{widget}} umschalten",
-        "moveUpAriaLabel": "{{widget}} nach oben verschieben",
-        "moveDownAriaLabel": "{{widget}} nach unten verschieben",
+        "dragHandleAriaLabel": "{{widget}} neu anordnen",
         "widgets": {
           "intent": "Zweck & Leiter",
           "about": "Über diesen Bereich",
+          "createPost": "Post hinzufügen",
           "subspaceLinks": "Unterbereiche",
           "events": "Anstehende Veranstaltungen",
           "updates": "Neueste Aktualisierung",

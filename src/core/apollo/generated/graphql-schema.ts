@@ -8436,6 +8436,7 @@ export enum SidebarWidget {
   About = 'ABOUT',
   AddUser = 'ADD_USER',
   ContactLeads = 'CONTACT_LEADS',
+  CreatePost = 'CREATE_POST',
   Events = 'EVENTS',
   Guidelines = 'GUIDELINES',
   Index = 'INDEX',

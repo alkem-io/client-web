@@ -119,11 +119,11 @@
         "help": "Choisissez les widgets à afficher dans la barre latérale de cet onglet, et dans quel ordre.",
         "emptyNote": "Aucun widget sélectionné — la barre latérale sera vide pour cet onglet.",
         "toggleAriaLabel": "Activer/désactiver {{widget}}",
-        "moveUpAriaLabel": "Déplacer {{widget}} vers le haut",
-        "moveDownAriaLabel": "Déplacer {{widget}} vers le bas",
+        "dragHandleAriaLabel": "Réorganiser {{widget}}",
         "widgets": {
           "intent": "Intention et responsables",
           "about": "À propos de cet Espace",
+          "createPost": "Ajouter un post",
           "subspaceLinks": "Sous-espaces",
           "events": "Événements à venir",
           "updates": "Dernière mise à jour",

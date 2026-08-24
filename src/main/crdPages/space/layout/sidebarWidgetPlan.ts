@@ -7,6 +7,7 @@ import { SidebarWidget } from '@/core/apollo/generated/graphql-schema';
 export type SidebarWidgetId =
   | 'intent'
   | 'about'
+  | 'createPost'
   | 'subspaceLinks'
   | 'events'
   | 'updates'
@@ -20,6 +21,7 @@ export type SidebarWidgetId =
 export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
   'intent',
   'about',
+  'createPost',
   'subspaceLinks',
   'events',
   'updates',
@@ -33,6 +35,7 @@ export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
 const WIRE_TO_WIDGET_ID: Record<string, SidebarWidgetId> = {
   [SidebarWidget.Intent]: 'intent',
   [SidebarWidget.About]: 'about',
+  [SidebarWidget.CreatePost]: 'createPost',
   [SidebarWidget.SubspaceLinks]: 'subspaceLinks',
   [SidebarWidget.Events]: 'events',
   [SidebarWidget.Updates]: 'updates',
@@ -46,6 +49,7 @@ const WIRE_TO_WIDGET_ID: Record<string, SidebarWidgetId> = {
 const WIDGET_ID_TO_WIRE: Record<SidebarWidgetId, SidebarWidget> = {
   intent: SidebarWidget.Intent,
   about: SidebarWidget.About,
+  createPost: SidebarWidget.CreatePost,
   subspaceLinks: SidebarWidget.SubspaceLinks,
   events: SidebarWidget.Events,
   updates: SidebarWidget.Updates,

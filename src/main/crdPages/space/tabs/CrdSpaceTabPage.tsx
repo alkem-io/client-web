@@ -121,26 +121,16 @@ export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
     appendingLabel: t('crd-space:knowledge.search.appendingLabel'),
   };
 
-  // Add Post + Create Subspace render as full-width buttons in the sidebar
-  // (develop's actionsSlot pattern), not the tab header. Invite lives in the
-  // sidebar as the `addUser` widget, owned by SpaceTabSidebarConnector.
-  const hasSidebarAction = canCreateCallout || (canCreateSubspace && handleCreateSubspaceClick);
-  const sidebarActions = hasSidebarAction ? (
-    <>
-      {canCreateCallout && (
-        <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateOpen(true)}>
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t('crd-space:feed.addPost')}
-        </Button>
-      )}
-      {canCreateSubspace && handleCreateSubspaceClick && (
-        <Button variant="outline" className="w-full gap-2 text-body-emphasis" onClick={handleCreateSubspaceClick}>
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t('crd-space:subspaces.createSubspace')}
-        </Button>
-      )}
-    </>
-  ) : undefined;
+  // Create Subspace renders as a full-width sidebar button — a position-keyed action,
+  // not a configurable widget in this slice. Add Post is now the `createPost` widget
+  // and Invite the `addUser` widget, both owned by SpaceTabSidebarConnector.
+  const sidebarActions =
+    canCreateSubspace && handleCreateSubspaceClick ? (
+      <Button variant="outline" className="w-full gap-2 text-body-emphasis" onClick={handleCreateSubspaceClick}>
+        <Plus className="w-4 h-4" aria-hidden="true" />
+        {t('crd-space:subspaces.createSubspace')}
+      </Button>
+    ) : undefined;
 
   return (
     <>
@@ -149,6 +139,8 @@ export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
         calloutsSetId={calloutsSetId}
         classificationTagsets={classificationTagsets}
         tabPosition={tabPosition}
+        canCreatePost={canCreateCallout}
+        onCreatePost={() => setCreateOpen(true)}
         actionsSlot={sidebarActions}
       />
 

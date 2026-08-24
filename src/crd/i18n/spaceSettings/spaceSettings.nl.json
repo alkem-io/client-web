@@ -119,11 +119,11 @@
         "help": "Kies welke widgets in de sidebar van dit tabblad verschijnen en in welke volgorde.",
         "emptyNote": "Geen widgets geselecteerd — de sidebar is leeg voor dit tabblad.",
         "toggleAriaLabel": "{{widget}} in-/uitschakelen",
-        "moveUpAriaLabel": "{{widget}} omhoog verplaatsen",
-        "moveDownAriaLabel": "{{widget}} omlaag verplaatsen",
+        "dragHandleAriaLabel": "{{widget}} herordenen",
         "widgets": {
           "intent": "Intentie & Leads",
           "about": "Over deze Space",
+          "createPost": "Post toevoegen",
           "subspaceLinks": "Subspaces",
           "events": "Aankomende evenementen",
           "updates": "Laatste update",

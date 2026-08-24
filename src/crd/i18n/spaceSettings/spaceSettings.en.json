@@ -119,11 +119,11 @@
         "help": "Choose which widgets appear in this tab's sidebar, and in what order.",
         "emptyNote": "No widgets selected — the sidebar will be empty for this tab.",
         "toggleAriaLabel": "Toggle {{widget}}",
-        "moveUpAriaLabel": "Move {{widget}} up",
-        "moveDownAriaLabel": "Move {{widget}} down",
+        "dragHandleAriaLabel": "Reorder {{widget}}",
         "widgets": {
           "intent": "Intention & Leads",
           "about": "About this Space",
+          "createPost": "Add Post",
           "subspaceLinks": "Subspaces",
           "events": "Upcoming Events",
           "updates": "Latest Update",

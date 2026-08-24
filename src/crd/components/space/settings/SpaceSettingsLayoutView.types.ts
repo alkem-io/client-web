@@ -71,6 +71,7 @@ export type LayoutSaveBarState =
 export type SidebarWidgetId =
   | 'intent'
   | 'about'
+  | 'createPost'
   | 'subspaceLinks'
   | 'events'
   | 'updates'
@@ -84,6 +85,7 @@ export type SidebarWidgetId =
 export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
   'intent',
   'about',
+  'createPost',
   'subspaceLinks',
   'events',
   'updates',

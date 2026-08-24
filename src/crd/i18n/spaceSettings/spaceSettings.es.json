@@ -119,11 +119,11 @@
         "help": "Elige qué widgets aparecen en la barra lateral de esta pestaña y en qué orden.",
         "emptyNote": "No hay widgets seleccionados: la barra lateral estará vacía en esta pestaña.",
         "toggleAriaLabel": "Activar o desactivar {{widget}}",
-        "moveUpAriaLabel": "Mover {{widget}} hacia arriba",
-        "moveDownAriaLabel": "Mover {{widget}} hacia abajo",
+        "dragHandleAriaLabel": "Reordenar {{widget}}",
         "widgets": {
           "intent": "Intención y líderes",
           "about": "Acerca de este Espacio",
+          "createPost": "Añadir publicación",
           "subspaceLinks": "Subespacios",
           "events": "Próximos eventos",
           "updates": "Última actualización",
