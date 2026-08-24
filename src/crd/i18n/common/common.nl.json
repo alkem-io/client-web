@@ -159,6 +159,8 @@
   "authentication": {
     "lockout": "Uw account is tijdelijk geblokkeerd vanwege te veel mislukte inlogpogingen. Probeer het opnieuw over {{duration}}.",
     "lockoutRetry": "Opnieuw proberen",
+    "flowUnavailable": "We konden je aanmelding niet veilig starten. Start deze opnieuw.",
+    "flowUnavailableRetry": "Aanmelden opnieuw starten",
     "passkey": {
       "not-supported": "Passkeys worden niet ondersteund door je browser",
       "script-loading": "Passkey ondersteuning laden...",

@@ -156,9 +156,28 @@ const useKratosFlow = <Name extends FlowTypeName>(
   };
 
   const getOrInitializeFlow = () => {
-    if (client) {
-      handlePromise(typeof flowId === 'undefined' ? initializeFlow(client) : getFlow(client, flowId));
+    if (!client) {
+      return;
     }
+    if (typeof flowId !== 'undefined') {
+      handlePromise(getFlow(client, flowId));
+      return;
+    }
+    // A login is only ever started through the OIDC BFF (Hydra → Kratos), which
+    // lands back on `/login?flow=<id>`; `LoginCrdRoute` redirects there itself
+    // when no flow id is present. Self-initiating a Kratos-native login flow
+    // here is therefore never what the caller wants, and it is actively
+    // harmful: `createBrowserLoginFlow` rotates the anti-CSRF cookie
+    // server-side, so the Hydra-minted flow whose id arrives moments later can
+    // no longer be read — Kratos answers `getLoginFlow` with 403
+    // `security_csrf_violation` and sign-in dead-ends. `requestSeqRef` cannot
+    // save this: the harm is the request's server-side side effect, not a
+    // stale response winning a race, and by the time the response is discarded
+    // the cookie has already moved on.
+    if (flowTypeName === FlowTypeName.Login) {
+      return;
+    }
+    handlePromise(initializeFlow(client));
   };
 
   // `options?.returnTo` only affects the Settings flow's initial creation

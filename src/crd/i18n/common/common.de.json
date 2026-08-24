@@ -159,6 +159,8 @@
   "authentication": {
     "lockout": "Dein Konto wurde wegen zu vieler fehlgeschlagener Anmeldeversuche vorübergehend gesperrt. Versuche es in {{duration}} erneut.",
     "lockoutRetry": "Erneut versuchen",
+    "flowUnavailable": "Wir konnten deine Anmeldung nicht sicher starten. Bitte starte sie neu.",
+    "flowUnavailableRetry": "Anmeldung neu starten",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",

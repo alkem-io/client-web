@@ -159,6 +159,8 @@
   "authentication": {
     "lockout": "Tu cuenta se ha bloqueado temporalmente por demasiados intentos fallidos de inicio de sesión. Inténtalo de nuevo en {{duration}}.",
     "lockoutRetry": "Intentar de nuevo",
+    "flowUnavailable": "No pudimos iniciar tu sesión de forma segura. Vuelve a iniciarla.",
+    "flowUnavailableRetry": "Reiniciar el inicio de sesión",
     "passkey": {
       "not-supported": "Las PassKeys no son compatibles con su navegador",
       "script-loading": "Leyendo PassKey...",

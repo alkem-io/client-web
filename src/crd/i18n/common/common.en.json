@@ -159,6 +159,8 @@
   "authentication": {
     "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{duration}}.",
     "lockoutRetry": "Try again",
+    "flowUnavailable": "We couldn't start your sign-in securely. Please restart it.",
+    "flowUnavailableRetry": "Restart sign-in",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
