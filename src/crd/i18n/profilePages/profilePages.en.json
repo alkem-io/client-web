@@ -126,7 +126,7 @@
       "capabilities": {
         "title": "Functional Capabilities",
         "tagging": "Answer questions in comments",
-        "createContent": "Create new posts",
+        "createContent": "Create new Posts",
         "communityManagement": "Invite other contributors"
       },
       "dataAccess": {

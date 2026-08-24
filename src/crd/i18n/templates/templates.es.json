@@ -309,13 +309,13 @@
     "searchVisibility": "Visibilidad en búsquedas",
     "searchVisibilityOptions": {
       "public": "Público",
-      "authenticated": "Usuarios autenticados",
-      "account": "Solo la cuenta"
+      "account": "Cuenta",
+      "hidden": "Oculto"
     },
     "searchVisibilityHints": {
       "public": "Cualquiera — incluidos los visitantes no autenticados — puede encontrar este paquete mediante búsqueda.",
-      "authenticated": "Los usuarios autenticados pueden encontrar este paquete mediante búsqueda.",
-      "account": "Solo los miembros de la cuenta propietaria pueden encontrar este paquete mediante búsqueda."
+      "account": "Los usuarios autenticados pueden encontrar este paquete mediante búsqueda.",
+      "hidden": "Solo los miembros de la cuenta propietaria pueden encontrar este paquete mediante búsqueda."
     },
     "save": "Guardar cambios",
     "crop": {

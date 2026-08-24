@@ -82,7 +82,7 @@
       "noContributions": "No contributions",
       "comments": "Comments enabled",
       "commentsDisabled": "Comments disabled",
-      "defaultPostDescription": "Default post description",
+      "defaultPostDescription": "Default Post description",
       "defaultWhiteboard": "Default whiteboard",
       "links": "Links",
       "gallery": "Gallery",
@@ -143,7 +143,7 @@
       "space": "Create space template",
       "callout": "Create collaboration-tool template",
       "whiteboard": "Create whiteboard template",
-      "post": "Create post template",
+      "post": "Create Post template",
       "communityGuidelines": "Create community-guidelines template",
       "classification": "Create classification template"
     },
@@ -151,7 +151,7 @@
       "space": "Edit space template",
       "callout": "Edit collaboration-tool template",
       "whiteboard": "Edit whiteboard template",
-      "post": "Edit post template",
+      "post": "Edit Post template",
       "communityGuidelines": "Edit community-guidelines template",
       "classification": "Edit classification template"
     },
@@ -180,7 +180,7 @@
     },
     "post": {
       "defaultDescription": "Default description",
-      "defaultDescriptionPlaceholder": "Content pre-filled for new posts using this template"
+      "defaultDescriptionPlaceholder": "Content pre-filled for new Posts using this template"
     },
     "space": {
       "source": "Source space",
@@ -309,13 +309,13 @@
     "searchVisibility": "Search visibility",
     "searchVisibilityOptions": {
       "public": "Public",
-      "authenticated": "Authenticated users",
-      "account": "Account only"
+      "account": "Account",
+      "hidden": "Hidden"
     },
     "searchVisibilityHints": {
       "public": "Anyone — including unauthenticated visitors — can find this pack via search.",
-      "authenticated": "Signed-in users can find this pack via search.",
-      "account": "Only members of the owning account can find this pack via search."
+      "account": "Signed-in users can find this pack via search.",
+      "hidden": "Only members of the owning account can find this pack via search."
     },
     "save": "Save changes",
     "crop": {
