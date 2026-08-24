@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentLazyQuery,
@@ -144,7 +144,15 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
     }
   };
 
+  // Synchronous re-entry guard: `mutating` is React state, so it updates a tick
+  // later — a fast double-click (or a double-invoked confirm) can fire the delete
+  // twice before the button disables, and the second call hits the already-deleted
+  // callout with ENTITY_NOT_FOUND. A ref blocks the second call immediately.
+  const deletingRef = useRef(false);
+
   const handleDeleteConfirm = async () => {
+    if (deletingRef.current) return;
+    deletingRef.current = true;
     setMutating(true);
     try {
       await deleteCallout(callout);
@@ -156,6 +164,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
       notify(t('deleteCallout.saveFailed'), 'error');
     } finally {
       setMutating(false);
+      deletingRef.current = false;
     }
   };
 

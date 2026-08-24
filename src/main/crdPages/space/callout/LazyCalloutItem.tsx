@@ -186,6 +186,15 @@ function LazyCalloutItemContent({
     }
   };
 
+  // The callout-header fullscreen icon opens the board dialog AND enters browser
+  // fullscreen. requestFullscreen must run inside the click gesture, so it is
+  // fired here (not in an effect after the dialog mounts).
+  const openBoardFullscreen = () => {
+    const request = document.documentElement.requestFullscreen?.();
+    if (request) request.catch(() => {});
+    setBoardDialogOpen(true);
+  };
+
   const handleDialogClose = (open: boolean) => {
     setDialogOpen(open);
     if (!open) {
@@ -361,7 +370,8 @@ function LazyCalloutItemContent({
                   onShare={() => setShareOpen(true)}
                 />
               }
-              onExpandClick={isBoard ? () => setBoardDialogOpen(true) : onExpandClick}
+              onExpandClick={isBoard ? openBoardFullscreen : onExpandClick}
+              expandIcon={isBoard ? 'fullscreen' : undefined}
               onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
               commentsSlot={thread}
               commentInputSlot={commentsEnabled ? commentInput : null}
@@ -388,7 +398,8 @@ function LazyCalloutItemContent({
           settingsSlot={
             <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
           }
-          onExpandClick={isBoard ? () => setBoardDialogOpen(true) : onExpandClick}
+          onExpandClick={isBoard ? openBoardFullscreen : onExpandClick}
+          expandIcon={isBoard ? 'fullscreen' : undefined}
           onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
           contributionsPreview={contributionsPreview}
           reactionsSlot={reactionsBar}

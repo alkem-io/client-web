@@ -26,15 +26,28 @@ type TaskBoardDialogProps = {
  */
 export function TaskBoardDialog({ calloutId, title, open, onOpenChange, onOpenTask }: TaskBoardDialogProps) {
   const { t } = useTranslation('crd-common');
-  const { fullscreen } = useFullscreen();
+  const { fullscreen, setFullscreen } = useFullscreen();
+
+  const handleOpenChange = (next: boolean) => {
+    // Leaving the dialog must also leave the browser's fullscreen — otherwise
+    // closing the board leaves the browser stuck in fullscreen mode.
+    if (!next) {
+      setFullscreen(false);
+    }
+    onOpenChange(next);
+  };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
+        hideClose={true}
         className={cn(
           'flex flex-col p-0 gap-0 overflow-hidden bg-background',
+          // `sm:max-w-none` is required: the primitive's `sm:max-w-lg` otherwise
+          // caps the width at ≥sm even with `max-w-none`, so fullscreen would fill
+          // only the height. `inset-0` + no translate pins it to the viewport.
           fullscreen
-            ? 'max-w-none w-screen h-screen rounded-none border-none'
+            ? 'fixed inset-0 left-0 top-0 translate-x-0 translate-y-0 max-w-none sm:max-w-none w-screen h-screen rounded-none border-none'
             : 'w-full sm:max-w-6xl h-[85vh] rounded-xl'
         )}
         aria-describedby="task-board-dialog-description"
