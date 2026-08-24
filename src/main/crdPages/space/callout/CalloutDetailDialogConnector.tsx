@@ -780,6 +780,7 @@ export function CalloutDetailDialogConnector({
       callout={callout}
       moveActions={moveActions}
       onShare={handleShareClick}
+      isTaskBoard={elevated}
       onDeleted={() => onOpenChange(false)}
     />
   );

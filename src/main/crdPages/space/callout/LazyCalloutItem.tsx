@@ -368,6 +368,7 @@ function LazyCalloutItemContent({
                   callout={callout}
                   moveActions={moveActions}
                   onShare={() => setShareOpen(true)}
+                  isTaskBoard={isBoard}
                 />
               }
               onExpandClick={isBoard ? openBoardFullscreen : onExpandClick}
@@ -396,7 +397,12 @@ function LazyCalloutItemContent({
           onAddMediaGalleryImages={handleAddMediaGalleryImages}
           onCommentsClick={() => openDialog()}
           settingsSlot={
-            <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
+            <CalloutSettingsConnector
+              callout={callout}
+              moveActions={moveActions}
+              onShare={() => setShareOpen(true)}
+              isTaskBoard={isBoard}
+            />
           }
           onExpandClick={isBoard ? openBoardFullscreen : onExpandClick}
           expandIcon={isBoard ? 'fullscreen' : undefined}
