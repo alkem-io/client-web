@@ -37,13 +37,36 @@ const ACCOUNT_LOCKOUT_MESSAGE_ID = 9000429;
 // Client-side message id for a passkey ceremony failure.
 const PASSKEY_ERROR_MESSAGE_ID = -1;
 
+/**
+ * Absolute URL that restarts sign-in at the OIDC BFF, preserving the pending
+ * destination.
+ *
+ * FR-017a — the server-side validator requires a same-origin, path-only
+ * `returnTo`. Resolve it against the apex rather than `window.location.origin`:
+ * this page also renders on the identity subdomain (its sign-up / recovery
+ * pages link back to /login), where an apex-absolute returnUrl would be judged
+ * cross-origin and collapse to '/', dropping the destination on every deployed
+ * sign-up.
+ *
+ * The BFF (/api/auth/oidc/*) is apex-only, so the hand-off must be absolute: a
+ * same-origin-relative one on the identity subdomain lands on
+ * identity.<domain>/api/auth/oidc/login, which is unrouted (Traefik sends it to
+ * the SPA catch-all → no OIDC flow). `platformOrigin` is the apex
+ * (`https://<locations.domain>`) and falls back to relative when unknown
+ * (single-host dev). Mirrors `LoginPage`.
+ */
+function buildOidcRestartHref(rawReturnUrl: string, platformOrigin: string | undefined) {
+  const returnTo = resolveInternalReturnPath(rawReturnUrl, platformOrigin) ?? '/';
+  return `${platformOrigin ?? ''}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`;
+}
+
 function CrdLoginPage({ flow }: { flow?: string }) {
   useTransactionScope({ type: 'authentication' });
   const { t, i18n } = useTranslation();
   usePageTitle(t('pages.titles.signIn'));
 
   const navigate = useNavigate();
-  const { flow: loginFlow, loading } = useKratosFlow(FlowTypeName.Login, flow);
+  const { flow: loginFlow, loading, error: loginFlowError } = useKratosFlow(FlowTypeName.Login, flow);
   const { kratosErrors } = (useLocation().state as LocationStateWithKratosErrors | null) ?? {};
   const params = useQueryParams();
   const [passkeyError, setPasskeyError] = useState<string>();
@@ -75,22 +98,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     if (returnUrlFromParam) {
       setReturnUrl(returnUrlFromParam);
     }
-    const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
-    // FR-017a — server-side validator requires a same-origin path-only value.
-    // Resolve against the apex, not `window.location.origin`: this page also
-    // renders on the identity subdomain (see below), where an apex-absolute
-    // returnUrl would otherwise be judged cross-origin and collapse to '/',
-    // dropping the destination on every deployed sign-up.
-    const returnTo = resolveInternalReturnPath(raw, platformOrigin) ?? '/';
-    // The OIDC BFF (/api/auth/oidc/*) is apex-only and called same-origin-relative.
-    // This page also renders on the identity subdomain (its sign-up/recovery pages
-    // link back to /login); a relative replace there would land on
-    // identity.<domain>/api/auth/oidc/login, which is unrouted (Traefik sends it to
-    // the SPA catch-all → no OIDC flow). Always hand off to the apex origin
-    // absolutely. platformOrigin is the apex (`https://<locations.domain>`); falls
-    // back to relative when unknown (single-host dev). Mirrors `LoginPage`.
-    const base = platformOrigin ?? '';
-    window.location.replace(`${base}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
+    window.location.replace(buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin));
   }, [isOidcEntry, returnUrlFromParam, platformOrigin]);
 
   usePasskeyScript(loginFlow?.ui?.nodes);
@@ -162,9 +170,6 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   // POST anyway. If still locked when the person retries, the proxy bounces
   // them back here with fresh params.
   if (!flow && isLockedOutArrival) {
-    const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
-    const returnTo = resolveInternalReturnPath(raw, platformOrigin) ?? '/';
-    const base = platformOrigin ?? '';
     return (
       <AuthShellWrapper>
         <LoginCard
@@ -173,7 +178,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
           notice={{
             text: t('authentication.lockout', { duration: lockoutDuration }),
             actionLabel: t('authentication.lockoutRetry'),
-            actionHref: `${base}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`,
+            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
           }}
           signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
@@ -197,6 +202,31 @@ function CrdLoginPage({ flow }: { flow?: string }) {
             // sign-up (bare /sign_up would drop it — they'd land on home).
             signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH
           }
+          forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
+        />
+      </AuthShellWrapper>
+    );
+  }
+
+  // The flow on the URL could not be read — most often Kratos answering 403
+  // `security_csrf_violation` because the anti-CSRF cookie no longer matches
+  // this flow id. Without this branch `descriptor` is undefined and the card
+  // falls back to its loading state, so a terminal failure is indistinguishable
+  // from "still preparing" and the person waits for ever. Offer the only
+  // recovery that actually works: restart at the BFF, which mints a fresh flow
+  // *and* a matching cookie. Re-reading this flow id would fail identically.
+  if (loginFlowError && !loginFlow && !loading) {
+    return (
+      <AuthShellWrapper>
+        <LoginCard
+          descriptor={undefined}
+          isLoading={false}
+          notice={{
+            text: t('authentication.flowUnavailable'),
+            actionLabel: t('authentication.flowUnavailableRetry'),
+            actionHref: buildOidcRestartHref(returnUrlFromParam ?? storedReturnUrl ?? '/', platformOrigin),
+          }}
+          signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
           forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
         />
       </AuthShellWrapper>

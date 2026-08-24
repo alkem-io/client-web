@@ -159,6 +159,8 @@
   "authentication": {
     "lockout": "Votre compte a été temporairement verrouillé en raison d'un trop grand nombre de tentatives de connexion échouées. Veuillez réessayer dans {{duration}}.",
     "lockoutRetry": "Réessayer",
+    "flowUnavailable": "Nous n'avons pas pu démarrer votre connexion en toute sécurité. Veuillez la relancer.",
+    "flowUnavailableRetry": "Relancer la connexion",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",

@@ -4,6 +4,8 @@ import useKratosFlow, { FlowTypeName } from './useKratosFlow';
 
 const mockCreateBrowserRegistrationFlow = vi.fn();
 const mockGetRegistrationFlow = vi.fn();
+const mockCreateBrowserLoginFlow = vi.fn();
+const mockGetLoginFlow = vi.fn();
 
 // A stable client object, as the real `useKratosClient` provides — a fresh
 // object per render would re-trigger the hook's [client, ...] effect on every
@@ -11,6 +13,8 @@ const mockGetRegistrationFlow = vi.fn();
 const mockClient = {
   createBrowserRegistrationFlow: (...args: unknown[]) => mockCreateBrowserRegistrationFlow(...args),
   getRegistrationFlow: (...args: unknown[]) => mockGetRegistrationFlow(...args),
+  createBrowserLoginFlow: (...args: unknown[]) => mockCreateBrowserLoginFlow(...args),
+  getLoginFlow: (...args: unknown[]) => mockGetLoginFlow(...args),
 };
 
 vi.mock('./useKratosClient', () => ({
@@ -158,5 +162,52 @@ describe('useKratosFlow', () => {
 
     expect(result.current.flow).toEqual(flow);
     expect(result.current.error).toBeUndefined();
+  });
+
+  // A login is only ever started through the OIDC BFF (Hydra → Kratos), which
+  // lands back here with a flow id on the URL. Self-initiating a Kratos-native
+  // login flow from the browser is not just redundant: `createBrowserLoginFlow`
+  // ROTATES the anti-CSRF cookie server-side, so the Hydra-minted flow whose id
+  // is about to arrive on the URL can no longer be read — Kratos answers the
+  // subsequent `getLoginFlow` with 403 `security_csrf_violation` and sign-in
+  // dead-ends. The request-sequence guard cannot help: the damage is the
+  // request's server-side side effect, not a stale response winning a race.
+  it('never self-initiates a Login flow when no flow id is present', async () => {
+    const { result } = renderHook(() => useKratosFlow(FlowTypeName.Login, undefined));
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    expect(mockCreateBrowserLoginFlow).not.toHaveBeenCalled();
+    expect(result.current.flow).toBeUndefined();
+    expect(result.current.error).toBeUndefined();
+  });
+
+  it('still reads a Login flow that Kratos put on the URL', async () => {
+    const flow = {
+      id: 'login-flow-1',
+      ui: { nodes: [], messages: [], action: '/self-service/login?flow=login-flow-1', method: 'POST' },
+    };
+    mockGetLoginFlow.mockResolvedValue({ status: 200, data: flow });
+
+    const { result } = renderHook(() => useKratosFlow(FlowTypeName.Login, 'login-flow-1'));
+
+    await waitFor(() => {
+      expect(result.current.flow).toEqual(flow);
+    });
+    expect(mockGetLoginFlow).toHaveBeenCalledWith({ id: 'login-flow-1' });
+    expect(mockCreateBrowserLoginFlow).not.toHaveBeenCalled();
+  });
+
+  it('every other flow type still self-initiates when no flow id is present', async () => {
+    const flow = { id: 'reg-1', ui: { nodes: [], messages: [], action: '/x', method: 'POST' } };
+    mockCreateBrowserRegistrationFlow.mockResolvedValue({ status: 200, data: flow });
+
+    renderHook(() => useKratosFlow(FlowTypeName.Registration, undefined));
+
+    await waitFor(() => {
+      expect(mockCreateBrowserRegistrationFlow).toHaveBeenCalled();
+    });
   });
 });

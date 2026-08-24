@@ -34,7 +34,7 @@ vi.mock('@/crd/components/auth/LoginCard', () => ({
     <div data-testid="crd-login-card">
       {descriptor?.flowType ?? 'no-descriptor'}
       {notice ? (
-        <div data-testid="lockout-notice">
+        <div data-testid="card-notice">
           <span>{notice.text}</span>
           <a href={notice.actionHref}>{notice.actionLabel}</a>
         </div>
@@ -46,8 +46,15 @@ vi.mock('./AuthShellWrapper', () => ({
   AuthShellWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 vi.mock('@/core/auth/authentication/pages/LoginSuccessPage', () => ({ default: () => <div /> }));
+// Mutable so a test can put the hook into its error state — the shape it
+// reports when Kratos refuses the flow id on the URL (403 security_csrf_violation).
+let mockFlowState: { flow: unknown; error: Error | undefined; loading: boolean } = {
+  flow: undefined,
+  error: undefined,
+  loading: false,
+};
 vi.mock('@/core/auth/authentication/hooks/useKratosFlow', () => ({
-  default: () => ({ flow: undefined, error: undefined, loading: false, refetch: vi.fn() }),
+  default: () => ({ ...mockFlowState, refetch: vi.fn() }),
   FlowTypeName: { Login: 'Login' },
 }));
 vi.mock('@/core/auth/authentication/hooks/usePasskeyScript', () => ({
@@ -86,6 +93,7 @@ const renderRoute = () =>
 describe('LoginCrdRoute', () => {
   beforeEach(() => {
     mockSearch = '';
+    mockFlowState = { flow: undefined, error: undefined, loading: false };
     mockIsAuthenticated.mockReset();
     replaceSpy.mockReset();
     // Simulate the page being served on the identity subdomain (where signup
@@ -132,7 +140,7 @@ describe('LoginCrdRoute', () => {
     renderRoute();
 
     expect(replaceSpy).not.toHaveBeenCalled();
-    const notice = screen.getByTestId('lockout-notice');
+    const notice = screen.getByTestId('card-notice');
     expect(notice).toHaveTextContent('authentication.lockout');
     expect(notice.querySelector('a')?.getAttribute('href')).toBe(
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
@@ -153,7 +161,7 @@ describe('LoginCrdRoute', () => {
 
     renderRoute();
 
-    expect(screen.getByTestId('lockout-notice')).toHaveTextContent(`authentication.lockout:${expected}`);
+    expect(screen.getByTestId('card-notice')).toHaveTextContent(`authentication.lockout:${expected}`);
   });
 
   it('a lockout arrival keeps the pending returnUrl in the retry action', () => {
@@ -162,7 +170,7 @@ describe('LoginCrdRoute', () => {
 
     renderRoute();
 
-    expect(screen.getByTestId('lockout-notice').querySelector('a')?.getAttribute('href')).toBe(
+    expect(screen.getByTestId('card-notice').querySelector('a')?.getAttribute('href')).toBe(
       'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome'
     );
   });
@@ -215,6 +223,50 @@ describe('LoginCrdRoute', () => {
 
     renderRoute();
 
+    expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+  });
+
+  // Kratos rejects a flow id whose anti-CSRF cookie has moved on with 403
+  // `security_csrf_violation`. `useKratosFlow` reports that as `error` with no
+  // flow, but the page used to read only `flow`/`loading` — so a terminal
+  // failure rendered identically to "still loading" and sign-in sat on
+  // "Preparing secure sign-in…" for ever, with no way out. Restarting through
+  // the BFF is the only real recovery: it mints a fresh flow AND a matching
+  // cookie, which re-reading the dead flow id never could.
+  it('a flow that cannot be read offers a restart instead of a permanent spinner', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'flow=dead-flow-id';
+    mockFlowState = { flow: undefined, error: new Error('Request failed with status code 403'), loading: false };
+
+    renderRoute();
+
+    const notice = screen.getByTestId('card-notice');
+    expect(notice).toHaveTextContent('authentication.flowUnavailable');
+    expect(notice.querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+  });
+
+  it('a flow error keeps the pending returnUrl in the restart action', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'flow=dead-flow-id&returnUrl=https%3A%2F%2Fsandbox-alkem.io%2Fhome';
+    mockFlowState = { flow: undefined, error: new Error('boom'), loading: false };
+
+    renderRoute();
+
+    expect(screen.getByTestId('card-notice').querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome'
+    );
+  });
+
+  it('still shows the loading state while the flow request is in flight', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'flow=pending-flow-id';
+    mockFlowState = { flow: undefined, error: undefined, loading: true };
+
+    renderRoute();
+
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
     expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
   });
 });

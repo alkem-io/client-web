@@ -159,6 +159,8 @@
   "authentication": {
     "lockout": "Акаунтът ви е временно заключен поради твърде много неуспешни опита за вход. Опитайте отново след {{duration}}.",
     "lockoutRetry": "Опитайте отново",
+    "flowUnavailable": "Не успяхме да започнем сигурно вписването ви. Моля, започнете отново.",
+    "flowUnavailableRetry": "Започнете вписването отново",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
