@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Vorlagen für Community-Richtlinien",
         "subtitle": "Regeln und Erwartungen für eine Community."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -43,7 +47,11 @@
     "edit": "Bearbeiten",
     "duplicate": "Duplizieren",
     "delete": "Löschen",
-    "noPreview": "Keine Vorschau"
+    "noPreview": "Keine Vorschau",
+    "classification": {
+      "multiSelect": "Mehrfachauswahl",
+      "singleSelect": "Einzelauswahl"
+    }
   },
   "framingKind": {
     "none": "Text",
@@ -101,6 +109,13 @@
       "title": "Titel der Richtlinien",
       "body": "Richtlinien",
       "references": "Referenzen"
+    },
+    "classification": {
+      "multiSelect": "Mehrfachauswahl",
+      "singleSelect": "Einzelauswahl",
+      "valueCount_one": "{{count}} Wert",
+      "valueCount_other": "{{count}} Werte",
+      "definedValues": "Definierte Werte"
     }
   },
   "picker": {
@@ -129,14 +144,16 @@
       "callout": "Kollaborationswerkzeug-Vorlage erstellen",
       "whiteboard": "Whiteboard-Vorlage erstellen",
       "post": "Beitragsvorlage erstellen",
-      "communityGuidelines": "Vorlage für Community-Richtlinien erstellen"
+      "communityGuidelines": "Vorlage für Community-Richtlinien erstellen",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Bereichsvorlage bearbeiten",
       "callout": "Kollaborationswerkzeug-Vorlage bearbeiten",
       "whiteboard": "Whiteboard-Vorlage bearbeiten",
       "post": "Beitragsvorlage bearbeiten",
-      "communityGuidelines": "Vorlage für Community-Richtlinien bearbeiten"
+      "communityGuidelines": "Vorlage für Community-Richtlinien bearbeiten",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Vorlagenname",
@@ -192,6 +209,27 @@
       "body": "Richtlinien",
       "bodyPlaceholder": "Schreibe die Richtlinien für diese Community…",
       "references": "Referenzen"
+    },
+    "classification": {
+      "cardinality": "Auswahltyp",
+      "cardinalitySingle": "Einzelauswahl — Nutzer wählen einen Wert",
+      "cardinalityMulti": "Mehrfachauswahl — Nutzer können mehrere Werte wählen",
+      "values": "Values",
+      "moveValueUp": "Wert {{position}} nach oben verschieben",
+      "moveValueDown": "Wert {{position}} nach unten verschieben",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Definiere die zulässigen Werte für diese Klassifikation. Gib einen Wert ein und drücke Enter.",
+      "quickAddPlaceholder": "z. B. SDG 1 – Keine Armut",
+      "valuesDefined_one": "{{count}} Wert definiert",
+      "valuesDefined_other": "{{count}} Werte definiert"
     }
   },
   "references": {
@@ -344,7 +382,8 @@
         "callout": "Kollaborationstools",
         "whiteboard": "Whiteboards",
         "post": "Beiträge",
-        "communityGuidelines": "Community-Richtlinien"
+        "communityGuidelines": "Community-Richtlinien",
+        "classification": "Classifications"
       },
       "summary": "{{first}} und {{count}} weitere",
       "pair": "{{first}} und {{second}}"

@@ -1,4 +1,5 @@
 import type { SpaceAboutDetailsQuery } from '@/core/apollo/generated/graphql-schema';
+import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import type {
   AboutFormValues,
   AboutReference,
@@ -7,6 +8,7 @@ import type {
   SpaceSettingsLevel,
 } from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { mapGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
 
 export type { AboutFormValues, AboutReference, AboutVisual, SpaceCardPreview };
 
@@ -68,6 +70,24 @@ export function mapSpaceToAboutFormValues(space: AboutSpace): AboutFormValues {
     why: space.about.why ?? '',
     who: space.about.who ?? '',
   };
+}
+
+/**
+ * `about.classifications` (the `ClassificationEntryFull` fragment) → the CRD
+ * plain-TS shape. The read path is `about.classifications[].values[]` (D1) —
+ * there is no container hop, and the array is `[]` (never null) when the
+ * Space carries none.
+ */
+export function mapClassificationEntries(space: AboutSpace): ClassificationEntryData[] {
+  return (space.about.classifications ?? []).map(entry => ({
+    id: entry.id,
+    displayLabel: entry.displayLabel,
+    cardinality: mapGqlClassificationCardinality(entry.cardinality),
+    values: entry.values.map(v => ({ id: v.id, label: v.label })),
+    selectedValueIDs: entry.selectedValueIDs,
+    display: entry.display,
+    sortOrder: entry.sortOrder,
+  }));
 }
 
 /** Build the live Preview card view from current form values + space id. */

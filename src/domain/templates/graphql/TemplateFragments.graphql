@@ -74,3 +74,14 @@ fragment CommunityGuidelinesTemplate on Template {
     }
   }
 }
+
+fragment ClassificationTemplate on Template {
+  ...TemplateProfileInfo
+  classification {
+    cardinality
+    values {
+      id
+      label
+    }
+  }
+}

@@ -8,6 +8,7 @@ mutation CreateTemplate(
   $contentSpaceData: CreateTemplateContentSpaceInput
   $postDefaultDescription: Markdown
   $whiteboard: CreateWhiteboardInput
+  $classificationData: CreateClassificationTemplateContentInput
   $includeProfileVisuals: Boolean = false
 ) {
   createTemplate(
@@ -21,6 +22,7 @@ mutation CreateTemplate(
       postDefaultDescription: $postDefaultDescription
       contentSpaceData: $contentSpaceData
       whiteboard: $whiteboard
+      classificationData: $classificationData
     }
   ) {
     id
@@ -99,6 +101,7 @@ mutation UpdateTemplate(
   $profile: UpdateProfileInput!
   $postDefaultDescription: Markdown
   $whiteboardContent: WhiteboardContent
+  $classificationData: CreateClassificationTemplateContentInput
   $includeProfileVisuals: Boolean = false
 ) {
   updateTemplate(
@@ -107,6 +110,7 @@ mutation UpdateTemplate(
       profile: $profile
       postDefaultDescription: $postDefaultDescription
       whiteboardContent: $whiteboardContent
+      classificationData: $classificationData
     }
   ) {
     id

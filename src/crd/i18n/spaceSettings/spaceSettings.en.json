@@ -989,5 +989,55 @@
       "title": "About",
       "subtitle": "Define your space's purpose, motivation, and target audience."
     }
+  },
+  "classifications": {
+    "sectionTitle": "Classifications",
+    "sectionDescription": "Classify your space with structured vocabularies (e.g. SDGs, Sector) for discoverability and reporting.",
+    "addButton": "Add Classification",
+    "picker": {
+      "title": "Add a classification",
+      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "platformSection": "Platform-wide",
+      "spaceSection": "This Space's library",
+      "emptyState": {
+        "title": "No Classification Templates yet",
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+      },
+      "conflict": {
+        "title": "That name is already in use",
+        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "fieldLabel": "Display label",
+        "retry": "Add with this label"
+      },
+      "cancel": "Cancel",
+      "searchPlaceholder": "Search templates…",
+      "noMatches": "No templates match \"{{query}}\".",
+      "multiSelect": "Multi",
+      "singleSelect": "Single"
+    },
+    "valueSelector": {
+      "noneSelected": "No values selected yet"
+    },
+    "display": {
+      "toggleLabel": "Show on the Space page",
+      "hiddenHint": "Not shown on the Space page"
+    },
+    "remove": {
+      "menuLabel": "Remove classification",
+      "confirmTitle": "Remove this classification?",
+      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
+      "confirmButton": "Remove"
+    },
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Multi-select",
+      "singleSelect": "Single-select",
+      "selectedCount_one": "{{count}} selected",
+      "selectedCount_other": "{{count}} selected",
+      "actions": "Classification actions: {{label}}",
+      "selectValues": "Select values…",
+      "deselectValue": "Deselect {{label}}"
+    },
+    "removedConcurrently": "This classification was removed by someone else. The list has been refreshed."
   }
 }
