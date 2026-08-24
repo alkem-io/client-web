@@ -1,6 +1,6 @@
 {
   "addReaction": "Add reaction",
-  "pickerTitle": "React to this post",
+  "pickerTitle": "React to this Post",
   "pickerAriaLabel": "Emoji reaction picker",
   "totalAriaLabel": "{{count}} people reacted",
   "totalAriaLabel_one": "1 person reacted",

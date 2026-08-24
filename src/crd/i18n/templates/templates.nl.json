@@ -82,7 +82,7 @@
       "noContributions": "Geen bijdragen",
       "comments": "Reacties ingeschakeld",
       "commentsDisabled": "Reacties uitgeschakeld",
-      "defaultPostDescription": "Standaard post-beschrijving",
+      "defaultPostDescription": "Standaard Post-beschrijving",
       "defaultWhiteboard": "Standaard whiteboard",
       "links": "Links",
       "gallery": "Galerij",
@@ -180,7 +180,7 @@
     },
     "post": {
       "defaultDescription": "Standaard beschrijving",
-      "defaultDescriptionPlaceholder": "Inhoud vooraf ingevuld voor nieuwe posts die dit template gebruiken"
+      "defaultDescriptionPlaceholder": "Inhoud vooraf ingevuld voor nieuwe Posts die dit template gebruiken"
     },
     "space": {
       "source": "Bron-Space",
@@ -309,13 +309,13 @@
     "searchVisibility": "Zichtbaarheid in zoekopdrachten",
     "searchVisibilityOptions": {
       "public": "Openbaar",
-      "authenticated": "Geauthenticeerde gebruikers",
-      "account": "Alleen account"
+      "account": "Account",
+      "hidden": "Verborgen"
     },
     "searchVisibilityHints": {
       "public": "Iedereen — inclusief niet-geauthenticeerde bezoekers — kan dit pakket via zoeken vinden.",
-      "authenticated": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
-      "account": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
+      "account": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
+      "hidden": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
     },
     "save": "Wijzigingen opslaan",
     "crop": {
