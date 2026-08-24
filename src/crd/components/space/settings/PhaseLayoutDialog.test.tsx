@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 import { PhaseLayoutDialog, type PhaseLayoutValues } from './PhaseLayoutDialog';
@@ -184,8 +184,9 @@ describe('PhaseLayoutDialog', () => {
   test('pre-fills the sidebar widget list from values.sidebar, selected first in saved order', () => {
     renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['events', 'intent'] });
 
-    const list = screen.getByRole('list');
-    const checkboxes = within(list).getAllByRole('checkbox');
+    // Selected widgets (drag-sortable list) render first, in saved order, then the
+    // unselected list; the switches are role="switch", so these are the widget checkboxes.
+    const checkboxes = screen.getAllByRole('checkbox');
     // events, intent selected (in that order) first; every other widget follows, unchecked.
     expect(checkboxes[0]).toHaveAccessibleName(
       'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.events'
@@ -230,18 +231,19 @@ describe('PhaseLayoutDialog', () => {
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: ['intent', 'about'] }));
   });
 
-  test('moving a widget down changes its position in the save payload', async () => {
-    const onSave = vi.fn();
-    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent', 'events'] }, onSave);
+  test('renders a drag handle for each selected widget (drag-to-reorder)', () => {
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent', 'events'] });
 
-    await userEvent.click(
+    expect(
       screen.getByRole('button', {
-        name: 'layout.column.sidebarDialog.moveDownAriaLabel:layout.column.sidebarDialog.widgets.intent',
+        name: 'layout.column.sidebarDialog.dragHandleAriaLabel:layout.column.sidebarDialog.widgets.intent',
       })
-    );
-    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
-
-    expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ sidebar: ['events', 'intent'] }));
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'layout.column.sidebarDialog.dragHandleAriaLabel:layout.column.sidebarDialog.widgets.events',
+      })
+    ).toBeInTheDocument();
   });
 
   test('deselecting every widget saves an empty list (FR-016)', async () => {
@@ -262,20 +264,5 @@ describe('PhaseLayoutDialog', () => {
     renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: [] });
 
     expect(screen.getByText('layout.column.sidebarDialog.emptyNote')).toBeInTheDocument();
-  });
-
-  test('the boundary widgets have their reorder button disabled', () => {
-    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent', 'events', 'about'] });
-
-    expect(
-      screen.getByRole('button', {
-        name: 'layout.column.sidebarDialog.moveUpAriaLabel:layout.column.sidebarDialog.widgets.intent',
-      })
-    ).toBeDisabled();
-    expect(
-      screen.getByRole('button', {
-        name: 'layout.column.sidebarDialog.moveDownAriaLabel:layout.column.sidebarDialog.widgets.about',
-      })
-    ).toBeDisabled();
   });
 });

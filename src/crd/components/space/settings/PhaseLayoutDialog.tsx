@@ -1,6 +1,23 @@
-import { ChevronDown, ChevronUp, LayoutDashboard } from 'lucide-react';
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { GripVertical, LayoutDashboard } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Checkbox } from '@/crd/primitives/checkbox';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
@@ -51,14 +68,19 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
     setSidebar(prev => (prev.includes(widgetId) ? prev.filter(id => id !== widgetId) : [...prev, widgetId]));
   };
 
-  const moveWidget = (widgetId: SidebarWidgetId, direction: -1 | 1) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
     setSidebar(prev => {
-      const index = prev.indexOf(widgetId);
-      const target = index + direction;
-      if (index === -1 || target < 0 || target >= prev.length) return prev;
-      const next = [...prev];
-      [next[index], next[target]] = [next[target], next[index]];
-      return next;
+      const oldIndex = prev.indexOf(active.id as SidebarWidgetId);
+      const newIndex = prev.indexOf(over.id as SidebarWidgetId);
+      if (oldIndex === -1 || newIndex === -1) return prev;
+      return arrayMove(prev, oldIndex, newIndex);
     });
   };
 
@@ -149,67 +171,59 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
               <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.emptyNote')}</p>
             )}
 
-            {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-            {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-            <ul role="list" className="flex flex-col gap-1 max-h-64 overflow-y-auto">
-              {sidebar.map((widgetId, index) => {
-                const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
-                return (
-                  <li key={widgetId} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
-                    <Checkbox
-                      id={`sidebar-widget-${widgetId}`}
-                      checked={true}
-                      onCheckedChange={() => toggleWidget(widgetId)}
-                      aria-label={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
-                    />
-                    <Label htmlFor={`sidebar-widget-${widgetId}`} className="flex-1 cursor-pointer text-body">
-                      {widgetLabel}
-                    </Label>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="size-7"
-                      disabled={index === 0}
-                      onClick={() => moveWidget(widgetId, -1)}
-                      aria-label={t('layout.column.sidebarDialog.moveUpAriaLabel', { widget: widgetLabel })}
-                    >
-                      <ChevronUp className="size-4" aria-hidden="true" />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="size-7"
-                      disabled={index === sidebar.length - 1}
-                      onClick={() => moveWidget(widgetId, 1)}
-                      aria-label={t('layout.column.sidebarDialog.moveDownAriaLabel', { widget: widgetLabel })}
-                    >
-                      <ChevronDown className="size-4" aria-hidden="true" />
-                    </Button>
-                  </li>
-                );
-              })}
-              {unselectedWidgets.map(widgetId => {
-                const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
-                return (
-                  <li key={widgetId} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
-                    <Checkbox
-                      id={`sidebar-widget-${widgetId}`}
-                      checked={false}
-                      onCheckedChange={() => toggleWidget(widgetId)}
-                      aria-label={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
-                    />
-                    <Label
-                      htmlFor={`sidebar-widget-${widgetId}`}
-                      className="flex-1 cursor-pointer text-body text-muted-foreground"
-                    >
-                      {widgetLabel}
-                    </Label>
-                  </li>
-                );
-              })}
-            </ul>
+            <div className="flex flex-col gap-1 max-h-64 overflow-y-auto">
+              {/* Selected widgets — drag the handle to reorder (FR-011). */}
+              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                <SortableContext items={sidebar} strategy={verticalListSortingStrategy}>
+                  {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                  {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                  <ul role="list" className="flex flex-col gap-1">
+                    {sidebar.map(widgetId => {
+                      const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
+                      return (
+                        <SortableWidgetRow
+                          key={widgetId}
+                          widgetId={widgetId}
+                          label={widgetLabel}
+                          onToggle={() => toggleWidget(widgetId)}
+                          toggleAriaLabel={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
+                          dragHandleAriaLabel={t('layout.column.sidebarDialog.dragHandleAriaLabel', {
+                            widget: widgetLabel,
+                          })}
+                        />
+                      );
+                    })}
+                  </ul>
+                </SortableContext>
+              </DndContext>
+
+              {/* Unselected widgets — check to add (appended to the end of the order). */}
+              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+              {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+              <ul role="list" className="flex flex-col gap-1">
+                {unselectedWidgets.map(widgetId => {
+                  const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
+                  return (
+                    <li key={widgetId} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
+                      {/* Spacer aligns the checkbox with the selected rows' drag handle. */}
+                      <span className="size-7 shrink-0" aria-hidden="true" />
+                      <Checkbox
+                        id={`sidebar-widget-${widgetId}`}
+                        checked={false}
+                        onCheckedChange={() => toggleWidget(widgetId)}
+                        aria-label={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
+                      />
+                      <Label
+                        htmlFor={`sidebar-widget-${widgetId}`}
+                        className="flex-1 cursor-pointer text-body text-muted-foreground"
+                      >
+                        {widgetLabel}
+                      </Label>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -223,5 +237,58 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+type SortableWidgetRowProps = {
+  widgetId: SidebarWidgetId;
+  label: string;
+  onToggle: () => void;
+  toggleAriaLabel: string;
+  dragHandleAriaLabel: string;
+};
+
+function SortableWidgetRow({
+  widgetId,
+  label,
+  onToggle,
+  toggleAriaLabel,
+  dragHandleAriaLabel,
+}: SortableWidgetRowProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: widgetId });
+
+  const style = {
+    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
+    transition,
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        'flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50',
+        isDragging && 'bg-card shadow-md ring-2 ring-ring/50'
+      )}
+    >
+      <button
+        type="button"
+        className="flex size-7 shrink-0 cursor-grab items-center justify-center rounded text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-label={dragHandleAriaLabel}
+        {...attributes}
+        {...listeners}
+      >
+        <GripVertical className="size-4" aria-hidden="true" />
+      </button>
+      <Checkbox
+        id={`sidebar-widget-${widgetId}`}
+        checked={true}
+        onCheckedChange={onToggle}
+        aria-label={toggleAriaLabel}
+      />
+      <Label htmlFor={`sidebar-widget-${widgetId}`} className="flex-1 cursor-pointer text-body">
+        {label}
+      </Label>
+    </li>
   );
 }

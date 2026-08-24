@@ -1,6 +1,16 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, SlidersHorizontal, Trash2 } from 'lucide-react';
+import {
+  Check,
+  Eye,
+  EyeOff,
+  FileText,
+  GripVertical,
+  MoreVertical,
+  Pencil,
+  SlidersHorizontal,
+  Trash2,
+} from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
@@ -335,7 +345,7 @@ function ColumnOverflowMenu({
           {t('layout.column.phaseLayout.menuLabel')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onRequestPostTemplate}>
-          <Pencil aria-hidden="true" className="mr-2 size-3.5" />
+          <FileText aria-hidden="true" className="mr-2 size-3.5" />
           {t('layout.column.postTemplate.menuLabel')}
         </DropdownMenuItem>
         {canToggleVisibility && (
