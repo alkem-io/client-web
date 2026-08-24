@@ -104,6 +104,14 @@ describe('applyMoveToCounts', () => {
     ]);
   });
 
+  it('is a no-op when source and destination normalize to the same column', () => {
+    // A task tagged "to do" renders in the "To do" column; dropping it back there
+    // must not decrement (nor increment) the count.
+    expect(applyMoveToCounts([{ column: 'To do', count: 4 }], 'to do', 'To do')).toEqual([
+      { column: 'To do', count: 4 },
+    ]);
+  });
+
   it('does not mutate the input', () => {
     const original = [{ column: 'Backlog', count: 3 }];
     applyMoveToCounts(original, 'Backlog', 'Done');

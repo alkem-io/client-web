@@ -102,6 +102,11 @@ export function applyMoveToCounts(
 ): TaskColumnCount[] {
   const from = fromColumn?.toLowerCase();
   const to = toColumn.toLowerCase();
+  // A move whose source and destination normalize to the same column (e.g. a
+  // task tagged "to do" dropped back into "To do") is a no-op: without this
+  // guard the source branch below would decrement the count and return before
+  // the destination branch could add it back.
+  if (from === to) return counts.map(entry => ({ ...entry }));
   return counts.map(entry => {
     const key = entry.column.toLowerCase();
     if (from && key === from) return { ...entry, count: Math.max(0, entry.count - 1) };

@@ -33,6 +33,17 @@ export function TaskCard({
   onClick,
   className,
 }: TaskCardProps) {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!onClick) return;
+    // Descendants render their own interactive elements (CollapsibleTagList's
+    // "+N" button, links inside MarkdownContent). A click on one of those bubbles
+    // to this wrapper — ignore it so following a link or expanding the tags does
+    // not also open the task. The wrapper is role="button", not a real <button>,
+    // so it never matches this guard itself.
+    if ((event.target as HTMLElement).closest('a, button')) return;
+    onClick();
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (!onClick) return;
     if (event.key === 'Enter' || event.key === ' ') {
@@ -51,7 +62,7 @@ export function TaskCard({
         'flex flex-col',
         className
       )}
-      onClick={onClick}
+      onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       <div className="flex gap-1.5 min-w-0">

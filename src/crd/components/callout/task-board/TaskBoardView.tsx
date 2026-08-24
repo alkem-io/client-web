@@ -288,6 +288,11 @@ export function TaskBoardView({
     setActiveCard(null);
     setDraftColumns(null);
     fromColumnRef.current = null;
+    // A drop outside every droppable (`over` is null) is a cancel, not a move —
+    // resetting the draft above already snapped the board back. Bail before any
+    // reorder/move is persisted. (Keyboard drags always resolve to a droppable
+    // via the closestCorners fallback, so this only guards pointer drops.)
+    if (!overId) return;
     if (!toColumn) return;
 
     // Resolve the card's final slot within its destination column from the drop

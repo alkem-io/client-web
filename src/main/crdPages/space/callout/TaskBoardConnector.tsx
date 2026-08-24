@@ -62,7 +62,7 @@ export function TaskBoardConnector({
   fallback,
   onOpenTask,
 }: TaskBoardConnectorProps) {
-  const { data } = useTaskBoardDataQuery({ variables: { calloutId } });
+  const { data, loading } = useTaskBoardDataQuery({ variables: { calloutId } });
 
   const callout = data?.lookup.callout;
   const isBoard = Boolean(
@@ -73,10 +73,15 @@ export function TaskBoardConnector({
       })
   );
 
-  // Report board-ness up so the consumer can open the callout to the board.
+  // Report board-ness up so the consumer can open the callout to the board — but
+  // only once the query has resolved. While loading, `callout` is undefined and
+  // `isBoard` is a provisional `false`; reporting that would make the deep-link
+  // view mount the post-detail dialog first and flash before swapping to the
+  // board. The consumer keeps its "detection in flight" state until this fires.
   useEffect(() => {
+    if (loading) return;
     onBoardResolved?.(isBoard);
-  }, [isBoard, onBoardResolved]);
+  }, [loading, isBoard, onBoardResolved]);
 
   // Detection-only consumers (the deep-link view) render the board elsewhere.
   if (detectOnly) {
