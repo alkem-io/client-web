@@ -297,9 +297,10 @@ function LazyCalloutItemContent({
       onBoardResolved={setIsBoard}
       fallback={plainContributionsPreview}
       onOpenTask={contributionId => {
-        // Collapse the fullscreen board first so the task's detail dialog is not
-        // hidden behind the z-[100] board layer.
-        setBoardFullscreen(false);
+        // Present the task on top of the board: keep (or enter) the fullscreen
+        // board and open the task's detail dialog above it (the dialog is
+        // elevated over the z-[100] board layer via `elevated` below).
+        setBoardFullscreen(true);
         openDialog(contributionId);
       }}
     />
@@ -410,6 +411,9 @@ function LazyCalloutItemContent({
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
         initialPostId={initialPostId}
+        // A task board opens its tasks on top of the fullscreen board, so the
+        // detail dialog (and its edit/delete/share) must stack above z-[100].
+        elevated={isBoard}
       />
 
       {collaboraDocumentId && (

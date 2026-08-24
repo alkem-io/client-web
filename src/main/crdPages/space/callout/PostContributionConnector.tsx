@@ -16,6 +16,9 @@ type PostContributionConnectorProps = {
    *  also clear its selected-post preview (otherwise the user sees the cached
    *  preview of a post that no longer exists). */
   onDeleted?: () => void;
+  /** Raise the edit dialog above a custom overlay (e.g. the fullscreen task board). */
+  overlayClassName?: string;
+  contentClassName?: string;
 };
 
 export function PostContributionConnector({
@@ -26,6 +29,8 @@ export function PostContributionConnector({
   postId,
   onClose,
   onDeleted,
+  overlayClassName,
+  contentClassName,
 }: PostContributionConnectorProps) {
   if (!open) return null;
   return (
@@ -44,6 +49,8 @@ export function PostContributionConnector({
         postId={postId}
         contributionId={contributionId}
         onDeleted={onDeleted}
+        overlayClassName={overlayClassName}
+        contentClassName={contentClassName}
       />
     </StorageConfigContextProvider>
   );
