@@ -110,6 +110,11 @@ function LazyCalloutItemContent({
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
+  // A Tasks board opens to the board itself (fullscreen), not the post-detail
+  // dialog. `isBoard` is confirmed asynchronously by the board connector's query;
+  // until then a click falls back to the normal dialog.
+  const [isBoard, setIsBoard] = useState(false);
+  const [boardFullscreen, setBoardFullscreen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [initialPostId, setInitialPostId] = useState<string | undefined>();
@@ -167,6 +172,17 @@ function LazyCalloutItemContent({
       setInitialPostId(undefined);
     }
     setDialogOpen(true);
+  };
+
+  // A Tasks board callout opens to the board (fullscreen); any other callout
+  // opens its detail dialog. Detection is async, so this falls back to the
+  // dialog until the board connector confirms.
+  const handleCardOpen = () => {
+    if (isBoard) {
+      setBoardFullscreen(true);
+    } else {
+      openDialog();
+    }
   };
 
   const handleDialogClose = (open: boolean) => {
@@ -276,8 +292,16 @@ function LazyCalloutItemContent({
     <TaskBoardConnector
       calloutId={callout.id}
       title={callout.framing.profile.displayName}
+      fullscreen={boardFullscreen}
+      onFullscreenChange={setBoardFullscreen}
+      onBoardResolved={setIsBoard}
       fallback={plainContributionsPreview}
-      onOpenTask={contributionId => openDialog(contributionId)}
+      onOpenTask={contributionId => {
+        // Collapse the fullscreen board first so the task's detail dialog is not
+        // hidden behind the z-[100] board layer.
+        setBoardFullscreen(false);
+        openDialog(contributionId);
+      }}
     />
   ) : (
     plainContributionsPreview
@@ -327,7 +351,7 @@ function LazyCalloutItemContent({
             <PostCard
               post={postData}
               onClick={() => {
-                openDialog();
+                handleCardOpen();
                 onClick?.();
               }}
               onOpenFraming={handleOpenFraming}

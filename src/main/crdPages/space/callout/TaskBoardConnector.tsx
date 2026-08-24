@@ -1,5 +1,5 @@
 import { Columns3 } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
@@ -27,6 +27,15 @@ type TaskBoardConnectorProps = {
   calloutId: string;
   /** Board title (the callout display name), shown in the fullscreen header. */
   title?: string;
+  /** Controlled fullscreen — lets the consumer open the board when the callout is opened. */
+  fullscreen?: boolean;
+  onFullscreenChange?: (open: boolean) => void;
+  /**
+   * Fires once board detection resolves (true when the callout is a Tasks board).
+   * Lets the consumer route "open the callout" to the board instead of the plain
+   * post-detail dialog. Must be a stable callback.
+   */
+  onBoardResolved?: (isBoard: boolean) => void;
   /**
    * The normal POSTS contributions body. Rendered unchanged whenever this
    * callout is not a Tasks board (marker absent) or the board view is switched
@@ -44,22 +53,44 @@ type TaskBoardConnectorProps = {
  * verbatim. The board itself lives in an inner component so its hooks run
  * unconditionally regardless of the branch.
  */
-export function TaskBoardConnector({ calloutId, title, fallback, onOpenTask }: TaskBoardConnectorProps) {
+export function TaskBoardConnector({
+  calloutId,
+  title,
+  fullscreen,
+  onFullscreenChange,
+  onBoardResolved,
+  fallback,
+  onOpenTask,
+}: TaskBoardConnectorProps) {
   const { data } = useTaskBoardDataQuery({ variables: { calloutId } });
 
   const callout = data?.lookup.callout;
-  if (
-    !callout ||
-    !isTaskBoard({
-      classification: { tagsets: callout.classification?.tagsets },
-      allowedContributionTypes: callout.settings.contribution.allowedTypes.map(type => String(type)),
-    })
-  ) {
+  const isBoard = Boolean(
+    callout &&
+      isTaskBoard({
+        classification: { tagsets: callout.classification?.tagsets },
+        allowedContributionTypes: callout.settings.contribution.allowedTypes.map(type => String(type)),
+      })
+  );
+
+  // Report board-ness up so the consumer can open the callout to the board.
+  useEffect(() => {
+    onBoardResolved?.(isBoard);
+  }, [isBoard, onBoardResolved]);
+
+  if (!isBoard || !callout) {
     return <>{fallback}</>;
   }
 
   return (
-    <TaskBoardBody callout={callout} contributions={callout.contributions} title={title} onOpenTask={onOpenTask} />
+    <TaskBoardBody
+      callout={callout}
+      contributions={callout.contributions}
+      title={title}
+      fullscreen={fullscreen}
+      onFullscreenChange={onFullscreenChange}
+      onOpenTask={onOpenTask}
+    />
   );
 }
 
@@ -67,11 +98,15 @@ function TaskBoardBody({
   callout,
   contributions,
   title,
+  fullscreen,
+  onFullscreenChange,
   onOpenTask,
 }: {
   callout: TaskBoardCalloutFragment;
   contributions: TaskBoardContributionFragment[];
   title?: string;
+  fullscreen?: boolean;
+  onFullscreenChange?: (open: boolean) => void;
   onOpenTask?: (contributionId: string) => void;
 }) {
   const { t } = useTranslation('crd-taskBoard');
@@ -206,6 +241,8 @@ function TaskBoardBody({
       <TaskBoardView
         columns={columns}
         title={title}
+        isFullscreen={fullscreen}
+        onFullscreenChange={onFullscreenChange}
         canAdd={canAdd}
         canMove={canMove}
         addLabel={t('addTask')}

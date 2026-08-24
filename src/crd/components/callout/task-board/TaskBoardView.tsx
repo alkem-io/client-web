@@ -49,6 +49,13 @@ export type TaskBoardViewProps = {
   columns: TaskBoardColumnModel[];
   /** Board title, shown in the header of the fullscreen view. */
   title?: string;
+  /**
+   * Controlled fullscreen state. When provided (with `onFullscreenChange`) the
+   * consumer owns the flag — e.g. so opening the callout expands the board. When
+   * omitted the view manages fullscreen internally via its expand control.
+   */
+  isFullscreen?: boolean;
+  onFullscreenChange?: (open: boolean) => void;
   /** When true, per-column add affordances are shown. */
   canAdd?: boolean;
   /** When true, cards are draggable between columns. */
@@ -207,6 +214,8 @@ function DroppableColumn({
 export function TaskBoardView({
   columns,
   title,
+  isFullscreen: isFullscreenProp,
+  onFullscreenChange,
   canAdd = false,
   canMove = false,
   addLabel,
@@ -218,7 +227,18 @@ export function TaskBoardView({
   onMoveTask,
   onReorder,
 }: TaskBoardViewProps) {
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [internalFullscreen, setInternalFullscreen] = useState(false);
+  // Controlled when the consumer passes both the flag and a change handler;
+  // otherwise the view owns the state via its expand control.
+  const isControlledFullscreen = isFullscreenProp !== undefined && onFullscreenChange !== undefined;
+  const isFullscreen = isControlledFullscreen ? isFullscreenProp : internalFullscreen;
+  const setIsFullscreen = (next: boolean) => {
+    if (isControlledFullscreen) {
+      onFullscreenChange(next);
+    } else {
+      setInternalFullscreen(next);
+    }
+  };
   const [activeCard, setActiveCard] = useState<TaskBoardCardModel | null>(null);
   // A working copy of the columns, live only during a drag, so the dragged card
   // can be relocated across columns for the visual. Null when not dragging, in
@@ -359,7 +379,7 @@ export function TaskBoardView({
           className="size-8 shrink-0"
           aria-label={isFullscreen ? collapseLabel : expandLabel}
           aria-pressed={isFullscreen}
-          onClick={() => setIsFullscreen(prev => !prev)}
+          onClick={() => setIsFullscreen(!isFullscreen)}
         >
           {isFullscreen ? (
             <Minimize2 className="size-4" aria-hidden="true" />
