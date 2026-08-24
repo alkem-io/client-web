@@ -390,7 +390,7 @@ function LazyCalloutItemContent({
         <PostCard
           post={postData}
           onClick={() => {
-            openDialog();
+            handleCardOpen();
             onClick?.();
           }}
           onOpenFraming={handleOpenFraming}

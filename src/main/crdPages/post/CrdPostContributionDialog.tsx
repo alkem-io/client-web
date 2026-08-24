@@ -567,6 +567,11 @@ export function CrdPostContributionDialog({
         confirmLabel={t('callout.postUnsavedCloseConfirm')}
         cancelLabel={t('callout.postUnsavedCloseCancel')}
         variant="destructive"
+        // When this dialog is elevated above the board (z-[110]/z-[120]), the
+        // confirmation must ride the same layer or it renders behind the post
+        // dialog's overlay. Harmless (undefined) when the dialog is not elevated.
+        overlayClassName={overlayClassName}
+        contentClassName={contentClassName}
         onConfirm={() => {
           setCloseConfirmOpen(false);
           onOpenChange(false);
@@ -581,6 +586,11 @@ export function CrdPostContributionDialog({
         confirmLabel={t('callout.postDelete')}
         variant="destructive"
         loading={deleting}
+        // See the unsaved-close dialog above: match the post dialog's elevation
+        // so the confirmation is not trapped behind its overlay when stacked over
+        // the board.
+        overlayClassName={overlayClassName}
+        contentClassName={contentClassName}
         onConfirm={handleDelete}
       />
     </>

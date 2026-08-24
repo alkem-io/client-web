@@ -1051,7 +1051,13 @@ function CalloutFormConnectorInner({
               // separate switch. Selecting it makes the callout a POST-only board;
               // it seeds responseType='post' so the Posts config panel (members /
               // admins / comments / defaults) renders. Deselecting clears both.
-              showTasksChip={mode === 'create' && isTaskBoardEnabled()}
+              // A Tasks board is post-based (selecting it seeds responseType='post'),
+              // so only offer it when posts are actually allowed by the response
+              // restrictions — otherwise it would create a post board the
+              // restriction forbids.
+              showTasksChip={
+                mode === 'create' && isTaskBoardEnabled() && (!responseAllowList || responseAllowList.includes('post'))
+              }
               tasksActive={values.taskBoard}
               tasksLabel={tTaskBoard('create.option')}
               onSelectTasks={() =>
