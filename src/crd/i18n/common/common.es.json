@@ -157,7 +157,8 @@
     "sign-in": "Inicia sesión para ver los usuarios asociados con esta $t(common.organization)"
   },
   "authentication": {
-    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
+    "lockout": "Tu cuenta se ha bloqueado temporalmente por demasiados intentos fallidos de inicio de sesión. Inténtalo de nuevo en {{duration}}.",
+    "lockoutRetry": "Intentar de nuevo",
     "passkey": {
       "not-supported": "Las PassKeys no son compatibles con su navegador",
       "script-loading": "Leyendo PassKey...",
@@ -1016,14 +1017,16 @@
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "invalid-credentials": "La dirección de correo electrónico o la contraseña que ingresaste no es válida. Por favor, comprueba tus credenciales e inténtalo de nuevo. ¿Estás intentando registrarte en su lugar? Puedes hacerlo haciendo clic en el enlace de arriba.",
       "login-flow-account-exists": "Este correo ya está asociado a una $t(common.account). Si te registraste previamente a través de LinkedIn, GitHub o Microsoft, usa ese método de inicio de sesión. De lo contrario, restablece tu contraseña",
-      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "oidc-account-linking-conflict": "Intentaste continuar con {{provider}}, pero ya existe una cuenta con ese correo. Inicia sesión en esa cuenta a continuación para confirmar que eres tú - {{provider}} quedará conectado a ella y a partir de ahora podrás usar cualquiera de los dos métodos.",
       "pick-password": "Elige una contraseña para tu $t(common.account)",
       "property-missing": "{{field}} is required.",
       "recovery-flow-expired": "Este enlace de restablecimiento de contraseña ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente",
       "request-recover-password": "<strong>Se ha enviado un correo electrónico con un enlace de recuperación a la dirección de correo que proporcionaste.</strong><br/><br/>Si no has recibido un correo, verifica lo siguiente:<br/><br/><li><strong>Verifica la ortografía</strong> de la dirección de correo electrónico.</li><li><strong>Asegúrate de estar usando la dirección de correo electrónico</strong> con la que te registraste.</li><li><strong>Revisa tu carpeta de spam o correo no deseado</strong> en caso de que el correo haya sido filtrado.</li><li><strong>Si te registraste usando LinkedIn, Microsoft u otro inicio de sesión social,</strong> la recuperación de contraseña por correo no funcionará. Usa la opción de inicio de sesión social correspondiente.</li><br/><br/><i>Nota: Esto no confirma que una $t(common.account) esté registrada con este correo.</i>",
       "successfully-recovered-password": "Introduce una nueva contraseña en los próximos 15 minutos para completar el restablecimiento de tu contraseña",
       "verification-flow-continue": "Continuar",
-      "verification-flow-expired": "El enlace de verificación ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente"
+      "verification-flow-expired": "El enlace de verificación ha expirado. Solicita uno nuevo enviando tu correo electrónico nuevamente",
+      "settings-changes-saved": "¡Tus cambios se han guardado!",
+      "confirm-it-is-you": "Confirma esta acción verificando que eres tú."
     }
   },
   "languages": {

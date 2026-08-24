@@ -157,7 +157,8 @@
     "sign-in": "Log in om de gebruikers te zien die geassocieerd zijn met deze $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Uw account is tijdelijk geblokkeerd vanwege te veel mislukte inlogpogingen. Probeer het opnieuw in {{minutes}} minuten.",
+    "lockout": "Uw account is tijdelijk geblokkeerd vanwege te veel mislukte inlogpogingen. Probeer het opnieuw over {{duration}}.",
+    "lockoutRetry": "Opnieuw proberen",
     "passkey": {
       "not-supported": "Passkeys worden niet ondersteund door je browser",
       "script-loading": "Passkey ondersteuning laden...",
@@ -1016,14 +1017,16 @@
       "claim-missing": "U heeft uw Cleverbase identiteit nog niet geverifieerd. Controleer uw identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
       "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
-      "oidc-account-linking-conflict": "U probeert in te loggen met {{provider}}, maar dat e-mailadres wordt al gebruikt door een ander account.",
+      "oidc-account-linking-conflict": "Je probeerde door te gaan met {{provider}}, maar er bestaat al een account met dat e-mailadres. Log hieronder in op dat account om te bevestigen dat jij het bent - {{provider}} wordt dan aan dat account gekoppeld en je kunt voortaan op beide manieren inloggen.",
       "pick-password": "Kies een wachtwoord voor je $t(common.account)",
       "property-missing": "{{field}} is vereist.",
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "request-recover-password": "<strong>Een e-mail met een herstellink is verstuurd naar het opgegeven e-mailadres.</strong><br/> <br/>Als je geen e-mail hebt ontvangen, Controleer het volgende:<br/> <br/><li> <strong>Controleer de spelling</strong> van het e-mailadres.</li/><li> <strong>zorg ervoor dat je het e-mailadres gebruikt </strong> waarmee je je hebt geregistreerd.</li><li> <strong>Controleer je spam of ongewenste map</strong> </li><li> <strong>Als je je hebt geregistreerd met LinkedIn, Microsoft of een andere sociale login,</strong> dan werkt wachtwoord herstel via e-mail niet. Gebruik in plaats daarvan de respectievelijke optie voor social login.</li><br/><br/><i>Opmerking: Dit bevestigt niet dat een $t(common.account) geregistreerd is met deze e-mail.</i>",
       "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om uw wachtwoordreset te voltooien.",
       "verification-flow-continue": "Volgende",
-      "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven."
+      "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
+      "settings-changes-saved": "Je wijzigingen zijn opgeslagen!",
+      "confirm-it-is-you": "Bevestig deze actie door te verifiëren dat jij het bent."
     }
   },
   "languages": {

@@ -1,3 +1,4 @@
+import { formatDuration } from 'date-fns';
 import type { TFunction } from 'i18next';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +23,7 @@ import { useQueryParams } from '@/core/routing/useQueryParams';
 import { resolveInternalReturnPath } from '@/core/utils/links';
 import type { KratosFlowDescriptor, KratosMessage } from '@/crd/components/auth/flowDescriptor';
 import { LoginCard } from '@/crd/components/auth/LoginCard';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import usePlatformOrigin from '@/domain/platform/routes/usePlatformOrigin';
 import { buildSignUpUrl } from '@/main/routing/urlBuilders';
 import { AuthShellWrapper } from './AuthShellWrapper';
@@ -37,7 +39,7 @@ const PASSKEY_ERROR_MESSAGE_ID = -1;
 
 function CrdLoginPage({ flow }: { flow?: string }) {
   useTransactionScope({ type: 'authentication' });
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   usePageTitle(t('pages.titles.signIn'));
 
   const navigate = useNavigate();
@@ -60,7 +62,13 @@ function CrdLoginPage({ flow }: { flow?: string }) {
   const { returnUrl: storedReturnUrl, setReturnUrl } = useReturnUrl();
   const signUpReturnUrl = returnUrlFromParam ?? storedReturnUrl;
   const platformOrigin = usePlatformOrigin();
-  const isOidcEntry = !flow;
+  // The login-backoff proxy (kratos-webhooks) 303s a locked-out browser to a
+  // flow-less `/login?lockout=true&retry_after=N`. Treating that as a fresh
+  // OIDC entry would immediately redirect away and discard the params before
+  // the lockout notice can render — so a lockout arrival is NOT an OIDC entry;
+  // it renders the notice with a manual way back into sign-in instead.
+  const isLockedOutArrival = params.get('lockout') === 'true';
+  const isOidcEntry = !flow && !isLockedOutArrival;
 
   useLayoutEffect(() => {
     if (!isOidcEntry) return;
@@ -87,10 +95,22 @@ function CrdLoginPage({ flow }: { flow?: string }) {
 
   usePasskeyScript(loginFlow?.ui?.nodes);
 
-  const isLockedOut = params.get('lockout') === 'true';
+  const isLockedOut = isLockedOutArrival;
   const retryAfterRaw = Number(params.get('retry_after'));
   const retryAfterSeconds = Number.isFinite(retryAfterRaw) ? Math.max(0, retryAfterRaw) : 0;
-  const lockoutMinutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
+  // Human-readable remaining time ("2 minutes", "1 minute 50 seconds"),
+  // localized by date-fns through the same locale mapping the rest of CRD uses.
+  // Built from total minutes/seconds rather than `intervalToDuration`: that helper
+  // carries whole hours in its own `hours` field, which this `format` list omits, so
+  // a 3600s lockout formatted to the empty string and 3660s rendered as "1 minute".
+  const lockoutTotalSeconds = Math.max(1, retryAfterSeconds);
+  const lockoutDuration = formatDuration(
+    { minutes: Math.floor(lockoutTotalSeconds / 60), seconds: lockoutTotalSeconds % 60 },
+    {
+      locale: resolveDateFnsLocale(i18n.language),
+      format: ['minutes', 'seconds'],
+    }
+  );
 
   // Email-not-verified → redirect to the verification reminder (parity with LoginPage).
   useEffect(() => {
@@ -125,7 +145,7 @@ function CrdLoginPage({ flow }: { flow?: string }) {
         {
           id: ACCOUNT_LOCKOUT_MESSAGE_ID,
           type: 'error',
-          text: t('authentication.lockout', { minutes: lockoutMinutes }),
+          text: t('authentication.lockout', { duration: lockoutDuration }),
         },
       ];
     }
@@ -134,6 +154,33 @@ function CrdLoginPage({ flow }: { flow?: string }) {
     }
     return { ...base, messages };
   })();
+
+  // Locked-out arrival (no flow): render the lockout notice with a manual
+  // re-entry into the OIDC sign-in. No Kratos form is offered — the flow the
+  // hook auto-provisioned is deliberately ignored, both because a Kratos-native
+  // login would bypass Hydra and because the backoff proxy would refuse the
+  // POST anyway. If still locked when the person retries, the proxy bounces
+  // them back here with fresh params.
+  if (!flow && isLockedOutArrival) {
+    const raw = returnUrlFromParam ?? storedReturnUrl ?? '/';
+    const returnTo = resolveInternalReturnPath(raw, platformOrigin) ?? '/';
+    const base = platformOrigin ?? '';
+    return (
+      <AuthShellWrapper>
+        <LoginCard
+          descriptor={undefined}
+          isLoading={false}
+          notice={{
+            text: t('authentication.lockout', { duration: lockoutDuration }),
+            actionLabel: t('authentication.lockoutRetry'),
+            actionHref: `${base}${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`,
+          }}
+          signUpHref={signUpReturnUrl ? buildSignUpUrl(signUpReturnUrl) : AUTH_SIGN_UP_PATH}
+          forgotPasswordHref={AUTH_RESET_PASSWORD_PATH}
+        />
+      </AuthShellWrapper>
+    );
+  }
 
   // OIDC entry: a full-page redirect to the BFF login route is in flight (see
   // the useLayoutEffect above). Show the card in its loading state rather than

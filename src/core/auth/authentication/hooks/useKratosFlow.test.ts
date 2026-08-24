@@ -5,11 +5,16 @@ import useKratosFlow, { FlowTypeName } from './useKratosFlow';
 const mockCreateBrowserRegistrationFlow = vi.fn();
 const mockGetRegistrationFlow = vi.fn();
 
+// A stable client object, as the real `useKratosClient` provides — a fresh
+// object per render would re-trigger the hook's [client, ...] effect on every
+// render and turn a persistent mock rejection into an update loop.
+const mockClient = {
+  createBrowserRegistrationFlow: (...args: unknown[]) => mockCreateBrowserRegistrationFlow(...args),
+  getRegistrationFlow: (...args: unknown[]) => mockGetRegistrationFlow(...args),
+};
+
 vi.mock('./useKratosClient', () => ({
-  useKratosClient: () => ({
-    createBrowserRegistrationFlow: mockCreateBrowserRegistrationFlow,
-    getRegistrationFlow: mockGetRegistrationFlow,
-  }),
+  useKratosClient: () => mockClient,
 }));
 
 vi.mock('@/core/logging/sentry/log', () => ({
@@ -102,6 +107,36 @@ describe('useKratosFlow', () => {
       value: originalLocation,
       writable: true,
     });
+  });
+
+  it('clears a previous error when a refetch succeeds', async () => {
+    mockCreateBrowserRegistrationFlow.mockRejectedValue({
+      response: {
+        status: 502,
+        data: { error: { message: 'Bad Gateway' } },
+      },
+      message: 'Request failed with status code 502',
+    });
+
+    const { result } = renderHook(() => useKratosFlow(FlowTypeName.Registration, undefined));
+
+    await waitFor(() => {
+      expect(result.current.error).toBeDefined();
+    });
+
+    const flow = {
+      id: 'flow-789',
+      ui: { nodes: [], messages: [], action: '/self-service/registration?flow=flow-789', method: 'POST' },
+    };
+    mockCreateBrowserRegistrationFlow.mockResolvedValue({ status: 200, data: flow });
+
+    result.current.refetch();
+
+    await waitFor(() => {
+      expect(result.current.flow).toEqual(flow);
+    });
+    expect(result.current.error).toBeUndefined();
+    expect(result.current.loading).toBe(false);
   });
 
   it('loads flow successfully on 200', async () => {
