@@ -331,6 +331,56 @@
           "loadError": "Je API-sleutels konden niet worden geladen — probeer de pagina te vernieuwen.",
           "retry": "Opnieuw proberen"
         }
+      },
+      "connectedAccounts": {
+        "title": "Gekoppelde accounts",
+        "description": "Elke manier waarop je nu op dit account kunt inloggen.",
+        "provider": {
+          "notConnected": "Niet gekoppeld",
+          "connected": "Gekoppeld"
+        },
+        "actions": {
+          "connect": "Koppelen",
+          "connectAria": "{{provider}} koppelen",
+          "disconnect": "Ontkoppelen",
+          "disconnectAria": "{{provider}} ontkoppelen"
+        },
+        "confirmDisconnect": {
+          "title": "{{provider}} ontkoppelen?",
+          "description": "U kunt niet meer inloggen met {{provider}}. Als u later opnieuw koppelt en de provider uw identificatie inmiddels heeft gewijzigd, komt deze exacte koppeling mogelijk niet meer terug.",
+          "confirm": "Ontkoppelen"
+        },
+        "locked": {
+          "reason": "Dit is op dit moment je enige manier om in te loggen — voeg hieronder eerst een wachtwoord of een passkey toe voordat je dit kunt ontkoppelen."
+        },
+        "unavailable": {
+          "message": "We kunnen je inlogmethoden nu niet tonen. Probeer het zo opnieuw - de pagina herladen is niet nodig.",
+          "retry": "Opnieuw proberen"
+        },
+        "messages": {
+          "changesSaved": "Je wijzigingen zijn opgeslagen!",
+          "identityAlreadyLinked": "Die identiteit is al gekoppeld aan een ander Alkemio-account. Er is niets veranderd op beide accounts.",
+          "linked": "{{provider}} gekoppeld.",
+          "unlinked": "{{provider}} ontkoppeld.",
+          "connectFailed": "{{provider}} koppelen is niet gelukt — probeer het opnieuw.",
+          "disconnectFailed": "{{provider}} ontkoppelen is niet gelukt — probeer het opnieuw.",
+          "reauthRequiredConnect": "Bevestig dat jij het bent en probeer {{provider}} daarna opnieuw te koppelen.",
+          "reauthRequiredDisconnect": "Bevestig dat jij het bent en probeer {{provider}} daarna opnieuw te ontkoppelen."
+        },
+        "credentials": {
+          "password": {
+            "label": "Wachtwoord",
+            "set": "Ingesteld",
+            "notSet": "Niet ingesteld",
+            "manage": "Wachtwoord wijzigen"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Ingesteld",
+            "notSet": "Niet ingesteld",
+            "manage": "Passkeys beheren"
+          }
+        }
       }
     },
     "settings": {
@@ -414,6 +464,7 @@
         "space": {
           "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
           "collaborationCalloutPublished": "Krijg een melding wanneer er een callout wordt gepubliceerd in een community waar ik lid van ben",
+          "collaborationCalloutReaction": "Ontvang een melding wanneer iemand op mijn Post reageert met een emoji",
           "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een post die ik volg",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
           "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een callout die ik volg",

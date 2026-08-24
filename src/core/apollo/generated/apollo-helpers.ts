@@ -977,6 +977,45 @@ export type ClassificationFieldPolicy = {
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ClassificationEntryKeySpecifier = (
+  | 'cardinality'
+  | 'createdDate'
+  | 'display'
+  | 'displayLabel'
+  | 'id'
+  | 'selectedValueIDs'
+  | 'selectedValues'
+  | 'sortOrder'
+  | 'updatedDate'
+  | 'values'
+  | ClassificationEntryKeySpecifier
+)[];
+export type ClassificationEntryFieldPolicy = {
+  cardinality?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  display?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayLabel?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedValueIDs?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedValues?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  values?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ClassificationTemplateContentKeySpecifier = (
+  | 'cardinality'
+  | 'values'
+  | ClassificationTemplateContentKeySpecifier
+)[];
+export type ClassificationTemplateContentFieldPolicy = {
+  cardinality?: FieldPolicy<any> | FieldReadFunction<any>;
+  values?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ClassificationValueKeySpecifier = ('id' | 'label' | ClassificationValueKeySpecifier)[];
+export type ClassificationValueFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  label?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CollaboraDocumentKeySpecifier = (
   | 'authorization'
   | 'createdBy'
@@ -2047,6 +2086,19 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPol
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier = (
+  | 'callout'
+  | 'emoji'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCollaborationCalloutReactionFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  emoji?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type InAppNotificationPayloadSpaceCollaborationPollKeySpecifier = (
   | 'callout'
   | 'poll'
@@ -2940,6 +2992,7 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
   modelCardEntry?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
+  | 'addClassificationEntryFromTemplate'
   | 'addIframeAllowedURL'
   | 'addNotificationEmailToBlacklist'
   | 'addPollOption'
@@ -2993,6 +3046,7 @@ export type MutationKeySpecifier = (
   | 'convertSpaceL2ToSpaceL1'
   | 'convertVirtualContributorToUseKnowledgeBase'
   | 'createCalloutOnCalloutsSet'
+  | 'createClassificationEntry'
   | 'createContributionOnCallout'
   | 'createConversation'
   | 'createDiscussion'
@@ -3017,6 +3071,7 @@ export type MutationKeySpecifier = (
   | 'deleteApplication'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
+  | 'deleteClassificationEntry'
   | 'deleteCollaboraDocument'
   | 'deleteContribution'
   | 'deleteConversation'
@@ -3112,6 +3167,9 @@ export type MutationKeySpecifier = (
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
+  | 'updateClassificationEntry'
+  | 'updateClassificationEntryDisplay'
+  | 'updateClassificationEntrySelection'
   | 'updateClassificationTagset'
   | 'updateCollaboraDocument'
   | 'updateCollaborationFromSpaceTemplate'
@@ -3166,6 +3224,7 @@ export type MutationKeySpecifier = (
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
+  addClassificationEntryFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addPollOption?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3219,6 +3278,7 @@ export type MutationFieldPolicy = {
   convertSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
   convertVirtualContributorToUseKnowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  createClassificationEntry?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3243,6 +3303,7 @@ export type MutationFieldPolicy = {
   deleteApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteClassificationEntry?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteConversation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3338,6 +3399,9 @@ export type MutationFieldPolicy = {
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationEntry?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationEntryDisplay?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationEntrySelection?: FieldPolicy<any> | FieldReadFunction<any>;
   updateClassificationTagset?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCollaborationFromSpaceTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4789,6 +4853,7 @@ export type SpaceFieldPolicy = {
 };
 export type SpaceAboutKeySpecifier = (
   | 'authorization'
+  | 'classifications'
   | 'createdDate'
   | 'guidelines'
   | 'id'
@@ -4804,6 +4869,7 @@ export type SpaceAboutKeySpecifier = (
 )[];
 export type SpaceAboutFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  classifications?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5098,6 +5164,7 @@ export type TaskFieldPolicy = {
 export type TemplateKeySpecifier = (
   | 'authorization'
   | 'callout'
+  | 'classification'
   | 'communityGuidelines'
   | 'contentSpace'
   | 'createdDate'
@@ -5113,6 +5180,7 @@ export type TemplateKeySpecifier = (
 export type TemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  classification?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   contentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5192,6 +5260,8 @@ export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'calloutTemplates'
   | 'calloutTemplatesCount'
+  | 'classificationTemplates'
+  | 'classificationTemplatesCount'
   | 'communityGuidelinesTemplates'
   | 'communityGuidelinesTemplatesCount'
   | 'createdDate'
@@ -5211,6 +5281,8 @@ export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  classificationTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  classificationTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5645,6 +5717,7 @@ export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
   | 'collaborationCalloutPostContributionComment'
   | 'collaborationCalloutPublished'
+  | 'collaborationCalloutReaction'
   | 'collaborationPollModifiedOnPollIVotedOn'
   | 'collaborationPollVoteAffectedByOptionChange'
   | 'collaborationPollVoteCastOnOwnPoll'
@@ -5659,6 +5732,7 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
   collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPostContributionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutReaction?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollModifiedOnPollIVotedOn?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollVoteAffectedByOptionChange?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollVoteCastOnOwnPoll?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6253,6 +6327,21 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ClassificationKeySpecifier | (() => undefined | ClassificationKeySpecifier);
     fields?: ClassificationFieldPolicy;
   };
+  ClassificationEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ClassificationEntryKeySpecifier | (() => undefined | ClassificationEntryKeySpecifier);
+    fields?: ClassificationEntryFieldPolicy;
+  };
+  ClassificationTemplateContent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ClassificationTemplateContentKeySpecifier
+      | (() => undefined | ClassificationTemplateContentKeySpecifier);
+    fields?: ClassificationTemplateContentFieldPolicy;
+  };
+  ClassificationValue?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ClassificationValueKeySpecifier | (() => undefined | ClassificationValueKeySpecifier);
+    fields?: ClassificationValueFieldPolicy;
+  };
   CollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CollaboraDocumentKeySpecifier | (() => undefined | CollaboraDocumentKeySpecifier);
     fields?: CollaboraDocumentFieldPolicy;
@@ -6740,6 +6829,13 @@ export type StrictTypedTypePolicies = {
       | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier
       | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy;
+  };
+  InAppNotificationPayloadSpaceCollaborationCalloutReaction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCollaborationCalloutReactionFieldPolicy;
   };
   InAppNotificationPayloadSpaceCollaborationPoll?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:

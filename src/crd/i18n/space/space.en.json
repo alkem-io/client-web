@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} members and {{organizations}} organisations in this space.",
-    "inviteMember": "Invite Member",
     "search": "Search members or organisations...",
     "filterAll": "All",
     "filterLead": "Lead",
@@ -411,7 +410,8 @@
         "why": "Why this subspace?",
         "who": "Who is involved?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Apply",
@@ -1027,5 +1027,15 @@
       "title": "No subspaces yet",
       "description": "This space has no subspaces yet."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
+  },
+  "parentStack": {
+    "goTo": "Go to {{name}}"
   }
 }

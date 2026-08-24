@@ -44,7 +44,7 @@ The banner `<div>` inside both header components is already `w-full`. We keep th
 - `flex items-center justify-between gap-4` keeps title left and buttons right; vertical alignment matches the `text-hero` baseline.
 - `flex-1 min-w-0` on the title cell is the canonical CSS recipe to allow `truncate` to work inside a flex parent — without `min-w-0`, the title would push the buttons off-screen on narrow viewports.
 - `shrink-0` on the button group prevents the buttons from being compressed.
-- Subspace adds a leading `shrink-0` avatar (56px) before the title (a third flex child); flex order: avatar → title → buttons.
+- ~~Subspace adds a leading `shrink-0` avatar (56px) before the title (a third flex child); flex order: avatar → title → buttons.~~ *(Superseded 2026-08-21: the avatar was removed; the row is title → buttons like the L0 header.)*
 
 **Alternatives considered**:
 - *CSS grid 3-column layout*: rejected. Flex is simpler for this row; grid offers no advantage when we have a deterministic three-element layout with one greedy middle cell.

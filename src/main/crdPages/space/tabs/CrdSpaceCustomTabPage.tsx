@@ -6,6 +6,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
@@ -20,7 +21,6 @@ import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 type CrdSpaceCustomTabPageProps = {
   sectionIndex: number;
@@ -118,6 +118,14 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
           onEditClick={
             permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
           }
+          actionsSlot={
+            canCreateCallout && (
+              <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateOpen(true)}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                {t('feed.addPost')}
+              </Button>
+            )
+          }
         >
           {/* The full post index is now behind this button — the heavy list query
               fires only when the dialog opens (feature 007). */}
@@ -133,17 +141,7 @@ export default function CrdSpaceCustomTabPage({ sectionIndex }: CrdSpaceCustomTa
       </SpaceSidebarPortal>
 
       <div className="space-y-6">
-        <SpaceTabActionHeader
-          description={tabDescription}
-          action={
-            canCreateCallout && (
-              <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
-                <Plus className="w-4 h-4" aria-hidden="true" />
-                {t('feed.addPost')}
-              </Button>
-            )
-          }
-        />
+        <TabStateHeader description={tabDescription} />
 
         {/* Scoped server search (FR-014): the term submits on Enter (FR-010) and
             tag pills ride the terms (FR-004). Replaces the old client-side,

@@ -157,7 +157,8 @@
     "sign-in": "Моля, влезете в системата, за да видите потребителите, свързани с тази $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
+    "lockout": "Акаунтът ви е временно заключен поради твърде много неуспешни опита за вход. Опитайте отново след {{duration}}.",
+    "lockoutRetry": "Опитайте отново",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
@@ -793,6 +794,10 @@
           "description": "{{triggeredByName}} публикува нов $t(common.post) в {{spaceLevel}}: {{spaceName}}, с име: {{calloutName}}.",
           "subject": "{{spaceName}} – Нов $t(common.post) е публикуван „{{calloutName}}“, хвърлете един поглед!"
         },
+        "SPACE_COLLABORATION_CALLOUT_REACTION": {
+          "description": "",
+          "subject": "<b>{{triggeredByName}}</b> реагира на вашия $t(common.post) с {{emoji}}"
+        },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} modified a $t(common.poll) you voted on",
           "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified"
@@ -1012,14 +1017,16 @@
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "invalid-credentials": "Въведеният имейл адрес или парола е невалиден. Моля, проверете вашите идентификационни данни и опитайте отново. Искате ли вместо това да се регистрирате? Можете да го направите, като кликнете върху връзката по-горе.",
       "login-flow-account-exists": "Този имейл вече е свързан с $t(common.account). Ако преди това сте се регистрирали през LinkedIn, GitHub или Microsoft, моля използвайте този метод за вход. В противен случай, нулирайте паролата си.",
-      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "oidc-account-linking-conflict": "Опитахте да продължите с {{provider}}, но вече съществува акаунт с този имейл. Влезте в този акаунт по-долу, за да потвърдите, че сте вие - {{provider}} ще бъде свързан към него и занапред ще можете да влизате и по двата начина.",
       "pick-password": "Изберете парола за вашия $t(common.account)",
       "property-missing": "{{field}} is required.",
       "recovery-flow-expired": "Този линк за нулиране на парола е изтекъл. Моля, поискайте нов, като въведете отново вашия имейл адрес.",
       "request-recover-password": "<strong>Имейл, съдържащ връзка за възстановяване, беше изпратен до посочения от вас имейл адрес.</strong><br /> <br/>Ако не сте получили имейл, моля проверете следното:<br /> <br/><li> <strong>Проверете правописа</strong> на имейл адреса.</li><li> <strong>Уверете се, че използвате имейл адреса</strong>, с който сте се регистрирали.</li><li> <strong>Проверете папката със спам или нежелана поща</strong>, в случай че имейла е филтриран.</li><li> <strong>Aко сте се регистрирали чрез LinkedIn, Microsoft или друга социална мрежа,</strong> възстановяването на парола чрез имейл няма да работи. Моля, използвайте съответната опция за вход през социална мрежа.</li><br/><br/><i>Забележка: Това не потвърждава, че $t(common.account) е регистриран с този имейл.</i>",
       "successfully-recovered-password": "Моля, въведете нова парола в рамките на следващите 15 минути, за да завършите нулирането на паролата си.",
       "verification-flow-continue": "Продължете",
-      "verification-flow-expired": "Връзката за потвърждение е изтекла. Моля, поискайте нова, като въведете отново вашия имейл адрес."
+      "verification-flow-expired": "Връзката за потвърждение е изтекла. Моля, поискайте нова, като въведете отново вашия имейл адрес.",
+      "settings-changes-saved": "Промените ви бяха запазени!",
+      "confirm-it-is-you": "Моля, потвърдете това действие, като удостоверите, че сте вие."
     }
   },
   "languages": {

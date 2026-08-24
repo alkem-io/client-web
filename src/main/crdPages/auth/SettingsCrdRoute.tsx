@@ -7,6 +7,7 @@ import { useQueryParams } from '@/core/routing/useQueryParams';
 import { SettingsCard } from '@/crd/components/auth/SettingsCard';
 import { AuthShellWrapper } from './AuthShellWrapper';
 import { flowDescriptorAdapter } from './flowDescriptorAdapter';
+import { securitySettingsResumeTarget } from './settingsFlowSecurityReturn';
 import { useTranslateDescriptor } from './useKratosMessageCopy';
 
 /**
@@ -36,6 +37,17 @@ export function SettingsCrdRoute() {
 function SettingsCrdPage({ flowId }: { flowId: string }) {
   const { flow: settingsFlow, loading } = useKratosFlow(FlowTypeName.Settings, flowId);
   const translateDescriptor = useTranslateDescriptor();
+
+  // Kratos redirects *errored* settings flows here (its global `ui_url`),
+  // regardless of the flow's own `return_to` — which is honoured only on
+  // success. A Connected Accounts link/unlink attempt that Kratos refused
+  // (e.g. the provider identity is already connected to a different account)
+  // must resume on the Security settings page that owns it — not render as
+  // this recovery-oriented set-new-password card (FR-019).
+  const resumeTarget = settingsFlow ? securitySettingsResumeTarget(settingsFlow) : null;
+  if (resumeTarget) {
+    return <Navigate to={resumeTarget} replace={true} />;
+  }
 
   const baseDescriptor = settingsFlow ? flowDescriptorAdapter(settingsFlow, 'settings') : undefined;
   const descriptor = baseDescriptor ? translateDescriptor(baseDescriptor) : undefined;

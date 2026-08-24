@@ -40,35 +40,57 @@ export function TemplatePreviewDialog({
             ScrollArea is disabled here (`max-h-none`) so the entire dialog body scrolls as a single
             unit — one scrollbar instead of nested ones; left and right columns scroll together. */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {header.type === 'classification' ? (
+            /* Classification (product#2161 design 07): no banner column — description
+               above the full-width numbered value grid. */
             <div className="space-y-4">
-              <div className="aspect-video w-full overflow-hidden rounded-md border">
-                {header.bannerUrl ? (
-                  <img src={header.bannerUrl} alt="" className="size-full object-cover" />
-                ) : (
-                  <div className="size-full flex items-center justify-center" style={backgroundGradient(header.color)}>
-                    <TypeIcon aria-hidden="true" className="size-10 text-white/70" />
-                  </div>
-                )}
-              </div>
-
               {header.description && (
                 <MarkdownContent content={header.description} className="text-body text-muted-foreground" />
               )}
-            </div>
-
-            <div className="min-w-0">
               {content ? (
                 <TemplateContentPreview content={content} loading={contentLoading} className="max-h-none pr-0" />
               ) : (
                 <TemplateContentPreview
-                  content={{ type: 'post', defaultDescription: '' }}
+                  content={{ type: 'classification', cardinality: 'MULTI_SELECT', values: [] }}
                   loading={true}
                   className="max-h-none pr-0"
                 />
               )}
             </div>
-          </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-4">
+                <div className="aspect-video w-full overflow-hidden rounded-md border">
+                  {header.bannerUrl ? (
+                    <img src={header.bannerUrl} alt="" className="size-full object-cover" />
+                  ) : (
+                    <div
+                      className="size-full flex items-center justify-center"
+                      style={backgroundGradient(header.color)}
+                    >
+                      <TypeIcon aria-hidden="true" className="size-10 text-white/70" />
+                    </div>
+                  )}
+                </div>
+
+                {header.description && (
+                  <MarkdownContent content={header.description} className="text-body text-muted-foreground" />
+                )}
+              </div>
+
+              <div className="min-w-0">
+                {content ? (
+                  <TemplateContentPreview content={content} loading={contentLoading} className="max-h-none pr-0" />
+                ) : (
+                  <TemplateContentPreview
+                    content={{ type: 'post', defaultDescription: '' }}
+                    loading={true}
+                    className="max-h-none pr-0"
+                  />
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="px-6 py-4 border-t">

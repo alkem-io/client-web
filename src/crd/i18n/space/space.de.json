@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} Mitglieder und {{organizations}} Organisationen in diesem Bereich.",
-    "inviteMember": "Mitglied einladen",
     "search": "Mitglieder oder Organisationen suchen...",
     "filterAll": "Alle",
     "filterLead": "Leiter",
@@ -411,7 +410,8 @@
         "why": "Warum dieser Unterbereich?",
         "who": "Wer ist beteiligt?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Bewerben",
@@ -1027,5 +1027,15 @@
       "title": "Noch keine Unterbereiche",
       "description": "Dieser Bereich hat noch keine Unterbereiche."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Klassifikationen"
+  },
+  "parentStack": {
+    "goTo": "Gehe zu {{name}}"
   }
 }

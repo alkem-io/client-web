@@ -144,6 +144,9 @@ export function SpacePage() {
       { name: 'Municipal Transition Playbook', uri: 'https://example.com/playbook', description: 'Step-by-step guide for city-level energy transitions' },
       { name: 'Community Solar Toolkit', uri: 'https://example.com/solar-toolkit' },
     ],
+    classifications: [
+      { id: 'c1', displayLabel: 'SDGs', values: ['7 · Affordable and Clean Energy', '11 · Sustainable Cities'], hidden: false },
+    ],
   };
 
   const openDialog = (post: PostCardData) => {
