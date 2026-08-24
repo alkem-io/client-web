@@ -73,6 +73,10 @@ export function CalloutContextMenu({
   onShare,
 }: CalloutContextMenuProps) {
   const { t } = useTranslation('crd-space');
+  // The manage-columns label is a task-board string — read it from its own
+  // namespace (the column dialog uses the same key) rather than duplicating it
+  // under crd-space.
+  const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   return (
     <DropdownMenu>
@@ -97,7 +101,7 @@ export function CalloutContextMenu({
         {editable && onManageColumns && (
           <DropdownMenuItem onClick={onManageColumns}>
             <Columns3 className="w-4 h-4 mr-2" aria-hidden="true" />
-            {t('taskBoard.manageColumns')}
+            {tTaskBoard('columns.manage')}
           </DropdownMenuItem>
         )}
 

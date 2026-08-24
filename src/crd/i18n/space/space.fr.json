@@ -1028,8 +1028,5 @@
       "title": "Aucun sous-espace pour le moment",
       "description": "Cet espace n'a pas encore de sous-espaces."
     }
-  },
-  "taskBoard": {
-    "manageColumns": "Gérer les colonnes"
   }
 }

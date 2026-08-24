@@ -7,7 +7,7 @@
   "columns": {
     "manage": "Kolommen beheren",
     "title": "Kolommen van het taakbord",
-    "description": "Voeg kolommen van dit taakbord toe, hernoem, herorden en verwijder ze.",
+    "description": "Voeg kolommen toe aan dit taakbord en hernoem, herorden of verwijder ze.",
     "add": "Kolom toevoegen",
     "namePlaceholder": "Kolomnaam",
     "save": "Opslaan",

@@ -1028,8 +1028,5 @@
       "title": "No subspaces yet",
       "description": "This space has no subspaces yet."
     }
-  },
-  "taskBoard": {
-    "manageColumns": "Manage columns"
   }
 }
