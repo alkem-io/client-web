@@ -79,3 +79,44 @@ describe('mapUserNotifications — conversation-message rows (US3, contract C-5)
     expect(direct?.channels.push).toBe(false);
   });
 });
+
+describe('mapUserNotifications — callout reaction row', () => {
+  const serverWithReaction: NotificationSettings = {
+    space: {
+      collaborationCalloutReaction: { email: false, inApp: true, push: true },
+    },
+  };
+
+  const findSpaceGroup = (server: NotificationSettings) => {
+    const { groups } = mapUserNotifications(server, new Map(), noPrivileges, t);
+    const spaceGroup = groups.find(group => group.groupId === 'space');
+    if (!spaceGroup) throw new Error('space group missing');
+    return spaceGroup;
+  };
+
+  it('exposes the collaborationCalloutReaction row in the space group', () => {
+    const spaceGroup = findSpaceGroup(serverWithReaction);
+    const properties = spaceGroup.rows.map(row => row.property);
+    expect(properties).toContain('collaborationCalloutReaction');
+  });
+
+  it('resolves channels from the server value: email off, inApp on, push on', () => {
+    const spaceGroup = findSpaceGroup(serverWithReaction);
+    const row = spaceGroup.rows.find(row => row.property === 'collaborationCalloutReaction');
+    expect(row?.channels).toEqual({ email: false, inApp: true, push: true });
+  });
+
+  it('defaults all channels to false when the server has not yet backfilled the row', () => {
+    const spaceGroup = findSpaceGroup({ space: {} });
+    const row = spaceGroup.rows.find(row => row.property === 'collaborationCalloutReaction');
+    expect(row?.channels).toEqual({ email: false, inApp: false, push: false });
+  });
+
+  it('applies optimistic overrides on the reaction row', () => {
+    const overrides = new Map<string, boolean>([['space::collaborationCalloutReaction::push', false]]);
+    const { groups } = mapUserNotifications(serverWithReaction, overrides, noPrivileges, t);
+    const spaceGroup = groups.find(g => g.groupId === 'space');
+    const row = spaceGroup?.rows.find(r => r.property === 'collaborationCalloutReaction');
+    expect(row?.channels.push).toBe(false);
+  });
+});

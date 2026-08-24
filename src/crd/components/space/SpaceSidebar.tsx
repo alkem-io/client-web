@@ -69,6 +69,9 @@ type SpaceSidebarProps = {
   /** Community-variant only: the consumer renders <CommunityGuidelinesBlock> here.
    *  Kept as a slot so the sidebar stays free of guidelines data/edit wiring. */
   guidelinesSlot?: ReactNode;
+  /** Primary tab actions (Add Post, Create Subspace, …) rendered below the
+   *  info/about block. The consumer gates each button on its own permission. */
+  actionsSlot?: ReactNode;
   // Extra
   children?: ReactNode;
   className?: string;
@@ -102,6 +105,7 @@ export function SpaceSidebar({
   showVirtualContributors = true,
   onInviteVc,
   guidelinesSlot,
+  actionsSlot,
   children,
   className,
   locale,
@@ -119,6 +123,10 @@ export function SpaceSidebar({
           <span className="truncate text-body-emphasis">{t('sidebar.aboutSpace')}</span>
         </Button>
       )}
+
+      {/* Primary tab actions (Add Post, Create Subspace, …) — the consumer decides
+          which buttons render here; buttons stack full-width like the other sidebar CTAs. */}
+      {actionsSlot && <div className="flex flex-col gap-2">{actionsSlot}</div>}
 
       {/* Variant-specific content */}
       {variant === 'home' && (

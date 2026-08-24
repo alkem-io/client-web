@@ -151,6 +151,16 @@ export const mapUserNotifications = (
         ),
       },
       {
+        property: 'collaborationCalloutReaction',
+        label: t('user.notifications.rows.space.collaborationCalloutReaction'),
+        channels: resolveChannels(
+          server.space?.collaborationCalloutReaction,
+          overrides,
+          'space',
+          'collaborationCalloutReaction'
+        ),
+      },
+      {
         property: 'collaborationCalloutPostContributionComment',
         label: t('user.notifications.rows.space.collaborationCalloutPostContributionComment'),
         channels: resolveChannels(

@@ -57,7 +57,7 @@ export function InlineWhiteboardPreview({
         )}
       >
         {previewImageUrl ? (
-          <img src={previewImageUrl} alt={imageAlt ?? ''} className="w-full h-full object-contain bg-background" />
+          <img src={previewImageUrl} alt={imageAlt ?? ''} className="w-full h-full object-contain bg-card" />
         ) : (
           <Presentation className="size-12 text-muted-foreground/50" aria-hidden="true" />
         )}
@@ -72,7 +72,7 @@ export function InlineWhiteboardPreview({
           disabled={disabled}
           aria-label={deleteLabel}
           className={cn(
-            'absolute top-2 right-2 size-8 flex items-center justify-center rounded-md bg-background border border-border shadow-sm',
+            'absolute top-2 right-2 size-8 flex items-center justify-center rounded-md bg-card border border-border shadow-sm',
             'text-muted-foreground hover:text-destructive hover:border-destructive/50 transition-colors',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
             'disabled:cursor-not-allowed disabled:opacity-60'

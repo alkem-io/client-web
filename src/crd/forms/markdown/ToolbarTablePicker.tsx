@@ -51,7 +51,7 @@ export function ToolbarTablePicker({ editor }: ToolbarTablePickerProps) {
           onClick={() => handleInsert(r, c)}
           aria-label={t('editor.table.cellAria', { rows: r, cols: c })}
           className={`size-5 border border-border transition-colors ${
-            highlighted ? 'bg-primary/70' : 'bg-background hover:bg-muted'
+            highlighted ? 'bg-primary/70' : 'bg-input-background hover:bg-muted'
           }`}
         />
       );

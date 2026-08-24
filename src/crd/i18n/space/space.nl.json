@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
-    "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
     "filterLead": "Lead",
@@ -411,7 +410,8 @@
         "why": "Waarom deze subspace?",
         "who": "Wie is erbij betrokken?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Toegang aanvragen",
@@ -1027,5 +1027,15 @@
       "title": "Nog geen subspaces",
       "description": "Deze space heeft nog geen subspaces."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classificaties"
+  },
+  "parentStack": {
+    "goTo": "Ga naar {{name}}"
   }
 }

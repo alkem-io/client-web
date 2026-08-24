@@ -14,6 +14,7 @@ export interface NotificationChannels {
 export interface SpaceNotificationSettings {
   communicationUpdates?: NotificationChannels;
   collaborationCalloutPublished?: NotificationChannels;
+  collaborationCalloutReaction?: NotificationChannels;
   collaborationCalloutPostContributionComment?: NotificationChannels;
   collaborationCalloutContributionCreated?: NotificationChannels;
   collaborationCalloutComment?: NotificationChannels;

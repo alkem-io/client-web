@@ -114,7 +114,7 @@ export function LinksPrePopulateRows({
                   aria-label={t('contributionSettings.prePopulate.titleLabel')}
                   aria-invalid={!!titleError}
                   aria-describedby={titleError ? `link-row-${index}-title-error` : undefined}
-                  className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                  className="w-full h-9 px-3 border border-border rounded-md bg-input-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
                 />
                 {titleError && (
                   <p id={`link-row-${index}-title-error`} className="text-caption text-destructive" aria-live="polite">
@@ -135,7 +135,7 @@ export function LinksPrePopulateRows({
                     aria-label={t('contributionSettings.prePopulate.urlLabel')}
                     aria-invalid={!!urlError}
                     aria-describedby={urlError ? `link-row-${index}-url-error` : undefined}
-                    className="flex-1 h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                    className="flex-1 h-9 px-3 border border-border rounded-md bg-input-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
                   />
                   {onFileUpload && (
                     <RowAttachFileButton
@@ -159,7 +159,7 @@ export function LinksPrePopulateRows({
                   placeholder={t('contributionSettings.prePopulate.descriptionPlaceholder')}
                   disabled={disabled}
                   aria-label={t('contributionSettings.prePopulate.descriptionLabel')}
-                  className="w-full h-9 px-3 border border-border rounded-md bg-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
+                  className="w-full h-9 px-3 border border-border rounded-md bg-input-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-60"
                 />
               </div>
               <Button

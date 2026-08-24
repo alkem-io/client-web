@@ -989,5 +989,55 @@
       "title": "Über",
       "subtitle": "Definieren Sie den Zweck, die Motivation und das Zielpublikum Ihres Spaces."
     }
+  },
+  "classifications": {
+    "sectionTitle": "Klassifikationen",
+    "sectionDescription": "Klassifiziere deinen Space mit strukturierten Vokabularen (z. B. SDGs, Sektor) für Auffindbarkeit und Berichte.",
+    "addButton": "Klassifikation hinzufügen",
+    "picker": {
+      "title": "Add a classification",
+      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "platformSection": "Platform-wide",
+      "spaceSection": "This Space's library",
+      "emptyState": {
+        "title": "No Classification Templates yet",
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+      },
+      "conflict": {
+        "title": "That name is already in use",
+        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "fieldLabel": "Display label",
+        "retry": "Add with this label"
+      },
+      "cancel": "Cancel",
+      "searchPlaceholder": "Vorlagen durchsuchen…",
+      "noMatches": "Keine Vorlagen passen zu \"{{query}}\".",
+      "multiSelect": "Mehrfach",
+      "singleSelect": "Einzeln"
+    },
+    "valueSelector": {
+      "noneSelected": "No values selected yet"
+    },
+    "display": {
+      "toggleLabel": "Show on the Space page",
+      "hiddenHint": "Not shown on the Space page"
+    },
+    "remove": {
+      "menuLabel": "Remove classification",
+      "confirmTitle": "Remove this classification?",
+      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
+      "confirmButton": "Remove"
+    },
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Mehrfachauswahl",
+      "singleSelect": "Einzelauswahl",
+      "selectedCount_one": "{{count}} ausgewählt",
+      "selectedCount_other": "{{count}} ausgewählt",
+      "actions": "Klassifikations-Aktionen: {{label}}",
+      "selectValues": "Werte auswählen…",
+      "deselectValue": "{{label}} abwählen"
+    },
+    "removedConcurrently": "Diese Klassifikation wurde von jemand anderem entfernt. Die Liste wurde aktualisiert."
   }
 }

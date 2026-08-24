@@ -1,4 +1,4 @@
-import { Plus, UserPlus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
@@ -7,6 +7,7 @@ import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDia
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import type { LeadItem } from '@/crd/components/space/sidebar/InfoBlock';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
@@ -17,7 +18,6 @@ import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConn
 import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdSpaceCommunity } from '../hooks/useCrdSpaceCommunity';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceCommunityPage() {
   const { t } = useTranslation(['crd-common', 'crd-space']);
@@ -95,31 +95,19 @@ export default function CrdSpaceCommunityPage() {
           onVirtualContributorClick={href => navigate(href)}
           onInviteVc={handleInviteVc}
           guidelinesSlot={guidelinesSlot}
+          actionsSlot={
+            canCreateCallout && (
+              <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateOpen(true)}>
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                {t('crd-space:feed.addPost')}
+              </Button>
+            )
+          }
         />
       </SpaceSidebarPortal>
 
       <div className="space-y-8">
-        <SpaceTabActionHeader
-          description={tabDescription}
-          action={
-            (canCreateCallout || (canInvite && handleInvite)) && (
-              <div className="flex items-center gap-2">
-                {canInvite && handleInvite && (
-                  <Button size="sm" className="gap-2" onClick={handleInvite}>
-                    <UserPlus className="w-4 h-4" aria-hidden="true" />
-                    {t('crd-space:members.inviteMember')}
-                  </Button>
-                )}
-                {canCreateCallout && (
-                  <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
-                    <Plus className="w-4 h-4" aria-hidden="true" />
-                    {t('crd-space:feed.addPost')}
-                  </Button>
-                )}
-              </div>
-            )
-          }
-        />
+        <TabStateHeader description={tabDescription} />
 
         <CalloutListConnector
           callouts={callouts}

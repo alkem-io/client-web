@@ -794,6 +794,10 @@
           "description": "{{triggeredByName}} heeft een nieuwe $t(common.post) gepubliceerd in {{spaceLevel}}: {{spaceName}}, met naam: {{calloutName}}.",
           "subject": "{{spaceName}} - Nieuwe $t(common.post) is gepubliceerd\"{{calloutName}}\", neem een kijke!"
         },
+        "SPACE_COLLABORATION_CALLOUT_REACTION": {
+          "description": "",
+          "subject": "<b>{{triggeredByName}}</b> heeft gereageerd op jouw $t(common.post) met {{emoji}}"
+        },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} heeft een $t(common.poll) gewijzigd waarop je hebt gestemd",
           "subject": "De $t(common.poll) \"{{calloutName}}\" in {{spaceName}} is gewijzigd"

@@ -794,6 +794,10 @@
           "description": "{{triggeredByName}} publicó un nuevo $t(common.post) en {{spaceLevel}}: {{spaceName}}, con el nombre: {{calloutName}}.",
           "subject": "{{spaceName}} - Se ha publicado un nuevo $t(common.post) \"{{calloutName}}\", ¡échale un vistazo!"
         },
+        "SPACE_COLLABORATION_CALLOUT_REACTION": {
+          "description": "",
+          "subject": "<b>{{triggeredByName}}</b> reaccionó a tu $t(common.post) con {{emoji}}"
+        },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} modified a $t(common.poll) you voted on",
           "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified"

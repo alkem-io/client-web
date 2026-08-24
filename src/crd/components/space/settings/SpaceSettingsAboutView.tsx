@@ -1,6 +1,8 @@
-import { CropIcon, ImageIcon } from 'lucide-react';
+import { CropIcon, ImageIcon, Plus } from 'lucide-react';
 import { useId, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ClassificationEntryCard } from '@/crd/components/classification/ClassificationEntryCard';
+import type { ClassificationEntryData } from '@/crd/components/classification/types';
 import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
 import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
 import { InlineEditText } from '@/crd/components/common/InlineEditText';
@@ -49,6 +51,19 @@ export type SpaceSettingsAboutViewProps = AboutFormValues & {
   referenceUploadAccept?: string;
   onSaveSection: (section: AboutSectionKey) => void;
   className?: string;
+
+  // ── Classifications (D1) — each action commits immediately, FR-006a; never buffered ──
+  classifications: ClassificationEntryData[];
+  /** Entry ids with a selection write in flight — the entry's value selector renders disabled. */
+  classificationSelectionPendingIds: string[];
+  /** Step A — opens the template picker (owned by the connector). */
+  onAddClassification: () => void;
+  /** Step B — full-replacement selection write. */
+  onSelectClassificationValues: (entryId: string, selectedValueIDs: string[]) => void;
+  /** The shown/hidden toggle (FR-010b/FR-010d) — worded "not shown on the Space page", never "private". */
+  onToggleClassificationDisplay: (entryId: string, display: boolean) => void;
+  /** Opens the removal confirmation (owned by the connector, FR-014b). */
+  onRequestRemoveClassification: (entryId: string) => void;
 } & MarkdownUploadProps;
 
 export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
@@ -83,6 +98,12 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
     onImageUpload,
     iframeAllowedUrls,
     onError,
+    classifications,
+    classificationSelectionPendingIds,
+    onAddClassification,
+    onSelectClassificationValues,
+    onToggleClassificationDisplay,
+    onRequestRemoveClassification,
   } = props;
   // Canonical visual fields (see spec 100-space-header-layout § "Visual fields — canonical usage"):
   //   - L0: page banner + cardBanner only — L0 has NO avatar concept (L0 cards show title + cardBanner)
@@ -313,6 +334,47 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
               dirty={!!dirtyByField.tags}
               status={saveStatusByField.tags ?? { kind: 'idle' }}
               onSave={() => onSaveSection('tags')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Classifications (D1, product#2161 design 01) */}
+          <FieldSection id="classifications">
+            <FieldLabel>{t('classifications.sectionTitle')}</FieldLabel>
+            {classifications.length > 0 && (
+              <div className="mt-4 space-y-4">
+                {classifications.map(entry => (
+                  <ClassificationEntryCard
+                    key={entry.id}
+                    entry={entry}
+                    selectionPending={classificationSelectionPendingIds.includes(entry.id)}
+                    onSelectValues={onSelectClassificationValues}
+                    onToggleDisplay={onToggleClassificationDisplay}
+                    onRequestRemove={onRequestRemoveClassification}
+                  />
+                ))}
+              </div>
+            )}
+            {/* Below the list, per design 01 — Step A entry point. */}
+            <Button type="button" variant="outline" size="sm" className="mt-4" onClick={onAddClassification}>
+              <Plus className="size-3.5 mr-1.5" aria-hidden="true" />
+              {t('classifications.addButton')}
+            </Button>
+
+            {/*
+             * Never dirty — each classification action commits on its own, immediately (FR-006a),
+             * so there is nothing to buffer and no manual Save button to show. Reusing FieldFooter
+             * here only surfaces the transient saving/saved feedback for the in-flight selection
+             * write (see `classificationSelectionPendingIds` above), the same status shape every
+             * other About section already uses.
+             */}
+            <FieldFooter
+              hint={t('classifications.sectionDescription')}
+              dirty={false}
+              status={saveStatusByField.classifications ?? { kind: 'idle' }}
+              onSave={() => {}}
               t={t}
             />
           </FieldSection>

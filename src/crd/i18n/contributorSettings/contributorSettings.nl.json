@@ -464,6 +464,7 @@
         "space": {
           "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
           "collaborationCalloutPublished": "Krijg een melding wanneer er een callout wordt gepubliceerd in een community waar ik lid van ben",
+          "collaborationCalloutReaction": "Ontvang een melding wanneer iemand op mijn Post reageert met een emoji",
           "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een post die ik volg",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
           "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een callout die ik volg",

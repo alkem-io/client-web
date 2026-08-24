@@ -464,6 +464,7 @@
         "space": {
           "communicationUpdates": "Recibir una notificación cuando se comparte una nueva comunicación en una comunidad",
           "collaborationCalloutPublished": "Recibir una notificación cuando se publica una llamada en una comunidad de la que soy miembro",
+          "collaborationCalloutReaction": "Recibir una notificación cuando alguien reacciona a mi Post con un emoji",
           "collaborationCalloutPostContributionComment": "Recibir una notificación cuando se comenta una publicación que sigo",
           "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
           "collaborationCalloutComment": "Recibir una notificación cuando se añade un nuevo comentario a una llamada que sigo",
