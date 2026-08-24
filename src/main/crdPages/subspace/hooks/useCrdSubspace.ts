@@ -4,7 +4,7 @@ import {
   useSpaceDefaultTemplatesQuery,
   useSubspacePageQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
+import { SpaceLevel, TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import type { ParentSpaceStackItem } from '@/crd/components/space/ParentSpaceStack';
 import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
 import type { SubspaceHeaderActionsData } from '@/crd/components/space/SubspaceHeader';
@@ -12,6 +12,7 @@ import type { SubspaceSidebarData } from '@/crd/components/space/SubspaceSidebar
 import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import useApplicationButton from '@/domain/access/ApplicationsAndInvitations/useApplicationButton';
+import { useCalloutsSetAuthorization } from '@/domain/collaboration/calloutsSet/authorization/useCalloutsSetAuthorization';
 import { filterVisibleStates } from '@/domain/collaboration/InnovationFlow/utils/filterVisibleStates';
 import useSpaceDashboardNavigation from '@/domain/space/components/spaceDashboardNavigation/useSpaceDashboardNavigation';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -112,10 +113,9 @@ export function useCrdSubspace(): CrdSubspacePageData {
   const collaborationId = subspacePageData?.lookup.space?.collaboration.id;
   const calloutsSetId = subspacePageData?.lookup.space?.collaboration.calloutsSet.id;
   // Same gate every L0 space tab uses for Add Post: CreateCallout on the calloutsSet.
-  const canCreateCallout =
-    subspacePageData?.lookup.space?.collaboration.calloutsSet.authorization?.myPrivileges?.includes(
-      AuthorizationPrivilege.CreateCallout
-    ) ?? false;
+  // Single source of truth — the same query useCalloutsSet fires on the callouts
+  // page, so Apollo serves both from one request/cache entry.
+  const { canCreateCallout } = useCalloutsSetAuthorization({ calloutsSetId });
   // The SubspacePage query already fetches templatesManager.templatesSet.id — surface it
   // so the Create-Subspace picker shows this space's own Space templates (D21).
   const templatesSetId = subspacePageData?.lookup.space?.templatesManager?.templatesSet?.id;
