@@ -75,7 +75,7 @@ export function CalloutCollaboraPreview({
         )}
       </div>
       <div className="absolute top-3 right-3">
-        <span className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-caption text-foreground shadow-sm">
+        <span className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-caption text-foreground shadow-sm">
           <Icon className={cn('w-3.5 h-3.5', accentColor)} aria-hidden="true" />
           {typeLabel}
         </span>

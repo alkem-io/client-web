@@ -1794,6 +1794,11 @@ export const UserSettingsFragmentFragmentDoc = gql`
         inApp
         push
       }
+      collaborationCalloutReaction {
+        email
+        inApp
+        push
+      }
       collaborationCalloutComment {
         email
         inApp
@@ -2475,6 +2480,10 @@ export const SubspacePageSpaceFragmentDoc = gql`
     id
     calloutsSet {
       id
+      authorization {
+        id
+        myPrivileges
+      }
     }
   }
   templatesManager {
@@ -3707,6 +3716,32 @@ export const InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentD
   }
 }
     ${SpaceNotificationFragmentDoc}`;
+export const InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc = gql`
+    fragment InAppNotificationPayloadSpaceCollaborationCalloutReaction on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+  type
+  emoji
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
+    }
+    reactionsSummary {
+      total
+      emojis
+      myReactionEmoji
+      allowedEmojis
+    }
+  }
+  space {
+    ...spaceNotification
+  }
+}
+    ${SpaceNotificationFragmentDoc}`;
 export const InAppNotificationPayloadSpaceCollaborationPollFragmentDoc = gql`
     fragment InAppNotificationPayloadSpaceCollaborationPoll on InAppNotificationPayloadSpaceCollaborationPoll {
   space {
@@ -3808,6 +3843,9 @@ export const InAppNotificationAllTypesFragmentDoc = gql`
     ... on InAppNotificationPayloadSpaceCommunityCalendarEventComment {
       ...InAppNotificationPayloadSpaceCommunityCalendarEventComment
     }
+    ... on InAppNotificationPayloadSpaceCollaborationCalloutReaction {
+      ...InAppNotificationPayloadSpaceCollaborationCalloutReaction
+    }
     ... on InAppNotificationPayloadSpaceCollaborationPoll {
       ...InAppNotificationPayloadSpaceCollaborationPoll
     }
@@ -3835,6 +3873,7 @@ ${InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragmentDoc}
 ${InAppNotificationPayloadVirtualContributorFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventFragmentDoc}
 ${InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragmentDoc}
+${InAppNotificationPayloadSpaceCollaborationCalloutReactionFragmentDoc}
 ${InAppNotificationPayloadSpaceCollaborationPollFragmentDoc}`;
 export const UrlResolverResultFragmentDoc = gql`
     fragment UrlResolverResult on UrlResolverQueryResults {
@@ -15263,6 +15302,11 @@ export const UpdateUserSettingsDocument = gql`
             push
           }
           collaborationCalloutPublished {
+            email
+            inApp
+            push
+          }
+          collaborationCalloutReaction {
             email
             inApp
             push

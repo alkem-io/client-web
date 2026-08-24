@@ -141,7 +141,7 @@ export function DocumentImportZone({
     return (
       <div
         className={cn(
-          'flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-4 py-3',
+          'flex items-center justify-between gap-3 rounded-lg border border-border bg-input-background px-4 py-3',
           className
         )}
       >
@@ -191,7 +191,7 @@ export function DocumentImportZone({
             ? 'border-border bg-muted/20 cursor-not-allowed opacity-50'
             : isDragOver
               ? 'border-primary bg-primary/5 cursor-copy'
-              : 'border-border bg-background hover:border-foreground/30 hover:bg-muted/40 cursor-pointer'
+              : 'border-border bg-input-background hover:border-foreground/30 hover:bg-muted/40 cursor-pointer'
         )}
       >
         <Upload className="h-6 w-6 text-muted-foreground" aria-hidden="true" />

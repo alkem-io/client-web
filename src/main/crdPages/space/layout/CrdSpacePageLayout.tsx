@@ -18,6 +18,7 @@ import type { BreadcrumbTrailItem } from '@/crd/components/common/BreadcrumbsTra
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { MobileSidebarDrawer } from '@/crd/components/common/MobileSidebarDrawer';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
+import { HeaderActionIcons } from '@/crd/components/space/HeaderActionIcons';
 import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
@@ -26,9 +27,11 @@ import {
   type SpaceSettingsTabDescriptor,
   SpaceSettingsTabStrip,
 } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
-import { useScreenSize } from '@/crd/hooks/useMediaQuery';
+import { useEdgeSwipe } from '@/crd/hooks/useEdgeSwipe';
+import { useMediaQuery, useScreenSize } from '@/crd/hooks/useMediaQuery';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
+import { getInitials } from '@/crd/lib/getInitials';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useVideoCall } from '@/domain/space/hooks/useVideoCall';
@@ -48,6 +51,7 @@ import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
 import { CalloutShareOnAlkemioForm } from '../callout/CalloutShareOnAlkemioForm';
 import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
+import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
 
@@ -63,6 +67,7 @@ export default function CrdSpacePageLayout() {
   const { pathname } = useLocation();
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [activityDialogOpen, setActivityDialogOpen] = useState(false);
+  const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { activeTab: activeSettingsTab, setActiveTab: setActiveSettingsTab } = useSpaceSettingsTab();
   // One guard instance, shared with the Settings page (rendered via <Outlet>)
@@ -105,6 +110,12 @@ export default function CrdSpacePageLayout() {
   const spaceDisplayName = space.about.profile.displayName;
   const spaceUrl = space.about.profile.url ?? '';
 
+  // Edge-swipe from the left opens the mobile sidebar drawer — same drawer the
+  // hamburger triggers. Only armed while the drawer exists: below lg (the
+  // desktop sidebar takes over at lg+) and off settings (no drawer there).
+  const belowLg = useMediaQuery('(max-width: 1023px)');
+  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && isLevelZero && !isOnSettings });
+
   if (resolvingUrl || loadingSpace) {
     return <LoadingSpinner />;
   }
@@ -142,6 +153,8 @@ export default function CrdSpacePageLayout() {
   const settingsHref = space.about.profile.url ? buildSettingsUrl(space.about.profile.url) : undefined;
 
   const headerActions = {
+    showInfo: true,
+    onInfoClick: () => setAboutDialogOpen(true),
     showActivity: true,
     showVideoCall: isVideoCallEnabled && !!videoCallUrl,
     videoCallUrl: videoCallUrl || undefined,
@@ -154,6 +167,11 @@ export default function CrdSpacePageLayout() {
     onShareClick: () => setShareDialogOpen(true),
     onSettingsClick: () => settingsHref && navigate(settingsHref),
     onToggleFullWidth: toggleFullWidth,
+    // Tablet (640–1023px) hamburger: the desktop sidebar is hidden below lg and
+    // the phone bottom bar (which has its own trigger) only renders below sm,
+    // so this is the only *visible* trigger for the sidebar drawer at those
+    // widths (the left-edge swipe gesture also opens it on touch devices).
+    onMenuClick: () => setMobileMenuOpen(true),
   };
 
   if (!isLevelZero) {
@@ -193,16 +211,9 @@ export default function CrdSpacePageLayout() {
             isOnSettings ? (
               <SpaceSettingsHeader
                 title={space.about.profile.displayName}
+                titleHref={space.about.profile.url ?? undefined}
                 tagline={space.about.profile.tagline ?? null}
-                hideAvatar={true}
                 fullWidth={fullWidth}
-                tabs={
-                  <SpaceSettingsTabStrip
-                    activeTab={activeSettingsTab}
-                    onTabChange={handleSettingsTabChange}
-                    tabs={settingsTabs}
-                  />
-                }
               />
             ) : (
               <SpaceHeader
@@ -220,14 +231,24 @@ export default function CrdSpacePageLayout() {
           }
           sidebar={isOnSettings ? undefined : sidebarSlot}
           tabs={
-            isOnSettings ? undefined : (
+            isOnSettings ? (
+              // Settings tabs live in the shell's sticky tabs row too, so they
+              // stay pinned under the platform header on scroll.
+              <SpaceSettingsTabStrip
+                activeTab={activeSettingsTab}
+                onTabChange={handleSettingsTabChange}
+                tabs={settingsTabs}
+              />
+            ) : (
               <SpaceNavigationTabs
                 tabs={tabItems}
                 activeIndex={activeTabIndex}
                 onTabChange={handleTabChange}
                 isSmallScreen={isSmallScreen}
                 onMenuClick={() => setMobileMenuOpen(true)}
-                action={<div id="crd-space-tabs-action" />}
+                // The gray header icons ride the sticky tab row at sm+ so they
+                // stay visible on scroll; below sm they render in the header.
+                action={<HeaderActionIcons actions={headerActions} />}
               />
             )
           }
@@ -257,6 +278,7 @@ export default function CrdSpacePageLayout() {
           <L0Breadcrumbs
             spaceDisplayName={spaceDisplayName}
             spaceUrl={spaceUrl}
+            spaceCardBannerUrl={space.about.profile.cardBanner?.uri || undefined}
             isOnSettings={isOnSettings}
             activeSettingsTab={activeSettingsTab}
           />
@@ -270,6 +292,10 @@ export default function CrdSpacePageLayout() {
           onOpenChange={setActivityDialogOpen}
           spaceId={spaceId}
         />
+
+        {/* About dialog — opened from the header info icon. Same shared
+          CrdSpaceAbout the sidebar "About this Space" button opens. */}
+        <CrdSpaceAboutDialogConnector open={aboutDialogOpen} onOpenChange={setAboutDialogOpen} />
 
         {/* Share dialog — opened from header share icon and the mobile "More" drawer.
           `entityLabel` is lowercased so the default message reads "...this space
@@ -307,22 +333,26 @@ function EnableSpaceFullWidth() {
 function L0Breadcrumbs({
   spaceDisplayName,
   spaceUrl,
+  spaceCardBannerUrl,
   isOnSettings,
   activeSettingsTab,
 }: {
   spaceDisplayName: string;
   spaceUrl: string;
+  spaceCardBannerUrl: string | undefined;
   isOnSettings: boolean;
   activeSettingsTab: SpaceSettingsTabId;
 }) {
   const { t } = useTranslation('crd-spaceSettings');
+  // L0 has no avatar visual — the cardBanner stands in as the identity image.
+  const spaceAvatar = { src: spaceCardBannerUrl, initials: getInitials(spaceDisplayName) };
   const items: BreadcrumbTrailItem[] = isOnSettings
     ? [
-        { label: spaceDisplayName, href: spaceUrl, icon: Layers },
+        { label: spaceDisplayName, href: spaceUrl, avatar: spaceAvatar },
         { label: t('tabs.settings'), href: buildSettingsUrl(spaceUrl) },
         { label: t(`tabs.${activeSettingsTab}`) },
       ]
-    : [{ label: spaceDisplayName, icon: Layers }];
+    : [{ label: spaceDisplayName, avatar: spaceAvatar }];
   useSetBreadcrumbs(items);
   return null;
 }

@@ -114,7 +114,7 @@ export function MyMembershipsPanel({
           'w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] sm:w-[calc(100%-3rem)] sm:max-w-[calc(100%-3rem)]',
           'lg:w-[calc(100%-6rem)] lg:max-w-[calc(100%-6rem)] xl:max-w-[72rem]',
           'h-[90vh] max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden',
-          'bg-background border border-border rounded-xl shadow-[var(--elevation-sm)]'
+          'bg-card border border-border rounded-xl shadow-[var(--elevation-sm)]'
         )}
         aria-describedby="memberships-panel-subtitle"
         closeLabel={t('myMembershipsPanel.close')}

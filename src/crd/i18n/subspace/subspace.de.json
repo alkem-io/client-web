@@ -1,12 +1,4 @@
 {
-  "actions": {
-    "activity": "Letzte Aktivität",
-    "videoCall": "Videoanruf starten",
-    "share": "Teilen",
-    "settings": "Einstellungen",
-    "expandWidth": "Auf volle Breite erweitern",
-    "collapseWidth": "Auf zentriertes Layout verkleinern"
-  },
   "members": {
     "memberCount_one": "{{count}} Mitglied",
     "memberCount_other": "{{count}} Mitglieder"

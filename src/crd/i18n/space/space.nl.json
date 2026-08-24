@@ -326,7 +326,6 @@
   },
   "members": {
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
-    "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
     "filterLead": "Lead",
@@ -1027,5 +1026,8 @@
       "title": "Nog geen subspaces",
       "description": "Deze space heeft nog geen subspaces."
     }
+  },
+  "parentStack": {
+    "goTo": "Ga naar {{name}}"
   }
 }

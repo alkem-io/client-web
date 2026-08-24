@@ -44,6 +44,11 @@ type SpaceTabSidebarConnectorProps = {
   calloutsSetId: string | undefined;
   classificationTagsets: ClassificationTagsetModel[];
   tabPosition: number;
+  /** Fixed tab actions (Add Post, Create Subspace) rendered above the
+   *  configured widgets — position-keyed affordances that are not themselves
+   *  configurable widgets in this slice (A-03/D-08). The page owns their
+   *  handlers and dialogs; the sidebar only renders the buttons. */
+  actionsSlot?: ReactNode;
 };
 
 /**
@@ -57,6 +62,7 @@ export function SpaceTabSidebarConnector({
   calloutsSetId,
   classificationTagsets,
   tabPosition,
+  actionsSlot,
 }: SpaceTabSidebarConnectorProps) {
   const { space, permissions } = useSpace();
   const navigate = useNavigate();
@@ -183,7 +189,10 @@ export function SpaceTabSidebarConnector({
   return (
     <>
       <SpaceSidebarPortal>
-        <SpaceSidebar>{plan.map(widgetId => sections[widgetId])}</SpaceSidebar>
+        <SpaceSidebar>
+          {actionsSlot && <div className="flex flex-col gap-2">{actionsSlot}</div>}
+          {plan.map(widgetId => sections[widgetId])}
+        </SpaceSidebar>
       </SpaceSidebarPortal>
 
       <CrdSpaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />

@@ -1,4 +1,4 @@
-import { Plus, UserPlus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -11,6 +11,7 @@ import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { Button } from '@/crd/primitives/button';
@@ -22,17 +23,15 @@ import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { LazyCalloutItem } from '../callout/LazyCalloutItem';
 import { mapFlowStateSearchCalloutIds } from '../dataMappers/flowStateSearchDataMapper';
-import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 import { SpaceTabSidebarConnector } from '../layout/SpaceTabSidebarConnector';
 
-// Fixed L0 tab positions carrying a non-sidebar main-content affordance that
-// stays position-keyed rather than becoming a configurable widget (A-03/D-08):
-// header Invite on Community (1), header Create-Subspace on Subspaces (2),
-// the search block on every custom/added tab (3+).
-const COMMUNITY_TAB_POSITION = 1;
+// Fixed L0 tab positions carrying a position-keyed affordance that is not
+// itself a configurable widget in this slice (A-03/D-08): the sidebar Create
+// Subspace action on Subspaces (2), and the search block on every custom/added
+// tab (3+). Add Post is a sidebar action on every tab; Invite is the `addUser`
+// widget, owned by the sidebar connector.
 const SUBSPACES_TAB_POSITION = 2;
 const FIRST_CUSTOM_TAB_POSITION = 3;
 
@@ -59,13 +58,7 @@ export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
 
   const [createOpen, setCreateOpen] = useState(false);
 
-  // Header Invite (Community tab only) — a main-content affordance, independent
-  // of whether the `addUser` widget is configured on this (or any) tab's sidebar.
-  const isCommunityTab = tabPosition === COMMUNITY_TAB_POSITION;
-  const canInvite = isCommunityTab && permissions.canUpdate;
-  const [inviteOpen, setInviteOpen] = useState(false);
-
-  // Header Create Subspace (Subspaces tab only).
+  // Create Subspace (Subspaces tab only).
   const isSubspacesTab = tabPosition === SUBSPACES_TAB_POSITION;
   const canCreateSubspace = isSubspacesTab && permissions.canCreateSubspaces;
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
@@ -128,29 +121,26 @@ export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
     appendingLabel: t('crd-space:knowledge.search.appendingLabel'),
   };
 
-  const hasHeaderAction = canInvite || (canCreateSubspace && handleCreateSubspaceClick) || canCreateCallout;
-  const headerAction = hasHeaderAction && (
-    <div className="flex items-center gap-2">
-      {canInvite && (
-        <Button size="sm" className="gap-2" onClick={() => setInviteOpen(true)}>
-          <UserPlus className="w-4 h-4" aria-hidden="true" />
-          {t('crd-space:members.inviteMember')}
-        </Button>
-      )}
-      {canCreateSubspace && handleCreateSubspaceClick && (
-        <Button size="sm" className="gap-2" onClick={handleCreateSubspaceClick}>
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {t('crd-space:subspaces.createSubspace')}
-        </Button>
-      )}
+  // Add Post + Create Subspace render as full-width buttons in the sidebar
+  // (develop's actionsSlot pattern), not the tab header. Invite lives in the
+  // sidebar as the `addUser` widget, owned by SpaceTabSidebarConnector.
+  const hasSidebarAction = canCreateCallout || (canCreateSubspace && handleCreateSubspaceClick);
+  const sidebarActions = hasSidebarAction ? (
+    <>
       {canCreateCallout && (
-        <Button size="sm" className="gap-2" onClick={() => setCreateOpen(true)}>
+        <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateOpen(true)}>
           <Plus className="w-4 h-4" aria-hidden="true" />
           {t('crd-space:feed.addPost')}
         </Button>
       )}
-    </div>
-  );
+      {canCreateSubspace && handleCreateSubspaceClick && (
+        <Button variant="outline" className="w-full gap-2 text-body-emphasis" onClick={handleCreateSubspaceClick}>
+          <Plus className="w-4 h-4" aria-hidden="true" />
+          {t('crd-space:subspaces.createSubspace')}
+        </Button>
+      )}
+    </>
+  ) : undefined;
 
   return (
     <>
@@ -159,10 +149,11 @@ export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
         calloutsSetId={calloutsSetId}
         classificationTagsets={classificationTagsets}
         tabPosition={tabPosition}
+        actionsSlot={sidebarActions}
       />
 
       <div className="space-y-6">
-        <SpaceTabActionHeader description={tabDescription} action={headerAction} />
+        <TabStateHeader description={tabDescription} />
 
         {isCustomTab && (
           <div className="flex items-start gap-2">
@@ -220,8 +211,6 @@ export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
           defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}
         />
       )}
-
-      {canInvite && <InviteMembersDialogConnector open={inviteOpen} onClose={() => setInviteOpen(false)} />}
 
       {canCreateSubspace && (
         <>

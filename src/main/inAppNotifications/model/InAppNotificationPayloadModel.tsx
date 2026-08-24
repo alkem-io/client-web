@@ -97,6 +97,7 @@ export interface InAppNotificationPayloadModel {
     url: string;
   };
   comment?: string;
+  emoji?: string;
   userEmail?: string;
   userDisplayName?: string;
   organizationMessage?: string;

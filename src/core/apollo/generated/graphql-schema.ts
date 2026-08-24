@@ -3510,6 +3510,18 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostComment = InApp
   type: NotificationEventPayload;
 };
 
+export type InAppNotificationPayloadSpaceCollaborationCalloutReaction = InAppNotificationPayload & {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutReaction';
+  /** The Callout that was reacted to. */
+  callout: Callout;
+  /** The emoji slug from the platform allow-list. Clients own slug-to-glyph rendering. */
+  emoji: Scalars['String']['output'];
+  /** The Space where the reaction was made. */
+  space: Space;
+  /** The payload type. */
+  type: NotificationEventPayload;
+};
+
 export type InAppNotificationPayloadSpaceCollaborationPoll = InAppNotificationPayload & {
   __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll';
   /** The Callout that contains the poll. */
@@ -6309,6 +6321,7 @@ export enum NotificationEvent {
   SpaceCollaborationCalloutContribution = 'SPACE_COLLABORATION_CALLOUT_CONTRIBUTION',
   SpaceCollaborationCalloutPostContributionComment = 'SPACE_COLLABORATION_CALLOUT_POST_CONTRIBUTION_COMMENT',
   SpaceCollaborationCalloutPublished = 'SPACE_COLLABORATION_CALLOUT_PUBLISHED',
+  SpaceCollaborationCalloutReaction = 'SPACE_COLLABORATION_CALLOUT_REACTION',
   SpaceCollaborationPollModifiedOnPollIVotedOn = 'SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON',
   SpaceCollaborationPollVoteAffectedByOptionChange = 'SPACE_COLLABORATION_POLL_VOTE_AFFECTED_BY_OPTION_CHANGE',
   SpaceCollaborationPollVoteCastOnOwnPoll = 'SPACE_COLLABORATION_POLL_VOTE_CAST_ON_OWN_POLL',
@@ -6361,6 +6374,7 @@ export enum NotificationEventPayload {
   SpaceCollaborationCallout = 'SPACE_COLLABORATION_CALLOUT',
   SpaceCollaborationCalloutComment = 'SPACE_COLLABORATION_CALLOUT_COMMENT',
   SpaceCollaborationCalloutPostComment = 'SPACE_COLLABORATION_CALLOUT_POST_COMMENT',
+  SpaceCollaborationCalloutReaction = 'SPACE_COLLABORATION_CALLOUT_REACTION',
   SpaceCollaborationPoll = 'SPACE_COLLABORATION_POLL',
   SpaceCommunicationMessageDirect = 'SPACE_COMMUNICATION_MESSAGE_DIRECT',
   SpaceCommunicationUpdate = 'SPACE_COMMUNICATION_UPDATE',
@@ -9922,6 +9936,8 @@ export type UpdateUserSettingsNotificationSpaceInput = {
   collaborationCalloutPostContributionComment?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a callout is published */
   collaborationCalloutPublished?: InputMaybe<NotificationSettingInput>;
+  /** Receive a notification when someone reacts to a callout you published */
+  collaborationCalloutReaction?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a poll you voted on is modified */
   collaborationPollModifiedOnPollIVotedOn?: InputMaybe<NotificationSettingInput>;
   /** Receive a notification when a poll option you voted for is changed or removed */
@@ -10479,6 +10495,8 @@ export type UserSettingsNotificationSpace = {
   collaborationCalloutPostContributionComment: UserSettingsNotificationChannels;
   /** Receive a notification when a callout is published */
   collaborationCalloutPublished: UserSettingsNotificationChannels;
+  /** Receive a notification when someone reacts to a callout you published */
+  collaborationCalloutReaction: UserSettingsNotificationChannels;
   /** Receive a notification when a poll you voted on is modified */
   collaborationPollModifiedOnPollIVotedOn: UserSettingsNotificationChannels;
   /** Receive a notification when a poll option you voted for is changed or removed */
@@ -23849,6 +23867,12 @@ export type UpdateUserSettingsMutation = {
             inApp: boolean;
             push: boolean;
           };
+          collaborationCalloutReaction: {
+            __typename?: 'UserSettingsNotificationChannels';
+            email: boolean;
+            inApp: boolean;
+            push: boolean;
+          };
           collaborationCalloutComment: {
             __typename?: 'UserSettingsNotificationChannels';
             email: boolean;
@@ -24137,6 +24161,12 @@ export type UserSettingsFragmentFragment = {
         inApp: boolean;
         push: boolean;
       };
+      collaborationCalloutReaction: {
+        __typename?: 'UserSettingsNotificationChannels';
+        email: boolean;
+        inApp: boolean;
+        push: boolean;
+      };
       collaborationCalloutComment: {
         __typename?: 'UserSettingsNotificationChannels';
         email: boolean;
@@ -24367,6 +24397,12 @@ export type UserSettingsQuery = {
                   push: boolean;
                 };
                 collaborationCalloutPublished: {
+                  __typename?: 'UserSettingsNotificationChannels';
+                  email: boolean;
+                  inApp: boolean;
+                  push: boolean;
+                };
+                collaborationCalloutReaction: {
                   __typename?: 'UserSettingsNotificationChannels';
                   email: boolean;
                   inApp: boolean;
@@ -29882,7 +29918,13 @@ export type SubspacePageQuery = {
           collaboration: {
             __typename?: 'Collaboration';
             id: string;
-            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
+            calloutsSet: {
+              __typename?: 'CalloutsSet';
+              id: string;
+              authorization?:
+                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+                | undefined;
+            };
           };
           templatesManager?:
             | {
@@ -29936,7 +29978,17 @@ export type SubspacePageSpaceFragment = {
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
-  collaboration: { __typename?: 'Collaboration'; id: string; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
+  collaboration: {
+    __typename?: 'Collaboration';
+    id: string;
+    calloutsSet: {
+      __typename?: 'CalloutsSet';
+      id: string;
+      authorization?:
+        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+        | undefined;
+    };
+  };
   templatesManager?:
     | {
         __typename?: 'TemplatesManager';
@@ -38249,6 +38301,81 @@ export type InAppNotificationReceivedSubscription = {
           };
         }
       | {
+          __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutReaction';
+          type: NotificationEventPayload;
+          emoji: string;
+          callout: {
+            __typename?: 'Callout';
+            id: string;
+            framing: {
+              __typename?: 'CalloutFraming';
+              id: string;
+              profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+            };
+            reactionsSummary: {
+              __typename?: 'CalloutReactionsSummary';
+              total: number;
+              emojis: Array<string>;
+              myReactionEmoji?: string | undefined;
+              allowedEmojis: Array<string>;
+            };
+          };
+          space: {
+            __typename?: 'Space';
+            id: string;
+            level: SpaceLevel;
+            about: {
+              __typename?: 'SpaceAbout';
+              id: string;
+              profile: {
+                __typename?: 'Profile';
+                id: string;
+                displayName: string;
+                description?: string | undefined;
+                url: string;
+                tagline?: string | undefined;
+                tagset?:
+                  | {
+                      __typename?: 'Tagset';
+                      id: string;
+                      name: string;
+                      tags: Array<string>;
+                      allowedValues: Array<string>;
+                      type: TagsetType;
+                    }
+                  | undefined;
+                avatar?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                cardBanner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+                banner?:
+                  | {
+                      __typename?: 'Visual';
+                      id: string;
+                      uri: string;
+                      name: VisualType;
+                      alternativeText?: string | undefined;
+                    }
+                  | undefined;
+              };
+            };
+          };
+        }
+      | {
           __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll';
           type: NotificationEventPayload;
           space: {
@@ -39383,6 +39510,81 @@ export type InAppNotificationsQuery = {
                   __typename?: 'CalloutFraming';
                   id: string;
                   profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                };
+              };
+            }
+          | {
+              __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutReaction';
+              type: NotificationEventPayload;
+              emoji: string;
+              callout: {
+                __typename?: 'Callout';
+                id: string;
+                framing: {
+                  __typename?: 'CalloutFraming';
+                  id: string;
+                  profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+                };
+                reactionsSummary: {
+                  __typename?: 'CalloutReactionsSummary';
+                  total: number;
+                  emojis: Array<string>;
+                  myReactionEmoji?: string | undefined;
+                  allowedEmojis: Array<string>;
+                };
+              };
+              space: {
+                __typename?: 'Space';
+                id: string;
+                level: SpaceLevel;
+                about: {
+                  __typename?: 'SpaceAbout';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    url: string;
+                    tagline?: string | undefined;
+                    tagset?:
+                      | {
+                          __typename?: 'Tagset';
+                          id: string;
+                          name: string;
+                          tags: Array<string>;
+                          allowedValues: Array<string>;
+                          type: TagsetType;
+                        }
+                      | undefined;
+                    avatar?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                    banner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
                 };
               };
             }
@@ -40531,6 +40733,81 @@ export type InAppNotificationAllTypesFragment = {
         };
       }
     | {
+        __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutReaction';
+        type: NotificationEventPayload;
+        emoji: string;
+        callout: {
+          __typename?: 'Callout';
+          id: string;
+          framing: {
+            __typename?: 'CalloutFraming';
+            id: string;
+            profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+          };
+          reactionsSummary: {
+            __typename?: 'CalloutReactionsSummary';
+            total: number;
+            emojis: Array<string>;
+            myReactionEmoji?: string | undefined;
+            allowedEmojis: Array<string>;
+          };
+        };
+        space: {
+          __typename?: 'Space';
+          id: string;
+          level: SpaceLevel;
+          about: {
+            __typename?: 'SpaceAbout';
+            id: string;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              tagline?: string | undefined;
+              tagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              avatar?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              cardBanner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+              banner?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          };
+        };
+      }
+    | {
         __typename?: 'InAppNotificationPayloadSpaceCollaborationPoll';
         type: NotificationEventPayload;
         space: {
@@ -41231,6 +41508,64 @@ export type InAppNotificationAllTypesFragment = {
             | undefined;
         };
       };
+};
+
+export type InAppNotificationPayloadSpaceCollaborationCalloutReactionFragment = {
+  __typename?: 'InAppNotificationPayloadSpaceCollaborationCalloutReaction';
+  type: NotificationEventPayload;
+  emoji: string;
+  callout: {
+    __typename?: 'Callout';
+    id: string;
+    framing: {
+      __typename?: 'CalloutFraming';
+      id: string;
+      profile: { __typename?: 'Profile'; id: string; displayName: string; url: string };
+    };
+    reactionsSummary: {
+      __typename?: 'CalloutReactionsSummary';
+      total: number;
+      emojis: Array<string>;
+      myReactionEmoji?: string | undefined;
+      allowedEmojis: Array<string>;
+    };
+  };
+  space: {
+    __typename?: 'Space';
+    id: string;
+    level: SpaceLevel;
+    about: {
+      __typename?: 'SpaceAbout';
+      id: string;
+      profile: {
+        __typename?: 'Profile';
+        id: string;
+        displayName: string;
+        description?: string | undefined;
+        url: string;
+        tagline?: string | undefined;
+        tagset?:
+          | {
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }
+          | undefined;
+        avatar?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        cardBanner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+        banner?:
+          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | undefined;
+      };
+    };
+  };
 };
 
 export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {

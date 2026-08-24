@@ -9,12 +9,12 @@ Types referenced below are defined in `src/crd/components/chat/types.ts` (see da
 type FloatingChatLauncherProps = {
   unreadCount?: number;     // 0/undefined → no badge
   isOpen: boolean;          // toggles open/close icon state
-  hidden?: boolean;         // suppressed on auth route / fullscreen editor
+  hidden?: boolean;         // suppressed on auth route / fullscreen editor (consumer also passes isSmallScreen && isOpen)
   onClick: () => void;
   ariaLabel: string;        // i18n-provided by consumer
 };
 ```
-- 60×60 fixed bottom-right circular button (lucide `MessageCircle`), unread `Badge` overlay. No internal routing/state beyond hover.
+- Fixed bottom-right circular button (`size-12`, `bottom-20 right-4` / `lg:bottom-4`; lucide `MessageCircle`), unread `Badge` overlay. No internal routing/state beyond hover. **Since 2026-08-21 the button is `hidden sm:flex` — it does not render below 640px; on phones chat opens from the header messages icon.**
 
 ## ChatPanel
 ```ts
@@ -28,7 +28,7 @@ type ChatPanelProps = {
   threadSlot: ReactNode;    // <ChatThreadView/>
 };
 ```
-- Floating card (`fixed`, `w-[380px]`, capped height, internal scroll); mobile expands toward full-screen via `useScreenSize`. Sticky-header / scrollable-body / sticky-composer layout. NOT a modal overlay.
+- Floating card (`fixed`, `w-[380px]`, capped height, internal scroll); mobile expands toward full-screen via `useScreenSize` (reached from the header messages icon there — the launcher is hidden < 640px). Sticky-header / scrollable-body / sticky-composer layout. NOT a modal overlay.
 
 ## ChatConversationList
 ```ts
