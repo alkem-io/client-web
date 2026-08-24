@@ -103,7 +103,30 @@ function TaskBoardBody({
     }
   };
 
-  const handleMoveTask = (contributionId: string, toColumn: string) => {
+  // Persist a card order (every contribution id, in the board's new top-to-bottom
+  // order). The board renders by sortOrder, so the optimistic response reassigns
+  // sortOrder to that order (index-based) and the cards settle in place with no
+  // refetch flicker; the server replaces the values with its own on completion,
+  // preserving the same order. Shared by a within-column reorder and the
+  // position half of a cross-column move.
+  const persistOrder = (orderedCardIds: string[]) => {
+    if (orderedCardIds.length === 0) return;
+    void reorderTasks({
+      variables: { calloutID: callout.id, contributionIds: orderedCardIds },
+      optimisticResponse: {
+        updateContributionsSortOrder: orderedCardIds.map((id, index) => ({
+          __typename: 'CalloutContribution',
+          id,
+          sortOrder: index,
+        })),
+      },
+      onError: () => {
+        toast.error(t('moveError'));
+      },
+    });
+  };
+
+  const handleMoveTask = (contributionId: string, toColumn: string, orderedCardIds: string[]) => {
     const contribution = contributions.find(item => item.id === contributionId);
     const fromColumn = contribution ? contributionColumnTag(contribution) : undefined;
 
@@ -113,7 +136,8 @@ function TaskBoardBody({
         moveTaskToColumn: {
           __typename: 'CalloutContribution',
           id: contributionId,
-          sortOrder: contribution?.sortOrder ?? 0,
+          // Optimistic hint only; the sort-order pass below is authoritative.
+          sortOrder: orderedCardIds.indexOf(contributionId),
           classification: {
             __typename: 'Classification',
             id: contribution?.classification?.id ?? `${contributionId}-classification`,
@@ -147,27 +171,20 @@ function TaskBoardBody({
       onError: () => {
         toast.error(t('moveError'));
       },
-    });
-  };
-
-  // Persist a within-column reorder. The board is ordered by sortOrder, so the
-  // optimistic response reassigns sortOrder to the dropped order (index-based)
-  // and the cards settle in place with no refetch flicker; the server replaces
-  // the values with its own on completion, preserving the same order.
-  const handleReorder = (orderedCardIds: string[]) => {
-    void reorderTasks({
-      variables: { calloutID: callout.id, contributionIds: orderedCardIds },
-      optimisticResponse: {
-        updateContributionsSortOrder: orderedCardIds.map((id, index) => ({
-          __typename: 'CalloutContribution',
-          id,
-          sortOrder: index,
-        })),
-      },
-      onError: () => {
-        toast.error(t('moveError'));
-      },
-    });
+    })
+      // Persist the dropped position within the destination column, but only
+      // AFTER the column move has settled on the server. moveTaskToColumn assigns
+      // its own sortOrder to the moved card; issuing the reorder afterwards makes
+      // it the authoritative last write, so the card lands — and stays — exactly
+      // where it was dropped. Firing both at once let the server apply them in a
+      // nondeterministic order, so the persisted position could disagree with the
+      // dropped one. The optimistic column re-tag above already shows the card in
+      // the destination column instantly; the reorder settles its exact slot a
+      // moment later.
+      .then(() => persistOrder(orderedCardIds))
+      .catch(() => {
+        // A failed move already surfaced its toast; do not reorder on top of it.
+      });
   };
 
   return (
@@ -191,7 +208,7 @@ function TaskBoardBody({
         onAddTask={canAdd ? column => setAddState({ column }) : undefined}
         onOpenTask={onOpenTask}
         onMoveTask={handleMoveTask}
-        onReorder={canMove ? handleReorder : undefined}
+        onReorder={canMove ? persistOrder : undefined}
       />
       {canEditColumns && (
         <TaskBoardColumnsDialog

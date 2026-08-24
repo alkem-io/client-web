@@ -59,8 +59,13 @@ export type TaskBoardViewProps = {
   collapseLabel?: string;
   onAddTask?: (column: string) => void;
   onOpenTask?: (cardId: string) => void;
-  /** Called on a drop into a different column. Same-column drops do not fire. */
-  onMoveTask?: (cardId: string, toColumn: string) => void;
+  /**
+   * Called on a drop into a different column. Receives the destination column and
+   * every card id in the board's new top-to-bottom, column-by-column order, so the
+   * connector can both re-tag the card's column and land it at the dropped
+   * position. Same-column drops fire `onReorder` instead.
+   */
+  onMoveTask?: (cardId: string, toColumn: string, orderedCardIds: string[]) => void;
   /**
    * Called on a within-column reorder (the drop stays in the same column but at a
    * new position). Receives every card id in the board's new top-to-bottom,
@@ -286,9 +291,13 @@ export function TaskBoardView({
     fromColumnRef.current = null;
     if (!toColumn) return;
 
-    // A drop into a different column changes only the card's column assignment.
+    // A drop into a different column re-tags the card's column and lands it at the
+    // dropped position. `handleDragOver` already placed the card into the target
+    // column at the hovered slot in the draft, so the draft order is what the user
+    // sees — persist that full order alongside the column change.
     if (toColumn !== fromColumn) {
-      onMoveTask?.(activeId, toColumn);
+      const orderedIds = draft.flatMap(entry => entry.cards.map(card => card.id));
+      onMoveTask?.(activeId, toColumn, orderedIds);
       return;
     }
 

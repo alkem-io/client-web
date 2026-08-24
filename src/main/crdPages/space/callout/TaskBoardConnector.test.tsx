@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/generated/graphql-schema';
 
@@ -182,12 +182,13 @@ describe('TaskBoardConnector', () => {
     expect(screen.getByTestId('can-move')).toBeInTheDocument();
   });
 
-  it('moves a task with the mutation, optimistic tag, and count patch on a cross-column drop', () => {
+  it('moves a task with the mutation, optimistic tag, and count patch on a cross-column drop', async () => {
+    moveTaskMock.mockResolvedValue({ data: {} });
     useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
     render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
 
-    const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string) => void;
-    onMoveTask('contrib-1', 'Done');
+    const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string, ordered: string[]) => void;
+    onMoveTask('contrib-1', 'Done', ['contrib-1']);
 
     expect(moveTaskMock).toHaveBeenCalledTimes(1);
     const options = moveTaskMock.mock.calls[0][0];
@@ -206,15 +207,38 @@ describe('TaskBoardConnector', () => {
       { column: 'Backlog', count: 0 },
       { column: 'Done', count: 1 },
     ]);
+
+    // A cross-column drop also persists the dropped position via the sort-order
+    // mutation, but only AFTER the move settles (so the reorder is the last write).
+    await waitFor(() => expect(reorderTasksMock).toHaveBeenCalledTimes(1));
+    expect(reorderTasksMock.mock.calls[0][0].variables).toEqual({
+      calloutID: 'callout-1',
+      contributionIds: ['contrib-1'],
+    });
+  });
+
+  it('does not persist a position when the move itself fails', async () => {
+    moveTaskMock.mockRejectedValue(new Error('move failed'));
+    useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
+    render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+
+    const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string, ordered: string[]) => void;
+    onMoveTask('contrib-1', 'Done', ['contrib-1']);
+    // The move's own onError surfaces the toast; the reorder must NOT fire on a
+    // failed move (which would reorder a card that never changed column).
+    await waitFor(() => expect(moveTaskMock).toHaveBeenCalledTimes(1));
+    await Promise.resolve();
+    expect(reorderTasksMock).not.toHaveBeenCalled();
   });
 
   it('shows an error toast when the move fails', async () => {
     const { toast } = await import('sonner');
+    moveTaskMock.mockResolvedValue({ data: {} });
     useTaskBoardDataQuery.mockReturnValue({ data: { lookup: { callout: boardCallout() } } });
     render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
 
-    const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string) => void;
-    onMoveTask('contrib-1', 'Done');
+    const onMoveTask = capturedViewProps?.onMoveTask as (id: string, column: string, ordered: string[]) => void;
+    onMoveTask('contrib-1', 'Done', ['contrib-1']);
     const options = moveTaskMock.mock.calls[0][0];
     options.onError();
     expect(toast.error).toHaveBeenCalledWith('moveError');
