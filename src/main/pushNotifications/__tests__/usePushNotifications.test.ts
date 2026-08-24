@@ -139,7 +139,7 @@ describe('usePushNotifications — subscribe', () => {
     });
 
     expect((caught as Error)?.message).toContain('server down');
-    // FR-014: the browser-side subscription must be unwound so we don't leave a
+    // The browser-side subscription must be unwound so we don't leave a
     // subscription the server never recorded.
     expect(browserUnsubscribeMock).toHaveBeenCalled();
     expect(localStorage.getItem(PUSH_SUBSCRIPTION_ID_KEY)).toBeNull();

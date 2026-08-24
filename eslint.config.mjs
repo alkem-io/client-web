@@ -53,10 +53,17 @@ export default [
             'useCallback is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
         },
         {
-          // Matches both `memo(...)` and `React.memo(...)`.
-          selector: 'CallExpression:matches([callee.name="memo"], [callee.property.name="memo"])',
+          // Namespaced `React.memo(...)`.
+          selector: 'CallExpression[callee.property.name="memo"]',
           message:
             'React.memo is not allowed. The React Compiler handles memoization automatically. If this is a documented exception, add an eslint-disable comment with a reason.',
+        },
+        {
+          // Bare `memo(...)` — targets `import { memo } from "react"`. May match a
+          // non-React utility also named `memo`; eslint-disable with a reason in that case.
+          selector: 'CallExpression[callee.name="memo"]',
+          message:
+            'memo() is not allowed (assumed React.memo). The React Compiler handles memoization automatically. If this is a non-React function or a documented exception, add an eslint-disable comment with a reason.',
         },
         {
           selector:

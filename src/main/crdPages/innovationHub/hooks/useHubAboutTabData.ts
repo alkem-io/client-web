@@ -169,6 +169,12 @@ export const useHubAboutTabData = (hub: InnovationHubSettingsFragment | undefine
       if (!base) return prev;
       return { ...base, ...patch };
     });
+    // Sync the ref immediately so onSaveSection reads the latest edit even when
+    // called in the same synchronous frame (before the post-render effect fires).
+    const base = valuesRef.current;
+    if (base) {
+      valuesRef.current = { ...base, ...patch };
+    }
     // Clear any previous validation error for fields the user just edited.
     setErrors(prev => {
       const next = { ...prev };

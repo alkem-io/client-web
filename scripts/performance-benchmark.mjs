@@ -207,7 +207,7 @@ class PerformanceBenchmark {
 
       // Drive a handful of real interactions so the Event Timing observer captures
       // input→next-paint latencies. Trusted Playwright input dispatches genuine events.
-      const interactiveSelectors = ['button', 'a[href]', '[role="button"]', 'input', '[tabindex]'];
+      const interactiveSelectors = ['button', '[role="button"]', 'input', '[tabindex]'];
       for (const selector of interactiveSelectors) {
         const handle = await page.$(selector);
         if (!handle) continue;
