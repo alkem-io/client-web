@@ -7,6 +7,7 @@ import {
   useDeleteTaskColumnOnCalloutMutation,
   useMoveTaskToColumnMutation,
   useTaskBoardDataQuery,
+  useUpdateContributionsSortOrderMutation,
   useUpdateTaskColumnOnCalloutMutation,
   useUpdateTaskColumnsSortOrderOnCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
@@ -69,6 +70,7 @@ function TaskBoardBody({
 }) {
   const { t } = useTranslation('crd-taskBoard');
   const [moveTask] = useMoveTaskToColumnMutation();
+  const [reorderTasks] = useUpdateContributionsSortOrderMutation();
   const [createColumn] = useCreateTaskColumnOnCalloutMutation();
   const [renameColumn] = useUpdateTaskColumnOnCalloutMutation();
   const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation();
@@ -148,6 +150,26 @@ function TaskBoardBody({
     });
   };
 
+  // Persist a within-column reorder. The board is ordered by sortOrder, so the
+  // optimistic response reassigns sortOrder to the dropped order (index-based)
+  // and the cards settle in place with no refetch flicker; the server replaces
+  // the values with its own on completion, preserving the same order.
+  const handleReorder = (orderedCardIds: string[]) => {
+    void reorderTasks({
+      variables: { calloutID: callout.id, contributionIds: orderedCardIds },
+      optimisticResponse: {
+        updateContributionsSortOrder: orderedCardIds.map((id, index) => ({
+          __typename: 'CalloutContribution',
+          id,
+          sortOrder: index,
+        })),
+      },
+      onError: () => {
+        toast.error(t('moveError'));
+      },
+    });
+  };
+
   return (
     <>
       {canEditColumns && (
@@ -169,6 +191,7 @@ function TaskBoardBody({
         onAddTask={canAdd ? column => setAddState({ column }) : undefined}
         onOpenTask={onOpenTask}
         onMoveTask={handleMoveTask}
+        onReorder={canMove ? handleReorder : undefined}
       />
       {canEditColumns && (
         <TaskBoardColumnsDialog

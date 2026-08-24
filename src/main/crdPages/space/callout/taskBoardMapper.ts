@@ -64,9 +64,15 @@ export function mapTaskBoardColumns(
     countByColumn.set(entry.column.toLowerCase(), entry.count);
   }
 
+  // Cards render in ascending sortOrder within each column — the same canonical
+  // order used everywhere else contributions are listed (e.g. the contributions
+  // sort dialog). Sorting here also lets an optimistic sortOrder update from a
+  // within-column drag reorder the board immediately, with no refetch flicker.
+  const ordered = [...contributions].sort((a, b) => a.sortOrder - b.sortOrder);
+
   const grouped = groupContributionsByColumn(
     columns,
-    contributions.map(contribution => ({ ...toBoardContribution(contribution), source: contribution }))
+    ordered.map(contribution => ({ ...toBoardContribution(contribution), source: contribution }))
   );
 
   return columns.map(column => ({

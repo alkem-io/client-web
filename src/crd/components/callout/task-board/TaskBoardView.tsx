@@ -15,6 +15,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
+  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
@@ -60,6 +61,13 @@ export type TaskBoardViewProps = {
   onOpenTask?: (cardId: string) => void;
   /** Called on a drop into a different column. Same-column drops do not fire. */
   onMoveTask?: (cardId: string, toColumn: string) => void;
+  /**
+   * Called on a within-column reorder (the drop stays in the same column but at a
+   * new position). Receives every card id in the board's new top-to-bottom,
+   * column-by-column order — the full order the connector persists. A drop into a
+   * different column fires `onMoveTask` instead, not this.
+   */
+  onReorder?: (orderedCardIds: string[]) => void;
 };
 
 /** Prefix for a column's droppable id so it never collides with a card id. */
@@ -83,12 +91,12 @@ const findColumnOfCard = (columns: TaskBoardColumnModel[], cardId: string): Task
   columns.find(column => column.cards.some(card => card.id === cardId));
 
 /**
- * A sortable card. Mirrors the "flawless" layout-settings pattern
- * (`LayoutCalloutRow`): `useSortable` applies the shift transform to the node so
- * siblings visibly move aside, while a `DragOverlay` carries the floating clone.
- * The whole card is the drag surface (a click still opens the task — the pointer
- * sensor only starts a drag past a small threshold). When dragging is disabled it
- * renders as a plain card.
+ * A sortable card. `useSortable` applies the shift transform to the node so
+ * siblings visibly move aside and the source fades in place as a placeholder,
+ * while a `DragOverlay` (portaled to <body>, see `TaskBoardView`) carries the
+ * floating clone that tracks the cursor. The whole card is the drag surface — a
+ * click still opens the task, since the pointer sensor only starts a drag past a
+ * small threshold. When dragging is disabled it renders as a plain card.
  */
 function SortableCard({
   card,
@@ -105,8 +113,9 @@ function SortableCard({
     disabled: !draggable,
   });
 
-  // With a DragOverlay the active node keeps no transform (the overlay floats);
-  // only sibling nodes receive one. Guard so the source just fades in place.
+  // The overlay carries the floating visual, so the in-list node just moves to
+  // its slot (transform from the sorting strategy) and fades to read as the
+  // drop placeholder.
   const style = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
     transition,
@@ -116,7 +125,7 @@ function SortableCard({
     <div
       ref={setNodeRef}
       style={style}
-      className={cn(draggable && 'cursor-grab', isDragging && 'opacity-30')}
+      className={cn(draggable && 'cursor-grab touch-none', isDragging && 'opacity-40')}
       {...(draggable ? attributes : {})}
       {...(draggable ? listeners : {})}
     >
@@ -182,12 +191,11 @@ function DroppableColumn({
 /**
  * Presentational board: a horizontal, non-wrapping row of columns in the given
  * order, each grouping its cards. Drag/drop is UI-only here — a drop into a
- * different column calls `onMoveTask`; the connector owns the mutation and cache
- * update. During a drag a local draft of the columns is rendered so the card
- * visibly moves between columns and siblings shift aside (only the final column
- * assignment is persisted; intra-column order is a visual affordance). The board
- * can be expanded to a fullscreen overlay. Affordances are driven purely by the
- * privilege props.
+ * different column calls `onMoveTask`, a within-column reorder calls `onReorder`;
+ * the connector owns the mutations and cache updates. During a drag a local draft
+ * of the columns is rendered so the card visibly moves between columns and
+ * siblings shift aside. The board can be expanded to a fullscreen overlay.
+ * Affordances are driven purely by the privilege props.
  */
 export function TaskBoardView({
   columns,
@@ -200,6 +208,7 @@ export function TaskBoardView({
   onAddTask,
   onOpenTask,
   onMoveTask,
+  onReorder,
 }: TaskBoardViewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeCard, setActiveCard] = useState<TaskBoardCardModel | null>(null);
@@ -252,7 +261,10 @@ export function TaskBoardView({
         overIndex = overColumn ? overColumn.cards.findIndex(card => card.id === overId) : -1;
       }
       if (!overColumn) return prev;
-      // Same column: the SortableContext strategy renders the gap itself.
+      // Same column: do NOT mutate the list here. The sorting strategy renders
+      // the gap visually, and the final order is computed once on drop. Moving
+      // cards on every same-column hover re-registers droppables and makes
+      // dnd-kit's rect measuring thrash (an infinite render loop).
       if (overColumn.name === activeColumn.name) return prev;
 
       const activeIndex = activeColumn.cards.findIndex(card => card.id === activeId);
@@ -265,13 +277,37 @@ export function TaskBoardView({
 
   const handleDragEnd = (event: DragEndEvent) => {
     const activeId = String(event.active.id);
-    const toColumn = findColumnOfCard(draftColumns ?? columns, activeId)?.name;
+    const overId = event.over ? String(event.over.id) : null;
+    const draft = draftColumns ?? columns;
+    const toColumn = findColumnOfCard(draft, activeId)?.name;
     const fromColumn = fromColumnRef.current;
     setActiveCard(null);
     setDraftColumns(null);
     fromColumnRef.current = null;
-    if (!onMoveTask || !toColumn || toColumn === fromColumn) return;
-    onMoveTask(activeId, toColumn);
+    if (!toColumn) return;
+
+    // A drop into a different column changes only the card's column assignment.
+    if (toColumn !== fromColumn) {
+      onMoveTask?.(activeId, toColumn);
+      return;
+    }
+
+    // A within-column drop persists the new order. The list was not reordered
+    // during the drag, so compute the final index from the drop target here.
+    if (!onReorder || !overId) return;
+    const column = draft.find(entry => entry.name === toColumn);
+    if (!column) return;
+    const activeIndex = column.cards.findIndex(card => card.id === activeId);
+    const overIndex = overId.startsWith(COLUMN_DROPPABLE_PREFIX)
+      ? column.cards.length - 1
+      : column.cards.findIndex(card => card.id === overId);
+    if (overIndex < 0 || overIndex === activeIndex) return;
+
+    const reordered = arrayMove(column.cards, activeIndex, overIndex);
+    const orderedIds = draft.flatMap(entry =>
+      entry.name === toColumn ? reordered.map(card => card.id) : entry.cards.map(card => card.id)
+    );
+    onReorder(orderedIds);
   };
 
   const handleDragCancel = () => {
@@ -325,19 +361,31 @@ export function TaskBoardView({
           />
         ))}
       </div>
-      <DragOverlay dropAnimation={null}>
-        {activeCard ? (
-          <TaskCard
-            title={activeCard.title}
-            author={activeCard.author}
-            description={activeCard.description}
-            tags={activeCard.tags}
-            commentCount={activeCard.commentCount}
-            dragHandleSlot={<GripVertical className="size-4" aria-hidden="true" />}
-            className="cursor-grabbing shadow-lg ring-1 ring-ring/40"
-          />
-        ) : null}
-      </DragOverlay>
+      {/*
+        The overlay carries the floating card that tracks the cursor. It is
+        `position: fixed`, but a feed ancestor of the callout establishes a
+        containing block, which would trap the overlay and offset it far from the
+        pointer. Portaling it to <body> (React context still flows through the
+        portal, so it stays wired to this DndContext) lets its fixed positioning
+        resolve against the viewport, so it follows the cursor 1:1. In fullscreen
+        the board already lives at <body>, so this is a harmless no-op there.
+      */}
+      {createPortal(
+        <DragOverlay dropAnimation={null}>
+          {activeCard ? (
+            <TaskCard
+              title={activeCard.title}
+              author={activeCard.author}
+              description={activeCard.description}
+              tags={activeCard.tags}
+              commentCount={activeCard.commentCount}
+              dragHandleSlot={<GripVertical className="size-4" aria-hidden="true" />}
+              className="cursor-grabbing shadow-lg ring-1 ring-ring/40"
+            />
+          ) : null}
+        </DragOverlay>,
+        document.body
+      )}
     </DndContext>
   );
 

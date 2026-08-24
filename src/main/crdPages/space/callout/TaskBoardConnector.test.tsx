@@ -4,6 +4,7 @@ import { AuthorizationPrivilege, CalloutContributionType } from '@/core/apollo/g
 
 const useTaskBoardDataQuery = vi.fn();
 const moveTaskMock = vi.fn();
+const reorderTasksMock = vi.fn();
 const createColumnMock = vi.fn();
 const renameColumnMock = vi.fn();
 const deleteColumnMock = vi.fn();
@@ -12,6 +13,7 @@ const reorderColumnsMock = vi.fn();
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useTaskBoardDataQuery: (options: unknown) => useTaskBoardDataQuery(options),
   useMoveTaskToColumnMutation: () => [moveTaskMock, {}] as const,
+  useUpdateContributionsSortOrderMutation: () => [reorderTasksMock, {}] as const,
   useCreateTaskColumnOnCalloutMutation: () => [createColumnMock, {}] as const,
   useUpdateTaskColumnOnCalloutMutation: () => [renameColumnMock, {}] as const,
   useDeleteTaskColumnOnCalloutMutation: () => [deleteColumnMock, {}] as const,
@@ -105,6 +107,7 @@ function boardCallout(overrides: Record<string, unknown> = {}) {
 afterEach(() => {
   useTaskBoardDataQuery.mockReset();
   moveTaskMock.mockReset();
+  reorderTasksMock.mockReset();
   createColumnMock.mockReset();
   renameColumnMock.mockReset();
   deleteColumnMock.mockReset();
@@ -215,6 +218,43 @@ describe('TaskBoardConnector', () => {
     const options = moveTaskMock.mock.calls[0][0];
     options.onError();
     expect(toast.error).toHaveBeenCalledWith('moveError');
+  });
+
+  it('persists a within-column reorder with optimistic sortOrder, only with MOVE_TASK', () => {
+    // Without MOVE_TASK the reorder callback is not even wired.
+    useTaskBoardDataQuery.mockReturnValue({
+      data: { lookup: { callout: boardCallout({ authorization: { id: 'a', myPrivileges: [] } }) } },
+    });
+    const { rerender } = render(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+    expect(capturedViewProps?.onReorder).toBeUndefined();
+
+    useTaskBoardDataQuery.mockReturnValue({
+      data: {
+        lookup: {
+          callout: boardCallout({
+            authorization: { id: 'a', myPrivileges: [AuthorizationPrivilege.MoveTask] },
+          }),
+        },
+      },
+    });
+    rerender(<TaskBoardConnector calloutId="callout-1" fallback={FALLBACK} />);
+
+    const onReorder = capturedViewProps?.onReorder as (orderedIds: string[]) => void;
+    onReorder(['contrib-3', 'contrib-1', 'contrib-2']);
+
+    expect(reorderTasksMock).toHaveBeenCalledTimes(1);
+    const options = reorderTasksMock.mock.calls[0][0];
+    expect(options.variables).toEqual({
+      calloutID: 'callout-1',
+      contributionIds: ['contrib-3', 'contrib-1', 'contrib-2'],
+    });
+    // Optimistic sortOrder is index-based, in the dropped order, so the board
+    // (which sorts by sortOrder) settles immediately with no refetch flicker.
+    expect(options.optimisticResponse.updateContributionsSortOrder).toEqual([
+      { __typename: 'CalloutContribution', id: 'contrib-3', sortOrder: 0 },
+      { __typename: 'CalloutContribution', id: 'contrib-1', sortOrder: 1 },
+      { __typename: 'CalloutContribution', id: 'contrib-2', sortOrder: 2 },
+    ]);
   });
 
   it('exposes the add affordance only with the CONTRIBUTE privilege', () => {
