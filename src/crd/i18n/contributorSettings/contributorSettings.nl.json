@@ -29,7 +29,7 @@
       }
     },
     "addKnowledge": {
-      "intro": "Welke kennis wil je dat je Virtual Contributor heeft? Schrijf het op in posts of upload het in documenten. Je kunt content later bijwerken, toevoegen en verwijderen.",
+      "intro": "Welke kennis wil je dat je Virtual Contributor heeft? Schrijf het op in Posts of upload het in documenten. Je kunt content later bijwerken, toevoegen en verwijderen.",
       "postsTitle": "Posts",
       "postTitle": "Titel",
       "postDescription": "Inhoud",
@@ -429,7 +429,7 @@
       "groups": {
         "space": {
           "title": "Space-meldingen",
-          "description": "Beheer meldingen voor Space-gerelateerde gebeurtenissen zoals posts, reacties en community-updates."
+          "description": "Beheer meldingen voor Space-gerelateerde gebeurtenissen zoals Posts, reacties en community-updates."
         },
         "spaceAdmin": {
           "title": "Space-beheerdermeldingen",
@@ -465,7 +465,7 @@
           "communicationUpdates": "Krijg een melding wanneer een nieuwe communicatie wordt gedeeld in een community",
           "collaborationCalloutPublished": "Krijg een melding wanneer er een callout wordt gepubliceerd in een community waar ik lid van ben",
           "collaborationCalloutReaction": "Ontvang een melding wanneer iemand op mijn Post reageert met een emoji",
-          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een post die ik volg",
+          "collaborationCalloutPostContributionComment": "Krijg een melding wanneer er een reactie wordt geplaatst op een Post die ik volg",
           "collaborationCalloutContributionCreated": "Krijg een melding wanneer er een nieuwe bijdrage aan een callout wordt aangemaakt",
           "collaborationCalloutComment": "Krijg een melding wanneer er een nieuwe reactie wordt toegevoegd aan een callout die ik volg",
           "communityCalendarEvents": "Krijg een melding voor community-agenda-evenementen",

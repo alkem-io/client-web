@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/crd/primitives/switch';
 import type { InnovationPackFormProps, SearchVisibilityValue } from './types';
 
-const SEARCH_VISIBILITY_ORDER: readonly SearchVisibilityValue[] = ['public', 'authenticated', 'account'];
+const SEARCH_VISIBILITY_ORDER: readonly SearchVisibilityValue[] = ['public', 'account', 'hidden'];
 
 /**
  * Pack EDIT form — the heavyweight surface on the pack admin screen.

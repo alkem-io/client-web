@@ -31,7 +31,7 @@
   "layout": {
     "pageHeader": {
       "title": "Layout",
-      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van posts."
+      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
     },
     "discardChangesDialog": {
       "title": "Wijzigingen verwerpen?",
@@ -702,8 +702,8 @@
       "descriptionPlaceholder": "Beschrijf dit template…",
       "tags": "Tags",
       "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
-      "postDefault": "Standaard post-beschrijving",
-      "postDefaultPlaceholder": "Vooraf ingevuld weergegeven wanneer leden een post maken op basis van dit template…",
+      "postDefault": "Standaard Post-beschrijving",
+      "postDefaultPlaceholder": "Vooraf ingevuld weergegeven wanneer leden een Post maken op basis van dit template…",
       "cancel": "Annuleren",
       "save": "Opslaan",
       "saving": "Opslaan…"
