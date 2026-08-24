@@ -2,6 +2,7 @@ import { format, isValid, parse, startOfDay } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import useNavigate from '@/core/routing/useNavigate';
 import { useQueryParams } from '@/core/routing/useQueryParams';
+import { TabbedLayoutParams } from '@/main/routing/urlBuilders';
 
 /**
  * URL constants for the calendar dialog deeplinks (FR-036).
@@ -98,6 +99,23 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
 
   const { basePath, calendarPath } = splitCalendarPath(pathname);
 
+  // The active tab (`?tab=N`) is not part of the calendar's own URL state, but
+  // every calendar navigation below rebuilds the query string from scratch —
+  // so it must be re-applied on each one, or opening/browsing/closing the
+  // calendar from a non-default tab silently switches the page back to the
+  // default tab (its sidebar plan may not even include the `events` widget,
+  // which then unmounts the dialog the user just opened).
+  const tabParam = params.get(TabbedLayoutParams.Section);
+  const withTab = (search: URLSearchParams) => {
+    if (tabParam) search.set(TabbedLayoutParams.Section, tabParam);
+    return search;
+  };
+  const appendTab = (path: string) => {
+    if (!tabParam) return path;
+    const next = withTab(new URLSearchParams());
+    return `${path}?${next.toString()}`;
+  };
+
   return {
     highlightedDay,
     isCreatingFromUrl,
@@ -111,21 +129,21 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
     },
 
     navigateToCreate: () => {
-      const next = new URLSearchParams();
+      const next = withTab(new URLSearchParams());
       next.set(INIT_CREATING_EVENT_PARAM, '1');
       navigate(`${calendarPath}?${next.toString()}`);
     },
 
     navigateToList: () => {
-      navigate(calendarPath);
+      navigate(appendTab(calendarPath));
     },
 
     navigateToEvent: (eventUrl: string) => {
-      navigate(eventUrl);
+      navigate(appendTab(eventUrl));
     },
 
     navigateAwayFromCalendar: () => {
-      navigate(basePath);
+      navigate(appendTab(basePath));
     },
   };
 }
