@@ -31,6 +31,7 @@ import { ContributorCollectionConnector } from './ContributorCollectionConnector
 import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
 import { SpaceCollectionConnector } from './SpaceCollectionConnector';
 import { TaskBoardConnector } from './TaskBoardConnector';
+import { TaskBoardDialog } from './TaskBoardDialog';
 
 type LazyCalloutItemProps = {
   calloutId: string;
@@ -110,11 +111,11 @@ function LazyCalloutItemContent({
   onExpandClick?: () => void;
 }) {
   const [dialogOpen, setDialogOpen] = useState(false);
-  // A Tasks board opens to the board itself (fullscreen), not the post-detail
-  // dialog. `isBoard` is confirmed asynchronously by the board connector's query;
-  // until then a click falls back to the normal dialog.
+  // A Tasks board opens to the board dialog (like a whiteboard/memo), not the
+  // post-detail dialog. `isBoard` is confirmed asynchronously by the board
+  // connector's query; until then a click falls back to the normal dialog.
   const [isBoard, setIsBoard] = useState(false);
-  const [boardFullscreen, setBoardFullscreen] = useState(false);
+  const [boardDialogOpen, setBoardDialogOpen] = useState(false);
   const [initialContributionId, setInitialContributionId] = useState<string | undefined>();
   const [initialMemoId, setInitialMemoId] = useState<string | undefined>();
   const [initialPostId, setInitialPostId] = useState<string | undefined>();
@@ -174,12 +175,12 @@ function LazyCalloutItemContent({
     setDialogOpen(true);
   };
 
-  // A Tasks board callout opens to the board (fullscreen); any other callout
-  // opens its detail dialog. Detection is async, so this falls back to the
-  // dialog until the board connector confirms.
+  // A Tasks board callout opens to the board dialog; any other callout opens its
+  // detail dialog. Detection is async, so this falls back to the dialog until
+  // the board connector confirms.
   const handleCardOpen = () => {
     if (isBoard) {
-      setBoardFullscreen(true);
+      setBoardDialogOpen(true);
     } else {
       openDialog();
     }
@@ -291,16 +292,12 @@ function LazyCalloutItemContent({
   const contributionsPreview = maybeTaskBoard ? (
     <TaskBoardConnector
       calloutId={callout.id}
-      title={callout.framing.profile.displayName}
-      fullscreen={boardFullscreen}
-      onFullscreenChange={setBoardFullscreen}
       onBoardResolved={setIsBoard}
       fallback={plainContributionsPreview}
       onOpenTask={contributionId => {
-        // Present the task on top of the board: keep (or enter) the fullscreen
-        // board and open the task's detail dialog above it (the dialog is
-        // elevated over the z-[100] board layer via `elevated` below).
-        setBoardFullscreen(true);
+        // Clicking a task in the inline preview presents it on top of the board
+        // dialog: open the board dialog and the task's focused dialog above it.
+        setBoardDialogOpen(true);
         openDialog(contributionId);
       }}
     />
@@ -364,7 +361,7 @@ function LazyCalloutItemContent({
                   onShare={() => setShareOpen(true)}
                 />
               }
-              onExpandClick={onExpandClick}
+              onExpandClick={isBoard ? () => setBoardDialogOpen(true) : onExpandClick}
               onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
               commentsSlot={thread}
               commentInputSlot={commentsEnabled ? commentInput : null}
@@ -391,7 +388,7 @@ function LazyCalloutItemContent({
           settingsSlot={
             <CalloutSettingsConnector callout={callout} moveActions={moveActions} onShare={() => setShareOpen(true)} />
           }
-          onExpandClick={onExpandClick}
+          onExpandClick={isBoard ? () => setBoardDialogOpen(true) : onExpandClick}
           onOpenFramingDocument={collaboraDocumentId ? () => setCollaboraEditorOpen(true) : undefined}
           contributionsPreview={contributionsPreview}
           reactionsSlot={reactionsBar}
@@ -403,6 +400,16 @@ function LazyCalloutItemContent({
       )}
       {mediaGalleryFileInput}
 
+      {isBoard && boardDialogOpen && (
+        <TaskBoardDialog
+          calloutId={callout.id}
+          title={callout.framing.profile.displayName}
+          open={boardDialogOpen}
+          onOpenChange={setBoardDialogOpen}
+          onOpenTask={openDialog}
+        />
+      )}
+
       <CalloutDetailDialogConnector
         open={dialogOpen}
         onOpenChange={handleDialogClose}
@@ -411,8 +418,8 @@ function LazyCalloutItemContent({
         initialContributionId={initialContributionId}
         initialMemoId={initialMemoId}
         initialPostId={initialPostId}
-        // A task board opens its tasks on top of the fullscreen board, so the
-        // detail dialog (and its edit/delete/share) must stack above z-[100].
+        // A task's focused dialog opens on top of the board dialog, so it (and
+        // its edit/delete/share) must stack above it.
         elevated={isBoard}
       />
 

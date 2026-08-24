@@ -21,11 +21,10 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { GripVertical, Maximize2, Minimize2 } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/crd/lib/utils';
-import { Button } from '@/crd/primitives/button';
 import { TaskBoardColumn } from './TaskBoardColumn';
 import { TaskCard } from './TaskCard';
 
@@ -47,25 +46,17 @@ export type TaskBoardColumnModel = {
 
 export type TaskBoardViewProps = {
   columns: TaskBoardColumnModel[];
-  /** Board title, shown in the header of the fullscreen view. */
-  title?: string;
   /**
-   * Controlled fullscreen state. When provided (with `onFullscreenChange`) the
-   * consumer owns the flag — e.g. so opening the callout expands the board. When
-   * omitted the view manages fullscreen internally via its expand control.
+   * Fill the available height (columns stretch to the container, e.g. inside the
+   * board dialog). When false the board is a bounded inline preview (feed).
    */
-  isFullscreen?: boolean;
-  onFullscreenChange?: (open: boolean) => void;
+  fill?: boolean;
   /** When true, per-column add affordances are shown. */
   canAdd?: boolean;
   /** When true, cards are draggable between columns. */
   canMove?: boolean;
   addLabel?: string;
   emptyLabel?: string;
-  /** Accessible label for the expand-to-fullscreen control. */
-  expandLabel?: string;
-  /** Accessible label for the collapse control shown while fullscreen. */
-  collapseLabel?: string;
   onAddTask?: (column: string) => void;
   onOpenTask?: (cardId: string) => void;
   /**
@@ -208,37 +199,22 @@ function DroppableColumn({
  * different column calls `onMoveTask`, a within-column reorder calls `onReorder`;
  * the connector owns the mutations and cache updates. During a drag a local draft
  * of the columns is rendered so the card visibly moves between columns and
- * siblings shift aside. The board can be expanded to a fullscreen overlay.
- * Affordances are driven purely by the privilege props.
+ * siblings shift aside. `fill` stretches the columns to the container (inside
+ * the board dialog); otherwise it is a bounded inline preview. Affordances are
+ * driven purely by the privilege props.
  */
 export function TaskBoardView({
   columns,
-  title,
-  isFullscreen: isFullscreenProp,
-  onFullscreenChange,
+  fill = false,
   canAdd = false,
   canMove = false,
   addLabel,
   emptyLabel,
-  expandLabel,
-  collapseLabel,
   onAddTask,
   onOpenTask,
   onMoveTask,
   onReorder,
 }: TaskBoardViewProps) {
-  const [internalFullscreen, setInternalFullscreen] = useState(false);
-  // Controlled when the consumer passes both the flag and a change handler;
-  // otherwise the view owns the state via its expand control.
-  const isControlledFullscreen = isFullscreenProp !== undefined && onFullscreenChange !== undefined;
-  const isFullscreen = isControlledFullscreen ? isFullscreenProp : internalFullscreen;
-  const setIsFullscreen = (next: boolean) => {
-    if (isControlledFullscreen) {
-      onFullscreenChange(next);
-    } else {
-      setInternalFullscreen(next);
-    }
-  };
   const [activeCard, setActiveCard] = useState<TaskBoardCardModel | null>(null);
   // A working copy of the columns, live only during a drag, so the dragged card
   // can be relocated across columns for the visual. Null when not dragging, in
@@ -364,35 +340,8 @@ export function TaskBoardView({
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="mb-2 flex items-center justify-between gap-2">
-        {/* The title anchors the fullscreen header; inline it stays empty so the
-            expand control keeps its right-aligned position. */}
-        {isFullscreen && title ? (
-          <h2 className="min-w-0 truncate text-section-title text-foreground">{title}</h2>
-        ) : (
-          <span className="min-w-0" />
-        )}
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="size-8 shrink-0"
-          aria-label={isFullscreen ? collapseLabel : expandLabel}
-          aria-pressed={isFullscreen}
-          onClick={() => setIsFullscreen(!isFullscreen)}
-        >
-          {isFullscreen ? (
-            <Minimize2 className="size-4" aria-hidden="true" />
-          ) : (
-            <Maximize2 className="size-4" aria-hidden="true" />
-          )}
-        </Button>
-      </div>
       <div
-        className={cn(
-          'flex flex-row flex-nowrap gap-3 overflow-x-auto pb-2',
-          isFullscreen ? 'min-h-0 flex-1' : 'max-h-[70vh]'
-        )}
+        className={cn('flex flex-row flex-nowrap gap-3 overflow-x-auto pb-2', fill ? 'min-h-0 flex-1' : 'max-h-[70vh]')}
       >
         {view.map(column => (
           <DroppableColumn
@@ -413,8 +362,7 @@ export function TaskBoardView({
         containing block, which would trap the overlay and offset it far from the
         pointer. Portaling it to <body> (React context still flows through the
         portal, so it stays wired to this DndContext) lets its fixed positioning
-        resolve against the viewport, so it follows the cursor 1:1. In fullscreen
-        the board already lives at <body>, so this is a harmless no-op there.
+        resolve against the viewport, so it follows the cursor 1:1.
       */}
       {createPortal(
         <DragOverlay dropAnimation={null}>
@@ -435,15 +383,7 @@ export function TaskBoardView({
     </DndContext>
   );
 
-  // A feed ancestor establishes a containing block (content-visibility / a
-  // transform), which traps `position: fixed` so a plain fixed overlay only
-  // covers the callout, not the viewport. Portal the fullscreen layer to
-  // <body> so it reliably fills the screen. Inline, the board renders in place.
-  if (isFullscreen) {
-    return createPortal(
-      <div className="fixed inset-0 z-[100] flex flex-col overflow-hidden bg-background p-4">{board}</div>,
-      document.body
-    );
-  }
-  return <div className="flex flex-col">{board}</div>;
+  // `fill` stretches the board to its container (the board dialog); otherwise it
+  // is a bounded inline preview in the feed.
+  return <div className={cn('flex flex-col', fill && 'flex-1 min-h-0')}>{board}</div>;
 }

@@ -3,6 +3,7 @@ import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoar
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
 import { TaskBoardConnector } from './TaskBoardConnector';
+import { TaskBoardDialog } from './TaskBoardDialog';
 
 type CalloutDeeplinkViewProps = {
   callout: CalloutDetailsModelExtended;
@@ -58,17 +59,8 @@ export function CalloutDeeplinkView({ callout, contributionId, postId, onClose }
 
   return (
     <>
-      <TaskBoardConnector
-        calloutId={callout.id}
-        title={callout.framing.profile.displayName}
-        fullscreen={isBoard !== false}
-        onFullscreenChange={open => {
-          if (!open) onClose();
-        }}
-        onBoardResolved={setIsBoard}
-        onOpenTask={setOpenContributionId}
-        fallback={null}
-      />
+      {/* Confirm board-ness without rendering an inline board on the page. */}
+      <TaskBoardConnector calloutId={callout.id} detectOnly={true} onBoardResolved={setIsBoard} fallback={null} />
 
       {/* Non-board callout: the usual post-with-responses dialog. */}
       {isBoard === false && (
@@ -80,6 +72,19 @@ export function CalloutDeeplinkView({ callout, contributionId, postId, onClose }
           callout={callout}
           initialContributionId={contributionId}
           initialPostId={postId}
+        />
+      )}
+
+      {/* Board callout: the board dialog (with its fullscreen toggle). */}
+      {isBoard === true && (
+        <TaskBoardDialog
+          calloutId={callout.id}
+          title={callout.framing.profile.displayName}
+          open={true}
+          onOpenChange={open => {
+            if (!open) onClose();
+          }}
+          onOpenTask={setOpenContributionId}
         />
       )}
 

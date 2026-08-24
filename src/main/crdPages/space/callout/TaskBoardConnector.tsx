@@ -19,17 +19,18 @@ import {
 import { TaskBoardColumnsDialog } from '@/crd/components/callout/task-board/TaskBoardColumnsDialog';
 import { TaskBoardView } from '@/crd/components/callout/task-board/TaskBoardView';
 import { getBoardColumns, isTaskBoard, TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { applyMoveToCounts, contributionColumnTag, mapTaskBoardColumns } from './taskBoardMapper';
 
 type TaskBoardConnectorProps = {
   calloutId: string;
-  /** Board title (the callout display name), shown in the fullscreen header. */
-  title?: string;
-  /** Controlled fullscreen — lets the consumer open the board when the callout is opened. */
-  fullscreen?: boolean;
-  onFullscreenChange?: (open: boolean) => void;
+  /** Fill the container height — set when rendered inside the board dialog. */
+  fill?: boolean;
+  /** Detect board-ness (fire `onBoardResolved`) but render nothing — for the
+   *  deep-link view, which shows the board in a dialog rather than inline. */
+  detectOnly?: boolean;
   /**
    * Fires once board detection resolves (true when the callout is a Tasks board).
    * Lets the consumer route "open the callout" to the board instead of the plain
@@ -55,9 +56,8 @@ type TaskBoardConnectorProps = {
  */
 export function TaskBoardConnector({
   calloutId,
-  title,
-  fullscreen,
-  onFullscreenChange,
+  fill,
+  detectOnly,
   onBoardResolved,
   fallback,
   onOpenTask,
@@ -78,35 +78,27 @@ export function TaskBoardConnector({
     onBoardResolved?.(isBoard);
   }, [isBoard, onBoardResolved]);
 
+  // Detection-only consumers (the deep-link view) render the board elsewhere.
+  if (detectOnly) {
+    return null;
+  }
+
   if (!isBoard || !callout) {
     return <>{fallback}</>;
   }
 
-  return (
-    <TaskBoardBody
-      callout={callout}
-      contributions={callout.contributions}
-      title={title}
-      fullscreen={fullscreen}
-      onFullscreenChange={onFullscreenChange}
-      onOpenTask={onOpenTask}
-    />
-  );
+  return <TaskBoardBody callout={callout} contributions={callout.contributions} fill={fill} onOpenTask={onOpenTask} />;
 }
 
 function TaskBoardBody({
   callout,
   contributions,
-  title,
-  fullscreen,
-  onFullscreenChange,
+  fill,
   onOpenTask,
 }: {
   callout: TaskBoardCalloutFragment;
   contributions: TaskBoardContributionFragment[];
-  title?: string;
-  fullscreen?: boolean;
-  onFullscreenChange?: (open: boolean) => void;
+  fill?: boolean;
   onOpenTask?: (contributionId: string) => void;
 }) {
   const { t } = useTranslation('crd-taskBoard');
@@ -229,7 +221,7 @@ function TaskBoardBody({
   };
 
   return (
-    <>
+    <div className={cn(fill && 'flex flex-col h-full min-h-0')}>
       {canEditColumns && (
         <div className="mb-2 flex justify-end">
           <Button type="button" variant="outline" size="sm" className="gap-2" onClick={() => setColumnsOpen(true)}>
@@ -240,15 +232,11 @@ function TaskBoardBody({
       )}
       <TaskBoardView
         columns={columns}
-        title={title}
-        isFullscreen={fullscreen}
-        onFullscreenChange={onFullscreenChange}
+        fill={fill}
         canAdd={canAdd}
         canMove={canMove}
         addLabel={t('addTask')}
         emptyLabel={t('emptyColumn')}
-        expandLabel={t('expand')}
-        collapseLabel={t('collapse')}
         onAddTask={canAdd ? column => setAddState({ column }) : undefined}
         onOpenTask={onOpenTask}
         onMoveTask={handleMoveTask}
@@ -299,6 +287,6 @@ function TaskBoardBody({
           }}
         />
       )}
-    </>
+    </div>
   );
 }
