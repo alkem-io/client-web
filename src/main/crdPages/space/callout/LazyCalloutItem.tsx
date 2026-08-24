@@ -275,6 +275,7 @@ function LazyCalloutItemContent({
   const contributionsPreview = maybeTaskBoard ? (
     <TaskBoardConnector
       calloutId={callout.id}
+      title={callout.framing.profile.displayName}
       fallback={plainContributionsPreview}
       onOpenTask={contributionId => openDialog(contributionId)}
     />

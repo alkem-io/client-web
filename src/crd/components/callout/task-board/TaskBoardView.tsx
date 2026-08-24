@@ -47,6 +47,8 @@ export type TaskBoardColumnModel = {
 
 export type TaskBoardViewProps = {
   columns: TaskBoardColumnModel[];
+  /** Board title, shown in the header of the fullscreen view. */
+  title?: string;
   /** When true, per-column add affordances are shown. */
   canAdd?: boolean;
   /** When true, cards are draggable between columns. */
@@ -204,6 +206,7 @@ function DroppableColumn({
  */
 export function TaskBoardView({
   columns,
+  title,
   canAdd = false,
   canMove = false,
   addLabel,
@@ -341,7 +344,14 @@ export function TaskBoardView({
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="mb-2 flex justify-end">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        {/* The title anchors the fullscreen header; inline it stays empty so the
+            expand control keeps its right-aligned position. */}
+        {isFullscreen && title ? (
+          <h2 className="min-w-0 truncate text-section-title text-foreground">{title}</h2>
+        ) : (
+          <span className="min-w-0" />
+        )}
         <Button
           type="button"
           variant="ghost"

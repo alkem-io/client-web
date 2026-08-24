@@ -23,6 +23,7 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import {
   Dialog,
@@ -68,6 +69,9 @@ type CrdPostContributionDialogProps = {
    * first column when omitted.
    */
   taskColumn?: string;
+  /** Escape hatch to raise the dialog's stacking above a custom overlay (e.g. the fullscreen task board at z-[100]). */
+  overlayClassName?: string;
+  contentClassName?: string;
   onCreated?: (post: { id: string }) => void;
   onDeleted?: () => void;
   onUpdated?: () => void;
@@ -86,6 +90,8 @@ export function CrdPostContributionDialog({
   defaultDisplayName,
   defaultDescription,
   taskColumn,
+  overlayClassName,
+  contentClassName,
   onCreated,
   onDeleted,
   onUpdated,
@@ -408,7 +414,10 @@ export function CrdPostContributionDialog({
           else onOpenChange(true);
         }}
       >
-        <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden">
+        <DialogContent
+          overlayClassName={overlayClassName}
+          className={cn('sm:max-w-3xl max-h-[90vh] flex flex-col overflow-hidden', contentClassName)}
+        >
           <DialogHeader className="shrink-0">
             <DialogTitle>{dialogTitle}</DialogTitle>
             <DialogDescription className="sr-only">{dialogTitle}</DialogDescription>

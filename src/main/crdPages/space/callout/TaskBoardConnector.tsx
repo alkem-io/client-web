@@ -25,6 +25,8 @@ import { applyMoveToCounts, contributionColumnTag, mapTaskBoardColumns } from '.
 
 type TaskBoardConnectorProps = {
   calloutId: string;
+  /** Board title (the callout display name), shown in the fullscreen header. */
+  title?: string;
   /**
    * The normal POSTS contributions body. Rendered unchanged whenever this
    * callout is not a Tasks board (marker absent) or the board view is switched
@@ -42,7 +44,7 @@ type TaskBoardConnectorProps = {
  * verbatim. The board itself lives in an inner component so its hooks run
  * unconditionally regardless of the branch.
  */
-export function TaskBoardConnector({ calloutId, fallback, onOpenTask }: TaskBoardConnectorProps) {
+export function TaskBoardConnector({ calloutId, title, fallback, onOpenTask }: TaskBoardConnectorProps) {
   const { data } = useTaskBoardDataQuery({ variables: { calloutId } });
 
   const callout = data?.lookup.callout;
@@ -56,16 +58,20 @@ export function TaskBoardConnector({ calloutId, fallback, onOpenTask }: TaskBoar
     return <>{fallback}</>;
   }
 
-  return <TaskBoardBody callout={callout} contributions={callout.contributions} onOpenTask={onOpenTask} />;
+  return (
+    <TaskBoardBody callout={callout} contributions={callout.contributions} title={title} onOpenTask={onOpenTask} />
+  );
 }
 
 function TaskBoardBody({
   callout,
   contributions,
+  title,
   onOpenTask,
 }: {
   callout: TaskBoardCalloutFragment;
   contributions: TaskBoardContributionFragment[];
+  title?: string;
   onOpenTask?: (contributionId: string) => void;
 }) {
   const { t } = useTranslation('crd-taskBoard');
@@ -199,6 +205,7 @@ function TaskBoardBody({
       )}
       <TaskBoardView
         columns={columns}
+        title={title}
         canAdd={canAdd}
         canMove={canMove}
         addLabel={t('addTask')}
@@ -244,6 +251,11 @@ function TaskBoardBody({
           calloutId={callout.id}
           taskColumn={addState.column}
           inlineTrigger={true}
+          // The board can be fullscreen (a z-[100] portal), so the creation dialog
+          // must stack above it — otherwise "Add task" opens behind the board and
+          // appears to do nothing. z-[110] also sits safely above the feed.
+          overlayClassName="z-[110]"
+          contentClassName="z-[110]"
           open={true}
           onOpenChange={open => {
             if (!open) setAddState(undefined);

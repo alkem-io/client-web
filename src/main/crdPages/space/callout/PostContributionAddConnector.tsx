@@ -19,6 +19,9 @@ type PostContributionAddConnectorProps = {
   onCreated?: () => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
+  /** Escape hatch to raise the dialog above a custom overlay (e.g. the fullscreen task board). */
+  overlayClassName?: string;
+  contentClassName?: string;
 } & (ControlledOpen | UncontrolledOpen);
 
 export function PostContributionAddConnector({
@@ -28,6 +31,8 @@ export function PostContributionAddConnector({
   taskColumn,
   onCreated,
   inlineTrigger,
+  overlayClassName,
+  contentClassName,
   open: controlledOpen,
   onOpenChange,
 }: PostContributionAddConnectorProps) {
@@ -59,6 +64,8 @@ export function PostContributionAddConnector({
             defaultDisplayName={defaultDisplayName}
             defaultDescription={defaultDescription}
             taskColumn={taskColumn}
+            overlayClassName={overlayClassName}
+            contentClassName={contentClassName}
             onCreated={() => {
               onCreated?.();
             }}
