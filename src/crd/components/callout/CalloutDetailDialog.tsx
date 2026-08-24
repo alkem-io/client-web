@@ -148,7 +148,11 @@ export function CalloutDetailDialog({
         overlayClassName={overlayClassName}
         hideClose={focusedPost}
         className={cn(
-          'w-full sm:max-w-5xl h-[95vh] p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl rounded-xl',
+          'w-full p-0 gap-0 overflow-hidden flex flex-col bg-background border-none shadow-2xl rounded-xl',
+          // Focused mode grows with its (single-post) content up to a cap, so a
+          // short task doesn't leave a tall empty dialog; the full callout dialog
+          // keeps its fixed, roomy height.
+          focusedPost ? 'sm:max-w-3xl max-h-[90vh]' : 'sm:max-w-5xl h-[95vh]',
           contentClassName
         )}
         aria-describedby="callout-dialog-description"
@@ -216,7 +220,7 @@ export function CalloutDetailDialog({
         )}
 
         {/* Scrollable body */}
-        <div className="flex-1 overflow-y-auto bg-background">
+        <div className="flex-1 min-h-0 overflow-y-auto bg-background">
           <div className="mx-auto w-full px-6 md:px-10 pb-6">
             {/* Callout framing (title/author/description/framing previews). Hidden
                 in focused mode — the single contribution stands on its own. */}

@@ -665,7 +665,14 @@ export function CalloutDetailDialogConnector({
         }}
         shareSlot={
           selectedPostUrl ? (
-            <ShareButton url={selectedPostUrl} tooltip={t('postPreview.share')} dialogTitle={t('postPreview.share')} />
+            <ShareButton
+              url={selectedPostUrl}
+              tooltip={t('postPreview.share')}
+              dialogTitle={t('postPreview.share')}
+              // Over the fullscreen board the share dialog must clear the board.
+              dialogClassName={elevated ? 'z-[120]' : undefined}
+              overlayClassName={elevated ? 'z-[120]' : undefined}
+            />
           ) : undefined
         }
       />
