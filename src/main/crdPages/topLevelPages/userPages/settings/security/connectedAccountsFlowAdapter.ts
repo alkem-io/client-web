@@ -6,6 +6,13 @@ import type { KratosMessage } from '@/crd/components/auth/flowDescriptor';
 
 type InputNode = UiNode & { attributes: UiNodeInputAttributes };
 
+/** `authentication.methods` mixes credential kinds with OIDC providers; these are the kinds. */
+const NON_PROVIDER_AUTHENTICATION_TYPES: ReadonlySet<AuthenticationType> = new Set([
+  AuthenticationType.Email,
+  AuthenticationType.Passkey,
+  AuthenticationType.Unknown,
+]);
+
 export type ConnectionAction = {
   kind: 'link' | 'unlink';
   /** The flow's own `ui.action` — every per-row form POSTs here (research D1). */
@@ -152,8 +159,16 @@ export const adaptConnectedAccountsFlow = (
 
   const providerIds = new Set<string>([...linkNodes.keys(), ...unlinkNodes.keys()]);
   for (const authMethod of authenticationMethods) {
-    const providerId = authMethod.toLowerCase();
-    if (socialProviderCustomizations[providerId]) providerIds.add(providerId);
+    // This loop is the ONLY source for a connected-but-locked row: Kratos omits the unlink
+    // node for the last first-factor credential, so such a provider appears nowhere else.
+    // Filtering it by "do we have branding for this id" would make a newly configured
+    // provider vanish from the section entirely rather than explain why it can't be
+    // disconnected (FR-007/FR-008) — reintroducing exactly the silence the derivation table
+    // exists to break. Exclude the credential kinds by name instead; everything else is a
+    // provider, branded or not, matching how the link/unlink path already renders an
+    // unrecognised provider id under its fallback display name (FR-025/FR-026).
+    if (NON_PROVIDER_AUTHENTICATION_TYPES.has(authMethod)) continue;
+    providerIds.add(authMethod.toLowerCase());
   }
 
   const providers: ProviderRow[] = Array.from(providerIds)

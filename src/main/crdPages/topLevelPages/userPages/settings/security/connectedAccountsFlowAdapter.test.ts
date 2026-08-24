@@ -141,6 +141,34 @@ describe('adaptConnectedAccountsFlow', () => {
     });
   });
 
+  describe('provider identification from authentication.methods', () => {
+    it('renders the connected-locked row for a provider we have no branding for', () => {
+      // The locked row's ONLY source is `authentication.methods`: Kratos omits the unlink
+      // node for the last first-factor credential, so there is no node to find it by. Keying
+      // that off `socialProviderCustomizations` would make a newly configured provider vanish
+      // from the section rather than explain why it cannot be disconnected (FR-007/FR-008).
+      const flow = buildFlow([hiddenNode('csrf_token', 'x')]);
+      const result = adaptConnectedAccountsFlow(flow, ['SOMENEWIDP' as AuthenticationType]);
+
+      expect(result.status).toBe('ready');
+      const row = result.providers.find(candidate => candidate.providerId === 'somenewidp');
+      expect(row?.state).toBe('connected-locked');
+      expect(row?.action).toBeNull();
+      expect(row?.lockedReasonKey).toBeTruthy();
+    });
+
+    it('never turns a credential kind into a provider row', () => {
+      const flow = buildFlow([hiddenNode('csrf_token', 'x')]);
+      const result = adaptConnectedAccountsFlow(flow, [
+        AuthenticationType.Email,
+        AuthenticationType.Passkey,
+        AuthenticationType.Unknown,
+      ]);
+
+      expect(result.providers).toHaveLength(0);
+    });
+  });
+
   describe('invariants', () => {
     it('locked state ⟹ action === null and lockedReasonKey is set', () => {
       const flow = buildFlow([hiddenNode('csrf_token', 'csrf-1')]);

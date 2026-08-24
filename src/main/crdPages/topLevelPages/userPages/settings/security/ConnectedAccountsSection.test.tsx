@@ -41,6 +41,31 @@ const githubConnected = {
   action: null,
 };
 
+describe('ConnectedAccountsSection — credential row manage links', () => {
+  it('points at the in-page anchors rather than reloading the settings URL', () => {
+    // `UserSecurityTabView` renders `#password` / `#passkeys` on this same page. A full
+    // settings URL rendered as a plain <a> reloaded the document to reach a section that
+    // was already on screen.
+    render(
+      <ConnectedAccountsSection
+        status="ready"
+        model={baseModel({
+          credentials: [
+            { kind: 'password', present: true },
+            { kind: 'passkey', present: false },
+          ],
+        })}
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
+
+    const hrefs = screen.getAllByRole('link').map(link => link.getAttribute('href'));
+    expect(hrefs).toEqual(expect.arrayContaining(['#password', '#passkeys']));
+    expect(hrefs.every(href => href?.startsWith('#'))).toBe(true);
+  });
+});
+
 describe('ConnectedAccountsSection — marker lifetime across a failed landing', () => {
   beforeEach(() => {
     sessionStorage.clear();
@@ -56,7 +81,6 @@ describe('ConnectedAccountsSection — marker lifetime across a failed landing',
       <ConnectedAccountsSection
         status="unavailable"
         model={baseModel({ status: 'unavailable' })}
-        profileUrl="/user/alice"
         flowWasResumed={false}
         onRetry={vi.fn()}
       />
@@ -73,7 +97,6 @@ describe('ConnectedAccountsSection — marker lifetime across a failed landing',
       <ConnectedAccountsSection
         status="unavailable"
         model={baseModel({ status: 'unavailable' })}
-        profileUrl="/user/alice"
         flowWasResumed={false}
         onRetry={vi.fn()}
       />
@@ -84,7 +107,6 @@ describe('ConnectedAccountsSection — marker lifetime across a failed landing',
       <ConnectedAccountsSection
         status="ready"
         model={baseModel({ providers: [githubConnected] })}
-        profileUrl="/user/alice"
         flowWasResumed={false}
         onRetry={vi.fn()}
       />
@@ -103,15 +125,7 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('unlink', 'github');
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={false} onRetry={vi.fn()} />);
 
     const status = screen.getByRole('status');
     expect(status).toHaveTextContent('user.security.connectedAccounts.messages.unlinked:GitHub');
@@ -121,15 +135,7 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('link', 'github');
     const model = baseModel({ providers: [githubConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={false} onRetry={vi.fn()} />);
 
     const status = screen.getByRole('status');
     expect(status).toHaveTextContent('user.security.connectedAccounts.messages.linked:GitHub');
@@ -141,15 +147,7 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('unlink', 'github');
     const model = baseModel({ providers: [githubConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={false} onRetry={vi.fn()} />);
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('user.security.connectedAccounts.messages.disconnectFailed:GitHub');
@@ -159,15 +157,7 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('link', 'github');
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={false} onRetry={vi.fn()} />);
 
     const alert = screen.getByRole('alert');
     expect(alert).toHaveTextContent('user.security.connectedAccounts.messages.connectFailed:GitHub');
@@ -180,15 +170,7 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
       messages: [{ id: 1050001, type: 'success', text: 'Your changes have been saved!' }],
     });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={false} onRetry={vi.fn()} />);
 
     // Exactly the real Kratos message renders — no synthetic marker message alongside it.
     const statusNodes = screen.getAllByRole('status');
@@ -200,15 +182,7 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
   it('renders nothing extra when there is no marker', () => {
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={false} onRetry={vi.fn()} />);
 
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
@@ -218,13 +192,7 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
     writeConnectedAccountsMarker('unlink', 'github');
 
     const { rerender } = render(
-      <ConnectedAccountsSection
-        status="loading"
-        model={baseModel()}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
+      <ConnectedAccountsSection status="loading" model={baseModel()} flowWasResumed={false} onRetry={vi.fn()} />
     );
     // The loading skeleton itself is a `role="status"` output, so assert on the marker text
     // specifically rather than on the role — no announcement has been derived yet.
@@ -234,7 +202,6 @@ describe('ConnectedAccountsSection — marker fallback announcement (FR-012, res
       <ConnectedAccountsSection
         status="ready"
         model={baseModel({ providers: [githubNotConnected] })}
-        profileUrl="/user/alice"
         flowWasResumed={false}
         onRetry={vi.fn()}
       />
@@ -256,15 +223,7 @@ describe('ConnectedAccountsSection — privileged-session re-auth interruption',
     writeConnectedAccountsMarker('unlink', 'github');
     const model = baseModel({ providers: [githubConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={true}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={true} onRetry={vi.fn()} />);
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     expect(screen.queryByText(/messages\.disconnectFailed/)).not.toBeInTheDocument();
@@ -276,15 +235,7 @@ describe('ConnectedAccountsSection — privileged-session re-auth interruption',
     writeConnectedAccountsMarker('link', 'github');
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={true}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={true} onRetry={vi.fn()} />);
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     const status = screen.getByRole('status');
@@ -295,15 +246,7 @@ describe('ConnectedAccountsSection — privileged-session re-auth interruption',
     writeConnectedAccountsMarker('unlink', 'github');
     const model = baseModel({ providers: [githubConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={false}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={false} onRetry={vi.fn()} />);
 
     expect(screen.getByRole('alert')).toHaveTextContent(
       'user.security.connectedAccounts.messages.disconnectFailed:GitHub'
@@ -314,15 +257,7 @@ describe('ConnectedAccountsSection — privileged-session re-auth interruption',
     writeConnectedAccountsMarker('unlink', 'github');
     const model = baseModel({ providers: [githubNotConnected] });
 
-    render(
-      <ConnectedAccountsSection
-        status="ready"
-        model={model}
-        profileUrl="/user/alice"
-        flowWasResumed={true}
-        onRetry={vi.fn()}
-      />
-    );
+    render(<ConnectedAccountsSection status="ready" model={model} flowWasResumed={true} onRetry={vi.fn()} />);
 
     const status = screen.getByRole('status');
     expect(status).toHaveTextContent('user.security.connectedAccounts.messages.unlinked:GitHub');

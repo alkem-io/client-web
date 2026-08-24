@@ -7,7 +7,6 @@ import {
   ConnectedAccountsView,
 } from '@/crd/components/user/settings/ConnectedAccountsView';
 import { useKratosMessageCopy } from '@/main/crdPages/auth/useKratosMessageCopy';
-import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { type ConnectedAccountsModel, displayNameFor } from './connectedAccountsFlowAdapter';
 import {
   type ConnectedAccountsMarkerLiveState,
@@ -29,7 +28,6 @@ export type ConnectedAccountsSectionStatus = 'loading' | 'unavailable' | 'ready'
 export type ConnectedAccountsSectionProps = {
   status: ConnectedAccountsSectionStatus;
   model: ConnectedAccountsModel;
-  profileUrl: string | undefined;
   /**
    * True when the Settings flow driving this render is a *resumed* flow (a `flow` id was already on
    * the URL) rather than a freshly-provisioned one. Kratos's settings UI URL convention is
@@ -52,13 +50,7 @@ export type ConnectedAccountsSectionProps = {
  * FR-019). When a real Kratos message *is* present, it already explains the attempt and the marker
  * path yields to it rather than double-announcing.
  */
-export function ConnectedAccountsSection({
-  status,
-  model,
-  profileUrl,
-  flowWasResumed,
-  onRetry,
-}: ConnectedAccountsSectionProps) {
+export function ConnectedAccountsSection({ status, model, flowWasResumed, onRetry }: ConnectedAccountsSectionProps) {
   const { t: tTyped } = useTranslation(NS);
   // Reason-key and outcome-message strings are built at runtime from the adapter's/marker's output
   // (a string, not a literal from the typed resource union) — translate via a plain signature,
@@ -88,7 +80,10 @@ export function ConnectedAccountsSection({
   const credentials: ConnectedAccountsCredentialRow[] = model.credentials.map(row => ({
     kind: row.kind,
     present: row.present,
-    manageHref: buildSettingsTabUrl(profileUrl, 'security', row.kind === 'password' ? 'password' : 'passkeys'),
+    // Hash-only: `UserSecurityTabView` renders the `#password` / `#passkeys` anchors on this
+    // same page (with `scroll-mt-60` to clear the sticky chrome). A full settings URL here
+    // rendered as a plain <a> and reloaded the document to reach a section already on screen.
+    manageHref: row.kind === 'password' ? '#password' : '#passkeys',
   }));
 
   const markerMessage = useConnectedAccountsMarkerMessage({ status, messages, providers, flowWasResumed, t });

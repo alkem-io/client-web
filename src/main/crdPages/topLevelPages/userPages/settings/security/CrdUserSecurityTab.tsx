@@ -165,7 +165,6 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
     <ConnectedAccountsSection
       status={connectedAccountsStatus}
       model={connectedAccountsModel}
-      profileUrl={profileUrl}
       flowWasResumed={flowResult.kind === 'ready' && flowResult.flowWasResumed}
       onRetry={() => {
         flowResult.refetch();
