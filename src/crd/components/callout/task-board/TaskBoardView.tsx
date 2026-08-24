@@ -291,31 +291,38 @@ export function TaskBoardView({
     fromColumnRef.current = null;
     if (!toColumn) return;
 
-    // A drop into a different column re-tags the card's column and lands it at the
-    // dropped position. `handleDragOver` already placed the card into the target
-    // column at the hovered slot in the draft, so the draft order is what the user
-    // sees — persist that full order alongside the column change.
+    // Resolve the card's final slot within its destination column from the drop
+    // target. `handleDragOver` only ever moves a card ACROSS columns (and drops it
+    // at the row it first crossed into) and leaves same-column order untouched, so
+    // the exact within-column index — for both a reorder and the position half of
+    // a cross-column move — is computed here from `over`.
+    const column = draft.find(entry => entry.name === toColumn);
+    if (!column) return;
+    const activeIndex = column.cards.findIndex(card => card.id === activeId);
+    const overIndex =
+      !overId || overId.startsWith(COLUMN_DROPPABLE_PREFIX)
+        ? column.cards.length - 1
+        : column.cards.findIndex(card => card.id === overId);
+    const targetIndex = overIndex < 0 ? column.cards.length - 1 : overIndex;
+    const finalCards =
+      activeIndex < 0 || targetIndex === activeIndex ? column.cards : arrayMove(column.cards, activeIndex, targetIndex);
+    const orderedIds = draft.flatMap(entry =>
+      entry.name === toColumn ? finalCards.map(card => card.id) : entry.cards.map(card => card.id)
+    );
+
+    // A cross-column drop re-tags the column and persists the dropped position
+    // together (the connector sequences the two mutations).
     if (toColumn !== fromColumn) {
-      const orderedIds = draft.flatMap(entry => entry.cards.map(card => card.id));
       onMoveTask?.(activeId, toColumn, orderedIds);
       return;
     }
 
-    // A within-column drop persists the new order. The list was not reordered
-    // during the drag, so compute the final index from the drop target here.
-    if (!onReorder || !overId) return;
-    const column = draft.find(entry => entry.name === toColumn);
-    if (!column) return;
-    const activeIndex = column.cards.findIndex(card => card.id === activeId);
-    const overIndex = overId.startsWith(COLUMN_DROPPABLE_PREFIX)
-      ? column.cards.length - 1
-      : column.cards.findIndex(card => card.id === overId);
-    if (overIndex < 0 || overIndex === activeIndex) return;
-
-    const reordered = arrayMove(column.cards, activeIndex, overIndex);
-    const orderedIds = draft.flatMap(entry =>
-      entry.name === toColumn ? reordered.map(card => card.id) : entry.cards.map(card => card.id)
-    );
+    // A within-column drop persists the new order only if it actually changed.
+    if (!onReorder) return;
+    const originalIds = columns.flatMap(entry => entry.cards.map(card => card.id));
+    if (orderedIds.length === originalIds.length && orderedIds.every((id, index) => id === originalIds[index])) {
+      return;
+    }
     onReorder(orderedIds);
   };
 
