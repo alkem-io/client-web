@@ -15,7 +15,10 @@ export default function CrdSpaceTabbedPages() {
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      {activeTabIndex < totalTabs && <CrdSpaceTabPage tabPosition={activeTabIndex} />}
+      {/* key: one collapsed instance serves every tab — remount on tab switch so
+          per-tab local state (search pills, tag filters, dialog open-state)
+          never leaks into another tab / flowStateID. */}
+      {activeTabIndex < totalTabs && <CrdSpaceTabPage key={activeTabIndex} tabPosition={activeTabIndex} />}
     </Suspense>
   );
 }
