@@ -8,17 +8,21 @@ const CrdSpaceTabPage = lazyWithGlobalErrorHandler(() => import('./CrdSpaceTabPa
 type OutletContext = {
   activeTabIndex: number;
   totalTabs: number;
+  /** Opens the layout-owned shared About dialog (single mount, see CrdSpacePageLayout). */
+  onOpenAbout: () => void;
 };
 
 export default function CrdSpaceTabbedPages() {
-  const { activeTabIndex, totalTabs } = useOutletContext<OutletContext>();
+  const { activeTabIndex, totalTabs, onOpenAbout } = useOutletContext<OutletContext>();
 
   return (
     <Suspense fallback={<LoadingSpinner />}>
       {/* key: one collapsed instance serves every tab — remount on tab switch so
           per-tab local state (search pills, tag filters, dialog open-state)
           never leaks into another tab / flowStateID. */}
-      {activeTabIndex < totalTabs && <CrdSpaceTabPage key={activeTabIndex} tabPosition={activeTabIndex} />}
+      {activeTabIndex < totalTabs && (
+        <CrdSpaceTabPage key={activeTabIndex} tabPosition={activeTabIndex} onOpenAbout={onOpenAbout} />
+      )}
     </Suspense>
   );
 }

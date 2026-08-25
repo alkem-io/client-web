@@ -64,7 +64,10 @@ export function useSpaceApplyFlow({
   const { applicationButtonProps, loading } = useApplicationButton({
     spaceId,
     parentSpaceId,
-    loading: skip,
+    // A real skip (not `loading`): gates BOTH the per-space ApplicationButton
+    // query and the global cache-and-network UserPendingMemberships list, so a
+    // skipped consumer (widget not configured / dialog closed) issues nothing.
+    skip,
     // On success, either close the hosting dialog (About) or navigate into the space.
     onJoin: onJoined ?? (() => navigate(spaceProfileUrl)),
   });

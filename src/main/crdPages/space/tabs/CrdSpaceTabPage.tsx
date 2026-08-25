@@ -37,9 +37,11 @@ const FIRST_CUSTOM_TAB_POSITION = 3;
 
 type CrdSpaceTabPageProps = {
   tabPosition: number;
+  /** Opens the layout-owned shared About dialog (single mount, see CrdSpacePageLayout). */
+  onOpenAbout: () => void;
 };
 
-export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
+export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTabPageProps) {
   const { t } = useTranslation(['crd-common', 'crd-space']);
   const { t: tSettings } = useTranslation('crd-spaceSettings');
   const { spaceId } = useUrlResolver();
@@ -141,6 +143,7 @@ export default function CrdSpaceTabPage({ tabPosition }: CrdSpaceTabPageProps) {
         tabPosition={tabPosition}
         canCreatePost={canCreateCallout}
         onCreatePost={() => setCreateOpen(true)}
+        onAboutClick={onOpenAbout}
         actionsSlot={sidebarActions}
       />
 

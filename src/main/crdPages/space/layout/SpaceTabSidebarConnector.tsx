@@ -22,7 +22,6 @@ import { buildSettingsTabUrl, buildSpaceSectionUrl } from '@/main/routing/urlBui
 import { PostIndexDialogConnector } from '../callout/PostIndexDialogConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { ContactLeadsDialogConnector } from '../dialogs/ContactLeadsDialogConnector';
-import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
 import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
@@ -52,6 +51,10 @@ type SpaceTabSidebarConnectorProps = {
   canCreatePost: boolean;
   /** Opens the create-post (callout) dialog, which the page owns. */
   onCreatePost: () => void;
+  /** Opens the shared About dialog — the layout owns its SINGLE mount
+   *  (CrdSpacePageLayout), shared with the header info icon; the sidebar
+   *  `about` widget only triggers it. */
+  onAboutClick: () => void;
   /** Fixed tab actions (Create Subspace) rendered above the configured widgets —
    *  a position-keyed affordance that is not itself a configurable widget in this
    *  slice (A-03/D-08). The page owns its handler and dialog; the sidebar only
@@ -72,13 +75,13 @@ export function SpaceTabSidebarConnector({
   tabPosition,
   canCreatePost,
   onCreatePost,
+  onAboutClick,
   actionsSlot,
 }: SpaceTabSidebarConnectorProps) {
   const { space, permissions } = useSpace();
   const navigate = useNavigate();
   const locale = useCrdSpaceLocale();
 
-  const [aboutOpen, setAboutOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [updatesOpen, setUpdatesOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
@@ -88,8 +91,6 @@ export function SpaceTabSidebarConnector({
 
   const plan = resolveSidebarPlan(sidebar);
   const skips = deriveWidgetSkips(plan);
-  // contactLeads/addUser/virtualContributors/guidelines share one fetch group.
-  const communitySkip = skips.contactLeads && skips.addUser && skips.virtualContributors && skips.guidelines;
 
   const {
     isMember: isSpaceMember,
@@ -133,8 +134,16 @@ export function SpaceTabSidebarConnector({
 
   const communityUpdates = useCrdCommunityUpdates(space.about.membership?.communityID, skips.updates);
 
+  // Per-widget query gating: contactLeads + virtualContributors genuinely share
+  // the one contributor-roster fetch (useRoleSetManager), so that query is gated
+  // on exactly those two; guidelines gates its own content query. The addUser
+  // widget needs no query at all — canInvite/roleSetId/communityId all come from
+  // the space context.
   const { leadUsers, virtualContributors, hasVcEntitlement, canInvite, communityId, roleSetId, guidelines } =
-    useCrdSpaceCommunity({ skip: communitySkip });
+    useCrdSpaceCommunity({
+      skipContributors: skips.contactLeads && skips.virtualContributors,
+      skipGuidelines: skips.guidelines,
+    });
   const canContactLeads = leadUsers.length > 0 && Boolean(communityId);
   const canInviteVc = hasVcEntitlement && canInvite && Boolean(roleSetId);
   const leadRecipients: ContactLeadRecipient[] = leadUsers.map(lead => ({
@@ -156,7 +165,7 @@ export function SpaceTabSidebarConnector({
         onEditClick={onEditClick}
       />
     ),
-    about: <AboutButton key="about" onClick={() => setAboutOpen(true)} />,
+    about: <AboutButton key="about" onClick={onAboutClick} />,
     createPost: canCreatePost && <CreatePostButton key="createPost" onClick={onCreatePost} />,
     applicationButton: !isSpaceMember && (
       <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
@@ -219,8 +228,6 @@ export function SpaceTabSidebarConnector({
           {plan.map(widgetId => sections[widgetId])}
         </SpaceSidebar>
       </SpaceSidebarPortal>
-
-      <CrdSpaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
 
       {!skips.applicationButton && applyDialogs}
 

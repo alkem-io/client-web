@@ -1,15 +1,7 @@
 import { useCommunityGuidelinesQuery } from '@/core/apollo/generated/apollo-hooks';
-import {
-  ActorType,
-  AuthorizationPrivilege,
-  LicenseEntitlementType,
-  RoleName,
-  SearchVisibility,
-} from '@/core/apollo/generated/graphql-schema';
+import { ActorType, LicenseEntitlementType, RoleName, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpace } from '@/domain/space/context/useSpace';
-import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import {
   mapRoleSetMemberToSidebarLead,
   mapVirtualContributorToSidebar,
@@ -18,29 +10,18 @@ import {
 } from '../dataMappers/communityDataMapper';
 
 type UseCrdSpaceCommunityParams = {
-  /** Suppresses every query this hook drives — the sidebar connector passes
-   *  this when NONE of contactLeads/addUser/virtualContributors/guidelines
-   *  are configured on the active tab (FR-019); the four widgets share this
-   *  one fetch group. */
-  skip?: boolean;
+  /** Suppresses the contributor-roster fetch (roleSet leads + virtual
+   *  contributors). The sidebar connector passes this when NEITHER
+   *  contactLeads NOR virtualContributors is configured on the active tab
+   *  (FR-019) — those two widgets genuinely share this one query. */
+  skipContributors?: boolean;
+  /** Suppresses the community-guidelines content fetch — gated solely on the
+   *  `guidelines` widget's presence. */
+  skipGuidelines?: boolean;
 };
 
-export function useCrdSpaceCommunity({ skip }: UseCrdSpaceCommunityParams = {}) {
+export function useCrdSpaceCommunity({ skipContributors, skipGuidelines }: UseCrdSpaceCommunityParams = {}) {
   const { space, permissions, entitlements } = useSpace();
-
-  const {
-    calloutsSetId,
-    classificationTagsets,
-    flowStateForNewCallouts,
-    tabDescription,
-    loading: tabLoading,
-  } = useSpaceTabProvider({ tabPosition: 1, skip });
-
-  const calloutsSetProvided = useCalloutsSet({
-    calloutsSetId,
-    classificationTagsets,
-    skip,
-  });
 
   const roleSetId = space.about.membership?.roleSetID;
 
@@ -61,7 +42,7 @@ export function useCrdSpaceCommunity({ skip }: UseCrdSpaceCommunityParams = {}) 
     relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member],
     contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
-    skip,
+    skip: skipContributors,
   });
 
   // Sidebar leads (users + organizations with the Lead role)
@@ -87,7 +68,7 @@ export function useCrdSpaceCommunity({ skip }: UseCrdSpaceCommunityParams = {}) 
   const guidelinesId = space.about.guidelines?.id || undefined;
   const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
     variables: { communityGuidelinesId: guidelinesId ?? '' },
-    skip: skip || !guidelinesId,
+    skip: skipGuidelines || !guidelinesId,
   });
   const guidelinesProfile = guidelinesData?.lookup.communityGuidelines?.profile;
   const guidelines = {
@@ -103,13 +84,6 @@ export function useCrdSpaceCommunity({ skip }: UseCrdSpaceCommunityParams = {}) 
   };
 
   return {
-    callouts: calloutsSetProvided.callouts ?? [],
-    calloutsSetId,
-    canCreateCallout: calloutsSetProvided.canCreateCallout,
-    canReorderCallouts:
-      calloutsSetProvided.calloutsSetAuthorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false,
-    tabDescription: tabDescription ?? '',
-    flowStateForNewCallouts,
     leadUsers,
     leadOrganizations,
     virtualContributors,
@@ -118,6 +92,6 @@ export function useCrdSpaceCommunity({ skip }: UseCrdSpaceCommunityParams = {}) 
     roleSetId,
     communityId: space.about.membership?.communityID,
     canInvite: permissions.canUpdate,
-    loading: tabLoading || calloutsSetProvided.loading || roleSetLoading,
+    loading: roleSetLoading,
   };
 }
