@@ -112,8 +112,10 @@ export function useCrdCalendarUrlState(): CrdCalendarUrlState {
   };
   const appendTab = (path: string) => {
     if (!tabParam) return path;
-    const next = withTab(new URLSearchParams());
-    return `${path}?${next.toString()}`;
+    const [base, search = ''] = path.split('?');
+    const next = new URLSearchParams(search);
+    next.set(TabbedLayoutParams.Section, tabParam);
+    return `${base}?${next.toString()}`;
   };
 
   return {
