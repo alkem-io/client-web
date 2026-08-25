@@ -3140,7 +3140,7 @@ export type DeleteStorageBuckeetInput = {
 export type DeleteTaskColumnOnCalloutInput = {
   /** The Tasks board Callout to remove a column from. */
   calloutID: Scalars['UUID']['input'];
-  /** The column to remove. Matched case-insensitively; the first (default) column cannot be removed and its tasks reflow to the default. */
+  /** The column to remove. Matched case-insensitively. The first (default) column cannot be removed; removing any other column reflows its tasks onto the first column. */
   name: Scalars['String']['input'];
 };
 
@@ -37313,6 +37313,12 @@ export type TaskBoardCalloutFragment = {
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }> | undefined;
       }
     | undefined;
+  contributionDefaults: {
+    __typename?: 'CalloutContributionDefaults';
+    id: string;
+    defaultDisplayName?: string | undefined;
+    postDescription?: string | undefined;
+  };
   taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
 };
 
@@ -37425,6 +37431,12 @@ export type TaskBoardDataQuery = {
                   | undefined;
               }
             | undefined;
+          contributionDefaults: {
+            __typename?: 'CalloutContributionDefaults';
+            id: string;
+            defaultDisplayName?: string | undefined;
+            postDescription?: string | undefined;
+          };
           taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
         }
       | undefined;
@@ -37504,6 +37516,12 @@ export type CreateTaskColumnOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
@@ -37573,6 +37591,12 @@ export type UpdateTaskColumnOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
@@ -37642,6 +37666,12 @@ export type DeleteTaskColumnOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
@@ -37671,6 +37701,12 @@ export type UpdateTaskColumnsSortOrderOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };

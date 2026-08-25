@@ -17,6 +17,11 @@ fragment TaskBoardCallout on Callout {
       allowedValues
     }
   }
+  contributionDefaults {
+    id
+    defaultDisplayName
+    postDescription
+  }
   taskColumnCounts {
     column
     count

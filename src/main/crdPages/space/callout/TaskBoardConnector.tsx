@@ -219,12 +219,21 @@ function TaskBoardBody({
           calloutId={callout.id}
           taskColumn={addState.column}
           isTaskBoard={true}
+          // Seed a new task from the board's contribution defaults (the "default
+          // task template" set at creation) — title + description — instead of the
+          // generic "New Post" fallback. Mirrors the non-board add flow in
+          // CalloutDetailDialogConnector.
+          defaultDisplayName={callout.contributionDefaults?.defaultDisplayName ?? undefined}
+          defaultDescription={callout.contributionDefaults?.postDescription ?? undefined}
           inlineTrigger={true}
-          // The board can be fullscreen (a z-[100] portal), so the creation dialog
-          // must stack above it — otherwise "Add task" opens behind the board and
-          // appears to do nothing. z-[110] also sits safely above the feed.
-          overlayClassName="z-[110]"
-          contentClassName="z-[110]"
+          // The board is a Radix dialog (z-50, fullscreen via the DOM Fullscreen
+          // API — not a z-[100] portal), so the creation dialog only needs to sit
+          // just above it. z-[60] keeps it above the board (and the feed) while
+          // staying BELOW the markdown editor's own toolbar dialogs (image / link /
+          // embed, z-[70]) — otherwise the image-upload dialog opens behind the
+          // create dialog and appears to do nothing.
+          overlayClassName="z-[60]"
+          contentClassName="z-[60]"
           open={true}
           onOpenChange={open => {
             if (!open) setAddState(undefined);

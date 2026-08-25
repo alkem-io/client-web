@@ -541,6 +541,13 @@ export function CalloutDetailDialogConnector({
       if (confirmDeleteContribution.kind === 'post') {
         setPostContributionId(undefined);
         setPostId(undefined);
+        // On a Tasks board the dialog is a focused single-task view layered over
+        // the board (not a contributions grid). Clearing the selection alone would
+        // flip it back to the full "post with responses" grid on top of the board;
+        // close the dialog instead. Non-board callouts keep the grid fallback.
+        if (elevated) {
+          onOpenChange(false);
+        }
       } else if (confirmDeleteContribution.kind === 'whiteboard') {
         setWhiteboardEditorOpen(false);
         setWhiteboardContributionId(undefined);
@@ -869,6 +876,11 @@ export function CalloutDetailDialogConnector({
         calloutId={callout.id}
         contributionId={isPostSelected ? postContributionId : undefined}
         roomData={activeRoomData}
+        // In the focused-task dialog on a board (elevated, z-[110]) the comment
+        // delete-confirmation would otherwise open behind it and block the UI —
+        // lift it to the same nested tier as the dialog's other confirmations.
+        confirmOverlayClassName={elevated ? 'z-[120]' : undefined}
+        confirmContentClassName={elevated ? 'z-[120]' : undefined}
         // The connector's wrapper `<div ref={ref}>` ends up in the feed-card's React tree
         // (alongside the dialog trigger), NOT inside the dialog's Radix portal. With the user
         // scrolled away from that card, `useInView` never fires and the post-comments query
