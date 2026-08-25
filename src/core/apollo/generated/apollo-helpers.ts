@@ -1083,6 +1083,7 @@ export type CollaborationMigrationResultKeySpecifier = (
   | 'flaggedDocuments'
   | 'migrated'
   | 'total'
+  | 'unattached'
   | CollaborationMigrationResultKeySpecifier
 )[];
 export type CollaborationMigrationResultFieldPolicy = {
@@ -1092,6 +1093,7 @@ export type CollaborationMigrationResultFieldPolicy = {
   flaggedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
   migrated?: FieldPolicy<any> | FieldReadFunction<any>;
   total?: FieldPolicy<any> | FieldReadFunction<any>;
+  unattached?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'

@@ -1600,6 +1600,8 @@ export type CollaborationMigrationResult = {
   flaggedDocuments: Array<CollaborationMigrationIssue>;
   migrated: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
+  /** Legacy Whiteboard contribution defaults without a complete owning Callout path. */
+  unattached: Scalars['Int']['output'];
 };
 
 export type Communication = {
@@ -7961,7 +7963,9 @@ export type ReplaceCollaboraDocumentInput = {
 };
 
 export type ReplaceWhiteboardContentFromSourceInput = {
+  /** The Whiteboard whose content and media are copied into the target. */
   sourceWhiteboardID: Scalars['UUID']['input'];
+  /** The Whiteboard whose content is replaced. */
   targetWhiteboardID: Scalars['UUID']['input'];
 };
 
