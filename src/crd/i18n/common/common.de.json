@@ -187,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Whiteboard-Änderungen konnten nicht gespeichert werden",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "Das Bild konnte nicht geladen werden. Bitte versuche es erneut.",
+        "maxSizeFallback": "das zulässige Limit",
+        "multipleFailures_one": "{{count}} Bild konnte nicht geladen werden",
+        "multipleFailures_other": "{{count}} Bilder konnten nicht geladen werden",
+        "uploadMultipleFailures_one": "{{count}} Bild konnte nicht hochgeladen werden",
+        "uploadMultipleFailures_other": "{{count}} Bilder konnten nicht hochgeladen werden",
+        "retry": "Erneut versuchen",
+        "singleFailure": "Ein Bild konnte nicht geladen werden",
+        "tooLarge": "Das Bild ist zu groß. Die maximale Größe beträgt {{maxSize}}.",
+        "unsupportedType": "Nicht unterstütztes Bildformat. Bitte verwende {{formats}}.",
+        "uploadFailed": "Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut."
+      },
+      "session": {
+        "rateExceeded": "Du bearbeitest zu schnell – Verbindung wird wiederhergestellt…",
+        "updateNotAccepted": "Deine Änderung konnte nicht gesendet werden – Verbindung wird wiederhergestellt…",
+        "sizeLimitExceeded": "Dieses Whiteboard hat seine Größenbeschränkung erreicht und deine letzte Änderung wurde nicht übernommen. Stelle die Verbindung wieder her, um von der zuletzt gespeicherten Version fortzufahren.",
+        "documentDeleted": "Dieses Whiteboard wurde gelöscht.",
+        "editsNotSaved": "Deine letzten Änderungen konnten nicht gespeichert werden und sind verloren gegangen. Die Zusammenarbeit wurde beendet.",
+        "serverShutdown": "Der Kollaborationsserver wird neu gestartet – Verbindung wird wiederhergestellt…",
+        "updateRejected": "Deine letzte Änderung konnte nicht gespeichert werden. Bitte versuche es erneut."
       },
       "export": {
         "title": "In Alkemio speichern",
         "description": "Speichern Sie die Szene in Alkemio und teilen Sie sie mit anderen.",
         "save": "In Alkemio speichern"
       }
+    },
+    "memo": {
+      "saveFailed": "Änderungen konnten nicht gespeichert werden",
+      "updateRejected": "Deine letzte Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "updateNotAccepted": "Deine Änderung konnte nicht gesendet werden – Verbindung wird wiederhergestellt…",
+      "sessionEnded": "Die Zusammenarbeit wurde beendet. Lade die Seite neu, um fortzufahren."
     }
   },
   "cancel": "Abbrechen",
@@ -217,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Gast",
     "Account": "Account",
     "Admin": "Admin",
     "Admins": "Admins",

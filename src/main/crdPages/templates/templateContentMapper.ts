@@ -21,7 +21,55 @@ import type {
   TemplateFormValues,
   TemplateType,
 } from '@/crd/components/templates/types';
+import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { mapGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
+
+/**
+ * The `whiteboardContent` to send on a template UPDATE. Non-empty (redrawn) content is always
+ * sent. Empty content is `undefined` (no-op) UNLESS the user deliberately cleared the board
+ * (`whiteboardEdited`), in which case the empty content is sent so the clear is persisted —
+ * emptiness alone must NOT be read as "untouched". A rename-only edit opens the editor against
+ * an empty draft and never touches it (`whiteboardEdited === false`), so the stored drawing is
+ * preserved; a deliberate clear (`whiteboardEdited === true`) overwrites it with the blank.
+ */
+export function whiteboardContentForTemplateUpdate(
+  content: string | undefined,
+  whiteboardEdited = false
+): string | undefined {
+  if (!isEmptyWhiteboardContent(content)) return content;
+  // Empty: persist the blank only when it was a deliberate clear; otherwise no-op it.
+  return whiteboardEdited ? (content ?? EmptyWhiteboardString) : undefined;
+}
+
+/**
+ * The `content` + `sourceWhiteboardID` for a whiteboard-template CREATE. They are mutually
+ * exclusive (source takes precedence server-side):
+ *  - redrawn (non-empty content) → send the real content, no source.
+ *  - empty AND the user deliberately cleared it (`whiteboardEdited`) → send the empty content,
+ *    NO source, so the intentional blank is saved rather than the source snapshot re-copied.
+ *  - empty AND untouched (duplicate / import-from-library) → send the SOURCE whiteboard id so
+ *    the server copies its snapshot; never the empty placeholder.
+ *  - from-scratch (empty, untouched, no source) → neither.
+ * Emptiness alone must NOT be read as "untouched" — that made an intentional clear impossible
+ * to save (the source was silently re-copied).
+ */
+export function whiteboardTemplateCreateFields(
+  content: string | undefined,
+  sourceWhiteboardId: string | undefined,
+  whiteboardEdited = false
+): { content: string | undefined; sourceWhiteboardID: string | undefined } {
+  if (!isEmptyWhiteboardContent(content)) {
+    // A genuine drawing — send it; the source would override it server-side.
+    return { content, sourceWhiteboardID: undefined };
+  }
+  if (whiteboardEdited) {
+    // Deliberately cleared to blank — persist the empty content, do NOT re-copy the source.
+    return { content: content ?? EmptyWhiteboardString, sourceWhiteboardID: undefined };
+  }
+  // Untouched duplicate / import — let the server copy the source snapshot on create.
+  return { content: undefined, sourceWhiteboardID: sourceWhiteboardId || undefined };
+}
 
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */
 export type TemplateContentTemplate = NonNullable<TemplateContentQuery['lookup']['template']>;
@@ -79,7 +127,10 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
     framingKind,
     framingTitle: framing.profile.displayName,
     framingDescription: framing.profile.description ?? '',
-    framingWhiteboardContent: framingKind === 'whiteboard' ? framing.whiteboard?.content : undefined,
+    // #29: a live whiteboard's content is WS-only now (no GraphQL field). The server copies it from
+    // the source whiteboard's file-service blob into the template on create, so the client no longer
+    // seeds it here. The server-rendered preview image below is still captured for read-only surfaces.
+    framingWhiteboardContent: undefined,
     // Server-rendered whiteboard preview image — D16, 2026-05-18. The Preview dialog (and any
     // read-only preview surface) renders an `<img>` of this when present; falls back to the
     // placeholder text only when the visual is genuinely missing on the server.
@@ -128,8 +179,12 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
 function mapWhiteboardContent(whiteboard: WhiteboardContentGql): Extract<TemplateContent, { type: 'whiteboard' }> {
   return {
     type: 'whiteboard',
-    whiteboardContent: whiteboard.content,
+    // The stored content is WS-only (unreadable here), so we seed the editor draft empty and
+    // carry the SOURCE whiteboard id — the server copies its snapshot on create (duplicate /
+    // import-from-library), rather than persisting this empty placeholder.
+    whiteboardContent: EmptyWhiteboardString,
     previewImageUrl: whiteboard.profile.preview?.uri || undefined,
+    sourceWhiteboardId: whiteboard.id,
   };
 }
 
@@ -286,7 +341,12 @@ export function templateContentToFormValues(
     case 'post':
       return { ...common, type: 'post', defaultDescription: content.defaultDescription };
     case 'whiteboard':
-      return { ...common, type: 'whiteboard', whiteboardContent: content.whiteboardContent };
+      return {
+        ...common,
+        type: 'whiteboard',
+        whiteboardContent: content.whiteboardContent,
+        sourceWhiteboardId: content.sourceWhiteboardId,
+      };
     case 'communityGuidelines':
       return {
         ...common,

@@ -1276,12 +1276,6 @@ export const WhiteboardGuestAccessFieldsFragmentDoc = gql`
   }
 }
     `;
-export const WhiteboardContentFragmentDoc = gql`
-    fragment WhiteboardContent on Whiteboard {
-  id
-  content
-}
-    `;
 export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
     fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
@@ -1312,7 +1306,6 @@ export const CollaborationWithWhiteboardDetailsFragmentDoc = gql`
 export const PublicWhiteboardFragmentFragmentDoc = gql`
     fragment PublicWhiteboardFragment on Whiteboard {
   id
-  content
   guestContributionsAllowed
   profile {
     id
@@ -2889,7 +2882,6 @@ export const CalloutTemplateContentFragmentDoc = gql`
     type
     whiteboard {
       ...WhiteboardDetails
-      content
     }
     link {
       ...LinkDetails
@@ -3088,7 +3080,6 @@ export const WhiteboardTemplateContentFragmentDoc = gql`
       uri
     }
   }
-  content
   previewSettings {
     ...whiteboardPreviewSettings
   }
@@ -7846,7 +7837,6 @@ export const CalloutContentDocument = gql`
               uri
             }
           }
-          content
           previewSettings {
             ...whiteboardPreviewSettings
           }
@@ -11739,6 +11729,83 @@ export type UploadVisualMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UploadVisualMutation,
   SchemaTypes.UploadVisualMutationVariables
 >;
+export const WhiteboardAssetDocumentDocument = gql`
+    query WhiteboardAssetDocument($documentId: UUID!) {
+  lookup {
+    document(ID: $documentId) {
+      id
+      url
+      mimeType
+    }
+  }
+}
+    `;
+
+/**
+ * __useWhiteboardAssetDocumentQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardAssetDocumentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardAssetDocumentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardAssetDocumentQuery({
+ *   variables: {
+ *      documentId: // value for 'documentId'
+ *   },
+ * });
+ */
+export function useWhiteboardAssetDocumentQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardAssetDocumentQuery,
+    SchemaTypes.WhiteboardAssetDocumentQueryVariables
+  > &
+    ({ variables: SchemaTypes.WhiteboardAssetDocumentQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardAssetDocumentQuery, SchemaTypes.WhiteboardAssetDocumentQueryVariables>(
+    WhiteboardAssetDocumentDocument,
+    options
+  );
+}
+export function useWhiteboardAssetDocumentLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardAssetDocumentQuery,
+    SchemaTypes.WhiteboardAssetDocumentQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardAssetDocumentQuery,
+    SchemaTypes.WhiteboardAssetDocumentQueryVariables
+  >(WhiteboardAssetDocumentDocument, options);
+}
+export function useWhiteboardAssetDocumentSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.WhiteboardAssetDocumentQuery,
+        SchemaTypes.WhiteboardAssetDocumentQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.WhiteboardAssetDocumentQuery,
+    SchemaTypes.WhiteboardAssetDocumentQueryVariables
+  >(WhiteboardAssetDocumentDocument, options);
+}
+export type WhiteboardAssetDocumentQueryHookResult = ReturnType<typeof useWhiteboardAssetDocumentQuery>;
+export type WhiteboardAssetDocumentLazyQueryHookResult = ReturnType<typeof useWhiteboardAssetDocumentLazyQuery>;
+export type WhiteboardAssetDocumentSuspenseQueryHookResult = ReturnType<typeof useWhiteboardAssetDocumentSuspenseQuery>;
+export type WhiteboardAssetDocumentQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardAssetDocumentQuery,
+  SchemaTypes.WhiteboardAssetDocumentQueryVariables
+>;
+export function refetchWhiteboardAssetDocumentQuery(variables: SchemaTypes.WhiteboardAssetDocumentQueryVariables) {
+  return { query: WhiteboardAssetDocumentDocument, variables: variables };
+}
 export const LatestReleaseDiscussionDocument = gql`
     query latestReleaseDiscussion {
   platform {
@@ -27534,7 +27601,6 @@ export const UpdateTemplateDocument = gql`
     }
     whiteboard {
       id
-      content
     }
   }
 }
@@ -27606,7 +27672,6 @@ export const UpdateCalloutTemplateDocument = gql`
       type
       whiteboard {
         id
-        content
         nameID
         profile {
           id

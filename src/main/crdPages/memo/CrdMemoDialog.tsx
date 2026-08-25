@@ -103,7 +103,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const handleCancelEdit = () => setEditingDisplayName(false);
 
   // Write the editor's current content directly to Apollo cache so previews update instantly.
-  // Hocuspocus's autosave lags by ~2s; fetching from the server immediately returns stale data.
+  // The collab room debounces its snapshot save by ~2s; fetching from the server immediately returns stale data.
   // Instead, we grab the HTML from Tiptap, convert to markdown, and write it to the normalized
   // cache entry. Connectors schedule a delayed server fetch as a safety net.
   const handleClose = () => {
@@ -218,7 +218,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           <Loading text={t('memo.errors.loading')} />
         ) : (
           <div className="h-full p-3 relative">
-            {/* The collaborative editor is only mounted once the Hocuspocus
+            {/* The collaborative editor is only mounted once the unified collab
                 provider is fully connected and the initial Yjs sync has
                 completed. Mounting earlier produces an editor instance that
                 attaches to an empty/partial ydoc, which Tiptap then has to

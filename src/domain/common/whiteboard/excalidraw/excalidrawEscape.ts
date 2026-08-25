@@ -1,4 +1,4 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 
 /**
  * Handles the Escape key for an Excalidraw instance embedded in a dialog, mirroring the
@@ -37,7 +37,10 @@ export const handleExcalidrawEscape = (
   // from ever seeing the Escape.
   const isEditingOrDrawing =
     appState.editingTextElement != null ||
-    appState.editingLinearElement != null ||
+    // The @excalidraw-yjs fork (upstream 0.18.x) folded the old `editingLinearElement` into
+    // `selectedLinearElement` (a LinearElementEditor carrying its own `isEditing` flag). Checked
+    // before the selection branch so a linear element mid-point-edit finalizes instead of clearing.
+    appState.selectedLinearElement?.isEditing === true ||
     appState.newElement != null ||
     appState.multiElement != null ||
     appState.croppingElementId != null;

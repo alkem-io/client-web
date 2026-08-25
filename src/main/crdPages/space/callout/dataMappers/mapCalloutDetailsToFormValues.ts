@@ -8,7 +8,7 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
@@ -143,14 +143,15 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      // Legacy callouts may have `EmptyWhiteboardString` persisted as the
-      // default-whiteboard sentinel from a prior buggy create path. Normalize
-      // it back to "" so the form treats this as "no default configured" and
-      // the mapper omits it on update — instead of round-tripping the sentinel.
-      whiteboardContent:
-        !contributionDefaults.whiteboardContent || contributionDefaults.whiteboardContent === EmptyWhiteboardString
-          ? ''
-          : contributionDefaults.whiteboardContent,
+      // A default whiteboard with no drawn content (an empty Yjs snapshot) must
+      // normalize back to "" so the form treats this as "no default configured" and
+      // the mapper omits it on update — instead of round-tripping empty content as
+      // if it were real. Byte-equality against `EmptyWhiteboardString` cannot be used:
+      // the empty encoding is non-deterministic, so a decoded-empty predicate is the
+      // only reliable check.
+      whiteboardContent: isEmptyWhiteboardContent(contributionDefaults.whiteboardContent)
+        ? ''
+        : (contributionDefaults.whiteboardContent ?? ''),
     },
     prePopulateLinkRows: [],
     referenceRows:

@@ -1,13 +1,10 @@
-import type { serializeAsJSON as ExcalidrawSerializeAsJSON } from '@alkemio/excalidraw';
-import type { ExportedDataState } from '@alkemio/excalidraw/data/types';
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege, VisualType } from '@/core/apollo/generated/graphql-schema';
 import { WhiteboardPreviewMode } from '@/core/apollo/generated/graphql-schema';
-import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError, warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
@@ -19,7 +16,6 @@ import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { WhiteboardSaveFooter } from '@/crd/components/whiteboard/WhiteboardSaveFooter';
-import isWhiteboardContentEqual from '@/domain/collaboration/whiteboard/utils/isWhiteboardContentEqual';
 import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema from '@/domain/collaboration/whiteboard/validation/whiteboardFormSchema';
 import {
@@ -34,15 +30,12 @@ import type {
   WhiteboardPreviewImage,
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
+import { flushAndEncodeScene } from '@/domain/common/whiteboard/excalidraw/assetAdapter/flushSceneForPersist';
+import { useWhiteboardAssetAdapter } from '@/domain/common/whiteboard/excalidraw/assetAdapter/useWhiteboardAssetAdapter';
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
-import useWhiteboardFilesManager from '@/domain/common/whiteboard/excalidraw/useWhiteboardFilesManager';
 import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
-
-type ExcalidrawUtils = {
-  serializeAsJSON: typeof ExcalidrawSerializeAsJSON;
-};
 
 export interface WhiteboardWithContent {
   id: string;
@@ -100,8 +93,6 @@ type CrdSingleUserWhiteboardDialogProps = {
   };
 };
 
-type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
-
 const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: CrdSingleUserWhiteboardDialogProps) => {
   const { t } = useTranslation();
   const { t: tWb } = useTranslation('crd-whiteboard');
@@ -109,6 +100,20 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const { whiteboard } = entities;
   useRegisterFullscreenEditor(options.show);
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  // Native dirty flag: flipped by the editor's first LOCAL scene update. The listener
+  // is attached in `onSceneInitialized` — AFTER the (remote) content seed — so seeding
+  // never marks the whiteboard dirty. On save the live scene is encoded straight to a
+  // Yjs-V2 update via `encodeSceneStateAsUpdate` (no snapshot/object materialization).
+  const dirtyRef = useRef(false);
+  // Detacher for the `onLocalSceneUpdate` subscription, run on unmount / re-seed.
+  const detachDirtyListenerRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => {
+      detachDirtyListenerRef.current?.();
+      detachDirtyListenerRef.current = null;
+    };
+  }, []);
   const { generateWhiteboardVisuals } = useGenerateWhiteboardVisuals(excalidrawAPI);
   const [pendingClose, setPendingClose] = useState<{ resolve: (discard: boolean) => void } | null>(null);
   const [selectedPreviewMode, setSelectedPreviewMode] = useState<WhiteboardPreviewMode>(
@@ -132,26 +137,27 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     setPreviewImageBlob(blob);
   };
 
-  const filesManager = useWhiteboardFilesManager({
-    excalidrawAPI,
+  const { assetAdapter, uploadError, resolveError } = useWhiteboardAssetAdapter({
     storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
-    allowedMimeTypes: whiteboard.profile?.storageBucket.allowedMimeTypes,
-    maxFileSize: whiteboard.profile?.storageBucket.maxFileSize,
-    allowFallbackToAttached: options.allowFilesAttached,
   });
+  const notifiedUploadError = useRef(uploadError);
+  const notifiedResolveError = useRef(resolveError);
 
-  const failureState = filesManager.getFailureState();
+  // Upload and resolve failures get distinct copy: an UPLOAD (store) failure is not a load
+  // failure, so it must not read "could not be loaded". Mirrors the collaborative dialog.
+  useEffect(() => {
+    if (uploadError && uploadError !== notifiedUploadError.current) {
+      notifiedUploadError.current = uploadError;
+      notify(t('callout.whiteboard.images.uploadFailed'), 'warning');
+    }
+  }, [uploadError, t, notify]);
 
   useEffect(() => {
-    if (failureState.hasFailures) {
-      const totalFailures = failureState.uploadFailures.length + failureState.downloadFailures.length;
-      const message =
-        totalFailures === 1
-          ? t('callout.whiteboard.images.singleFailure')
-          : t('callout.whiteboard.images.multipleFailures', { count: totalFailures });
-      notify(message, 'warning');
+    if (resolveError && resolveError !== notifiedResolveError.current) {
+      notifiedResolveError.current = resolveError;
+      notify(t('callout.whiteboard.images.downloadFailed'), 'warning');
     }
-  }, [failureState.hasFailures, failureState.uploadFailures.length, failureState.downloadFailures.length, t, notify]);
+  }, [resolveError, t, notify]);
 
   // Keep the selected mode in sync with the persisted settings each time the dialog opens — the
   // state initializer can capture a stale `Auto` if `whiteboard` populates after this mounts.
@@ -161,51 +167,41 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     }
   }, [options.previewSettingsDialogOpen, whiteboard.previewSettings.mode]);
 
-  const getExcalidrawState = () => {
-    if (!excalidrawAPI) return undefined;
-    return {
-      appState: excalidrawAPI.getAppState(),
-      elements: excalidrawAPI.getSceneElements(),
-      files: excalidrawAPI.getFiles(),
-    };
-  };
-
-  const handleUpdate = async (wb: WhiteboardWithContent, excState: RelevantExcalidrawState | undefined) => {
-    if (!excState) return;
-    const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
-    const { whiteboard: convertedState, unrecoverableFiles } =
-      await filesManager.convertLocalFilesToRemoteInWhiteboard(excState);
-
-    if (unrecoverableFiles.length > 0) {
-      logWarn(`Whiteboard save: ${unrecoverableFiles.length} files could not be saved`, {
+  const handleUpdate = async (wb: WhiteboardWithContent) => {
+    if (!excalidrawAPI) return;
+    // Publish every pending image, then encode the scene (006 boundary: a base64
+    // Yjs-V2 update, NOT Excalidraw JSON — the server rejects JSON with error 12101).
+    // A failed flush means an image did NOT persist — do NOT report a successful save.
+    const flushed = await flushAndEncodeScene(excalidrawAPI);
+    if (!flushed.ok) {
+      logWarn(`Whiteboard save aborted: ${flushed.failedCount} image(s) failed to publish`, {
         category: TagCategoryValues.WHITEBOARD,
       });
+      notify(
+        flushed.failedCount === 1
+          ? t('callout.whiteboard.images.uploadFailed')
+          : t('callout.whiteboard.images.uploadMultipleFailures', { count: flushed.failedCount }),
+        'error'
+      );
+      return;
     }
 
-    const { appState, elements, files } = convertedState;
     const previewImages = await generateWhiteboardVisuals(wb, true, options.previewImagesSettings);
-    const content = serializeAsJSON(elements, appState, files ?? {}, 'local');
-
-    return actions.onUpdate({ ...wb, content }, previewImages);
+    await actions.onUpdate({ ...wb, content: flushed.content }, previewImages);
+    dirtyRef.current = false;
   };
 
   const handleSave = async () => {
     formikRef.current?.setTouched({ profile: { displayName: true } }, true);
-    const excState = getExcalidrawState();
-    await handleUpdate(whiteboard, excState);
+    await handleUpdate(whiteboard);
   };
 
   const onClose = async () => {
-    if (excalidrawAPI && options.canEdit) {
-      const { serializeAsJSON } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
-        () => import('@alkemio/excalidraw')
-      );
-      const elements = excalidrawAPI.getSceneElements();
-      const appState = excalidrawAPI.getAppState();
-      const files = excalidrawAPI.getFiles();
-      const content = serializeAsJSON(elements, appState, files, 'local');
-
-      if (!isWhiteboardContentEqual(whiteboard.content, content) || formikRef.current?.dirty) {
+    if (options.canEdit) {
+      // Native dirty-check: `dirtyRef` was flipped by the editor's first LOCAL scene
+      // update (attached post-seed via `onLocalSceneUpdate`, so the seed never counts) —
+      // no doc materialization, no hashing.
+      if (dirtyRef.current || formikRef.current?.dirty) {
         const discard = await new Promise<boolean>(resolve => {
           setPendingClose({ resolve });
         });
@@ -218,7 +214,7 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const handleImportTemplate = async (whiteboardContent: string) => {
     if (excalidrawAPI && options.canEdit) {
       try {
-        await mergeWhiteboard(excalidrawAPI, whiteboardContent);
+        await mergeWhiteboard(excalidrawAPI, whiteboardContent, assetAdapter);
       } catch (err) {
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
@@ -273,7 +269,14 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
           >
             {!state?.loadingWhiteboardContent && whiteboard && (
               <ExcalidrawWrapper
-                entities={{ whiteboard, filesManager }}
+                entities={{
+                  whiteboard,
+                  assetAdapter,
+                  imageValidation: {
+                    allowedMimeTypes: whiteboard.profile?.storageBucket.allowedMimeTypes,
+                    maxFileSize: whiteboard.profile?.storageBucket.maxFileSize,
+                  },
+                }}
                 options={{
                   viewModeEnabled: !options.canEdit,
                   UIOptions: {
@@ -283,8 +286,19 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
                   },
                 }}
                 actions={{
-                  onUpdate: excState => handleUpdate(whiteboard, excState),
+                  onUpdate: () => handleUpdate(whiteboard),
                   onInitApi: setExcalidrawAPI,
+                  onSceneInitialized: api => {
+                    // Start edit-tracking AFTER the seed. `onLocalSceneUpdate` fires only
+                    // for genuine LOCAL edits (the remote seed does not emit one), so the
+                    // seed can never mark the whiteboard dirty. Detach any prior listener
+                    // (a remount / re-seed) and reset first.
+                    detachDirtyListenerRef.current?.();
+                    dirtyRef.current = false;
+                    detachDirtyListenerRef.current = api.onLocalSceneUpdate(() => {
+                      dirtyRef.current = true;
+                    }, 'v1');
+                  },
                 }}
               />
             )}

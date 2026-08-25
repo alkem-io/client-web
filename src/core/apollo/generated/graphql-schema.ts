@@ -30,7 +30,7 @@ export type Scalars = {
   UUID: { input: string; output: string };
   /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard, as JSON. */
+  /** Content of a Whiteboard as a base64-encoded Yjs-V2 document snapshot (CRDT state, not an Excalidraw scene). */
   WhiteboardContent: { input: string; output: string };
 };
 
@@ -2939,6 +2939,8 @@ export type CreateWhiteboardData = {
   /** The preview settings for the whiteboard. */
   previewSettings?: Maybe<CreateWhiteboardPreviewSettingsData>;
   profile?: Maybe<CreateProfileData>;
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Takes precedence over `content` when set and resolvable. */
+  sourceWhiteboardID?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type CreateWhiteboardInput = {
@@ -2948,6 +2950,8 @@ export type CreateWhiteboardInput = {
   /** The preview settings for the whiteboard. */
   previewSettings?: InputMaybe<CreateWhiteboardPreviewSettingsInput>;
   profile?: InputMaybe<CreateProfileInput>;
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Takes precedence over `content` when set and resolvable. */
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateWhiteboardPreviewSettingsData = {
@@ -4892,8 +4896,6 @@ export type Memo = {
   __typename?: 'Memo';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The last saved binary stateV2 of the Yjs document, used to collaborate on the Memo, represented in base64. */
-  content?: Maybe<Scalars['String']['output']>;
   /** The policy governing who can update the Memo content. */
   contentUpdatePolicy: ContentUpdatePolicy;
   /** The user that created this Memo */
@@ -11055,8 +11057,6 @@ export type Whiteboard = {
   __typename?: 'Whiteboard';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
-  /** The visual content of the Whiteboard. */
-  content: Scalars['WhiteboardContent']['output'];
   /** The policy governing who can update the Whiteboard content. */
   contentUpdatePolicy: ContentUpdatePolicy;
   /** The user that created this Whiteboard */
@@ -14790,7 +14790,6 @@ export type CalloutContentQuery = {
               | {
                   __typename?: 'Whiteboard';
                   id: string;
-                  content: string;
                   profile: {
                     __typename?: 'Profile';
                     id: string;
@@ -20318,8 +20317,6 @@ export type WhiteboardDetailsFragment = {
   };
 };
 
-export type WhiteboardContentFragment = { __typename?: 'Whiteboard'; id: string; content: string };
-
 export type CollaborationWithWhiteboardDetailsFragment = {
   __typename?: 'Collaboration';
   id: string;
@@ -20744,7 +20741,6 @@ export type GetPublicWhiteboardQuery = {
       | {
           __typename?: 'Whiteboard';
           id: string;
-          content: string;
           guestContributionsAllowed: boolean;
           createdDate: Date;
           updatedDate: Date;
@@ -20769,7 +20765,6 @@ export type GetPublicWhiteboardQuery = {
 export type PublicWhiteboardFragmentFragment = {
   __typename?: 'Whiteboard';
   id: string;
-  content: string;
   guestContributionsAllowed: boolean;
   createdDate: Date;
   updatedDate: Date;
@@ -20898,6 +20893,18 @@ export type UploadVisualMutationVariables = Exact<{
 export type UploadVisualMutation = {
   __typename?: 'Mutation';
   uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
+};
+
+export type WhiteboardAssetDocumentQueryVariables = Exact<{
+  documentId: Scalars['UUID']['input'];
+}>;
+
+export type WhiteboardAssetDocumentQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    document?: { __typename?: 'Document'; id: string; url: string; mimeType: MimeType } | undefined;
+  };
 };
 
 export type LatestReleaseDiscussionQueryVariables = Exact<{ [key: string]: never }>;
@@ -33506,7 +33513,6 @@ export type TemplateContentQuery = {
                   whiteboard?:
                     | {
                         __typename?: 'Whiteboard';
-                        content: string;
                         id: string;
                         nameID: string;
                         createdDate: Date;
@@ -33795,7 +33801,6 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Whiteboard';
                 id: string;
-                content: string;
                 profile: {
                   __typename?: 'Profile';
                   id: string;
@@ -34313,7 +34318,6 @@ export type CalloutTemplateContentFragment = {
     whiteboard?:
       | {
           __typename?: 'Whiteboard';
-          content: string;
           id: string;
           nameID: string;
           createdDate: Date;
@@ -34896,7 +34900,6 @@ export type SpaceTemplateContent_SubspacesFragment = {
 export type WhiteboardTemplateContentFragment = {
   __typename?: 'Whiteboard';
   id: string;
-  content: string;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -35269,7 +35272,7 @@ export type UpdateTemplateMutation = {
       cardVisual?: { __typename?: 'Visual'; id: string } | undefined;
       previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
     };
-    whiteboard?: { __typename?: 'Whiteboard'; id: string; content: string } | undefined;
+    whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
   };
 };
 
@@ -35307,7 +35310,6 @@ export type UpdateCalloutTemplateMutation = {
         | {
             __typename?: 'Whiteboard';
             id: string;
-            content: string;
             nameID: string;
             profile: {
               __typename?: 'Profile';

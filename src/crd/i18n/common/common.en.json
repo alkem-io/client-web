@@ -187,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Unable to save whiteboard changes",
       "images": {
         "downloadFailed": "Couldn't load the image. Please try again.",
         "maxSizeFallback": "the allowed limit",
         "multipleFailures_one": "{{count}} image could not be loaded",
         "multipleFailures_other": "{{count}} images could not be loaded",
+        "uploadMultipleFailures_one": "{{count}} image could not be uploaded",
+        "uploadMultipleFailures_other": "{{count}} images could not be uploaded",
         "retry": "Retry",
         "singleFailure": "An image could not be loaded",
         "tooLarge": "Image is too large. Max size is {{maxSize}}.",
         "unsupportedType": "Unsupported image format. Please use {{formats}}.",
         "uploadFailed": "Couldn't upload the image. Please try again."
       },
+      "session": {
+        "rateExceeded": "You're editing too fast — reconnecting…",
+        "updateNotAccepted": "Your change couldn't be sent — reconnecting…",
+        "sizeLimitExceeded": "This whiteboard has reached its size limit and your last change was not applied. Reconnect to continue from the last saved version.",
+        "documentDeleted": "This whiteboard has been deleted.",
+        "editsNotSaved": "Your recent changes could not be saved and have been lost. Collaboration has stopped.",
+        "serverShutdown": "The collaboration server is restarting — reconnecting…",
+        "updateRejected": "Your last change couldn't be saved. Please try again."
+      },
       "export": {
         "title": "Save to Alkemio",
         "description": "Save the scene in Alkemio and share it with others.",
         "save": "Save to Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Unable to save changes",
+      "updateRejected": "Your last change couldn't be saved. Please try again.",
+      "updateNotAccepted": "Your change couldn't be sent — reconnecting…",
+      "sessionEnded": "Collaboration has ended. Reload the page to continue."
     }
   },
   "cancel": "Cancel",
@@ -217,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Guest",
     "Account": "Account",
     "Admin": "Admin",
     "Admins": "Admins",

@@ -107,9 +107,11 @@ export function MemoCollabFooter({
     >
       <div className="flex items-center gap-3">
         {visibleUsers.length > 0 && (
-          // biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style
-          // biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset
-          <ul role="list" aria-label={t('memo.footer.connectedUsersLabel')} className="flex items-center gap-1 min-w-0">
+          <ul
+            aria-label={t('memo.footer.connectedUsersLabel')}
+            data-testid="memo-connected-users"
+            className="flex items-center gap-1 min-w-0"
+          >
             {visibleUsers.map(user => {
               const initial = user.name.trim()[0]?.toUpperCase() ?? '?';
               return (

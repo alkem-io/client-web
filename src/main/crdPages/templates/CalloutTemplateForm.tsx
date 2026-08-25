@@ -147,6 +147,9 @@ export function CalloutTemplateForm({
             setField('whiteboardPreviewImages', previewImages ?? []);
             setField('whiteboardPreviewSettings', previewSettings);
             setField('whiteboardConfigured', true);
+            // The user opened the editor and saved (drew OR cleared) — mark it touched so the
+            // create mapper won't re-copy a source snapshot over a deliberate blank.
+            setField('whiteboardEdited', true);
           }}
           memoMarkdown={values.memoMarkdown}
           onMemoMarkdownChange={v => setField('memoMarkdown', v)}

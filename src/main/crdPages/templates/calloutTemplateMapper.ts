@@ -24,6 +24,7 @@ import {
 import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
+import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import {
   allowedActorsFromServer,
   framingChipToServer,
@@ -45,6 +46,16 @@ export type CalloutTemplateMapperFallbacks = {
  * Reuses the live-callout creation mapper (its output is, by construction, a `CreateCalloutOnCalloutsSetInput`
  * minus `calloutsSetID` — i.e. structurally a `CreateCalloutInput`); `visibility` is irrelevant for a
  * template (the create-template mutation ignores `settings.visibility`) so we pass a fixed value.
+ *
+ * #29 — a whiteboard-framed source's live content is WS-only and can no longer be read on the client
+ * (006-collab-content-unification), so we can't carry the scene over in `framing.whiteboard.content`.
+ * Instead, when the source has a whiteboard the user did NOT TOUCH in this dialog (still the empty
+ * placeholder AND `whiteboardEdited === false`), we pass `framing.whiteboard.sourceWhiteboardID` and
+ * let the SERVER copy the source whiteboard's stored snapshot into the new template whiteboard. This
+ * also fixes Duplicate / import-from-library (same mapper, same source pointer in `editMeta.whiteboardId`).
+ * If the user drew fresh content — OR deliberately cleared the board (`whiteboardEdited === true`) — the
+ * real (possibly empty) content is sent and the source pointer is omitted, so an intentional blank is
+ * saved instead of the source being silently re-copied. Emptiness alone is NOT read as "untouched".
  */
 export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
@@ -55,6 +66,27 @@ export function calloutFormValuesToCreateCalloutInput(
     whiteboardFallbackDisplayName: fallbacks.whiteboardFallbackDisplayName,
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
   });
+
+  const sourceWhiteboardId = values.editMeta?.whiteboardId;
+  // "Untouched" means BOTH still-empty AND the user never opened/saved the editor. A deliberate
+  // clear (`whiteboardEdited === true`) is empty but must NOT re-copy the source — the intentional
+  // blank travels as `content` instead. Emptiness alone is not proof the whiteboard is pristine.
+  const isUntouchedSourceWhiteboard = isEmptyWhiteboardContent(values.whiteboardContent) && !values.whiteboardEdited;
+  if (
+    input.framing?.whiteboard &&
+    framingChipToServer(values.framingChip) === CalloutFramingType.Whiteboard &&
+    sourceWhiteboardId &&
+    isUntouchedSourceWhiteboard
+  ) {
+    input.framing.whiteboard.sourceWhiteboardID = sourceWhiteboardId;
+    // `content` and `sourceWhiteboardID` are mutually exclusive server-side (a create
+    // carrying BOTH is rejected by presence, and the empty placeholder counts as
+    // present). The server copies the source whiteboard's stored snapshot, so the
+    // placeholder `content` mapFormToCalloutCreationInput set must be dropped entirely
+    // (the field is a required string here; omit the key so it never reaches the wire).
+    delete (input.framing.whiteboard as { content?: string }).content;
+  }
+
   // Pick only the fields `CreateCalloutInput` accepts (drops `sendNotification` / `classification`,
   // which are concrete-callout concerns and meaningless on a template). `taskBoard` IS forwarded:
   // it is how board-ness (and the column list) is captured into a callout template — without it a
@@ -174,7 +206,8 @@ export function calloutTemplateContentToFormValues(
     pollAllowCustomOptions: framing.poll?.settings.allowContributorsAddOptions ?? false,
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
-    whiteboardContent: framing.whiteboard?.content || EmptyWhiteboardString,
+    // #29: live whiteboard content is WS-only; the server copies it into the template on create.
+    whiteboardContent: EmptyWhiteboardString,
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     // Server-rendered preview image (D16, 2026-05-18) — shown by `InlineWhiteboardPreview` as the
@@ -198,10 +231,9 @@ export function calloutTemplateContentToFormValues(
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      whiteboardContent:
-        !contributionDefaults.whiteboardContent || contributionDefaults.whiteboardContent === EmptyWhiteboardString
-          ? ''
-          : contributionDefaults.whiteboardContent,
+      whiteboardContent: isEmptyWhiteboardContent(contributionDefaults.whiteboardContent)
+        ? ''
+        : (contributionDefaults.whiteboardContent ?? ''),
     },
     prePopulateLinkRows: [],
     referenceRows:
