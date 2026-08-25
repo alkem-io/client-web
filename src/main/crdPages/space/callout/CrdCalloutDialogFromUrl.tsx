@@ -1,7 +1,7 @@
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import useCalloutDetails from '@/domain/collaboration/callout/useCalloutDetails/useCalloutDetails';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
-import { CalloutDetailDialogConnector } from './CalloutDetailDialogConnector';
+import { CalloutDeeplinkView } from './CalloutDeeplinkView';
 
 type CrdCalloutDialogFromUrlProps = {
   /** Called when the user closes the dialog (X / Escape). The page route
@@ -39,15 +39,5 @@ export function CrdCalloutDialogFromUrl({ onClose }: CrdCalloutDialogFromUrlProp
     return null;
   }
 
-  return (
-    <CalloutDetailDialogConnector
-      open={true}
-      onOpenChange={isOpen => {
-        if (!isOpen) onClose();
-      }}
-      callout={callout}
-      initialContributionId={contributionId}
-      initialPostId={postId}
-    />
-  );
+  return <CalloutDeeplinkView callout={callout} contributionId={contributionId} postId={postId} onClose={onClose} />;
 }

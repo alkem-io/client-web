@@ -29,10 +29,17 @@ function AlertDialogOverlay({ className, ...props }: React.ComponentProps<typeof
   );
 }
 
-function AlertDialogContent({ className, ...props }: React.ComponentProps<typeof AlertDialogPrimitive.Content>) {
+function AlertDialogContent({
+  className,
+  overlayClassName,
+  ...props
+}: React.ComponentProps<typeof AlertDialogPrimitive.Content> & {
+  /** Escape hatch to raise the overlay's stacking (e.g. above the fullscreen task board). */
+  overlayClassName?: string;
+}) {
   return (
     <AlertDialogPortal>
-      <AlertDialogOverlay />
+      <AlertDialogOverlay className={overlayClassName} />
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         className={cn(
