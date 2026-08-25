@@ -4,6 +4,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
+import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { AboutButton } from '@/crd/components/space/sidebar/AboutButton';
 import { ContactLeadButton } from '@/crd/components/space/sidebar/ContactLeadButton';
@@ -32,6 +33,7 @@ import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
 import { CrdCalendarDialogConnector } from '../timeline/CrdCalendarDialogConnector';
 import { useCrdCalendarUrlState } from '../timeline/useCrdCalendarUrlState';
+import { useSpaceApplyFlow } from '../useSpaceApplyFlow';
 import { SpaceSidebarPortal } from './SpaceSidebarPortal';
 import { deriveWidgetSkips, resolveSidebarPlan } from './sidebarWidgetPlan';
 
@@ -89,6 +91,17 @@ export function SpaceTabSidebarConnector({
   // contactLeads/addUser/virtualContributors/guidelines share one fetch group.
   const communitySkip = skips.contactLeads && skips.addUser && skips.virtualContributors && skips.guidelines;
 
+  const {
+    isMember: isSpaceMember,
+    buttonProps: applyButtonProps,
+    dialogs: applyDialogs,
+  } = useSpaceApplyFlow({
+    spaceId: space.id,
+    spaceProfileUrl: space.about.profile.url,
+    communityName: space.about.profile.displayName,
+    skip: skips.applicationButton,
+  });
+
   const sidebarLeads = useCrdSpaceLeads(space.id, skips.intent);
 
   const { dashboardNavigation } = useCrdSpaceDashboard({ skip: skips.subspaceLinks });
@@ -145,6 +158,9 @@ export function SpaceTabSidebarConnector({
     ),
     about: <AboutButton key="about" onClick={() => setAboutOpen(true)} />,
     createPost: canCreatePost && <CreatePostButton key="createPost" onClick={onCreatePost} />,
+    applicationButton: !isSpaceMember && (
+      <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
+    ),
     subspaceLinks: subspaces.length > 0 && (
       <SubspacesSection
         key="subspaceLinks"
@@ -205,6 +221,8 @@ export function SpaceTabSidebarConnector({
       </SpaceSidebarPortal>
 
       <CrdSpaceAboutDialogConnector open={aboutOpen} onOpenChange={setAboutOpen} />
+
+      {!skips.applicationButton && applyDialogs}
 
       {!skips.events && <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />}
 

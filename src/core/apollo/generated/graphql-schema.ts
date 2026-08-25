@@ -8634,6 +8634,7 @@ export type SetPlatformWellKnownVirtualContributorInput = {
 export enum SidebarWidget {
   About = 'ABOUT',
   AddUser = 'ADD_USER',
+  ApplicationButton = 'APPLICATION_BUTTON',
   ContactLeads = 'CONTACT_LEADS',
   CreatePost = 'CREATE_POST',
   Events = 'EVENTS',
