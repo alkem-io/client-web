@@ -48,7 +48,7 @@ const tpl = (id: string, type: GqlTemplateType, name: string) => ({
 
 const allTemplatesMock = (
   templatesSetId: string,
-  bucket: 'callout' | 'post' | 'whiteboard' | 'space' | 'communityGuidelines',
+  bucket: 'callout' | 'post' | 'whiteboard' | 'space' | 'communityGuidelines' | 'classification',
   templates: ReturnType<typeof tpl>[]
 ): MockedResponse<AllTemplatesInTemplatesSetQuery> => {
   const bucketKey = `${bucket}Templates`;
@@ -67,6 +67,7 @@ const allTemplatesMock = (
             whiteboardTemplates: [],
             spaceTemplates: [],
             communityGuidelinesTemplates: [],
+            classificationTemplates: [],
             [bucketKey]: templates,
           },
         },
@@ -109,7 +110,7 @@ describe('useTemplatesManager — initial state', () => {
     expect(result.current.deletingId).toBeNull();
   });
 
-  it('returns 5 sections (one per type) in TEMPLATE_TYPE_ORDER once the list query resolves', async () => {
+  it('returns 6 sections (one per type) in TEMPLATE_TYPE_ORDER once the list query resolves', async () => {
     const callout = tpl('c-1', GqlTemplateType.Callout, 'My callout template');
     const wrapper = makeWrapper([allTemplatesMock('set-1', 'callout', [callout])]);
     const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
@@ -123,6 +124,7 @@ describe('useTemplatesManager — initial state', () => {
       'callout',
       'whiteboard',
       'post',
+      'classification',
       'communityGuidelines',
     ]);
     const calloutCategory = result.current.categories.find(c => c.type === 'callout');

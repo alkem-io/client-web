@@ -1,9 +1,9 @@
 {
   "common": {
     "Callout": "Post",
-    "callout": "post",
+    "callout": "Post",
     "Callouts": "Posts",
-    "callouts": "posts"
+    "callouts": "Posts"
   },
   "banner": {
     "homeSpace": "Home Space",
@@ -39,8 +39,8 @@
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",
     "count": {
-      "post_one": "{{count}} post",
-      "post_other": "{{count}} posts",
+      "post_one": "{{count}} Post",
+      "post_other": "{{count}} Posts",
       "whiteboard_one": "{{count}} whiteboard",
       "whiteboard_other": "{{count}} whiteboards",
       "memo_one": "{{count}} memo",
@@ -54,7 +54,7 @@
   "postIndexDialog": {
     "close": "Sluiten",
     "loadingLabel": "Post-index laden",
-    "empty": "Nog geen posts"
+    "empty": "Nog geen Posts"
   },
   "sidebar": {
     "aboutSpace": "Over deze Space",
@@ -283,13 +283,13 @@
     "defaultPostName": "Nieuwe Post",
     "postNameLabel": "Titel",
     "postDescriptionLabel": "Beschrijving",
-    "postDescriptionPlaceholder": "Schrijf je post...",
+    "postDescriptionPlaceholder": "Schrijf je Post...",
     "postTagsLabel": "Tags",
     "postSave": "Opslaan",
     "postCreate": "Post",
     "postDelete": "Post verwijderen",
-    "postDeleteConfirmTitle": "Deze post verwijderen?",
-    "postDeleteConfirmDescription": "Hiermee verwijder je de post en alle reacties definitief. Deze actie kan niet ongedaan worden gemaakt.",
+    "postDeleteConfirmTitle": "Deze Post verwijderen?",
+    "postDeleteConfirmDescription": "Hiermee verwijder je de Post en alle reacties definitief. Deze actie kan niet ongedaan worden gemaakt.",
     "postUnsavedCloseTitle": "Niet-opgeslagen wijzigingen verwijderen?",
     "postUnsavedCloseDescription": "Je hebt niet-opgeslagen wijzigingen. Als je nu sluit, gaan ze verloren.",
     "postUnsavedCloseConfirm": "Wijzigingen verwijderen",
@@ -410,7 +410,8 @@
         "why": "Waarom deze subspace?",
         "who": "Wie is erbij betrokken?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Toegang aanvragen",
@@ -549,7 +550,7 @@
     "tagsLabel": "Tags",
     "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
     "tagsTooShort": "Elke tag moet minimaal {{min}} tekens lang zijn.",
-    "framingType": "Toevoegen aan post",
+    "framingType": "Toevoegen aan Post",
     "typeLockedHint": "Instellingen voor aanvullende inhoud kunnen na het aanmaken niet meer worden gewijzigd",
     "visibility": "Zichtbaarheid",
     "publishedLabel": "Gepubliceerd",
@@ -826,7 +827,7 @@
   },
   "postLocation": {
     "label": "Postlocatie",
-    "warning": "Wees voorzichtig met het wijzigen van de reactielocatie. Door de reactie naar een andere post te verplaatsen, verdwijnt deze uit de huidige post. Dit kan het voor mensen, waaronder de persoon die deze reactie heeft gemaakt, moeilijk maken om hem terug te vinden. Houd er rekening mee dat je reacties alleen binnen dezelfde Space of Subspace kunt verplaatsen.",
+    "warning": "Wees voorzichtig met het wijzigen van de reactielocatie. Door de reactie naar een andere Post te verplaatsen, verdwijnt deze uit de huidige Post. Dit kan het voor mensen, waaronder de persoon die deze reactie heeft gemaakt, moeilijk maken om hem terug te vinden. Houd er rekening mee dat je reacties alleen binnen dezelfde Space of Subspace kunt verplaatsen.",
     "moved": "Reactie succesvol verplaatst.",
     "moveFailed": "Reactie kon niet worden verplaatst. Probeer het opnieuw."
   },
@@ -1026,6 +1027,13 @@
       "title": "Nog geen subspaces",
       "description": "Deze space heeft nog geen subspaces."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classificaties"
   },
   "parentStack": {
     "goTo": "Ga naar {{name}}"

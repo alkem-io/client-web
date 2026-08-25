@@ -2178,6 +2178,23 @@ export const SpaceAboutCardAvatarFragmentDoc = gql`
   }
 }
     ${VisualModelFragmentDoc}`;
+export const ClassificationTemplateOptionFragmentDoc = gql`
+    fragment ClassificationTemplateOption on Template {
+  id
+  profile {
+    id
+    displayName
+    description
+  }
+  classification {
+    cardinality
+    values {
+      id
+      label
+    }
+  }
+}
+    `;
 export const ProfileVisualsFragmentDoc = gql`
     fragment ProfileVisuals on Profile {
   id
@@ -2304,6 +2321,20 @@ export const SubspacesOnSpaceFragmentDoc = gql`
   }
 }
     ${SubspaceCardFragmentDoc}`;
+export const ClassificationEntryFullFragmentDoc = gql`
+    fragment ClassificationEntryFull on ClassificationEntry {
+  id
+  displayLabel
+  cardinality
+  display
+  sortOrder
+  values {
+    id
+    label
+  }
+  selectedValueIDs
+}
+    `;
 export const SpaceAboutDetailsFragmentDoc = gql`
     fragment SpaceAboutDetails on SpaceAbout {
   id
@@ -2403,11 +2434,15 @@ export const SpaceAboutDetailsFragmentDoc = gql`
     name
     value
   }
+  classifications {
+    ...ClassificationEntryFull
+  }
 }
     ${VisualModelFragmentDoc}
 ${TagsetDetailsFragmentDoc}
 ${VisualModelFullFragmentDoc}
-${ReferenceDetailsFragmentDoc}`;
+${ReferenceDetailsFragmentDoc}
+${ClassificationEntryFullFragmentDoc}`;
 export const SpaceInfoFragmentDoc = gql`
     fragment SpaceInfo on Space {
   about {
@@ -2801,6 +2836,15 @@ export const TemplateCardProfileInfoFragmentDoc = gql`
   }
 }
     ${TagsetDetailsFragmentDoc}`;
+export const ClassificationTemplateContentFullFragmentDoc = gql`
+    fragment ClassificationTemplateContentFull on ClassificationTemplateContent {
+  cardinality
+  values {
+    id
+    label
+  }
+}
+    `;
 export const MemoTemplateDetailsFragmentDoc = gql`
     fragment MemoTemplateDetails on Memo {
   id
@@ -3127,6 +3171,18 @@ export const SpaceTemplateFragmentDoc = gql`
 }
     ${TemplateProfileInfoFragmentDoc}
 ${VisualModelFragmentDoc}`;
+export const ClassificationTemplateFragmentDoc = gql`
+    fragment ClassificationTemplate on Template {
+  ...TemplateProfileInfo
+  classification {
+    cardinality
+    values {
+      id
+      label
+    }
+  }
+}
+    ${TemplateProfileInfoFragmentDoc}`;
 export const TemplatesSetTemplatesFragmentDoc = gql`
     fragment TemplatesSetTemplates on TemplatesSet {
   calloutTemplates {
@@ -3144,12 +3200,16 @@ export const TemplatesSetTemplatesFragmentDoc = gql`
   spaceTemplates {
     ...SpaceTemplate
   }
+  classificationTemplates {
+    ...ClassificationTemplate
+  }
 }
     ${CalloutTemplateFragmentDoc}
 ${PostTemplateFragmentDoc}
 ${WhiteboardTemplateFragmentDoc}
 ${CommunityGuidelinesTemplateFragmentDoc}
-${SpaceTemplateFragmentDoc}`;
+${SpaceTemplateFragmentDoc}
+${ClassificationTemplateFragmentDoc}`;
 export const EventProfileFragmentDoc = gql`
     fragment EventProfile on Profile {
   id
@@ -22460,6 +22520,378 @@ export type SpaceAboutDetailsQueryResult = Apollo.QueryResult<
 export function refetchSpaceAboutDetailsQuery(variables: SchemaTypes.SpaceAboutDetailsQueryVariables) {
   return { query: SpaceAboutDetailsDocument, variables: variables };
 }
+export const AddClassificationEntryFromTemplateDocument = gql`
+    mutation AddClassificationEntryFromTemplate($classificationData: AddClassificationEntryFromTemplateInput!) {
+  addClassificationEntryFromTemplate(classificationData: $classificationData) {
+    ...ClassificationEntryFull
+  }
+}
+    ${ClassificationEntryFullFragmentDoc}`;
+export type AddClassificationEntryFromTemplateMutationFn = Apollo.MutationFunction<
+  SchemaTypes.AddClassificationEntryFromTemplateMutation,
+  SchemaTypes.AddClassificationEntryFromTemplateMutationVariables
+>;
+
+/**
+ * __useAddClassificationEntryFromTemplateMutation__
+ *
+ * To run a mutation, you first call `useAddClassificationEntryFromTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddClassificationEntryFromTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addClassificationEntryFromTemplateMutation, { data, loading, error }] = useAddClassificationEntryFromTemplateMutation({
+ *   variables: {
+ *      classificationData: // value for 'classificationData'
+ *   },
+ * });
+ */
+export function useAddClassificationEntryFromTemplateMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.AddClassificationEntryFromTemplateMutation,
+    SchemaTypes.AddClassificationEntryFromTemplateMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.AddClassificationEntryFromTemplateMutation,
+    SchemaTypes.AddClassificationEntryFromTemplateMutationVariables
+  >(AddClassificationEntryFromTemplateDocument, options);
+}
+export type AddClassificationEntryFromTemplateMutationHookResult = ReturnType<
+  typeof useAddClassificationEntryFromTemplateMutation
+>;
+export type AddClassificationEntryFromTemplateMutationResult =
+  Apollo.MutationResult<SchemaTypes.AddClassificationEntryFromTemplateMutation>;
+export type AddClassificationEntryFromTemplateMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.AddClassificationEntryFromTemplateMutation,
+  SchemaTypes.AddClassificationEntryFromTemplateMutationVariables
+>;
+export const DeleteClassificationEntryDocument = gql`
+    mutation DeleteClassificationEntry($classificationData: DeleteClassificationEntryInput!) {
+  deleteClassificationEntry(classificationData: $classificationData) {
+    id
+  }
+}
+    `;
+export type DeleteClassificationEntryMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteClassificationEntryMutation,
+  SchemaTypes.DeleteClassificationEntryMutationVariables
+>;
+
+/**
+ * __useDeleteClassificationEntryMutation__
+ *
+ * To run a mutation, you first call `useDeleteClassificationEntryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteClassificationEntryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteClassificationEntryMutation, { data, loading, error }] = useDeleteClassificationEntryMutation({
+ *   variables: {
+ *      classificationData: // value for 'classificationData'
+ *   },
+ * });
+ */
+export function useDeleteClassificationEntryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteClassificationEntryMutation,
+    SchemaTypes.DeleteClassificationEntryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteClassificationEntryMutation,
+    SchemaTypes.DeleteClassificationEntryMutationVariables
+  >(DeleteClassificationEntryDocument, options);
+}
+export type DeleteClassificationEntryMutationHookResult = ReturnType<typeof useDeleteClassificationEntryMutation>;
+export type DeleteClassificationEntryMutationResult =
+  Apollo.MutationResult<SchemaTypes.DeleteClassificationEntryMutation>;
+export type DeleteClassificationEntryMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteClassificationEntryMutation,
+  SchemaTypes.DeleteClassificationEntryMutationVariables
+>;
+export const UpdateClassificationEntryDisplayDocument = gql`
+    mutation UpdateClassificationEntryDisplay($classificationData: UpdateClassificationEntryDisplayInput!) {
+  updateClassificationEntryDisplay(classificationData: $classificationData) {
+    ...ClassificationEntryFull
+  }
+}
+    ${ClassificationEntryFullFragmentDoc}`;
+export type UpdateClassificationEntryDisplayMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateClassificationEntryDisplayMutation,
+  SchemaTypes.UpdateClassificationEntryDisplayMutationVariables
+>;
+
+/**
+ * __useUpdateClassificationEntryDisplayMutation__
+ *
+ * To run a mutation, you first call `useUpdateClassificationEntryDisplayMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateClassificationEntryDisplayMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateClassificationEntryDisplayMutation, { data, loading, error }] = useUpdateClassificationEntryDisplayMutation({
+ *   variables: {
+ *      classificationData: // value for 'classificationData'
+ *   },
+ * });
+ */
+export function useUpdateClassificationEntryDisplayMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateClassificationEntryDisplayMutation,
+    SchemaTypes.UpdateClassificationEntryDisplayMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateClassificationEntryDisplayMutation,
+    SchemaTypes.UpdateClassificationEntryDisplayMutationVariables
+  >(UpdateClassificationEntryDisplayDocument, options);
+}
+export type UpdateClassificationEntryDisplayMutationHookResult = ReturnType<
+  typeof useUpdateClassificationEntryDisplayMutation
+>;
+export type UpdateClassificationEntryDisplayMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateClassificationEntryDisplayMutation>;
+export type UpdateClassificationEntryDisplayMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateClassificationEntryDisplayMutation,
+  SchemaTypes.UpdateClassificationEntryDisplayMutationVariables
+>;
+export const UpdateClassificationEntrySelectionDocument = gql`
+    mutation UpdateClassificationEntrySelection($classificationData: UpdateClassificationEntrySelectionInput!) {
+  updateClassificationEntrySelection(classificationData: $classificationData) {
+    ...ClassificationEntryFull
+  }
+}
+    ${ClassificationEntryFullFragmentDoc}`;
+export type UpdateClassificationEntrySelectionMutationFn = Apollo.MutationFunction<
+  SchemaTypes.UpdateClassificationEntrySelectionMutation,
+  SchemaTypes.UpdateClassificationEntrySelectionMutationVariables
+>;
+
+/**
+ * __useUpdateClassificationEntrySelectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateClassificationEntrySelectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateClassificationEntrySelectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateClassificationEntrySelectionMutation, { data, loading, error }] = useUpdateClassificationEntrySelectionMutation({
+ *   variables: {
+ *      classificationData: // value for 'classificationData'
+ *   },
+ * });
+ */
+export function useUpdateClassificationEntrySelectionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.UpdateClassificationEntrySelectionMutation,
+    SchemaTypes.UpdateClassificationEntrySelectionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.UpdateClassificationEntrySelectionMutation,
+    SchemaTypes.UpdateClassificationEntrySelectionMutationVariables
+  >(UpdateClassificationEntrySelectionDocument, options);
+}
+export type UpdateClassificationEntrySelectionMutationHookResult = ReturnType<
+  typeof useUpdateClassificationEntrySelectionMutation
+>;
+export type UpdateClassificationEntrySelectionMutationResult =
+  Apollo.MutationResult<SchemaTypes.UpdateClassificationEntrySelectionMutation>;
+export type UpdateClassificationEntrySelectionMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.UpdateClassificationEntrySelectionMutation,
+  SchemaTypes.UpdateClassificationEntrySelectionMutationVariables
+>;
+export const ClassificationTemplatesPlatformWideDocument = gql`
+    query ClassificationTemplatesPlatformWide {
+  platform {
+    library {
+      templates(filter: {types: [CLASSIFICATION]}) {
+        template {
+          ...ClassificationTemplateOption
+        }
+      }
+    }
+  }
+}
+    ${ClassificationTemplateOptionFragmentDoc}`;
+
+/**
+ * __useClassificationTemplatesPlatformWideQuery__
+ *
+ * To run a query within a React component, call `useClassificationTemplatesPlatformWideQuery` and pass it any options that fit your needs.
+ * When your component renders, `useClassificationTemplatesPlatformWideQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useClassificationTemplatesPlatformWideQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useClassificationTemplatesPlatformWideQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.ClassificationTemplatesPlatformWideQuery,
+    SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ClassificationTemplatesPlatformWideQuery,
+    SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+  >(ClassificationTemplatesPlatformWideDocument, options);
+}
+export function useClassificationTemplatesPlatformWideLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ClassificationTemplatesPlatformWideQuery,
+    SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ClassificationTemplatesPlatformWideQuery,
+    SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+  >(ClassificationTemplatesPlatformWideDocument, options);
+}
+export function useClassificationTemplatesPlatformWideSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ClassificationTemplatesPlatformWideQuery,
+        SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ClassificationTemplatesPlatformWideQuery,
+    SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+  >(ClassificationTemplatesPlatformWideDocument, options);
+}
+export type ClassificationTemplatesPlatformWideQueryHookResult = ReturnType<
+  typeof useClassificationTemplatesPlatformWideQuery
+>;
+export type ClassificationTemplatesPlatformWideLazyQueryHookResult = ReturnType<
+  typeof useClassificationTemplatesPlatformWideLazyQuery
+>;
+export type ClassificationTemplatesPlatformWideSuspenseQueryHookResult = ReturnType<
+  typeof useClassificationTemplatesPlatformWideSuspenseQuery
+>;
+export type ClassificationTemplatesPlatformWideQueryResult = Apollo.QueryResult<
+  SchemaTypes.ClassificationTemplatesPlatformWideQuery,
+  SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+>;
+export function refetchClassificationTemplatesPlatformWideQuery(
+  variables?: SchemaTypes.ClassificationTemplatesPlatformWideQueryVariables
+) {
+  return { query: ClassificationTemplatesPlatformWideDocument, variables: variables };
+}
+export const ClassificationTemplatesForSpaceDocument = gql`
+    query ClassificationTemplatesForSpace($levelZeroSpaceId: UUID!) {
+  lookup {
+    space(ID: $levelZeroSpaceId) {
+      id
+      templatesManager {
+        templatesSet {
+          id
+          classificationTemplates {
+            ...ClassificationTemplateOption
+          }
+        }
+      }
+    }
+  }
+}
+    ${ClassificationTemplateOptionFragmentDoc}`;
+
+/**
+ * __useClassificationTemplatesForSpaceQuery__
+ *
+ * To run a query within a React component, call `useClassificationTemplatesForSpaceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useClassificationTemplatesForSpaceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useClassificationTemplatesForSpaceQuery({
+ *   variables: {
+ *      levelZeroSpaceId: // value for 'levelZeroSpaceId'
+ *   },
+ * });
+ */
+export function useClassificationTemplatesForSpaceQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.ClassificationTemplatesForSpaceQuery,
+    SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+  > &
+    ({ variables: SchemaTypes.ClassificationTemplatesForSpaceQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.ClassificationTemplatesForSpaceQuery,
+    SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+  >(ClassificationTemplatesForSpaceDocument, options);
+}
+export function useClassificationTemplatesForSpaceLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.ClassificationTemplatesForSpaceQuery,
+    SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.ClassificationTemplatesForSpaceQuery,
+    SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+  >(ClassificationTemplatesForSpaceDocument, options);
+}
+export function useClassificationTemplatesForSpaceSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.ClassificationTemplatesForSpaceQuery,
+        SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.ClassificationTemplatesForSpaceQuery,
+    SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+  >(ClassificationTemplatesForSpaceDocument, options);
+}
+export type ClassificationTemplatesForSpaceQueryHookResult = ReturnType<typeof useClassificationTemplatesForSpaceQuery>;
+export type ClassificationTemplatesForSpaceLazyQueryHookResult = ReturnType<
+  typeof useClassificationTemplatesForSpaceLazyQuery
+>;
+export type ClassificationTemplatesForSpaceSuspenseQueryHookResult = ReturnType<
+  typeof useClassificationTemplatesForSpaceSuspenseQuery
+>;
+export type ClassificationTemplatesForSpaceQueryResult = Apollo.QueryResult<
+  SchemaTypes.ClassificationTemplatesForSpaceQuery,
+  SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+>;
+export function refetchClassificationTemplatesForSpaceQuery(
+  variables: SchemaTypes.ClassificationTemplatesForSpaceQueryVariables
+) {
+  return { query: ClassificationTemplatesForSpaceDocument, variables: variables };
+}
 export const PlansTableDocument = gql`
     query PlansTable {
   platform {
@@ -26610,7 +27042,7 @@ export function refetchAllTemplatesInTemplatesSetQuery(
   return { query: AllTemplatesInTemplatesSetDocument, variables: variables };
 }
 export const TemplateContentDocument = gql`
-    query TemplateContent($templateId: UUID!, $includeCallout: Boolean = false, $includeCommunityGuidelines: Boolean = false, $includeSpace: Boolean = false, $includePost: Boolean = false, $includeWhiteboard: Boolean = false) {
+    query TemplateContent($templateId: UUID!, $includeCallout: Boolean = false, $includeCommunityGuidelines: Boolean = false, $includeSpace: Boolean = false, $includePost: Boolean = false, $includeWhiteboard: Boolean = false, $includeClassification: Boolean = false) {
   lookup {
     template(ID: $templateId) {
       id
@@ -26636,6 +27068,9 @@ export const TemplateContentDocument = gql`
       contentSpace @include(if: $includeSpace) {
         ...SpaceTemplateContent
       }
+      classification @include(if: $includeClassification) {
+        ...ClassificationTemplateContentFull
+      }
     }
   }
 }
@@ -26643,7 +27078,8 @@ export const TemplateContentDocument = gql`
 ${CalloutTemplateContentFragmentDoc}
 ${CommunityGuidelinesTemplateContentFragmentDoc}
 ${WhiteboardTemplateContentFragmentDoc}
-${SpaceTemplateContentFragmentDoc}`;
+${SpaceTemplateContentFragmentDoc}
+${ClassificationTemplateContentFullFragmentDoc}`;
 
 /**
  * __useTemplateContentQuery__
@@ -26663,6 +27099,7 @@ ${SpaceTemplateContentFragmentDoc}`;
  *      includeSpace: // value for 'includeSpace'
  *      includePost: // value for 'includePost'
  *      includeWhiteboard: // value for 'includeWhiteboard'
+ *      includeClassification: // value for 'includeClassification'
  *   },
  * });
  */
@@ -26804,9 +27241,9 @@ export function refetchSpaceTemplateContentQuery(variables: SchemaTypes.SpaceTem
   return { query: SpaceTemplateContentDocument, variables: variables };
 }
 export const CreateTemplateDocument = gql`
-    mutation CreateTemplate($templatesSetId: UUID!, $profileData: CreateProfileInput!, $type: TemplateType!, $tags: [String!], $calloutData: CreateCalloutInput, $communityGuidelinesData: CreateCommunityGuidelinesInput, $contentSpaceData: CreateTemplateContentSpaceInput, $postDefaultDescription: Markdown, $whiteboard: CreateWhiteboardInput, $includeProfileVisuals: Boolean = false) {
+    mutation CreateTemplate($templatesSetId: UUID!, $profileData: CreateProfileInput!, $type: TemplateType!, $tags: [String!], $calloutData: CreateCalloutInput, $communityGuidelinesData: CreateCommunityGuidelinesInput, $contentSpaceData: CreateTemplateContentSpaceInput, $postDefaultDescription: Markdown, $whiteboard: CreateWhiteboardInput, $classificationData: CreateClassificationTemplateContentInput, $includeProfileVisuals: Boolean = false) {
   createTemplate(
-    templateData: {templatesSetID: $templatesSetId, profileData: $profileData, tags: $tags, type: $type, calloutData: $calloutData, communityGuidelinesData: $communityGuidelinesData, postDefaultDescription: $postDefaultDescription, contentSpaceData: $contentSpaceData, whiteboard: $whiteboard}
+    templateData: {templatesSetID: $templatesSetId, profileData: $profileData, tags: $tags, type: $type, calloutData: $calloutData, communityGuidelinesData: $communityGuidelinesData, postDefaultDescription: $postDefaultDescription, contentSpaceData: $contentSpaceData, whiteboard: $whiteboard, classificationData: $classificationData}
   ) {
     id
     nameID
@@ -26868,6 +27305,7 @@ export type CreateTemplateMutationFn = Apollo.MutationFunction<
  *      contentSpaceData: // value for 'contentSpaceData'
  *      postDefaultDescription: // value for 'postDefaultDescription'
  *      whiteboard: // value for 'whiteboard'
+ *      classificationData: // value for 'classificationData'
  *      includeProfileVisuals: // value for 'includeProfileVisuals'
  *   },
  * });
@@ -26999,9 +27437,9 @@ export type CreateTemplateFromSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTemplateFromSpaceMutationVariables
 >;
 export const UpdateTemplateDocument = gql`
-    mutation UpdateTemplate($templateId: UUID!, $profile: UpdateProfileInput!, $postDefaultDescription: Markdown, $whiteboardContent: WhiteboardContent, $includeProfileVisuals: Boolean = false) {
+    mutation UpdateTemplate($templateId: UUID!, $profile: UpdateProfileInput!, $postDefaultDescription: Markdown, $whiteboardContent: WhiteboardContent, $classificationData: CreateClassificationTemplateContentInput, $includeProfileVisuals: Boolean = false) {
   updateTemplate(
-    updateData: {ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription, whiteboardContent: $whiteboardContent}
+    updateData: {ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription, whiteboardContent: $whiteboardContent, classificationData: $classificationData}
   ) {
     id
     nameID
@@ -27043,6 +27481,7 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<
  *      profile: // value for 'profile'
  *      postDefaultDescription: // value for 'postDefaultDescription'
  *      whiteboardContent: // value for 'whiteboardContent'
+ *      classificationData: // value for 'classificationData'
  *      includeProfileVisuals: // value for 'includeProfileVisuals'
  *   },
  * });
