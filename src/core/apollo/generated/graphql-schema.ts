@@ -1588,6 +1588,22 @@ export type Collaboration = {
   updatedDate: Scalars['DateTime']['output'];
 };
 
+export type CollaborationMigrationIssue = {
+  __typename?: 'CollaborationMigrationIssue';
+  id: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+};
+
+export type CollaborationMigrationResult = {
+  __typename?: 'CollaborationMigrationResult';
+  failed: Scalars['Int']['output'];
+  failedDocuments: Array<CollaborationMigrationIssue>;
+  flagged: Scalars['Int']['output'];
+  flaggedDocuments: Array<CollaborationMigrationIssue>;
+  migrated: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+};
+
 export type Communication = {
   __typename?: 'Communication';
   /** The authorization rules for the entity */
@@ -2943,7 +2959,7 @@ export type CreateWhiteboardData = {
   /** The preview settings for the whiteboard. */
   previewSettings?: Maybe<CreateWhiteboardPreviewSettingsData>;
   profile?: Maybe<CreateProfileData>;
-  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Takes precedence over `content` when set and resolvable. */
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Mutually exclusive with `content` — supply exactly one. */
   sourceWhiteboardID?: Maybe<Scalars['UUID']['output']>;
 };
 
@@ -2954,7 +2970,7 @@ export type CreateWhiteboardInput = {
   /** The preview settings for the whiteboard. */
   previewSettings?: InputMaybe<CreateWhiteboardPreviewSettingsInput>;
   profile?: InputMaybe<CreateProfileInput>;
-  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Takes precedence over `content` when set and resolvable. */
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Mutually exclusive with `content` — supply exactly one. */
   sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
@@ -3148,7 +3164,7 @@ export type DeleteStorageBuckeetInput = {
 export type DeleteTaskColumnOnCalloutInput = {
   /** The Tasks board Callout to remove a column from. */
   calloutID: Scalars['UUID']['input'];
-  /** The column to remove. Matched case-insensitively; the first (default) column cannot be removed and its tasks reflow to the default. */
+  /** The column to remove. Matched case-insensitively. The first (default) column cannot be removed; removing any other column reflows its tasks onto the first column. */
   name: Scalars['String']['input'];
 };
 
@@ -5350,6 +5366,10 @@ export type Mutation = {
   markNotificationsAsRead: Scalars['Boolean']['output'];
   /** Mark notifications as unread. If no filter is provided, marks all user notifications as unread. If filter with types is provided, marks only those notification types as unread. */
   markNotificationsAsUnread: Scalars['Boolean']['output'];
+  /** Migrates all pending legacy memo content. Idempotent: repeated calls process only rows whose migrated marker is false. */
+  migrateLegacyMemoContent: CollaborationMigrationResult;
+  /** Migrates all pending legacy whiteboard content. Idempotent: repeated calls process only rows whose migrated marker is false. */
+  migrateLegacyWhiteboardContent: CollaborationMigrationResult;
   /** Mint a new MCP API key for the current user. Returns the plaintext exactly once. */
   mintMcpApiKey: McpApiKeyMintResult;
   /** Moves the specified Contribution to another Callout. */

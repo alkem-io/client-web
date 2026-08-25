@@ -1071,6 +1071,28 @@ export type CollaborationFieldPolicy = {
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CollaborationMigrationIssueKeySpecifier = ('id' | 'reason' | CollaborationMigrationIssueKeySpecifier)[];
+export type CollaborationMigrationIssueFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  reason?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaborationMigrationResultKeySpecifier = (
+  | 'failed'
+  | 'failedDocuments'
+  | 'flagged'
+  | 'flaggedDocuments'
+  | 'migrated'
+  | 'total'
+  | CollaborationMigrationResultKeySpecifier
+)[];
+export type CollaborationMigrationResultFieldPolicy = {
+  failed?: FieldPolicy<any> | FieldReadFunction<any>;
+  failedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
+  flagged?: FieldPolicy<any> | FieldReadFunction<any>;
+  flaggedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrated?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CommunicationKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -3129,6 +3151,8 @@ export type MutationKeySpecifier = (
   | 'markMessageAsReadInRoom'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
+  | 'migrateLegacyMemoContent'
+  | 'migrateLegacyWhiteboardContent'
   | 'mintMcpApiKey'
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
@@ -3366,6 +3390,8 @@ export type MutationFieldPolicy = {
   markMessageAsReadInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrateLegacyMemoContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrateLegacyWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
   mintMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6382,6 +6408,20 @@ export type StrictTypedTypePolicies = {
   Collaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CollaborationKeySpecifier | (() => undefined | CollaborationKeySpecifier);
     fields?: CollaborationFieldPolicy;
+  };
+  CollaborationMigrationIssue?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CollaborationMigrationIssueKeySpecifier
+      | (() => undefined | CollaborationMigrationIssueKeySpecifier);
+    fields?: CollaborationMigrationIssueFieldPolicy;
+  };
+  CollaborationMigrationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CollaborationMigrationResultKeySpecifier
+      | (() => undefined | CollaborationMigrationResultKeySpecifier);
+    fields?: CollaborationMigrationResultFieldPolicy;
   };
   Communication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationKeySpecifier | (() => undefined | CommunicationKeySpecifier);
