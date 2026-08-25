@@ -525,7 +525,10 @@ export function CrdPostContributionDialog({
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      {/* z-[130]: this dialog is elevated (z-[120]) when editing a
+                          task on a board, and the primitive's default z-50 dropdown
+                          would open behind it. Matches the editor toolbar dialogs. */}
+                      <SelectContent className="z-[130]">
                         {siblingCallouts.map(sibling => (
                           <SelectItem key={sibling.id} value={sibling.id}>
                             {sibling.framing.profile.displayName}
