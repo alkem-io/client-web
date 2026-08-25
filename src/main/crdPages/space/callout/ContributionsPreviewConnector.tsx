@@ -115,6 +115,7 @@ export function ContributionsPreviewConnector({
           open={addOpen}
           onOpenChange={setAddOpen}
           calloutId={callout.id}
+          isTaskBoard={isTaskBoard}
           defaultDisplayName={defaults?.defaultDisplayName}
           defaultDescription={defaults?.postDescription}
         />

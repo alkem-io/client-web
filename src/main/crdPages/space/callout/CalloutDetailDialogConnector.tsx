@@ -757,7 +757,14 @@ export function CalloutDetailDialogConnector({
           setPostEditOpen(false);
           setPostContributionId(undefined);
           setPostId(undefined);
+          // On a board (elevated) the focused-task dialog has no contributions
+          // grid behind it — deleting the task via the edit dialog must close it,
+          // not fall back to the "post with responses" grid on top of the board.
+          if (elevated) {
+            onOpenChange(false);
+          }
         }}
+        isTaskBoard={elevated}
         {...elevatedNested}
       />
     ) : null;
