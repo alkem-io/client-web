@@ -116,7 +116,7 @@ export function SpaceTabSidebarConnector({
     })) ?? [];
 
   const { events: sidebarEvents, canCreateEvents } = useCrdCalendarSidebar(skips.events);
-  const { navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
+  const { isAnyCalendarRoute, navigateToList, navigateToCreate, navigateToEvent } = useCrdCalendarUrlState();
   const openCalendar = () => {
     setCalendarOpen(true);
     navigateToList();
@@ -224,7 +224,15 @@ export function SpaceTabSidebarConnector({
 
       {!skips.applicationButton && applyDialogs}
 
-      {!skips.events && <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />}
+      {/* Sole mount point for the /calendar and /calendar/:eventId deep-link routes.
+          Widget-driven for the sidebar Events button (!skips.events), but ALSO
+          route-driven: a shared/notification calendar link must open the dialog even
+          when the active tab's plan omits the `events` widget (on develop the
+          connector was mounted unconditionally, so these links always worked).
+          Closing navigates away from /calendar, which drops the route-driven mount. */}
+      {(!skips.events || isAnyCalendarRoute) && (
+        <CrdCalendarDialogConnector open={calendarOpen} onOpenChange={setCalendarOpen} />
+      )}
 
       <CommunityUpdatesDialog
         open={updatesOpen}
