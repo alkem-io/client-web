@@ -80,6 +80,15 @@ export type CalloutFormValues = {
   pollHideResultsUntilVoted: boolean;
   pollShowVoterAvatars: boolean;
   whiteboardContent: string;
+  /**
+   * True once the user has opened the whiteboard editor and saved (drew OR deliberately
+   * cleared it) — set by the framing/whiteboard editor's `onWhiteboardChange`. Distinct from
+   * serialized emptiness: a source-derived (duplicated / imported) template starts with an
+   * empty placeholder AND `whiteboardEdited === false`, so the create mapper copies the source
+   * snapshot; once the user clears it on purpose (`whiteboardEdited === true`, empty content)
+   * the intentional blank is sent instead of re-copying the source. `false` on prefill.
+   */
+  whiteboardEdited?: boolean;
   whiteboardPreviewImages: WhiteboardPreviewImage[];
   whiteboardPreviewSettings: WhiteboardPreviewSettings;
   /**
@@ -185,6 +194,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   pollHideResultsUntilVoted: false,
   pollShowVoterAvatars: true,
   whiteboardContent: EmptyWhiteboardString,
+  whiteboardEdited: false,
   whiteboardPreviewImages: [],
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
   whiteboardPreviewServerUrl: undefined,

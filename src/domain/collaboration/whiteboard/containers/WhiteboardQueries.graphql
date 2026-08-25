@@ -54,11 +54,6 @@ fragment WhiteboardDetails on Whiteboard {
   }
 }
 
-fragment WhiteboardContent on Whiteboard {
-  id
-  content
-}
-
 fragment CollaborationWithWhiteboardDetails on Collaboration {
   id
   calloutsSet {

@@ -187,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Kan whiteboardwijzigingen niet opslaan",
       "images": {
         "downloadFailed": "Kan de afbeelding niet laden. Probeer het nogmaals.",
         "maxSizeFallback": "de toegestane limiet",
         "multipleFailures_one": "{{count}} afbeelding kon niet worden geladen",
         "multipleFailures_other": "{{count}} afbeeldingen konden niet geladen worden",
+        "uploadMultipleFailures_one": "{{count}} afbeelding kon niet worden geüpload",
+        "uploadMultipleFailures_other": "{{count}} afbeeldingen konden niet geüpload worden",
         "retry": "Probeer opnieuw",
         "singleFailure": "Een afbeelding kon niet geladen worden",
         "tooLarge": "Deze afbeelding is te groot. Maximale grootte is {{maxSize}}.",
         "unsupportedType": "Dit afbeeldingsformaat wordt niet ondersteund. Gebruik {{formats}}.",
         "uploadFailed": "Kan de afbeelding niet uploaden. Probeer het nogmaals."
       },
+      "session": {
+        "rateExceeded": "Je bewerkt te snel — opnieuw verbinden…",
+        "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…",
+        "sizeLimitExceeded": "Dit whiteboard heeft de maximale grootte bereikt en je laatste wijziging is niet toegepast. Maak opnieuw verbinding om verder te gaan vanaf de laatst opgeslagen versie.",
+        "documentDeleted": "Dit whiteboard is verwijderd.",
+        "editsNotSaved": "Je recente wijzigingen konden niet worden opgeslagen en zijn verloren gegaan. De samenwerking is gestopt.",
+        "serverShutdown": "De samenwerkingsserver wordt opnieuw opgestart — opnieuw verbinden…",
+        "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw."
+      },
       "export": {
         "title": "Opslaan in Alkemio",
         "description": "Sla de scène op in Alkemio en deel deze met anderen.",
         "save": "Opslaan in Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Kan wijzigingen niet opslaan",
+      "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw.",
+      "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…",
+      "sessionEnded": "De samenwerking is beëindigd. Herlaad de pagina om verder te gaan."
     }
   },
   "cancel": "Annuleren",
@@ -217,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Gast",
     "Account": "Account",
     "Admin": "Beheerder",
     "Admins": "Beheerders",

@@ -187,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Промените в бялата дъска не могат да бъдат запазени",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "Изображението не можа да бъде заредено. Опитайте отново.",
+        "maxSizeFallback": "разрешения лимит",
+        "multipleFailures_one": "{{count}} изображение не можа да бъде заредено",
+        "multipleFailures_other": "{{count}} изображения не можаха да бъдат заредени",
+        "uploadMultipleFailures_one": "{{count}} изображение не можа да бъде качено",
+        "uploadMultipleFailures_other": "{{count}} изображения не можаха да бъдат качени",
+        "retry": "Опитайте отново",
+        "singleFailure": "Едно изображение не можа да бъде заредено",
+        "tooLarge": "Изображението е твърде голямо. Максималният размер е {{maxSize}}.",
+        "unsupportedType": "Неподдържан формат на изображението. Използвайте {{formats}}.",
+        "uploadFailed": "Изображението не можа да бъде качено. Опитайте отново."
+      },
+      "session": {
+        "rateExceeded": "Редактирате твърде бързо — повторно свързване…",
+        "updateNotAccepted": "Промяната ви не можа да бъде изпратена — повторно свързване…",
+        "sizeLimitExceeded": "Тази бяла дъска достигна ограничението за размер и последната ви промяна не беше приложена. Свържете се отново, за да продължите от последно запазената версия.",
+        "documentDeleted": "Тази бяла дъска беше изтрита.",
+        "editsNotSaved": "Скорошните ви промени не можаха да бъдат запазени и бяха загубени. Съвместната работа е спряна.",
+        "serverShutdown": "Сървърът за съвместна работа се рестартира — повторно свързване…",
+        "updateRejected": "Последната ви промяна не можа да бъде запазена. Опитайте отново."
       },
       "export": {
         "title": "Запазване в Alkemio",
         "description": "Запазете сцената в Alkemio и я споделете с други.",
         "save": "Запазване в Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Промените не могат да бъдат запазени",
+      "updateRejected": "Последната ви промяна не можа да бъде запазена. Опитайте отново.",
+      "updateNotAccepted": "Промяната ви не можа да бъде изпратена — повторно свързване…",
+      "sessionEnded": "Съвместната работа приключи. Презаредете страницата, за да продължите."
     }
   },
   "cancel": "Отказ",
@@ -217,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Гост",
     "Account": "Акаунт",
     "Admin": "Администратор",
     "Admins": "Администратори",

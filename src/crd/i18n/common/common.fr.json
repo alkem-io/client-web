@@ -187,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Impossible d'enregistrer les modifications du tableau blanc",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "Impossible de charger l'image. Veuillez réessayer.",
+        "maxSizeFallback": "la limite autorisée",
+        "multipleFailures_one": "{{count}} image n'a pas pu être chargée",
+        "multipleFailures_other": "{{count}} images n'ont pas pu être chargées",
+        "uploadMultipleFailures_one": "{{count}} image n'a pas pu être téléversée",
+        "uploadMultipleFailures_other": "{{count}} images n'ont pas pu être téléversées",
+        "retry": "Réessayer",
+        "singleFailure": "Une image n'a pas pu être chargée",
+        "tooLarge": "L'image est trop volumineuse. La taille maximale est {{maxSize}}.",
+        "unsupportedType": "Format d'image non pris en charge. Utilisez {{formats}}.",
+        "uploadFailed": "Impossible de téléverser l'image. Veuillez réessayer."
+      },
+      "session": {
+        "rateExceeded": "Vous modifiez trop vite — reconnexion…",
+        "updateNotAccepted": "Votre modification n'a pas pu être envoyée — reconnexion…",
+        "sizeLimitExceeded": "Ce tableau blanc a atteint sa taille limite et votre dernière modification n'a pas été appliquée. Reconnectez-vous pour continuer à partir de la dernière version enregistrée.",
+        "documentDeleted": "Ce tableau blanc a été supprimé.",
+        "editsNotSaved": "Vos modifications récentes n'ont pas pu être enregistrées et ont été perdues. La collaboration s'est arrêtée.",
+        "serverShutdown": "Le serveur de collaboration redémarre — reconnexion…",
+        "updateRejected": "Votre dernière modification n'a pas pu être enregistrée. Veuillez réessayer."
       },
       "export": {
         "title": "Enregistrer dans Alkemio",
         "description": "Enregistrez la scène dans Alkemio et partagez-la avec d'autres.",
         "save": "Enregistrer dans Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Impossible d'enregistrer les modifications",
+      "updateRejected": "Votre dernière modification n'a pas pu être enregistrée. Veuillez réessayer.",
+      "updateNotAccepted": "Votre modification n'a pas pu être envoyée — reconnexion…",
+      "sessionEnded": "La collaboration a pris fin. Rechargez la page pour continuer."
     }
   },
   "cancel": "Annuler",
@@ -217,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Invité",
     "Account": "Compte",
     "Admin": "Administrateur",
     "Admins": "Administrateurs",

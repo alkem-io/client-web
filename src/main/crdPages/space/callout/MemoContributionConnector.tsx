@@ -39,7 +39,7 @@ export function MemoContributionConnector({ open, contributionId, memoId, onClos
 
   // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
   // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
-  // once Hocuspocus has persisted (~2s lag).
+  // once the collab room has persisted its snapshot (~2s lag).
   const handleClose = () => {
     if (!isDeletingRef.current) {
       if (refreshTimeoutRef.current) {
