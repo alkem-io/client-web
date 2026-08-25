@@ -1,6 +1,6 @@
 import type { FileId } from '@excalidraw-yjs/excalidraw/element/types';
 import type { AssetAdapter, BinaryFileData } from '@excalidraw-yjs/excalidraw/types';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useUploadFileMutation, useWhiteboardAssetDocumentLazyQuery } from '@/core/apollo/generated/apollo-hooks';
 import { encodeToBase64 } from '@/core/utils/encodeToBase64';
 import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
@@ -65,11 +65,11 @@ export function useWhiteboardAssetAdapter({
   const [uploadError, setUploadError] = useState<AssetOperationError | undefined>(undefined);
   const [resolveError, setResolveError] = useState<AssetOperationError | undefined>(undefined);
 
-  // Latest dependencies, read by the stable operations below. Assigning during
-  // render is safe here: `depsRef` never feeds render output, it only carries the
-  // current closures/ids into the (identity-stable) adapter.
+  // Latest committed dependencies, read by the stable operations below.
   const depsRef = useRef({ storageBucketId, uploadFile, fetchDocument });
-  depsRef.current = { storageBucketId, uploadFile, fetchDocument };
+  useEffect(() => {
+    depsRef.current = { storageBucketId, uploadFile, fetchDocument };
+  }, [storageBucketId, uploadFile, fetchDocument]);
 
   const adapterRef = useRef<AssetAdapter | null>(null);
   if (!adapterRef.current) {

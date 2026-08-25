@@ -187,18 +187,19 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Whiteboard-Änderungen konnten nicht gespeichert werden",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "uploadMultipleFailures_one": "{{count}} image could not be uploaded",
-        "uploadMultipleFailures_other": "{{count}} images could not be uploaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "Das Bild konnte nicht geladen werden. Bitte versuche es erneut.",
+        "maxSizeFallback": "das zulässige Limit",
+        "multipleFailures_one": "{{count}} Bild konnte nicht geladen werden",
+        "multipleFailures_other": "{{count}} Bilder konnten nicht geladen werden",
+        "uploadMultipleFailures_one": "{{count}} Bild konnte nicht hochgeladen werden",
+        "uploadMultipleFailures_other": "{{count}} Bilder konnten nicht hochgeladen werden",
+        "retry": "Erneut versuchen",
+        "singleFailure": "Ein Bild konnte nicht geladen werden",
+        "tooLarge": "Das Bild ist zu groß. Die maximale Größe beträgt {{maxSize}}.",
+        "unsupportedType": "Nicht unterstütztes Bildformat. Bitte verwende {{formats}}.",
+        "uploadFailed": "Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut."
       },
       "session": {
         "rateExceeded": "Du bearbeitest zu schnell – Verbindung wird wiederhergestellt…",
@@ -234,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Gast",
     "Account": "Account",
     "Admin": "Admin",
     "Admins": "Admins",

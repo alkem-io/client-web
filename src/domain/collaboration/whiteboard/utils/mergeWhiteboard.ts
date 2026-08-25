@@ -26,10 +26,8 @@ type ExcalidrawUtils = {
 class WhiteboardMergeError extends Error {}
 
 interface WhiteboardLike {
-  type: string;
-  version: number;
   elements: ExcalidrawElement[];
-  files?: Record<BinaryFileData['id'], BinaryFileData>;
+  assets: Record<string, string>;
 }
 
 const isWhiteboardLike = (parsedObject: unknown): parsedObject is WhiteboardLike => {
@@ -38,14 +36,13 @@ const isWhiteboardLike = (parsedObject: unknown): parsedObject is WhiteboardLike
   }
 
   const whiteboard = parsedObject as Record<string, unknown>;
-  if (whiteboard.type !== 'excalidraw' || whiteboard.version !== 2) {
-    return false;
-  }
-  if (!whiteboard.elements || !Array.isArray(whiteboard.elements)) {
-    return false;
-  }
-  // At least we have something that looks like a whiteboard
-  return true;
+  return (
+    Array.isArray(whiteboard.elements) &&
+    whiteboard.elements.length > 0 &&
+    typeof whiteboard.assets === 'object' &&
+    whiteboard.assets !== null &&
+    !Array.isArray(whiteboard.assets)
+  );
 };
 
 interface BoundingBox {
@@ -155,7 +152,7 @@ const mergeWhiteboard = async (
   // merge via updateScene).
   const templateScene = decodeSnapshot(encodeSnapshot(parseWhiteboardContentToScene(whiteboardContent)));
 
-  if (!isWhiteboardLike({ type: 'excalidraw', version: 2, ...templateScene })) {
+  if (!isWhiteboardLike(templateScene)) {
     throw new WhiteboardMergeError('Whiteboard verification failed');
   }
 

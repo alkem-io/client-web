@@ -187,18 +187,19 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Промените в бялата дъска не могат да бъдат запазени",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "uploadMultipleFailures_one": "{{count}} image could not be uploaded",
-        "uploadMultipleFailures_other": "{{count}} images could not be uploaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "Изображението не можа да бъде заредено. Опитайте отново.",
+        "maxSizeFallback": "разрешения лимит",
+        "multipleFailures_one": "{{count}} изображение не можа да бъде заредено",
+        "multipleFailures_other": "{{count}} изображения не можаха да бъдат заредени",
+        "uploadMultipleFailures_one": "{{count}} изображение не можа да бъде качено",
+        "uploadMultipleFailures_other": "{{count}} изображения не можаха да бъдат качени",
+        "retry": "Опитайте отново",
+        "singleFailure": "Едно изображение не можа да бъде заредено",
+        "tooLarge": "Изображението е твърде голямо. Максималният размер е {{maxSize}}.",
+        "unsupportedType": "Неподдържан формат на изображението. Използвайте {{formats}}.",
+        "uploadFailed": "Изображението не можа да бъде качено. Опитайте отново."
       },
       "session": {
         "rateExceeded": "Редактирате твърде бързо — повторно свързване…",
@@ -234,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Гост",
     "Account": "Акаунт",
     "Admin": "Администратор",
     "Admins": "Администратори",

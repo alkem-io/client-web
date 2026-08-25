@@ -56,6 +56,7 @@ test.describe('multi-user collaboration', () => {
     const wbB = new WhiteboardEditor(b.page);
     await wbB.waitReady();
     expect(await wbB.elementCount()).toBeGreaterThan(0);
+    const initial = await wbB.firstElementState();
 
     // Concurrent, different-property edits to the SAME element:
     //  - A drags it (position),
@@ -64,10 +65,14 @@ test.describe('multi-user collaboration', () => {
     await wbB.canvas.click({ position: { x: 65, y: 55 } }); // select the element on B
     // Recolour via Excalidraw's stroke swatch (stable upstream contract).
     const strokeSwatch = b.page.locator('.color-picker__button').first();
-    if (await strokeSwatch.isVisible({ timeout: 5_000 }).catch(() => false)) {
-      await strokeSwatch.click();
-      await b.page.locator('.color-picker-content [title], .color-picker__button').nth(2).click();
-    }
+    await expect(strokeSwatch).toBeVisible({ timeout: 5_000 });
+    await strokeSwatch.click();
+    await b.page.locator('.color-picker-content [title], .color-picker__button').nth(2).click();
+
+    await expect
+      .poll(async () => (await wbB.firstElementState()).strokeColor, { timeout: 15_000 })
+      .not.toBe(initial.strokeColor);
+    const changedColor = (await wbB.firstElementState()).strokeColor;
 
     await authedPage.waitForTimeout(3_000);
 
@@ -78,18 +83,20 @@ test.describe('multi-user collaboration', () => {
       await openCalloutByName(reopened, name);
       const wb = new WhiteboardEditor(reopened);
       await wb.waitReady();
-      const moved = await reopened.evaluate(() => {
-        const api = (window as unknown as { h?: { app?: { scene?: { getNonDeletedElements: () => { x: number; strokeColor: string }[] } } } }).h;
-        const el = api?.app?.scene?.getNonDeletedElements()[0];
-        return { x: el?.x ?? 0, strokeColor: el?.strokeColor ?? '' };
-      });
+      const moved = await wb.firstElementState();
       await reopened.close();
       return moved;
     };
 
+    await expect.poll(async () => (await wbA.firstElementState()).strokeColor).toBe(changedColor);
+    await expect.poll(async () => (await wbB.firstElementState()).x).toBeGreaterThan(initial.x);
     const onA = await verify(authedPage);
-    // The position reflects A's drag (moved well to the right of the origin)...
+    const onB = await verify(b.page);
+    // The position reflects A's drag and the colour reflects B's choice on both reloads.
     expect(onA.x).toBeGreaterThan(250);
+    expect(onA.strokeColor).toBe(changedColor);
+    expect(onB.x).toBeGreaterThan(250);
+    expect(onB.strokeColor).toBe(changedColor);
     await b.close();
   });
 });

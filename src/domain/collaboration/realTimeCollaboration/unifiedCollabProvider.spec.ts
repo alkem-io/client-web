@@ -1,7 +1,7 @@
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Awareness, encodeAwarenessUpdate } from 'y-protocols/awareness';
+import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import { messageYjsSyncStep2, readSyncMessage, writeSyncStep1, writeSyncStep2, writeUpdate } from 'y-protocols/sync';
 import * as Y from 'yjs';
 import {
@@ -352,6 +352,34 @@ describe('UnifiedCollabProvider', () => {
     const states = [...sharedAwareness.getStates().values()];
     expect(states.some(s => (s as { user?: { name?: string } }).user?.name === 'Bob')).toBe(true);
     provider.destroy();
+  });
+
+  it('uses an external awareness client id when its backing doc is not supplied', () => {
+    const awarenessDoc = new Y.Doc();
+    const externalAwareness = new Awareness(awarenessDoc);
+    externalAwareness.setLocalState({ user: { name: 'Alice' } });
+    const provider = new UnifiedCollabProvider({ ...baseOptions, awareness: externalAwareness });
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+
+    const awarenessFrame = socket.sent.find(frame => readFrameType(frame) === WIRE.AWARENESS);
+    expect(awarenessFrame).toBeDefined();
+    const decoder = decoding.createDecoder(awarenessFrame as Uint8Array);
+    decoding.readVarUint(decoder);
+    const update = decoding.readVarUint8Array(decoder);
+    const peerAwareness = new Awareness(new Y.Doc());
+    applyAwarenessUpdate(peerAwareness, update, null);
+    expect(peerAwareness.getStates().get(externalAwareness.clientID)).toEqual({ user: { name: 'Alice' } });
+
+    const framesBeforeDestroy = socket.sent.length;
+    provider.destroy();
+    expect(externalAwareness.getStates().has(externalAwareness.clientID)).toBe(false);
+    const leaveFrame = socket.sent[framesBeforeDestroy];
+    expect(readFrameType(leaveFrame)).toBe(WIRE.AWARENESS);
+    const leaveDecoder = decoding.createDecoder(leaveFrame);
+    decoding.readVarUint(leaveDecoder);
+    applyAwarenessUpdate(peerAwareness, decoding.readVarUint8Array(leaveDecoder), null);
+    expect(peerAwareness.getStates().has(externalAwareness.clientID)).toBe(false);
   });
 
   it('reconnects after an unexpected close but not after a normal closure', () => {

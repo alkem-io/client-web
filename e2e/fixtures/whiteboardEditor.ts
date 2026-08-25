@@ -49,7 +49,23 @@ export class WhiteboardEditor {
   async elementCount(): Promise<number> {
     return this.page.evaluate(() => {
       const api = (window as unknown as { h?: { app?: { scene?: { getNonDeletedElements: () => unknown[] } } } }).h;
-      return api?.app?.scene?.getNonDeletedElements().length ?? 0;
+      const elements = api?.app?.scene?.getNonDeletedElements();
+      if (!elements) throw new Error('Excalidraw scene API is unavailable');
+      return elements.length;
+    });
+  }
+
+  /** State needed to prove that concurrent edits to two properties of the same element both survive. */
+  async firstElementState(): Promise<{ x: number; strokeColor: string }> {
+    return this.page.evaluate(() => {
+      const api = (
+        window as unknown as {
+          h?: { app?: { scene?: { getNonDeletedElements: () => { x: number; strokeColor: string }[] } } };
+        }
+      ).h;
+      const element = api?.app?.scene?.getNonDeletedElements()[0];
+      if (!element) throw new Error('No Excalidraw element is available');
+      return { x: element.x, strokeColor: element.strokeColor };
     });
   }
 

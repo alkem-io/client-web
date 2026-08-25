@@ -45,6 +45,8 @@ export class MemoEditor {
 
   /** Presence: at least one remote collaborator avatar shows in the memo footer. */
   async expectPresence(): Promise<void> {
-    await expect(this.page.getByTestId('memo-collab-footer')).toBeVisible({ timeout: 15_000 });
+    const users = this.page.getByTestId('memo-connected-users');
+    await expect(users).toBeVisible({ timeout: 15_000 });
+    await expect.poll(() => users.locator('li').count(), { timeout: 15_000 }).toBeGreaterThan(1);
   }
 }

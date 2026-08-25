@@ -187,18 +187,19 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "No se pudieron guardar los cambios de la pizarra",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "uploadMultipleFailures_one": "{{count}} image could not be uploaded",
-        "uploadMultipleFailures_other": "{{count}} images could not be uploaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "No se pudo cargar la imagen. Inténtalo de nuevo.",
+        "maxSizeFallback": "el límite permitido",
+        "multipleFailures_one": "No se pudo cargar {{count}} imagen",
+        "multipleFailures_other": "No se pudieron cargar {{count}} imágenes",
+        "uploadMultipleFailures_one": "No se pudo subir {{count}} imagen",
+        "uploadMultipleFailures_other": "No se pudieron subir {{count}} imágenes",
+        "retry": "Reintentar",
+        "singleFailure": "No se pudo cargar una imagen",
+        "tooLarge": "La imagen es demasiado grande. El tamaño máximo es {{maxSize}}.",
+        "unsupportedType": "Formato de imagen no compatible. Usa {{formats}}.",
+        "uploadFailed": "No se pudo subir la imagen. Inténtalo de nuevo."
       },
       "session": {
         "rateExceeded": "Estás editando demasiado rápido: reconectando…",
@@ -234,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Invitado",
     "Account": "Cuenta",
     "Admin": "Administrador",
     "Admins": "Administradores",

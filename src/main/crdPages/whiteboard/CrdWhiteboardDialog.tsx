@@ -134,7 +134,8 @@ type CollaborativeCloseParams = {
   /** The live editor API, or `null` when the editor is already gone / unmounted. */
   excalidrawAPI: Pick<ExcalidrawImperativeAPI, 'flushAssetPublication'> | null;
   /** Persist preview + display name for the collaborative whiteboard (a no-op when not editing). */
-  save: () => Promise<void>;
+  /** Return false when the metadata/preview save failed and the dialog must stay open. */
+  save: () => Promise<boolean | void>;
   /** Report that one or more images failed to publish (a non-empty `failed`). */
   onPublishFailed: (report: AssetPublishReport) => void;
   /** Tear the collaborative session down: evict the cache + run the parent cancel, which unmounts the provider. */
@@ -187,7 +188,10 @@ export async function closeCollaborativeWhiteboard({
   if (hasEditorChanged?.()) {
     return false;
   }
-  await save();
+  const saved = await save();
+  if (saved === false) {
+    return false;
+  }
   teardown();
   return true;
 }
@@ -237,17 +241,21 @@ const CrdWhiteboardDialog = ({
   const { assetAdapter, uploadError, resolveError } = useWhiteboardAssetAdapter({
     storageBucketId: whiteboard?.profile?.storageBucket.id ?? '',
   });
+  const notifiedUploadError = useRef(uploadError);
+  const notifiedResolveError = useRef(resolveError);
 
   // Surface asset store/resolve failures the way the old files-manager failure state did:
   // a user-visible notification whenever the last error message changes.
   useEffect(() => {
-    if (uploadError) {
+    if (uploadError && uploadError !== notifiedUploadError.current) {
+      notifiedUploadError.current = uploadError;
       notify(t('callout.whiteboard.images.uploadFailed'), 'warning');
     }
   }, [uploadError, t, notify]);
 
   useEffect(() => {
-    if (resolveError) {
+    if (resolveError && resolveError !== notifiedResolveError.current) {
+      notifiedResolveError.current = resolveError;
       notify(t('callout.whiteboard.images.downloadFailed'), 'warning');
     }
   }, [resolveError, t, notify]);
@@ -277,7 +285,7 @@ const CrdWhiteboardDialog = ({
       excalidrawAPI,
       hasEditorChanged: () => editorGenerationRef.current !== generationAtClose,
       save: async () => {
-        if (!shouldSave || !whiteboard) return;
+        if (!shouldSave || !whiteboard) return true;
         const excState = excalidrawAPI
           ? {
               elements: excalidrawAPI.getSceneElements(),
@@ -287,11 +295,18 @@ const CrdWhiteboardDialog = ({
           : undefined;
         const result = await prepareWhiteboardForUpdate(whiteboard, excState);
         if (result.success) {
-          await actions.onUpdate(result.whiteboard, result.previewImages);
+          const update = await actions.onUpdate(result.whiteboard, result.previewImages);
+          if (!update.success) {
+            notify(t('callout.whiteboard.saveFailed'), 'error');
+            return false;
+          }
+          return true;
         } else {
           logError(new Error('Error preparing whiteboard for update on close'), {
             category: TagCategoryValues.WHITEBOARD,
           });
+          notify(t('callout.whiteboard.saveFailed'), 'error');
+          return false;
         }
       },
       onPublishFailed: () => {

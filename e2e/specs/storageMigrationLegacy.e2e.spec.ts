@@ -8,9 +8,8 @@ import { WhiteboardEditor } from '../fixtures/whiteboardEditor';
  * (SC-005), no legacy backend (SC-006), deletion cleanup (FR-013), and identical
  * concurrent content (FR-011).
  *
- * Rows 14/15 also have DB/file-service assertions the orchestrator runs out-of-band
- * (the spec's "DB + file-service inspectable" companions); the UI-observable parts
- * are asserted here.
+ * Rows 14/15/17 are the browser half of the acceptance gate. The orchestrator's
+ * companion proof owns DB/file-service assertions that a browser cannot observe.
  */
 test.describe('storage, migration, no-legacy, deletion, identical content', () => {
   test('row 16 — no legacy backend: 0 connections to Hocuspocus or Socket.IO collab (SC-006)', async ({
@@ -52,11 +51,8 @@ test.describe('storage, migration, no-legacy, deletion, identical content', () =
     await wb.drawRectangle();
     await authedPage.waitForTimeout(3_000);
 
-    // UI-observable proxy for SC-004: the document's storage area lists a content
-    // snapshot file and the space storage usage is non-zero. The authoritative DB
-    // assertion (no inline content column; usage == content size) is the
-    // orchestrator's companion check against the deployed DB + file-service.
-    // (No GraphQL `whiteboard.content` field is selected by the client any more.)
+    // Browser half: content saves successfully with no UI error. The orchestrator
+    // companion proves the resulting file row, owning bucket and usage accounting.
     expect(name).toBeTruthy();
   });
 
@@ -67,7 +63,8 @@ test.describe('storage, migration, no-legacy, deletion, identical content', () =
     // batch migration ran up-front. Open each and assert content intact + editable.
     const legacyMemo = process.env.E2E_LEGACY_MEMO_NAME;
     const legacyWb = process.env.E2E_LEGACY_WHITEBOARD_NAME;
-    test.skip(!legacyMemo || !legacyWb, 'set E2E_LEGACY_MEMO_NAME / E2E_LEGACY_WHITEBOARD_NAME to run the migration row');
+    expect(legacyMemo, 'E2E_LEGACY_MEMO_NAME is required for the full acceptance matrix').toBeTruthy();
+    expect(legacyWb, 'E2E_LEGACY_WHITEBOARD_NAME is required for the full acceptance matrix').toBeTruthy();
 
     await openCalloutByName(authedPage, legacyMemo as string);
     const memo = new MemoEditor(authedPage);
@@ -84,7 +81,7 @@ test.describe('storage, migration, no-legacy, deletion, identical content', () =
     await fresh.close();
   });
 
-  test('row 17 — deletion while open: editor closes gracefully + stored content removed (FR-013)', async ({
+  test('row 17 — deletion while open: editor closes gracefully; companion proves stored cleanup (FR-013)', async ({
     authedPage,
     secondUser,
   }) => {
@@ -107,6 +104,8 @@ test.describe('storage, migration, no-legacy, deletion, identical content', () =
 
     // The open viewer editor closes gracefully (room-closed control), no crash.
     await expect(viewer.page.locator('.excalidraw')).toHaveCount(0, { timeout: 20_000 });
+    // The orchestrator companion checks that the document bucket and snapshot file
+    // were deleted; this browser test intentionally makes no storage-level claim.
     await viewer.close();
   });
 
@@ -123,15 +122,13 @@ test.describe('storage, migration, no-legacy, deletion, identical content', () =
       if (r.status() >= 500) errors.push(r.status());
     });
 
-    await createWhiteboardCallout(authedPage, a);
-    const wbA = new WhiteboardEditor(authedPage);
-    await wbA.waitReady();
-
     const second = await secondUser();
     second.page.on('response', r => {
       if (r.status() >= 500) errors.push(r.status());
     });
-    await createWhiteboardCallout(second.page, b);
+    await Promise.all([createWhiteboardCallout(authedPage, a), createWhiteboardCallout(second.page, b)]);
+    const wbA = new WhiteboardEditor(authedPage);
+    await wbA.waitReady();
     const wbB = new WhiteboardEditor(second.page);
     await wbB.waitReady();
 

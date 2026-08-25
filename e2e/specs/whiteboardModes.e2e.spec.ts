@@ -8,7 +8,10 @@ import { WhiteboardEditor } from '../fixtures/whiteboardEditor';
  * template, and duplicate.
  */
 test.describe('whiteboard editing modes are consistent', () => {
-  test('row 5 — edit solo + save, reopen collaboratively → content identical', async ({ authedPage }) => {
+  test('row 5 — edit solo + save, reopen collaboratively → content identical', async ({
+    authedPage,
+    freshPrimaryUser,
+  }) => {
     const name = `e2e-wb-solo-${Date.now()}`;
     await createWhiteboardCallout(authedPage, name);
     const wb = new WhiteboardEditor(authedPage);
@@ -16,11 +19,12 @@ test.describe('whiteboard editing modes are consistent', () => {
     await wb.drawRectangle();
     await wb.drawRectangle({ x: 420, y: 220 }, { x: 520, y: 300 });
     const soloCount = await wb.elementCount();
-    await authedPage.waitForTimeout(3_000);
+    await wb.save();
 
-    const fresh = await authedPage.context().newPage();
-    await openCalloutByName(fresh, name);
-    const collab = new WhiteboardEditor(fresh);
+    await authedPage.close();
+    const fresh = await freshPrimaryUser();
+    await openCalloutByName(fresh.page, name);
+    const collab = new WhiteboardEditor(fresh.page);
     await collab.waitReady();
     expect(await collab.elementCount()).toBe(soloCount); // identical content across modes
     await fresh.close();
@@ -50,6 +54,7 @@ test.describe('whiteboard editing modes are consistent', () => {
 
   test('row 7 — duplicate a whiteboard contribution → copy has the source content, independent', async ({
     authedPage,
+    freshPrimaryUser,
   }) => {
     const name = `e2e-wb-dup-${Date.now()}`;
     await createWhiteboardCallout(authedPage, name);
@@ -64,9 +69,18 @@ test.describe('whiteboard editing modes are consistent', () => {
     await authedPage.getByRole('menuitem', { name: /duplicate|copy/i }).click();
 
     const dupName = `${name}-copy`;
-    await openCalloutByName(authedPage, dupName).catch(() => undefined);
+    await openCalloutByName(authedPage, dupName);
     const dup = new WhiteboardEditor(authedPage);
     await dup.waitReady();
     expect(await dup.elementCount()).toBe(sourceCount); // copy carries the source content
+    await dup.drawRectangle({ x: 430, y: 240 }, { x: 540, y: 330 });
+    expect(await dup.elementCount()).toBeGreaterThan(sourceCount);
+
+    const source = await freshPrimaryUser();
+    await openCalloutByName(source.page, name);
+    const reopenedSource = new WhiteboardEditor(source.page);
+    await reopenedSource.waitReady();
+    expect(await reopenedSource.elementCount()).toBe(sourceCount);
+    await source.close();
   });
 });

@@ -69,9 +69,12 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   // Stable refs for notify + t so the provider effect does not tear down on their
   // identity changes (t changes on every language switch).
   const notifyRef = useRef(notify);
-  notifyRef.current = notify;
   const tRef = useRef(t);
-  tRef.current = t;
+
+  useEffect(() => {
+    notifyRef.current = notify;
+    tRef.current = t;
+  }, [notify, t]);
 
   // Create the provider without auto-connecting; connection is started in the effect.
   const provider = useMemo(() => {

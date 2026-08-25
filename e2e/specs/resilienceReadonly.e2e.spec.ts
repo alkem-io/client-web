@@ -11,7 +11,7 @@ import { WhiteboardEditor } from '../fixtures/whiteboardEditor';
 test.describe('resilience + read-only', () => {
   test('row 11 — offline/reconnect (memo + whiteboard): offline + concurrent edits both survive', async ({
     authedPage,
-    context,
+    secondUser,
   }) => {
     const name = `e2e-memo-offline-${Date.now()}`;
     await createMemoCallout(authedPage, name);
@@ -20,25 +20,35 @@ test.describe('resilience + read-only', () => {
     await memo.type('online-1 ');
     await authedPage.waitForTimeout(2_000);
 
-    // Partition the client mid-edit, keep editing offline, then reconnect.
-    await context.setOffline(true);
+    const remote = await secondUser();
+    await openCalloutByName(remote.page, name);
+    const remoteMemo = new MemoEditor(remote.page);
+    await remoteMemo.waitReady();
+
+    // Partition the primary editor's actual context. While it edits offline, a
+    // second live collaborator writes to the room; reconnect must merge both.
+    await authedPage.context().setOffline(true);
     await memo.type('offline-edit ');
+    await remoteMemo.type('remote-edit ');
     await authedPage.waitForTimeout(1_500);
-    await context.setOffline(false);
+    await authedPage.context().setOffline(false);
 
     // On reconnect, offline edits reconcile with the room (no loss).
     await memo.expectContains('online-1');
     await memo.expectContains('offline-edit');
+    await memo.expectContains('remote-edit');
+    await remoteMemo.expectContains('offline-edit');
 
     // Whiteboard parity: an element drawn offline survives the reconnect.
     const wbName = `e2e-wb-offline-${Date.now()}`;
     await createWhiteboardCallout(authedPage, wbName);
     const wb = new WhiteboardEditor(authedPage);
     await wb.waitReady();
-    await context.setOffline(true);
+    await authedPage.context().setOffline(true);
     await wb.drawRectangle();
     const offlineCount = await wb.elementCount();
-    await context.setOffline(false);
+    expect(offlineCount).toBeGreaterThan(0);
+    await authedPage.context().setOffline(false);
     await authedPage.waitForTimeout(3_000);
 
     const fresh = await authedPage.context().newPage();
@@ -47,11 +57,12 @@ test.describe('resilience + read-only', () => {
     await reopened.waitReady();
     expect(await reopened.elementCount()).toBe(offlineCount); // offline edit persisted on reconnect
     await fresh.close();
+    await remote.close();
   });
 
   test('row 12 — a user without edit rights sees content, editing blocked (distinct from loading)', async ({
     authedPage,
-    secondUser,
+    readonlyUser,
   }) => {
     // Primary creates a whiteboard with content and locks it to view-only for others.
     const name = `e2e-wb-readonly-${Date.now()}`;
@@ -62,7 +73,7 @@ test.describe('resilience + read-only', () => {
     await authedPage.waitForTimeout(3_000);
 
     // The second account (a viewer without update rights) opens it.
-    const viewer = await secondUser();
+    const viewer = await readonlyUser();
     await openCalloutByName(viewer.page, name);
     const viewerWb = new WhiteboardEditor(viewer.page);
     await viewerWb.waitReady();

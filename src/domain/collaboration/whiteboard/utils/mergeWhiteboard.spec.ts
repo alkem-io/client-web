@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 // Control the template scene directly and exercise only the merge/asset-copy
 // logic: the fork snapshot codec + the content parser are stubbed so the test
 // owns `templateScene`, and the lazy fork import returns the stubbed module.
-const TEMPLATE_SCENE = {
+const makeTemplateScene = () => ({
   elements: [
     {
       id: 'el1',
@@ -19,7 +19,9 @@ const TEMPLATE_SCENE = {
   ],
   assets: { f1: 'source-doc-id' },
   appState: {},
-};
+});
+
+const h = vi.hoisted(() => ({ templateScene: undefined as unknown }));
 
 vi.mock('@excalidraw-yjs/excalidraw/headless', () => ({
   encodeSnapshot: (s: unknown) => s,
@@ -30,7 +32,7 @@ vi.mock('@excalidraw-yjs/excalidraw', () => ({
   CaptureUpdateAction: { IMMEDIATELY: 'immediately' },
 }));
 vi.mock('@/domain/common/whiteboard/excalidraw/whiteboardContent', () => ({
-  parseWhiteboardContentToScene: () => TEMPLATE_SCENE,
+  parseWhiteboardContentToScene: () => h.templateScene,
 }));
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({
   lazyImportWithErrorHandler: async (fn: () => Promise<unknown>) => fn(),
@@ -68,7 +70,20 @@ const makeApi = (o: ApiOverrides = {}) => {
 const makeAdapter = (resolve = vi.fn(async () => RESOLVED_BYTES)) => ({ store: vi.fn(), resolve }) as never;
 
 describe('mergeWhiteboard asset re-homing', () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    vi.clearAllMocks();
+    h.templateScene = makeTemplateScene();
+  });
+
+  it('rejects an unreadable/empty template instead of reporting a successful no-op', async () => {
+    h.templateScene = { elements: [], assets: {}, appState: {} };
+    const api = makeApi();
+
+    await expect(mergeWhiteboard(api as never, 'invalid', makeAdapter())).rejects.toThrow(
+      'Whiteboard verification failed'
+    );
+    expect(api.updateScene).not.toHaveBeenCalled();
+  });
 
   it('resolves the source locator, re-stores into the target bucket (new id), keeps fileId, inserts the element', async () => {
     const api = makeApi();
@@ -80,7 +95,8 @@ describe('mergeWhiteboard asset re-homing', () => {
     // bytes handed to the editor to re-publish through the same adapter.store
     expect(api.addFiles).toHaveBeenCalledWith([RESOLVED_BYTES]);
     // the target locator committed after publish differs from the source one; fileId unchanged
-    const committed = api.getSceneAssetLocators.mock.results.at(-1)?.value as Record<string, string>;
+    const results = api.getSceneAssetLocators.mock.results;
+    const committed = results[results.length - 1]?.value as Record<string, string>;
     expect(committed.f1).toBe('target-doc-id');
     expect(committed.f1).not.toBe('source-doc-id');
     // element inserted only after the locator is committed

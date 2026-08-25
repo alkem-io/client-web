@@ -9,7 +9,10 @@ import { WhiteboardEditor } from '../fixtures/whiteboardEditor';
  * editable. Driven through the real UI against the deployed unified stack.
  */
 test.describe('create-with-content → reopen', () => {
-  test('row 1 — memo: type text, reopen in a fresh session, text present + editable', async ({ authedPage }) => {
+  test('row 1 — memo: type text, reopen in a fresh session, text present + editable', async ({
+    authedPage,
+    freshPrimaryUser,
+  }) => {
     const name = `e2e-memo-${Date.now()}`;
     await createMemoCallout(authedPage, name);
 
@@ -19,17 +22,21 @@ test.describe('create-with-content → reopen', () => {
     // Wait for the collab room to debounce a snapshot save.
     await authedPage.waitForTimeout(3_000);
 
-    // Reopen in a fresh page (new tab → new editor mount → reload from storage seed).
-    const fresh = await authedPage.context().newPage();
-    await openCalloutByName(fresh, name);
-    const reopened = new MemoEditor(fresh);
+    // Tear down the writer context: the reopen cannot reuse its provider, awareness or Y.Doc.
+    await authedPage.close();
+    const fresh = await freshPrimaryUser();
+    await openCalloutByName(fresh.page, name);
+    const reopened = new MemoEditor(fresh.page);
     await reopened.waitReady();
     await reopened.expectContains('hello from the matrix'); // SC-002
     await reopened.expectEditable();
     await fresh.close();
   });
 
-  test('row 2 — whiteboard: draw a shape, reopen, shape present + editable (not read-only)', async ({ authedPage }) => {
+  test('row 2 — whiteboard: draw a shape, reopen, shape present + editable (not read-only)', async ({
+    authedPage,
+    freshPrimaryUser,
+  }) => {
     const name = `e2e-wb-${Date.now()}`;
     await createWhiteboardCallout(authedPage, name);
 
@@ -39,9 +46,10 @@ test.describe('create-with-content → reopen', () => {
     expect(await wb.elementCount()).toBeGreaterThan(0);
     await authedPage.waitForTimeout(3_000);
 
-    const fresh = await authedPage.context().newPage();
-    await openCalloutByName(fresh, name);
-    const reopened = new WhiteboardEditor(fresh);
+    await authedPage.close();
+    const fresh = await freshPrimaryUser();
+    await openCalloutByName(fresh.page, name);
+    const reopened = new WhiteboardEditor(fresh.page);
     await reopened.waitReady();
     expect(await reopened.elementCount()).toBeGreaterThan(0); // SC-002
     await reopened.expectEditable(); // not read-only

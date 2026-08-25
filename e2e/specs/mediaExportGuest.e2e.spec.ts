@@ -85,10 +85,16 @@ test.describe('media, export/import, guest', () => {
     await wb.waitReady();
     await wb.drawRectangle();
     await authedPage.waitForTimeout(3_000);
+    const ownerCount = await wb.elementCount();
 
-    // Grab the public share link from the share dialog.
+    // Explicitly enable guest contribution, then grab the public share link.
     await authedPage.getByRole('button', { name: /share/i }).first().click();
-    const shareUrl = await authedPage.getByRole('textbox', { name: /link|url/i }).inputValue();
+    const guestAccess = authedPage.getByTestId('guest-access-section');
+    await expect(guestAccess).toBeVisible();
+    const toggle = guestAccess.getByRole('switch');
+    if (!(await toggle.isChecked())) await toggle.click();
+    await expect(toggle).toBeChecked();
+    const shareUrl = await guestAccess.getByRole('textbox').inputValue();
     await authedPage.keyboard.press('Escape');
 
     // A genuinely anonymous context (no auth) opens the link as a guest.
@@ -103,7 +109,10 @@ test.describe('media, export/import, guest', () => {
     }
     const guestWb = new WhiteboardEditor(guestPage);
     await guestWb.waitReady();
-    expect(await guestWb.elementCount()).toBeGreaterThan(0); // sees current content
+    expect(await guestWb.elementCount()).toBe(ownerCount); // sees current content
+    await guestWb.expectEditable();
+    await guestWb.drawRectangle({ x: 430, y: 240 }, { x: 540, y: 330 });
+    await expect.poll(async () => wb.elementCount(), { timeout: 20_000 }).toBeGreaterThan(ownerCount);
     await guestContext.close();
   });
 });

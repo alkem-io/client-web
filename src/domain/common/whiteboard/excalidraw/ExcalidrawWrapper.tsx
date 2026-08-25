@@ -17,13 +17,13 @@ import { getWhiteboardImageUploadI18nParams, validateWhiteboardImageFile } from 
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 import { decodeWhiteboardContentUpdate } from './whiteboardContent';
 
-export interface WhiteboardWhiteboardEntities {
+export type WhiteboardWhiteboardEntities = {
   whiteboard: { id?: string; content: string } | undefined;
   /** The asset boundary for image bytes — passed straight to `<Excalidraw assetAdapter>`. */
   assetAdapter: AssetAdapter;
   /** Image upload validation limits (from the whiteboard's storage bucket). */
   imageValidation?: { allowedMimeTypes?: string[]; maxFileSize?: number };
-}
+};
 
 export interface WhiteboardWhiteboardActions {
   onUpdate?: (state: ExportedDataState) => void;

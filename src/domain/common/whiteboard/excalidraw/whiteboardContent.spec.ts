@@ -31,6 +31,20 @@ describe('parseWhiteboardContentToScene', () => {
     expect(parseWhiteboardContentToScene('{"foo":1}')).toEqual({ elements: [], assets: {}, appState: {} });
   });
 
+  it('returns independent empty fallback scenes', () => {
+    const first = parseWhiteboardContentToScene('');
+    const mutable = first as unknown as {
+      elements: unknown[];
+      assets: Record<string, unknown>;
+      appState: Record<string, unknown>;
+    };
+    mutable.elements.push({ id: 'mutated' });
+    mutable.assets.changed = 'locator';
+    mutable.appState.changed = true;
+
+    expect(parseWhiteboardContentToScene('')).toEqual({ elements: [], assets: {}, appState: {} });
+  });
+
   it('parses a valid scene into the WhiteboardSnapshot shape', () => {
     const scene = parseWhiteboardContentToScene(contentWithRect);
     expect(scene.elements).toHaveLength(1);

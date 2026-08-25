@@ -278,6 +278,8 @@ const useCollab = ({
           // The server rejected this generation's local update; hand off to the
           // consumer to discard the poisoned scene and remount a fresh generation
           // that resyncs from the server. Reconnecting this provider would resend it.
+          setIsSceneInitialized(false);
+          onSceneInitChange?.(false);
           onUpdateRejected?.();
           break;
         case 'session-end': {

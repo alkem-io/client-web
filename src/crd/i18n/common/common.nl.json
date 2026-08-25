@@ -187,6 +187,7 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Kan whiteboardwijzigingen niet opslaan",
       "images": {
         "downloadFailed": "Kan de afbeelding niet laden. Probeer het nogmaals.",
         "maxSizeFallback": "de toegestane limiet",
@@ -234,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Gast",
     "Account": "Account",
     "Admin": "Beheerder",
     "Admins": "Beheerders",

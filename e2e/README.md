@@ -2,8 +2,10 @@
 
 Headless Playwright driving the **real UI** against the **deployed full stack**
 (unified collaboration-service + server BFF + file-service). This is the SC-001
-acceptance gate from `../specs/006-collab-content-unification/quickstart.md`: all
-18 rows must pass 100% through the UI.
+acceptance gate from the
+[canonical workspace quickstart](https://github.com/alkem-io/agents-hq/blob/006-collab-content-unification/specs/006-collab-content-unification/quickstart.md):
+all 18 rows must pass. That workspace specification and its constitution govern
+this repository-local driver when the two disagree.
 
 > **This is the orchestrator's FINAL gate**, run after every repo's slice deploys.
 > It is intentionally **not** part of `pnpm test` (vitest) or the client PR's
@@ -13,7 +15,7 @@ acceptance gate from `../specs/006-collab-content-unification/quickstart.md`: al
 
 ## Layout
 
-```
+```text
 e2e/
 ├── playwright.config.ts is at the repo root (testDir → e2e/specs)
 ├── fixtures/
@@ -40,21 +42,27 @@ pnpm exec playwright install chromium   # one-time
 ALKEMIO_BASE_URL=https://<deployed-host> \
 AUTH_TEST_HARNESS_EMAIL=<primary@acct> \
 AUTH_TEST_HARNESS_EMAIL_2=<secondary@acct> \
+E2E_READONLY_USER_EMAIL=<read-only@acct> \
 AUTH_TEST_HARNESS_PASSWORD=<password> \
 E2E_SPACE_URL=https://<deployed-host>/<space-path> \
+E2E_LEGACY_MEMO_NAME=<pre-cutover-memo> \
+E2E_LEGACY_WHITEBOARD_NAME=<pre-cutover-whiteboard> \
 pnpm test:e2e
 ```
 
-Optional for the migration row (15): `E2E_LEGACY_MEMO_NAME` / `E2E_LEGACY_WHITEBOARD_NAME`
-naming documents created **before** cutover (otherwise that row is skipped).
+The secondary account must be able to contribute for the two-user rows. The
+read-only account must be able to view the test space but lack update access.
+Both legacy names must identify documents created **before** cutover; the full
+matrix fails rather than silently skipping row 15 when either is absent.
 
 ## Companions (orchestrator, out-of-band)
 
-Rows 14 (storage/quota) and 15 (migration) also have DB + file-service assertions
+Rows 14 (storage/quota), 15 (migration), and 17 (deletion) also have DB + file-service assertions
 the orchestrator runs directly against the deployed stack: `memo.content` and
 `whiteboard.content` columns are gone; every document's snapshot lives in its own
-bucket; space storage usage reflects content size; no collab/file-service 500s in
-the logs during the run.
+bucket; space storage usage reflects content size; deletion removes the owning
+bucket and snapshot; no collab/file-service 500s appear in the logs. The browser
+specs assert only their UI-observable half and do not present it as storage proof.
 
 ## Selector note
 

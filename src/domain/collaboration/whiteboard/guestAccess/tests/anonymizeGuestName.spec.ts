@@ -36,10 +36,14 @@ describe('anonymizeGuestName - Guest Name Derivation', () => {
       expect(name).not.toBeNull();
       expect(validateGuestName(name as string).valid).toBe(true);
     });
+
+    it('sanitizes a surname before selecting its initial', () => {
+      expect(anonymizeGuestName(null, "O'Connor")).toBe('O');
+    });
   });
 
   describe('Full name scenarios (firstName + lastName)', () => {
-    it('should derive "FirstName L." format when both names provided', () => {
+    it('should derive the period-free "FirstName L" format when both names are provided', () => {
       const result = anonymizeGuestName('Alice', 'Brown');
       expect(result).toBe('Alice B');
     });
@@ -104,22 +108,22 @@ describe('anonymizeGuestName - Guest Name Derivation', () => {
     });
 
     describe('lastName only', () => {
-      it('should return "L." when firstName is null', () => {
+      it('should return the period-free "L" form when firstName is null', () => {
         const result = anonymizeGuestName(null, 'Brown');
         expect(result).toBe('B');
       });
 
-      it('should return "L." when firstName is undefined', () => {
+      it('should return the period-free "L" form when firstName is undefined', () => {
         const result = anonymizeGuestName(undefined, 'Brown');
         expect(result).toBe('B');
       });
 
-      it('should return "L." when firstName is empty string', () => {
+      it('should return the period-free "L" form when firstName is empty string', () => {
         const result = anonymizeGuestName('', 'Brown');
         expect(result).toBe('B');
       });
 
-      it('should return "L." when firstName is whitespace only', () => {
+      it('should return the period-free "L" form when firstName is whitespace only', () => {
         const result = anonymizeGuestName('   ', 'Brown');
         expect(result).toBe('B');
       });

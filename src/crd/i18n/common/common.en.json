@@ -187,6 +187,7 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Unable to save whiteboard changes",
       "images": {
         "downloadFailed": "Couldn't load the image. Please try again.",
         "maxSizeFallback": "the allowed limit",
@@ -234,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Guest",
     "Account": "Account",
     "Admin": "Admin",
     "Admins": "Admins",

@@ -1,8 +1,8 @@
 import { decodeSnapshot, encodeSnapshot, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import { fromBase64, toBase64 } from 'lib0/buffer';
 
-/** An empty scene — the editor seed for a brand-new / empty / unreadable whiteboard. */
-const EMPTY_SCENE: WhiteboardSnapshot = { elements: [], assets: {}, appState: {} };
+/** A fresh empty scene — callers may hand the mutable object to an editor. */
+const createEmptyScene = (): WhiteboardSnapshot => ({ elements: [], assets: {}, appState: {} });
 
 /**
  * Parse the stored whiteboard `content` (the 006 boundary: a base64-encoded Yjs-V2
@@ -16,12 +16,12 @@ const EMPTY_SCENE: WhiteboardSnapshot = { elements: [], assets: {}, appState: {}
  */
 export function parseWhiteboardContentToScene(content: string | undefined): WhiteboardSnapshot {
   if (!content || content.trim() === '') {
-    return EMPTY_SCENE;
+    return createEmptyScene();
   }
   try {
     return decodeSnapshot(fromBase64(content));
   } catch {
-    return EMPTY_SCENE;
+    return createEmptyScene();
   }
 }
 

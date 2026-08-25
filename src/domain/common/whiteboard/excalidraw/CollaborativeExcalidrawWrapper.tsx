@@ -58,14 +58,14 @@ const LoadingScene = ({ enabled }: { enabled: boolean }) => {
   ) : null;
 };
 
-export interface WhiteboardWhiteboardEntities {
+export type WhiteboardWhiteboardEntities = {
   whiteboard: (Identifiable & { profile?: { url?: string } }) | undefined;
   /** The asset boundary for image bytes — passed straight to `<Excalidraw assetAdapter>`. */
   assetAdapter: AssetAdapter;
   /** Image upload validation limits (from the whiteboard's storage bucket). */
   imageValidation?: { allowedMimeTypes?: string[]; maxFileSize?: number };
   lastSuccessfulSavedDate: Date | undefined;
-}
+};
 
 export interface WhiteboardWhiteboardActions {
   onInitApi?: (excalidrawApi: ExcalidrawImperativeAPI) => void;
@@ -207,11 +207,11 @@ const CollaborativeExcalidrawWrapper = ({
       // handshake and asset-fetch header use — NEVER the authenticated user's real display
       // name (that would leak identity on a public link). A generic fallback covers a
       // missing/invalid guest name (fail closed).
-      return guestName ?? t('common.guestUserFallback', { defaultValue: 'Guest' });
+      return guestName ?? t('common.guestUserFallback');
     }
     // Private route: the user is authenticated (identified by their session cookie), so
     // their real display name is shown on their cursor.
-    return userModel?.profile?.displayName ?? t('common.guestUserFallback', { defaultValue: 'Guest' });
+    return userModel?.profile?.displayName ?? t('common.guestUserFallback');
   })();
 
   const [isSceneInitialized, setSceneInitialized] = useState(false);

@@ -43,8 +43,8 @@
  * @param lastName - User's last name (may be null, empty, or whitespace)
  * @returns Derived guest name or null if no derivation is possible
  *
- * @see {@link https://github.com/alkem-io/client-web/blob/develop/specs/002-guest-whiteboard-access/spec.md | Feature Spec}
- * @see FR-018..FR-023 in spec for full derivation requirements
+ * The accepted period-free forms are `First L` and `L`, matching
+ * `validateGuestName`'s punctuation-free alphabet.
  */
 /** Mirrors `validateGuestName`'s length bound so a derived name is never over-long. */
 const GUEST_NAME_MAX_LENGTH = 50;
@@ -63,8 +63,8 @@ const toValidGuestName = (name: string): string =>
     .trim();
 
 export const anonymizeGuestName = (firstName?: string | null, lastName?: string | null): string | null => {
-  const f = (firstName || '').trim();
-  const l = (lastName || '').trim();
+  const f = toValidGuestName((firstName || '').trim());
+  const l = toValidGuestName((lastName || '').trim());
 
   let derived: string | null = null;
   if (f && l) {

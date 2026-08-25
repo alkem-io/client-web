@@ -375,6 +375,10 @@ export class UnifiedCollabProvider {
     if (this.destroyed) return;
     this.destroyed = true;
     this.clearReconnect();
+    // Publish the local leave while the socket and awareness listener are still
+    // active. The service also cleans up on disconnect; this makes normal client
+    // disposal immediate without depending on that fallback.
+    removeAwarenessStates(this.awareness, [this.awareness.clientID], 'provider-destroy');
     this.teardownSocket(NORMAL_CLOSURE);
 
     if (this.scenePort) {
@@ -385,8 +389,6 @@ export class UnifiedCollabProvider {
       this.doc.off('update', this.handleDocUpdate);
     }
     this.awareness.off('update', this.handleAwarenessUpdate);
-    // Drop this client's awareness state so peers see the leave immediately.
-    removeAwarenessStates(this.awareness, [this.doc.clientID], 'provider-destroy');
 
     this.statusListeners.clear();
     this.syncedListeners.clear();
@@ -418,7 +420,7 @@ export class UnifiedCollabProvider {
 
     // Announce our current local awareness state to the room.
     if (this.awareness.getLocalState() !== null) {
-      this.broadcastAwareness([this.doc.clientID]);
+      this.broadcastAwareness([this.awareness.clientID]);
     }
   };
 

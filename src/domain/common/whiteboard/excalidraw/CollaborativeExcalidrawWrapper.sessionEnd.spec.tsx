@@ -100,6 +100,14 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     expect(h.notifications).toContain('callout.whiteboard.session.updateNotAccepted');
   });
 
+  it('transient server shutdown preserves the editor generation', () => {
+    renderWrapper();
+    send({ code: 'server-shutdown', scope: 'document', disposition: 'transient' });
+    expect(h.editorInvalidatedCount.value).toBe(0);
+    expect(lastActive()).toBe(false);
+    expect(h.notifications).toContain('callout.whiteboard.session.serverShutdown');
+  });
+
   it('manual (size-limit): discards the generation + disables auto-reconnect; the restart mints a fresh generation', () => {
     renderWrapper();
     const mountsBefore = h.mountCount.value;

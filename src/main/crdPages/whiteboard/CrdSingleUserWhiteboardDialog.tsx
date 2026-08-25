@@ -140,17 +140,21 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
   const { assetAdapter, uploadError, resolveError } = useWhiteboardAssetAdapter({
     storageBucketId: whiteboard.profile?.storageBucket.id ?? '',
   });
+  const notifiedUploadError = useRef(uploadError);
+  const notifiedResolveError = useRef(resolveError);
 
   // Upload and resolve failures get distinct copy: an UPLOAD (store) failure is not a load
   // failure, so it must not read "could not be loaded". Mirrors the collaborative dialog.
   useEffect(() => {
-    if (uploadError) {
+    if (uploadError && uploadError !== notifiedUploadError.current) {
+      notifiedUploadError.current = uploadError;
       notify(t('callout.whiteboard.images.uploadFailed'), 'warning');
     }
   }, [uploadError, t, notify]);
 
   useEffect(() => {
-    if (resolveError) {
+    if (resolveError && resolveError !== notifiedResolveError.current) {
+      notifiedResolveError.current = resolveError;
       notify(t('callout.whiteboard.images.downloadFailed'), 'warning');
     }
   }, [resolveError, t, notify]);
@@ -183,7 +187,8 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     }
 
     const previewImages = await generateWhiteboardVisuals(wb, true, options.previewImagesSettings);
-    return actions.onUpdate({ ...wb, content: flushed.content }, previewImages);
+    await actions.onUpdate({ ...wb, content: flushed.content }, previewImages);
+    dirtyRef.current = false;
   };
 
   const handleSave = async () => {

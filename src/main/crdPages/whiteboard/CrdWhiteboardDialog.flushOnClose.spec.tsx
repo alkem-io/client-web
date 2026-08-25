@@ -215,6 +215,23 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(teardown).toHaveBeenCalledOnce();
   });
 
+  it('keeps the session open when the metadata/preview save reports failure', async () => {
+    const excalidrawAPI = { flushAssetPublication: vi.fn(async () => cleanReport) };
+    const save = vi.fn(async () => false);
+    const teardown = vi.fn();
+
+    const proceeded = await closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      save,
+      onPublishFailed: vi.fn(),
+      teardown,
+    });
+
+    expect(proceeded).toBe(false);
+    expect(save).toHaveBeenCalledOnce();
+    expect(teardown).not.toHaveBeenCalled();
+  });
+
   it('treats a missing (unmounted) editor as nothing-to-flush and proceeds', async () => {
     const save = vi.fn(async () => {});
     const teardown = vi.fn();

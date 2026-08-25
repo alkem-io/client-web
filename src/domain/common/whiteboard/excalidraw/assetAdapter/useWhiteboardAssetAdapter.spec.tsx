@@ -280,4 +280,22 @@ describe('useWhiteboardAssetAdapter', () => {
     rerender();
     expect(result.current.assetAdapter).toBe(first);
   });
+
+  it('the stable adapter reads the latest storage bucket after a prop change', async () => {
+    mockUpload.mockResolvedValue({ data: { uploadFileOnStorageBucket: { id: 'doc-1' } } });
+    const { result, rerender } = renderHook(({ storageBucketId }) => useWhiteboardAssetAdapter({ storageBucketId }), {
+      initialProps: { storageBucketId: 'sb-1' },
+    });
+    const adapter = result.current.assetAdapter;
+
+    rerender({ storageBucketId: 'sb-2' });
+    await act(async () => {
+      await adapter.store(FILE);
+    });
+
+    expect(result.current.assetAdapter).toBe(adapter);
+    expect(mockUpload).toHaveBeenCalledWith(
+      expect.objectContaining({ variables: { file: expect.any(File), uploadData: { storageBucketId: 'sb-2' } } })
+    );
+  });
 });

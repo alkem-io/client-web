@@ -119,6 +119,12 @@ describe('CollaborativeExcalidrawWrapper — #10131 reconnect-error escape-hatch
 
   it('a transient drop (hasError=false) forwards hasError=false — no escape hatch', () => {
     renderWrapper();
+    expect(typeof h.collabProps?.onCloseConnection).toBe('function');
+
+    act(() => {
+      h.collabProps?.onCloseConnection(true);
+    });
+    expect(latestNoticeHasError()).toBe(true);
 
     act(() => {
       h.collabProps?.onCloseConnection(false);

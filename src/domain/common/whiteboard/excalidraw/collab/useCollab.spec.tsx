@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CloseVerdict, ControlMessage } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+import { CollaboratorModeReasons } from './excalidrawAppConstants';
 import useCollab from './useCollab';
 
 // AwarenessRouter subscribes to editor pointer/selection APIs we don't fake here.
@@ -35,7 +36,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', as
   return { ...actual, UnifiedCollabProvider: MockProvider };
 });
 
-const fakeApi = {} as never;
+const fakeApi = { getSceneElements: () => [], scrollToContent: vi.fn() } as never;
 
 describe('useCollab — update-rejected recovery routing', () => {
   afterEach(() => {
@@ -44,17 +45,25 @@ describe('useCollab — update-rejected recovery routing', () => {
     vi.clearAllMocks();
   });
 
-  it('calls onUpdateRejected when the server sends an update-rejected control', () => {
+  it('locks the scene before routing an update-rejected recovery', () => {
     const onUpdateRejected = vi.fn();
     const onRemoteSave = vi.fn();
+    const onSceneInitChange = vi.fn();
     const { result } = renderHook(() =>
-      useCollab({ username: 'Tester', onCloseConnection: () => {}, onRemoteSave, onUpdateRejected })
+      useCollab({ username: 'Tester', onCloseConnection: () => {}, onRemoteSave, onUpdateRejected, onSceneInitChange })
     );
     const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
 
-    controlHandler?.({ kind: 'update-rejected' });
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(result.current[2].isReadOnly).toBe(false);
+    act(() => controlHandler?.({ kind: 'update-rejected' }));
 
     expect(onUpdateRejected).toHaveBeenCalledTimes(1);
+    expect(onSceneInitChange).toHaveBeenLastCalledWith(false);
+    expect(result.current[2].isReadOnly).toBe(true);
     // a non-rejection control must NOT trigger recovery
     expect(onRemoteSave).not.toHaveBeenCalled();
     cleanup();
@@ -194,7 +203,12 @@ describe('useCollab — reconnect + collaborator-mode contract', () => {
     const rendered = renderHook(() => useCollab({ username: 'T', onCloseConnection: () => {} }));
     const cleanup = rendered.result.current[1]({ excalidrawApi: api, roomId: 'r' });
     const stateOf = () =>
-      rendered.result.current[2] as { collaborating: boolean; mode: string | null; isReadOnly: boolean };
+      rendered.result.current[2] as {
+        collaborating: boolean;
+        mode: string | null;
+        isReadOnly: boolean;
+        modeReason: CollaboratorModeReasons | null;
+      };
     return { stateOf, cleanup };
   };
 
@@ -240,6 +254,19 @@ describe('useCollab — reconnect + collaborator-mode contract', () => {
     expect(stateOf().mode).toBe('write');
     act(() => controlHandler?.({ kind: 'read-only-state', readOnly: true } as ControlMessage));
     expect(stateOf().mode).toBe('read');
+    cleanup();
+  });
+
+  it.each([
+    ['room-capacity-reached', CollaboratorModeReasons.ROOM_CAPACITY_REACHED],
+    ['multi-user-not-allowed', CollaboratorModeReasons.MULTI_USER_NOT_ALLOWED],
+    ['inactivity', CollaboratorModeReasons.INACTIVITY],
+    ['unknown', null],
+  ])('maps collaborator-mode reason %s', (reason, expectedReason) => {
+    const { stateOf, cleanup } = mount();
+    act(() => controlHandler?.({ kind: 'collaborator-mode', mode: 'read', reason } as ControlMessage));
+    expect(stateOf().mode).toBe('read');
+    expect(stateOf().modeReason).toBe(expectedReason);
     cleanup();
   });
 });
