@@ -825,6 +825,7 @@
     "seeFullDescription": "See full description"
   },
   "postPreview": {
+    "createdBy": "Created by",
     "label": "Selected contribution preview",
     "edit": "Edit response",
     "share": "Share response",

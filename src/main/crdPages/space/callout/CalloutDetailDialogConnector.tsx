@@ -630,6 +630,9 @@ export function CalloutDetailDialogConnector({
     postContributionId && contributionType === CalloutContributionType.Post ? (
       <CalloutPostPreview
         loading={loadingPostContribution && !selectedPost}
+        // On a Tasks board (elevated) the task is worked by several assignees, so
+        // de-emphasise the single creator: drop the avatar, prefix "Created by".
+        deEmphasizeCreator={elevated}
         post={{
           id: selectedPost?.id ?? postContributionId,
           title: selectedPost?.profile.displayName ?? '',

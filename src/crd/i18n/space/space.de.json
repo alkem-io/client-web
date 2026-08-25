@@ -825,6 +825,7 @@
     "seeFullDescription": "Vollständige Beschreibung anzeigen"
   },
   "postPreview": {
+    "createdBy": "Erstellt von",
     "label": "Vorschau des ausgewählten Beitrags",
     "edit": "Beitrag bearbeiten",
     "share": "Beitrag teilen",

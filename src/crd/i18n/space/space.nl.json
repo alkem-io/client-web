@@ -825,6 +825,7 @@
     "seeFullDescription": "Volledige beschrijving"
   },
   "postPreview": {
+    "createdBy": "Aangemaakt door",
     "label": "Voorbeeld van geselecteerde bijdrage",
     "edit": "Reactie bewerken",
     "share": "Reactie delen",
