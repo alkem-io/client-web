@@ -8657,6 +8657,7 @@ export enum SidebarWidget {
   ApplicationButton = 'APPLICATION_BUTTON',
   ContactLeads = 'CONTACT_LEADS',
   CreatePost = 'CREATE_POST',
+  CreateSubspace = 'CREATE_SUBSPACE',
   Events = 'EVENTS',
   Guidelines = 'GUIDELINES',
   Index = 'INDEX',

@@ -1,4 +1,3 @@
-import { Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,7 +13,6 @@ import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubs
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
-import { Button } from '@/crd/primitives/button';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
@@ -26,13 +24,13 @@ import { mapFlowStateSearchCalloutIds } from '../dataMappers/flowStateSearchData
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
 import { SpaceTabSidebarConnector } from '../layout/SpaceTabSidebarConnector';
+import { resolveSidebarPlan } from '../layout/sidebarWidgetPlan';
 
-// Fixed L0 tab positions carrying a position-keyed affordance that is not
-// itself a configurable widget in this slice (A-03/D-08): the sidebar Create
-// Subspace action on Subspaces (2), and the search block on every custom/added
-// tab (3+). Add Post is a sidebar action on every tab; Invite is the `addUser`
-// widget, owned by the sidebar connector.
-const SUBSPACES_TAB_POSITION = 2;
+// Fixed L0 tab position carrying the one remaining position-keyed affordance:
+// the search block on every custom/added tab (3+). Create Subspace is now the
+// `createSubspace` widget (its position-driven action slot is retired, A-03),
+// Add Post the `createPost` widget, and Invite the `addUser` widget — all
+// owned by the sidebar connector.
 const FIRST_CUSTOM_TAB_POSITION = 3;
 
 type CrdSpaceTabPageProps = {
@@ -60,19 +58,24 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
 
   const [createOpen, setCreateOpen] = useState(false);
 
-  // Create Subspace (Subspaces tab only).
-  const isSubspacesTab = tabPosition === SUBSPACES_TAB_POSITION;
-  const canCreateSubspace = isSubspacesTab && permissions.canCreateSubspaces;
+  // Create Subspace — the `createSubspace` sidebar widget (A-03: the former
+  // Subspaces-tab action slot is retired, so the button follows the tab
+  // configuration). The page keeps the dialog + flow; the connector renders
+  // the button. Template queries fire only when the widget is configured on
+  // this tab AND the viewer can create subspaces (FR-012/FR-019).
+  const sidebarWire = flowStateForNewCallouts?.settings.sidebar ?? [];
+  const hasCreateSubspaceWidget = resolveSidebarPlan(sidebarWire).includes('createSubspace');
+  const canCreateSubspace = hasCreateSubspaceWidget && permissions.canCreateSubspaces;
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
     // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: spaceId! },
-    skip: !spaceId || !isSubspacesTab,
+    skip: !spaceId || !canCreateSubspace,
   });
   const templatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
   const { data: defaultTemplatesData } = useSpaceDefaultTemplatesQuery({
     // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: spaceId! },
-    skip: !spaceId || !isSubspacesTab,
+    skip: !spaceId || !canCreateSubspace,
   });
   const defaultSubspaceTemplateId = defaultTemplatesData?.lookup.space?.templatesManager?.templateDefaults?.find(
     td => td.type === TemplateDefaultType.SpaceSubspace
@@ -82,7 +85,6 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
     templatesSetId,
     defaultTemplateId: defaultSubspaceTemplateId,
   });
-  const handleCreateSubspaceClick = canCreateSubspace ? createSubspace.openDialog : undefined;
 
   // Search block (custom/added tabs only, position 3+).
   const isCustomTab = tabPosition >= FIRST_CUSTOM_TAB_POSITION;
@@ -123,28 +125,17 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
     appendingLabel: t('crd-space:knowledge.search.appendingLabel'),
   };
 
-  // Create Subspace renders as a full-width sidebar button — a position-keyed action,
-  // not a configurable widget in this slice. Add Post is now the `createPost` widget
-  // and Invite the `addUser` widget, both owned by SpaceTabSidebarConnector.
-  const sidebarActions =
-    canCreateSubspace && handleCreateSubspaceClick ? (
-      <Button variant="outline" className="w-full gap-2 text-body-emphasis" onClick={handleCreateSubspaceClick}>
-        <Plus className="w-4 h-4" aria-hidden="true" />
-        {t('crd-space:subspaces.createSubspace')}
-      </Button>
-    ) : undefined;
-
   return (
     <>
       <SpaceTabSidebarConnector
-        sidebar={flowStateForNewCallouts?.settings.sidebar ?? []}
+        sidebar={sidebarWire}
         calloutsSetId={calloutsSetId}
         classificationTagsets={classificationTagsets}
         tabPosition={tabPosition}
         canCreatePost={canCreateCallout}
         onCreatePost={() => setCreateOpen(true)}
         onAboutClick={onOpenAbout}
-        actionsSlot={sidebarActions}
+        onCreateSubspace={createSubspace.openDialog}
       />
 
       <div className="space-y-6">

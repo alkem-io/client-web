@@ -13,6 +13,11 @@ describe('resolveSidebarPlan', () => {
     expect(resolveSidebarPlan([SidebarWidget.Events, SidebarWidget.Intent])).toEqual(['events', 'intent']);
   });
 
+  it('maps the createSubspace widget both directions (A-03 — promoted from the action slot)', () => {
+    expect(resolveSidebarPlan([SidebarWidget.CreateSubspace])).toEqual(['createSubspace']);
+    expect(toWireSidebar(['createSubspace'])).toEqual([SidebarWidget.CreateSubspace]);
+  });
+
   it('drops unrecognized wire values (forward compatibility, FR-013)', () => {
     expect(resolveSidebarPlan([SidebarWidget.Intent, 'NOT_A_WIDGET', SidebarWidget.Index])).toEqual([
       'intent',

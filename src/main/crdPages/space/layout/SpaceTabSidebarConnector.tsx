@@ -9,6 +9,7 @@ import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { AboutButton } from '@/crd/components/space/sidebar/AboutButton';
 import { ContactLeadButton } from '@/crd/components/space/sidebar/ContactLeadButton';
 import { CreatePostButton } from '@/crd/components/space/sidebar/CreatePostButton';
+import { CreateSubspaceButton } from '@/crd/components/space/sidebar/CreateSubspaceButton';
 import { EventsSection } from '@/crd/components/space/sidebar/EventsSection';
 import { InfoBlock } from '@/crd/components/space/sidebar/InfoBlock';
 import { InviteButton } from '@/crd/components/space/sidebar/InviteButton';
@@ -55,11 +56,13 @@ type SpaceTabSidebarConnectorProps = {
    *  (CrdSpacePageLayout), shared with the header info icon; the sidebar
    *  `about` widget only triggers it. */
   onAboutClick: () => void;
-  /** Fixed tab actions (Create Subspace) rendered above the configured widgets —
-   *  a position-keyed affordance that is not itself a configurable widget in this
-   *  slice (A-03/D-08). The page owns its handler and dialog; the sidebar only
-   *  renders the button. */
-  actionsSlot?: ReactNode;
+  /** Opens the create-subspace dialog, which the page owns (dialog + flow state
+   *  stay in CrdSpaceTabPage; the sidebar `createSubspace` widget only triggers
+   *  it). The widget renders nothing when the viewer lacks the
+   *  canCreateSubspaces permission (FR-012). The former position-keyed action
+   *  slot for this button is retired (A-03) — it renders ONLY as a configured
+   *  widget now. */
+  onCreateSubspace: () => void;
 };
 
 /**
@@ -76,7 +79,7 @@ export function SpaceTabSidebarConnector({
   canCreatePost,
   onCreatePost,
   onAboutClick,
-  actionsSlot,
+  onCreateSubspace,
 }: SpaceTabSidebarConnectorProps) {
   const { space, permissions } = useSpace();
   const navigate = useNavigate();
@@ -170,6 +173,9 @@ export function SpaceTabSidebarConnector({
     applicationButton: !isSpaceMember && (
       <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
     ),
+    createSubspace: permissions.canCreateSubspaces && (
+      <CreateSubspaceButton key="createSubspace" onClick={onCreateSubspace} />
+    ),
     subspaceLinks: subspaces.length > 0 && (
       <SubspacesSection
         key="subspaceLinks"
@@ -223,10 +229,7 @@ export function SpaceTabSidebarConnector({
   return (
     <>
       <SpaceSidebarPortal>
-        <SpaceSidebar>
-          {actionsSlot && <div className="flex flex-col gap-2">{actionsSlot}</div>}
-          {plan.map(widgetId => sections[widgetId])}
-        </SpaceSidebar>
+        <SpaceSidebar>{plan.map(widgetId => sections[widgetId])}</SpaceSidebar>
       </SpaceSidebarPortal>
 
       {!skips.applicationButton && applyDialogs}

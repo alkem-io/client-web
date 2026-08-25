@@ -73,6 +73,7 @@ export type SidebarWidgetId =
   | 'about'
   | 'createPost'
   | 'applicationButton'
+  | 'createSubspace'
   | 'subspaceLinks'
   | 'events'
   | 'updates'
@@ -88,6 +89,7 @@ export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
   'about',
   'createPost',
   'applicationButton',
+  'createSubspace',
   'subspaceLinks',
   'events',
   'updates',
