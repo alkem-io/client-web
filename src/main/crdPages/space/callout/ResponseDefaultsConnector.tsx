@@ -1,22 +1,15 @@
-import { Pencil } from 'lucide-react';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
-import { Loading } from '@/crd/components/common/Loading';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import type { TemplateType } from '@/crd/components/templates/types';
 import { ResponseDefaultsDialog } from '@/crd/forms/callout/ResponseDefaultsDialog';
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
-import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { ContributionDefaults, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
-import CrdSingleUserWhiteboardDialog, {
-  type WhiteboardWithContent,
-} from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
 
 type ApplyDraft = (next: Partial<ContributionDefaults>) => void;
 type PickerHandle = ReturnType<typeof useTemplatePicker>;
@@ -28,29 +21,16 @@ type PickerHandle = ReturnType<typeof useTemplatePicker>;
  *
  * - `post` → the dialog's draft via `applyDraft` (D20: the markdown editor binds to the draft, so
  *   the user sees the templated description immediately, can edit it, and Save/Cancel behave).
- * - `whiteboard` → the **parent** form via `applyWhiteboardTemplate`, mirroring the
- *   whiteboard-editor sub-flow's `onUpdate` (which also commits `whiteboardContent` through the
- *   parent). The dialog's `handleSave`/dirty-check/sync-effect all source `whiteboardContent` from
- *   the parent `values`, so a draft-only write would be discarded on Save — routing through the
- *   parent keeps the single whiteboard source of truth consistent.
+ * - `whiteboard` → the selected template's whiteboard id. The server copies the canonical snapshot
+ *   and re-homes media when the callout is saved; no Yjs bytes cross GraphQL.
  *
  * Both callbacks are stored in refs so the effect's deps stay minimal and don't re-fire on each
  * parent render. State (`appliedFor`) resets each time the dialog re-opens — fresh apply per session.
  */
-function TemplateApplyButton({
-  applyDraft,
-  applyWhiteboardTemplate,
-  picker,
-}: {
-  applyDraft: ApplyDraft;
-  applyWhiteboardTemplate: (whiteboardContent: string) => void;
-  picker: PickerHandle;
-}) {
+function TemplateApplyButton({ applyDraft, picker }: { applyDraft: ApplyDraft; picker: PickerHandle }) {
   const { t } = useTranslation('crd-space');
   const applyDraftRef = useRef(applyDraft);
   applyDraftRef.current = applyDraft;
-  const applyWhiteboardRef = useRef(applyWhiteboardTemplate);
-  applyWhiteboardRef.current = applyWhiteboardTemplate;
   const selectedContent = picker.selectedTemplateContent;
   const selectedId = picker.selectedTemplateId;
   const [appliedFor, setAppliedFor] = useState<string | null>(null);
@@ -60,8 +40,12 @@ function TemplateApplyButton({
     setAppliedFor(selectedId);
     if (selectedContent.type === 'post') {
       applyDraftRef.current({ postDescription: selectedContent.defaultDescription });
-    } else if (selectedContent.type === 'whiteboard') {
-      applyWhiteboardRef.current(selectedContent.whiteboardContent);
+    } else if (selectedContent.type === 'whiteboard' && selectedContent.sourceWhiteboardId) {
+      applyDraftRef.current({
+        sourceWhiteboardId: selectedContent.sourceWhiteboardId,
+        whiteboardContentAvailable: true,
+        clearWhiteboardContent: false,
+      });
     }
   }, [selectedContent, selectedId, appliedFor]);
 
@@ -74,8 +58,6 @@ function TemplateApplyButton({
     </div>
   );
 }
-
-const WHITEBOARD_DEFAULT_TEMPLATE_ID = '__response_default_whiteboard';
 
 type ResponseDefaultsConnectorProps = {
   open: boolean;
@@ -98,11 +80,9 @@ type ResponseDefaultsConnectorProps = {
  *    space's templates set + its account + the platform library. Selecting a
  *    template applies its content to the matching contribution default.
  *
- * 2. **Whiteboard-default sub-flow** — a single Edit button that opens
- *    `CrdSingleUserWhiteboardDialog` for in-place editing. No preview
- *    thumbnail is shown: the defaults whiteboard is a virtual template (not a
- *    server entity), so its screenshot is never captured or persisted —
- *    only `whiteboardContent` is saved — and a preview would imply otherwise.
+ * 2. **Whiteboard defaults** — source-id selection or explicit clear. There is deliberately no
+ *    synthetic editor: before the callout exists it has neither a storage bucket nor a collaboration
+ *    room, so pretending it is editable causes broken uploads and binary GraphQL transport.
  */
 export function ResponseDefaultsConnector({
   open,
@@ -113,16 +93,9 @@ export function ResponseDefaultsConnector({
   onSave,
   markdownUpload,
 }: ResponseDefaultsConnectorProps) {
-  const { t } = useTranslation('crd-space');
   const {
     space: { accountId },
   } = useSpace();
-  const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
-  // Read whiteboard content straight from `values` so external updates land
-  // immediately in the editor instead of being shadowed by stale local state —
-  // both the template-picker apply path and the whiteboard sub-flow write
-  // through the parent form's `values.whiteboardContent`.
-  const whiteboardDraft = values.whiteboardContent || EmptyWhiteboardString;
 
   // Resolve the space's templates set so the picker can offer the Space source section.
   const { data: tmData } = useSpaceTemplatesManagerQuery({ variables: { spaceId: spaceId ?? '' }, skip: !spaceId });
@@ -136,65 +109,10 @@ export function ResponseDefaultsConnector({
   // `onSave({...values, postDescription: ...})` route, which bypassed the draft and (a) didn't
   // populate `defaultDescription` (no sync effect for that field), (b) was overwritten by the
   // dialog's stale draft on Save, and (c) leaked to the parent on Cancel.
-  // `whiteboard` instead commits through the parent `onSave` — the same channel the
-  // whiteboard-editor sub-flow already uses (`onUpdate` below). The dialog sources
-  // `whiteboardContent` from the parent `values` (handleSave/dirty-check/sync-effect), so a
-  // draft-only write would be silently discarded on Save; routing through the parent keeps the
-  // single whiteboard source of truth consistent.
-  const supportsTemplate = type === 'post' || type === 'whiteboard';
-  const applyWhiteboardTemplate = (whiteboardContent: string) => onSave({ ...values, whiteboardContent });
+  const supportsTemplate = type === 'post' || type === 'memo' || type === 'whiteboard';
   const templateSlot = supportsTemplate
-    ? ({ applyDraft }: { applyDraft: ApplyDraft }) => (
-        <TemplateApplyButton
-          applyDraft={applyDraft}
-          applyWhiteboardTemplate={applyWhiteboardTemplate}
-          picker={picker}
-        />
-      )
+    ? ({ applyDraft }: { applyDraft: ApplyDraft }) => <TemplateApplyButton applyDraft={applyDraft} picker={picker} />
     : undefined;
-
-  const whiteboardSlot =
-    type === 'whiteboard' ? (
-      <>
-        <Button variant="outline" size="sm" onClick={() => setWhiteboardEditorOpen(true)}>
-          <Pencil className="size-4" aria-hidden="true" />
-          {t('framing.edit')}
-        </Button>
-        <Suspense fallback={<Loading />}>
-          <CrdSingleUserWhiteboardDialog
-            entities={{
-              whiteboard: {
-                id: WHITEBOARD_DEFAULT_TEMPLATE_ID,
-                nameID: WHITEBOARD_DEFAULT_TEMPLATE_ID,
-                profile: {
-                  id: `${WHITEBOARD_DEFAULT_TEMPLATE_ID}_profile`,
-                  displayName: values.defaultDisplayName || t('responseDefaults.defaultWhiteboard'),
-                  storageBucket: { id: '', allowedMimeTypes: [], maxFileSize: 0 },
-                },
-                content: whiteboardDraft,
-                previewSettings: DefaultWhiteboardPreviewSettings,
-              } satisfies WhiteboardWithContent,
-            }}
-            actions={{
-              onCancel: () => setWhiteboardEditorOpen(false),
-              onUpdate: async wb => {
-                // The defaults whiteboard is virtual — only its content is persisted; the
-                // generated preview screenshot is intentionally discarded (no preview is shown).
-                onSave({ ...values, whiteboardContent: wb.content });
-                setWhiteboardEditorOpen(false);
-              },
-            }}
-            options={{
-              show: whiteboardEditorOpen,
-              canEdit: true,
-              canDelete: false,
-              allowFilesAttached: true,
-              dialogTitle: values.defaultDisplayName || t('responseDefaults.defaultWhiteboard'),
-            }}
-          />
-        </Suspense>
-      </>
-    ) : null;
 
   return (
     <>
@@ -205,7 +123,6 @@ export function ResponseDefaultsConnector({
         values={values}
         onSave={onSave}
         templateSlot={templateSlot}
-        whiteboardSlot={whiteboardSlot}
         onImageUpload={markdownUpload?.onImageUpload}
         iframeAllowedUrls={markdownUpload?.iframeAllowedUrls}
         onError={markdownUpload?.onError}

@@ -36,9 +36,7 @@ import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
-import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { toGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
-import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
 import {
   type CalloutFormValues,
   EMPTY_CALLOUT_FORM_VALUES,
@@ -50,11 +48,7 @@ import {
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
-import {
-  mapSpaceContentFromSpace,
-  whiteboardContentForTemplateUpdate,
-  whiteboardTemplateCreateFields,
-} from './templateContentMapper';
+import { mapSpaceContentFromSpace } from './templateContentMapper';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
@@ -68,7 +62,7 @@ function emptyValuesFor(type: TemplateType): TemplateFormValues {
     case 'post':
       return { ...EMPTY_COMMON, type: 'post', defaultDescription: '' };
     case 'whiteboard':
-      return { ...EMPTY_COMMON, type: 'whiteboard', whiteboardContent: '' };
+      return { ...EMPTY_COMMON, type: 'whiteboard' };
     case 'communityGuidelines':
       return { ...EMPTY_COMMON, type: 'communityGuidelines', title: '', guidelinesMarkdown: '', references: [] };
     case 'space':
@@ -255,10 +249,6 @@ export function useTemplateForms({
   const [pristine, setPristine] = useState(true);
   const [submitting, startSubmitting] = useTransition();
   const calloutForm = useCrdCalloutForm();
-  // Preview screenshots the whiteboard editor generated on save (Whiteboard templates) — uploaded against
-  // the template's profile visuals after the create/update mutation so the screenshot becomes the card image.
-  const [whiteboardTemplatePreviewImages, setWhiteboardTemplatePreviewImages] = useState<WhiteboardPreviewImage[]>([]);
-  const { handlePreviewTemplates } = useHandlePreviewImages();
 
   // Space-template URL-paste source picker (mirrors legacy MUI `SpaceContentFromSpaceUrlForm`):
   // the user pastes a space URL, clicks "Use this space" → resolve URL → fetch space content →
@@ -349,7 +339,6 @@ export function useTemplateForms({
     setValues(initial ?? emptyValuesFor(type));
     setErrors({});
     setPristine(true);
-    setWhiteboardTemplatePreviewImages([]);
     resetSpaceSourceState();
     if (initial && initial.type === 'space') setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
     setOpen(true);
@@ -372,7 +361,6 @@ export function useTemplateForms({
     setValues(initial);
     setErrors({});
     setPristine(true);
-    setWhiteboardTemplatePreviewImages([]);
     resetSpaceSourceState();
     if (initial.type === 'space') {
       setSpaceSourceInitialSpaceId(initial.sourceSpaceId);
@@ -417,7 +405,6 @@ export function useTemplateForms({
   const close = () => {
     setOpen(false);
     setErrors({});
-    setWhiteboardTemplatePreviewImages([]);
     setEditTagsetId(null);
     setEditCgProfileId(null);
     setEditOriginalCgReferenceIds([]);
@@ -588,29 +575,22 @@ export function useTemplateForms({
         });
         return;
       case 'whiteboard': {
-        const wantsPreview = whiteboardTemplatePreviewImages.length > 0;
-        // Duplicate / import-from-library carry the SOURCE whiteboard id; the server copies
-        // its stored snapshot into the new template. Only when the user actually REDREW do we
-        // send real content instead (mutually exclusive — see the helper). A from-scratch
-        // template has neither.
-        const { content, sourceWhiteboardID } = whiteboardTemplateCreateFields(
-          current.whiteboardContent,
-          current.sourceWhiteboardId,
-          current.whiteboardEdited
-        );
-        const result = await createTemplate({
+        // Ordinary template creation carries metadata + an optional source id only. A missing
+        // source creates the canonical blank server-side; an existing source is copied with its
+        // media and preview. Snapshot bytes never enter this GraphQL mutation.
+        await createTemplate({
           variables: {
             templatesSetId: setId,
             type: GqlTemplateType.Whiteboard,
             profileData,
             tags,
-            whiteboard: { content, sourceWhiteboardID, profile: { displayName: current.name } },
-            includeProfileVisuals: wantsPreview,
+            whiteboard: {
+              sourceWhiteboardID: current.sourceWhiteboardId || undefined,
+              profile: { displayName: current.name },
+            },
+            includeProfileVisuals: false,
           },
         });
-        if (wantsPreview && result.data?.createTemplate) {
-          await handlePreviewTemplates(whiteboardTemplatePreviewImages, result.data.createTemplate);
-        }
         return;
       }
       case 'space':
@@ -715,21 +695,15 @@ export function useTemplateForms({
         });
         return;
       case 'whiteboard': {
-        const wantsPreview = whiteboardTemplatePreviewImages.length > 0;
-        const result = await updateTemplate({
+        // Content is edited on the template-owned live Whiteboard. This mutation updates
+        // template metadata only; it must never shuttle a Yjs snapshot through GraphQL.
+        await updateTemplate({
           variables: {
             templateId,
             profile,
-            // Send content when genuinely redrawn, or when the user deliberately cleared it
-            // (`whiteboardEdited`) so the blank persists — a rename-only edit (untouched) must
-            // not overwrite the stored drawing with the empty placeholder (see the helper).
-            whiteboardContent: whiteboardContentForTemplateUpdate(current.whiteboardContent, current.whiteboardEdited),
-            includeProfileVisuals: wantsPreview,
+            includeProfileVisuals: false,
           },
         });
-        if (wantsPreview && result.data?.updateTemplate) {
-          await handlePreviewTemplates(whiteboardTemplatePreviewImages, result.data.updateTemplate);
-        }
         return;
       }
       case 'space':
@@ -933,8 +907,7 @@ export function useTemplateForms({
       perTypeFormSlot = (
         <WhiteboardTemplateFormConnector
           value={values}
-          onChange={onPerTypeChange}
-          onPreviewImagesChange={setWhiteboardTemplatePreviewImages}
+          editableWhiteboardId={intent === 'edit' ? values.sourceWhiteboardId : undefined}
           disabled={submitting}
         />
       );

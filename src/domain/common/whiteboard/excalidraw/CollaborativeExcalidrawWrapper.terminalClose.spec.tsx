@@ -14,6 +14,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 const h = vi.hoisted(() => ({
   collabProps: null as null | { onCloseConnection: () => void; onTerminalClose?: (reason: string) => void },
   autoReconnectActive: [] as boolean[],
+  noticeReasons: [] as (string | null)[],
 }));
 
 // The wrapper builds <Excalidraw> via lazyWithGlobalErrorHandler; replace it with a
@@ -85,7 +86,10 @@ function renderWrapper() {
       }}
       options={{} as never}
       actions={{}}
-      renderDisconnectNotice={() => null}
+      renderDisconnectNotice={props => {
+        h.noticeReasons.push(props.terminalCloseReason);
+        return null;
+      }}
     >
       {() => null}
     </CollaborativeExcalidrawWrapper>
@@ -101,6 +105,7 @@ describe('CollaborativeExcalidrawWrapper — terminal close disables the wrapper
   beforeEach(() => {
     h.collabProps = null;
     h.autoReconnectActive = [];
+    h.noticeReasons = [];
   });
   afterEach(() => {
     vi.clearAllMocks();
@@ -117,6 +122,7 @@ describe('CollaborativeExcalidrawWrapper — terminal close disables the wrapper
 
     // Notice open + not collaborating, but the terminal verdict gates the timer OFF.
     expect(latestActive()).toBe(false);
+    expect(h.noticeReasons.at(-1)).toBe('forbidden');
   });
 
   it('a TRANSIENT close keeps useAutoReconnect active:true (auto-reconnect stays running)', () => {

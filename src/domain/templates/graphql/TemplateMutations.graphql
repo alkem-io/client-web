@@ -100,7 +100,7 @@ mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
   $postDefaultDescription: Markdown
-  $whiteboardContent: WhiteboardContent
+  $sourceWhiteboardID: UUID
   $classificationData: CreateClassificationTemplateContentInput
   $includeProfileVisuals: Boolean = false
 ) {
@@ -109,7 +109,7 @@ mutation UpdateTemplate(
       ID: $templateId
       profile: $profile
       postDefaultDescription: $postDefaultDescription
-      whiteboardContent: $whiteboardContent
+      sourceWhiteboardID: $sourceWhiteboardID
       classificationData: $classificationData
     }
   ) {
@@ -174,7 +174,7 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
     contributionDefaults {
       id
       postDescription
-      whiteboardContent
+      whiteboardContentAvailable
     }
     settings {
       ...CalloutSettingsFull

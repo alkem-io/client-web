@@ -790,7 +790,7 @@ export type CalloutContributionDefaultsKeySpecifier = (
   | 'id'
   | 'postDescription'
   | 'updatedDate'
-  | 'whiteboardContent'
+  | 'whiteboardContentAvailable'
   | CalloutContributionDefaultsKeySpecifier
 )[];
 export type CalloutContributionDefaultsFieldPolicy = {
@@ -799,7 +799,7 @@ export type CalloutContributionDefaultsFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContentAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionsCountOutputKeySpecifier = (
   | 'collaboraDocument'
@@ -1070,6 +1070,28 @@ export type CollaborationFieldPolicy = {
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaborationMigrationIssueKeySpecifier = ('id' | 'reason' | CollaborationMigrationIssueKeySpecifier)[];
+export type CollaborationMigrationIssueFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  reason?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaborationMigrationResultKeySpecifier = (
+  | 'failed'
+  | 'failedDocuments'
+  | 'flagged'
+  | 'flaggedDocuments'
+  | 'migrated'
+  | 'total'
+  | CollaborationMigrationResultKeySpecifier
+)[];
+export type CollaborationMigrationResultFieldPolicy = {
+  failed?: FieldPolicy<any> | FieldReadFunction<any>;
+  failedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
+  flagged?: FieldPolicy<any> | FieldReadFunction<any>;
+  flaggedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrated?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
@@ -1458,13 +1480,15 @@ export type CreateCalloutContributionDataFieldPolicy = {
 export type CreateCalloutContributionDefaultsDataKeySpecifier = (
   | 'defaultDisplayName'
   | 'postDescription'
-  | 'whiteboardContent'
+  | 'sourceCalloutID'
+  | 'sourceWhiteboardID'
   | CreateCalloutContributionDefaultsDataKeySpecifier
 )[];
 export type CreateCalloutContributionDefaultsDataFieldPolicy = {
   defaultDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceCalloutID?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributorsMapViewDataKeySpecifier = (
   | 'latitude'
@@ -1719,7 +1743,6 @@ export type CreateVisualOnProfileDataFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateWhiteboardDataKeySpecifier = (
-  | 'content'
   | 'nameID'
   | 'previewSettings'
   | 'profile'
@@ -1727,7 +1750,6 @@ export type CreateWhiteboardDataKeySpecifier = (
   | CreateWhiteboardDataKeySpecifier
 )[];
 export type CreateWhiteboardDataFieldPolicy = {
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3125,6 +3147,8 @@ export type MutationKeySpecifier = (
   | 'markMessageAsReadInRoom'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
+  | 'migrateLegacyMemoContent'
+  | 'migrateLegacyWhiteboardContent'
   | 'mintMcpApiKey'
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
@@ -3151,6 +3175,7 @@ export type MutationKeySpecifier = (
   | 'removeUserFromGroup'
   | 'reorderPollOptions'
   | 'replaceCollaboraDocument'
+  | 'replaceWhiteboardContentFromSource'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -3362,6 +3387,8 @@ export type MutationFieldPolicy = {
   markMessageAsReadInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrateLegacyMemoContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrateLegacyWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
   mintMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3388,6 +3415,7 @@ export type MutationFieldPolicy = {
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
   replaceCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  replaceWhiteboardContentFromSource?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6378,6 +6406,20 @@ export type StrictTypedTypePolicies = {
   Collaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CollaborationKeySpecifier | (() => undefined | CollaborationKeySpecifier);
     fields?: CollaborationFieldPolicy;
+  };
+  CollaborationMigrationIssue?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CollaborationMigrationIssueKeySpecifier
+      | (() => undefined | CollaborationMigrationIssueKeySpecifier);
+    fields?: CollaborationMigrationIssueFieldPolicy;
+  };
+  CollaborationMigrationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CollaborationMigrationResultKeySpecifier
+      | (() => undefined | CollaborationMigrationResultKeySpecifier);
+    fields?: CollaborationMigrationResultFieldPolicy;
   };
   Communication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationKeySpecifier | (() => undefined | CommunicationKeySpecifier);

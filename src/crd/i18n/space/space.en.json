@@ -656,6 +656,9 @@
     "template": "Template",
     "templatePlaceholder": "Choose a template…",
     "templateLoading": "Loading templates…",
+    "whiteboardConfigured": "A default whiteboard is configured.",
+    "whiteboardNotConfigured": "New contributions will start with a blank whiteboard.",
+    "clearWhiteboard": "Clear default",
     "save": "Save"
   },
   "calloutDialog": {
