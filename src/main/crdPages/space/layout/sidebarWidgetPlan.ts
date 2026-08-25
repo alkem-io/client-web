@@ -1,36 +1,12 @@
 import { SidebarWidget } from '@/core/apollo/generated/graphql-schema';
+import {
+  SIDEBAR_WIDGET_IDS,
+  type SidebarWidgetId,
+} from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
 
-/** Plain, CRD-safe union — the client-side counterpart of the server's
- *  `SidebarWidget` enum vocabulary (FR-001). CRD components never see the
- *  generated GraphQL enum directly (D-12); this is the type that crosses
- *  that boundary. */
-export type SidebarWidgetId =
-  | 'intent'
-  | 'about'
-  | 'createPost'
-  | 'subspaceLinks'
-  | 'events'
-  | 'updates'
-  | 'contactLeads'
-  | 'addUser'
-  | 'virtualContributors'
-  | 'guidelines'
-  | 'index';
-
-/** The full vocabulary, in the platform's canonical (FR-001 table) order. */
-export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
-  'intent',
-  'about',
-  'createPost',
-  'subspaceLinks',
-  'events',
-  'updates',
-  'contactLeads',
-  'addUser',
-  'virtualContributors',
-  'guidelines',
-  'index',
-];
+/** Re-export the canonical CRD-safe sidebar widget vocabulary + ordering. */
+export { SIDEBAR_WIDGET_IDS };
+export type { SidebarWidgetId };
 
 const WIRE_TO_WIDGET_ID: Record<string, SidebarWidgetId> = {
   [SidebarWidget.Intent]: 'intent',
