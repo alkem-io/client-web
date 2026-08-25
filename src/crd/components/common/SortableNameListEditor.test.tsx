@@ -66,11 +66,17 @@ describe('SortableNameListEditor', () => {
     expect(addButton.disabled).toBe(true);
   });
 
-  it('marks the input invalid and shows the error for a row with a validation message', () => {
+  it('shows the validation error only after the row is touched (not immediately)', () => {
     renderEditor({ errorFor: id => (id === '2' ? 'Duplicate name' : undefined) });
     const inputs = screen.getAllByLabelText('Column name');
+    // Untouched: an invalid row does not flash red before the user interacts.
+    expect(inputs[1].getAttribute('aria-invalid')).toBe('false');
+    expect(screen.queryByText('Duplicate name')).not.toBeInTheDocument();
+    // Touching the row (blur) surfaces the error and marks the input invalid.
+    fireEvent.blur(inputs[1]);
     expect(inputs[1].getAttribute('aria-invalid')).toBe('true');
-    expect(inputs[0].getAttribute('aria-invalid')).toBe('false');
     expect(screen.getByText('Duplicate name')).toBeInTheDocument();
+    // A valid, untouched row stays clean.
+    expect(inputs[0].getAttribute('aria-invalid')).toBe('false');
   });
 });

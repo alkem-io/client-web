@@ -541,6 +541,13 @@ export function CalloutDetailDialogConnector({
       if (confirmDeleteContribution.kind === 'post') {
         setPostContributionId(undefined);
         setPostId(undefined);
+        // On a Tasks board the dialog is a focused single-task view layered over
+        // the board (not a contributions grid). Clearing the selection alone would
+        // flip it back to the full "post with responses" grid on top of the board;
+        // close the dialog instead. Non-board callouts keep the grid fallback.
+        if (elevated) {
+          onOpenChange(false);
+        }
       } else if (confirmDeleteContribution.kind === 'whiteboard') {
         setWhiteboardEditorOpen(false);
         setWhiteboardContributionId(undefined);
@@ -561,7 +568,9 @@ export function CalloutDetailDialogConnector({
     <ConfirmationDialog
       open={confirmDeleteContribution !== undefined}
       onOpenChange={isOpen => !isOpen && setConfirmDeleteContribution(undefined)}
-      title={t('deleteContribution.title')}
+      // Over a task board the focused post is a task, so name the delete prompt
+      // accordingly; the description/confirm stay generic (shared with posts).
+      title={elevated ? t('deleteTask.title') : t('deleteContribution.title')}
       description={t('deleteContribution.description', { title: confirmDeleteContribution?.title ?? '' })}
       confirmLabel={t('deleteContribution.confirm')}
       cancelLabel={t('dialogs.cancel')}
@@ -621,6 +630,9 @@ export function CalloutDetailDialogConnector({
     postContributionId && contributionType === CalloutContributionType.Post ? (
       <CalloutPostPreview
         loading={loadingPostContribution && !selectedPost}
+        // On a Tasks board (elevated) the task is worked by several assignees, so
+        // de-emphasise the single creator: drop the avatar, prefix "Created by".
+        deEmphasizeCreator={elevated}
         post={{
           id: selectedPost?.id ?? postContributionId,
           title: selectedPost?.profile.displayName ?? '',
@@ -748,7 +760,14 @@ export function CalloutDetailDialogConnector({
           setPostEditOpen(false);
           setPostContributionId(undefined);
           setPostId(undefined);
+          // On a board (elevated) the focused-task dialog has no contributions
+          // grid behind it — deleting the task via the edit dialog must close it,
+          // not fall back to the "post with responses" grid on top of the board.
+          if (elevated) {
+            onOpenChange(false);
+          }
         }}
+        isTaskBoard={elevated}
         {...elevatedNested}
       />
     ) : null;
@@ -867,6 +886,11 @@ export function CalloutDetailDialogConnector({
         calloutId={callout.id}
         contributionId={isPostSelected ? postContributionId : undefined}
         roomData={activeRoomData}
+        // In the focused-task dialog on a board (elevated, z-[110]) the comment
+        // delete-confirmation would otherwise open behind it and block the UI —
+        // lift it to the same nested tier as the dialog's other confirmations.
+        confirmOverlayClassName={elevated ? 'z-[120]' : undefined}
+        confirmContentClassName={elevated ? 'z-[120]' : undefined}
         // The connector's wrapper `<div ref={ref}>` ends up in the feed-card's React tree
         // (alongside the dialog trigger), NOT inside the dialog's Radix portal. With the user
         // scrolled away from that card, `useInView` never fires and the post-comments query

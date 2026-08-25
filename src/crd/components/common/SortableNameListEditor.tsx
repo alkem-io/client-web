@@ -15,6 +15,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { GripVertical, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Input } from '@/crd/primitives/input';
@@ -150,6 +151,12 @@ function SortableRow({
   };
   const deletable = item.deletable !== false;
   const errorId = `${item.id}-error`;
+  // Show a validation error only once the row has been touched (edited or
+  // blurred), so a freshly added empty row does not flash red before the user
+  // has done anything. Save stays disabled meanwhile (the consumer computes that
+  // from the raw validity), so an untouched-invalid row still can't be saved.
+  const [touched, setTouched] = useState(false);
+  const showError = Boolean(error) && touched;
 
   return (
     <li ref={setNodeRef} style={style} className={cn('flex flex-col gap-1', isDragging && 'opacity-50')}>
@@ -165,11 +172,15 @@ function SortableRow({
         </button>
         <Input
           value={item.name}
-          onChange={e => onRename(item.id, e.target.value)}
+          onChange={e => {
+            setTouched(true);
+            onRename(item.id, e.target.value);
+          }}
+          onBlur={() => setTouched(true)}
           placeholder={namePlaceholder}
           aria-label={nameLabel}
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? errorId : undefined}
+          aria-invalid={showError}
+          aria-describedby={showError ? errorId : undefined}
           className="flex-1"
         />
         <Button
@@ -185,7 +196,7 @@ function SortableRow({
           <Trash2 aria-hidden="true" className="size-4" />
         </Button>
       </div>
-      {error && (
+      {showError && (
         <p id={errorId} className="text-caption text-destructive pl-8">
           {error}
         </p>

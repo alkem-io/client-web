@@ -288,6 +288,10 @@
     "postTagsLabel": "Schlagwörter",
     "postSave": "Speichern",
     "postCreate": "Veröffentlichen",
+    "createTask": "Aufgabe erstellen",
+    "editTask": "Aufgabe bearbeiten",
+    "taskCreate": "Aufgabe erstellen",
+    "tasksHeader": "Aufgaben ({{count}})",
     "postDelete": "Beitrag löschen",
     "postDeleteConfirmTitle": "Diesen Beitrag löschen?",
     "postDeleteConfirmDescription": "Damit werden der Beitrag und alle Kommentare endgültig entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -502,6 +506,9 @@
     "comments_other": "{{count}} Kommentare werden gelöscht",
     "success": "Der $t(common.Callout) „{{title}}“ wurde gelöscht.",
     "saveFailed": "Der $t(common.Callout) konnte nicht gelöscht werden. Bitte erneut versuchen."
+  },
+  "deleteTask": {
+    "title": "Diese Aufgabe löschen?"
   },
   "deleteContribution": {
     "title": "Diesen Beitrag löschen?",
@@ -818,6 +825,7 @@
     "seeFullDescription": "Vollständige Beschreibung anzeigen"
   },
   "postPreview": {
+    "createdBy": "Erstellt von",
     "label": "Vorschau des ausgewählten Beitrags",
     "edit": "Beitrag bearbeiten",
     "share": "Beitrag teilen",

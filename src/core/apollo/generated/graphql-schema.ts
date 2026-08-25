@@ -37357,6 +37357,12 @@ export type TaskBoardCalloutFragment = {
         tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }> | undefined;
       }
     | undefined;
+  contributionDefaults: {
+    __typename?: 'CalloutContributionDefaults';
+    id: string;
+    defaultDisplayName?: string | undefined;
+    postDescription?: string | undefined;
+  };
   taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
 };
 
@@ -37469,6 +37475,12 @@ export type TaskBoardDataQuery = {
                   | undefined;
               }
             | undefined;
+          contributionDefaults: {
+            __typename?: 'CalloutContributionDefaults';
+            id: string;
+            defaultDisplayName?: string | undefined;
+            postDescription?: string | undefined;
+          };
           taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
         }
       | undefined;
@@ -37548,6 +37560,12 @@ export type CreateTaskColumnOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
@@ -37617,6 +37635,12 @@ export type UpdateTaskColumnOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
@@ -37686,6 +37710,12 @@ export type DeleteTaskColumnOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
@@ -37715,6 +37745,12 @@ export type UpdateTaskColumnsSortOrderOnCalloutMutation = {
             | undefined;
         }
       | undefined;
+    contributionDefaults: {
+      __typename?: 'CalloutContributionDefaults';
+      id: string;
+      defaultDisplayName?: string | undefined;
+      postDescription?: string | undefined;
+    };
     taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };

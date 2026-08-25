@@ -288,6 +288,10 @@
     "postTagsLabel": "Tags",
     "postSave": "Opslaan",
     "postCreate": "Post",
+    "createTask": "Task aanmaken",
+    "editTask": "Task bewerken",
+    "taskCreate": "Task aanmaken",
+    "tasksHeader": "Tasks ({{count}})",
     "postDelete": "Post verwijderen",
     "postDeleteConfirmTitle": "Deze Post verwijderen?",
     "postDeleteConfirmDescription": "Hiermee verwijder je de Post en alle reacties definitief. Deze actie kan niet ongedaan worden gemaakt.",
@@ -502,6 +506,9 @@
     "comments_other": "{{count}} reacties worden verwijderd",
     "success": "$t(common.Callout) “{{title}}” is verwijderd.",
     "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
+  },
+  "deleteTask": {
+    "title": "Deze task verwijderen?"
   },
   "deleteContribution": {
     "title": "Deze bijdrage verwijderen?",
@@ -818,6 +825,7 @@
     "seeFullDescription": "Volledige beschrijving"
   },
   "postPreview": {
+    "createdBy": "Aangemaakt door",
     "label": "Voorbeeld van geselecteerde bijdrage",
     "edit": "Reactie bewerken",
     "share": "Reactie delen",

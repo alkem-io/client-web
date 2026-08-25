@@ -295,6 +295,7 @@ function LazyCalloutItemContent({
       callout={callout}
       onShowAll={() => openDialog()}
       onContributionClick={(contributionId, memoId) => openDialog(contributionId, memoId)}
+      isTaskBoard={isBoard}
     />
   ) : undefined;
 

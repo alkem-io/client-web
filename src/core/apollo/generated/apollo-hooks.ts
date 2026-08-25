@@ -3346,6 +3346,11 @@ export const TaskBoardCalloutFragmentDoc = gql`
       allowedValues
     }
   }
+  contributionDefaults {
+    id
+    defaultDisplayName
+    postDescription
+  }
   taskColumnCounts {
     column
     count

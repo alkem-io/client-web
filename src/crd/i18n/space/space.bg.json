@@ -288,6 +288,10 @@
     "postTagsLabel": "Етикети",
     "postSave": "Запази",
     "postCreate": "Публикувай",
+    "createTask": "Създай задача",
+    "editTask": "Редактирай задачата",
+    "taskCreate": "Създай задача",
+    "tasksHeader": "Задачи ({{count}})",
     "postDelete": "Изтрий публикацията",
     "postDeleteConfirmTitle": "Да се изтрие ли тази публикация?",
     "postDeleteConfirmDescription": "Това ще премахне публикацията и всички коментари за постоянно. Действието е необратимо.",
@@ -502,6 +506,9 @@
     "comments_other": "Ще се изтрият {{count}} коментара",
     "success": "$t(common.Callout)-ът “{{title}}” беше изтрит.",
     "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+  },
+  "deleteTask": {
+    "title": "Да изтрия ли тази задача?"
   },
   "deleteContribution": {
     "title": "Да изтрия ли този принос?",
@@ -818,6 +825,7 @@
     "seeFullDescription": "Виж пълното описание"
   },
   "postPreview": {
+    "createdBy": "Създадено от",
     "label": "Преглед на избрания отговор",
     "edit": "Редактиране на отговора",
     "share": "Споделяне на отговора",

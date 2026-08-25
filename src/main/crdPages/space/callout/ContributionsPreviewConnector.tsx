@@ -33,12 +33,19 @@ type ContributionsPreviewConnectorProps = {
   callout: CalloutDetailsModelExtended;
   onShowAll: () => void;
   onContributionClick?: (contributionId: string, memoId?: string) => void;
+  /**
+   * True when this callout renders as a Tasks board. Retitles the section
+   * header "Tasks (N)" instead of "Contributions (N)". Resolved asynchronously
+   * by the parent (`LazyCalloutItem`); ordinary callouts leave it false.
+   */
+  isTaskBoard?: boolean;
 };
 
 export function ContributionsPreviewConnector({
   callout,
   onShowAll,
   onContributionClick,
+  isTaskBoard,
 }: ContributionsPreviewConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
   const locale = resolveDateFnsLocale(i18n.language);
@@ -108,6 +115,7 @@ export function ContributionsPreviewConnector({
           open={addOpen}
           onOpenChange={setAddOpen}
           calloutId={callout.id}
+          isTaskBoard={isTaskBoard}
           defaultDisplayName={defaults?.defaultDisplayName}
           defaultDescription={defaults?.postDescription}
         />
@@ -181,7 +189,9 @@ export function ContributionsPreviewConnector({
   // detail dialog just to add another contribution.
   const header = (
     <div className="mt-4 mb-2 flex items-center justify-between gap-2">
-      <p className="text-label uppercase text-muted-foreground">{t('callout.contributionsHeader', { count: total })}</p>
+      <p className="text-label uppercase text-muted-foreground">
+        {isTaskBoard ? t('callout.tasksHeader', { count: total }) : t('callout.contributionsHeader', { count: total })}
+      </p>
       {canCreateContribution && addLabel && (
         <Button
           variant="ghost"

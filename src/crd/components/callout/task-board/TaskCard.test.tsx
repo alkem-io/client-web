@@ -15,10 +15,15 @@ describe('TaskCard', () => {
     expect(description).toBeInTheDocument();
   });
 
-  it('renders the author and comment count', () => {
-    render(<TaskCard title="t" author={{ name: 'Ada' }} commentCount={3} />);
-    expect(screen.getByText('Ada')).toBeInTheDocument();
+  it('renders the comment count', () => {
+    render(<TaskCard title="t" commentCount={3} />);
     expect(screen.getByText('3')).toBeInTheDocument();
+  });
+
+  it('does not render a creator/author', () => {
+    // Tasks can have multiple assignees; the single creator is intentionally omitted.
+    render(<TaskCard title="t" commentCount={3} />);
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
   it('hides the comment counter when the count is zero', () => {

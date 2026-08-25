@@ -44,7 +44,7 @@ describe('mapTaskBoardColumns', () => {
     expect(backlog?.count).toBe(5);
   });
 
-  it('maps author, description, tags, and comment count into the card model', () => {
+  it('maps description, tags, and comment count into the card model', () => {
     const rich = contribution('a', 'Backlog', {
       createdBy: { id: 'u', profile: { id: 'pu', displayName: 'Ada', avatar: { id: 'v', uri: 'http://a' } } },
       profile: { id: 'pa', displayName: 'Rich task', description: 'desc', tagset: { id: 'tg', tags: ['x'] } },
@@ -54,11 +54,13 @@ describe('mapTaskBoardColumns', () => {
     const card = columns.find(c => c.name === 'Backlog')?.cards[0];
     expect(card).toMatchObject({
       title: 'Rich task',
-      author: { name: 'Ada', avatarUrl: 'http://a' },
       description: 'desc',
       tags: ['x'],
       commentCount: 4,
     });
+    // Task cards intentionally carry no author (a column can hold contributions
+    // from many members — a single avatar would be misleading). R2.
+    expect(card).not.toHaveProperty('author');
   });
 });
 

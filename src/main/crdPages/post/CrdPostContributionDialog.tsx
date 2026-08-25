@@ -69,6 +69,13 @@ type CrdPostContributionDialogProps = {
    * first column when omitted.
    */
   taskColumn?: string;
+  /**
+   * Tasks board only: retitles the dialog and the create submit button in
+   * task-specific terms ("Create task" / "Edit task" / "Create task"). Left
+   * false for ordinary post-with-responses callouts so their strings are
+   * unchanged.
+   */
+  isTaskBoard?: boolean;
   /** Escape hatch to raise the dialog's stacking above a custom overlay (e.g. the fullscreen task board at z-[100]). */
   overlayClassName?: string;
   contentClassName?: string;
@@ -90,6 +97,7 @@ export function CrdPostContributionDialog({
   defaultDisplayName,
   defaultDescription,
   taskColumn,
+  isTaskBoard,
   overlayClassName,
   contentClassName,
   onCreated,
@@ -403,7 +411,13 @@ export function CrdPostContributionDialog({
 
   const submitting = creating || updating;
   const showCommentsSection = mode === 'edit' && Boolean(commentsRoom);
-  const dialogTitle = mode === 'create' ? t('callout.createPost') : t('callout.editPost');
+  const dialogTitle = isTaskBoard
+    ? mode === 'create'
+      ? t('callout.createTask')
+      : t('callout.editTask')
+    : mode === 'create'
+      ? t('callout.createPost')
+      : t('callout.editPost');
 
   return (
     <>
@@ -552,7 +566,11 @@ export function CrdPostContributionDialog({
               </Button>
               <Button onClick={handleSubmit} disabled={submitting || deleting} aria-busy={submitting}>
                 {submitting && <Loader2 aria-hidden="true" className="mr-1.5 size-4 animate-spin" />}
-                {mode === 'create' ? t('callout.postCreate') : t('callout.postSave')}
+                {mode === 'create'
+                  ? isTaskBoard
+                    ? t('callout.taskCreate')
+                    : t('callout.postCreate')
+                  : t('callout.postSave')}
               </Button>
             </div>
           </DialogFooter>
