@@ -14,5 +14,8 @@ fragment TemplatesSetTemplates on TemplatesSet {
   spaceTemplates {
     ...SpaceTemplate
   }
+  classificationTemplates {
+    ...ClassificationTemplate
+  }
 }
 

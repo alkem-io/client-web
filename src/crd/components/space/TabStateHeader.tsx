@@ -12,18 +12,25 @@ type TabStateHeaderProps = {
   className?: string;
 };
 
+const hasVisibleMarkdownContent = (value?: string) => {
+  if (!value) return false;
+
+  return value.replace(/<br\s*\/?>/gi, '').trim().length > 0;
+};
+
 export function TabStateHeader({ description, action, className }: TabStateHeaderProps) {
   const { t } = useTranslation('crd-space');
   const { isSmallScreen } = useScreenSize();
+  const hasDescription = hasVisibleMarkdownContent(description);
 
-  if (!description && !action) return null;
+  if (!hasDescription && !action) return null;
 
   return (
     <div className={cn('flex flex-col sm:flex-row sm:items-start justify-between gap-4 sm:gap-6', className)}>
-      {description ? (
+      {hasDescription ? (
         <div className="flex-1 min-w-0">
           <ExpandableMarkdown
-            content={description}
+            content={description ?? ''}
             maxLines={isSmallScreen ? 3 : 2}
             surface="background"
             expandLabel={t('postSnippet.seeFullDescription')}

@@ -327,7 +327,6 @@
   },
   "members": {
     "subtitle": "{{users}} членове и {{organizations}} организации в това пространство.",
-    "inviteMember": "Покани член",
     "search": "Търсене на членове или организации...",
     "filterAll": "Всички",
     "filterLead": "Ръководител",
@@ -412,7 +411,8 @@
         "why": "Защо това подпространство?",
         "who": "Кой участва?"
       }
-    }
+    },
+    "tags": "Етикети"
   },
   "apply": {
     "apply": "Кандидатствай",
@@ -1028,5 +1028,15 @@
       "title": "Все още няма подпространства",
       "description": "Това пространство все още няма подпространства."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Класификации"
+  },
+  "parentStack": {
+    "goTo": "Към {{name}}"
   }
 }

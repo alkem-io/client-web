@@ -208,7 +208,7 @@ export function SearchOverlay({
           className={cn(
             'col-span-12 lg:col-start-2 lg:col-span-10 max-md:col-span-12',
             'flex flex-col overflow-hidden pointer-events-auto',
-            'bg-background border border-border rounded-xl shadow-lg',
+            'bg-popover border border-border rounded-xl shadow-lg',
             'transition-all duration-200 ease-out',
             visible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.97] translate-y-2.5'
           )}

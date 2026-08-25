@@ -15,6 +15,12 @@ import type { ReactNode } from 'react';
  * Shape passed into the shell's hero slot. Must match (by duck-typing) the
  * props exported by `src/crd/components/space/SpaceHeader.tsx` at implementation
  * time. Declared here as a standalone contract so the spec is self-contained.
+ *
+ * SUPERSEDED: settings pages no longer embed the hero. They render the compact
+ * `SpaceSettingsHeader` whose props are `{ title, titleHref?, tagline?, fullWidth?,
+ * className? }` — no banner, no avatar, no member avatars (the interim
+ * subspace-settings avatar was removed 2026-08-21; `titleHref` links the title
+ * back to the space/subspace home). Kept for the historical record.
  */
 export type SpaceHeroProps = {
   spaceName: string;

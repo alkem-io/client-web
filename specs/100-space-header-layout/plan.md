@@ -5,7 +5,7 @@
 
 ## Summary
 
-Reshape the Space and Subspace headers in the CRD layer so the banner becomes full-width and fluid (`aspect-[6/1]`), and the title, subtitle, and action buttons move into a single below-banner section that sits inside the existing inner content width (`lg:col-start-2 / lg:col-span-10`). The change is presentational only — no GraphQL fields, no domain logic, no MUI changes. Member-avatar stack, Subspace level badge, and Subspace layered avatar pair are removed; Subspace uses a single ~56px avatar inline with the title.
+Reshape the Space and Subspace headers in the CRD layer so the banner becomes full-width and fluid (`aspect-[6/1]`), and the title, subtitle, and action buttons move into a single below-banner section that sits inside the existing inner content width (`lg:col-start-2 / lg:col-span-10`). The change is presentational only — no GraphQL fields, no domain logic, no MUI changes. Member-avatar stack, Subspace level badge, and Subspace layered avatar pair are removed; Subspace uses a single ~56px avatar inline with the title *(superseded 2026-08-21: that inline avatar was removed as well — the header shows the bare title, and identity images live in the breadcrumb trail)*.
 
 Touchpoints: `src/crd/components/space/SpaceHeader.tsx`, `src/crd/components/space/SubspaceHeader.tsx`, and the two consumer integration layouts (`src/main/crdPages/space/layout/CrdSpacePageLayout.tsx`, `src/main/crdPages/subspace/layout/CrdSubspacePageLayout.tsx`) — the latter only to stop passing now-unused props.
 
@@ -102,7 +102,7 @@ src/
 │   └── components/
 │       └── space/
 │           ├── SpaceHeader.tsx          # REWRITE: banner aspect-[6/1] full-width, title/buttons row below, member-avatar stack removed
-│           └── SubspaceHeader.tsx       # REWRITE: same pattern, single 56px subspace avatar inline, layered avatar + level badge removed
+│           └── SubspaceHeader.tsx       # REWRITE: same pattern, layered avatar + level badge removed (interim single 56px inline avatar itself removed 2026-08-21)
 ├── main/
 │   └── crdPages/
 │       ├── space/

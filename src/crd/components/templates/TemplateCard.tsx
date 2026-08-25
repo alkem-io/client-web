@@ -8,6 +8,7 @@ import {
   MoreHorizontal,
   Pencil,
   PenTool,
+  Tags,
   Trash2,
   Users,
 } from 'lucide-react';
@@ -16,6 +17,7 @@ import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
 import { backgroundGradient } from '@/crd/lib/backgroundGradient';
 import { cn } from '@/crd/lib/utils';
+import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import {
   DropdownMenu,
@@ -26,12 +28,16 @@ import {
 } from '@/crd/primitives/dropdown-menu';
 import type { TemplateAction, TemplateCardData, TemplateType } from './types';
 
+/** How many value chips a classification card header previews before the "+N" overflow chip. */
+const CLASSIFICATION_PREVIEW_VALUES = 4;
+
 const TYPE_ICON: Record<TemplateType, React.ElementType> = {
   space: LayoutTemplate,
   callout: Users,
   whiteboard: PenTool,
   post: FileText,
   communityGuidelines: BookText,
+  classification: Tags,
 };
 
 export type TemplateCardProps = {
@@ -84,7 +90,35 @@ export function TemplateCard({
         className="relative aspect-video w-full overflow-hidden text-left outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={`${t('card.preview')}: ${template.name}`}
       >
-        {template.bannerUrl ? (
+        {template.classification ? (
+          // Classification header (product#2161 design 03): cardinality badge + a
+          // preview of the value set in authored order (FR-002b) on a muted band,
+          // visually separated from the white card body — no banner/gradient.
+          <div className="size-full flex flex-col gap-2.5 p-4 bg-muted/50 border-b border-border">
+            <div className="flex items-center gap-2">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10">
+                <TypeIcon aria-hidden="true" className="size-4 text-primary" />
+              </span>
+              <Badge variant="outline" className="bg-card">
+                {template.classification.cardinality === 'SINGLE_SELECT'
+                  ? t('card.classification.singleSelect')
+                  : t('card.classification.multiSelect')}
+              </Badge>
+            </div>
+            <div className="flex flex-wrap content-start gap-1.5 overflow-hidden">
+              {template.classification.valueLabels.slice(0, CLASSIFICATION_PREVIEW_VALUES).map(label => (
+                <Badge key={label} variant="outline" className="bg-card max-w-full truncate font-normal">
+                  {label}
+                </Badge>
+              ))}
+              {template.classification.valueLabels.length > CLASSIFICATION_PREVIEW_VALUES && (
+                <Badge variant="outline" className="bg-card font-normal">
+                  +{template.classification.valueLabels.length - CLASSIFICATION_PREVIEW_VALUES}
+                </Badge>
+              )}
+            </div>
+          </div>
+        ) : template.bannerUrl ? (
           <img
             src={template.bannerUrl}
             alt=""

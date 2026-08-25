@@ -7,6 +7,7 @@ import useNavigate from '@/core/routing/useNavigate';
 import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
 import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
+import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { useSpace } from '@/domain/space/context/useSpace';
@@ -18,7 +19,6 @@ import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useCrdSpaceLeads } from '../hooks/useCrdSpaceLeads';
 import { SpaceSidebarPortal } from '../layout/SpaceSidebarPortal';
-import { SpaceTabActionHeader } from '../layout/SpaceTabActionHeader';
 
 export default function CrdSpaceSubspacesPage() {
   const { t } = useTranslation('crd-space');
@@ -86,31 +86,29 @@ export default function CrdSpaceSubspacesPage() {
           onEditClick={
             permissions.canUpdate ? () => navigate(buildSettingsTabUrl(space.about.profile.url, 'about')) : undefined
           }
-        />
-      </SpaceSidebarPortal>
-
-      <div className="space-y-8">
-        <SpaceTabActionHeader
-          description={tabDescription}
-          action={
+          actionsSlot={
             (canCreateCallout || (canCreate && handleCreateClick)) && (
-              <div className="flex items-center gap-2">
-                {canCreate && handleCreateClick && (
-                  <Button size="sm" className="gap-2" onClick={handleCreateClick}>
-                    <Plus className="w-4 h-4" aria-hidden="true" />
-                    {t('subspaces.createSubspace')}
-                  </Button>
-                )}
+              <>
                 {canCreateCallout && (
-                  <Button size="sm" className="gap-2" onClick={() => setCreateCalloutOpen(true)}>
+                  <Button className="w-full gap-2 text-body-emphasis" onClick={() => setCreateCalloutOpen(true)}>
                     <Plus className="w-4 h-4" aria-hidden="true" />
                     {t('feed.addPost')}
                   </Button>
                 )}
-              </div>
+                {canCreate && handleCreateClick && (
+                  <Button variant="outline" className="w-full gap-2 text-body-emphasis" onClick={handleCreateClick}>
+                    <Plus className="w-4 h-4" aria-hidden="true" />
+                    {t('subspaces.createSubspace')}
+                  </Button>
+                )}
+              </>
             )
           }
         />
+      </SpaceSidebarPortal>
+
+      <div className="space-y-8">
+        <TabStateHeader description={tabDescription} />
 
         <CalloutListConnector
           callouts={callouts}

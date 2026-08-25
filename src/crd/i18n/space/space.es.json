@@ -327,7 +327,6 @@
   },
   "members": {
     "subtitle": "{{users}} miembros y {{organizations}} organizaciones en este espacio.",
-    "inviteMember": "Invitar miembro",
     "search": "Buscar miembros u organizaciones...",
     "filterAll": "Todos",
     "filterLead": "Líder",
@@ -412,7 +411,8 @@
         "why": "¿Por qué este subespacio?",
         "who": "¿Quién participa?"
       }
-    }
+    },
+    "tags": "Etiquetas"
   },
   "apply": {
     "apply": "Solicitar acceso",
@@ -1028,5 +1028,15 @@
       "title": "Aún no hay subespacios",
       "description": "Este espacio aún no tiene subespacios."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Clasificaciones"
+  },
+  "parentStack": {
+    "goTo": "Ir a {{name}}"
   }
 }
