@@ -372,7 +372,11 @@ export function CrdPostContributionDialog({
         try {
           await moveContributionToCallout({
             variables: { contributionId, calloutId: targetCalloutId },
-            refetchQueries: ['CalloutContributions', 'CalloutDetails'],
+            // Also refresh any Tasks board views: the server may have added or
+            // dropped the task-column classification (moving a post into a board
+            // makes it a task; moving a task out makes it a plain post), so both
+            // the source and destination boards must re-render.
+            refetchQueries: ['CalloutContributions', 'CalloutDetails', 'TaskBoardData'],
           });
           await refetchSiblingCallouts();
           baselineCalloutIdRef.current = targetCalloutId;
@@ -521,7 +525,10 @@ export function CrdPostContributionDialog({
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      {/* z-[130]: this dialog is elevated (z-[120]) when editing a
+                          task on a board, and the primitive's default z-50 dropdown
+                          would open behind it. Matches the editor toolbar dialogs. */}
+                      <SelectContent className="z-[130]">
                         {siblingCallouts.map(sibling => (
                           <SelectItem key={sibling.id} value={sibling.id}>
                             {sibling.framing.profile.displayName}
