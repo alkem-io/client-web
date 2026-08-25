@@ -43,7 +43,7 @@ export function WhiteboardTemplateFormConnector({
         status={!editableWhiteboardId ? t('preview.whiteboard.empty') : undefined}
         actionLabel={editableWhiteboardId ? t('form.whiteboard.editDrawing') : t('form.whiteboard.startDrawing')}
         onAction={() => setEditorOpen(true)}
-        disabled={disabled || !editableWhiteboardId || loading}
+        disabled={disabled || !editableWhiteboardId || loading || !whiteboard}
       />
 
       {editorOpen && whiteboard && (

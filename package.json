@@ -68,7 +68,7 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "@elastic/apm-rum": "^5.12.0",
-    "@excalidraw-yjs/excalidraw": "https://pkg.pr.new/@excalidraw-yjs/excalidraw@5",
+    "@excalidraw-yjs/excalidraw": "https://pkg.pr.new/@excalidraw-yjs/excalidraw@d5e5a36",
     "@ory/kratos-client": "26.2.0",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",

@@ -203,6 +203,7 @@ export function ResponseDefaultsDialog({
                   <Button
                     variant="outline"
                     size="sm"
+                    disabled={disabled}
                     onClick={() =>
                       setDraft(prev => ({
                         ...prev,

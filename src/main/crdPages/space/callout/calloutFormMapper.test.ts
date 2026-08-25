@@ -477,6 +477,7 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
       defaultDisplayName: undefined,
       postDescription: undefined,
       sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
       clearWhiteboardContent: undefined,
     });
   });
@@ -697,6 +698,7 @@ describe('mapFormToCalloutUpdateInput', () => {
       defaultDisplayName: 'Name',
       postDescription: 'desc',
       sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
       clearWhiteboardContent: undefined,
     });
 
@@ -708,6 +710,7 @@ describe('mapFormToCalloutUpdateInput', () => {
           postDescription: 'p',
           whiteboardContentAvailable: true,
           sourceWhiteboardId: 'source-wb',
+          sourceCalloutId: 'source-callout',
         },
       }),
       updateOptions
@@ -716,6 +719,7 @@ describe('mapFormToCalloutUpdateInput', () => {
       defaultDisplayName: 'N',
       postDescription: undefined,
       sourceWhiteboardID: 'source-wb',
+      sourceCalloutID: 'source-callout',
       clearWhiteboardContent: undefined,
     });
 
@@ -734,6 +738,7 @@ describe('mapFormToCalloutUpdateInput', () => {
       defaultDisplayName: undefined,
       postDescription: 'p',
       sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
       clearWhiteboardContent: undefined,
     });
 

@@ -490,6 +490,7 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
             : undefined,
         sourceWhiteboardID:
           values.responseType === 'whiteboard' ? values.contributionDefaults.sourceWhiteboardId : undefined,
+        sourceCalloutID: values.responseType === 'whiteboard' ? values.contributionDefaults.sourceCalloutId : undefined,
         clearWhiteboardContent:
           values.responseType === 'whiteboard'
             ? values.contributionDefaults.clearWhiteboardContent || undefined

@@ -122,7 +122,7 @@ describe('CollaborativeExcalidrawWrapper — terminal close disables the wrapper
 
     // Notice open + not collaborating, but the terminal verdict gates the timer OFF.
     expect(latestActive()).toBe(false);
-    expect(h.noticeReasons.at(-1)).toBe('forbidden');
+    expect(h.noticeReasons[h.noticeReasons.length - 1]).toBe('forbidden');
   });
 
   it('a TRANSIENT close keeps useAutoReconnect active:true (auto-reconnect stays running)', () => {

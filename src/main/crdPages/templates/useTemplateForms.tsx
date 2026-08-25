@@ -42,13 +42,13 @@ import {
   EMPTY_CALLOUT_FORM_VALUES,
   useCrdCalloutForm,
 } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+import { mapSpaceContentFromSpace } from '@/main/crdPages/templates/templateContentMapper';
 import { CalloutTemplateForm } from './CalloutTemplateForm';
 import {
   type CalloutTemplateMapperFallbacks,
   calloutFormValuesToCreateCalloutInput,
   calloutFormValuesToUpdateCalloutEntityInput,
 } from './calloutTemplateMapper';
-import { mapSpaceContentFromSpace } from './templateContentMapper';
 import { WhiteboardTemplateFormConnector } from './WhiteboardTemplateFormConnector';
 
 // ---------------------------------------------------------------------------
