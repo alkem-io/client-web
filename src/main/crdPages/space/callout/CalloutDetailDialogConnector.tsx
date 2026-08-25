@@ -561,7 +561,9 @@ export function CalloutDetailDialogConnector({
     <ConfirmationDialog
       open={confirmDeleteContribution !== undefined}
       onOpenChange={isOpen => !isOpen && setConfirmDeleteContribution(undefined)}
-      title={t('deleteContribution.title')}
+      // Over a task board the focused post is a task, so name the delete prompt
+      // accordingly; the description/confirm stay generic (shared with posts).
+      title={elevated ? t('deleteTask.title') : t('deleteContribution.title')}
       description={t('deleteContribution.description', { title: confirmDeleteContribution?.title ?? '' })}
       confirmLabel={t('deleteContribution.confirm')}
       cancelLabel={t('dialogs.cancel')}

@@ -3,12 +3,10 @@ import type { ReactNode } from 'react';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Skeleton } from '@/crd/primitives/skeleton';
 
 export type TaskCardProps = {
   title: string;
-  author?: { name: string; avatarUrl?: string };
   description?: string;
   tags?: string[];
   commentCount?: number;
@@ -25,7 +23,6 @@ export type TaskCardProps = {
  */
 export function TaskCard({
   title,
-  author,
   description,
   tags,
   commentCount,
@@ -75,23 +72,12 @@ export function TaskCard({
             </div>
           )}
           {tags && tags.length > 0 && <CollapsibleTagList tags={tags} maxRows={1} className="mt-2 min-w-0" />}
-          {(author || (commentCount !== undefined && commentCount > 0)) && (
-            <div className="mt-3 flex items-center gap-1.5 min-w-0">
-              {author && (
-                <div className="flex items-center gap-1.5 min-w-0">
-                  <Avatar className="w-5 h-5">
-                    {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt={author.name} />}
-                    <AvatarFallback className="text-badge">{author.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <span className="text-caption text-muted-foreground truncate">{author.name}</span>
-                </div>
-              )}
-              {commentCount !== undefined && commentCount > 0 && (
-                <span className="ml-auto flex shrink-0 items-center gap-1 text-caption text-muted-foreground">
-                  <MessageSquare className="w-3 h-3" aria-hidden="true" />
-                  {commentCount}
-                </span>
-              )}
+          {commentCount !== undefined && commentCount > 0 && (
+            <div className="mt-3 flex items-center min-w-0">
+              <span className="ml-auto flex shrink-0 items-center gap-1 text-caption text-muted-foreground">
+                <MessageSquare className="w-3 h-3" aria-hidden="true" />
+                {commentCount}
+              </span>
             </div>
           )}
         </div>

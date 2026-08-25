@@ -31,7 +31,6 @@ import { TaskCard } from './TaskCard';
 export type TaskBoardCardModel = {
   id: string;
   title: string;
-  author?: { name: string; avatarUrl?: string };
   description?: string;
   tags?: string[];
   commentCount?: number;
@@ -136,7 +135,6 @@ function SortableCard({
     >
       <TaskCard
         title={card.title}
-        author={card.author}
         description={card.description}
         tags={card.tags}
         commentCount={card.commentCount}
@@ -374,7 +372,6 @@ export function TaskBoardView({
           {activeCard ? (
             <TaskCard
               title={activeCard.title}
-              author={activeCard.author}
               description={activeCard.description}
               tags={activeCard.tags}
               commentCount={activeCard.commentCount}

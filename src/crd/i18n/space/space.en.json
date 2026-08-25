@@ -288,6 +288,10 @@
     "postTagsLabel": "Tags",
     "postSave": "Save",
     "postCreate": "Post",
+    "createTask": "Create task",
+    "editTask": "Edit task",
+    "taskCreate": "Create task",
+    "tasksHeader": "Tasks ({{count}})",
     "postDelete": "Delete Post",
     "postDeleteConfirmTitle": "Delete this Post?",
     "postDeleteConfirmDescription": "This will permanently remove the Post and its comments. This action cannot be undone.",
@@ -502,6 +506,9 @@
     "comments_other": "{{count}} comments will be deleted",
     "success": "$t(common.Callout) “{{title}}” was deleted.",
     "saveFailed": "Could not delete the $t(common.callout). Please try again."
+  },
+  "deleteTask": {
+    "title": "Delete this task?"
   },
   "deleteContribution": {
     "title": "Delete this contribution?",

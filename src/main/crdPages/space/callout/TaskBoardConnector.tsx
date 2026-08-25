@@ -1,26 +1,19 @@
-import { Columns3 } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
-  useCreateTaskColumnOnCalloutMutation,
-  useDeleteTaskColumnOnCalloutMutation,
   useMoveTaskToColumnMutation,
   useTaskBoardDataQuery,
   useUpdateContributionsSortOrderMutation,
-  useUpdateTaskColumnOnCalloutMutation,
-  useUpdateTaskColumnsSortOrderOnCalloutMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   AuthorizationPrivilege,
   type TaskBoardCalloutFragment,
   type TaskBoardContributionFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import { TaskBoardColumnsDialog } from '@/crd/components/callout/task-board/TaskBoardColumnsDialog';
 import { TaskBoardView } from '@/crd/components/callout/task-board/TaskBoardView';
-import { getBoardColumns, isTaskBoard, TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
+import { isTaskBoard, TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { cn } from '@/crd/lib/utils';
-import { Button } from '@/crd/primitives/button';
 import { PostContributionAddConnector } from './PostContributionAddConnector';
 import { applyMoveToCounts, contributionColumnTag, mapTaskBoardColumns } from './taskBoardMapper';
 
@@ -109,37 +102,16 @@ function TaskBoardBody({
   const { t } = useTranslation('crd-taskBoard');
   const [moveTask] = useMoveTaskToColumnMutation();
   const [reorderTasks] = useUpdateContributionsSortOrderMutation();
-  const [createColumn] = useCreateTaskColumnOnCalloutMutation();
-  const [renameColumn] = useUpdateTaskColumnOnCalloutMutation();
-  const [deleteColumn] = useDeleteTaskColumnOnCalloutMutation();
-  const [reorderColumns] = useUpdateTaskColumnsSortOrderOnCalloutMutation();
   // Creation dialog state: closed when undefined. When open, `column` is the
   // per-column add's pre-targeted column. Using an explicit open flag keeps an
   // add with no column distinct from the closed state.
   const [addState, setAddState] = useState<{ column?: string } | undefined>();
-  const [columnsOpen, setColumnsOpen] = useState(false);
 
   const privileges = callout.authorization?.myPrivileges ?? [];
   const canMove = privileges.includes(AuthorizationPrivilege.MoveTask);
   const canAdd = privileges.includes(AuthorizationPrivilege.Contribute);
-  const canEditColumns = privileges.includes(AuthorizationPrivilege.Update);
 
   const columns = mapTaskBoardColumns(callout, contributions);
-  const columnNames = getBoardColumns({ classification: { tagsets: callout.classification?.tagsets } });
-
-  // Surface a toast for a failed column mutation and re-throw so the dialog's
-  // save sweep aborts and keeps itself open. Column edits run in their own
-  // server transactions under a template-row lock, so the sweep must sequence
-  // creates/renames before the reorder (a reorder naming a not-yet-committed
-  // column fails the server's permutation check).
-  const runColumnMutation = async (mutate: () => Promise<unknown>): Promise<void> => {
-    try {
-      await mutate();
-    } catch (error) {
-      toast.error(t('columns.saveError'));
-      throw error;
-    }
-  };
 
   // Persist a card order (every contribution id, in the board's new top-to-bottom
   // order). The board renders by sortOrder, so the optimistic response reassigns
@@ -227,14 +199,6 @@ function TaskBoardBody({
 
   return (
     <div className={cn(fill && 'flex flex-col h-full min-h-0')}>
-      {canEditColumns && (
-        <div className="mb-2 flex justify-end">
-          <Button type="button" variant="outline" size="sm" className="gap-2" onClick={() => setColumnsOpen(true)}>
-            <Columns3 aria-hidden="true" className="size-4" />
-            {t('columns.manage')}
-          </Button>
-        </div>
-      )}
       <TaskBoardView
         columns={columns}
         fill={fill}
@@ -247,32 +211,6 @@ function TaskBoardBody({
         onMoveTask={handleMoveTask}
         onReorder={canMove ? persistOrder : undefined}
       />
-      {canEditColumns && (
-        <TaskBoardColumnsDialog
-          open={columnsOpen}
-          onOpenChange={setColumnsOpen}
-          columns={columnNames.map(name => ({ name }))}
-          onAddColumn={name =>
-            runColumnMutation(() => createColumn({ variables: { columnData: { calloutID: callout.id, name } } }))
-          }
-          onRenameColumn={(currentName, nextName) =>
-            runColumnMutation(() =>
-              renameColumn({ variables: { columnData: { calloutID: callout.id, currentName, newName: nextName } } })
-            )
-          }
-          onReorderColumns={orderedNames =>
-            runColumnMutation(() =>
-              reorderColumns({ variables: { sortOrderData: { calloutID: callout.id, columnNames: orderedNames } } })
-            )
-          }
-          onDeleteColumn={name =>
-            runColumnMutation(() => deleteColumn({ variables: { columnData: { calloutID: callout.id, name } } }))
-          }
-          // The dialog fires deletes only during its Save sweep (alongside
-          // creates/renames/reorder), never on the trash click — so a delete's
-          // refetch never reseeds and discards the admin's other queued edits.
-        />
-      )}
       {addState !== undefined && (
         // Reuse the existing post creation dialog, pre-targeted at the picked
         // column. The refetch of TaskBoardData (inside the dialog) surfaces the
@@ -280,6 +218,7 @@ function TaskBoardBody({
         <PostContributionAddConnector
           calloutId={callout.id}
           taskColumn={addState.column}
+          isTaskBoard={true}
           inlineTrigger={true}
           // The board can be fullscreen (a z-[100] portal), so the creation dialog
           // must stack above it — otherwise "Add task" opens behind the board and
