@@ -212,7 +212,9 @@ export function useColumnMenu({
             ? CalloutDescriptionDisplayMode.Collapsed
             : CalloutDescriptionDisplayMode.Expanded,
           showPublishDetails: layout.showPublishDetails,
-          sidebar: toWireSidebar(layout.sidebar),
+          // Re-insert the out-of-vocabulary values captured at read time so this
+          // full-replacement write never deletes a newer server vocabulary.
+          sidebar: toWireSidebar(layout.sidebar, layout.sidebarUnknown),
         },
       },
       // Refetch so the local column buffer's `column.layout` reflects the saved

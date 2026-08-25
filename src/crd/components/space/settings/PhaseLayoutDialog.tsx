@@ -30,6 +30,13 @@ export type PhaseLayoutValues = {
   showPublishDetails: boolean;
   /** Ordered sidebar widgets configured for this phase/tab. May be empty. */
   sidebar: SidebarWidgetId[];
+  /**
+   * Stored sidebar values this client bundle does not recognize (newer server
+   * vocabulary). Opaque: the dialog never renders or edits them, but passes
+   * them back through `onSave` untouched so the consumer's full-replacement
+   * write can preserve them.
+   */
+  sidebarUnknown?: Array<{ index: number; value: string }>;
 };
 
 type PhaseLayoutDialogProps = {
@@ -89,7 +96,8 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
   const handleSave = async () => {
     setSaving(true);
     try {
-      await onSave({ descriptionCollapsed, showPublishDetails, sidebar });
+      // sidebarUnknown passes through untouched — see PhaseLayoutValues.
+      await onSave({ descriptionCollapsed, showPublishDetails, sidebar, sidebarUnknown: values.sidebarUnknown });
       onOpenChange(false);
     } catch {
       // Persistence failed — keep the dialog open so the admin can retry. Error surfacing

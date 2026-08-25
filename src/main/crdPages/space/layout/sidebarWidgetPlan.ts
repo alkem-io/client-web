@@ -62,10 +62,46 @@ export function resolveSidebarPlan(sidebar: readonly string[] | null | undefined
   return plan;
 }
 
+/** A stored wire value this client bundle does not recognize, with its original
+ *  position in the stored list. During a staged deploy the server may know a
+ *  13th widget this bundle doesn't; the Layout editor must carry such values
+ *  opaquely across its read→edit→save round trip, because the server treats an
+ *  explicit `sidebar` array as full replacement — writing back the filtered
+ *  list would permanently delete the unknown widget for everyone. */
+export type UnknownSidebarEntry = { index: number; value: string };
+
+/** Collects the wire values `resolveSidebarPlan` would drop as out-of-vocabulary,
+ *  keeping their original indices so `toWireSidebar` can re-insert them. */
+export function extractUnknownSidebarEntries(sidebar: readonly string[] | null | undefined): UnknownSidebarEntry[] {
+  if (!sidebar) return [];
+  const unknown: UnknownSidebarEntry[] = [];
+  sidebar.forEach((value, index) => {
+    if (!WIRE_TO_WIDGET_ID[value]) unknown.push({ index, value });
+  });
+  return unknown;
+}
+
 /** Maps a plain CRD widget-id plan back to the generated wire enum, for the
- *  Settings > Layout editor's save payload. */
-export function toWireSidebar(plan: readonly SidebarWidgetId[]): SidebarWidget[] {
-  return plan.map(widgetId => WIDGET_ID_TO_WIRE[widgetId]);
+ *  Settings > Layout editor's save payload. When `unknownEntries` (from
+ *  `extractUnknownSidebarEntries` at read time) is provided, those values are
+ *  re-inserted at their original indices (clamped to the outgoing length) so
+ *  the full-replacement write never deletes a newer server vocabulary the
+ *  editor couldn't render. */
+export function toWireSidebar(
+  plan: readonly SidebarWidgetId[],
+  unknownEntries?: readonly UnknownSidebarEntry[]
+): SidebarWidget[] {
+  const wire = plan.map(widgetId => WIDGET_ID_TO_WIRE[widgetId]);
+  if (!unknownEntries || unknownEntries.length === 0) return wire;
+  // Ascending insertion keeps the unknown values' relative order intact even
+  // when several were dropped from the same stored list.
+  for (const entry of [...unknownEntries].sort((a, b) => a.index - b.index)) {
+    const index = Math.max(0, Math.min(entry.index, wire.length));
+    // The value is outside this bundle's generated enum by definition; the
+    // server owns the vocabulary, so write it back verbatim.
+    wire.splice(index, 0, entry.value as SidebarWidget);
+  }
+  return wire;
 }
 
 export type SidebarWidgetSkipFlags = Record<SidebarWidgetId, boolean>;

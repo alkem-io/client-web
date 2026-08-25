@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { SidebarWidget } from '@/core/apollo/generated/graphql-schema';
-import { deriveWidgetSkips, resolveSidebarPlan, SIDEBAR_WIDGET_IDS, toWireSidebar } from './sidebarWidgetPlan';
+import {
+  deriveWidgetSkips,
+  extractUnknownSidebarEntries,
+  resolveSidebarPlan,
+  SIDEBAR_WIDGET_IDS,
+  toWireSidebar,
+} from './sidebarWidgetPlan';
 
 describe('resolveSidebarPlan', () => {
   it('maps wire enum values to CRD widget ids, preserving order', () => {
@@ -39,6 +45,40 @@ describe('toWireSidebar', () => {
   it('round-trips every widget id in the vocabulary', () => {
     const wire = toWireSidebar(SIDEBAR_WIDGET_IDS);
     expect(resolveSidebarPlan(wire)).toEqual(SIDEBAR_WIDGET_IDS);
+  });
+
+  it('re-inserts unknown wire values at their original indices (non-destructive round trip)', () => {
+    const stored = [SidebarWidget.Intent, 'FUTURE_WIDGET', SidebarWidget.Index];
+    const plan = resolveSidebarPlan(stored);
+    const unknown = extractUnknownSidebarEntries(stored);
+    expect(toWireSidebar(plan, unknown)).toEqual(stored);
+  });
+
+  it('keeps multiple unknown values in relative order, clamping indices past the end', () => {
+    const stored = ['ALPHA_WIDGET', SidebarWidget.Events, 'OMEGA_WIDGET'];
+    const unknown = extractUnknownSidebarEntries(stored);
+    // Round trip untouched → identical.
+    expect(toWireSidebar(resolveSidebarPlan(stored), unknown)).toEqual(stored);
+    // Admin removed the only known widget → unknown entries survive, order kept.
+    expect(toWireSidebar([], unknown)).toEqual(['ALPHA_WIDGET', 'OMEGA_WIDGET']);
+  });
+
+  it('without unknown entries behaves as a plain mapping', () => {
+    expect(toWireSidebar(['events'], [])).toEqual([SidebarWidget.Events]);
+  });
+});
+
+describe('extractUnknownSidebarEntries', () => {
+  it('captures only out-of-vocabulary values, with their original indices', () => {
+    expect(extractUnknownSidebarEntries([SidebarWidget.Intent, 'FUTURE_WIDGET', SidebarWidget.Index])).toEqual([
+      { index: 1, value: 'FUTURE_WIDGET' },
+    ]);
+  });
+
+  it('returns an empty list for a fully-recognized or absent stored list', () => {
+    expect(extractUnknownSidebarEntries([SidebarWidget.Intent])).toEqual([]);
+    expect(extractUnknownSidebarEntries(null)).toEqual([]);
+    expect(extractUnknownSidebarEntries(undefined)).toEqual([]);
   });
 });
 

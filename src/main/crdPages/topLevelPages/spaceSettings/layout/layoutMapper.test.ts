@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { toWireSidebar } from '@/main/crdPages/space/layout/sidebarWidgetPlan';
 import { type LayoutCollaboration, mapCollaborationToLayoutColumns } from './layoutMapper';
 
 /**
@@ -165,6 +166,23 @@ describe('mapCollaborationToLayoutColumns', () => {
         'L1'
       );
       expect(columns.find(c => c.id === 'state-1')?.layout?.sidebar).toEqual(['intent', 'index']);
+    });
+
+    test('keeps the dropped unknown value in layout.sidebarUnknown so the save round trip is non-destructive', () => {
+      const columns = mapCollaborationToLayoutColumns(
+        buildWithSidebar({ 'state-1': ['INTENT', 'NOT_A_WIDGET', 'INDEX'] }),
+        'L1'
+      );
+      const layout = columns.find(c => c.id === 'state-1')?.layout;
+      expect(layout?.sidebarUnknown).toEqual([{ index: 1, value: 'NOT_A_WIDGET' }]);
+      // The save path (useColumnMenu.onSaveLayout) re-inserts them via toWireSidebar:
+      // an unchanged edit writes back exactly what was stored.
+      expect(toWireSidebar(layout?.sidebar ?? [], layout?.sidebarUnknown)).toEqual(['INTENT', 'NOT_A_WIDGET', 'INDEX']);
+    });
+
+    test('a fully-recognized stored list yields no unknown entries', () => {
+      const columns = mapCollaborationToLayoutColumns(buildWithSidebar({ 'state-1': ['EVENTS', 'INTENT'] }), 'L1');
+      expect(columns.find(c => c.id === 'state-1')?.layout?.sidebarUnknown).toEqual([]);
     });
 
     test('absent sidebar key → layout.sidebar empty (defensive; the read normalization elsewhere supplies the real default)', () => {

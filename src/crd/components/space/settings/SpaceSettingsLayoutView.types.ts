@@ -106,6 +106,13 @@ export type PhaseLayoutInput = {
   showPublishDetails: boolean;
   /** Ordered sidebar widgets configured for this phase/tab (FR-014). May be empty (FR-016). */
   sidebar: SidebarWidgetId[];
+  /**
+   * Stored sidebar values this client bundle does not recognize (a newer server
+   * vocabulary during a staged deploy), with their original list indices.
+   * Opaque passthrough: never rendered or edited, but MUST be carried back on
+   * save so the full-replacement write never deletes them for everyone.
+   */
+  sidebarUnknown?: Array<{ index: number; value: string }>;
 };
 
 export type ColumnMenuActions = {
