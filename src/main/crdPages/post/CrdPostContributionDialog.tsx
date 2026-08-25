@@ -372,7 +372,11 @@ export function CrdPostContributionDialog({
         try {
           await moveContributionToCallout({
             variables: { contributionId, calloutId: targetCalloutId },
-            refetchQueries: ['CalloutContributions', 'CalloutDetails'],
+            // Also refresh any Tasks board views: the server may have added or
+            // dropped the task-column classification (moving a post into a board
+            // makes it a task; moving a task out makes it a plain post), so both
+            // the source and destination boards must re-render.
+            refetchQueries: ['CalloutContributions', 'CalloutDetails', 'TaskBoardData'],
           });
           await refetchSiblingCallouts();
           baselineCalloutIdRef.current = targetCalloutId;
