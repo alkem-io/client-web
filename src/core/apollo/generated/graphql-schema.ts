@@ -1029,6 +1029,7 @@ export enum AuthorizationPrivilege {
   LicenseReset = 'LICENSE_RESET',
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
+  MoveTask = 'MOVE_TASK',
   PlatformAdmin = 'PLATFORM_ADMIN',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
@@ -1171,6 +1172,8 @@ export type Callout = {
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
+  /** Per-column task counts for a Tasks board callout, in the board-defined column order and zero-filled; null when the callout is not a Tasks board. */
+  taskColumnCounts?: Maybe<Array<TaskColumnCount>>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -1191,6 +1194,8 @@ export type CalloutContribution = {
   __typename?: 'CalloutContribution';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Classification of this Contribution, present only for a task on a Tasks board (carries the task column). */
+  classification?: Maybe<Classification>;
   /** The CollaboraDocument that was contributed. */
   collaboraDocument?: Maybe<CollaboraDocument>;
   /** The user that created this Document */
@@ -2085,6 +2090,8 @@ export type CreateCalloutContributionData = {
   post?: Maybe<CreatePostData>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: Maybe<Scalars['Float']['output']>;
+  /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
+  taskColumn?: Maybe<Scalars['String']['output']>;
   type: CalloutContributionType;
   whiteboard?: Maybe<CreateWhiteboardData>;
 };
@@ -2113,6 +2120,8 @@ export type CreateCalloutContributionInput = {
   post?: InputMaybe<CreatePostInput>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
+  taskColumn?: InputMaybe<Scalars['String']['input']>;
   type: CalloutContributionType;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
@@ -2173,6 +2182,8 @@ export type CreateCalloutData = {
   settings?: Maybe<CreateCalloutSettingsData>;
   /** The sort order to assign to this Callout. */
   sortOrder?: Maybe<Scalars['Float']['output']>;
+  /** When present, creates this Callout as a Tasks board. Requires a POST-only contribution type. */
+  taskBoard?: Maybe<CreateCalloutTaskBoardData>;
 };
 
 export type CreateCalloutFramingData = {
@@ -2217,6 +2228,8 @@ export type CreateCalloutInput = {
   settings?: InputMaybe<CreateCalloutSettingsInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** When present, creates this Callout as a Tasks board. Requires a POST-only contribution type. */
+  taskBoard?: InputMaybe<CreateCalloutTaskBoardInput>;
 };
 
 export type CreateCalloutOnCalloutsSetInput = {
@@ -2233,6 +2246,8 @@ export type CreateCalloutOnCalloutsSetInput = {
   settings?: InputMaybe<CreateCalloutSettingsInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** When present, creates this Callout as a Tasks board. Requires a POST-only contribution type. */
+  taskBoard?: InputMaybe<CreateCalloutTaskBoardInput>;
 };
 
 export type CreateCalloutSelectionSettingsData = {
@@ -2305,6 +2320,17 @@ export type CreateCalloutSettingsInput = {
   framing?: InputMaybe<CreateCalloutSettingsFramingInput>;
   /** Visibility of the Callout. Defaults to PUBLISHED. */
   visibility?: InputMaybe<CalloutVisibility>;
+};
+
+export type CreateCalloutTaskBoardData = {
+  __typename?: 'CreateCalloutTaskBoardData';
+  /** The ordered columns of the Tasks board. The first is the default column. Omit to seed the default set. */
+  columns?: Maybe<Array<Scalars['String']['output']>>;
+};
+
+export type CreateCalloutTaskBoardInput = {
+  /** The ordered columns of the Tasks board. The first is the default column. Omit to seed the default set. */
+  columns?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type CreateCalloutsSetData = {
@@ -2406,6 +2432,8 @@ export type CreateContributionOnCalloutInput = {
   post?: InputMaybe<CreatePostInput>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
+  taskColumn?: InputMaybe<Scalars['String']['input']>;
   type: CalloutContributionType;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
@@ -2798,6 +2826,13 @@ export type CreateTagsetOnProfileInput = {
   type?: InputMaybe<TagsetType>;
 };
 
+export type CreateTaskColumnOnCalloutInput = {
+  /** The Tasks board Callout to add a column to. */
+  calloutID: Scalars['UUID']['input'];
+  /** The name of the new column. Appended after the last column. */
+  name: Scalars['String']['input'];
+};
+
 export type CreateTemplateContentSpaceInput = {
   about: CreateSpaceAboutInput;
   collaborationData: CreateCollaborationInput;
@@ -3104,6 +3139,13 @@ export type DeleteStateOnInnovationFlowInput = {
 
 export type DeleteStorageBuckeetInput = {
   ID: Scalars['UUID']['input'];
+};
+
+export type DeleteTaskColumnOnCalloutInput = {
+  /** The Tasks board Callout to remove a column from. */
+  calloutID: Scalars['UUID']['input'];
+  /** The column to remove. Matched case-insensitively; the first (default) column cannot be removed and its tasks reflow to the default. */
+  name: Scalars['String']['input'];
 };
 
 export type DeleteTemplateInput = {
@@ -5055,6 +5097,13 @@ export type MoveSpaceL2ToSpaceL1Input = {
   targetSpaceL1ID: Scalars['UUID']['input'];
 };
 
+export type MoveTaskToColumnInput = {
+  /** The destination column on the Tasks board. Matched case-insensitively to an existing column. */
+  column: Scalars['String']['input'];
+  /** The task (Callout Contribution) to move. */
+  contributionID: Scalars['UUID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /** Adds a Classification to a Space by copying a Classification Template (Step A). */
@@ -5197,6 +5246,8 @@ export type Mutation = {
   createSubspace: Space;
   /** Creates a new Tagset on the specified Profile */
   createTagsetOnProfile: Tagset;
+  /** Add a column to a Tasks board Callout. */
+  createTaskColumnOnCallout: Callout;
   /** Creates a new Template on the specified TemplatesSet. */
   createTemplate: Template;
   /** Creates a new Template on the specified TemplatesSet using the provided ContentSpace as content. */
@@ -5253,6 +5304,8 @@ export type Mutation = {
   deleteStateOnInnovationFlow: InnovationFlowState;
   /** Deletes a Storage Bucket */
   deleteStorageBucket: StorageBucket;
+  /** Remove a column from a Tasks board Callout. */
+  deleteTaskColumnOnCallout: Callout;
   /** Deletes the specified Template. */
   deleteTemplate: Template;
   /** Deletes the specified User. */
@@ -5305,6 +5358,8 @@ export type Mutation = {
   moveSpaceL1ToSpaceL2: Space;
   /** Move an L2 sub-subspace to become an L2 subspace under a target L1 in a different L0 space.       The subspace stays at level 2 but changes both its parent L1 and its top-level L0.       All community roles (including admins) are cleared and pending invitations dropped.       Platform access rules are recomputed from the new parent hierarchy.       Requires platform admin privileges. */
   moveSpaceL2ToSpaceL1: Space;
+  /** Moves a task to another column on its Tasks board. Authorized as MOVE_TASK on the parent Callout, so a board member can move any task. */
+  moveTaskToColumn: CalloutContribution;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
@@ -5479,6 +5534,10 @@ export type Mutation = {
   updateSubspacesSortOrder: Array<Space>;
   /** Updates the specified Tagset. */
   updateTagset: Tagset;
+  /** Rename a column on a Tasks board Callout. */
+  updateTaskColumnOnCallout: Callout;
+  /** Reorder the columns of a Tasks board Callout. */
+  updateTaskColumnsSortOrderOnCallout: Callout;
   /** Updates the specified Template. */
   updateTemplate: Template;
   /** Updates the TemplateContentSpace. */
@@ -5754,6 +5813,10 @@ export type MutationCreateTagsetOnProfileArgs = {
   tagsetData: CreateTagsetOnProfileInput;
 };
 
+export type MutationCreateTaskColumnOnCalloutArgs = {
+  columnData: CreateTaskColumnOnCalloutInput;
+};
+
 export type MutationCreateTemplateArgs = {
   templateData: CreateTemplateOnTemplatesSetInput;
 };
@@ -5866,6 +5929,10 @@ export type MutationDeleteStorageBucketArgs = {
   deleteData: DeleteStorageBuckeetInput;
 };
 
+export type MutationDeleteTaskColumnOnCalloutArgs = {
+  columnData: DeleteTaskColumnOnCalloutInput;
+};
+
 export type MutationDeleteTemplateArgs = {
   deleteData: DeleteTemplateInput;
 };
@@ -5971,6 +6038,10 @@ export type MutationMoveSpaceL1ToSpaceL2Args = {
 
 export type MutationMoveSpaceL2ToSpaceL1Args = {
   moveData: MoveSpaceL2ToSpaceL1Input;
+};
+
+export type MutationMoveTaskToColumnArgs = {
+  moveData: MoveTaskToColumnInput;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -6314,6 +6385,14 @@ export type MutationUpdateSubspacesSortOrderArgs = {
 
 export type MutationUpdateTagsetArgs = {
   updateData: UpdateTagsetInput;
+};
+
+export type MutationUpdateTaskColumnOnCalloutArgs = {
+  columnData: UpdateTaskColumnOnCalloutInput;
+};
+
+export type MutationUpdateTaskColumnsSortOrderOnCalloutArgs = {
+  sortOrderData: UpdateTaskColumnsSortOrderOnCalloutInput;
 };
 
 export type MutationUpdateTemplateArgs = {
@@ -9025,6 +9104,7 @@ export enum TagsetReservedName {
   FlowState = 'FLOW_STATE',
   Keywords = 'KEYWORDS',
   Skills = 'SKILLS',
+  Task = 'TASK',
 }
 
 export type TagsetTemplate = {
@@ -9072,6 +9152,14 @@ export type Task = {
   status: TaskStatus;
   /** TBD */
   type?: Maybe<Scalars['String']['output']>;
+};
+
+export type TaskColumnCount = {
+  __typename?: 'TaskColumnCount';
+  /** The Tasks board column, in the board-defined order. */
+  column: Scalars['String']['output'];
+  /** The number of tasks currently in this column. */
+  count: Scalars['Int']['output'];
 };
 
 /** The current status of the task */
@@ -9892,6 +9980,22 @@ export type UpdateTagsetInput = {
   ID: Scalars['UUID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   tags: Array<Scalars['String']['input']>;
+};
+
+export type UpdateTaskColumnOnCalloutInput = {
+  /** The Tasks board Callout whose column is being renamed. */
+  calloutID: Scalars['UUID']['input'];
+  /** The current column name. Matched case-insensitively to an existing column. */
+  currentName: Scalars['String']['input'];
+  /** The new column name. Tasks in the column follow the rename. */
+  newName: Scalars['String']['input'];
+};
+
+export type UpdateTaskColumnsSortOrderOnCalloutInput = {
+  /** The Tasks board Callout whose columns are being reordered. */
+  calloutID: Scalars['UUID']['input'];
+  /** Every existing column exactly once, in the new left-to-right order. Matched case-insensitively. */
+  columnNames: Array<Scalars['String']['input']>;
 };
 
 export type UpdateTemplateContentSpaceInput = {
@@ -14855,6 +14959,15 @@ export type CalloutContentQuery = {
             postDescription?: string | undefined;
             whiteboardContent?: string | undefined;
           };
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                tagsets?:
+                  | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                  | undefined;
+              }
+            | undefined;
           settings: {
             __typename?: 'CalloutSettings';
             visibility: CalloutVisibility;
@@ -16618,6 +16731,7 @@ export type CalloutPostCreatedSubscription = {
 export type CreatePostOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   post: CreatePostInput;
+  taskColumn?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type CreatePostOnCalloutMutation = {
@@ -33350,6 +33464,22 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Callout';
                 id: string;
+                classification?:
+                  | {
+                      __typename?: 'Classification';
+                      id: string;
+                      tagsets?:
+                        | Array<{
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
@@ -34149,6 +34279,22 @@ export type SpaceTemplateContentQuery = {
 export type CalloutTemplateContentFragment = {
   __typename?: 'Callout';
   id: string;
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      }
+    | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -37168,6 +37314,385 @@ export type SpaceCollectionSubspacesQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type TaskBoardCalloutFragment = {
+  __typename?: 'Callout';
+  id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  settings: {
+    __typename?: 'CalloutSettings';
+    contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+  };
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }> | undefined;
+      }
+    | undefined;
+  taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+};
+
+export type TaskBoardContributionFragment = {
+  __typename?: 'CalloutContribution';
+  id: string;
+  sortOrder: number;
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+      }
+    | undefined;
+  post?:
+    | {
+        __typename?: 'Post';
+        id: string;
+        createdBy?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        };
+        comments: { __typename?: 'Room'; id: string; messagesCount: number };
+      }
+    | undefined;
+};
+
+export type TaskBoardDataQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type TaskBoardDataQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          contributions: Array<{
+            __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
+            classification?:
+              | {
+                  __typename?: 'Classification';
+                  id: string;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                }
+              | undefined;
+            post?:
+              | {
+                  __typename?: 'Post';
+                  id: string;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile?:
+                          | {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  };
+                  comments: { __typename?: 'Room'; id: string; messagesCount: number };
+                }
+              | undefined;
+          }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          settings: {
+            __typename?: 'CalloutSettings';
+            contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+          };
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                tagsets?:
+                  | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                  | undefined;
+              }
+            | undefined;
+          taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MoveTaskToColumnMutationVariables = Exact<{
+  moveData: MoveTaskToColumnInput;
+}>;
+
+export type MoveTaskToColumnMutation = {
+  __typename?: 'Mutation';
+  moveTaskToColumn: {
+    __typename?: 'CalloutContribution';
+    id: string;
+    sortOrder: number;
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+          comments: { __typename?: 'Room'; id: string; messagesCount: number };
+        }
+      | undefined;
+  };
+};
+
+export type CreateTaskColumnOnCalloutMutationVariables = Exact<{
+  columnData: CreateTaskColumnOnCalloutInput;
+}>;
+
+export type CreateTaskColumnOnCalloutMutation = {
+  __typename?: 'Mutation';
+  createTaskColumnOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+  };
+};
+
+export type UpdateTaskColumnOnCalloutMutationVariables = Exact<{
+  columnData: UpdateTaskColumnOnCalloutInput;
+}>;
+
+export type UpdateTaskColumnOnCalloutMutation = {
+  __typename?: 'Mutation';
+  updateTaskColumnOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    contributions: Array<{
+      __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
+      classification?:
+        | {
+            __typename?: 'Classification';
+            id: string;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            };
+            comments: { __typename?: 'Room'; id: string; messagesCount: number };
+          }
+        | undefined;
+    }>;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+  };
+};
+
+export type DeleteTaskColumnOnCalloutMutationVariables = Exact<{
+  columnData: DeleteTaskColumnOnCalloutInput;
+}>;
+
+export type DeleteTaskColumnOnCalloutMutation = {
+  __typename?: 'Mutation';
+  deleteTaskColumnOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    contributions: Array<{
+      __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
+      classification?:
+        | {
+            __typename?: 'Classification';
+            id: string;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            };
+            comments: { __typename?: 'Room'; id: string; messagesCount: number };
+          }
+        | undefined;
+    }>;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+  };
+};
+
+export type UpdateTaskColumnsSortOrderOnCalloutMutationVariables = Exact<{
+  sortOrderData: UpdateTaskColumnsSortOrderOnCalloutInput;
+}>;
+
+export type UpdateTaskColumnsSortOrderOnCalloutMutation = {
+  __typename?: 'Mutation';
+  updateTaskColumnsSortOrderOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
 

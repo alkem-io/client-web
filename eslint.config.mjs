@@ -3,7 +3,7 @@ import reactCompilerPlugin from 'eslint-plugin-react-compiler';
 
 export default [
   {
-    ignores: ['node_modules/', 'build/', 'dist/', 'coverage/', '**/*.test_.ts', 'src/crd/app/**'],
+    ignores: ['node_modules/', 'build/', 'dist/', 'coverage/', 'tests/', '**/*.test_.ts', 'src/crd/app/**'],
   },
   {
     files: ['**/*.ts', '**/*.tsx'],

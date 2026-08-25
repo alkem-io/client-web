@@ -83,6 +83,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/space/space.de.json'),
     fr: () => import('@/crd/i18n/space/space.fr.json'),
   },
+  'crd-taskBoard': {
+    en: () => import('@/crd/i18n/taskBoard/taskBoard.en.json'),
+    es: () => import('@/crd/i18n/taskBoard/taskBoard.es.json'),
+    nl: () => import('@/crd/i18n/taskBoard/taskBoard.nl.json'),
+    bg: () => import('@/crd/i18n/taskBoard/taskBoard.bg.json'),
+    de: () => import('@/crd/i18n/taskBoard/taskBoard.de.json'),
+    fr: () => import('@/crd/i18n/taskBoard/taskBoard.fr.json'),
+  },
   'crd-markdown': {
     en: () => import('@/crd/i18n/markdown/markdown.en.json'),
     es: () => import('@/crd/i18n/markdown/markdown.es.json'),

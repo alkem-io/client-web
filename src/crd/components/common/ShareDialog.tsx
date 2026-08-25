@@ -29,6 +29,8 @@ export type ShareDialogProps = {
   shareOnAlkemioSlot?: ReactNode;
   children?: ReactNode;
   className?: string;
+  /** Escape hatch to raise the overlay's stacking (e.g. above the fullscreen task board). */
+  overlayClassName?: string;
 };
 
 export function ShareDialog({
@@ -39,6 +41,7 @@ export function ShareDialog({
   shareOnAlkemioSlot,
   children,
   className,
+  overlayClassName,
 }: ShareDialogProps) {
   const { t } = useTranslation('crd-common');
   const [copied, setCopied] = useState(false);
@@ -90,7 +93,7 @@ export function ShareDialog({
       {/* z-[70] keeps the share dialog above whiteboard / memo editors (z-[60]) and below confirms (z-[90]). */}
       <DialogContent
         className={cn('sm:max-w-md z-[70] max-h-[90vh] flex flex-col overflow-hidden', className)}
-        overlayClassName="z-[70]"
+        overlayClassName={cn('z-[70]', overlayClassName)}
         closeLabel={t('close')}
       >
         <DialogHeader className="shrink-0">

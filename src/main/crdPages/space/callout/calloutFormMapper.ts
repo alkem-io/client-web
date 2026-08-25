@@ -4,6 +4,7 @@ import {
   CalloutFramingType,
   CalloutSelectionMode,
   CalloutVisibility,
+  type CreateCalloutTaskBoardInput,
   PollResultsDetail,
   PollResultsVisibility,
   type UpdateCalloutEntityInput,
@@ -116,6 +117,12 @@ export type CalloutCreationInput = Omit<CalloutCreationType, 'framing'> & {
   framing: CalloutCreationType['framing'] & {
     memo?: MemoFieldSubmittedValues;
   };
+  /**
+   * When present, creates this callout as a Tasks board. The domain
+   * `CalloutCreationType` omits this additive field, so it lives on the local
+   * extension; the server input (`CreateCalloutOnCalloutsSetInput`) accepts it.
+   */
+  taskBoard?: CreateCalloutTaskBoardInput;
 };
 
 export type MapFormResult = {
@@ -145,7 +152,9 @@ export type MapFormResult = {
  */
 export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options: MapFormOptions): MapFormResult => {
   const framingType = framingChipToServer(values.framingChip);
-  const responseType = responseTypeToServer(values.responseType);
+  // A Tasks board is a POST-only callout regardless of the picked response chip —
+  // the server requires `allowedTypes == [POST]` alongside `taskBoard`.
+  const responseType = values.taskBoard ? CalloutContributionType.Post : responseTypeToServer(values.responseType);
   // `values.tags` is already `string[]` from `TagsInput`. Dedup defensively.
   const tagsArray = Array.from(new Set(values.tags.map(t => t.trim()).filter(Boolean)));
   const hasResponseType = responseType !== undefined;
@@ -218,6 +227,14 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     },
     sendNotification: values.notifyMembers && options.visibility !== CalloutVisibility.Draft,
   };
+
+  // Tasks board: when the form carries explicit columns (a board template was
+  // applied), send them so the new board reproduces the template's column set;
+  // otherwise send an empty input so the server seeds the default columns.
+  if (values.taskBoard) {
+    const columns = values.taskBoardColumns.map(column => column.trim()).filter(Boolean);
+    callout.taskBoard = columns.length > 0 ? { columns } : {};
+  }
 
   // Contribution defaults — spec FR-40..46, D5. Mirror MUI's response-type
   // filter (CreateCalloutDialog `contributionDefaults` block): only send

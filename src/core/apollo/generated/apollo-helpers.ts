@@ -727,6 +727,7 @@ export type CalloutKeySpecifier = (
   | 'reactionsSummary'
   | 'settings'
   | 'sortOrder'
+  | 'taskColumnCounts'
   | 'updatedDate'
   | CalloutKeySpecifier
 )[];
@@ -751,10 +752,12 @@ export type CalloutFieldPolicy = {
   reactionsSummary?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  taskColumnCounts?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionKeySpecifier = (
   | 'authorization'
+  | 'classification'
   | 'collaboraDocument'
   | 'createdBy'
   | 'createdDate'
@@ -769,6 +772,7 @@ export type CalloutContributionKeySpecifier = (
 )[];
 export type CalloutContributionFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  classification?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1436,6 +1440,7 @@ export type CreateCalloutContributionDataKeySpecifier = (
   | 'memo'
   | 'post'
   | 'sortOrder'
+  | 'taskColumn'
   | 'type'
   | 'whiteboard'
   | CreateCalloutContributionDataKeySpecifier
@@ -1446,6 +1451,7 @@ export type CreateCalloutContributionDataFieldPolicy = {
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  taskColumn?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1493,6 +1499,7 @@ export type CreateCalloutDataKeySpecifier = (
   | 'sendNotification'
   | 'settings'
   | 'sortOrder'
+  | 'taskBoard'
   | CreateCalloutDataKeySpecifier
 )[];
 export type CreateCalloutDataFieldPolicy = {
@@ -1504,6 +1511,7 @@ export type CreateCalloutDataFieldPolicy = {
   sendNotification?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  taskBoard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFramingDataKeySpecifier = (
   | 'collaboraDocument'
@@ -1569,6 +1577,10 @@ export type CreateCalloutSettingsFramingDataFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   selection?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutTaskBoardDataKeySpecifier = ('columns' | CreateCalloutTaskBoardDataKeySpecifier)[];
+export type CreateCalloutTaskBoardDataFieldPolicy = {
+  columns?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutsSetDataKeySpecifier = ('calloutsData' | CreateCalloutsSetDataKeySpecifier)[];
 export type CreateCalloutsSetDataFieldPolicy = {
@@ -3066,6 +3078,7 @@ export type MutationKeySpecifier = (
   | 'createStateOnInnovationFlow'
   | 'createSubspace'
   | 'createTagsetOnProfile'
+  | 'createTaskColumnOnCallout'
   | 'createTemplate'
   | 'createTemplateFromContentSpace'
   | 'createTemplateFromSpace'
@@ -3094,6 +3107,7 @@ export type MutationKeySpecifier = (
   | 'deleteSpace'
   | 'deleteStateOnInnovationFlow'
   | 'deleteStorageBucket'
+  | 'deleteTaskColumnOnCallout'
   | 'deleteTemplate'
   | 'deleteUser'
   | 'deleteUserGroup'
@@ -3120,6 +3134,7 @@ export type MutationKeySpecifier = (
   | 'moveSpaceL1ToSpaceL0'
   | 'moveSpaceL1ToSpaceL2'
   | 'moveSpaceL2ToSpaceL1'
+  | 'moveTaskToColumn'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
@@ -3207,6 +3222,8 @@ export type MutationKeySpecifier = (
   | 'updateSubspacePinned'
   | 'updateSubspacesSortOrder'
   | 'updateTagset'
+  | 'updateTaskColumnOnCallout'
+  | 'updateTaskColumnsSortOrderOnCallout'
   | 'updateTemplate'
   | 'updateTemplateContentSpace'
   | 'updateTemplateDefault'
@@ -3298,6 +3315,7 @@ export type MutationFieldPolicy = {
   createStateOnInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
+  createTaskColumnOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplateFromContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplateFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3326,6 +3344,7 @@ export type MutationFieldPolicy = {
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteStateOnInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteTaskColumnOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3352,6 +3371,7 @@ export type MutationFieldPolicy = {
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveTaskToColumn?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3439,6 +3459,8 @@ export type MutationFieldPolicy = {
   updateSubspacePinned?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSubspacesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateTaskColumnOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateTaskColumnsSortOrderOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateDefault?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5165,6 +5187,11 @@ export type TaskFieldPolicy = {
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type TaskColumnCountKeySpecifier = ('column' | 'count' | TaskColumnCountKeySpecifier)[];
+export type TaskColumnCountFieldPolicy = {
+  column?: FieldPolicy<any> | FieldReadFunction<any>;
+  count?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type TemplateKeySpecifier = (
   | 'authorization'
   | 'callout'
@@ -6584,6 +6611,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CreateCalloutSettingsFramingDataKeySpecifier);
     fields?: CreateCalloutSettingsFramingDataFieldPolicy;
   };
+  CreateCalloutTaskBoardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutTaskBoardDataKeySpecifier
+      | (() => undefined | CreateCalloutTaskBoardDataKeySpecifier);
+    fields?: CreateCalloutTaskBoardDataFieldPolicy;
+  };
   CreateCalloutsSetData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutsSetDataKeySpecifier | (() => undefined | CreateCalloutsSetDataKeySpecifier);
     fields?: CreateCalloutsSetDataFieldPolicy;
@@ -7603,6 +7637,10 @@ export type StrictTypedTypePolicies = {
   Task?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TaskKeySpecifier | (() => undefined | TaskKeySpecifier);
     fields?: TaskFieldPolicy;
+  };
+  TaskColumnCount?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TaskColumnCountKeySpecifier | (() => undefined | TaskColumnCountKeySpecifier);
+    fields?: TaskColumnCountFieldPolicy;
   };
   Template?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplateKeySpecifier | (() => undefined | TemplateKeySpecifier);
