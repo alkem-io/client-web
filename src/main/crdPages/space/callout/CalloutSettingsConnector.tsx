@@ -27,6 +27,7 @@ import { CollaboraFramingReplaceConnector } from './CollaboraFramingReplaceConne
 import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
 import { mapCalloutToDeletionSummary } from './dataMappers/mapCalloutToDeletionSummary';
 import { deriveCalloutMenuVisibility } from './deriveCalloutMenuVisibility';
+import { TaskBoardColumnsConnector } from './TaskBoardColumnsConnector';
 
 type CalloutSettingsConnectorProps = {
   callout: CalloutDetailsModelExtended;
@@ -87,6 +88,7 @@ export function CalloutSettingsConnector({
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [replaceOpen, setReplaceOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [columnsOpen, setColumnsOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
 
   const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
@@ -231,6 +233,7 @@ export function CalloutSettingsConnector({
         saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
         saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
         onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
+        onManageColumns={isTaskBoard && perms.editable ? () => setColumnsOpen(true) : undefined}
         onReplace={perms.showReplace ? () => setReplaceOpen(true) : undefined}
         onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
         onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
@@ -290,6 +293,10 @@ export function CalloutSettingsConnector({
         loading={sortLoading || updatingSort}
         onConfirm={handleSortConfirm}
       />
+
+      {isTaskBoard && perms.editable && (
+        <TaskBoardColumnsConnector calloutId={callout.id} open={columnsOpen} onOpenChange={setColumnsOpen} />
+      )}
 
       <TemplateFormDialog
         open={saveAs.form.open}

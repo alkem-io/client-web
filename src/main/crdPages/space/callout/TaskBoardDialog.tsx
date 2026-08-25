@@ -6,6 +6,7 @@ import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogTitle } from '@/crd/primitives/dialog';
 import { TaskBoardConnector } from './TaskBoardConnector';
+import { TaskBoardManageColumnsButton } from './TaskBoardManageColumnsButton';
 
 type TaskBoardDialogProps = {
   calloutId: string;
@@ -59,6 +60,13 @@ export function TaskBoardDialog({ calloutId, title, open, onOpenChange, onOpenTa
           </DialogDescription>
           <div className="flex items-center gap-1 shrink-0">
             <CrdFullscreenButton label={t('fullscreen')} forceExit={!open} />
+            {/* Admins can manage columns without leaving the board view — same
+                UPDATE-privilege gate as the 3-dots menu item. Renders null for
+                non-admins. Placed after the fullscreen control. */}
+            <TaskBoardManageColumnsButton
+              calloutId={calloutId}
+              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full"
+            />
             <DialogClose asChild={true}>
               <Button
                 variant="ghost"

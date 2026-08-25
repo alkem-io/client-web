@@ -19,6 +19,8 @@ type PostContributionConnectorProps = {
   /** Raise the edit dialog above a custom overlay (e.g. the fullscreen task board). */
   overlayClassName?: string;
   contentClassName?: string;
+  /** When editing a task on a Tasks board, use task-specific wording ("Edit task"). */
+  isTaskBoard?: boolean;
 };
 
 export function PostContributionConnector({
@@ -31,6 +33,7 @@ export function PostContributionConnector({
   onDeleted,
   overlayClassName,
   contentClassName,
+  isTaskBoard,
 }: PostContributionConnectorProps) {
   if (!open) return null;
   return (
@@ -51,6 +54,7 @@ export function PostContributionConnector({
         onDeleted={onDeleted}
         overlayClassName={overlayClassName}
         contentClassName={contentClassName}
+        isTaskBoard={isTaskBoard}
       />
     </StorageConfigContextProvider>
   );

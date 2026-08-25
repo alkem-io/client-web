@@ -288,6 +288,10 @@
     "postTagsLabel": "Étiquettes",
     "postSave": "Enregistrer",
     "postCreate": "Publier",
+    "createTask": "Créer une tâche",
+    "editTask": "Modifier la tâche",
+    "taskCreate": "Créer une tâche",
+    "tasksHeader": "Tâches ({{count}})",
     "postDelete": "Supprimer la publication",
     "postDeleteConfirmTitle": "Supprimer cette publication ?",
     "postDeleteConfirmDescription": "La publication et ses commentaires seront définitivement supprimés. Cette action est irréversible.",
@@ -502,6 +506,9 @@
     "comments_other": "{{count}} commentaires seront supprimés",
     "success": "La $t(common.callout) « {{title}} » a été supprimée.",
     "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+  },
+  "deleteTask": {
+    "title": "Supprimer cette tâche ?"
   },
   "deleteContribution": {
     "title": "Supprimer cette contribution ?",
@@ -818,6 +825,7 @@
     "seeFullDescription": "Voir la description complète"
   },
   "postPreview": {
+    "createdBy": "Créé par",
     "label": "Aperçu de la contribution sélectionnée",
     "edit": "Modifier la réponse",
     "share": "Partager la réponse",

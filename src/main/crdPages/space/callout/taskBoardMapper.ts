@@ -35,13 +35,12 @@ function toBoardContribution(contribution: TaskBoardContributionFragment) {
 /** Renders a single contribution into the presentational card model. */
 function toCardModel(contribution: TaskBoardContributionFragment): TaskBoardCardModel {
   const post = contribution.post;
-  const authorProfile = post?.createdBy?.profile;
   return {
     id: contribution.id,
     title: post?.profile.displayName ?? '',
-    author: authorProfile
-      ? { name: authorProfile.displayName, avatarUrl: authorProfile.avatar?.uri || undefined }
-      : undefined,
+    // The creator is intentionally NOT shown on a task card: tasks can have
+    // multiple assignees, and the creator (e.g. a project lead) is usually not
+    // one of them — so a single "author" avatar is misleading here.
     description: post?.profile.description || undefined,
     tags: post?.profile.tagset?.tags,
     commentCount: post?.comments.messagesCount,

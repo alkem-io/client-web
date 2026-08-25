@@ -105,7 +105,13 @@ export function ToolbarLinkDialog({ editor }: ToolbarLinkDialogProps) {
           <Link className="w-4 h-4" aria-hidden="true" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="z-[70] w-80 p-3 space-y-2" align="start" onOpenAutoFocus={e => e.preventDefault()}>
+      <PopoverContent
+        // z-[130]: above the elevated focused-task edit dialog (z-[120]) so the
+        // link popover isn't buried behind it (see ToolbarImageDialog).
+        className="z-[130] w-80 p-3 space-y-2"
+        align="start"
+        onOpenAutoFocus={e => e.preventDefault()}
+      >
         <label className="text-caption font-medium text-foreground" htmlFor="toolbar-link-url">
           {t('editor.link.url')}
         </label>
