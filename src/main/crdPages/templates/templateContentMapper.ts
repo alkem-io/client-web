@@ -23,6 +23,7 @@ import type {
 } from '@/crd/components/templates/types';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
+import { mapGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
 
 /**
  * The `whiteboardContent` to send on a template UPDATE. Non-empty (redrawn) content is always
@@ -76,6 +77,7 @@ type CalloutContentGql = NonNullable<TemplateContentTemplate['callout']>;
 type WhiteboardContentGql = NonNullable<TemplateContentTemplate['whiteboard']>;
 type CommunityGuidelinesContentGql = NonNullable<TemplateContentTemplate['communityGuidelines']>;
 type SpaceContentGql = NonNullable<TemplateContentTemplate['contentSpace']>;
+type ClassificationContentGql = NonNullable<TemplateContentTemplate['classification']>;
 
 export function mapGqlFramingType(gql: CalloutFramingType): FramingKind {
   switch (gql) {
@@ -248,6 +250,16 @@ export function mapSpaceContentFromSpace(
   return mapSpaceStructure(space);
 }
 
+function mapClassificationContent(
+  classification: ClassificationContentGql
+): Extract<TemplateContent, { type: 'classification' }> {
+  return {
+    type: 'classification',
+    cardinality: mapGqlClassificationCardinality(classification.cardinality),
+    values: classification.values.map(v => ({ id: v.id, label: v.label })),
+  };
+}
+
 function mapCommunityGuidelinesContent(
   cg: CommunityGuidelinesContentGql
 ): Extract<TemplateContent, { type: 'communityGuidelines' }> {
@@ -293,6 +305,10 @@ export function mapTemplateContent(template: TemplateContentTemplate, type: Temp
       return template.communityGuidelines
         ? mapCommunityGuidelinesContent(template.communityGuidelines)
         : { type: 'communityGuidelines', title: '', guidelinesMarkdown: '', references: [] };
+    case 'classification':
+      return template.classification
+        ? mapClassificationContent(template.classification)
+        : { type: 'classification', cardinality: 'MULTI_SELECT', values: [] };
   }
 }
 
@@ -304,6 +320,7 @@ export function templateContentIncludeVars(type: TemplateType) {
     includePost: type === 'post',
     includeSpace: type === 'space',
     includeCommunityGuidelines: type === 'communityGuidelines',
+    includeClassification: type === 'classification',
   };
 }
 
@@ -338,6 +355,8 @@ export function templateContentToFormValues(
         guidelinesMarkdown: content.guidelinesMarkdown,
         references: content.references,
       };
+    case 'classification':
+      return { ...common, type: 'classification', cardinality: content.cardinality, values: content.values };
     case 'space':
     case 'callout':
       return null;

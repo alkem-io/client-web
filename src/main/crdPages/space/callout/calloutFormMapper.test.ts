@@ -287,6 +287,46 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
   });
 });
 
+describe('mapFormToCalloutCreationInput — Tasks board', () => {
+  it('taskBoard option sends an empty taskBoard input and forces the POST-only contribution type', () => {
+    const result = mapFormToCalloutCreationInput(baseValues({ taskBoard: true }), createOptions);
+    expect(result.input.taskBoard).toEqual({});
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('taskBoard forces POST even when a different response chip was picked', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: true, responseType: 'whiteboard' }),
+      createOptions
+    );
+    expect(result.input.taskBoard).toEqual({});
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('absent taskBoard option emits no taskBoard field', () => {
+    const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'post' }), createOptions);
+    expect(result.input.taskBoard).toBeUndefined();
+  });
+
+  it('taskBoard with explicit columns sends them (board template round-trip)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: true, taskBoardColumns: [' A ', 'B', '', 'C'] }),
+      createOptions
+    );
+    // Trimmed and empty entries dropped; the template's column order is preserved.
+    expect(result.input.taskBoard).toEqual({ columns: ['A', 'B', 'C'] });
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('taskBoard columns are ignored when the board toggle is off', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: false, taskBoardColumns: ['A', 'B'], responseType: 'post' }),
+      createOptions
+    );
+    expect(result.input.taskBoard).toBeUndefined();
+  });
+});
+
 describe('mapFormToCalloutCreationInput — contribution settings', () => {
   it('responseType=none → permissive default (enabled, empty allowedTypes, Members, comments on)', () => {
     const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'none' }), createOptions);

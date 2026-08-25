@@ -8,6 +8,7 @@ export default [
       'build/',
       'dist/',
       'coverage/',
+      'tests/',
       '**/*.test_.ts',
       'src/crd/app/**',
       // The Playwright e2e suite is type-checked via tsconfig.e2e.json

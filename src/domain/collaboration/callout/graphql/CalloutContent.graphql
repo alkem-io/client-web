@@ -63,6 +63,14 @@ query CalloutContent($calloutId: UUID!) {
         postDescription
         whiteboardContent
       }
+      classification {
+        id
+        tagsets {
+          id
+          name
+          allowedValues
+        }
+      }
       settings {
         ...CalloutSettingsFull
       }

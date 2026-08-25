@@ -13,6 +13,15 @@ export type CalloutMenuPermissionsInput = {
   canMoveSet: boolean;
   contributionsEnabled: boolean;
   contributionsCount: number;
+  /**
+   * True when the callout renders as a Tasks board. A board owns its
+   * contribution ordering through drag-and-drop across columns (persisted via
+   * the same sort-order mutation), so the manual "Sort contributions" dialog is
+   * hidden for it — running both against the same callout fights the board's
+   * own ordering (dragging a task then opening the sort dialog leaves the two
+   * out of sync).
+   */
+  isTaskBoard: boolean;
   canBeSavedAsTemplate: boolean;
   saveAsTemplateFeatureEnabled: boolean;
   /**
@@ -67,7 +76,10 @@ export type CalloutMenuPermissions = {
  * - Publish shows only when the callout is a draft; Unpublish only when
  *   published.
  * - Sort Contributions requires `Update` on the callout **and** at least two
- *   contributions to reorder **and** contributions enabled on the callout.
+ *   contributions to reorder **and** contributions enabled on the callout
+ *   **and** the callout is not a Tasks board (a board reorders via drag-and-drop
+ *   across its columns, so the manual sort dialog is hidden to avoid the two
+ *   ordering paths desyncing).
  * - Share is always shown.
  * - Replace file requires `Update` on the callout **and** a Collabora framing
  *   document **and** a Phase-1 replaceable type (Drawing is excluded — it would
@@ -98,7 +110,8 @@ export const deriveCalloutMenuVisibility = (input: CalloutMenuPermissionsInput):
       input.isCollaboraDocument &&
       input.collaboraDocumentType !== undefined &&
       isReplaceableCollaboraDocumentType(input.collaboraDocumentType),
-    showSortContributions: editable && input.contributionsEnabled && input.contributionsCount >= 2,
+    showSortContributions:
+      editable && input.contributionsEnabled && input.contributionsCount >= 2 && !input.isTaskBoard,
     // Documents show the item greyed out (`saveAsTemplateDisabled`) even though
     // the backend `canBeSavedAsTemplate` flag may not cover them, so the
     // affordance stays visible as "not yet supported".

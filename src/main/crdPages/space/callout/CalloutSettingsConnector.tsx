@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useCalloutContentLazyQuery,
@@ -40,6 +40,14 @@ type CalloutSettingsConnectorProps = {
    */
   onShare?: () => void;
   /**
+   * True when this callout renders as a Tasks board. Hides the manual "Sort
+   * contributions" menu item — the board owns its ordering via drag-and-drop,
+   * so the two paths would desync. Resolved asynchronously by the parent
+   * (`LazyCalloutItem` / the deep-link view), since the callout model here does
+   * not carry the board marker tagset.
+   */
+  isTaskBoard?: boolean;
+  /**
    * Fires after the callout has been deleted (FR-018). The detail dialog uses
    * it to close itself — the feed card needs nothing, it unmounts when the
    * feed list drops the deleted id.
@@ -62,7 +70,13 @@ type CalloutSettingsConnectorProps = {
  * Share is owned by the parent connector via `onShare` (so the detail dialog's
  * header / reactions-bar Share buttons share state with the menu's Share item).
  */
-export function CalloutSettingsConnector({ callout, moveActions, onShare, onDeleted }: CalloutSettingsConnectorProps) {
+export function CalloutSettingsConnector({
+  callout,
+  moveActions,
+  onShare,
+  isTaskBoard,
+  onDeleted,
+}: CalloutSettingsConnectorProps) {
   const { t } = useTranslation('crd-space');
   const notify = useNotification();
   const {
@@ -119,6 +133,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
     canMoveSet: !!moveActions,
     contributionsEnabled: callout.settings.contribution.enabled,
     contributionsCount: callout.contributions.length,
+    isTaskBoard: isTaskBoard ?? false,
     canBeSavedAsTemplate: callout.canBeSavedAsTemplate,
     saveAsTemplateFeatureEnabled: true,
     // Saving a document callout as a template is not yet supported — the menu
@@ -144,7 +159,15 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
     }
   };
 
+  // Synchronous re-entry guard: `mutating` is React state, so it updates a tick
+  // later — a fast double-click (or a double-invoked confirm) can fire the delete
+  // twice before the button disables, and the second call hits the already-deleted
+  // callout with ENTITY_NOT_FOUND. A ref blocks the second call immediately.
+  const deletingRef = useRef(false);
+
   const handleDeleteConfirm = async () => {
+    if (deletingRef.current) return;
+    deletingRef.current = true;
     setMutating(true);
     try {
       await deleteCallout(callout);
@@ -156,6 +179,7 @@ export function CalloutSettingsConnector({ callout, moveActions, onShare, onDele
       notify(t('deleteCallout.saveFailed'), 'error');
     } finally {
       setMutating(false);
+      deletingRef.current = false;
     }
   };
 

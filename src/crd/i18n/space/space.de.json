@@ -188,6 +188,7 @@
     "openAria": "{{title}} öffnen",
     "draft": "Entwurf",
     "expand": "Mehr anzeigen",
+    "fullscreen": "Vollbild",
     "collapse": "Weniger anzeigen",
     "openWhiteboard": "Whiteboard öffnen",
     "openMemo": "Memo öffnen",
@@ -410,7 +411,8 @@
         "why": "Warum dieser Unterbereich?",
         "who": "Wer ist beteiligt?"
       }
-    }
+    },
+    "tags": "Tags"
   },
   "apply": {
     "apply": "Bewerben",
@@ -1026,6 +1028,13 @@
       "title": "Noch keine Unterbereiche",
       "description": "Dieser Bereich hat noch keine Unterbereiche."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Klassifikationen"
   },
   "parentStack": {
     "goTo": "Gehe zu {{name}}"

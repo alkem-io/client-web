@@ -218,6 +218,7 @@ const baseFragment = (
 ): CalloutTemplateContentFragment => ({
   __typename: 'Callout',
   id: 'callout-1',
+  classification: undefined,
   framing: {
     __typename: 'CalloutFraming',
     id: 'framing-1',
@@ -279,6 +280,58 @@ describe('calloutTemplateContentToFormValues', () => {
     });
     expect(v.referenceRows).toEqual([{ id: 'ref-1', name: 'Docs', uri: 'https://x.test', description: 'd' }]);
     expect(v.editMeta?.framingProfileTagsetId).toBe('ts-1');
+  });
+
+  // A template saved from a Tasks board carries the reserved TASK classification
+  // whose allowedValues are the columns. Applying it MUST restore board mode and
+  // the exact custom column set — otherwise the create form loses board-ness and
+  // posts a plain callout.
+  it('restores board mode and custom columns from a board template', () => {
+    const frag = baseFragment();
+    frag.classification = {
+      __typename: 'Classification',
+      id: 'cls-1',
+      tagsets: [
+        {
+          __typename: 'Tagset',
+          id: 'ts-task',
+          name: 'task',
+          tags: [],
+          allowedValues: ['A', 'B', 'C'],
+          type: TagsetType.SelectOne,
+        },
+      ],
+    };
+    const v = calloutTemplateContentToFormValues(frag);
+    expect(v.taskBoard).toBe(true);
+    expect(v.taskBoardColumns).toEqual(['A', 'B', 'C']);
+  });
+
+  it('leaves board mode off for a plain (non-board) template', () => {
+    const v = calloutTemplateContentToFormValues(baseFragment());
+    expect(v.taskBoard).toBe(false);
+    expect(v.taskBoardColumns).toEqual([]);
+  });
+
+  it('leaves board mode off when the classification has other tagsets but no task marker', () => {
+    const frag = baseFragment();
+    frag.classification = {
+      __typename: 'Classification',
+      id: 'cls-1',
+      tagsets: [
+        {
+          __typename: 'Tagset',
+          id: 'ts-flow',
+          name: 'flow-state',
+          tags: ['To do'],
+          allowedValues: ['To do', 'Done'],
+          type: TagsetType.SelectOne,
+        },
+      ],
+    };
+    const v = calloutTemplateContentToFormValues(frag);
+    expect(v.taskBoard).toBe(false);
+    expect(v.taskBoardColumns).toEqual([]);
   });
 
   // Feature 008 — applying a contributors template MUST carry its captured config

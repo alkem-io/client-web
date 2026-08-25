@@ -331,6 +331,56 @@
           "loadError": "Deine API-Schlüssel konnten nicht geladen werden — bitte aktualisiere die Seite.",
           "retry": "Erneut versuchen"
         }
+      },
+      "connectedAccounts": {
+        "title": "Verbundene Konten",
+        "description": "Jede Möglichkeit, mit der du dich derzeit bei diesem Konto anmelden kannst.",
+        "provider": {
+          "notConnected": "Nicht verbunden",
+          "connected": "Verbunden"
+        },
+        "actions": {
+          "connect": "Verbinden",
+          "connectAria": "{{provider}} verbinden",
+          "disconnect": "Trennen",
+          "disconnectAria": "{{provider}} trennen"
+        },
+        "confirmDisconnect": {
+          "title": "{{provider}} trennen?",
+          "description": "Du kannst dich nicht mehr mit {{provider}} anmelden. Wenn du später erneut verbindest und der Anbieter seine Art der Identifizierung geändert hat, ist genau diese Verbindung möglicherweise nicht wiederherstellbar.",
+          "confirm": "Trennen"
+        },
+        "locked": {
+          "reason": "Dies ist derzeit deine einzige Möglichkeit, dich anzumelden — füge unten zuerst ein Passwort oder einen Passkey hinzu, bevor du die Verbindung trennen kannst."
+        },
+        "unavailable": {
+          "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen. Versuche es gleich erneut - die Seite muss nicht neu geladen werden.",
+          "retry": "Erneut versuchen"
+        },
+        "messages": {
+          "changesSaved": "Deine Änderungen wurden gespeichert!",
+          "identityAlreadyLinked": "Diese Identität ist bereits mit einem anderen Alkemio-Konto verbunden. An keinem der beiden Konten wurde etwas geändert.",
+          "linked": "{{provider}} verbunden.",
+          "unlinked": "{{provider}} getrennt.",
+          "connectFailed": "{{provider}} konnte nicht verbunden werden — versuche es erneut.",
+          "disconnectFailed": "{{provider}} konnte nicht getrennt werden — versuche es erneut.",
+          "reauthRequiredConnect": "Bestätige, dass du es bist, und versuche anschließend erneut, {{provider}} zu verbinden.",
+          "reauthRequiredDisconnect": "Bestätige, dass du es bist, und versuche anschließend erneut, {{provider}} zu trennen."
+        },
+        "credentials": {
+          "password": {
+            "label": "Passwort",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passwort ändern"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passkeys verwalten"
+          }
+        }
       }
     },
     "settings": {

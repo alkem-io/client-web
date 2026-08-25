@@ -331,6 +331,56 @@
           "loadError": "Impossible de charger vos clés API — essayez de recharger la page.",
           "retry": "Réessayer"
         }
+      },
+      "connectedAccounts": {
+        "title": "Comptes connectés",
+        "description": "Tous les moyens actuels de vous connecter à ce compte.",
+        "provider": {
+          "notConnected": "Non connecté",
+          "connected": "Connecté"
+        },
+        "actions": {
+          "connect": "Connecter",
+          "connectAria": "Connecter {{provider}}",
+          "disconnect": "Déconnecter",
+          "disconnectAria": "Déconnecter {{provider}}"
+        },
+        "confirmDisconnect": {
+          "title": "Déconnecter {{provider}} ?",
+          "description": "Vous ne pourrez plus vous connecter avec {{provider}}. Si vous le reconnectez plus tard et que le fournisseur a modifié la façon dont il vous identifie, cette connexion exacte pourrait ne pas être récupérable.",
+          "confirm": "Déconnecter"
+        },
+        "locked": {
+          "reason": "C'est actuellement votre seul moyen de vous connecter — ajoutez d'abord un mot de passe ou une clé d'accès ci-dessous avant de pouvoir le déconnecter."
+        },
+        "unavailable": {
+          "message": "Nous ne pouvons pas afficher vos méthodes de connexion pour le moment. Réessayez dans un instant - pas besoin de recharger la page.",
+          "retry": "Réessayer"
+        },
+        "messages": {
+          "changesSaved": "Vos modifications ont été enregistrées !",
+          "identityAlreadyLinked": "Cette identité est déjà connectée à un autre compte Alkemio. Aucun des deux comptes n'a été modifié.",
+          "linked": "{{provider}} connecté.",
+          "unlinked": "{{provider}} déconnecté.",
+          "connectFailed": "Impossible de connecter {{provider}} — réessayez.",
+          "disconnectFailed": "Impossible de déconnecter {{provider}} — réessayez.",
+          "reauthRequiredConnect": "Confirmez qu'il s'agit bien de vous, puis réessayez de connecter {{provider}}.",
+          "reauthRequiredDisconnect": "Confirmez qu'il s'agit bien de vous, puis réessayez de déconnecter {{provider}}."
+        },
+        "credentials": {
+          "password": {
+            "label": "Mot de passe",
+            "set": "Défini",
+            "notSet": "Non défini",
+            "manage": "Changer le mot de passe"
+          },
+          "passkey": {
+            "label": "Clé d'accès",
+            "set": "Définie",
+            "notSet": "Non définie",
+            "manage": "Gérer les clés d'accès"
+          }
+        }
       }
     },
     "settings": {

@@ -188,6 +188,7 @@
     "openAria": "Ouvrir {{title}}",
     "draft": "Brouillon",
     "expand": "Afficher plus",
+    "fullscreen": "Plein écran",
     "collapse": "Afficher moins",
     "openWhiteboard": "Ouvrir le tableau blanc",
     "openMemo": "Ouvrir le mémo",
@@ -410,7 +411,8 @@
         "why": "Pourquoi ce sous-espace ?",
         "who": "Qui est impliqué ?"
       }
-    }
+    },
+    "tags": "Étiquettes"
   },
   "apply": {
     "apply": "Postuler",
@@ -1026,6 +1028,13 @@
       "title": "Aucun sous-espace pour le moment",
       "description": "Cet espace n'a pas encore de sous-espaces."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
   },
   "parentStack": {
     "goTo": "Aller à {{name}}"

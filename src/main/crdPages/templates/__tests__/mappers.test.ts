@@ -113,7 +113,7 @@ const tpl = (over: Partial<GqlTemplateLike> & { id: string }): GqlTemplateLike =
 
 describe('templateCardMapper', () => {
   it('round-trips the type enum ⇄ string union', () => {
-    const types = ['space', 'callout', 'whiteboard', 'post', 'communityGuidelines'] as const;
+    const types = ['space', 'callout', 'whiteboard', 'post', 'communityGuidelines', 'classification'] as const;
     for (const t of types) expect(mapGqlTemplateType(toGqlTemplateType(t))).toBe(t);
   });
 
@@ -163,7 +163,14 @@ describe('templateCardMapper', () => {
 describe('templatesManagerMapper', () => {
   it('returns one section per type in TEMPLATE_TYPE_ORDER even when the set is empty/undefined', () => {
     const sections = mapTemplatesSetToCategories(undefined);
-    expect(sections.map(s => s.type)).toEqual(['space', 'callout', 'whiteboard', 'post', 'communityGuidelines']);
+    expect(sections.map(s => s.type)).toEqual([
+      'space',
+      'callout',
+      'whiteboard',
+      'post',
+      'classification',
+      'communityGuidelines',
+    ]);
     expect(sections.every(s => s.templates.length === 0)).toBe(true);
   });
 
@@ -211,6 +218,7 @@ describe('templateContentMapper', () => {
       includePost: false,
       includeSpace: false,
       includeCommunityGuidelines: false,
+      includeClassification: false,
     });
     expect(templateContentIncludeVars('communityGuidelines').includeCommunityGuidelines).toBe(true);
   });
@@ -238,6 +246,31 @@ describe('templateContentMapper', () => {
       title: '',
       guidelinesMarkdown: '',
       references: [],
+    });
+    expect(mapTemplateContent(empty, 'classification')).toEqual({
+      type: 'classification',
+      cardinality: 'MULTI_SELECT',
+      values: [],
+    });
+  });
+
+  it('maps a classification content payload, preserving authored value order (FR-002b)', () => {
+    const template = {
+      classification: {
+        cardinality: 'SINGLE_SELECT',
+        values: [
+          { id: 'sdg-13', label: '13 · Climate Action' },
+          { id: 'sdg-14', label: '14 · Life Below Water' },
+        ],
+      },
+    } as unknown as TemplateContentTemplate;
+    expect(mapTemplateContent(template, 'classification')).toEqual({
+      type: 'classification',
+      cardinality: 'SINGLE_SELECT',
+      values: [
+        { id: 'sdg-13', label: '13 · Climate Action' },
+        { id: 'sdg-14', label: '14 · Life Below Water' },
+      ],
     });
   });
 

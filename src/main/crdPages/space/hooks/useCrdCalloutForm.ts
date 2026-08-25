@@ -109,6 +109,19 @@ export type CalloutFormValues = {
   collaboraUploadFile: File | null;
   // Zone 2 — responses
   responseType: ResponseType;
+  /**
+   * Create-mode only: build this callout as a Tasks board. When set, the mapper
+   * forces the POST-only contribution type and sends `taskBoard: {}` so the
+   * server seeds the default columns. Columns are managed post-create.
+   */
+  taskBoard: boolean;
+  /**
+   * Create-mode only: the ordered column list to seed a Tasks board with. Empty
+   * means "seed the default columns" (the plain toggle path). It is populated
+   * when a board template is applied so the template's custom columns round-trip
+   * onto the new board; `taskBoard` must be true for it to have any effect.
+   */
+  taskBoardColumns: string[];
   allowedActors: AllowedActors;
   contributionCommentsEnabled: boolean;
   contributionDefaults: ContributionDefaults;
@@ -190,6 +203,8 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
   collaboraUploadFile: null,
   responseType: 'none',
+  taskBoard: false,
+  taskBoardColumns: [],
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,
   contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },

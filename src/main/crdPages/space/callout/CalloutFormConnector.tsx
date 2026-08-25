@@ -15,7 +15,7 @@
  * payloads. Dirty tracking drives the `DiscardChangesDialog` + `useBeforeUnloadGuard`.
  */
 import { ApolloError } from '@apollo/client';
-import { Hash } from 'lucide-react';
+import { Columns3, Hash } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,6 +36,8 @@ import {
 import { error as logError } from '@/core/logging/sentry/log';
 import { SMALL_TEXT_LENGTH } from '@/core/ui/forms/field-length.constants';
 import { useNotification } from '@/core/ui/notifications/useNotification';
+import { TaskColumnsDraftDialog } from '@/crd/components/callout/task-board/TaskColumnsDraftDialog';
+import { isTaskBoardEnabled } from '@/crd/components/callout/task-board/taskBoard';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
 import type { ContributorMapPin } from '@/crd/components/map/ContributorMap';
 import { AddPostModal } from '@/crd/forms/callout/AddPostModal';
@@ -48,6 +50,7 @@ import { MarkdownEditor } from '@/crd/forms/markdown/MarkdownEditor';
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
+import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
 import { Switch } from '@/crd/primitives/switch';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
@@ -197,6 +200,7 @@ function CalloutFormConnectorInner({
   restrictions,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
+  const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   // Restriction-driven create-mode defaults: any comment toggle that is hidden
   // must still submit `false`, so seed the empty form accordingly.
@@ -242,7 +246,7 @@ function CalloutFormConnectorInner({
   const showFramingComments = mode !== 'create' || !restrictions?.disableFramingComments;
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
-  const { values, errors, setField, validate, reset, prefill, dirty } = form;
+  const { values, errors, setField, setValues, validate, reset, prefill, dirty } = form;
 
   // Feature 025: contributor candidates for the custom-selection picker (T005).
   // Only fetched when the contributors chip is active AND the dialog is open.
@@ -297,6 +301,7 @@ function CalloutFormConnectorInner({
 
   const [discardOpen, setDiscardOpen] = useState(false);
   const [defaultsOpen, setDefaultsOpen] = useState(false);
+  const [columnsDraftOpen, setColumnsDraftOpen] = useState(false);
   const [importTemplateOpen, setImportTemplateOpen] = useState(false);
   // Import-zone validation error (client pre-check OR server FORMAT_NOT_SUPPORTED /
   // STORAGE_UPLOAD_FAILED). Cleared on successful re-stage and on framing-type
@@ -1041,9 +1046,30 @@ function CalloutFormConnectorInner({
               onChange={type => {
                 // Locked in edit mode (see framing strip) — only fires during
                 // create, so the response type can't be changed or cleared on
-                // an existing callout.
-                setField('responseType', type);
+                // an existing callout. Picking a real response type also leaves
+                // the Tasks board (they are mutually exclusive selections).
+                setValues(prev => ({ ...prev, responseType: type, taskBoard: false }));
               }}
+              // Tasks is a sibling chip of the response types (create only), not a
+              // separate switch. Selecting it makes the callout a POST-only board;
+              // it seeds responseType='post' so the Posts config panel (members /
+              // admins / comments / defaults) renders. Deselecting clears both.
+              // A Tasks board is post-based (selecting it seeds responseType='post'),
+              // so only offer it when posts are actually allowed by the response
+              // restrictions — otherwise it would create a post board the
+              // restriction forbids.
+              showTasksChip={
+                mode === 'create' && isTaskBoardEnabled() && (!responseAllowList || responseAllowList.includes('post'))
+              }
+              tasksActive={values.taskBoard}
+              tasksLabel={tTaskBoard('create.option')}
+              onSelectTasks={() =>
+                setValues(prev =>
+                  prev.taskBoard
+                    ? { ...prev, taskBoard: false, responseType: 'none' }
+                    : { ...prev, taskBoard: true, responseType: 'post' }
+                )
+              }
               locked={mode === 'edit'}
             />
             <ResponsePanel
@@ -1061,6 +1087,18 @@ function CalloutFormConnectorInner({
               onSetDefaults={responseTypeSupportsDefaults ? () => setDefaultsOpen(true) : undefined}
               disabled={submitting}
             />
+            {values.taskBoard && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setColumnsDraftOpen(true)}
+                disabled={submitting}
+              >
+                <Columns3 className="w-4 h-4" aria-hidden="true" />
+                {tTaskBoard('columns.manage')}
+              </Button>
+            )}
           </div>
         }
         moreOptionsSlot={
@@ -1099,6 +1137,12 @@ function CalloutFormConnectorInner({
         onFindTemplate={mode === 'create' ? handleFindTemplate : undefined}
       />
       <DiscardChangesDialog open={discardOpen} onOpenChange={setDiscardOpen} onConfirm={handleDiscardConfirm} />
+      <TaskColumnsDraftDialog
+        open={columnsDraftOpen}
+        onOpenChange={setColumnsDraftOpen}
+        columns={values.taskBoardColumns}
+        onSave={columns => setField('taskBoardColumns', columns)}
+      />
       <ResponseDefaultsConnector
         open={defaultsOpen}
         onOpenChange={setDefaultsOpen}

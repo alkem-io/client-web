@@ -96,4 +96,7 @@ fragment SpaceAboutDetails on SpaceAbout {
     name
     value
   }
+  classifications {
+    ...ClassificationEntryFull
+  }
 }

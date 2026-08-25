@@ -1,0 +1,12 @@
+fragment ClassificationEntryFull on ClassificationEntry {
+  id
+  displayLabel
+  cardinality
+  display
+  sortOrder
+  values {
+    id
+    label
+  }
+  selectedValueIDs
+}

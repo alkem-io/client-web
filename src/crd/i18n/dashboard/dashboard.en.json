@@ -43,8 +43,8 @@
     "showMore": "Show more",
     "noActivity": "No recent activity",
     "iconLabel": {
-      "CALLOUT_PUBLISHED": "New post",
-      "CALLOUT_POST_CREATED": "New post",
+      "CALLOUT_PUBLISHED": "New Post",
+      "CALLOUT_POST_CREATED": "New Post",
       "CALLOUT_POST_COMMENT": "New comment",
       "DISCUSSION_COMMENT": "New comment",
       "CALLOUT_WHITEBOARD_CREATED": "New whiteboard",

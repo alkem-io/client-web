@@ -39,6 +39,9 @@ type ConfirmationDialogConfirmProps = {
   children?: ReactNode;
   /** Show an X close control in the title bar — closes via the cancel path (no action performed). */
   showCloseButton?: boolean;
+  /** Escape hatch to raise the dialog above a custom overlay (e.g. the fullscreen task board). */
+  overlayClassName?: string;
+  contentClassName?: string;
 };
 
 type ConfirmationDialogDiscardProps = {
@@ -128,6 +131,8 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
     loading = false,
     children,
     showCloseButton = false,
+    overlayClassName,
+    contentClassName,
   } = props;
 
   const handleCancel = () => {
@@ -138,7 +143,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       {/* The z-[90] is necessary to ensure the dialog appears above some other dialogs like memos or whiteboards that have z-[60]. */}
-      <AlertDialogContent className="z-[90]">
+      <AlertDialogContent overlayClassName={overlayClassName} className={cn('z-[90]', contentClassName)}>
         {showCloseButton && (
           <button
             type="button"

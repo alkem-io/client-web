@@ -5,6 +5,7 @@ query TemplateContent(
   $includeSpace: Boolean = false
   $includePost: Boolean = false
   $includeWhiteboard: Boolean = false
+  $includeClassification: Boolean = false
 ) {
   lookup {
     template(ID: $templateId) {
@@ -31,7 +32,18 @@ query TemplateContent(
       contentSpace @include(if: $includeSpace) {
         ...SpaceTemplateContent
       }
+      classification @include(if: $includeClassification) {
+        ...ClassificationTemplateContentFull
+      }
     }
+  }
+}
+
+fragment ClassificationTemplateContentFull on ClassificationTemplateContent {
+  cardinality
+  values {
+    id
+    label
   }
 }
 
@@ -65,6 +77,12 @@ query SpaceTemplateContent($spaceId: UUID!) {
 
 fragment CalloutTemplateContent on Callout {
   id
+  classification {
+    id
+    tagsets {
+      ...TagsetDetails
+    }
+  }
   framing {
     id
     profile {

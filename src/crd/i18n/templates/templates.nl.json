@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Templates voor community richtlijnen",
         "subtitle": "Regels en verwachtingen voor een community."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -43,7 +47,11 @@
     "edit": "Bewerken",
     "duplicate": "Dupliceren",
     "delete": "Verwijderen",
-    "noPreview": "Geen voorbeeld"
+    "noPreview": "Geen voorbeeld",
+    "classification": {
+      "multiSelect": "Meerkeuze",
+      "singleSelect": "Eén keuze"
+    }
   },
   "framingKind": {
     "none": "Tekst",
@@ -74,7 +82,7 @@
       "noContributions": "Geen bijdragen",
       "comments": "Reacties ingeschakeld",
       "commentsDisabled": "Reacties uitgeschakeld",
-      "defaultPostDescription": "Standaard post-beschrijving",
+      "defaultPostDescription": "Standaard Post-beschrijving",
       "defaultWhiteboard": "Standaard whiteboard",
       "links": "Links",
       "gallery": "Galerij",
@@ -101,6 +109,13 @@
       "title": "Titel richtlijnen",
       "body": "Richtlijnen",
       "references": "Referenties"
+    },
+    "classification": {
+      "multiSelect": "Meerkeuze",
+      "singleSelect": "Eén keuze",
+      "valueCount_one": "{{count}} waarde",
+      "valueCount_other": "{{count}} waarden",
+      "definedValues": "Gedefinieerde waarden"
     }
   },
   "picker": {
@@ -129,14 +144,16 @@
       "callout": "Samenwerkingstool-template maken",
       "whiteboard": "Whiteboard-template maken",
       "post": "Post-template maken",
-      "communityGuidelines": "Template voor community richtlijnen maken"
+      "communityGuidelines": "Template voor community richtlijnen maken",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Space-template bewerken",
       "callout": "Samenwerkingstool-template bewerken",
       "whiteboard": "Whiteboard-template bewerken",
       "post": "Post-template bewerken",
-      "communityGuidelines": "Template voor community richtlijnen bewerken"
+      "communityGuidelines": "Template voor community richtlijnen bewerken",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Template-naam",
@@ -163,7 +180,7 @@
     },
     "post": {
       "defaultDescription": "Standaard beschrijving",
-      "defaultDescriptionPlaceholder": "Inhoud vooraf ingevuld voor nieuwe posts die dit template gebruiken"
+      "defaultDescriptionPlaceholder": "Inhoud vooraf ingevuld voor nieuwe Posts die dit template gebruiken"
     },
     "space": {
       "source": "Bron-Space",
@@ -192,6 +209,27 @@
       "body": "Richtlijnen",
       "bodyPlaceholder": "Schrijf de richtlijnen voor deze community…",
       "references": "Referenties"
+    },
+    "classification": {
+      "cardinality": "Selectietype",
+      "cardinalitySingle": "Eén keuze — gebruikers kiezen één waarde",
+      "cardinalityMulti": "Meerkeuze — gebruikers kunnen meerdere waarden kiezen",
+      "values": "Values",
+      "moveValueUp": "Waarde {{position}} omhoog verplaatsen",
+      "moveValueDown": "Waarde {{position}} omlaag verplaatsen",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Definieer de toegestane waarden voor deze classificatie. Typ een waarde en druk op Enter.",
+      "quickAddPlaceholder": "bijv. SDG 1 – Geen armoede",
+      "valuesDefined_one": "{{count}} waarde gedefinieerd",
+      "valuesDefined_other": "{{count}} waarden gedefinieerd"
     }
   },
   "references": {
@@ -271,13 +309,13 @@
     "searchVisibility": "Zichtbaarheid in zoekopdrachten",
     "searchVisibilityOptions": {
       "public": "Openbaar",
-      "authenticated": "Geauthenticeerde gebruikers",
-      "account": "Alleen account"
+      "account": "Account",
+      "hidden": "Verborgen"
     },
     "searchVisibilityHints": {
       "public": "Iedereen — inclusief niet-geauthenticeerde bezoekers — kan dit pakket via zoeken vinden.",
-      "authenticated": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
-      "account": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
+      "account": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
+      "hidden": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
     },
     "save": "Wijzigingen opslaan",
     "crop": {
@@ -344,7 +382,8 @@
         "callout": "Samenwerkingstools",
         "whiteboard": "Whiteboards",
         "post": "Posts",
-        "communityGuidelines": "Communityrichtlijnen"
+        "communityGuidelines": "Communityrichtlijnen",
+        "classification": "Classifications"
       },
       "summary": "{{first}} en {{count}} meer",
       "pair": "{{first}} en {{second}}"

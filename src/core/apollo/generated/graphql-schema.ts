@@ -617,6 +617,15 @@ export enum ActorType {
   VirtualContributor = 'VIRTUAL_CONTRIBUTOR',
 }
 
+export type AddClassificationEntryFromTemplateInput = {
+  /** Override for the entry's display label. Defaults to the source template's display name. */
+  displayLabel?: InputMaybe<Scalars['String']['input']>;
+  /** The Space to add the Classification to. */
+  spaceID: Scalars['UUID']['input'];
+  /** The Classification Template to copy the vocabulary from. */
+  templateID: Scalars['UUID']['input'];
+};
+
 export type AddPollOptionInput = {
   pollID: Scalars['UUID']['input'];
   text: Scalars['String']['input'];
@@ -1020,6 +1029,7 @@ export enum AuthorizationPrivilege {
   LicenseReset = 'LICENSE_RESET',
   MoveContribution = 'MOVE_CONTRIBUTION',
   MovePost = 'MOVE_POST',
+  MoveTask = 'MOVE_TASK',
   PlatformAdmin = 'PLATFORM_ADMIN',
   PlatformOperationsAdmin = 'PLATFORM_OPERATIONS_ADMIN',
   PlatformSettingsAdmin = 'PLATFORM_SETTINGS_ADMIN',
@@ -1162,6 +1172,8 @@ export type Callout = {
   settings: CalloutSettings;
   /** The sorting order for this Callout. */
   sortOrder: Scalars['Float']['output'];
+  /** Per-column task counts for a Tasks board callout, in the board-defined column order and zero-filled; null when the callout is not a Tasks board. */
+  taskColumnCounts?: Maybe<Array<TaskColumnCount>>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
 };
@@ -1182,6 +1194,8 @@ export type CalloutContribution = {
   __typename?: 'CalloutContribution';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The Classification of this Contribution, present only for a task on a Tasks board (carries the task column). */
+  classification?: Maybe<Classification>;
   /** The CollaboraDocument that was contributed. */
   collaboraDocument?: Maybe<CollaboraDocument>;
   /** The user that created this Document */
@@ -1470,6 +1484,52 @@ export type Classification = {
 
 export type ClassificationTagsetArgs = {
   tagsetName: TagsetReservedName;
+};
+
+export enum ClassificationCardinality {
+  MultiSelect = 'MULTI_SELECT',
+  SingleSelect = 'SINGLE_SELECT',
+}
+
+/** One vocabulary group on a host entity — the spec's 'a Classification'. */
+export type ClassificationEntry = {
+  __typename?: 'ClassificationEntry';
+  /** Whether one or several values may be selected. */
+  cardinality: ClassificationCardinality;
+  /** The date at which the entity was created. */
+  createdDate: Scalars['DateTime']['output'];
+  /** Render-only: false means 'not shown on the Space page'. NOT an access control. */
+  display: Scalars['Boolean']['output'];
+  /** Per-instance display label; defaults to the source template's, overridable to resolve a conflict. */
+  displayLabel: Scalars['String']['output'];
+  /** The ID of the entity */
+  id: Scalars['UUID']['output'];
+  /** Ids of the currently selected values. */
+  selectedValueIDs: Array<Scalars['String']['output']>;
+  /** The selected values resolved against `values`, in authored order. */
+  selectedValues: Array<ClassificationValue>;
+  /** Render order on the host entity — order of addition, oldest first. */
+  sortOrder: Scalars['Float']['output'];
+  /** The date at which the entity was last updated. */
+  updatedDate: Scalars['DateTime']['output'];
+  /** The snapshot vocabulary, in authored order. Never re-sorted. */
+  values: Array<ClassificationValue>;
+};
+
+/** Cardinality + value set of a Classification Template. Null unless type == CLASSIFICATION. */
+export type ClassificationTemplateContent = {
+  __typename?: 'ClassificationTemplateContent';
+  cardinality: ClassificationCardinality;
+  values: Array<ClassificationValue>;
+};
+
+/** One selectable option in a classification's vocabulary. */
+export type ClassificationValue = {
+  __typename?: 'ClassificationValue';
+  /** Stable identifier — aggregation key. Copied verbatim into every snapshot; never re-derived on rename. */
+  id: Scalars['String']['output'];
+  /** Human-readable, single-language label. */
+  label: Scalars['String']['output'];
 };
 
 export type CollaboraDocument = {
@@ -2030,6 +2090,8 @@ export type CreateCalloutContributionData = {
   post?: Maybe<CreatePostData>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: Maybe<Scalars['Float']['output']>;
+  /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
+  taskColumn?: Maybe<Scalars['String']['output']>;
   type: CalloutContributionType;
   whiteboard?: Maybe<CreateWhiteboardData>;
 };
@@ -2058,6 +2120,8 @@ export type CreateCalloutContributionInput = {
   post?: InputMaybe<CreatePostInput>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
+  taskColumn?: InputMaybe<Scalars['String']['input']>;
   type: CalloutContributionType;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
@@ -2118,6 +2182,8 @@ export type CreateCalloutData = {
   settings?: Maybe<CreateCalloutSettingsData>;
   /** The sort order to assign to this Callout. */
   sortOrder?: Maybe<Scalars['Float']['output']>;
+  /** When present, creates this Callout as a Tasks board. Requires a POST-only contribution type. */
+  taskBoard?: Maybe<CreateCalloutTaskBoardData>;
 };
 
 export type CreateCalloutFramingData = {
@@ -2162,6 +2228,8 @@ export type CreateCalloutInput = {
   settings?: InputMaybe<CreateCalloutSettingsInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** When present, creates this Callout as a Tasks board. Requires a POST-only contribution type. */
+  taskBoard?: InputMaybe<CreateCalloutTaskBoardInput>;
 };
 
 export type CreateCalloutOnCalloutsSetInput = {
@@ -2178,6 +2246,8 @@ export type CreateCalloutOnCalloutsSetInput = {
   settings?: InputMaybe<CreateCalloutSettingsInput>;
   /** The sort order to assign to this Callout. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** When present, creates this Callout as a Tasks board. Requires a POST-only contribution type. */
+  taskBoard?: InputMaybe<CreateCalloutTaskBoardInput>;
 };
 
 export type CreateCalloutSelectionSettingsData = {
@@ -2252,6 +2322,17 @@ export type CreateCalloutSettingsInput = {
   visibility?: InputMaybe<CalloutVisibility>;
 };
 
+export type CreateCalloutTaskBoardData = {
+  __typename?: 'CreateCalloutTaskBoardData';
+  /** The ordered columns of the Tasks board. The first is the default column. Omit to seed the default set. */
+  columns?: Maybe<Array<Scalars['String']['output']>>;
+};
+
+export type CreateCalloutTaskBoardInput = {
+  /** The ordered columns of the Tasks board. The first is the default column. Omit to seed the default set. */
+  columns?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type CreateCalloutsSetData = {
   __typename?: 'CreateCalloutsSetData';
   /** The Callouts to add to this Collaboration. */
@@ -2268,8 +2349,29 @@ export type CreateClassificationData = {
   tagsets: Array<CreateTagsetData>;
 };
 
+export type CreateClassificationEntryInput = {
+  cardinality: ClassificationCardinality;
+  displayLabel: Scalars['String']['input'];
+  /** Optional selection to apply in the same write. Omitted -> selectedValueIDs: []. */
+  selectedValueIDs?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** The Space to add the Classification to. */
+  spaceID: Scalars['UUID']['input'];
+  values: Array<CreateClassificationValueInput>;
+};
+
 export type CreateClassificationInput = {
   tagsets: Array<CreateTagsetInput>;
+};
+
+export type CreateClassificationTemplateContentInput = {
+  cardinality: ClassificationCardinality;
+  values: Array<CreateClassificationValueInput>;
+};
+
+export type CreateClassificationValueInput = {
+  /** Optional explicit stable id. Omitted -> slugified from `label` once, at authoring time. */
+  id?: InputMaybe<Scalars['String']['input']>;
+  label: Scalars['String']['input'];
 };
 
 export type CreateCollaboraDocumentData = {
@@ -2330,6 +2432,8 @@ export type CreateContributionOnCalloutInput = {
   post?: InputMaybe<CreatePostInput>;
   /** The sort order to assign to this Contribution. */
   sortOrder?: InputMaybe<Scalars['Float']['input']>;
+  /** The Tasks board column this task starts in. Only valid when the parent Callout is a Tasks board; defaults to the first column. */
+  taskColumn?: InputMaybe<Scalars['String']['input']>;
   type: CalloutContributionType;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
 };
@@ -2718,6 +2822,13 @@ export type CreateTagsetOnProfileInput = {
   type?: InputMaybe<TagsetType>;
 };
 
+export type CreateTaskColumnOnCalloutInput = {
+  /** The Tasks board Callout to add a column to. */
+  calloutID: Scalars['UUID']['input'];
+  /** The name of the new column. Appended after the last column. */
+  name: Scalars['String']['input'];
+};
+
 export type CreateTemplateContentSpaceInput = {
   about: CreateSpaceAboutInput;
   collaborationData: CreateCollaborationInput;
@@ -2752,6 +2863,8 @@ export type CreateTemplateFromSpaceOnTemplatesSetInput = {
 export type CreateTemplateOnTemplatesSetInput = {
   /** The Callout to associate with this template. */
   calloutData?: InputMaybe<CreateCalloutInput>;
+  /** The cardinality and value set for a Classification Template. */
+  classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   /** The Community guidelines to associate with this template. */
   communityGuidelinesData?: InputMaybe<CreateCommunityGuidelinesInput>;
   /** The Template Content for a Space to associate with this template. */
@@ -2946,6 +3059,10 @@ export type DeleteCalloutInput = {
   ID: Scalars['UUID']['input'];
 };
 
+export type DeleteClassificationEntryInput = {
+  ID: Scalars['UUID']['input'];
+};
+
 export type DeleteCollaboraDocumentInput = {
   /** The ID of the CollaboraDocument to delete. */
   ID: Scalars['UUID']['input'];
@@ -3022,6 +3139,13 @@ export type DeleteStateOnInnovationFlowInput = {
 
 export type DeleteStorageBuckeetInput = {
   ID: Scalars['UUID']['input'];
+};
+
+export type DeleteTaskColumnOnCalloutInput = {
+  /** The Tasks board Callout to remove a column from. */
+  calloutID: Scalars['UUID']['input'];
+  /** The column to remove. Matched case-insensitively; the first (default) column cannot be removed and its tasks reflow to the default. */
+  name: Scalars['String']['input'];
 };
 
 export type DeleteTemplateInput = {
@@ -4969,8 +5093,17 @@ export type MoveSpaceL2ToSpaceL1Input = {
   targetSpaceL1ID: Scalars['UUID']['input'];
 };
 
+export type MoveTaskToColumnInput = {
+  /** The destination column on the Tasks board. Matched case-insensitively to an existing column. */
+  column: Scalars['String']['input'];
+  /** The task (Callout Contribution) to move. */
+  contributionID: Scalars['UUID']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Adds a Classification to a Space by copying a Classification Template (Step A). */
+  addClassificationEntryFromTemplate: ClassificationEntry;
   /** Adds an Iframe Allowed URL to the Platform Settings */
   addIframeAllowedURL: Array<Scalars['String']['output']>;
   /** Adds a full email address to the platform notification blacklist */
@@ -5077,6 +5210,8 @@ export type Mutation = {
   convertVirtualContributorToUseKnowledgeBase: VirtualContributor;
   /** Create a new Callout on the CalloutsSet. When `file` is supplied alongside a COLLABORA_DOCUMENT framing, the new callout is framed with a Collabora document populated from the uploaded bytes (file-service-go sniffs MIME, validates format and size, and derives the document type; any documentType in the input is ignored on the upload path; displayName defaults from the filename when absent). When `file` is omitted, the existing blank-create behaviour applies and framing.collaboraDocument must specify both displayName and documentType. */
   createCalloutOnCalloutsSet: Callout;
+  /** Creates a Classification on a Space ad hoc, without a Template (API-only). */
+  createClassificationEntry: ClassificationEntry;
   /** Create a new Contribution on the Callout. */
   createContributionOnCallout: CalloutContribution;
   /** Create a new Conversation. Use type DIRECT for 1-on-1, GROUP for multi-party. */
@@ -5107,6 +5242,8 @@ export type Mutation = {
   createSubspace: Space;
   /** Creates a new Tagset on the specified Profile */
   createTagsetOnProfile: Tagset;
+  /** Add a column to a Tasks board Callout. */
+  createTaskColumnOnCallout: Callout;
   /** Creates a new Template on the specified TemplatesSet. */
   createTemplate: Template;
   /** Creates a new Template on the specified TemplatesSet using the provided ContentSpace as content. */
@@ -5125,6 +5262,8 @@ export type Mutation = {
   deleteCalendarEvent: CalendarEvent;
   /** Delete a Callout. */
   deleteCallout: Callout;
+  /** Permanently removes a Classification from a Space. No template and no other Space is affected. */
+  deleteClassificationEntry: ClassificationEntry;
   /** Deletes the specified CollaboraDocument. */
   deleteCollaboraDocument: CollaboraDocument;
   /** Deletes a contribution. */
@@ -5161,6 +5300,8 @@ export type Mutation = {
   deleteStateOnInnovationFlow: InnovationFlowState;
   /** Deletes a Storage Bucket */
   deleteStorageBucket: StorageBucket;
+  /** Remove a column from a Tasks board Callout. */
+  deleteTaskColumnOnCallout: Callout;
   /** Deletes the specified Template. */
   deleteTemplate: Template;
   /** Deletes the specified User. */
@@ -5213,6 +5354,8 @@ export type Mutation = {
   moveSpaceL1ToSpaceL2: Space;
   /** Move an L2 sub-subspace to become an L2 subspace under a target L1 in a different L0 space.       The subspace stays at level 2 but changes both its parent L1 and its top-level L0.       All community roles (including admins) are cleared and pending invitations dropped.       Platform access rules are recomputed from the new parent hierarchy.       Requires platform admin privileges. */
   moveSpaceL2ToSpaceL1: Space;
+  /** Moves a task to another column on its Tasks board. Authorized as MOVE_TASK on the parent Callout, so a board member can move any task. */
+  moveTaskToColumn: CalloutContribution;
   /** Refresh the Bodies of Knowledge on All VCs */
   refreshAllBodiesOfKnowledge: Scalars['Boolean']['output'];
   /** Triggers a request to the backing AI Service to refresh the knowledge that is available to it. */
@@ -5315,6 +5458,12 @@ export type Mutation = {
   updateCalloutVisibility: Callout;
   /** Update the sortOrder field of the supplied Callouts to increase as per the order that they are provided in. */
   updateCalloutsSortOrder: Array<Callout>;
+  /** Updates a Classification's definition — label, cardinality and/or value set (API-only). */
+  updateClassificationEntry: ClassificationEntry;
+  /** Toggles a Classification's shown/hidden state on the Space's About page. */
+  updateClassificationEntryDisplay: ClassificationEntry;
+  /** Replaces the selected values of a Classification (Step B). */
+  updateClassificationEntrySelection: ClassificationEntry;
   /** Updates a Tagset on a Classification. */
   updateClassificationTagset: Tagset;
   /** Updates the specified CollaboraDocument. */
@@ -5381,6 +5530,10 @@ export type Mutation = {
   updateSubspacesSortOrder: Array<Space>;
   /** Updates the specified Tagset. */
   updateTagset: Tagset;
+  /** Rename a column on a Tasks board Callout. */
+  updateTaskColumnOnCallout: Callout;
+  /** Reorder the columns of a Tasks board Callout. */
+  updateTaskColumnsSortOrderOnCallout: Callout;
   /** Updates the specified Template. */
   updateTemplate: Template;
   /** Updates the TemplateContentSpace. */
@@ -5417,6 +5570,10 @@ export type Mutation = {
   uploadFileOnStorageBucket: StorageBucketUploadFileResult;
   /** Uploads and sets an image for the specified Visual. */
   uploadImageOnVisual: Visual;
+};
+
+export type MutationAddClassificationEntryFromTemplateArgs = {
+  classificationData: AddClassificationEntryFromTemplateInput;
 };
 
 export type MutationAddIframeAllowedUrlArgs = {
@@ -5588,6 +5745,10 @@ export type MutationCreateCalloutOnCalloutsSetArgs = {
   file?: InputMaybe<Scalars['Upload']['input']>;
 };
 
+export type MutationCreateClassificationEntryArgs = {
+  classificationData: CreateClassificationEntryInput;
+};
+
 export type MutationCreateContributionOnCalloutArgs = {
   contributionData: CreateContributionOnCalloutInput;
 };
@@ -5648,6 +5809,10 @@ export type MutationCreateTagsetOnProfileArgs = {
   tagsetData: CreateTagsetOnProfileInput;
 };
 
+export type MutationCreateTaskColumnOnCalloutArgs = {
+  columnData: CreateTaskColumnOnCalloutInput;
+};
+
 export type MutationCreateTemplateArgs = {
   templateData: CreateTemplateOnTemplatesSetInput;
 };
@@ -5682,6 +5847,10 @@ export type MutationDeleteCalendarEventArgs = {
 
 export type MutationDeleteCalloutArgs = {
   deleteData: DeleteCalloutInput;
+};
+
+export type MutationDeleteClassificationEntryArgs = {
+  classificationData: DeleteClassificationEntryInput;
 };
 
 export type MutationDeleteCollaboraDocumentArgs = {
@@ -5754,6 +5923,10 @@ export type MutationDeleteStateOnInnovationFlowArgs = {
 
 export type MutationDeleteStorageBucketArgs = {
   deleteData: DeleteStorageBuckeetInput;
+};
+
+export type MutationDeleteTaskColumnOnCalloutArgs = {
+  columnData: DeleteTaskColumnOnCalloutInput;
 };
 
 export type MutationDeleteTemplateArgs = {
@@ -5861,6 +6034,10 @@ export type MutationMoveSpaceL1ToSpaceL2Args = {
 
 export type MutationMoveSpaceL2ToSpaceL1Args = {
   moveData: MoveSpaceL2ToSpaceL1Input;
+};
+
+export type MutationMoveTaskToColumnArgs = {
+  moveData: MoveTaskToColumnInput;
 };
 
 export type MutationRefreshVirtualContributorBodyOfKnowledgeArgs = {
@@ -6062,6 +6239,18 @@ export type MutationUpdateCalloutsSortOrderArgs = {
   sortOrderData: UpdateCalloutsSortOrderInput;
 };
 
+export type MutationUpdateClassificationEntryArgs = {
+  classificationData: UpdateClassificationEntryInput;
+};
+
+export type MutationUpdateClassificationEntryDisplayArgs = {
+  classificationData: UpdateClassificationEntryDisplayInput;
+};
+
+export type MutationUpdateClassificationEntrySelectionArgs = {
+  classificationData: UpdateClassificationEntrySelectionInput;
+};
+
 export type MutationUpdateClassificationTagsetArgs = {
   updateData: UpdateClassificationSelectTagsetValueInput;
 };
@@ -6192,6 +6381,14 @@ export type MutationUpdateSubspacesSortOrderArgs = {
 
 export type MutationUpdateTagsetArgs = {
   updateData: UpdateTagsetInput;
+};
+
+export type MutationUpdateTaskColumnOnCalloutArgs = {
+  columnData: UpdateTaskColumnOnCalloutInput;
+};
+
+export type MutationUpdateTaskColumnsSortOrderOnCalloutArgs = {
+  sortOrderData: UpdateTaskColumnsSortOrderOnCalloutInput;
 };
 
 export type MutationUpdateTemplateArgs = {
@@ -8513,6 +8710,8 @@ export type SpaceAbout = {
   __typename?: 'SpaceAbout';
   /** The authorization rules for the entity */
   authorization?: Maybe<Authorization>;
+  /** The classification entries on this About, in sortOrder. Empty array when none exist — never null, never an error. */
+  classifications: Array<ClassificationEntry>;
   /** The date at which the entity was created. */
   createdDate: Scalars['DateTime']['output'];
   /** The guidelines for members of this Community. */
@@ -8886,6 +9085,7 @@ export enum TagsetReservedName {
   FlowState = 'FLOW_STATE',
   Keywords = 'KEYWORDS',
   Skills = 'SKILLS',
+  Task = 'TASK',
 }
 
 export type TagsetTemplate = {
@@ -8935,6 +9135,14 @@ export type Task = {
   type?: Maybe<Scalars['String']['output']>;
 };
 
+export type TaskColumnCount = {
+  __typename?: 'TaskColumnCount';
+  /** The Tasks board column, in the board-defined order. */
+  column: Scalars['String']['output'];
+  /** The number of tasks currently in this column. */
+  count: Scalars['Int']['output'];
+};
+
 /** The current status of the task */
 export enum TaskStatus {
   Completed = 'COMPLETED',
@@ -8948,6 +9156,8 @@ export type Template = {
   authorization?: Maybe<Authorization>;
   /** The Callout for this Template. */
   callout?: Maybe<Callout>;
+  /** The classification vocabulary; null unless this Template is of type CLASSIFICATION — and never null when it is. */
+  classification?: Maybe<ClassificationTemplateContent>;
   /** The Community Guidelines for this Template. */
   communityGuidelines?: Maybe<CommunityGuidelines>;
   /** The Space for this Template. */
@@ -9028,6 +9238,7 @@ export type TemplateResult = {
 
 export enum TemplateType {
   Callout = 'CALLOUT',
+  Classification = 'CLASSIFICATION',
   CommunityGuidelines = 'COMMUNITY_GUIDELINES',
   Post = 'POST',
   Space = 'SPACE',
@@ -9058,6 +9269,10 @@ export type TemplatesSet = {
   calloutTemplates: Array<Template>;
   /** The total number of CalloutTemplates in this TemplatesSet. */
   calloutTemplatesCount: Scalars['Float']['output'];
+  /** The Classification Templates in this TemplatesSet. */
+  classificationTemplates: Array<Template>;
+  /** The total number of Classification Templates in this TemplatesSet. */
+  classificationTemplatesCount: Scalars['Float']['output'];
   /** The CommunityGuidelines in this TemplatesSet. */
   communityGuidelinesTemplates: Array<Template>;
   /** The total number of CommunityGuidelinesTemplates in this TemplatesSet. */
@@ -9297,6 +9512,24 @@ export type UpdateCalloutsSortOrderInput = {
   /** The IDs of the callouts to update the sort order on */
   calloutIDs: Array<Scalars['UUID']['input']>;
   calloutsSetID: Scalars['UUID']['input'];
+};
+
+export type UpdateClassificationEntryDisplayInput = {
+  classificationEntryID: Scalars['UUID']['input'];
+  display: Scalars['Boolean']['input'];
+};
+
+export type UpdateClassificationEntryInput = {
+  cardinality?: InputMaybe<ClassificationCardinality>;
+  classificationEntryID: Scalars['UUID']['input'];
+  displayLabel?: InputMaybe<Scalars['String']['input']>;
+  values?: InputMaybe<Array<CreateClassificationValueInput>>;
+};
+
+export type UpdateClassificationEntrySelectionInput = {
+  classificationEntryID: Scalars['UUID']['input'];
+  /** The complete set of selected value ids. An empty list clears the selection. */
+  selectedValueIDs: Array<Scalars['String']['input']>;
 };
 
 export type UpdateClassificationInput = {
@@ -9728,6 +9961,22 @@ export type UpdateTagsetInput = {
   tags: Array<Scalars['String']['input']>;
 };
 
+export type UpdateTaskColumnOnCalloutInput = {
+  /** The Tasks board Callout whose column is being renamed. */
+  calloutID: Scalars['UUID']['input'];
+  /** The current column name. Matched case-insensitively to an existing column. */
+  currentName: Scalars['String']['input'];
+  /** The new column name. Tasks in the column follow the rename. */
+  newName: Scalars['String']['input'];
+};
+
+export type UpdateTaskColumnsSortOrderOnCalloutInput = {
+  /** The Tasks board Callout whose columns are being reordered. */
+  calloutID: Scalars['UUID']['input'];
+  /** Every existing column exactly once, in the new left-to-right order. Matched case-insensitively. */
+  columnNames: Array<Scalars['String']['input']>;
+};
+
 export type UpdateTemplateContentSpaceInput = {
   ID: Scalars['UUID']['input'];
   /** Update the TemplateContentSpace About information. */
@@ -9754,6 +10003,8 @@ export type UpdateTemplateFromSpaceInput = {
 
 export type UpdateTemplateInput = {
   ID: Scalars['UUID']['input'];
+  /** The cardinality and value set for a Classification Template. */
+  classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   /** The default description to be pre-filled when users create Posts based on this template. */
   postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
@@ -14677,6 +14928,15 @@ export type CalloutContentQuery = {
             postDescription?: string | undefined;
             whiteboardContent?: string | undefined;
           };
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                tagsets?:
+                  | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                  | undefined;
+              }
+            | undefined;
           settings: {
             __typename?: 'CalloutSettings';
             visibility: CalloutVisibility;
@@ -16440,6 +16700,7 @@ export type CalloutPostCreatedSubscription = {
 export type CreatePostOnCalloutMutationVariables = Exact<{
   calloutId: Scalars['UUID']['input'];
   post: CreatePostInput;
+  taskColumn?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 export type CreatePostOnCalloutMutation = {
@@ -28163,6 +28424,16 @@ export type SpaceAboutDetailsQuery = {
             };
             guidelines: { __typename?: 'CommunityGuidelines'; id: string };
             metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+            classifications: Array<{
+              __typename?: 'ClassificationEntry';
+              id: string;
+              displayLabel: string;
+              cardinality: ClassificationCardinality;
+              display: boolean;
+              sortOrder: number;
+              selectedValueIDs: Array<string>;
+              values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+            }>;
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -28170,6 +28441,17 @@ export type SpaceAboutDetailsQuery = {
         }
       | undefined;
   };
+};
+
+export type ClassificationEntryFullFragment = {
+  __typename?: 'ClassificationEntry';
+  id: string;
+  displayLabel: string;
+  cardinality: ClassificationCardinality;
+  display: boolean;
+  sortOrder: number;
+  selectedValueIDs: Array<string>;
+  values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
 };
 
 export type SpaceAboutCardAvatarFragment = {
@@ -28375,6 +28657,16 @@ export type SpaceAboutDetailsFragment = {
   };
   guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+  classifications: Array<{
+    __typename?: 'ClassificationEntry';
+    id: string;
+    displayLabel: string;
+    cardinality: ClassificationCardinality;
+    display: boolean;
+    sortOrder: number;
+    selectedValueIDs: Array<string>;
+    values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+  }>;
 };
 
 export type SpaceAboutLightFragment = {
@@ -28454,6 +28746,154 @@ export type SpaceAboutTileFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+};
+
+export type AddClassificationEntryFromTemplateMutationVariables = Exact<{
+  classificationData: AddClassificationEntryFromTemplateInput;
+}>;
+
+export type AddClassificationEntryFromTemplateMutation = {
+  __typename?: 'Mutation';
+  addClassificationEntryFromTemplate: {
+    __typename?: 'ClassificationEntry';
+    id: string;
+    displayLabel: string;
+    cardinality: ClassificationCardinality;
+    display: boolean;
+    sortOrder: number;
+    selectedValueIDs: Array<string>;
+    values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+  };
+};
+
+export type DeleteClassificationEntryMutationVariables = Exact<{
+  classificationData: DeleteClassificationEntryInput;
+}>;
+
+export type DeleteClassificationEntryMutation = {
+  __typename?: 'Mutation';
+  deleteClassificationEntry: { __typename?: 'ClassificationEntry'; id: string };
+};
+
+export type UpdateClassificationEntryDisplayMutationVariables = Exact<{
+  classificationData: UpdateClassificationEntryDisplayInput;
+}>;
+
+export type UpdateClassificationEntryDisplayMutation = {
+  __typename?: 'Mutation';
+  updateClassificationEntryDisplay: {
+    __typename?: 'ClassificationEntry';
+    id: string;
+    displayLabel: string;
+    cardinality: ClassificationCardinality;
+    display: boolean;
+    sortOrder: number;
+    selectedValueIDs: Array<string>;
+    values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+  };
+};
+
+export type UpdateClassificationEntrySelectionMutationVariables = Exact<{
+  classificationData: UpdateClassificationEntrySelectionInput;
+}>;
+
+export type UpdateClassificationEntrySelectionMutation = {
+  __typename?: 'Mutation';
+  updateClassificationEntrySelection: {
+    __typename?: 'ClassificationEntry';
+    id: string;
+    displayLabel: string;
+    cardinality: ClassificationCardinality;
+    display: boolean;
+    sortOrder: number;
+    selectedValueIDs: Array<string>;
+    values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+  };
+};
+
+export type ClassificationTemplatesPlatformWideQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ClassificationTemplatesPlatformWideQuery = {
+  __typename?: 'Query';
+  platform: {
+    __typename?: 'Platform';
+    library: {
+      __typename?: 'Library';
+      templates: Array<{
+        __typename?: 'TemplateResult';
+        template: {
+          __typename?: 'Template';
+          id: string;
+          profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+          classification?:
+            | {
+                __typename?: 'ClassificationTemplateContent';
+                cardinality: ClassificationCardinality;
+                values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+              }
+            | undefined;
+        };
+      }>;
+    };
+  };
+};
+
+export type ClassificationTemplatesForSpaceQueryVariables = Exact<{
+  levelZeroSpaceId: Scalars['UUID']['input'];
+}>;
+
+export type ClassificationTemplatesForSpaceQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    space?:
+      | {
+          __typename?: 'Space';
+          id: string;
+          templatesManager?:
+            | {
+                __typename?: 'TemplatesManager';
+                templatesSet?:
+                  | {
+                      __typename?: 'TemplatesSet';
+                      id: string;
+                      classificationTemplates: Array<{
+                        __typename?: 'Template';
+                        id: string;
+                        profile: {
+                          __typename?: 'Profile';
+                          id: string;
+                          displayName: string;
+                          description?: string | undefined;
+                        };
+                        classification?:
+                          | {
+                              __typename?: 'ClassificationTemplateContent';
+                              cardinality: ClassificationCardinality;
+                              values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+                            }
+                          | undefined;
+                      }>;
+                    }
+                  | undefined;
+              }
+            | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type ClassificationTemplateOptionFragment = {
+  __typename?: 'Template';
+  id: string;
+  profile: { __typename?: 'Profile'; id: string; displayName: string; description?: string | undefined };
+  classification?:
+    | {
+        __typename?: 'ClassificationTemplateContent';
+        cardinality: ClassificationCardinality;
+        values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+      }
+    | undefined;
 };
 
 export type PlansTableQueryVariables = Exact<{ [key: string]: never }>;
@@ -29435,6 +29875,16 @@ export type UpdateSpaceMutation = {
       };
       guidelines: { __typename?: 'CommunityGuidelines'; id: string };
       metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+      classifications: Array<{
+        __typename?: 'ClassificationEntry';
+        id: string;
+        displayLabel: string;
+        cardinality: ClassificationCardinality;
+        display: boolean;
+        sortOrder: number;
+        selectedValueIDs: Array<string>;
+        values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+      }>;
     };
   };
 };
@@ -29602,6 +30052,16 @@ export type SpaceInfoFragment = {
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
     metrics?: Array<{ __typename?: 'NVP'; id: string; name: string; value: string }> | undefined;
+    classifications: Array<{
+      __typename?: 'ClassificationEntry';
+      id: string;
+      displayLabel: string;
+      cardinality: ClassificationCardinality;
+      display: boolean;
+      sortOrder: number;
+      selectedValueIDs: Array<string>;
+      values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+    }>;
   };
 };
 
@@ -30295,6 +30755,16 @@ export type SpacePageQuery = {
               | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
               | undefined;
             guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+            classifications: Array<{
+              __typename?: 'ClassificationEntry';
+              id: string;
+              displayLabel: string;
+              cardinality: ClassificationCardinality;
+              display: boolean;
+              sortOrder: number;
+              selectedValueIDs: Array<string>;
+              values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+            }>;
           };
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -30529,6 +30999,16 @@ export type SpacePageFragment = {
       | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
       | undefined;
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
+    classifications: Array<{
+      __typename?: 'ClassificationEntry';
+      id: string;
+      displayLabel: string;
+      cardinality: ClassificationCardinality;
+      display: boolean;
+      sortOrder: number;
+      selectedValueIDs: Array<string>;
+      values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+    }>;
   };
   authorization?:
     | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
@@ -32873,6 +33353,44 @@ export type AllTemplatesInTemplatesSetQuery = {
                 | undefined;
             };
           }>;
+          classificationTemplates: Array<{
+            __typename?: 'Template';
+            id: string;
+            type: TemplateType;
+            classification?:
+              | {
+                  __typename?: 'ClassificationTemplateContent';
+                  cardinality: ClassificationCardinality;
+                  values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              url: string;
+              defaultTagset?:
+                | {
+                    __typename?: 'Tagset';
+                    id: string;
+                    name: string;
+                    tags: Array<string>;
+                    allowedValues: Array<string>;
+                    type: TagsetType;
+                  }
+                | undefined;
+              visual?:
+                | {
+                    __typename?: 'Visual';
+                    id: string;
+                    uri: string;
+                    name: VisualType;
+                    alternativeText?: string | undefined;
+                  }
+                | undefined;
+            };
+          }>;
         }
       | undefined;
   };
@@ -32903,6 +33421,7 @@ export type TemplateContentQueryVariables = Exact<{
   includeSpace?: InputMaybe<Scalars['Boolean']['input']>;
   includePost?: InputMaybe<Scalars['Boolean']['input']>;
   includeWhiteboard?: InputMaybe<Scalars['Boolean']['input']>;
+  includeClassification?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
 export type TemplateContentQuery = {
@@ -32935,6 +33454,22 @@ export type TemplateContentQuery = {
             | {
                 __typename?: 'Callout';
                 id: string;
+                classification?:
+                  | {
+                      __typename?: 'Classification';
+                      id: string;
+                      tagsets?:
+                        | Array<{
+                            __typename?: 'Tagset';
+                            id: string;
+                            name: string;
+                            tags: Array<string>;
+                            allowedValues: Array<string>;
+                            type: TagsetType;
+                          }>
+                        | undefined;
+                    }
+                  | undefined;
                 framing: {
                   __typename?: 'CalloutFraming';
                   id: string;
@@ -33491,9 +34026,22 @@ export type TemplateContentQuery = {
                 }>;
               }
             | undefined;
+          classification?:
+            | {
+                __typename?: 'ClassificationTemplateContent';
+                cardinality: ClassificationCardinality;
+                values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+              }
+            | undefined;
         }
       | undefined;
   };
+};
+
+export type ClassificationTemplateContentFullFragment = {
+  __typename?: 'ClassificationTemplateContent';
+  cardinality: ClassificationCardinality;
+  values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
 };
 
 export type SpaceTemplateContentQueryVariables = Exact<{
@@ -33717,6 +34265,22 @@ export type SpaceTemplateContentQuery = {
 export type CalloutTemplateContentFragment = {
   __typename?: 'Callout';
   id: string;
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        tagsets?:
+          | Array<{
+              __typename?: 'Tagset';
+              id: string;
+              name: string;
+              tags: Array<string>;
+              allowedValues: Array<string>;
+              type: TagsetType;
+            }>
+          | undefined;
+      }
+    | undefined;
   framing: {
     __typename?: 'CalloutFraming';
     id: string;
@@ -34577,6 +35141,39 @@ export type CommunityGuidelinesTemplateFragment = {
   };
 };
 
+export type ClassificationTemplateFragment = {
+  __typename?: 'Template';
+  id: string;
+  type: TemplateType;
+  classification?:
+    | {
+        __typename?: 'ClassificationTemplateContent';
+        cardinality: ClassificationCardinality;
+        values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
+      }
+    | undefined;
+  profile: {
+    __typename?: 'Profile';
+    id: string;
+    displayName: string;
+    description?: string | undefined;
+    url: string;
+    defaultTagset?:
+      | {
+          __typename?: 'Tagset';
+          id: string;
+          name: string;
+          tags: Array<string>;
+          allowedValues: Array<string>;
+          type: TagsetType;
+        }
+      | undefined;
+    visual?:
+      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | undefined;
+  };
+};
+
 export type CreateTemplateMutationVariables = Exact<{
   templatesSetId: Scalars['UUID']['input'];
   profileData: CreateProfileInput;
@@ -34587,6 +35184,7 @@ export type CreateTemplateMutationVariables = Exact<{
   contentSpaceData?: InputMaybe<CreateTemplateContentSpaceInput>;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
   whiteboard?: InputMaybe<CreateWhiteboardInput>;
+  classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
@@ -34658,6 +35256,7 @@ export type UpdateTemplateMutationVariables = Exact<{
   profile: UpdateProfileInput;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
   whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
 
@@ -34966,6 +35565,38 @@ export type TemplatesSetTemplatesFragment = {
                 | undefined;
             };
           };
+        }
+      | undefined;
+    profile: {
+      __typename?: 'Profile';
+      id: string;
+      displayName: string;
+      description?: string | undefined;
+      url: string;
+      defaultTagset?:
+        | {
+            __typename?: 'Tagset';
+            id: string;
+            name: string;
+            tags: Array<string>;
+            allowedValues: Array<string>;
+            type: TagsetType;
+          }
+        | undefined;
+      visual?:
+        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | undefined;
+    };
+  }>;
+  classificationTemplates: Array<{
+    __typename?: 'Template';
+    id: string;
+    type: TemplateType;
+    classification?:
+      | {
+          __typename?: 'ClassificationTemplateContent';
+          cardinality: ClassificationCardinality;
+          values: Array<{ __typename?: 'ClassificationValue'; id: string; label: string }>;
         }
       | undefined;
     profile: {
@@ -36664,6 +37295,385 @@ export type SpaceCollectionSubspacesQuery = {
           };
         }
       | undefined;
+  };
+};
+
+export type TaskBoardCalloutFragment = {
+  __typename?: 'Callout';
+  id: string;
+  authorization?:
+    | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+    | undefined;
+  settings: {
+    __typename?: 'CalloutSettings';
+    contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+  };
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }> | undefined;
+      }
+    | undefined;
+  taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+};
+
+export type TaskBoardContributionFragment = {
+  __typename?: 'CalloutContribution';
+  id: string;
+  sortOrder: number;
+  classification?:
+    | {
+        __typename?: 'Classification';
+        id: string;
+        tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+      }
+    | undefined;
+  post?:
+    | {
+        __typename?: 'Post';
+        id: string;
+        createdBy?:
+          | {
+              __typename?: 'User';
+              id: string;
+              profile?:
+                | {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                  }
+                | undefined;
+            }
+          | undefined;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          displayName: string;
+          description?: string | undefined;
+          tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+        };
+        comments: { __typename?: 'Room'; id: string; messagesCount: number };
+      }
+    | undefined;
+};
+
+export type TaskBoardDataQueryVariables = Exact<{
+  calloutId: Scalars['UUID']['input'];
+}>;
+
+export type TaskBoardDataQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    callout?:
+      | {
+          __typename?: 'Callout';
+          id: string;
+          contributions: Array<{
+            __typename?: 'CalloutContribution';
+            id: string;
+            sortOrder: number;
+            classification?:
+              | {
+                  __typename?: 'Classification';
+                  id: string;
+                  tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+                }
+              | undefined;
+            post?:
+              | {
+                  __typename?: 'Post';
+                  id: string;
+                  createdBy?:
+                    | {
+                        __typename?: 'User';
+                        id: string;
+                        profile?:
+                          | {
+                              __typename?: 'Profile';
+                              id: string;
+                              displayName: string;
+                              avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                            }
+                          | undefined;
+                      }
+                    | undefined;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    displayName: string;
+                    description?: string | undefined;
+                    tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+                  };
+                  comments: { __typename?: 'Room'; id: string; messagesCount: number };
+                }
+              | undefined;
+          }>;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          settings: {
+            __typename?: 'CalloutSettings';
+            contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+          };
+          classification?:
+            | {
+                __typename?: 'Classification';
+                id: string;
+                tagsets?:
+                  | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+                  | undefined;
+              }
+            | undefined;
+          taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type MoveTaskToColumnMutationVariables = Exact<{
+  moveData: MoveTaskToColumnInput;
+}>;
+
+export type MoveTaskToColumnMutation = {
+  __typename?: 'Mutation';
+  moveTaskToColumn: {
+    __typename?: 'CalloutContribution';
+    id: string;
+    sortOrder: number;
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+        }
+      | undefined;
+    post?:
+      | {
+          __typename?: 'Post';
+          id: string;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            description?: string | undefined;
+            tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+          };
+          comments: { __typename?: 'Room'; id: string; messagesCount: number };
+        }
+      | undefined;
+  };
+};
+
+export type CreateTaskColumnOnCalloutMutationVariables = Exact<{
+  columnData: CreateTaskColumnOnCalloutInput;
+}>;
+
+export type CreateTaskColumnOnCalloutMutation = {
+  __typename?: 'Mutation';
+  createTaskColumnOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+  };
+};
+
+export type UpdateTaskColumnOnCalloutMutationVariables = Exact<{
+  columnData: UpdateTaskColumnOnCalloutInput;
+}>;
+
+export type UpdateTaskColumnOnCalloutMutation = {
+  __typename?: 'Mutation';
+  updateTaskColumnOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    contributions: Array<{
+      __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
+      classification?:
+        | {
+            __typename?: 'Classification';
+            id: string;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            };
+            comments: { __typename?: 'Room'; id: string; messagesCount: number };
+          }
+        | undefined;
+    }>;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+  };
+};
+
+export type DeleteTaskColumnOnCalloutMutationVariables = Exact<{
+  columnData: DeleteTaskColumnOnCalloutInput;
+}>;
+
+export type DeleteTaskColumnOnCalloutMutation = {
+  __typename?: 'Mutation';
+  deleteTaskColumnOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    contributions: Array<{
+      __typename?: 'CalloutContribution';
+      id: string;
+      sortOrder: number;
+      classification?:
+        | {
+            __typename?: 'Classification';
+            id: string;
+            tagsets?: Array<{ __typename?: 'Tagset'; id: string; name: string; tags: Array<string> }> | undefined;
+          }
+        | undefined;
+      post?:
+        | {
+            __typename?: 'Post';
+            id: string;
+            createdBy?:
+              | {
+                  __typename?: 'User';
+                  id: string;
+                  profile?:
+                    | {
+                        __typename?: 'Profile';
+                        id: string;
+                        displayName: string;
+                        avatar?: { __typename?: 'Visual'; id: string; uri: string } | undefined;
+                      }
+                    | undefined;
+                }
+              | undefined;
+            profile: {
+              __typename?: 'Profile';
+              id: string;
+              displayName: string;
+              description?: string | undefined;
+              tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
+            };
+            comments: { __typename?: 'Room'; id: string; messagesCount: number };
+          }
+        | undefined;
+    }>;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
+  };
+};
+
+export type UpdateTaskColumnsSortOrderOnCalloutMutationVariables = Exact<{
+  sortOrderData: UpdateTaskColumnsSortOrderOnCalloutInput;
+}>;
+
+export type UpdateTaskColumnsSortOrderOnCalloutMutation = {
+  __typename?: 'Mutation';
+  updateTaskColumnsSortOrderOnCallout: {
+    __typename?: 'Callout';
+    id: string;
+    authorization?:
+      | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+      | undefined;
+    settings: {
+      __typename?: 'CalloutSettings';
+      contribution: { __typename?: 'CalloutSettingsContribution'; allowedTypes: Array<CalloutContributionType> };
+    };
+    classification?:
+      | {
+          __typename?: 'Classification';
+          id: string;
+          tagsets?:
+            | Array<{ __typename?: 'Tagset'; id: string; name: string; allowedValues: Array<string> }>
+            | undefined;
+        }
+      | undefined;
+    taskColumnCounts?: Array<{ __typename?: 'TaskColumnCount'; column: string; count: number }> | undefined;
   };
 };
 

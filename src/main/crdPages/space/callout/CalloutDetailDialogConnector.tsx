@@ -75,6 +75,11 @@ type CalloutDetailDialogConnectorProps = {
   initialPostId?: string;
   /** Move-action prop bag forwarded from the feed (plan T064) so the detail-dialog's 3-dots menu offers the same Move items as the card's. */
   moveActions?: CalloutMoveActions;
+  /**
+   * When true, the dialog is opened over the fullscreen task board (z-[100]), so
+   * it and every dialog it spawns (edit, delete, share) must stack above it.
+   */
+  elevated?: boolean;
 };
 
 function ContributionsSlot({
@@ -261,8 +266,13 @@ export function CalloutDetailDialogConnector({
   initialMemoId,
   initialPostId,
   moveActions,
+  elevated = false,
 }: CalloutDetailDialogConnectorProps) {
   const { t, i18n } = useTranslation('crd-space');
+  // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
+  // any dialog it spawns (edit, delete, share) at z-[120] so it clears both.
+  const elevatedDialog = elevated ? { overlayClassName: 'z-[110]', contentClassName: 'z-[110]' } : {};
+  const elevatedNested = elevated ? { overlayClassName: 'z-[120]', contentClassName: 'z-[120]' } : {};
   const contributionType = getCalloutContributionType(callout);
   const initialIsMemo = contributionType === CalloutContributionType.Memo;
   const initialIsPost = contributionType === CalloutContributionType.Post;
@@ -558,6 +568,7 @@ export function CalloutDetailDialogConnector({
       onConfirm={handleDeleteContributionConfirm}
       variant="destructive"
       loading={deletingContribution}
+      {...elevatedNested}
     />
   );
 
@@ -643,12 +654,25 @@ export function CalloutDetailDialogConnector({
             : undefined
         }
         onClose={() => {
+          // In focused mode the preview IS the dialog (no grid to fall back to),
+          // so its close control closes the whole dialog.
+          if (elevated) {
+            onOpenChange(false);
+            return;
+          }
           setPostContributionId(undefined);
           setPostId(undefined);
         }}
         shareSlot={
           selectedPostUrl ? (
-            <ShareButton url={selectedPostUrl} tooltip={t('postPreview.share')} dialogTitle={t('postPreview.share')} />
+            <ShareButton
+              url={selectedPostUrl}
+              tooltip={t('postPreview.share')}
+              dialogTitle={t('postPreview.share')}
+              // Over the fullscreen board the share dialog must clear the board.
+              dialogClassName={elevated ? 'z-[120]' : undefined}
+              overlayClassName={elevated ? 'z-[120]' : undefined}
+            />
           ) : undefined
         }
       />
@@ -725,6 +749,7 @@ export function CalloutDetailDialogConnector({
           setPostContributionId(undefined);
           setPostId(undefined);
         }}
+        {...elevatedNested}
       />
     ) : null;
 
@@ -755,11 +780,14 @@ export function CalloutDetailDialogConnector({
       callout={callout}
       moveActions={moveActions}
       onShare={handleShareClick}
+      isTaskBoard={elevated}
       onDeleted={() => onOpenChange(false)}
     />
   );
 
-  const shareDialog = <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} />;
+  const shareDialog = (
+    <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} {...elevatedNested} />
+  );
 
   // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
   // existing messages readable. The dialog itself hides the discussion section entirely
@@ -793,6 +821,8 @@ export function CalloutDetailDialogConnector({
         <CalloutDetailDialog
           open={open}
           onOpenChange={onOpenChange}
+          {...elevatedDialog}
+          focusedPost={elevated && isPostSelected}
           callout={{
             ...mapCalloutDetailsToDialogData(callout, t),
             commentCount: isPostSelected ? postMessagesCount : undefined,
@@ -848,6 +878,8 @@ export function CalloutDetailDialogConnector({
           <CalloutDetailDialog
             open={open}
             onOpenChange={onOpenChange}
+            {...elevatedDialog}
+            focusedPost={elevated && isPostSelected}
             callout={{
               ...mapCalloutDetailsToDialogData(callout, t),
               // While the live thread is still loading, fall back to the post's `messagesCount`

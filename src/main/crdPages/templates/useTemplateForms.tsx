@@ -20,6 +20,7 @@ import {
   TemplateType as GqlTemplateType,
   UrlType,
 } from '@/core/apollo/generated/graphql-schema';
+import { ClassificationTemplateForm } from '@/crd/components/templates/forms/ClassificationTemplateForm';
 import { CommunityGuidelinesTemplateForm } from '@/crd/components/templates/forms/CommunityGuidelinesTemplateForm';
 import { PostTemplateForm } from '@/crd/components/templates/forms/PostTemplateForm';
 import { SpaceTemplateForm } from '@/crd/components/templates/forms/SpaceTemplateForm';
@@ -36,6 +37,7 @@ import { ensureHttps } from '@/crd/lib/ensureHttps';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
+import { toGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
 import useHandlePreviewImages from '@/domain/templates/utils/useHandlePreviewImages';
 import {
   type CalloutFormValues,
@@ -71,6 +73,9 @@ function emptyValuesFor(type: TemplateType): TemplateFormValues {
       return { ...EMPTY_COMMON, type: 'communityGuidelines', title: '', guidelinesMarkdown: '', references: [] };
     case 'space':
       return { ...EMPTY_COMMON, type: 'space', recursive: true };
+    case 'classification':
+      // Start with no rows — "0 values defined" until the first quick-add (product#2161 design 04).
+      return { ...EMPTY_COMMON, type: 'classification', cardinality: 'MULTI_SELECT', values: [] };
     case 'callout':
       return {
         ...EMPTY_COMMON,
@@ -538,6 +543,22 @@ export function useTemplateForms({
     const profileData = toProfileData(current);
     const tags = current.tags.length > 0 ? current.tags : undefined;
     switch (current.type) {
+      case 'classification':
+        await createTemplate({
+          variables: {
+            templatesSetId: setId,
+            type: GqlTemplateType.Classification,
+            profileData,
+            tags,
+            classificationData: {
+              cardinality: toGqlClassificationCardinality(current.cardinality),
+              values: current.values
+                .filter(v => v.label.trim().length > 0)
+                .map(v => ({ id: v.id?.trim() || undefined, label: v.label.trim() })),
+            },
+          },
+        });
+        return;
       case 'post':
         await createTemplate({
           variables: {
@@ -674,6 +695,20 @@ export function useTemplateForms({
       tagsets: tagsetId ? [{ ID: tagsetId, tags: current.tags }] : undefined,
     };
     switch (current.type) {
+      case 'classification':
+        await updateTemplate({
+          variables: {
+            templateId,
+            profile,
+            classificationData: {
+              cardinality: toGqlClassificationCardinality(current.cardinality),
+              values: current.values
+                .filter(v => v.label.trim().length > 0)
+                .map(v => ({ id: v.id?.trim() || undefined, label: v.label.trim() })),
+            },
+          },
+        });
+        return;
       case 'post':
         await updateTemplate({
           variables: { templateId, profile, postDefaultDescription: current.defaultDescription || undefined },
@@ -822,6 +857,26 @@ export function useTemplateForms({
     // from somewhere). Editing is profile-only by default; re-capture is opt-in via the URL picker.
     if (intent === 'create' && values.type === 'space' && !values.sourceSpaceId)
       errs.sourceSpaceId = t('form.space.sourceRequired');
+    // Classification value-set client-side checks (FR-002a bound, FR-002c explicit-id
+    // collisions rejected rather than silently suffixed) — the server remains authoritative;
+    // this only gives faster feedback ahead of the round trip.
+    if (values.type === 'classification') {
+      const nonEmpty = values.values.filter(v => v.label.trim().length > 0);
+      if (nonEmpty.length === 0) errs.values = t('form.classification.valuesRequired');
+      else if (nonEmpty.length > 50) errs.values = t('form.classification.tooManyValues');
+      const idCounts = new Map<string, number>();
+      for (const row of values.values) {
+        const id = row.id?.trim();
+        if (!id) continue;
+        idCounts.set(id, (idCounts.get(id) ?? 0) + 1);
+      }
+      values.values.forEach((row, index) => {
+        const id = row.id?.trim();
+        if (id && (idCounts.get(id) ?? 0) > 1) {
+          errs[`values.${index}.id`] = t('form.classification.valueIdCollision');
+        }
+      });
+    }
     setErrors(errs);
     const calloutErrors = values.type === 'callout' ? calloutForm.validate() : {};
     if (Object.keys(errs).length > 0 || Object.keys(calloutErrors).length > 0) return;
@@ -854,6 +909,9 @@ export function useTemplateForms({
 
   let perTypeFormSlot: ReactNode = null;
   switch (values.type) {
+    case 'classification':
+      perTypeFormSlot = <ClassificationTemplateForm value={values} errors={errors} onChange={onPerTypeChange} />;
+      break;
     case 'post':
       perTypeFormSlot = (
         <PostTemplateForm value={values} errors={errors} onChange={onPerTypeChange} {...markdownUploadProps} />

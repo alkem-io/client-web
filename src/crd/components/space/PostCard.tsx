@@ -6,6 +6,7 @@ import {
   ImagePlus,
   Images,
   type LucideIcon,
+  Maximize,
   Maximize2,
   Megaphone,
   MessageSquare,
@@ -172,6 +173,8 @@ type PostCardProps = {
    */
   settingsSlot?: ReactNode;
   onExpandClick?: () => void;
+  /** Icon shown for the expand control — the fullscreen icon (e.g. a Tasks board opens fullscreen) or the default expand icon. */
+  expandIcon?: 'expand' | 'fullscreen';
   /** Opens the Collabora editor directly from the feed preview (document framing only).
    *  Distinct from `onClick`, which opens the callout dialog via the title link. */
   onOpenFramingDocument?: () => void;
@@ -213,6 +216,7 @@ export function PostCard({
   onCommentsClick,
   settingsSlot,
   onExpandClick,
+  expandIcon,
   onOpenFramingDocument,
   contributionsPreview,
   reactionsSlot,
@@ -369,9 +373,13 @@ export function PostCard({
                 e.stopPropagation();
                 onExpandClick();
               }}
-              aria-label={t('callout.expand')}
+              aria-label={expandIcon === 'fullscreen' ? t('callout.fullscreen') : t('callout.expand')}
             >
-              <Maximize2 className="w-4 h-4" aria-hidden="true" />
+              {expandIcon === 'fullscreen' ? (
+                <Maximize className="w-4 h-4" aria-hidden="true" />
+              ) : (
+                <Maximize2 className="w-4 h-4" aria-hidden="true" />
+              )}
             </Button>
           )}
           {settingsSlot}
