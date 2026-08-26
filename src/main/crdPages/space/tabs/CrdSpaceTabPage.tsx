@@ -61,8 +61,12 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
   // the button. Template queries fire only when the widget is configured on
   // this tab AND the viewer can create subspaces (FR-012/FR-019).
   const sidebarWire = flowStateForNewCallouts?.settings.sidebar ?? [];
-  const hasCreateSubspaceWidget = resolveSidebarPlan(sidebarWire).includes('createSubspace');
-  const canCreateSubspace = hasCreateSubspaceWidget && permissions.canCreateSubspaces;
+  const sidebarPlan = resolveSidebarPlan(sidebarWire);
+  // The Subspaces dialog (opened from the `subspaceLinks` widget's "Show all")
+  // also offers Create Subspace, so the dialog + template queries must be live
+  // for either entry point — not only the dedicated `createSubspace` widget.
+  const hasCreateSubspaceEntry = sidebarPlan.includes('createSubspace') || sidebarPlan.includes('subspaceLinks');
+  const canCreateSubspace = hasCreateSubspaceEntry && permissions.canCreateSubspaces;
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
     // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: spaceId! },
