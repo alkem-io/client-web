@@ -60,7 +60,7 @@ export function InfoBlock({ description, leads = [], onEditClick, className }: I
   const leadHeading = leads.length === 1 ? t('sidebar.spaceLead') : t('sidebar.spaceLeads');
 
   return (
-    <div className={cn('group relative bg-primary text-primary-foreground rounded-lg p-5', className)}>
+    <div className={cn('group relative bg-primary text-primary-foreground rounded-lg p-5 min-h-[120px]', className)}>
       {description && (
         <>
           <div ref={descriptionRef} className={cn(!isExpanded && 'line-clamp-3')}>
