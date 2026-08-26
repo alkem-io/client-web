@@ -49,6 +49,26 @@ export type AccountFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AccountDeletionBlockerKeySpecifier = (
+  | 'displayName'
+  | 'kind'
+  | 'resourceID'
+  | 'selfResolvable'
+  | 'url'
+  | AccountDeletionBlockerKeySpecifier
+)[];
+export type AccountDeletionBlockerFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  kind?: FieldPolicy<any> | FieldReadFunction<any>;
+  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  selfResolvable?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountDeletionBlockerTotalKeySpecifier = ('kind' | 'total' | AccountDeletionBlockerTotalKeySpecifier)[];
+export type AccountDeletionBlockerTotalFieldPolicy = {
+  kind?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AccountLicensePlanKeySpecifier = (
   | 'innovationPacks'
   | 'spaceFree'
@@ -2069,14 +2089,10 @@ export type InAppNotificationPayloadPlatformUserMessageRoomFieldPolicy = {
 };
 export type InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier = (
   | 'type'
-  | 'userDisplayName'
-  | 'userEmail'
   | InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformUserProfileRemovedFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-  userDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadSpaceKeySpecifier = (
   | 'space'
@@ -2873,11 +2889,29 @@ export type McpApiKeyMintResultFieldPolicy = {
   apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   key?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type MeAccountDeletionStatusKeySpecifier = (
+  | 'blockers'
+  | 'canDelete'
+  | 'externalSubscriptionLinked'
+  | 'sessionFresh'
+  | 'totals'
+  | 'truncated'
+  | MeAccountDeletionStatusKeySpecifier
+)[];
+export type MeAccountDeletionStatusFieldPolicy = {
+  blockers?: FieldPolicy<any> | FieldReadFunction<any>;
+  canDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalSubscriptionLinked?: FieldPolicy<any> | FieldReadFunction<any>;
+  sessionFresh?: FieldPolicy<any> | FieldReadFunction<any>;
+  totals?: FieldPolicy<any> | FieldReadFunction<any>;
+  truncated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MeConversationsResultKeySpecifier = ('conversations' | MeConversationsResultKeySpecifier)[];
 export type MeConversationsResultFieldPolicy = {
   conversations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MeQueryResultsKeySpecifier = (
+  | 'accountDeletion'
   | 'communityApplications'
   | 'communityInvitations'
   | 'communityInvitationsCount'
@@ -2893,6 +2927,7 @@ export type MeQueryResultsKeySpecifier = (
   | MeQueryResultsKeySpecifier
 )[];
 export type MeQueryResultsFieldPolicy = {
+  accountDeletion?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -6120,6 +6155,17 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier);
     fields?: AccountFieldPolicy;
   };
+  AccountDeletionBlocker?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountDeletionBlockerKeySpecifier | (() => undefined | AccountDeletionBlockerKeySpecifier);
+    fields?: AccountDeletionBlockerFieldPolicy;
+  };
+  AccountDeletionBlockerTotal?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AccountDeletionBlockerTotalKeySpecifier
+      | (() => undefined | AccountDeletionBlockerTotalKeySpecifier);
+    fields?: AccountDeletionBlockerTotalFieldPolicy;
+  };
   AccountLicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountLicensePlanKeySpecifier | (() => undefined | AccountLicensePlanKeySpecifier);
     fields?: AccountLicensePlanFieldPolicy;
@@ -7113,6 +7159,10 @@ export type StrictTypedTypePolicies = {
   McpApiKeyMintResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | McpApiKeyMintResultKeySpecifier | (() => undefined | McpApiKeyMintResultKeySpecifier);
     fields?: McpApiKeyMintResultFieldPolicy;
+  };
+  MeAccountDeletionStatus?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MeAccountDeletionStatusKeySpecifier | (() => undefined | MeAccountDeletionStatusKeySpecifier);
+    fields?: MeAccountDeletionStatusFieldPolicy;
   };
   MeConversationsResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeConversationsResultKeySpecifier | (() => undefined | MeConversationsResultKeySpecifier);
