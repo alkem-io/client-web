@@ -966,21 +966,10 @@ function CalloutFormConnectorInner({
                 // always open, so the toggle stays hidden until there is a `pollId`.
                 pollStatus={pollStatus === PollStatus.Closed ? 'closed' : pollId ? 'open' : undefined}
                 onPollStatusChange={handlePollStatusChange}
-                whiteboardContent={values.whiteboardContent}
-                whiteboardPreviewSettings={values.whiteboardPreviewSettings}
                 whiteboardConfigured={values.whiteboardConfigured}
                 whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
                 whiteboardPreviewImages={values.whiteboardPreviewImages}
                 whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
-                onWhiteboardChange={(content, previewImages, previewSettings) => {
-                  setField('whiteboardContent', content);
-                  setField('whiteboardPreviewImages', previewImages ?? []);
-                  setField('whiteboardPreviewSettings', previewSettings);
-                  setField('whiteboardConfigured', true);
-                  // The user opened the editor and saved (drew OR cleared) — mark it touched so the
-                  // create mapper won't re-copy a source snapshot over a deliberate blank.
-                  setField('whiteboardEdited', true);
-                }}
                 memoMarkdown={values.memoMarkdown}
                 onMemoMarkdownChange={v => setField('memoMarkdown', v)}
                 memoUpload={editorMarkdownUpload}

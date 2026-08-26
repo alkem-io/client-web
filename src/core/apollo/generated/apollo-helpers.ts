@@ -790,7 +790,7 @@ export type CalloutContributionDefaultsKeySpecifier = (
   | 'id'
   | 'postDescription'
   | 'updatedDate'
-  | 'whiteboardContent'
+  | 'whiteboardContentAvailable'
   | CalloutContributionDefaultsKeySpecifier
 )[];
 export type CalloutContributionDefaultsFieldPolicy = {
@@ -799,7 +799,7 @@ export type CalloutContributionDefaultsFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContentAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionsCountOutputKeySpecifier = (
   | 'collaboraDocument'
@@ -1083,6 +1083,7 @@ export type CollaborationMigrationResultKeySpecifier = (
   | 'flaggedDocuments'
   | 'migrated'
   | 'total'
+  | 'unattached'
   | CollaborationMigrationResultKeySpecifier
 )[];
 export type CollaborationMigrationResultFieldPolicy = {
@@ -1092,6 +1093,7 @@ export type CollaborationMigrationResultFieldPolicy = {
   flaggedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
   migrated?: FieldPolicy<any> | FieldReadFunction<any>;
   total?: FieldPolicy<any> | FieldReadFunction<any>;
+  unattached?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
@@ -1480,13 +1482,15 @@ export type CreateCalloutContributionDataFieldPolicy = {
 export type CreateCalloutContributionDefaultsDataKeySpecifier = (
   | 'defaultDisplayName'
   | 'postDescription'
-  | 'whiteboardContent'
+  | 'sourceCalloutID'
+  | 'sourceWhiteboardID'
   | CreateCalloutContributionDefaultsDataKeySpecifier
 )[];
 export type CreateCalloutContributionDefaultsDataFieldPolicy = {
   defaultDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceCalloutID?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributorsMapViewDataKeySpecifier = (
   | 'latitude'
@@ -1743,7 +1747,6 @@ export type CreateVisualOnProfileDataFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateWhiteboardDataKeySpecifier = (
-  | 'content'
   | 'nameID'
   | 'previewSettings'
   | 'profile'
@@ -1751,7 +1754,6 @@ export type CreateWhiteboardDataKeySpecifier = (
   | CreateWhiteboardDataKeySpecifier
 )[];
 export type CreateWhiteboardDataFieldPolicy = {
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3179,6 +3181,7 @@ export type MutationKeySpecifier = (
   | 'removeUserFromGroup'
   | 'reorderPollOptions'
   | 'replaceCollaboraDocument'
+  | 'replaceWhiteboardContentFromSource'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -3418,6 +3421,7 @@ export type MutationFieldPolicy = {
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
   replaceCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  replaceWhiteboardContentFromSource?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;

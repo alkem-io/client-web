@@ -122,12 +122,12 @@ export type TemplatesManagerViewProps = {
 export type TemplateContent =
   | {
       type: 'callout';
+      /** Source callout id used for server-side copying of internal defaults. */
+      sourceCalloutId?: string;
       framingKind: FramingKind;
       framingTitle: string;
       /** markdown */
       framingDescription: string;
-      /** Excalidraw JSON — when framingKind === 'whiteboard' */
-      framingWhiteboardContent?: string;
       /**
        * When `framingKind === 'whiteboard'` — the server-rendered preview image URL
        * (`framing.whiteboard.profile.preview.uri`). The preview surface renders this as an
@@ -156,15 +156,13 @@ export type TemplateContent =
       commentsEnabled: boolean;
       /** markdown */
       defaultPostDescription?: string;
-      /** Excalidraw JSON */
-      defaultWhiteboardContent?: string;
+      /** Whether this callout template has a canonical default whiteboard snapshot. */
+      defaultWhiteboardAvailable?: boolean;
       /** The default title new whiteboard contributions are created with (`contributionDefaults.defaultDisplayName`). */
       defaultWhiteboardName?: string;
     }
   | {
       type: 'whiteboard';
-      /** Excalidraw JSON */
-      whiteboardContent: string;
       previewImageUrl?: string;
       /**
        * The SOURCE whiteboard's id. Its stored content is WS-only (unreadable on the client),
@@ -249,7 +247,6 @@ export type CalloutTemplateValues = TemplateCommonValues & {
   framingKind: FramingKind;
   framingTitle: string;
   framingDescription: string;
-  framingWhiteboardContent?: string;
   framingMemoContent?: string;
   framingCollaboraDoc?: { displayName?: string; documentType?: string; uploadFile?: File };
   framingLinks?: { name: string; uri: string }[];
@@ -258,25 +255,13 @@ export type CalloutTemplateValues = TemplateCommonValues & {
   allowedContributionTypes: ContributionType[];
   commentsEnabled: boolean;
   defaultPostDescription?: string;
-  defaultWhiteboardContent?: string;
+  defaultWhiteboardAvailable?: boolean;
 };
-
-/** Mirrors the live whiteboard editor's preview-settings shape — opaque at the CRD layer. */
-export type WhiteboardPreviewSettings = Record<string, unknown>;
 
 export type WhiteboardTemplateValues = TemplateCommonValues & {
   type: 'whiteboard';
-  whiteboardContent: string;
-  previewSettings?: WhiteboardPreviewSettings;
   /** Source whiteboard id threaded to the server so it copies the source snapshot on create. */
   sourceWhiteboardId?: string;
-  /**
-   * True once the user opened the editor and saved (drew OR deliberately cleared). Distinct from
-   * `whiteboardContent` being empty: a duplicated / imported template starts empty AND
-   * `whiteboardEdited === false`, so the server copies `sourceWhiteboardId`; once the user clears
-   * it on purpose (`whiteboardEdited === true`) the blank is persisted instead. `false` on prefill.
-   */
-  whiteboardEdited?: boolean;
 };
 
 export type PostTemplateValues = TemplateCommonValues & {

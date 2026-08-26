@@ -134,7 +134,7 @@ fragment CalloutTemplateContent on Callout {
     id
     defaultDisplayName
     postDescription
-    whiteboardContent
+    whiteboardContentAvailable
   }
 }
 
