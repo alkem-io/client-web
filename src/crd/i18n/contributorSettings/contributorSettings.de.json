@@ -381,6 +381,42 @@
             "manage": "Passkeys verwalten"
           }
         }
+      },
+      "deleteAccount": {
+        "title": "Konto löschen",
+        "description": "Löscht dein Alkemio-Konto dauerhaft.",
+        "cardBody": "Das Löschen deines Kontos ist sofort und endgültig. Dein Profil, deine Einstellungen, hochgeladene Dateien und Anmeldedaten werden entfernt und können nicht wiederhergestellt werden.",
+        "trigger": "Konto löschen",
+        "preflightError": "Es konnte nicht geprüft werden, ob dein Konto gelöscht werden kann — versuche es erneut.",
+        "confirm": {
+          "title": "Konto löschen?",
+          "description": "Dies löscht dein Alkemio-Konto dauerhaft. Dies kann nicht rückgängig gemacht werden.",
+          "instructions": "Gib deinen Namen — {{name}} — ein, um zu bestätigen.",
+          "namePlaceholder": "Gib deinen Namen zur Bestätigung ein",
+          "subscriptionNotice": "Mit deinem Konto ist ein aktives Abonnement verknüpft. Die Löschung wird fortgesetzt; die Abrechnung erfolgt separat.",
+          "cancel": "Abbrechen",
+          "confirmLabel": "Mein Konto löschen",
+          "deleting": "Wird gelöscht…",
+          "genericError": "Dein Konto konnte nicht gelöscht werden — versuche es erneut."
+        },
+        "blocked": {
+          "title": "Du kannst dein Konto noch nicht löschen",
+          "description": "Dein Konto enthält noch Elemente, die zuerst aufgelöst werden müssen.",
+          "truncatedNotice": "Zeigt die ersten {{count}} von {{total}} Elementen.",
+          "resolveLink": "Meine Kontoressourcen verwalten",
+          "supportLink": "Support kontaktieren",
+          "close": "Schließen",
+          "soleOwner": {
+            "notice": "Du bist der einzige Eigentümer von {{name}}. Ernenne einen weiteren Eigentümer, bevor du dein Konto löschst, oder kontaktiere den Support."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovationspaket",
+            "ACCOUNT_INNOVATION_HUB": "Innovations-Hub",
+            "SOLE_ORGANIZATION_OWNER": "Organisation (einziger Eigentümer)"
+          }
+        }
       }
     },
     "settings": {

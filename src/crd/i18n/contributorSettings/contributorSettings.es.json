@@ -381,6 +381,42 @@
             "manage": "Gestionar passkeys"
           }
         }
+      },
+      "deleteAccount": {
+        "title": "Eliminar cuenta",
+        "description": "Elimina tu cuenta de Alkemio de forma permanente.",
+        "cardBody": "Eliminar tu cuenta es inmediato y permanente. Se eliminan tu perfil, tus ajustes, los archivos subidos y tus credenciales de inicio de sesión, y esto no se puede deshacer.",
+        "trigger": "Eliminar cuenta",
+        "preflightError": "No se pudo comprobar si tu cuenta puede eliminarse — inténtalo de nuevo.",
+        "confirm": {
+          "title": "¿Eliminar tu cuenta?",
+          "description": "Esto elimina tu cuenta de Alkemio de forma permanente. Esta acción no se puede deshacer.",
+          "instructions": "Escribe tu nombre — {{name}} — para confirmar.",
+          "namePlaceholder": "Escribe tu nombre para confirmar",
+          "subscriptionNotice": "Tu cuenta tiene una suscripción activa vinculada. La eliminación continuará; la facturación se concilia por separado.",
+          "cancel": "Cancelar",
+          "confirmLabel": "Eliminar mi cuenta",
+          "deleting": "Eliminando…",
+          "genericError": "No se pudo eliminar tu cuenta — inténtalo de nuevo."
+        },
+        "blocked": {
+          "title": "Todavía no puedes eliminar tu cuenta",
+          "description": "Tu cuenta todavía tiene elementos que deben resolverse primero.",
+          "truncatedNotice": "Mostrando los primeros {{count}} de {{total}} elementos.",
+          "resolveLink": "Gestionar mis recursos de cuenta",
+          "supportLink": "Contactar con soporte",
+          "close": "Cerrar",
+          "soleOwner": {
+            "notice": "Eres el único propietario de {{name}}. Nombra a otro propietario antes de eliminar tu cuenta, o contacta con soporte para obtener ayuda."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Espacio",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Paquete de innovación",
+            "ACCOUNT_INNOVATION_HUB": "Hub de innovación",
+            "SOLE_ORGANIZATION_OWNER": "Organización (propietario único)"
+          }
+        }
       }
     },
     "settings": {

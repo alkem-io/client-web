@@ -40,6 +40,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -53,6 +54,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -92,6 +94,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 

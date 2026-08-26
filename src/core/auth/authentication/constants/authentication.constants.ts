@@ -12,6 +12,14 @@ export const AUTH_SIGN_UP_PATH = '/sign_up';
 export const AUTH_REGISTRATION_PATH = '/registration';
 export const AUTH_RESET_PASSWORD_REQUEST = '/ory/kratos/public/self-service/recovery/browser';
 export const AUTH_RESET_PASSWORD_PATH = '/recovery';
+// Ory Kratos's self-service login browser endpoint with `refresh=true` forces
+// re-authentication even on an already-live session — the "confirm it is you"
+// prompt (Kratos message 1010003) — and redirects back to `return_to` once it
+// succeeds. Used to gate privileged actions triggered outside the Settings
+// flow's own submit cycle (e.g. a GraphQL mutation refused with a
+// freshness-required error code), where Kratos has no submission of its own
+// to attach the same 403 redirect to.
+export const AUTH_REFRESH_LOGIN_REQUEST = '/ory/kratos/public/self-service/login/browser';
 export const PARAM_NAME_RETURN_URL = 'returnUrl';
 export const STORAGE_KEY_RETURN_URL = 'returnUrl';
 // Companion cookie to STORAGE_KEY_RETURN_URL: set when a sign-up carrying a

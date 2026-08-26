@@ -381,6 +381,42 @@
             "manage": "Gérer les clés d'accès"
           }
         }
+      },
+      "deleteAccount": {
+        "title": "Supprimer le compte",
+        "description": "Supprime définitivement ton compte Alkemio.",
+        "cardBody": "La suppression de ton compte est immédiate et définitive. Ton profil, tes paramètres, tes fichiers téléversés et tes identifiants de connexion sont supprimés, et cette action est irréversible.",
+        "trigger": "Supprimer le compte",
+        "preflightError": "Impossible de vérifier si ton compte peut être supprimé — réessaie.",
+        "confirm": {
+          "title": "Supprimer ton compte ?",
+          "description": "Cette action supprime définitivement ton compte Alkemio. Elle est irréversible.",
+          "instructions": "Saisis ton nom — {{name}} — pour confirmer.",
+          "namePlaceholder": "Saisis ton nom pour confirmer",
+          "subscriptionNotice": "Un abonnement actif est associé à ton compte. La suppression se poursuivra ; la facturation est régularisée séparément.",
+          "cancel": "Annuler",
+          "confirmLabel": "Supprimer mon compte",
+          "deleting": "Suppression…",
+          "genericError": "Impossible de supprimer ton compte — réessaie."
+        },
+        "blocked": {
+          "title": "Tu ne peux pas encore supprimer ton compte",
+          "description": "Ton compte contient encore des éléments à résoudre au préalable.",
+          "truncatedNotice": "Affichage des {{count}} premiers éléments sur {{total}}.",
+          "resolveLink": "Gérer mes ressources de compte",
+          "supportLink": "Contacter le support",
+          "close": "Fermer",
+          "soleOwner": {
+            "notice": "Tu es le seul propriétaire de {{name}}. Désigne un autre propriétaire avant de supprimer ton compte, ou contacte le support pour obtenir de l'aide."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Espace",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Contributeur virtuel",
+            "ACCOUNT_INNOVATION_PACK": "Pack d'innovation",
+            "ACCOUNT_INNOVATION_HUB": "Hub d'innovation",
+            "SOLE_ORGANIZATION_OWNER": "Organisation (propriétaire unique)"
+          }
+        }
       }
     },
     "settings": {

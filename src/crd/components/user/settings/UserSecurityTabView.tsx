@@ -1,4 +1,4 @@
-import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { Info, KeyRound, Link2, Plug, ShieldAlert, ShieldCheck, Trash2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SettingsCard } from '@/crd/components/contributor/settings/SettingsCard';
@@ -39,6 +39,12 @@ export type UserSecurityTabViewProps = {
    * renders whenever `state.kind === 'ready'` alongside the other cards.
    */
   connectedAccountsSection: ReactNode;
+  /**
+   * Slot for the Delete-account card (054). Provided by the integration page
+   * so the CRD view stays free of Apollo/GraphQL imports; rendered last,
+   * whenever `state.kind === 'ready'` — the card owns its own dialog state.
+   */
+  deleteAccountCard: ReactNode;
 };
 
 /**
@@ -52,6 +58,7 @@ export function UserSecurityTabView({
   webauthnForm,
   mcpApiKeysCard,
   connectedAccountsSection,
+  deleteAccountCard,
 }: UserSecurityTabViewProps) {
   const { t } = useTranslation(NS);
 
@@ -149,6 +156,13 @@ export function UserSecurityTabView({
         description={t('user.security.mcpApiKeys.description')}
       >
         {mcpApiKeysCard}
+      </SettingsCard>
+      <SettingsCard
+        icon={Trash2}
+        title={t('user.security.deleteAccount.title')}
+        description={t('user.security.deleteAccount.description')}
+      >
+        {deleteAccountCard}
       </SettingsCard>
     </div>
   );
