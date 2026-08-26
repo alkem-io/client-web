@@ -79,6 +79,42 @@ describe('PhaseLayoutDialog', () => {
     expect(onSave).toHaveBeenCalledWith({ descriptionCollapsed: true, showPublishDetails: false, sidebar: [] });
   });
 
+  test('sidebarSettingsEnabled={false} hides the sidebar section but round-trips stored values on save', async () => {
+    const onSave = vi.fn();
+    const values: PhaseLayoutValues = {
+      descriptionCollapsed: false,
+      showPublishDetails: true,
+      sidebar: ['events', 'intent'],
+      sidebarUnknown: [{ index: 1, value: 'FUTURE_WIDGET' }],
+    };
+    render(
+      <PhaseLayoutDialog
+        open={true}
+        onOpenChange={vi.fn()}
+        phaseName="Knowledge Base"
+        values={values}
+        onSave={onSave}
+        sidebarSettingsEnabled={false}
+      />
+    );
+
+    // No sidebar section at all — no heading, no widget checkboxes.
+    expect(screen.queryByText('layout.column.sidebarDialog.title')).not.toBeInTheDocument();
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+    // The two switches are still there.
+    expect(screen.getAllByRole('switch')).toHaveLength(2);
+
+    await userEvent.click(screen.getByRole('button', { name: 'layout.column.phaseLayout.save' }));
+
+    // Stored sidebar + unknown passthrough survive the save untouched.
+    expect(onSave).toHaveBeenCalledWith({
+      descriptionCollapsed: false,
+      showPublishDetails: true,
+      sidebar: ['events', 'intent'],
+      sidebarUnknown: [{ index: 1, value: 'FUTURE_WIDGET' }],
+    });
+  });
+
   test('save without changes emits the original values unchanged', async () => {
     const onSave = vi.fn();
     renderDialog({ descriptionCollapsed: true, showPublishDetails: false, sidebar: [] }, onSave);

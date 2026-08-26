@@ -71,6 +71,8 @@ type LayoutPoolColumnProps = {
   entityNoun?: 'tab' | 'phase';
   /** Enables the column drag handle + sortable behaviour (off at L0). */
   draggable?: boolean;
+  /** Whether the Layout dialog shows the sidebar-widgets section (hidden on subspaces for now). */
+  sidebarSettingsEnabled?: boolean;
   className?: string;
 } & MarkdownUploadProps;
 
@@ -83,6 +85,7 @@ export function LayoutPoolColumn({
   columnMenuActions,
   entityNoun = 'phase',
   draggable = false,
+  sidebarSettingsEnabled = true,
   className,
   onImageUpload,
   iframeAllowedUrls,
@@ -231,6 +234,7 @@ export function LayoutPoolColumn({
         open={layoutDialogOpen}
         onOpenChange={setLayoutDialogOpen}
         phaseName={column.title}
+        sidebarSettingsEnabled={sidebarSettingsEnabled}
         values={column.layout ?? { descriptionCollapsed: false, showPublishDetails: true, sidebar: [] }}
         onSave={async (layout: PhaseLayoutInput) => {
           // Await persistence and let the dialog close itself on success — a failed save

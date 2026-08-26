@@ -52,6 +52,12 @@ type PhaseLayoutDialogProps = {
    * than silently discarding the edit.
    */
   onSave: (values: PhaseLayoutValues) => void | Promise<void>;
+  /**
+   * Whether the sidebar-widgets section is shown (default true). When false the section
+   * is hidden entirely, but the stored `sidebar`/`sidebarUnknown` values still pass
+   * through `onSave` untouched so hiding the controls never wipes the configuration.
+   */
+  sidebarSettingsEnabled?: boolean;
 };
 
 /**
@@ -63,7 +69,14 @@ type PhaseLayoutDialogProps = {
  *
  * Styling mirrors the existing `EditDetailsDialog` in `LayoutPoolColumn.tsx`.
  */
-export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSave }: PhaseLayoutDialogProps) {
+export function PhaseLayoutDialog({
+  open,
+  onOpenChange,
+  phaseName,
+  values,
+  onSave,
+  sidebarSettingsEnabled = true,
+}: PhaseLayoutDialogProps) {
   const { t } = useTranslation('crd-spaceSettings');
 
   const [descriptionCollapsed, setDescriptionCollapsed] = useState(values.descriptionCollapsed);
@@ -168,71 +181,75 @@ export function PhaseLayoutDialog({ open, onOpenChange, phaseName, values, onSav
             />
           </div>
 
-          {/* Sidebar widgets — full vocabulary, selected first in saved order */}
-          <div className="flex flex-col gap-2">
-            <div className="flex flex-col gap-0.5">
-              <Label className="text-body-emphasis">{t('layout.column.sidebarDialog.title')}</Label>
-              <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.help')}</p>
-            </div>
+          {/* Sidebar widgets — full vocabulary, selected first in saved order.
+              Hidden on subspaces for now (sidebarSettingsEnabled=false); the stored
+              values still round-trip through onSave untouched. */}
+          {sidebarSettingsEnabled && (
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-0.5">
+                <Label className="text-body-emphasis">{t('layout.column.sidebarDialog.title')}</Label>
+                <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.help')}</p>
+              </div>
 
-            {sidebar.length === 0 && (
-              <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.emptyNote')}</p>
-            )}
+              {sidebar.length === 0 && (
+                <p className="text-caption text-muted-foreground">{t('layout.column.sidebarDialog.emptyNote')}</p>
+              )}
 
-            <div className="flex flex-col gap-1 max-h-64 overflow-y-auto">
-              {/* Selected widgets — drag the handle to reorder (FR-011). */}
-              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={sidebar} strategy={verticalListSortingStrategy}>
-                  {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-                  {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-                  <ul role="list" className="flex flex-col gap-1">
-                    {sidebar.map(widgetId => {
-                      const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
-                      return (
-                        <SortableWidgetRow
-                          key={widgetId}
-                          widgetId={widgetId}
-                          label={widgetLabel}
-                          onToggle={() => toggleWidget(widgetId)}
-                          toggleAriaLabel={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
-                          dragHandleAriaLabel={t('layout.column.sidebarDialog.dragHandleAriaLabel', {
-                            widget: widgetLabel,
-                          })}
+              <div className="flex flex-col gap-1 max-h-64 overflow-y-auto">
+                {/* Selected widgets — drag the handle to reorder (FR-011). */}
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={sidebar} strategy={verticalListSortingStrategy}>
+                    {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                    {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                    <ul role="list" className="flex flex-col gap-1">
+                      {sidebar.map(widgetId => {
+                        const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
+                        return (
+                          <SortableWidgetRow
+                            key={widgetId}
+                            widgetId={widgetId}
+                            label={widgetLabel}
+                            onToggle={() => toggleWidget(widgetId)}
+                            toggleAriaLabel={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
+                            dragHandleAriaLabel={t('layout.column.sidebarDialog.dragHandleAriaLabel', {
+                              widget: widgetLabel,
+                            })}
+                          />
+                        );
+                      })}
+                    </ul>
+                  </SortableContext>
+                </DndContext>
+
+                {/* Unselected widgets — check to add (appended to the end of the order). */}
+                {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+                {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+                <ul role="list" className="flex flex-col gap-1">
+                  {unselectedWidgets.map(widgetId => {
+                    const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
+                    return (
+                      <li key={widgetId} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
+                        {/* Spacer aligns the checkbox with the selected rows' drag handle. */}
+                        <span className="size-7 shrink-0" aria-hidden="true" />
+                        <Checkbox
+                          id={`sidebar-widget-${widgetId}`}
+                          checked={false}
+                          onCheckedChange={() => toggleWidget(widgetId)}
+                          aria-label={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
                         />
-                      );
-                    })}
-                  </ul>
-                </SortableContext>
-              </DndContext>
-
-              {/* Unselected widgets — check to add (appended to the end of the order). */}
-              {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
-              {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
-              <ul role="list" className="flex flex-col gap-1">
-                {unselectedWidgets.map(widgetId => {
-                  const widgetLabel = t(`layout.column.sidebarDialog.widgets.${widgetId}`);
-                  return (
-                    <li key={widgetId} className="flex items-center gap-2 rounded-md px-2 py-1.5 hover:bg-muted/50">
-                      {/* Spacer aligns the checkbox with the selected rows' drag handle. */}
-                      <span className="size-7 shrink-0" aria-hidden="true" />
-                      <Checkbox
-                        id={`sidebar-widget-${widgetId}`}
-                        checked={false}
-                        onCheckedChange={() => toggleWidget(widgetId)}
-                        aria-label={t('layout.column.sidebarDialog.toggleAriaLabel', { widget: widgetLabel })}
-                      />
-                      <Label
-                        htmlFor={`sidebar-widget-${widgetId}`}
-                        className="flex-1 cursor-pointer text-body text-muted-foreground"
-                      >
-                        {widgetLabel}
-                      </Label>
-                    </li>
-                  );
-                })}
-              </ul>
+                        <Label
+                          htmlFor={`sidebar-widget-${widgetId}`}
+                          className="flex-1 cursor-pointer text-body text-muted-foreground"
+                        >
+                          {widgetLabel}
+                        </Label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <DialogFooter>
