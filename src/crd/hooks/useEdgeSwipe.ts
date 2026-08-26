@@ -37,6 +37,10 @@ export function useEdgeSwipe(onSwipe: () => void, { enabled = true }: UseEdgeSwi
 
     const onTouchStart = (e: TouchEvent) => {
       if (e.touches.length !== 1) return;
+      // While a Radix modal layer (dialog, sheet, drawer) is open, react-remove-scroll
+      // stamps `data-scroll-locked` on <body>. Swiping then must not stack the drawer
+      // on top of the open overlay.
+      if (document.body.hasAttribute('data-scroll-locked')) return;
       const touch = e.touches[0];
       if (touch.clientX > EDGE_ZONE_PX) return;
       startX = touch.clientX;

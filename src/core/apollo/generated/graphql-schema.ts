@@ -2511,6 +2511,8 @@ export type CreateInnovationFlowStateSettingsData = {
   descriptionDisplayMode?: Maybe<CalloutDescriptionDisplayMode>;
   /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
   showPublishDetails?: Maybe<Scalars['Boolean']['output']>;
+  /** Optional. Ordered sidebar widgets; defaults to [INTENT, INDEX] when omitted. */
+  sidebar?: Maybe<Array<SidebarWidget>>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -2522,6 +2524,8 @@ export type CreateInnovationFlowStateSettingsInput = {
   descriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
   /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
   showPublishDetails?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Optional. Ordered sidebar widgets; defaults to [INTENT, INDEX] when omitted. */
+  sidebar?: InputMaybe<Array<SidebarWidget>>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -3835,6 +3839,8 @@ export type InnovationFlowStateSettings = {
   descriptionDisplayMode: CalloutDescriptionDisplayMode;
   /** Whether Posts in this State show publish details (publisher, publish date, avatar) in the feed. Presentation only — does not restrict access to publisher data. Default true. */
   showPublishDetails: Scalars['Boolean']['output'];
+  /** Ordered widgets shown in the Space sidepanel for this State. May be empty. */
+  sidebar: Array<SidebarWidget>;
   /** Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content. */
   visible: Scalars['Boolean']['output'];
 };
@@ -8661,6 +8667,23 @@ export type SetPlatformWellKnownVirtualContributorInput = {
   wellKnown: VirtualContributorWellKnown;
 };
 
+/** The widgets available for the Space sidepanel, per InnovationFlow state (tab). */
+export enum SidebarWidget {
+  About = 'ABOUT',
+  AddUser = 'ADD_USER',
+  ApplicationButton = 'APPLICATION_BUTTON',
+  ContactLeads = 'CONTACT_LEADS',
+  CreatePost = 'CREATE_POST',
+  CreateSubspace = 'CREATE_SUBSPACE',
+  Events = 'EVENTS',
+  Guidelines = 'GUIDELINES',
+  Index = 'INDEX',
+  Intent = 'INTENT',
+  SubspaceLinks = 'SUBSPACE_LINKS',
+  Updates = 'UPDATES',
+  VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
+}
+
 export type Space = ActorFull & {
   __typename?: 'Space';
   /** About this space. */
@@ -9689,6 +9712,8 @@ export type UpdateInnovationFlowStateSettingsInput = {
   descriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
   /** Optional. Sets whether Posts in this State show publish details (publisher, publish date, avatar) in the feed; omission leaves the stored value unchanged. */
   showPublishDetails?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Optional. Ordered sidebar widgets for this State; omission leaves the stored value unchanged. Duplicates rejected; max 20 entries. */
+  sidebar?: InputMaybe<Array<SidebarWidget>>;
   /** Optional. Sets whether the phase is shown in member-facing navigation; omission leaves the stored value unchanged. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -12753,6 +12778,7 @@ export type InnovationFlowSettingsQuery = {
                 visible: boolean;
                 descriptionDisplayMode: CalloutDescriptionDisplayMode;
                 showPublishDetails: boolean;
+                sidebar: Array<SidebarWidget>;
               };
               defaultCalloutTemplate?:
                 | {
@@ -12877,6 +12903,7 @@ export type InnovationFlowDetailsQuery = {
                 visible: boolean;
                 descriptionDisplayMode: CalloutDescriptionDisplayMode;
                 showPublishDetails: boolean;
+                sidebar: Array<SidebarWidget>;
               };
               defaultCalloutTemplate?:
                 | {
@@ -13033,6 +13060,7 @@ export type InnovationFlowDetailsFragment = {
       visible: boolean;
       descriptionDisplayMode: CalloutDescriptionDisplayMode;
       showPublishDetails: boolean;
+      sidebar: Array<SidebarWidget>;
     };
     defaultCalloutTemplate?:
       | {
@@ -13083,6 +13111,7 @@ export type InnovationFlowStatesFragment = {
       visible: boolean;
       descriptionDisplayMode: CalloutDescriptionDisplayMode;
       showPublishDetails: boolean;
+      sidebar: Array<SidebarWidget>;
     };
     defaultCalloutTemplate?:
       | {
@@ -13181,6 +13210,7 @@ export type CreateStateOnInnovationFlowMutation = {
       allowNewCallouts: boolean;
       descriptionDisplayMode: CalloutDescriptionDisplayMode;
       showPublishDetails: boolean;
+      sidebar: Array<SidebarWidget>;
     };
   };
 };
@@ -13214,6 +13244,7 @@ export type UpdateInnovationFlowStateMutation = {
       visible: boolean;
       descriptionDisplayMode: CalloutDescriptionDisplayMode;
       showPublishDetails: boolean;
+      sidebar: Array<SidebarWidget>;
     };
   };
 };
@@ -13235,6 +13266,7 @@ export type UpdateInnovationFlowStateSettingsMutation = {
       visible: boolean;
       descriptionDisplayMode: CalloutDescriptionDisplayMode;
       showPublishDetails: boolean;
+      sidebar: Array<SidebarWidget>;
     };
   };
 };
@@ -30521,13 +30553,7 @@ export type SubspacePageQuery = {
           collaboration: {
             __typename?: 'Collaboration';
             id: string;
-            calloutsSet: {
-              __typename?: 'CalloutsSet';
-              id: string;
-              authorization?:
-                | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-                | undefined;
-            };
+            calloutsSet: { __typename?: 'CalloutsSet'; id: string };
           };
           templatesManager?:
             | {
@@ -30581,17 +30607,7 @@ export type SubspacePageSpaceFragment = {
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
   };
-  collaboration: {
-    __typename?: 'Collaboration';
-    id: string;
-    calloutsSet: {
-      __typename?: 'CalloutsSet';
-      id: string;
-      authorization?:
-        | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
-        | undefined;
-    };
-  };
+  collaboration: { __typename?: 'Collaboration'; id: string; calloutsSet: { __typename?: 'CalloutsSet'; id: string } };
   templatesManager?:
     | {
         __typename?: 'TemplatesManager';
@@ -30686,6 +30702,7 @@ export type SpaceTabQuery = {
                   visible: boolean;
                   descriptionDisplayMode: CalloutDescriptionDisplayMode;
                   showPublishDetails: boolean;
+                  sidebar: Array<SidebarWidget>;
                 };
                 defaultCalloutTemplate?:
                   | {
@@ -31249,6 +31266,7 @@ export type SpaceTabsQuery = {
                   visible: boolean;
                   descriptionDisplayMode: CalloutDescriptionDisplayMode;
                   showPublishDetails: boolean;
+                  sidebar: Array<SidebarWidget>;
                 };
               }>;
             };
@@ -32449,6 +32467,7 @@ export type SpaceAdminDefaultSpaceTemplatesDetailsQuery = {
                                       visible: boolean;
                                       descriptionDisplayMode: CalloutDescriptionDisplayMode;
                                       showPublishDetails: boolean;
+                                      sidebar: Array<SidebarWidget>;
                                     };
                                     defaultCalloutTemplate?:
                                       | {
@@ -34009,6 +34028,7 @@ export type TemplateContentQuery = {
                         visible: boolean;
                         descriptionDisplayMode: CalloutDescriptionDisplayMode;
                         showPublishDetails: boolean;
+                        sidebar: Array<SidebarWidget>;
                       };
                       defaultCalloutTemplate?:
                         | {
@@ -34242,6 +34262,7 @@ export type SpaceTemplateContentQuery = {
                   visible: boolean;
                   descriptionDisplayMode: CalloutDescriptionDisplayMode;
                   showPublishDetails: boolean;
+                  sidebar: Array<SidebarWidget>;
                 };
                 defaultCalloutTemplate?:
                   | {
@@ -34766,6 +34787,7 @@ export type SpaceTemplateContentFragment = {
           visible: boolean;
           descriptionDisplayMode: CalloutDescriptionDisplayMode;
           showPublishDetails: boolean;
+          sidebar: Array<SidebarWidget>;
         };
         defaultCalloutTemplate?:
           | {
@@ -34924,6 +34946,7 @@ export type SpaceTemplateContent_CollaborationFragment = {
         visible: boolean;
         descriptionDisplayMode: CalloutDescriptionDisplayMode;
         showPublishDetails: boolean;
+        sidebar: Array<SidebarWidget>;
       };
       defaultCalloutTemplate?:
         | {

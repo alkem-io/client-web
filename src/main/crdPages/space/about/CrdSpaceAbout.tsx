@@ -52,6 +52,10 @@ export function CrdSpaceAbout({ open, onClose }: CrdSpaceAboutProps) {
     // Joining from the About dialog closes it via the normal close path instead
     // of letting the default navigate yank the open modal (which froze the page).
     onJoined: onClose,
+    // Mirror the dialog's own data queries: while the About dialog is closed the
+    // apply-flow queries (ApplicationButton + UserPendingMemberships) are not
+    // issued, so mounting the connector on every tab costs no fetches.
+    skip: !open,
   });
 
   const guidelinesId = data?.lookup.space?.about.guidelines.id;
