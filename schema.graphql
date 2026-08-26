@@ -841,9 +841,7 @@ enum SearchVisibility {
   PUBLIC
 }
 
-"""
-The widgets available for the Space sidepanel, per InnovationFlow state (tab).
-"""
+"""The widgets available for the Space sidepanel, per InnovationFlow state (tab)."""
 enum SidebarWidget {
   ABOUT
   ADD_USER
@@ -3407,6 +3405,8 @@ type InnovationFlowStateSettings {
   Whether Posts in this State show publish details (publisher, publish date, avatar) in the feed. Presentation only — does not restrict access to publisher data. Default true.
   """
   showPublishDetails: Boolean!
+  """Ordered widgets shown in the Space sidepanel for this State. May be empty."""
+  sidebar: [SidebarWidget!]!
   """
   Ordered widgets shown in the Space sidepanel for this State. May be empty.
   """

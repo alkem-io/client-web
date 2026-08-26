@@ -29615,6 +29615,7 @@ export type SpaceSubspaceCardsQuery = {
           level: SpaceLevel;
           about: {
             __typename?: 'SpaceAbout';
+            id: string;
             profile: {
               __typename?: 'Profile';
               id: string;

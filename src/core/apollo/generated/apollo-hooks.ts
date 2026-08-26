@@ -24038,6 +24038,7 @@ export const SpaceSubspaceCardsDocument = gql`
       id
       level
       about {
+        id
         profile {
           id
           url
