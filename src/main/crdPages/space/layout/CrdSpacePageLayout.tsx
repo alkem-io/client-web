@@ -174,11 +174,16 @@ export default function CrdSpacePageLayout() {
     onMenuClick: () => setMobileMenuOpen(true),
   };
 
+  // Single opener for the shared About dialog (header info icon + the sidebar
+  // "About this Space" widget) — the layout owns the ONE
+  // CrdSpaceAboutDialogConnector mount; the tab page reaches it via Outlet context.
+  const onOpenAbout = () => setAboutDialogOpen(true);
+
   if (!isLevelZero) {
     // For non-L0 spaces (subspaces), just render the outlet
     return (
       <Suspense fallback={<LoadingSpinner />}>
-        <Outlet context={{ activeTabIndex, totalTabs: sectionCount }} />
+        <Outlet context={{ activeTabIndex, totalTabs: sectionCount, onOpenAbout }} />
       </Suspense>
     );
   }
@@ -254,7 +259,7 @@ export default function CrdSpacePageLayout() {
           }
         >
           <Suspense fallback={<LoadingSpinner />}>
-            <Outlet context={{ activeTabIndex, totalTabs: sectionCount }} />
+            <Outlet context={{ activeTabIndex, totalTabs: sectionCount, onOpenAbout }} />
           </Suspense>
         </SpaceShell>
 
@@ -293,8 +298,10 @@ export default function CrdSpacePageLayout() {
           spaceId={spaceId}
         />
 
-        {/* About dialog — opened from the header info icon. Same shared
-          CrdSpaceAbout the sidebar "About this Space" button opens. */}
+        {/* About dialog — the SINGLE mount for the shared CrdSpaceAbout at L0.
+          Opened from the header info icon AND (via the `onOpenAbout` Outlet
+          context) from the sidebar "About this Space" widget — the sidebar
+          connector no longer mounts its own copy. */}
         <CrdSpaceAboutDialogConnector open={aboutDialogOpen} onOpenChange={setAboutDialogOpen} />
 
         {/* Share dialog — opened from header share icon and the mobile "More" drawer.
