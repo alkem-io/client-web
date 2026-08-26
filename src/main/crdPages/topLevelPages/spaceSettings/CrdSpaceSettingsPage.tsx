@@ -13,7 +13,6 @@ import { AddCommunityMemberDialog } from '@/crd/components/space/settings/AddCom
 import { ApplicationFormEditor } from '@/crd/components/space/settings/ApplicationFormEditor';
 import { ChangeDefaultSubspaceTemplateDialog } from '@/crd/components/space/settings/ChangeDefaultSubspaceTemplateDialog';
 import { CommunityGuidelinesEditor } from '@/crd/components/space/settings/CommunityGuidelinesEditor';
-import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { MemberSettingsDialog } from '@/crd/components/space/settings/MemberSettingsDialog';
 import type { MemberSettingsSubject } from '@/crd/components/space/settings/memberSettingsTypes';
 import { SpaceSettingsAboutView } from '@/crd/components/space/settings/SpaceSettingsAboutView';
@@ -52,6 +51,7 @@ import { useApplicationFormData } from './settings/useApplicationFormData';
 import { useSettingsTabData } from './settings/useSettingsTabData';
 import { useSubspaceDangerZone } from './settings/useSubspaceDangerZone';
 import { useStorageTabData } from './storage/useStorageTabData';
+import { CreateSubspaceDialogs } from './subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from './subspaces/useCreateSubspace';
 import { useSubspacesTabData } from './subspaces/useSubspacesTabData';
 import { CrdSpaceTemplatesTab } from './templates/CrdSpaceTemplatesTab';
@@ -684,54 +684,11 @@ export default function CrdSpaceSettingsPage() {
           `SaveSubspaceAsTemplateDialog` + `useSaveSubspaceAsTemplate` remain on disk for reference
           but are no longer wired to this page. */}
 
-      <CreateSubspaceDialog
-        open={createSubspace.open}
-        onOpenChange={open => {
-          if (!open) createSubspace.closeDialog();
-        }}
-        values={createSubspace.values}
-        errors={createSubspace.errors}
-        selectedTemplateName={createSubspace.selectedTemplateName}
-        selectedTemplateContent={createSubspace.selectedTemplateContent}
-        selectedTemplateLoading={createSubspace.selectedTemplateLoading}
-        onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
-        onClearTemplate={createSubspace.onClearTemplate}
-        submitting={createSubspace.submitting}
-        canSubmit={createSubspace.canSubmit}
-        avatarConstraints={createSubspace.avatarConstraints}
-        cardBannerConstraints={createSubspace.cardBannerConstraints}
-        onChange={createSubspace.onChange}
-        onSubmit={() => void createSubspace.onSubmit()}
+      <CreateSubspaceDialogs
+        createSubspace={createSubspace}
         onImageUpload={mdCreate.onImageUpload}
         iframeAllowedUrls={mdCreate.iframeAllowedUrls}
         onError={mdCreate.onError}
-      />
-      <TemplatePicker {...createSubspace.picker} />
-      <ConfirmationDialog
-        open={createSubspace.overwriteConfirmOpen}
-        onOpenChange={open => {
-          if (!open) createSubspace.onCancelOverwriteTemplate();
-        }}
-        title={t('subspaces.createDialog.template.overwriteConfirm.title')}
-        description={t('subspaces.createDialog.template.overwriteConfirm.description')}
-        confirmLabel={t('subspaces.createDialog.template.overwriteConfirm.confirm')}
-        cancelLabel={t('subspaces.createDialog.template.overwriteConfirm.cancel')}
-        onConfirm={createSubspace.onConfirmOverwriteTemplate}
-        onCancel={createSubspace.onCancelOverwriteTemplate}
-      />
-      <ImageCropDialog
-        open={Boolean(createSubspace.pendingCrop)}
-        file={createSubspace.pendingCrop?.file}
-        config={createSubspace.pendingCrop?.config ?? {}}
-        onSave={({ file, altText }) => createSubspace.onCropComplete(file, altText)}
-        onCancel={createSubspace.onCropCancel}
-        title={t('subspaces.createDialog.crop.title')}
-        description={t('subspaces.createDialog.crop.description')}
-        saveLabel={t('subspaces.createDialog.crop.save')}
-        savingLabel={t('subspaces.createDialog.crop.saving')}
-        cancelLabel={t('subspaces.createDialog.crop.cancel')}
-        altTextLabel={t('subspaces.createDialog.crop.altLabel')}
-        altTextPlaceholder={t('subspaces.createDialog.crop.altPlaceholder')}
       />
 
       <ChangeDefaultSubspaceTemplateDialog
