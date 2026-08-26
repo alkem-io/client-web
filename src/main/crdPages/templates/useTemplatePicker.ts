@@ -148,6 +148,7 @@ export function useTemplatePicker({
 
   const onPreview = (templateId: string) => {
     if (!primaryType) return;
+    const cardPreviewUrl = sources.flatMap(source => source.templates).find(card => card.id === templateId)?.bannerUrl;
     activePreviewIdRef.current = templateId;
     setPreviewId(templateId);
     setPreviewContent(undefined);
@@ -156,7 +157,12 @@ export function useTemplatePicker({
       .then(({ data }) => {
         if (activePreviewIdRef.current !== templateId) return;
         const fetched = data?.lookup.template;
-        setPreviewContent(fetched ? mapTemplateContent(fetched, primaryType) : undefined);
+        const content = fetched ? mapTemplateContent(fetched, primaryType) : undefined;
+        setPreviewContent(
+          content?.type === 'whiteboard' && !content.previewImageUrl && cardPreviewUrl
+            ? { ...content, previewImageUrl: cardPreviewUrl }
+            : content
+        );
       })
       .catch(() => {
         // The request failed (network / auth / GraphQL). Leave the (already-cleared) preview empty
