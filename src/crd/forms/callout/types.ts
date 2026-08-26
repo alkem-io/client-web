@@ -83,6 +83,11 @@ export type LinkRow = {
   description: string;
 };
 
+export type WhiteboardDraftRef = {
+  whiteboardID: string;
+  sourceKey: string;
+};
+
 export type ContributionDefaults = {
   defaultDisplayName: string;
   postDescription: string;
@@ -95,5 +100,5 @@ export type ContributionDefaults = {
   /** Explicit removal; omission preserves an existing default on update. */
   clearWhiteboardContent?: boolean;
   /** Server-owned live draft used while authoring a default Whiteboard. */
-  whiteboardDraft?: import('@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft').WhiteboardDraftHandle;
+  whiteboardDraft?: WhiteboardDraftRef;
 };

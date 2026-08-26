@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   useCreateWhiteboardDraftOnCalloutsSetMutation,
   useCreateWhiteboardDraftOnTemplatesSetMutation,
@@ -35,6 +35,9 @@ type UseWhiteboardDraftOptions = {
 const sourceKey = (source?: WhiteboardDraftSource) =>
   `${source?.sourceWhiteboardID ?? ''}:${source?.sourceCalloutID ?? ''}`;
 
+const sameHandle = (first?: WhiteboardDraftHandle, second?: WhiteboardDraftHandle) =>
+  first?.whiteboardID === second?.whiteboardID && first?.sourceKey === second?.sourceKey;
+
 /**
  * Owns the GraphQL-only lifecycle for a persisted live Whiteboard draft. The
  * collaborative content itself never crosses GraphQL: callers receive only the
@@ -48,7 +51,12 @@ export const useWhiteboardDraft = ({
 }: UseWhiteboardDraftOptions): WhiteboardDraftLifecycle => {
   const inFlightRef = useRef<Promise<WhiteboardDraftHandle | undefined> | null>(null);
   const handleRef = useRef(handle);
-  handleRef.current = handle;
+  const lastPropHandleRef = useRef(handle);
+  useEffect(() => {
+    if (sameHandle(handle, lastPropHandleRef.current)) return;
+    lastPropHandleRef.current = handle;
+    handleRef.current = handle;
+  }, [handle]);
   const [loading, setLoading] = useState(false);
   const [createOnCalloutsSet] = useCreateWhiteboardDraftOnCalloutsSetMutation();
   const [createOnTemplatesSet] = useCreateWhiteboardDraftOnTemplatesSetMutation();

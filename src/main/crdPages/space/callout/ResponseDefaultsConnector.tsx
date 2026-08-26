@@ -99,12 +99,16 @@ export function ResponseDefaultsConnector({
   whiteboardDraft,
 }: ResponseDefaultsConnectorProps) {
   const { t } = useTranslation('crd-space');
-  const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
+  const [whiteboardEditorSession, setWhiteboardEditorSession] = useState<number>();
+  const dialogSessionRef = useRef(0);
   const initialDraftID = useRef<string | undefined>(undefined);
   const wasOpen = useRef(false);
   useEffect(() => {
-    if (open && !wasOpen.current) {
-      initialDraftID.current = values.whiteboardDraft?.whiteboardID;
+    if (open !== wasOpen.current) {
+      dialogSessionRef.current += 1;
+      if (open) {
+        initialDraftID.current = values.whiteboardDraft?.whiteboardID;
+      }
     }
     wasOpen.current = open;
   }, [open, values.whiteboardDraft?.whiteboardID]);
@@ -133,17 +137,18 @@ export function ResponseDefaultsConnector({
     type === 'whiteboard' && whiteboardDraft
       ? ({ draft, applyDraft }: { draft: ContributionDefaults; applyDraft: ApplyDraft }) => {
           const openEditor = async () => {
+            const dialogSession = dialogSessionRef.current;
             const materialized = await whiteboardDraft.materialize({
               sourceWhiteboardID: draft.sourceWhiteboardId,
               sourceCalloutID: draft.sourceCalloutId,
             });
-            if (!materialized) return;
+            if (!materialized || dialogSessionRef.current !== dialogSession) return;
             applyDraft({
               whiteboardDraft: materialized,
               whiteboardContentAvailable: true,
               clearWhiteboardContent: false,
             });
-            setWhiteboardEditorOpen(true);
+            setWhiteboardEditorSession(dialogSession);
           };
           return (
             <>
@@ -151,11 +156,11 @@ export function ResponseDefaultsConnector({
                 <Pencil className="size-4" aria-hidden="true" />
                 {t('framing.edit')}
               </Button>
-              {whiteboardEditorOpen && whiteboardDraft.handle && (
+              {open && whiteboardEditorSession === dialogSessionRef.current && whiteboardDraft.handle && (
                 <WhiteboardDraftEditor
                   whiteboardID={whiteboardDraft.handle.whiteboardID}
                   displayName={draft.defaultDisplayName || t('callout.whiteboard')}
-                  onClose={() => setWhiteboardEditorOpen(false)}
+                  onClose={() => setWhiteboardEditorSession(undefined)}
                 />
               )}
             </>
@@ -164,23 +169,34 @@ export function ResponseDefaultsConnector({
       : undefined;
 
   const cancelWhiteboardDraft = async () => {
+    dialogSessionRef.current += 1;
+    setWhiteboardEditorSession(undefined);
     if (!whiteboardDraft?.handle || whiteboardDraft.handle.whiteboardID === initialDraftID.current) {
       return true;
     }
     return whiteboardDraft.discard();
   };
 
+  const handleDialogOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      dialogSessionRef.current += 1;
+      setWhiteboardEditorSession(undefined);
+    }
+    onOpenChange(nextOpen);
+  };
+
   return (
     <>
       <ResponseDefaultsDialog
         open={open}
-        onOpenChange={onOpenChange}
+        onOpenChange={handleDialogOpenChange}
         type={type}
         values={values}
         onSave={onSave}
         templateSlot={templateSlot}
         whiteboardSlot={whiteboardSlot}
         onCancel={type === 'whiteboard' ? cancelWhiteboardDraft : undefined}
+        disabled={whiteboardDraft?.loading}
         onImageUpload={markdownUpload?.onImageUpload}
         iframeAllowedUrls={markdownUpload?.iframeAllowedUrls}
         onError={markdownUpload?.onError}

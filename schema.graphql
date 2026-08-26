@@ -3408,10 +3408,6 @@ type InnovationFlowStateSettings {
   """Ordered widgets shown in the Space sidepanel for this State. May be empty."""
   sidebar: [SidebarWidget!]!
   """
-  Ordered widgets shown in the Space sidepanel for this State. May be empty.
-  """
-  sidebar: [SidebarWidget!]!
-  """
   Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content.
   """
   visible: Boolean!

@@ -161,4 +161,27 @@ describe('useWhiteboardDraft', () => {
     expect(deleteDraft).toHaveBeenCalledWith({ variables: { whiteboardID: persisted.whiteboardID } });
     expect(onHandleChange).toHaveBeenLastCalledWith(undefined);
   });
+
+  it('retains a newly materialized handle until the parent commits it', async () => {
+    const onHandleChange = vi.fn();
+    const { result, rerender } = renderHook(
+      ({ handle }: { handle?: WhiteboardDraftHandle }) =>
+        useWhiteboardDraft({
+          scope: { type: 'calloutsSet', id: '80c59089-c435-45ae-9862-fda57c0a5a35' },
+          handle,
+          onHandleChange,
+        }),
+      { initialProps: { handle: undefined as WhiteboardDraftHandle | undefined } }
+    );
+
+    await act(async () => {
+      await result.current.materialize();
+    });
+    rerender({ handle: undefined });
+    await act(async () => {
+      await result.current.discard();
+    });
+
+    expect(deleteDraft).toHaveBeenCalledWith({ variables: { whiteboardID: persisted.whiteboardID } });
+  });
 });

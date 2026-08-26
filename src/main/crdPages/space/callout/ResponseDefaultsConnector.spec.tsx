@@ -1,6 +1,8 @@
 /** @vitest-environment jsdom */
-import { render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import type { ContributionDefaults } from '@/crd/forms/callout/types';
 
 const harness = vi.hoisted(() => ({
   applyDraft: vi.fn(),
@@ -11,6 +13,8 @@ const harness = vi.hoisted(() => ({
     | undefined,
   selectedTemplateId: undefined as string | undefined,
   onCancel: undefined as (() => Promise<boolean>) | undefined,
+  dialogOpenChange: undefined as ((open: boolean) => void) | undefined,
+  whiteboardApplyDraft: vi.fn(),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -44,14 +48,33 @@ vi.mock('@/crd/components/templates/TemplatePicker', () => ({
 vi.mock('@/crd/forms/callout/ResponseDefaultsDialog', () => ({
   ResponseDefaultsDialog: ({
     templateSlot,
+    whiteboardSlot,
     onCancel,
+    onOpenChange,
+    values,
   }: {
-    templateSlot?: (args: { applyDraft: typeof harness.applyDraft }) => unknown;
+    templateSlot?: (args: { applyDraft: typeof harness.applyDraft }) => ReactNode;
+    whiteboardSlot?: (args: {
+      draft: ContributionDefaults;
+      applyDraft: typeof harness.whiteboardApplyDraft;
+    }) => ReactNode;
     onCancel?: () => Promise<boolean>;
+    onOpenChange: (open: boolean) => void;
+    values: ContributionDefaults;
   }) => {
     harness.onCancel = onCancel;
-    return templateSlot?.({ applyDraft: harness.applyDraft }) ?? null;
+    harness.dialogOpenChange = onOpenChange;
+    return (
+      <>
+        {templateSlot?.({ applyDraft: harness.applyDraft })}
+        {whiteboardSlot?.({ draft: values, applyDraft: harness.whiteboardApplyDraft })}
+      </>
+    );
   },
+}));
+
+vi.mock('@/domain/collaboration/whiteboard/WhiteboardDraft/WhiteboardDraftEditor', () => ({
+  WhiteboardDraftEditor: () => <div data-testid="whiteboard-draft-editor" />,
 }));
 
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
@@ -69,6 +92,8 @@ describe('ResponseDefaultsConnector template boundaries', () => {
     harness.selectedTemplateContent = undefined;
     harness.selectedTemplateId = undefined;
     harness.onCancel = undefined;
+    harness.dialogOpenChange = undefined;
+    harness.whiteboardApplyDraft.mockReset();
   });
 
   it('keeps memo defaults on the Markdown/post-template path', async () => {
@@ -142,5 +167,45 @@ describe('ResponseDefaultsConnector template boundaries', () => {
     await waitFor(() => expect(harness.onCancel).toBeDefined());
     await expect(harness.onCancel?.()).resolves.toBe(true);
     expect(discard).not.toHaveBeenCalled();
+  });
+
+  it('does not reopen the editor when materialization finishes after the dialog closes', async () => {
+    let resolveMaterialize: ((value: { whiteboardID: string; sourceKey: string }) => void) | undefined;
+    const materialized = {
+      whiteboardID: 'whiteboard-draft-2',
+      sourceKey: ':',
+    };
+    const materialize = vi.fn(
+      () =>
+        new Promise<{ whiteboardID: string; sourceKey: string }>(resolve => {
+          resolveMaterialize = resolve;
+        })
+    );
+    const onOpenChange = vi.fn();
+
+    render(
+      <ResponseDefaultsConnector
+        open={true}
+        onOpenChange={onOpenChange}
+        type="whiteboard"
+        values={values}
+        onSave={vi.fn()}
+        whiteboardDraft={{
+          handle: materialized,
+          loading: false,
+          materialize,
+          discard: vi.fn().mockResolvedValue(true),
+          consumed: vi.fn(),
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'framing.edit' }));
+    act(() => harness.dialogOpenChange?.(false));
+    await act(async () => resolveMaterialize?.(materialized));
+
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    expect(harness.whiteboardApplyDraft).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('whiteboard-draft-editor')).not.toBeInTheDocument();
   });
 });
