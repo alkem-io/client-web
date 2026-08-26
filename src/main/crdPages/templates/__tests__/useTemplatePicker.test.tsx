@@ -20,12 +20,14 @@ import {
   ImportTemplateDialogAccountTemplatesDocument,
   ImportTemplateDialogDocument,
   ImportTemplateDialogPlatformTemplatesDocument,
+  TemplateContentDocument,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   TemplateType as GqlTemplateType,
   type ImportTemplateDialogAccountTemplatesQuery,
   type ImportTemplateDialogPlatformTemplatesQuery,
   type ImportTemplateDialogQuery,
+  type TemplateContentQuery,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTemplatePicker } from '../useTemplatePicker';
 
@@ -106,7 +108,11 @@ const platformMock = (
 ): MockedResponse<ImportTemplateDialogPlatformTemplatesQuery> => ({
   request: {
     query: ImportTemplateDialogPlatformTemplatesDocument,
-    variables: { templateTypes: allowedTypes, includeCallout: true, includeSpace: false },
+    variables: {
+      templateTypes: allowedTypes,
+      includeCallout: allowedTypes[0] === GqlTemplateType.Callout,
+      includeSpace: allowedTypes[0] === GqlTemplateType.Space,
+    },
   },
   result: {
     data: {
@@ -134,6 +140,55 @@ const platformMock = (
         },
       },
     } as unknown as ImportTemplateDialogPlatformTemplatesQuery,
+  },
+});
+
+const whiteboardContentMock = (templateId: string, previewUri?: string): MockedResponse<TemplateContentQuery> => ({
+  request: {
+    query: TemplateContentDocument,
+    variables: {
+      templateId,
+      includeCallout: false,
+      includeWhiteboard: true,
+      includePost: false,
+      includeSpace: false,
+      includeCommunityGuidelines: false,
+      includeClassification: false,
+    },
+  },
+  result: {
+    data: {
+      lookup: {
+        __typename: 'LookupQueryResults',
+        template: {
+          __typename: 'Template',
+          id: templateId,
+          type: GqlTemplateType.Whiteboard,
+          profile: {
+            __typename: 'Profile',
+            id: `${templateId}-profile`,
+            displayName: 'Whiteboard template',
+            description: '',
+            defaultTagset: { __typename: 'Tagset', id: `${templateId}-tagset`, tags: [] },
+          },
+          whiteboard: {
+            __typename: 'Whiteboard',
+            id: `${templateId}-whiteboard`,
+            profile: {
+              __typename: 'Profile',
+              id: `${templateId}-whiteboard-profile`,
+              displayName: 'Whiteboard template',
+              preview: previewUri ? { __typename: 'Visual', name: 'preview', uri: previewUri } : null,
+            },
+            previewSettings: {
+              __typename: 'WhiteboardPreviewSettings',
+              mode: 'AUTO',
+              coordinates: null,
+            },
+          },
+        },
+      },
+    } as unknown as TemplateContentQuery,
   },
 });
 
@@ -306,5 +361,37 @@ describe('useTemplatePicker — selection lifecycle', () => {
 
     expect(result.current.selectedTemplateId).toBeNull();
     expect(result.current.selectedTemplateContent).toBeNull();
+  });
+});
+
+describe('useTemplatePicker — whiteboard preview', () => {
+  it('uses the template card visual when the nested whiteboard has no preview visual', async () => {
+    const allowedTypes: ['whiteboard'] = ['whiteboard'];
+    const template = tpl('wb-1', GqlTemplateType.Whiteboard, 'Legacy whiteboard');
+    template.profile.visual.uri = 'https://cdn.alkem.io/templates/wb-1.png';
+    const wrapper = makeWrapper([
+      platformMock([GqlTemplateType.Whiteboard], [{ template, packDisplayName: 'Platform' }]),
+      whiteboardContentMock('wb-1'),
+    ]);
+    const { result } = renderHook(() => useTemplatePicker({ allowedTypes }), { wrapper });
+
+    act(() => {
+      result.current.openPicker();
+    });
+    await waitFor(() => {
+      expect(result.current.pickerProps.sources[0]?.templates).toHaveLength(1);
+    });
+
+    act(() => {
+      result.current.pickerProps.onPreview('wb-1');
+    });
+
+    await waitFor(() => {
+      expect(result.current.pickerProps.previewContent).toEqual({
+        type: 'whiteboard',
+        sourceWhiteboardId: 'wb-1-whiteboard',
+        previewImageUrl: 'https://cdn.alkem.io/templates/wb-1.png',
+      });
+    });
   });
 });
