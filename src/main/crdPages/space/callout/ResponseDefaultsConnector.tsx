@@ -43,6 +43,7 @@ function TemplateApplyButton({ applyDraft, picker }: { applyDraft: ApplyDraft; p
     } else if (selectedContent.type === 'whiteboard' && selectedContent.sourceWhiteboardId) {
       applyDraftRef.current({
         sourceWhiteboardId: selectedContent.sourceWhiteboardId,
+        sourceCalloutId: undefined,
         whiteboardContentAvailable: true,
         clearWhiteboardContent: false,
       });

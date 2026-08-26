@@ -95,6 +95,7 @@ export function ResponseDefaultsDialog({
     draft.postDescription !== openSnapshot.postDescription ||
     draft.whiteboardContentAvailable !== openSnapshot.whiteboardContentAvailable ||
     draft.sourceWhiteboardId !== openSnapshot.sourceWhiteboardId ||
+    draft.sourceCalloutId !== openSnapshot.sourceCalloutId ||
     draft.clearWhiteboardContent !== openSnapshot.clearWhiteboardContent;
 
   const handleRequestClose = () => {
@@ -208,6 +209,7 @@ export function ResponseDefaultsDialog({
                       setDraft(prev => ({
                         ...prev,
                         sourceWhiteboardId: undefined,
+                        sourceCalloutId: undefined,
                         whiteboardContentAvailable: false,
                         clearWhiteboardContent: true,
                       }))

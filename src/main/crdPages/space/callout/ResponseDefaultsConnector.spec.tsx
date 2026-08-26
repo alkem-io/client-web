@@ -94,10 +94,13 @@ describe('ResponseDefaultsConnector template boundaries', () => {
     await waitFor(() =>
       expect(harness.applyDraft).toHaveBeenCalledWith({
         sourceWhiteboardId: 'whiteboard-source-1',
+        sourceCalloutId: undefined,
         whiteboardContentAvailable: true,
         clearWhiteboardContent: false,
       })
     );
-    expect(harness.applyDraft.mock.calls[0]?.[0]).not.toHaveProperty('whiteboardContent');
+    const appliedDraft = harness.applyDraft.mock.calls[0]?.[0];
+    expect(appliedDraft).toHaveProperty('sourceCalloutId', undefined);
+    expect(appliedDraft).not.toHaveProperty('whiteboardContent');
   });
 });
