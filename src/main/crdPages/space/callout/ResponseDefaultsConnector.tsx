@@ -171,7 +171,10 @@ export function ResponseDefaultsConnector({
   const cancelWhiteboardDraft = async () => {
     dialogSessionRef.current += 1;
     setWhiteboardEditorSession(undefined);
-    if (!whiteboardDraft?.handle || whiteboardDraft.handle.whiteboardID === initialDraftID.current) {
+    if (!whiteboardDraft) {
+      return true;
+    }
+    if (whiteboardDraft.handle && whiteboardDraft.handle.whiteboardID === initialDraftID.current) {
       return true;
     }
     return whiteboardDraft.discard();

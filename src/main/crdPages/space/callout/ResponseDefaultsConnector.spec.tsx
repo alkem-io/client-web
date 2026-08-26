@@ -169,6 +169,45 @@ describe('ResponseDefaultsConnector template boundaries', () => {
     expect(discard).not.toHaveBeenCalled();
   });
 
+  it('discards a materialized draft when cancellation precedes the parent handle commit', async () => {
+    const materialized = {
+      whiteboardID: 'whiteboard-draft-uncommitted',
+      sourceKey: ':',
+    };
+    const discard = vi.fn().mockResolvedValue(true);
+
+    render(
+      <ResponseDefaultsConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        type="whiteboard"
+        values={values}
+        onSave={vi.fn()}
+        whiteboardDraft={{
+          handle: undefined,
+          loading: false,
+          materialize: vi.fn().mockResolvedValue(materialized),
+          discard,
+          consumed: vi.fn(),
+        }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'framing.edit' }));
+    await waitFor(() =>
+      expect(harness.whiteboardApplyDraft).toHaveBeenCalledWith(
+        expect.objectContaining({
+          whiteboardDraft: materialized,
+        })
+      )
+    );
+    await act(async () => {
+      await expect(harness.onCancel?.()).resolves.toBe(true);
+    });
+
+    expect(discard).toHaveBeenCalledOnce();
+  });
+
   it('does not reopen the editor when materialization finishes after the dialog closes', async () => {
     let resolveMaterialize: ((value: { whiteboardID: string; sourceKey: string }) => void) | undefined;
     const materialized = {
