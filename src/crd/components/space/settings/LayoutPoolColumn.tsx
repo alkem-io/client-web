@@ -1,6 +1,16 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Check, Eye, EyeOff, GripVertical, MoreVertical, Pencil, SlidersHorizontal, Trash2 } from 'lucide-react';
+import {
+  Check,
+  Eye,
+  EyeOff,
+  FileText,
+  GripVertical,
+  MoreVertical,
+  Pencil,
+  SlidersHorizontal,
+  Trash2,
+} from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmojiInsertButton } from '@/crd/components/common/EmojiInsertButton';
@@ -61,6 +71,8 @@ type LayoutPoolColumnProps = {
   entityNoun?: 'tab' | 'phase';
   /** Enables the column drag handle + sortable behaviour (off at L0). */
   draggable?: boolean;
+  /** Whether the Layout dialog shows the sidebar-widgets section (hidden on subspaces for now). */
+  sidebarSettingsEnabled?: boolean;
   className?: string;
 } & MarkdownUploadProps;
 
@@ -73,6 +85,7 @@ export function LayoutPoolColumn({
   columnMenuActions,
   entityNoun = 'phase',
   draggable = false,
+  sidebarSettingsEnabled = true,
   className,
   onImageUpload,
   iframeAllowedUrls,
@@ -221,7 +234,8 @@ export function LayoutPoolColumn({
         open={layoutDialogOpen}
         onOpenChange={setLayoutDialogOpen}
         phaseName={column.title}
-        values={column.layout ?? { descriptionCollapsed: false, showPublishDetails: true }}
+        sidebarSettingsEnabled={sidebarSettingsEnabled}
+        values={column.layout ?? { descriptionCollapsed: false, showPublishDetails: true, sidebar: [] }}
         onSave={async (layout: PhaseLayoutInput) => {
           // Await persistence and let the dialog close itself on success — a failed save
           // keeps it open (see PhaseLayoutDialog.handleSave). Rejection propagates so the
@@ -335,7 +349,7 @@ function ColumnOverflowMenu({
           {t('layout.column.phaseLayout.menuLabel')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={onRequestPostTemplate}>
-          <Pencil aria-hidden="true" className="mr-2 size-3.5" />
+          <FileText aria-hidden="true" className="mr-2 size-3.5" />
           {t('layout.column.postTemplate.menuLabel')}
         </DropdownMenuItem>
         {canToggleVisibility && (

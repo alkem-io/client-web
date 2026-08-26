@@ -207,7 +207,11 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   taskBoardColumns: [],
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,
-  contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+  contributionDefaults: {
+    defaultDisplayName: '',
+    postDescription: '',
+    whiteboardContentAvailable: false,
+  },
   prePopulateLinkRows: [],
   referenceRows: [],
   notifyMembers: false,

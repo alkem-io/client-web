@@ -656,6 +656,9 @@
     "template": "Modèle",
     "templatePlaceholder": "Choisir un modèle…",
     "templateLoading": "Chargement des modèles…",
+    "whiteboardConfigured": "Un tableau blanc par défaut est configuré.",
+    "whiteboardNotConfigured": "Les nouvelles contributions commenceront avec un tableau blanc vide.",
+    "clearWhiteboard": "Effacer le contenu par défaut",
     "save": "Enregistrer"
   },
   "calloutDialog": {

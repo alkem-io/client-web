@@ -35,8 +35,11 @@ type ParentSpaceStackProps = {
 /* Each stacking level peeks out 14px above and 10px left of the card in front.
    Card size matches the front card (wrapper minus the total stack inset), so it
    is indexed by depth like the wrapper padding — a depth-1 stack insets 10/14px,
-   a depth-2 stack 20/28px. */
+   a depth-2 stack 20/28px. The wrapper min-height (104px card + inset) keeps
+   the parent cards visible — banner strip + name row — even when the front
+   card is short or empty (e.g. a subspace with no description). */
 const WRAPPER_PAD = ['pt-[14px] pl-[10px]', 'pt-[28px] pl-[20px]'];
+const WRAPPER_MIN_H = ['min-h-[118px]', 'min-h-[132px]'];
 const CARD_SIZE = ['w-[calc(100%-10px)] h-[calc(100%-14px)]', 'w-[calc(100%-20px)] h-[calc(100%-28px)]'];
 const CARD_TOP = ['top-0', 'top-[14px]'];
 const CARD_LEFT = ['left-0', 'left-[10px]'];
@@ -57,7 +60,7 @@ export function ParentSpaceStack({ parents, children, className }: ParentSpaceSt
   }
 
   return (
-    <div className={cn('relative', WRAPPER_PAD[depth - 1], className)}>
+    <div className={cn('relative', WRAPPER_PAD[depth - 1], WRAPPER_MIN_H[depth - 1], className)}>
       {visibleParents.map((parent, index) => {
         const innermost = index === depth - 1;
         return (
@@ -67,7 +70,7 @@ export function ParentSpaceStack({ parents, children, className }: ParentSpaceSt
             title={t('parentStack.goTo', { name: parent.name })}
             aria-label={t('parentStack.goTo', { name: parent.name })}
             className={cn(
-              'group absolute block rounded-xl overflow-hidden',
+              'group absolute flex flex-col rounded-xl overflow-hidden',
               'border border-border bg-card shadow-sm no-underline',
               'transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-[3px]',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
@@ -76,7 +79,9 @@ export function ParentSpaceStack({ parents, children, className }: ParentSpaceSt
               CARD_LEFT[index]
             )}
           >
-            <div className="aspect-video overflow-hidden">
+            {/* Fills the card above the name row; the min-height guarantees a
+                visible banner strip even at the wrapper's minimum height. */}
+            <div className="flex-1 min-h-16 overflow-hidden">
               {parent.bannerUrl ? (
                 <img
                   src={parent.bannerUrl}
@@ -87,7 +92,7 @@ export function ParentSpaceStack({ parents, children, className }: ParentSpaceSt
                 <div className="w-full h-full" style={parent.color ? backgroundGradient(parent.color) : undefined} />
               )}
             </div>
-            <div className="flex flex-col gap-1 px-3 py-2">
+            <div className="flex flex-col gap-1 px-3 py-2 shrink-0">
               <div className="flex items-center gap-2">
                 <Avatar className="size-5 rounded">
                   <AvatarFallback className="rounded bg-primary text-primary-foreground text-badge">

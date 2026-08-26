@@ -54,6 +54,7 @@ import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
+import { resolveSidebarPlan } from './sidebarWidgetPlan';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
@@ -95,7 +96,7 @@ export default function CrdSpacePageLayout() {
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
-  const { tabs, defaultTabIndex, sectionCount, showSettings } = useCrdSpaceTabs({
+  const { tabs, defaultTabIndex, sectionCount, showSettings, stateSidebars } = useCrdSpaceTabs({
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
@@ -132,6 +133,14 @@ export default function CrdSpacePageLayout() {
   } else if (defaultTabIndex >= 0) {
     activeTabIndex = Math.min(defaultTabIndex, maxTabIndex);
   }
+
+  // A tab configured with zero renderable widgets gets no sidebar column at all — the
+  // content takes the full no-sidebar width (FR-016). Only collapse when the stored list
+  // is KNOWN and resolves empty: while SpaceTabs is loading `stateSidebars` is empty, and
+  // collapsing then would flash the content full-width on every cold load. The mobile
+  // drawer and its triggers (hamburger, bottom bar, edge swipe) stay available regardless.
+  const activeTabSidebar = stateSidebars[activeTabIndex];
+  const sidebarEmpty = activeTabSidebar !== undefined && resolveSidebarPlan(activeTabSidebar).length === 0;
 
   const handleTabChange = (index: number) => {
     const url = buildSpaceSectionUrl(space.about.profile.url ?? '', index + 1);
@@ -174,11 +183,16 @@ export default function CrdSpacePageLayout() {
     onMenuClick: () => setMobileMenuOpen(true),
   };
 
+  // Single opener for the shared About dialog (header info icon + the sidebar
+  // "About this Space" widget) — the layout owns the ONE
+  // CrdSpaceAboutDialogConnector mount; the tab page reaches it via Outlet context.
+  const onOpenAbout = () => setAboutDialogOpen(true);
+
   if (!isLevelZero) {
     // For non-L0 spaces (subspaces), just render the outlet
     return (
       <Suspense fallback={<LoadingSpinner />}>
-        <Outlet context={{ activeTabIndex, totalTabs: sectionCount }} />
+        <Outlet context={{ activeTabIndex, totalTabs: sectionCount, onOpenAbout }} />
       </Suspense>
     );
   }
@@ -230,6 +244,9 @@ export default function CrdSpacePageLayout() {
             )
           }
           sidebar={isOnSettings ? undefined : sidebarSlot}
+          // Empty-configured sidebar: the slot stays mounted (the portal resolves its
+          // target once on mount) but the column collapses and content goes full width.
+          sidebarCollapsed={sidebarEmpty}
           tabs={
             isOnSettings ? (
               // Settings tabs live in the shell's sticky tabs row too, so they
@@ -254,7 +271,7 @@ export default function CrdSpacePageLayout() {
           }
         >
           <Suspense fallback={<LoadingSpinner />}>
-            <Outlet context={{ activeTabIndex, totalTabs: sectionCount }} />
+            <Outlet context={{ activeTabIndex, totalTabs: sectionCount, onOpenAbout }} />
           </Suspense>
         </SpaceShell>
 
@@ -293,8 +310,10 @@ export default function CrdSpacePageLayout() {
           spaceId={spaceId}
         />
 
-        {/* About dialog — opened from the header info icon. Same shared
-          CrdSpaceAbout the sidebar "About this Space" button opens. */}
+        {/* About dialog — the SINGLE mount for the shared CrdSpaceAbout at L0.
+          Opened from the header info icon AND (via the `onOpenAbout` Outlet
+          context) from the sidebar "About this Space" widget — the sidebar
+          connector no longer mounts its own copy. */}
         <CrdSpaceAboutDialogConnector open={aboutDialogOpen} onOpenChange={setAboutDialogOpen} />
 
         {/* Share dialog — opened from header share icon and the mobile "More" drawer.

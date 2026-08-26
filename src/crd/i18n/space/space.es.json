@@ -656,6 +656,9 @@
     "template": "Plantilla",
     "templatePlaceholder": "Elige una plantilla…",
     "templateLoading": "Cargando plantillas…",
+    "whiteboardConfigured": "Hay una pizarra predeterminada configurada.",
+    "whiteboardNotConfigured": "Las nuevas contribuciones comenzarán con una pizarra vacía.",
+    "clearWhiteboard": "Borrar predeterminado",
     "save": "Guardar"
   },
   "calloutDialog": {

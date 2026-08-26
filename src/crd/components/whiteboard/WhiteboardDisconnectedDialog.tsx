@@ -30,6 +30,8 @@ type WhiteboardDisconnectedDialogProps = {
   /** Seconds until auto-reconnect; appended to the Reconnect label as "(Xs)" when > 0. */
   countdownSeconds?: number | null;
   onReconnect: () => void;
+  /** Hide the reconnect action for a terminal unavailable/access verdict. */
+  showReconnect?: boolean;
   /**
    * Full page reload escape hatch. When provided, a "Reload page" button appears — always clickable,
    * independent of `canReconnect` / `reconnecting` — once the modal has been stuck past a short
@@ -59,6 +61,7 @@ export function WhiteboardDisconnectedDialog({
   reconnecting,
   countdownSeconds,
   onReconnect,
+  showReconnect = true,
   onReloadPage,
   hasError,
   className,
@@ -69,7 +72,7 @@ export function WhiteboardDisconnectedDialog({
   // The modal is "stuck" whenever the Reconnect button offers no immediate action: it is disabled
   // (offline / `!canReconnect`) or busy (`reconnecting`). We reveal the reload escape hatch only after
   // that state has persisted past a short threshold, so it stays out of the normal fast-reconnect path.
-  const isStuck = !canReconnect || Boolean(reconnecting);
+  const isStuck = showReconnect && (!canReconnect || Boolean(reconnecting));
   const [stuckElapsed, setStuckElapsed] = useState(false);
 
   useEffect(() => {
@@ -113,13 +116,15 @@ export function WhiteboardDisconnectedDialog({
               {t('disconnected.reloadPage')}
             </Button>
           )}
-          <Button onClick={onReconnect} disabled={!canReconnect || reconnecting} aria-busy={reconnecting}>
-            {reconnecting && <Loader2 className="size-4 mr-1 animate-spin" aria-hidden="true" />}
-            {t('disconnected.reconnect')}
-            {showCountdown && (
-              <span className="ml-1 font-normal">{t('disconnected.countdown', { seconds: countdownSeconds })}</span>
-            )}
-          </Button>
+          {showReconnect && (
+            <Button onClick={onReconnect} disabled={!canReconnect || reconnecting} aria-busy={reconnecting}>
+              {reconnecting && <Loader2 className="size-4 mr-1 animate-spin" aria-hidden="true" />}
+              {t('disconnected.reconnect')}
+              {showCountdown && (
+                <span className="ml-1 font-normal">{t('disconnected.countdown', { seconds: countdownSeconds })}</span>
+              )}
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

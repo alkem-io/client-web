@@ -61,7 +61,7 @@ query CalloutContent($calloutId: UUID!) {
         id
         defaultDisplayName
         postDescription
-        whiteboardContent
+        whiteboardContentAvailable
       }
       classification {
         id

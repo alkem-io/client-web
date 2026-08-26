@@ -4,8 +4,6 @@ import {
   CalloutFramingType,
   TemplateType as GqlTemplateType,
 } from '@/core/apollo/generated/graphql-schema';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { serializeWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import {
   type GqlTemplateLike,
   mapGqlTemplateType,
@@ -18,88 +16,8 @@ import {
   type TemplateContentTemplate,
   templateContentIncludeVars,
   templateContentToFormValues,
-  whiteboardContentForTemplateUpdate,
-  whiteboardTemplateCreateFields,
 } from '../templateContentMapper';
 import { mapTemplatesSetToCategories, mapTemplatesToCards } from '../templatesManagerMapper';
-
-// ---------------------------------------------------------------------------
-// whiteboardContentForTemplateUpdate — rename-only edits must NOT overwrite content
-// ---------------------------------------------------------------------------
-
-describe('whiteboardContentForTemplateUpdate', () => {
-  it('returns undefined for empty content (rename-only), so the update no-ops it', () => {
-    expect(whiteboardContentForTemplateUpdate(undefined)).toBeUndefined();
-    expect(whiteboardContentForTemplateUpdate('')).toBeUndefined();
-    // The empty placeholder the editor draft holds — must NOT be sent (would overwrite).
-    expect(whiteboardContentForTemplateUpdate(EmptyWhiteboardString)).toBeUndefined();
-  });
-
-  it('returns the content when the user genuinely redrew (non-empty scene)', () => {
-    const drawn = serializeWhiteboardContent({
-      elements: [{ id: 'r', type: 'rectangle', x: 0, y: 0, width: 10, height: 10, index: 'a0' }],
-      assets: {},
-      appState: {},
-    } as never);
-    expect(whiteboardContentForTemplateUpdate(drawn)).toBe(drawn);
-  });
-
-  // C4 — a deliberate clear-to-blank must PERSIST on update (emptiness alone is no longer read as
-  // "untouched"); only a genuinely untouched (rename-only) draft no-ops the content.
-  it('persists a deliberate clear-to-blank on update (sends the empty content, not a no-op)', () => {
-    expect(whiteboardContentForTemplateUpdate(EmptyWhiteboardString, true)).toBe(EmptyWhiteboardString);
-  });
-
-  it('still no-ops empty content for a rename-only (untouched) update', () => {
-    expect(whiteboardContentForTemplateUpdate(EmptyWhiteboardString, false)).toBeUndefined();
-  });
-});
-
-describe('whiteboardTemplateCreateFields — source-copy vs redrawn content (mutually exclusive)', () => {
-  const drawn = serializeWhiteboardContent({
-    elements: [{ id: 'r', type: 'rectangle', x: 0, y: 0, width: 10, height: 10, index: 'a0' }],
-    assets: {},
-    appState: {},
-  } as never);
-
-  it('duplicate/import (not redrawn) sends the SOURCE id and no content', () => {
-    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, 'src-wb-1')).toEqual({
-      content: undefined,
-      sourceWhiteboardID: 'src-wb-1',
-    });
-  });
-
-  it('a genuine redraw sends the content and NO source (source would override it server-side)', () => {
-    expect(whiteboardTemplateCreateFields(drawn, 'src-wb-1')).toEqual({
-      content: drawn,
-      sourceWhiteboardID: undefined,
-    });
-  });
-
-  it('from-scratch (empty, no source) sends neither', () => {
-    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, undefined)).toEqual({
-      content: undefined,
-      sourceWhiteboardID: undefined,
-    });
-  });
-
-  // C4 — clearing a source-derived template to blank ON PURPOSE (whiteboardEdited=true) must send
-  // the empty content and NOT the source id, so the server saves the intentional blank instead of
-  // silently re-copying the original. Emptiness alone no longer implies "pristine / use the source".
-  it('a deliberately-cleared source-derived template sends empty content and NOT the source id', () => {
-    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, 'src-wb-1', true)).toEqual({
-      content: EmptyWhiteboardString,
-      sourceWhiteboardID: undefined,
-    });
-  });
-
-  it('an UNTOUCHED source-derived template (whiteboardEdited=false) still copies the source', () => {
-    expect(whiteboardTemplateCreateFields(EmptyWhiteboardString, 'src-wb-1', false)).toEqual({
-      content: undefined,
-      sourceWhiteboardID: 'src-wb-1',
-    });
-  });
-});
 
 const tpl = (over: Partial<GqlTemplateLike> & { id: string }): GqlTemplateLike => ({
   type: GqlTemplateType.Post,
@@ -230,10 +148,11 @@ describe('templateContentMapper', () => {
       framingKind: 'none',
       framingTitle: '',
       framingDescription: '',
+      sourceCalloutId: '',
       allowedContributionTypes: [],
       commentsEnabled: false,
     });
-    expect(mapTemplateContent(empty, 'whiteboard')).toEqual({ type: 'whiteboard', whiteboardContent: '' });
+    expect(mapTemplateContent(empty, 'whiteboard')).toEqual({ type: 'whiteboard' });
     expect(mapTemplateContent(empty, 'post')).toEqual({ type: 'post', defaultDescription: '' });
     expect(mapTemplateContent(empty, 'space')).toEqual({
       type: 'space',
@@ -328,10 +247,6 @@ describe('templateContentMapper', () => {
     expect(content).toMatchObject({
       type: 'callout',
       framingKind: 'whiteboard',
-      // #29: a live whiteboard's content is WS-only and no longer carried on the client — the server
-      // copies it from the source whiteboard's blob into the template on create. Only the
-      // server-rendered preview image is surfaced here (for read-only preview surfaces).
-      framingWhiteboardContent: undefined,
       framingWhiteboardPreviewImageUrl: 'https://cdn.alkem.io/wb/preview.png',
     });
   });
@@ -435,12 +350,12 @@ describe('templateContentMapper', () => {
       tags: ['t'],
       defaultDescription: 'pd',
     });
-    expect(templateContentToFormValues({ type: 'whiteboard', whiteboardContent: '{}' }, 'W')).toEqual({
+    expect(templateContentToFormValues({ type: 'whiteboard', sourceWhiteboardId: 'wb-1' }, 'W')).toEqual({
       type: 'whiteboard',
       name: 'W',
       description: '',
       tags: [],
-      whiteboardContent: '{}',
+      sourceWhiteboardId: 'wb-1',
     });
     expect(
       templateContentToFormValues(
