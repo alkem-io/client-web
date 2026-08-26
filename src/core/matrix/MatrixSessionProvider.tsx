@@ -1,7 +1,7 @@
-import { createContext, type ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { isAdmitted } from './matrixConfig';
-import { establishSession, onMessagingOpened, type SessionState } from './sessionController';
+import { establishSession, onMessagingOpened, type SessionHandle, type SessionState } from './sessionController';
 
 interface MatrixSessionContextValue {
   readonly state: SessionState;
@@ -18,19 +18,27 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
   const { userModel } = useCurrentUserContext();
   const actorId = userModel?.id;
   const [sessionState, setSessionState] = useState<SessionState>('idle');
-  const startedRef = useRef(false);
 
   useEffect(() => {
-    if (!actorId || !isAdmitted(actorId) || startedRef.current) {
+    if (!actorId || !isAdmitted(actorId)) {
       return;
     }
-    return onMessagingOpened(() => {
-      if (startedRef.current) {
+
+    let disposed = false;
+    let establishing = false;
+    let handle: SessionHandle | null = null;
+
+    const unsubscribe = onMessagingOpened(() => {
+      if (disposed || establishing) {
         return;
       }
-      startedRef.current = true;
-      void establishSession(actorId, {
-        onState: setSessionState,
+      establishing = true;
+      establishSession(actorId, {
+        onState: state => {
+          if (!disposed) {
+            setSessionState(state);
+          }
+        },
         onRooms: rooms => {
           // biome-ignore lint/suspicious/noConsole: temporary local-proof observability, removed before PR
           console.info(
@@ -38,8 +46,27 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
             rooms.map(room => `${room.name} (${room.roomId})`)
           );
         },
-      });
+      })
+        .then(established => {
+          if (disposed) {
+            established.stop();
+            return;
+          }
+          handle = established;
+        })
+        .catch(() => {
+          if (!disposed) {
+            setSessionState('failed');
+          }
+        });
     });
+
+    return () => {
+      disposed = true;
+      unsubscribe();
+      handle?.stop();
+      setSessionState('idle');
+    };
   }, [actorId]);
 
   return <MatrixSessionContext value={{ state: sessionState }}>{children}</MatrixSessionContext>;

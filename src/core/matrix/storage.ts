@@ -2,6 +2,11 @@ const DB_PREFIX = 'alkemio-matrix/';
 const STORE_NAME = 'credentials';
 const RECORD_KEY = 'session';
 
+// expiresAt for a token the server issued without expiry info (non-refreshable
+// login): treated as never expiring locally — the server 401s if it dies.
+// Kept within the maximum valid Date time value, since it is turned into one.
+const NEVER_EXPIRES = 8_640_000_000_000_000;
+
 interface CredentialRecord {
   readonly userId: string;
   readonly deviceId: string;
@@ -139,5 +144,5 @@ const clearNamespace = async (userId: string): Promise<void> => {
   });
 };
 
-export { loadCredentials, storeCredentials, rotateTokens, clearNamespace, findStoredUserId };
+export { loadCredentials, storeCredentials, rotateTokens, clearNamespace, findStoredUserId, NEVER_EXPIRES };
 export type { CredentialRecord, StorageResult };

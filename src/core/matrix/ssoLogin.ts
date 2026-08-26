@@ -16,17 +16,21 @@ interface SsoIdpResult {
 }
 
 const discoverIdp = async (homeserverUrl: string): Promise<SsoIdpResult> => {
-  const response = await fetch(`${homeserverUrl}/_matrix/client/v3/login`, {
-    credentials: 'omit',
-  });
+  let response: Response;
+  let body: { flows?: { type?: string; identity_providers?: { id?: string }[] }[] };
+  try {
+    response = await fetch(`${homeserverUrl}/_matrix/client/v3/login`, {
+      credentials: 'omit',
+    });
 
-  if (!response.ok) {
-    return { ok: false, error: `login endpoint returned ${response.status}` };
+    if (!response.ok) {
+      return { ok: false, error: `login endpoint returned ${response.status}` };
+    }
+
+    body = (await response.json()) as typeof body;
+  } catch {
+    return { ok: false, error: 'login endpoint unreachable' };
   }
-
-  const body = (await response.json()) as {
-    flows?: { type?: string; identity_providers?: { id?: string }[] }[];
-  };
 
   const ssoFlow = body.flows?.find(f => f.type === 'm.login.sso');
   if (!ssoFlow) {

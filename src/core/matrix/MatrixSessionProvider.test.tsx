@@ -1,26 +1,29 @@
-import { render } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { MatrixSessionProvider } from './MatrixSessionProvider';
+import { MatrixSessionProvider, useMatrixSessionContext } from './MatrixSessionProvider';
 
 const harness = vi.hoisted(() => {
   const listeners = new Set<() => void>();
-  return {
+  const stopSpy = vi.fn();
+  const harnessState = {
+    stopSpy,
     establishSession: vi.fn(async (_actorId: string) => ({
       machine: { state: () => 'idle', transition: () => true },
-      stop: () => {},
+      stop: stopSpy,
     })),
     admitted: { value: true },
     actorId: { value: 'actor-1' as string | undefined },
     opened: { value: false },
     listeners,
     notify: () => {
-      harness.opened.value = true;
+      harnessState.opened.value = true;
       for (const listener of listeners) {
         listener();
       }
       listeners.clear();
     },
   };
+  return harnessState;
 });
 
 vi.mock('./sessionController', () => ({
@@ -44,9 +47,19 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: harness.actorId.value ? { id: harness.actorId.value } : undefined }),
 }));
 
+const StateProbe = () => <span data-testid="session-state">{useMatrixSessionContext().state}</span>;
+
+const renderProvider = () =>
+  render(
+    <MatrixSessionProvider>
+      <StateProbe />
+    </MatrixSessionProvider>
+  );
+
 describe('MatrixSessionProvider', () => {
   beforeEach(() => {
     harness.establishSession.mockClear();
+    harness.stopSpy.mockClear();
     harness.listeners.clear();
     harness.opened.value = false;
     harness.admitted.value = true;
@@ -54,55 +67,76 @@ describe('MatrixSessionProvider', () => {
   });
 
   it('does nothing at mount before messaging opens', () => {
-    render(
-      <MatrixSessionProvider>
-        <span>child</span>
-      </MatrixSessionProvider>
-    );
+    renderProvider();
     expect(harness.establishSession).not.toHaveBeenCalled();
   });
 
   it('never subscribes when the user is not admitted', () => {
     harness.admitted.value = false;
-    render(
-      <MatrixSessionProvider>
-        <span>child</span>
-      </MatrixSessionProvider>
-    );
+    renderProvider();
     harness.notify();
     expect(harness.establishSession).not.toHaveBeenCalled();
   });
 
   it('never subscribes without a signed-in user', () => {
     harness.actorId.value = undefined;
-    render(
-      <MatrixSessionProvider>
-        <span>child</span>
-      </MatrixSessionProvider>
-    );
+    renderProvider();
     harness.notify();
     expect(harness.establishSession).not.toHaveBeenCalled();
   });
 
-  it('establishes exactly once when admitted and messaging opens', () => {
-    render(
-      <MatrixSessionProvider>
-        <span>child</span>
-      </MatrixSessionProvider>
-    );
-    harness.notify();
-    harness.notify();
+  it('establishes exactly once when admitted and messaging opens', async () => {
+    renderProvider();
+    await act(async () => {
+      harness.notify();
+      harness.notify();
+    });
     expect(harness.establishSession).toHaveBeenCalledOnce();
     expect(harness.establishSession.mock.calls[0][0]).toBe('actor-1');
   });
 
-  it('establishes immediately when messaging was already open at mount', () => {
+  it('establishes immediately when messaging was already open at mount', async () => {
     harness.opened.value = true;
-    render(
+    renderProvider();
+    await act(async () => {});
+    expect(harness.establishSession).toHaveBeenCalledOnce();
+  });
+
+  it('stops the session when the provider unmounts', async () => {
+    const { unmount } = renderProvider();
+    await act(async () => {
+      harness.notify();
+    });
+    unmount();
+    expect(harness.stopSpy).toHaveBeenCalledOnce();
+  });
+
+  it('stops the old session and establishes a new one when the actor changes', async () => {
+    const { rerender } = renderProvider();
+    await act(async () => {
+      harness.notify();
+    });
+    expect(harness.establishSession).toHaveBeenCalledTimes(1);
+
+    harness.actorId.value = 'actor-2';
+    rerender(
       <MatrixSessionProvider>
-        <span>child</span>
+        <StateProbe />
       </MatrixSessionProvider>
     );
-    expect(harness.establishSession).toHaveBeenCalledOnce();
+    await act(async () => {});
+
+    expect(harness.stopSpy).toHaveBeenCalledOnce();
+    expect(harness.establishSession).toHaveBeenCalledTimes(2);
+    expect(harness.establishSession.mock.calls[1][0]).toBe('actor-2');
+  });
+
+  it('reports failed when establishment rejects', async () => {
+    harness.establishSession.mockRejectedValueOnce(new Error('boom'));
+    renderProvider();
+    await act(async () => {
+      harness.notify();
+    });
+    expect(screen.getByTestId('session-state').textContent).toBe('failed');
   });
 });

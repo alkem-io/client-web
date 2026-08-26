@@ -144,6 +144,27 @@ describe('matrixCallback', () => {
       expect(stored.record?.deviceId).toBe(EXCHANGE_RESPONSE.device_id);
     });
 
+    it('stores a non-expiring record when the response omits refresh token and expiry', async () => {
+      setEnv();
+      setPendingFlow();
+      setUrlWithToken('mlt_norefresh');
+
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({ user_id: EXCHANGE_RESPONSE.user_id, device_id: 'DEV2', access_token: 'syt_norefresh' }),
+          { status: 200 }
+        )
+      );
+
+      const { handleMatrixCallback: fresh } = await import('./matrixCallback');
+      const result = await fresh();
+      expect(result.ok).toBe(true);
+
+      const stored = await loadCredentials(EXCHANGE_RESPONSE.user_id);
+      expect(stored.record?.refreshToken).toBe('');
+      expect(stored.record?.expiresAt).toBeGreaterThan(Date.now() + 1_000_000_000);
+    });
+
     it('navigates to saved return path', async () => {
       setEnv();
       setPendingFlow('/my/return/path');

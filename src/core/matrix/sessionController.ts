@@ -182,104 +182,155 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       onState?.(machine.state());
     }
   };
-  const inertHandle: SessionHandle = { machine, stop: () => {} };
 
-  setState('starting');
-
-  let record: CredentialRecord | null = null;
-  const storedUserId = await findStoredUserId(actorId);
-  if (storedUserId) {
-    record = (await loadCredentials(storedUserId)).record;
-    if (record && !record.userId.toLowerCase().startsWith(`@${actorId.toLowerCase()}:`)) {
-      await clearNamespace(storedUserId);
-      record = null;
-    }
-  }
-
-  if (record && record.expiresAt <= Date.now()) {
-    try {
-      const refreshed = await refreshMatrixTokens(record.homeserverUrl, record.userId, record.refreshToken);
-      record = { ...record, accessToken: refreshed.accessToken, refreshToken: refreshed.refreshToken };
-    } catch {
-      await clearNamespace(record.userId);
-      record = null;
-    }
-  }
-
-  if (!record) {
-    const authenticated = await silentSso(actorId.toLowerCase());
-    if (authenticated) {
-      const freshUserId = await findStoredUserId(actorId);
-      record = freshUserId ? (await loadCredentials(freshUserId)).record : null;
-    }
-  }
-
-  if (!record) {
-    setState('failed');
-    return inertHandle;
-  }
-
-  const credentials = record;
-  const sdk = await loadSdk();
-  const client = sdk.createClient({
-    baseUrl: credentials.homeserverUrl,
-    userId: credentials.userId,
-    deviceId: credentials.deviceId,
-    accessToken: credentials.accessToken,
-    refreshToken: credentials.refreshToken,
-    logger: silentSdkLogger,
-    tokenRefreshFunction: refreshToken =>
-      refreshMatrixTokens(credentials.homeserverUrl, credentials.userId, refreshToken),
-  });
-
-  client.on(sdk.ClientEvent.Sync, (...args) => {
-    const syncState = args[0];
-    if (syncState === sdk.SyncState.Prepared) {
-      if (machine.state() === 'offline') {
-        setState('starting');
-      }
-      setState('ready');
-      onRooms?.(client.getRooms().map(room => ({ roomId: room.roomId, name: room.name })));
-      return;
-    }
-    if (syncState === sdk.SyncState.Syncing) {
-      if (machine.state() === 'ready') {
-        setState('syncing');
-      } else if (machine.state() === 'reconnecting') {
-        setState('ready');
-      }
-      return;
-    }
-    if (syncState === sdk.SyncState.Error || syncState === sdk.SyncState.Catchup) {
-      if (machine.state() === 'starting') {
-        setState('offline');
-      } else if (machine.state() === 'ready' || machine.state() === 'syncing') {
-        setState('reconnecting');
-      }
-    }
-  });
-
+  let activeClient: MatrixClientLike | null = null;
+  let stopped = false;
   let recovered = false;
-  client.on(sdk.HttpApiEvent.SessionLoggedOut, () => {
-    client.stopClient();
-    void (async () => {
-      await clearNamespace(credentials.userId);
-      if (!recovered) {
-        recovered = true;
-        setState('recovering');
-        await establishSession(actorId, hooks);
-      }
-    })();
-  });
-
-  await client.startClient({ initialSyncLimit: 10 });
-
-  return {
+  const handle: SessionHandle = {
     machine,
     stop: () => {
-      client.stopClient();
+      stopped = true;
+      activeClient?.stopClient();
     },
   };
+
+  const loadRecordForActor = async (): Promise<CredentialRecord | null> => {
+    const storedUserId = await findStoredUserId(actorId);
+    if (!storedUserId) {
+      return null;
+    }
+    const record = (await loadCredentials(storedUserId)).record;
+    if (record && !record.userId.toLowerCase().startsWith(`@${actorId.toLowerCase()}:`)) {
+      await clearNamespace(storedUserId);
+      return null;
+    }
+    return record;
+  };
+
+  const acquireRecord = async (): Promise<CredentialRecord | null> => {
+    let record = await loadRecordForActor();
+
+    if (record && record.expiresAt <= Date.now()) {
+      if (record.refreshToken) {
+        try {
+          const refreshed = await refreshMatrixTokens(record.homeserverUrl, record.userId, record.refreshToken);
+          record = { ...record, accessToken: refreshed.accessToken, refreshToken: refreshed.refreshToken };
+        } catch {
+          await clearNamespace(record.userId);
+          record = null;
+        }
+      } else {
+        await clearNamespace(record.userId);
+        record = null;
+      }
+    }
+
+    if (!record) {
+      const authenticated = await silentSso(actorId.toLowerCase());
+      if (authenticated) {
+        record = await loadRecordForActor();
+      }
+    }
+
+    return record;
+  };
+
+  const startWithRecord = async (credentials: CredentialRecord): Promise<void> => {
+    const sdk = await loadSdk();
+    const client = sdk.createClient({
+      baseUrl: credentials.homeserverUrl,
+      userId: credentials.userId,
+      deviceId: credentials.deviceId,
+      accessToken: credentials.accessToken,
+      refreshToken: credentials.refreshToken,
+      logger: silentSdkLogger,
+      tokenRefreshFunction: refreshToken =>
+        refreshMatrixTokens(credentials.homeserverUrl, credentials.userId, refreshToken),
+    });
+    activeClient = client;
+
+    client.on(sdk.ClientEvent.Sync, (...args) => {
+      const syncState = args[0];
+      if (syncState === sdk.SyncState.Prepared) {
+        if (machine.state() === 'offline') {
+          setState('starting');
+        }
+        setState('ready');
+        onRooms?.(client.getRooms().map(room => ({ roomId: room.roomId, name: room.name })));
+        return;
+      }
+      if (syncState === sdk.SyncState.Syncing) {
+        if (machine.state() === 'ready') {
+          setState('syncing');
+        } else if (machine.state() === 'reconnecting') {
+          setState('ready');
+        }
+        return;
+      }
+      if (syncState === sdk.SyncState.Error || syncState === sdk.SyncState.Catchup) {
+        if (machine.state() === 'starting') {
+          setState('offline');
+        } else if (machine.state() === 'ready' || machine.state() === 'syncing') {
+          setState('reconnecting');
+        }
+      }
+    });
+
+    client.on(sdk.HttpApiEvent.SessionLoggedOut, () => {
+      client.stopClient();
+      if (activeClient === client) {
+        activeClient = null;
+      }
+      void recover(credentials.userId);
+    });
+
+    await client.startClient({ initialSyncLimit: 10 });
+    if (stopped) {
+      client.stopClient();
+    }
+  };
+
+  // One recovery attempt per establishment: a session that dies again after a
+  // fresh silent SSO would just loop, so it ends in auth-required instead.
+  const recover = async (staleUserId: string): Promise<void> => {
+    try {
+      await clearNamespace(staleUserId);
+      if (stopped || recovered) {
+        return;
+      }
+      recovered = true;
+      setState('recovering');
+      const record = await acquireRecord();
+      if (stopped) {
+        return;
+      }
+      if (!record) {
+        setState('auth-required');
+        return;
+      }
+      setState('starting');
+      await startWithRecord(record);
+    } catch {
+      setState('failed');
+    }
+  };
+
+  try {
+    setState('starting');
+    const record = await acquireRecord();
+    if (stopped) {
+      return handle;
+    }
+    if (!record) {
+      setState('failed');
+      return handle;
+    }
+    await startWithRecord(record);
+  } catch {
+    setState('failed');
+  }
+
+  return handle;
 };
 
 export {

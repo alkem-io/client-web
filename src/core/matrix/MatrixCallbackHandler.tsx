@@ -14,11 +14,17 @@ const MatrixCallbackHandler = () => {
     // there is nothing to restore — the parent detects success via storage.
     const framed = window.self !== window.top;
 
-    handleMatrixCallback(undefined, framed ? undefined : path => navigate(path, { replace: true })).catch(() => {
-      if (!framed) {
-        navigate('/', { replace: true });
-      }
-    });
+    handleMatrixCallback(undefined, framed ? undefined : path => navigate(path, { replace: true }))
+      .then(outcome => {
+        if (!outcome.ok && !framed) {
+          navigate('/', { replace: true });
+        }
+      })
+      .catch(() => {
+        if (!framed) {
+          navigate('/', { replace: true });
+        }
+      });
   }, [navigate]);
 
   return null;
