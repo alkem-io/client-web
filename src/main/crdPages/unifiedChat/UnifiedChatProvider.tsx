@@ -1,4 +1,5 @@
-import { createContext, type ReactNode, useContext, useState } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
+import { notifyMessagingOpened } from '@/core/matrix/sessionController';
 import { useGuidanceVcId } from '@/main/guidance/chatWidget/useGuidanceVcId';
 import { ConversationDraftsProvider } from '@/main/userMessaging/ConversationDraftsContext';
 import { UserMessagingProvider, useUserMessagingContext } from '@/main/userMessaging/UserMessagingContext';
@@ -44,6 +45,17 @@ const UnifiedChatGuidanceProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
+/** Signals the Matrix session layer the first time the messaging surface opens. */
+const MessagingOpenNotifier = () => {
+  const { isOpen } = useUserMessagingContext();
+  useEffect(() => {
+    if (isOpen) {
+      notifyMessagingOpened();
+    }
+  }, [isOpen]);
+  return null;
+};
+
 /**
  * Provides unified-chat state. Wraps the existing UserMessagingProvider (which
  * holds isOpen/selection/unread/newly-created state) and adds Guidance-specific
@@ -54,6 +66,7 @@ const UnifiedChatGuidanceProvider = ({ children }: { children: ReactNode }) => {
  */
 export const UnifiedChatProvider = ({ children }: { children: ReactNode }) => (
   <UserMessagingProvider>
+    <MessagingOpenNotifier />
     <ConversationDraftsProvider>
       <UnifiedChatGuidanceProvider>{children}</UnifiedChatGuidanceProvider>
     </ConversationDraftsProvider>
