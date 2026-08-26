@@ -449,10 +449,13 @@ export function CalloutDetailDialogConnector({
   const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
 
   // Omit the slot entirely when the callout has no reactions summary (the server
-  // module may not be deployed). The connector renders null in that case, but an
-  // element is still truthy — passing it would render an empty bordered section.
+  // module may not be deployed), or when commenting is turned off for the callout —
+  // reactions share the comments switch, and an omitted slot also drops the bordered
+  // section that hosts them. The framing-level flag is read here rather than from the
+  // dialog's `commentsEnabled` prop, which swaps to the contribution-level switch while
+  // a post contribution is selected and would gate callout reactions on the wrong toggle.
   const reactionsSlot =
-    callout.reactionsSummary == null ? undefined : (
+    callout.reactionsSummary == null || !callout.settings.framing.commentsEnabled ? undefined : (
       <CalloutReactionsConnector
         calloutId={callout.id}
         reactionsSummary={callout.reactionsSummary}

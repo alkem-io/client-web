@@ -149,19 +149,34 @@ describe('PostCard reactionsSlot placement', () => {
     expect(reactionsNode.parentElement?.parentElement).toBe(trigger.parentElement);
   });
 
-  it('renders a reactions-only footer when comments are suppressed but reactions exist (edge case)', () => {
-    // commentsEnabled=false AND no existing comments AND no commentsSlot → the
-    // comments footer is suppressed, but reactions still need a home.
+  it('renders no footer and no reactions when comments are turned off and none exist yet', () => {
+    // Reactions follow the comments switch: with commenting off and no existing
+    // messages, the card falls back to its pre-reactions look — no footer row at all.
     const { container } = render(
       <PostCard post={{ ...basePost, commentsEnabled: false, commentCount: 0 }} reactionsSlot={reactions} />
     );
-    const footer = container.querySelector('[data-slot="card-footer"]');
-    expect(footer).toBeTruthy();
-    const reactionsNode = screen.getByTestId('reactions');
-    expect(footer?.contains(reactionsNode)).toBe(true);
-    expect(reactionsNode.parentElement).toHaveClass('ml-auto');
-    // No comments affordance in this minimal footer.
-    expect(screen.queryByRole('button', { name: /Comments/i })).not.toBeInTheDocument();
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeNull();
+    expect(screen.queryByTestId('reactions')).not.toBeInTheDocument();
+  });
+
+  it('hides reactions but keeps the read-only comments footer when comments are turned off with existing messages', () => {
+    const { container } = render(
+      <PostCard
+        post={{ ...basePost, commentsEnabled: false, commentCount: 3 }}
+        reactionsSlot={reactions}
+        commentsSlot={<div>thread</div>}
+      />
+    );
+    // The existing thread stays reachable, so the footer survives...
+    expect(container.querySelector('[data-slot="card-footer"]')).toBeTruthy();
+    expect(screen.getByRole('button', { name: /expandComments|collapseComments/i })).toBeInTheDocument();
+    // ...but the reactions surface is gone with the comments switch.
+    expect(screen.queryByTestId('reactions')).not.toBeInTheDocument();
+  });
+
+  it('renders reactions when comments are explicitly enabled', () => {
+    render(<PostCard post={{ ...basePost, commentsEnabled: true, commentCount: 0 }} reactionsSlot={reactions} />);
+    expect(screen.getByTestId('reactions')).toBeInTheDocument();
   });
 
   it('renders no footer at all when comments are suppressed and there is no reactions slot', () => {
