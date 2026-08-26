@@ -35411,6 +35411,7 @@ export type CreateTemplateMutation = {
           };
         }
       | undefined;
+    whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
   };
 };
 

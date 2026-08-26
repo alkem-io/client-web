@@ -27554,6 +27554,9 @@ export const CreateTemplateDocument = gql`
         }
       }
     }
+    whiteboard {
+      id
+    }
   }
 }
     `;
