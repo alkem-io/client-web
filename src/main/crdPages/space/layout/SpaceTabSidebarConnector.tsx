@@ -97,6 +97,7 @@ export function SpaceTabSidebarConnector({
 
   const {
     isMember: isSpaceMember,
+    loading: applyLoading,
     buttonProps: applyButtonProps,
     dialogs: applyDialogs,
   } = useSpaceApplyFlow({
@@ -170,7 +171,7 @@ export function SpaceTabSidebarConnector({
     ),
     about: <AboutButton key="about" onClick={onAboutClick} />,
     createPost: canCreatePost && <CreatePostButton key="createPost" onClick={onCreatePost} />,
-    applicationButton: !isSpaceMember && (
+    applicationButton: !applyLoading && !isSpaceMember && (
       <SpaceAboutApplyButton key="applicationButton" {...applyButtonProps} className="w-full" />
     ),
     createSubspace: permissions.canCreateSubspaces && (

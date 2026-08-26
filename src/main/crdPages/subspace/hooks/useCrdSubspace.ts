@@ -115,7 +115,7 @@ export function useCrdSubspace(): CrdSubspacePageData {
   // Same gate every L0 space tab uses for Add Post: CreateCallout on the calloutsSet.
   // Single source of truth — the same query useCalloutsSet fires on the callouts
   // page, so Apollo serves both from one request/cache entry.
-  const { canCreateCallout } = useCalloutsSetAuthorization({ calloutsSetId });
+  const { canCreateCallout, loading: calloutsSetAuthLoading } = useCalloutsSetAuthorization({ calloutsSetId });
   // The SubspacePage query already fetches templatesManager.templatesSet.id — surface it
   // so the Create-Subspace picker shows this space's own Space templates (D21).
   const templatesSetId = subspacePageData?.lookup.space?.templatesManager?.templatesSet?.id;
@@ -232,7 +232,12 @@ export function useCrdSubspace(): CrdSubspacePageData {
 
   return {
     loading:
-      subspaceContextLoading || subspacePageLoading || flowLoading || parentAboutLoading || levelZeroAboutLoading,
+      subspaceContextLoading ||
+      subspacePageLoading ||
+      flowLoading ||
+      parentAboutLoading ||
+      levelZeroAboutLoading ||
+      calloutsSetAuthLoading,
     notFound: !subspaceContextLoading && !subspaceId,
 
     subspaceId,
