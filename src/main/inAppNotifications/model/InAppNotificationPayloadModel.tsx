@@ -98,8 +98,6 @@ export interface InAppNotificationPayloadModel {
   };
   comment?: string;
   emoji?: string;
-  userEmail?: string;
-  userDisplayName?: string;
   organizationMessage?: string;
   calendarEvent?: {
     id: string;

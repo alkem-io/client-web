@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) е премахнат от платформата"
+          "subject": "Потребителски профил беше премахнат от платформата"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",

@@ -192,14 +192,29 @@ describe('notification types kept on the generic payload fallback', () => {
         NotificationEvent.PlatformAdminUserProfileRemoved,
         {
           type: NotificationEventPayload.PlatformUserProfileRemoved,
-          userEmail: 'someone@example.com',
-          userDisplayName: 'Someone',
         },
         NotificationEventCategory.Platform
       )
     );
 
     expect(href).toBeUndefined();
+  });
+
+  it('renders the profile-removed notification with no PII in its interpolation values', () => {
+    const model = notification(
+      NotificationEvent.PlatformAdminUserProfileRemoved,
+      { type: NotificationEventPayload.PlatformUserProfileRemoved },
+      NotificationEventCategory.Platform
+    );
+    const data = mapNotificationToItemData(model, t, NotificationEventInAppState.Unread);
+
+    // The removed user's display name and email are gone from the wire payload
+    // entirely (schema fields dropped) — assert the values passed into <Trans>
+    // carry no leftover trace of either, so a future re-add of the fields to the
+    // shared payload model can't silently leak them back into this notification.
+    const title = data.title as ReactElement<{ values: Record<string, string | undefined> }>;
+    expect(title.props.values.userEmail).toBeUndefined();
+    expect(title.props.values.userDisplayName).toBeUndefined();
   });
 });
 
