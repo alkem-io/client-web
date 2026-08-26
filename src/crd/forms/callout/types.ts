@@ -86,5 +86,12 @@ export type LinkRow = {
 export type ContributionDefaults = {
   defaultDisplayName: string;
   postDescription: string;
-  whiteboardContent: string;
+  /** Whether the persisted defaults currently contain a canonical whiteboard snapshot. */
+  whiteboardContentAvailable: boolean;
+  /** A selected template whiteboard to copy server-side when the callout is saved. */
+  sourceWhiteboardId?: string;
+  /** Source callout used when applying or duplicating a callout template's internal default. */
+  sourceCalloutId?: string;
+  /** Explicit removal; omission preserves an existing default on update. */
+  clearWhiteboardContent?: boolean;
 };

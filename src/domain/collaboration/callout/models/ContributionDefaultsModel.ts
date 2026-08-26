@@ -1,5 +1,8 @@
 export interface ContributionDefaultsModel {
   defaultDisplayName?: string;
   postDescription?: string;
-  whiteboardContent?: string;
+  whiteboardContentAvailable?: boolean;
+  sourceWhiteboardID?: string;
+  sourceCalloutID?: string;
+  clearWhiteboardContent?: boolean;
 }

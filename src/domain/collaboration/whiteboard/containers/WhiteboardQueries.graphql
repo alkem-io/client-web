@@ -107,6 +107,14 @@ query whiteboardLastUpdatedDate($whiteboardId: UUID!) {
   }
 }
 
+query WhiteboardDetailsById($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
+    }
+  }
+}
+
 mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
   deleteWhiteboard(whiteboardData: $input) {
     id

@@ -27,7 +27,6 @@ import { WhiteboardDisconnectedDialog } from '@/crd/components/whiteboard/Whiteb
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
-import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema, {
   type WhiteboardFormSchema,
 } from '@/domain/collaboration/whiteboard/validation/whiteboardFormSchema';
@@ -319,19 +318,6 @@ const CrdWhiteboardDialog = ({
     });
   };
 
-  const handleImportTemplate = async (whiteboardContent: string) => {
-    if (excalidrawAPI) {
-      try {
-        await mergeWhiteboard(excalidrawAPI, whiteboardContent, assetAdapter);
-      } catch (err) {
-        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-        logError(new Error(`Error importing whiteboard template: '${err}'`), {
-          category: TagCategoryValues.WHITEBOARD,
-        });
-      }
-    }
-  };
-
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [learnWhyDialogOpen, setLearnWhyDialogOpen] = useState(false);
   const [learnWhyReasonKey, setLearnWhyReasonKey] = useState<
@@ -415,40 +401,53 @@ const CrdWhiteboardDialog = ({
           isOnline,
           connecting,
           hasError,
+          terminalCloseReason,
           autoReconnectSeconds,
           lastSuccessfulSavedDate: lastSaved,
           onReconnect,
           onClose: onCloseNotice,
-        }) => (
-          <WhiteboardDisconnectedDialog
-            open={open}
-            onClose={onCloseNotice}
-            title={t('pages.whiteboard.whiteboardDisconnected.title')}
-            message={t(
-              isOnline
-                ? 'pages.whiteboard.whiteboardDisconnected.message'
-                : 'pages.whiteboard.whiteboardDisconnected.offline'
-            )}
-            lastSavedText={
-              lastSaved
-                ? t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                    lastSaved: formatTimeElapsed(lastSaved, t, 'long'),
-                  })
-                : undefined
-            }
-            canReconnect={isOnline}
-            reconnecting={connecting}
-            countdownSeconds={autoReconnectSeconds}
-            onReconnect={onReconnect}
-            // Surface the reload escape hatch immediately once a reconnect attempt has failed — while
-            // online the countdown cycles `connecting`, so the notice's own stuck-timer never elapses.
-            hasError={hasError}
-            // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
-            // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
-            // of seconds, disabling Reconnect AND pausing the auto-reconnect countdown (story #10131).
-            onReloadPage={() => window.location.reload()}
-          />
-        )}
+        }) => {
+          const isManualRecovery = terminalCloseReason === 'document-size-limit-exceeded';
+          const isTerminalUnavailable = terminalCloseReason !== null && !isManualRecovery;
+
+          return (
+            <WhiteboardDisconnectedDialog
+              open={open}
+              onClose={onCloseNotice}
+              title={t(
+                isTerminalUnavailable
+                  ? 'pages.whiteboard.whiteboardDisconnected.unavailableTitle'
+                  : 'pages.whiteboard.whiteboardDisconnected.title'
+              )}
+              message={t(
+                isTerminalUnavailable
+                  ? 'pages.whiteboard.whiteboardDisconnected.unavailableMessage'
+                  : isOnline
+                    ? 'pages.whiteboard.whiteboardDisconnected.message'
+                    : 'pages.whiteboard.whiteboardDisconnected.offline'
+              )}
+              lastSavedText={
+                lastSaved
+                  ? t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
+                      lastSaved: formatTimeElapsed(lastSaved, t, 'long'),
+                    })
+                  : undefined
+              }
+              canReconnect={!isTerminalUnavailable && isOnline}
+              showReconnect={!isTerminalUnavailable}
+              reconnecting={connecting}
+              countdownSeconds={autoReconnectSeconds}
+              onReconnect={onReconnect}
+              // Surface the reload escape hatch immediately once a reconnect attempt has failed — while
+              // online the countdown cycles `connecting`, so the notice's own stuck-timer never elapses.
+              hasError={hasError}
+              // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
+              // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
+              // of seconds, disabling Reconnect AND pausing the auto-reconnect countdown (story #10131).
+              onReloadPage={isTerminalUnavailable ? undefined : () => window.location.reload()}
+            />
+          );
+        }}
       >
         {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly }) => {
           const { readonlyReason, ...footerProps } = mapWhiteboardFooterProps({
@@ -545,7 +544,7 @@ const CrdWhiteboardDialog = ({
                   }
                   titleExtra={
                     editModeEnabled && mode === 'write' ? (
-                      <WhiteboardTemplatePickerButton disabled={!isSceneInitialized} onImport={handleImportTemplate} />
+                      <WhiteboardTemplatePickerButton whiteboardId={whiteboard.id} disabled={!isSceneInitialized} />
                     ) : undefined
                   }
                   headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
