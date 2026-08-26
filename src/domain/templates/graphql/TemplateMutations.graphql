@@ -27,12 +27,15 @@ mutation CreateTemplate(
   ) {
     id
     nameID  # Used to name the files uploaded as whiteboard visuals
-    profile @include(if: $includeProfileVisuals) {
+    profile {
       id
-      cardVisual: visual(type: CARD) {
+      defaultTagset: tagset {
         id
       }
-      previewVisual: visual(type: BANNER) {
+      cardVisual: visual(type: CARD) @include(if: $includeProfileVisuals) {
+        id
+      }
+      previewVisual: visual(type: BANNER) @include(if: $includeProfileVisuals) {
         id
       }
     }

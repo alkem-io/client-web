@@ -35382,9 +35382,10 @@ export type CreateTemplateMutation = {
     __typename?: 'Template';
     id: string;
     nameID: string;
-    profile?: {
+    profile: {
       __typename?: 'Profile';
       id: string;
+      defaultTagset?: { __typename?: 'Tagset'; id: string } | undefined;
       cardVisual?: { __typename?: 'Visual'; id: string } | undefined;
       previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
     };

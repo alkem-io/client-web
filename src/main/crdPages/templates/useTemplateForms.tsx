@@ -551,8 +551,13 @@ export function useTemplateForms({
     await uploadMediaGalleryVisuals({ mediaGalleryId, visuals: cv.mediaGalleryVisuals, reuploadVisuals: true });
   };
 
-  const createWhiteboardTemplate = (current: Extract<TemplateFormValues, { type: 'whiteboard' }>, setId: string) =>
+  const createWhiteboardTemplate = (
+    current: Extract<TemplateFormValues, { type: 'whiteboard' }>,
+    setId: string,
+    errorPolicy?: 'all'
+  ) =>
     createTemplate({
+      errorPolicy,
       variables: {
         templatesSetId: setId,
         type: GqlTemplateType.Whiteboard,
@@ -670,12 +675,15 @@ export function useTemplateForms({
         await deleteTemplate({ variables: { templateId: materializedWhiteboardDraftId } });
         setMaterializedWhiteboardDraftId(null);
       }
-      const result = await createWhiteboardTemplate(values, templatesSetId);
+      // Start Drawing is an explicit materialization boundary. `all` lets us clean up a
+      // partially-created template if GraphQL returns both data and errors; ordinary final
+      // creation keeps Apollo's default rejecting policy in submitCreate.
+      const result = await createWhiteboardTemplate(values, templatesSetId, 'all');
       const template = result.data?.createTemplate;
       const whiteboardId = template?.whiteboard?.id;
       if (!template) return false;
       setMaterializedWhiteboardDraftId(template.id);
-      if (!whiteboardId) {
+      if (result.errors?.length || !whiteboardId) {
         try {
           await deleteTemplate({ variables: { templateId: template.id } });
           setMaterializedWhiteboardDraftId(null);
@@ -685,6 +693,7 @@ export function useTemplateForms({
         return false;
       }
       setEditTemplateId(template.id);
+      setEditTagsetId(template.profile.defaultTagset?.id ?? null);
       setIntent('edit');
       setValues(current =>
         current.type === 'whiteboard' ? { ...current, sourceWhiteboardId: whiteboardId } : current
