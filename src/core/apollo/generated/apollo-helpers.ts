@@ -1481,6 +1481,7 @@ export type CreateCalloutContributionDataFieldPolicy = {
 };
 export type CreateCalloutContributionDefaultsDataKeySpecifier = (
   | 'defaultDisplayName'
+  | 'draftWhiteboardID'
   | 'postDescription'
   | 'sourceCalloutID'
   | 'sourceWhiteboardID'
@@ -1488,6 +1489,7 @@ export type CreateCalloutContributionDefaultsDataKeySpecifier = (
 )[];
 export type CreateCalloutContributionDefaultsDataFieldPolicy = {
   defaultDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  draftWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   sourceCalloutID?: FieldPolicy<any> | FieldReadFunction<any>;
   sourceWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1747,6 +1749,7 @@ export type CreateVisualOnProfileDataFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateWhiteboardDataKeySpecifier = (
+  | 'draftWhiteboardID'
   | 'nameID'
   | 'previewSettings'
   | 'profile'
@@ -1754,6 +1757,7 @@ export type CreateWhiteboardDataKeySpecifier = (
   | CreateWhiteboardDataKeySpecifier
 )[];
 export type CreateWhiteboardDataFieldPolicy = {
+  draftWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3108,6 +3112,8 @@ export type MutationKeySpecifier = (
   | 'createTemplateFromSpace'
   | 'createUser'
   | 'createVirtualContributor'
+  | 'createWhiteboardDraftOnCalloutsSet'
+  | 'createWhiteboardDraftOnTemplatesSet'
   | 'createWingbackAccount'
   | 'deleteApplication'
   | 'deleteCalendarEvent'
@@ -3138,6 +3144,7 @@ export type MutationKeySpecifier = (
   | 'deleteVirtualContributor'
   | 'deleteVisualFromMediaGallery'
   | 'deleteWhiteboard'
+  | 'deleteWhiteboardDraft'
   | 'enablePushSubscription'
   | 'eventOnApplication'
   | 'eventOnInvitation'
@@ -3348,6 +3355,8 @@ export type MutationFieldPolicy = {
   createTemplateFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  createWhiteboardDraftOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  createWhiteboardDraftOnTemplatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createWingbackAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3378,6 +3387,7 @@ export type MutationFieldPolicy = {
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVisualFromMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteWhiteboardDraft?: FieldPolicy<any> | FieldReadFunction<any>;
   enablePushSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;

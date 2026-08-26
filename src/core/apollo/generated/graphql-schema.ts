@@ -2116,6 +2116,8 @@ export type CreateCalloutContributionDefaultsData = {
   __typename?: 'CreateCalloutContributionDefaultsData';
   /** The default title to use for new contributions. */
   defaultDisplayName?: Maybe<Scalars['String']['output']>;
+  /** Use a server-owned live Whiteboard contribution-default draft. Mutually exclusive with either source field. */
+  draftWhiteboardID?: Maybe<Scalars['UUID']['output']>;
   /** The default description to use for new Post contributions. */
   postDescription?: Maybe<Scalars['Markdown']['output']>;
   /** Copy the internal Whiteboard contribution default from this source Callout. Mutually exclusive with sourceWhiteboardID. */
@@ -2127,6 +2129,8 @@ export type CreateCalloutContributionDefaultsData = {
 export type CreateCalloutContributionDefaultsInput = {
   /** The default title to use for new contributions. */
   defaultDisplayName?: InputMaybe<Scalars['String']['input']>;
+  /** Use a server-owned live Whiteboard contribution-default draft. Mutually exclusive with either source field. */
+  draftWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
   /** The default description to use for new Post contributions. */
   postDescription?: InputMaybe<Scalars['Markdown']['input']>;
   /** Copy the internal Whiteboard contribution default from this source Callout. Mutually exclusive with sourceWhiteboardID. */
@@ -2511,7 +2515,7 @@ export type CreateInnovationFlowStateSettingsData = {
   descriptionDisplayMode?: Maybe<CalloutDescriptionDisplayMode>;
   /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
   showPublishDetails?: Maybe<Scalars['Boolean']['output']>;
-  /** Optional. Ordered sidebar widgets; defaults to [INTENT, INDEX] when omitted. */
+  /** Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, INDEX] when omitted. */
   sidebar?: Maybe<Array<SidebarWidget>>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: Maybe<Scalars['Boolean']['output']>;
@@ -2524,7 +2528,7 @@ export type CreateInnovationFlowStateSettingsInput = {
   descriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
   /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
   showPublishDetails?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Optional. Ordered sidebar widgets; defaults to [INTENT, INDEX] when omitted. */
+  /** Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, INDEX] when omitted. */
   sidebar?: InputMaybe<Array<SidebarWidget>>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
@@ -2959,6 +2963,8 @@ export type CreateVisualOnProfileInput = {
 
 export type CreateWhiteboardData = {
   __typename?: 'CreateWhiteboardData';
+  /** Use a server-owned live Whiteboard draft as the trusted source for final materialization. Mutually exclusive with sourceWhiteboardID. */
+  draftWhiteboardID?: Maybe<Scalars['UUID']['output']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: Maybe<Scalars['NameID']['output']>;
   /** The preview settings for the whiteboard. */
@@ -2968,7 +2974,21 @@ export type CreateWhiteboardData = {
   sourceWhiteboardID?: Maybe<Scalars['UUID']['output']>;
 };
 
+export type CreateWhiteboardDraftOnCalloutsSetInput = {
+  calloutsSetID: Scalars['UUID']['input'];
+  sourceCalloutID?: InputMaybe<Scalars['UUID']['input']>;
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
+};
+
+export type CreateWhiteboardDraftOnTemplatesSetInput = {
+  sourceCalloutID?: InputMaybe<Scalars['UUID']['input']>;
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
+  templatesSetID: Scalars['UUID']['input'];
+};
+
 export type CreateWhiteboardInput = {
+  /** Use a server-owned live Whiteboard draft as the trusted source for final materialization. Mutually exclusive with sourceWhiteboardID. */
+  draftWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** The preview settings for the whiteboard. */
@@ -5280,6 +5300,10 @@ export type Mutation = {
   createUser: User;
   /** Creates a new VirtualContributor on an Account. */
   createVirtualContributor: VirtualContributor;
+  /** Materializes a server-owned live Whiteboard draft for a Callout form. Content remains on the collaboration transport; GraphQL returns identifiers only. */
+  createWhiteboardDraftOnCalloutsSet: Scalars['UUID']['output'];
+  /** Materializes a server-owned live Whiteboard draft for a Template form. GraphQL returns identifiers only. */
+  createWhiteboardDraftOnTemplatesSet: Scalars['UUID']['output'];
   /** Creates an account in Wingback */
   createWingbackAccount: Scalars['String']['output'];
   /** Removes the specified Application. */
@@ -5340,6 +5364,8 @@ export type Mutation = {
   deleteVisualFromMediaGallery: Visual;
   /** Deletes the specified Whiteboard. */
   deleteWhiteboard: Whiteboard;
+  /** Idempotently discards a server-owned live Whiteboard draft through the canonical Whiteboard deletion path. */
+  deleteWhiteboardDraft: Scalars['UUID']['output'];
   /** Re-enable a previously disabled push notification subscription for the current user. */
   enablePushSubscription: PushSubscription;
   /** Trigger an event on the Application. */
@@ -5865,6 +5891,14 @@ export type MutationCreateVirtualContributorArgs = {
   virtualContributorData: CreateVirtualContributorOnAccountInput;
 };
 
+export type MutationCreateWhiteboardDraftOnCalloutsSetArgs = {
+  draftData: CreateWhiteboardDraftOnCalloutsSetInput;
+};
+
+export type MutationCreateWhiteboardDraftOnTemplatesSetArgs = {
+  draftData: CreateWhiteboardDraftOnTemplatesSetInput;
+};
+
 export type MutationCreateWingbackAccountArgs = {
   accountID: Scalars['UUID']['input'];
 };
@@ -5983,6 +6017,10 @@ export type MutationDeleteVisualFromMediaGalleryArgs = {
 
 export type MutationDeleteWhiteboardArgs = {
   whiteboardData: DeleteWhiteboardInput;
+};
+
+export type MutationDeleteWhiteboardDraftArgs = {
+  whiteboardID: Scalars['UUID']['input'];
 };
 
 export type MutationEnablePushSubscriptionArgs = {
@@ -20215,6 +20253,71 @@ export type UpdateWhiteboardGuestAccessMutation = {
           authorization?:
             | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
             | undefined;
+        }
+      | undefined;
+  };
+};
+
+export type CreateWhiteboardDraftOnCalloutsSetMutationVariables = Exact<{
+  draftData: CreateWhiteboardDraftOnCalloutsSetInput;
+}>;
+
+export type CreateWhiteboardDraftOnCalloutsSetMutation = {
+  __typename?: 'Mutation';
+  createWhiteboardDraftOnCalloutsSet: string;
+};
+
+export type CreateWhiteboardDraftOnTemplatesSetMutationVariables = Exact<{
+  draftData: CreateWhiteboardDraftOnTemplatesSetInput;
+}>;
+
+export type CreateWhiteboardDraftOnTemplatesSetMutation = {
+  __typename?: 'Mutation';
+  createWhiteboardDraftOnTemplatesSet: string;
+};
+
+export type DeleteWhiteboardDraftMutationVariables = Exact<{
+  whiteboardID: Scalars['UUID']['input'];
+}>;
+
+export type DeleteWhiteboardDraftMutation = { __typename?: 'Mutation'; deleteWhiteboardDraft: string };
+
+export type WhiteboardDraftDetailsByIdQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+}>;
+
+export type WhiteboardDraftDetailsByIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          guestContributionsAllowed: boolean;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            displayName: string;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
+          };
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
         }
       | undefined;
   };

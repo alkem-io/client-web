@@ -841,6 +841,25 @@ enum SearchVisibility {
   PUBLIC
 }
 
+"""
+The widgets available for the Space sidepanel, per InnovationFlow state (tab).
+"""
+enum SidebarWidget {
+  ABOUT
+  ADD_USER
+  APPLICATION_BUTTON
+  CONTACT_LEADS
+  CREATE_POST
+  CREATE_SUBSPACE
+  EVENTS
+  GUIDELINES
+  INDEX
+  INTENT
+  SUBSPACE_LINKS
+  UPDATES
+  VIRTUAL_CONTRIBUTORS
+}
+
 enum SpaceLevel {
   L0
   L1
@@ -2603,6 +2622,10 @@ type CreateCalloutContributionData {
 type CreateCalloutContributionDefaultsData {
   """The default title to use for new contributions."""
   defaultDisplayName: String
+  """
+  Use a server-owned live Whiteboard contribution-default draft. Mutually exclusive with either source field.
+  """
+  draftWhiteboardID: UUID
   """The default description to use for new Post contributions."""
   postDescription: Markdown
   """
@@ -2791,6 +2814,10 @@ type CreateInnovationFlowStateSettingsData {
   """
   showPublishDetails: Boolean
   """
+  Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, INDEX] when omitted.
+  """
+  sidebar: [SidebarWidget!]
+  """
   Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted.
   """
   visible: Boolean
@@ -2870,6 +2897,10 @@ type CreateVisualOnProfileData {
 }
 
 type CreateWhiteboardData {
+  """
+  Use a server-owned live Whiteboard draft as the trusted source for final materialization. Mutually exclusive with sourceWhiteboardID.
+  """
+  draftWhiteboardID: UUID
   """A readable identifier, unique within the containing scope."""
   nameID: NameID
   """The preview settings for the whiteboard."""
@@ -3376,6 +3407,10 @@ type InnovationFlowStateSettings {
   Whether Posts in this State show publish details (publisher, publish date, avatar) in the feed. Presentation only — does not restrict access to publisher data. Default true.
   """
   showPublishDetails: Boolean!
+  """
+  Ordered widgets shown in the Space sidepanel for this State. May be empty.
+  """
+  sidebar: [SidebarWidget!]!
   """
   Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content.
   """
@@ -4370,6 +4405,14 @@ type Mutation {
   createUser(userData: CreateUserInput!): User!
   """Creates a new VirtualContributor on an Account."""
   createVirtualContributor(virtualContributorData: CreateVirtualContributorOnAccountInput!): VirtualContributor!
+  """
+  Materializes a server-owned live Whiteboard draft for a Callout form. Content remains on the collaboration transport; GraphQL returns identifiers only.
+  """
+  createWhiteboardDraftOnCalloutsSet(draftData: CreateWhiteboardDraftOnCalloutsSetInput!): UUID!
+  """
+  Materializes a server-owned live Whiteboard draft for a Template form. GraphQL returns identifiers only.
+  """
+  createWhiteboardDraftOnTemplatesSet(draftData: CreateWhiteboardDraftOnTemplatesSetInput!): UUID!
   """Creates an account in Wingback"""
   createWingbackAccount(accountID: UUID!): String!
   """Removes the specified Application."""
@@ -4434,6 +4477,10 @@ type Mutation {
   deleteVisualFromMediaGallery(deleteData: DeleteVisualFromMediaGalleryInput!): Visual!
   """Deletes the specified Whiteboard."""
   deleteWhiteboard(whiteboardData: DeleteWhiteboardInput!): Whiteboard!
+  """
+  Idempotently discards a server-owned live Whiteboard draft through the canonical Whiteboard deletion path.
+  """
+  deleteWhiteboardDraft(whiteboardID: UUID!): UUID!
   """
   Re-enable a previously disabled push notification subscription for the current user.
   """
@@ -7908,6 +7955,10 @@ input CreateCalendarEventOnCalendarInput {
 input CreateCalloutContributionDefaultsInput {
   """The default title to use for new contributions."""
   defaultDisplayName: String
+  """
+  Use a server-owned live Whiteboard contribution-default draft. Mutually exclusive with either source field.
+  """
+  draftWhiteboardID: UUID
   """The default description to use for new Post contributions."""
   postDescription: Markdown
   """
@@ -8203,6 +8254,10 @@ input CreateInnovationFlowStateSettingsInput {
   Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted.
   """
   showPublishDetails: Boolean
+  """
+  Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, INDEX] when omitted.
+  """
+  sidebar: [SidebarWidget!]
   """
   Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted.
   """
@@ -8590,7 +8645,23 @@ input CreateVisualOnProfileInput {
   uri: String!
 }
 
+input CreateWhiteboardDraftOnCalloutsSetInput {
+  calloutsSetID: UUID!
+  sourceCalloutID: UUID
+  sourceWhiteboardID: UUID
+}
+
+input CreateWhiteboardDraftOnTemplatesSetInput {
+  sourceCalloutID: UUID
+  sourceWhiteboardID: UUID
+  templatesSetID: UUID!
+}
+
 input CreateWhiteboardInput {
+  """
+  Use a server-owned live Whiteboard draft as the trusted source for final materialization. Mutually exclusive with sourceWhiteboardID.
+  """
+  draftWhiteboardID: UUID
   """A readable identifier, unique within the containing scope."""
   nameID: NameID
   """The preview settings for the whiteboard."""
@@ -9738,6 +9809,10 @@ input UpdateInnovationFlowStateSettingsInput {
   Optional. Sets whether Posts in this State show publish details (publisher, publish date, avatar) in the feed; omission leaves the stored value unchanged.
   """
   showPublishDetails: Boolean
+  """
+  Optional. Ordered sidebar widgets for this State; omission leaves the stored value unchanged. Duplicates rejected; max 20 entries.
+  """
+  sidebar: [SidebarWidget!]
   """
   Optional. Sets whether the phase is shown in member-facing navigation; omission leaves the stored value unchanged.
   """

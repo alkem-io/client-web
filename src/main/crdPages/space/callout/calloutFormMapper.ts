@@ -242,10 +242,19 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     const isPostOrMemoResponse = values.responseType === 'post' || values.responseType === 'memo';
     const defaultDisplayName = defaults.defaultDisplayName.trim() || undefined;
     const postDescription = isPostOrMemoResponse ? defaults.postDescription.trim() || undefined : undefined;
-    const sourceWhiteboardID = values.responseType === 'whiteboard' ? defaults.sourceWhiteboardId : undefined;
-    const sourceCalloutID = values.responseType === 'whiteboard' ? defaults.sourceCalloutId : undefined;
-    if (defaultDisplayName || postDescription || sourceWhiteboardID || sourceCalloutID) {
-      callout.contributionDefaults = { defaultDisplayName, postDescription, sourceWhiteboardID, sourceCalloutID };
+    const draftWhiteboardID = values.responseType === 'whiteboard' ? defaults.whiteboardDraft?.whiteboardID : undefined;
+    const sourceWhiteboardID =
+      values.responseType === 'whiteboard' && !draftWhiteboardID ? defaults.sourceWhiteboardId : undefined;
+    const sourceCalloutID =
+      values.responseType === 'whiteboard' && !draftWhiteboardID ? defaults.sourceCalloutId : undefined;
+    if (defaultDisplayName || postDescription || draftWhiteboardID || sourceWhiteboardID || sourceCalloutID) {
+      callout.contributionDefaults = {
+        defaultDisplayName,
+        postDescription,
+        draftWhiteboardID,
+        sourceWhiteboardID,
+        sourceCalloutID,
+      };
     }
   }
 
@@ -272,7 +281,8 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   // the mutation resolves.
   if (framingType === CalloutFramingType.Whiteboard) {
     callout.framing.whiteboard = {
-      sourceWhiteboardID: values.editMeta?.whiteboardId,
+      draftWhiteboardID: values.framingWhiteboardDraft?.whiteboardID,
+      sourceWhiteboardID: values.framingWhiteboardDraft ? undefined : values.editMeta?.whiteboardId,
       profile: { displayName: values.title.trim() || options.whiteboardFallbackDisplayName },
       previewSettings: values.whiteboardPreviewSettings,
     };

@@ -16,6 +16,9 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useCreateReferenceOnProfileMutation: () => [vi.fn()],
   useCreateTemplateFromSpaceMutation: () => [vi.fn()],
   useCreateTemplateMutation: () => [harness.createTemplate],
+  useCreateWhiteboardDraftOnCalloutsSetMutation: () => [vi.fn()],
+  useCreateWhiteboardDraftOnTemplatesSetMutation: () => [vi.fn()],
+  useDeleteWhiteboardDraftMutation: () => [vi.fn()],
   useDeleteTemplateMutation: () => [harness.deleteTemplate],
   useDeleteReferenceMutation: () => [vi.fn()],
   useSpaceTemplateContentLazyQuery: () => [vi.fn()],
@@ -35,13 +38,15 @@ vi.mock('@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboard
 }));
 
 vi.mock('@/main/crdPages/space/hooks/useCrdCalloutForm', () => ({
-  EMPTY_CALLOUT_FORM_VALUES: {},
+  EMPTY_CALLOUT_FORM_VALUES: { contributionDefaults: {} },
   useCrdCalloutForm: () => ({
-    values: {},
+    values: { contributionDefaults: {} },
     dirty: false,
     validate: () => ({}),
     reset: vi.fn(),
     prefill: vi.fn(),
+    setField: vi.fn(),
+    setValues: vi.fn(),
   }),
 }));
 

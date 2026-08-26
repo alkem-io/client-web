@@ -94,4 +94,6 @@ export type ContributionDefaults = {
   sourceCalloutId?: string;
   /** Explicit removal; omission preserves an existing default on update. */
   clearWhiteboardContent?: boolean;
+  /** Server-owned live draft used while authoring a default Whiteboard. */
+  whiteboardDraft?: import('@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft').WhiteboardDraftHandle;
 };

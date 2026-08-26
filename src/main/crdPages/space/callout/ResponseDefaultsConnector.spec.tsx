@@ -10,6 +10,7 @@ const harness = vi.hoisted(() => ({
     | { type: 'whiteboard'; sourceWhiteboardId: string }
     | undefined,
   selectedTemplateId: undefined as string | undefined,
+  onCancel: undefined as (() => Promise<boolean>) | undefined,
 }));
 
 vi.mock('react-i18next', () => ({
@@ -43,9 +44,14 @@ vi.mock('@/crd/components/templates/TemplatePicker', () => ({
 vi.mock('@/crd/forms/callout/ResponseDefaultsDialog', () => ({
   ResponseDefaultsDialog: ({
     templateSlot,
+    onCancel,
   }: {
     templateSlot?: (args: { applyDraft: typeof harness.applyDraft }) => unknown;
-  }) => templateSlot?.({ applyDraft: harness.applyDraft }) ?? null,
+    onCancel?: () => Promise<boolean>;
+  }) => {
+    harness.onCancel = onCancel;
+    return templateSlot?.({ applyDraft: harness.applyDraft }) ?? null;
+  },
 }));
 
 import { ResponseDefaultsConnector } from './ResponseDefaultsConnector';
@@ -62,6 +68,7 @@ describe('ResponseDefaultsConnector template boundaries', () => {
     harness.allowedTypes = [];
     harness.selectedTemplateContent = undefined;
     harness.selectedTemplateId = undefined;
+    harness.onCancel = undefined;
   });
 
   it('keeps memo defaults on the Markdown/post-template path', async () => {
@@ -102,5 +109,38 @@ describe('ResponseDefaultsConnector template boundaries', () => {
     const appliedDraft = harness.applyDraft.mock.calls[0]?.[0];
     expect(appliedDraft).toHaveProperty('sourceCalloutId', undefined);
     expect(appliedDraft).not.toHaveProperty('whiteboardContent');
+  });
+
+  it('does not delete an already accepted draft when the dialog is reopened and cancelled', async () => {
+    const discard = vi.fn().mockResolvedValue(true);
+    const acceptedDraft = {
+      whiteboardID: 'whiteboard-draft-1',
+      sourceKey: ':',
+    };
+
+    render(
+      <ResponseDefaultsConnector
+        open={true}
+        onOpenChange={vi.fn()}
+        type="whiteboard"
+        values={{
+          ...values,
+          whiteboardContentAvailable: true,
+          whiteboardDraft: acceptedDraft,
+        }}
+        onSave={vi.fn()}
+        whiteboardDraft={{
+          handle: acceptedDraft,
+          loading: false,
+          materialize: vi.fn(),
+          discard,
+          consumed: vi.fn(),
+        }}
+      />
+    );
+
+    await waitFor(() => expect(harness.onCancel).toBeDefined());
+    await expect(harness.onCancel?.()).resolves.toBe(true);
+    expect(discard).not.toHaveBeenCalled();
   });
 });
