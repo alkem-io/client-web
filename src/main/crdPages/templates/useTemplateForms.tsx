@@ -6,6 +6,7 @@ import {
   useCreateTemplateFromSpaceMutation,
   useCreateTemplateMutation,
   useDeleteReferenceMutation,
+  useDeleteTemplateMutation,
   useSpaceTemplateContentLazyQuery,
   useUpdateCalloutTemplateMutation,
   useUpdateCommunityGuidelinesMutation,
@@ -248,6 +249,8 @@ export function useTemplateForms({
   const [errors, setErrors] = useState<TemplateFormErrors>({});
   const [pristine, setPristine] = useState(true);
   const [submitting, startSubmitting] = useTransition();
+  const [materializingWhiteboard, setMaterializingWhiteboard] = useState(false);
+  const [materializedWhiteboardDraftId, setMaterializedWhiteboardDraftId] = useState<string | null>(null);
   const calloutForm = useCrdCalloutForm();
 
   // Space-template URL-paste source picker (mirrors legacy MUI `SpaceContentFromSpaceUrlForm`):
@@ -270,6 +273,7 @@ export function useTemplateForms({
   const [spaceSourceInitialSpaceId, setSpaceSourceInitialSpaceId] = useState<string | undefined>(undefined);
 
   const [createTemplate] = useCreateTemplateMutation({ refetchQueries: ['AllTemplatesInTemplatesSet'] });
+  const [deleteTemplate] = useDeleteTemplateMutation({ refetchQueries: ['AllTemplatesInTemplatesSet'] });
   const [createTemplateFromSpace] = useCreateTemplateFromSpaceMutation({
     refetchQueries: ['AllTemplatesInTemplatesSet'],
   });
@@ -336,6 +340,7 @@ export function useTemplateForms({
     setEditTagsetId(null);
     setEditCgProfileId(null);
     setEditOriginalCgReferenceIds([]);
+    setMaterializedWhiteboardDraftId(null);
     setValues(initial ?? emptyValuesFor(type));
     setErrors({});
     setPristine(true);
@@ -358,6 +363,7 @@ export function useTemplateForms({
     setEditTagsetId(tagsetId ?? null);
     setEditCgProfileId(cgContext?.profileId ?? null);
     setEditOriginalCgReferenceIds(cgContext?.originalReferenceIds ?? []);
+    setMaterializedWhiteboardDraftId(null);
     setValues(initial);
     setErrors({});
     setPristine(true);
@@ -377,6 +383,7 @@ export function useTemplateForms({
     setEditSubEntityId(null);
     setEditCalloutId(null);
     setEditTagsetId(null);
+    setMaterializedWhiteboardDraftId(null);
     setValues({ ...emptyValuesFor('callout'), ...prefill?.common });
     if (prefill?.body) calloutForm.prefill(prefill.body);
     else calloutForm.reset();
@@ -396,6 +403,7 @@ export function useTemplateForms({
     setEditSubEntityId(null);
     setEditCalloutId(calloutId);
     setEditTagsetId(tagsetId ?? null);
+    setMaterializedWhiteboardDraftId(null);
     setValues({ ...emptyValuesFor('callout'), ...common });
     calloutForm.prefill(body);
     setErrors({});
@@ -409,6 +417,23 @@ export function useTemplateForms({
     setEditCgProfileId(null);
     setEditOriginalCgReferenceIds([]);
     resetSpaceSourceState();
+  };
+  const cancel = () => {
+    const draftId = materializedWhiteboardDraftId;
+    if (!draftId) {
+      close();
+      return;
+    }
+    setMaterializingWhiteboard(true);
+    void deleteTemplate({ variables: { templateId: draftId } })
+      .then(() => {
+        setMaterializedWhiteboardDraftId(null);
+        close();
+      })
+      .catch(() => {
+        // The global Apollo handler surfaces the failure; keep the dialog open so the draft is not abandoned silently.
+      })
+      .finally(() => setMaterializingWhiteboard(false));
   };
 
   /**
@@ -526,6 +551,26 @@ export function useTemplateForms({
     await uploadMediaGalleryVisuals({ mediaGalleryId, visuals: cv.mediaGalleryVisuals, reuploadVisuals: true });
   };
 
+  const createWhiteboardTemplate = (
+    current: Extract<TemplateFormValues, { type: 'whiteboard' }>,
+    setId: string,
+    errorPolicy?: 'all'
+  ) =>
+    createTemplate({
+      errorPolicy,
+      variables: {
+        templatesSetId: setId,
+        type: GqlTemplateType.Whiteboard,
+        profileData: toProfileData(current),
+        tags: current.tags.length > 0 ? current.tags : undefined,
+        whiteboard: {
+          sourceWhiteboardID: current.sourceWhiteboardId || undefined,
+          profile: { displayName: current.name },
+        },
+        includeProfileVisuals: false,
+      },
+    });
+
   const submitCreate = async (current: TemplateFormValues, setId: string) => {
     const profileData = toProfileData(current);
     const tags = current.tags.length > 0 ? current.tags : undefined;
@@ -578,19 +623,7 @@ export function useTemplateForms({
         // Ordinary template creation carries metadata + an optional source id only. A missing
         // source creates the canonical blank server-side; an existing source is copied with its
         // media and preview. Snapshot bytes never enter this GraphQL mutation.
-        await createTemplate({
-          variables: {
-            templatesSetId: setId,
-            type: GqlTemplateType.Whiteboard,
-            profileData,
-            tags,
-            whiteboard: {
-              sourceWhiteboardID: current.sourceWhiteboardId || undefined,
-              profile: { displayName: current.name },
-            },
-            includeProfileVisuals: false,
-          },
-        });
+        await createWhiteboardTemplate(current, setId);
         return;
       }
       case 'space':
@@ -631,6 +664,46 @@ export function useTemplateForms({
         }
         return;
       }
+    }
+  };
+
+  const materializeWhiteboardTemplate = async (): Promise<boolean> => {
+    if (!templatesSetId || values.type !== 'whiteboard') return false;
+    setMaterializingWhiteboard(true);
+    try {
+      if (materializedWhiteboardDraftId) {
+        await deleteTemplate({ variables: { templateId: materializedWhiteboardDraftId } });
+        setMaterializedWhiteboardDraftId(null);
+      }
+      // Start Drawing is an explicit materialization boundary. `all` lets us clean up a
+      // partially-created template if GraphQL returns both data and errors; ordinary final
+      // creation keeps Apollo's default rejecting policy in submitCreate.
+      const result = await createWhiteboardTemplate(values, templatesSetId, 'all');
+      const template = result.data?.createTemplate;
+      const whiteboardId = template?.whiteboard?.id;
+      if (!template) return false;
+      setMaterializedWhiteboardDraftId(template.id);
+      if (result.errors?.length || !whiteboardId) {
+        try {
+          await deleteTemplate({ variables: { templateId: template.id } });
+          setMaterializedWhiteboardDraftId(null);
+        } catch {
+          // Keep the draft id so Cancel can retry the server-side cascade after the global handler reports the failure.
+        }
+        return false;
+      }
+      setEditTemplateId(template.id);
+      setEditTagsetId(template.profile.defaultTagset?.id ?? null);
+      setIntent('edit');
+      setValues(current =>
+        current.type === 'whiteboard' ? { ...current, sourceWhiteboardId: whiteboardId } : current
+      );
+      setPristine(false);
+      return true;
+    } catch {
+      return false;
+    } finally {
+      setMaterializingWhiteboard(false);
     }
   };
 
@@ -863,11 +936,16 @@ export function useTemplateForms({
     const cgOriginalReferenceIds = editOriginalCgReferenceIds;
     startSubmitting(async () => {
       try {
+        if (intent === 'create' && materializedWhiteboardDraftId) {
+          await deleteTemplate({ variables: { templateId: materializedWhiteboardDraftId } });
+          setMaterializedWhiteboardDraftId(null);
+        }
         if (intent === 'edit' && editId) {
           await submitEdit(current, editId, subEntityId, tagsetId, cgProfileId, cgOriginalReferenceIds);
         } else {
           await submitCreate(current, setId);
         }
+        setMaterializedWhiteboardDraftId(null);
         close();
         onSaved?.();
       } catch {
@@ -908,7 +986,8 @@ export function useTemplateForms({
         <WhiteboardTemplateFormConnector
           value={values}
           editableWhiteboardId={intent === 'edit' ? values.sourceWhiteboardId : undefined}
-          disabled={submitting}
+          onMaterialize={intent === 'create' ? materializeWhiteboardTemplate : undefined}
+          disabled={submitting || materializingWhiteboard || !values.name.trim() || !values.description.trim()}
         />
       );
       break;
@@ -955,10 +1034,10 @@ export function useTemplateForms({
     commonErrors: errors,
     onCommonChange,
     perTypeFormSlot,
-    submitting,
+    submitting: submitting || materializingWhiteboard,
     isDirty: !pristine || (values.type === 'callout' && calloutForm.dirty),
     onSubmit,
-    onCancel: close,
+    onCancel: cancel,
     openCreate: type => (type === 'callout' ? openCreateCallout() : reset(type)),
     openCreatePrefilled: initial => reset(initial.type, initial),
     openEdit,
