@@ -24,6 +24,13 @@ import { SpaceHeader } from '@/crd/components/space/SpaceHeader';
 import { SpaceMembers } from '@/crd/components/space/SpaceMembers';
 import { SpaceNavigationTabs } from '@/crd/components/space/SpaceNavigationTabs';
 import { SpaceSidebar } from '@/crd/components/space/SpaceSidebar';
+import { AboutButton } from '@/crd/components/space/sidebar/AboutButton';
+import { ContactLeadButton } from '@/crd/components/space/sidebar/ContactLeadButton';
+import { EventsSection } from '@/crd/components/space/sidebar/EventsSection';
+import { InfoBlock } from '@/crd/components/space/sidebar/InfoBlock';
+import { InviteButton } from '@/crd/components/space/sidebar/InviteButton';
+import { SubspacesSection } from '@/crd/components/space/sidebar/SubspacesSection';
+import { VirtualContributorsSection } from '@/crd/components/space/sidebar/VirtualContributorsSection';
 import { SpaceSubspacesList } from '@/crd/components/space/SpaceSubspacesList';
 import { SpaceShell } from '@/crd/layouts/SpaceShell';
 import { pickColorFromId } from '@/crd/lib/pickColorFromId';
@@ -157,43 +164,33 @@ export function SpacePage() {
 
   const currentUser = { id: 'u1', name: 'Sarah Chen', avatarUrl: MOCK_SPACE_BANNER.memberAvatars[0]?.url };
 
-  const sidebarVariant = (() => {
-    switch (activeTab) {
-      case 1:
-        return 'community' as const;
-      case 2:
-        return 'subspaces' as const;
-      case 3:
-        return 'knowledge' as const;
-      default:
-        return 'home' as const;
-    }
-  })();
+  // Mock stand-in for `resolveSidebarPlan` — each tab renders the widgets its
+  // FR-009 default list carries, composed directly (the standalone preview
+  // app has no GraphQL layer to drive `SpaceTabSidebarConnector`).
+  const infoBlock = (
+    <InfoBlock key="intent" description={MOCK_SIDEBAR.description} onEditClick={() => {}} />
+  );
 
   const sidebar = (
-    <SpaceSidebar
-      variant={sidebarVariant}
-      description={MOCK_SIDEBAR.description}
-      // Home
-      onAboutClick={() => setAboutOpen(true)}
-      subspaces={MOCK_SIDEBAR.subspaces}
-      subspacesHref="/space/green-energy?tab=3"
-      events={[]}
-      onShowCalendar={() => {}}
-      // Community
-      leads={sidebarVariant === 'community' ? MOCK_SIDEBAR.leads : undefined}
-      onContactLead={sidebarVariant === 'community' ? () => {} : undefined}
-      onInvite={sidebarVariant === 'community' ? () => {} : undefined}
-      canInvite={sidebarVariant === 'community'}
-      virtualContributors={sidebarVariant === 'community' ? MOCK_SIDEBAR.virtualContributors : undefined}
-      guidelinesSlot={
-        sidebarVariant === 'community' ? (
-          <CommunityGuidelinesBlock description={MOCK_SIDEBAR.guidelines.map(g => `- ${g}`).join('\n')} />
-        ) : undefined
-      }
-    >
-      {sidebarVariant === 'knowledge' && (
+    <SpaceSidebar>
+      {activeTab === 0 && [
+        infoBlock,
+        <AboutButton key="about" onClick={() => setAboutOpen(true)} />,
+        <SubspacesSection key="subspaceLinks" subspaces={MOCK_SIDEBAR.subspaces} showAllHref="/space/green-energy?tab=3" />,
+        <EventsSection key="events" events={[]} onShowCalendar={() => {}} />,
+      ]}
+      {activeTab === 1 && [
+        infoBlock,
+        <ContactLeadButton key="contactLeads" onClick={() => {}} />,
+        <InviteButton key="addUser" onClick={() => {}} />,
+        <VirtualContributorsSection key="virtualContributors" contributors={MOCK_SIDEBAR.virtualContributors} />,
+        <CommunityGuidelinesBlock key="guidelines" description={MOCK_SIDEBAR.guidelines.map(g => `- ${g}`).join('\n')} />,
+      ]}
+      {activeTab === 2 && infoBlock}
+      {activeTab === 3 && [
+        infoBlock,
         <CalloutSidebarList
+          key="knowledgeIndex"
           items={MOCK_POSTS.map(p => ({
             id: p.id,
             title: p.title,
@@ -203,8 +200,8 @@ export function SpacePage() {
             const el = document.getElementById(id);
             el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }}
-        />
-      )}
+        />,
+      ]}
     </SpaceSidebar>
   );
 
