@@ -23,6 +23,13 @@ type UseCrdSpaceTabsProvided = {
    */
   sectionCount: number;
   showSettings: boolean;
+  /**
+   * Each state's stored `sidebar` (wire enum values), indexed by original position in
+   * the full flow — same indexing as `CrdTabDefinition.index`. Empty while the query
+   * is loading or when the space has no flow states, so `stateSidebars[i]` being
+   * `undefined` means "unknown", never "configured empty".
+   */
+  stateSidebars: ReadonlyArray<readonly string[]>;
 };
 
 const tabsDefaultNames: Record<string, 'tabs.dashboard' | 'tabs.community' | 'tabs.subspaces' | 'tabs.knowledgeBase'> =
@@ -113,5 +120,6 @@ export function useCrdSpaceTabs({
     defaultTabIndex,
     sectionCount,
     showSettings: permissions.canUpdate,
+    stateSidebars: allStates.map(state => state.settings.sidebar),
   };
 }
