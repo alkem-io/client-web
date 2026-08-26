@@ -45,6 +45,7 @@ import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPrefere
 import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
+import { SubspacesDialogConnector } from '../../space/dialogs/SubspacesDialogConnector';
 import { useCrdCommunityUpdates } from '../../space/hooks/useCrdCommunityUpdates';
 import { useCrdSpaceLocale } from '../../space/hooks/useCrdSpaceLocale';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
@@ -52,7 +53,6 @@ import { CrdSubspaceAbout } from '../about/CrdSubspaceAbout';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
 import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDialogConnector';
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
-import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
 import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import { useSubspaceSidebarCollapsed } from '../hooks/useSubspaceSidebarCollapsed';
@@ -452,10 +452,11 @@ export default function CrdSubspacePageLayout() {
         />
       )}
 
-      <CrdSubspaceSubspacesDialogConnector
+      <SubspacesDialogConnector
         open={activeDialog === 'subspaces'}
         onOpenChange={open => setActiveDialog(open ? 'subspaces' : null)}
-        subspaceId={data.subspaceId}
+        spaceId={data.subspaceId}
+        emptyText={t('crd-subspace:subspaces.empty')}
         onCreateSubspace={handleCreateSubspace}
       />
 

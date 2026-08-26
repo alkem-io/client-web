@@ -4,6 +4,7 @@ query SpaceSubspaceCards($spaceId: UUID!) {
       id
       level
       about {
+        id
         profile {
           id
           url
