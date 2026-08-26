@@ -30,8 +30,6 @@ export type Scalars = {
   UUID: { input: string; output: string };
   /** The `Upload` scalar type represents a file upload. */
   Upload: { input: File; output: File };
-  /** Content of a Whiteboard as a base64-encoded Yjs-V2 document snapshot (CRDT state, not an Excalidraw scene). */
-  WhiteboardContent: { input: string; output: string };
 };
 
 export type Apm = {
@@ -1230,8 +1228,8 @@ export type CalloutContributionDefaults = {
   postDescription?: Maybe<Scalars['Markdown']['output']>;
   /** The date at which the entity was last updated. */
   updatedDate: Scalars['DateTime']['output'];
-  /** The default whiteboard content for whiteboard responses. */
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']['output']>;
+  /** Whether this Callout has a non-empty default for Whiteboard contributions. */
+  whiteboardContentAvailable: Scalars['Boolean']['output'];
 };
 
 export enum CalloutContributionType {
@@ -1602,6 +1600,8 @@ export type CollaborationMigrationResult = {
   flaggedDocuments: Array<CollaborationMigrationIssue>;
   migrated: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
+  /** Legacy Whiteboard contribution defaults without a complete owning Callout path. */
+  unattached: Scalars['Int']['output'];
 };
 
 export type Communication = {
@@ -2118,7 +2118,10 @@ export type CreateCalloutContributionDefaultsData = {
   defaultDisplayName?: Maybe<Scalars['String']['output']>;
   /** The default description to use for new Post contributions. */
   postDescription?: Maybe<Scalars['Markdown']['output']>;
-  whiteboardContent?: Maybe<Scalars['WhiteboardContent']['output']>;
+  /** Copy the internal Whiteboard contribution default from this source Callout. Mutually exclusive with sourceWhiteboardID. */
+  sourceCalloutID?: Maybe<Scalars['UUID']['output']>;
+  /** Seed the default from an existing Whiteboard. The server copies its content and media into the owning Callout bucket; the source id is not persisted. */
+  sourceWhiteboardID?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type CreateCalloutContributionDefaultsInput = {
@@ -2126,7 +2129,10 @@ export type CreateCalloutContributionDefaultsInput = {
   defaultDisplayName?: InputMaybe<Scalars['String']['input']>;
   /** The default description to use for new Post contributions. */
   postDescription?: InputMaybe<Scalars['Markdown']['input']>;
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  /** Copy the internal Whiteboard contribution default from this source Callout. Mutually exclusive with sourceWhiteboardID. */
+  sourceCalloutID?: InputMaybe<Scalars['UUID']['input']>;
+  /** Seed the default from an existing Whiteboard. The server copies its content and media into the owning Callout bucket; the source id is not persisted. */
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type CreateCalloutContributionInput = {
@@ -2953,24 +2959,22 @@ export type CreateVisualOnProfileInput = {
 
 export type CreateWhiteboardData = {
   __typename?: 'CreateWhiteboardData';
-  content?: Maybe<Scalars['WhiteboardContent']['output']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: Maybe<Scalars['NameID']['output']>;
   /** The preview settings for the whiteboard. */
   previewSettings?: Maybe<CreateWhiteboardPreviewSettingsData>;
   profile?: Maybe<CreateProfileData>;
-  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Mutually exclusive with `content` — supply exactly one. */
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard through a server-side authorized copy. Omission creates an empty Whiteboard. */
   sourceWhiteboardID?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type CreateWhiteboardInput = {
-  content?: InputMaybe<Scalars['WhiteboardContent']['input']>;
   /** A readable identifier, unique within the containing scope. */
   nameID?: InputMaybe<Scalars['NameID']['input']>;
   /** The preview settings for the whiteboard. */
   previewSettings?: InputMaybe<CreateWhiteboardPreviewSettingsInput>;
   profile?: InputMaybe<CreateProfileInput>;
-  /** Seed the new Whiteboard from the stored content of an existing Whiteboard (server-side copy). Mutually exclusive with `content` — supply exactly one. */
+  /** Seed the new Whiteboard from the stored content of an existing Whiteboard through a server-side authorized copy. Omission creates an empty Whiteboard. */
   sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
@@ -5368,7 +5372,7 @@ export type Mutation = {
   markNotificationsAsUnread: Scalars['Boolean']['output'];
   /** Migrates all pending legacy memo content. Idempotent: repeated calls process only rows whose migrated marker is false. */
   migrateLegacyMemoContent: CollaborationMigrationResult;
-  /** Migrates all pending legacy whiteboard content. Idempotent: repeated calls process only rows whose migrated marker is false. */
+  /** Migrates pending legacy Whiteboard documents and independently normalizes every legacy Whiteboard contribution default, including defaults stored by Callout templates. Idempotent: repeated calls process only unmigrated documents and non-canonical defaults. */
   migrateLegacyWhiteboardContent: CollaborationMigrationResult;
   /** Mint a new MCP API key for the current user. Returns the plaintext exactly once. */
   mintMcpApiKey: McpApiKeyMintResult;
@@ -5422,6 +5426,8 @@ export type Mutation = {
   reorderPollOptions: Poll;
   /** Replace the backing file of an existing CollaboraDocument in place, preserving its identity. Requires UPDATE on the document. The replacement must be an allowed OfficeDocs format, within the size cap, and the SAME document type as the current file. Refused while the document is being edited. */
   replaceCollaboraDocument: CollaboraDocument;
+  /** Replace a Whiteboard from another Whiteboard through the live collaboration room. Content and media are copied server-side; snapshot bytes never pass through GraphQL. */
+  replaceWhiteboardContentFromSource: Whiteboard;
   /** Resets the interaction with the VC by recreating the room. */
   resetConversationVc: Conversation;
   /** Reset all license plans on Accounts */
@@ -6141,6 +6147,10 @@ export type MutationReorderPollOptionsArgs = {
 export type MutationReplaceCollaboraDocumentArgs = {
   file: Scalars['Upload']['input'];
   replaceData: ReplaceCollaboraDocumentInput;
+};
+
+export type MutationReplaceWhiteboardContentFromSourceArgs = {
+  input: ReplaceWhiteboardContentFromSourceInput;
 };
 
 export type MutationResetConversationVcArgs = {
@@ -7958,6 +7968,13 @@ export type ReplaceCollaboraDocumentInput = {
   displayName?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type ReplaceWhiteboardContentFromSourceInput = {
+  /** The Whiteboard whose content and media are copied into the target. */
+  sourceWhiteboardID: Scalars['UUID']['input'];
+  /** The Whiteboard whose content is replaced. */
+  targetWhiteboardID: Scalars['UUID']['input'];
+};
+
 export type RevokeAuthorizationCredentialInput = {
   /** The resource to which access is being removed. */
   resourceID: Scalars['String']['input'];
@@ -9450,12 +9467,16 @@ export type UpdateCalendarEventInput = {
 };
 
 export type UpdateCalloutContributionDefaultsInput = {
+  /** Remove the stored Whiteboard contribution default. Mutually exclusive with sourceWhiteboardID and sourceCalloutID. */
+  clearWhiteboardContent?: InputMaybe<Scalars['Boolean']['input']>;
   /** The default title to use for new contributions. */
   defaultDisplayName?: InputMaybe<Scalars['String']['input']>;
   /** The default description to use for new Post contributions. */
   postDescription?: InputMaybe<Scalars['Markdown']['input']>;
-  /** The default description to use for new Whiteboard contributions. */
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  /** Copy the internal Whiteboard contribution default from this source Callout. Mutually exclusive with sourceWhiteboardID and clearWhiteboardContent. */
+  sourceCalloutID?: InputMaybe<Scalars['UUID']['input']>;
+  /** Replace the default from an existing Whiteboard. The server copies its content and media into the owning Callout bucket; the source id is not persisted. */
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type UpdateCalloutContributorsSettingsInput = {
@@ -9493,10 +9514,10 @@ export type UpdateCalloutFramingInput = {
   poll?: InputMaybe<UpdatePollInput>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
+  /** Replace the framing Whiteboard from another Whiteboard through a server-side authorized copy. */
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
   /** The type of additional content attached to the framing of the callout. */
   type?: InputMaybe<CalloutFramingType>;
-  /** The new content to be used. */
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
   /** The new preview settings for the Whiteboard. */
   whiteboardPreviewSettings?: InputMaybe<UpdateWhiteboardPreviewSettingsInput>;
 };
@@ -10054,8 +10075,8 @@ export type UpdateTemplateInput = {
   postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
   /** The Profile of the Template. */
   profile?: InputMaybe<UpdateProfileInput>;
-  /** The new content to be used. */
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  /** Replace this Whiteboard Template from an existing Whiteboard through a server-side authorized copy. */
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 export type UpdateUserGroupInput = {
@@ -14978,7 +14999,7 @@ export type CalloutContentQuery = {
             id: string;
             defaultDisplayName?: string | undefined;
             postDescription?: string | undefined;
-            whiteboardContent?: string | undefined;
+            whiteboardContentAvailable: boolean;
           };
           classification?:
             | {
@@ -15323,7 +15344,7 @@ export type UpdateCalloutContentMutation = {
       id: string;
       defaultDisplayName?: string | undefined;
       postDescription?: string | undefined;
-      whiteboardContent?: string | undefined;
+      whiteboardContentAvailable: boolean;
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
@@ -15815,7 +15836,7 @@ export type UpdateCalloutVisibilityMutation = {
       id: string;
       defaultDisplayName?: string | undefined;
       postDescription?: string | undefined;
-      whiteboardContent?: string | undefined;
+      whiteboardContentAvailable: boolean;
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
@@ -17697,7 +17718,7 @@ export type CreateCalloutMutation = {
       id: string;
       defaultDisplayName?: string | undefined;
       postDescription?: string | undefined;
-      whiteboardContent?: string | undefined;
+      whiteboardContentAvailable: boolean;
     };
     contributions: Array<{
       __typename?: 'CalloutContribution';
@@ -18328,7 +18349,7 @@ export type CalloutDetailsQuery = {
             id: string;
             defaultDisplayName?: string | undefined;
             postDescription?: string | undefined;
-            whiteboardContent?: string | undefined;
+            whiteboardContentAvailable: boolean;
           };
           contributions: Array<{
             __typename?: 'CalloutContribution';
@@ -18885,7 +18906,7 @@ export type CalloutDetailsFragment = {
     id: string;
     defaultDisplayName?: string | undefined;
     postDescription?: string | undefined;
-    whiteboardContent?: string | undefined;
+    whiteboardContentAvailable: boolean;
   };
   contributions: Array<{
     __typename?: 'CalloutContribution';
@@ -20227,6 +20248,15 @@ export type UpdateWhiteboardPreviewSettingsMutation = {
   };
 };
 
+export type ReplaceWhiteboardContentFromSourceMutationVariables = Exact<{
+  input: ReplaceWhiteboardContentFromSourceInput;
+}>;
+
+export type ReplaceWhiteboardContentFromSourceMutation = {
+  __typename?: 'Mutation';
+  replaceWhiteboardContentFromSource: { __typename?: 'Whiteboard'; id: string };
+};
+
 export type WhiteboardProfileFragment = {
   __typename?: 'Profile';
   id: string;
@@ -20749,6 +20779,121 @@ export type WhiteboardLastUpdatedDateQuery = {
   lookup: {
     __typename?: 'LookupQueryResults';
     whiteboard?: { __typename?: 'Whiteboard'; id: string; updatedDate: Date } | undefined;
+  };
+};
+
+export type WhiteboardDetailsByIdQueryVariables = Exact<{
+  whiteboardId: Scalars['UUID']['input'];
+}>;
+
+export type WhiteboardDetailsByIdQuery = {
+  __typename?: 'Query';
+  lookup: {
+    __typename?: 'LookupQueryResults';
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          nameID: string;
+          createdDate: Date;
+          guestContributionsAllowed: boolean;
+          contentUpdatePolicy: ContentUpdatePolicy;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            url: string;
+            displayName: string;
+            description?: string | undefined;
+            visual?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            preview?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  allowedTypes: Array<string>;
+                  aspectRatio: number;
+                  maxHeight: number;
+                  maxWidth: number;
+                  minHeight: number;
+                  minWidth: number;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+            tagset?:
+              | {
+                  __typename?: 'Tagset';
+                  id: string;
+                  name: string;
+                  tags: Array<string>;
+                  allowedValues: Array<string>;
+                  type: TagsetType;
+                }
+              | undefined;
+            storageBucket: {
+              __typename?: 'StorageBucket';
+              id: string;
+              allowedMimeTypes: Array<string>;
+              maxFileSize: number;
+            };
+          };
+          authorization?:
+            | { __typename?: 'Authorization'; id: string; myPrivileges?: Array<AuthorizationPrivilege> | undefined }
+            | undefined;
+          createdBy?:
+            | {
+                __typename?: 'User';
+                id: string;
+                profile?:
+                  | {
+                      __typename?: 'Profile';
+                      id: string;
+                      displayName: string;
+                      url: string;
+                      location?:
+                        | {
+                            __typename?: 'Location';
+                            id: string;
+                            country?: string | undefined;
+                            city?: string | undefined;
+                          }
+                        | undefined;
+                      avatar?:
+                        | {
+                            __typename?: 'Visual';
+                            id: string;
+                            uri: string;
+                            name: VisualType;
+                            alternativeText?: string | undefined;
+                          }
+                        | undefined;
+                    }
+                  | undefined;
+              }
+            | undefined;
+          previewSettings: {
+            __typename?: 'WhiteboardPreviewSettings';
+            mode: WhiteboardPreviewMode;
+            coordinates?:
+              | { __typename?: 'WhiteboardPreviewCoordinates'; x: number; y: number; width: number; height: number }
+              | undefined;
+          };
+        }
+      | undefined;
   };
 };
 
@@ -33804,7 +33949,7 @@ export type TemplateContentQuery = {
                   id: string;
                   defaultDisplayName?: string | undefined;
                   postDescription?: string | undefined;
-                  whiteboardContent?: string | undefined;
+                  whiteboardContentAvailable: boolean;
                 };
               }
             | undefined;
@@ -34587,7 +34732,7 @@ export type CalloutTemplateContentFragment = {
     id: string;
     defaultDisplayName?: string | undefined;
     postDescription?: string | undefined;
-    whiteboardContent?: string | undefined;
+    whiteboardContentAvailable: boolean;
   };
 };
 
@@ -35237,9 +35382,10 @@ export type CreateTemplateMutation = {
     __typename?: 'Template';
     id: string;
     nameID: string;
-    profile?: {
+    profile: {
       __typename?: 'Profile';
       id: string;
+      defaultTagset?: { __typename?: 'Tagset'; id: string } | undefined;
       cardVisual?: { __typename?: 'Visual'; id: string } | undefined;
       previewVisual?: { __typename?: 'Visual'; id: string } | undefined;
     };
@@ -35266,6 +35412,7 @@ export type CreateTemplateMutation = {
           };
         }
       | undefined;
+    whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
   };
 };
 
@@ -35298,7 +35445,7 @@ export type UpdateTemplateMutationVariables = Exact<{
   templateId: Scalars['UUID']['input'];
   profile: UpdateProfileInput;
   postDefaultDescription?: InputMaybe<Scalars['Markdown']['input']>;
-  whiteboardContent?: InputMaybe<Scalars['WhiteboardContent']['input']>;
+  sourceWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
   classificationData?: InputMaybe<CreateClassificationTemplateContentInput>;
   includeProfileVisuals?: InputMaybe<Scalars['Boolean']['input']>;
 }>;
@@ -35370,7 +35517,7 @@ export type UpdateCalloutTemplateMutation = {
       __typename?: 'CalloutContributionDefaults';
       id: string;
       postDescription?: string | undefined;
-      whiteboardContent?: string | undefined;
+      whiteboardContentAvailable: boolean;
     };
     settings: {
       __typename?: 'CalloutSettings';

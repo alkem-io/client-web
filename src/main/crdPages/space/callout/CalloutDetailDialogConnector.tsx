@@ -130,7 +130,6 @@ function ContributionsSlot({
       <WhiteboardContributionAddConnector
         calloutId={callout.id}
         defaultDisplayName={defaults?.defaultDisplayName}
-        defaultContent={defaults?.whiteboardContent}
         onCreated={onContributionCreated}
       />
     ) : contributionType === CalloutContributionType.Memo ? (

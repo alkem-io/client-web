@@ -93,6 +93,13 @@ export type DisconnectNoticeRenderProps = {
   open: boolean;
   isOnline: boolean;
   connecting: boolean;
+  /**
+   * Non-null when the room refused this collaboration attempt permanently. Consumers must
+   * render an unavailable/access state and must not offer reconnect for these verdicts.
+   * `document-size-limit-exceeded` is the one manual-recovery verdict: reconnect creates a
+   * fresh editor generation after the rejected local generation is discarded.
+   */
+  terminalCloseReason: string | null;
   /** A reconnect attempt has failed (not just a transient drop) — surface an immediate reload escape hatch. */
   hasError: boolean;
   /** Seconds until auto-reconnect, or `null` when no countdown is active (offline / not scheduled). */
@@ -458,6 +465,7 @@ const CollaborativeExcalidrawWrapper = ({
         isOnline,
         hasError: connectionError,
         connecting,
+        terminalCloseReason,
         autoReconnectSeconds,
         lastSuccessfulSavedDate,
         onReconnect: restartCollaboration,

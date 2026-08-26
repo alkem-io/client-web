@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscardChangesDialog } from '@/crd/components/dialogs/DiscardChangesDialog';
@@ -16,10 +17,8 @@ import { Label } from '@/crd/primitives/label';
  * (a) didn't populate `defaultDescription` because no sync effect existed for that field, and (b)
  * leaked the templated value to the parent even when the user cancelled.
  *
- * Scope: this is the **`post`** apply path. **Whiteboard** content is *not* applied through this
- * helper — `whiteboardContent` is sourced from the parent `values` (see `handleSave` / the dirty
- * check / the `values.whiteboardContent` sync effect), so the connector applies a whiteboard
- * template through the parent `onSave` instead, matching the whiteboard-editor sub-flow.
+ * Whiteboard templates are also applied to this draft, but only as a source whiteboard id. Binary
+ * Yjs content never enters the form or this GraphQL flow.
  */
 type ApplyDraft = (next: Partial<ContributionDefaults>) => void;
 
@@ -44,11 +43,6 @@ type ResponseDefaultsDialogProps = {
    * accepted for callers that don't need draft access.
    */
   templateSlot?: ReactNode | ((helpers: { applyDraft: ApplyDraft }) => ReactNode);
-  /**
-   * Optional whiteboard-editor launcher slot — rendered for the whiteboard
-   * type (the connector wires `CrdSingleUserWhiteboardDialog`).
-   */
-  whiteboardSlot?: ReactNode;
   disabled?: boolean;
 } & MarkdownUploadProps;
 
@@ -64,7 +58,6 @@ export function ResponseDefaultsDialog({
   values,
   onSave,
   templateSlot,
-  whiteboardSlot,
   disabled,
   onImageUpload,
   iframeAllowedUrls,
@@ -93,21 +86,6 @@ export function ResponseDefaultsDialog({
     wasOpenRef.current = open;
   }, [open]);
 
-  // Sync `whiteboardContent` from parent values into draft whenever it changes
-  // while the dialog is open. The whiteboard sub-flow commits via the parent's
-  // `onSave` (writing straight to the form), bypassing this dialog's draft —
-  // without this sync, the outer Save would commit a stale empty
-  // `whiteboardContent` and wipe the inner dialog's save.
-  useEffect(() => {
-    if (open) {
-      setDraft(prev =>
-        prev.whiteboardContent === values.whiteboardContent
-          ? prev
-          : { ...prev, whiteboardContent: values.whiteboardContent }
-      );
-    }
-  }, [open, values.whiteboardContent]);
-
   // Dirty against the open-time snapshot rather than against `values` —
   // `values` may have been mutated via the whiteboard sub-flow (which commits
   // through the parent form) and is intended to be preserved on Save. The
@@ -115,7 +93,10 @@ export function ResponseDefaultsDialog({
   const isDirty =
     draft.defaultDisplayName !== openSnapshot.defaultDisplayName ||
     draft.postDescription !== openSnapshot.postDescription ||
-    values.whiteboardContent !== openSnapshot.whiteboardContent;
+    draft.whiteboardContentAvailable !== openSnapshot.whiteboardContentAvailable ||
+    draft.sourceWhiteboardId !== openSnapshot.sourceWhiteboardId ||
+    draft.sourceCalloutId !== openSnapshot.sourceCalloutId ||
+    draft.clearWhiteboardContent !== openSnapshot.clearWhiteboardContent;
 
   const handleRequestClose = () => {
     if (isDirty) {
@@ -144,13 +125,7 @@ export function ResponseDefaultsDialog({
   })();
 
   const handleSave = () => {
-    // The whiteboard editor commits its content directly to the parent form
-    // (via the connector's `onSave` from `whiteboardSlot`), so by the time the
-    // user clicks Save here, `values.whiteboardContent` already holds the
-    // freshly-configured whiteboard. The local `draft` was seeded at open time
-    // and still has the stale value — committing it would wipe the inner
-    // dialog's save. Merge the up-to-date whiteboard content from `values`.
-    onSave({ ...draft, whiteboardContent: values.whiteboardContent });
+    onSave(draft);
     onOpenChange(false);
   };
 
@@ -184,7 +159,7 @@ export function ResponseDefaultsDialog({
         </div>
 
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 min-w-0">
-          {(type === 'post' || type === 'whiteboard') && renderedTemplateSlot}
+          {(type === 'post' || type === 'memo' || type === 'whiteboard') && renderedTemplateSlot}
 
           <div className="space-y-1.5">
             <Label htmlFor="response-defaults-display-name" className="text-body text-foreground">
@@ -219,7 +194,32 @@ export function ResponseDefaultsDialog({
           {type === 'whiteboard' && (
             <div className="space-y-1.5">
               <Label className="text-body text-foreground">{t('responseDefaults.defaultWhiteboard')}</Label>
-              {whiteboardSlot}
+              <div className="flex items-center justify-between gap-3 rounded-md border p-3">
+                <span className="text-body text-muted-foreground">
+                  {draft.whiteboardContentAvailable
+                    ? t('responseDefaults.whiteboardConfigured')
+                    : t('responseDefaults.whiteboardNotConfigured')}
+                </span>
+                {draft.whiteboardContentAvailable && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={disabled}
+                    onClick={() =>
+                      setDraft(prev => ({
+                        ...prev,
+                        sourceWhiteboardId: undefined,
+                        sourceCalloutId: undefined,
+                        whiteboardContentAvailable: false,
+                        clearWhiteboardContent: true,
+                      }))
+                    }
+                  >
+                    <Trash2 className="size-4" aria-hidden="true" />
+                    {t('responseDefaults.clearWhiteboard')}
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>

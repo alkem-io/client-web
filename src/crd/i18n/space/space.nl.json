@@ -656,6 +656,9 @@
     "template": "Template",
     "templatePlaceholder": "Kies een template…",
     "templateLoading": "Templates laden…",
+    "whiteboardConfigured": "Er is een standaardwhiteboard ingesteld.",
+    "whiteboardNotConfigured": "Nieuwe bijdragen beginnen met een leeg whiteboard.",
+    "clearWhiteboard": "Standaard wissen",
     "save": "Opslaan"
   },
   "calloutDialog": {

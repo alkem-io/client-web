@@ -35,23 +35,13 @@ const LazyContributorMap = lazy(() => import('@/crd/components/map/ContributorMa
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
-import {
-  DefaultWhiteboardPreviewSettings,
-  type WhiteboardPreviewSettings,
-} from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
-import CrdSingleUserWhiteboardDialog, {
-  type WhiteboardWithContent,
-} from '@/main/crdPages/whiteboard/CrdSingleUserWhiteboardDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
 import { MediaGalleryFormFieldConnector } from './MediaGalleryFormFieldConnector';
 import { useWhiteboardPreviewBlobUrl } from './useWhiteboardPreviewBlobUrl';
 
 type EditWhiteboard = NonNullable<CalloutDetailsModelExtended['framing']['whiteboard']>;
-
-const WHITEBOARD_FRAMING_TEMPLATE_ID = '__callout_framing_whiteboard';
 
 // Icon + label for the read-only existing-document box shown in edit mode.
 const collaboraDocIconByType: Record<CollaboraDocumentTypeValue, typeof FileText> = {
@@ -156,8 +146,6 @@ type FramingEditorConnectorProps = {
   pollStatus?: 'open' | 'closed';
   onPollStatusChange?: (status: 'open' | 'closed') => void;
   // Whiteboard framing
-  whiteboardContent?: string;
-  whiteboardPreviewSettings?: WhiteboardPreviewSettings;
   whiteboardConfigured?: boolean;
   whiteboardTitle?: string;
   /**
@@ -177,11 +165,6 @@ type FramingEditorConnectorProps = {
    * the "loaded but not re-edited" gap.
    */
   whiteboardPreviewServerUrl?: string;
-  onWhiteboardChange?: (
-    content: string,
-    previewImages: WhiteboardPreviewImage[] | undefined,
-    previewSettings: WhiteboardPreviewSettings
-  ) => void;
   // Memo framing (create mode) — value is the raw markdown; `onMemoMarkdownChange`
   // is wired into the form hook's `memoMarkdown` field (spec T010/T011).
   memoMarkdown?: string;
@@ -303,12 +286,9 @@ export function FramingEditorConnector({
   onPollShowVoterAvatarsChange,
   pollStatus,
   onPollStatusChange,
-  whiteboardContent,
-  whiteboardPreviewSettings,
   whiteboardTitle,
   whiteboardPreviewImages,
   whiteboardPreviewServerUrl,
-  onWhiteboardChange,
   memoMarkdown = '',
   onMemoMarkdownChange,
   memoUpload,
@@ -394,49 +374,30 @@ export function FramingEditorConnector({
         );
       }
 
-      // Create mode: single-user editor — the callout doesn't exist yet, so
-      // there's nothing to collaborate on. Content lands in the form and is
-      // sent inline with the callout-create mutation.
-      const templateWhiteboard: WhiteboardWithContent = {
-        id: WHITEBOARD_FRAMING_TEMPLATE_ID,
-        nameID: WHITEBOARD_FRAMING_TEMPLATE_ID,
-        profile: {
-          id: `${WHITEBOARD_FRAMING_TEMPLATE_ID}_profile`,
-          displayName: whiteboardTitle || t('callout.whiteboard'),
-          storageBucket: { id: '', allowedMimeTypes: [], maxFileSize: 0 },
-        },
-        content: whiteboardContent ?? EmptyWhiteboardString,
-        previewSettings: whiteboardPreviewSettings ?? DefaultWhiteboardPreviewSettings,
-      };
-
+      // Create mode has no persisted document, bucket, or room yet. Show the selected source
+      // preview (when any), but do not invent a synthetic editable whiteboard: that previously
+      // broke image uploads and forced Yjs bytes through GraphQL. The created whiteboard can be
+      // edited immediately afterwards through the normal collaborative dialog.
+      const sourcePreviewUrl = whiteboardPreviewUrl ?? whiteboardPreviewServerUrl;
       return (
-        <>
-          <InlineWhiteboardPreview
-            onEdit={() => setWhiteboardEditorOpen(true)}
-            editLabel={t('framing.edit')}
-            previewImageUrl={whiteboardPreviewUrl ?? whiteboardPreviewServerUrl}
-            imageAlt={whiteboardTitle || t('callout.whiteboard')}
-          />
-          <Suspense fallback={<Loading />}>
-            <CrdSingleUserWhiteboardDialog
-              entities={{ whiteboard: templateWhiteboard }}
-              actions={{
-                onCancel: () => setWhiteboardEditorOpen(false),
-                onUpdate: async (wb, previewImages) => {
-                  onWhiteboardChange?.(wb.content, previewImages, wb.previewSettings);
-                  setWhiteboardEditorOpen(false);
-                },
-              }}
-              options={{
-                show: whiteboardEditorOpen,
-                canEdit: true,
-                canDelete: false,
-                allowFilesAttached: true,
-                dialogTitle: whiteboardTitle || t('callout.whiteboard'),
-              }}
+        <div className="space-y-3">
+          {sourcePreviewUrl && (
+            <InlineWhiteboardPreview
+              onEdit={() => undefined}
+              editLabel={t('framing.configure')}
+              previewImageUrl={sourcePreviewUrl}
+              imageAlt={whiteboardTitle || t('callout.whiteboard')}
+              disabled={true}
             />
-          </Suspense>
-        </>
+          )}
+          <WhiteboardConfigCard
+            title={whiteboardTitle || t('callout.whiteboard')}
+            status={t('framing.readyToCreate')}
+            actionLabel={t('framing.configure')}
+            onAction={() => undefined}
+            disabled={true}
+          />
+        </div>
       );
     }
 

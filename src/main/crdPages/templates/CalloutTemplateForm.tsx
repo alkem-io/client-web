@@ -21,6 +21,7 @@
 import { Hash } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useWhiteboardDetailsByIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
@@ -70,6 +71,12 @@ export function CalloutTemplateForm({
   const { t } = useTranslation('crd-space');
   const { values, errors, setField } = form;
   const [defaultsOpen, setDefaultsOpen] = useState(false);
+  const editableWhiteboardId = editMode ? values.editMeta?.whiteboardId : undefined;
+  const { data: whiteboardData } = useWhiteboardDetailsByIdQuery({
+    variables: { whiteboardId: editableWhiteboardId ?? '' },
+    skip: !editableWhiteboardId,
+  });
+  const editableWhiteboard = whiteboardData?.lookup.whiteboard;
 
   const responseTypeSupportsDefaults =
     values.responseType === 'post' || values.responseType === 'memo' || values.responseType === 'whiteboard';
@@ -114,7 +121,10 @@ export function CalloutTemplateForm({
           editMode={editMode}
         />
         <FramingEditorConnector
-          mode="create"
+          mode={editMode ? 'edit' : 'create'}
+          editMemoId={editMode ? values.editMeta?.memoId : undefined}
+          editWhiteboard={editableWhiteboard}
+          editWhiteboardShareUrl={editableWhiteboard?.profile.url ?? undefined}
           framingType={values.framingChip}
           linkUrl={values.linkUrl}
           onLinkUrlChange={v => setField('linkUrl', v)}
@@ -136,21 +146,10 @@ export function CalloutTemplateForm({
           onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
           pollShowVoterAvatars={values.pollShowVoterAvatars}
           onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
-          whiteboardContent={values.whiteboardContent}
-          whiteboardPreviewSettings={values.whiteboardPreviewSettings}
           whiteboardPreviewImages={values.whiteboardPreviewImages}
           whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
           whiteboardConfigured={values.whiteboardConfigured}
           whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
-          onWhiteboardChange={(content, previewImages, previewSettings) => {
-            setField('whiteboardContent', content);
-            setField('whiteboardPreviewImages', previewImages ?? []);
-            setField('whiteboardPreviewSettings', previewSettings);
-            setField('whiteboardConfigured', true);
-            // The user opened the editor and saved (drew OR cleared) — mark it touched so the
-            // create mapper won't re-copy a source snapshot over a deliberate blank.
-            setField('whiteboardEdited', true);
-          }}
           memoMarkdown={values.memoMarkdown}
           onMemoMarkdownChange={v => setField('memoMarkdown', v)}
           memoUpload={{ onImageUpload, iframeAllowedUrls, onError }}
