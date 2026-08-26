@@ -77,6 +77,14 @@ describe('ssoLogin', () => {
       expect(result.error).toContain('500');
     });
 
+    it('returns ok:false instead of rejecting when the login endpoint is unreachable', async () => {
+      vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new TypeError('Failed to fetch'));
+
+      const result = await discoverIdp(HOMESERVER);
+      expect(result.ok).toBe(false);
+      expect(result.error).toContain('unreachable');
+    });
+
     it('does not pass credentials to the homeserver (D-06)', async () => {
       const fetchSpy = vi
         .spyOn(globalThis, 'fetch')

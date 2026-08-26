@@ -64,6 +64,19 @@ describe('refreshMatrixTokens', () => {
     expect(stored.record?.refreshToken).toBe('syr_old_refresh');
   });
 
+  it('stores a non-expiring expiry when the response omits expires_in_ms', async () => {
+    await seedRecord();
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ access_token: 'syt_new_access' }), { status: 200 })
+    );
+
+    const result = await refreshMatrixTokens(HOMESERVER, USER_ID, 'syr_old_refresh');
+    expect(result.expiry.getTime()).toBeGreaterThan(Date.now() + 1_000_000_000);
+
+    const stored = await loadCredentials(USER_ID);
+    expect(stored.record?.expiresAt).toBeGreaterThan(Date.now() + 1_000_000_000);
+  });
+
   it('throws on a non-200 response and leaves stored tokens untouched', async () => {
     await seedRecord();
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response('', { status: 401 }));

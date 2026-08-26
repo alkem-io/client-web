@@ -291,6 +291,66 @@ describe('establishSession', () => {
     expect(states).toEqual(['starting', 'failed']);
   });
 
+  it('does not call refresh for an expired record without a refresh token — clears and tries silent SSO', async () => {
+    await seedRecord({ expiresAt: Date.now() - 1000, refreshToken: '' });
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    const silentSso = vi.fn(async () => false);
+    const loadSdk = vi.fn();
+
+    await establishSession(ACTOR, { silentSso, loadSdk });
+
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(silentSso).toHaveBeenCalledOnce();
+  });
+
+  it('resolves to failed instead of rejecting when silent SSO throws', async () => {
+    const silentSso = vi.fn(async () => {
+      throw new Error('network down');
+    });
+    const states: SessionState[] = [];
+
+    const handle = await establishSession('actor-without-record', { silentSso, onState: s => states.push(s) });
+
+    expect(states).toEqual(['starting', 'failed']);
+    expect(handle.machine.state()).toBe('failed');
+  });
+
+  it('stop() stops the active client', async () => {
+    await seedRecord();
+    const { sdk, client } = makeSdkMock();
+
+    const handle = await establishSession(ACTOR, {
+      loadSdk: async () => sdk,
+      silentSso: vi.fn(async () => false),
+    });
+    handle.stop();
+
+    expect(client.stopClient).toHaveBeenCalled();
+  });
+
+  it('recovers exactly once after SessionLoggedOut, landing in auth-required when silent SSO fails', async () => {
+    await seedRecord();
+    const { sdk, handlers } = makeSdkMock();
+    const silentSso = vi.fn(async () => false);
+    const states: SessionState[] = [];
+
+    await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso, onState: s => states.push(s) });
+
+    handlers.get('sync')?.('PREPARED');
+    handlers.get('Session.logged_out')?.();
+
+    await vi.waitFor(() => {
+      expect(states).toContain('auth-required');
+    });
+    expect(silentSso).toHaveBeenCalledOnce();
+
+    handlers.get('Session.logged_out')?.();
+    await new Promise(resolve => setTimeout(resolve, 20));
+
+    expect(silentSso).toHaveBeenCalledOnce();
+    expect(states).toEqual(['starting', 'ready', 'recovering', 'auth-required']);
+  });
+
   it('maps sync errors during establishment to offline', async () => {
     await seedRecord();
     const { sdk, handlers } = makeSdkMock();
