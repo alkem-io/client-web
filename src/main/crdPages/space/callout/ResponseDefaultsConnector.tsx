@@ -1,3 +1,4 @@
+import { Pencil } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
@@ -7,6 +8,8 @@ import { ResponseDefaultsDialog } from '@/crd/forms/callout/ResponseDefaultsDial
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { Button } from '@/crd/primitives/button';
 import { Label } from '@/crd/primitives/label';
+import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
+import { WhiteboardDraftEditor } from '@/domain/collaboration/whiteboard/WhiteboardDraft/WhiteboardDraftEditor';
 import { useSpace } from '@/domain/space/context/useSpace';
 import type { ContributionDefaults, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
@@ -70,6 +73,7 @@ type ResponseDefaultsConnectorProps = {
   onSave: (next: ContributionDefaults) => void;
   /** Image-upload wiring for the default post/memo description editor. */
   markdownUpload?: MarkdownUploadProps;
+  whiteboardDraft?: WhiteboardDraftLifecycle;
 };
 
 /**
@@ -81,9 +85,8 @@ type ResponseDefaultsConnectorProps = {
  *    space's templates set + its account + the platform library. Selecting a
  *    template applies its content to the matching contribution default.
  *
- * 2. **Whiteboard defaults** — source-id selection or explicit clear. There is deliberately no
- *    synthetic editor: before the callout exists it has neither a storage bucket nor a collaboration
- *    room, so pretending it is editable causes broken uploads and binary GraphQL transport.
+ * 2. **Whiteboard defaults** — source selection and live editing on a lazily
+ *    materialized server-owned draft. GraphQL carries only the draft Whiteboard id.
  */
 export function ResponseDefaultsConnector({
   open,
@@ -93,7 +96,22 @@ export function ResponseDefaultsConnector({
   values,
   onSave,
   markdownUpload,
+  whiteboardDraft,
 }: ResponseDefaultsConnectorProps) {
+  const { t } = useTranslation('crd-space');
+  const [whiteboardEditorSession, setWhiteboardEditorSession] = useState<number>();
+  const dialogSessionRef = useRef(0);
+  const initialDraftID = useRef<string | undefined>(undefined);
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (open !== wasOpen.current) {
+      dialogSessionRef.current += 1;
+      if (open) {
+        initialDraftID.current = values.whiteboardDraft?.whiteboardID;
+      }
+    }
+    wasOpen.current = open;
+  }, [open, values.whiteboardDraft?.whiteboardID]);
   const {
     space: { accountId },
   } = useSpace();
@@ -115,15 +133,73 @@ export function ResponseDefaultsConnector({
     ? ({ applyDraft }: { applyDraft: ApplyDraft }) => <TemplateApplyButton applyDraft={applyDraft} picker={picker} />
     : undefined;
 
+  const whiteboardSlot =
+    type === 'whiteboard' && whiteboardDraft
+      ? ({ draft, applyDraft }: { draft: ContributionDefaults; applyDraft: ApplyDraft }) => {
+          const openEditor = async () => {
+            const dialogSession = dialogSessionRef.current;
+            const materialized = await whiteboardDraft.materialize({
+              sourceWhiteboardID: draft.sourceWhiteboardId,
+              sourceCalloutID: draft.sourceCalloutId,
+            });
+            if (!materialized || dialogSessionRef.current !== dialogSession) return;
+            applyDraft({
+              whiteboardDraft: materialized,
+              whiteboardContentAvailable: true,
+              clearWhiteboardContent: false,
+            });
+            setWhiteboardEditorSession(dialogSession);
+          };
+          return (
+            <>
+              <Button variant="outline" size="sm" disabled={whiteboardDraft.loading} onClick={() => void openEditor()}>
+                <Pencil className="size-4" aria-hidden="true" />
+                {t('framing.edit')}
+              </Button>
+              {open && whiteboardEditorSession === dialogSessionRef.current && whiteboardDraft.handle && (
+                <WhiteboardDraftEditor
+                  whiteboardID={whiteboardDraft.handle.whiteboardID}
+                  displayName={draft.defaultDisplayName || t('callout.whiteboard')}
+                  onClose={() => setWhiteboardEditorSession(undefined)}
+                />
+              )}
+            </>
+          );
+        }
+      : undefined;
+
+  const cancelWhiteboardDraft = async () => {
+    dialogSessionRef.current += 1;
+    setWhiteboardEditorSession(undefined);
+    if (!whiteboardDraft) {
+      return true;
+    }
+    if (whiteboardDraft.handle && whiteboardDraft.handle.whiteboardID === initialDraftID.current) {
+      return true;
+    }
+    return whiteboardDraft.discard();
+  };
+
+  const handleDialogOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen) {
+      dialogSessionRef.current += 1;
+      setWhiteboardEditorSession(undefined);
+    }
+    onOpenChange(nextOpen);
+  };
+
   return (
     <>
       <ResponseDefaultsDialog
         open={open}
-        onOpenChange={onOpenChange}
+        onOpenChange={handleDialogOpenChange}
         type={type}
         values={values}
         onSave={onSave}
         templateSlot={templateSlot}
+        whiteboardSlot={whiteboardSlot}
+        onCancel={type === 'whiteboard' ? cancelWhiteboardDraft : undefined}
+        disabled={whiteboardDraft?.loading}
         onImageUpload={markdownUpload?.onImageUpload}
         iframeAllowedUrls={markdownUpload?.iframeAllowedUrls}
         onError={markdownUpload?.onError}

@@ -1,5 +1,5 @@
 /** @vitest-environment jsdom */
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('react-i18next', () => ({
@@ -65,6 +65,27 @@ describe('ResponseDefaultsDialog whiteboard source metadata', () => {
     fireEvent.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
 
     expect(screen.getByText('dialogs.discardChanges.title')).toBeTruthy();
+    expect(onOpenChange).not.toHaveBeenCalledWith(false);
+  });
+
+  it('keeps the dialog open when explicit draft cleanup fails', async () => {
+    const onOpenChange = vi.fn();
+    const onCancel = vi.fn().mockResolvedValue(false);
+
+    render(
+      <ResponseDefaultsDialog
+        open={true}
+        onOpenChange={onOpenChange}
+        type="whiteboard"
+        values={whiteboardDefaults}
+        onSave={vi.fn()}
+        onCancel={onCancel}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'dialogs.cancel' }));
+
+    await waitFor(() => expect(onCancel).toHaveBeenCalledOnce());
     expect(onOpenChange).not.toHaveBeenCalledWith(false);
   });
 });

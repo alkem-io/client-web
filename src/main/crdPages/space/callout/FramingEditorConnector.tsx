@@ -35,6 +35,8 @@ const LazyContributorMap = lazy(() => import('@/crd/components/map/ContributorMa
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
 import type { UseRenameCollaboraDocumentResult } from '@/domain/collaboration/calloutContributions/collaboraDocument/useRenameCollaboraDocument';
 import buildGuestShareUrl from '@/domain/collaboration/whiteboard/utils/buildGuestShareUrl';
+import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
+import { WhiteboardDraftEditor } from '@/domain/collaboration/whiteboard/WhiteboardDraft/WhiteboardDraftEditor';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
 import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
@@ -147,6 +149,8 @@ type FramingEditorConnectorProps = {
   onPollStatusChange?: (status: 'open' | 'closed') => void;
   // Whiteboard framing
   whiteboardConfigured?: boolean;
+  /** Persisted live draft lifecycle for create mode. */
+  whiteboardDraft?: WhiteboardDraftLifecycle;
   whiteboardTitle?: string;
   /**
    * Preview blobs returned from the last save of the inline whiteboard editor —
@@ -287,6 +291,7 @@ export function FramingEditorConnector({
   pollStatus,
   onPollStatusChange,
   whiteboardTitle,
+  whiteboardDraft,
   whiteboardPreviewImages,
   whiteboardPreviewServerUrl,
   memoMarkdown = '',
@@ -374,30 +379,30 @@ export function FramingEditorConnector({
         );
       }
 
-      // Create mode has no persisted document, bucket, or room yet. Show the selected source
-      // preview (when any), but do not invent a synthetic editable whiteboard: that previously
-      // broke image uploads and forced Yjs bytes through GraphQL. The created whiteboard can be
-      // edited immediately afterwards through the normal collaborative dialog.
-      const sourcePreviewUrl = whiteboardPreviewUrl ?? whiteboardPreviewServerUrl;
+      // Create mode uses a real server-owned Whiteboard draft. Its Yjs content
+      // stays on the collaboration transport; the final create mutation carries
+      // only the draft id.
+      const openDraft = async () => {
+        const draft = await whiteboardDraft?.materialize();
+        if (draft) setWhiteboardEditorOpen(true);
+      };
       return (
-        <div className="space-y-3">
-          {sourcePreviewUrl && (
-            <InlineWhiteboardPreview
-              onEdit={() => undefined}
-              editLabel={t('framing.configure')}
-              previewImageUrl={sourcePreviewUrl}
-              imageAlt={whiteboardTitle || t('callout.whiteboard')}
-              disabled={true}
+        <>
+          <InlineWhiteboardPreview
+            onEdit={() => void openDraft()}
+            editLabel={t('framing.edit')}
+            previewImageUrl={whiteboardPreviewUrl ?? whiteboardPreviewServerUrl}
+            imageAlt={whiteboardTitle || t('callout.whiteboard')}
+            disabled={!whiteboardDraft || whiteboardDraft.loading}
+          />
+          {whiteboardEditorOpen && whiteboardDraft?.handle && (
+            <WhiteboardDraftEditor
+              whiteboardID={whiteboardDraft.handle.whiteboardID}
+              displayName={whiteboardTitle || t('callout.whiteboard')}
+              onClose={() => setWhiteboardEditorOpen(false)}
             />
           )}
-          <WhiteboardConfigCard
-            title={whiteboardTitle || t('callout.whiteboard')}
-            status={t('framing.readyToCreate')}
-            actionLabel={t('framing.configure')}
-            onAction={() => undefined}
-            disabled={true}
-          />
-        </div>
+        </>
       );
     }
 

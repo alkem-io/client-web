@@ -11149,6 +11149,245 @@ export type UpdateWhiteboardGuestAccessMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.UpdateWhiteboardGuestAccessMutation,
   SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
 >;
+export const CreateWhiteboardDraftOnCalloutsSetDocument = gql`
+    mutation CreateWhiteboardDraftOnCalloutsSet($draftData: CreateWhiteboardDraftOnCalloutsSetInput!) {
+  createWhiteboardDraftOnCalloutsSet(draftData: $draftData)
+}
+    `;
+export type CreateWhiteboardDraftOnCalloutsSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+>;
+
+/**
+ * __useCreateWhiteboardDraftOnCalloutsSetMutation__
+ *
+ * To run a mutation, you first call `useCreateWhiteboardDraftOnCalloutsSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardDraftOnCalloutsSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWhiteboardDraftOnCalloutsSetMutation, { data, loading, error }] = useCreateWhiteboardDraftOnCalloutsSetMutation({
+ *   variables: {
+ *      draftData: // value for 'draftData'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardDraftOnCalloutsSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+  >(CreateWhiteboardDraftOnCalloutsSetDocument, options);
+}
+export type CreateWhiteboardDraftOnCalloutsSetMutationHookResult = ReturnType<
+  typeof useCreateWhiteboardDraftOnCalloutsSetMutation
+>;
+export type CreateWhiteboardDraftOnCalloutsSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation>;
+export type CreateWhiteboardDraftOnCalloutsSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+>;
+export const CreateWhiteboardDraftOnTemplatesSetDocument = gql`
+    mutation CreateWhiteboardDraftOnTemplatesSet($draftData: CreateWhiteboardDraftOnTemplatesSetInput!) {
+  createWhiteboardDraftOnTemplatesSet(draftData: $draftData)
+}
+    `;
+export type CreateWhiteboardDraftOnTemplatesSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+>;
+
+/**
+ * __useCreateWhiteboardDraftOnTemplatesSetMutation__
+ *
+ * To run a mutation, you first call `useCreateWhiteboardDraftOnTemplatesSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardDraftOnTemplatesSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWhiteboardDraftOnTemplatesSetMutation, { data, loading, error }] = useCreateWhiteboardDraftOnTemplatesSetMutation({
+ *   variables: {
+ *      draftData: // value for 'draftData'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardDraftOnTemplatesSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+  >(CreateWhiteboardDraftOnTemplatesSetDocument, options);
+}
+export type CreateWhiteboardDraftOnTemplatesSetMutationHookResult = ReturnType<
+  typeof useCreateWhiteboardDraftOnTemplatesSetMutation
+>;
+export type CreateWhiteboardDraftOnTemplatesSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation>;
+export type CreateWhiteboardDraftOnTemplatesSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+>;
+export const DeleteWhiteboardDraftDocument = gql`
+    mutation DeleteWhiteboardDraft($whiteboardID: UUID!) {
+  deleteWhiteboardDraft(whiteboardID: $whiteboardID)
+}
+    `;
+export type DeleteWhiteboardDraftMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteWhiteboardDraftMutation,
+  SchemaTypes.DeleteWhiteboardDraftMutationVariables
+>;
+
+/**
+ * __useDeleteWhiteboardDraftMutation__
+ *
+ * To run a mutation, you first call `useDeleteWhiteboardDraftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWhiteboardDraftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWhiteboardDraftMutation, { data, loading, error }] = useDeleteWhiteboardDraftMutation({
+ *   variables: {
+ *      whiteboardID: // value for 'whiteboardID'
+ *   },
+ * });
+ */
+export function useDeleteWhiteboardDraftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteWhiteboardDraftMutation,
+    SchemaTypes.DeleteWhiteboardDraftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteWhiteboardDraftMutation,
+    SchemaTypes.DeleteWhiteboardDraftMutationVariables
+  >(DeleteWhiteboardDraftDocument, options);
+}
+export type DeleteWhiteboardDraftMutationHookResult = ReturnType<typeof useDeleteWhiteboardDraftMutation>;
+export type DeleteWhiteboardDraftMutationResult = Apollo.MutationResult<SchemaTypes.DeleteWhiteboardDraftMutation>;
+export type DeleteWhiteboardDraftMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteWhiteboardDraftMutation,
+  SchemaTypes.DeleteWhiteboardDraftMutationVariables
+>;
+export const WhiteboardDraftDetailsByIdDocument = gql`
+    query WhiteboardDraftDetailsById($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      id
+      nameID
+      guestContributionsAllowed
+      contentUpdatePolicy
+      authorization {
+        id
+        myPrivileges
+      }
+      profile {
+        id
+        displayName
+        storageBucket {
+          id
+          allowedMimeTypes
+          maxFileSize
+        }
+      }
+      previewSettings {
+        ...whiteboardPreviewSettings
+      }
+    }
+  }
+}
+    ${WhiteboardPreviewSettingsFragmentDoc}`;
+
+/**
+ * __useWhiteboardDraftDetailsByIdQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardDraftDetailsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardDraftDetailsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardDraftDetailsByIdQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardDraftDetailsByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  > &
+    ({ variables: SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >(WhiteboardDraftDetailsByIdDocument, options);
+}
+export function useWhiteboardDraftDetailsByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >(WhiteboardDraftDetailsByIdDocument, options);
+}
+export function useWhiteboardDraftDetailsByIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+        SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >(WhiteboardDraftDetailsByIdDocument, options);
+}
+export type WhiteboardDraftDetailsByIdQueryHookResult = ReturnType<typeof useWhiteboardDraftDetailsByIdQuery>;
+export type WhiteboardDraftDetailsByIdLazyQueryHookResult = ReturnType<typeof useWhiteboardDraftDetailsByIdLazyQuery>;
+export type WhiteboardDraftDetailsByIdSuspenseQueryHookResult = ReturnType<
+  typeof useWhiteboardDraftDetailsByIdSuspenseQuery
+>;
+export type WhiteboardDraftDetailsByIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+  SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+>;
+export function refetchWhiteboardDraftDetailsByIdQuery(
+  variables: SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+) {
+  return { query: WhiteboardDraftDetailsByIdDocument, variables: variables };
+}
 export const UpdateWhiteboardPreviewSettingsDocument = gql`
     mutation UpdateWhiteboardPreviewSettings($whiteboardId: UUID!, $previewSettings: UpdateWhiteboardPreviewSettingsInput!) {
   updateWhiteboard(
