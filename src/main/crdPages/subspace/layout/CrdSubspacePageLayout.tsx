@@ -7,17 +7,14 @@ import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
 import { HeaderActionIcons } from '@/crd/components/space/HeaderActionIcons';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
-import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
-import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { useEdgeSwipe } from '@/crd/hooks/useEdgeSwipe';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
@@ -27,6 +24,7 @@ import { Button } from '@/crd/primitives/button';
 import { IconButton } from '@/crd/primitives/icon-button';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
+import { CreateSubspaceDialogs } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import { useDirtyTabGuard } from '@/main/crdPages/topLevelPages/spaceSettings/useDirtyTabGuard';
 import {
@@ -489,42 +487,7 @@ export default function CrdSubspacePageLayout() {
         }
       />
 
-      {data.canCreateSubspace && (
-        <>
-          <CreateSubspaceDialog
-            open={createSubspace.open}
-            onOpenChange={open => {
-              if (!open) createSubspace.closeDialog();
-            }}
-            values={createSubspace.values}
-            errors={createSubspace.errors}
-            selectedTemplateName={createSubspace.selectedTemplateName}
-            selectedTemplateContent={createSubspace.selectedTemplateContent}
-            selectedTemplateLoading={createSubspace.selectedTemplateLoading}
-            onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
-            onClearTemplate={createSubspace.onClearTemplate}
-            submitting={createSubspace.submitting}
-            canSubmit={createSubspace.canSubmit}
-            avatarConstraints={createSubspace.avatarConstraints}
-            cardBannerConstraints={createSubspace.cardBannerConstraints}
-            onChange={createSubspace.onChange}
-            onSubmit={() => void createSubspace.onSubmit()}
-          />
-          <TemplatePicker {...createSubspace.picker} />
-          <ConfirmationDialog
-            open={createSubspace.overwriteConfirmOpen}
-            onOpenChange={open => {
-              if (!open) createSubspace.onCancelOverwriteTemplate();
-            }}
-            title={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.title')}
-            description={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.description')}
-            confirmLabel={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.confirm')}
-            cancelLabel={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.cancel')}
-            onConfirm={createSubspace.onConfirmOverwriteTemplate}
-            onCancel={createSubspace.onCancelOverwriteTemplate}
-          />
-        </>
-      )}
+      {data.canCreateSubspace && <CreateSubspaceDialogs createSubspace={createSubspace} />}
     </StorageConfigContextProvider>
   );
 }
