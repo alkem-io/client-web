@@ -188,6 +188,7 @@
     "openAria": "Ouvrir {{title}}",
     "draft": "Brouillon",
     "expand": "Afficher plus",
+    "fullscreen": "Plein écran",
     "collapse": "Afficher moins",
     "openWhiteboard": "Ouvrir le tableau blanc",
     "openMemo": "Ouvrir le mémo",
@@ -287,6 +288,10 @@
     "postTagsLabel": "Étiquettes",
     "postSave": "Enregistrer",
     "postCreate": "Publier",
+    "createTask": "Créer une tâche",
+    "editTask": "Modifier la tâche",
+    "taskCreate": "Créer une tâche",
+    "tasksHeader": "Tâches ({{count}})",
     "postDelete": "Supprimer la publication",
     "postDeleteConfirmTitle": "Supprimer cette publication ?",
     "postDeleteConfirmDescription": "La publication et ses commentaires seront définitivement supprimés. Cette action est irréversible.",
@@ -326,7 +331,6 @@
   },
   "members": {
     "subtitle": "{{users}} membres et {{organizations}} organisations dans cet espace.",
-    "inviteMember": "Inviter un membre",
     "search": "Rechercher des membres ou organisations...",
     "filterAll": "Tous",
     "filterLead": "Responsable",
@@ -411,7 +415,8 @@
         "why": "Pourquoi ce sous-espace ?",
         "who": "Qui est impliqué ?"
       }
-    }
+    },
+    "tags": "Étiquettes"
   },
   "apply": {
     "apply": "Postuler",
@@ -501,6 +506,9 @@
     "comments_other": "{{count}} commentaires seront supprimés",
     "success": "La $t(common.callout) « {{title}} » a été supprimée.",
     "saveFailed": "Impossible de supprimer le $t(common.callout). Veuillez réessayer."
+  },
+  "deleteTask": {
+    "title": "Supprimer cette tâche ?"
   },
   "deleteContribution": {
     "title": "Supprimer cette contribution ?",
@@ -648,6 +656,9 @@
     "template": "Modèle",
     "templatePlaceholder": "Choisir un modèle…",
     "templateLoading": "Chargement des modèles…",
+    "whiteboardConfigured": "Un tableau blanc par défaut est configuré.",
+    "whiteboardNotConfigured": "Les nouvelles contributions commenceront avec un tableau blanc vide.",
+    "clearWhiteboard": "Effacer le contenu par défaut",
     "save": "Enregistrer"
   },
   "calloutDialog": {
@@ -817,6 +828,7 @@
     "seeFullDescription": "Voir la description complète"
   },
   "postPreview": {
+    "createdBy": "Créé par",
     "label": "Aperçu de la contribution sélectionnée",
     "edit": "Modifier la réponse",
     "share": "Partager la réponse",
@@ -1027,5 +1039,15 @@
       "title": "Aucun sous-espace pour le moment",
       "description": "Cet espace n'a pas encore de sous-espaces."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
+  },
+  "parentStack": {
+    "goTo": "Aller à {{name}}"
   }
 }

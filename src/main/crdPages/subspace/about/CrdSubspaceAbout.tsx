@@ -2,11 +2,13 @@ import { Lock, Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useCommunityGuidelinesQuery, useSpaceAboutDetailsQuery } from '@/core/apollo/generated/apollo-hooks';
 import useNavigate from '@/core/routing/useNavigate';
+import { groupEntriesForDisplay, resolveSelectedValues } from '@/crd/components/classification/types';
 import { CommunityGuidelinesBlock } from '@/crd/components/space/CommunityGuidelinesBlock';
 import { SpaceAboutApplyButton } from '@/crd/components/space/SpaceAboutApplyButton';
 import { SpaceAboutDialog } from '@/crd/components/space/SpaceAboutDialog';
 import type { SpaceAboutData } from '@/crd/components/space/SpaceAboutView';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { mapClassificationEntries } from '@/main/crdPages/topLevelPages/spaceSettings/about/aboutMapper';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { useSpaceApplyFlow } from '../../space/useSpaceApplyFlow';
 
@@ -99,6 +101,18 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       }
     : undefined;
 
+  const canEditClassifications = permissions.canUpdate;
+  const classifications = data?.lookup.space
+    ? groupEntriesForDisplay(mapClassificationEntries(data.lookup.space), { canEdit: canEditClassifications }).map(
+        entry => ({
+          id: entry.id,
+          displayLabel: entry.displayLabel,
+          values: resolveSelectedValues(entry).map(v => v.label),
+          hidden: !entry.display,
+        })
+      )
+    : [];
+
   const aboutData: SpaceAboutData = {
     name: profile?.displayName ?? subspace.about.profile.displayName,
     tagline: profile?.tagline ?? subspace.about.profile.tagline ?? undefined,
@@ -115,6 +129,9 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
       uri: r.uri,
       description: r.description ?? undefined,
     })),
+    // Freeform Tags stay visible beside Classifications (FR-013 coexistence).
+    tags: profile?.tagset?.tags ?? [],
+    classifications,
   };
 
   const whyTitle = t(`about.context.${subspace.level}.why` as const, { ns: 'crd-space' });
@@ -185,6 +202,7 @@ export function CrdSubspaceAbout({ open, onClose }: CrdSubspaceAboutProps) {
         onEditWho={() => navigate(buildSettingsTabUrl(profileUrl, 'about', 'who'))}
         onEditReferences={() => navigate(buildSettingsTabUrl(profileUrl, 'about', 'references'))}
         onEditMembers={() => navigate(buildSettingsTabUrl(profileUrl, 'community', 'members'))}
+        onEditClassifications={() => navigate(buildSettingsTabUrl(profileUrl, 'about', 'classifications'))}
       />
       {dialogs}
     </>

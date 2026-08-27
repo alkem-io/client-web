@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Community guidelines templates",
         "subtitle": "Rules and expectations for a community."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -43,7 +47,11 @@
     "edit": "Edit",
     "duplicate": "Duplicate",
     "delete": "Delete",
-    "noPreview": "No preview"
+    "noPreview": "No preview",
+    "classification": {
+      "multiSelect": "Multi-select",
+      "singleSelect": "Single-select"
+    }
   },
   "framingKind": {
     "none": "Text",
@@ -74,7 +82,7 @@
       "noContributions": "No contributions",
       "comments": "Comments enabled",
       "commentsDisabled": "Comments disabled",
-      "defaultPostDescription": "Default post description",
+      "defaultPostDescription": "Default Post description",
       "defaultWhiteboard": "Default whiteboard",
       "links": "Links",
       "gallery": "Gallery",
@@ -101,6 +109,13 @@
       "title": "Guidelines title",
       "body": "Guidelines",
       "references": "References"
+    },
+    "classification": {
+      "multiSelect": "Multi-select",
+      "singleSelect": "Single-select",
+      "valueCount_one": "{{count}} value",
+      "valueCount_other": "{{count}} values",
+      "definedValues": "Defined values"
     }
   },
   "picker": {
@@ -128,15 +143,17 @@
       "space": "Create space template",
       "callout": "Create collaboration-tool template",
       "whiteboard": "Create whiteboard template",
-      "post": "Create post template",
-      "communityGuidelines": "Create community-guidelines template"
+      "post": "Create Post template",
+      "communityGuidelines": "Create community-guidelines template",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Edit space template",
       "callout": "Edit collaboration-tool template",
       "whiteboard": "Edit whiteboard template",
-      "post": "Edit post template",
-      "communityGuidelines": "Edit community-guidelines template"
+      "post": "Edit Post template",
+      "communityGuidelines": "Edit community-guidelines template",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Template name",
@@ -163,7 +180,7 @@
     },
     "post": {
       "defaultDescription": "Default description",
-      "defaultDescriptionPlaceholder": "Content pre-filled for new posts using this template"
+      "defaultDescriptionPlaceholder": "Content pre-filled for new Posts using this template"
     },
     "space": {
       "source": "Source space",
@@ -192,6 +209,27 @@
       "body": "Guidelines",
       "bodyPlaceholder": "Write the guidelines for this community…",
       "references": "References"
+    },
+    "classification": {
+      "cardinality": "Selection type",
+      "cardinalitySingle": "Single-select — users pick one value",
+      "cardinalityMulti": "Multi-select — users can pick multiple values",
+      "values": "Values",
+      "moveValueUp": "Move value {{position}} up",
+      "moveValueDown": "Move value {{position}} down",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Define the allowed values for this classification. Type a value and press Enter.",
+      "quickAddPlaceholder": "e.g. SDG 1 – No Poverty",
+      "valuesDefined_one": "{{count}} value defined",
+      "valuesDefined_other": "{{count}} values defined"
     }
   },
   "references": {
@@ -271,13 +309,13 @@
     "searchVisibility": "Search visibility",
     "searchVisibilityOptions": {
       "public": "Public",
-      "authenticated": "Authenticated users",
-      "account": "Account only"
+      "account": "Account",
+      "hidden": "Hidden"
     },
     "searchVisibilityHints": {
-      "public": "Anyone — including unauthenticated visitors — can find this pack via search.",
-      "authenticated": "Signed-in users can find this pack via search.",
-      "account": "Only members of the owning account can find this pack via search."
+      "public": "Anyone can find this pack via search.",
+      "account": "Only the owning account can find this pack via search — including its Associates, if the owner is an organization.",
+      "hidden": "Only admins of the owning account can find this pack via search."
     },
     "save": "Save changes",
     "crop": {
@@ -344,7 +382,8 @@
         "callout": "Collaboration tools",
         "whiteboard": "Whiteboards",
         "post": "Posts",
-        "communityGuidelines": "Community guidelines"
+        "communityGuidelines": "Community guidelines",
+        "classification": "Classifications"
       },
       "summary": "{{first}} and {{count}} more",
       "pair": "{{first}} and {{second}}"

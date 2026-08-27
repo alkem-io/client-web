@@ -157,7 +157,10 @@
     "sign-in": "Please sign in to see the users that are associated with this $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
+    "lockout": "Votre compte a été temporairement verrouillé en raison d'un trop grand nombre de tentatives de connexion échouées. Veuillez réessayer dans {{duration}}.",
+    "lockoutRetry": "Réessayer",
+    "flowUnavailable": "Nous n'avons pas pu démarrer votre connexion en toute sécurité. Veuillez la relancer.",
+    "flowUnavailableRetry": "Relancer la connexion",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
@@ -184,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Impossible d'enregistrer les modifications du tableau blanc",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "Impossible de charger l'image. Veuillez réessayer.",
+        "maxSizeFallback": "la limite autorisée",
+        "multipleFailures_one": "{{count}} image n'a pas pu être chargée",
+        "multipleFailures_other": "{{count}} images n'ont pas pu être chargées",
+        "uploadMultipleFailures_one": "{{count}} image n'a pas pu être téléversée",
+        "uploadMultipleFailures_other": "{{count}} images n'ont pas pu être téléversées",
+        "retry": "Réessayer",
+        "singleFailure": "Une image n'a pas pu être chargée",
+        "tooLarge": "L'image est trop volumineuse. La taille maximale est {{maxSize}}.",
+        "unsupportedType": "Format d'image non pris en charge. Utilisez {{formats}}.",
+        "uploadFailed": "Impossible de téléverser l'image. Veuillez réessayer."
+      },
+      "session": {
+        "rateExceeded": "Vous modifiez trop vite — reconnexion…",
+        "updateNotAccepted": "Votre modification n'a pas pu être envoyée — reconnexion…",
+        "sizeLimitExceeded": "Ce tableau blanc a atteint sa taille limite et votre dernière modification n'a pas été appliquée. Reconnectez-vous pour continuer à partir de la dernière version enregistrée.",
+        "documentDeleted": "Ce tableau blanc a été supprimé.",
+        "editsNotSaved": "Vos modifications récentes n'ont pas pu être enregistrées et ont été perdues. La collaboration s'est arrêtée.",
+        "serverShutdown": "Le serveur de collaboration redémarre — reconnexion…",
+        "updateRejected": "Votre dernière modification n'a pas pu être enregistrée. Veuillez réessayer."
       },
       "export": {
         "title": "Enregistrer dans Alkemio",
         "description": "Enregistrez la scène dans Alkemio et partagez-la avec d'autres.",
         "save": "Enregistrer dans Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Impossible d'enregistrer les modifications",
+      "updateRejected": "Votre dernière modification n'a pas pu être enregistrée. Veuillez réessayer.",
+      "updateNotAccepted": "Votre modification n'a pas pu être envoyée — reconnexion…",
+      "sessionEnded": "La collaboration a pris fin. Rechargez la page pour continuer."
     }
   },
   "cancel": "Annuler",
@@ -214,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Invité",
     "Account": "Compte",
     "Admin": "Administrateur",
     "Admins": "Administrateurs",
@@ -793,6 +815,10 @@
           "description": "{{triggeredByName}} published a new $t(common.post) in {{spaceLevel}}: {{spaceName}}, with name: {{calloutName}}.",
           "subject": "{{spaceName}} - New $t(common.post) is published \"{{calloutName}}\", have a look!"
         },
+        "SPACE_COLLABORATION_CALLOUT_REACTION": {
+          "description": "",
+          "subject": "<b>{{triggeredByName}}</b> a réagi à votre $t(common.post) avec {{emoji}}"
+        },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} modified a $t(common.poll) you voted on",
           "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified"
@@ -1012,14 +1038,16 @@
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "invalid-credentials": "The email address or password you inserted is invalid. Please check your credentials and try again. Are you trying to sign up instead? You can do so by clicking the link above.",
       "login-flow-account-exists": "This email is already associated with an $t(common.account). If you previously signed up via LinkedIn, GitHub, or Microsoft, please use that login method. Otherwise, reset your password.",
-      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "oidc-account-linking-conflict": "Vous avez essayé de continuer avec {{provider}}, mais un compte avec cet e-mail existe déjà. Connectez-vous à ce compte ci-dessous pour confirmer que c'est bien vous - {{provider}} y sera alors rattaché et vous pourrez désormais vous connecter des deux façons.",
       "pick-password": "Pick a password for your $t(common.account)",
       "property-missing": "{{field}} is required.",
       "recovery-flow-expired": "Ce lien de réinitialisation de mot de passe a expiré. Veuillez en demander un nouveau en envoyant à nouveau votre e-mail.",
       "request-recover-password": "<strong>An email containing a recovery link has been sent to the email address you provided.</strong><br/> <br/>If you have not received an email, please check the following:<br/> <br/><li> <strong>Check the spelling</strong> of the email address.</li><li> <strong>Ensure you are using the email address</strong> you registered with.</li><li> <strong>Check your spam or junk folder</strong> in case the email was filtered.</li><li> <strong>If you registered using LinkedIn, Microsoft, or another social login,</strong> password recovery via email will not work. Please use the respective social login option instead.</li><br/><br/><i>Note: This does not confirm that an $t(common.account) is registered with this email.</i>",
       "successfully-recovered-password": "Veuillez saisir un nouveau mot de passe dans les 15 prochaines minutes pour terminer la réinitialisation de votre mot de passe.",
       "verification-flow-continue": "Continuer",
-      "verification-flow-expired": "Le lien de vérification a expiré. Veuillez en demander un nouveau en soumettant à nouveau votre e-mail."
+      "verification-flow-expired": "Le lien de vérification a expiré. Veuillez en demander un nouveau en soumettant à nouveau votre e-mail.",
+      "settings-changes-saved": "Vos modifications ont été enregistrées !",
+      "confirm-it-is-you": "Veuillez confirmer cette action en vérifiant qu'il s'agit bien de vous."
     }
   },
   "languages": {
@@ -1366,7 +1394,9 @@
         "lastSaved": "The content of this $t(common.whiteboard) was last saved {{lastSaved}}.",
         "message": "Apologies for the inconvenience! The $t(common.whiteboard) isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the $t(common.whiteboard) or refreshing the page. If the issue persists, reach out to your $t(common.space) $t(common.admin) for assistance.",
         "offline": "You are currently offline. The $t(common.whiteboard) will try to reconnect when you are back online.",
-        "title": "$t(common.Whiteboards) connection lost"
+        "title": "$t(common.Whiteboards) : connexion perdue",
+        "unavailableMessage": "Ce $t(common.whiteboard) n’est pas disponible. Il se peut que vous n’y ayez pas accès ou qu’il ne soit plus disponible.",
+        "unavailableTitle": "$t(common.Whiteboard) indisponible"
       }
     }
   },

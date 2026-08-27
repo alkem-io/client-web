@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Шаблони за указания на общността",
         "subtitle": "Правила и очаквания за общност."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -43,7 +47,11 @@
     "edit": "Редактирай",
     "duplicate": "Дублирай",
     "delete": "Изтрий",
-    "noPreview": "Няма преглед"
+    "noPreview": "Няма преглед",
+    "classification": {
+      "multiSelect": "Множествен избор",
+      "singleSelect": "Единичен избор"
+    }
   },
   "framingKind": {
     "none": "Текст",
@@ -101,6 +109,13 @@
       "title": "Заглавие на указанията",
       "body": "Указания",
       "references": "Препратки"
+    },
+    "classification": {
+      "multiSelect": "Множествен избор",
+      "singleSelect": "Единичен избор",
+      "valueCount_one": "{{count}} стойност",
+      "valueCount_other": "{{count}} стойности",
+      "definedValues": "Дефинирани стойности"
     }
   },
   "picker": {
@@ -129,14 +144,16 @@
       "callout": "Създаване на шаблон за инструмент за сътрудничество",
       "whiteboard": "Създаване на шаблон за бяла дъска",
       "post": "Създаване на шаблон за публикация",
-      "communityGuidelines": "Създаване на шаблон за указания на общността"
+      "communityGuidelines": "Създаване на шаблон за указания на общността",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Редактиране на шаблон за пространство",
       "callout": "Редактиране на шаблон за инструмент за сътрудничество",
       "whiteboard": "Редактиране на шаблон за бяла дъска",
       "post": "Редактиране на шаблон за публикация",
-      "communityGuidelines": "Редактиране на шаблон за указания на общността"
+      "communityGuidelines": "Редактиране на шаблон за указания на общността",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Име на шаблон",
@@ -192,6 +209,27 @@
       "body": "Указания",
       "bodyPlaceholder": "Напишете указанията за тази общност…",
       "references": "Препратки"
+    },
+    "classification": {
+      "cardinality": "Тип на избор",
+      "cardinalitySingle": "Единичен избор — потребителите избират една стойност",
+      "cardinalityMulti": "Множествен избор — потребителите могат да изберат няколко стойности",
+      "values": "Values",
+      "moveValueUp": "Премести стойност {{position}} нагоре",
+      "moveValueDown": "Премести стойност {{position}} надолу",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Дефинирайте позволените стойности за тази класификация. Въведете стойност и натиснете Enter.",
+      "quickAddPlaceholder": "напр. ЦУР 1 – Изкореняване на бедността",
+      "valuesDefined_one": "{{count}} дефинирана стойност",
+      "valuesDefined_other": "{{count}} дефинирани стойности"
     }
   },
   "references": {
@@ -271,13 +309,13 @@
     "searchVisibility": "Видимост при търсене",
     "searchVisibilityOptions": {
       "public": "Публичен",
-      "authenticated": "Удостоверени потребители",
-      "account": "Само профил"
+      "account": "Акаунт",
+      "hidden": "Скрит"
     },
     "searchVisibilityHints": {
-      "public": "Всеки — включително неудостоверени посетители — може да открие този пакет чрез търсене.",
-      "authenticated": "Влезлите потребители могат да открият този пакет чрез търсене.",
-      "account": "Само членовете на собственика-профил могат да открият този пакет чрез търсене."
+      "public": "Всеки може да открие този пакет чрез търсене.",
+      "account": "Само акаунтът собственик може да открие този пакет чрез търсене — включително неговите Асоциирани, ако собственикът е организация.",
+      "hidden": "Само администраторите на акаунта собственик могат да открият този пакет чрез търсене."
     },
     "save": "Запази промените",
     "crop": {
@@ -344,7 +382,8 @@
         "callout": "Инструменти за сътрудничество",
         "whiteboard": "Бели дъски",
         "post": "Публикации",
-        "communityGuidelines": "Правила на общността"
+        "communityGuidelines": "Правила на общността",
+        "classification": "Classifications"
       },
       "summary": "{{first}} и още {{count}}",
       "pair": "{{first}} и {{second}}"

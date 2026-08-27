@@ -14,17 +14,32 @@ type PostContributionAddConnectorProps = {
   calloutId: string;
   defaultDisplayName?: string;
   defaultDescription?: string;
+  /** Tasks board only: the column the new post starts in (server defaults to the first column). */
+  taskColumn?: string;
+  /**
+   * Tasks board only: retitles the creation dialog and submit button in
+   * task-specific terms. Generic callers leave it false so their strings are
+   * unchanged.
+   */
+  isTaskBoard?: boolean;
   onCreated?: () => void;
   /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
   inlineTrigger?: boolean;
+  /** Escape hatch to raise the dialog above a custom overlay (e.g. the fullscreen task board). */
+  overlayClassName?: string;
+  contentClassName?: string;
 } & (ControlledOpen | UncontrolledOpen);
 
 export function PostContributionAddConnector({
   calloutId,
   defaultDisplayName,
   defaultDescription,
+  taskColumn,
+  isTaskBoard,
   onCreated,
   inlineTrigger,
+  overlayClassName,
+  contentClassName,
   open: controlledOpen,
   onOpenChange,
 }: PostContributionAddConnectorProps) {
@@ -55,6 +70,10 @@ export function PostContributionAddConnector({
             calloutId={calloutId}
             defaultDisplayName={defaultDisplayName}
             defaultDescription={defaultDescription}
+            taskColumn={taskColumn}
+            isTaskBoard={isTaskBoard}
+            overlayClassName={overlayClassName}
+            contentClassName={contentClassName}
             onCreated={() => {
               onCreated?.();
             }}

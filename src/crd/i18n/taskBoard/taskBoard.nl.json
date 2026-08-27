@@ -1,0 +1,36 @@
+{
+  "addTask": "Taak toevoegen",
+  "expand": "Volledig scherm",
+  "collapse": "Volledig scherm sluiten",
+  "emptyColumn": "Nog geen taken",
+  "moveError": "De taak kon niet worden verplaatst. Probeer het opnieuw.",
+  "columns": {
+    "manage": "Kolommen beheren",
+    "title": "Kolommen van het taakbord",
+    "description": "Voeg kolommen toe aan dit taakbord en hernoem, herorden of verwijder ze.",
+    "add": "Kolom toevoegen",
+    "namePlaceholder": "Kolomnaam",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "deleteFirstDisabled": "De eerste kolom kan niet worden verwijderd — taken komen hierin terecht.",
+    "delete": {
+      "title": "Kolom verwijderen",
+      "description": "\"{{name}}\" verwijderen? De taken gaan naar \"{{target}}\".",
+      "confirm": "Kolom verwijderen"
+    },
+    "validation": {
+      "required": "Voer een kolomnaam in.",
+      "tooLong": "Houd de naam onder de 128 tekens.",
+      "comma": "Kolomnamen mogen geen komma's bevatten.",
+      "duplicate": "Die kolom bestaat al."
+    },
+    "dragLabel": "Kolom herordenen",
+    "deleteLabel": "Kolom verwijderen",
+    "saving": "Opslaan…",
+    "saveError": "De kolomwijziging kon niet worden opgeslagen. Probeer het opnieuw."
+  },
+  "create": {
+    "option": "Takenbord",
+    "optionDescription": "Een bord met kolommen voor posts, verplaatst met slepen en neerzetten."
+  }
+}

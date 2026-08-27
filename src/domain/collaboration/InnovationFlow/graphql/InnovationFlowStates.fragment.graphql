@@ -10,6 +10,7 @@ fragment InnovationFlowStates on InnovationFlow {
       visible
       descriptionDisplayMode
       showPublishDetails
+      sidebar
     }
     defaultCalloutTemplate {
       id

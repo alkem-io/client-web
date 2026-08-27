@@ -157,7 +157,10 @@
     "sign-in": "Log in om de gebruikers te zien die geassocieerd zijn met deze $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Uw account is tijdelijk geblokkeerd vanwege te veel mislukte inlogpogingen. Probeer het opnieuw in {{minutes}} minuten.",
+    "lockout": "Uw account is tijdelijk geblokkeerd vanwege te veel mislukte inlogpogingen. Probeer het opnieuw over {{duration}}.",
+    "lockoutRetry": "Opnieuw proberen",
+    "flowUnavailable": "We konden je aanmelding niet veilig starten. Start deze opnieuw.",
+    "flowUnavailableRetry": "Aanmelden opnieuw starten",
     "passkey": {
       "not-supported": "Passkeys worden niet ondersteund door je browser",
       "script-loading": "Passkey ondersteuning laden...",
@@ -184,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Kan whiteboardwijzigingen niet opslaan",
       "images": {
         "downloadFailed": "Kan de afbeelding niet laden. Probeer het nogmaals.",
         "maxSizeFallback": "de toegestane limiet",
         "multipleFailures_one": "{{count}} afbeelding kon niet worden geladen",
         "multipleFailures_other": "{{count}} afbeeldingen konden niet geladen worden",
+        "uploadMultipleFailures_one": "{{count}} afbeelding kon niet worden geüpload",
+        "uploadMultipleFailures_other": "{{count}} afbeeldingen konden niet geüpload worden",
         "retry": "Probeer opnieuw",
         "singleFailure": "Een afbeelding kon niet geladen worden",
         "tooLarge": "Deze afbeelding is te groot. Maximale grootte is {{maxSize}}.",
         "unsupportedType": "Dit afbeeldingsformaat wordt niet ondersteund. Gebruik {{formats}}.",
         "uploadFailed": "Kan de afbeelding niet uploaden. Probeer het nogmaals."
       },
+      "session": {
+        "rateExceeded": "Je bewerkt te snel — opnieuw verbinden…",
+        "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…",
+        "sizeLimitExceeded": "Dit whiteboard heeft de maximale grootte bereikt en je laatste wijziging is niet toegepast. Maak opnieuw verbinding om verder te gaan vanaf de laatst opgeslagen versie.",
+        "documentDeleted": "Dit whiteboard is verwijderd.",
+        "editsNotSaved": "Je recente wijzigingen konden niet worden opgeslagen en zijn verloren gegaan. De samenwerking is gestopt.",
+        "serverShutdown": "De samenwerkingsserver wordt opnieuw opgestart — opnieuw verbinden…",
+        "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw."
+      },
       "export": {
         "title": "Opslaan in Alkemio",
         "description": "Sla de scène op in Alkemio en deel deze met anderen.",
         "save": "Opslaan in Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Kan wijzigingen niet opslaan",
+      "updateRejected": "Je laatste wijziging kon niet worden opgeslagen. Probeer het opnieuw.",
+      "updateNotAccepted": "Je wijziging kon niet worden verzonden — opnieuw verbinden…",
+      "sessionEnded": "De samenwerking is beëindigd. Herlaad de pagina om verder te gaan."
     }
   },
   "cancel": "Annuleren",
@@ -214,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Gast",
     "Account": "Account",
     "Admin": "Beheerder",
     "Admins": "Beheerders",
@@ -482,8 +504,8 @@
     "permission": "Toestemming",
     "permissions": "Rechten",
     "poll": "peiling",
-    "post": "post",
-    "posts": "posts",
+    "post": "Post",
+    "posts": "Posts",
     "preview": "Voorbeeld",
     "profile": "profiel",
     "project": "Project",
@@ -793,6 +815,10 @@
           "description": "{{triggeredByName}} heeft een nieuwe $t(common.post) gepubliceerd in {{spaceLevel}}: {{spaceName}}, met naam: {{calloutName}}.",
           "subject": "{{spaceName}} - Nieuwe $t(common.post) is gepubliceerd\"{{calloutName}}\", neem een kijke!"
         },
+        "SPACE_COLLABORATION_CALLOUT_REACTION": {
+          "description": "",
+          "subject": "<b>{{triggeredByName}}</b> heeft gereageerd op jouw $t(common.post) met {{emoji}}"
+        },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} heeft een $t(common.poll) gewijzigd waarop je hebt gestemd",
           "subject": "De $t(common.poll) \"{{calloutName}}\" in {{spaceName}} is gewijzigd"
@@ -1012,14 +1038,16 @@
       "claim-missing": "U heeft uw Cleverbase identiteit nog niet geverifieerd. Controleer uw identiteit en probeer het opnieuw of probeer een andere registratiemethode.",
       "invalid-credentials": "Het ingevoerde e-mailadres of wachtwoord is ongeldig. Controleer je gegevens en probeer het opnieuw. Probeer je je in plaats daarvan aan te melden? Je kunt dit doen door op de link hierboven te klikken.",
       "login-flow-account-exists": "Dit e-mailadres is al verbonden met een $t(common.account). Als je je eerder hebt aangemeld via LinkedIn, GitHub of Microsoft, gebruik dan die inlogmethode. Anders kun je ook je wachtwoord herstellen.",
-      "oidc-account-linking-conflict": "U probeert in te loggen met {{provider}}, maar dat e-mailadres wordt al gebruikt door een ander account.",
+      "oidc-account-linking-conflict": "Je probeerde door te gaan met {{provider}}, maar er bestaat al een account met dat e-mailadres. Log hieronder in op dat account om te bevestigen dat jij het bent - {{provider}} wordt dan aan dat account gekoppeld en je kunt voortaan op beide manieren inloggen.",
       "pick-password": "Kies een wachtwoord voor je $t(common.account)",
       "property-missing": "{{field}} is vereist.",
       "recovery-flow-expired": "Deze wachtwoord reset-link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
       "request-recover-password": "<strong>Een e-mail met een herstellink is verstuurd naar het opgegeven e-mailadres.</strong><br/> <br/>Als je geen e-mail hebt ontvangen, Controleer het volgende:<br/> <br/><li> <strong>Controleer de spelling</strong> van het e-mailadres.</li/><li> <strong>zorg ervoor dat je het e-mailadres gebruikt </strong> waarmee je je hebt geregistreerd.</li><li> <strong>Controleer je spam of ongewenste map</strong> </li><li> <strong>Als je je hebt geregistreerd met LinkedIn, Microsoft of een andere sociale login,</strong> dan werkt wachtwoord herstel via e-mail niet. Gebruik in plaats daarvan de respectievelijke optie voor social login.</li><br/><br/><i>Opmerking: Dit bevestigt niet dat een $t(common.account) geregistreerd is met deze e-mail.</i>",
       "successfully-recovered-password": "Voer binnen de komende 15 minuten een nieuw wachtwoord in om uw wachtwoordreset te voltooien.",
       "verification-flow-continue": "Volgende",
-      "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven."
+      "verification-flow-expired": "De verificatie link is verlopen. Vraag een nieuwe aan door nogmaals je email door te geven.",
+      "settings-changes-saved": "Je wijzigingen zijn opgeslagen!",
+      "confirm-it-is-you": "Bevestig deze actie door te verifiëren dat jij het bent."
     }
   },
   "languages": {
@@ -1366,7 +1394,9 @@
         "lastSaved": "De inhoud van dit $t(common.whiteboard) is voor het laatst opgeslagen op {{lastSaved}}.",
         "message": "Excuses voor het ongemak! Je kunt het $t(common.whiteboard) nu niet bewerken, mogelijk door een netwerkfout of geen toegang. Sluit en open het $t(common.whiteboard) opnieuw of ververs de pagina. Blijft het fout gaan? Vraag dan de $t(common.admin) van deze $t(common.space) om hulp.",
         "offline": "Je bent momenteel offline. Het $t(common.whiteboard) zal proberen opnieuw verbinding te maken als je weer online bent.",
-        "title": "Verbinding verloren"
+        "title": "Verbinding verloren",
+        "unavailableMessage": "Dit $t(common.whiteboard) is niet beschikbaar. Mogelijk heb je geen toegang of is het niet langer beschikbaar.",
+        "unavailableTitle": "$t(common.Whiteboard) niet beschikbaar"
       }
     }
   },

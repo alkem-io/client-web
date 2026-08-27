@@ -19,13 +19,17 @@ export type CrdCalendarSidebar = {
  * Sidebar-specific view of the calendar. Shares the underlying
  * `useSpaceCalendarEventsQuery` with CrdCalendarDialogConnector via Apollo's
  * normalised cache (no extra network request).
+ *
+ * `skip: true` suppresses the query — the sidebar connector passes this when
+ * the `events` widget is not configured on the active tab (FR-019). Forwarded
+ * as an absent `spaceId` since `useCalendarEvents` skips on `!spaceId`.
  */
-export function useCrdCalendarSidebar(): CrdCalendarSidebar {
+export function useCrdCalendarSidebar(skip?: boolean): CrdCalendarSidebar {
   const { spaceId, parentSpaceId } = useUrlResolver();
   // useCalendarEvents internally sets includeSubspace=!parentSpaceId, so at L0
   // we receive parent events PLUS subspace events flagged visibleOnParentCalendar
   // (FR-033/035). Apollo dedupes against the dialog connector's identical call.
-  const { entities, state } = useCalendarEvents({ spaceId, parentSpaceId });
+  const { entities, state } = useCalendarEvents({ spaceId: skip ? undefined : spaceId, parentSpaceId });
 
   const startOfToday = startOfDay(new Date());
   const futureSorted = sortBy(

@@ -6,8 +6,8 @@ import {
   PollResultsDetail,
   PollResultsVisibility,
 } from '@/core/apollo/generated/graphql-schema';
+import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
@@ -87,6 +87,15 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     ? (CONTRIBUTION_TYPE_TO_RESPONSE[firstAllowedType] ?? 'none')
     : 'none';
 
+  // Board-ness lives on the callout's classification: a Tasks board carries the
+  // reserved TASK tagset, whose `allowedValues` are the ordered columns. Restore
+  // the create-form toggle and its columns so saving this callout as a template
+  // captures board-ness (the template-create input emits `taskBoard.columns`) —
+  // otherwise the saved template is a plain posts callout and the round-trip is
+  // lost. Mirrors `calloutTemplateContentToFormValues`. A callout without the
+  // marker leaves `taskBoard` at the form default (off).
+  const taskTagset = callout.classification?.tagsets?.find(tagset => tagset.name === TASK_TAGSET_NAME);
+
   const values: Partial<CalloutFormValues> = {
     title: framing.profile.displayName,
     description: framing.profile.description ?? '',
@@ -125,20 +134,15 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
         altText: v.alternativeText,
         sortOrder: v.sortOrder,
       })) ?? [],
+    taskBoard: Boolean(taskTagset),
+    taskBoardColumns: taskTagset?.allowedValues ?? [],
     responseType,
     allowedActors: allowedActorsFromServer(settings.contribution.canAddContributions),
     contributionCommentsEnabled: settings.contribution.commentsEnabled,
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      // Legacy callouts may have `EmptyWhiteboardString` persisted as the
-      // default-whiteboard sentinel from a prior buggy create path. Normalize
-      // it back to "" so the form treats this as "no default configured" and
-      // the mapper omits it on update — instead of round-tripping the sentinel.
-      whiteboardContent:
-        !contributionDefaults.whiteboardContent || contributionDefaults.whiteboardContent === EmptyWhiteboardString
-          ? ''
-          : contributionDefaults.whiteboardContent,
+      whiteboardContentAvailable: contributionDefaults.whiteboardContentAvailable,
     },
     prePopulateLinkRows: [],
     referenceRows:

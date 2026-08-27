@@ -188,6 +188,7 @@
     "openAria": "Abrir {{title}}",
     "draft": "Borrador",
     "expand": "Mostrar más",
+    "fullscreen": "Pantalla completa",
     "collapse": "Mostrar menos",
     "openWhiteboard": "Abrir pizarra",
     "openMemo": "Abrir memo",
@@ -287,6 +288,10 @@
     "postTagsLabel": "Etiquetas",
     "postSave": "Guardar",
     "postCreate": "Publicar",
+    "createTask": "Crear tarea",
+    "editTask": "Editar tarea",
+    "taskCreate": "Crear tarea",
+    "tasksHeader": "Tareas ({{count}})",
     "postDelete": "Eliminar publicación",
     "postDeleteConfirmTitle": "¿Eliminar esta publicación?",
     "postDeleteConfirmDescription": "Esto eliminará permanentemente la publicación y sus comentarios. Esta acción no se puede deshacer.",
@@ -326,7 +331,6 @@
   },
   "members": {
     "subtitle": "{{users}} miembros y {{organizations}} organizaciones en este espacio.",
-    "inviteMember": "Invitar miembro",
     "search": "Buscar miembros u organizaciones...",
     "filterAll": "Todos",
     "filterLead": "Líder",
@@ -411,7 +415,8 @@
         "why": "¿Por qué este subespacio?",
         "who": "¿Quién participa?"
       }
-    }
+    },
+    "tags": "Etiquetas"
   },
   "apply": {
     "apply": "Solicitar acceso",
@@ -501,6 +506,9 @@
     "comments_other": "Se eliminarán {{count}} comentarios",
     "success": "El aviso “{{title}}” se ha eliminado.",
     "saveFailed": "No se pudo eliminar el aviso. Vuelve a intentarlo."
+  },
+  "deleteTask": {
+    "title": "¿Eliminar esta tarea?"
   },
   "deleteContribution": {
     "title": "¿Eliminar esta contribución?",
@@ -648,6 +656,9 @@
     "template": "Plantilla",
     "templatePlaceholder": "Elige una plantilla…",
     "templateLoading": "Cargando plantillas…",
+    "whiteboardConfigured": "Hay una pizarra predeterminada configurada.",
+    "whiteboardNotConfigured": "Las nuevas contribuciones comenzarán con una pizarra vacía.",
+    "clearWhiteboard": "Borrar predeterminado",
     "save": "Guardar"
   },
   "calloutDialog": {
@@ -817,6 +828,7 @@
     "seeFullDescription": "Ver descripción completa"
   },
   "postPreview": {
+    "createdBy": "Creado por",
     "label": "Vista previa de la contribución seleccionada",
     "edit": "Editar respuesta",
     "share": "Compartir respuesta",
@@ -1027,5 +1039,15 @@
       "title": "Aún no hay subespacios",
       "description": "Este espacio aún no tiene subespacios."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Clasificaciones"
+  },
+  "parentStack": {
+    "goTo": "Ir a {{name}}"
   }
 }

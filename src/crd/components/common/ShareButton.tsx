@@ -15,6 +15,9 @@ type ShareButtonProps = {
   shareOnAlkemioSlot?: ReactNode;
   children?: ReactNode;
   className?: string;
+  /** Raise the share dialog above a custom overlay (e.g. the fullscreen task board). */
+  dialogClassName?: string;
+  overlayClassName?: string;
 };
 
 export function ShareButton({
@@ -26,6 +29,8 @@ export function ShareButton({
   shareOnAlkemioSlot,
   children,
   className,
+  dialogClassName,
+  overlayClassName,
 }: ShareButtonProps) {
   const { t } = useTranslation('crd-common');
   const [open, setOpen] = useState(false);
@@ -67,6 +72,8 @@ export function ShareButton({
         url={url}
         title={dialogTitle}
         shareOnAlkemioSlot={shareOnAlkemioSlot}
+        className={dialogClassName}
+        overlayClassName={overlayClassName}
       >
         {children}
       </ShareDialog>

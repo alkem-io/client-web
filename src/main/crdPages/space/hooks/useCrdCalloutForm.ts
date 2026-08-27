@@ -80,6 +80,15 @@ export type CalloutFormValues = {
   pollHideResultsUntilVoted: boolean;
   pollShowVoterAvatars: boolean;
   whiteboardContent: string;
+  /**
+   * True once the user has opened the whiteboard editor and saved (drew OR deliberately
+   * cleared it) — set by the framing/whiteboard editor's `onWhiteboardChange`. Distinct from
+   * serialized emptiness: a source-derived (duplicated / imported) template starts with an
+   * empty placeholder AND `whiteboardEdited === false`, so the create mapper copies the source
+   * snapshot; once the user clears it on purpose (`whiteboardEdited === true`, empty content)
+   * the intentional blank is sent instead of re-copying the source. `false` on prefill.
+   */
+  whiteboardEdited?: boolean;
   whiteboardPreviewImages: WhiteboardPreviewImage[];
   whiteboardPreviewSettings: WhiteboardPreviewSettings;
   /**
@@ -93,6 +102,8 @@ export type CalloutFormValues = {
    */
   whiteboardPreviewServerUrl?: string;
   whiteboardConfigured: boolean;
+  /** Server-owned live draft used only while creating a Whiteboard framing. */
+  framingWhiteboardDraft?: import('@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft').WhiteboardDraftHandle;
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
   // Collabora document framing — only submitted when framingType is CollaboraDocument
   collaboraDocumentType: CollaboraDocumentType;
@@ -100,6 +111,19 @@ export type CalloutFormValues = {
   collaboraUploadFile: File | null;
   // Zone 2 — responses
   responseType: ResponseType;
+  /**
+   * Create-mode only: build this callout as a Tasks board. When set, the mapper
+   * forces the POST-only contribution type and sends `taskBoard: {}` so the
+   * server seeds the default columns. Columns are managed post-create.
+   */
+  taskBoard: boolean;
+  /**
+   * Create-mode only: the ordered column list to seed a Tasks board with. Empty
+   * means "seed the default columns" (the plain toggle path). It is populated
+   * when a board template is applied so the template's custom columns round-trip
+   * onto the new board; `taskBoard` must be true for it to have any effect.
+   */
+  taskBoardColumns: string[];
   allowedActors: AllowedActors;
   contributionCommentsEnabled: boolean;
   contributionDefaults: ContributionDefaults;
@@ -172,17 +196,25 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   pollHideResultsUntilVoted: false,
   pollShowVoterAvatars: true,
   whiteboardContent: EmptyWhiteboardString,
+  whiteboardEdited: false,
   whiteboardPreviewImages: [],
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
   whiteboardPreviewServerUrl: undefined,
   whiteboardConfigured: false,
+  framingWhiteboardDraft: undefined,
   mediaGalleryVisuals: [],
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
   collaboraUploadFile: null,
   responseType: 'none',
+  taskBoard: false,
+  taskBoardColumns: [],
   allowedActors: { members: true, admins: true },
   contributionCommentsEnabled: true,
-  contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+  contributionDefaults: {
+    defaultDisplayName: '',
+    postDescription: '',
+    whiteboardContentAvailable: false,
+  },
   prePopulateLinkRows: [],
   referenceRows: [],
   notifyMembers: false,

@@ -24,10 +24,10 @@ function sameUsers(a: ConnectedUser[], b: ConnectedUser[]): boolean {
 }
 
 /**
- * Thin wrapper around the MUI collab-input `useCollaboration` hook.
+ * Thin wrapper around the shared collab-input `useCollaboration` hook.
  *
- * Reuses the existing Hocuspocus provider lifecycle (WebSocket URL resolution,
- * provider creation, event wiring, cleanup) so there is exactly one source of
+ * Reuses the unified collaboration-provider lifecycle (`/collab/<id>?type=memo`):
+ * provider creation, event wiring, cleanup — so there is exactly one source of
  * truth for memo/collab wiring. See `src/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration.ts`.
  *
  * Adds: member count + connected-user presence list derived from provider

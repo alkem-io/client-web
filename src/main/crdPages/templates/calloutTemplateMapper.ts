@@ -21,11 +21,11 @@ import {
   PollResultsVisibility,
   type UpdateCalloutEntityInput,
 } from '@/core/apollo/generated/graphql-schema';
+import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import {
   allowedActorsFromServer,
-  framingChipToServer,
   mapFormToCalloutCreationInput,
   mapFormToCalloutUpdateInput,
 } from '@/main/crdPages/space/callout/calloutFormMapper';
@@ -44,6 +44,11 @@ export type CalloutTemplateMapperFallbacks = {
  * Reuses the live-callout creation mapper (its output is, by construction, a `CreateCalloutOnCalloutsSetInput`
  * minus `calloutsSetID` — i.e. structurally a `CreateCalloutInput`); `visibility` is irrelevant for a
  * template (the create-template mutation ignores `settings.visibility`) so we pass a fixed value.
+ *
+ * #29 — a whiteboard-framed source's live content is WS-only and can no longer be read on the client
+ * (006-collab-content-unification), so we can't carry the scene over in `framing.whiteboard.content`.
+ * Instead, the create mapper carries only the source whiteboard id. The server copies its stored
+ * snapshot and media, or creates a canonical blank when there is no source.
  */
 export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
@@ -54,35 +59,29 @@ export function calloutFormValuesToCreateCalloutInput(
     whiteboardFallbackDisplayName: fallbacks.whiteboardFallbackDisplayName,
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
   });
+
   // Pick only the fields `CreateCalloutInput` accepts (drops `sendNotification` / `classification`,
-  // which are concrete-callout concerns and meaningless on a template).
+  // which are concrete-callout concerns and meaningless on a template). `taskBoard` IS forwarded:
+  // it is how board-ness (and the column list) is captured into a callout template — without it a
+  // Tasks board saved as a template would round-trip to a plain posts callout.
   return {
     framing: input.framing,
     settings: input.settings,
     contributionDefaults: input.contributionDefaults,
+    ...(input.taskBoard ? { taskBoard: input.taskBoard } : {}),
   };
 }
 
 /**
  * `CalloutFormValues` → `UpdateCalloutEntityInput` for `updateCalloutTemplate({ calloutData })`.
- * Starts from the live-callout update mapper (handles profile / references / tagsets / link / poll-title /
- * settings / contributionDefaults) then layers on the static body fields a *template* keeps —
- * whiteboard content + preview settings, memo content — which the live mapper deliberately omits
- * (a live callout edits those through its collaborative dialogs; a template stores them directly).
+ * Starts from the live-callout update mapper. Existing whiteboard and memo bodies are edited through
+ * their collaborative dialogs; this metadata mutation never carries Yjs or Markdown body content.
  */
 export function calloutFormValuesToUpdateCalloutEntityInput(
   values: CalloutFormValues,
   calloutId: string
 ): UpdateCalloutEntityInput {
   const { input } = mapFormToCalloutUpdateInput(values, { calloutId });
-  const framingType = framingChipToServer(values.framingChip);
-  if (input.framing && framingType === CalloutFramingType.Whiteboard) {
-    input.framing.whiteboardContent = values.whiteboardContent;
-    input.framing.whiteboardPreviewSettings = values.whiteboardPreviewSettings;
-  }
-  if (input.framing && framingType === CalloutFramingType.Memo && values.memoMarkdown.trim()) {
-    input.framing.memoContent = values.memoMarkdown;
-  }
   return input;
 }
 
@@ -127,6 +126,13 @@ export function calloutTemplateContentToFormValues(
   callout: CalloutTemplateContentFragment
 ): Partial<CalloutFormValues> {
   const { framing, settings, contributionDefaults } = callout;
+  // Board-ness lives on the callout's classification: a template saved from a
+  // Tasks board carries the reserved TASK tagset, whose `allowedValues` are the
+  // ordered columns. Restore the create-form toggle and its columns so applying
+  // the template reproduces the board (not a plain posts callout). A template
+  // without the marker leaves `taskBoard` at the form default (off).
+  const taskTagset = callout.classification?.tagsets?.find(tagset => tagset.name === TASK_TAGSET_NAME);
+  const taskBoardColumns = taskTagset?.allowedValues ?? [];
   const framingChip = FRAMING_TYPE_TO_CHIP[framing.type];
   const collaboraDocumentType = framing.collaboraDocument?.documentType;
   // `responseType` is the user's chosen contribution type — it must come from
@@ -163,7 +169,8 @@ export function calloutTemplateContentToFormValues(
     pollAllowCustomOptions: framing.poll?.settings.allowContributorsAddOptions ?? false,
     pollHideResultsUntilVoted: framing.poll?.settings.resultsVisibility === PollResultsVisibility.Hidden,
     pollShowVoterAvatars: framing.poll?.settings.resultsDetail !== PollResultsDetail.Count,
-    whiteboardContent: framing.whiteboard?.content || EmptyWhiteboardString,
+    // #29: live whiteboard content is WS-only; the server copies it into the template on create.
+    whiteboardContent: EmptyWhiteboardString,
     whiteboardPreviewImages: [],
     whiteboardPreviewSettings: framing.whiteboard?.previewSettings ?? DefaultWhiteboardPreviewSettings,
     // Server-rendered preview image (D16, 2026-05-18) — shown by `InlineWhiteboardPreview` as the
@@ -179,16 +186,16 @@ export function calloutTemplateContentToFormValues(
         sortOrder: v.sortOrder,
       })) ?? [],
     ...(collaboraDocumentType ? { collaboraDocumentType } : {}),
+    taskBoard: Boolean(taskTagset),
+    taskBoardColumns,
     responseType,
     allowedActors: allowedActorsFromServer(settings.contribution.canAddContributions),
     contributionCommentsEnabled: settings.contribution.commentsEnabled,
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      whiteboardContent:
-        !contributionDefaults.whiteboardContent || contributionDefaults.whiteboardContent === EmptyWhiteboardString
-          ? ''
-          : contributionDefaults.whiteboardContent,
+      whiteboardContentAvailable: contributionDefaults.whiteboardContentAvailable,
+      sourceCalloutId: callout.id,
     },
     prePopulateLinkRows: [],
     referenceRows:
