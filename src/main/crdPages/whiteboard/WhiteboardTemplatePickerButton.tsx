@@ -1,11 +1,6 @@
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useReplaceWhiteboardContentFromSourceMutation,
-  useSpaceTemplatesManagerQuery,
-} from '@/core/apollo/generated/apollo-hooks';
-import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
-import { useNotification } from '@/core/ui/notifications/useNotification';
+import { useSpaceTemplatesManagerQuery } from '@/core/apollo/generated/apollo-hooks';
 import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { Button } from '@/crd/primitives/button';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -13,8 +8,8 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useTemplatePicker } from '@/main/crdPages/templates/useTemplatePicker';
 
 type WhiteboardTemplatePickerButtonProps = {
-  whiteboardId: string;
   disabled?: boolean;
+  onImport: (sourceWhiteboardId: string) => Promise<void>;
 };
 
 /**
@@ -25,9 +20,8 @@ type WhiteboardTemplatePickerButtonProps = {
  * outside a space (e.g. the public whiteboard route) `useSpace()` returns its empty default, so only
  * the platform library is offered.
  */
-export function WhiteboardTemplatePickerButton({ whiteboardId, disabled }: WhiteboardTemplatePickerButtonProps) {
+export function WhiteboardTemplatePickerButton({ disabled, onImport }: WhiteboardTemplatePickerButtonProps) {
   const { t } = useTranslation();
-  const notify = useNotification();
   const {
     space: { accountId, levelZeroSpaceId },
   } = useSpace();
@@ -37,26 +31,28 @@ export function WhiteboardTemplatePickerButton({ whiteboardId, disabled }: White
   });
   const spaceTemplatesSetId = tmData?.lookup.space?.templatesManager?.templatesSet?.id;
   const picker = useTemplatePicker({ allowedTypes: ['whiteboard'], accountId, spaceTemplatesSetId });
-  const [replaceFromSource, { loading: importing }] = useReplaceWhiteboardContentFromSourceMutation();
+  const [importing, setImporting] = useState(false);
+  const consumedSelection = useRef<typeof picker.selectedTemplateContent>(null);
 
   const selectedContent = picker.selectedTemplateContent;
   const selectedId = picker.selectedTemplateId;
-  const [appliedFor, setAppliedFor] = useState<string | null>(null);
   useEffect(() => {
-    if (!selectedContent || selectedContent.type !== 'whiteboard' || !selectedId || appliedFor === selectedId) return;
+    if (!selectedContent) {
+      consumedSelection.current = null;
+      return;
+    }
+    if (selectedContent.type !== 'whiteboard' || !selectedId || consumedSelection.current === selectedContent) {
+      return;
+    }
     const sourceWhiteboardID = selectedContent.sourceWhiteboardId;
     if (!sourceWhiteboardID) return;
-    setAppliedFor(selectedId);
-    void replaceFromSource({
-      variables: { input: { targetWhiteboardID: whiteboardId, sourceWhiteboardID } },
-    }).catch(err => {
-      setAppliedFor(null);
-      notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-      logError(new Error(`Error importing whiteboard template by source id: '${err}'`), {
-        category: TagCategoryValues.WHITEBOARD,
-      });
+    consumedSelection.current = selectedContent;
+    picker.clearSelection();
+    setImporting(true);
+    void onImport(sourceWhiteboardID).finally(() => {
+      setImporting(false);
     });
-  }, [selectedContent, selectedId, appliedFor, replaceFromSource, whiteboardId, notify, t]);
+  }, [selectedContent, selectedId, picker, onImport]);
 
   return (
     // Own Suspense boundary: the template picker pulls in the lazy `crd-templates`
