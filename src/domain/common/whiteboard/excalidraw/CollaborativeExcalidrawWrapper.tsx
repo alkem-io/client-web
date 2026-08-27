@@ -1,7 +1,7 @@
 import type { AssetAdapter, ExcalidrawImperativeAPI, ExcalidrawProps } from '@excalidraw-yjs/excalidraw/types';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
-import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
+import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -176,6 +176,14 @@ const CollaborativeExcalidrawWrapper = ({
   const [connectionError, setConnectionError] = useState(false);
 
   const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
+  const previousWhiteboardIdRef = useRef(whiteboard?.id);
+
+  useEffect(() => {
+    if (previousWhiteboardIdRef.current !== whiteboard?.id) {
+      actions.onEditorInvalidated?.();
+      previousWhiteboardIdRef.current = whiteboard?.id;
+    }
+  }, [whiteboard?.id, actions.onEditorInvalidated]);
 
   const whiteboardDefaults = useWhiteboardDefaults();
   const { t } = useTranslation();
