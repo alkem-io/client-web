@@ -1,7 +1,7 @@
 import type { AssetAdapter, ExcalidrawImperativeAPI, ExcalidrawProps } from '@excalidraw-yjs/excalidraw/types';
 import { debounce, merge } from 'lodash-es';
 import type React from 'react';
-import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useState } from 'react';
+import { type PropsWithChildren, type Ref, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
@@ -93,6 +93,13 @@ export type DisconnectNoticeRenderProps = {
   open: boolean;
   isOnline: boolean;
   connecting: boolean;
+  /**
+   * Non-null when the room refused this collaboration attempt permanently. Consumers must
+   * render an unavailable/access state and must not offer reconnect for these verdicts.
+   * `document-size-limit-exceeded` is the one manual-recovery verdict: reconnect creates a
+   * fresh editor generation after the rejected local generation is discarded.
+   */
+  terminalCloseReason: string | null;
   /** A reconnect attempt has failed (not just a transient drop) — surface an immediate reload escape hatch. */
   hasError: boolean;
   /** Seconds until auto-reconnect, or `null` when no countdown is active (offline / not scheduled). */
@@ -169,6 +176,7 @@ const CollaborativeExcalidrawWrapper = ({
   const [connectionError, setConnectionError] = useState(false);
 
   const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
+  const previousWhiteboardIdRef = useRef(whiteboard?.id);
 
   const whiteboardDefaults = useWhiteboardDefaults();
   const { t } = useTranslation();
@@ -244,7 +252,7 @@ const CollaborativeExcalidrawWrapper = ({
     },
   };
 
-  const { UIOptions: externalUIOptions, ...restOptions } = options;
+  const { UIOptions: externalUIOptions, viewModeEnabled: externallyReadOnly, ...restOptions } = options;
 
   const mergedUIOptions = merge(UIOptions, externalUIOptions);
 
@@ -407,6 +415,13 @@ const CollaborativeExcalidrawWrapper = ({
 
   const handleInitializeApi = (api: ExcalidrawImperativeAPI | null) => {
     if (!api) return;
+    // The keyed editor for a new whiteboard can publish its API before a passive
+    // parent effect runs. Invalidate the old generation synchronously here, then
+    // publish the new API, so the invalidation can never clear the replacement.
+    if (previousWhiteboardIdRef.current !== whiteboard?.id) {
+      actions.onEditorInvalidated?.();
+      previousWhiteboardIdRef.current = whiteboard?.id;
+    }
     // Pair the api with the whiteboard it was created under (the editor mounted under the
     // current, keyed whiteboard id), so the init effect can require a match.
     setExcalidrawApi({ api, whiteboardId: whiteboard?.id ?? '' });
@@ -426,7 +441,7 @@ const CollaborativeExcalidrawWrapper = ({
             initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
-            viewModeEnabled={isReadOnly}
+            viewModeEnabled={isReadOnly || externallyReadOnly}
             assetAdapter={assetAdapter}
             onPointerUpdate={collabApi?.onPointerUpdate}
             onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}
@@ -458,6 +473,7 @@ const CollaborativeExcalidrawWrapper = ({
         isOnline,
         hasError: connectionError,
         connecting,
+        terminalCloseReason,
         autoReconnectSeconds,
         lastSuccessfulSavedDate,
         onReconnect: restartCollaboration,

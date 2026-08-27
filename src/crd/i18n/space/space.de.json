@@ -656,6 +656,9 @@
     "template": "Vorlage",
     "templatePlaceholder": "Vorlage auswählen…",
     "templateLoading": "Vorlagen werden geladen…",
+    "whiteboardConfigured": "Ein Standard-Whiteboard ist konfiguriert.",
+    "whiteboardNotConfigured": "Neue Beiträge beginnen mit einem leeren Whiteboard.",
+    "clearWhiteboard": "Standard löschen",
     "save": "Speichern"
   },
   "calloutDialog": {

@@ -1394,7 +1394,9 @@
         "lastSaved": "The content of this $t(common.whiteboard) was last saved {{lastSaved}}.",
         "message": "Apologies for the inconvenience! The $t(common.whiteboard) isn't available for editing right now, possibly due to a network issue or loss of access. Please try closing and reopening the $t(common.whiteboard) or refreshing the page. If the issue persists, reach out to your $t(common.space) $t(common.admin) for assistance.",
         "offline": "You are currently offline. The $t(common.whiteboard) will try to reconnect when you are back online.",
-        "title": "$t(common.Whiteboards) connection lost"
+        "title": "$t(common.Whiteboards) connection lost",
+        "unavailableMessage": "This $t(common.whiteboard) is unavailable. You may not have access, or it may no longer be available.",
+        "unavailableTitle": "$t(common.Whiteboard) unavailable"
       }
     }
   },

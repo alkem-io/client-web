@@ -148,12 +148,48 @@ function resolveNotificationUrl(notification: InAppNotificationModel): string | 
   );
 }
 
+/**
+ * The profile shape the item's avatar needs. Both `triggeredBy.profile` and the optional
+ * contributor profiles carried on the payload satisfy it.
+ */
+type NotificationAvatarProfile = {
+  displayName: string;
+  visual?: { uri?: string } | undefined;
+};
+
+/**
+ * Per-type overrides for whose avatar the item shows.
+ *
+ * The avatar defaults to the user who triggered the notification, which is right for every
+ * template that opens with `{{triggeredByName}}`. A few templates are worded about someone
+ * else entirely, and for those the triggering user is not the subject — their avatar beside
+ * another person's name reads as if the wrong person acted.
+ *
+ * A type absent from this map keeps `triggeredBy`, and so does an entry whose profile the
+ * payload does not carry. Only add an entry where the template unambiguously names someone
+ * other than the triggering user as its subject.
+ */
+const AVATAR_SUBJECT_BY_TYPE: Partial<
+  Record<NotificationEvent, (payload: InAppNotificationPayloadModel) => NotificationAvatarProfile | undefined>
+> = {
+  // "<member> joined <space>" — the member is the payload actor, whereas the trigger is
+  // whoever performed the join: on the invitation and admin-adds-a-member paths that is a
+  // lead, not the new member.
+  [NotificationEvent.SpaceAdminCommunityNewMember]: payload => payload.actor?.profile,
+};
+
+/** Resolves the profile whose avatar and initials the item renders. */
+function resolveAvatarProfile(notification: InAppNotificationModel): NotificationAvatarProfile {
+  return AVATAR_SUBJECT_BY_TYPE[notification.type]?.(notification.payload) ?? notification.triggeredBy.profile;
+}
+
 export function mapNotificationToItemData(
   notification: InAppNotificationModel,
   t: TFunction,
   unreadState: NotificationEventInAppState
 ): CrdNotificationItemData {
   const values = buildTranslationValues(notification, t);
+  const avatarProfile = resolveAvatarProfile(notification);
   const typeKey = `components.inAppNotifications.type.${notification.type}`;
   const subjectKey = `${typeKey}.subject`;
   const descriptionKey = `${typeKey}.description`;
@@ -177,8 +213,8 @@ export function mapNotificationToItemData(
       <Trans i18nKey={descriptionKey as any} values={values} components={TRANS_COMPONENTS} />
     ) : undefined,
     comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} className="text-body" /> : undefined,
-    avatarUrl: notification.triggeredBy.profile.visual?.uri,
-    avatarFallback: getInitials(notification.triggeredBy.profile.displayName),
+    avatarUrl: avatarProfile.visual?.uri,
+    avatarFallback: getInitials(avatarProfile.displayName),
     timestamp: formatTimeElapsed(notification.triggeredAt, t),
     isUnread: notification.state === unreadState,
     href: resolveNotificationUrl(notification),

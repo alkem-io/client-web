@@ -8,6 +8,7 @@ import {
   type CloseVerdict,
   type ControlMessage,
   classifyClose,
+  DURABILITY_REQUEST_TIMEOUT_MS,
   type SceneSyncPort,
   UnifiedCollabProvider,
   WIRE,
@@ -71,6 +72,13 @@ function readFrameType(bytes: Uint8Array): number {
   return decoding.readVarUint(decoding.createDecoder(bytes));
 }
 
+function readRawJsonFrame(bytes: Uint8Array): { type: number; body: unknown } {
+  const decoder = decoding.createDecoder(bytes);
+  const type = decoding.readVarUint(decoder);
+  const body = JSON.parse(new TextDecoder().decode(decoding.readTailAsUint8Array(decoder)));
+  return { type, body };
+}
+
 beforeEach(() => {
   MockWebSocket.instances = [];
   vi.stubGlobal('WebSocket', MockWebSocket);
@@ -92,6 +100,42 @@ describe('UnifiedCollabProvider', () => {
     const provider = new UnifiedCollabProvider(baseOptions);
     expect(MockWebSocket.instances).toHaveLength(1);
     expect(MockWebSocket.instances[0].url).toBe('wss://collab.test/collab/doc-1?type=whiteboard');
+    provider.destroy();
+  });
+
+  it('uses the configured platform domain when no base URL override is provided', () => {
+    vi.stubGlobal('window', {
+      _env_: { VITE_APP_ALKEMIO_DOMAIN: 'https://platform.test' },
+      location: { origin: 'https://browser.test' },
+    });
+
+    const provider = new UnifiedCollabProvider({ documentId: 'doc-1', type: 'whiteboard' });
+
+    expect(MockWebSocket.instances[0].url).toBe('wss://platform.test/collab/doc-1?type=whiteboard');
+    provider.destroy();
+  });
+
+  it('uses the browser origin when no platform domain or base URL override is provided', () => {
+    vi.stubGlobal('window', {
+      _env_: {},
+      location: { origin: 'https://browser.test' },
+    });
+
+    const provider = new UnifiedCollabProvider({ documentId: 'doc-1', type: 'memo' });
+
+    expect(MockWebSocket.instances[0].url).toBe('wss://browser.test/collab/doc-1?type=memo');
+    provider.destroy();
+  });
+
+  it('uses the browser origin when the runtime platform domain is empty', () => {
+    vi.stubGlobal('window', {
+      _env_: { VITE_APP_ALKEMIO_DOMAIN: '' },
+      location: { origin: 'https://browser.test' },
+    });
+
+    const provider = new UnifiedCollabProvider({ documentId: 'doc-1', type: 'memo' });
+
+    expect(MockWebSocket.instances[0].url).toBe('wss://browser.test/collab/doc-1?type=memo');
     provider.destroy();
   });
 
@@ -287,6 +331,99 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
+  it('requests durability with the raw service wire contract and waits for the matching persisted reply', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.sent.length = 0;
+
+    const durability = provider.requestDurability();
+    const request = readRawJsonFrame(socket.sent[0]);
+    expect(request.type).toBe(WIRE.DURABILITY_REQUEST);
+    expect(request.body).toEqual({ requestId: expect.stringMatching(/^[a-z0-9]+-[a-z0-9]+$/) });
+
+    let settled = false;
+    void durability.then(() => {
+      settled = true;
+    });
+    await Promise.resolve();
+    expect(settled).toBe(false);
+
+    socket.receive(
+      encodeServiceControlFrame({ kind: 'persisted', requestId: (request.body as { requestId: string }).requestId })
+    );
+    await expect(durability).resolves.toBeUndefined();
+    provider.destroy();
+  });
+
+  it('queues a fresh barrier for a later caller when updates are sent during the first request', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.sent.length = 0;
+
+    const first = provider.requestDurability();
+    const firstRequest = readRawJsonFrame(socket.sent[0]).body as { requestId: string };
+    provider.doc.getMap('scene').set('after-first-barrier', true);
+    const second = provider.requestDurability();
+    expect(socket.sent.map(readFrameType)).toEqual([WIRE.DURABILITY_REQUEST, WIRE.SYNC]);
+
+    let secondSettled = false;
+    void second.then(() => {
+      secondSettled = true;
+    });
+    socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: firstRequest.requestId }));
+    await expect(first).resolves.toBeUndefined();
+    await vi.waitFor(() => expect(socket.sent).toHaveLength(3));
+    expect(secondSettled).toBe(false);
+
+    const secondRequest = readRawJsonFrame(socket.sent[2]);
+    expect(secondRequest.type).toBe(WIRE.DURABILITY_REQUEST);
+    expect((secondRequest.body as { requestId: string }).requestId).not.toBe(firstRequest.requestId);
+    socket.receive(
+      encodeServiceControlFrame({
+        kind: 'persisted',
+        requestId: (secondRequest.body as { requestId: string }).requestId,
+      })
+    );
+    await expect(second).resolves.toBeUndefined();
+    provider.destroy();
+  });
+
+  it('rejects an outstanding durability request when the connection closes', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+
+    const durability = provider.requestDurability();
+    socket.serverClose(1006);
+
+    await expect(durability).rejects.toThrow('closed before the draft was persisted');
+    provider.destroy();
+  });
+
+  it('times out a lost durability reply and lets the caller retry', async () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.sent.length = 0;
+
+    const durability = provider.requestDurability();
+    const timedOut = expect(durability).rejects.toThrow('timed out while persisting the draft');
+    await vi.advanceTimersByTimeAsync(DURABILITY_REQUEST_TIMEOUT_MS);
+    await timedOut;
+
+    const retry = provider.requestDurability();
+    expect(socket.sent).toHaveLength(2);
+    const request = readRawJsonFrame(socket.sent[1]).body as { requestId: string };
+    socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
+    await expect(retry).resolves.toBeUndefined();
+
+    provider.destroy();
+    vi.useRealTimers();
+  });
+
   it('does NOT decode an (invalid) VarString-prefixed control frame — the client reads only the Go raw contract', () => {
     // The old manufactured shape — which the previous decoder and its test used — framed
     // CONTROL with `writeVarString`, injecting a length prefix. That was NEVER the service
@@ -435,13 +572,6 @@ describe('UnifiedCollabProvider', () => {
 
     provider.destroy();
     vi.useRealTimers();
-  });
-
-  it('stays inert when no collab base URL is configured', () => {
-    const provider = new UnifiedCollabProvider({ documentId: 'd', type: 'memo' });
-    expect(MockWebSocket.instances).toHaveLength(0);
-    expect(provider.status).toBe('connecting');
-    provider.destroy();
   });
 });
 

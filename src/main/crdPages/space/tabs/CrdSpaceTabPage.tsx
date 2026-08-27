@@ -7,14 +7,12 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
 import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
-import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
-import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
 import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
+import { CreateSubspaceDialogs } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
@@ -41,7 +39,6 @@ type CrdSpaceTabPageProps = {
 
 export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTabPageProps) {
   const { t } = useTranslation(['crd-common', 'crd-space']);
-  const { t: tSettings } = useTranslation('crd-spaceSettings');
   const { spaceId } = useUrlResolver();
   const { space, permissions } = useSpace();
 
@@ -64,8 +61,12 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
   // the button. Template queries fire only when the widget is configured on
   // this tab AND the viewer can create subspaces (FR-012/FR-019).
   const sidebarWire = flowStateForNewCallouts?.settings.sidebar ?? [];
-  const hasCreateSubspaceWidget = resolveSidebarPlan(sidebarWire).includes('createSubspace');
-  const canCreateSubspace = hasCreateSubspaceWidget && permissions.canCreateSubspaces;
+  const sidebarPlan = resolveSidebarPlan(sidebarWire);
+  // The Subspaces dialog (opened from the `subspaceLinks` widget's "Show all")
+  // also offers Create Subspace, so the dialog + template queries must be live
+  // for either entry point — not only the dedicated `createSubspace` widget.
+  const hasCreateSubspaceEntry = sidebarPlan.includes('createSubspace') || sidebarPlan.includes('subspaceLinks');
+  const canCreateSubspace = hasCreateSubspaceEntry && permissions.canCreateSubspaces;
   const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
     // biome-ignore lint/style/noNonNullAssertion: ensured by skip
     variables: { spaceId: spaceId! },
@@ -198,42 +199,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
         />
       )}
 
-      {canCreateSubspace && (
-        <>
-          <CreateSubspaceDialog
-            open={createSubspace.open}
-            onOpenChange={open => {
-              if (!open) createSubspace.closeDialog();
-            }}
-            values={createSubspace.values}
-            errors={createSubspace.errors}
-            selectedTemplateName={createSubspace.selectedTemplateName}
-            selectedTemplateContent={createSubspace.selectedTemplateContent}
-            selectedTemplateLoading={createSubspace.selectedTemplateLoading}
-            onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
-            onClearTemplate={createSubspace.onClearTemplate}
-            submitting={createSubspace.submitting}
-            canSubmit={createSubspace.canSubmit}
-            avatarConstraints={createSubspace.avatarConstraints}
-            cardBannerConstraints={createSubspace.cardBannerConstraints}
-            onChange={createSubspace.onChange}
-            onSubmit={() => void createSubspace.onSubmit()}
-          />
-          <TemplatePicker {...createSubspace.picker} />
-          <ConfirmationDialog
-            open={createSubspace.overwriteConfirmOpen}
-            onOpenChange={open => {
-              if (!open) createSubspace.onCancelOverwriteTemplate();
-            }}
-            title={tSettings('subspaces.createDialog.template.overwriteConfirm.title')}
-            description={tSettings('subspaces.createDialog.template.overwriteConfirm.description')}
-            confirmLabel={tSettings('subspaces.createDialog.template.overwriteConfirm.confirm')}
-            cancelLabel={tSettings('subspaces.createDialog.template.overwriteConfirm.cancel')}
-            onConfirm={createSubspace.onConfirmOverwriteTemplate}
-            onCancel={createSubspace.onCancelOverwriteTemplate}
-          />
-        </>
-      )}
+      {canCreateSubspace && <CreateSubspaceDialogs createSubspace={createSubspace} />}
     </>
   );
 }

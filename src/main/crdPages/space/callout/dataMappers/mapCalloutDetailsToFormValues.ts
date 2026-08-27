@@ -8,7 +8,6 @@ import {
 } from '@/core/apollo/generated/graphql-schema';
 import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { allowedActorsFromServer } from '@/main/crdPages/space/callout/calloutFormMapper';
 import { contributorCollectionFromServer } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import type { CalloutFormValues, FramingChip, ResponseType } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
@@ -143,15 +142,7 @@ export const mapCalloutDetailsToFormValues = (data: CalloutContentQuery | undefi
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      // A default whiteboard with no drawn content (an empty Yjs snapshot) must
-      // normalize back to "" so the form treats this as "no default configured" and
-      // the mapper omits it on update — instead of round-tripping empty content as
-      // if it were real. Byte-equality against `EmptyWhiteboardString` cannot be used:
-      // the empty encoding is non-deterministic, so a decoded-empty predicate is the
-      // only reliable check.
-      whiteboardContent: isEmptyWhiteboardContent(contributionDefaults.whiteboardContent)
-        ? ''
-        : (contributionDefaults.whiteboardContent ?? ''),
+      whiteboardContentAvailable: contributionDefaults.whiteboardContentAvailable,
     },
     prePopulateLinkRows: [],
     referenceRows:

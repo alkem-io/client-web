@@ -656,6 +656,9 @@
     "template": "Шаблон",
     "templatePlaceholder": "Избери шаблон…",
     "templateLoading": "Зареждане на шаблоните…",
+    "whiteboardConfigured": "Конфигурирана е бяла дъска по подразбиране.",
+    "whiteboardNotConfigured": "Новите приноси ще започват с празна бяла дъска.",
+    "clearWhiteboard": "Изчистване по подразбиране",
     "save": "Запази"
   },
   "calloutDialog": {

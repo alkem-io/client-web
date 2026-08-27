@@ -54,6 +54,7 @@ import { mapSpaceVisibility } from '../dataMappers/spacePageDataMapper';
 import { CrdSpaceAboutDialogConnector } from '../dialogs/CrdSpaceAboutDialogConnector';
 import { CrdSpaceActivityDialogConnector } from '../dialogs/CrdSpaceActivityDialogConnector';
 import { useCrdSpaceTabs } from '../hooks/useCrdSpaceTabs';
+import { resolveSidebarPlan } from './sidebarWidgetPlan';
 
 export default function CrdSpacePageLayout() {
   const { t } = useTranslation(['crd-space', 'crd-spaceSettings']);
@@ -95,7 +96,7 @@ export default function CrdSpacePageLayout() {
   const isLevelZero = spaceLevel === SpaceLevel.L0;
   usePageTitle(isLevelZero ? space.about.profile.displayName : undefined);
 
-  const { tabs, defaultTabIndex, sectionCount, showSettings } = useCrdSpaceTabs({
+  const { tabs, defaultTabIndex, sectionCount, showSettings, stateSidebars } = useCrdSpaceTabs({
     spaceId,
     skip: !isLevelZero || !permissions.canRead,
   });
@@ -132,6 +133,14 @@ export default function CrdSpacePageLayout() {
   } else if (defaultTabIndex >= 0) {
     activeTabIndex = Math.min(defaultTabIndex, maxTabIndex);
   }
+
+  // A tab configured with zero renderable widgets gets no sidebar column at all — the
+  // content takes the full no-sidebar width (FR-016). Only collapse when the stored list
+  // is KNOWN and resolves empty: while SpaceTabs is loading `stateSidebars` is empty, and
+  // collapsing then would flash the content full-width on every cold load. The mobile
+  // drawer and its triggers (hamburger, bottom bar, edge swipe) stay available regardless.
+  const activeTabSidebar = stateSidebars[activeTabIndex];
+  const sidebarEmpty = activeTabSidebar !== undefined && resolveSidebarPlan(activeTabSidebar).length === 0;
 
   const handleTabChange = (index: number) => {
     const url = buildSpaceSectionUrl(space.about.profile.url ?? '', index + 1);
@@ -235,6 +244,9 @@ export default function CrdSpacePageLayout() {
             )
           }
           sidebar={isOnSettings ? undefined : sidebarSlot}
+          // Empty-configured sidebar: the slot stays mounted (the portal resolves its
+          // target once on mount) but the column collapses and content goes full width.
+          sidebarCollapsed={sidebarEmpty}
           tabs={
             isOnSettings ? (
               // Settings tabs live in the shell's sticky tabs row too, so they

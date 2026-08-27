@@ -297,3 +297,58 @@ describe('reaction notification rendering', () => {
     expect(data.avatarFallback).toBe('AL');
   });
 });
+
+describe('notification avatar subject', () => {
+  const newMember = (actor?: InAppNotificationPayloadModel['actor']) =>
+    mapNotificationToItemData(
+      notification(NotificationEvent.SpaceAdminCommunityNewMember, {
+        type: NotificationEventPayload.SpaceCommunityActor,
+        space: spacePayload(),
+        actor,
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+
+  it('shows the member who joined, not whoever triggered the join', () => {
+    // The trigger is a lead accepting an invitation / adding a member, so the two differ;
+    // the copy names the member, and the avatar has to name the same person.
+    const data = newMember({
+      profile: { displayName: 'Grace Hopper', url: '/user/grace', visual: { uri: 'grace.png' } },
+    });
+
+    expect(data.avatarUrl).toBe('grace.png');
+    expect(data.avatarFallback).toBe('GH');
+  });
+
+  it('keeps the member as the subject when that member has no avatar image', () => {
+    const data = newMember({ profile: { displayName: 'Grace Hopper', url: '/user/grace' } });
+
+    expect(data.avatarUrl).toBeUndefined();
+    expect(data.avatarFallback).toBe('GH');
+  });
+
+  it('falls back to the triggering user when the payload carries no actor', () => {
+    const data = newMember(undefined);
+
+    expect(data.avatarUrl).toBe('ada.png');
+    expect(data.avatarFallback).toBe('AL');
+  });
+
+  it('leaves types whose copy leads with the triggering user on that user', () => {
+    // This template reads "<triggeredBy> declined your invitation for <contributor>", so
+    // the trigger is its subject even though the payload also carries an actor.
+    const data = mapNotificationToItemData(
+      notification(NotificationEvent.SpaceAdminVirtualCommunityInvitationDeclined, {
+        type: NotificationEventPayload.VirtualContributor,
+        space: spacePayload(),
+        actor: { profile: { displayName: 'A VC', url: '/vc/a-vc', visual: { uri: 'vc.png' } } },
+      }),
+      t,
+      NotificationEventInAppState.Unread
+    );
+
+    expect(data.avatarUrl).toBe('ada.png');
+    expect(data.avatarFallback).toBe('AL');
+  });
+});
