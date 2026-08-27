@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Bot, Building2, LayoutGrid, Package, Users } from 'lucide-react';
+import { Bot, Building2, CircleAlert, LayoutGrid, Package, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/crd/primitives/button';
 import {
@@ -59,7 +59,11 @@ export function DeleteAccountBlockedDialog({
   const { t } = useTranslation(NS);
 
   const totalCount = totals.reduce((sum, entry) => sum + entry.total, 0);
-  const hasSelfResolvableBlocker = blockers.some(blocker => blocker.selfResolvable);
+  // Derived from `totals`, which is authoritative and unaffected by the 25-item
+  // cap on `blockers`. Reading the capped list instead would hide the
+  // "manage my resources" route whenever the visible page happens to be all
+  // sole-owned organizations while a self-resolvable blocker sits past the cap.
+  const hasSelfResolvableBlocker = totals.some(entry => entry.kind !== 'SOLE_ORGANIZATION_OWNER' && entry.total > 0);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,7 +98,7 @@ export function DeleteAccountBlockedDialog({
           {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
           <ul role="list" className="flex list-none flex-col gap-2 p-0 m-0">
             {blockers.map(blocker => {
-              const Icon = ICON_BY_KIND[blocker.kind];
+              const Icon = ICON_BY_KIND[blocker.kind] ?? CircleAlert;
               return (
                 <li
                   key={`${blocker.kind}-${blocker.resourceID}`}

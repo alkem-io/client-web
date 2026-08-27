@@ -10,6 +10,7 @@ import {
 import { useKratosLogout } from '@/core/auth/authentication/hooks/useKratosLogout';
 import useNavigate from '@/core/routing/useNavigate';
 import type {
+  AccountDeletionBlockerKindOption,
   DeleteAccountBlocker,
   DeleteAccountBlockerTotal,
   DeleteAccountDialogState,
@@ -31,17 +32,37 @@ type PreflightBlocker = {
 
 type PreflightTotal = { kind: string; total: number };
 
+// The server enum can gain a member before this client is redeployed. A bare
+// cast would let the unknown value through and the dialog would then index
+// ICON_BY_KIND with it, render `undefined` as an element and crash. Validate
+// membership instead and drop what we cannot render — the per-kind totals
+// still report the blocker exists, so nothing is silently under-reported.
+const KNOWN_BLOCKER_KINDS: readonly AccountDeletionBlockerKindOption[] = [
+  'ACCOUNT_SPACE',
+  'ACCOUNT_VIRTUAL_CONTRIBUTOR',
+  'ACCOUNT_INNOVATION_PACK',
+  'ACCOUNT_INNOVATION_HUB',
+  'SOLE_ORGANIZATION_OWNER',
+];
+
+const isKnownBlockerKind = (kind: string): kind is AccountDeletionBlockerKindOption =>
+  (KNOWN_BLOCKER_KINDS as readonly string[]).includes(kind);
+
 const mapBlockers = (blockers: PreflightBlocker[]): DeleteAccountBlocker[] =>
-  blockers.map(blocker => ({
-    kind: blocker.kind as DeleteAccountBlocker['kind'],
-    resourceID: blocker.resourceID,
-    displayName: blocker.displayName,
-    url: blocker.url ?? undefined,
-    selfResolvable: blocker.selfResolvable,
-  }));
+  blockers
+    .filter(blocker => isKnownBlockerKind(blocker.kind))
+    .map(blocker => ({
+      kind: blocker.kind as AccountDeletionBlockerKindOption,
+      resourceID: blocker.resourceID,
+      displayName: blocker.displayName,
+      url: blocker.url ?? undefined,
+      selfResolvable: blocker.selfResolvable,
+    }));
 
 const mapTotals = (totals: PreflightTotal[]): DeleteAccountBlockerTotal[] =>
-  totals.map(total => ({ kind: total.kind as DeleteAccountBlockerTotal['kind'], total: total.total }));
+  totals
+    .filter(total => isKnownBlockerKind(total.kind))
+    .map(total => ({ kind: total.kind as AccountDeletionBlockerKindOption, total: total.total }));
 
 const graphQLErrorCode = (error: unknown): string | undefined =>
   error instanceof ApolloError ? (error.graphQLErrors[0]?.extensions?.code as string | undefined) : undefined;
