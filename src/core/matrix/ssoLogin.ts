@@ -13,6 +13,8 @@ interface SsoIdpResult {
   readonly ok: boolean;
   readonly idpId?: string;
   readonly error?: string;
+  /** True when the failure looks transient (network down, 5xx, rate limit) rather than a misconfiguration. */
+  readonly unreachable?: boolean;
 }
 
 const discoverIdp = async (homeserverUrl: string): Promise<SsoIdpResult> => {
@@ -24,12 +26,16 @@ const discoverIdp = async (homeserverUrl: string): Promise<SsoIdpResult> => {
     });
 
     if (!response.ok) {
-      return { ok: false, error: `login endpoint returned ${response.status}` };
+      return {
+        ok: false,
+        error: `login endpoint returned ${response.status}`,
+        unreachable: response.status >= 500 || response.status === 429,
+      };
     }
 
     body = (await response.json()) as typeof body;
   } catch {
-    return { ok: false, error: 'login endpoint unreachable' };
+    return { ok: false, error: 'login endpoint unreachable', unreachable: true };
   }
 
   const ssoFlow = body.flows?.find(f => f.type === 'm.login.sso');
@@ -120,25 +126,36 @@ interface SilentSsoOptions {
 }
 
 /**
+ * - `authenticated` — the callback persisted fresh credentials for the expected user.
+ * - `unreachable` — the homeserver could not be reached (or answered 5xx/429); worth retrying with backoff.
+ * - `timeout` — the round-trip stalled (no live Alkemio session, or an interstitial rendered); fail closed.
+ * - `unavailable` — flag off / not configured / SSO misconfigured; fail closed, retrying cannot help.
+ */
+type SilentSsoOutcome = 'authenticated' | 'unreachable' | 'timeout' | 'unavailable';
+
+/**
  * Runs the whole SSO round-trip inside a hidden iframe so the visible page
  * never navigates. Works only while every hop is a redirect (live Alkemio
  * session + whitelisted client, so no login UI and no interstitial renders);
- * anything else stalls invisibly until the timeout and resolves false.
+ * anything else stalls invisibly until the timeout and fails closed.
  * Success is detected by the callback (loaded inside the iframe, same origin)
  * persisting fresh credentials to the shared IndexedDB namespace.
  */
-const attemptSilentSso = async (expectedLocalpart: string, options: SilentSsoOptions = {}): Promise<boolean> => {
+const attemptSilentSso = async (
+  expectedLocalpart: string,
+  options: SilentSsoOptions = {}
+): Promise<SilentSsoOutcome> => {
   const timeoutMs = options.timeoutMs ?? 20_000;
   const pollIntervalMs = options.pollIntervalMs ?? 400;
 
   const config = getConfig();
   if (!config.enabled || config.homeserverUrl === '') {
-    return false;
+    return 'unavailable';
   }
 
   const idpResult = await discoverIdp(config.homeserverUrl);
   if (!idpResult.ok || !idpResult.idpId) {
-    return false;
+    return idpResult.unreachable ? 'unreachable' : 'unavailable';
   }
 
   saveSsoFlowState(window.location.pathname + window.location.search);
@@ -157,11 +174,11 @@ const attemptSilentSso = async (expectedLocalpart: string, options: SilentSsoOpt
       if (userId) {
         const { record } = await loadCredentials(userId);
         if (record && record.expiresAt > Date.now()) {
-          return true;
+          return 'authenticated';
         }
       }
     }
-    return false;
+    return 'timeout';
   } finally {
     iframe.remove();
     clearSsoFlowState();
@@ -178,4 +195,4 @@ export {
   loadSsoFlowState,
   clearSsoFlowState,
 };
-export type { SsoFlowState, SsoIdpResult, InitiateSsoResult, SilentSsoOptions };
+export type { SsoFlowState, SsoIdpResult, InitiateSsoResult, SilentSsoOptions, SilentSsoOutcome };

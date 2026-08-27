@@ -1,7 +1,7 @@
 import { redactBreadcrumb } from './redaction';
-import { attemptSilentSso } from './ssoLogin';
+import { attemptSilentSso, type SilentSsoOutcome } from './ssoLogin';
 import { type CredentialRecord, clearNamespace, findStoredUserId, loadCredentials } from './storage';
-import { refreshMatrixTokens } from './tokenRefresh';
+import { refreshMatrixTokens, TokenRefreshError } from './tokenRefresh';
 
 const SESSION_STATES = [
   'idle',
@@ -160,7 +160,10 @@ interface EstablishmentHooks {
   readonly onBreadcrumb?: BreadcrumbSink;
   readonly onRooms?: (rooms: readonly RoomSummary[]) => void;
   readonly loadSdk?: () => Promise<MatrixSdkModule>;
-  readonly silentSso?: (expectedLocalpart: string) => Promise<boolean>;
+  readonly silentSso?: (expectedLocalpart: string) => Promise<SilentSsoOutcome>;
+  /** Backoff schedule for the Synapse-unreachable row (contract §6). One retry per entry. */
+  readonly retryDelaysMs?: readonly number[];
+  readonly wait?: (ms: number) => Promise<void>;
 }
 
 interface SessionHandle {
@@ -171,10 +174,14 @@ interface SessionHandle {
 const defaultLoadSdk = async (): Promise<MatrixSdkModule> =>
   (await import('matrix-js-sdk')) as unknown as MatrixSdkModule;
 
+const DEFAULT_RETRY_DELAYS_MS: readonly number[] = [5_000, 15_000, 45_000];
+
 const establishSession = async (actorId: string, hooks: EstablishmentHooks = {}): Promise<SessionHandle> => {
   const { onState, onBreadcrumb, onRooms } = hooks;
   const loadSdk = hooks.loadSdk ?? defaultLoadSdk;
   const silentSso = hooks.silentSso ?? attemptSilentSso;
+  const retryDelaysMs = hooks.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS;
+  const wait = hooks.wait ?? ((ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms)));
 
   const machine = createSessionMachine(onBreadcrumb);
   const setState = (to: SessionState): void => {
@@ -207,7 +214,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     return record;
   };
 
-  const acquireRecord = async (): Promise<CredentialRecord | null> => {
+  const acquireRecord = async (): Promise<CredentialRecord | null | 'unreachable'> => {
     let record = await loadRecordForActor();
 
     if (record && record.expiresAt <= Date.now()) {
@@ -215,9 +222,15 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
         try {
           const refreshed = await refreshMatrixTokens(record.homeserverUrl, record.userId, record.refreshToken);
           record = { ...record, accessToken: refreshed.accessToken, refreshToken: refreshed.refreshToken };
-        } catch {
-          await clearNamespace(record.userId);
-          record = null;
+        } catch (error) {
+          if (error instanceof TokenRefreshError) {
+            // The server rejected the token — the stored pair is dead.
+            await clearNamespace(record.userId);
+            record = null;
+          } else {
+            // Network failure: the tokens may be perfectly valid — never destroy them.
+            return 'unreachable';
+          }
         }
       } else {
         await clearNamespace(record.userId);
@@ -226,13 +239,39 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     }
 
     if (!record) {
-      const authenticated = await silentSso(actorId.toLowerCase());
-      if (authenticated) {
+      const outcome = await silentSso(actorId.toLowerCase());
+      if (outcome === 'unreachable') {
+        return 'unreachable';
+      }
+      if (outcome === 'authenticated') {
         record = await loadRecordForActor();
       }
     }
 
     return record;
+  };
+
+  // Contract §6: Synapse unreachable → offline with bounded exponential backoff,
+  // one retry per configured delay, never an auth loop.
+  const acquireWithBackoff = async (): Promise<CredentialRecord | null | 'unreachable'> => {
+    for (let attempt = 0; ; attempt++) {
+      const result = await acquireRecord();
+      if (stopped) {
+        return null;
+      }
+      if (result !== 'unreachable') {
+        return result;
+      }
+      setState('offline');
+      if (attempt >= retryDelaysMs.length) {
+        return 'unreachable';
+      }
+      await wait(retryDelaysMs[attempt]);
+      if (stopped) {
+        return null;
+      }
+      setState('starting');
+    }
   };
 
   const startWithRecord = async (credentials: CredentialRecord): Promise<void> => {
@@ -300,15 +339,24 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       }
       recovered = true;
       setState('recovering');
-      const record = await acquireRecord();
+      const record = await acquireWithBackoff();
       if (stopped) {
         return;
       }
-      if (!record) {
-        setState('auth-required');
+      if (record === 'unreachable') {
+        setState('failed');
         return;
       }
-      setState('starting');
+      if (!record) {
+        // Promptless SSO could not complete: Kratos is gone (auth-required) —
+        // unless backoff cycles moved the machine off `recovering`, where the
+        // table has no auth-required edge and failed is the fail-closed exit.
+        setState(machine.state() === 'recovering' ? 'auth-required' : 'failed');
+        return;
+      }
+      if (machine.state() !== 'starting') {
+        setState('starting');
+      }
       await startWithRecord(record);
     } catch {
       setState('failed');
@@ -317,11 +365,11 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
 
   try {
     setState('starting');
-    const record = await acquireRecord();
+    const record = await acquireWithBackoff();
     if (stopped) {
       return handle;
     }
-    if (!record) {
+    if (!record || record === 'unreachable') {
       setState('failed');
       return handle;
     }

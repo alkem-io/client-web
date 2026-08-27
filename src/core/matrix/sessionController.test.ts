@@ -204,7 +204,7 @@ describe('establishSession', () => {
   });
 
   it('attempts silent SSO when no stored record exists and fails closed — SDK never loaded', async () => {
-    const silentSso = vi.fn(async () => false);
+    const silentSso = vi.fn(async () => 'timeout' as const);
     const loadSdk = vi.fn();
     const states: SessionState[] = [];
 
@@ -218,7 +218,7 @@ describe('establishSession', () => {
   it('resumes after a successful silent SSO seeds fresh credentials', async () => {
     const silentSso = vi.fn(async () => {
       await seedRecord();
-      return true;
+      return 'authenticated' as const;
     });
     const { sdk, createClient } = makeSdkMock();
 
@@ -233,7 +233,7 @@ describe('establishSession', () => {
   it('resumes from a valid stored record without any SSO round-trip', async () => {
     await seedRecord();
     const { sdk, client, createClient, handlers } = makeSdkMock();
-    const silentSso = vi.fn(async () => false);
+    const silentSso = vi.fn(async () => 'timeout' as const);
     const states: SessionState[] = [];
     const rooms: unknown[] = [];
 
@@ -267,7 +267,7 @@ describe('establishSession', () => {
       )
     );
     const { sdk, createClient } = makeSdkMock();
-    const silentSso = vi.fn(async () => false);
+    const silentSso = vi.fn(async () => 'timeout' as const);
 
     await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso });
 
@@ -280,7 +280,7 @@ describe('establishSession', () => {
   it('clears the namespace and attempts silent SSO when refresh of an expired record fails', async () => {
     await seedRecord({ expiresAt: Date.now() - 1000 });
     vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response('', { status: 401 }));
-    const silentSso = vi.fn(async () => false);
+    const silentSso = vi.fn(async () => 'timeout' as const);
     const loadSdk = vi.fn();
     const states: SessionState[] = [];
 
@@ -294,7 +294,7 @@ describe('establishSession', () => {
   it('does not call refresh for an expired record without a refresh token — clears and tries silent SSO', async () => {
     await seedRecord({ expiresAt: Date.now() - 1000, refreshToken: '' });
     const fetchSpy = vi.spyOn(globalThis, 'fetch');
-    const silentSso = vi.fn(async () => false);
+    const silentSso = vi.fn(async () => 'timeout' as const);
     const loadSdk = vi.fn();
 
     await establishSession(ACTOR, { silentSso, loadSdk });
@@ -321,7 +321,7 @@ describe('establishSession', () => {
 
     const handle = await establishSession(ACTOR, {
       loadSdk: async () => sdk,
-      silentSso: vi.fn(async () => false),
+      silentSso: vi.fn(async () => 'timeout' as const),
     });
     handle.stop();
 
@@ -331,7 +331,7 @@ describe('establishSession', () => {
   it('recovers exactly once after SessionLoggedOut, landing in auth-required when silent SSO fails', async () => {
     await seedRecord();
     const { sdk, handlers } = makeSdkMock();
-    const silentSso = vi.fn(async () => false);
+    const silentSso = vi.fn(async () => 'timeout' as const);
     const states: SessionState[] = [];
 
     await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso, onState: s => states.push(s) });
@@ -358,11 +358,145 @@ describe('establishSession', () => {
 
     await establishSession(ACTOR, {
       loadSdk: async () => sdk,
-      silentSso: vi.fn(async () => false),
+      silentSso: vi.fn(async () => 'timeout' as const),
       onState: s => states.push(s),
     });
 
     handlers.get('sync')?.('ERROR');
     expect(states).toEqual(['starting', 'offline']);
+  });
+
+  describe('contract §6 fail-closed rows', () => {
+    const immediateWait = () => {
+      const delays: number[] = [];
+      const wait = vi.fn(async (ms: number) => {
+        delays.push(ms);
+      });
+      return { wait, delays };
+    };
+
+    it('Synapse unreachable at establishment → offline, then bounded backoff retry recovers to ready', async () => {
+      const silentSso = vi
+        .fn<() => Promise<'unreachable' | 'authenticated'>>()
+        .mockResolvedValueOnce('unreachable')
+        .mockImplementationOnce(async () => {
+          await seedRecord();
+          return 'authenticated';
+        });
+      const { sdk, handlers } = makeSdkMock();
+      const { wait, delays } = immediateWait();
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso,
+        onState: s => states.push(s),
+        retryDelaysMs: [100, 200],
+        wait,
+      });
+
+      handlers.get('sync')?.('PREPARED');
+      expect(states).toEqual(['starting', 'offline', 'starting', 'ready']);
+      expect(delays).toEqual([100]);
+      expect(silentSso).toHaveBeenCalledTimes(2);
+    });
+
+    it('Synapse unreachable beyond the bounded retries → failed, never an auth loop', async () => {
+      const silentSso = vi.fn(async () => 'unreachable' as const);
+      const loadSdk = vi.fn();
+      const { wait, delays } = immediateWait();
+      const states: SessionState[] = [];
+
+      await establishSession('actor-without-record', {
+        silentSso,
+        loadSdk,
+        onState: s => states.push(s),
+        retryDelaysMs: [100, 200],
+        wait,
+      });
+
+      expect(states).toEqual(['starting', 'offline', 'starting', 'offline', 'starting', 'offline', 'failed']);
+      expect(delays).toEqual([100, 200]);
+      expect(silentSso).toHaveBeenCalledTimes(3);
+      expect(loadSdk).not.toHaveBeenCalled();
+    });
+
+    it('a network failure during proactive refresh does not destroy stored tokens — retries instead', async () => {
+      await seedRecord({ expiresAt: Date.now() - 1000 });
+      vi.spyOn(globalThis, 'fetch')
+        .mockRejectedValueOnce(new TypeError('Failed to fetch'))
+        .mockResolvedValueOnce(
+          new Response(
+            JSON.stringify({ access_token: 'syt_rotated', refresh_token: 'syr_rotated', expires_in_ms: 60_000 }),
+            { status: 200 }
+          )
+        );
+      const { sdk, createClient } = makeSdkMock();
+      const silentSso = vi.fn(async () => 'timeout' as const);
+      const { wait } = immediateWait();
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso,
+        onState: s => states.push(s),
+        retryDelaysMs: [100],
+        wait,
+      });
+
+      expect(silentSso).not.toHaveBeenCalled();
+      expect(states).toEqual(['starting', 'offline', 'starting']);
+      expect(createClient.mock.calls[0][0].accessToken).toBe('syt_rotated');
+    });
+
+    it('recovery while Synapse is unreachable lands in offline/failed, not auth-required (no auth loop)', async () => {
+      await seedRecord();
+      const { sdk, handlers } = makeSdkMock();
+      const silentSso = vi.fn(async () => 'unreachable' as const);
+      const { wait } = immediateWait();
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso,
+        onState: s => states.push(s),
+        retryDelaysMs: [100],
+        wait,
+      });
+
+      handlers.get('sync')?.('PREPARED');
+      handlers.get('Session.logged_out')?.();
+
+      await vi.waitFor(() => {
+        expect(states[states.length - 1]).toBe('failed');
+      });
+      expect(states).not.toContain('auth-required');
+      expect(states).toContain('recovering');
+      expect(states).toContain('offline');
+      expect(silentSso).toHaveBeenCalledTimes(2);
+    });
+
+    it('recovery succeeds promptless while Kratos lives — fresh credentials, back to ready', async () => {
+      await seedRecord();
+      const { sdk, handlers, createClient } = makeSdkMock();
+      const silentSso = vi.fn(async () => {
+        await seedRecord({ accessToken: 'syt_recovered', deviceId: 'DEV2' });
+        return 'authenticated' as const;
+      });
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso, onState: s => states.push(s) });
+
+      handlers.get('sync')?.('PREPARED');
+      handlers.get('Session.logged_out')?.();
+
+      await vi.waitFor(() => {
+        expect(states[states.length - 1]).toBe('starting');
+      });
+      expect(silentSso).toHaveBeenCalledOnce();
+      expect(createClient).toHaveBeenCalledTimes(2);
+      expect(createClient.mock.calls[1][0].accessToken).toBe('syt_recovered');
+      expect(states).toEqual(['starting', 'ready', 'recovering', 'starting']);
+    });
   });
 });

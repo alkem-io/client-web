@@ -86,4 +86,63 @@ describe('refreshMatrixTokens', () => {
     const stored = await loadCredentials(USER_ID);
     expect(stored.record?.accessToken).toBe('syt_old_access');
   });
+
+  describe('soft_logout retry (contract §3)', () => {
+    const softLogoutResponse = () =>
+      new Response(JSON.stringify({ errcode: 'M_UNKNOWN_TOKEN', soft_logout: true }), { status: 401 });
+
+    it('retries exactly once on M_UNKNOWN_TOKEN with soft_logout, then persists the rotated pair', async () => {
+      await seedRecord();
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(softLogoutResponse())
+        .mockResolvedValueOnce(
+          new Response(
+            JSON.stringify({ access_token: 'syt_new_access', refresh_token: 'syr_new_refresh', expires_in_ms: 60_000 }),
+            { status: 200 }
+          )
+        );
+
+      const result = await refreshMatrixTokens(HOMESERVER, USER_ID, 'syr_old_refresh');
+
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      // The old refresh token stays valid until the new access token is first
+      // used, so the retry re-sends the same token.
+      expect(JSON.parse(fetchSpy.mock.calls[1][1]?.body as string)).toEqual({ refresh_token: 'syr_old_refresh' });
+      expect(result.accessToken).toBe('syt_new_access');
+
+      const stored = await loadCredentials(USER_ID);
+      expect(stored.record?.accessToken).toBe('syt_new_access');
+    });
+
+    it('does not retry a hard M_UNKNOWN_TOKEN (soft_logout absent) — escalates immediately', async () => {
+      await seedRecord();
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(new Response(JSON.stringify({ errcode: 'M_UNKNOWN_TOKEN' }), { status: 401 }));
+
+      await expect(refreshMatrixTokens(HOMESERVER, USER_ID, 'syr_old_refresh')).rejects.toMatchObject({
+        errcode: 'M_UNKNOWN_TOKEN',
+        softLogout: false,
+      });
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('escalates after the single retry also fails — never loops', async () => {
+      await seedRecord();
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(softLogoutResponse())
+        .mockResolvedValueOnce(softLogoutResponse());
+
+      await expect(refreshMatrixTokens(HOMESERVER, USER_ID, 'syr_old_refresh')).rejects.toMatchObject({
+        errcode: 'M_UNKNOWN_TOKEN',
+        softLogout: true,
+      });
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+
+      const stored = await loadCredentials(USER_ID);
+      expect(stored.record?.accessToken).toBe('syt_old_access');
+    });
+  });
 });
