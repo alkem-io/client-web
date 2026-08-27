@@ -283,10 +283,27 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
     const onSessionEnd = vi.fn();
     const onTerminalClose = vi.fn();
     const onCloseConnection = vi.fn();
-    const { result } = renderHook(() => useCollab({ username: 'T', onCloseConnection, onTerminalClose, onSessionEnd }));
+    const onSceneInitChange = vi.fn();
+    const { result } = renderHook(() =>
+      useCollab({ username: 'T', onCloseConnection, onTerminalClose, onSessionEnd, onSceneInitChange })
+    );
     const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'r' });
-    return { onSessionEnd, onTerminalClose, onCloseConnection, cleanup };
+    return { onSessionEnd, onTerminalClose, onCloseConnection, onSceneInitChange, cleanup };
   };
+
+  it('seals scene consumers immediately when session-end arrives, before the socket closes', () => {
+    const { onSessionEnd, onSceneInitChange, cleanup } = mount();
+    controlHandler?.({
+      kind: 'session-end',
+      code: 'server-shutdown',
+      scope: 'document',
+      disposition: 'transient',
+    } as ControlMessage);
+
+    expect(onSceneInitChange).toHaveBeenLastCalledWith(false);
+    expect(onSceneInitChange.mock.invocationCallOrder[0]).toBeLessThan(onSessionEnd.mock.invocationCallOrder[0] ?? 0);
+    cleanup();
+  });
 
   it.each([
     ['update-rate-exceeded', 'member', 'transient'],

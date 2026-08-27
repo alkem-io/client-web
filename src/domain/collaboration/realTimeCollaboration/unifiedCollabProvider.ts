@@ -31,6 +31,8 @@ export const WIRE = {
   EPHEMERAL: 2,
   /** Server→client JSON control (saved / save-error / read-only-state / collaborator-mode / room-user-change / update-rejected / session-end). */
   CONTROL: 3,
+  /** Client→server request to persist every preceding update on this connection. */
+  DURABILITY_REQUEST: 4,
 } as const;
 
 /**
@@ -105,8 +107,8 @@ export type ControlMessage = {
     | 'session-end'
     // Durability-barrier replies: each answers ONE `persist-request` by its `requestId`.
     // `persisted` = the requested state reached the configured stores; `persist-failed` =
-    // it could not (with `error`). The client decodes them today over the same raw-JSON
-    // control channel; the durability CALLER that consumes them lands with Stage B.
+    // it could not (with `error`). `requestDurability` below consumes them over the
+    // same raw-JSON control channel.
     | 'persisted'
     | 'persist-failed';
   version?: number;
@@ -213,6 +215,7 @@ export type UnifiedCollabProviderOptions = UnifiedCollabProviderCommonOptions &
   );
 
 const RECONNECT_BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
+export const DURABILITY_REQUEST_TIMEOUT_MS = 60_000;
 const NORMAL_CLOSURE = 1000;
 /**
  * WebSocket policy-violation close code (RFC 6455 §7.4.1). The unified collaboration
@@ -265,6 +268,18 @@ export class UnifiedCollabProvider {
   private readonly controlListeners = new Set<ControlListener>();
   private readonly closeListeners = new Set<CloseListener>();
   private readonly ephemeralListeners = new Set<(event: EphemeralEvent) => void>();
+  private durabilitySequence = 0;
+  private pendingDurability:
+    | {
+        requestId: string;
+        promise: Promise<void>;
+        resolve: () => void;
+        reject: (error: Error) => void;
+        timeout: ReturnType<typeof setTimeout>;
+      }
+    | undefined;
+  /** Serializes callers so every call receives a barrier sent after that call. */
+  private durabilityQueueTail: Promise<void> | undefined;
 
   constructor(options: UnifiedCollabProviderOptions) {
     this.documentId = options.documentId;
@@ -364,6 +379,7 @@ export class UnifiedCollabProvider {
 
   /** Tear down the socket without reconnecting and without destroying the doc. */
   disconnect(): void {
+    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.clearReconnect();
     this.teardownSocket(NORMAL_CLOSURE);
     this.setSynced(false);
@@ -374,6 +390,7 @@ export class UnifiedCollabProvider {
   destroy(): void {
     if (this.destroyed) return;
     this.destroyed = true;
+    this.rejectPendingDurability('The collaboration editor closed before the draft was persisted');
     this.clearReconnect();
     // Publish the local leave while the socket and awareness listener are still
     // active. The service also cleans up on disconnect; this makes normal client
@@ -398,6 +415,57 @@ export class UnifiedCollabProvider {
 
     if (this.ownsAwareness) this.awareness.destroy();
     if (this.ownsDoc) this.doc.destroy();
+  }
+
+  /**
+   * Ask the collaboration service to persist every update sent before this frame.
+   * The wire allows one in-flight request per connection. A later caller is queued
+   * behind it and receives its own frame, because updates may have been sent after
+   * the earlier barrier.
+   */
+  requestDurability(): Promise<void> {
+    if (!this.pendingDurability && !this.durabilityQueueTail) {
+      return this.startDurabilityRequest();
+    }
+
+    const predecessor = this.durabilityQueueTail ?? this.pendingDurability?.promise ?? Promise.resolve();
+    const start = () => this.startDurabilityRequest();
+    const queued = predecessor.then(start, start);
+    const settled = queued.then(
+      () => undefined,
+      () => undefined
+    );
+    this.durabilityQueueTail = settled;
+    void settled.then(() => {
+      if (this.durabilityQueueTail === settled) {
+        this.durabilityQueueTail = undefined;
+      }
+    });
+    return queued;
+  }
+
+  private startDurabilityRequest(): Promise<void> {
+    if (this.destroyed || this._status !== 'connected' || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      return Promise.reject(new Error('The collaboration connection is not ready to persist the draft'));
+    }
+
+    const requestId = `${Date.now().toString(36)}-${(++this.durabilitySequence).toString(36)}`;
+    let resolve!: () => void;
+    let reject!: (error: Error) => void;
+    const promise = new Promise<void>((resolvePromise, rejectPromise) => {
+      resolve = resolvePromise;
+      reject = rejectPromise;
+    });
+    const timeout = setTimeout(() => {
+      this.rejectPendingDurability('The collaboration service timed out while persisting the draft');
+    }, DURABILITY_REQUEST_TIMEOUT_MS);
+    this.pendingDurability = { requestId, promise, resolve, reject, timeout };
+
+    const encoder = encoding.createEncoder();
+    encoding.writeVarUint(encoder, WIRE.DURABILITY_REQUEST);
+    encoding.writeUint8Array(encoder, lib0String.encodeUtf8(JSON.stringify({ requestId })));
+    this.sendFrame(encoding.toUint8Array(encoder));
+    return promise;
   }
 
   private handleOpen = () => {
@@ -465,6 +533,7 @@ export class UnifiedCollabProvider {
       case WIRE.CONTROL: {
         const parsed = readRawJsonPayload(decoder) as ControlMessage | undefined;
         if (parsed && typeof parsed.kind === 'string') {
+          this.settleDurability(parsed);
           this.controlListeners.forEach(listener => listener(parsed));
         }
         break;
@@ -476,6 +545,7 @@ export class UnifiedCollabProvider {
   };
 
   private handleClose = (event: CloseEvent) => {
+    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.setSynced(false);
     this.detachSocketListeners();
     this.ws = null;
@@ -495,6 +565,33 @@ export class UnifiedCollabProvider {
       this.scheduleReconnect();
     }
   };
+
+  private settleDurability(message: ControlMessage): void {
+    const pending = this.pendingDurability;
+    if (
+      !pending ||
+      message.requestId !== pending.requestId ||
+      (message.kind !== 'persisted' && message.kind !== 'persist-failed')
+    ) {
+      return;
+    }
+    clearTimeout(pending.timeout);
+    if (message.kind === 'persisted') {
+      this.pendingDurability = undefined;
+      pending.resolve();
+    } else if (message.kind === 'persist-failed') {
+      this.pendingDurability = undefined;
+      pending.reject(new Error(message.error ?? 'The draft could not be persisted'));
+    }
+  }
+
+  private rejectPendingDurability(message: string): void {
+    const pending = this.pendingDurability;
+    if (!pending) return;
+    clearTimeout(pending.timeout);
+    this.pendingDurability = undefined;
+    pending.reject(new Error(message));
+  }
 
   private handleError = () => {
     // 'close' fires after 'error'; the reconnect is scheduled there.
