@@ -8,6 +8,7 @@ import useDeleteAccount from './useDeleteAccount';
 const mockRunPreflight = vi.fn();
 const mockDeleteUserMutation = vi.fn();
 const mockNavigate = vi.fn();
+const mockGetKratosLogoutUrl = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useAccountDeletionPreflightLazyQuery: () => [mockRunPreflight],
@@ -16,6 +17,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 
 vi.mock('@/core/routing/useNavigate', () => ({
   default: () => mockNavigate,
+}));
+
+vi.mock('@/core/auth/authentication/hooks/useKratosLogout', () => ({
+  useKratosLogout: () => ({ getKratosLogoutUrl: mockGetKratosLogoutUrl }),
 }));
 
 const wrapperWithUrl =
@@ -66,6 +71,10 @@ describe('useDeleteAccount', () => {
       value: { ...window.location, assign: assignSpy, origin: 'https://alkemio.test' },
       writable: true,
     });
+    // No live Kratos session by default — most tests only care about the
+    // BFF redirect; the Kratos-session-termination tests below override this.
+    mockGetKratosLogoutUrl.mockResolvedValue(undefined);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 200 }));
   });
 
   afterEach(() => {
@@ -120,6 +129,60 @@ describe('useDeleteAccount', () => {
     // Sets the one-shot loop-guard marker so a resumed round trip that is
     // still stale can be told apart from a first attempt.
     expect(sessionStorage.getItem(REAUTH_ATTEMPTED_KEY)).toBe('1');
+  });
+
+  it('ends the live Kratos SSO session before the BFF redirect, so the round trip cannot silently ride it', async () => {
+    mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
+    mockGetKratosLogoutUrl.mockResolvedValue('https://identity.alkemio.test/self-service/logout/browser?token=abc');
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
+      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    });
+
+    await act(async () => result.current.result.onOpen());
+
+    expect(mockGetKratosLogoutUrl).toHaveBeenCalledTimes(1);
+    // A credentialed fetch to the Kratos-issued logout URL — not a page
+    // navigation — so the live SSO session is actually ended before the BFF
+    // login redirect fires; a plain full-navigation-only check would miss a
+    // regression that dropped this call entirely.
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      'https://identity.alkemio.test/self-service/logout/browser?token=abc',
+      expect.objectContaining({ credentials: 'include' })
+    );
+    // Ordering: the SSO session must be ended BEFORE the BFF redirect is
+    // requested, or the round trip below would still find a live session.
+    const fetchOrder = (globalThis.fetch as unknown as ReturnType<typeof vi.fn>).mock.invocationCallOrder[0];
+    const assignOrder = assignSpy.mock.invocationCallOrder[0];
+    expect(fetchOrder).toBeLessThan(assignOrder);
+    expect(assignSpy).toHaveBeenCalledTimes(1);
+    expect(assignSpy.mock.calls[0][0] as string).toContain('/api/auth/oidc/login');
+  });
+
+  it('still redirects to the BFF login when ending the Kratos SSO session fails (best-effort, never blocks the gate)', async () => {
+    mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
+    mockGetKratosLogoutUrl.mockResolvedValue('https://identity.alkemio.test/self-service/logout/browser?token=abc');
+    (globalThis.fetch as unknown as ReturnType<typeof vi.fn>).mockRejectedValue(new Error('network error'));
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
+      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    });
+
+    await act(async () => result.current.result.onOpen());
+
+    expect(assignSpy).toHaveBeenCalledTimes(1);
+    expect(assignSpy.mock.calls[0][0] as string).toContain('/api/auth/oidc/login');
+  });
+
+  it('skips the Kratos logout fetch when there is no live Kratos session to end', async () => {
+    mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
+    mockGetKratosLogoutUrl.mockResolvedValue(undefined);
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
+      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    });
+
+    await act(async () => result.current.result.onOpen());
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(assignSpy).toHaveBeenCalledTimes(1);
   });
 
   it("resumes on mount from a `?resume=delete-account` URL carrying this tab's marker, then strips the flag", async () => {
