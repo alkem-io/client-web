@@ -16,6 +16,8 @@ const h = vi.hoisted(() => ({
   notifications: [] as string[],
   mountCount: { value: 0 },
   editorInvalidatedCount: { value: 0 },
+  publishedApi: { value: null as string | null },
+  apiEvents: [] as string[],
 }));
 
 vi.mock('./collab/useCollab', () => ({
@@ -62,7 +64,18 @@ const wrapper = (whiteboardId = 'wb-1') => (
   <CollaborativeExcalidrawWrapper
     entities={{ whiteboard: { id: whiteboardId }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
     options={{}}
-    actions={{ onEditorInvalidated: () => (h.editorInvalidatedCount.value += 1) }}
+    actions={{
+      onInitApi: api => {
+        const id = (api as unknown as { id: string }).id;
+        h.publishedApi.value = id;
+        h.apiEvents.push(`api:${id}`);
+      },
+      onEditorInvalidated: () => {
+        h.editorInvalidatedCount.value += 1;
+        h.publishedApi.value = null;
+        h.apiEvents.push('invalidate');
+      },
+    }}
     renderDisconnectNotice={() => null}
   >
     {({ children }) => <>{children}</>}
@@ -82,6 +95,8 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     h.notifications.length = 0;
     h.mountCount.value = 0;
     h.editorInvalidatedCount.value = 0;
+    h.publishedApi.value = null;
+    h.apiEvents.length = 0;
   });
   afterEach(() => vi.clearAllMocks());
 
@@ -137,11 +152,13 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     expect(h.notifications).toContain('callout.whiteboard.session.documentDeleted');
   });
 
-  it('invalidates the captured editor when the whiteboard id changes in place', () => {
+  it('invalidates the old editor before publishing the API for a new whiteboard id', () => {
     const view = renderWrapper();
 
     view.rerender(wrapper('wb-2'));
 
     expect(h.editorInvalidatedCount.value).toBe(1);
+    expect(h.apiEvents).toEqual(['api:api-1', 'invalidate', 'api:api-2']);
+    expect(h.publishedApi.value).toBe('api-2');
   });
 });

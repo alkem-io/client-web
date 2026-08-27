@@ -98,10 +98,22 @@ describe('mergeWhiteboard asset re-homing', () => {
     expect(api.updateScene).not.toHaveBeenCalled();
   });
 
-  it('does not require a source locator for deleted image elements', async () => {
+  it('ignores deleted image elements instead of importing their tombstones', async () => {
     h.templateScene = {
       ...makeTemplateScene(),
-      elements: [{ ...makeTemplateScene().elements[0], isDeleted: true }],
+      elements: [
+        { ...makeTemplateScene().elements[0], isDeleted: true },
+        {
+          id: 'visible',
+          type: 'rectangle',
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 10,
+          version: 1,
+          boundElements: null,
+        },
+      ],
       assets: {},
     };
     const api = makeApi({ sceneLocatorsSequence: [{}] });
@@ -111,6 +123,23 @@ describe('mergeWhiteboard asset re-homing', () => {
     expect(api.addFiles).not.toHaveBeenCalled();
     expect(api.flushAssetPublication).not.toHaveBeenCalled();
     expect(api.updateScene).toHaveBeenCalledTimes(1);
+    expect(api.updateScene.mock.calls[0][0].elements).toHaveLength(1);
+    expect(api.updateScene.mock.calls[0][0].elements[0].type).toBe('rectangle');
+  });
+
+  it('rejects a deleted-only template without reporting a visible import', async () => {
+    h.templateScene = {
+      ...makeTemplateScene(),
+      elements: [{ ...makeTemplateScene().elements[0], isDeleted: true }],
+      assets: {},
+    };
+    const api = makeApi({ sceneLocatorsSequence: [{}] });
+
+    await expect(mergeWhiteboard(api as never, h.templateScene as never, makeAdapter())).rejects.toThrow(
+      'Template has no visible elements'
+    );
+    expect(api.updateScene).not.toHaveBeenCalled();
+    expect(api.scrollToContent).not.toHaveBeenCalled();
   });
 
   it('resolves the source locator, re-stores into the target bucket (new id), keeps fileId, inserts the element', async () => {
@@ -294,6 +323,53 @@ describe('mergeWhiteboard asset re-homing', () => {
     expect(secondElements[2].id).not.toBe(firstElements[1].id);
     expect(firstElements[1].x).toBeGreaterThan(existing.x + existing.width);
     expect(secondElements[2].x).toBeGreaterThan(firstElements[1].x as number);
+  });
+
+  it('ignores deleted outliers when positioning visible imported content', async () => {
+    h.templateScene = {
+      elements: [
+        {
+          id: 'visible',
+          type: 'rectangle',
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 10,
+          version: 1,
+          boundElements: null,
+        },
+        {
+          id: 'deleted-outlier',
+          type: 'rectangle',
+          x: -100000,
+          y: -100000,
+          width: 10,
+          height: 10,
+          version: 1,
+          isDeleted: true,
+          boundElements: null,
+        },
+      ],
+      assets: {},
+      appState: {},
+    };
+    const existing = {
+      id: 'existing',
+      type: 'rectangle',
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      version: 1,
+      boundElements: null,
+    };
+    const api = makeApi({ initialElements: [existing] });
+
+    await mergeWhiteboard(api as never, h.templateScene as never, makeAdapter());
+
+    const inserted = api.updateScene.mock.calls[0][0].elements[1];
+    expect(inserted.x).toBeGreaterThan(existing.x + existing.width);
+    expect(api.updateScene.mock.calls[0][0].elements).toHaveLength(2);
   });
 
   it('regenerates frame, binding, and group relationships within each imported copy', async () => {
