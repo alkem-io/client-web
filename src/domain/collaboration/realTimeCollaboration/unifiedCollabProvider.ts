@@ -184,7 +184,7 @@ type UnifiedCollabProviderCommonOptions = {
   type: 'memo' | 'whiteboard';
   /** Reuse an existing awareness (e.g. the whiteboard binding's). A fresh one is created when omitted. */
   awareness?: Awareness;
-  /** Override the service base URL (defaults to the configured collab URL). */
+  /** Override the service base URL (defaults to the platform or browser origin). */
   baseUrl?: string;
   /** Override the service path prefix (defaults to `/collab`). */
   path?: string;
@@ -799,13 +799,14 @@ function readRawJsonPayload(decoder: decoding.Decoder): unknown {
 
 /**
  * Build `wss://<host><path>/<documentId>?type=<type>[&guestName=...]` from the
- * configured collab base URL. `http(s)` is upgraded to `ws(s)`. Returns null when
- * the base URL is not configured (the provider then stays inert).
+ * platform origin. `http(s)` is upgraded to `ws(s)`. An explicit `baseUrl`
+ * remains available for tests and non-platform embedding.
  */
 function buildCollabUrl(
   options: Pick<UnifiedCollabProviderOptions, 'documentId' | 'type' | 'baseUrl' | 'path' | 'guestName'>
 ): string | null {
-  const baseUrl = options.baseUrl ?? globalThis.window?._env_?.VITE_APP_COLLAB_URL;
+  const baseUrl =
+    options.baseUrl || globalThis.window?._env_?.VITE_APP_ALKEMIO_DOMAIN || globalThis.window?.location.origin;
   if (!baseUrl) return null;
 
   const path = options.path ?? globalThis.window?._env_?.VITE_APP_COLLAB_PATH ?? '/collab';

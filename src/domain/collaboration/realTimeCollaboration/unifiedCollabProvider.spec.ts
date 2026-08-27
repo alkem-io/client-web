@@ -103,6 +103,42 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
+  it('uses the configured platform domain when no base URL override is provided', () => {
+    vi.stubGlobal('window', {
+      _env_: { VITE_APP_ALKEMIO_DOMAIN: 'https://platform.test' },
+      location: { origin: 'https://browser.test' },
+    });
+
+    const provider = new UnifiedCollabProvider({ documentId: 'doc-1', type: 'whiteboard' });
+
+    expect(MockWebSocket.instances[0].url).toBe('wss://platform.test/collab/doc-1?type=whiteboard');
+    provider.destroy();
+  });
+
+  it('uses the browser origin when no platform domain or base URL override is provided', () => {
+    vi.stubGlobal('window', {
+      _env_: {},
+      location: { origin: 'https://browser.test' },
+    });
+
+    const provider = new UnifiedCollabProvider({ documentId: 'doc-1', type: 'memo' });
+
+    expect(MockWebSocket.instances[0].url).toBe('wss://browser.test/collab/doc-1?type=memo');
+    provider.destroy();
+  });
+
+  it('uses the browser origin when the runtime platform domain is empty', () => {
+    vi.stubGlobal('window', {
+      _env_: { VITE_APP_ALKEMIO_DOMAIN: '' },
+      location: { origin: 'https://browser.test' },
+    });
+
+    const provider = new UnifiedCollabProvider({ documentId: 'doc-1', type: 'memo' });
+
+    expect(MockWebSocket.instances[0].url).toBe('wss://browser.test/collab/doc-1?type=memo');
+    provider.destroy();
+  });
+
   it('passes a guest name through the query string', () => {
     const provider = new UnifiedCollabProvider({ ...baseOptions, type: 'memo', guestName: 'Alice S.' });
     expect(MockWebSocket.instances[0].url).toBe('wss://collab.test/collab/doc-1?type=memo&guestName=Alice+S.');
@@ -536,13 +572,6 @@ describe('UnifiedCollabProvider', () => {
 
     provider.destroy();
     vi.useRealTimers();
-  });
-
-  it('stays inert when no collab base URL is configured', () => {
-    const provider = new UnifiedCollabProvider({ documentId: 'd', type: 'memo' });
-    expect(MockWebSocket.instances).toHaveLength(0);
-    expect(provider.status).toBe('connecting');
-    provider.destroy();
   });
 });
 
