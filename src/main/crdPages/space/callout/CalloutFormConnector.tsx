@@ -134,6 +134,22 @@ export async function prepareWhiteboardDraftsForCalloutCreation(
   return prepared.every(Boolean);
 }
 
+export async function runCalloutCreationOnce(
+  inFlight: { current: boolean },
+  setPreparing: (preparing: boolean) => void,
+  create: () => Promise<void>
+): Promise<void> {
+  if (inFlight.current) return;
+  inFlight.current = true;
+  setPreparing(true);
+  try {
+    await create();
+  } finally {
+    inFlight.current = false;
+    setPreparing(false);
+  }
+}
+
 type CalloutFormConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -526,10 +542,17 @@ function CalloutFormConnectorInner({
   };
 
   // --- Create path -------------------------------------------------------
+  const [preparingCreation, setPreparingCreation] = useState(false);
+  const creationInFlightRef = useRef(false);
   const submitting =
-    creating || updating || mediaGalleryUploading || framingWhiteboardDraft.loading || defaultWhiteboardDraft.loading;
+    creating ||
+    updating ||
+    mediaGalleryUploading ||
+    framingWhiteboardDraft.loading ||
+    defaultWhiteboardDraft.loading ||
+    preparingCreation;
 
-  const createAndUpload = async (visibility: CalloutVisibility) => {
+  const performCreateAndUpload = async (visibility: CalloutVisibility) => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -634,6 +657,9 @@ function CalloutFormConnectorInner({
       onOpenChange(false);
     }
   };
+
+  const createAndUpload = (visibility: CalloutVisibility) =>
+    runCalloutCreationOnce(creationInFlightRef, setPreparingCreation, () => performCreateAndUpload(visibility));
 
   // --- Edit path ---------------------------------------------------------
   const pollId = editData?.lookup.callout?.framing.poll?.id ?? values.editMeta?.pollId;

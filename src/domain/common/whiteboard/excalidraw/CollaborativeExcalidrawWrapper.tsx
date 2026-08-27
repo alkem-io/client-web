@@ -251,7 +251,7 @@ const CollaborativeExcalidrawWrapper = ({
     },
   };
 
-  const { UIOptions: externalUIOptions, ...restOptions } = options;
+  const { UIOptions: externalUIOptions, viewModeEnabled: externallyReadOnly, ...restOptions } = options;
 
   const mergedUIOptions = merge(UIOptions, externalUIOptions);
 
@@ -433,7 +433,7 @@ const CollaborativeExcalidrawWrapper = ({
             initialData={whiteboardDefaults}
             UIOptions={mergedUIOptions}
             isCollaborating={collaborating}
-            viewModeEnabled={isReadOnly}
+            viewModeEnabled={isReadOnly || externallyReadOnly}
             assetAdapter={assetAdapter}
             onPointerUpdate={collabApi?.onPointerUpdate}
             onRequestBroadcastEmojiReaction={handleRequestBroadcastEmojiReaction}

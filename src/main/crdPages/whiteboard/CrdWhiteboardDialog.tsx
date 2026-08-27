@@ -142,8 +142,12 @@ type CollaborativeCloseParams = {
   onPublishFailed: (report: AssetPublishReport) => void;
   /** Persist every scene update sent before this request, after asset locators are published. */
   requestDurability?: () => Promise<void>;
+  /** Refuse to close when no live collaboration connection can supply the durability barrier. */
+  requireDurability?: boolean;
   /** Report that the collaboration service could not make the scene durable. */
   onDurabilityFailed?: () => void;
+  /** Disable canvas mutation for the full flush/durability/save interval. */
+  onPreparingChange?: (preparing: boolean) => void;
   /** Tear the collaborative session down: evict the cache + run the parent cancel, which unmounts the provider. */
   teardown: () => void;
   /**
@@ -178,38 +182,54 @@ export async function closeCollaborativeWhiteboard({
   save,
   onPublishFailed,
   requestDurability,
+  requireDurability,
   onDurabilityFailed,
+  onPreparingChange,
   teardown,
   hasEditorChanged,
 }: CollaborativeCloseParams): Promise<boolean> {
-  if (excalidrawAPI) {
-    const report = await excalidrawAPI.flushAssetPublication();
-    if (report.failed.length > 0) {
-      onPublishFailed(report);
+  onPreparingChange?.(true);
+  try {
+    if (excalidrawAPI) {
+      const report = await excalidrawAPI.flushAssetPublication();
+      if (report.failed.length > 0) {
+        onPublishFailed(report);
+        return false;
+      }
+    }
+    // A recovery (update-rejected) that fired DURING the flush replaced the editor: the
+    // captured api is dead and its scene is stale versus the recovery's server-canonical
+    // resync. Abort BEFORE the save — never read/persist the dead api, and leave the
+    // (recovered) session up rather than tearing it down on this stale intent.
+    if (hasEditorChanged?.()) {
       return false;
     }
-  }
-  // A recovery (update-rejected) that fired DURING the flush replaced the editor: the
-  // captured api is dead and its scene is stale versus the recovery's server-canonical
-  // resync. Abort BEFORE the save — never read/persist the dead api, and leave the
-  // (recovered) session up rather than tearing it down on this stale intent.
-  if (hasEditorChanged?.()) {
-    return false;
-  }
-  if (requestDurability) {
-    try {
-      await requestDurability();
-    } catch {
+    if (!requestDurability && requireDurability) {
       onDurabilityFailed?.();
       return false;
     }
+    if (requestDurability) {
+      try {
+        await requestDurability();
+      } catch {
+        onDurabilityFailed?.();
+        return false;
+      }
+    }
+    // A recovery can also replace the editor while the durability request is in
+    // flight. Never save from the captured API or tear the recovered editor down.
+    if (hasEditorChanged?.()) {
+      return false;
+    }
+    const saved = await save();
+    if (saved === false) {
+      return false;
+    }
+    teardown();
+    return true;
+  } finally {
+    onPreparingChange?.(false);
   }
-  const saved = await save();
-  if (saved === false) {
-    return false;
-  }
-  teardown();
-  return true;
 }
 
 const CrdWhiteboardDialog = ({
@@ -247,6 +267,8 @@ const CrdWhiteboardDialog = ({
   const [_lastSaveError, setLastSaveError] = useState<string | undefined>();
   const [isSceneInitialized, setSceneInitialized] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
+  const [preparingClose, setPreparingClose] = useState(false);
+  const closeInFlightRef = useRef(false);
   const [selectedPreviewMode, setSelectedPreviewMode] = useState<WhiteboardPreviewMode>(
     whiteboard?.previewSettings.mode ?? WhiteboardPreviewMode.Auto
   );
@@ -294,53 +316,63 @@ const CrdWhiteboardDialog = ({
   };
 
   const onClose = async () => {
-    const shouldSave = !!(editModeEnabled && collabApiRef.current?.isCollaborating() && whiteboard);
+    if (closeInFlightRef.current) return;
+    closeInFlightRef.current = true;
+    const collabApi = collabApiRef.current;
+    const shouldSave = !!(editModeEnabled && collabApi?.isCollaborating() && whiteboard);
+    const draftRequiresDurability = consumptionPreparationRef !== undefined;
     // Snapshot the editor generation now; if a recovery (update-rejected) discards it while
     // the flush is awaited, the captured api is dead and the save must abort.
     const generationAtClose = editorGenerationRef.current;
-    await closeCollaborativeWhiteboard({
-      excalidrawAPI,
-      hasEditorChanged: () => editorGenerationRef.current !== generationAtClose,
-      requestDurability:
-        shouldSave && collabApiRef.current
-          ? () => collabApiRef.current?.requestDurability() ?? Promise.reject(new Error('Collaboration unavailable'))
-          : undefined,
-      save: async () => {
-        if (!shouldSave || !whiteboard) return true;
-        const excState = excalidrawAPI
-          ? {
-              elements: excalidrawAPI.getSceneElements(),
-              appState: excalidrawAPI.getAppState(),
-              files: excalidrawAPI.getFiles(),
+    try {
+      await closeCollaborativeWhiteboard({
+        excalidrawAPI,
+        hasEditorChanged: () => editorGenerationRef.current !== generationAtClose,
+        requestDurability:
+          (shouldSave || draftRequiresDurability) && collabApi?.isCollaborating()
+            ? () => collabApi.requestDurability()
+            : undefined,
+        requireDurability: draftRequiresDurability,
+        onPreparingChange: setPreparingClose,
+        save: async () => {
+          if (!shouldSave || !whiteboard) return true;
+          const excState = excalidrawAPI
+            ? {
+                elements: excalidrawAPI.getSceneElements(),
+                appState: excalidrawAPI.getAppState(),
+                files: excalidrawAPI.getFiles(),
+              }
+            : undefined;
+          const result = await prepareWhiteboardForUpdate(whiteboard, excState);
+          if (result.success) {
+            const update = await actions.onUpdate(result.whiteboard, result.previewImages);
+            if (!update.success) {
+              notify(t('callout.whiteboard.saveFailed'), 'error');
+              return false;
             }
-          : undefined;
-        const result = await prepareWhiteboardForUpdate(whiteboard, excState);
-        if (result.success) {
-          const update = await actions.onUpdate(result.whiteboard, result.previewImages);
-          if (!update.success) {
+            return true;
+          } else {
+            logError(new Error('Error preparing whiteboard for update on close'), {
+              category: TagCategoryValues.WHITEBOARD,
+            });
             notify(t('callout.whiteboard.saveFailed'), 'error');
             return false;
           }
-          return true;
-        } else {
-          logError(new Error('Error preparing whiteboard for update on close'), {
-            category: TagCategoryValues.WHITEBOARD,
-          });
+        },
+        onPublishFailed: () => {
+          notify(t('callout.whiteboard.images.uploadFailed'), 'error');
+        },
+        onDurabilityFailed: () => {
           notify(t('callout.whiteboard.saveFailed'), 'error');
-          return false;
-        }
-      },
-      onPublishFailed: () => {
-        notify(t('callout.whiteboard.images.uploadFailed'), 'error');
-      },
-      onDurabilityFailed: () => {
-        notify(t('callout.whiteboard.saveFailed'), 'error');
-      },
-      teardown: () => {
-        evictFromCache(whiteboard?.id, 'Whiteboard');
-        actions.onCancel();
-      },
-    });
+        },
+        teardown: () => {
+          evictFromCache(whiteboard?.id, 'Whiteboard');
+          actions.onCancel();
+        },
+      });
+    } finally {
+      closeInFlightRef.current = false;
+    }
   };
 
   useImperativeHandle(consumptionPreparationRef, () => async () => {
@@ -351,6 +383,8 @@ const CrdWhiteboardDialog = ({
       excalidrawAPI,
       hasEditorChanged: () => editorGenerationRef.current !== generationAtPrepare,
       requestDurability: () => collabApi.requestDurability(),
+      requireDurability: true,
+      onPreparingChange: setPreparingClose,
       save: async () => true,
       onPublishFailed: () => notify(t('callout.whiteboard.images.uploadFailed'), 'error'),
       onDurabilityFailed: () => notify(t('callout.whiteboard.saveFailed'), 'error'),
@@ -435,6 +469,7 @@ const CrdWhiteboardDialog = ({
         collabApiRef={collabApiRef}
         options={{
           UIOptions: { canvasActions: { export: { saveFileToDisk: true } } },
+          viewModeEnabled: preparingClose,
         }}
         actions={{
           onInitApi: setExcalidrawAPI,
@@ -586,7 +621,7 @@ const CrdWhiteboardDialog = ({
                       displayName={whiteboard.profile.displayName}
                       value={values.profile.displayName}
                       onChange={name => setFieldValue('profile.displayName', name)}
-                      readOnly={options.readOnlyDisplayName}
+                      readOnly={options.readOnlyDisplayName || preparingClose}
                       editing={isEditingName}
                       onEdit={() => setIsEditingName(true)}
                       onSave={async () => {
@@ -601,7 +636,10 @@ const CrdWhiteboardDialog = ({
                   }
                   titleExtra={
                     editModeEnabled && mode === 'write' ? (
-                      <WhiteboardTemplatePickerButton disabled={!isSceneInitialized} onImport={handleImportTemplate} />
+                      <WhiteboardTemplatePickerButton
+                        disabled={!isSceneInitialized || preparingClose}
+                        onImport={handleImportTemplate}
+                      />
                     ) : undefined
                   }
                   headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}

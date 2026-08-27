@@ -176,6 +176,56 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(teardown).not.toHaveBeenCalled();
   });
 
+  it('keeps a draft open when no live connection can supply its required durability barrier', async () => {
+    const save = vi.fn(async () => {});
+    const teardown = vi.fn();
+    const onDurabilityFailed = vi.fn();
+    const onPreparingChange = vi.fn();
+
+    const proceeded = await closeCollaborativeWhiteboard({
+      excalidrawAPI: { flushAssetPublication: vi.fn(async () => cleanReport) },
+      requireDurability: true,
+      save,
+      onPublishFailed: vi.fn(),
+      onDurabilityFailed,
+      onPreparingChange,
+      teardown,
+    });
+
+    expect(proceeded).toBe(false);
+    expect(onDurabilityFailed).toHaveBeenCalledOnce();
+    expect(save).not.toHaveBeenCalled();
+    expect(teardown).not.toHaveBeenCalled();
+    expect(onPreparingChange.mock.calls).toEqual([[true], [false]]);
+  });
+
+  it('keeps the recovered editor open when its generation changes during durability', async () => {
+    let resolveDurability!: () => void;
+    const durability = new Promise<void>(resolve => {
+      resolveDurability = resolve;
+    });
+    let editorChanged = false;
+    const save = vi.fn(async () => {});
+    const teardown = vi.fn();
+
+    const closing = closeCollaborativeWhiteboard({
+      excalidrawAPI: { flushAssetPublication: vi.fn(async () => cleanReport) },
+      requestDurability: vi.fn(() => durability),
+      save,
+      onPublishFailed: vi.fn(),
+      teardown,
+      hasEditorChanged: () => editorChanged,
+    });
+
+    await vi.waitFor(() => expect(save).not.toHaveBeenCalled());
+    editorChanged = true;
+    resolveDurability();
+
+    await expect(closing).resolves.toBe(false);
+    expect(save).not.toHaveBeenCalled();
+    expect(teardown).not.toHaveBeenCalled();
+  });
+
   it('(b) a still-pending slow store that resolves with a non-empty `failed` does NOT report a clean close', async () => {
     const { promise, resolveWith } = deferredReport();
     const excalidrawAPI = { flushAssetPublication: vi.fn(() => promise) };
@@ -332,5 +382,25 @@ describe('CollaborativeExcalidrawWrapper — asset adapter wiring', () => {
 
     await waitFor(() => expect(h.excalidrawProps).not.toBeNull());
     expect(h.excalidrawProps?.assetAdapter).toBe(assetAdapter);
+  });
+
+  it('puts Excalidraw in view mode while the caller is preparing to close', async () => {
+    render(
+      <CollaborativeExcalidrawWrapper
+        entities={{
+          whiteboard: { id: 'wb-1', profile: { url: '/wb-1' } },
+          assetAdapter: { store: vi.fn(), resolve: vi.fn() } as never,
+          lastSuccessfulSavedDate: undefined,
+        }}
+        options={{ viewModeEnabled: true }}
+        actions={{}}
+        renderDisconnectNotice={() => null}
+      >
+        {({ children }) => children}
+      </CollaborativeExcalidrawWrapper>
+    );
+
+    await waitFor(() => expect(h.excalidrawProps).not.toBeNull());
+    expect(h.excalidrawProps?.viewModeEnabled).toBe(true);
   });
 });

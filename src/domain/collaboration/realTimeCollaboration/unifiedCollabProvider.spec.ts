@@ -8,6 +8,7 @@ import {
   type CloseVerdict,
   type ControlMessage,
   classifyClose,
+  DURABILITY_REQUEST_TIMEOUT_MS,
   type SceneSyncPort,
   UnifiedCollabProvider,
   WIRE,
@@ -348,6 +349,28 @@ describe('UnifiedCollabProvider', () => {
 
     await expect(durability).rejects.toThrow('closed before the draft was persisted');
     provider.destroy();
+  });
+
+  it('times out a lost durability reply and lets the caller retry', async () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.sent.length = 0;
+
+    const durability = provider.requestDurability();
+    const timedOut = expect(durability).rejects.toThrow('timed out while persisting the draft');
+    await vi.advanceTimersByTimeAsync(DURABILITY_REQUEST_TIMEOUT_MS);
+    await timedOut;
+
+    const retry = provider.requestDurability();
+    expect(socket.sent).toHaveLength(2);
+    const request = readRawJsonFrame(socket.sent[1]).body as { requestId: string };
+    socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
+    await expect(retry).resolves.toBeUndefined();
+
+    provider.destroy();
+    vi.useRealTimers();
   });
 
   it('does NOT decode an (invalid) VarString-prefixed control frame — the client reads only the Go raw contract', () => {

@@ -215,6 +215,7 @@ export type UnifiedCollabProviderOptions = UnifiedCollabProviderCommonOptions &
   );
 
 const RECONNECT_BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
+export const DURABILITY_REQUEST_TIMEOUT_MS = 60_000;
 const NORMAL_CLOSURE = 1000;
 /**
  * WebSocket policy-violation close code (RFC 6455 §7.4.1). The unified collaboration
@@ -274,6 +275,7 @@ export class UnifiedCollabProvider {
         promise: Promise<void>;
         resolve: () => void;
         reject: (error: Error) => void;
+        timeout: ReturnType<typeof setTimeout>;
       }
     | undefined;
 
@@ -430,7 +432,10 @@ export class UnifiedCollabProvider {
       resolve = resolvePromise;
       reject = rejectPromise;
     });
-    this.pendingDurability = { requestId, promise, resolve, reject };
+    const timeout = setTimeout(() => {
+      this.rejectPendingDurability('The collaboration service timed out while persisting the draft');
+    }, DURABILITY_REQUEST_TIMEOUT_MS);
+    this.pendingDurability = { requestId, promise, resolve, reject, timeout };
 
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.DURABILITY_REQUEST);
@@ -539,7 +544,14 @@ export class UnifiedCollabProvider {
 
   private settleDurability(message: ControlMessage): void {
     const pending = this.pendingDurability;
-    if (!pending || message.requestId !== pending.requestId) return;
+    if (
+      !pending ||
+      message.requestId !== pending.requestId ||
+      (message.kind !== 'persisted' && message.kind !== 'persist-failed')
+    ) {
+      return;
+    }
+    clearTimeout(pending.timeout);
     if (message.kind === 'persisted') {
       this.pendingDurability = undefined;
       pending.resolve();
@@ -552,6 +564,7 @@ export class UnifiedCollabProvider {
   private rejectPendingDurability(message: string): void {
     const pending = this.pendingDurability;
     if (!pending) return;
+    clearTimeout(pending.timeout);
     this.pendingDurability = undefined;
     pending.reject(new Error(message));
   }

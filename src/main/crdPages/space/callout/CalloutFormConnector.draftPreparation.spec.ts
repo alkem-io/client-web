@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { prepareWhiteboardDraftsForCalloutCreation } from './CalloutFormConnector';
+import { prepareWhiteboardDraftsForCalloutCreation, runCalloutCreationOnce } from './CalloutFormConnector';
 
 const deferred = () => {
   let resolve!: (prepared: boolean) => void;
@@ -51,5 +51,27 @@ describe('prepareWhiteboardDraftsForCalloutCreation', () => {
     expect(prepared).toBe(false);
     expect(createCallout).not.toHaveBeenCalled();
     expect(consumed).not.toHaveBeenCalled();
+  });
+
+  it('keeps the entire preparation and create operation single-flight', async () => {
+    const inFlight = { current: false };
+    const preparation = deferred();
+    const create = vi.fn(async () => {
+      await preparation.promise;
+    });
+    const setPreparing = vi.fn();
+
+    const first = runCalloutCreationOnce(inFlight, setPreparing, create);
+    const second = runCalloutCreationOnce(inFlight, setPreparing, create);
+
+    expect(create).toHaveBeenCalledOnce();
+    expect(setPreparing).toHaveBeenCalledWith(true);
+    await expect(second).resolves.toBeUndefined();
+
+    preparation.resolve(true);
+    await first;
+
+    expect(setPreparing).toHaveBeenLastCalledWith(false);
+    expect(inFlight.current).toBe(false);
   });
 });
