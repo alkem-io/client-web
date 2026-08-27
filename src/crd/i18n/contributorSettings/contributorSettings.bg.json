@@ -411,7 +411,7 @@
             "notice": "Ти си единственият собственик на {{name}}. Назначи друг собственик, преди да изтриеш профила си, или се свържи с поддръжката за помощ."
           },
           "kinds": {
-            "ACCOUNT_SPACE": "Пространство",
+            "ACCOUNT_SPACE": "Space",
             "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Виртуален участник",
             "ACCOUNT_INNOVATION_PACK": "Пакет за иновации",
             "ACCOUNT_INNOVATION_HUB": "Иновационен хъб",

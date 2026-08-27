@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { useKratosLogout } from './useKratosLogout';
+import { useKratosLogout } from '@/core/auth/authentication/hooks/useKratosLogout';
 
 const mockCreateBrowserLogoutFlow = vi.fn();
 
@@ -11,7 +11,7 @@ const mockClient = {
 
 let clientAvailable = true;
 
-vi.mock('./useKratosClient', () => ({
+vi.mock('@/core/auth/authentication/hooks/useKratosClient', () => ({
   useKratosClient: () => (clientAvailable ? mockClient : undefined),
 }));
 

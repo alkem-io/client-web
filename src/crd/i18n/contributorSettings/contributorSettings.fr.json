@@ -411,7 +411,7 @@
             "notice": "Tu es le seul propriétaire de {{name}}. Désigne un autre propriétaire avant de supprimer ton compte, ou contacte le support pour obtenir de l'aide."
           },
           "kinds": {
-            "ACCOUNT_SPACE": "Espace",
+            "ACCOUNT_SPACE": "Space",
             "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Contributeur virtuel",
             "ACCOUNT_INNOVATION_PACK": "Pack d'innovation",
             "ACCOUNT_INNOVATION_HUB": "Hub d'innovation",

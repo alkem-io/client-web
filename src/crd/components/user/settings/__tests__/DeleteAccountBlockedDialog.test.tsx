@@ -2,9 +2,12 @@ import { render, screen } from '@testing-library/react';
 import { createInstance } from 'i18next';
 import { I18nextProvider } from 'react-i18next';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
+import type {
+  DeleteAccountBlocker,
+  DeleteAccountBlockerTotal,
+} from '@/crd/components/user/settings/DeleteAccount.types';
+import { DeleteAccountBlockedDialog } from '@/crd/components/user/settings/DeleteAccountBlockedDialog';
 import contributorSettingsEn from '@/crd/i18n/contributorSettings/contributorSettings.en.json';
-import type { DeleteAccountBlocker, DeleteAccountBlockerTotal } from '../DeleteAccount.types';
-import { DeleteAccountBlockedDialog } from '../DeleteAccountBlockedDialog';
 
 const i18n = createInstance();
 
