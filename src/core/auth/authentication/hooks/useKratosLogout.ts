@@ -71,8 +71,19 @@ export const useKratosLogout = () => {
       // A credentialed fetch (not a page navigation) still applies the
       // Set-Cookie the logout response carries, so ending the session adds
       // no extra visible redirect for the user.
-      await fetch(logoutUrl, { credentials: 'include', redirect: 'manual' });
-      return 'ended';
+      const response = await fetch(logoutUrl, { credentials: 'include', redirect: 'manual' });
+      // `fetch` rejects only on a network-level failure, so the response MUST
+      // be inspected: a 4xx/5xx from Kratos resolves normally and would
+      // otherwise be reported as a confirmed logout.
+      //
+      // Two shapes count as success. Kratos answers the logout URL with a
+      // redirect to `default_browser_return_url`, and `redirect: 'manual'`
+      // surfaces that as an opaque redirect (`type === 'opaqueredirect'`,
+      // `status === 0`) — the Set-Cookie still applied. A 2xx is the other
+      // legitimate answer. Anything else leaves the session state unknown,
+      // which for this caller means 'failed'.
+      const ended = response.type === 'opaqueredirect' || response.ok;
+      return ended ? 'ended' : 'failed';
     } catch {
       return 'failed';
     }

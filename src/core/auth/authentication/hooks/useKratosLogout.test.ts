@@ -84,6 +84,34 @@ describe('useKratosLogout', () => {
       await expect(result.current.endKratosSsoSession()).resolves.toBe('failed');
     });
 
+    // sec-client-web-2: `fetch` rejects only on a network-level failure, so an
+    // HTTP error status resolves normally. Reporting 'ended' without inspecting
+    // the response would let the caller's step-up gate proceed on a Kratos
+    // session that is provably still alive.
+    it.each([
+      400, 401, 403, 500, 502,
+    ])("reports 'failed' when the logout URL answers HTTP %i — the session may still be live", async status => {
+      mockCreateBrowserLogoutFlow.mockResolvedValue({ data: { logout_url: 'https://identity.test/logout?token=1' } });
+      (globalThis.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(null, { status }));
+      const { result } = renderHook(() => useKratosLogout());
+
+      await expect(result.current.endKratosSsoSession()).resolves.toBe('failed');
+    });
+
+    it("reports 'ended' on an opaque redirect — Kratos's normal answer under redirect:'manual'", async () => {
+      mockCreateBrowserLogoutFlow.mockResolvedValue({ data: { logout_url: 'https://identity.test/logout?token=1' } });
+      // Response.type is read-only, so stand in the shape the fetch spec produces
+      // for a manual-redirect response: type 'opaqueredirect', status 0, ok false.
+      (globalThis.fetch as unknown as ReturnType<typeof vi.fn>).mockResolvedValue({
+        type: 'opaqueredirect',
+        status: 0,
+        ok: false,
+      });
+      const { result } = renderHook(() => useKratosLogout());
+
+      await expect(result.current.endKratosSsoSession()).resolves.toBe('ended');
+    });
+
     it("reports 'failed' when there is no Kratos client available", async () => {
       clientAvailable = false;
       const { result } = renderHook(() => useKratosLogout());
