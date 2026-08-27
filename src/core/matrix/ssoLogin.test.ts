@@ -191,11 +191,11 @@ describe('ssoLogin', () => {
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
       const result = await fresh(LOCALPART, { timeoutMs: 200, pollIntervalMs: 20 });
 
-      expect(result).toBe(false);
+      expect(result).toBe('unavailable');
       expect(document.querySelector('iframe')).toBeNull();
     });
 
-    it('resolves true when the callback persists fresh credentials, then removes the iframe', async () => {
+    it('resolves authenticated when the callback persists fresh credentials, then removes the iframe', async () => {
       setEnv();
       vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify(makeLoginResponse()), { status: 200 })
@@ -215,11 +215,11 @@ describe('ssoLogin', () => {
       });
 
       const result = await attempt;
-      expect(result).toBe(true);
+      expect(result).toBe('authenticated');
       expect(document.querySelector('iframe')).toBeNull();
     });
 
-    it('times out and resolves false when no credentials appear', async () => {
+    it('times out and resolves timeout when no credentials appear', async () => {
       setEnv();
       vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify(makeLoginResponse()), { status: 200 })
@@ -228,8 +228,41 @@ describe('ssoLogin', () => {
       const { attemptSilentSso: fresh } = await import('./ssoLogin');
       const result = await fresh(LOCALPART, { timeoutMs: 100, pollIntervalMs: 20 });
 
-      expect(result).toBe(false);
+      expect(result).toBe('timeout');
       expect(document.querySelector('iframe')).toBeNull();
+    });
+
+    it('resolves unreachable without creating an iframe when the login endpoint is down (contract §6)', async () => {
+      setEnv();
+      vi.spyOn(globalThis, 'fetch').mockRejectedValueOnce(new TypeError('Failed to fetch'));
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const result = await fresh(LOCALPART, { timeoutMs: 200, pollIntervalMs: 20 });
+
+      expect(result).toBe('unreachable');
+      expect(document.querySelector('iframe')).toBeNull();
+    });
+
+    it('resolves unreachable on a 5xx from the login endpoint', async () => {
+      setEnv();
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(new Response('', { status: 502 }));
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const result = await fresh(LOCALPART, { timeoutMs: 200, pollIntervalMs: 20 });
+
+      expect(result).toBe('unreachable');
+    });
+
+    it('resolves unavailable on an SSO misconfiguration (zero providers) — no retry signal', async () => {
+      setEnv();
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify(makeLoginResponse([])), { status: 200 })
+      );
+
+      const { attemptSilentSso: fresh } = await import('./ssoLogin');
+      const result = await fresh(LOCALPART, { timeoutMs: 200, pollIntervalMs: 20 });
+
+      expect(result).toBe('unavailable');
     });
 
     it('points the hidden iframe at the SSO redirect URL for the discovered idp', async () => {
