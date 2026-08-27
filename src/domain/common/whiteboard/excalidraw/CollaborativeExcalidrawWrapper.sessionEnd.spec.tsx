@@ -58,17 +58,18 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 vi.mock('@/domain/shared/utils/useCombinedRefs', () => ({ useCombinedRefs: () => ({ current: null }) }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }));
 
-const renderWrapper = () =>
-  render(
-    <CollaborativeExcalidrawWrapper
-      entities={{ whiteboard: { id: 'wb-1' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
-      options={{}}
-      actions={{ onEditorInvalidated: () => (h.editorInvalidatedCount.value += 1) }}
-      renderDisconnectNotice={() => null}
-    >
-      {({ children }) => <>{children}</>}
-    </CollaborativeExcalidrawWrapper>
-  );
+const wrapper = (whiteboardId = 'wb-1') => (
+  <CollaborativeExcalidrawWrapper
+    entities={{ whiteboard: { id: whiteboardId }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
+    options={{}}
+    actions={{ onEditorInvalidated: () => (h.editorInvalidatedCount.value += 1) }}
+    renderDisconnectNotice={() => null}
+  >
+    {({ children }) => <>{children}</>}
+  </CollaborativeExcalidrawWrapper>
+);
+
+const renderWrapper = () => render(wrapper());
 
 const lastActive = () => h.autoReconnectActive[h.autoReconnectActive.length - 1];
 const send = (info: SessionEndInfo) => act(() => h.onSessionEnd.value?.(info));
@@ -134,5 +135,13 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     send({ code: 'document-deleted', scope: 'document', disposition: 'terminal' });
     expect(lastActive()).toBe(false);
     expect(h.notifications).toContain('callout.whiteboard.session.documentDeleted');
+  });
+
+  it('invalidates the captured editor when the whiteboard id changes in place', () => {
+    const view = renderWrapper();
+
+    view.rerender(wrapper('wb-2'));
+
+    expect(h.editorInvalidatedCount.value).toBe(1);
   });
 });

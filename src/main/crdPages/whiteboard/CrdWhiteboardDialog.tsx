@@ -400,7 +400,12 @@ const CrdWhiteboardDialog = ({
       if (editorGenerationRef.current !== generationAtImport) {
         throw new Error('Whiteboard editor changed while importing template');
       }
-      await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter);
+      await mergeWhiteboard(
+        excalidrawAPI,
+        templateScene,
+        assetAdapter,
+        () => editorGenerationRef.current !== generationAtImport
+      );
     } catch (err) {
       notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
       logError(new Error(`Error importing whiteboard template: '${err}'`), {
@@ -475,6 +480,7 @@ const CrdWhiteboardDialog = ({
           onInitApi: setExcalidrawAPI,
           onEditorInvalidated: () => {
             editorGenerationRef.current += 1;
+            setExcalidrawAPI(null);
           },
           onRemoteSave: (error?: string) => {
             if (error) {
