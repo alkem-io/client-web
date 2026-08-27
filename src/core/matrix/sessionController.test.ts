@@ -366,6 +366,182 @@ describe('establishSession', () => {
     expect(states).toEqual(['starting', 'offline']);
   });
 
+  describe('single sync ownership (contract §5)', () => {
+    type CoordinatorCallbacks = {
+      onPromoted?: () => void;
+      onRemoteState?: (state: string) => void;
+      onRemoteLogout?: () => void;
+    };
+
+    const makeCoordinatorMock = (initialRole: 'leader' | 'follower') => {
+      let role = initialRole;
+      const captured: { callbacks?: CoordinatorCallbacks } = {};
+      const announceLeadership = vi.fn();
+      const broadcastState = vi.fn();
+      const release = vi.fn();
+      const coordinator = {
+        role: () => role,
+        announceLeadership,
+        broadcastState,
+        release,
+      };
+      const createCoordinator = vi.fn(async (_userId: string, callbacks: CoordinatorCallbacks) => {
+        captured.callbacks = callbacks;
+        return coordinator;
+      });
+      const promote = () => {
+        role = 'leader';
+        captured.callbacks?.onPromoted?.();
+      };
+      return { coordinator, createCoordinator, captured, promote, announceLeadership, broadcastState, release };
+    };
+
+    it('a follower never constructs a client and mirrors the remote leader state', async () => {
+      await seedRecord();
+      const { createCoordinator, captured } = makeCoordinatorMock('follower');
+      const loadSdk = vi.fn();
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const states: SessionState[] = [];
+
+      await establishSession(ACTOR, {
+        loadSdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        onState: s => states.push(s),
+        createCoordinator,
+      });
+
+      expect(loadSdk).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
+
+      captured.callbacks?.onRemoteState?.('syncing');
+      expect(states[states.length - 1]).toBe('syncing');
+    });
+
+    it('promotion resumes from the shared stored credentials with no /login round-trip', async () => {
+      await seedRecord();
+      const { createCoordinator, promote, announceLeadership } = makeCoordinatorMock('follower');
+      const { sdk, createClient } = makeSdkMock();
+      const silentSso = vi.fn(async () => 'timeout' as const);
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso, createCoordinator });
+      expect(createClient).not.toHaveBeenCalled();
+
+      promote();
+
+      await vi.waitFor(() => {
+        expect(createClient).toHaveBeenCalledOnce();
+      });
+      expect(createClient.mock.calls[0][0].accessToken).toBe('syt_stored_access');
+      expect(silentSso).not.toHaveBeenCalled();
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(announceLeadership).toHaveBeenCalled();
+    });
+
+    it('the leader broadcasts every lifecycle transition', async () => {
+      await seedRecord();
+      const { createCoordinator, broadcastState } = makeCoordinatorMock('leader');
+      const { sdk, handlers } = makeSdkMock();
+
+      await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        createCoordinator,
+      });
+
+      handlers.get('sync')?.('PREPARED');
+      handlers.get('sync')?.('SYNCING');
+
+      expect(broadcastState.mock.calls.map(call => call[0])).toEqual(['ready', 'syncing']);
+    });
+
+    it('a remote logout stops the tab and lands it in signed-out', async () => {
+      await seedRecord();
+      const { createCoordinator, captured } = makeCoordinatorMock('follower');
+      const states: SessionState[] = [];
+
+      const handle = await establishSession(ACTOR, {
+        loadSdk: vi.fn(),
+        silentSso: vi.fn(async () => 'timeout' as const),
+        onState: s => states.push(s),
+        createCoordinator,
+      });
+
+      captured.callbacks?.onRemoteLogout?.();
+
+      expect(handle.machine.state()).toBe('signed-out');
+      expect(states[states.length - 1]).toBe('signed-out');
+    });
+
+    it('stop() releases the coordinator lock', async () => {
+      await seedRecord();
+      const { createCoordinator, release } = makeCoordinatorMock('leader');
+      const { sdk } = makeSdkMock();
+
+      const handle = await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        createCoordinator,
+      });
+      handle.stop();
+
+      expect(release).toHaveBeenCalled();
+    });
+  });
+
+  describe('user switch & sign-out (contract §4)', () => {
+    const OTHER_USER_ID = '@stale-actor:matrix.dev-alkem.io';
+
+    afterEach(async () => {
+      await clearNamespace(OTHER_USER_ID);
+    });
+
+    it("purges another user's stale namespace at establishment — full §4 sequence, then own session resumes", async () => {
+      await storeCredentials({
+        userId: OTHER_USER_ID,
+        deviceId: 'DEV_STALE',
+        accessToken: 'syt_stale_access',
+        refreshToken: 'syr_stale_refresh',
+        expiresAt: Date.now() + 60_000,
+        homeserverUrl: HOMESERVER,
+        storedAt: Date.now(),
+      });
+      await seedRecord();
+      const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('{}', { status: 200 }));
+      const { sdk, createClient } = makeSdkMock();
+
+      await establishSession(ACTOR, { loadSdk: async () => sdk, silentSso: vi.fn(async () => 'timeout' as const) });
+
+      const [url, init] = fetchSpy.mock.calls[0];
+      expect(url).toBe(`${HOMESERVER}/_matrix/client/v3/logout`);
+      expect((init?.headers as Record<string, string>).Authorization).toBe('Bearer syt_stale_access');
+
+      const { loadCredentials } = await import('./storage');
+      expect((await loadCredentials(OTHER_USER_ID)).record).toBe(null);
+      expect(createClient.mock.calls[0][0].userId).toBe(USER_ID);
+    });
+
+    it('stopActiveSession transitions to signed-out and stops the client', async () => {
+      await seedRecord();
+      const { sdk, client, handlers } = makeSdkMock();
+      const states: SessionState[] = [];
+
+      const handle = await establishSession(ACTOR, {
+        loadSdk: async () => sdk,
+        silentSso: vi.fn(async () => 'timeout' as const),
+        onState: s => states.push(s),
+      });
+      handlers.get('sync')?.('PREPARED');
+
+      const { stopActiveSession } = await import('./activeSession');
+      stopActiveSession();
+
+      expect(states).toEqual(['starting', 'ready', 'signed-out']);
+      expect(handle.machine.state()).toBe('signed-out');
+      expect(client.stopClient).toHaveBeenCalled();
+    });
+  });
+
   describe('contract §6 fail-closed rows', () => {
     const immediateWait = () => {
       const delays: number[] = [];
