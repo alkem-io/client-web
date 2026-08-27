@@ -111,4 +111,28 @@ describe('UserSecurityTabView', () => {
       expect(onRetry).toHaveBeenCalledTimes(1);
     }
   );
+
+  it.each<[string, UserSecurityViewState]>([
+    ['loading', { kind: 'loading' }],
+    ['error', { kind: 'error' }],
+    ['ready', { kind: 'ready', hasPassword: true, hasWebauthn: false }],
+  ])(
+    "renders the Delete-account slot in the '%s' state (spec-cw-3, FR-001) — the app-store-mandated " +
+      'deletion entry point is self-contained and must never disappear because an unrelated Kratos ' +
+      'settings-flow load is slow or failed',
+    (_label, state) => {
+      render(
+        <UserSecurityTabView
+          state={state}
+          passwordForm={null}
+          webauthnForm={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={null}
+          deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
+        />
+      );
+
+      expect(screen.getByTestId('delete-account-card-probe')).toBeInTheDocument();
+    }
+  );
 });
