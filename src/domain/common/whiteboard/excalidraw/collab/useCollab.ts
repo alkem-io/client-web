@@ -22,6 +22,8 @@ export type CollabAPI = {
   /** Local pointer move → awareness (the AwarenessRouter owns cursor presence). */
   onPointerUpdate: (payload: PointerUpdatePayload) => void;
   isCollaborating: () => boolean;
+  /** Wait until every preceding scene update is durable in both collaboration stores. */
+  requestDurability: () => Promise<void>;
   /** Broadcast an ephemeral floating emoji to other collaborators (never persisted). */
   broadcastEmojiReaction: (emoji: string, x: number, y: number) => void;
   broadcastCountdownTimer: (remainingSeconds: number, startedBy: string, active: boolean) => void;
@@ -311,6 +313,7 @@ const useCollab = ({
     const collabApi: CollabAPI = {
       onPointerUpdate: payload => awarenessRouter.onPointerUpdate(payload),
       isCollaborating: () => providerRef.current?.status === 'connected',
+      requestDurability: () => provider.requestDurability(),
       broadcastEmojiReaction: (emoji, x, y) => {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
         awarenessRouter.broadcastEmojiReaction({ id, emoji, x, y });

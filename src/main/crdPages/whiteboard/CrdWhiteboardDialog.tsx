@@ -2,7 +2,7 @@ import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/data/types';
 import type { AssetPublishReport, ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, type Ref, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { AuthorizationPrivilege, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
@@ -127,6 +127,7 @@ interface CrdWhiteboardDialogProps {
     loadingWhiteboardValue?: boolean;
     changingWhiteboardLockState?: boolean;
   };
+  consumptionPreparationRef?: Ref<(() => Promise<boolean>) | null>;
 }
 
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
@@ -139,6 +140,10 @@ type CollaborativeCloseParams = {
   save: () => Promise<boolean | void>;
   /** Report that one or more images failed to publish (a non-empty `failed`). */
   onPublishFailed: (report: AssetPublishReport) => void;
+  /** Persist every scene update sent before this request, after asset locators are published. */
+  requestDurability?: () => Promise<void>;
+  /** Report that the collaboration service could not make the scene durable. */
+  onDurabilityFailed?: () => void;
   /** Tear the collaborative session down: evict the cache + run the parent cancel, which unmounts the provider. */
   teardown: () => void;
   /**
@@ -172,6 +177,8 @@ export async function closeCollaborativeWhiteboard({
   excalidrawAPI,
   save,
   onPublishFailed,
+  requestDurability,
+  onDurabilityFailed,
   teardown,
   hasEditorChanged,
 }: CollaborativeCloseParams): Promise<boolean> {
@@ -189,6 +196,14 @@ export async function closeCollaborativeWhiteboard({
   if (hasEditorChanged?.()) {
     return false;
   }
+  if (requestDurability) {
+    try {
+      await requestDurability();
+    } catch {
+      onDurabilityFailed?.();
+      return false;
+    }
+  }
   const saved = await save();
   if (saved === false) {
     return false;
@@ -203,6 +218,7 @@ const CrdWhiteboardDialog = ({
   options,
   state,
   lastSuccessfulSavedDate,
+  consumptionPreparationRef,
 }: CrdWhiteboardDialogProps) => {
   const { t } = useTranslation();
   const { t: tWb } = useTranslation('crd-whiteboard');
@@ -285,6 +301,10 @@ const CrdWhiteboardDialog = ({
     await closeCollaborativeWhiteboard({
       excalidrawAPI,
       hasEditorChanged: () => editorGenerationRef.current !== generationAtClose,
+      requestDurability:
+        shouldSave && collabApiRef.current
+          ? () => collabApiRef.current?.requestDurability() ?? Promise.reject(new Error('Collaboration unavailable'))
+          : undefined,
       save: async () => {
         if (!shouldSave || !whiteboard) return true;
         const excState = excalidrawAPI
@@ -313,12 +333,30 @@ const CrdWhiteboardDialog = ({
       onPublishFailed: () => {
         notify(t('callout.whiteboard.images.uploadFailed'), 'error');
       },
+      onDurabilityFailed: () => {
+        notify(t('callout.whiteboard.saveFailed'), 'error');
+      },
       teardown: () => {
         evictFromCache(whiteboard?.id, 'Whiteboard');
         actions.onCancel();
       },
     });
   };
+
+  useImperativeHandle(consumptionPreparationRef, () => async () => {
+    const collabApi = collabApiRef.current;
+    if (!collabApi?.isCollaborating()) return false;
+    const generationAtPrepare = editorGenerationRef.current;
+    return closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      hasEditorChanged: () => editorGenerationRef.current !== generationAtPrepare,
+      requestDurability: () => collabApi.requestDurability(),
+      save: async () => true,
+      onPublishFailed: () => notify(t('callout.whiteboard.images.uploadFailed'), 'error'),
+      onDurabilityFailed: () => notify(t('callout.whiteboard.saveFailed'), 'error'),
+      teardown: () => {},
+    });
+  });
 
   const handleImportTemplate = async (sourceWhiteboardId: string) => {
     if (!excalidrawAPI) return;

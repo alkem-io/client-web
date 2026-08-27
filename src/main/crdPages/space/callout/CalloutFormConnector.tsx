@@ -67,7 +67,10 @@ import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/call
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
-import { useWhiteboardDraft } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
+import {
+  useWhiteboardDraft,
+  type WhiteboardDraftLifecycle,
+} from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
 import {
@@ -123,6 +126,13 @@ const ADMIN_ONLY_FRAMING_CHIPS: FramingChipId[] = ['contributors', 'spaces'];
 
 /** The title counter stays hidden until the value gets this close to `SMALL_TEXT_LENGTH`. */
 const TITLE_COUNTER_THRESHOLD = SMALL_TEXT_LENGTH - 10;
+
+export async function prepareWhiteboardDraftsForCalloutCreation(
+  drafts: Array<Pick<WhiteboardDraftLifecycle, 'prepareForConsumption'>>
+): Promise<boolean> {
+  const prepared = await Promise.all(drafts.map(draft => draft.prepareForConsumption()));
+  return prepared.every(Boolean);
+}
 
 type CalloutFormConnectorProps = {
   open: boolean;
@@ -201,6 +211,7 @@ function CalloutFormConnectorInner({
   restrictions,
 }: CalloutFormConnectorProps) {
   const { t } = useTranslation('crd-space');
+  const { t: tCommon } = useTranslation();
   const { t: tTaskBoard } = useTranslation('crd-taskBoard');
 
   // Restriction-driven create-mode defaults: any comment toggle that is hidden
@@ -521,6 +532,15 @@ function CalloutFormConnectorInner({
   const createAndUpload = async (visibility: CalloutVisibility) => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) return;
+
+    const draftsPrepared = await prepareWhiteboardDraftsForCalloutCreation([
+      framingWhiteboardDraft,
+      defaultWhiteboardDraft,
+    ]);
+    if (!draftsPrepared) {
+      notify(tCommon('callout.whiteboard.saveFailed'), 'error');
+      return;
+    }
 
     // Strip ineligible (stale) selectedIds before serialising — mirrors the update
     // path (tasks T005/T006; the server rejects out-of-scope ids on create too).

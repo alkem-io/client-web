@@ -32,6 +32,9 @@ const renderWhiteboardFraming = (materialize: () => Promise<undefined>) =>
         handle: undefined,
         loading: false,
         materialize,
+        preparationRef: { current: null },
+        prepareForConsumption: vi.fn().mockResolvedValue(true),
+        prepared: vi.fn(),
         discard: vi.fn().mockResolvedValue(true),
         consumed: vi.fn(),
       }}

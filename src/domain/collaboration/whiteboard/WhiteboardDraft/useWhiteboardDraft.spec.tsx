@@ -184,4 +184,89 @@ describe('useWhiteboardDraft', () => {
 
     expect(deleteDraft).toHaveBeenCalledWith({ variables: { whiteboardID: persisted.whiteboardID } });
   });
+
+  it('coalesces an outstanding preparation and retries it after failure without consuming the draft', async () => {
+    const onHandleChange = vi.fn();
+    const { result } = renderHook(() =>
+      useWhiteboardDraft({
+        scope: { type: 'calloutsSet', id: '80c59089-c435-45ae-9862-fda57c0a5a35' },
+        handle: persisted,
+        onHandleChange,
+      })
+    );
+    let resolveFirst!: (prepared: boolean) => void;
+    const prepare = vi
+      .fn()
+      .mockReturnValueOnce(
+        new Promise<boolean>(resolve => {
+          resolveFirst = resolve;
+        })
+      )
+      .mockResolvedValueOnce(true);
+    result.current.preparationRef.current = prepare;
+
+    let first!: Promise<boolean>;
+    let second!: Promise<boolean>;
+    await act(async () => {
+      first = result.current.prepareForConsumption();
+      second = result.current.prepareForConsumption();
+      await Promise.resolve();
+    });
+    expect(second).toBe(first);
+    expect(prepare).toHaveBeenCalledOnce();
+
+    await act(async () => {
+      resolveFirst(false);
+      await expect(first).resolves.toBe(false);
+    });
+    expect(onHandleChange).not.toHaveBeenCalledWith(undefined);
+    expect(deleteDraft).not.toHaveBeenCalled();
+
+    await act(async () => {
+      await expect(result.current.prepareForConsumption()).resolves.toBe(true);
+    });
+    expect(prepare).toHaveBeenCalledTimes(2);
+    expect(onHandleChange).not.toHaveBeenCalledWith(undefined);
+  });
+
+  it('does not prepare again after a successful editor close', async () => {
+    const { result } = renderHook(() =>
+      useWhiteboardDraft({
+        scope: { type: 'calloutsSet', id: '80c59089-c435-45ae-9862-fda57c0a5a35' },
+        handle: persisted,
+        onHandleChange: vi.fn(),
+      })
+    );
+    const prepare = vi.fn(async () => true);
+    result.current.preparationRef.current = prepare;
+
+    act(() => {
+      result.current.preparationRef.current = null;
+      result.current.prepared();
+    });
+    await act(async () => {
+      await expect(result.current.prepareForConsumption()).resolves.toBe(true);
+    });
+
+    expect(prepare).not.toHaveBeenCalled();
+  });
+
+  it('prepares again when an already prepared draft editor is reopened', async () => {
+    const { result } = renderHook(() =>
+      useWhiteboardDraft({
+        scope: { type: 'calloutsSet', id: '80c59089-c435-45ae-9862-fda57c0a5a35' },
+        handle: persisted,
+        onHandleChange: vi.fn(),
+      })
+    );
+    const prepare = vi.fn(async () => true);
+
+    act(() => result.current.prepared());
+    result.current.preparationRef.current = prepare;
+    await act(async () => {
+      await expect(result.current.prepareForConsumption()).resolves.toBe(true);
+    });
+
+    expect(prepare).toHaveBeenCalledOnce();
+  });
 });

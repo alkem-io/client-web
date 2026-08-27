@@ -160,6 +160,7 @@ export function ResponseDefaultsConnector({
                 <WhiteboardDraftEditor
                   whiteboardID={whiteboardDraft.handle.whiteboardID}
                   displayName={draft.defaultDisplayName || t('callout.whiteboard')}
+                  draftLifecycle={whiteboardDraft}
                   onClose={() => setWhiteboardEditorSession(undefined)}
                 />
               )}

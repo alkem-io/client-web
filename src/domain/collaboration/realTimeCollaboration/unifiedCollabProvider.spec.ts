@@ -71,6 +71,13 @@ function readFrameType(bytes: Uint8Array): number {
   return decoding.readVarUint(decoding.createDecoder(bytes));
 }
 
+function readRawJsonFrame(bytes: Uint8Array): { type: number; body: unknown } {
+  const decoder = decoding.createDecoder(bytes);
+  const type = decoding.readVarUint(decoder);
+  const body = JSON.parse(new TextDecoder().decode(decoding.readTailAsUint8Array(decoder)));
+  return { type, body };
+}
+
 beforeEach(() => {
   MockWebSocket.instances = [];
   vi.stubGlobal('WebSocket', MockWebSocket);
@@ -284,6 +291,62 @@ describe('UnifiedCollabProvider', () => {
       { kind: 'persisted', requestId: 'req-1' },
       { kind: 'persist-failed', requestId: 'req-1', error: 'store unavailable' },
     ]);
+    provider.destroy();
+  });
+
+  it('requests durability with the raw service wire contract and waits for the matching persisted reply', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.sent.length = 0;
+
+    const durability = provider.requestDurability();
+    const request = readRawJsonFrame(socket.sent[0]);
+    expect(request.type).toBe(WIRE.DURABILITY_REQUEST);
+    expect(request.body).toEqual({ requestId: expect.stringMatching(/^[a-z0-9]+-[a-z0-9]+$/) });
+
+    let settled = false;
+    void durability.then(() => {
+      settled = true;
+    });
+    await Promise.resolve();
+    expect(settled).toBe(false);
+
+    socket.receive(
+      encodeServiceControlFrame({ kind: 'persisted', requestId: (request.body as { requestId: string }).requestId })
+    );
+    await expect(durability).resolves.toBeUndefined();
+    provider.destroy();
+  });
+
+  it('coalesces concurrent durability callers and rejects a failed persistence reply', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.sent.length = 0;
+
+    const first = provider.requestDurability();
+    const second = provider.requestDurability();
+    expect(second).toBe(first);
+    expect(socket.sent).toHaveLength(1);
+    const request = readRawJsonFrame(socket.sent[0]).body as { requestId: string };
+
+    socket.receive(
+      encodeServiceControlFrame({ kind: 'persist-failed', requestId: request.requestId, error: 'store unavailable' })
+    );
+    await expect(first).rejects.toThrow('store unavailable');
+    provider.destroy();
+  });
+
+  it('rejects an outstanding durability request when the connection closes', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+
+    const durability = provider.requestDurability();
+    socket.serverClose(1006);
+
+    await expect(durability).rejects.toThrow('closed before the draft was persisted');
     provider.destroy();
   });
 

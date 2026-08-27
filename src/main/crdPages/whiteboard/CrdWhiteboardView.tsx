@@ -1,5 +1,5 @@
 import { ScanEye } from 'lucide-react';
-import { type ReactNode, Suspense, useState } from 'react';
+import { type ReactNode, type Ref, Suspense, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
@@ -30,6 +30,7 @@ export interface CrdWhiteboardViewProps {
   preventWhiteboardDeletion?: boolean;
   backToWhiteboards: () => void;
   onWhiteboardDeleted?: () => void;
+  consumptionPreparationRef?: Ref<(() => Promise<boolean>) | null>;
 }
 
 const CrdWhiteboardView = ({
@@ -44,6 +45,7 @@ const CrdWhiteboardView = ({
   readOnlyDisplayName,
   preventWhiteboardDeletion,
   onWhiteboardDeleted,
+  consumptionPreparationRef,
 }: CrdWhiteboardViewProps) => {
   // aria-label-only use; disable suspense so this hook never suspends above the
   // component's internal <Suspense>, which would tear down the live canvas
@@ -79,6 +81,7 @@ const CrdWhiteboardView = ({
   return (
     <Suspense fallback={<Loading />}>
       <CrdWhiteboardDialog
+        consumptionPreparationRef={consumptionPreparationRef}
         entities={{ whiteboard }}
         lastSuccessfulSavedDate={lastSuccessfulSavedDate}
         actions={{

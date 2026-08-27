@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { type RefObject, useEffect, useRef, useState } from 'react';
 import {
   useCreateWhiteboardDraftOnCalloutsSetMutation,
   useCreateWhiteboardDraftOnTemplatesSetMutation,
@@ -17,10 +17,15 @@ export type WhiteboardDraftHandle = {
   sourceKey: string;
 };
 
+export type WhiteboardDraftPreparation = () => Promise<boolean>;
+
 export type WhiteboardDraftLifecycle = {
   handle?: WhiteboardDraftHandle;
   loading: boolean;
   materialize: (source?: WhiteboardDraftSource) => Promise<WhiteboardDraftHandle | undefined>;
+  preparationRef: RefObject<WhiteboardDraftPreparation | null>;
+  prepareForConsumption: () => Promise<boolean>;
+  prepared: () => void;
   discard: () => Promise<boolean>;
   consumed: () => void;
 };
@@ -50,10 +55,16 @@ export const useWhiteboardDraft = ({
   source: defaultSource,
 }: UseWhiteboardDraftOptions): WhiteboardDraftLifecycle => {
   const inFlightRef = useRef<Promise<WhiteboardDraftHandle | undefined> | null>(null);
+  const preparationRef = useRef<WhiteboardDraftPreparation | null>(null);
+  const preparationInFlightRef = useRef<Promise<boolean> | null>(null);
+  const preparedRef = useRef(false);
   const handleRef = useRef(handle);
   const lastPropHandleRef = useRef(handle);
   useEffect(() => {
     if (sameHandle(handle, lastPropHandleRef.current)) return;
+    if (handle?.whiteboardID !== lastPropHandleRef.current?.whiteboardID) {
+      preparedRef.current = false;
+    }
     lastPropHandleRef.current = handle;
     handleRef.current = handle;
   }, [handle]);
@@ -72,6 +83,7 @@ export const useWhiteboardDraft = ({
     try {
       await deleteDraft({ variables: { whiteboardID: currentHandle.whiteboardID } });
       handleRef.current = undefined;
+      preparedRef.current = false;
       onHandleChange(undefined);
       return true;
     } catch {
@@ -124,6 +136,7 @@ export const useWhiteboardDraft = ({
           sourceKey: nextSourceKey,
         };
         handleRef.current = next;
+        preparedRef.current = false;
         onHandleChange(next);
         return next;
       } catch {
@@ -140,13 +153,37 @@ export const useWhiteboardDraft = ({
     return promise;
   };
 
+  const prepareForConsumption = (): Promise<boolean> => {
+    if (!handleRef.current) return Promise.resolve(true);
+    if (preparationInFlightRef.current) return preparationInFlightRef.current;
+    const prepare = preparationRef.current;
+    if (!prepare) return Promise.resolve(preparedRef.current);
+
+    const promise = prepare()
+      .then(prepared => {
+        if (prepared) preparedRef.current = true;
+        return prepared;
+      })
+      .finally(() => {
+        preparationInFlightRef.current = null;
+      });
+    preparationInFlightRef.current = promise;
+    return promise;
+  };
+
   return {
     handle,
     loading,
     materialize,
+    preparationRef,
+    prepareForConsumption,
+    prepared: () => {
+      preparedRef.current = true;
+    },
     discard,
     consumed: () => {
       handleRef.current = undefined;
+      preparedRef.current = false;
       onHandleChange(undefined);
     },
   };

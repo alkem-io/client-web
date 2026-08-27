@@ -399,6 +399,7 @@ export function FramingEditorConnector({
             <WhiteboardDraftEditor
               whiteboardID={whiteboardDraft.handle.whiteboardID}
               displayName={whiteboardTitle || t('callout.whiteboard')}
+              draftLifecycle={whiteboardDraft}
               onClose={() => setWhiteboardEditorOpen(false)}
             />
           )}

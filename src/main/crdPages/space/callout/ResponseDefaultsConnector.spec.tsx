@@ -158,6 +158,9 @@ describe('ResponseDefaultsConnector template boundaries', () => {
           handle: acceptedDraft,
           loading: false,
           materialize: vi.fn(),
+          preparationRef: { current: null },
+          prepareForConsumption: vi.fn().mockResolvedValue(true),
+          prepared: vi.fn(),
           discard,
           consumed: vi.fn(),
         }}
@@ -187,6 +190,9 @@ describe('ResponseDefaultsConnector template boundaries', () => {
           handle: undefined,
           loading: false,
           materialize: vi.fn().mockResolvedValue(materialized),
+          preparationRef: { current: null },
+          prepareForConsumption: vi.fn().mockResolvedValue(true),
+          prepared: vi.fn(),
           discard,
           consumed: vi.fn(),
         }}
@@ -233,6 +239,9 @@ describe('ResponseDefaultsConnector template boundaries', () => {
           handle: materialized,
           loading: false,
           materialize,
+          preparationRef: { current: null },
+          prepareForConsumption: vi.fn().mockResolvedValue(true),
+          prepared: vi.fn(),
           discard: vi.fn().mockResolvedValue(true),
           consumed: vi.fn(),
         }}
