@@ -135,6 +135,8 @@ type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' |
 type CollaborativeCloseParams = {
   /** The live editor API, or `null` when the editor is already gone / unmounted. */
   excalidrawAPI: Pick<ExcalidrawImperativeAPI, 'flushAssetPublication'> | null;
+  /** Finish a template import already in progress before taking the close barrier. */
+  waitForPendingWork?: () => Promise<void>;
   /** Persist preview + display name for the collaborative whiteboard (a no-op when not editing). */
   /** Return false when the metadata/preview save failed and the dialog must stay open. */
   save: () => Promise<boolean | void>;
@@ -179,6 +181,7 @@ type CollaborativeCloseParams = {
  */
 export async function closeCollaborativeWhiteboard({
   excalidrawAPI,
+  waitForPendingWork,
   save,
   onPublishFailed,
   requestDurability,
@@ -190,6 +193,10 @@ export async function closeCollaborativeWhiteboard({
 }: CollaborativeCloseParams): Promise<boolean> {
   onPreparingChange?.(true);
   try {
+    await waitForPendingWork?.();
+    if (hasEditorChanged?.()) {
+      return false;
+    }
     if (excalidrawAPI) {
       const report = await excalidrawAPI.flushAssetPublication();
       if (report.failed.length > 0) {
@@ -268,7 +275,13 @@ const CrdWhiteboardDialog = ({
   const [isSceneInitialized, setSceneInitialized] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [preparingClose, setPreparingClose] = useState(false);
+  const preparingCloseRef = useRef(false);
   const closeInFlightRef = useRef(false);
+  const importInFlightRef = useRef<Promise<void> | null>(null);
+  const updatePreparingClose = (preparing: boolean) => {
+    preparingCloseRef.current = preparing;
+    setPreparingClose(preparing);
+  };
   const [selectedPreviewMode, setSelectedPreviewMode] = useState<WhiteboardPreviewMode>(
     whiteboard?.previewSettings.mode ?? WhiteboardPreviewMode.Auto
   );
@@ -327,13 +340,14 @@ const CrdWhiteboardDialog = ({
     try {
       await closeCollaborativeWhiteboard({
         excalidrawAPI,
+        waitForPendingWork: () => importInFlightRef.current ?? Promise.resolve(),
         hasEditorChanged: () => editorGenerationRef.current !== generationAtClose,
         requestDurability:
           (shouldSave || draftRequiresDurability) && collabApi?.isCollaborating()
             ? () => collabApi.requestDurability()
             : undefined,
         requireDurability: draftRequiresDurability,
-        onPreparingChange: setPreparingClose,
+        onPreparingChange: updatePreparingClose,
         save: async () => {
           if (!shouldSave || !whiteboard) return true;
           const excState = excalidrawAPI
@@ -381,10 +395,11 @@ const CrdWhiteboardDialog = ({
     const generationAtPrepare = editorGenerationRef.current;
     return closeCollaborativeWhiteboard({
       excalidrawAPI,
+      waitForPendingWork: () => importInFlightRef.current ?? Promise.resolve(),
       hasEditorChanged: () => editorGenerationRef.current !== generationAtPrepare,
       requestDurability: () => collabApi.requestDurability(),
       requireDurability: true,
-      onPreparingChange: setPreparingClose,
+      onPreparingChange: updatePreparingClose,
       save: async () => true,
       onPublishFailed: () => notify(t('callout.whiteboard.images.uploadFailed'), 'error'),
       onDurabilityFailed: () => notify(t('callout.whiteboard.saveFailed'), 'error'),
@@ -392,26 +407,37 @@ const CrdWhiteboardDialog = ({
     });
   });
 
-  const handleImportTemplate = async (sourceWhiteboardId: string) => {
-    if (!excalidrawAPI) return;
+  const handleImportTemplate = (sourceWhiteboardId: string): Promise<void> => {
+    if (preparingCloseRef.current || !excalidrawAPI) return Promise.resolve();
+    if (importInFlightRef.current) return importInFlightRef.current;
+
     const generationAtImport = editorGenerationRef.current;
-    try {
-      const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId);
-      if (editorGenerationRef.current !== generationAtImport) {
-        throw new Error('Whiteboard editor changed while importing template');
+    const operation = (async () => {
+      try {
+        const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId);
+        if (editorGenerationRef.current !== generationAtImport) {
+          throw new Error('Whiteboard editor changed while importing template');
+        }
+        await mergeWhiteboard(
+          excalidrawAPI,
+          templateScene,
+          assetAdapter,
+          () => editorGenerationRef.current !== generationAtImport
+        );
+      } catch (err) {
+        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+        logError(new Error(`Error importing whiteboard template: '${err}'`), {
+          category: TagCategoryValues.WHITEBOARD,
+        });
       }
-      await mergeWhiteboard(
-        excalidrawAPI,
-        templateScene,
-        assetAdapter,
-        () => editorGenerationRef.current !== generationAtImport
-      );
-    } catch (err) {
-      notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-      logError(new Error(`Error importing whiteboard template: '${err}'`), {
-        category: TagCategoryValues.WHITEBOARD,
-      });
-    }
+    })();
+    importInFlightRef.current = operation;
+    void operation.finally(() => {
+      if (importInFlightRef.current === operation) {
+        importInFlightRef.current = null;
+      }
+    });
+    return operation;
   };
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);

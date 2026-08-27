@@ -154,6 +154,49 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(order).toEqual(['assets', 'durability', 'save', 'teardown']);
   });
 
+  it('awaits an in-flight template import before assets, durability, save, and teardown', async () => {
+    const order: string[] = [];
+    let finishImport!: () => void;
+    const importInFlight = new Promise<void>(resolve => {
+      finishImport = () => {
+        order.push('import');
+        resolve();
+      };
+    });
+    const excalidrawAPI = {
+      flushAssetPublication: vi.fn(async () => {
+        order.push('assets');
+        return cleanReport;
+      }),
+    };
+    const requestDurability = vi.fn(async () => {
+      order.push('durability');
+    });
+    const save = vi.fn(async () => {
+      order.push('save');
+    });
+    const teardown = vi.fn(() => order.push('teardown'));
+
+    const closing = closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      waitForPendingWork: () => importInFlight,
+      requestDurability,
+      save,
+      onPublishFailed: vi.fn(),
+      teardown,
+    });
+
+    await Promise.resolve();
+    expect(order).toEqual([]);
+    expect(requestDurability).not.toHaveBeenCalled();
+    expect(save).not.toHaveBeenCalled();
+    expect(teardown).not.toHaveBeenCalled();
+
+    finishImport();
+    await expect(closing).resolves.toBe(true);
+    expect(order).toEqual(['import', 'assets', 'durability', 'save', 'teardown']);
+  });
+
   it('keeps the editor and draft open when durability fails so the user can retry', async () => {
     const save = vi.fn(async () => {});
     const teardown = vi.fn();

@@ -278,6 +278,8 @@ export class UnifiedCollabProvider {
         timeout: ReturnType<typeof setTimeout>;
       }
     | undefined;
+  /** Serializes callers so every call receives a barrier sent after that call. */
+  private durabilityQueueTail: Promise<void> | undefined;
 
   constructor(options: UnifiedCollabProviderOptions) {
     this.documentId = options.documentId;
@@ -417,10 +419,32 @@ export class UnifiedCollabProvider {
 
   /**
    * Ask the collaboration service to persist every update sent before this frame.
-   * Concurrent callers share the one in-flight request allowed per connection.
+   * The wire allows one in-flight request per connection. A later caller is queued
+   * behind it and receives its own frame, because updates may have been sent after
+   * the earlier barrier.
    */
   requestDurability(): Promise<void> {
-    if (this.pendingDurability) return this.pendingDurability.promise;
+    if (!this.pendingDurability && !this.durabilityQueueTail) {
+      return this.startDurabilityRequest();
+    }
+
+    const predecessor = this.durabilityQueueTail ?? this.pendingDurability?.promise ?? Promise.resolve();
+    const start = () => this.startDurabilityRequest();
+    const queued = predecessor.then(start, start);
+    const settled = queued.then(
+      () => undefined,
+      () => undefined
+    );
+    this.durabilityQueueTail = settled;
+    void settled.then(() => {
+      if (this.durabilityQueueTail === settled) {
+        this.durabilityQueueTail = undefined;
+      }
+    });
+    return queued;
+  }
+
+  private startDurabilityRequest(): Promise<void> {
     if (this.destroyed || this._status !== 'connected' || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
       return Promise.reject(new Error('The collaboration connection is not ready to persist the draft'));
     }

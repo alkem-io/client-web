@@ -320,22 +320,37 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
-  it('coalesces concurrent durability callers and rejects a failed persistence reply', async () => {
+  it('queues a fresh barrier for a later caller when updates are sent during the first request', async () => {
     const provider = new UnifiedCollabProvider(baseOptions);
     const socket = MockWebSocket.instances[0];
     socket.open();
     socket.sent.length = 0;
 
     const first = provider.requestDurability();
+    const firstRequest = readRawJsonFrame(socket.sent[0]).body as { requestId: string };
+    provider.doc.getMap('scene').set('after-first-barrier', true);
     const second = provider.requestDurability();
-    expect(second).toBe(first);
-    expect(socket.sent).toHaveLength(1);
-    const request = readRawJsonFrame(socket.sent[0]).body as { requestId: string };
+    expect(socket.sent.map(readFrameType)).toEqual([WIRE.DURABILITY_REQUEST, WIRE.SYNC]);
 
+    let secondSettled = false;
+    void second.then(() => {
+      secondSettled = true;
+    });
+    socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: firstRequest.requestId }));
+    await expect(first).resolves.toBeUndefined();
+    await vi.waitFor(() => expect(socket.sent).toHaveLength(3));
+    expect(secondSettled).toBe(false);
+
+    const secondRequest = readRawJsonFrame(socket.sent[2]);
+    expect(secondRequest.type).toBe(WIRE.DURABILITY_REQUEST);
+    expect((secondRequest.body as { requestId: string }).requestId).not.toBe(firstRequest.requestId);
     socket.receive(
-      encodeServiceControlFrame({ kind: 'persist-failed', requestId: request.requestId, error: 'store unavailable' })
+      encodeServiceControlFrame({
+        kind: 'persisted',
+        requestId: (secondRequest.body as { requestId: string }).requestId,
+      })
     );
-    await expect(first).rejects.toThrow('store unavailable');
+    await expect(second).resolves.toBeUndefined();
     provider.destroy();
   });
 
