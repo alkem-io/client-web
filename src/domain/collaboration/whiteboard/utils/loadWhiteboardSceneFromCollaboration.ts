@@ -7,7 +7,10 @@ import {
 const LOAD_TIMEOUT_MS = 30_000;
 
 /** Load a whiteboard through the collaboration transport without exposing its Yjs update through GraphQL. */
-export const loadWhiteboardSceneFromCollaboration = (whiteboardId: string): Promise<WhiteboardSnapshot> => {
+export const loadWhiteboardSceneFromCollaboration = (
+  whiteboardId: string,
+  options: { signal?: AbortSignal } = {}
+): Promise<WhiteboardSnapshot> => {
   const scene = new Scene();
   const provider = new UnifiedCollabProvider({
     documentId: whiteboardId,
@@ -23,11 +26,13 @@ export const loadWhiteboardSceneFromCollaboration = (whiteboardId: string): Prom
 
   return new Promise((resolve, reject) => {
     let settled = false;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
 
     const finish = (result: { scene: WhiteboardSnapshot } | { error: Error }) => {
       if (settled) return;
       settled = true;
-      clearTimeout(timeout);
+      if (timeout) clearTimeout(timeout);
+      options.signal?.removeEventListener('abort', handleAbort);
       provider.off('synced', handleSynced);
       provider.off('close', handleClose);
       provider.destroy();
@@ -53,12 +58,18 @@ export const loadWhiteboardSceneFromCollaboration = (whiteboardId: string): Prom
       }
     };
 
-    const timeout = setTimeout(
-      () => finish({ error: new Error('Timed out loading whiteboard template') }),
-      LOAD_TIMEOUT_MS
-    );
+    const handleAbort = () => {
+      finish({ error: new Error('Whiteboard template load cancelled') });
+    };
+
+    timeout = setTimeout(() => finish({ error: new Error('Timed out loading whiteboard template') }), LOAD_TIMEOUT_MS);
     provider.on('synced', handleSynced);
     provider.on('close', handleClose);
+    options.signal?.addEventListener('abort', handleAbort, { once: true });
+    if (options.signal?.aborted) {
+      handleAbort();
+      return;
+    }
     provider.connect();
   });
 };

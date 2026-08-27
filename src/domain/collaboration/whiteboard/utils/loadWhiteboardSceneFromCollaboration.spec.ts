@@ -96,4 +96,17 @@ describe('loadWhiteboardSceneFromCollaboration', () => {
     expect(provider.destroy).toHaveBeenCalledTimes(1);
     expect(h.scene.destroy).toHaveBeenCalledTimes(1);
   });
+
+  it('destroys the temporary source provider immediately when the import is cancelled', async () => {
+    const controller = new AbortController();
+    const result = loadWhiteboardSceneFromCollaboration('slow-source', { signal: controller.signal });
+    const provider = h.MockProvider.instance;
+
+    expect(provider.connect).toHaveBeenCalledTimes(1);
+    controller.abort();
+
+    await expect(result).rejects.toThrow('Whiteboard template load cancelled');
+    expect(provider.destroy).toHaveBeenCalledTimes(1);
+    expect(h.scene.destroy).toHaveBeenCalledTimes(1);
+  });
 });
