@@ -7,6 +7,7 @@ import {
   DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY,
   OIDC_LOGIN_PATH,
 } from '@/core/auth/authentication/constants/authentication.constants';
+import { useKratosLogout } from '@/core/auth/authentication/hooks/useKratosLogout';
 import useNavigate from '@/core/routing/useNavigate';
 import type {
   DeleteAccountBlocker,
@@ -69,15 +70,38 @@ export type UseDeleteAccountResult = {
  * The Settings flow's own privileged-session redirect (`useKratosFlow`,
  * triggered by a Kratos-native form submission returning HTTP 403) does not
  * apply here — `deleteUser` is a plain GraphQL mutation, not a Kratos flow
- * submission, so there is no Kratos-issued redirect to follow. Instead this
- * hook forces re-authentication through the OIDC BFF login route (the same
- * one every other forced re-login in this app uses) so the round trip both
- * shows the "confirm it is you" prompt AND re-mints the `alkemio_session`
- * BFF cookie whose `created_at` the server reads for freshness — a Kratos
- * SSO-only refresh would satisfy neither the server's session-freshness gate
- * nor its audit trail. A resume flag rides on `returnTo` so the Security tab
- * can reopen the confirm dialog (name field cleared, never auto-submitted)
- * once the round trip completes.
+ * submission, so there is no Kratos-issued redirect to follow. This hook
+ * instead forces re-authentication through the OIDC BFF login route (the
+ * same one every other forced re-login in this app uses) so the round trip
+ * re-mints the `alkemio_session` BFF cookie whose `created_at` the server
+ * reads for freshness — a Kratos SSO-only refresh would satisfy neither the
+ * server's session-freshness gate nor its audit trail.
+ *
+ * That BFF round trip alone is NOT a credential check: as long as the
+ * browser's Kratos SSO session is still live, the login provider completes
+ * it silently against that session with no password/passkey prompt at all
+ * (the exact mechanism `useOidcSessionRecovery` relies on elsewhere to avoid
+ * ever showing a login form). A freshness gate satisfied that way proves
+ * nothing about who is at the keyboard. So before requesting the BFF round
+ * trip, `redirectToReauth` first ends the actual Kratos SSO session for this
+ * browser (`useKratosLogout().endKratosSsoSession`) via a credentialed fetch
+ * to the Kratos-issued logout URL, not a full navigation, so the single
+ * delete-account redirect chain is preserved. With no live Kratos session
+ * left to ride, the BFF round trip that follows lands on Kratos's own login
+ * screen and genuinely re-runs whichever method the identity actually has
+ * (password, passkey, or a linked external provider — FR-013).
+ *
+ * This step is fail-CLOSED, not best-effort: `endKratosSsoSession` reports
+ * `'no-session'` when there was genuinely nothing to end (safe to proceed —
+ * an already-absent session cannot be silently ridden either) and `'ended'`
+ * when the termination is confirmed, but a `'failed'` outcome (the session's
+ * true state is unknown — e.g. a Kratos outage or a CORS/origin change)
+ * stops here and surfaces the existing `reauth-failed` dialog instead of
+ * falling through to the BFF redirect. A silent fallthrough on failure would
+ * let exactly the outage it is guarding against downgrade the step-up gate
+ * back into an automated, credential-less bounce. A resume flag rides on
+ * `returnTo` so the Security tab can reopen the confirm dialog (name field
+ * cleared, never auto-submitted) once the round trip completes.
  */
 const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): UseDeleteAccountResult => {
   const navigate = useNavigate();
@@ -86,8 +110,19 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
 
   const [runPreflight] = useAccountDeletionPreflightLazyQuery({ fetchPolicy: 'network-only' });
   const [deleteUserMutation] = useDeleteUserMutation();
+  const { endKratosSsoSession } = useKratosLogout();
 
-  const redirectToReauth = () => {
+  const redirectToReauth = async (): Promise<void> => {
+    // Ends the live Kratos SSO session BEFORE the BFF redirect below, so
+    // that redirect cannot silently ride it (see the docblock above). The
+    // marker is set only once the redirect actually fires, further down —
+    // not here — so a failed attempt never poisons the one-shot resume guard
+    // and a retry (re-opening the trigger) can try again.
+    const outcome = await endKratosSsoSession();
+    if (outcome === 'failed') {
+      setDialog({ kind: 'reauth-failed' });
+      return;
+    }
     const resumeUrl = new URL(securityTabUrl, window.location.origin);
     resumeUrl.searchParams.set(RESUME_QUERY_PARAM, RESUME_QUERY_VALUE);
     const returnTo = `${resumeUrl.pathname}${resumeUrl.search}`;
@@ -113,7 +148,7 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
           setDialog({ kind: 'reauth-failed' });
           return;
         }
-        redirectToReauth();
+        await redirectToReauth();
         return;
       }
       sessionStorage.removeItem(DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY);
@@ -176,7 +211,7 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
     } catch (error) {
       const code = graphQLErrorCode(error);
       if (code === SESSION_REFRESH_REQUIRED) {
-        redirectToReauth();
+        await redirectToReauth();
         return;
       }
       if (code === ACCOUNT_DELETION_BLOCKED) {

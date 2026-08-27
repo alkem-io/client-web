@@ -8,6 +8,7 @@ import useDeleteAccount from './useDeleteAccount';
 const mockRunPreflight = vi.fn();
 const mockDeleteUserMutation = vi.fn();
 const mockNavigate = vi.fn();
+const mockEndKratosSsoSession = vi.fn();
 
 vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
   useAccountDeletionPreflightLazyQuery: () => [mockRunPreflight],
@@ -16,6 +17,10 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 
 vi.mock('@/core/routing/useNavigate', () => ({
   default: () => mockNavigate,
+}));
+
+vi.mock('@/core/auth/authentication/hooks/useKratosLogout', () => ({
+  useKratosLogout: () => ({ endKratosSsoSession: mockEndKratosSsoSession }),
 }));
 
 const wrapperWithUrl =
@@ -66,6 +71,10 @@ describe('useDeleteAccount', () => {
       value: { ...window.location, assign: assignSpy, origin: 'https://alkemio.test' },
       writable: true,
     });
+    // No live Kratos session by default — most tests only care about the
+    // BFF redirect; the fail-closed tests below override this to 'ended' /
+    // 'failed'.
+    mockEndKratosSsoSession.mockResolvedValue('no-session');
   });
 
   afterEach(() => {
@@ -120,6 +129,66 @@ describe('useDeleteAccount', () => {
     // Sets the one-shot loop-guard marker so a resumed round trip that is
     // still stale can be told apart from a first attempt.
     expect(sessionStorage.getItem(REAUTH_ATTEMPTED_KEY)).toBe('1');
+  });
+
+  it('ends a live Kratos SSO session before the BFF redirect, so the round trip cannot silently ride it', async () => {
+    mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
+    mockEndKratosSsoSession.mockResolvedValue('ended');
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
+      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    });
+
+    await act(async () => result.current.result.onOpen());
+
+    expect(mockEndKratosSsoSession).toHaveBeenCalledTimes(1);
+    expect(assignSpy).toHaveBeenCalledTimes(1);
+    expect(assignSpy.mock.calls[0][0] as string).toContain('/api/auth/oidc/login');
+  });
+
+  it('fails CLOSED — never falls through to the BFF redirect — when the Kratos SSO session cannot be confirmed ended', async () => {
+    mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
+    mockEndKratosSsoSession.mockResolvedValue('failed');
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
+      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    });
+
+    await act(async () => result.current.result.onOpen());
+
+    expect(assignSpy).not.toHaveBeenCalled();
+    expect(result.current.result.dialog).toEqual({ kind: 'reauth-failed' });
+    // The one-shot resume marker is only set once a redirect actually fires
+    // — a failed attempt must not poison it, or retrying (re-opening the
+    // trigger) would be told "already attempted" and blocked forever.
+    expect(sessionStorage.getItem(REAUTH_ATTEMPTED_KEY)).toBeNull();
+  });
+
+  it('proceeds to the BFF redirect when there is no live Kratos session to end', async () => {
+    mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
+    mockEndKratosSsoSession.mockResolvedValue('no-session');
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
+      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    });
+
+    await act(async () => result.current.result.onOpen());
+
+    expect(assignSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('a retry after a failed session-termination attempt tries again rather than being stuck on reauth-failed', async () => {
+    mockRunPreflight.mockResolvedValue({ data: { me: { accountDeletion: stale } } });
+    mockEndKratosSsoSession.mockResolvedValueOnce('failed').mockResolvedValueOnce('ended');
+    const { result } = renderHook(() => useHarness('user-1', '/user/me/settings/security'), {
+      wrapper: wrapperWithUrl('/user/me/settings/security'),
+    });
+
+    await act(async () => result.current.result.onOpen());
+    expect(result.current.result.dialog).toEqual({ kind: 'reauth-failed' });
+    expect(assignSpy).not.toHaveBeenCalled();
+
+    await act(async () => result.current.result.onOpen());
+
+    expect(mockEndKratosSsoSession).toHaveBeenCalledTimes(2);
+    expect(assignSpy).toHaveBeenCalledTimes(1);
   });
 
   it("resumes on mount from a `?resume=delete-account` URL carrying this tab's marker, then strips the flag", async () => {
