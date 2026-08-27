@@ -55,6 +55,7 @@ import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { useWhiteboardImportLifetime } from './useWhiteboardImportLifetime';
 import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
 import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 import { mapWhiteboardFooterProps } from './whiteboardFooterMapper';
@@ -268,6 +269,7 @@ const CrdWhiteboardDialog = ({
   // (server update-rejected). A close-in-flight compares this to detect a recovery that
   // replaced the editor mid-flush and abort the save (see `hasEditorChanged`).
   const editorGenerationRef = useRef(0);
+  const importLifetime = useWhiteboardImportLifetime(whiteboard?.id, options.show);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
 
@@ -412,23 +414,27 @@ const CrdWhiteboardDialog = ({
     if (importInFlightRef.current) return importInFlightRef.current;
 
     const generationAtImport = editorGenerationRef.current;
+    const importToken = importLifetime.beginImport();
     const operation = (async () => {
       try {
-        const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId);
-        if (editorGenerationRef.current !== generationAtImport) {
-          throw new Error('Whiteboard editor changed while importing template');
-        }
+        const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId, {
+          signal: importToken.signal,
+        });
+        if (importToken.isCancelled() || editorGenerationRef.current !== generationAtImport) return;
         await mergeWhiteboard(
           excalidrawAPI,
           templateScene,
           assetAdapter,
-          () => editorGenerationRef.current !== generationAtImport
+          () => importToken.isCancelled() || editorGenerationRef.current !== generationAtImport
         );
       } catch (err) {
+        if (importToken.isCancelled()) return;
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
           category: TagCategoryValues.WHITEBOARD,
         });
+      } finally {
+        importLifetime.finishImport(importToken);
       }
     })();
     importInFlightRef.current = operation;
@@ -506,6 +512,7 @@ const CrdWhiteboardDialog = ({
           onInitApi: setExcalidrawAPI,
           onEditorInvalidated: () => {
             editorGenerationRef.current += 1;
+            importLifetime.cancelActiveImport();
             setExcalidrawAPI(null);
           },
           onRemoteSave: (error?: string) => {
