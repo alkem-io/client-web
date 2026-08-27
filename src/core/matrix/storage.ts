@@ -135,6 +135,21 @@ const findStoredUserId = async (actorLocalpart: string): Promise<string | null> 
   }
 };
 
+const listStoredUserIds = async (): Promise<string[]> => {
+  try {
+    if (typeof indexedDB.databases !== 'function') {
+      return [];
+    }
+    const databases = await indexedDB.databases();
+    return databases
+      .map(db => db.name ?? '')
+      .filter(name => name.startsWith(DB_PREFIX))
+      .map(name => name.slice(DB_PREFIX.length));
+  } catch {
+    return [];
+  }
+};
+
 const clearNamespace = async (userId: string): Promise<void> => {
   await new Promise<void>((resolve, reject) => {
     const request = indexedDB.deleteDatabase(dbName(userId));
@@ -144,5 +159,13 @@ const clearNamespace = async (userId: string): Promise<void> => {
   });
 };
 
-export { loadCredentials, storeCredentials, rotateTokens, clearNamespace, findStoredUserId, NEVER_EXPIRES };
+export {
+  loadCredentials,
+  storeCredentials,
+  rotateTokens,
+  clearNamespace,
+  findStoredUserId,
+  listStoredUserIds,
+  NEVER_EXPIRES,
+};
 export type { CredentialRecord, StorageResult };

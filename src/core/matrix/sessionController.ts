@@ -1,6 +1,9 @@
+import { registerActiveSession, unregisterActiveSession } from './activeSession';
+import { cleanupMatrixUser } from './logoutCleanup';
+import { createMultiTabCoordinator, type MultiTabCallbacks, type MultiTabCoordinator } from './multiTab';
 import { redactBreadcrumb } from './redaction';
 import { attemptSilentSso, type SilentSsoOutcome } from './ssoLogin';
-import { type CredentialRecord, clearNamespace, findStoredUserId, loadCredentials } from './storage';
+import { type CredentialRecord, clearNamespace, findStoredUserId, listStoredUserIds, loadCredentials } from './storage';
 import { refreshMatrixTokens, TokenRefreshError } from './tokenRefresh';
 
 const SESSION_STATES = [
@@ -19,8 +22,8 @@ const SESSION_STATES = [
 type SessionState = (typeof SESSION_STATES)[number];
 
 const TRANSITIONS: ReadonlyMap<SessionState, ReadonlySet<SessionState>> = new Map([
-  ['idle', new Set<SessionState>(['starting'])],
-  ['starting', new Set<SessionState>(['ready', 'failed', 'offline'])],
+  ['idle', new Set<SessionState>(['starting', 'signed-out'])],
+  ['starting', new Set<SessionState>(['ready', 'failed', 'offline', 'signed-out'])],
   ['ready', new Set<SessionState>(['syncing', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['syncing', new Set<SessionState>(['ready', 'reconnecting', 'recovering', 'failed', 'offline', 'signed-out'])],
   ['reconnecting', new Set<SessionState>(['ready', 'recovering', 'failed', 'offline', 'signed-out'])],
@@ -164,6 +167,7 @@ interface EstablishmentHooks {
   /** Backoff schedule for the Synapse-unreachable row (contract §6). One retry per entry. */
   readonly retryDelaysMs?: readonly number[];
   readonly wait?: (ms: number) => Promise<void>;
+  readonly createCoordinator?: (userId: string, callbacks: MultiTabCallbacks) => Promise<MultiTabCoordinator>;
 }
 
 interface SessionHandle {
@@ -182,11 +186,16 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
   const silentSso = hooks.silentSso ?? attemptSilentSso;
   const retryDelaysMs = hooks.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS;
   const wait = hooks.wait ?? ((ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms)));
+  const createCoordinator = hooks.createCoordinator ?? createMultiTabCoordinator;
 
+  let coordinator: MultiTabCoordinator | null = null;
   const machine = createSessionMachine(onBreadcrumb);
   const setState = (to: SessionState): void => {
     if (machine.transition(to)) {
       onState?.(machine.state());
+      if (coordinator?.role() === 'leader') {
+        coordinator.broadcastState(machine.state());
+      }
     }
   };
 
@@ -198,7 +207,27 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     stop: () => {
       stopped = true;
       activeClient?.stopClient();
+      coordinator?.release();
+      unregisterActiveSession(signOut);
     },
+  };
+  const signOut = (): void => {
+    setState('signed-out');
+    handle.stop();
+  };
+  registerActiveSession(signOut);
+
+  // User-switch hygiene (contract §4, P-08b): a namespace left behind by a
+  // different user (unclean switch, crash before cleanup) is fully retired —
+  // bounded server-side logout, local wipe, cross-tab fan-out.
+  const purgeStaleNamespaces = async (): Promise<void> => {
+    const ownPrefix = `@${actorId.toLowerCase()}:`;
+    const userIds = await listStoredUserIds();
+    for (const userId of userIds) {
+      if (!userId.toLowerCase().startsWith(ownPrefix)) {
+        await cleanupMatrixUser(userId);
+      }
+    }
   };
 
   const loadRecordForActor = async (): Promise<CredentialRecord | null> => {
@@ -363,8 +392,31 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     }
   };
 
+  // Contract §5 invariant 3: a promoted tab resumes from the shared stored
+  // credentials (possibly rotated by the previous leader) — never a re-login.
+  const becomeLeader = async (): Promise<void> => {
+    if (stopped) {
+      return;
+    }
+    try {
+      const fresh = await loadRecordForActor();
+      if (stopped) {
+        return;
+      }
+      if (!fresh) {
+        setState('failed');
+        return;
+      }
+      coordinator?.announceLeadership(machine.state());
+      await startWithRecord(fresh);
+    } catch {
+      setState('failed');
+    }
+  };
+
   try {
     setState('starting');
+    await purgeStaleNamespaces();
     const record = await acquireWithBackoff();
     if (stopped) {
       return handle;
@@ -373,7 +425,28 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       setState('failed');
       return handle;
     }
-    await startWithRecord(record);
+
+    coordinator = await createCoordinator(record.userId, {
+      onPromoted: () => {
+        void becomeLeader();
+      },
+      onRemoteState: state => {
+        if (coordinator?.role() !== 'leader' && (SESSION_STATES as readonly string[]).includes(state)) {
+          onState?.(state as SessionState);
+        }
+      },
+      onRemoteLogout: () => {
+        setState('signed-out');
+        handle.stop();
+      },
+    });
+    if (stopped) {
+      coordinator.release();
+      return handle;
+    }
+    if (coordinator.role() === 'leader') {
+      await startWithRecord(record);
+    }
   } catch {
     setState('failed');
   }

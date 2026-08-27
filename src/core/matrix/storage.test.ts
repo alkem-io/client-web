@@ -104,6 +104,31 @@ describe('storage (IndexedDB)', () => {
     });
   });
 
+  describe('listStoredUserIds', () => {
+    it('lists every user with a matrix namespace', async () => {
+      await storeCredentials(makeRecord({ userId: USER_ID }));
+      await storeCredentials(makeRecord({ userId: OTHER_USER_ID }));
+
+      const { listStoredUserIds } = await import('./storage');
+      const ids = await listStoredUserIds();
+
+      expect(ids).toContain(USER_ID);
+      expect(ids).toContain(OTHER_USER_ID);
+    });
+
+    it('returns an empty list when enumeration is unsupported', async () => {
+      const original = indexedDB.databases;
+      // @ts-expect-error — simulate a browser without indexedDB.databases()
+      indexedDB.databases = undefined;
+      try {
+        const { listStoredUserIds } = await import('./storage');
+        expect(await listStoredUserIds()).toEqual([]);
+      } finally {
+        indexedDB.databases = original;
+      }
+    });
+  });
+
   describe('storage-unavailable fallback', () => {
     it('returns available:false when IndexedDB throws', async () => {
       const originalOpen = indexedDB.open.bind(indexedDB);
