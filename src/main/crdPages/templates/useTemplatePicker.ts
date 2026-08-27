@@ -171,14 +171,24 @@ export function useTemplatePicker({
     if (!primaryType) return;
     void getTemplateContent({
       variables: { templateId, ...templateContentIncludeVars(primaryType) },
-    }).then(({ data }) => {
-      if (selectionRequestRef.current !== request) return;
-      const fetched = data?.lookup.template;
-      setSelectedTemplate({
-        id: templateId,
-        content: fetched ? mapTemplateContent(fetched, primaryType) : null,
+    })
+      .then(({ data }) => {
+        if (selectionRequestRef.current !== request) return;
+        const fetched = data?.lookup.template;
+        setSelectedTemplate(
+          fetched
+            ? {
+                id: templateId,
+                content: mapTemplateContent(fetched, primaryType),
+              }
+            : null
+        );
+      })
+      .catch(() => {
+        // Apollo's error link reports the failure. Drop this transient pick so consumers
+        // never observe a permanently half-loaded `{ id, content: null }` selection.
+        if (selectionRequestRef.current === request) setSelectedTemplate(null);
       });
-    });
   };
 
   const clearSelection = () => {

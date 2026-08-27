@@ -439,7 +439,7 @@ describe('mergeWhiteboard asset re-homing', () => {
       expect(arrow.endBinding?.elementId).toBe(frame.id);
       expect(frame.boundElements?.[0].id).toBe(arrow.id);
       expect(rectangle.boundElements?.[0].id).toBe(arrow.id);
-      expect(new Set(copy.flatMap(element => (element.groupIds as string[]) ?? []))).toHaveLength(1);
+      expect(new Set(copy.flatMap(element => (element.groupIds as string[]) ?? [])).size).toBe(1);
       expect(frame.groupIds[0]).not.toBe('group');
       expect([frame.id, rectangle.id, arrow.id]).not.toContain('frame');
       return frame.groupIds[0];
