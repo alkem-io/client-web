@@ -28,6 +28,7 @@ export interface CrdWhiteboardViewProps {
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
   preventWhiteboardDeletion?: boolean;
+  requireDurableClose?: boolean;
   backToWhiteboards: () => void;
   onWhiteboardDeleted?: () => void;
 }
@@ -43,6 +44,7 @@ const CrdWhiteboardView = ({
   displayName,
   readOnlyDisplayName,
   preventWhiteboardDeletion,
+  requireDurableClose,
   onWhiteboardDeleted,
 }: CrdWhiteboardViewProps) => {
   // aria-label-only use; disable suspense so this hook never suspends above the
@@ -102,6 +104,7 @@ const CrdWhiteboardView = ({
           readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
           fullscreen: isFullscreen,
           previewSettingsDialogOpen,
+          requireDurableClose,
           headerActions: (collabState: CollabState) => (
             <>
               <ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl}>

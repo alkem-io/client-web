@@ -20,6 +20,7 @@ export const WhiteboardDraftEditor = ({ whiteboardID, displayName, onClose }: Wh
       displayName={displayName}
       readOnlyDisplayName={true}
       preventWhiteboardDeletion={true}
+      requireDurableClose={true}
       loadingWhiteboards={loading}
       backToWhiteboards={onClose}
     />
