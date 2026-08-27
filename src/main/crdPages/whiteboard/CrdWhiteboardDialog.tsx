@@ -27,6 +27,8 @@ import { WhiteboardDisconnectedDialog } from '@/crd/components/whiteboard/Whiteb
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
+import { loadWhiteboardSceneFromCollaboration } from '@/domain/collaboration/whiteboard/utils/loadWhiteboardSceneFromCollaboration';
+import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema, {
   type WhiteboardFormSchema,
 } from '@/domain/collaboration/whiteboard/validation/whiteboardFormSchema';
@@ -318,6 +320,19 @@ const CrdWhiteboardDialog = ({
     });
   };
 
+  const handleImportTemplate = async (sourceWhiteboardId: string) => {
+    if (!excalidrawAPI) return;
+    try {
+      const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId);
+      await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter);
+    } catch (err) {
+      notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+      logError(new Error(`Error importing whiteboard template: '${err}'`), {
+        category: TagCategoryValues.WHITEBOARD,
+      });
+    }
+  };
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [learnWhyDialogOpen, setLearnWhyDialogOpen] = useState(false);
   const [learnWhyReasonKey, setLearnWhyReasonKey] = useState<
@@ -544,7 +559,7 @@ const CrdWhiteboardDialog = ({
                   }
                   titleExtra={
                     editModeEnabled && mode === 'write' ? (
-                      <WhiteboardTemplatePickerButton whiteboardId={whiteboard.id} disabled={!isSceneInitialized} />
+                      <WhiteboardTemplatePickerButton disabled={!isSceneInitialized} onImport={handleImportTemplate} />
                     ) : undefined
                   }
                   headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}

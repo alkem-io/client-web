@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 // Control the template scene directly and exercise only the merge/asset-copy
-// logic: the fork snapshot codec + the content parser are stubbed so the test
-// owns `templateScene`, and the lazy fork import returns the stubbed module.
+// logic: the fork snapshot codec is stubbed so the test owns `templateScene`,
+// and the lazy fork import returns the stubbed module.
 const makeTemplateScene = () => ({
   elements: [
     {
@@ -31,9 +31,6 @@ vi.mock('@excalidraw-yjs/excalidraw', () => ({
   hashElementsVersion: () => 1,
   CaptureUpdateAction: { IMMEDIATELY: 'immediately' },
 }));
-vi.mock('@/domain/common/whiteboard/excalidraw/whiteboardContent', () => ({
-  parseWhiteboardContentToScene: () => h.templateScene,
-}));
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({
   lazyImportWithErrorHandler: async (fn: () => Promise<unknown>) => fn(),
 }));
@@ -51,18 +48,22 @@ type ApiOverrides = Partial<{
   getFiles: () => Record<string, unknown>;
   sceneLocatorsSequence: Array<Record<string, string>>;
   flushReport: { published: string[]; skipped: unknown[]; failed: Array<{ fileId: string; error: unknown }> };
+  initialElements: Array<Record<string, unknown>>;
 }>;
 
 const makeApi = (o: ApiOverrides = {}) => {
   const locatorsSeq = o.sceneLocatorsSequence ?? [{}, { f1: 'target-doc-id' }];
   let call = 0;
+  let elements = o.initialElements ?? [];
   return {
     getFiles: vi.fn(o.getFiles ?? (() => ({}))),
     getSceneAssetLocators: vi.fn(() => locatorsSeq[Math.min(call++, locatorsSeq.length - 1)]),
     addFiles: vi.fn(),
     flushAssetPublication: vi.fn(async () => o.flushReport ?? { published: ['f1'], skipped: [], failed: [] }),
-    getSceneElementsIncludingDeleted: vi.fn(() => []),
-    updateScene: vi.fn(),
+    getSceneElementsIncludingDeleted: vi.fn(() => elements),
+    updateScene: vi.fn(({ elements: nextElements }) => {
+      elements = nextElements;
+    }),
     scrollToContent: vi.fn(),
   };
 };
@@ -79,7 +80,7 @@ describe('mergeWhiteboard asset re-homing', () => {
     h.templateScene = { elements: [], assets: {}, appState: {} };
     const api = makeApi();
 
-    await expect(mergeWhiteboard(api as never, 'invalid', makeAdapter())).rejects.toThrow(
+    await expect(mergeWhiteboard(api as never, h.templateScene as never, makeAdapter())).rejects.toThrow(
       'Whiteboard verification failed'
     );
     expect(api.updateScene).not.toHaveBeenCalled();
@@ -88,7 +89,7 @@ describe('mergeWhiteboard asset re-homing', () => {
   it('resolves the source locator, re-stores into the target bucket (new id), keeps fileId, inserts the element', async () => {
     const api = makeApi();
     const resolve = vi.fn(async () => RESOLVED_BYTES);
-    await mergeWhiteboard(api as never, 'content', makeAdapter(resolve));
+    await mergeWhiteboard(api as never, h.templateScene as never, makeAdapter(resolve));
 
     // resolve is called with the fileId + the SOURCE locator
     expect(resolve).toHaveBeenCalledWith('f1', 'source-doc-id');
@@ -114,28 +115,28 @@ describe('mergeWhiteboard asset re-homing', () => {
     const resolve = vi.fn(async () => {
       throw new Error('gone');
     });
-    await expect(mergeWhiteboard(api as never, 'content', makeAdapter(resolve))).rejects.toThrow();
+    await expect(mergeWhiteboard(api as never, h.templateScene as never, makeAdapter(resolve))).rejects.toThrow();
     expect(api.addFiles).not.toHaveBeenCalled();
     expect(api.updateScene).not.toHaveBeenCalled();
   });
 
   it('aborts and inserts zero elements when a target store fails in the publish flush', async () => {
     const api = makeApi({ flushReport: { published: [], skipped: [], failed: [{ fileId: 'f1', error: 'x' }] } });
-    await expect(mergeWhiteboard(api as never, 'content', makeAdapter())).rejects.toThrow();
+    await expect(mergeWhiteboard(api as never, h.templateScene as never, makeAdapter())).rejects.toThrow();
     expect(api.updateScene).not.toHaveBeenCalled();
   });
 
   it('aborts when a resolved file ends up with no committed target locator', async () => {
     // flush reports success but the scene has no locator for f1 (replaced/unmounted mid-merge)
     const api = makeApi({ sceneLocatorsSequence: [{}, {}] });
-    await expect(mergeWhiteboard(api as never, 'content', makeAdapter())).rejects.toThrow();
+    await expect(mergeWhiteboard(api as never, h.templateScene as never, makeAdapter())).rejects.toThrow();
     expect(api.updateScene).not.toHaveBeenCalled();
   });
 
   it('does not re-upload an image the target already has a locator for', async () => {
     const api = makeApi({ sceneLocatorsSequence: [{ f1: 'existing' }] });
     const resolve = vi.fn(async () => RESOLVED_BYTES);
-    await mergeWhiteboard(api as never, 'content', makeAdapter(resolve));
+    await mergeWhiteboard(api as never, h.templateScene as never, makeAdapter(resolve));
 
     expect(resolve).not.toHaveBeenCalled();
     expect(api.addFiles).not.toHaveBeenCalled();
@@ -153,7 +154,7 @@ describe('mergeWhiteboard asset re-homing', () => {
       sceneLocatorsSequence: [{}, { f1: 'target-doc-id' }],
     });
     const resolve = vi.fn(async () => RESOLVED_BYTES);
-    await mergeWhiteboard(api as never, 'content', makeAdapter(resolve));
+    await mergeWhiteboard(api as never, h.templateScene as never, makeAdapter(resolve));
 
     expect(resolve).not.toHaveBeenCalled();
     expect(api.addFiles).not.toHaveBeenCalled();
@@ -168,8 +169,54 @@ describe('mergeWhiteboard asset re-homing', () => {
       flushReport: { published: [], skipped: [], failed: [] },
     });
     const resolve = vi.fn(async () => RESOLVED_BYTES);
-    await expect(mergeWhiteboard(api as never, 'content', makeAdapter(resolve))).rejects.toThrow();
+    await expect(mergeWhiteboard(api as never, h.templateScene as never, makeAdapter(resolve))).rejects.toThrow();
     expect(resolve).not.toHaveBeenCalled();
     expect(api.updateScene).not.toHaveBeenCalled();
+  });
+
+  it('preserves existing content and inserts a fresh displaced copy every time the same template is applied', async () => {
+    h.templateScene = {
+      elements: [
+        {
+          id: 'template-element',
+          type: 'rectangle',
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 10,
+          version: 1,
+          boundElements: null,
+        },
+      ],
+      assets: {},
+      appState: {},
+    };
+    const existing = {
+      id: 'existing-element',
+      type: 'rectangle',
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      version: 1,
+      boundElements: null,
+    };
+    const api = makeApi({ initialElements: [existing] });
+
+    await mergeWhiteboard(api as never, h.templateScene as never, makeAdapter());
+    await mergeWhiteboard(api as never, h.templateScene as never, makeAdapter());
+
+    expect(api.updateScene).toHaveBeenCalledTimes(2);
+    const firstElements = api.updateScene.mock.calls[0][0].elements as Array<Record<string, unknown>>;
+    const secondElements = api.updateScene.mock.calls[1][0].elements as Array<Record<string, unknown>>;
+    expect(firstElements[0]).toBe(existing);
+    expect(secondElements[0]).toBe(existing);
+    expect(firstElements).toHaveLength(2);
+    expect(secondElements).toHaveLength(3);
+    expect(firstElements[1].id).not.toBe('template-element');
+    expect(secondElements[2].id).not.toBe('template-element');
+    expect(secondElements[2].id).not.toBe(firstElements[1].id);
+    expect(firstElements[1].x).toBeGreaterThan(existing.x + existing.width);
+    expect(secondElements[2].x).toBeGreaterThan(firstElements[1].x as number);
   });
 });

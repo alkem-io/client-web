@@ -8,11 +8,10 @@ import type {
   hashElementsVersion as ExcalidrawHashElementsVersion,
 } from '@excalidraw-yjs/excalidraw/element/index';
 import type { ExcalidrawElement, FileId } from '@excalidraw-yjs/excalidraw/element/types';
-import { decodeSnapshot, encodeSnapshot } from '@excalidraw-yjs/excalidraw/headless';
+import { decodeSnapshot, encodeSnapshot, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import type { AssetAdapter, BinaryFileData, ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { v4 as uuidv4 } from 'uuid';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
-import { parseWhiteboardContentToScene } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 
 const ANIMATION_SPEED = 2000;
 const ANIMATION_ZOOM_FACTOR = 0.75;
@@ -136,7 +135,7 @@ const displaceElements = (displacement: { x: number; y: number }) => (element: E
 
 const mergeWhiteboard = async (
   whiteboardApi: ExcalidrawImperativeAPI,
-  whiteboardContent: string,
+  whiteboardSnapshot: WhiteboardSnapshot,
   assetAdapter: AssetAdapter
 ) => {
   const { hashElementsVersion, CaptureUpdateAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
@@ -144,13 +143,13 @@ const mergeWhiteboard = async (
   );
 
   // Normalize the template through the native snapshot round-trip: encode the
-  // parsed template scene into a throwaway Yjs doc and decode it straight back.
+  // loaded template scene into a throwaway Yjs doc and decode it straight back.
   // This routes the template through the single content representation (the doc
   // re-orders by fractional index and strips per-peer reconciliation metadata)
   // and keeps no raw JSON scene as state — only the materialized elements are
   // merged into the live scene below (the editor's own Scene.doc captures the
   // merge via updateScene).
-  const templateScene = decodeSnapshot(encodeSnapshot(parseWhiteboardContentToScene(whiteboardContent)));
+  const templateScene = decodeSnapshot(encodeSnapshot(whiteboardSnapshot));
 
   if (!isWhiteboardLike(templateScene)) {
     throw new WhiteboardMergeError('Whiteboard verification failed');
