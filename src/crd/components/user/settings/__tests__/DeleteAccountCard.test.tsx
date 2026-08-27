@@ -155,9 +155,29 @@ describe('DeleteAccountCard', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('shows a distinct message when a resumed re-authentication round trip is still stale', () => {
+    renderCard({ dialog: { kind: 'reauth-failed' } });
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/couldn't refresh your session/i);
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+  });
+
   it('disables the trigger while the pre-flight is loading', () => {
     renderCard({ dialog: { kind: 'preflight-loading' } });
 
     expect(screen.getByRole('button', { name: 'Delete account' })).toBeDisabled();
+  });
+
+  it('fails closed when displayName has not resolved yet — an empty typed field must never enable the destructive confirm', () => {
+    const dialog: DeleteAccountDialogState = {
+      kind: 'confirm',
+      typedName: '',
+      deleting: false,
+      error: false,
+      externalSubscriptionLinked: false,
+    };
+    renderCard({ dialog, displayName: '' });
+
+    expect(screen.getByRole('button', { name: 'Delete my account' })).toBeDisabled();
   });
 });

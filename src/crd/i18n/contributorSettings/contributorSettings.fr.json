@@ -388,6 +388,7 @@
         "cardBody": "La suppression de ton compte est immédiate et définitive. Ton profil, tes paramètres, tes fichiers téléversés et tes identifiants de connexion sont supprimés, et cette action est irréversible.",
         "trigger": "Supprimer le compte",
         "preflightError": "Impossible de vérifier si ton compte peut être supprimé — réessaie.",
+        "reauthFailed": "Impossible d'actualiser ta session. Déconnecte-toi puis reconnecte-toi, et réessaie ensuite.",
         "confirm": {
           "title": "Supprimer ton compte ?",
           "description": "Cette action supprime définitivement ton compte Alkemio. Elle est irréversible.",

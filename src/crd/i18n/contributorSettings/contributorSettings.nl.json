@@ -388,6 +388,7 @@
         "cardBody": "Het verwijderen van je account is onmiddellijk en permanent. Je profiel, instellingen, geüploade bestanden en inloggegevens worden verwijderd, en dit kan niet ongedaan worden gemaakt.",
         "trigger": "Account verwijderen",
         "preflightError": "Kon niet controleren of je account verwijderd kan worden — probeer het opnieuw.",
+        "reauthFailed": "Je sessie kon niet worden vernieuwd. Log uit en weer in, en probeer het daarna opnieuw.",
         "confirm": {
           "title": "Account verwijderen?",
           "description": "Dit verwijdert je Alkemio-account permanent. Dit kan niet ongedaan worden gemaakt.",

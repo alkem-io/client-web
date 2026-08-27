@@ -40,6 +40,12 @@ export type DeleteAccountDialogState =
   | { kind: 'closed' }
   | { kind: 'preflight-loading' }
   | { kind: 'preflight-error' }
+  /**
+   * A resumed re-authentication round trip still reports a stale session —
+   * the one-shot loop guard has already tripped, so we stop here instead of
+   * redirecting again (see useDeleteAccount's REAUTH_ATTEMPTED_KEY guard).
+   */
+  | { kind: 'reauth-failed' }
   | {
       kind: 'confirm';
       typedName: string;

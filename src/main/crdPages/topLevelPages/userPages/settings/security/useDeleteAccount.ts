@@ -4,7 +4,8 @@ import { useSearchParams } from 'react-router-dom';
 import { useAccountDeletionPreflightLazyQuery, useDeleteUserMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
   AUTH_LOGOUT_PATH,
-  AUTH_REFRESH_LOGIN_REQUEST,
+  DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY,
+  OIDC_LOGIN_PATH,
 } from '@/core/auth/authentication/constants/authentication.constants';
 import useNavigate from '@/core/routing/useNavigate';
 import type {
@@ -69,10 +70,14 @@ export type UseDeleteAccountResult = {
  * triggered by a Kratos-native form submission returning HTTP 403) does not
  * apply here — `deleteUser` is a plain GraphQL mutation, not a Kratos flow
  * submission, so there is no Kratos-issued redirect to follow. Instead this
- * hook drives the SAME "confirm it is you" flow directly via Kratos's
- * self-service login browser endpoint with `refresh=true`, carrying a resume
- * flag on `return_to` so the Security tab can reopen the confirm dialog (name
- * field cleared, never auto-submitted) once the round trip completes.
+ * hook forces re-authentication through the OIDC BFF login route (the same
+ * one every other forced re-login in this app uses) so the round trip both
+ * shows the "confirm it is you" prompt AND re-mints the `alkemio_session`
+ * BFF cookie whose `created_at` the server reads for freshness — a Kratos
+ * SSO-only refresh would satisfy neither the server's session-freshness gate
+ * nor its audit trail. A resume flag rides on `returnTo` so the Security tab
+ * can reopen the confirm dialog (name field cleared, never auto-submitted)
+ * once the round trip completes.
  */
 const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): UseDeleteAccountResult => {
   const navigate = useNavigate();
@@ -86,7 +91,8 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
     const resumeUrl = new URL(securityTabUrl, window.location.origin);
     resumeUrl.searchParams.set(RESUME_QUERY_PARAM, RESUME_QUERY_VALUE);
     const returnTo = `${resumeUrl.pathname}${resumeUrl.search}`;
-    window.location.assign(`${AUTH_REFRESH_LOGIN_REQUEST}?refresh=true&return_to=${encodeURIComponent(returnTo)}`);
+    sessionStorage.setItem(DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY, '1');
+    window.location.assign(`${OIDC_LOGIN_PATH}?returnTo=${encodeURIComponent(returnTo)}`);
   };
 
   const openFromPreflight = async () => {
@@ -99,9 +105,18 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
         return;
       }
       if (!status.sessionFresh) {
+        // A resumed pre-flight (the round trip just completed) that STILL
+        // finds the session stale would redirect forever if retried blindly
+        // — the marker means this tab already made that one attempt, so
+        // stop here instead of looping back into another forced re-login.
+        if (sessionStorage.getItem(DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY) === '1') {
+          setDialog({ kind: 'reauth-failed' });
+          return;
+        }
         redirectToReauth();
         return;
       }
+      sessionStorage.removeItem(DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY);
       if (!status.canDelete) {
         setDialog({
           kind: 'blocked',
@@ -123,16 +138,21 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
     }
   };
 
-  // One-shot resume: Kratos lands the browser back here with `?resume=delete-account`
-  // once the forced re-login completes. Re-run the pre-flight rather than blindly
-  // reopening confirm — a resource created elsewhere during the round trip must
-  // still surface as a blocker (TOCTOU), and the freshly-issued session should now
-  // pass the freshness check without looping back into another redirect.
+  // One-shot resume: the OIDC BFF lands the browser back here with
+  // `?resume=delete-account` once the forced re-login completes. Re-run the
+  // pre-flight rather than blindly reopening confirm — a resource created
+  // elsewhere during the round trip must still surface as a blocker (TOCTOU),
+  // and the freshly-issued session should now pass the freshness check.
+  // Only honour the flag when this tab's own redirectToReauth set the
+  // matching marker — a `?resume=delete-account` link supplied any other way
+  // (e.g. sent to a signed-in victim) can never carry it, so it is ignored
+  // rather than treated as a resumed round trip.
   useEffect(() => {
     if (searchParams.get(RESUME_QUERY_PARAM) !== RESUME_QUERY_VALUE) return;
     const next = new URLSearchParams(searchParams);
     next.delete(RESUME_QUERY_PARAM);
     setSearchParams(next, { replace: true });
+    if (sessionStorage.getItem(DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY) !== '1') return;
     void openFromPreflight();
     // Runs once per resumed mount only — deliberately not re-run on every
     // searchParams/setSearchParams identity change (this repo's lint config
@@ -174,8 +194,18 @@ const useDeleteAccount = (userId: string | undefined, securityTabUrl: string): U
     setDialog({ kind: 'closed' });
   };
 
+  // Radix's AlertDialogAction (the confirm button) closes the dialog itself
+  // on click, in the SAME click as onConfirm — so a mutation that is still
+  // in flight (or about to reject) must not be allowed to close here, or the
+  // rejection branch below updates a dialog state nothing is rendering
+  // anymore and the user sees no error at all. Ignoring the close while
+  // `deleting` is true keeps the dialog mounted until onConfirm's own
+  // success (navigate away) or failure (setDialog with `error: true`)
+  // branch decides what happens next; Cancel stays disabled for the same
+  // duration, so this never blocks a legitimate close.
   const onDialogOpenChange = (open: boolean) => {
-    if (!open) setDialog({ kind: 'closed' });
+    if (open) return;
+    setDialog(current => (current.kind === 'confirm' && current.deleting ? current : { kind: 'closed' }));
   };
 
   return { dialog, onOpen, onTypedNameChange, onConfirm, onCancel, onDialogOpenChange };

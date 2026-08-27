@@ -388,6 +388,7 @@
         "cardBody": "Das Löschen deines Kontos ist sofort und endgültig. Dein Profil, deine Einstellungen, hochgeladene Dateien und Anmeldedaten werden entfernt und können nicht wiederhergestellt werden.",
         "trigger": "Konto löschen",
         "preflightError": "Es konnte nicht geprüft werden, ob dein Konto gelöscht werden kann — versuche es erneut.",
+        "reauthFailed": "Deine Sitzung konnte nicht aktualisiert werden. Melde dich ab und wieder an und versuche es dann erneut.",
         "confirm": {
           "title": "Konto löschen?",
           "description": "Dies löscht dein Alkemio-Konto dauerhaft. Dies kann nicht rückgängig gemacht werden.",

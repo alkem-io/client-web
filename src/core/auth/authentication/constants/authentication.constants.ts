@@ -12,14 +12,6 @@ export const AUTH_SIGN_UP_PATH = '/sign_up';
 export const AUTH_REGISTRATION_PATH = '/registration';
 export const AUTH_RESET_PASSWORD_REQUEST = '/ory/kratos/public/self-service/recovery/browser';
 export const AUTH_RESET_PASSWORD_PATH = '/recovery';
-// Ory Kratos's self-service login browser endpoint with `refresh=true` forces
-// re-authentication even on an already-live session — the "confirm it is you"
-// prompt (Kratos message 1010003) — and redirects back to `return_to` once it
-// succeeds. Used to gate privileged actions triggered outside the Settings
-// flow's own submit cycle (e.g. a GraphQL mutation refused with a
-// freshness-required error code), where Kratos has no submission of its own
-// to attach the same 403 redirect to.
-export const AUTH_REFRESH_LOGIN_REQUEST = '/ory/kratos/public/self-service/login/browser';
 export const PARAM_NAME_RETURN_URL = 'returnUrl';
 export const STORAGE_KEY_RETURN_URL = 'returnUrl';
 // Companion cookie to STORAGE_KEY_RETURN_URL: set when a sign-up carrying a
@@ -45,3 +37,12 @@ export const OIDC_ID_TOKEN_HINT_PATH = `${OIDC_BFF_BASE}/id-token-hint`;
 // mint a session can't trap the user in a redirect loop. Cleared on logout and
 // whenever a live BFF session is next observed.
 export const OIDC_RECOVERY_ATTEMPTED_KEY = 'alkemio_oidc_recovery_attempted';
+
+// sessionStorage marker (see useDeleteAccount): a forced re-authentication
+// round trip for account deletion has already been attempted in this tab —
+// loop guard so a session that a re-login never freshens (window/IdP
+// mismatch, clock skew) can't trap the user in a redirect loop, and so a
+// `?resume=delete-account` URL supplied any other way than this tab's own
+// redirect can't kick off a forced re-login with no user gesture. Cleared
+// once a pre-flight reports a fresh session.
+export const DELETE_ACCOUNT_REAUTH_ATTEMPTED_KEY = 'alkemio_delete_account_reauth_attempted';

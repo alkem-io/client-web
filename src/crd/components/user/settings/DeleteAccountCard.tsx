@@ -51,6 +51,11 @@ export function DeleteAccountCard({
           {t('user.security.deleteAccount.preflightError')}
         </p>
       ) : null}
+      {dialog.kind === 'reauth-failed' ? (
+        <p role="alert" className="text-body text-destructive">
+          {t('user.security.deleteAccount.reauthFailed')}
+        </p>
+      ) : null}
       <div>
         <Button
           type="button"
@@ -78,7 +83,11 @@ export function DeleteAccountCard({
         onCancel={onCancel}
         variant="destructive"
         loading={dialog.kind === 'confirm' && dialog.deleting}
-        confirmDisabled={dialog.kind === 'confirm' && dialog.typedName.trim() !== displayName}
+        // A missing/unresolved displayName ('') must never satisfy the typed-name
+        // guard by comparing equal to an empty typed field — fail closed instead.
+        confirmDisabled={
+          dialog.kind === 'confirm' && (displayName.length === 0 || dialog.typedName.trim() !== displayName)
+        }
       >
         {dialog.kind === 'confirm' ? (
           <div className="flex flex-col gap-2">

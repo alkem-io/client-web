@@ -388,6 +388,7 @@
         "cardBody": "Deleting your account is immediate and permanent. Your profile, settings, uploaded files, and sign-in credentials are removed, and this cannot be undone.",
         "trigger": "Delete account",
         "preflightError": "Couldn't check whether your account can be deleted — try again.",
+        "reauthFailed": "We couldn't refresh your session. Sign out and sign back in, then try again.",
         "confirm": {
           "title": "Delete your account?",
           "description": "This permanently deletes your Alkemio account. This cannot be undone.",
