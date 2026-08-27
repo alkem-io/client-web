@@ -999,8 +999,8 @@
     "aspectRatio": {
       "label": "Relación de aspecto: {{ratio}}:1",
       "ariaLabel": "Relación de aspecto: {{ratio}}",
-      "hintLeft": "Izquierda: recorte de imagen más alto",
-      "hintRight": "Derecha: recorte de imagen más bajo",
+      "hintLeft": "Izquierda: recorte de imagen más bajo",
+      "hintRight": "Derecha: recorte de imagen más alto",
       "name": "Forma del banner"
     }
   },

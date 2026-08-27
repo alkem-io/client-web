@@ -235,7 +235,7 @@ export default function CrdSpacePageLayout() {
                 tagline={space.about.profile.tagline ?? undefined}
                 bannerUrl={space.about.profile.banner?.uri}
                 bannerAlt={space.about.profile.banner?.alternativeText ?? undefined}
-                bannerAspectRatio={resolveBannerAspectRatio(space.about.profile.banner?.aspectRatio)}
+                bannerAspectRatio={resolveBannerAspectRatio(space.about.profile.banner)}
                 color={pickColorFromId(spaceId ?? space.about.profile.displayName)}
                 actions={headerActions}
                 overlayHeader={enableBannerOverlay}

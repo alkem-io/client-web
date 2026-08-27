@@ -999,8 +999,8 @@
     "aspectRatio": {
       "label": "Format d'image : {{ratio}}:1",
       "ariaLabel": "Format d'image : {{ratio}}",
-      "hintLeft": "Gauche : recadrage d'image plus haut",
-      "hintRight": "Droite : recadrage d'image plus court",
+      "hintLeft": "Gauche : recadrage d'image plus court",
+      "hintRight": "Droite : recadrage d'image plus haut",
       "name": "Forme de la bannière"
     }
   },

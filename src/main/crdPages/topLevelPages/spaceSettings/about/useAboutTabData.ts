@@ -305,8 +305,15 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     // Page banner is the only visual with adjustable aspect ratio.
     const aspectRatioBounds = key === 'pageBanner' ? (pageBannerAspectRatioBounds ?? undefined) : undefined;
 
+    // A stored banner ratio describes an uploaded image's crop — the shape
+    // slider is the only thing that writes it. With no image the row still
+    // carries the server's creation default (6), chosen by nobody; passing it
+    // through would open the first-ever crop on 6 instead of the dialog's own
+    // default (the bounds' max, 10).
+    const hasImage = Boolean(values?.[key]?.uri ?? visualRaw?.uri);
+
     return {
-      aspectRatio: aspectRatio ?? visualRaw?.aspectRatio ?? 1,
+      aspectRatio: key === 'pageBanner' && !hasImage ? undefined : (aspectRatio ?? visualRaw?.aspectRatio ?? 1),
       maxHeight: visualRaw?.maxHeight,
       minHeight: visualRaw?.minHeight,
       maxWidth: visualRaw?.maxWidth,
