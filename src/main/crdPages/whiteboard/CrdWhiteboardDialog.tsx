@@ -360,8 +360,12 @@ const CrdWhiteboardDialog = ({
 
   const handleImportTemplate = async (sourceWhiteboardId: string) => {
     if (!excalidrawAPI) return;
+    const generationAtImport = editorGenerationRef.current;
     try {
       const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId);
+      if (editorGenerationRef.current !== generationAtImport) {
+        throw new Error('Whiteboard editor changed while importing template');
+      }
       await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter);
     } catch (err) {
       notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
