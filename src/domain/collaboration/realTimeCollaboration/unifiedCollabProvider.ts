@@ -709,7 +709,7 @@ function buildCollabUrl(
   options: Pick<UnifiedCollabProviderOptions, 'documentId' | 'type' | 'baseUrl' | 'path' | 'guestName'>
 ): string | null {
   const baseUrl =
-    options.baseUrl ?? globalThis.window?._env_?.VITE_APP_ALKEMIO_DOMAIN ?? globalThis.window?.location.origin;
+    options.baseUrl || globalThis.window?._env_?.VITE_APP_ALKEMIO_DOMAIN || globalThis.window?.location.origin;
   if (!baseUrl) return null;
 
   const path = options.path ?? globalThis.window?._env_?.VITE_APP_COLLAB_PATH ?? '/collab';

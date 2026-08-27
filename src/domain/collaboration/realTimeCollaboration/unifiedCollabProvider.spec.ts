@@ -119,6 +119,18 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
+  it('uses the browser origin when the runtime platform domain is empty', () => {
+    vi.stubGlobal('window', {
+      _env_: { VITE_APP_ALKEMIO_DOMAIN: '' },
+      location: { origin: 'https://browser.test' },
+    });
+
+    const provider = new UnifiedCollabProvider({ documentId: 'doc-1', type: 'memo' });
+
+    expect(MockWebSocket.instances[0].url).toBe('wss://browser.test/collab/doc-1?type=memo');
+    provider.destroy();
+  });
+
   it('passes a guest name through the query string', () => {
     const provider = new UnifiedCollabProvider({ ...baseOptions, type: 'memo', guestName: 'Alice S.' });
     expect(MockWebSocket.instances[0].url).toBe('wss://collab.test/collab/doc-1?type=memo&guestName=Alice+S.');
