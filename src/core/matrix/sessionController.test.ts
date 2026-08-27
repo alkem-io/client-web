@@ -303,6 +303,31 @@ describe('establishSession', () => {
     expect(silentSso).toHaveBeenCalledOnce();
   });
 
+  it('reports a redacted error through onError when establishment fails', async () => {
+    const silentSso = vi.fn(async () => {
+      throw new Error('exchange failed: access_token=syt_leaky rejected');
+    });
+    const errors: string[] = [];
+
+    await establishSession('actor-without-record', { silentSso, onError: message => errors.push(message) });
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('[REDACTED]');
+    expect(errors[0]).not.toContain('syt_leaky');
+  });
+
+  it('reports a descriptive error through onError when silent SSO cannot complete', async () => {
+    const errors: string[] = [];
+
+    await establishSession('actor-without-record', {
+      silentSso: vi.fn(async () => 'timeout' as const),
+      onError: message => errors.push(message),
+    });
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toContain('timeout');
+  });
+
   it('resolves to failed instead of rejecting when silent SSO throws', async () => {
     const silentSso = vi.fn(async () => {
       throw new Error('network down');

@@ -1,10 +1,28 @@
 import { createContext, type ReactNode, useContext, useEffect, useState } from 'react';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { isAdmitted } from './matrixConfig';
+import { redactString } from './redaction';
 import { establishSession, onMessagingOpened, type SessionHandle, type SessionState } from './sessionController';
 
 interface MatrixSessionContextValue {
   readonly state: SessionState;
+}
+
+interface MatrixDiagnostics {
+  readonly state: SessionState;
+  readonly lastError: string | undefined;
+}
+
+declare global {
+  interface Window {
+    /**
+     * Session diagnostics for the live proof (FR-011): current lifecycle state
+     * and the last redacted error, nothing else. Present in every build in
+     * which the foundation is active for an admitted user; never assigned at
+     * all while the flag is off. No token material is reachable through it.
+     */
+    __alkemioMatrix?: MatrixDiagnostics;
+  }
 }
 
 const MatrixSessionContext = createContext<MatrixSessionContextValue>({ state: 'idle' });
@@ -24,6 +42,16 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
+    window.__alkemioMatrix = { state: 'idle', lastError: undefined };
+    const updateDiagnostics = (patch: Partial<MatrixDiagnostics>): void => {
+      window.__alkemioMatrix = {
+        state: 'idle',
+        lastError: undefined,
+        ...window.__alkemioMatrix,
+        ...patch,
+      };
+    };
+
     let disposed = false;
     let establishing = false;
     let handle: SessionHandle | null = null;
@@ -38,13 +66,10 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
           if (!disposed) {
             setSessionState(state);
           }
+          updateDiagnostics({ state });
         },
-        onRooms: rooms => {
-          // biome-ignore lint/suspicious/noConsole: temporary local-proof observability, removed before PR
-          console.info(
-            `[matrix] session ready — ${rooms.length} rooms`,
-            rooms.map(room => `${room.name} (${room.roomId})`)
-          );
+        onError: message => {
+          updateDiagnostics({ lastError: redactString(message) });
         },
       })
         .then(established => {
@@ -54,10 +79,14 @@ const MatrixSessionProvider = ({ children }: { children: ReactNode }) => {
           }
           handle = established;
         })
-        .catch(() => {
+        .catch(error => {
           if (!disposed) {
             setSessionState('failed');
           }
+          updateDiagnostics({
+            state: 'failed',
+            lastError: redactString(error instanceof Error ? error.message : String(error)),
+          });
         });
     });
 

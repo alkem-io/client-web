@@ -1,7 +1,7 @@
 import { registerActiveSession, unregisterActiveSession } from './activeSession';
 import { cleanupMatrixUser } from './logoutCleanup';
 import { createMultiTabCoordinator, type MultiTabCallbacks, type MultiTabCoordinator } from './multiTab';
-import { redactBreadcrumb } from './redaction';
+import { redactBreadcrumb, redactString } from './redaction';
 import { attemptSilentSso, type SilentSsoOutcome } from './ssoLogin';
 import { type CredentialRecord, clearNamespace, findStoredUserId, listStoredUserIds, loadCredentials } from './storage';
 import { refreshMatrixTokens, TokenRefreshError } from './tokenRefresh';
@@ -161,6 +161,8 @@ interface MatrixSdkModule {
 interface EstablishmentHooks {
   readonly onState?: (state: SessionState) => void;
   readonly onBreadcrumb?: BreadcrumbSink;
+  /** Last-error reporting for diagnostics (FR-011). Always receives a redacted message. */
+  readonly onError?: (redactedMessage: string) => void;
   readonly onRooms?: (rooms: readonly RoomSummary[]) => void;
   readonly loadSdk?: () => Promise<MatrixSdkModule>;
   readonly silentSso?: (expectedLocalpart: string) => Promise<SilentSsoOutcome>;
@@ -189,6 +191,10 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
   const createCoordinator = hooks.createCoordinator ?? createMultiTabCoordinator;
 
   let coordinator: MultiTabCoordinator | null = null;
+  const reportError = (message: unknown): void => {
+    const raw = message instanceof Error ? message.message : String(message);
+    hooks.onError?.(redactString(raw));
+  };
   const machine = createSessionMachine(onBreadcrumb);
   const setState = (to: SessionState): void => {
     if (machine.transition(to)) {
@@ -202,6 +208,7 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
   let activeClient: MatrixClientLike | null = null;
   let stopped = false;
   let recovered = false;
+  let lastFailureReason: string | null = null;
   const handle: SessionHandle = {
     machine,
     stop: () => {
@@ -274,6 +281,8 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       }
       if (outcome === 'authenticated') {
         record = await loadRecordForActor();
+      } else {
+        lastFailureReason = `silent SSO ${outcome}`;
       }
     }
 
@@ -387,7 +396,8 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
         setState('starting');
       }
       await startWithRecord(record);
-    } catch {
+    } catch (error) {
+      reportError(error);
       setState('failed');
     }
   };
@@ -422,6 +432,11 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
       return handle;
     }
     if (!record || record === 'unreachable') {
+      reportError(
+        record === 'unreachable'
+          ? 'establishment failed: homeserver unreachable'
+          : `establishment failed: ${lastFailureReason ?? 'no credentials'}`
+      );
       setState('failed');
       return handle;
     }
@@ -447,7 +462,8 @@ const establishSession = async (actorId: string, hooks: EstablishmentHooks = {})
     if (coordinator.role() === 'leader') {
       await startWithRecord(record);
     }
-  } catch {
+  } catch (error) {
+    reportError(error);
     setState('failed');
   }
 
