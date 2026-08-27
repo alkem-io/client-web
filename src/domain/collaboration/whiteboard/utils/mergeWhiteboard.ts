@@ -188,7 +188,14 @@ const mergeWhiteboard = async (
     throw new WhiteboardMergeError('Whiteboard verification failed');
   }
 
-  const templateElements = templateScene.elements as unknown as ExcalidrawElement[];
+  // Snapshot tombstones are synchronization history, not template content. Import
+  // only live elements so deleted outliers cannot affect placement or reappear.
+  const templateElements = (templateScene.elements as unknown as ExcalidrawElement[]).filter(
+    element => !element.isDeleted
+  );
+  if (templateElements.length === 0) {
+    throw new WhiteboardMergeError('Template has no visible elements');
+  }
   // Template images are opaque locators pointing at the TEMPLATE's storage bucket,
   // never bytes. They must be re-homed into THIS whiteboard's bucket before the
   // elements referencing them are inserted (see the asset-copy steps below).
@@ -266,7 +273,7 @@ const mergeWhiteboard = async (
     const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
     const sceneVersion = hashElementsVersion(currentElements);
 
-    const currentElementsBBox = getBoundingBox(currentElements);
+    const currentElementsBBox = getBoundingBox(currentElements.filter(element => !element.isDeleted));
     const insertedWhiteboardBBox = getBoundingBox(templateElements);
     const displacement = calculateInsertionPoint(currentElementsBBox, insertedWhiteboardBBox);
 

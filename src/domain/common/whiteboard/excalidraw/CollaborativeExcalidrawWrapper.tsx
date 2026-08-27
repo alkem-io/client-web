@@ -178,13 +178,6 @@ const CollaborativeExcalidrawWrapper = ({
   const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
   const previousWhiteboardIdRef = useRef(whiteboard?.id);
 
-  useEffect(() => {
-    if (previousWhiteboardIdRef.current !== whiteboard?.id) {
-      actions.onEditorInvalidated?.();
-      previousWhiteboardIdRef.current = whiteboard?.id;
-    }
-  }, [whiteboard?.id, actions.onEditorInvalidated]);
-
   const whiteboardDefaults = useWhiteboardDefaults();
   const { t } = useTranslation();
   const notify = useNotification();
@@ -422,6 +415,13 @@ const CollaborativeExcalidrawWrapper = ({
 
   const handleInitializeApi = (api: ExcalidrawImperativeAPI | null) => {
     if (!api) return;
+    // The keyed editor for a new whiteboard can publish its API before a passive
+    // parent effect runs. Invalidate the old generation synchronously here, then
+    // publish the new API, so the invalidation can never clear the replacement.
+    if (previousWhiteboardIdRef.current !== whiteboard?.id) {
+      actions.onEditorInvalidated?.();
+      previousWhiteboardIdRef.current = whiteboard?.id;
+    }
     // Pair the api with the whiteboard it was created under (the editor mounted under the
     // current, keyed whiteboard id), so the init effect can require a match.
     setExcalidrawApi({ api, whiteboardId: whiteboard?.id ?? '' });
