@@ -51,10 +51,21 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     spaceLevel === SpaceLevel.L0
       ? space.about.membership?.myMembershipStatus
       : subspace.about.membership?.myMembershipStatus;
-  const { ydoc, provider, connectionStatus, synced, isReadOnly, memberCount, connectedUsers, user } =
-    useCrdMemoProvider({
-      collaborationId: memoId,
-    });
+  const {
+    ydoc,
+    provider,
+    connectionStatus,
+    synced,
+    isReadOnly,
+    readOnlyCode,
+    sessionEndCode,
+    resumeEditing,
+    memberCount,
+    connectedUsers,
+    user,
+  } = useCrdMemoProvider({
+    collaborationId: memoId,
+  });
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
@@ -149,11 +160,14 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     synced,
     isAuthenticated,
     isReadOnly,
+    readOnlyCode,
+    sessionEndCode,
     memberCount,
     connectedUsers,
     isContribution,
     hasDeletePrivileges,
     onDelete: handleRequestDelete,
+    onResumeEditing: resumeEditing,
     contentUpdatePolicy: memo?.contentUpdatePolicy,
     hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,
@@ -165,6 +179,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   // (permission-driven only), so it does not need to rebuild mid-session.
   const isConnectionReady = connectionStatus === 'connected' && synced;
   const editorDisabled = isReadOnly || !hasContributePrivileges;
+  const sessionEndMessage = sessionEndCode
+    ? t(
+        sessionEndCode === 'document-size-limit-exceeded'
+          ? 'memo.footer.readonlyReason.sizeLimitExceeded'
+          : 'memo.footer.readonlyReason.sessionEnded'
+      )
+    : undefined;
 
   const title = (
     <MemoDisplayName
@@ -228,7 +249,11 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 the editor's first render is its final render, with
                 `disabled` driven purely by permissions. Mirrors the MUI
                 memo dialog's "Connecting to collaboration service…" overlay. */}
-            {isConnectionReady ? (
+            {sessionEndMessage ? (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                <p>{sessionEndMessage}</p>
+              </div>
+            ) : isConnectionReady ? (
               <CollaborativeMarkdownEditor
                 ydoc={ydoc as unknown as YDocLike}
                 provider={provider as unknown as CollabProviderLike}

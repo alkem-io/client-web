@@ -41,7 +41,6 @@ vi.mock('./collab/useCollab', () => ({
   ],
 }));
 
-vi.mock('./useAutoReconnect', () => ({ useAutoReconnect: () => ({ secondsRemaining: null }) }));
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
 vi.mock('@/core/utils/onlineStatus', () => ({ default: () => true }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
