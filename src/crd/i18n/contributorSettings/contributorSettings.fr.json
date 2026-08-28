@@ -387,18 +387,18 @@
         "description": "Supprimez définitivement votre compte Alkemio.",
         "cardBody": "La suppression de votre compte est immédiate et définitive. Votre profil, vos paramètres, vos fichiers téléversés et vos identifiants de connexion sont supprimés, et cette action est irréversible.",
         "trigger": "Supprimer le compte",
-        "preflightError": "Impossible de vérifier si votre compte peut être supprimé — réessayez.",
+        "preflightError": "Impossible de vérifier si votre compte peut être supprimé - réessayez.",
         "reauthFailed": "Impossible d'actualiser votre session. Déconnectez-vous puis reconnectez-vous, et réessayez ensuite.",
         "confirm": {
           "title": "Supprimer votre compte ?",
           "description": "Cette action supprime définitivement votre compte Alkemio. Elle est irréversible.",
-          "instructions": "Saisissez votre nom — {{name}} — pour confirmer.",
+          "instructions": "Saisissez votre nom - {{name}} - pour confirmer.",
           "namePlaceholder": "Saisissez votre nom pour confirmer",
           "subscriptionNotice": "Un abonnement actif est associé à votre compte. La suppression se poursuivra ; la facturation est régularisée séparément.",
           "cancel": "Annuler",
           "confirmLabel": "Supprimer mon compte",
           "deleting": "Suppression…",
-          "genericError": "Impossible de supprimer votre compte — réessayez."
+          "genericError": "Impossible de supprimer votre compte - réessayez."
         },
         "blocked": {
           "title": "Vous ne pouvez pas encore supprimer votre compte",
