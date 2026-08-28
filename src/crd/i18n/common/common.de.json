@@ -1478,7 +1478,8 @@
   },
   "templateLibrary": {
     "whiteboardTemplates": {
-      "errorImporting": "Error importing $t(common.enums.templateType.WHITEBOARD)"
+      "errorImporting": "Error importing $t(common.enums.templateType.WHITEBOARD)",
+      "persistenceUnconfirmed": "Die Vorlage wurde lokal angewendet, aber das Speichern konnte nicht bestätigt werden. Lass das Whiteboard während der Wiederverbindung geöffnet."
     }
   },
   "virtualContributor": "Virtual Contributor",

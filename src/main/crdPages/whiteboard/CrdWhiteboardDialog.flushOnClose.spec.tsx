@@ -54,7 +54,16 @@ vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
   default: () => [
     null,
     () => () => {},
-    { connecting: false, collaborating: false, mode: 'read', modeReason: undefined, isReadOnly: false },
+    {
+      connecting: false,
+      collaborating: true,
+      mode: 'read',
+      modeReason: undefined,
+      isReadOnly: true,
+      phase: 'readOnly',
+      hasEverSynced: true,
+      hasUnconfirmedLocalChanges: false,
+    },
   ],
 }));
 

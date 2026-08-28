@@ -1478,7 +1478,8 @@
   },
   "templateLibrary": {
     "whiteboardTemplates": {
-      "errorImporting": "Error importing $t(common.enums.templateType.WHITEBOARD)"
+      "errorImporting": "Error importing $t(common.enums.templateType.WHITEBOARD)",
+      "persistenceUnconfirmed": "Le modèle a été appliqué localement, mais l’enregistrement n’a pas pu être confirmé. Gardez le tableau blanc ouvert pendant la reconnexion."
     }
   },
   "virtualContributor": "Virtual Contributor",

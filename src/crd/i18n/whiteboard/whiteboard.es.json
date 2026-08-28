@@ -44,6 +44,9 @@
   },
   "footer": {
     "guestContributionsWarning": "Cualquiera con el enlace puede editar",
+    "recovering": "Conexión interrumpida — reconectando. Tus cambios locales se conservan.",
+    "retryNow": "Reintentar ahora",
+    "unconfirmedChanges": "No se pudieron confirmar los cambios locales. Exporta la pizarra antes de salir.",
     "readonlyReason": {
       "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",
       "contentUpdatePolicy": "No tienes derechos para editar esta pizarra. Pide al propietario, <ownerlink>{{ownerName}}</ownerlink>, que cambie la configuración de uso compartido si deseas contribuir.",

@@ -44,6 +44,9 @@
   },
   "footer": {
     "guestContributionsWarning": "Anyone with the link can edit",
+    "recovering": "Connection interrupted — reconnecting. Your local changes are kept.",
+    "retryNow": "Retry now",
+    "unconfirmedChanges": "Local changes could not be confirmed. Export the whiteboard before leaving.",
     "readonlyReason": {
       "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
       "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",

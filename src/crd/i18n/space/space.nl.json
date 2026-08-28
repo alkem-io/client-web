@@ -694,6 +694,10 @@
       "guestWarning": "Je bewerkt als gast",
       "delete": "Memo verwijderen",
       "resumeEditing": "Bewerken hervatten",
+      "recovering": "Verbinding onderbroken — opnieuw verbinden. Lokale wijzigingen blijven behouden.",
+      "retryNow": "Nu opnieuw proberen",
+      "unconfirmedChanges": "Lokale wijzigingen konden niet worden bevestigd. Kopieer ze voordat je afsluit.",
+      "copyChanges": "Wijzigingen kopiëren",
       "readonlyReason": {
         "connecting": "Verbinden met de samenwerkingsservice…",
         "notSynced": "Synchroniseren…",

@@ -1,6 +1,10 @@
 import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { useRef, useState } from 'react';
 import {
+  type CollaborationPhase,
+  deriveCollaborationPhase,
+} from '@/domain/collaboration/realTimeCollaboration/collaborationPhase';
+import {
   type CloseVerdict,
   type ControlMessage,
   classifySessionEnd,
@@ -26,6 +30,7 @@ export type CollabAPI = {
   requestDurability: () => Promise<void>;
   /** Retry a disconnected transport through the provider's single retry owner. */
   reconnect: () => void;
+  hasUnconfirmedLocalChanges: () => boolean;
   /** Broadcast an ephemeral floating emoji to other collaborators (never persisted). */
   broadcastEmojiReaction: (emoji: string, x: number, y: number) => void;
   broadcastCountdownTimer: (remainingSeconds: number, startedBy: string, active: boolean) => void;
@@ -37,6 +42,9 @@ export type CollabState = {
   mode: CollaboratorMode | null;
   modeReason: CollaboratorModeReasons | null;
   isReadOnly: boolean;
+  phase: CollaborationPhase;
+  hasEverSynced: boolean;
+  hasUnconfirmedLocalChanges: boolean;
 };
 
 type UseCollabProps = {
@@ -44,14 +52,11 @@ type UseCollabProps = {
   onRemoteSave?: (error?: string) => void;
   /**
    * A TRANSIENT disconnect (network/transport drop, 1011, or a `room-capacity-reached`
-   * policy close) — the connection is expected to come back, so the consumer opens the
-   * reconnect notice while the provider keeps retrying. A TERMINAL
+   * policy close) — the connection is expected to come back, so the consumer surfaces
+   * non-blocking recovery status while the provider keeps retrying. A TERMINAL
    * close routes to `onTerminalClose` instead and never reaches here.
    */
-  // `hasError` (#10131): true once a reconnect attempt has actually failed, false for a first
-  // transient drop that may still auto-heal. A native-Yjs `transient` close is retryable, so it
-  // reports `false`; the hard, won't-heal case is routed through `onTerminalClose` instead.
-  onCloseConnection: (hasError: boolean) => void;
+  onCloseConnection: () => void;
   onSceneInitChange?: (initialized: boolean) => void;
   /**
    * The server rejected a local update — the scene is poisoned. The consumer must
@@ -145,14 +150,32 @@ const useCollab = ({
 }: UseCollabProps): UseCollabProvided => {
   const providerRef = useRef<UnifiedCollabProvider | null>(null);
   const collabApiRef = useRef<CollabAPI | null>(null);
+  // These facts belong to the editor scene, not to one admitted WebSocket
+  // member. Inactivity Resume deliberately replaces the provider/member while
+  // preserving the same Excalidraw Scene, so a provider cleanup must not erase
+  // either fact. A room or poisoned-scene replacement resets them explicitly.
+  const activeRoomIdRef = useRef<string | null>(null);
+  const hasEverSyncedRef = useRef(false);
+  const hasUnconfirmedLocalChangesRef = useRef(false);
 
   const [isConnecting, setIsConnecting] = useState(false);
   const [isCollaborating, setIsCollaborating] = useState(false);
-  const [isSceneInitialized, setIsSceneInitialized] = useState(false);
+  const [hasEverSynced, setHasEverSynced] = useState(false);
+  const [hasUnconfirmedLocalChanges, setHasUnconfirmedLocalChanges] = useState(false);
+  const [terminal, setTerminal] = useState(false);
+  const [replaceGeneration, setReplaceGeneration] = useState(false);
   const [collaboratorMode, setCollaboratorMode] = useState<CollaboratorMode | null>(null);
   const [collaboratorModeReason, setCollaboratorModeReason] = useState<CollaboratorModeReasons | null>(null);
 
   const initialize = ({ excalidrawApi, roomId }: InitProps): (() => void) => {
+    const preservesScene = activeRoomIdRef.current === roomId;
+    if (!preservesScene) {
+      activeRoomIdRef.current = roomId;
+      hasEverSyncedRef.current = false;
+      hasUnconfirmedLocalChangesRef.current = false;
+      setHasEverSynced(false);
+      setHasUnconfirmedLocalChanges(false);
+    }
     // Native-Yjs core: the editor's `Scene` IS the `Y.Doc`, but the provider drives
     // whiteboard sync through the editor's scene-sync port (the four v1 methods)
     // instead of subscribing to the raw doc. The editor enforces its own origin
@@ -169,6 +192,7 @@ const useCollab = ({
       },
       guestName: resolveWhiteboardGuestIdentity().guestName,
       connect: false,
+      initialUnconfirmedLocalChanges: preservesScene && hasUnconfirmedLocalChangesRef.current,
     });
     providerRef.current = provider;
 
@@ -190,6 +214,8 @@ const useCollab = ({
     // idempotent for the UI/action (it must NOT re-route to a callback), though the
     // provider still completes its own socket teardown. Reset on a fresh connection.
     let sessionEndHandled = false;
+    let didEverSync = preservesScene && hasEverSyncedRef.current;
+    let currentMode: CollaboratorMode | null = null;
 
     const handleStatus = (status: 'connecting' | 'connected' | 'disconnected') => {
       // A WebSocket OPEN is not editor readiness. Keep the UI in connecting /
@@ -197,6 +223,7 @@ const useCollab = ({
       setIsConnecting(status === 'connecting' || (status === 'connected' && !provider.synced));
       if (status === 'connected') {
         sessionEndHandled = false; // a fresh connection: any prior session-end is spent
+        setTerminal(false);
       } else if (status === 'disconnected') {
         setIsCollaborating(false);
         // The close-reason routing (transient → onCloseConnection, terminal →
@@ -218,32 +245,38 @@ const useCollab = ({
         return;
       }
       if (verdict.disposition === 'terminal') {
+        setTerminal(true);
         onTerminalClose?.(verdict.reason);
       } else if (verdict.disposition === 'transient') {
-        // A transient close is retryable (the provider's timer keeps going), so it is not the
-        // hard-error "reconnect has failed" state that surfaces the #10131 Reload-page escape hatch.
-        onCloseConnection(false);
+        // A transient close is retryable; the provider's single scheduler keeps going.
+        onCloseConnection();
       }
-      // 'normal' (a clean 1000 close): NEITHER — no retry and no reconnect notice.
     };
 
     // Fit-to-content fires exactly ONCE per editor generation, on the first completed
     // scene sync — never on a later resync/reconnect.
     let didInitialFit = false;
     const handleSynced = (synced: boolean) => {
-      setIsSceneInitialized(synced);
       setIsCollaborating(synced);
       setIsConnecting(!synced && provider.status !== 'disconnected');
-      onSceneInitChange?.(synced);
       if (!synced) {
         return;
       }
+      const isRecoverySync = didEverSync;
+      didEverSync = true;
+      hasEverSyncedRef.current = true;
+      setHasEverSynced(true);
+      onSceneInitChange?.(true);
       // Absence of a read-only/mode downgrade by the time the initial sync completes IS
       // the write grant — the service never sends `collaborator-mode` at join, only on a
       // later inactivity downgrade. The functional update keeps a mode a viewer
       // `read-only-state` already set (FIFO-safe: a read-only frame that arrived first
       // wins), and only fills in the default `write` when no downgrade has been seen.
+      if (currentMode === null) currentMode = 'write';
       setCollaboratorMode(previous => previous ?? 'write');
+      if (isRecoverySync && currentMode === 'write' && provider.hasUnconfirmedLocalChanges) {
+        void provider.requestDurability().catch(() => {});
+      }
       // The Yjs scene-sync restores elements but NOT viewport scroll/zoom, so without an
       // initial fit the editor opens at (0,0) showing blank canvas for a drawing placed
       // away from the origin. Mirror the single-user path (ExcalidrawWrapper), which
@@ -271,20 +304,26 @@ const useCollab = ({
           onRemoteSave?.(message.error ?? 'save-error');
           break;
         case 'collaborator-mode':
-          setCollaboratorMode(message.mode === 'write' ? 'write' : 'read');
+          currentMode = message.mode === 'write' ? 'write' : 'read';
+          setCollaboratorMode(currentMode);
           setCollaboratorModeReason(toModeReason(message.reason));
           break;
         case 'read-only-state':
           // A read-only downgrade also rides on read-only-state; reflect it as the
           // collaborator mode so the editor toggles view-mode.
-          setCollaboratorMode(message.readOnly ? 'read' : 'write');
+          currentMode = message.readOnly ? 'read' : 'write';
+          setCollaboratorMode(currentMode);
           if (message.reason) setCollaboratorModeReason(toModeReason(message.reason));
           break;
         case 'update-rejected':
           // The server rejected this generation's local update; hand off to the
           // consumer to discard the poisoned scene and remount a fresh generation
           // that resyncs from the server. Reconnecting this provider would resend it.
-          setIsSceneInitialized(false);
+          setReplaceGeneration(true);
+          hasEverSyncedRef.current = false;
+          hasUnconfirmedLocalChangesRef.current = false;
+          setHasEverSynced(false);
+          setHasUnconfirmedLocalChanges(false);
           onSceneInitChange?.(false);
           onUpdateRejected?.();
           break;
@@ -294,16 +333,22 @@ const useCollab = ({
           // control is authoritative over the socket close that follows (idempotence via
           // `sessionEndHandled`). An unknown/inconsistent tuple fails CLOSED to a terminal.
           sessionEndHandled = true;
-          // Seal editor consumers immediately, before the socket close which follows this
-          // control frame. Waiting for the provider's later `synced=false` event leaves a
-          // window where an async template import can still publish into a session the
-          // server has already ended.
-          setIsSceneInitialized(false);
-          onSceneInitChange?.(false);
           const info = classifySessionEnd(message);
           if (info) {
+            if (info.disposition !== 'transient') {
+              setTerminal(true);
+              if (info.disposition === 'manual') {
+                hasEverSyncedRef.current = false;
+                hasUnconfirmedLocalChangesRef.current = false;
+                setHasEverSynced(false);
+                setHasUnconfirmedLocalChanges(false);
+              }
+              onSceneInitChange?.(false);
+            }
             onSessionEnd?.(info);
           } else {
+            setTerminal(true);
+            onSceneInitChange?.(false);
             onTerminalClose?.(message.code ?? 'session-end');
           }
           break;
@@ -313,10 +358,18 @@ const useCollab = ({
       }
     };
 
+    const handleUnconfirmed = (unconfirmed: boolean) => {
+      hasUnconfirmedLocalChangesRef.current = unconfirmed;
+      setHasUnconfirmedLocalChanges(unconfirmed);
+    };
+
     provider.on('status', handleStatus);
     provider.on('synced', handleSynced);
     provider.on('control', handleControl);
     provider.on('close', handleClose);
+    provider.on('unconfirmed', handleUnconfirmed);
+    hasUnconfirmedLocalChangesRef.current = provider.hasUnconfirmedLocalChanges;
+    setHasUnconfirmedLocalChanges(provider.hasUnconfirmedLocalChanges);
     provider.connect();
 
     const collabApi: CollabAPI = {
@@ -324,6 +377,7 @@ const useCollab = ({
       isCollaborating: () => providerRef.current?.status === 'connected' && providerRef.current.synced,
       requestDurability: () => provider.requestDurability(),
       reconnect: () => provider.reconnectNow(),
+      hasUnconfirmedLocalChanges: () => provider.hasUnconfirmedLocalChanges,
       broadcastEmojiReaction: (emoji, x, y) => {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
         awarenessRouter.broadcastEmojiReaction({ id, emoji, x, y });
@@ -339,16 +393,27 @@ const useCollab = ({
       provider.off('synced', handleSynced);
       provider.off('control', handleControl);
       provider.off('close', handleClose);
+      provider.off('unconfirmed', handleUnconfirmed);
       awarenessRouter.destroy();
       provider.destroy();
       providerRef.current = null;
       collabApiRef.current = null;
       setIsCollaborating(false);
-      setIsSceneInitialized(false);
+      setTerminal(false);
+      setReplaceGeneration(false);
       setCollaboratorMode(null);
       setCollaboratorModeReason(null);
     };
   };
+
+  const phase = deriveCollaborationPhase({
+    status: isConnecting ? 'connecting' : isCollaborating ? 'connected' : 'disconnected',
+    synced: isCollaborating,
+    hasEverSynced,
+    readOnly: collaboratorMode === 'read',
+    terminal,
+    replaceGeneration,
+  });
 
   return [
     collabApiRef.current,
@@ -361,7 +426,10 @@ const useCollab = ({
       collaborating: isCollaborating,
       mode: collaboratorMode,
       modeReason: collaboratorModeReason,
-      isReadOnly: isConnecting || !isCollaborating || collaboratorMode === 'read' || !isSceneInitialized,
+      isReadOnly: phase === 'initial' || phase === 'readOnly' || phase === 'terminal' || phase === 'replaceGeneration',
+      phase,
+      hasEverSynced,
+      hasUnconfirmedLocalChanges,
     },
   ];
 };

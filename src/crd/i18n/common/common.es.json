@@ -1478,7 +1478,8 @@
   },
   "templateLibrary": {
     "whiteboardTemplates": {
-      "errorImporting": "Error al importar $t(common.enums.templateType.WHITEBOARD)"
+      "errorImporting": "Error al importar $t(common.enums.templateType.WHITEBOARD)",
+      "persistenceUnconfirmed": "La plantilla se aplicó localmente, pero no se pudo confirmar el guardado. Mantén la pizarra abierta mientras se reconecta."
     }
   },
   "virtualContributor": "Virtual Contributor",

@@ -44,6 +44,9 @@
   },
   "footer": {
     "guestContributionsWarning": "Iedereen met de link kan bewerken",
+    "recovering": "Verbinding onderbroken — opnieuw verbinden. Lokale wijzigingen blijven behouden.",
+    "retryNow": "Nu opnieuw proberen",
+    "unconfirmedChanges": "Lokale wijzigingen konden niet worden bevestigd. Exporteer het whiteboard voordat je afsluit.",
     "readonlyReason": {
       "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",
       "contentUpdatePolicy": "Je hebt geen rechten om dit whiteboard te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de instellingen te wijzigen als je wilt bijdragen.",

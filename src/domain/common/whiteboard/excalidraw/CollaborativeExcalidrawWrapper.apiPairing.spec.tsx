@@ -37,7 +37,16 @@ vi.mock('./collab/useCollab', () => ({
       h.initCalls.push({ apiId: opts.excalidrawApi.id, roomId: opts.roomId });
       return () => {};
     },
-    { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
+    {
+      connecting: false,
+      collaborating: true,
+      mode: 'write',
+      modeReason: null,
+      isReadOnly: false,
+      phase: 'live',
+      hasEverSynced: true,
+      hasUnconfirmedLocalChanges: false,
+    },
   ],
 }));
 

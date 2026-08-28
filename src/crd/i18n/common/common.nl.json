@@ -1478,7 +1478,8 @@
   },
   "templateLibrary": {
     "whiteboardTemplates": {
-      "errorImporting": "Fout bij het importeren van $t(common.enums.templateType.WHITEBOARD)"
+      "errorImporting": "Fout bij het importeren van $t(common.enums.templateType.WHITEBOARD)",
+      "persistenceUnconfirmed": "De sjabloon is lokaal toegepast, maar opslaan kon niet worden bevestigd. Houd het whiteboard open terwijl opnieuw wordt verbonden."
     }
   },
   "virtualContributor": "Virtual Contributor",

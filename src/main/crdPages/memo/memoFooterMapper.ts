@@ -2,15 +2,15 @@ import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/ge
 import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import type { ConnectedUser, ReadonlyReason } from '@/crd/components/memo/MemoCollabFooter';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
+import type { CollaborationPhase } from '@/domain/collaboration/realTimeCollaboration/collaborationPhase';
 import type { SessionEndCode } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
 type MemoSessionEndCode = SessionEndCode | 'terminal-connection-close';
 
 type MapMemoFooterParams = {
   connectionStatus: CollabStatus;
-  synced: boolean;
+  phase: CollaborationPhase;
   isAuthenticated: boolean;
-  isReadOnly: boolean;
   readOnlyCode?: ReadOnlyCode;
   sessionEndCode?: MemoSessionEndCode;
   memberCount: number;
@@ -43,7 +43,7 @@ type MemoFooterMappedProps = {
  *
  * Mirrors the decision tree in `src/domain/collaboration/memo/MemoDialog/MemoFooter.tsx`
  * `getReadonlyReason` — the primary reason is derived only from server/collab state
- * (connection status, sync state, authentication, server readOnly flag). Client-side
+ * (the shared collaboration phase, authentication, and server read-only reason). Client-side
  * Apollo privileges do NOT drive the reason (they only affect the editor-disabled
  * state), because the server's readOnly signal is the authoritative permission truth.
  *
@@ -52,9 +52,8 @@ type MemoFooterMappedProps = {
 export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappedProps {
   const {
     connectionStatus,
-    synced,
+    phase,
     isAuthenticated,
-    isReadOnly,
     readOnlyCode,
     sessionEndCode,
     memberCount,
@@ -76,10 +75,8 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     connectedUsers,
     isGuest: !isAuthenticated,
     readonlyReason: resolveReadonlyReason({
-      connectionStatus,
-      synced,
+      phase,
       isAuthenticated,
-      isReadOnly,
       readOnlyCode,
       sessionEndCode,
       contentUpdatePolicy,
@@ -88,7 +85,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     }),
     onDelete: canDelete ? onDelete : undefined,
     onResumeEditing:
-      ((connectionStatus === 'connected' && synced && readOnlyCode === ReadOnlyCode.INACTIVITY && isReadOnly) ||
+      ((phase === 'readOnly' && readOnlyCode === ReadOnlyCode.INACTIVITY) ||
         sessionEndCode === 'document-size-limit-exceeded') &&
       onResumeEditing
         ? onResumeEditing
@@ -97,10 +94,8 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
 }
 
 type ResolveReadonlyReasonParams = {
-  connectionStatus: CollabStatus;
-  synced: boolean;
+  phase: CollaborationPhase;
   isAuthenticated: boolean;
-  isReadOnly: boolean;
   readOnlyCode?: ReadOnlyCode;
   sessionEndCode?: MemoSessionEndCode;
   contentUpdatePolicy?: ContentUpdatePolicy;
@@ -109,10 +104,8 @@ type ResolveReadonlyReasonParams = {
 };
 
 function resolveReadonlyReason({
-  connectionStatus,
-  synced,
+  phase,
   isAuthenticated,
-  isReadOnly,
   readOnlyCode,
   sessionEndCode,
   contentUpdatePolicy,
@@ -121,10 +114,10 @@ function resolveReadonlyReason({
 }: ResolveReadonlyReasonParams): ReadonlyReason {
   if (sessionEndCode === 'document-size-limit-exceeded') return 'sizeLimitExceeded';
   if (sessionEndCode) return 'sessionEnded';
-  if (connectionStatus !== 'connected') return 'connecting';
+  if (phase === 'initial' || phase === 'replaceGeneration') return 'connecting';
+  if (phase === 'recovering') return null;
   if (!isAuthenticated) return 'unauthenticated';
-  if (!synced) return 'notSynced';
-  if (!isReadOnly) return null;
+  if (phase !== 'readOnly') return null;
   if (readOnlyCode === ReadOnlyCode.INACTIVITY) return 'inactivity';
   if (
     contentUpdatePolicy === ContentUpdatePolicy.Contributors &&

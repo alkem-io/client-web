@@ -5,14 +5,23 @@ import * as Y from 'yjs';
 // Capture every UnifiedCollabProvider instance + a global lifecycle order log so the
 // test can prove room B gets a fresh doc and provider A is torn down before B connects.
 const order: string[] = [];
-type Inst = { documentId: string; doc: Y.Doc; connected: boolean; destroyed: boolean; disconnected: boolean };
+type Inst = {
+  documentId: string;
+  doc: Y.Doc;
+  connected: boolean;
+  destroyed: boolean;
+  disconnected: boolean;
+  hasUnconfirmedLocalChanges: boolean;
+  durabilityRequests: number;
+};
 const instances: Inst[] = [];
 // The most-recent provider's listeners, so a test can inject a control frame and drive
 // the readiness (status/synced) callbacks of whichever generation is currently wired.
 let controlHandler: ((arg: unknown) => void) | undefined;
 let statusHandler: ((arg: unknown) => void) | undefined;
 let syncedHandler: ((arg: unknown) => void) | undefined;
-let closeHandler: ((arg: { disposition: 'normal' | 'terminal' | 'transient' }) => void) | undefined;
+let closeHandler: ((arg: { disposition: 'terminal' | 'transient' }) => void) | undefined;
+let unconfirmedHandler: ((arg: boolean) => void) | undefined;
 const { notifySpy, onlineState } = vi.hoisted(() => ({ notifySpy: vi.fn(), onlineState: { value: true } }));
 
 vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', () => ({
@@ -22,9 +31,12 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
     connected = false;
     destroyed = false;
     disconnected = false;
-    constructor(opts: { documentId: string; doc: Y.Doc }) {
+    hasUnconfirmedLocalChanges = false;
+    durabilityRequests = 0;
+    constructor(opts: { documentId: string; doc: Y.Doc; initialUnconfirmedLocalChanges?: boolean }) {
       this.documentId = opts.documentId;
       this.doc = opts.doc;
+      this.hasUnconfirmedLocalChanges = !!opts.initialUnconfirmedLocalChanges;
       instances.push(this as unknown as Inst);
       order.push(`construct:${opts.documentId}`);
     }
@@ -32,8 +44,8 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
       if (event === 'control') controlHandler = handler;
       else if (event === 'status') statusHandler = handler;
       else if (event === 'synced') syncedHandler = handler;
-      else if (event === 'close')
-        closeHandler = handler as (arg: { disposition: 'normal' | 'terminal' | 'transient' }) => void;
+      else if (event === 'close') closeHandler = handler as (arg: { disposition: 'terminal' | 'transient' }) => void;
+      else if (event === 'unconfirmed') unconfirmedHandler = handler as (arg: boolean) => void;
     }
     connect() {
       this.connected = true;
@@ -46,6 +58,11 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
       order.push(`disconnect:${this.documentId}`);
       syncedHandler?.(false);
       statusHandler?.('disconnected');
+    }
+    reconnectNow() {}
+    requestDurability() {
+      this.durabilityRequests += 1;
+      return Promise.resolve();
     }
     destroy() {
       this.destroyed = true;
@@ -86,6 +103,7 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     statusHandler = undefined;
     syncedHandler = undefined;
     closeHandler = undefined;
+    unconfirmedHandler = undefined;
     notifySpy.mockClear();
     onlineState.value = true;
   });
@@ -129,7 +147,8 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(result.current.status).toBe('connecting');
     expect(result.current.synced).toBe(false);
     expect(result.current.lastSaveTime).toBeUndefined();
-    expect(result.current.isReadOnly).toBeFalsy();
+    expect(result.current.phase).toBe('initial');
+    expect(result.current.isReadOnly).toBe(true);
   });
 
   it('keeps a server read-only decision across browser offline→online transitions', () => {
@@ -147,11 +166,52 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(result.current.isReadOnly).toBe(true);
   });
 
-  it('resumes an inactivity-downgraded memo with a fresh doc/provider generation', () => {
+  it('keeps the established memo and Y.Doc editable through transient recovery', () => {
+    const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    const providerA = instances[0];
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    const establishedDoc = result.current.ydoc;
+
+    act(() => {
+      syncedHandler?.(false);
+      statusHandler?.('disconnected');
+    });
+
+    expect(result.current.phase).toBe('recovering');
+    expect(result.current.isReadOnly).toBe(false);
+    expect(result.current.ydoc).toBe(establishedDoc);
+    expect(instances).toHaveLength(1);
+    expect(instances[0]).toBe(providerA);
+  });
+
+  it('requests one persisted barrier after a dirty memo resyncs with write admission', () => {
+    const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    const providerA = instances[0];
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+      providerA.hasUnconfirmedLocalChanges = true;
+      unconfirmedHandler?.(true);
+      syncedHandler?.(false);
+      statusHandler?.('disconnected');
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+
+    expect(result.current.phase).toBe('live');
+    expect(providerA.durabilityRequests).toBe(1);
+  });
+
+  it('resumes an inactivity-downgraded memo with fresh admission over the same Y.Doc', () => {
     const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
     const providerA = instances[0];
     const docA = providerA.doc;
     docA.getText('content').insert(0, 'server-accepted-content');
+    providerA.hasUnconfirmedLocalChanges = true;
+    act(() => unconfirmedHandler?.(true));
 
     act(() => controlHandler?.({ kind: 'read-only-state', readOnly: true, reason: 'inactivity' }));
     expect(result.current.isReadOnly).toBe(true);
@@ -161,7 +221,10 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
 
     expect(instances).toHaveLength(2);
     expect(providerA.destroyed).toBe(true);
-    expect(instances[1].doc).not.toBe(docA);
+    expect(instances[1].doc).toBe(docA);
+    expect(instances[1].doc.getText('content').toString()).toBe('server-accepted-content');
+    expect(instances[1].hasUnconfirmedLocalChanges).toBe(true);
+    expect(result.current.hasUnconfirmedLocalChanges).toBe(true);
     expect(order.indexOf('destroy:room-A')).toBeLessThan(order.lastIndexOf('connect:room-A'));
     expect(result.current.status).toBe('connecting');
     expect(result.current.synced).toBe(false);
@@ -267,8 +330,8 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(providerA.destroyed).toBe(true);
     expect(providerB.connected).toBe(true);
     expect(order.indexOf('destroy:room-A')).toBeLessThan(order.lastIndexOf('connect:room-A'));
-    // READINESS DROPS IMMEDIATELY (CrdMemoDialog gates edits on connected && synced) and
-    // stays down — this is the assertion that fails if setSynced(false) is omitted.
+    // READINESS DROPS IMMEDIATELY and stays down until the replacement generation
+    // syncs; CrdMemoDialog keeps only an established, non-poisoned generation mounted.
     expect(result.current.status).not.toBe('connected');
     expect(result.current.synced).toBe(false);
     // Only the FRESH provider's OWN callbacks (statusHandler/syncedHandler now point at B,

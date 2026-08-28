@@ -1,4 +1,4 @@
-import { act, render } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 /**
@@ -6,8 +6,14 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
  * moves entirely into the provider. The wrapper only renders state and manual retry.
  */
 const h = vi.hoisted(() => ({
-  collabProps: null as null | { onCloseConnection: () => void; onTerminalClose?: (reason: string) => void },
+  collabProps: null as null | {
+    onCloseConnection: () => void;
+    onSceneInitChange?: (initialized: boolean) => void;
+    onTerminalClose?: (reason: string) => void;
+  },
   noticeReasons: [] as (string | null)[],
+  noticeOpen: [] as boolean[],
+  dirty: false,
 }));
 
 // The wrapper builds <Excalidraw> via lazyWithGlobalErrorHandler; replace it with a
@@ -48,12 +54,25 @@ vi.mock('@/domain/common/whiteboard/excalidraw/useWhiteboardDefaults', () => ({ 
 // Capture the close callbacks the wrapper passes to useCollab so the test can simulate
 // a socket close directly. Report a not-yet-collaborating state (the drop condition).
 vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
-  default: (props: { onCloseConnection: () => void; onTerminalClose?: (reason: string) => void }) => {
+  default: (props: {
+    onCloseConnection: () => void;
+    onSceneInitChange?: (initialized: boolean) => void;
+    onTerminalClose?: (reason: string) => void;
+  }) => {
     h.collabProps = props;
     return [
-      null,
+      { hasUnconfirmedLocalChanges: () => h.dirty },
       () => () => {},
-      { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: true },
+      {
+        connecting: false,
+        collaborating: true,
+        mode: 'write',
+        modeReason: null,
+        isReadOnly: false,
+        phase: 'live',
+        hasEverSynced: true,
+        hasUnconfirmedLocalChanges: false,
+      },
     ];
   },
 }));
@@ -73,6 +92,7 @@ function renderWrapper() {
       actions={{}}
       renderDisconnectNotice={props => {
         h.noticeReasons.push(props.terminalCloseReason);
+        h.noticeOpen.push(props.open);
         return null;
       }}
     >
@@ -85,6 +105,8 @@ describe('CollaborativeExcalidrawWrapper — close disposition presentation', ()
   beforeEach(() => {
     h.collabProps = null;
     h.noticeReasons = [];
+    h.noticeOpen = [];
+    h.dirty = false;
   });
   afterEach(() => {
     vi.clearAllMocks();
@@ -102,13 +124,25 @@ describe('CollaborativeExcalidrawWrapper — close disposition presentation', ()
     expect(h.noticeReasons[h.noticeReasons.length - 1]).toBe('forbidden');
   });
 
-  it('a TRANSIENT close opens a reasonless reconnect notice', () => {
+  it('a dirty terminal close preserves the scene for the existing export action', () => {
+    h.dirty = true;
+    renderWrapper();
+    act(() => h.collabProps?.onSceneInitChange?.(true));
+    expect(screen.queryByText('pages.whiteboard.loadingScene')).not.toBeInTheDocument();
+
+    act(() => h.collabProps?.onTerminalClose?.('forbidden'));
+
+    expect(screen.queryByText('pages.whiteboard.loadingScene')).not.toBeInTheDocument();
+    expect(h.noticeOpen[h.noticeOpen.length - 1]).toBe(true);
+  });
+
+  it('a TRANSIENT close leaves the blocking reconnect notice closed', () => {
     renderWrapper();
 
     act(() => {
       h.collabProps?.onCloseConnection();
     });
 
-    expect(h.noticeReasons[h.noticeReasons.length - 1]).toBeNull();
+    expect(h.noticeOpen[h.noticeOpen.length - 1]).toBe(false);
   });
 });

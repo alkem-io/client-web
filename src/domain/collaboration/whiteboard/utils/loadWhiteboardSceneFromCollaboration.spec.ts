@@ -57,11 +57,12 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
   UnifiedCollabProvider: h.MockProvider,
 }));
 
-import { loadWhiteboardSceneFromCollaboration } from './loadWhiteboardSceneFromCollaboration';
+import { loadWhiteboardSceneFromCollaboration, TEMPLATE_LOAD_TIMEOUT_MS } from './loadWhiteboardSceneFromCollaboration';
 
 describe('loadWhiteboardSceneFromCollaboration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   it('loads the source through the whiteboard collaboration port and returns a plain scene', async () => {
@@ -108,5 +109,29 @@ describe('loadWhiteboardSceneFromCollaboration', () => {
     await expect(result).rejects.toThrow('Whiteboard template load cancelled');
     expect(provider.destroy).toHaveBeenCalledTimes(1);
     expect(h.scene.destroy).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not abort a source that is still progressing past the old 30-second caller timeout', async () => {
+    vi.useFakeTimers();
+    const result = loadWhiteboardSceneFromCollaboration('large-source');
+    let settled = false;
+    void result.finally(() => {
+      settled = true;
+    });
+
+    await vi.advanceTimersByTimeAsync(30_001);
+    expect(settled).toBe(false);
+    h.MockProvider.instance.emit('synced', true);
+    await expect(result).resolves.toMatchObject({ elements: [{ id: 'template-element' }] });
+  });
+
+  it('retains a last-resort caller deadline beyond two liveness cycles', async () => {
+    vi.useFakeTimers();
+    const result = loadWhiteboardSceneFromCollaboration('stalled-source');
+    const rejection = expect(result).rejects.toThrow('Timed out loading whiteboard template');
+
+    await vi.advanceTimersByTimeAsync(TEMPLATE_LOAD_TIMEOUT_MS);
+    await rejection;
+    expect(h.MockProvider.instance.destroy).toHaveBeenCalledTimes(1);
   });
 });

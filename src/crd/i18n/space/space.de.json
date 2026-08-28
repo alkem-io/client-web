@@ -694,6 +694,10 @@
       "guestWarning": "Du bearbeitest als Gast",
       "delete": "Notiz löschen",
       "resumeEditing": "Bearbeitung fortsetzen",
+      "recovering": "Verbindung unterbrochen — Verbindung wird wiederhergestellt. Lokale Änderungen bleiben erhalten.",
+      "retryNow": "Jetzt erneut versuchen",
+      "unconfirmedChanges": "Lokale Änderungen konnten nicht bestätigt werden. Kopiere sie vor dem Verlassen.",
+      "copyChanges": "Änderungen kopieren",
       "readonlyReason": {
         "connecting": "Verbindung zum Zusammenarbeitsdienst wird hergestellt…",
         "notSynced": "Synchronisierung…",

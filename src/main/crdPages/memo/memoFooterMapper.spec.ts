@@ -4,9 +4,8 @@ import { mapMemoFooterProps } from '@/main/crdPages/memo/memoFooterMapper';
 
 const base = {
   connectionStatus: 'connected' as const,
-  synced: true,
+  phase: 'readOnly' as const,
   isAuthenticated: true,
-  isReadOnly: true,
   memberCount: 1,
   connectedUsers: [],
   isContribution: false,
@@ -38,11 +37,12 @@ describe('mapMemoFooterProps inactivity recovery', () => {
     const result = mapMemoFooterProps({
       ...base,
       connectionStatus: 'disconnected',
+      phase: 'recovering',
       readOnlyCode: ReadOnlyCode.INACTIVITY,
       onResumeEditing: vi.fn(),
     });
 
-    expect(result.readonlyReason).toBe('connecting');
+    expect(result.readonlyReason).toBeNull();
     expect(result.onResumeEditing).toBeUndefined();
   });
 
@@ -51,7 +51,7 @@ describe('mapMemoFooterProps inactivity recovery', () => {
     const terminal = mapMemoFooterProps({
       ...base,
       connectionStatus: 'disconnected',
-      synced: false,
+      phase: 'terminal',
       sessionEndCode: 'document-deleted',
       onResumeEditing,
     });
@@ -61,7 +61,7 @@ describe('mapMemoFooterProps inactivity recovery', () => {
     const manual = mapMemoFooterProps({
       ...base,
       connectionStatus: 'disconnected',
-      synced: false,
+      phase: 'replaceGeneration',
       sessionEndCode: 'document-size-limit-exceeded',
       onResumeEditing,
     });

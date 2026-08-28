@@ -101,8 +101,6 @@ export type DisconnectNoticeRenderProps = {
    * fresh editor generation after the rejected local generation is discarded.
    */
   terminalCloseReason: string | null;
-  /** A reconnect attempt has failed (not just a transient drop) — surface an immediate reload escape hatch. */
-  hasError: boolean;
   /** Kept for the presentational notice; provider retries do not expose a second countdown. */
   autoReconnectSeconds: number | null;
   lastSuccessfulSavedDate: Date | undefined;
@@ -169,39 +167,12 @@ const CollaborativeExcalidrawWrapper = ({
   // user reconnect or once collaboration is re-established.
   const [terminalCloseReason, setTerminalCloseReason] = useState<string | null>(null);
 
-  // True once a reconnect attempt has actually failed (`connect_error`), as opposed to a transient
-  // drop. This lets the notice surface the "Reload page" escape hatch immediately.
-  const [connectionError, setConnectionError] = useState(false);
-
   const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
   const previousWhiteboardIdRef = useRef(whiteboard?.id);
 
   const whiteboardDefaults = useWhiteboardDefaults();
   const { t } = useTranslation();
   const notify = useNotification();
-
-  /**
-   * Validate a dropped/pasted image, then return a content-hash id for it. The
-   * editor holds the bytes in its own file store and publishes them through
-   * `assetAdapter.store`; a rejected file surfaces a user-visible notification.
-   */
-  const handleGenerateIdForFile = async (file: File): Promise<string> => {
-    const validation = validateWhiteboardImageFile(file, {
-      allowedMimeTypes: imageValidation?.allowedMimeTypes,
-      maxFileSizeBytes: imageValidation?.maxFileSize,
-    });
-    if (!validation.ok) {
-      const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
-      const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
-      const message: string =
-        validation.reason === 'unsupportedMimeType'
-          ? t('callout.whiteboard.images.unsupportedType', params)
-          : t('callout.whiteboard.images.tooLarge', params);
-      notify(message, 'error');
-      throw new Error(message);
-    }
-    return generateIdFromFile(file);
-  };
 
   const combinedCollabApiRef = useCombinedRefs<CollabAPI | null>(null, collabApiRef);
 
@@ -254,16 +225,16 @@ const CollaborativeExcalidrawWrapper = ({
 
   const mergedUIOptions = merge(UIOptions, externalUIOptions);
 
-  const [collabApi, initializeCollab, { connecting, collaborating, mode, modeReason, isReadOnly }] = useCollab({
+  const [
+    collabApi,
+    initializeCollab,
+    { connecting, collaborating, mode, modeReason, isReadOnly, phase, hasEverSynced, hasUnconfirmedLocalChanges },
+  ] = useCollab({
     username,
     onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
-    onCloseConnection: (hasError: boolean) => {
-      setCollaborationStoppedNoticeOpen(true);
-      setSceneInitialized(false);
-      setConnectionError(hasError);
-      // The provider owns retry; this callback only surfaces connection state.
-      // event if it's duplicated by the httpLink and Portal handlers, let's log this closeConnection one
-      // with additional info here #7492
+    onCloseConnection: () => {
+      // Established documents remain mounted while the provider's single retry
+      // owner reconnects this same scene. Terminal/manual outcomes use the modal.
       logError('WB Connection Closed', {
         category: TagCategoryValues.WHITEBOARD,
         label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Online: ${isOnline}`,
@@ -302,7 +273,10 @@ const CollaborativeExcalidrawWrapper = ({
       // not coming back on its own.
       setTerminalCloseReason(reason);
       setCollaborationStoppedNoticeOpen(true);
-      setSceneInitialized(false);
+      // A terminal refusal freezes editing, but a dirty scene must stay visible so
+      // the existing Excalidraw export action remains usable. Clean terminal closes
+      // keep the established unavailable/loading presentation.
+      if (!combinedCollabApiRef.current?.hasUnconfirmedLocalChanges?.()) setSceneInitialized(false);
       logError('WB Connection Closed (terminal policy close)', {
         category: TagCategoryValues.WHITEBOARD,
         label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Reason: ${reason}`,
@@ -312,11 +286,9 @@ const CollaborativeExcalidrawWrapper = ({
       // A code-specific, translated explanation for the user (edits-not-saved reads as a
       // data-loss warning, distinct from an ordinary deletion).
       notify(t(SESSION_END_MESSAGE_KEYS[code]), disposition === 'transient' ? 'info' : 'warning');
-      setSceneInitialized(false);
       if (disposition === 'transient') {
-        // The provider remains the only retry owner; the notice merely reports
-        // the disconnected state and offers an immediate provider retry.
-        setCollaborationStoppedNoticeOpen(true);
+        // The provider owns retry. Established scenes surface recovery in the
+        // footer without blocking or replacing the editor.
         return;
       }
       if (disposition === 'manual') {
@@ -325,6 +297,7 @@ const CollaborativeExcalidrawWrapper = ({
         // replacement editor mounts. Keep collaboration init and provider reconnect OFF
         // (collaborationStartTime=null disables init; a 1008 close never reconnects the provider) until the user
         // explicitly restarts — which mints a FRESH generation first (see restartCollaboration).
+        setSceneInitialized(false);
         setExcalidrawApi(null);
         setCollaborationStartTime(null);
         setTerminalCloseReason(code);
@@ -336,6 +309,7 @@ const CollaborativeExcalidrawWrapper = ({
       // terminal (document-deleted / edits-not-saved): no reconnect; surface the notice.
       setTerminalCloseReason(code);
       setCollaborationStoppedNoticeOpen(true);
+      if (!combinedCollabApiRef.current?.hasUnconfirmedLocalChanges?.()) setSceneInitialized(false);
     },
   });
 
@@ -355,6 +329,34 @@ const CollaborativeExcalidrawWrapper = ({
   };
 
   const isOnline = useOnlineStatus();
+
+  /**
+   * Validate a dropped/pasted image, then return a content-hash id for it. Text
+   * and shapes can recover through Yjs while disconnected; image bytes cannot,
+   * so insertion is refused at the source during transient recovery.
+   */
+  const handleGenerateIdForFile = async (file: File): Promise<string> => {
+    if (phase === 'recovering') {
+      const message = t('callout.whiteboard.images.uploadFailed');
+      notify(message, 'warning');
+      throw new Error(message);
+    }
+    const validation = validateWhiteboardImageFile(file, {
+      allowedMimeTypes: imageValidation?.allowedMimeTypes,
+      maxFileSizeBytes: imageValidation?.maxFileSize,
+    });
+    if (!validation.ok) {
+      const maxSizeFallback = t('callout.whiteboard.images.maxSizeFallback');
+      const params = getWhiteboardImageUploadI18nParams(validation, maxSizeFallback);
+      const message: string =
+        validation.reason === 'unsupportedMimeType'
+          ? t('callout.whiteboard.images.unsupportedType', params)
+          : t('callout.whiteboard.images.tooLarge', params);
+      notify(message, 'error');
+      throw new Error(message);
+    }
+    return generateIdFromFile(file);
+  };
 
   const restartCollaboration = () => {
     if (manualDiscardPending) {
@@ -381,14 +383,13 @@ const CollaborativeExcalidrawWrapper = ({
   };
 
   useEffect(() => {
-    if (!connecting && collaborating) {
+    if (phase === 'live') {
       setCollaborationStoppedNoticeOpen(false);
       // Collaboration is live again — drop any terminal verdict so a later drop is
       // classified fresh.
       setTerminalCloseReason(null);
-      setConnectionError(false);
     }
-  }, [connecting, collaborating]);
+  }, [phase]);
 
   useEffect(() => {
     // Only initialize when the live api actually belongs to THIS whiteboard — never the
@@ -426,7 +427,7 @@ const CollaborativeExcalidrawWrapper = ({
   const children = (
     <div style={{ height: '100%', flexGrow: 1, position: 'relative' }}>
       <Suspense fallback={<Loading />}>
-        <LoadingScene enabled={!isSceneInitialized} />
+        <LoadingScene enabled={phase === 'initial' || !isSceneInitialized} />
         {whiteboard && (
           <Excalidraw
             // Keyed by whiteboard id AND recovery generation: a new whiteboard OR an
@@ -460,16 +461,19 @@ const CollaborativeExcalidrawWrapper = ({
         connecting,
         mode,
         modeReason,
+        phase,
+        hasEverSynced,
+        hasUnconfirmedLocalChanges,
         restartCollaboration,
-        canReconnect:
-          isOnline &&
-          (manualDiscardPending || (!!collabApi && !connecting && !collaborating && terminalCloseReason === null)),
+        // Ordinary transport recovery has its own non-blocking Retry-now action.
+        // This legacy/manual affordance is reserved for the discarded size-limit
+        // generation; inactivity is derived independently from modeReason.
+        canReconnect: isOnline && manualDiscardPending,
         isReadOnly,
       })}
       {renderDisconnectNotice({
         open: collaborationStoppedNoticeOpen,
         isOnline,
-        hasError: connectionError,
         connecting,
         terminalCloseReason,
         autoReconnectSeconds: null,

@@ -17,20 +17,32 @@ let controlHandler: ((message: ControlMessage) => void) | undefined;
 let closeHandler: ((verdict: CloseVerdict) => void) | undefined;
 let syncedHandler: ((synced: boolean) => void) | undefined;
 let statusHandler: ((status: string) => void) | undefined;
+let unconfirmedHandler: ((unconfirmed: boolean) => void) | undefined;
+let providerInitialUnconfirmed: boolean[] = [];
+let durabilityRequests: ReturnType<typeof vi.fn>[] = [];
 vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', async importOriginal => {
   const actual =
     await importOriginal<typeof import('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider')>();
   class MockProvider {
     awareness = { setLocalStateField: vi.fn(), on: vi.fn(), off: vi.fn(), destroy: vi.fn() };
     ephemeralChannel = { send: vi.fn(), subscribe: vi.fn(() => () => {}) };
+    hasUnconfirmedLocalChanges: boolean;
+    requestDurability = vi.fn(() => Promise.resolve());
+    constructor(options: { initialUnconfirmedLocalChanges?: boolean }) {
+      this.hasUnconfirmedLocalChanges = !!options.initialUnconfirmedLocalChanges;
+      providerInitialUnconfirmed.push(this.hasUnconfirmedLocalChanges);
+      durabilityRequests.push(this.requestDurability);
+    }
     on(event: string, handler: (arg: never) => void) {
       if (event === 'control') controlHandler = handler as (m: ControlMessage) => void;
       else if (event === 'close') closeHandler = handler as (v: CloseVerdict) => void;
       else if (event === 'synced') syncedHandler = handler as (s: boolean) => void;
       else if (event === 'status') statusHandler = handler as (s: string) => void;
+      else if (event === 'unconfirmed') unconfirmedHandler = handler as (value: boolean) => void;
     }
     off() {}
     connect() {}
+    reconnectNow() {}
     destroy() {}
   }
   return { ...actual, UnifiedCollabProvider: MockProvider };
@@ -42,6 +54,9 @@ describe('useCollab — update-rejected recovery routing', () => {
   afterEach(() => {
     controlHandler = undefined;
     closeHandler = undefined;
+    unconfirmedHandler = undefined;
+    providerInitialUnconfirmed = [];
+    durabilityRequests = [];
     vi.clearAllMocks();
   });
 
@@ -120,18 +135,49 @@ describe('useCollab — reason-aware close routing', () => {
     cleanup();
   });
 
-  it('a NORMAL (clean 1000) close calls NEITHER callback — no reconnect notice, no terminal state', () => {
+  it('keeps an established whiteboard editable while the same scene recovers', () => {
     const onCloseConnection = vi.fn();
-    const onTerminalClose = vi.fn();
-    const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection, onTerminalClose }));
+    const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection }));
     const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(result.current[2].phase).toBe('live');
 
-    closeHandler?.({ code: 1000, reason: '', disposition: 'normal' });
+    act(() => {
+      syncedHandler?.(false);
+      statusHandler?.('disconnected');
+      closeHandler?.({ code: 1006, reason: '', disposition: 'transient' });
+    });
 
-    // A clean close must neither open the retry notice nor surface a terminal state.
-    expect(onCloseConnection).not.toHaveBeenCalled();
-    expect(onTerminalClose).not.toHaveBeenCalled();
+    expect(result.current[2].phase).toBe('recovering');
+    expect(result.current[2].isReadOnly).toBe(false);
+    expect(onCloseConnection).toHaveBeenCalledTimes(1);
     cleanup();
+  });
+
+  it('resumes inactivity with a fresh admission over the same dirty scene and confirms it after sync', () => {
+    providerInitialUnconfirmed = [];
+    durabilityRequests = [];
+    const { result } = renderHook(() => useCollab({ username: 'Tester', onCloseConnection: () => {} }));
+    const firstCleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+      unconfirmedHandler?.(true);
+    });
+
+    act(() => firstCleanup());
+    const secondCleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'room-1' });
+    expect(providerInitialUnconfirmed).toEqual([false, true]);
+
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+    });
+    expect(durabilityRequests[1]).toHaveBeenCalledOnce();
+    secondCleanup();
   });
 });
 
@@ -292,7 +338,7 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
     return { onSessionEnd, onTerminalClose, onCloseConnection, onSceneInitChange, cleanup };
   };
 
-  it('seals scene consumers immediately when session-end arrives, before the socket closes', () => {
+  it('keeps an established scene mounted when a transient session-end starts recovery', () => {
     const { onSessionEnd, onSceneInitChange, cleanup } = mount();
     controlHandler?.({
       kind: 'session-end',
@@ -301,8 +347,12 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
       disposition: 'transient',
     } as ControlMessage);
 
-    expect(onSceneInitChange).toHaveBeenLastCalledWith(false);
-    expect(onSceneInitChange.mock.invocationCallOrder[0]).toBeLessThan(onSessionEnd.mock.invocationCallOrder[0] ?? 0);
+    expect(onSessionEnd).toHaveBeenCalledWith({
+      code: 'server-shutdown',
+      scope: 'document',
+      disposition: 'transient',
+    });
+    expect(onSceneInitChange).not.toHaveBeenCalledWith(false);
     cleanup();
   });
 

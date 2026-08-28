@@ -6,12 +6,18 @@ import CollaborativeExcalidrawWrapper from './CollaborativeExcalidrawWrapper';
 /**
  * COMPOSITION test: the real `useCollab` routing wired into the wrapper. The
  * Here the provider is mocked only to inject a socket-close verdict; `useCollab`
- * and the wrapper are real. A clean (normal 1000) close reaches neither wrapper
- * callback, so the reconnect notice stays closed; a transient drop opens it.
+ * and the wrapper are real. Established transient recovery stays non-blocking,
+ * so a remote drop never opens the terminal/manual modal. Intentional local
+ * closes are pinned at the provider boundary, where the close listener is
+ * detached before close(1000).
  */
 const h = vi.hoisted(() => ({
   closeHandler: { value: undefined as ((v: CloseVerdict) => void) | undefined },
+  statusHandler: { value: undefined as ((status: string) => void) | undefined },
+  syncedHandler: { value: undefined as ((synced: boolean) => void) | undefined },
   noticeOpen: [] as boolean[],
+  viewModeEnabled: [] as (boolean | undefined)[],
+  generateIdForFile: { value: undefined as ((file: File) => Promise<string>) | undefined },
 }));
 
 // Mock the provider so the wrapper's real useCollab still subscribes to a `close`
@@ -22,8 +28,11 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', as
   class MockProvider {
     awareness = { setLocalStateField: vi.fn(), on: vi.fn(), off: vi.fn(), destroy: vi.fn() };
     ephemeralChannel = { send: vi.fn(), subscribe: vi.fn(() => () => {}) };
-    on(event: string, handler: (v: CloseVerdict) => void) {
-      if (event === 'close') h.closeHandler.value = handler;
+    hasUnconfirmedLocalChanges = false;
+    on(event: string, handler: (value: never) => void) {
+      if (event === 'close') h.closeHandler.value = handler as (value: CloseVerdict) => void;
+      else if (event === 'status') h.statusHandler.value = handler as (status: string) => void;
+      else if (event === 'synced') h.syncedHandler.value = handler as (synced: boolean) => void;
     }
     off() {}
     connect() {}
@@ -42,12 +51,20 @@ vi.mock('./collab/awarenessRouter', () => ({
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', async () => {
   const React = await import('react');
   return {
-    lazyWithGlobalErrorHandler: () => (props: { onExcalidrawAPI?: (api: unknown) => void }) => {
-      React.useEffect(() => {
-        props.onExcalidrawAPI?.({ id: 'api-1' });
-      }, []);
-      return null;
-    },
+    lazyWithGlobalErrorHandler:
+      () =>
+      (props: {
+        onExcalidrawAPI?: (api: unknown) => void;
+        viewModeEnabled?: boolean;
+        generateIdForFile?: (file: File) => Promise<string>;
+      }) => {
+        React.useEffect(() => {
+          props.onExcalidrawAPI?.({ id: 'api-1', getSceneElements: () => [] });
+        }, []);
+        h.viewModeEnabled.push(props.viewModeEnabled);
+        h.generateIdForFile.value = props.generateIdForFile;
+        return null;
+      },
   };
 });
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
@@ -79,28 +96,34 @@ const latestNoticeOpen = () => h.noticeOpen[h.noticeOpen.length - 1];
 describe('CollaborativeExcalidrawWrapper — close disposition controls the reconnect notice', () => {
   beforeEach(() => {
     h.closeHandler.value = undefined;
+    h.statusHandler.value = undefined;
+    h.syncedHandler.value = undefined;
     h.noticeOpen.length = 0;
+    h.viewModeEnabled.length = 0;
+    h.generateIdForFile.value = undefined;
   });
   afterEach(() => vi.clearAllMocks());
 
-  it('a NORMAL (clean 1000) close leaves the reconnect notice closed', () => {
+  it('a TRANSIENT close keeps the editor active, the blocking notice closed, and rejects new image bytes', async () => {
     renderWrapper();
-    expect(typeof h.closeHandler.value).toBe('function'); // real useCollab subscribed
 
     act(() => {
-      h.closeHandler.value?.({ code: 1000, reason: '', disposition: 'normal' });
+      h.statusHandler.value?.('connected');
+      h.syncedHandler.value?.(true);
     });
-
-    expect(latestNoticeOpen()).toBe(false);
-  });
-
-  it('a TRANSIENT close opens the reconnect notice while the provider owns retry', () => {
-    renderWrapper();
+    expect(h.viewModeEnabled.at(-1)).not.toBe(true);
 
     act(() => {
+      h.syncedHandler.value?.(false);
+      h.statusHandler.value?.('disconnected');
       h.closeHandler.value?.({ code: 1011, reason: '', disposition: 'transient' });
     });
 
-    expect(latestNoticeOpen()).toBe(true);
+    expect(latestNoticeOpen()).toBe(false);
+    expect(h.viewModeEnabled.at(-1)).not.toBe(true);
+    expect(h.generateIdForFile.value).toBeTypeOf('function');
+    await expect(
+      h.generateIdForFile.value?.(new File(['image'], 'offline.png', { type: 'image/png' })) as Promise<string>
+    ).rejects.toThrow('callout.whiteboard.images.uploadFailed');
   });
 });

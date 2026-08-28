@@ -694,6 +694,10 @@
       "guestWarning": "You are editing as a guest",
       "delete": "Delete memo",
       "resumeEditing": "Resume editing",
+      "recovering": "Connection interrupted — reconnecting. Your local changes are kept.",
+      "retryNow": "Retry now",
+      "unconfirmedChanges": "Local changes could not be confirmed. Copy them before leaving.",
+      "copyChanges": "Copy changes",
       "readonlyReason": {
         "connecting": "Connecting to the collaboration service…",
         "notSynced": "Synchronising…",

@@ -1,4 +1,4 @@
-import { Globe, RotateCcw, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
+import { Copy, Globe, RotateCcw, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
@@ -40,6 +40,10 @@ type MemoCollabFooterProps = {
   onDelete?: () => void;
   /** Explicitly rejoin after a server inactivity downgrade; never used for transport recovery. */
   onResumeEditing?: () => void;
+  recovering?: boolean;
+  hasUnconfirmedChanges?: boolean;
+  onRetry?: () => void;
+  onCopy?: () => void;
   className?: string;
 };
 
@@ -56,6 +60,10 @@ export function MemoCollabFooter({
   owner,
   onDelete,
   onResumeEditing,
+  recovering,
+  hasUnconfirmedChanges,
+  onRetry,
+  onCopy,
   className,
 }: MemoCollabFooterProps) {
   const { t } = useTranslation('crd-space');
@@ -161,6 +169,24 @@ export function MemoCollabFooter({
           <Button variant="outline" size="sm" onClick={onResumeEditing}>
             <RotateCcw className="size-3 mr-1" aria-hidden="true" />
             {t('memo.footer.resumeEditing')}
+          </Button>
+        )}
+        {recovering && <output className="text-caption text-muted-foreground">{t('memo.footer.recovering')}</output>}
+        {recovering && onRetry && (
+          <Button variant="outline" size="sm" onClick={onRetry}>
+            <RotateCcw className="size-3 mr-1" aria-hidden="true" />
+            {t('memo.footer.retryNow')}
+          </Button>
+        )}
+        {hasUnconfirmedChanges && !recovering && (
+          <span className="text-caption text-destructive" role="alert">
+            {t('memo.footer.unconfirmedChanges')}
+          </span>
+        )}
+        {hasUnconfirmedChanges && !recovering && onCopy && (
+          <Button variant="outline" size="sm" onClick={onCopy}>
+            <Copy className="size-3 mr-1" aria-hidden="true" />
+            {t('memo.footer.copyChanges')}
           </Button>
         )}
       </div>

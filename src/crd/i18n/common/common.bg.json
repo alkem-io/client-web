@@ -1478,7 +1478,8 @@
   },
   "templateLibrary": {
     "whiteboardTemplates": {
-      "errorImporting": "Грешка при импортиране на $t(common.enums.templateType.WHITEBOARD)"
+      "errorImporting": "Грешка при импортиране на $t(common.enums.templateType.WHITEBOARD)",
+      "persistenceUnconfirmed": "Шаблонът е приложен локално, но запазването не е потвърдено. Оставете бялата дъска отворена, докато се свърже отново."
     }
   },
   "virtualContributor": "Virtual Contributor",

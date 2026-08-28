@@ -55,11 +55,14 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     ydoc,
     provider,
     connectionStatus,
-    synced,
+    phase,
+    hasEverSynced,
+    hasUnconfirmedLocalChanges,
     isReadOnly,
     readOnlyCode,
     sessionEndCode,
     resumeEditing,
+    retryNow,
     memberCount,
     connectedUsers,
     user,
@@ -157,9 +160,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const footerProps = mapMemoFooterProps({
     connectionStatus,
-    synced,
+    phase,
     isAuthenticated,
-    isReadOnly,
     readOnlyCode,
     sessionEndCode,
     memberCount,
@@ -173,11 +175,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     myMembershipStatus,
   });
 
-  // The connection-loading overlay below blocks interaction until the provider
-  // is `connected` AND the initial sync packet has arrived. By the time the
-  // overlay disappears, the editor is built with the final disabled state
-  // (permission-driven only), so it does not need to rebuild mid-session.
-  const isConnectionReady = connectionStatus === 'connected' && synced;
+  // Initial load waits for the first sync. Once established, the same editor and
+  // Y.Doc remain mounted through transient recovery; permissions, terminal
+  // verdicts, and poisoned-generation replacement are the only edit locks.
   const editorDisabled = isReadOnly || !hasContributePrivileges;
   const sessionEndMessage = sessionEndCode
     ? t(
@@ -203,6 +203,11 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const showLoadingState = loading || !memo || !ydoc || !provider;
 
+  const handleCopyUnconfirmed = () => {
+    const text = editorRef.current?.getText();
+    if (text) void navigator.clipboard?.writeText(text);
+  };
+
   const headerActions = (
     <>
       {/* Share dropdown. For users who can update the memo, it also hosts the content-update-policy
@@ -227,6 +232,10 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         footer={
           <MemoCollabFooter
             {...footerProps}
+            recovering={phase === 'recovering'}
+            hasUnconfirmedChanges={hasUnconfirmedLocalChanges && (phase === 'readOnly' || phase === 'terminal')}
+            onRetry={retryNow}
+            onCopy={handleCopyUnconfirmed}
             owner={
               memo?.createdBy?.profile
                 ? { name: memo.createdBy.profile.displayName, url: memo.createdBy.profile.url }
@@ -239,9 +248,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           <Loading text={t('memo.errors.loading')} />
         ) : (
           <div className="h-full p-3 relative">
-            {/* The collaborative editor is only mounted once the unified collab
-                provider is fully connected and the initial Yjs sync has
-                completed. Mounting earlier produces an editor instance that
+            {/* The collaborative editor is mounted once the unified collab
+                provider completes its first Yjs sync, then stays mounted through
+                transient recovery. Mounting before that first sync produces an editor instance that
                 attaches to an empty/partial ydoc, which Tiptap then has to
                 rebuild on the next render — and the rebuild race is what
                 made just-created memos appear stuck on the first 1–3 opens
@@ -249,11 +258,11 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 the editor's first render is its final render, with
                 `disabled` driven purely by permissions. Mirrors the MUI
                 memo dialog's "Connecting to collaboration service…" overlay. */}
-            {sessionEndMessage ? (
+            {sessionEndMessage && !hasUnconfirmedLocalChanges ? (
               <div className="h-full flex items-center justify-center text-muted-foreground">
                 <p>{sessionEndMessage}</p>
               </div>
-            ) : isConnectionReady ? (
+            ) : hasEverSynced ? (
               <CollaborativeMarkdownEditor
                 ydoc={ydoc as unknown as YDocLike}
                 provider={provider as unknown as CollabProviderLike}

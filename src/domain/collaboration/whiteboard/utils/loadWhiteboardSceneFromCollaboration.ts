@@ -4,7 +4,10 @@ import {
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
-const LOAD_TIMEOUT_MS = 30_000;
+// A caller-owned last-resort cap, deliberately longer than two complete
+// probe+grace liveness cycles. Progressing sync is governed by provider inbound
+// liveness and is never killed at the old fixed 15/30-second boundary.
+export const TEMPLATE_LOAD_TIMEOUT_MS = 120_000;
 
 /** Load a whiteboard through the collaboration transport without exposing its Yjs update through GraphQL. */
 export const loadWhiteboardSceneFromCollaboration = (
@@ -53,7 +56,7 @@ export const loadWhiteboardSceneFromCollaboration = (
     };
 
     const handleClose = (verdict: CloseVerdict) => {
-      if (verdict.disposition === 'terminal' || verdict.disposition === 'normal') {
+      if (verdict.disposition === 'terminal') {
         finish({ error: new Error(`Unable to load whiteboard template: ${verdict.reason || verdict.code}`) });
       }
     };
@@ -62,7 +65,10 @@ export const loadWhiteboardSceneFromCollaboration = (
       finish({ error: new Error('Whiteboard template load cancelled') });
     };
 
-    timeout = setTimeout(() => finish({ error: new Error('Timed out loading whiteboard template') }), LOAD_TIMEOUT_MS);
+    timeout = setTimeout(
+      () => finish({ error: new Error('Timed out loading whiteboard template') }),
+      TEMPLATE_LOAD_TIMEOUT_MS
+    );
     provider.on('synced', handleSynced);
     provider.on('close', handleClose);
     options.signal?.addEventListener('abort', handleAbort, { once: true });

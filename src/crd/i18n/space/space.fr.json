@@ -694,6 +694,10 @@
       "guestWarning": "Vous éditez en tant qu'invité",
       "delete": "Supprimer le mémo",
       "resumeEditing": "Reprendre la modification",
+      "recovering": "Connexion interrompue — reconnexion en cours. Vos modifications locales sont conservées.",
+      "retryNow": "Réessayer maintenant",
+      "unconfirmedChanges": "Les modifications locales n’ont pas pu être confirmées. Copiez-les avant de quitter.",
+      "copyChanges": "Copier les modifications",
       "readonlyReason": {
         "connecting": "Connexion au service de collaboration…",
         "notSynced": "Synchronisation…",

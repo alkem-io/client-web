@@ -10,6 +10,7 @@ import CollaborativeExcalidrawWrapper from './CollaborativeExcalidrawWrapper';
  */
 const h = vi.hoisted(() => ({
   onSessionEnd: { value: undefined as ((info: SessionEndInfo) => void) | undefined },
+  onSceneInitChange: { value: undefined as ((initialized: boolean) => void) | undefined },
   onReconnect: { value: undefined as (() => void) | undefined },
   notifications: [] as string[],
   mountCount: { value: 0 },
@@ -20,6 +21,7 @@ const h = vi.hoisted(() => ({
   initializeCount: { value: 0 },
   cleanupCount: { value: 0 },
   footerCanReconnect: { value: false },
+  sceneInitEvents: [] as boolean[],
   collabState: {
     connecting: false,
     collaborating: false,
@@ -30,8 +32,12 @@ const h = vi.hoisted(() => ({
 }));
 
 vi.mock('./collab/useCollab', () => ({
-  default: (opts: { onSessionEnd?: (info: SessionEndInfo) => void }) => {
+  default: (opts: {
+    onSessionEnd?: (info: SessionEndInfo) => void;
+    onSceneInitChange?: (initialized: boolean) => void;
+  }) => {
     h.onSessionEnd.value = opts.onSessionEnd;
+    h.onSceneInitChange.value = opts.onSceneInitChange;
     return [
       { reconnect: h.reconnect },
       () => {
@@ -82,6 +88,7 @@ const wrapper = (whiteboardId = 'wb-1') => (
         h.publishedApi.value = null;
         h.apiEvents.push('invalidate');
       },
+      onSceneInitChange: initialized => h.sceneInitEvents.push(initialized),
     }}
     renderDisconnectNotice={props => {
       h.onReconnect.value = props.onReconnect;
@@ -102,6 +109,7 @@ const send = (info: SessionEndInfo) => act(() => h.onSessionEnd.value?.(info));
 describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
   beforeEach(() => {
     h.onSessionEnd.value = undefined;
+    h.onSceneInitChange.value = undefined;
     h.onReconnect.value = undefined;
     h.notifications.length = 0;
     h.mountCount.value = 0;
@@ -112,6 +120,7 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     h.initializeCount.value = 0;
     h.cleanupCount.value = 0;
     h.footerCanReconnect.value = false;
+    h.sceneInitEvents.length = 0;
     h.collabState.connecting = false;
     h.collabState.collaborating = false;
     h.collabState.mode = null;
@@ -122,9 +131,11 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
 
   it('transient: informational only — no discard, no retry-notice arming (no second reconnect trigger)', () => {
     renderWrapper();
+    act(() => h.onSceneInitChange.value?.(true));
     send({ code: 'update-rate-exceeded', scope: 'member', disposition: 'transient' });
     expect(h.editorInvalidatedCount.value).toBe(0); // nothing discarded
     expect(h.notifications).toContain('callout.whiteboard.session.rateExceeded');
+    expect(h.sceneInitEvents).toEqual([true]);
   });
 
   it('transient update-not-accepted: reconnect notice only — no discard, no retry-notice arming', () => {

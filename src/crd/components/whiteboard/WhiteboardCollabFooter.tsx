@@ -1,4 +1,4 @@
-import { Globe, RotateCcw, Trash2 } from 'lucide-react';
+import { Globe, RotateCcw, Trash2, WifiOff } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -11,6 +11,8 @@ type WhiteboardCollabFooterProps = {
   readonlyMessage?: ReactNode;
   canRestart?: boolean;
   onRestart?: () => void;
+  recovering?: boolean;
+  hasUnconfirmedChanges?: boolean;
   guestWarningVisible?: boolean;
   guestAccessBadge?: ReactNode;
   className?: string;
@@ -23,6 +25,8 @@ export function WhiteboardCollabFooter({
   readonlyMessage,
   canRestart,
   onRestart,
+  recovering,
+  hasUnconfirmedChanges,
   guestWarningVisible,
   guestAccessBadge,
   className,
@@ -53,6 +57,23 @@ export function WhiteboardCollabFooter({
             <RotateCcw className="size-3 mr-1" aria-hidden="true" />
             {t('editor.restart')}
           </Button>
+        )}
+        {recovering && (
+          <output className="flex items-center gap-1 text-caption text-muted-foreground">
+            <WifiOff className="size-3.5" aria-hidden="true" />
+            {t('footer.recovering')}
+          </output>
+        )}
+        {recovering && onRestart && (
+          <Button variant="outline" size="sm" onClick={onRestart}>
+            <RotateCcw className="size-3 mr-1" aria-hidden="true" />
+            {t('footer.retryNow')}
+          </Button>
+        )}
+        {hasUnconfirmedChanges && !recovering && (
+          <span className="text-caption text-destructive" role="alert">
+            {t('footer.unconfirmedChanges')}
+          </span>
         )}
       </div>
 

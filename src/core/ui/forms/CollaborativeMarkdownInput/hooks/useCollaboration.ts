@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
-import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
+import { deriveCollaborationPhase } from '@/domain/collaboration/realTimeCollaboration/collaborationPhase';
 import {
   type CollaborationStatus,
   isCollaborationStatus,
@@ -38,7 +38,6 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const { userId, userName, cursorColor } = useUserCursor();
   const notify = useNotification();
   const { t } = useTranslation();
-  const isOnline = useOnlineStatus();
 
   const [status, setStatus] = useState<CollaborationStatus>(MemoStatus.CONNECTING);
   const [synced, setSynced] = useState(false);
@@ -51,6 +50,9 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     readOnlyCode?: ReadOnlyCode;
   }>();
   const [sessionEndCode, setSessionEndCode] = useState<SessionEndCode | 'terminal-connection-close'>();
+  const [hasEverSynced, setHasEverSynced] = useState(false);
+  const [hasUnconfirmedLocalChanges, setHasUnconfirmedLocalChanges] = useState(false);
+  const [replaceGeneration, setReplaceGeneration] = useState(false);
 
   // Bumped when the server REJECTS a memo update (`update-rejected`). A rejected
   // generation must be DISCARDED, not kept locally: the server refused it, so every
@@ -59,7 +61,11 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   // the editor rebinds via its `[ydoc, provider]` deps and the fresh provider resyncs the
   // server-canonical state — never reusing the refused doc. Mirrors the whiteboard's
   // discard-generation-and-resync recovery.
-  const [recoveryGeneration, setRecoveryGeneration] = useState(0);
+  const [documentGeneration, setDocumentGeneration] = useState(0);
+  // A fresh admission uses a new provider/member over the SAME Y.Doc. This is
+  // intentionally separate from documentGeneration: inactivity must not discard
+  // offline/local edits, while schema/size poison must never reuse its Y.Doc.
+  const [admissionGeneration, setAdmissionGeneration] = useState(0);
 
   // One Y.Doc PER collaborationId, not per component lifetime. If the memoId changes
   // in place (deep-link/route change while the dialog stays mounted), a stale
@@ -72,7 +78,13 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   // so its destroy() never touches the doc; the previous doc is released to GC once
   // the old provider/editor drop it (no explicit destroy, which could race the
   // Tiptap binding's teardown across the component boundary).
-  const ydoc = useMemo(() => new Y.Doc(), [collaborationId, recoveryGeneration]);
+  const ydoc = useMemo(() => new Y.Doc(), [collaborationId, documentGeneration]);
+
+  useEffect(() => {
+    setHasEverSynced(false);
+    setHasUnconfirmedLocalChanges(false);
+    setReplaceGeneration(false);
+  }, [ydoc]);
 
   // Stable refs for notify + t so the provider effect does not tear down on their
   // identity changes (t changes on every language switch).
@@ -92,10 +104,14 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [providerSession, setProviderSession] = useState<{
     collaborationId: string;
     ydoc: Y.Doc;
+    admissionGeneration: number;
     provider: UnifiedCollabProvider;
   }>();
   const provider =
-    providerSession && providerSession.collaborationId === collaborationId && providerSession.ydoc === ydoc
+    providerSession &&
+    providerSession.collaborationId === collaborationId &&
+    providerSession.ydoc === ydoc &&
+    providerSession.admissionGeneration === admissionGeneration
       ? providerSession.provider
       : null;
 
@@ -118,10 +134,26 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       type: 'memo',
       doc: ydoc,
       connect: false,
+      initialUnconfirmedLocalChanges: providerSession?.ydoc === ydoc && hasUnconfirmedLocalChanges,
     });
+
+    // Admission replacement reuses this Y.Doc and therefore retains recovery
+    // history; document replacement has a different Y.Doc and starts at initial.
+    let didEverSync = providerSession?.ydoc === ydoc ? hasEverSynced : false;
+    let currentReadOnly = false;
 
     const syncHandler = (isSynced: boolean) => {
       setSynced(isSynced);
+      if (!isSynced) return;
+      const recovered = didEverSync;
+      didEverSync = true;
+      setHasEverSynced(true);
+      if (recovered && !currentReadOnly && nextProvider.hasUnconfirmedLocalChanges) {
+        void nextProvider.requestDurability().catch(() => {
+          // The provider retains the logical waiter across transient reconnects.
+          // A terminal/deadline failure leaves `unconfirmed` true for the UI.
+        });
+      }
     };
 
     const statusHandler = (nextStatus: string) => {
@@ -132,7 +164,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       }
     };
 
-    const closeHandler = (verdict: { disposition: 'normal' | 'terminal' | 'transient' }) => {
+    const closeHandler = (verdict: { disposition: 'terminal' | 'transient' }) => {
       if (verdict.disposition === 'terminal') {
         setSynced(false);
         setStatus(MemoStatus.DISCONNECTED);
@@ -149,6 +181,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           notifyRef.current(tRef.current('callout.memo.saveFailed'), 'warning');
           break;
         case 'read-only-state':
+          currentReadOnly = !!message.readOnly;
           setServerReadOnlyState({
             readOnly: !!message.readOnly,
             readOnlyCode: controlReasonToReadOnlyCode(message.reason),
@@ -166,7 +199,8 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           // provider's own status/synced callbacks restore readiness once it has synced.
           setSynced(false);
           setStatus(MemoStatus.CONNECTING);
-          setRecoveryGeneration(generation => generation + 1);
+          setReplaceGeneration(true);
+          setDocumentGeneration(generation => generation + 1);
           break;
         case 'session-end': {
           // The server is ending this session. Classify against the KNOWN tuple table (the
@@ -215,6 +249,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     nextProvider.on('synced', syncHandler);
     nextProvider.on('control', controlHandler);
     nextProvider.on('close', closeHandler);
+    nextProvider.on('unconfirmed', setHasUnconfirmedLocalChanges);
 
     // Reset every room/generation-owned state in the same effect turn that
     // publishes the new provider. Room B must never observe room A's readiness,
@@ -224,16 +259,18 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     setLastSaveTime(undefined);
     setServerReadOnlyState(undefined);
     setSessionEndCode(undefined);
+    setReplaceGeneration(false);
+    setHasUnconfirmedLocalChanges(nextProvider.hasUnconfirmedLocalChanges);
 
     // Start the WebSocket connection now that event listeners are in place.
-    setProviderSession({ collaborationId, ydoc, provider: nextProvider });
+    setProviderSession({ collaborationId, ydoc, admissionGeneration, provider: nextProvider });
     nextProvider.connect();
 
     return () => {
       nextProvider.destroy();
       setProviderSession(current => (current?.provider === nextProvider ? undefined : current));
     };
-  }, [collaborationId, ydoc]);
+  }, [admissionGeneration, collaborationId, ydoc]);
 
   // Extensions depend on the memoized provider, not ref.current
   const collaborationExtensions: Extensions = useMemo(() => {
@@ -254,28 +291,40 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     ];
   }, [provider, ydoc, userName, cursorColor]);
 
-  // Inactivity is a live, server-downgraded member rather than a broken socket,
-  // while a size-limit end has rejected the current generation. Both recover by
-  // creating a fresh room member + Y.Doc; calling connect() on the old provider
-  // would either no-op or retain rejected state. No terminal/authorization reason
-  // is eligible for this action.
+  // Inactivity needs fresh admission but retains the SAME Y.Doc. A size-limit end
+  // rejects the document generation and therefore replaces it. No terminal or
+  // authorization reason is eligible for either action.
   const resumeEditing = () => {
-    if (
-      serverReadOnlyState?.readOnlyCode === ReadOnlyCode.INACTIVITY ||
-      sessionEndCode === 'document-size-limit-exceeded'
-    ) {
-      setRecoveryGeneration(generation => generation + 1);
+    if (serverReadOnlyState?.readOnlyCode === ReadOnlyCode.INACTIVITY) {
+      setAdmissionGeneration(generation => generation + 1);
+    } else if (sessionEndCode === 'document-size-limit-exceeded') {
+      setReplaceGeneration(true);
+      setDocumentGeneration(generation => generation + 1);
     }
   };
+
+  const phase = deriveCollaborationPhase({
+    status:
+      status === MemoStatus.CONNECTED ? 'connected' : status === MemoStatus.CONNECTING ? 'connecting' : 'disconnected',
+    synced,
+    hasEverSynced,
+    readOnly: !!serverReadOnlyState?.readOnly,
+    terminal: !!sessionEndCode && sessionEndCode !== 'document-size-limit-exceeded',
+    replaceGeneration: replaceGeneration || sessionEndCode === 'document-size-limit-exceeded',
+  });
 
   return {
     status,
     synced,
     lastSaveTime,
-    isReadOnly: !isOnline || serverReadOnlyState?.readOnly || !!sessionEndCode,
+    phase,
+    hasEverSynced,
+    hasUnconfirmedLocalChanges,
+    isReadOnly: phase === 'initial' || phase === 'readOnly' || phase === 'terminal' || phase === 'replaceGeneration',
     readOnlyCode: serverReadOnlyState?.readOnlyCode,
     sessionEndCode,
     resumeEditing,
+    retryNow: () => provider?.reconnectNow(),
     collaborationExtensions,
     ydoc,
     provider,

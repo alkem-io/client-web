@@ -27,6 +27,10 @@ import { WhiteboardDisconnectedDialog } from '@/crd/components/whiteboard/Whiteb
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
+import {
+  importWhiteboardTemplate,
+  WhiteboardTemplatePersistenceUnconfirmedError,
+} from '@/domain/collaboration/whiteboard/utils/importWhiteboardTemplate';
 import { loadWhiteboardSceneFromCollaboration } from '@/domain/collaboration/whiteboard/utils/loadWhiteboardSceneFromCollaboration';
 import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema, {
@@ -379,15 +383,30 @@ const CrdWhiteboardDialog = ({
     importAbortRef.current = controller;
     const operation = (async () => {
       try {
-        const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId, {
-          signal: controller.signal,
-        });
         const cancelled = () => controller.signal.aborted || editorGenerationRef.current !== generationAtImport;
-        if (cancelled()) return;
-        await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter, cancelled);
+        const targetCollab = collabApiRef.current;
+        if (!targetCollab) throw new Error('Target collaboration is not available');
+        await importWhiteboardTemplate({
+          load: () =>
+            loadWhiteboardSceneFromCollaboration(sourceWhiteboardId, {
+              signal: controller.signal,
+            }),
+          merge: async templateScene => {
+            await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter, cancelled);
+          },
+          requestDurability: () => targetCollab.requestDurability(),
+          isCancelled: cancelled,
+        });
       } catch (err) {
         if (controller.signal.aborted) return;
-        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
+        notify(
+          t(
+            err instanceof WhiteboardTemplatePersistenceUnconfirmedError
+              ? 'templateLibrary.whiteboardTemplates.persistenceUnconfirmed'
+              : 'templateLibrary.whiteboardTemplates.errorImporting'
+          ),
+          'error'
+        );
         logError(new Error(`Error importing whiteboard template: '${err}'`), {
           category: TagCategoryValues.WHITEBOARD,
         });
@@ -489,7 +508,6 @@ const CrdWhiteboardDialog = ({
           open,
           isOnline,
           connecting,
-          hasError,
           terminalCloseReason,
           autoReconnectSeconds,
           lastSuccessfulSavedDate: lastSaved,
@@ -527,8 +545,6 @@ const CrdWhiteboardDialog = ({
               reconnecting={connecting}
               countdownSeconds={autoReconnectSeconds}
               onReconnect={onReconnect}
-              // Surface the reload escape hatch immediately once a reconnect attempt has failed.
-              hasError={hasError}
               // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
               // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
               // of seconds, disabling Reconnect while the browser is genuinely offline (story #10131).
@@ -543,6 +559,9 @@ const CrdWhiteboardDialog = ({
           modeReason,
           collaborating,
           connecting,
+          phase,
+          hasEverSynced,
+          hasUnconfirmedLocalChanges,
           restartCollaboration,
           canReconnect,
           isReadOnly,
@@ -594,7 +613,6 @@ const CrdWhiteboardDialog = ({
                   />
                 ),
                 learnwhy: (
-                  // biome-ignore lint/a11y/useButtonType: type is fixed below
                   <button
                     type="button"
                     onClick={() => {
@@ -658,11 +676,24 @@ const CrdWhiteboardDialog = ({
                       />
                     ) : undefined
                   }
-                  headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
+                  headerActions={options.headerActions?.({
+                    mode,
+                    modeReason,
+                    collaborating,
+                    connecting,
+                    isReadOnly,
+                    phase,
+                    hasEverSynced,
+                    hasUnconfirmedLocalChanges,
+                  })}
                   rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
                   footer={
                     <WhiteboardCollabFooter
                       {...footerProps}
+                      recovering={phase === 'recovering'}
+                      hasUnconfirmedChanges={
+                        hasUnconfirmedLocalChanges && (phase === 'readOnly' || phase === 'terminal')
+                      }
                       readonlyMessage={readonlyMessage}
                       onDelete={() => setDeleteDialogOpen(true)}
                       onRestart={restartCollaboration}

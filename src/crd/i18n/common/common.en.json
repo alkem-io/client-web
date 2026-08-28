@@ -1478,7 +1478,8 @@
   },
   "templateLibrary": {
     "whiteboardTemplates": {
-      "errorImporting": "Error importing $t(common.enums.templateType.WHITEBOARD)"
+      "errorImporting": "Error importing $t(common.enums.templateType.WHITEBOARD)",
+      "persistenceUnconfirmed": "The template was applied locally, but saving could not be confirmed. Keep this whiteboard open while it reconnects."
     }
   },
   "virtualContributor": "Virtual Contributor",

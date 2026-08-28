@@ -694,6 +694,10 @@
       "guestWarning": "Estás editando como invitado",
       "delete": "Eliminar nota",
       "resumeEditing": "Reanudar edición",
+      "recovering": "Conexión interrumpida — reconectando. Tus cambios locales se conservan.",
+      "retryNow": "Reintentar ahora",
+      "unconfirmedChanges": "No se pudieron confirmar los cambios locales. Cópialos antes de salir.",
+      "copyChanges": "Copiar cambios",
       "readonlyReason": {
         "connecting": "Conectando al servicio de colaboración…",
         "notSynced": "Sincronizando…",

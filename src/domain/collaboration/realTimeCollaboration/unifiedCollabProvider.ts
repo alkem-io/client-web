@@ -130,21 +130,16 @@ export type ControlMessage = {
 export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
 /**
- * How an unavailable or ended connection attempt should be handled — an EXPLICIT
- * 3-way disposition, never
- * `retry = !terminal` (a clean 1000 close is neither terminal nor something to
- * retry):
- * - `normal`: a clean 1000 close. NEITHER retried NOR surfaced as a reconnect
- *   notice — no mechanism should reconnect it.
+ * How an unavailable or ended connection attempt should be handled:
  * - `transient`: a drop to reconnect from with backoff (and the reconnect notice):
  *   `room-capacity-reached` (1008), 1011 (authz-backend outage), a transport error
  *   (1006), etc.
  * - `terminal`: a policy close this attempt must NEVER retry — `forbidden` /
  *   `document deleted` / any unrecognised 1008 (fail closed). The provider's timer
- *   Its reconnect timer stays off.
+ *   stays off.
  * `reason` is carried through so a consumer can tell the terminal reasons apart.
  */
-export type CloseDisposition = 'normal' | 'transient' | 'terminal';
+export type CloseDisposition = 'transient' | 'terminal';
 
 export type CloseVerdict = {
   code: number;
@@ -173,12 +168,19 @@ export type SceneSyncPort = {
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
 
-type ProviderEvent = 'status' | 'synced' | 'control' | 'close';
+type ProviderEvent = 'status' | 'synced' | 'control' | 'close' | 'unconfirmed';
 
 type StatusListener = (status: ConnectionStatus) => void;
 type SyncedListener = (synced: boolean) => void;
 type ControlListener = (message: ControlMessage) => void;
 type CloseListener = (verdict: CloseVerdict) => void;
+type UnconfirmedListener = (unconfirmed: boolean) => void;
+
+type DurabilityWaiter = {
+  resolve: () => void;
+  reject: (error: Error) => void;
+  timeout: ReturnType<typeof setTimeout>;
+};
 
 type UnifiedCollabProviderCommonOptions = {
   /** The collaborative document id (the room) — `/collab/<documentId>`. */
@@ -195,6 +197,12 @@ type UnifiedCollabProviderCommonOptions = {
   guestName?: string;
   /** Connect on construction. Defaults to true. */
   connect?: boolean;
+  /**
+   * Carry an unconfirmed edit across a deliberate provider/admission replacement
+   * that keeps the same Y.Doc/scene (the inactivity Resume path). Transport
+   * reconnects keep their provider and do not need this hand-off.
+   */
+  initialUnconfirmedLocalChanges?: boolean;
 };
 
 /**
@@ -219,9 +227,8 @@ export type UnifiedCollabProviderOptions = UnifiedCollabProviderCommonOptions &
 
 const RECONNECT_BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
 export const DURABILITY_REQUEST_TIMEOUT_MS = 60_000;
-export const INITIAL_SYNC_TIMEOUT_MS = 15_000;
-export const HEARTBEAT_INTERVAL_MS = 15_000;
-export const HEARTBEAT_TIMEOUT_MS = 10_000;
+export const INBOUND_IDLE_PROBE_MS = 15_000;
+export const INBOUND_IDLE_GRACE_MS = 10_000;
 const NORMAL_CLOSURE = 1000;
 /**
  * WebSocket policy-violation close code (RFC 6455 §7.4.1). The unified collaboration
@@ -268,9 +275,8 @@ export class UnifiedCollabProvider {
   private destroyed = false;
   private reconnectAttempt = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-  private initialSyncTimer: ReturnType<typeof setTimeout> | null = null;
-  private heartbeatTimer: ReturnType<typeof setTimeout> | null = null;
-  private heartbeatTimeout: ReturnType<typeof setTimeout> | null = null;
+  private inboundIdleTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatProbeSent = false;
   private online = globalThis.navigator?.onLine !== false;
   /**
    * The caller's durable connection intent. Transient transport failures and
@@ -284,19 +290,20 @@ export class UnifiedCollabProvider {
   private readonly syncedListeners = new Set<SyncedListener>();
   private readonly controlListeners = new Set<ControlListener>();
   private readonly closeListeners = new Set<CloseListener>();
+  private readonly unconfirmedListeners = new Set<UnconfirmedListener>();
   private readonly ephemeralListeners = new Set<(event: EphemeralEvent) => void>();
   private durabilitySequence = 0;
+  private localUpdateSeq = 0;
+  private confirmedUpdateSeq = 0;
+  private hasCompletedSync = false;
+  private queuedDurabilityWaiters: DurabilityWaiter[] = [];
   private pendingDurability:
     | {
         requestId: string;
-        promise: Promise<void>;
-        resolve: () => void;
-        reject: (error: Error) => void;
-        timeout: ReturnType<typeof setTimeout>;
+        snapshotSeq: number;
+        waiters: DurabilityWaiter[];
       }
     | undefined;
-  /** Serializes callers so every call receives a barrier sent after that call. */
-  private durabilityQueueTail: Promise<void> | undefined;
 
   constructor(options: UnifiedCollabProviderOptions) {
     this.documentId = options.documentId;
@@ -318,6 +325,7 @@ export class UnifiedCollabProvider {
     this.awareness = options.awareness ?? new Awareness(this.doc);
     this.ownsAwareness = !options.awareness;
     this.url = buildCollabUrl(options);
+    if (options.initialUnconfirmedLocalChanges) this.localUpdateSeq = 1;
 
     if (this.scenePort) {
       // Outbound: local scene edits are framed as sync Updates. The port never
@@ -344,6 +352,14 @@ export class UnifiedCollabProvider {
     return this._synced;
   }
 
+  get hasEverSynced(): boolean {
+    return this.hasCompletedSync;
+  }
+
+  get hasUnconfirmedLocalChanges(): boolean {
+    return this.localUpdateSeq > this.confirmedUpdateSeq;
+  }
+
   /**
    * The whiteboard binding's ephemeral transport: outbound events are JSON-framed
    * as `WireEphemeral` (type 2); inbound type-2 frames are decoded back to events.
@@ -363,22 +379,32 @@ export class UnifiedCollabProvider {
   on(event: 'synced', listener: SyncedListener): void;
   on(event: 'control', listener: ControlListener): void;
   on(event: 'close', listener: CloseListener): void;
-  on(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener | CloseListener): void {
+  on(event: 'unconfirmed', listener: UnconfirmedListener): void;
+  on(
+    event: ProviderEvent,
+    listener: StatusListener | SyncedListener | ControlListener | CloseListener | UnconfirmedListener
+  ): void {
     if (event === 'status') this.statusListeners.add(listener as StatusListener);
     else if (event === 'synced') this.syncedListeners.add(listener as SyncedListener);
     else if (event === 'control') this.controlListeners.add(listener as ControlListener);
-    else this.closeListeners.add(listener as CloseListener);
+    else if (event === 'close') this.closeListeners.add(listener as CloseListener);
+    else this.unconfirmedListeners.add(listener as UnconfirmedListener);
   }
 
   off(event: 'status', listener: StatusListener): void;
   off(event: 'synced', listener: SyncedListener): void;
   off(event: 'control', listener: ControlListener): void;
   off(event: 'close', listener: CloseListener): void;
-  off(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener | CloseListener): void {
+  off(event: 'unconfirmed', listener: UnconfirmedListener): void;
+  off(
+    event: ProviderEvent,
+    listener: StatusListener | SyncedListener | ControlListener | CloseListener | UnconfirmedListener
+  ): void {
     if (event === 'status') this.statusListeners.delete(listener as StatusListener);
     else if (event === 'synced') this.syncedListeners.delete(listener as SyncedListener);
     else if (event === 'control') this.controlListeners.delete(listener as ControlListener);
-    else this.closeListeners.delete(listener as CloseListener);
+    else if (event === 'close') this.closeListeners.delete(listener as CloseListener);
+    else this.unconfirmedListeners.delete(listener as UnconfirmedListener);
   }
 
   connect(): void {
@@ -413,7 +439,7 @@ export class UnifiedCollabProvider {
   /** Tear down the socket without reconnecting and without destroying the doc. */
   disconnect(): void {
     this.connectionRequested = false;
-    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
+    this.rejectAllDurability('The collaboration connection closed before the draft was persisted');
     this.clearReconnect();
     this.clearConnectionHealthTimers();
     this.teardownSocket(NORMAL_CLOSURE);
@@ -426,7 +452,7 @@ export class UnifiedCollabProvider {
     if (this.destroyed) return;
     this.destroyed = true;
     this.connectionRequested = false;
-    this.rejectPendingDurability('The collaboration editor closed before the draft was persisted');
+    this.rejectAllDurability('The collaboration editor closed before the draft was persisted');
     this.clearReconnect();
     this.clearConnectionHealthTimers();
     // Publish the local leave while the socket and awareness listener are still
@@ -450,6 +476,7 @@ export class UnifiedCollabProvider {
     this.syncedListeners.clear();
     this.controlListeners.clear();
     this.closeListeners.clear();
+    this.unconfirmedListeners.clear();
     this.ephemeralListeners.clear();
 
     if (this.ownsAwareness) this.awareness.destroy();
@@ -458,60 +485,103 @@ export class UnifiedCollabProvider {
 
   /**
    * Ask the collaboration service to persist every update sent before this frame.
-   * The wire allows one in-flight request per connection. A later caller is queued
-   * behind it and receives its own frame, because updates may have been sent after
-   * the earlier barrier.
+   * Logical callers survive transient reconnects. At most one wire request is in
+   * flight; callers that were waiting when a connection resyncs share the next
+   * barrier, while callers arriving after that frame wait for the following one.
    */
   requestDurability(): Promise<void> {
-    if (!this.pendingDurability && !this.durabilityQueueTail) {
-      return this.startDurabilityRequest();
+    if (this.destroyed) {
+      return Promise.reject(new Error('The collaboration editor closed before the draft was persisted'));
     }
-
-    const predecessor = this.durabilityQueueTail ?? this.pendingDurability?.promise ?? Promise.resolve();
-    const start = () => this.startDurabilityRequest();
-    const queued = predecessor.then(start, start);
-    const settled = queued.then(
-      () => undefined,
-      () => undefined
-    );
-    this.durabilityQueueTail = settled;
-    void settled.then(() => {
-      if (this.durabilityQueueTail === settled) {
-        this.durabilityQueueTail = undefined;
-      }
+    const promise = new Promise<void>((resolve, reject) => {
+      const waiter: DurabilityWaiter = {
+        resolve,
+        reject,
+        timeout: setTimeout(() => {
+          this.expireDurabilityWaiter(waiter);
+          reject(new Error('The collaboration service timed out while persisting the draft'));
+        }, DURABILITY_REQUEST_TIMEOUT_MS),
+      };
+      this.queuedDurabilityWaiters.push(waiter);
     });
-    return queued;
+    this.ensureDurabilityRequest();
+    return promise;
   }
 
-  private startDurabilityRequest(): Promise<void> {
-    if (this.destroyed || this._status !== 'connected' || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      return Promise.reject(new Error('The collaboration connection is not ready to persist the draft'));
+  private ensureDurabilityRequest(): void {
+    if (this.destroyed || this.pendingDurability || this.queuedDurabilityWaiters.length === 0) return;
+    if (
+      !this.online ||
+      this._status !== 'connected' ||
+      !this._synced ||
+      !this.ws ||
+      this.ws.readyState !== WebSocket.OPEN
+    ) {
+      this.reconnectNow();
+      return;
     }
 
     const requestId = `${Date.now().toString(36)}-${(++this.durabilitySequence).toString(36)}`;
-    let resolve!: () => void;
-    let reject!: (error: Error) => void;
-    const promise = new Promise<void>((resolvePromise, rejectPromise) => {
-      resolve = resolvePromise;
-      reject = rejectPromise;
-    });
-    const timeout = setTimeout(() => {
-      this.rejectPendingDurability('The collaboration service timed out while persisting the draft');
-    }, DURABILITY_REQUEST_TIMEOUT_MS);
-    this.pendingDurability = { requestId, promise, resolve, reject, timeout };
+    const waiters = this.queuedDurabilityWaiters;
+    this.queuedDurabilityWaiters = [];
+    this.pendingDurability = { requestId, snapshotSeq: this.localUpdateSeq, waiters };
 
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.DURABILITY_REQUEST);
     encoding.writeUint8Array(encoder, lib0String.encodeUtf8(JSON.stringify({ requestId })));
     this.sendFrame(encoding.toUint8Array(encoder));
-    return promise;
+  }
+
+  private requeuePendingDurability(): void {
+    if (!this.pendingDurability) return;
+    this.queuedDurabilityWaiters = [...this.pendingDurability.waiters, ...this.queuedDurabilityWaiters];
+    this.pendingDurability = undefined;
+  }
+
+  private expireDurabilityWaiter(waiter: DurabilityWaiter): void {
+    this.queuedDurabilityWaiters = this.queuedDurabilityWaiters.filter(candidate => candidate !== waiter);
+    let abandonedWireRequest = false;
+    if (this.pendingDurability) {
+      this.pendingDurability.waiters = this.pendingDurability.waiters.filter(candidate => candidate !== waiter);
+      abandonedWireRequest = this.pendingDurability.waiters.length === 0;
+    }
+
+    if (abandonedWireRequest) {
+      // The wire request may still be running even though its last logical caller
+      // timed out. Retire that connection before another barrier is sent: requestId
+      // correlation prevents a wrong acknowledgement, but it would not preserve the
+      // stronger one-wire-at-a-time contract. The normal transient funnel clears the
+      // old request and keeps any later logical callers queued for the resync.
+      this.failTransientConnection('durability-timeout');
+      return;
+    }
+    this.ensureDurabilityRequest();
+  }
+
+  private resolveDurabilityWaiters(waiters: DurabilityWaiter[]): void {
+    for (const waiter of waiters) {
+      clearTimeout(waiter.timeout);
+      waiter.resolve();
+    }
+  }
+
+  private rejectDurabilityWaiters(waiters: DurabilityWaiter[], message: string): void {
+    for (const waiter of waiters) {
+      clearTimeout(waiter.timeout);
+      waiter.reject(new Error(message));
+    }
+  }
+
+  private rejectAllDurability(message: string): void {
+    const waiters = [...(this.pendingDurability?.waiters ?? []), ...this.queuedDurabilityWaiters];
+    this.pendingDurability = undefined;
+    this.queuedDurabilityWaiters = [];
+    this.rejectDurabilityWaiters(waiters, message);
   }
 
   private handleOpen = () => {
     this.setStatus('connected');
-    this.initialSyncTimer = setTimeout(() => {
-      this.failTransientConnection('initial-sync-timeout');
-    }, INITIAL_SYNC_TIMEOUT_MS);
+    this.markInboundActivity();
     // Initiate the handshake: send SyncStep1 so the server replies SyncStep2
     // (+ its own SyncStep1 and an awareness snapshot). Mirrors the y-websocket client.
     const encoder = encoding.createEncoder();
@@ -537,6 +607,7 @@ export class UnifiedCollabProvider {
     if (!(event.data instanceof ArrayBuffer)) return;
     const decoder = decoding.createDecoder(new Uint8Array(event.data));
     const messageType = decoding.readVarUint(decoder);
+    let validInboundFrame = false;
 
     switch (messageType) {
       case WIRE.SYNC: {
@@ -557,17 +628,20 @@ export class UnifiedCollabProvider {
         if (replyType === messageYjsSyncStep2 && !this._synced) {
           this.setSynced(true);
         }
+        validInboundFrame = true;
         break;
       }
       case WIRE.AWARENESS: {
         const update = decoding.readVarUint8Array(decoder);
         applyAwarenessUpdate(this.awareness, update, this);
+        validInboundFrame = true;
         break;
       }
       case WIRE.EPHEMERAL: {
         const parsed = readJsonPayload(decoder) as EphemeralEvent | undefined;
         if (parsed && typeof parsed.type === 'string') {
           this.ephemeralListeners.forEach(listener => listener(parsed));
+          validInboundFrame = true;
         }
         break;
       }
@@ -576,20 +650,22 @@ export class UnifiedCollabProvider {
         if (parsed && typeof parsed.kind === 'string') {
           this.settleDurability(parsed);
           this.controlListeners.forEach(listener => listener(parsed));
+          validInboundFrame = true;
         }
         break;
       }
       case WIRE.HEARTBEAT:
-        this.handleHeartbeatReply();
+        validInboundFrame = true;
         break;
       default:
         // y-protocols leniency: ignore unknown types.
         break;
     }
+    if (validInboundFrame) this.markInboundActivity();
   };
 
   private handleClose = (event: CloseEvent) => {
-    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
+    this.requeuePendingDurability();
     this.setSynced(false);
     this.clearConnectionHealthTimers();
     this.detachSocketListeners();
@@ -607,12 +683,12 @@ export class UnifiedCollabProvider {
       // would silently cancel that new request.
       this.connectionRequested = false;
       this.clearReconnect();
+      this.rejectAllDurability('The collaboration connection closed before the draft was persisted');
     }
     this.closeListeners.forEach(listener => listener(verdict));
 
-    // ONLY a transient drop reconnects with backoff (1011, a transport error 1006,
-    // or `room-capacity-reached` — so an authz-backend outage stays retryable). A
-    // `normal` clean close and a `terminal` policy close both stay closed.
+    // Every observed non-terminal remote close reconnects with backoff. Intentional
+    // local closes detached this listener before sending 1000.
     if (verdict.disposition === 'transient') {
       this.scheduleReconnect();
     }
@@ -627,22 +703,18 @@ export class UnifiedCollabProvider {
     ) {
       return;
     }
-    clearTimeout(pending.timeout);
     if (message.kind === 'persisted') {
       this.pendingDurability = undefined;
-      pending.resolve();
+      const wasUnconfirmed = this.hasUnconfirmedLocalChanges;
+      this.confirmedUpdateSeq = Math.max(this.confirmedUpdateSeq, pending.snapshotSeq);
+      this.resolveDurabilityWaiters(pending.waiters);
+      this.emitUnconfirmedIfChanged(wasUnconfirmed);
+      this.ensureDurabilityRequest();
     } else if (message.kind === 'persist-failed') {
       this.pendingDurability = undefined;
-      pending.reject(new Error(message.error ?? 'The draft could not be persisted'));
+      this.rejectDurabilityWaiters(pending.waiters, message.error ?? 'The draft could not be persisted');
+      this.ensureDurabilityRequest();
     }
-  }
-
-  private rejectPendingDurability(message: string): void {
-    const pending = this.pendingDurability;
-    if (!pending) return;
-    clearTimeout(pending.timeout);
-    this.pendingDurability = undefined;
-    pending.reject(new Error(message));
   }
 
   private handleError = () => {
@@ -656,6 +728,7 @@ export class UnifiedCollabProvider {
   private handleDocUpdate = (update: Uint8Array, origin: unknown) => {
     // Skip updates we applied FROM the server (origin === this).
     if (origin === this) return;
+    this.markLocalUpdate();
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.SYNC);
     writeUpdate(encoder, update);
@@ -702,6 +775,7 @@ export class UnifiedCollabProvider {
    * `writeUpdate` frames `messageYjsUpdate` + payload under the WIRE.SYNC prefix.
    */
   private broadcastSceneUpdate(update: Uint8Array): void {
+    this.markLocalUpdate();
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.SYNC);
     writeUpdate(encoder, update);
@@ -740,6 +814,37 @@ export class UnifiedCollabProvider {
     }
   }
 
+  private markLocalUpdate(): void {
+    const wasUnconfirmed = this.hasUnconfirmedLocalChanges;
+    this.localUpdateSeq += 1;
+    this.emitUnconfirmedIfChanged(wasUnconfirmed);
+  }
+
+  private emitUnconfirmedIfChanged(previous: boolean): void {
+    const current = this.hasUnconfirmedLocalChanges;
+    if (current !== previous) this.unconfirmedListeners.forEach(listener => listener(current));
+  }
+
+  private markInboundActivity(): void {
+    if (this.destroyed || !this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+    if (this.inboundIdleTimer) clearTimeout(this.inboundIdleTimer);
+    this.heartbeatProbeSent = false;
+    this.inboundIdleTimer = setTimeout(() => {
+      this.inboundIdleTimer = null;
+      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+      if (!this.heartbeatProbeSent) {
+        this.heartbeatProbeSent = true;
+        const encoder = encoding.createEncoder();
+        encoding.writeVarUint(encoder, WIRE.HEARTBEAT);
+        this.sendFrame(encoding.toUint8Array(encoder));
+        this.inboundIdleTimer = setTimeout(() => {
+          this.inboundIdleTimer = null;
+          this.failTransientConnection('inbound-idle-timeout');
+        }, INBOUND_IDLE_GRACE_MS);
+      }
+    }, INBOUND_IDLE_PROBE_MS);
+  }
+
   private scheduleReconnect(): void {
     if (this.destroyed || !this.connectionRequested || this.ws || this.reconnectTimer || !this.online) return;
     const delay = RECONNECT_BACKOFF_MS[Math.min(this.reconnectAttempt, RECONNECT_BACKOFF_MS.length - 1)];
@@ -760,7 +865,7 @@ export class UnifiedCollabProvider {
 
   /** Retry immediately through the provider's one reconnect owner. */
   reconnectNow(): void {
-    if (this.destroyed) return;
+    if (this.destroyed || !this.online || this.ws) return;
     this.clearReconnect();
     this.connect();
   }
@@ -785,37 +890,14 @@ export class UnifiedCollabProvider {
     this.reconnectNow();
   };
 
-  private scheduleHeartbeat(): void {
-    if (this.destroyed || !this._synced || this.heartbeatTimer || this.heartbeatTimeout) return;
-    this.heartbeatTimer = setTimeout(() => {
-      this.heartbeatTimer = null;
-      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
-      const encoder = encoding.createEncoder();
-      encoding.writeVarUint(encoder, WIRE.HEARTBEAT);
-      this.sendFrame(encoding.toUint8Array(encoder));
-      this.heartbeatTimeout = setTimeout(() => {
-        this.heartbeatTimeout = null;
-        this.failTransientConnection('heartbeat-timeout');
-      }, HEARTBEAT_TIMEOUT_MS);
-    }, HEARTBEAT_INTERVAL_MS);
-  }
-
-  private handleHeartbeatReply(): void {
-    if (this.heartbeatTimeout) {
-      clearTimeout(this.heartbeatTimeout);
-      this.heartbeatTimeout = null;
-    }
-    this.scheduleHeartbeat();
-  }
-
   private failTransientConnection(reason: string): void {
     if (this.destroyed || !this.ws) return;
     // Once the browser has started closing a socket, its queued `close` event is
-    // authoritative: it may carry a normal or terminal policy verdict. Detaching
+    // authoritative: it may carry a remote 1000 or terminal policy verdict. Detaching
     // that listener here would replace the real outcome with a synthetic transient
     // one and could reconnect a session that must stay closed.
     if (this.ws.readyState !== WebSocket.CONNECTING && this.ws.readyState !== WebSocket.OPEN) return;
-    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
+    this.requeuePendingDurability();
     this.clearConnectionHealthTimers();
     this.teardownSocket(4000);
     this.reportTransientDisconnect(reason);
@@ -831,12 +913,9 @@ export class UnifiedCollabProvider {
   }
 
   private clearConnectionHealthTimers(): void {
-    if (this.initialSyncTimer) clearTimeout(this.initialSyncTimer);
-    if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
-    if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
-    this.initialSyncTimer = null;
-    this.heartbeatTimer = null;
-    this.heartbeatTimeout = null;
+    if (this.inboundIdleTimer) clearTimeout(this.inboundIdleTimer);
+    this.inboundIdleTimer = null;
+    this.heartbeatProbeSent = false;
   }
 
   private teardownSocket(code: number): void {
@@ -871,11 +950,8 @@ export class UnifiedCollabProvider {
       // Reset backoff only after a usable Yjs session, not merely TCP OPEN.
       // Repeated open-without-sync failures must continue backing off.
       this.reconnectAttempt = 0;
-      if (this.initialSyncTimer) {
-        clearTimeout(this.initialSyncTimer);
-        this.initialSyncTimer = null;
-      }
-      this.scheduleHeartbeat();
+      this.hasCompletedSync = true;
+      this.ensureDurabilityRequest();
     }
     this.syncedListeners.forEach(listener => listener(synced));
   }
@@ -883,24 +959,18 @@ export class UnifiedCollabProvider {
 
 /**
  * Classify a WebSocket close into one of three dispositions from its `(code, reason)`:
- * `normal` (a clean 1000 close — neither retried NOR surfaced as a terminal state),
- * `terminal` (never retry), or `transient` (retry). The disposition is authoritative:
- * a normal close is its OWN category, not a special-cased `terminal`, so callers must
- * not conflate "don't retry" with "surface a terminal notice" — a clean close does
- * neither, which is why retry UI must gate on the disposition rather than on
- * `!terminal`.
+ * `terminal` (never retry) or `transient` (retry). A remote 1000 is transient:
+ * proxies and service drains can normalize an unexpected close to 1000. Intentional
+ * local closes are excluded structurally because their listener is detached first.
  *
  * Only a `1008` policy close is reason-sensitive: `room-capacity-reached` is the
  * single transient reason (retrying may later find room); `forbidden` and
  * `document deleted` are terminal, and any OTHER/unknown 1008 reason is treated as
  * terminal too — FAIL CLOSED, so a policy the client does not recognise is never
- * retried blindly. Every other non-1000 code is transient (a `1011` authz-backend
- * outage or a `1006` transport drop must stay retryable).
+ * retried blindly. Every other code is transient (including 1000, a `1011`
+ * authz-backend outage, and a `1006` transport drop).
  */
 export function classifyClose(code: number, reason: string): CloseVerdict {
-  if (code === NORMAL_CLOSURE) {
-    return { code, reason, disposition: 'normal' };
-  }
   if (code === POLICY_VIOLATION && reason !== TRANSIENT_POLICY_REASON) {
     return { code, reason, disposition: 'terminal' };
   }

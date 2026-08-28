@@ -44,6 +44,9 @@
   },
   "footer": {
     "guestContributionsWarning": "Jeder mit dem Link kann bearbeiten",
+    "recovering": "Verbindung unterbrochen — Verbindung wird wiederhergestellt. Lokale Änderungen bleiben erhalten.",
+    "retryNow": "Jetzt erneut versuchen",
+    "unconfirmedChanges": "Lokale Änderungen konnten nicht bestätigt werden. Exportiere das Whiteboard vor dem Verlassen.",
     "readonlyReason": {
       "readonly": "<strong>Nur-Lese-Modus</strong> <learnwhy>klicken Sie hier, um zu erfahren, warum</learnwhy>",
       "contentUpdatePolicy": "Sie sind nicht berechtigt, dieses Whiteboard zu bearbeiten. Bitten Sie den Besitzer <ownerlink>{{ownerName}}</ownerlink>, die Freigabeeinstellungen zu ändern, wenn Sie beitragen möchten.",
