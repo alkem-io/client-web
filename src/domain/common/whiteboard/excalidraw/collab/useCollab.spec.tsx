@@ -128,8 +128,7 @@ describe('useCollab — reason-aware close routing', () => {
 
     closeHandler?.({ code: 1000, reason: '', disposition: 'normal' });
 
-    // A clean close must not open the retrying notice (which would activate the
-    // wrapper's independent useAutoReconnect) NOR surface a terminal state.
+    // A clean close must neither open the retry notice nor surface a terminal state.
     expect(onCloseConnection).not.toHaveBeenCalled();
     expect(onTerminalClose).not.toHaveBeenCalled();
     cleanup();
@@ -212,13 +211,15 @@ describe('useCollab — reconnect + collaborator-mode contract', () => {
     return { stateOf, cleanup };
   };
 
-  it('collaborating becomes true on connect — WITHOUT waiting for a collaborator-mode frame', () => {
+  it('does not report collaboration ready until the opened socket completes Yjs sync', () => {
     const { stateOf, cleanup } = mount();
     act(() => statusHandler?.('connected'));
-    // A healthy socket is enough for the wrapper's auto-reconnect to stop; it must not
-    // hinge on a mode frame the service never sends at join.
-    expect(stateOf().collaborating).toBe(true);
+    expect(stateOf().collaborating).toBe(false);
+    expect(stateOf().isReadOnly).toBe(true);
     expect(stateOf().mode).toBeNull();
+    act(() => syncedHandler?.(true));
+    expect(stateOf().collaborating).toBe(true);
+    expect(stateOf().mode).toBe('write');
     cleanup();
   });
 

@@ -24,6 +24,8 @@ export type CollabAPI = {
   isCollaborating: () => boolean;
   /** Wait until every preceding scene update is durable in both collaboration stores. */
   requestDurability: () => Promise<void>;
+  /** Retry a disconnected transport through the provider's single retry owner. */
+  reconnect: () => void;
   /** Broadcast an ephemeral floating emoji to other collaborators (never persisted). */
   broadcastEmojiReaction: (emoji: string, x: number, y: number) => void;
   broadcastCountdownTimer: (remainingSeconds: number, startedBy: string, active: boolean) => void;
@@ -43,7 +45,7 @@ type UseCollabProps = {
   /**
    * A TRANSIENT disconnect (network/transport drop, 1011, or a `room-capacity-reached`
    * policy close) — the connection is expected to come back, so the consumer opens the
-   * reconnect notice and lets its auto-reconnect countdown keep retrying. A TERMINAL
+   * reconnect notice while the provider keeps retrying. A TERMINAL
    * close routes to `onTerminalClose` instead and never reaches here.
    */
   // `hasError` (#10131): true once a reconnect attempt has actually failed, false for a first
@@ -60,7 +62,7 @@ type UseCollabProps = {
   /**
    * A TERMINAL policy close (1008 `forbidden` / `document deleted` / any unrecognised
    * 1008 reason, fail closed) — this attempt must NOT be retried. The consumer must
-   * stop its own auto-reconnect loop; reconnecting would just be re-rejected. `reason`
+   * keep manual retry disabled; reconnecting would just be re-rejected. `reason`
    * is the server's close reason so the consumer can differentiate the terminal cause.
    */
   onTerminalClose?: (reason: string) => void;
@@ -69,7 +71,7 @@ type UseCollabProps = {
    * `disposition` is authoritative and decides the outcome: `transient` (the provider's own
    * scheduler reconnects — the consumer must NOT start a second loop), `terminal` (no
    * reconnect; `edits-not-saved` warrants a data-loss UX distinct from a deletion), or
-   * `manual` (discard the poisoned generation now, keep collaboration + both reconnect loops
+   * `manual` (discard the poisoned generation now, keep collaboration + provider reconnect
    * OFF until the user explicitly starts a fresh generation). An unknown/inconsistent tuple
    * never reaches here — it fails closed to `onTerminalClose`.
    */
@@ -190,9 +192,10 @@ const useCollab = ({
     let sessionEndHandled = false;
 
     const handleStatus = (status: 'connecting' | 'connected' | 'disconnected') => {
-      setIsConnecting(status === 'connecting');
+      // A WebSocket OPEN is not editor readiness. Keep the UI in connecting /
+      // read-only state until SyncStep2 confirms this same Y.Doc has converged.
+      setIsConnecting(status === 'connecting' || (status === 'connected' && !provider.synced));
       if (status === 'connected') {
-        setIsCollaborating(true);
         sessionEndHandled = false; // a fresh connection: any prior session-end is spent
       } else if (status === 'disconnected') {
         setIsCollaborating(false);
@@ -217,12 +220,11 @@ const useCollab = ({
       if (verdict.disposition === 'terminal') {
         onTerminalClose?.(verdict.reason);
       } else if (verdict.disposition === 'transient') {
-        // A transient close is retryable (the auto-reconnect loop keeps going), so it is not the
+        // A transient close is retryable (the provider's timer keeps going), so it is not the
         // hard-error "reconnect has failed" state that surfaces the #10131 Reload-page escape hatch.
         onCloseConnection(false);
       }
-      // 'normal' (a clean 1000 close): NEITHER — no reconnect notice is opened, so
-      // the wrapper's independent `useAutoReconnect` timer never activates either.
+      // 'normal' (a clean 1000 close): NEITHER — no retry and no reconnect notice.
     };
 
     // Fit-to-content fires exactly ONCE per editor generation, on the first completed
@@ -230,6 +232,8 @@ const useCollab = ({
     let didInitialFit = false;
     const handleSynced = (synced: boolean) => {
       setIsSceneInitialized(synced);
+      setIsCollaborating(synced);
+      setIsConnecting(!synced && provider.status !== 'disconnected');
       onSceneInitChange?.(synced);
       if (!synced) {
         return;
@@ -318,8 +322,9 @@ const useCollab = ({
 
     const collabApi: CollabAPI = {
       onPointerUpdate: payload => awarenessRouter.onPointerUpdate(payload),
-      isCollaborating: () => providerRef.current?.status === 'connected',
+      isCollaborating: () => providerRef.current?.status === 'connected' && providerRef.current.synced,
       requestDurability: () => provider.requestDurability(),
+      reconnect: () => provider.reconnectNow(),
       broadcastEmojiReaction: (emoji, x, y) => {
         const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
         awarenessRouter.broadcastEmojiReaction({ id, emoji, x, y });
@@ -351,12 +356,9 @@ const useCollab = ({
     initialize,
     {
       connecting: isConnecting,
-      // "Collaborating" means the socket is up — decoupled from collaborator mode. The
-      // service never sends `collaborator-mode` at join, so gating this on a mode being
-      // known left it false at a normal join and, after a transient drop, kept the
-      // wrapper's independent useAutoReconnect countdown running against a HEALTHY
-      // reconnected socket (tearing it down in a loop). Mode is a separate concern,
-      // surfaced via `mode` / `isReadOnly`.
+      // "Collaborating" means the provider completed Yjs sync, not merely that the
+      // WebSocket opened. Collaborator mode remains a separate concern surfaced via
+      // `mode` / `isReadOnly`.
       collaborating: isCollaborating,
       mode: collaboratorMode,
       modeReason: collaboratorModeReason,

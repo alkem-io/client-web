@@ -9,6 +9,9 @@ import {
   type ControlMessage,
   classifyClose,
   DURABILITY_REQUEST_TIMEOUT_MS,
+  HEARTBEAT_INTERVAL_MS,
+  HEARTBEAT_TIMEOUT_MS,
+  INITIAL_SYNC_TIMEOUT_MS,
   type SceneSyncPort,
   UnifiedCollabProvider,
   WIRE,
@@ -85,6 +88,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
@@ -218,6 +222,82 @@ describe('UnifiedCollabProvider', () => {
     expect(synced).toContain(true);
     expect(provider.synced).toBe(true);
     expect(provider.doc.getMap('scene').get('seed')).toBe(true);
+    provider.destroy();
+  });
+
+  it('drops and retries a socket that opens but never completes the initial sync', () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const verdicts: CloseVerdict[] = [];
+    provider.on('close', verdict => verdicts.push(verdict));
+    MockWebSocket.instances[0].open();
+
+    vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS);
+    expect(provider.status).toBe('disconnected');
+    expect(verdicts.at(-1)).toMatchObject({ reason: 'initial-sync-timeout', disposition: 'transient' });
+
+    vi.advanceTimersByTime(1_000);
+    expect(MockWebSocket.instances).toHaveLength(2);
+
+    MockWebSocket.instances[1].open();
+    vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS + 1_000);
+    expect(MockWebSocket.instances).toHaveLength(2);
+    vi.advanceTimersByTime(1_000);
+    expect(MockWebSocket.instances).toHaveLength(3);
+    provider.destroy();
+  });
+
+  it('keeps a synced connection alive when the service echoes the heartbeat', () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    const serverDoc = new Y.Doc();
+    const step2 = encoding.createEncoder();
+    encoding.writeVarUint(step2, WIRE.SYNC);
+    writeSyncStep2(step2, serverDoc);
+    socket.receive(encoding.toUint8Array(step2));
+    socket.sent.length = 0;
+
+    vi.advanceTimersByTime(HEARTBEAT_INTERVAL_MS);
+    expect(readFrameType(socket.sent[0])).toBe(WIRE.HEARTBEAT);
+    socket.receive(socket.sent[0]);
+    vi.advanceTimersByTime(HEARTBEAT_TIMEOUT_MS);
+
+    expect(provider.status).toBe('connected');
+    expect(MockWebSocket.instances).toHaveLength(1);
+    provider.destroy();
+  });
+
+  it('drops and retries a connection that does not answer the heartbeat', () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    const step2 = encoding.createEncoder();
+    encoding.writeVarUint(step2, WIRE.SYNC);
+    writeSyncStep2(step2, new Y.Doc());
+    socket.receive(encoding.toUint8Array(step2));
+
+    vi.advanceTimersByTime(HEARTBEAT_INTERVAL_MS + HEARTBEAT_TIMEOUT_MS);
+    expect(provider.status).toBe('disconnected');
+    vi.advanceTimersByTime(1_000);
+    expect(MockWebSocket.instances).toHaveLength(2);
+    provider.destroy();
+  });
+
+  it('pauses reconnect while offline and retries immediately when the browser returns online', () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    MockWebSocket.instances[0].open();
+
+    window.dispatchEvent(new Event('offline'));
+    expect(provider.status).toBe('disconnected');
+    vi.advanceTimersByTime(60_000);
+    expect(MockWebSocket.instances).toHaveLength(1);
+
+    window.dispatchEvent(new Event('online'));
+    expect(MockWebSocket.instances).toHaveLength(2);
     provider.destroy();
   });
 
@@ -407,16 +487,30 @@ describe('UnifiedCollabProvider', () => {
     const provider = new UnifiedCollabProvider(baseOptions);
     const socket = MockWebSocket.instances[0];
     socket.open();
+    const step2 = encoding.createEncoder();
+    encoding.writeVarUint(step2, WIRE.SYNC);
+    writeSyncStep2(step2, new Y.Doc());
+    socket.receive(encoding.toUint8Array(step2));
     socket.sent.length = 0;
 
     const durability = provider.requestDurability();
     const timedOut = expect(durability).rejects.toThrow('timed out while persisting the draft');
-    await vi.advanceTimersByTimeAsync(DURABILITY_REQUEST_TIMEOUT_MS);
+    // Keep the transport healthy while the durability reply alone is lost.
+    // Otherwise the independent heartbeat timeout would correctly close first.
+    for (let elapsed = 0; elapsed < DURABILITY_REQUEST_TIMEOUT_MS - HEARTBEAT_INTERVAL_MS; elapsed += 15_000) {
+      await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL_MS);
+      const heartbeat = socket.sent.at(-1);
+      if (!heartbeat) throw new Error('heartbeat was not sent');
+      expect(readFrameType(heartbeat)).toBe(WIRE.HEARTBEAT);
+      socket.receive(heartbeat);
+    }
+    await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL_MS);
     await timedOut;
 
     const retry = provider.requestDurability();
-    expect(socket.sent).toHaveLength(2);
-    const request = readRawJsonFrame(socket.sent[1]).body as { requestId: string };
+    const retryFrame = socket.sent.at(-1);
+    if (!retryFrame) throw new Error('durability retry was not sent');
+    const request = readRawJsonFrame(retryFrame).body as { requestId: string };
     socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
     await expect(retry).resolves.toBeUndefined();
 

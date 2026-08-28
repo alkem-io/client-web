@@ -103,7 +103,7 @@ Header save-status indicator: a cloud icon (`CloudCheck` success / `CloudOff` er
 
 ### WhiteboardDisconnectedDialog (`whiteboard/WhiteboardDisconnectedDialog.tsx`)
 
-CRD "whiteboard disconnected / collaboration stopped" dialog. Title + online/offline message + optional last-saved line (all props), plus a single Reconnect button that shows the live auto-reconnect countdown `(Xs)` and a spinner while reconnecting. No "Ok" button — dismissal is the `Dialog`'s built-in close (X) / outside-click / Escape. Rendered at `z-[70]` to stack over the editor shell. Wired via the shared `CollaborativeExcalidrawWrapper`'s optional `renderDisconnectNotice` slot; replaces the MUI notice in CRD whiteboards.
+CRD "whiteboard disconnected / collaboration stopped" dialog. Title + online/offline message + optional last-saved line (all props), plus a Reconnect button and a spinner while reconnecting. No "Ok" button — dismissal is the `Dialog`'s built-in close (X) / outside-click / Escape. Rendered at `z-[70]` to stack over the editor shell. Wired via the shared `CollaborativeExcalidrawWrapper`'s optional `renderDisconnectNotice` slot; the provider owns automatic retry.
 
 ### PreviewSettingsDialog (`whiteboard/PreviewSettingsDialog.tsx`)
 

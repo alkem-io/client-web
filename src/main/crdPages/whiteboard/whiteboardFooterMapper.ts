@@ -23,6 +23,7 @@ type MapWhiteboardFooterParams = {
   updating?: boolean;
   collaboratorMode: CollaboratorMode | null;
   collaboratorModeReason: CollaboratorModeReasons | null;
+  canReconnect?: boolean;
   guestContributionsAllowed?: boolean;
   isAuthenticated: boolean;
   contentUpdatePolicy?: ContentUpdatePolicy;
@@ -80,8 +81,9 @@ export function mapWhiteboardFooterProps(params: MapWhiteboardFooterParams): Whi
   });
 
   const canRestart =
-    readonlyReason === ReadonlyReason.Readonly &&
-    (!params.collaboratorModeReason || params.collaboratorModeReason === CollaboratorModeReasons.INACTIVITY);
+    params.canReconnect === true ||
+    (readonlyReason === ReadonlyReason.Readonly &&
+      (!params.collaboratorModeReason || params.collaboratorModeReason === CollaboratorModeReasons.INACTIVITY));
 
   return {
     canDelete: hasDeletePrivilege && !params.preventWhiteboardDeletion,

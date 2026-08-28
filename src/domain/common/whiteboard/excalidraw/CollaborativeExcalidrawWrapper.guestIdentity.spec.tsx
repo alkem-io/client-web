@@ -33,7 +33,6 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { profile: { displayName: 'Alice Brown' } } }),
 }));
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({ lazyWithGlobalErrorHandler: () => () => null }));
-vi.mock('./useAutoReconnect', () => ({ useAutoReconnect: () => ({ secondsRemaining: null }) }));
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
 vi.mock('@/core/utils/onlineStatus', () => ({ default: () => true }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));

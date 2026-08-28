@@ -33,6 +33,8 @@ export const WIRE = {
   CONTROL: 3,
   /** Client→server request to persist every preceding update on this connection. */
   DURABILITY_REQUEST: 4,
+  /** Client liveness probe echoed by the service; never persisted or broadcast. */
+  HEARTBEAT: 5,
 } as const;
 
 /**
@@ -138,7 +140,7 @@ export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboar
  *   (1006), etc.
  * - `terminal`: a policy close this attempt must NEVER retry — `forbidden` /
  *   `document deleted` / any unrecognised 1008 (fail closed). The provider's timer
- *   AND consumers' retry loops (e.g. the wrapper's `useAutoReconnect`) both stay off.
+ *   Its reconnect timer stays off.
  * `reason` is carried through so a consumer can tell the terminal reasons apart.
  */
 export type CloseDisposition = 'normal' | 'transient' | 'terminal';
@@ -216,6 +218,9 @@ export type UnifiedCollabProviderOptions = UnifiedCollabProviderCommonOptions &
 
 const RECONNECT_BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
 export const DURABILITY_REQUEST_TIMEOUT_MS = 60_000;
+export const INITIAL_SYNC_TIMEOUT_MS = 15_000;
+export const HEARTBEAT_INTERVAL_MS = 15_000;
+export const HEARTBEAT_TIMEOUT_MS = 10_000;
 const NORMAL_CLOSURE = 1000;
 /**
  * WebSocket policy-violation close code (RFC 6455 §7.4.1). The unified collaboration
@@ -234,10 +239,10 @@ const TRANSIENT_POLICY_REASON = 'room-capacity-reached';
  * collaboration service over a single WebSocket at
  * `wss://<host>/collab/<documentId>?type=memo|whiteboard`, reusing the OIDC/BFF
  * session (the session cookie rides the same-site handshake; a guest passes
- * `?guestName=`). It speaks the four-channel protocol directly — sync(0) +
+ * `?guestName=`). It speaks the collaboration wire protocol directly — sync(0) +
  * awareness(1) via y-protocols, plus the service's custom ephemeral(2) and
- * control(3) JSON channels — so it replaces both the legacy memo Hocuspocus
- * provider and the legacy whiteboard Socket.IO portal with one transport.
+ * control(3) JSON channels, durability requests(4), and heartbeats(5) — so it
+ * replaces both legacy transports with one transport.
  *
  * It is transport-only: it owns no editor state. The whiteboard binding consumes
  * its `awareness` + `ephemeralChannel`; Tiptap binds its `doc`.
@@ -262,6 +267,10 @@ export class UnifiedCollabProvider {
   private destroyed = false;
   private reconnectAttempt = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private initialSyncTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatTimeout: ReturnType<typeof setTimeout> | null = null;
+  private online = globalThis.navigator?.onLine !== false;
 
   private readonly statusListeners = new Set<StatusListener>();
   private readonly syncedListeners = new Set<SyncedListener>();
@@ -311,6 +320,8 @@ export class UnifiedCollabProvider {
       this.doc.on('update', this.handleDocUpdate);
     }
     this.awareness.on('update', this.handleAwarenessUpdate);
+    globalThis.window?.addEventListener?.('offline', this.handleOffline);
+    globalThis.window?.addEventListener?.('online', this.handleOnline);
 
     if (options.connect !== false) {
       this.connect();
@@ -363,7 +374,7 @@ export class UnifiedCollabProvider {
   }
 
   connect(): void {
-    if (this.destroyed || !this.url || this.ws) return;
+    if (this.destroyed || !this.url || this.ws || !this.online) return;
 
     this.setStatus('connecting');
 
@@ -381,6 +392,7 @@ export class UnifiedCollabProvider {
   disconnect(): void {
     this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.clearReconnect();
+    this.clearConnectionHealthTimers();
     this.teardownSocket(NORMAL_CLOSURE);
     this.setSynced(false);
     this.setStatus('disconnected');
@@ -392,6 +404,7 @@ export class UnifiedCollabProvider {
     this.destroyed = true;
     this.rejectPendingDurability('The collaboration editor closed before the draft was persisted');
     this.clearReconnect();
+    this.clearConnectionHealthTimers();
     // Publish the local leave while the socket and awareness listener are still
     // active. The service also cleans up on disconnect; this makes normal client
     // disposal immediate without depending on that fallback.
@@ -406,6 +419,8 @@ export class UnifiedCollabProvider {
       this.doc.off('update', this.handleDocUpdate);
     }
     this.awareness.off('update', this.handleAwarenessUpdate);
+    globalThis.window?.removeEventListener?.('offline', this.handleOffline);
+    globalThis.window?.removeEventListener?.('online', this.handleOnline);
 
     this.statusListeners.clear();
     this.syncedListeners.clear();
@@ -469,8 +484,10 @@ export class UnifiedCollabProvider {
   }
 
   private handleOpen = () => {
-    this.reconnectAttempt = 0;
     this.setStatus('connected');
+    this.initialSyncTimer = setTimeout(() => {
+      this.failTransientConnection('initial-sync-timeout');
+    }, INITIAL_SYNC_TIMEOUT_MS);
     // Initiate the handshake: send SyncStep1 so the server replies SyncStep2
     // (+ its own SyncStep1 and an awareness snapshot). Mirrors the y-websocket client.
     const encoder = encoding.createEncoder();
@@ -538,6 +555,9 @@ export class UnifiedCollabProvider {
         }
         break;
       }
+      case WIRE.HEARTBEAT:
+        this.handleHeartbeatReply();
+        break;
       default:
         // y-protocols leniency: ignore unknown types.
         break;
@@ -547,6 +567,7 @@ export class UnifiedCollabProvider {
   private handleClose = (event: CloseEvent) => {
     this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.setSynced(false);
+    this.clearConnectionHealthTimers();
     this.detachSocketListeners();
     this.ws = null;
     if (this.destroyed) return;
@@ -689,7 +710,7 @@ export class UnifiedCollabProvider {
   }
 
   private scheduleReconnect(): void {
-    if (this.destroyed || this.reconnectTimer) return;
+    if (this.destroyed || this.reconnectTimer || !this.online) return;
     const delay = RECONNECT_BACKOFF_MS[Math.min(this.reconnectAttempt, RECONNECT_BACKOFF_MS.length - 1)];
     this.reconnectAttempt += 1;
     this.reconnectTimer = setTimeout(() => {
@@ -704,6 +725,74 @@ export class UnifiedCollabProvider {
       this.reconnectTimer = null;
     }
     this.reconnectAttempt = 0;
+  }
+
+  /** Retry immediately through the provider's one reconnect owner. */
+  reconnectNow(): void {
+    if (this.destroyed) return;
+    this.clearReconnect();
+    this.connect();
+  }
+
+  private handleOffline = () => {
+    if (this.destroyed) return;
+    this.online = false;
+    if (this.ws) {
+      this.failTransientConnection('offline');
+    } else {
+      this.clearReconnect();
+      this.setSynced(false);
+      this.setStatus('disconnected');
+    }
+  };
+
+  private handleOnline = () => {
+    this.online = true;
+    this.reconnectNow();
+  };
+
+  private scheduleHeartbeat(): void {
+    if (this.destroyed || !this._synced || this.heartbeatTimer || this.heartbeatTimeout) return;
+    this.heartbeatTimer = setTimeout(() => {
+      this.heartbeatTimer = null;
+      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+      const encoder = encoding.createEncoder();
+      encoding.writeVarUint(encoder, WIRE.HEARTBEAT);
+      this.sendFrame(encoding.toUint8Array(encoder));
+      this.heartbeatTimeout = setTimeout(() => {
+        this.heartbeatTimeout = null;
+        this.failTransientConnection('heartbeat-timeout');
+      }, HEARTBEAT_TIMEOUT_MS);
+    }, HEARTBEAT_INTERVAL_MS);
+  }
+
+  private handleHeartbeatReply(): void {
+    if (this.heartbeatTimeout) {
+      clearTimeout(this.heartbeatTimeout);
+      this.heartbeatTimeout = null;
+    }
+    this.scheduleHeartbeat();
+  }
+
+  private failTransientConnection(reason: string): void {
+    if (this.destroyed || !this.ws) return;
+    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
+    this.clearConnectionHealthTimers();
+    this.teardownSocket(4000);
+    this.setSynced(false);
+    this.setStatus('disconnected');
+    const verdict: CloseVerdict = { code: 4000, reason, disposition: 'transient' };
+    this.closeListeners.forEach(listener => listener(verdict));
+    this.scheduleReconnect();
+  }
+
+  private clearConnectionHealthTimers(): void {
+    if (this.initialSyncTimer) clearTimeout(this.initialSyncTimer);
+    if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
+    if (this.heartbeatTimeout) clearTimeout(this.heartbeatTimeout);
+    this.initialSyncTimer = null;
+    this.heartbeatTimer = null;
+    this.heartbeatTimeout = null;
   }
 
   private teardownSocket(code: number): void {
@@ -734,6 +823,16 @@ export class UnifiedCollabProvider {
   private setSynced(synced: boolean): void {
     if (this._synced === synced) return;
     this._synced = synced;
+    if (synced) {
+      // Reset backoff only after a usable Yjs session, not merely TCP OPEN.
+      // Repeated open-without-sync failures must continue backing off.
+      this.reconnectAttempt = 0;
+      if (this.initialSyncTimer) {
+        clearTimeout(this.initialSyncTimer);
+        this.initialSyncTimer = null;
+      }
+      this.scheduleHeartbeat();
+    }
     this.syncedListeners.forEach(listener => listener(synced));
   }
 }
@@ -744,8 +843,8 @@ export class UnifiedCollabProvider {
  * `terminal` (never retry), or `transient` (retry). The disposition is authoritative:
  * a normal close is its OWN category, not a special-cased `terminal`, so callers must
  * not conflate "don't retry" with "surface a terminal notice" — a clean close does
- * neither, which is why both independent retry loops (this provider's timer and the
- * wrapper's `useAutoReconnect`) must gate on the disposition rather than on `!terminal`.
+ * neither, which is why retry UI must gate on the disposition rather than on
+ * `!terminal`.
  *
  * Only a `1008` policy close is reason-sensitive: `room-capacity-reached` is the
  * single transient reason (retrying may later find room); `forbidden` and

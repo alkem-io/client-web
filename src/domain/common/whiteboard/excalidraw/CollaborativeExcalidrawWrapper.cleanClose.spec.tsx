@@ -5,15 +5,13 @@ import CollaborativeExcalidrawWrapper from './CollaborativeExcalidrawWrapper';
 
 /**
  * COMPOSITION test: the real `useCollab` routing wired into the wrapper. The
- * provider-only 1000 test cannot see the wrapper's SECOND, independent retry loop
- * (`useAutoReconnect`). Here the provider is mocked only to inject a socket-close
- * verdict; `useCollab` and the wrapper are REAL. A clean (normal 1000) close must
- * reach NEITHER wrapper callback, so the reconnect notice never opens and
- * `useAutoReconnect` is never activated — unlike a transient drop, which does.
+ * Here the provider is mocked only to inject a socket-close verdict; `useCollab`
+ * and the wrapper are real. A clean (normal 1000) close reaches neither wrapper
+ * callback, so the reconnect notice stays closed; a transient drop opens it.
  */
 const h = vi.hoisted(() => ({
   closeHandler: { value: undefined as ((v: CloseVerdict) => void) | undefined },
-  autoReconnectActive: [] as boolean[],
+  noticeOpen: [] as boolean[],
 }));
 
 // Mock the provider so the wrapper's real useCollab still subscribes to a `close`
@@ -36,14 +34,6 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', as
 vi.mock('./collab/awarenessRouter', () => ({
   AwarenessRouter: class {
     destroy() {}
-  },
-}));
-
-// Capture the `active` flag every time the wrapper drives useAutoReconnect.
-vi.mock('./useAutoReconnect', () => ({
-  useAutoReconnect: (params: { active: boolean }) => {
-    h.autoReconnectActive.push(params.active);
-    return { secondsRemaining: null };
   },
 }));
 
@@ -75,22 +65,25 @@ const renderWrapper = () =>
       entities={{ whiteboard: { id: 'wb-1' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
       options={{}}
       actions={{}}
-      renderDisconnectNotice={() => null}
+      renderDisconnectNotice={props => {
+        h.noticeOpen.push(props.open);
+        return null;
+      }}
     >
       {({ children }) => <>{children}</>}
     </CollaborativeExcalidrawWrapper>
   );
 
-const lastActive = () => h.autoReconnectActive[h.autoReconnectActive.length - 1];
+const latestNoticeOpen = () => h.noticeOpen[h.noticeOpen.length - 1];
 
-describe('CollaborativeExcalidrawWrapper — a clean close never activates the wrapper reconnect timer', () => {
+describe('CollaborativeExcalidrawWrapper — close disposition controls the reconnect notice', () => {
   beforeEach(() => {
     h.closeHandler.value = undefined;
-    h.autoReconnectActive.length = 0;
+    h.noticeOpen.length = 0;
   });
   afterEach(() => vi.clearAllMocks());
 
-  it('a NORMAL (clean 1000) close keeps useAutoReconnect active:false (no reconnect notice opened)', () => {
+  it('a NORMAL (clean 1000) close leaves the reconnect notice closed', () => {
     renderWrapper();
     expect(typeof h.closeHandler.value).toBe('function'); // real useCollab subscribed
 
@@ -98,16 +91,16 @@ describe('CollaborativeExcalidrawWrapper — a clean close never activates the w
       h.closeHandler.value?.({ code: 1000, reason: '', disposition: 'normal' });
     });
 
-    expect(lastActive()).toBe(false);
+    expect(latestNoticeOpen()).toBe(false);
   });
 
-  it('a TRANSIENT close DOES activate useAutoReconnect (contrast — the notice opens)', () => {
+  it('a TRANSIENT close opens the reconnect notice while the provider owns retry', () => {
     renderWrapper();
 
     act(() => {
       h.closeHandler.value?.({ code: 1011, reason: '', disposition: 'transient' });
     });
 
-    expect(lastActive()).toBe(true);
+    expect(latestNoticeOpen()).toBe(true);
   });
 });
