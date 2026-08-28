@@ -1,4 +1,4 @@
-import { Globe, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
+import { Globe, RotateCcw, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
@@ -14,6 +14,9 @@ export type ReadonlyReason =
   | 'contentUpdatePolicy'
   | 'contentUpdatePolicyNoOwner'
   | 'noMembership'
+  | 'inactivity'
+  | 'sizeLimitExceeded'
+  | 'sessionEnded'
   | null;
 
 /** Stable, React-key-safe identifier (e.g. Yjs awareness clientId as a string). */
@@ -35,6 +38,8 @@ type MemoCollabFooterProps = {
   /** The memo owner (`createdBy`), used to render an owner link in the policy-locked message. */
   owner?: { name: string; url?: string };
   onDelete?: () => void;
+  /** Explicitly rejoin after a server inactivity downgrade; never used for transport recovery. */
+  onResumeEditing?: () => void;
   className?: string;
 };
 
@@ -50,6 +55,7 @@ export function MemoCollabFooter({
   readonlyReason,
   owner,
   onDelete,
+  onResumeEditing,
   className,
 }: MemoCollabFooterProps) {
   const { t } = useTranslation('crd-space');
@@ -151,6 +157,12 @@ export function MemoCollabFooter({
           </Button>
         )}
         {readonlyContent && <span className="text-caption text-muted-foreground">{readonlyContent}</span>}
+        {(delayedReason === 'inactivity' || delayedReason === 'sizeLimitExceeded') && onResumeEditing && (
+          <Button variant="outline" size="sm" onClick={onResumeEditing}>
+            <RotateCcw className="size-3 mr-1" aria-hidden="true" />
+            {t('memo.footer.resumeEditing')}
+          </Button>
+        )}
       </div>
 
       <div className="flex items-center gap-3">

@@ -128,8 +128,7 @@ describe('useCollab — reason-aware close routing', () => {
 
     closeHandler?.({ code: 1000, reason: '', disposition: 'normal' });
 
-    // A clean close must not open the retrying notice (which would activate the
-    // wrapper's independent useAutoReconnect) NOR surface a terminal state.
+    // A clean close must neither open the retry notice nor surface a terminal state.
     expect(onCloseConnection).not.toHaveBeenCalled();
     expect(onTerminalClose).not.toHaveBeenCalled();
     cleanup();
@@ -212,13 +211,15 @@ describe('useCollab — reconnect + collaborator-mode contract', () => {
     return { stateOf, cleanup };
   };
 
-  it('collaborating becomes true on connect — WITHOUT waiting for a collaborator-mode frame', () => {
+  it('does not report collaboration ready until the opened socket completes Yjs sync', () => {
     const { stateOf, cleanup } = mount();
     act(() => statusHandler?.('connected'));
-    // A healthy socket is enough for the wrapper's auto-reconnect to stop; it must not
-    // hinge on a mode frame the service never sends at join.
-    expect(stateOf().collaborating).toBe(true);
+    expect(stateOf().collaborating).toBe(false);
+    expect(stateOf().isReadOnly).toBe(true);
     expect(stateOf().mode).toBeNull();
+    act(() => syncedHandler?.(true));
+    expect(stateOf().collaborating).toBe(true);
+    expect(stateOf().mode).toBe('write');
     cleanup();
   });
 
@@ -283,10 +284,27 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
     const onSessionEnd = vi.fn();
     const onTerminalClose = vi.fn();
     const onCloseConnection = vi.fn();
-    const { result } = renderHook(() => useCollab({ username: 'T', onCloseConnection, onTerminalClose, onSessionEnd }));
+    const onSceneInitChange = vi.fn();
+    const { result } = renderHook(() =>
+      useCollab({ username: 'T', onCloseConnection, onTerminalClose, onSessionEnd, onSceneInitChange })
+    );
     const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'r' });
-    return { onSessionEnd, onTerminalClose, onCloseConnection, cleanup };
+    return { onSessionEnd, onTerminalClose, onCloseConnection, onSceneInitChange, cleanup };
   };
+
+  it('seals scene consumers immediately when session-end arrives, before the socket closes', () => {
+    const { onSessionEnd, onSceneInitChange, cleanup } = mount();
+    controlHandler?.({
+      kind: 'session-end',
+      code: 'server-shutdown',
+      scope: 'document',
+      disposition: 'transient',
+    } as ControlMessage);
+
+    expect(onSceneInitChange).toHaveBeenLastCalledWith(false);
+    expect(onSceneInitChange.mock.invocationCallOrder[0]).toBeLessThan(onSessionEnd.mock.invocationCallOrder[0] ?? 0);
+    cleanup();
+  });
 
   it.each([
     ['update-rate-exceeded', 'member', 'transient'],

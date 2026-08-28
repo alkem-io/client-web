@@ -50,9 +50,6 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: undefined }),
 }));
 vi.mock('@/domain/common/whiteboard/excalidraw/useWhiteboardDefaults', () => ({ default: () => ({}) }));
-vi.mock('@/domain/common/whiteboard/excalidraw/useAutoReconnect', () => ({
-  useAutoReconnect: () => ({ secondsRemaining: null }),
-}));
 vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
   default: () => [
     null,
@@ -113,6 +110,89 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(onPublishFailed).not.toHaveBeenCalled();
     // Order proves the flush is awaited before the close/teardown callback.
     expect(order).toEqual(['flush', 'save', 'teardown']);
+  });
+
+  it('waits for the editor-owned import, then flushes, persists, saves, and tears down', async () => {
+    const order: string[] = [];
+    let finishImport!: () => void;
+    const pendingImport = new Promise<void>(resolve => {
+      finishImport = resolve;
+    });
+    const excalidrawAPI = {
+      flushAssetPublication: vi.fn(async () => {
+        order.push('flush');
+        return cleanReport;
+      }),
+    };
+    const requestDurability = vi.fn(async () => {
+      order.push('durability');
+    });
+    const save = vi.fn(async () => {
+      order.push('save');
+    });
+    const teardown = vi.fn(() => order.push('teardown'));
+
+    const closing = closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      waitForPendingImport: async () => {
+        order.push('import');
+        await pendingImport;
+      },
+      requestDurability,
+      requireDurability: true,
+      save,
+      onPublishFailed: vi.fn(),
+      teardown,
+    });
+
+    await Promise.resolve();
+    expect(order).toEqual(['import']);
+    finishImport();
+    await expect(closing).resolves.toBe(true);
+    expect(order).toEqual(['import', 'flush', 'durability', 'save', 'teardown']);
+  });
+
+  it('keeps a draft editor open when no durability barrier is available', async () => {
+    const save = vi.fn(async () => {});
+    const teardown = vi.fn();
+    const onDurabilityFailed = vi.fn();
+
+    const closed = await closeCollaborativeWhiteboard({
+      excalidrawAPI: { flushAssetPublication: vi.fn(async () => cleanReport) },
+      requireDurability: true,
+      save,
+      onPublishFailed: vi.fn(),
+      onDurabilityFailed,
+      teardown,
+    });
+
+    expect(closed).toBe(false);
+    expect(onDurabilityFailed).toHaveBeenCalledOnce();
+    expect(save).not.toHaveBeenCalled();
+    expect(teardown).not.toHaveBeenCalled();
+  });
+
+  it('keeps the editor open when persistence fails', async () => {
+    const save = vi.fn(async () => {});
+    const teardown = vi.fn();
+    const onDurabilityFailed = vi.fn();
+
+    const closed = await closeCollaborativeWhiteboard({
+      excalidrawAPI: { flushAssetPublication: vi.fn(async () => cleanReport) },
+      requestDurability: vi.fn(async () => {
+        throw new Error('persist failed');
+      }),
+      requireDurability: true,
+      save,
+      onPublishFailed: vi.fn(),
+      onDurabilityFailed,
+      teardown,
+    });
+
+    expect(closed).toBe(false);
+    expect(onDurabilityFailed).toHaveBeenCalledOnce();
+    expect(save).not.toHaveBeenCalled();
+    expect(teardown).not.toHaveBeenCalled();
   });
 
   it('(b) a still-pending slow store that resolves with a non-empty `failed` does NOT report a clean close', async () => {
@@ -215,7 +295,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(teardown).toHaveBeenCalledOnce();
   });
 
-  it('keeps the session open when the metadata/preview save reports failure', async () => {
+  it('closes after durable content even when best-effort metadata/preview reports failure', async () => {
     const excalidrawAPI = { flushAssetPublication: vi.fn(async () => cleanReport) };
     const save = vi.fn(async () => false);
     const teardown = vi.fn();
@@ -227,9 +307,9 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
       teardown,
     });
 
-    expect(proceeded).toBe(false);
+    expect(proceeded).toBe(true);
     expect(save).toHaveBeenCalledOnce();
-    expect(teardown).not.toHaveBeenCalled();
+    expect(teardown).toHaveBeenCalledOnce();
   });
 
   it('treats a missing (unmounted) editor as nothing-to-flush and proceeds', async () => {
