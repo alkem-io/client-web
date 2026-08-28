@@ -15,6 +15,8 @@ export type ReadonlyReason =
   | 'contentUpdatePolicyNoOwner'
   | 'noMembership'
   | 'inactivity'
+  | 'sizeLimitExceeded'
+  | 'sessionEnded'
   | null;
 
 /** Stable, React-key-safe identifier (e.g. Yjs awareness clientId as a string). */
@@ -155,7 +157,7 @@ export function MemoCollabFooter({
           </Button>
         )}
         {readonlyContent && <span className="text-caption text-muted-foreground">{readonlyContent}</span>}
-        {delayedReason === 'inactivity' && onResumeEditing && (
+        {(delayedReason === 'inactivity' || delayedReason === 'sizeLimitExceeded') && onResumeEditing && (
           <Button variant="outline" size="sm" onClick={onResumeEditing}>
             <RotateCcw className="size-3 mr-1" aria-hidden="true" />
             {t('memo.footer.resumeEditing')}

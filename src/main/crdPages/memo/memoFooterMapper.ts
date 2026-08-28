@@ -2,6 +2,9 @@ import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/ge
 import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import type { ConnectedUser, ReadonlyReason } from '@/crd/components/memo/MemoCollabFooter';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
+import type { SessionEndCode } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+
+type MemoSessionEndCode = SessionEndCode | 'terminal-connection-close';
 
 type MapMemoFooterParams = {
   connectionStatus: CollabStatus;
@@ -9,6 +12,7 @@ type MapMemoFooterParams = {
   isAuthenticated: boolean;
   isReadOnly: boolean;
   readOnlyCode?: ReadOnlyCode;
+  sessionEndCode?: MemoSessionEndCode;
   memberCount: number;
   connectedUsers: ConnectedUser[];
   isContribution: boolean;
@@ -52,6 +56,7 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     isAuthenticated,
     isReadOnly,
     readOnlyCode,
+    sessionEndCode,
     memberCount,
     connectedUsers,
     isContribution,
@@ -76,16 +81,15 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
       isAuthenticated,
       isReadOnly,
       readOnlyCode,
+      sessionEndCode,
       contentUpdatePolicy,
       hasOwner,
       myMembershipStatus,
     }),
     onDelete: canDelete ? onDelete : undefined,
     onResumeEditing:
-      connectionStatus === 'connected' &&
-      synced &&
-      readOnlyCode === ReadOnlyCode.INACTIVITY &&
-      isReadOnly &&
+      ((connectionStatus === 'connected' && synced && readOnlyCode === ReadOnlyCode.INACTIVITY && isReadOnly) ||
+        sessionEndCode === 'document-size-limit-exceeded') &&
       onResumeEditing
         ? onResumeEditing
         : undefined,
@@ -98,6 +102,7 @@ type ResolveReadonlyReasonParams = {
   isAuthenticated: boolean;
   isReadOnly: boolean;
   readOnlyCode?: ReadOnlyCode;
+  sessionEndCode?: MemoSessionEndCode;
   contentUpdatePolicy?: ContentUpdatePolicy;
   hasOwner?: boolean;
   myMembershipStatus?: CommunityMembershipStatus | string;
@@ -109,10 +114,13 @@ function resolveReadonlyReason({
   isAuthenticated,
   isReadOnly,
   readOnlyCode,
+  sessionEndCode,
   contentUpdatePolicy,
   hasOwner,
   myMembershipStatus,
 }: ResolveReadonlyReasonParams): ReadonlyReason {
+  if (sessionEndCode === 'document-size-limit-exceeded') return 'sizeLimitExceeded';
+  if (sessionEndCode) return 'sessionEnded';
   if (connectionStatus !== 'connected') return 'connecting';
   if (!isAuthenticated) return 'unauthenticated';
   if (!synced) return 'notSynced';

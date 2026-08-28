@@ -114,6 +114,7 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
     synced: collab.synced,
     isReadOnly: collab.isReadOnly ?? false,
     readOnlyCode: collab.readOnlyCode,
+    sessionEndCode: collab.sessionEndCode,
     resumeEditing: collab.resumeEditing,
     memberCount,
     connectedUsers,

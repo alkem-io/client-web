@@ -45,4 +45,27 @@ describe('mapMemoFooterProps inactivity recovery', () => {
     expect(result.readonlyReason).toBe('connecting');
     expect(result.onResumeEditing).toBeUndefined();
   });
+
+  it('distinguishes a terminal end from reconnecting and only resumes a manual size-limit end', () => {
+    const onResumeEditing = vi.fn();
+    const terminal = mapMemoFooterProps({
+      ...base,
+      connectionStatus: 'disconnected',
+      synced: false,
+      sessionEndCode: 'document-deleted',
+      onResumeEditing,
+    });
+    expect(terminal.readonlyReason).toBe('sessionEnded');
+    expect(terminal.onResumeEditing).toBeUndefined();
+
+    const manual = mapMemoFooterProps({
+      ...base,
+      connectionStatus: 'disconnected',
+      synced: false,
+      sessionEndCode: 'document-size-limit-exceeded',
+      onResumeEditing,
+    });
+    expect(manual.readonlyReason).toBe('sizeLimitExceeded');
+    expect(manual.onResumeEditing).toBe(onResumeEditing);
+  });
 });

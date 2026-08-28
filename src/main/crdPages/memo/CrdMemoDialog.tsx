@@ -58,6 +58,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     synced,
     isReadOnly,
     readOnlyCode,
+    sessionEndCode,
     resumeEditing,
     memberCount,
     connectedUsers,
@@ -160,6 +161,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     isAuthenticated,
     isReadOnly,
     readOnlyCode,
+    sessionEndCode,
     memberCount,
     connectedUsers,
     isContribution,
@@ -177,6 +179,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   // (permission-driven only), so it does not need to rebuild mid-session.
   const isConnectionReady = connectionStatus === 'connected' && synced;
   const editorDisabled = isReadOnly || !hasContributePrivileges;
+  const sessionEndMessage = sessionEndCode
+    ? t(
+        sessionEndCode === 'document-size-limit-exceeded'
+          ? 'memo.footer.readonlyReason.sizeLimitExceeded'
+          : 'memo.footer.readonlyReason.sessionEnded'
+      )
+    : undefined;
 
   const title = (
     <MemoDisplayName
@@ -240,7 +249,11 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 the editor's first render is its final render, with
                 `disabled` driven purely by permissions. Mirrors the MUI
                 memo dialog's "Connecting to collaboration service…" overlay. */}
-            {isConnectionReady ? (
+            {sessionEndMessage ? (
+              <div className="h-full flex items-center justify-center text-muted-foreground">
+                <p>{sessionEndMessage}</p>
+              </div>
+            ) : isConnectionReady ? (
               <CollaborativeMarkdownEditor
                 ydoc={ydoc as unknown as YDocLike}
                 provider={provider as unknown as CollabProviderLike}

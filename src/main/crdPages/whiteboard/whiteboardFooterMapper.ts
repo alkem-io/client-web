@@ -83,7 +83,7 @@ export function mapWhiteboardFooterProps(params: MapWhiteboardFooterParams): Whi
   const canRestart =
     params.canReconnect === true ||
     (readonlyReason === ReadonlyReason.Readonly &&
-      (!params.collaboratorModeReason || params.collaboratorModeReason === CollaboratorModeReasons.INACTIVITY));
+      params.collaboratorModeReason === CollaboratorModeReasons.INACTIVITY);
 
   return {
     canDelete: hasDeletePrivilege && !params.preventWhiteboardDeletion,

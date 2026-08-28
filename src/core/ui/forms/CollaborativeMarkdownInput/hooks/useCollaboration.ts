@@ -16,6 +16,7 @@ import {
   type ControlMessage,
   classifySessionEnd,
   controlReasonToReadOnlyCode,
+  type SessionEndCode,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { useNotification } from '../../../notifications/useNotification';
@@ -49,6 +50,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     readOnly: boolean;
     readOnlyCode?: ReadOnlyCode;
   }>();
+  const [sessionEndCode, setSessionEndCode] = useState<SessionEndCode | 'terminal-connection-close'>();
 
   // Bumped when the server REJECTS a memo update (`update-rejected`). A rejected
   // generation must be DISCARDED, not kept locally: the server refused it, so every
@@ -107,6 +109,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       setSynced(false);
       setLastSaveTime(undefined);
       setServerReadOnlyState(undefined);
+      setSessionEndCode(undefined);
       return;
     }
 
@@ -126,6 +129,14 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
         setStatus(nextStatus);
       } else {
         logWarn('UnknownMemoStatusError', { category: TagCategoryValues.MEMO, label: `Status: ${nextStatus}` });
+      }
+    };
+
+    const closeHandler = (verdict: { disposition: 'normal' | 'terminal' | 'transient' }) => {
+      if (verdict.disposition === 'terminal') {
+        setSynced(false);
+        setStatus(MemoStatus.DISCONNECTED);
+        setSessionEndCode(current => current ?? 'terminal-connection-close');
       }
     };
 
@@ -168,20 +179,29 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           // is a rolling deploy where a NEWER server emits a session-end code this client's
           // table does not know: trusting the socket close that follows (often a transient
           // 1013/1001) would silently reconnect past a terminal condition and MASK data loss.
-          // Disconnecting the provider tears down the socket and clears its reconnect timer,
-          // so its scheduler cannot reconnect; the user reopens the memo to retry.
+          // Disconnecting the provider tears down the socket and clears its reconnect timer.
+          // The one manual tuple gets an explicit fresh-generation action below; terminal
+          // and unknown tuples remain closed.
           const info = classifySessionEnd(message);
           if (info) {
             if (info.code === 'update-not-accepted') {
               notifyRef.current(tRef.current('callout.memo.updateNotAccepted'), 'warning');
               setSynced(false);
               setStatus(MemoStatus.CONNECTING);
+            } else if (info.disposition !== 'transient') {
+              setSynced(false);
+              setStatus(MemoStatus.DISCONNECTED);
+              setSessionEndCode(info.code);
+              nextProvider.disconnect();
             }
-            // Every other validated tuple is driven by the socket close that follows, whose
-            // classifyClose verdict the provider already routes (terminal → no reconnect,
-            // transient → reconnect) — no extra memo action here.
+            // A terminal/manual control is authoritative before the socket close arrives:
+            // seal readiness, expose its reason, and stop this provider. Only the validated
+            // transient leaves reconnect ownership with the provider's close handler.
           } else {
             notifyRef.current(tRef.current('callout.memo.sessionEnded'), 'warning');
+            setSynced(false);
+            setStatus(MemoStatus.DISCONNECTED);
+            setSessionEndCode('terminal-connection-close');
             nextProvider.disconnect();
           }
           break;
@@ -194,6 +214,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     nextProvider.on('status', statusHandler);
     nextProvider.on('synced', syncHandler);
     nextProvider.on('control', controlHandler);
+    nextProvider.on('close', closeHandler);
 
     // Reset every room/generation-owned state in the same effect turn that
     // publishes the new provider. Room B must never observe room A's readiness,
@@ -202,6 +223,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     setSynced(false);
     setLastSaveTime(undefined);
     setServerReadOnlyState(undefined);
+    setSessionEndCode(undefined);
 
     // Start the WebSocket connection now that event listeners are in place.
     setProviderSession({ collaborationId, ydoc, provider: nextProvider });
@@ -232,12 +254,16 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     ];
   }, [provider, ydoc, userName, cursorColor]);
 
-  // Inactivity is a live, server-downgraded member rather than a broken socket.
-  // Resuming therefore means a fresh room member + Y.Doc generation; calling
-  // connect() on the still-open provider would be a no-op. No other read-only
-  // reason is eligible for this action.
+  // Inactivity is a live, server-downgraded member rather than a broken socket,
+  // while a size-limit end has rejected the current generation. Both recover by
+  // creating a fresh room member + Y.Doc; calling connect() on the old provider
+  // would either no-op or retain rejected state. No terminal/authorization reason
+  // is eligible for this action.
   const resumeEditing = () => {
-    if (serverReadOnlyState?.readOnlyCode === ReadOnlyCode.INACTIVITY) {
+    if (
+      serverReadOnlyState?.readOnlyCode === ReadOnlyCode.INACTIVITY ||
+      sessionEndCode === 'document-size-limit-exceeded'
+    ) {
       setRecoveryGeneration(generation => generation + 1);
     }
   };
@@ -246,8 +272,9 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     status,
     synced,
     lastSaveTime,
-    isReadOnly: !isOnline || serverReadOnlyState?.readOnly,
+    isReadOnly: !isOnline || serverReadOnlyState?.readOnly || !!sessionEndCode,
     readOnlyCode: serverReadOnlyState?.readOnlyCode,
+    sessionEndCode,
     resumeEditing,
     collaborationExtensions,
     ydoc,

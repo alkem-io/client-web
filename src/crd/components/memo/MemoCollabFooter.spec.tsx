@@ -41,4 +41,31 @@ describe('MemoCollabFooter inactivity recovery', () => {
 
     expect(screen.queryByRole('button', { name: 'Resume editing' })).not.toBeInTheDocument();
   });
+
+  it('offers a fresh-generation resume for a manual size-limit end, but not a terminal end', () => {
+    vi.useFakeTimers();
+    const onResumeEditing = vi.fn();
+    const { rerender } = render(
+      <MemoCollabFooter
+        connectionStatus="disconnected"
+        memberCount={1}
+        readonlyReason="sizeLimitExceeded"
+        onResumeEditing={onResumeEditing}
+      />
+    );
+    act(() => vi.advanceTimersByTime(500));
+    fireEvent.click(screen.getByRole('button', { name: 'Resume editing' }));
+    expect(onResumeEditing).toHaveBeenCalledOnce();
+
+    rerender(
+      <MemoCollabFooter
+        connectionStatus="disconnected"
+        memberCount={1}
+        readonlyReason="sessionEnded"
+        onResumeEditing={onResumeEditing}
+      />
+    );
+    act(() => vi.advanceTimersByTime(500));
+    expect(screen.queryByRole('button', { name: 'Resume editing' })).not.toBeInTheDocument();
+  });
 });
