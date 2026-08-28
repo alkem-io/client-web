@@ -138,9 +138,8 @@ type CollaborativeCloseParams = {
   excalidrawAPI: Pick<ExcalidrawImperativeAPI, 'flushAssetPublication'> | null;
   /** Finish the one editor-owned import before freezing and persisting the scene. */
   waitForPendingImport?: () => Promise<void>;
-  /** Persist preview + display name for the collaborative whiteboard (a no-op when not editing). */
-  /** Return false when the metadata/preview save failed and the dialog must stay open. */
-  save: () => Promise<boolean | void>;
+  /** Best-effort preview/profile update after collaborative content is durable. */
+  save: () => Promise<unknown>;
   /** Report that one or more images failed to publish (a non-empty `failed`). */
   onPublishFailed: (report: AssetPublishReport) => void;
   /** Persist every update sent before this request. */
@@ -217,10 +216,7 @@ export async function closeCollaborativeWhiteboard({
     }
   }
   if (hasEditorChanged?.()) return false;
-  const saved = await save();
-  if (saved === false) {
-    return false;
-  }
+  await save();
   teardown();
   return true;
 }
@@ -299,14 +295,13 @@ const CrdWhiteboardDialog = ({
   const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
 
   const prepareWhiteboardForUpdate = async (wb: WhiteboardDetails, excState: RelevantExcalidrawState | undefined) => {
-    if (!excState || !wb?.profile?.id || !formikRef.current?.isValid) {
+    if (!excState || !wb?.profile?.id) {
       return { success: false as const };
     }
     const previewImages = await generateWhiteboardVisuals(wb);
-    const displayName = formikRef.current?.values.profile.displayName ?? wb.profile.displayName;
     return {
       success: true as const,
-      whiteboard: { ...wb, profile: { ...wb.profile, displayName } },
+      whiteboard: wb,
       previewImages,
     };
   };
@@ -330,28 +325,37 @@ const CrdWhiteboardDialog = ({
         requireDurability: options.requireDurableClose,
         save: async () => {
           if (!shouldSave || !whiteboard) return true;
-          const excState = excalidrawAPI
-            ? {
-                elements: excalidrawAPI.getSceneElements(),
-                appState: excalidrawAPI.getAppState(),
-                files: excalidrawAPI.getFiles(),
+          try {
+            const excState = excalidrawAPI
+              ? {
+                  elements: excalidrawAPI.getSceneElements(),
+                  appState: excalidrawAPI.getAppState(),
+                  files: excalidrawAPI.getFiles(),
+                }
+              : undefined;
+            const result = await prepareWhiteboardForUpdate(whiteboard, excState);
+            if (result.success) {
+              const update = await actions.onUpdate(result.whiteboard, result.previewImages);
+              if (!update.success) {
+                notify(t('callout.whiteboard.saveFailed'), 'error');
               }
-            : undefined;
-          const result = await prepareWhiteboardForUpdate(whiteboard, excState);
-          if (result.success) {
-            const update = await actions.onUpdate(result.whiteboard, result.previewImages);
-            if (!update.success) {
+            } else {
+              logError(new Error('Error preparing whiteboard preview on close'), {
+                category: TagCategoryValues.WHITEBOARD,
+              });
               notify(t('callout.whiteboard.saveFailed'), 'error');
-              return false;
             }
-            return true;
-          } else {
-            logError(new Error('Error preparing whiteboard for update on close'), {
+          } catch {
+            // Apollo errors may include serialized variables. Never send those
+            // values to browser telemetry.
+            logError(new Error('Whiteboard preview update failed'), {
               category: TagCategoryValues.WHITEBOARD,
             });
             notify(t('callout.whiteboard.saveFailed'), 'error');
-            return false;
           }
+          // Preview/profile metadata is best-effort. The Yjs durability barrier
+          // above is the content-safety boundary and must not be coupled to it.
+          return true;
         },
         onPublishFailed: () => notify(t('callout.whiteboard.images.uploadFailed'), 'error'),
         onDurabilityFailed: () => notify(t('callout.whiteboard.saveFailed'), 'error'),
@@ -523,24 +527,33 @@ const CrdWhiteboardDialog = ({
               reconnecting={connecting}
               countdownSeconds={autoReconnectSeconds}
               onReconnect={onReconnect}
-              // Surface the reload escape hatch immediately once a reconnect attempt has failed — while
-              // online the countdown cycles `connecting`, so the notice's own stuck-timer never elapses.
+              // Surface the reload escape hatch immediately once a reconnect attempt has failed.
               hasError={hasError}
               // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
               // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
-              // of seconds, disabling Reconnect AND pausing the auto-reconnect countdown (story #10131).
+              // of seconds, disabling Reconnect while the browser is genuinely offline (story #10131).
               onReloadPage={isTerminalUnavailable ? undefined : () => window.location.reload()}
             />
           );
         }}
       >
-        {({ children, mode, modeReason, collaborating, connecting, restartCollaboration, isReadOnly }) => {
+        {({
+          children,
+          mode,
+          modeReason,
+          collaborating,
+          connecting,
+          restartCollaboration,
+          canReconnect,
+          isReadOnly,
+        }) => {
           const { readonlyReason, ...footerProps } = mapWhiteboardFooterProps({
             myPrivileges: whiteboard.authorization?.myPrivileges,
             canEdit: !!options.canEdit,
             preventWhiteboardDeletion: !options.canDelete,
             collaboratorMode: mode,
             collaboratorModeReason: modeReason,
+            canReconnect,
             guestContributionsAllowed: whiteboard.guestContributionsAllowed,
             isAuthenticated,
             contentUpdatePolicy: whiteboard.contentUpdatePolicy,
@@ -618,8 +631,18 @@ const CrdWhiteboardDialog = ({
                       editing={isEditingName}
                       onEdit={() => setIsEditingName(true)}
                       onSave={async () => {
-                        await actions.onChangeDisplayName(whiteboard.id, values.profile.displayName);
-                        setIsEditingName(false);
+                        try {
+                          await actions.onChangeDisplayName(whiteboard.id, values.profile.displayName);
+                          setIsEditingName(false);
+                        } catch {
+                          // Keep GraphQL variable values out of telemetry here too.
+                          logError(new Error('Whiteboard rename failed'), {
+                            category: TagCategoryValues.WHITEBOARD,
+                          });
+                          notify(t('callout.whiteboard.saveFailed'), 'error');
+                          setFieldValue('profile.displayName', whiteboard.profile.displayName);
+                          setIsEditingName(false);
+                        }
                       }}
                       onCancel={() => {
                         setFieldValue('profile.displayName', whiteboard.profile.displayName);

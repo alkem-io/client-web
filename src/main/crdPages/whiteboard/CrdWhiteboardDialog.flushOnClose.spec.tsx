@@ -50,9 +50,6 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: undefined }),
 }));
 vi.mock('@/domain/common/whiteboard/excalidraw/useWhiteboardDefaults', () => ({ default: () => ({}) }));
-vi.mock('@/domain/common/whiteboard/excalidraw/useAutoReconnect', () => ({
-  useAutoReconnect: () => ({ secondsRemaining: null }),
-}));
 vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
   default: () => [
     null,
@@ -298,7 +295,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(teardown).toHaveBeenCalledOnce();
   });
 
-  it('keeps the session open when the metadata/preview save reports failure', async () => {
+  it('closes after durable content even when best-effort metadata/preview reports failure', async () => {
     const excalidrawAPI = { flushAssetPublication: vi.fn(async () => cleanReport) };
     const save = vi.fn(async () => false);
     const teardown = vi.fn();
@@ -310,9 +307,9 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
       teardown,
     });
 
-    expect(proceeded).toBe(false);
+    expect(proceeded).toBe(true);
     expect(save).toHaveBeenCalledOnce();
-    expect(teardown).not.toHaveBeenCalled();
+    expect(teardown).toHaveBeenCalledOnce();
   });
 
   it('treats a missing (unmounted) editor as nothing-to-flush and proceeds', async () => {
