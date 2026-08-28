@@ -234,7 +234,10 @@ describe('UnifiedCollabProvider', () => {
 
     vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS);
     expect(provider.status).toBe('disconnected');
-    expect(verdicts.at(-1)).toMatchObject({ reason: 'initial-sync-timeout', disposition: 'transient' });
+    expect(verdicts[verdicts.length - 1]).toMatchObject({
+      reason: 'initial-sync-timeout',
+      disposition: 'transient',
+    });
 
     vi.advanceTimersByTime(1_000);
     expect(MockWebSocket.instances).toHaveLength(2);
@@ -298,6 +301,35 @@ describe('UnifiedCollabProvider', () => {
 
     window.dispatchEvent(new Event('online'));
     expect(MockWebSocket.instances).toHaveLength(2);
+    provider.destroy();
+  });
+
+  it('does not reconnect on an online event after a terminal close', () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.serverClose(1008, 'forbidden');
+
+    window.dispatchEvent(new Event('offline'));
+    window.dispatchEvent(new Event('online'));
+    vi.advanceTimersByTime(60_000);
+
+    expect(MockWebSocket.instances).toHaveLength(1);
+    provider.destroy();
+  });
+
+  it('does not reconnect on an online event after an explicit disconnect', () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    MockWebSocket.instances[0].open();
+    provider.disconnect();
+
+    window.dispatchEvent(new Event('offline'));
+    window.dispatchEvent(new Event('online'));
+    vi.advanceTimersByTime(60_000);
+
+    expect(MockWebSocket.instances).toHaveLength(1);
     provider.destroy();
   });
 
@@ -499,7 +531,7 @@ describe('UnifiedCollabProvider', () => {
     // Otherwise the independent heartbeat timeout would correctly close first.
     for (let elapsed = 0; elapsed < DURABILITY_REQUEST_TIMEOUT_MS - HEARTBEAT_INTERVAL_MS; elapsed += 15_000) {
       await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL_MS);
-      const heartbeat = socket.sent.at(-1);
+      const heartbeat = socket.sent[socket.sent.length - 1];
       if (!heartbeat) throw new Error('heartbeat was not sent');
       expect(readFrameType(heartbeat)).toBe(WIRE.HEARTBEAT);
       socket.receive(heartbeat);
@@ -508,7 +540,7 @@ describe('UnifiedCollabProvider', () => {
     await timedOut;
 
     const retry = provider.requestDurability();
-    const retryFrame = socket.sent.at(-1);
+    const retryFrame = socket.sent[socket.sent.length - 1];
     if (!retryFrame) throw new Error('durability retry was not sent');
     const request = readRawJsonFrame(retryFrame).body as { requestId: string };
     socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
@@ -557,7 +589,7 @@ describe('UnifiedCollabProvider', () => {
 
     // Outbound: channel.send frames a type-2 message.
     provider.ephemeralChannel.send(event);
-    expect(readFrameType(socket.sent.at(-1) as Uint8Array)).toBe(WIRE.EPHEMERAL);
+    expect(readFrameType(socket.sent[socket.sent.length - 1] as Uint8Array)).toBe(WIRE.EPHEMERAL);
     provider.destroy();
   });
 

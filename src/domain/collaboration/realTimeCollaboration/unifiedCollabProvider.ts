@@ -271,6 +271,7 @@ export class UnifiedCollabProvider {
   private heartbeatTimer: ReturnType<typeof setTimeout> | null = null;
   private heartbeatTimeout: ReturnType<typeof setTimeout> | null = null;
   private online = globalThis.navigator?.onLine !== false;
+  private resumeAfterOffline = false;
 
   private readonly statusListeners = new Set<StatusListener>();
   private readonly syncedListeners = new Set<SyncedListener>();
@@ -390,6 +391,7 @@ export class UnifiedCollabProvider {
 
   /** Tear down the socket without reconnecting and without destroying the doc. */
   disconnect(): void {
+    this.resumeAfterOffline = false;
     this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.clearReconnect();
     this.clearConnectionHealthTimers();
@@ -402,6 +404,7 @@ export class UnifiedCollabProvider {
   destroy(): void {
     if (this.destroyed) return;
     this.destroyed = true;
+    this.resumeAfterOffline = false;
     this.rejectPendingDurability('The collaboration editor closed before the draft was persisted');
     this.clearReconnect();
     this.clearConnectionHealthTimers();
@@ -584,6 +587,8 @@ export class UnifiedCollabProvider {
     // `normal` clean close and a `terminal` policy close both stay closed.
     if (verdict.disposition === 'transient') {
       this.scheduleReconnect();
+    } else {
+      this.resumeAfterOffline = false;
     }
   };
 
@@ -734,8 +739,10 @@ export class UnifiedCollabProvider {
     this.connect();
   }
 
+  /** Pause retries and remember only a retryable session for browser-online resume. */
   private handleOffline = () => {
     if (this.destroyed) return;
+    this.resumeAfterOffline ||= Boolean(this.ws || this.reconnectTimer);
     this.online = false;
     if (this.ws) {
       this.failTransientConnection('offline');
@@ -746,8 +753,11 @@ export class UnifiedCollabProvider {
     }
   };
 
+  /** Resume a session interrupted by browser-offline without reviving an intentional close. */
   private handleOnline = () => {
     this.online = true;
+    if (!this.resumeAfterOffline) return;
+    this.resumeAfterOffline = false;
     this.reconnectNow();
   };
 

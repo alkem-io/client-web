@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mapWhiteboardFooterProps } from './whiteboardFooterMapper';
+import { mapWhiteboardFooterProps } from '@/main/crdPages/whiteboard/whiteboardFooterMapper';
 
 describe('mapWhiteboardFooterProps reconnect affordance', () => {
   it('offers reconnect after a transient disconnect without changing edit authorization', () => {
