@@ -810,6 +810,11 @@ export class UnifiedCollabProvider {
 
   private failTransientConnection(reason: string): void {
     if (this.destroyed || !this.ws) return;
+    // Once the browser has started closing a socket, its queued `close` event is
+    // authoritative: it may carry a normal or terminal policy verdict. Detaching
+    // that listener here would replace the real outcome with a synthetic transient
+    // one and could reconnect a session that must stay closed.
+    if (this.ws.readyState !== WebSocket.CONNECTING && this.ws.readyState !== WebSocket.OPEN) return;
     this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.clearConnectionHealthTimers();
     this.teardownSocket(4000);

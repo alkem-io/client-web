@@ -31,6 +31,7 @@ describe('controlReasonToReadOnlyCode', () => {
  * without a live server. Each instance records the URL it was opened with.
  */
 class MockWebSocket {
+  static CONNECTING = 0;
   static OPEN = 1;
   static instances: MockWebSocket[] = [];
 
@@ -298,6 +299,72 @@ describe('UnifiedCollabProvider', () => {
     expect(provider.status).toBe('disconnected');
     vi.advanceTimersByTime(1_000);
     expect(MockWebSocket.instances).toHaveLength(2);
+    provider.destroy();
+  });
+
+  it.each([
+    {
+      socketState: 'CLOSING',
+      readyState: 2,
+      source: 'browser offline',
+      trigger: () => window.dispatchEvent(new Event('offline')),
+      closeCode: 1008,
+      closeReason: 'forbidden',
+      disposition: 'terminal' as const,
+    },
+    {
+      socketState: 'CLOSED',
+      readyState: 3,
+      source: 'browser offline',
+      trigger: () => window.dispatchEvent(new Event('offline')),
+      closeCode: 1000,
+      closeReason: '',
+      disposition: 'normal' as const,
+    },
+    {
+      socketState: 'CLOSING',
+      readyState: 2,
+      source: 'initial-sync timeout',
+      trigger: () => vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS),
+      closeCode: 1008,
+      closeReason: 'forbidden',
+      disposition: 'terminal' as const,
+    },
+    {
+      socketState: 'CLOSED',
+      readyState: 3,
+      source: 'initial-sync timeout',
+      trigger: () => vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS),
+      closeCode: 1000,
+      closeReason: '',
+      disposition: 'normal' as const,
+    },
+  ])('lets a queued $disposition $socketState close win over a $source transient trigger', ({
+    readyState,
+    trigger,
+    closeCode,
+    closeReason,
+    disposition,
+  }) => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const verdicts: CloseVerdict[] = [];
+    provider.on('close', verdict => verdicts.push(verdict));
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.readyState = readyState; // The authoritative close event is queued.
+
+    trigger();
+
+    expect(verdicts).toEqual([]);
+    expect(MockWebSocket.instances).toHaveLength(1);
+
+    socket.serverClose(closeCode, closeReason);
+    window.dispatchEvent(new Event('online'));
+    vi.advanceTimersByTime(60_000);
+
+    expect(verdicts).toEqual([{ code: closeCode, reason: closeReason, disposition }]);
+    expect(MockWebSocket.instances).toHaveLength(1);
     provider.destroy();
   });
 

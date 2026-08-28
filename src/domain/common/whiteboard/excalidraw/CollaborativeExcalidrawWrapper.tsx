@@ -461,7 +461,9 @@ const CollaborativeExcalidrawWrapper = ({
         mode,
         modeReason,
         restartCollaboration,
-        canReconnect: !!collabApi && isOnline && !connecting && !collaborating && terminalCloseReason === null,
+        canReconnect:
+          isOnline &&
+          (manualDiscardPending || (!!collabApi && !connecting && !collaborating && terminalCloseReason === null)),
         isReadOnly,
       })}
       {renderDisconnectNotice({

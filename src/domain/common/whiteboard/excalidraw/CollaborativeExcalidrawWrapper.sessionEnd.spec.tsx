@@ -19,6 +19,7 @@ const h = vi.hoisted(() => ({
   reconnect: vi.fn(),
   initializeCount: { value: 0 },
   cleanupCount: { value: 0 },
+  footerCanReconnect: { value: false },
   collabState: {
     connecting: false,
     collaborating: false,
@@ -87,7 +88,10 @@ const wrapper = (whiteboardId = 'wb-1') => (
       return null;
     }}
   >
-    {({ children }) => <>{children}</>}
+    {({ children, canReconnect }) => {
+      h.footerCanReconnect.value = canReconnect;
+      return <>{children}</>;
+    }}
   </CollaborativeExcalidrawWrapper>
 );
 
@@ -107,6 +111,7 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     h.reconnect.mockClear();
     h.initializeCount.value = 0;
     h.cleanupCount.value = 0;
+    h.footerCanReconnect.value = false;
     h.collabState.connecting = false;
     h.collabState.collaborating = false;
     h.collabState.mode = null;
@@ -142,6 +147,9 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     send({ code: 'document-size-limit-exceeded', scope: 'member', disposition: 'manual' });
     expect(h.editorInvalidatedCount.value).toBe(1); // poisoned generation torn down
     expect(h.notifications).toContain('callout.whiteboard.session.sizeLimitExceeded');
+    // The disconnect dialog may be dismissed; the footer must preserve the same
+    // explicit fresh-generation recovery action.
+    expect(h.footerCanReconnect.value).toBe(true);
     // The explicit user restart mints a FRESH generation (remount) before reconnecting.
     act(() => h.onReconnect.value?.());
     expect(h.mountCount.value).toBeGreaterThan(mountsBefore);
@@ -178,6 +186,7 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     expect(h.editorInvalidatedCount.value).toBe(0);
     expect(h.notifications).toContain('callout.whiteboard.session.editsNotSaved');
     expect(h.notifications).not.toContain('callout.whiteboard.session.documentDeleted');
+    expect(h.footerCanReconnect.value).toBe(false);
   });
 
   it('terminal document-deleted: no reconnect, deletion copy', () => {
