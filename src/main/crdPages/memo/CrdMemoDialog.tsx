@@ -51,10 +51,20 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     spaceLevel === SpaceLevel.L0
       ? space.about.membership?.myMembershipStatus
       : subspace.about.membership?.myMembershipStatus;
-  const { ydoc, provider, connectionStatus, synced, isReadOnly, memberCount, connectedUsers, user } =
-    useCrdMemoProvider({
-      collaborationId: memoId,
-    });
+  const {
+    ydoc,
+    provider,
+    connectionStatus,
+    synced,
+    isReadOnly,
+    readOnlyCode,
+    resumeEditing,
+    memberCount,
+    connectedUsers,
+    user,
+  } = useCrdMemoProvider({
+    collaborationId: memoId,
+  });
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
@@ -149,11 +159,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     synced,
     isAuthenticated,
     isReadOnly,
+    readOnlyCode,
     memberCount,
     connectedUsers,
     isContribution,
     hasDeletePrivileges,
     onDelete: handleRequestDelete,
+    onResumeEditing: resumeEditing,
     contentUpdatePolicy: memo?.contentUpdatePolicy,
     hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,

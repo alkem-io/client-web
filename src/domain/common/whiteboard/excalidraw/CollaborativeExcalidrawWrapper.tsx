@@ -14,6 +14,7 @@ import type { SessionEndCode } from '@/domain/collaboration/realTimeCollaboratio
 import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
+import { CollaboratorModeReasons } from './collab/excalidrawAppConstants';
 import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
 import { generateIdFromFile } from './collab/utils';
 import { getWhiteboardImageUploadI18nParams, validateWhiteboardImageFile } from './fileStore/fileValidation';
@@ -363,12 +364,17 @@ const CollaborativeExcalidrawWrapper = ({
       setRecoveryGeneration(generation => generation + 1);
       setManualDiscardPending(false);
     }
-    // An explicit user reconnect clears the terminal verdict. For an ordinary
-    // transport drop, retry the SAME provider/Y.Doc; only a discarded/manual
-    // generation goes through a fresh editor mount.
+    // An explicit user reconnect clears the terminal verdict. Ordinary transport
+    // recovery retries the SAME provider/Y.Doc. An inactivity downgrade is
+    // different: its socket is still OPEN and the server member is deliberately a
+    // viewer, so reconnect() would correctly no-op. Re-run the binding lifecycle to
+    // destroy that member and join afresh only after the user explicitly asks to
+    // resume editing (automatic rejoin would defeat the inactivity policy).
     setTerminalCloseReason(null);
     if (manualDiscardPending || !collabApi) {
       setCollaborationStartTime(Date.now());
+    } else if (mode === 'read' && modeReason === CollaboratorModeReasons.INACTIVITY) {
+      setCollaborationStartTime(generation => (generation ?? 0) + 1);
     } else {
       collabApi.reconnect();
     }

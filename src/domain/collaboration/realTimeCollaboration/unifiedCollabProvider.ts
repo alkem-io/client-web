@@ -972,6 +972,8 @@ export function controlReasonToReadOnlyCode(reason: string | undefined): ReadOnl
       return ReadOnlyCode.ROOM_CAPACITY_REACHED;
     case 'multi-user-not-allowed':
       return ReadOnlyCode.MULTI_USER_NOT_ALLOWED;
+    case 'inactivity':
+      return ReadOnlyCode.INACTIVITY;
     default:
       return undefined;
   }

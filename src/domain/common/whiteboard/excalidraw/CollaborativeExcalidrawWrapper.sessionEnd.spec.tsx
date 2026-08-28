@@ -16,15 +16,30 @@ const h = vi.hoisted(() => ({
   editorInvalidatedCount: { value: 0 },
   publishedApi: { value: null as string | null },
   apiEvents: [] as string[],
+  reconnect: vi.fn(),
+  initializeCount: { value: 0 },
+  cleanupCount: { value: 0 },
+  collabState: {
+    connecting: false,
+    collaborating: false,
+    mode: null as 'read' | 'write' | null,
+    modeReason: null as string | null,
+    isReadOnly: false,
+  },
 }));
 
 vi.mock('./collab/useCollab', () => ({
   default: (opts: { onSessionEnd?: (info: SessionEndInfo) => void }) => {
     h.onSessionEnd.value = opts.onSessionEnd;
     return [
-      null,
-      () => () => {},
-      { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
+      { reconnect: h.reconnect },
+      () => {
+        h.initializeCount.value += 1;
+        return () => {
+          h.cleanupCount.value += 1;
+        };
+      },
+      h.collabState,
     ];
   },
 }));
@@ -89,6 +104,14 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     h.editorInvalidatedCount.value = 0;
     h.publishedApi.value = null;
     h.apiEvents.length = 0;
+    h.reconnect.mockClear();
+    h.initializeCount.value = 0;
+    h.cleanupCount.value = 0;
+    h.collabState.connecting = false;
+    h.collabState.collaborating = false;
+    h.collabState.mode = null;
+    h.collabState.modeReason = null;
+    h.collabState.isReadOnly = false;
   });
   afterEach(() => vi.clearAllMocks());
 
@@ -122,6 +145,31 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     // The explicit user restart mints a FRESH generation (remount) before reconnecting.
     act(() => h.onReconnect.value?.());
     expect(h.mountCount.value).toBeGreaterThan(mountsBefore);
+  });
+
+  it('an inactivity restart replaces the live downgraded binding instead of reconnecting its open socket', () => {
+    h.collabState.collaborating = true;
+    h.collabState.mode = 'read';
+    h.collabState.modeReason = 'inactivity';
+    renderWrapper();
+    expect(h.initializeCount.value).toBe(1);
+
+    act(() => h.onReconnect.value?.());
+
+    expect(h.cleanupCount.value).toBe(1);
+    expect(h.initializeCount.value).toBe(2);
+    expect(h.reconnect).not.toHaveBeenCalled();
+  });
+
+  it('a disconnected transport retries the existing binding without replacing its scene generation', () => {
+    renderWrapper();
+    expect(h.initializeCount.value).toBe(1);
+
+    act(() => h.onReconnect.value?.());
+
+    expect(h.reconnect).toHaveBeenCalledTimes(1);
+    expect(h.cleanupCount.value).toBe(0);
+    expect(h.initializeCount.value).toBe(1);
   });
 
   it('terminal edits-not-saved: data-loss copy, no reconnect (distinct from a deletion)', () => {

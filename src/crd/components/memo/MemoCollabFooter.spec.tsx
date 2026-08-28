@@ -1,0 +1,44 @@
+/** @vitest-environment jsdom */
+import '@testing-library/jest-dom/vitest';
+import { act, fireEvent } from '@testing-library/react';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import i18n from '@/core/i18n/config';
+import { render, screen } from '@/main/test/testUtils';
+import { MemoCollabFooter } from './MemoCollabFooter';
+
+beforeAll(async () => {
+  await i18n.changeLanguage('en');
+  await i18n.loadNamespaces('crd-space');
+});
+
+afterEach(() => vi.useRealTimers());
+
+describe('MemoCollabFooter inactivity recovery', () => {
+  it('shows the inactivity reason and an explicit resume action', () => {
+    vi.useFakeTimers();
+    const onResumeEditing = vi.fn();
+    render(
+      <MemoCollabFooter
+        connectionStatus="connected"
+        memberCount={1}
+        readonlyReason="inactivity"
+        onResumeEditing={onResumeEditing}
+      />
+    );
+
+    act(() => vi.advanceTimersByTime(500));
+
+    expect(screen.getByText(/paused because you were inactive/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Resume editing' }));
+    expect(onResumeEditing).toHaveBeenCalledOnce();
+  });
+
+  it('does not offer resume for an authorization read-only reason', () => {
+    vi.useFakeTimers();
+    render(<MemoCollabFooter connectionStatus="connected" memberCount={1} readonlyReason="noMembership" />);
+
+    act(() => vi.advanceTimersByTime(500));
+
+    expect(screen.queryByRole('button', { name: 'Resume editing' })).not.toBeInTheDocument();
+  });
+});

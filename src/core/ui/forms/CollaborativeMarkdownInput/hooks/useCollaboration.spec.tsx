@@ -12,7 +12,7 @@ const instances: Inst[] = [];
 let controlHandler: ((arg: unknown) => void) | undefined;
 let statusHandler: ((arg: unknown) => void) | undefined;
 let syncedHandler: ((arg: unknown) => void) | undefined;
-const { notifySpy } = vi.hoisted(() => ({ notifySpy: vi.fn() }));
+const { notifySpy, onlineState } = vi.hoisted(() => ({ notifySpy: vi.fn(), onlineState: { value: true } }));
 
 vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', () => ({
   UnifiedCollabProvider: class {
@@ -49,7 +49,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
       order.push(`destroy:${this.documentId}`);
     }
   },
-  controlReasonToReadOnlyCode: () => undefined,
+  controlReasonToReadOnlyCode: (reason?: string) => (reason === 'inactivity' ? 'inactivity' : undefined),
   classifySessionEnd: (m: { code?: string; scope?: string; disposition?: string }) =>
     m.code === 'update-not-accepted' && m.scope === 'member' && m.disposition === 'transient'
       ? { code: m.code, scope: m.scope, disposition: m.disposition }
@@ -58,7 +58,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
 
 vi.mock('../useUserCursor', () => ({ default: () => ({ userId: 'u1', userName: 'U', cursorColor: '#000' }) }));
 vi.mock('../../../notifications/useNotification', () => ({ useNotification: () => notifySpy }));
-vi.mock('@/core/utils/useOnlineStatus', () => ({ useOnlineStatus: () => true }));
+vi.mock('@/core/utils/useOnlineStatus', () => ({ useOnlineStatus: () => onlineState.value }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@tiptap/extension-collaboration', () => ({ default: { extend: () => ({ configure: () => ({}) }) } }));
 vi.mock('@tiptap/extension-collaboration-caret', () => ({ default: { extend: () => ({ configure: () => ({}) }) } }));
@@ -74,16 +74,27 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     statusHandler = undefined;
     syncedHandler = undefined;
     notifySpy.mockClear();
+    onlineState.value = true;
   });
 
   it('an in-place collaborationId A→B swap gives room B a FRESH doc — B never inherits A state, provider A torn down first', () => {
-    const { rerender } = renderHook(({ id }) => useCollaboration({ collaborationId: id }), {
+    const { result, rerender } = renderHook(({ id }) => useCollaboration({ collaborationId: id }), {
       initialProps: { id: 'room-A' },
     });
     expect(instances).toHaveLength(1);
     const docA = instances[0].doc;
     // Memo A's CRDT content lives in the doc bound to room A.
     docA.getText('content').insert(0, 'secret-from-A');
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+      controlHandler?.({ kind: 'saved' });
+      controlHandler?.({ kind: 'read-only-state', readOnly: true, reason: 'forbidden' });
+    });
+    expect(result.current.status).toBe('connected');
+    expect(result.current.synced).toBe(true);
+    expect(result.current.lastSaveTime).toBeInstanceOf(Date);
+    expect(result.current.isReadOnly).toBe(true);
 
     // The memoId changes IN PLACE (deep-link/route change) — the dialog is not keyed by memoId.
     act(() => rerender({ id: 'room-B' }));
@@ -100,6 +111,48 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(instances[1].connected).toBe(true);
     expect(order.indexOf('destroy:room-A')).toBeGreaterThanOrEqual(0);
     expect(order.indexOf('destroy:room-A')).toBeLessThan(order.indexOf('connect:room-B'));
+    // Room-owned readiness/authorization is reset atomically with publishing B.
+    // B cannot mount as ready from A before B's own status + SyncStep2 arrive.
+    expect(result.current.status).toBe('connecting');
+    expect(result.current.synced).toBe(false);
+    expect(result.current.lastSaveTime).toBeUndefined();
+    expect(result.current.isReadOnly).toBeFalsy();
+  });
+
+  it('keeps a server read-only decision across browser offline→online transitions', () => {
+    const { result, rerender } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+
+    act(() => controlHandler?.({ kind: 'read-only-state', readOnly: true, reason: 'forbidden' }));
+    expect(result.current.isReadOnly).toBe(true);
+
+    onlineState.value = false;
+    rerender();
+    expect(result.current.isReadOnly).toBe(true);
+
+    onlineState.value = true;
+    rerender();
+    expect(result.current.isReadOnly).toBe(true);
+  });
+
+  it('resumes an inactivity-downgraded memo with a fresh doc/provider generation', () => {
+    const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    const providerA = instances[0];
+    const docA = providerA.doc;
+    docA.getText('content').insert(0, 'server-accepted-content');
+
+    act(() => controlHandler?.({ kind: 'read-only-state', readOnly: true, reason: 'inactivity' }));
+    expect(result.current.isReadOnly).toBe(true);
+    expect(result.current.readOnlyCode).toBe('inactivity');
+
+    act(() => result.current.resumeEditing());
+
+    expect(instances).toHaveLength(2);
+    expect(providerA.destroyed).toBe(true);
+    expect(instances[1].doc).not.toBe(docA);
+    expect(order.indexOf('destroy:room-A')).toBeLessThan(order.lastIndexOf('connect:room-A'));
+    expect(result.current.status).toBe('connecting');
+    expect(result.current.synced).toBe(false);
+    expect(result.current.readOnlyCode).toBeUndefined();
   });
 
   it('StrictMode leaves exactly one live provider and destroys every discarded render/effect generation', () => {

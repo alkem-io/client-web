@@ -693,13 +693,15 @@
       "moreConnectedUsers_other": "{{count}} more connected users",
       "guestWarning": "You are editing as a guest",
       "delete": "Delete memo",
+      "resumeEditing": "Resume editing",
       "readonlyReason": {
         "connecting": "Connecting to the collaboration service…",
         "notSynced": "Synchronising… reopen the memo to resume editing.",
         "unauthenticated": "Sign in to edit this memo.",
         "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings.",
         "contentUpdatePolicyNoOwner": "You don't have permission to edit this memo. The owner is no longer available, but you can ask a space administrator to change the Share settings.",
-        "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
+        "noMembership": "Only members of this space can edit this memo. Join the space to contribute.",
+        "inactivity": "Editing paused because you were inactive. Resume when you're ready."
       }
     },
     "errors": {

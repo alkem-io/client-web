@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import type { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
+import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
 import {
   type CollaborationStatus,
@@ -42,7 +42,13 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [status, setStatus] = useState<CollaborationStatus>(MemoStatus.CONNECTING);
   const [synced, setSynced] = useState(false);
   const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
-  const [readOnlyState, setReadOnlyState] = useState<{ readOnly: boolean; readOnlyCode?: ReadOnlyCode }>();
+  // Authorization is session-owned state from the server. Browser connectivity is
+  // derived separately below: an offline/online transition must never erase a
+  // server-issued read-only decision.
+  const [serverReadOnlyState, setServerReadOnlyState] = useState<{
+    readOnly: boolean;
+    readOnlyCode?: ReadOnlyCode;
+  }>();
 
   // Bumped when the server REJECTS a memo update (`update-rejected`). A rejected
   // generation must be DISCARDED, not kept locally: the server refused it, so every
@@ -97,6 +103,10 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   useEffect(() => {
     if (!collaborationId) {
       setProviderSession(undefined);
+      setStatus(MemoStatus.CONNECTING);
+      setSynced(false);
+      setLastSaveTime(undefined);
+      setServerReadOnlyState(undefined);
       return;
     }
 
@@ -128,7 +138,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           notifyRef.current(tRef.current('callout.memo.saveFailed'), 'warning');
           break;
         case 'read-only-state':
-          setReadOnlyState({
+          setServerReadOnlyState({
             readOnly: !!message.readOnly,
             readOnlyCode: controlReasonToReadOnlyCode(message.reason),
           });
@@ -185,6 +195,14 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     nextProvider.on('synced', syncHandler);
     nextProvider.on('control', controlHandler);
 
+    // Reset every room/generation-owned state in the same effect turn that
+    // publishes the new provider. Room B must never observe room A's readiness,
+    // save acknowledgement, or authorization while B is still awaiting SyncStep2.
+    setStatus(MemoStatus.CONNECTING);
+    setSynced(false);
+    setLastSaveTime(undefined);
+    setServerReadOnlyState(undefined);
+
     // Start the WebSocket connection now that event listeners are in place.
     setProviderSession({ collaborationId, ydoc, provider: nextProvider });
     nextProvider.connect();
@@ -194,13 +212,6 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       setProviderSession(current => (current?.provider === nextProvider ? undefined : current));
     };
   }, [collaborationId, ydoc]);
-
-  useEffect(() => {
-    setReadOnlyState({
-      readOnly: !isOnline,
-      readOnlyCode: undefined,
-    });
-  }, [isOnline]);
 
   // Extensions depend on the memoized provider, not ref.current
   const collaborationExtensions: Extensions = useMemo(() => {
@@ -221,12 +232,23 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     ];
   }, [provider, ydoc, userName, cursorColor]);
 
+  // Inactivity is a live, server-downgraded member rather than a broken socket.
+  // Resuming therefore means a fresh room member + Y.Doc generation; calling
+  // connect() on the still-open provider would be a no-op. No other read-only
+  // reason is eligible for this action.
+  const resumeEditing = () => {
+    if (serverReadOnlyState?.readOnlyCode === ReadOnlyCode.INACTIVITY) {
+      setRecoveryGeneration(generation => generation + 1);
+    }
+  };
+
   return {
     status,
     synced,
     lastSaveTime,
-    isReadOnly: readOnlyState?.readOnly,
-    readOnlyCode: readOnlyState?.readOnlyCode,
+    isReadOnly: !isOnline || serverReadOnlyState?.readOnly,
+    readOnlyCode: serverReadOnlyState?.readOnlyCode,
+    resumeEditing,
     collaborationExtensions,
     ydoc,
     provider,

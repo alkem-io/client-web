@@ -1,4 +1,5 @@
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
+import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import type { ConnectedUser, ReadonlyReason } from '@/crd/components/memo/MemoCollabFooter';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
 
@@ -7,11 +8,13 @@ type MapMemoFooterParams = {
   synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
+  readOnlyCode?: ReadOnlyCode;
   memberCount: number;
   connectedUsers: ConnectedUser[];
   isContribution: boolean;
   hasDeletePrivileges: boolean;
   onDelete?: () => void;
+  onResumeEditing?: () => void;
   contentUpdatePolicy?: ContentUpdatePolicy;
   // Whether the memo still has an owner (`createdBy.profile`). When the policy locks the memo and the
   // owner is gone, the footer points at a space admin instead of a (broken) owner link — mirrors the MUI
@@ -28,6 +31,7 @@ type MemoFooterMappedProps = {
   isGuest: boolean;
   readonlyReason: ReadonlyReason;
   onDelete?: () => void;
+  onResumeEditing?: () => void;
 };
 
 /**
@@ -47,11 +51,13 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     synced,
     isAuthenticated,
     isReadOnly,
+    readOnlyCode,
     memberCount,
     connectedUsers,
     isContribution,
     hasDeletePrivileges,
     onDelete,
+    onResumeEditing,
     contentUpdatePolicy,
     hasOwner,
     myMembershipStatus,
@@ -69,11 +75,20 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
       synced,
       isAuthenticated,
       isReadOnly,
+      readOnlyCode,
       contentUpdatePolicy,
       hasOwner,
       myMembershipStatus,
     }),
     onDelete: canDelete ? onDelete : undefined,
+    onResumeEditing:
+      connectionStatus === 'connected' &&
+      synced &&
+      readOnlyCode === ReadOnlyCode.INACTIVITY &&
+      isReadOnly &&
+      onResumeEditing
+        ? onResumeEditing
+        : undefined,
   };
 }
 
@@ -82,6 +97,7 @@ type ResolveReadonlyReasonParams = {
   synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
+  readOnlyCode?: ReadOnlyCode;
   contentUpdatePolicy?: ContentUpdatePolicy;
   hasOwner?: boolean;
   myMembershipStatus?: CommunityMembershipStatus | string;
@@ -92,6 +108,7 @@ function resolveReadonlyReason({
   synced,
   isAuthenticated,
   isReadOnly,
+  readOnlyCode,
   contentUpdatePolicy,
   hasOwner,
   myMembershipStatus,
@@ -100,6 +117,7 @@ function resolveReadonlyReason({
   if (!isAuthenticated) return 'unauthenticated';
   if (!synced) return 'notSynced';
   if (!isReadOnly) return null;
+  if (readOnlyCode === ReadOnlyCode.INACTIVITY) return 'inactivity';
   if (
     contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
     myMembershipStatus !== CommunityMembershipStatus.Member

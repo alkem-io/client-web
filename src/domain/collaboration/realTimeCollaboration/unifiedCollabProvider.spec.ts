@@ -4,10 +4,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import { messageYjsSyncStep2, readSyncMessage, writeSyncStep1, writeSyncStep2, writeUpdate } from 'y-protocols/sync';
 import * as Y from 'yjs';
+import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import {
   type CloseVerdict,
   type ControlMessage,
   classifyClose,
+  controlReasonToReadOnlyCode,
   DURABILITY_REQUEST_TIMEOUT_MS,
   HEARTBEAT_INTERVAL_MS,
   HEARTBEAT_TIMEOUT_MS,
@@ -16,6 +18,12 @@ import {
   UnifiedCollabProvider,
   WIRE,
 } from './unifiedCollabProvider';
+
+describe('controlReasonToReadOnlyCode', () => {
+  it('preserves the inactivity downgrade as an actionable read-only reason', () => {
+    expect(controlReasonToReadOnlyCode('inactivity')).toBe(ReadOnlyCode.INACTIVITY);
+  });
+});
 
 /**
  * A controllable WebSocket stand-in. `globalThis.WebSocket` is replaced with this
