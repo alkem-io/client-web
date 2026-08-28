@@ -14,11 +14,10 @@ export type CollabAwarenessLike = {
   getStates: () => Map<number, unknown>;
 };
 
-export type CollabStatus = 'connecting' | 'connected' | 'disconnected';
+export type CollabStatus = 'connecting' | 'ready' | 'reconnecting' | 'closed';
 
 export type CollabProviderLike = {
   awareness: CollabAwarenessLike;
-  status: CollabStatus;
   on(event: string, cb: (...args: unknown[]) => void): void;
   off(event: string, cb: (...args: unknown[]) => void): void;
   destroy(): void;

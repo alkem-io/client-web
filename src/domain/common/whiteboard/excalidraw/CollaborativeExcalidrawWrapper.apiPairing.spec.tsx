@@ -37,11 +37,17 @@ vi.mock('./collab/useCollab', () => ({
       h.initCalls.push({ apiId: opts.excalidrawApi.id, roomId: opts.roomId });
       return () => {};
     },
-    { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
+    {
+      state: { status: 'ready' },
+      connecting: false,
+      collaborating: false,
+      mode: null,
+      modeReason: null,
+      isReadOnly: false,
+    },
   ],
 }));
 
-vi.mock('./useAutoReconnect', () => ({ useAutoReconnect: () => ({ secondsRemaining: null }) }));
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
 vi.mock('@/core/utils/onlineStatus', () => ({ default: () => true }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
@@ -57,7 +63,6 @@ const renderWrapper = (whiteboardId: string) =>
       entities={{ whiteboard: { id: whiteboardId }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
       options={{}}
       actions={{}}
-      renderDisconnectNotice={() => null}
     >
       {({ children }) => <>{children}</>}
     </CollaborativeExcalidrawWrapper>
@@ -81,7 +86,6 @@ describe('CollaborativeExcalidrawWrapper — api ↔ whiteboard-id pairing', () 
         entities={{ whiteboard: { id: 'wb-B' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
         options={{}}
         actions={{}}
-        renderDisconnectNotice={() => null}
       >
         {({ children }) => <>{children}</>}
       </CollaborativeExcalidrawWrapper>

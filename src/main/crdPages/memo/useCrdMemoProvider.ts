@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { useCollaboration } from '@/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration';
 import useUserCursor from '@/core/ui/forms/CollaborativeMarkdownInput/useUserCursor';
 import type { ConnectedUser } from '@/crd/components/memo/MemoCollabFooter';
-import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
-import { MemoStatus } from '@/domain/collaboration/realTimeCollaboration/RealTimeCollaborationState';
 
 type UseCrdMemoProviderProps = {
   collaborationId?: string;
@@ -30,9 +28,7 @@ function sameUsers(a: ConnectedUser[], b: ConnectedUser[]): boolean {
  * provider creation, event wiring, cleanup — so there is exactly one source of
  * truth for memo/collab wiring. See `src/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration.ts`.
  *
- * Adds: member count + connected-user presence list derived from provider
- * awareness, and maps the internal `MemoStatus` to the CRD-facing
- * `CollabStatus` string union.
+ * Adds member count + connected-user presence derived from provider awareness.
  */
 export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps) {
   const collab = useCollaboration({ collaborationId });
@@ -96,22 +92,10 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
     };
   }, [collab.provider]);
 
-  const connectionStatus: CollabStatus = (() => {
-    switch (collab.status) {
-      case MemoStatus.CONNECTED:
-        return 'connected';
-      case MemoStatus.CONNECTING:
-        return 'connecting';
-      default:
-        return 'disconnected';
-    }
-  })();
-
   return {
     ydoc: collab.ydoc,
     provider: collab.provider,
-    connectionStatus,
-    synced: collab.synced,
+    connectionStatus: collab.state.status,
     isReadOnly: collab.isReadOnly ?? false,
     readOnlyCode: collab.readOnlyCode,
     memberCount,

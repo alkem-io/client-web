@@ -43,6 +43,12 @@
     }
   },
   "footer": {
+    "connection": {
+      "connecting": "Conectando…",
+      "ready": "Conectado",
+      "reconnecting": "Reconectando…",
+      "closed": "Desconectado"
+    },
     "guestContributionsWarning": "Cualquiera con el enlace puede editar",
     "readonlyReason": {
       "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",

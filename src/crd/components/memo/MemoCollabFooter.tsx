@@ -9,7 +9,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/toolti
 
 export type ReadonlyReason =
   | 'connecting'
-  | 'notSynced'
   | 'unauthenticated'
   | 'contentUpdatePolicy'
   | 'contentUpdatePolicyNoOwner'
@@ -68,13 +67,13 @@ export function MemoCollabFooter({
   }, [readonlyReason]);
 
   const statusLabel =
-    connectionStatus === 'connected'
+    connectionStatus === 'ready'
       ? t('memo.footer.connected')
-      : connectionStatus === 'connecting'
+      : connectionStatus === 'connecting' || connectionStatus === 'reconnecting'
         ? t('memo.footer.connecting')
         : t('memo.footer.disconnected');
 
-  const StatusIcon = connectionStatus === 'connected' ? Wifi : WifiOff;
+  const StatusIcon = connectionStatus === 'ready' ? Wifi : WifiOff;
 
   // The policy-locked message names the owner with a link to their profile (parity with the whiteboard
   // footer). When the owner is gone the mapper returns `contentUpdatePolicyNoOwner` instead, so the

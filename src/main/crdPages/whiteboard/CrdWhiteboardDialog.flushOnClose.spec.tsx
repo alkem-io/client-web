@@ -50,20 +50,24 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: undefined }),
 }));
 vi.mock('@/domain/common/whiteboard/excalidraw/useWhiteboardDefaults', () => ({ default: () => ({}) }));
-vi.mock('@/domain/common/whiteboard/excalidraw/useAutoReconnect', () => ({
-  useAutoReconnect: () => ({ secondsRemaining: null }),
-}));
 vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
   default: () => [
     null,
     () => () => {},
-    { connecting: false, collaborating: false, mode: 'read', modeReason: undefined, isReadOnly: false },
+    {
+      state: { status: 'ready' },
+      connecting: false,
+      collaborating: true,
+      mode: 'read',
+      modeReason: undefined,
+      isReadOnly: false,
+    },
   ],
 }));
 
 // Imported AFTER the mocks are declared (vitest hoists vi.mock above imports).
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import { closeCollaborativeWhiteboard } from './CrdWhiteboardDialog';
+import { closeCollaborativeWhiteboard, saveWhiteboardDisplayName } from './CrdWhiteboardDialog';
 
 const cleanReport: AssetPublishReport = { published: ['f1' as never], skipped: [], failed: [] };
 const failedReport: AssetPublishReport = {
@@ -113,46 +117,6 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(onPublishFailed).not.toHaveBeenCalled();
     // Order proves the flush is awaited before the close/teardown callback.
     expect(order).toEqual(['flush', 'save', 'teardown']);
-  });
-
-  it('waits for the editor-owned import, then flushes, persists, saves, and tears down', async () => {
-    const order: string[] = [];
-    let finishImport!: () => void;
-    const pendingImport = new Promise<void>(resolve => {
-      finishImport = resolve;
-    });
-    const excalidrawAPI = {
-      flushAssetPublication: vi.fn(async () => {
-        order.push('flush');
-        return cleanReport;
-      }),
-    };
-    const requestDurability = vi.fn(async () => {
-      order.push('durability');
-    });
-    const save = vi.fn(async () => {
-      order.push('save');
-    });
-    const teardown = vi.fn(() => order.push('teardown'));
-
-    const closing = closeCollaborativeWhiteboard({
-      excalidrawAPI,
-      waitForPendingImport: async () => {
-        order.push('import');
-        await pendingImport;
-      },
-      requestDurability,
-      requireDurability: true,
-      save,
-      onPublishFailed: vi.fn(),
-      teardown,
-    });
-
-    await Promise.resolve();
-    expect(order).toEqual(['import']);
-    finishImport();
-    await expect(closing).resolves.toBe(true);
-    expect(order).toEqual(['import', 'flush', 'durability', 'save', 'teardown']);
   });
 
   it('keeps a draft editor open when no durability barrier is available', async () => {
@@ -248,73 +212,6 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(teardown).not.toHaveBeenCalled();
   });
 
-  it('(gate 8) aborts the save when a recovery replaces the editor DURING the flush', async () => {
-    // The flush's locator write can itself trigger a server update-rejected, which discards
-    // the editor generation mid-flush. The captured api is then dead and its scene is stale
-    // vs the recovery's server-canonical resync — so the save must abort, not clobber it.
-    const { promise, resolveWith } = deferredReport();
-    const excalidrawAPI = { flushAssetPublication: vi.fn(() => promise) };
-    const save = vi.fn(async () => {});
-    const teardown = vi.fn();
-    const onPublishFailed = vi.fn();
-    let editorChanged = false;
-
-    const closing = closeCollaborativeWhiteboard({
-      excalidrawAPI,
-      save,
-      onPublishFailed,
-      teardown,
-      hasEditorChanged: () => editorChanged,
-    });
-
-    // While the flush is in flight, an update-rejected recovery replaces the editor.
-    await Promise.resolve();
-    editorChanged = true;
-
-    // The flush then resolves CLEAN (the upload itself succeeded).
-    resolveWith(cleanReport);
-    const proceeded = await closing;
-
-    expect(proceeded).toBe(false); // aborted — the captured api is dead
-    expect(save).not.toHaveBeenCalled(); // never read/persist the dead editor's scene
-    expect(teardown).not.toHaveBeenCalled(); // the recovered session stays up
-  });
-
-  it('proceeds normally when the editor is unchanged across the flush', async () => {
-    const excalidrawAPI = { flushAssetPublication: vi.fn(async () => cleanReport) };
-    const save = vi.fn(async () => {});
-    const teardown = vi.fn();
-
-    const proceeded = await closeCollaborativeWhiteboard({
-      excalidrawAPI,
-      save,
-      onPublishFailed: vi.fn(),
-      teardown,
-      hasEditorChanged: () => false,
-    });
-
-    expect(proceeded).toBe(true);
-    expect(save).toHaveBeenCalledOnce();
-    expect(teardown).toHaveBeenCalledOnce();
-  });
-
-  it('keeps the session open when the metadata/preview save reports failure', async () => {
-    const excalidrawAPI = { flushAssetPublication: vi.fn(async () => cleanReport) };
-    const save = vi.fn(async () => false);
-    const teardown = vi.fn();
-
-    const proceeded = await closeCollaborativeWhiteboard({
-      excalidrawAPI,
-      save,
-      onPublishFailed: vi.fn(),
-      teardown,
-    });
-
-    expect(proceeded).toBe(false);
-    expect(save).toHaveBeenCalledOnce();
-    expect(teardown).not.toHaveBeenCalled();
-  });
-
   it('treats a missing (unmounted) editor as nothing-to-flush and proceeds', async () => {
     const save = vi.fn(async () => {});
     const teardown = vi.fn();
@@ -326,6 +223,33 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(save).toHaveBeenCalledOnce();
     expect(teardown).toHaveBeenCalledOnce();
     expect(onPublishFailed).not.toHaveBeenCalled();
+  });
+});
+
+describe('saveWhiteboardDisplayName', () => {
+  it('restores the canonical title and never logs rejected GraphQL variables or snapshot content', async () => {
+    const rejectedValue = 'secret snapshot payload';
+    const rename = vi.fn().mockRejectedValue(new Error(`variables=${rejectedValue}`));
+    const restore = vi.fn(async () => undefined);
+    const notifyFailure = vi.fn();
+
+    await saveWhiteboardDisplayName({
+      whiteboardId: 'wb-1',
+      displayName: rejectedValue,
+      canonicalDisplayName: 'Canonical title',
+      rename,
+      restore,
+      notifyFailure,
+    });
+
+    expect(restore).toHaveBeenCalledWith('Canonical title');
+    expect(notifyFailure).toHaveBeenCalledOnce();
+    expect(rename).toHaveBeenCalledWith('wb-1', rejectedValue);
+    const { error } = await import('@/core/logging/sentry/log');
+    expect(error).toHaveBeenCalledWith(new Error('Whiteboard rename failed'), {
+      category: 'whiteboard',
+    });
+    expect(JSON.stringify(vi.mocked(error).mock.calls)).not.toContain(rejectedValue);
   });
 });
 
@@ -346,7 +270,6 @@ describe('CollaborativeExcalidrawWrapper — asset adapter wiring', () => {
         }}
         options={{} as never}
         actions={{}}
-        renderDisconnectNotice={() => null}
       >
         {({ children }) => children}
       </CollaborativeExcalidrawWrapper>

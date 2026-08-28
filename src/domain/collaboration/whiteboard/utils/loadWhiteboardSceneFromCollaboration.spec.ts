@@ -75,7 +75,7 @@ describe('loadWhiteboardSceneFromCollaboration', () => {
     });
     expect(provider.connect).toHaveBeenCalledTimes(1);
 
-    provider.emit('synced', true);
+    provider.emit('state', { status: 'ready' });
 
     await expect(result).resolves.toEqual({
       elements: [{ id: 'template-element' }],
@@ -90,7 +90,7 @@ describe('loadWhiteboardSceneFromCollaboration', () => {
     const result = loadWhiteboardSceneFromCollaboration('forbidden-source');
     const provider = h.MockProvider.instance;
 
-    provider.emit('close', { code: 1008, reason: 'forbidden', disposition: 'terminal' });
+    provider.emit('state', { status: 'closed', reason: 'forbidden' });
 
     await expect(result).rejects.toThrow('Unable to load whiteboard template: forbidden');
     expect(provider.destroy).toHaveBeenCalledTimes(1);

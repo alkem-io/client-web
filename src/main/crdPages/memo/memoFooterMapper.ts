@@ -4,7 +4,6 @@ import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
 
 type MapMemoFooterParams = {
   connectionStatus: CollabStatus;
-  synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
   memberCount: number;
@@ -44,7 +43,6 @@ type MemoFooterMappedProps = {
 export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappedProps {
   const {
     connectionStatus,
-    synced,
     isAuthenticated,
     isReadOnly,
     memberCount,
@@ -66,7 +64,6 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
     isGuest: !isAuthenticated,
     readonlyReason: resolveReadonlyReason({
       connectionStatus,
-      synced,
       isAuthenticated,
       isReadOnly,
       contentUpdatePolicy,
@@ -79,7 +76,6 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
 
 type ResolveReadonlyReasonParams = {
   connectionStatus: CollabStatus;
-  synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
   contentUpdatePolicy?: ContentUpdatePolicy;
@@ -89,16 +85,15 @@ type ResolveReadonlyReasonParams = {
 
 function resolveReadonlyReason({
   connectionStatus,
-  synced,
   isAuthenticated,
   isReadOnly,
   contentUpdatePolicy,
   hasOwner,
   myMembershipStatus,
 }: ResolveReadonlyReasonParams): ReadonlyReason {
-  if (connectionStatus !== 'connected') return 'connecting';
+  if (connectionStatus === 'connecting' || connectionStatus === 'reconnecting') return 'connecting';
+  if (connectionStatus === 'closed') return null;
   if (!isAuthenticated) return 'unauthenticated';
-  if (!synced) return 'notSynced';
   if (!isReadOnly) return null;
   if (
     contentUpdatePolicy === ContentUpdatePolicy.Contributors &&

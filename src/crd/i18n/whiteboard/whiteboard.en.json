@@ -43,6 +43,12 @@
     }
   },
   "footer": {
+    "connection": {
+      "connecting": "Connecting…",
+      "ready": "Connected",
+      "reconnecting": "Reconnecting…",
+      "closed": "Disconnected"
+    },
     "guestContributionsWarning": "Anyone with the link can edit",
     "readonlyReason": {
       "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",

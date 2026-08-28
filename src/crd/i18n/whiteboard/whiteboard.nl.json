@@ -43,6 +43,12 @@
     }
   },
   "footer": {
+    "connection": {
+      "connecting": "Verbinding maken…",
+      "ready": "Verbonden",
+      "reconnecting": "Opnieuw verbinden…",
+      "closed": "Verbinding verbroken"
+    },
     "guestContributionsWarning": "Iedereen met de link kan bewerken",
     "readonlyReason": {
       "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",

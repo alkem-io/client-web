@@ -7,6 +7,7 @@ import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/grap
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
@@ -39,6 +40,8 @@ type CrdMemoDialogProps = {
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
+  const { t: tGlobal } = useTranslation();
+  const notify = useNotification();
   useRegisterFullscreenEditor(open);
   const client = useApolloClient();
   const { memo, loading } = useMemoManager({ id: memoId });
@@ -51,10 +54,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     spaceLevel === SpaceLevel.L0
       ? space.about.membership?.myMembershipStatus
       : subspace.about.membership?.myMembershipStatus;
-  const { ydoc, provider, connectionStatus, synced, isReadOnly, memberCount, connectedUsers, user } =
-    useCrdMemoProvider({
-      collaborationId: memoId,
-    });
+  const { ydoc, provider, connectionStatus, isReadOnly, memberCount, connectedUsers, user } = useCrdMemoProvider({
+    collaborationId: memoId,
+  });
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
@@ -106,7 +108,15 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   // The collab room debounces its snapshot save by ~2s; fetching from the server immediately returns stale data.
   // Instead, we grab the HTML from Tiptap, convert to markdown, and write it to the normalized
   // cache entry. Connectors schedule a delayed server fetch as a safety net.
-  const handleClose = () => {
+  const handleClose = async () => {
+    if (editorRef.current && provider) {
+      try {
+        await provider.requestDurability();
+      } catch {
+        notify(tGlobal('callout.memo.saveFailed'), 'warning');
+        return;
+      }
+    }
     if (editorRef.current) {
       const html = editorRef.current.getHTML();
       // Fire-and-forget: write to cache as soon as conversion completes.
@@ -146,7 +156,6 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const footerProps = mapMemoFooterProps({
     connectionStatus,
-    synced,
     isAuthenticated,
     isReadOnly,
     memberCount,
@@ -159,12 +168,11 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     myMembershipStatus,
   });
 
-  // The connection-loading overlay below blocks interaction until the provider
-  // is `connected` AND the initial sync packet has arrived. By the time the
-  // overlay disappears, the editor is built with the final disabled state
-  // (permission-driven only), so it does not need to rebuild mid-session.
-  const isConnectionReady = connectionStatus === 'connected' && synced;
-  const editorDisabled = isReadOnly || !hasContributePrivileges;
+  // `ready` is the initial-sync boundary. A provider only enters `reconnecting`
+  // after it has been ready once, so the same editor/Y.Doc remains mounted across
+  // transient drops without ever mounting against a partial first sync.
+  const hasConnected = connectionStatus === 'ready' || connectionStatus === 'reconnecting';
+  const editorDisabled = isReadOnly || connectionStatus === 'closed' || !hasContributePrivileges;
 
   const title = (
     <MemoDisplayName
@@ -228,7 +236,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 the editor's first render is its final render, with
                 `disabled` driven purely by permissions. Mirrors the MUI
                 memo dialog's "Connecting to collaboration service…" overlay. */}
-            {isConnectionReady ? (
+            {hasConnected ? (
               <CollaborativeMarkdownEditor
                 ydoc={ydoc as unknown as YDocLike}
                 provider={provider as unknown as CollabProviderLike}

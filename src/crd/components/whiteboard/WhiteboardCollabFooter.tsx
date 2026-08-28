@@ -1,4 +1,4 @@
-import { Globe, RotateCcw, Trash2 } from 'lucide-react';
+import { Globe, LoaderCircle, RotateCcw, Trash2, Wifi, WifiOff } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
@@ -13,6 +13,7 @@ type WhiteboardCollabFooterProps = {
   onRestart?: () => void;
   guestWarningVisible?: boolean;
   guestAccessBadge?: ReactNode;
+  connectionState?: 'connecting' | 'ready' | 'reconnecting' | 'closed';
   className?: string;
 };
 
@@ -25,6 +26,7 @@ export function WhiteboardCollabFooter({
   onRestart,
   guestWarningVisible,
   guestAccessBadge,
+  connectionState,
   className,
 }: WhiteboardCollabFooterProps) {
   const { t } = useTranslation('crd-whiteboard');
@@ -57,6 +59,18 @@ export function WhiteboardCollabFooter({
       </div>
 
       <div className="flex items-center gap-2">
+        {connectionState && (
+          <output className="flex items-center gap-1 text-caption text-muted-foreground">
+            {connectionState === 'ready' ? (
+              <Wifi className="size-3.5" aria-hidden="true" />
+            ) : connectionState === 'connecting' || connectionState === 'reconnecting' ? (
+              <LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />
+            ) : (
+              <WifiOff className="size-3.5" aria-hidden="true" />
+            )}
+            <span>{t(`footer.connection.${connectionState}`)}</span>
+          </output>
+        )}
         {guestWarningVisible && (
           <div className="flex items-center gap-1 border border-destructive rounded px-2 py-1 text-destructive">
             <Globe className="size-3.5" aria-hidden="true" />

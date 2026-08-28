@@ -43,6 +43,12 @@
     }
   },
   "footer": {
+    "connection": {
+      "connecting": "Verbindung wird hergestellt…",
+      "ready": "Verbunden",
+      "reconnecting": "Verbindung wird wiederhergestellt…",
+      "closed": "Getrennt"
+    },
     "guestContributionsWarning": "Jeder mit dem Link kann bearbeiten",
     "readonlyReason": {
       "readonly": "<strong>Nur-Lese-Modus</strong> <learnwhy>klicken Sie hier, um zu erfahren, warum</learnwhy>",

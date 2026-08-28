@@ -43,6 +43,12 @@
     }
   },
   "footer": {
+    "connection": {
+      "connecting": "Свързване…",
+      "ready": "Свързано",
+      "reconnecting": "Повторно свързване…",
+      "closed": "Прекъсната връзка"
+    },
     "guestContributionsWarning": "Всеки с линка може да редактира",
     "readonlyReason": {
       "readonly": "<strong>Режим само за преглед</strong> <learnwhy>кликнете тук, за да научите защо</learnwhy>",

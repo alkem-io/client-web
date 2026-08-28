@@ -1,10 +1,12 @@
 import { Scene, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import {
-  type CloseVerdict,
+  type CollaborationState,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
-const LOAD_TIMEOUT_MS = 30_000;
+// A source is a separate collaborative document. Its only deadline belongs to
+// this one-shot caller; the provider must never restart a progressing first sync.
+const LOAD_TIMEOUT_MS = 120_000;
 
 /** Load a whiteboard through the collaboration transport without exposing its Yjs update through GraphQL. */
 export const loadWhiteboardSceneFromCollaboration = (
@@ -33,28 +35,24 @@ export const loadWhiteboardSceneFromCollaboration = (
       settled = true;
       if (timeout) clearTimeout(timeout);
       options.signal?.removeEventListener('abort', handleAbort);
-      provider.off('synced', handleSynced);
-      provider.off('close', handleClose);
+      provider.off('state', handleState);
       provider.destroy();
       scene.destroy();
       if ('scene' in result) resolve(result.scene);
       else reject(result.error);
     };
 
-    const handleSynced = (synced: boolean) => {
-      if (!synced) return;
-      finish({
-        scene: {
-          elements: [...scene.getElementsIncludingDeleted()],
-          assets: scene.getAssetLocators(),
-          appState: scene.getPersistedAppState(),
-        },
-      });
-    };
-
-    const handleClose = (verdict: CloseVerdict) => {
-      if (verdict.disposition === 'terminal' || verdict.disposition === 'normal') {
-        finish({ error: new Error(`Unable to load whiteboard template: ${verdict.reason || verdict.code}`) });
+    const handleState = (state: CollaborationState) => {
+      if (state.status === 'ready') {
+        finish({
+          scene: {
+            elements: [...scene.getElementsIncludingDeleted()],
+            assets: scene.getAssetLocators(),
+            appState: scene.getPersistedAppState(),
+          },
+        });
+      } else if (state.status === 'closed' && state.reason) {
+        finish({ error: new Error(`Unable to load whiteboard template: ${state.reason}`) });
       }
     };
 
@@ -63,8 +61,7 @@ export const loadWhiteboardSceneFromCollaboration = (
     };
 
     timeout = setTimeout(() => finish({ error: new Error('Timed out loading whiteboard template') }), LOAD_TIMEOUT_MS);
-    provider.on('synced', handleSynced);
-    provider.on('close', handleClose);
+    provider.on('state', handleState);
     options.signal?.addEventListener('abort', handleAbort, { once: true });
     if (options.signal?.aborted) {
       handleAbort();

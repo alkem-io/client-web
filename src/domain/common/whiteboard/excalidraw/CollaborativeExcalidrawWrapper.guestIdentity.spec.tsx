@@ -25,7 +25,14 @@ vi.mock('./collab/useCollab', () => ({
     return [
       null,
       () => () => {},
-      { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
+      {
+        state: { status: 'ready' },
+        connecting: false,
+        collaborating: false,
+        mode: null,
+        modeReason: null,
+        isReadOnly: false,
+      },
     ];
   },
 }));
@@ -33,7 +40,6 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
   useCurrentUserContext: () => ({ userModel: { profile: { displayName: 'Alice Brown' } } }),
 }));
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({ lazyWithGlobalErrorHandler: () => () => null }));
-vi.mock('./useAutoReconnect', () => ({ useAutoReconnect: () => ({ secondsRemaining: null }) }));
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
 vi.mock('@/core/utils/onlineStatus', () => ({ default: () => true }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
@@ -48,7 +54,6 @@ const renderWrapper = () =>
       entities={{ whiteboard: { id: 'wb-1' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
       options={{}}
       actions={{}}
-      renderDisconnectNotice={() => null}
     >
       {({ children }) => <>{children}</>}
     </CollaborativeExcalidrawWrapper>
