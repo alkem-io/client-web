@@ -304,6 +304,20 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
+  it('defers an initial connection while offline and connects when the browser returns online', () => {
+    vi.stubGlobal('navigator', { onLine: false });
+    const provider = new UnifiedCollabProvider(baseOptions);
+
+    expect(provider.status).toBe('disconnected');
+    expect(MockWebSocket.instances).toHaveLength(0);
+
+    window.dispatchEvent(new Event('online'));
+
+    expect(provider.status).toBe('connecting');
+    expect(MockWebSocket.instances).toHaveLength(1);
+    provider.destroy();
+  });
+
   it('does not reconnect on an online event after a terminal close', () => {
     vi.useFakeTimers();
     const provider = new UnifiedCollabProvider(baseOptions);

@@ -318,7 +318,6 @@ const useCollab = ({
     provider.on('control', handleControl);
     provider.on('close', handleClose);
     provider.connect();
-    setIsConnecting(true);
 
     const collabApi: CollabAPI = {
       onPointerUpdate: payload => awarenessRouter.onPointerUpdate(payload),
