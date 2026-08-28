@@ -76,23 +76,36 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     tRef.current = t;
   }, [notify, t]);
 
-  // Create the provider without auto-connecting; connection is started in the effect.
-  const provider = useMemo(() => {
+  // Provider construction is effect-owned because its Awareness instance and
+  // browser/doc subscriptions are live resources. Constructing it in useMemo
+  // leaks React StrictMode's discarded render instance. Pair the provider with
+  // its room/doc so a render after an id change never exposes the previous room's
+  // provider beside the new room's doc while the replacement effect is pending.
+  const [providerSession, setProviderSession] = useState<{
+    collaborationId: string;
+    ydoc: Y.Doc;
+    provider: UnifiedCollabProvider;
+  }>();
+  const provider =
+    providerSession && providerSession.collaborationId === collaborationId && providerSession.ydoc === ydoc
+      ? providerSession.provider
+      : null;
+
+  // Create the provider, wire its events, and connect from one effect-owned
+  // lifecycle. Cleanup destroys every resource before a remount/replacement can
+  // become the active session.
+  useEffect(() => {
     if (!collaborationId) {
-      return null;
+      setProviderSession(undefined);
+      return;
     }
 
-    return new UnifiedCollabProvider({
+    const nextProvider = new UnifiedCollabProvider({
       documentId: collaborationId,
       type: 'memo',
       doc: ydoc,
       connect: false,
     });
-  }, [collaborationId, ydoc]);
-
-  // Wire up provider events and connect.
-  useEffect(() => {
-    if (!provider) return;
 
     const syncHandler = (isSynced: boolean) => {
       setSynced(isSynced);
@@ -159,7 +172,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
             // transient → reconnect) — no extra memo action here.
           } else {
             notifyRef.current(tRef.current('callout.memo.sessionEnded'), 'warning');
-            provider.disconnect();
+            nextProvider.disconnect();
           }
           break;
         }
@@ -168,17 +181,19 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       }
     };
 
-    provider.on('status', statusHandler);
-    provider.on('synced', syncHandler);
-    provider.on('control', controlHandler);
+    nextProvider.on('status', statusHandler);
+    nextProvider.on('synced', syncHandler);
+    nextProvider.on('control', controlHandler);
 
     // Start the WebSocket connection now that event listeners are in place.
-    provider.connect();
+    setProviderSession({ collaborationId, ydoc, provider: nextProvider });
+    nextProvider.connect();
 
     return () => {
-      provider.destroy();
+      nextProvider.destroy();
+      setProviderSession(current => (current?.provider === nextProvider ? undefined : current));
     };
-  }, [provider]);
+  }, [collaborationId, ydoc]);
 
   useEffect(() => {
     setReadOnlyState({

@@ -102,6 +102,20 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(order.indexOf('destroy:room-A')).toBeLessThan(order.indexOf('connect:room-B'));
   });
 
+  it('StrictMode leaves exactly one live provider and destroys every discarded render/effect generation', () => {
+    const { unmount } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }), {
+      reactStrictMode: true,
+    });
+
+    expect(instances.length).toBeGreaterThanOrEqual(2);
+    expect(instances.filter(instance => !instance.destroyed)).toHaveLength(1);
+    expect(instances.filter(instance => instance.connected && !instance.destroyed)).toHaveLength(1);
+
+    unmount();
+
+    expect(instances.every(instance => instance.destroyed)).toBe(true);
+  });
+
   it('a save-error control notifies via the translated key, not a hardcoded string', () => {
     renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
     expect(typeof controlHandler).toBe('function');

@@ -56,6 +56,10 @@ class MockWebSocket {
     this.readyState = MockWebSocket.OPEN;
     this.emit('open', {});
   }
+  /** Simulate the diagnostic error event that precedes the authoritative close. */
+  error(): void {
+    this.emit('error', {});
+  }
   /** Inject a server→client binary frame. */
   receive(bytes: Uint8Array): void {
     this.emit('message', { data: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) });
@@ -306,10 +310,16 @@ describe('UnifiedCollabProvider', () => {
 
   it('defers an initial connection while offline and connects when the browser returns online', () => {
     vi.stubGlobal('navigator', { onLine: false });
-    const provider = new UnifiedCollabProvider(baseOptions);
+    const provider = new UnifiedCollabProvider({ ...baseOptions, connect: false });
+    const verdicts: CloseVerdict[] = [];
+    provider.on('close', verdict => verdicts.push(verdict));
+
+    provider.connect();
+    provider.connect();
 
     expect(provider.status).toBe('disconnected');
     expect(MockWebSocket.instances).toHaveLength(0);
+    expect(verdicts).toEqual([{ code: 4000, reason: 'offline', disposition: 'transient' }]);
 
     window.dispatchEvent(new Event('online'));
 
@@ -345,6 +355,189 @@ describe('UnifiedCollabProvider', () => {
 
     expect(MockWebSocket.instances).toHaveLength(1);
     provider.destroy();
+  });
+
+  describe('connection-intent transition matrix', () => {
+    it.each([
+      { connect: false, online: true, socketsBeforeRequest: 0, socketsAfterOnline: 0 },
+      { connect: false, online: false, socketsBeforeRequest: 0, socketsAfterOnline: 0 },
+      { connect: true, online: true, socketsBeforeRequest: 1, socketsAfterOnline: 1 },
+      { connect: true, online: false, socketsBeforeRequest: 0, socketsAfterOnline: 1 },
+    ])('construction connect=$connect online=$online owns the expected initial attempt', ({
+      connect,
+      online,
+      socketsBeforeRequest,
+      socketsAfterOnline,
+    }) => {
+      vi.stubGlobal('navigator', { onLine: online });
+      const provider = new UnifiedCollabProvider({ ...baseOptions, connect });
+
+      expect(provider.status).toBe(connect && online ? 'connecting' : 'disconnected');
+      expect(MockWebSocket.instances).toHaveLength(socketsBeforeRequest);
+
+      window.dispatchEvent(new Event('online'));
+      expect(MockWebSocket.instances).toHaveLength(socketsAfterOnline);
+      provider.destroy();
+    });
+
+    it.each([
+      { socketState: 'CONNECTING', open: false },
+      { socketState: 'OPEN', open: true },
+    ])('preserves one connection request across offline/online while the socket is $socketState', ({ open }) => {
+      const provider = new UnifiedCollabProvider({ ...baseOptions, connect: false });
+      const verdicts: CloseVerdict[] = [];
+      provider.on('close', verdict => verdicts.push(verdict));
+      provider.connect();
+      provider.connect();
+      if (open) MockWebSocket.instances[0].open();
+
+      window.dispatchEvent(new Event('offline'));
+      window.dispatchEvent(new Event('offline'));
+      expect(MockWebSocket.instances).toHaveLength(1);
+      expect(verdicts).toEqual([{ code: 4000, reason: 'offline', disposition: 'transient' }]);
+
+      window.dispatchEvent(new Event('online'));
+      window.dispatchEvent(new Event('online'));
+      expect(MockWebSocket.instances).toHaveLength(2);
+      provider.destroy();
+    });
+
+    it.each([
+      { socketState: 'CLOSING', readyState: 2 },
+      { socketState: 'CLOSED before its close event', readyState: 3 },
+    ])('does not overtake a $socketState socket before its authoritative close event', ({ readyState }) => {
+      vi.useFakeTimers();
+      const provider = new UnifiedCollabProvider(baseOptions);
+      const socket = MockWebSocket.instances[0];
+      socket.readyState = readyState;
+
+      provider.connect();
+      provider.reconnectNow();
+      expect(MockWebSocket.instances).toHaveLength(1);
+
+      socket.serverClose(1006, 'transport-lost');
+      vi.advanceTimersByTime(1_000);
+      expect(MockWebSocket.instances).toHaveLength(2);
+      provider.destroy();
+    });
+
+    it.each([
+      { label: 'transient close', code: 1006, reason: '', resumes: true },
+      { label: 'normal close', code: 1000, reason: '', resumes: false },
+      { label: 'terminal close', code: 1008, reason: 'forbidden', resumes: false },
+    ])('$label has the expected durable connection intent', ({ code, reason, resumes }) => {
+      vi.useFakeTimers();
+      const provider = new UnifiedCollabProvider(baseOptions);
+      MockWebSocket.instances[0].open();
+      MockWebSocket.instances[0].serverClose(code, reason);
+
+      window.dispatchEvent(new Event('offline'));
+      window.dispatchEvent(new Event('online'));
+      vi.runOnlyPendingTimers();
+
+      expect(MockWebSocket.instances).toHaveLength(resumes ? 2 : 1);
+      provider.destroy();
+    });
+
+    it.each([
+      { action: 'disconnect', stop: (provider: UnifiedCollabProvider) => provider.disconnect() },
+      { action: 'destroy', stop: (provider: UnifiedCollabProvider) => provider.destroy() },
+    ])('$action clears connection intent, timers, and browser-event recovery', ({ stop }) => {
+      vi.useFakeTimers();
+      const provider = new UnifiedCollabProvider(baseOptions);
+      MockWebSocket.instances[0].open();
+      stop(provider);
+
+      window.dispatchEvent(new Event('offline'));
+      window.dispatchEvent(new Event('online'));
+      vi.advanceTimersByTime(120_000);
+
+      expect(MockWebSocket.instances).toHaveLength(1);
+      provider.destroy();
+    });
+
+    it('manual reconnect reasserts intent after a terminal close', () => {
+      vi.useFakeTimers();
+      const provider = new UnifiedCollabProvider(baseOptions);
+      MockWebSocket.instances[0].open();
+      MockWebSocket.instances[0].serverClose(1008, 'forbidden');
+
+      provider.reconnectNow();
+
+      expect(MockWebSocket.instances).toHaveLength(2);
+      expect(provider.status).toBe('connecting');
+      provider.destroy();
+    });
+
+    it('does not erase a fresh request started synchronously by a close consumer', () => {
+      const provider = new UnifiedCollabProvider(baseOptions);
+      provider.on('close', verdict => {
+        if (verdict.disposition === 'terminal') provider.reconnectNow();
+      });
+
+      MockWebSocket.instances[0].serverClose(1008, 'forbidden');
+
+      expect(MockWebSocket.instances).toHaveLength(2);
+      window.dispatchEvent(new Event('offline'));
+      window.dispatchEvent(new Event('online'));
+      expect(MockWebSocket.instances).toHaveLength(3);
+      provider.destroy();
+    });
+
+    it('keeps one retry owner when connect and reconnect are repeated during backoff', () => {
+      vi.useFakeTimers();
+      const provider = new UnifiedCollabProvider(baseOptions);
+      MockWebSocket.instances[0].open();
+      MockWebSocket.instances[0].serverClose(1006);
+
+      provider.connect();
+      provider.connect();
+      expect(MockWebSocket.instances).toHaveLength(1);
+
+      provider.reconnectNow();
+      provider.reconnectNow();
+      expect(MockWebSocket.instances).toHaveLength(2);
+      vi.advanceTimersByTime(120_000);
+      expect(MockWebSocket.instances).toHaveLength(2);
+      provider.destroy();
+    });
+
+    it('treats error as diagnostic and the following close as the single retry outcome', () => {
+      vi.useFakeTimers();
+      const provider = new UnifiedCollabProvider(baseOptions);
+      const verdicts: CloseVerdict[] = [];
+      provider.on('close', verdict => verdicts.push(verdict));
+      const socket = MockWebSocket.instances[0];
+
+      socket.error();
+      socket.serverClose(1006, 'transport-lost');
+      socket.serverClose(1006, 'duplicate-close');
+
+      expect(verdicts).toEqual([{ code: 1006, reason: 'transport-lost', disposition: 'transient' }]);
+      vi.advanceTimersByTime(1_000);
+      expect(MockWebSocket.instances).toHaveLength(2);
+      provider.destroy();
+    });
+
+    it('emits readiness loss, disconnected status, and one transient outcome in order', () => {
+      const events: string[] = [];
+      const provider = new UnifiedCollabProvider(baseOptions);
+      provider.on('synced', synced => events.push(`synced:${synced}`));
+      provider.on('status', status => events.push(`status:${status}`));
+      provider.on('close', verdict => events.push(`outcome:${verdict.disposition}:${verdict.reason}`));
+      const socket = MockWebSocket.instances[0];
+      socket.open();
+      const step2 = encoding.createEncoder();
+      encoding.writeVarUint(step2, WIRE.SYNC);
+      writeSyncStep2(step2, new Y.Doc());
+      socket.receive(encoding.toUint8Array(step2));
+      events.length = 0;
+
+      socket.serverClose(1006, 'transport-lost');
+
+      expect(events).toEqual(['synced:false', 'status:disconnected', 'outcome:transient:transport-lost']);
+      provider.destroy();
+    });
   });
 
   it('forwards local doc edits to the server as sync Update frames', () => {

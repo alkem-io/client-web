@@ -130,7 +130,8 @@ export type ControlMessage = {
 export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
 /**
- * How a socket close should be handled — an EXPLICIT 3-way disposition, never
+ * How an unavailable or ended connection attempt should be handled — an EXPLICIT
+ * 3-way disposition, never
  * `retry = !terminal` (a clean 1000 close is neither terminal nor something to
  * retry):
  * - `normal`: a clean 1000 close. NEITHER retried NOR surfaced as a reconnect
@@ -271,7 +272,13 @@ export class UnifiedCollabProvider {
   private heartbeatTimer: ReturnType<typeof setTimeout> | null = null;
   private heartbeatTimeout: ReturnType<typeof setTimeout> | null = null;
   private online = globalThis.navigator?.onLine !== false;
-  private connectWhenOnline = false;
+  /**
+   * The caller's durable connection intent. Transient transport failures and
+   * browser-offline periods preserve it; clean/terminal closes, disconnect(),
+   * and destroy() clear it. Sockets and retry timers are consequences of this
+   * intent, never a source from which it is reconstructed.
+   */
+  private connectionRequested = false;
 
   private readonly statusListeners = new Set<StatusListener>();
   private readonly syncedListeners = new Set<SyncedListener>();
@@ -375,16 +382,22 @@ export class UnifiedCollabProvider {
   }
 
   connect(): void {
-    if (this.destroyed || !this.url || this.ws) return;
+    if (this.destroyed || !this.url) return;
+
+    const isNewRequest = !this.connectionRequested;
+    this.connectionRequested = true;
+
+    // A live/connecting socket or a scheduled retry already owns the next
+    // attempt. Repeated connect() calls must never create a second owner.
+    if (this.ws || this.reconnectTimer) return;
 
     if (!this.online) {
-      this.connectWhenOnline = true;
-      this.setSynced(false);
-      this.setStatus('disconnected');
+      if (isNewRequest) {
+        this.reportTransientDisconnect('offline');
+      }
       return;
     }
 
-    this.connectWhenOnline = false;
     this.setStatus('connecting');
 
     const ws = new WebSocket(this.url);
@@ -399,7 +412,7 @@ export class UnifiedCollabProvider {
 
   /** Tear down the socket without reconnecting and without destroying the doc. */
   disconnect(): void {
-    this.connectWhenOnline = false;
+    this.connectionRequested = false;
     this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.clearReconnect();
     this.clearConnectionHealthTimers();
@@ -412,7 +425,7 @@ export class UnifiedCollabProvider {
   destroy(): void {
     if (this.destroyed) return;
     this.destroyed = true;
-    this.connectWhenOnline = false;
+    this.connectionRequested = false;
     this.rejectPendingDurability('The collaboration editor closed before the draft was persisted');
     this.clearReconnect();
     this.clearConnectionHealthTimers();
@@ -588,6 +601,13 @@ export class UnifiedCollabProvider {
     // to consumers so a terminal policy close stops their retry loops too — not
     // just this provider's timer.
     const verdict = classifyClose(event.code, event.reason);
+    if (verdict.disposition !== 'transient') {
+      // Clear the ended intent before notifying consumers. A close listener may
+      // deliberately start a fresh manual attempt; clearing after notification
+      // would silently cancel that new request.
+      this.connectionRequested = false;
+      this.clearReconnect();
+    }
     this.closeListeners.forEach(listener => listener(verdict));
 
     // ONLY a transient drop reconnects with backoff (1011, a transport error 1006,
@@ -595,8 +615,6 @@ export class UnifiedCollabProvider {
     // `normal` clean close and a `terminal` policy close both stay closed.
     if (verdict.disposition === 'transient') {
       this.scheduleReconnect();
-    } else {
-      this.connectWhenOnline = false;
     }
   };
 
@@ -723,7 +741,7 @@ export class UnifiedCollabProvider {
   }
 
   private scheduleReconnect(): void {
-    if (this.destroyed || this.reconnectTimer || !this.online) return;
+    if (this.destroyed || !this.connectionRequested || this.ws || this.reconnectTimer || !this.online) return;
     const delay = RECONNECT_BACKOFF_MS[Math.min(this.reconnectAttempt, RECONNECT_BACKOFF_MS.length - 1)];
     this.reconnectAttempt += 1;
     this.reconnectTimer = setTimeout(() => {
@@ -750,7 +768,6 @@ export class UnifiedCollabProvider {
   /** Pause retries and preserve an active connection intent until the browser returns online. */
   private handleOffline = () => {
     if (this.destroyed) return;
-    this.connectWhenOnline ||= Boolean(this.ws || this.reconnectTimer);
     this.online = false;
     if (this.ws) {
       this.failTransientConnection('offline');
@@ -764,7 +781,7 @@ export class UnifiedCollabProvider {
   /** Fulfil a deferred connection intent without reviving an intentional close. */
   private handleOnline = () => {
     this.online = true;
-    if (!this.connectWhenOnline) return;
+    if (!this.connectionRequested) return;
     this.reconnectNow();
   };
 
@@ -796,11 +813,16 @@ export class UnifiedCollabProvider {
     this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
     this.clearConnectionHealthTimers();
     this.teardownSocket(4000);
+    this.reportTransientDisconnect(reason);
+    this.scheduleReconnect();
+  }
+
+  /** Publish the shared retryable-disconnect outcome, whether or not a socket was created. */
+  private reportTransientDisconnect(reason: string): void {
     this.setSynced(false);
     this.setStatus('disconnected');
     const verdict: CloseVerdict = { code: 4000, reason, disposition: 'transient' };
     this.closeListeners.forEach(listener => listener(verdict));
-    this.scheduleReconnect();
   }
 
   private clearConnectionHealthTimers(): void {
