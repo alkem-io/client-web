@@ -13,6 +13,7 @@ type Inst = {
   disconnected: boolean;
   hasUnconfirmedLocalChanges: boolean;
   durabilityRequests: number;
+  persistPendingChanges: ReturnType<typeof vi.fn>;
 };
 const instances: Inst[] = [];
 // The most-recent provider's listeners, so a test can inject a control frame and drive
@@ -33,6 +34,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
     disconnected = false;
     hasUnconfirmedLocalChanges = false;
     durabilityRequests = 0;
+    persistPendingChanges = vi.fn(() => Promise.resolve());
     constructor(opts: { documentId: string; doc: Y.Doc; initialUnconfirmedLocalChanges?: boolean }) {
       this.documentId = opts.documentId;
       this.doc = opts.doc;
@@ -206,7 +208,13 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
   });
 
   it('resumes an inactivity-downgraded memo with fresh admission over the same Y.Doc', () => {
-    const { result } = renderHook(() => useCollaboration({ collaborationId: 'room-A' }));
+    const providersSeenAfterResume: Array<object | null> = [];
+    let captureProvider = false;
+    const { result } = renderHook(() => {
+      const collaboration = useCollaboration({ collaborationId: 'room-A' });
+      if (captureProvider) providersSeenAfterResume.push(collaboration.provider);
+      return collaboration;
+    });
     const providerA = instances[0];
     const docA = providerA.doc;
     docA.getText('content').insert(0, 'server-accepted-content');
@@ -217,6 +225,7 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(result.current.isReadOnly).toBe(true);
     expect(result.current.readOnlyCode).toBe('inactivity');
 
+    captureProvider = true;
     act(() => result.current.resumeEditing());
 
     expect(instances).toHaveLength(2);
@@ -225,6 +234,9 @@ describe('useCollaboration — one Y.Doc per collaborationId (no cross-document 
     expect(instances[1].doc.getText('content').toString()).toBe('server-accepted-content');
     expect(instances[1].hasUnconfirmedLocalChanges).toBe(true);
     expect(result.current.hasUnconfirmedLocalChanges).toBe(true);
+    expect(result.current.provider).toBe(instances[1]);
+    expect(providersSeenAfterResume.length).toBeGreaterThan(0);
+    expect(providersSeenAfterResume).not.toContain(null);
     expect(order.indexOf('destroy:room-A')).toBeLessThan(order.lastIndexOf('connect:room-A'));
     expect(result.current.status).toBe('connecting');
     expect(result.current.synced).toBe(false);

@@ -228,7 +228,17 @@ const CollaborativeExcalidrawWrapper = ({
   const [
     collabApi,
     initializeCollab,
-    { connecting, collaborating, mode, modeReason, isReadOnly, phase, hasEverSynced, hasUnconfirmedLocalChanges },
+    {
+      connecting,
+      collaborating,
+      mode,
+      modeReason,
+      isReadOnly,
+      phase,
+      access,
+      hasEverSynced,
+      hasUnconfirmedLocalChanges,
+    },
   ] = useCollab({
     username,
     onRemoteSave: (error?: string) => actions.onRemoteSave?.(error),
@@ -272,11 +282,13 @@ const CollaborativeExcalidrawWrapper = ({
       // WITHOUT a retry countdown — unlike a transient drop, the connection is
       // not coming back on its own.
       setTerminalCloseReason(reason);
-      setCollaborationStoppedNoticeOpen(true);
       // A terminal refusal freezes editing, but a dirty scene must stay visible so
-      // the existing Excalidraw export action remains usable. Clean terminal closes
-      // keep the established unavailable/loading presentation.
-      if (!combinedCollabApiRef.current?.hasUnconfirmedLocalChanges?.()) setSceneInitialized(false);
+      // the existing Excalidraw export action remains usable. Do not cover that action
+      // with the blocking unavailable dialog; the persistent dirty footer owns this
+      // state. Clean terminal closes keep the established unavailable presentation.
+      const dirty = !!combinedCollabApiRef.current?.hasUnconfirmedLocalChanges?.();
+      setCollaborationStoppedNoticeOpen(!dirty);
+      if (!dirty) setSceneInitialized(false);
       logError('WB Connection Closed (terminal policy close)', {
         category: TagCategoryValues.WHITEBOARD,
         label: `WB ID: ${whiteboard?.id}; URL: ${whiteboard?.profile?.url}; Reason: ${reason}`,
@@ -308,8 +320,9 @@ const CollaborativeExcalidrawWrapper = ({
       }
       // terminal (document-deleted / edits-not-saved): no reconnect; surface the notice.
       setTerminalCloseReason(code);
-      setCollaborationStoppedNoticeOpen(true);
-      if (!combinedCollabApiRef.current?.hasUnconfirmedLocalChanges?.()) setSceneInitialized(false);
+      const dirty = !!combinedCollabApiRef.current?.hasUnconfirmedLocalChanges?.();
+      setCollaborationStoppedNoticeOpen(!dirty);
+      if (!dirty) setSceneInitialized(false);
     },
   });
 
@@ -462,6 +475,7 @@ const CollaborativeExcalidrawWrapper = ({
         mode,
         modeReason,
         phase,
+        access,
         hasEverSynced,
         hasUnconfirmedLocalChanges,
         restartCollaboration,

@@ -493,6 +493,9 @@ export class UnifiedCollabProvider {
     if (this.destroyed) {
       return Promise.reject(new Error('The collaboration editor closed before the draft was persisted'));
     }
+    if (!this.connectionRequested) {
+      return Promise.reject(new Error('The collaboration connection is not available for persistence'));
+    }
     const promise = new Promise<void>((resolve, reject) => {
       const waiter: DurabilityWaiter = {
         resolve,
@@ -508,6 +511,18 @@ export class UnifiedCollabProvider {
     return promise;
   }
 
+  /**
+   * Persist the provider's pending local state, not merely one point-in-time
+   * barrier. A newer edit that lands while an acknowledgement is in flight
+   * remains dirty and therefore requires the next barrier before this resolves.
+   */
+  async persistPendingChanges(options: { force?: boolean } = {}): Promise<void> {
+    if (!options.force && !this.hasUnconfirmedLocalChanges) return;
+    do {
+      await this.requestDurability();
+    } while (this.hasUnconfirmedLocalChanges);
+  }
+
   private ensureDurabilityRequest(): void {
     if (this.destroyed || this.pendingDurability || this.queuedDurabilityWaiters.length === 0) return;
     if (
@@ -517,7 +532,7 @@ export class UnifiedCollabProvider {
       !this.ws ||
       this.ws.readyState !== WebSocket.OPEN
     ) {
-      this.reconnectNow();
+      this.dialNowIfRequested();
       return;
     }
 
@@ -728,11 +743,12 @@ export class UnifiedCollabProvider {
   private handleDocUpdate = (update: Uint8Array, origin: unknown) => {
     // Skip updates we applied FROM the server (origin === this).
     if (origin === this) return;
-    this.markLocalUpdate();
+    const wasUnconfirmed = this.recordLocalUpdate();
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.SYNC);
     writeUpdate(encoder, update);
     this.sendFrame(encoding.toUint8Array(encoder));
+    this.emitUnconfirmedIfChanged(wasUnconfirmed);
   };
 
   /**
@@ -775,11 +791,12 @@ export class UnifiedCollabProvider {
    * `writeUpdate` frames `messageYjsUpdate` + payload under the WIRE.SYNC prefix.
    */
   private broadcastSceneUpdate(update: Uint8Array): void {
-    this.markLocalUpdate();
+    const wasUnconfirmed = this.recordLocalUpdate();
     const encoder = encoding.createEncoder();
     encoding.writeVarUint(encoder, WIRE.SYNC);
     writeUpdate(encoder, update);
     this.sendFrame(encoding.toUint8Array(encoder));
+    this.emitUnconfirmedIfChanged(wasUnconfirmed);
   }
 
   private handleAwarenessUpdate = (
@@ -814,10 +831,10 @@ export class UnifiedCollabProvider {
     }
   }
 
-  private markLocalUpdate(): void {
+  private recordLocalUpdate(): boolean {
     const wasUnconfirmed = this.hasUnconfirmedLocalChanges;
     this.localUpdateSeq += 1;
-    this.emitUnconfirmedIfChanged(wasUnconfirmed);
+    return wasUnconfirmed;
   }
 
   private emitUnconfirmedIfChanged(previous: boolean): void {
@@ -866,7 +883,22 @@ export class UnifiedCollabProvider {
   /** Retry immediately through the provider's one reconnect owner. */
   reconnectNow(): void {
     if (this.destroyed || !this.online || this.ws) return;
+    this.connectionRequested = true;
     this.clearReconnect();
+    this.connect();
+  }
+
+  /**
+   * Expedite an already-requested connection for a pending durability waiter.
+   * Unlike explicit Retry, this can never revive a terminal or intentionally
+   * disconnected provider and it preserves the accumulated backoff attempt.
+   */
+  private dialNowIfRequested(): void {
+    if (this.destroyed || !this.connectionRequested || !this.online || this.ws) return;
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
+    }
     this.connect();
   }
 

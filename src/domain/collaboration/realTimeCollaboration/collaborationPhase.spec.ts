@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type CollaborationPhaseSnapshot, deriveCollaborationPhase } from './collaborationPhase';
+import { type CollaborationPhaseSnapshot, deriveCollaborationState } from './collaborationPhase';
 
 const live: CollaborationPhaseSnapshot = {
   status: 'connected',
@@ -10,15 +10,16 @@ const live: CollaborationPhaseSnapshot = {
   replaceGeneration: false,
 };
 
-describe('deriveCollaborationPhase', () => {
+describe('deriveCollaborationState', () => {
   it.each([
-    [{ ...live, hasEverSynced: false, synced: false, status: 'connecting' }, 'initial'],
-    [live, 'live'],
-    [{ ...live, status: 'disconnected', synced: false }, 'recovering'],
-    [{ ...live, readOnly: true }, 'readOnly'],
-    [{ ...live, terminal: true }, 'terminal'],
-    [{ ...live, replaceGeneration: true }, 'replaceGeneration'],
-  ] as const)('derives %s as %s', (snapshot, expected) => {
-    expect(deriveCollaborationPhase(snapshot)).toBe(expected);
+    [{ ...live, hasEverSynced: false, synced: false, status: 'connecting' }, 'initial', 'readWrite'],
+    [live, 'live', 'readWrite'],
+    [{ ...live, status: 'disconnected', synced: false }, 'recovering', 'readWrite'],
+    [{ ...live, status: 'disconnected', synced: false, readOnly: true }, 'recovering', 'readOnly'],
+    [{ ...live, readOnly: true }, 'live', 'readOnly'],
+    [{ ...live, terminal: true, readOnly: true }, 'terminal', 'readOnly'],
+    [{ ...live, replaceGeneration: true, readOnly: true }, 'replaceGeneration', 'readOnly'],
+  ] as const)('derives %s as lifecycle %s with access %s', (snapshot, phase, access) => {
+    expect(deriveCollaborationState(snapshot)).toEqual({ phase, access });
   });
 });

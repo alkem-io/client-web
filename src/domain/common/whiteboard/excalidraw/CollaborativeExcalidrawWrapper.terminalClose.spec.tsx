@@ -70,6 +70,7 @@ vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
         modeReason: null,
         isReadOnly: false,
         phase: 'live',
+        access: 'readWrite',
         hasEverSynced: true,
         hasUnconfirmedLocalChanges: false,
       },
@@ -133,7 +134,7 @@ describe('CollaborativeExcalidrawWrapper — close disposition presentation', ()
     act(() => h.collabProps?.onTerminalClose?.('forbidden'));
 
     expect(screen.queryByText('pages.whiteboard.loadingScene')).not.toBeInTheDocument();
-    expect(h.noticeOpen[h.noticeOpen.length - 1]).toBe(true);
+    expect(h.noticeOpen[h.noticeOpen.length - 1]).toBe(false);
   });
 
   it('a TRANSIENT close leaves the blocking reconnect notice closed', () => {

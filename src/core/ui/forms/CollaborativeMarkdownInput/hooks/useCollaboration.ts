@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
-import { deriveCollaborationPhase } from '@/domain/collaboration/realTimeCollaboration/collaborationPhase';
+import { deriveCollaborationState } from '@/domain/collaboration/realTimeCollaboration/collaborationPhase';
 import {
   type CollaborationStatus,
   isCollaborationStatus,
@@ -108,10 +108,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     provider: UnifiedCollabProvider;
   }>();
   const provider =
-    providerSession &&
-    providerSession.collaborationId === collaborationId &&
-    providerSession.ydoc === ydoc &&
-    providerSession.admissionGeneration === admissionGeneration
+    providerSession && providerSession.collaborationId === collaborationId && providerSession.ydoc === ydoc
       ? providerSession.provider
       : null;
 
@@ -268,7 +265,6 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
 
     return () => {
       nextProvider.destroy();
-      setProviderSession(current => (current?.provider === nextProvider ? undefined : current));
     };
   }, [admissionGeneration, collaborationId, ydoc]);
 
@@ -303,7 +299,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     }
   };
 
-  const phase = deriveCollaborationPhase({
+  const { phase, access } = deriveCollaborationState({
     status:
       status === MemoStatus.CONNECTED ? 'connected' : status === MemoStatus.CONNECTING ? 'connecting' : 'disconnected',
     synced,
@@ -318,13 +314,18 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     synced,
     lastSaveTime,
     phase,
+    access,
     hasEverSynced,
     hasUnconfirmedLocalChanges,
-    isReadOnly: phase === 'initial' || phase === 'readOnly' || phase === 'terminal' || phase === 'replaceGeneration',
+    isReadOnly: access === 'readOnly' || phase === 'initial' || phase === 'terminal' || phase === 'replaceGeneration',
     readOnlyCode: serverReadOnlyState?.readOnlyCode,
     sessionEndCode,
     resumeEditing,
     retryNow: () => provider?.reconnectNow(),
+    persistPendingChanges: (options?: { force?: boolean }) =>
+      provider
+        ? provider.persistPendingChanges(options)
+        : Promise.reject(new Error('The collaboration provider is not available')),
     collaborationExtensions,
     ydoc,
     provider,

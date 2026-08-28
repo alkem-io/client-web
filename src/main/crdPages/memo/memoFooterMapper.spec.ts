@@ -4,7 +4,8 @@ import { mapMemoFooterProps } from '@/main/crdPages/memo/memoFooterMapper';
 
 const base = {
   connectionStatus: 'connected' as const,
-  phase: 'readOnly' as const,
+  phase: 'live' as const,
+  access: 'readOnly' as const,
   isAuthenticated: true,
   memberCount: 1,
   connectedUsers: [],
@@ -33,17 +34,18 @@ describe('mapMemoFooterProps inactivity recovery', () => {
     expect(forbidden.onResumeEditing).toBeUndefined();
   });
 
-  it('does not turn a disconnected transport into a manual resume action', () => {
+  it('keeps transport recovery and the independent inactivity-resume action visible together', () => {
+    const onResumeEditing = vi.fn();
     const result = mapMemoFooterProps({
       ...base,
       connectionStatus: 'disconnected',
       phase: 'recovering',
       readOnlyCode: ReadOnlyCode.INACTIVITY,
-      onResumeEditing: vi.fn(),
+      onResumeEditing,
     });
 
-    expect(result.readonlyReason).toBeNull();
-    expect(result.onResumeEditing).toBeUndefined();
+    expect(result.readonlyReason).toBe('inactivity');
+    expect(result.onResumeEditing).toBe(onResumeEditing);
   });
 
   it('distinguishes a terminal end from reconnecting and only resumes a manual size-limit end', () => {

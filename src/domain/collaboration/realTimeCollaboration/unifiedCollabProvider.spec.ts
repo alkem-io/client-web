@@ -342,6 +342,24 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
+  it('keeps an open, not-yet-synced connection alive when the service echoes the heartbeat', () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.sent.length = 0;
+
+    vi.advanceTimersByTime(INBOUND_IDLE_PROBE_MS);
+    expect(readFrameType(socket.sent[0])).toBe(WIRE.HEARTBEAT);
+    socket.receive(socket.sent[0]);
+    vi.advanceTimersByTime(INBOUND_IDLE_GRACE_MS);
+
+    expect(provider.synced).toBe(false);
+    expect(provider.status).toBe('connected');
+    expect(MockWebSocket.instances).toHaveLength(1);
+    provider.destroy();
+  });
+
   it('drops and retries a connection that does not answer the heartbeat', () => {
     vi.useFakeTimers();
     const provider = new UnifiedCollabProvider(baseOptions);
@@ -847,6 +865,118 @@ describe('UnifiedCollabProvider', () => {
     provider.destroy();
   });
 
+  it('persistPendingChanges resolves without a wire request when the provider is already clean', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.receive(syncStep2Frame(new Y.Doc()));
+    socket.sent.length = 0;
+
+    await expect(provider.persistPendingChanges()).resolves.toBeUndefined();
+    expect(socket.sent).toEqual([]);
+    provider.destroy();
+  });
+
+  it('persistPendingChanges can force one wire barrier for a clean draft', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.receive(syncStep2Frame(new Y.Doc()));
+    socket.sent.length = 0;
+
+    const persisted = provider.persistPendingChanges({ force: true });
+    const requests = socket.sent.filter(frame => readFrameType(frame) === WIRE.DURABILITY_REQUEST);
+    expect(requests).toHaveLength(1);
+    const request = readRawJsonFrame(requests[0]).body as { requestId: string };
+    socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
+
+    await expect(persisted).resolves.toBeUndefined();
+    expect(socket.sent.filter(frame => readFrameType(frame) === WIRE.DURABILITY_REQUEST)).toHaveLength(1);
+    provider.destroy();
+  });
+
+  it('persistPendingChanges reconnects a dirty disconnected provider and waits for the resynced barrier', async () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const firstSocket = MockWebSocket.instances[0];
+    firstSocket.open();
+    firstSocket.receive(syncStep2Frame(new Y.Doc()));
+    provider.doc.getMap('scene').set('dirty', true);
+    firstSocket.serverClose(1006);
+
+    const persisted = provider.persistPendingChanges();
+    await vi.advanceTimersByTimeAsync(1_000);
+    const retrySocket = MockWebSocket.instances[1];
+    retrySocket.open();
+    retrySocket.receive(syncStep2Frame(new Y.Doc()));
+    const requests = retrySocket.sent.filter(frame => readFrameType(frame) === WIRE.DURABILITY_REQUEST);
+    expect(requests).toHaveLength(1);
+    const request = readRawJsonFrame(requests[0]).body as { requestId: string };
+    retrySocket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
+
+    await expect(persisted).resolves.toBeUndefined();
+    expect(provider.hasUnconfirmedLocalChanges).toBe(false);
+    provider.destroy();
+  });
+
+  it('persistPendingChanges sends another barrier when a newer update lands before the first acknowledgement', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.receive(syncStep2Frame(new Y.Doc()));
+    socket.sent.length = 0;
+    provider.doc.getMap('scene').set('before-first', true);
+
+    const persisted = provider.persistPendingChanges();
+    const firstRequestFrame = socket.sent.find(frame => readFrameType(frame) === WIRE.DURABILITY_REQUEST);
+    if (!firstRequestFrame) throw new Error('first durability request was not sent');
+    const firstRequest = readRawJsonFrame(firstRequestFrame).body as { requestId: string };
+    provider.doc.getMap('scene').set('after-first', true);
+    socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: firstRequest.requestId }));
+    await Promise.resolve();
+
+    const requestFrames = socket.sent.filter(frame => readFrameType(frame) === WIRE.DURABILITY_REQUEST);
+    expect(requestFrames).toHaveLength(2);
+    const secondRequest = readRawJsonFrame(requestFrames[1]).body as { requestId: string };
+    socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: secondRequest.requestId }));
+
+    await expect(persisted).resolves.toBeUndefined();
+    expect(provider.hasUnconfirmedLocalChanges).toBe(false);
+    provider.destroy();
+  });
+
+  it('queues the update frame before notifying synchronous unconfirmed listeners', () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.receive(syncStep2Frame(new Y.Doc()));
+    socket.sent.length = 0;
+    provider.on('unconfirmed', () => {
+      void provider.requestDurability().catch(() => {});
+    });
+
+    provider.doc.getMap('scene').set('ordered', true);
+
+    expect(socket.sent.map(readFrameType)).toEqual([WIRE.SYNC, WIRE.DURABILITY_REQUEST]);
+    provider.destroy();
+  });
+
+  it('does not revive a terminal connection for durability, but explicit Retry opens one socket', async () => {
+    const provider = new UnifiedCollabProvider(baseOptions);
+    const socket = MockWebSocket.instances[0];
+    socket.open();
+    socket.receive(syncStep2Frame(new Y.Doc()));
+    provider.doc.getMap('scene').set('dirty', true);
+    socket.serverClose(1008, 'forbidden');
+
+    await expect(provider.persistPendingChanges()).rejects.toThrow('connection is not available');
+    expect(MockWebSocket.instances).toHaveLength(1);
+
+    provider.reconnectNow();
+    expect(MockWebSocket.instances).toHaveLength(2);
+    provider.destroy();
+  });
+
   it('queues a fresh barrier for a later caller when updates are sent during the first request', async () => {
     const provider = new UnifiedCollabProvider(baseOptions);
     const socket = MockWebSocket.instances[0];
@@ -951,6 +1081,9 @@ describe('UnifiedCollabProvider', () => {
     socket.sent.length = 0;
 
     const durability = provider.requestDurability();
+    const originalRequestFrame = socket.sent.find(frame => readFrameType(frame) === WIRE.DURABILITY_REQUEST);
+    if (!originalRequestFrame) throw new Error('original durability request was not sent');
+    const originalRequest = readRawJsonFrame(originalRequestFrame).body as { requestId: string };
     const timedOut = expect(durability).rejects.toThrow('timed out while persisting the draft');
     // Keep the transport healthy while the durability reply alone is lost.
     // Otherwise the independent heartbeat timeout would correctly close first.
@@ -975,6 +1108,13 @@ describe('UnifiedCollabProvider', () => {
     const retryFrame = retryFrames[0];
     if (!retryFrame) throw new Error('durability retry was not sent');
     const request = readRawJsonFrame(retryFrame).body as { requestId: string };
+    let retrySettled = false;
+    void retry.then(() => {
+      retrySettled = true;
+    });
+    retrySocket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: originalRequest.requestId }));
+    await Promise.resolve();
+    expect(retrySettled).toBe(false);
     retrySocket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
     await expect(retry).resolves.toBeUndefined();
 

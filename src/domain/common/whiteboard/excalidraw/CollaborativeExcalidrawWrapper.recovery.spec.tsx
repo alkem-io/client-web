@@ -44,6 +44,7 @@ vi.mock('./collab/useCollab', () => ({
         modeReason: null,
         isReadOnly: false,
         phase: 'live',
+        access: 'readWrite',
         hasEverSynced: true,
         hasUnconfirmedLocalChanges: false,
       },

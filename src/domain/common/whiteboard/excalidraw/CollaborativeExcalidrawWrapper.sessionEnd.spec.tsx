@@ -28,6 +28,10 @@ const h = vi.hoisted(() => ({
     mode: null as 'read' | 'write' | null,
     modeReason: null as string | null,
     isReadOnly: false,
+    phase: 'live' as const,
+    access: 'readWrite' as const,
+    hasEverSynced: true,
+    hasUnconfirmedLocalChanges: false,
   },
 }));
 

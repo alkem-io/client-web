@@ -1,8 +1,9 @@
 import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { useRef, useState } from 'react';
 import {
+  type CollaborationAccess,
   type CollaborationPhase,
-  deriveCollaborationPhase,
+  deriveCollaborationState,
 } from '@/domain/collaboration/realTimeCollaboration/collaborationPhase';
 import {
   type CloseVerdict,
@@ -28,6 +29,10 @@ export type CollabAPI = {
   isCollaborating: () => boolean;
   /** Wait until every preceding scene update is durable in both collaboration stores. */
   requestDurability: () => Promise<void>;
+  /** Persist the provider's complete pending scene, including edits made while an acknowledgement is in flight. */
+  persistPendingChanges: (options?: { force?: boolean }) => Promise<void>;
+  /** Whether this admission is sealed by a terminal or generation-replacing session end. */
+  isTerminal: () => boolean;
   /** Retry a disconnected transport through the provider's single retry owner. */
   reconnect: () => void;
   hasUnconfirmedLocalChanges: () => boolean;
@@ -43,6 +48,7 @@ export type CollabState = {
   modeReason: CollaboratorModeReasons | null;
   isReadOnly: boolean;
   phase: CollaborationPhase;
+  access: CollaborationAccess;
   hasEverSynced: boolean;
   hasUnconfirmedLocalChanges: boolean;
 };
@@ -214,6 +220,7 @@ const useCollab = ({
     // idempotent for the UI/action (it must NOT re-route to a callback), though the
     // provider still completes its own socket teardown. Reset on a fresh connection.
     let sessionEndHandled = false;
+    let terminalSealed = false;
     let didEverSync = preservesScene && hasEverSyncedRef.current;
     let currentMode: CollaboratorMode | null = null;
 
@@ -222,8 +229,10 @@ const useCollab = ({
       // read-only state until SyncStep2 confirms this same Y.Doc has converged.
       setIsConnecting(status === 'connecting' || (status === 'connected' && !provider.synced));
       if (status === 'connected') {
-        sessionEndHandled = false; // a fresh connection: any prior session-end is spent
-        setTerminal(false);
+        if (!terminalSealed) {
+          sessionEndHandled = false; // a fresh connection: any prior transient session-end is spent
+          setTerminal(false);
+        }
       } else if (status === 'disconnected') {
         setIsCollaborating(false);
         // The close-reason routing (transient → onCloseConnection, terminal →
@@ -245,7 +254,9 @@ const useCollab = ({
         return;
       }
       if (verdict.disposition === 'terminal') {
+        terminalSealed = true;
         setTerminal(true);
+        provider.disconnect();
         onTerminalClose?.(verdict.reason);
       } else if (verdict.disposition === 'transient') {
         // A transient close is retryable; the provider's single scheduler keeps going.
@@ -336,19 +347,22 @@ const useCollab = ({
           const info = classifySessionEnd(message);
           if (info) {
             if (info.disposition !== 'transient') {
+              terminalSealed = true;
               setTerminal(true);
               if (info.disposition === 'manual') {
                 hasEverSyncedRef.current = false;
                 hasUnconfirmedLocalChangesRef.current = false;
                 setHasEverSynced(false);
                 setHasUnconfirmedLocalChanges(false);
+                onSceneInitChange?.(false);
               }
-              onSceneInitChange?.(false);
+              provider.disconnect();
             }
             onSessionEnd?.(info);
           } else {
+            terminalSealed = true;
             setTerminal(true);
-            onSceneInitChange?.(false);
+            provider.disconnect();
             onTerminalClose?.(message.code ?? 'session-end');
           }
           break;
@@ -376,6 +390,8 @@ const useCollab = ({
       onPointerUpdate: payload => awarenessRouter.onPointerUpdate(payload),
       isCollaborating: () => providerRef.current?.status === 'connected' && providerRef.current.synced,
       requestDurability: () => provider.requestDurability(),
+      persistPendingChanges: options => provider.persistPendingChanges(options),
+      isTerminal: () => terminalSealed,
       reconnect: () => provider.reconnectNow(),
       hasUnconfirmedLocalChanges: () => provider.hasUnconfirmedLocalChanges,
       broadcastEmojiReaction: (emoji, x, y) => {
@@ -406,7 +422,7 @@ const useCollab = ({
     };
   };
 
-  const phase = deriveCollaborationPhase({
+  const { phase, access } = deriveCollaborationState({
     status: isConnecting ? 'connecting' : isCollaborating ? 'connected' : 'disconnected',
     synced: isCollaborating,
     hasEverSynced,
@@ -426,8 +442,9 @@ const useCollab = ({
       collaborating: isCollaborating,
       mode: collaboratorMode,
       modeReason: collaboratorModeReason,
-      isReadOnly: phase === 'initial' || phase === 'readOnly' || phase === 'terminal' || phase === 'replaceGeneration',
+      isReadOnly: access === 'readOnly' || phase === 'initial' || phase === 'terminal' || phase === 'replaceGeneration',
       phase,
+      access,
       hasEverSynced,
       hasUnconfirmedLocalChanges,
     },

@@ -7,6 +7,7 @@ import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/grap
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
@@ -36,9 +37,44 @@ type CrdMemoDialogProps = {
   onDelete?: () => Promise<void> | void;
 };
 
+type CollaborativeMemoCloseParams = {
+  freeze: () => void;
+  persistPendingChanges?: () => Promise<void>;
+  updatePreview: () => Promise<void>;
+  onPersistenceFailed: () => void;
+  teardown: () => void;
+};
+
+export async function closeCollaborativeMemo({
+  freeze,
+  persistPendingChanges,
+  updatePreview,
+  onPersistenceFailed,
+  teardown,
+}: CollaborativeMemoCloseParams): Promise<boolean> {
+  freeze();
+  if (persistPendingChanges) {
+    try {
+      await persistPendingChanges();
+    } catch {
+      onPersistenceFailed();
+      return false;
+    }
+  }
+  try {
+    await updatePreview();
+  } catch {
+    // Preview cache hydration is best effort; the collaboration barrier above
+    // is the content-safety boundary.
+  }
+  teardown();
+  return true;
+}
+
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
+  const notify = useNotification();
   useRegisterFullscreenEditor(open);
   const client = useApolloClient();
   const { memo, loading } = useMemoManager({ id: memoId });
@@ -56,6 +92,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     provider,
     connectionStatus,
     phase,
+    access,
     hasEverSynced,
     hasUnconfirmedLocalChanges,
     isReadOnly,
@@ -63,6 +100,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     sessionEndCode,
     resumeEditing,
     retryNow,
+    persistPendingChanges,
     memberCount,
     connectedUsers,
     user,
@@ -91,6 +129,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [displayNameDraft, setDisplayNameDraft] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const closeInFlightRef = useRef(false);
+  const [closing, setClosing] = useState(false);
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
@@ -120,25 +160,32 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   // The collab room debounces its snapshot save by ~2s; fetching from the server immediately returns stale data.
   // Instead, we grab the HTML from Tiptap, convert to markdown, and write it to the normalized
   // cache entry. Connectors schedule a delayed server fetch as a safety net.
-  const handleClose = () => {
-    if (editorRef.current) {
-      const html = editorRef.current.getHTML();
-      // Fire-and-forget: write to cache as soon as conversion completes.
-      // The dialog unmounts on close so we can't rely on timeouts; this runs
-      // outside React lifecycle as a plain promise. Swallow failures — the
-      // connector's delayed server refetch is the safety net.
-      void htmlToMarkdown(html)
-        .then(markdown => {
+  const handleClose = async () => {
+    if (closeInFlightRef.current) return;
+    closeInFlightRef.current = true;
+    let closed = false;
+    try {
+      closed = await closeCollaborativeMemo({
+        freeze: () => setClosing(true),
+        persistPendingChanges:
+          phase === 'terminal' || phase === 'replaceGeneration' ? undefined : persistPendingChanges,
+        updatePreview: async () => {
+          if (!editorRef.current) return;
+          const markdown = await htmlToMarkdown(editorRef.current.getHTML());
           client.cache.modify({
             id: client.cache.identify({ __typename: 'Memo', id: memoId }),
             fields: {
               markdown: () => markdown,
             },
           });
-        })
-        .catch(() => {});
+        },
+        onPersistenceFailed: () => notify(tCommon('callout.memo.saveFailed'), 'error'),
+        teardown: onClose,
+      });
+    } finally {
+      closeInFlightRef.current = false;
+      if (!closed) setClosing(false);
     }
-    onClose();
   };
 
   // The footer Delete button opens the confirmation; the actual delete runs from the
@@ -161,6 +208,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const footerProps = mapMemoFooterProps({
     connectionStatus,
     phase,
+    access,
     isAuthenticated,
     readOnlyCode,
     sessionEndCode,
@@ -178,7 +226,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   // Initial load waits for the first sync. Once established, the same editor and
   // Y.Doc remain mounted through transient recovery; permissions, terminal
   // verdicts, and poisoned-generation replacement are the only edit locks.
-  const editorDisabled = isReadOnly || !hasContributePrivileges;
+  const editorDisabled = closing || isReadOnly || !hasContributePrivileges;
   const sessionEndMessage = sessionEndCode
     ? t(
         sessionEndCode === 'document-size-limit-exceeded'
@@ -191,7 +239,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     <MemoDisplayName
       displayName={displayName}
       value={displayNameDraft}
-      readOnly={!canEditDisplayName}
+      readOnly={!canEditDisplayName || closing}
       editing={editingDisplayName}
       saving={savingDisplayName}
       onChange={setDisplayNameDraft}
@@ -233,7 +281,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           <MemoCollabFooter
             {...footerProps}
             recovering={phase === 'recovering'}
-            hasUnconfirmedChanges={hasUnconfirmedLocalChanges && (phase === 'readOnly' || phase === 'terminal')}
+            hasUnconfirmedChanges={
+              hasUnconfirmedLocalChanges && (phase === 'recovering' || phase === 'terminal' || access === 'readOnly')
+            }
             onRetry={retryNow}
             onCopy={handleCopyUnconfirmed}
             owner={

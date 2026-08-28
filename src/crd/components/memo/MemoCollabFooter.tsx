@@ -178,12 +178,12 @@ export function MemoCollabFooter({
             {t('memo.footer.retryNow')}
           </Button>
         )}
-        {hasUnconfirmedChanges && !recovering && (
+        {hasUnconfirmedChanges && (
           <span className="text-caption text-destructive" role="alert">
             {t('memo.footer.unconfirmedChanges')}
           </span>
         )}
-        {hasUnconfirmedChanges && !recovering && onCopy && (
+        {hasUnconfirmedChanges && onCopy && (
           <Button variant="outline" size="sm" onClick={onCopy}>
             <Copy className="size-3 mr-1" aria-hidden="true" />
             {t('memo.footer.copyChanges')}

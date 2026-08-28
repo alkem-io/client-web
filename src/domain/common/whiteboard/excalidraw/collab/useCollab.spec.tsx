@@ -20,6 +20,7 @@ let statusHandler: ((status: string) => void) | undefined;
 let unconfirmedHandler: ((unconfirmed: boolean) => void) | undefined;
 let providerInitialUnconfirmed: boolean[] = [];
 let durabilityRequests: ReturnType<typeof vi.fn>[] = [];
+let disconnects: ReturnType<typeof vi.fn>[] = [];
 vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', async importOriginal => {
   const actual =
     await importOriginal<typeof import('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider')>();
@@ -28,10 +29,13 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', as
     ephemeralChannel = { send: vi.fn(), subscribe: vi.fn(() => () => {}) };
     hasUnconfirmedLocalChanges: boolean;
     requestDurability = vi.fn(() => Promise.resolve());
+    persistPendingChanges = vi.fn(() => Promise.resolve());
+    disconnect = vi.fn();
     constructor(options: { initialUnconfirmedLocalChanges?: boolean }) {
       this.hasUnconfirmedLocalChanges = !!options.initialUnconfirmedLocalChanges;
       providerInitialUnconfirmed.push(this.hasUnconfirmedLocalChanges);
       durabilityRequests.push(this.requestDurability);
+      disconnects.push(this.disconnect);
     }
     on(event: string, handler: (arg: never) => void) {
       if (event === 'control') controlHandler = handler as (m: ControlMessage) => void;
@@ -57,6 +61,7 @@ describe('useCollab — update-rejected recovery routing', () => {
     unconfirmedHandler = undefined;
     providerInitialUnconfirmed = [];
     durabilityRequests = [];
+    disconnects = [];
     vi.clearAllMocks();
   });
 
@@ -104,6 +109,10 @@ describe('useCollab — reason-aware close routing', () => {
   afterEach(() => {
     controlHandler = undefined;
     closeHandler = undefined;
+    syncedHandler = undefined;
+    statusHandler = undefined;
+    unconfirmedHandler = undefined;
+    disconnects = [];
     vi.clearAllMocks();
   });
 
@@ -119,6 +128,7 @@ describe('useCollab — reason-aware close routing', () => {
     expect(onTerminalClose).toHaveBeenCalledWith('forbidden');
     // A terminal close must NOT open the retrying reconnect notice.
     expect(onCloseConnection).not.toHaveBeenCalled();
+    expect(disconnects.at(-1)).toHaveBeenCalledOnce();
     cleanup();
   });
 
@@ -323,6 +333,9 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
     controlHandler = undefined;
     closeHandler = undefined;
     statusHandler = undefined;
+    syncedHandler = undefined;
+    unconfirmedHandler = undefined;
+    disconnects = [];
     vi.clearAllMocks();
   });
 
@@ -335,7 +348,7 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
       useCollab({ username: 'T', onCloseConnection, onTerminalClose, onSessionEnd, onSceneInitChange })
     );
     const cleanup = result.current[1]({ excalidrawApi: fakeApi, roomId: 'r' });
-    return { onSessionEnd, onTerminalClose, onCloseConnection, onSceneInitChange, cleanup };
+    return { result, onSessionEnd, onTerminalClose, onCloseConnection, onSceneInitChange, cleanup };
   };
 
   it('keeps an established scene mounted when a transient session-end starts recovery', () => {
@@ -372,7 +385,7 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
   });
 
   it('fails CLOSED to onTerminalClose on an inconsistent tuple (never onSessionEnd)', () => {
-    const { onSessionEnd, onTerminalClose, cleanup } = mount();
+    const { onSessionEnd, onTerminalClose, onSceneInitChange, cleanup } = mount();
     controlHandler?.({
       kind: 'session-end',
       code: 'document-deleted',
@@ -381,6 +394,34 @@ describe('useCollab — session-end control (validated tuple, idempotent close)'
     } as ControlMessage);
     expect(onSessionEnd).not.toHaveBeenCalled();
     expect(onTerminalClose).toHaveBeenCalledWith('document-deleted');
+    expect(disconnects.at(-1)).toHaveBeenCalledOnce();
+    expect(onSceneInitChange).not.toHaveBeenCalledWith(false);
+    cleanup();
+  });
+
+  it('seals a terminal session-end, disconnects synchronously, and ignores a later connected status', () => {
+    const { result, onSceneInitChange, cleanup } = mount();
+    act(() => {
+      statusHandler?.('connected');
+      syncedHandler?.(true);
+      unconfirmedHandler?.(true);
+    });
+
+    act(() =>
+      controlHandler?.({
+        kind: 'session-end',
+        code: 'edits-not-saved',
+        scope: 'document',
+        disposition: 'terminal',
+      } as ControlMessage)
+    );
+
+    expect(disconnects.at(-1)).toHaveBeenCalledOnce();
+    expect(onSceneInitChange).not.toHaveBeenCalledWith(false);
+    expect(result.current[2].phase).toBe('terminal');
+    act(() => statusHandler?.('connected'));
+    expect(disconnects.at(-1)).toHaveBeenCalledOnce();
+    expect(result.current[2].phase).toBe('terminal');
     cleanup();
   });
 

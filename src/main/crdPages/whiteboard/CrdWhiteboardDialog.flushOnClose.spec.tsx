@@ -60,7 +60,8 @@ vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
       mode: 'read',
       modeReason: undefined,
       isReadOnly: true,
-      phase: 'readOnly',
+      phase: 'live',
+      access: 'readOnly',
       hasEverSynced: true,
       hasUnconfirmedLocalChanges: false,
     },
@@ -69,7 +70,7 @@ vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({
 
 // Imported AFTER the mocks are declared (vitest hoists vi.mock above imports).
 import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import { closeCollaborativeWhiteboard } from './CrdWhiteboardDialog';
+import { closeCollaborativeWhiteboard, runWhiteboardCloseOnce } from './CrdWhiteboardDialog';
 
 const cleanReport: AssetPublishReport = { published: ['f1' as never], skipped: [], failed: [] };
 const failedReport: AssetPublishReport = {
@@ -87,6 +88,25 @@ const deferredReport = () => {
 };
 
 describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', () => {
+  it('ignores a repeated close gesture while the first close is still in flight', async () => {
+    const inFlight = { current: false };
+    let finish!: (closed: boolean) => void;
+    const close = vi.fn(
+      () =>
+        new Promise<boolean>(resolve => {
+          finish = resolve;
+        })
+    );
+
+    const first = runWhiteboardCloseOnce(inFlight, close);
+    await expect(runWhiteboardCloseOnce(inFlight, close)).resolves.toBe(false);
+    expect(close).toHaveBeenCalledOnce();
+
+    finish(true);
+    await expect(first).resolves.toBe(true);
+    expect(inFlight.current).toBe(false);
+  });
+
   it('(a) a clean flush report proceeds: flush is awaited BEFORE save + teardown', async () => {
     const order: string[] = [];
     const { promise, resolveWith } = deferredReport();
@@ -104,7 +124,13 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     });
     const onPublishFailed = vi.fn();
 
-    const closing = closeCollaborativeWhiteboard({ excalidrawAPI, save, onPublishFailed, teardown });
+    const closing = closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      freeze: () => order.push('freeze'),
+      save,
+      onPublishFailed,
+      teardown,
+    });
 
     // Flush is still pending — the provider/socket teardown must NOT have fired yet.
     await Promise.resolve();
@@ -118,7 +144,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     expect(excalidrawAPI.flushAssetPublication).toHaveBeenCalledOnce();
     expect(onPublishFailed).not.toHaveBeenCalled();
     // Order proves the flush is awaited before the close/teardown callback.
-    expect(order).toEqual(['flush', 'save', 'teardown']);
+    expect(order).toEqual(['freeze', 'flush', 'save', 'teardown']);
   });
 
   it('waits for the editor-owned import, then flushes, persists, saves, and tears down', async () => {
@@ -133,7 +159,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
         return cleanReport;
       }),
     };
-    const requestDurability = vi.fn(async () => {
+    const persistPendingChanges = vi.fn(async () => {
       order.push('durability');
     });
     const save = vi.fn(async () => {
@@ -143,11 +169,12 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
 
     const closing = closeCollaborativeWhiteboard({
       excalidrawAPI,
+      freeze: () => order.push('freeze'),
       waitForPendingImport: async () => {
         order.push('import');
         await pendingImport;
       },
-      requestDurability,
+      persistPendingChanges,
       requireDurability: true,
       save,
       onPublishFailed: vi.fn(),
@@ -155,10 +182,30 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     });
 
     await Promise.resolve();
-    expect(order).toEqual(['import']);
+    expect(order).toEqual(['freeze', 'import']);
     finishImport();
     await expect(closing).resolves.toBe(true);
-    expect(order).toEqual(['import', 'flush', 'durability', 'save', 'teardown']);
+    expect(order).toEqual(['freeze', 'import', 'flush', 'durability', 'save', 'teardown']);
+    expect(persistPendingChanges).toHaveBeenCalledWith({ force: true });
+  });
+
+  it('persists an established recovering board without forcing an otherwise clean barrier', async () => {
+    const persistPendingChanges = vi.fn(async () => {});
+    const teardown = vi.fn();
+
+    await expect(
+      closeCollaborativeWhiteboard({
+        excalidrawAPI: { flushAssetPublication: vi.fn(async () => cleanReport) },
+        freeze: vi.fn(),
+        persistPendingChanges,
+        save: vi.fn(async () => {}),
+        onPublishFailed: vi.fn(),
+        teardown,
+      })
+    ).resolves.toBe(true);
+
+    expect(persistPendingChanges).toHaveBeenCalledWith({ force: undefined });
+    expect(teardown).toHaveBeenCalledOnce();
   });
 
   it('keeps a draft editor open when no durability barrier is available', async () => {
@@ -168,6 +215,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
 
     const closed = await closeCollaborativeWhiteboard({
       excalidrawAPI: { flushAssetPublication: vi.fn(async () => cleanReport) },
+      freeze: vi.fn(),
       requireDurability: true,
       save,
       onPublishFailed: vi.fn(),
@@ -188,7 +236,8 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
 
     const closed = await closeCollaborativeWhiteboard({
       excalidrawAPI: { flushAssetPublication: vi.fn(async () => cleanReport) },
-      requestDurability: vi.fn(async () => {
+      freeze: vi.fn(),
+      persistPendingChanges: vi.fn(async () => {
         throw new Error('persist failed');
       }),
       requireDurability: true,
@@ -211,7 +260,13 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     const teardown = vi.fn();
     const onPublishFailed = vi.fn();
 
-    const closing = closeCollaborativeWhiteboard({ excalidrawAPI, save, onPublishFailed, teardown });
+    const closing = closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      freeze: vi.fn(),
+      save,
+      onPublishFailed,
+      teardown,
+    });
 
     // While the store is still in flight nothing tears down.
     await Promise.resolve();
@@ -246,7 +301,13 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     const teardown = vi.fn();
     const onPublishFailed = vi.fn();
 
-    const proceeded = await closeCollaborativeWhiteboard({ excalidrawAPI, save, onPublishFailed, teardown });
+    const proceeded = await closeCollaborativeWhiteboard({
+      excalidrawAPI,
+      freeze: vi.fn(),
+      save,
+      onPublishFailed,
+      teardown,
+    });
 
     expect(proceeded).toBe(false);
     expect(onPublishFailed).toHaveBeenCalledWith(timedOutReport);
@@ -267,6 +328,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
 
     const closing = closeCollaborativeWhiteboard({
       excalidrawAPI,
+      freeze: vi.fn(),
       save,
       onPublishFailed,
       teardown,
@@ -293,6 +355,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
 
     const proceeded = await closeCollaborativeWhiteboard({
       excalidrawAPI,
+      freeze: vi.fn(),
       save,
       onPublishFailed: vi.fn(),
       teardown,
@@ -311,6 +374,7 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
 
     const proceeded = await closeCollaborativeWhiteboard({
       excalidrawAPI,
+      freeze: vi.fn(),
       save,
       onPublishFailed: vi.fn(),
       teardown,
@@ -326,7 +390,13 @@ describe('closeCollaborativeWhiteboard — flush-at-collaborative-close gate', (
     const teardown = vi.fn();
     const onPublishFailed = vi.fn();
 
-    const proceeded = await closeCollaborativeWhiteboard({ excalidrawAPI: null, save, onPublishFailed, teardown });
+    const proceeded = await closeCollaborativeWhiteboard({
+      excalidrawAPI: null,
+      freeze: vi.fn(),
+      save,
+      onPublishFailed,
+      teardown,
+    });
 
     expect(proceeded).toBe(true);
     expect(save).toHaveBeenCalledOnce();

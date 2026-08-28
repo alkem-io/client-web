@@ -70,7 +70,7 @@ export function WhiteboardCollabFooter({
             {t('footer.retryNow')}
           </Button>
         )}
-        {hasUnconfirmedChanges && !recovering && (
+        {hasUnconfirmedChanges && (
           <span className="text-caption text-destructive" role="alert">
             {t('footer.unconfirmedChanges')}
           </span>
