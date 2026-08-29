@@ -37,6 +37,14 @@ type CrdMemoDialogProps = {
   onDelete?: () => Promise<void> | void;
 };
 
+export const updateMemoMarkdownCache = (
+  editor: Pick<Editor, 'getHTML'> | null,
+  writeMarkdown: (markdown: string) => void
+): Promise<void> => {
+  if (!editor) return Promise.resolve();
+  return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
+};
+
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
@@ -121,10 +129,11 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const currentMarkdown = () => htmlToMarkdown(editorRef.current?.getHTML() ?? '');
   const finishClose = async () => {
     try {
-      const markdown = await currentMarkdown();
-      client.cache.modify({
-        id: client.cache.identify({ __typename: 'Memo', id: memoId }),
-        fields: { markdown: () => markdown },
+      await updateMemoMarkdownCache(editorRef.current, markdown => {
+        client.cache.modify({
+          id: client.cache.identify({ __typename: 'Memo', id: memoId }),
+          fields: { markdown: () => markdown },
+        });
       });
     } catch {
       // The connector's delayed refetch remains the cache fallback.
@@ -155,7 +164,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
       link.href = url;
       link.download = `${displayName || 'memo'}.md`;
       link.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
     } catch {
       notify(t('memo.unsavedClose.exportFailed'), 'error');
     }
@@ -181,7 +190,6 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const footerProps = mapMemoFooterProps({
     connectionStatus,
     saveStatus: lifecycle.kind === 'active' ? lifecycle.save : undefined,
-    saveError: lastSaveError,
     synced,
     isAuthenticated,
     isReadOnly,
@@ -194,6 +202,13 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,
   });
+  const footerStatusLabel = footerProps.saveStatus
+    ? t(`memo.footer.${footerProps.saveStatus}` as const)
+    : footerProps.connectionStatus === 'connected'
+      ? t('memo.footer.saved')
+      : footerProps.connectionStatus === 'connecting'
+        ? t('memo.footer.connecting')
+        : t('memo.footer.disconnected');
 
   // The connection-loading overlay below blocks interaction until the provider
   // is `connected` AND the initial sync packet has arrived. By the time the
@@ -244,6 +259,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         footer={
           <MemoCollabFooter
             {...footerProps}
+            statusLabel={footerStatusLabel}
+            saveErrorLabel={lastSaveError ? t('memo.footer.saveFailed') : undefined}
             owner={
               memo?.createdBy?.profile
                 ? { name: memo.createdBy.profile.displayName, url: memo.createdBy.profile.url }

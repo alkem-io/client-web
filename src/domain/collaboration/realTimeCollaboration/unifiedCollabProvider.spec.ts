@@ -56,7 +56,7 @@ const options = {
   baseUrl: 'https://collab.test',
   path: '/collab',
 };
-const socket = () => MockWebSocket.instances.at(-1) as MockWebSocket;
+const socket = () => MockWebSocket.instances[MockWebSocket.instances.length - 1] as MockWebSocket;
 const frameType = (frame: Uint8Array) => decoding.readVarUint(decoding.createDecoder(frame));
 const heartbeatFixtureHex = '050731353030302d31'; // type 5 + VarString('15000-1')
 const toHex = (frame: Uint8Array) => Array.from(frame, byte => byte.toString(16).padStart(2, '0')).join('');
@@ -123,7 +123,8 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
 
     socket().receive(control({ kind: 'admission', mode: 'write' }));
     socket().receive(syncStep1());
-    const reply = socket().sent.at(-1) as Uint8Array;
+    const sent = socket().sent;
+    const reply = sent[sent.length - 1] as Uint8Array;
     const decoder = decoding.createDecoder(reply);
     decoding.readVarUint(decoder);
     expect(decoding.readVarUint(decoder)).toBe(messageYjsSyncStep2);
@@ -141,7 +142,7 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     socket().receive(control({ kind: 'admission', mode: 'write' }));
     socket().receive(syncStep2(server));
     expect(provider.doc.getText('content').toString()).toBe('hello');
-    expect(states.at(-1)).toEqual({ kind: 'active', access: 'write', save: 'saved' });
+    expect(states[states.length - 1]).toEqual({ kind: 'active', access: 'write', save: 'saved' });
     provider.destroy();
   });
 
@@ -152,7 +153,8 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     socket().open();
     socket().receive(control({ kind: 'admission', mode: 'read', reason: 'no-update-access' }));
     socket().receive(syncStep1());
-    const reply = socket().sent.at(-1) as Uint8Array;
+    const sent = socket().sent;
+    const reply = sent[sent.length - 1] as Uint8Array;
     const decoder = decoding.createDecoder(reply);
     decoding.readVarUint(decoder);
     expect(decoding.readVarUint(decoder)).toBe(messageYjsSyncStep2);
@@ -190,15 +192,17 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     provider.destroy();
   });
 
-  it('keeps the backoff timer as dial owner when navigator reports offline', async () => {
+  it('keeps the patient backoff loop running when the browser reports offline', async () => {
     vi.useFakeTimers();
-    vi.spyOn(Math, 'random').mockReturnValue(0);
+    vi.spyOn(Math, 'random').mockReturnValue(0.5);
     vi.stubGlobal('navigator', { onLine: false });
     const provider = new UnifiedCollabProvider(options);
     expect(MockWebSocket.instances).toHaveLength(1);
     admitAndSync(provider);
     socket().serverClose(1006);
-    await vi.advanceTimersByTimeAsync(0);
+    await vi.advanceTimersByTimeAsync(499);
+    expect(MockWebSocket.instances).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(1);
     expect(MockWebSocket.instances).toHaveLength(2);
     provider.destroy();
   });
@@ -210,7 +214,7 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     const states: CollaborationState[] = [];
     provider.subscribe(state => states.push(state));
     provider.doc.getText('content').insert(0, 'offline edit');
-    expect(states.at(-1)).toEqual({ kind: 'active', access: 'write', save: 'offline' });
+    expect(states[states.length - 1]).toEqual({ kind: 'active', access: 'write', save: 'offline' });
     expect(provider.hasUnsavedChanges).toBe(true);
     provider.destroy();
   });
@@ -222,6 +226,17 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     socket().serverClose(1008, 'forbidden');
     expect(provider.state).toEqual({ kind: 'ended', reason: 'forbidden', recovery: 'none' });
     expect(MockWebSocket.instances).toHaveLength(1);
+    provider.destroy();
+  });
+
+  it('keeps a terminal end final when the retained local document changes', () => {
+    const provider = new UnifiedCollabProvider(options);
+    admitAndSync(provider);
+    socket().serverClose(1008, 'forbidden');
+
+    provider.doc.getText('content').insert(0, 'local edit after refusal');
+
+    expect(provider.state).toEqual({ kind: 'ended', reason: 'forbidden', recovery: 'none' });
     provider.destroy();
   });
 
@@ -274,7 +289,7 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     const provider = new UnifiedCollabProvider(options);
     const ws = admitAndSync(provider);
     await vi.advanceTimersByTimeAsync(15_000);
-    const probe = ws.sent.at(-1) as Uint8Array;
+    const probe = ws.sent[ws.sent.length - 1] as Uint8Array;
     expect(toHex(probe)).toBe(heartbeatFixtureHex);
     ws.receive(probe);
     await vi.advanceTimersByTimeAsync(9_999);

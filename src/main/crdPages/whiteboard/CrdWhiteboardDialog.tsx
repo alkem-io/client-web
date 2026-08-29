@@ -335,7 +335,7 @@ const CrdWhiteboardDialog = ({
       link.href = url;
       link.download = `${whiteboard.profile.displayName || 'whiteboard'}.excalidraw`;
       link.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
     } catch {
       notify(t('callout.whiteboard.saveFailed'), 'error');
     }

@@ -6,7 +6,6 @@ import type { CollaborationSave } from '@/domain/collaboration/realTimeCollabora
 type MapMemoFooterParams = {
   connectionStatus: CollabStatus;
   saveStatus?: CollaborationSave;
-  saveError?: string;
   synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
@@ -27,7 +26,6 @@ type MapMemoFooterParams = {
 type MemoFooterMappedProps = {
   connectionStatus: CollabStatus;
   saveStatus?: CollaborationSave;
-  saveError?: string;
   memberCount: number;
   connectedUsers: ConnectedUser[];
   isGuest: boolean;
@@ -50,7 +48,6 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
   const {
     connectionStatus,
     saveStatus,
-    saveError,
     synced,
     isAuthenticated,
     isReadOnly,
@@ -69,7 +66,6 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
   return {
     connectionStatus,
     saveStatus,
-    saveError,
     memberCount,
     connectedUsers,
     isGuest: !isAuthenticated,

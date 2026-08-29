@@ -6,7 +6,6 @@ import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback } from '@/crd/primitives/avatar';
 import { Button } from '@/crd/primitives/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
-import type { CollaborationSave } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
 export type ReadonlyReason =
   | 'connecting'
@@ -24,13 +23,16 @@ export type ConnectedUser = {
   color: string;
 };
 
+export type MemoSaveStatus = 'saved' | 'saving' | 'offline';
+
 /** Cap visible avatars to keep the footer compact; overflow collapses to a "+N" badge. */
 const MAX_VISIBLE_AVATARS = 5;
 
 type MemoCollabFooterProps = {
   connectionStatus: CollabStatus;
-  saveStatus?: CollaborationSave;
-  saveError?: string;
+  saveStatus?: MemoSaveStatus;
+  statusLabel: string;
+  saveErrorLabel?: string;
   memberCount: number;
   connectedUsers?: ConnectedUser[];
   isGuest?: boolean;
@@ -48,7 +50,8 @@ const READONLY_REASON_DEBOUNCE_MS = 500;
 export function MemoCollabFooter({
   connectionStatus,
   saveStatus,
-  saveError,
+  statusLabel,
+  saveErrorLabel,
   memberCount,
   connectedUsers = [],
   isGuest,
@@ -71,14 +74,6 @@ export function MemoCollabFooter({
     const timer = setTimeout(() => setDelayedReason(readonlyReason), READONLY_REASON_DEBOUNCE_MS);
     return () => clearTimeout(timer);
   }, [readonlyReason]);
-
-  const statusLabel = saveStatus
-    ? t(`memo.footer.${saveStatus}` as const)
-    : connectionStatus === 'connected'
-      ? t('memo.footer.saved')
-      : connectionStatus === 'connecting'
-        ? t('memo.footer.connecting')
-        : t('memo.footer.disconnected');
 
   const StatusIcon = saveStatus !== 'offline' && connectionStatus === 'connected' ? Wifi : WifiOff;
 
@@ -160,9 +155,9 @@ export function MemoCollabFooter({
       </div>
 
       <div className="flex items-center gap-3">
-        {saveError && (
+        {saveErrorLabel && (
           <span role="alert" className="text-caption text-destructive">
-            {t('memo.footer.saveFailed')}
+            {saveErrorLabel}
           </span>
         )}
         <div className="flex items-center gap-1 text-caption text-muted-foreground">

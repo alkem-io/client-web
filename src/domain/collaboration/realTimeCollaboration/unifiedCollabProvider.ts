@@ -338,6 +338,8 @@ export class UnifiedCollabProvider {
 
   private end(end: { reason: string; recovery: 'none' | 'reload' }): void {
     this.running = false;
+    this.attemptReady = false;
+    this.access = null;
     this.clearReconnect();
     this.clearHeartbeat();
     this.rejectBarrier(new Error(`Collaboration ended: ${end.reason}`));
