@@ -5,7 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
-import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
+import type { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import { useOnlineStatus } from '@/core/utils/useOnlineStatus';
 import {
   type CollaborationStatus,
@@ -16,7 +16,6 @@ import {
   type ControlMessage,
   classifySessionEnd,
   controlReasonToReadOnlyCode,
-  type SessionEndCode,
   UnifiedCollabProvider,
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { useNotification } from '../../../notifications/useNotification';
@@ -43,14 +42,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
   const [status, setStatus] = useState<CollaborationStatus>(MemoStatus.CONNECTING);
   const [synced, setSynced] = useState(false);
   const [lastSaveTime, setLastSaveTime] = useState<Date | undefined>(undefined);
-  // Authorization is session-owned state from the server. Browser connectivity is
-  // derived separately below: an offline/online transition must never erase a
-  // server-issued read-only decision.
-  const [serverReadOnlyState, setServerReadOnlyState] = useState<{
-    readOnly: boolean;
-    readOnlyCode?: ReadOnlyCode;
-  }>();
-  const [sessionEndCode, setSessionEndCode] = useState<SessionEndCode | 'terminal-connection-close'>();
+  const [readOnlyState, setReadOnlyState] = useState<{ readOnly: boolean; readOnlyCode?: ReadOnlyCode }>();
 
   // Bumped when the server REJECTS a memo update (`update-rejected`). A rejected
   // generation must be DISCARDED, not kept locally: the server refused it, so every
@@ -84,41 +76,23 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     tRef.current = t;
   }, [notify, t]);
 
-  // Provider construction is effect-owned because its Awareness instance and
-  // browser/doc subscriptions are live resources. Constructing it in useMemo
-  // leaks React StrictMode's discarded render instance. Pair the provider with
-  // its room/doc so a render after an id change never exposes the previous room's
-  // provider beside the new room's doc while the replacement effect is pending.
-  const [providerSession, setProviderSession] = useState<{
-    collaborationId: string;
-    ydoc: Y.Doc;
-    provider: UnifiedCollabProvider;
-  }>();
-  const provider =
-    providerSession && providerSession.collaborationId === collaborationId && providerSession.ydoc === ydoc
-      ? providerSession.provider
-      : null;
-
-  // Create the provider, wire its events, and connect from one effect-owned
-  // lifecycle. Cleanup destroys every resource before a remount/replacement can
-  // become the active session.
-  useEffect(() => {
+  // Create the provider without auto-connecting; connection is started in the effect.
+  const provider = useMemo(() => {
     if (!collaborationId) {
-      setProviderSession(undefined);
-      setStatus(MemoStatus.CONNECTING);
-      setSynced(false);
-      setLastSaveTime(undefined);
-      setServerReadOnlyState(undefined);
-      setSessionEndCode(undefined);
-      return;
+      return null;
     }
 
-    const nextProvider = new UnifiedCollabProvider({
+    return new UnifiedCollabProvider({
       documentId: collaborationId,
       type: 'memo',
       doc: ydoc,
       connect: false,
     });
+  }, [collaborationId, ydoc]);
+
+  // Wire up provider events and connect.
+  useEffect(() => {
+    if (!provider) return;
 
     const syncHandler = (isSynced: boolean) => {
       setSynced(isSynced);
@@ -132,14 +106,6 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       }
     };
 
-    const closeHandler = (verdict: { disposition: 'normal' | 'terminal' | 'transient' }) => {
-      if (verdict.disposition === 'terminal') {
-        setSynced(false);
-        setStatus(MemoStatus.DISCONNECTED);
-        setSessionEndCode(current => current ?? 'terminal-connection-close');
-      }
-    };
-
     const controlHandler = (message: ControlMessage) => {
       switch (message.kind) {
         case 'saved':
@@ -149,7 +115,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           notifyRef.current(tRef.current('callout.memo.saveFailed'), 'warning');
           break;
         case 'read-only-state':
-          setServerReadOnlyState({
+          setReadOnlyState({
             readOnly: !!message.readOnly,
             readOnlyCode: controlReasonToReadOnlyCode(message.reason),
           });
@@ -179,30 +145,21 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
           // is a rolling deploy where a NEWER server emits a session-end code this client's
           // table does not know: trusting the socket close that follows (often a transient
           // 1013/1001) would silently reconnect past a terminal condition and MASK data loss.
-          // Disconnecting the provider tears down the socket and clears its reconnect timer.
-          // The one manual tuple gets an explicit fresh-generation action below; terminal
-          // and unknown tuples remain closed.
+          // Disconnecting the provider tears down the socket and clears its reconnect timer,
+          // so its scheduler cannot reconnect; the user reopens the memo to retry.
           const info = classifySessionEnd(message);
           if (info) {
             if (info.code === 'update-not-accepted') {
               notifyRef.current(tRef.current('callout.memo.updateNotAccepted'), 'warning');
               setSynced(false);
               setStatus(MemoStatus.CONNECTING);
-            } else if (info.disposition !== 'transient') {
-              setSynced(false);
-              setStatus(MemoStatus.DISCONNECTED);
-              setSessionEndCode(info.code);
-              nextProvider.disconnect();
             }
-            // A terminal/manual control is authoritative before the socket close arrives:
-            // seal readiness, expose its reason, and stop this provider. Only the validated
-            // transient leaves reconnect ownership with the provider's close handler.
+            // Every other validated tuple is driven by the socket close that follows, whose
+            // classifyClose verdict the provider already routes (terminal → no reconnect,
+            // transient → reconnect) — no extra memo action here.
           } else {
             notifyRef.current(tRef.current('callout.memo.sessionEnded'), 'warning');
-            setSynced(false);
-            setStatus(MemoStatus.DISCONNECTED);
-            setSessionEndCode('terminal-connection-close');
-            nextProvider.disconnect();
+            provider.disconnect();
           }
           break;
         }
@@ -211,29 +168,24 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       }
     };
 
-    nextProvider.on('status', statusHandler);
-    nextProvider.on('synced', syncHandler);
-    nextProvider.on('control', controlHandler);
-    nextProvider.on('close', closeHandler);
-
-    // Reset every room/generation-owned state in the same effect turn that
-    // publishes the new provider. Room B must never observe room A's readiness,
-    // save acknowledgement, or authorization while B is still awaiting SyncStep2.
-    setStatus(MemoStatus.CONNECTING);
-    setSynced(false);
-    setLastSaveTime(undefined);
-    setServerReadOnlyState(undefined);
-    setSessionEndCode(undefined);
+    provider.on('status', statusHandler);
+    provider.on('synced', syncHandler);
+    provider.on('control', controlHandler);
 
     // Start the WebSocket connection now that event listeners are in place.
-    setProviderSession({ collaborationId, ydoc, provider: nextProvider });
-    nextProvider.connect();
+    provider.connect();
 
     return () => {
-      nextProvider.destroy();
-      setProviderSession(current => (current?.provider === nextProvider ? undefined : current));
+      provider.destroy();
     };
-  }, [collaborationId, ydoc]);
+  }, [provider]);
+
+  useEffect(() => {
+    setReadOnlyState({
+      readOnly: !isOnline,
+      readOnlyCode: undefined,
+    });
+  }, [isOnline]);
 
   // Extensions depend on the memoized provider, not ref.current
   const collaborationExtensions: Extensions = useMemo(() => {
@@ -254,28 +206,12 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     ];
   }, [provider, ydoc, userName, cursorColor]);
 
-  // Inactivity is a live, server-downgraded member rather than a broken socket,
-  // while a size-limit end has rejected the current generation. Both recover by
-  // creating a fresh room member + Y.Doc; calling connect() on the old provider
-  // would either no-op or retain rejected state. No terminal/authorization reason
-  // is eligible for this action.
-  const resumeEditing = () => {
-    if (
-      serverReadOnlyState?.readOnlyCode === ReadOnlyCode.INACTIVITY ||
-      sessionEndCode === 'document-size-limit-exceeded'
-    ) {
-      setRecoveryGeneration(generation => generation + 1);
-    }
-  };
-
   return {
     status,
     synced,
     lastSaveTime,
-    isReadOnly: !isOnline || serverReadOnlyState?.readOnly || !!sessionEndCode,
-    readOnlyCode: serverReadOnlyState?.readOnlyCode,
-    sessionEndCode,
-    resumeEditing,
+    isReadOnly: readOnlyState?.readOnly,
+    readOnlyCode: readOnlyState?.readOnlyCode,
     collaborationExtensions,
     ydoc,
     provider,
