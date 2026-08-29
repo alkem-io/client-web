@@ -130,9 +130,74 @@ const accountImportMock = (): MockedResponse<ImportTemplateDialogAccountTemplate
     data: {
       lookup: {
         __typename: 'LookupQueryResults',
-        account: { __typename: 'Account', id: 'account-1', innovationPacks: [] },
+        account: {
+          __typename: 'Account',
+          id: 'account-1',
+          innovationPacks: [
+            {
+              __typename: 'InnovationPack',
+              id: 'pack-1',
+              profile: {
+                __typename: 'Profile',
+                id: 'pack-1-profile',
+                displayName: 'Account Space Pack',
+                url: '/innovation-packs/pack-1',
+              },
+              provider: {
+                __typename: 'Actor',
+                id: 'provider-1',
+                profile: {
+                  __typename: 'Profile',
+                  id: 'provider-1-profile',
+                  displayName: 'Pack Provider',
+                  avatar: {
+                    __typename: 'Visual',
+                    id: 'provider-1-avatar',
+                    uri: 'https://example.com/provider-avatar.png',
+                  },
+                  url: '/contributors/provider-1',
+                },
+              },
+              templatesSet: {
+                __typename: 'TemplatesSet',
+                id: 'pack-1-templates',
+                templates: [
+                  {
+                    ...tpl('space-import-1', GqlTemplateType.Space, 'Space starter'),
+                    contentSpace: {
+                      __typename: 'TemplateContentSpace',
+                      id: 'space-content-1',
+                      about: {
+                        __typename: 'SpaceAbout',
+                        id: 'space-content-1-about',
+                        profile: {
+                          __typename: 'Profile',
+                          id: 'space-content-1-profile',
+                          cardBanner: {
+                            __typename: 'Visual',
+                            id: 'space-content-1-banner',
+                            uri: 'https://example.com/space-banner.png',
+                          },
+                        },
+                      },
+                      collaboration: {
+                        __typename: 'Collaboration',
+                        id: 'space-content-1-collaboration',
+                        innovationFlow: {
+                          __typename: 'InnovationFlow',
+                          id: 'space-content-1-flow',
+                          states: [],
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
       },
-    } as ImportTemplateDialogAccountTemplatesQuery,
+    } as unknown as ImportTemplateDialogAccountTemplatesQuery,
   },
 });
 
@@ -237,6 +302,15 @@ describe('useTemplatesManager — initial state', () => {
 
     await waitFor(() => expect(result.current.importPicker.open).toBe(true));
     await waitFor(() => expect(result.current.importPicker.sources.every(source => !source.loading)).toBe(true));
+    expect(result.current.importPicker.sources[0].templates).toEqual([
+      expect.objectContaining({
+        id: 'space-import-1',
+        type: 'space',
+        name: 'Space starter',
+        bannerUrl: 'https://example.com/space-banner.png',
+        ownerLabel: 'Account Space Pack',
+      }),
+    ]);
   });
 });
 

@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { TemplateFormDialog } from './TemplateFormDialog';
+import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
