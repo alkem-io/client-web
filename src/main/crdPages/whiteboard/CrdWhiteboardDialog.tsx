@@ -135,9 +135,6 @@ interface CrdWhiteboardDialogProps {
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
 type CollaborativeCloseParams = {
-  /** Abort, then settle, the one editor-owned import before persisting the target. */
-  cancelPendingImport?: () => void;
-  waitForPendingImport?: () => Promise<void>;
   /** Persist preview + display name; content persists through the provider below. */
   save: () => Promise<boolean | undefined>;
   /** Join the provider's one save owner. It publishes assets before its barrier. */
@@ -149,16 +146,12 @@ type CollaborativeCloseParams = {
 
 /** Close only after metadata and the provider's continuous save owner settle. */
 export async function closeCollaborativeWhiteboard({
-  cancelPendingImport,
-  waitForPendingImport,
   save,
   requestDurability,
   requireDurability,
   onDurabilityFailed,
   teardown,
 }: CollaborativeCloseParams): Promise<boolean> {
-  cancelPendingImport?.();
-  await waitForPendingImport?.();
   if ((await save()) === false) return false;
   if (!requestDurability && requireDurability) {
     onDurabilityFailed?.();
@@ -200,6 +193,7 @@ const CrdWhiteboardDialog = ({
   const spaceAboutProfile = spaceLevel === SpaceLevel.L0 ? space.about.profile : subspace.about.profile;
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
+  const editorLeaseRef = useRef<{ api: ExcalidrawImperativeAPI; whiteboardId: string } | null>(null);
   const importInFlightRef = useRef<Promise<void> | null>(null);
   const importAbortRef = useRef<AbortController | null>(null);
   const closeInFlightRef = useRef(false);
@@ -261,6 +255,7 @@ const CrdWhiteboardDialog = ({
   const onClose = async () => {
     if (closeInFlightRef.current) return;
     closeInFlightRef.current = true;
+    importAbortRef.current?.abort();
     const collabApi = collabApiRef.current;
     const lifecycle = collabApi?.getState();
     const hasUnsaved = !!collabApi?.hasUnsavedChanges();
@@ -277,8 +272,6 @@ const CrdWhiteboardDialog = ({
     );
     try {
       await closeCollaborativeWhiteboard({
-        cancelPendingImport: () => importAbortRef.current?.abort(),
-        waitForPendingImport: () => importInFlightRef.current ?? Promise.resolve(),
         requestDurability: shouldSave && collabApi ? () => collabApi.requestDurability() : undefined,
         requireDurability: options.requireDurableClose,
         save: async () => {
@@ -342,7 +335,16 @@ const CrdWhiteboardDialog = ({
   };
 
   const handleImportTemplate = (sourceWhiteboardId: string): Promise<void> => {
-    if (!excalidrawAPI) return Promise.resolve();
+    const targetLease = editorLeaseRef.current;
+    const whiteboardId = whiteboard?.id;
+    if (
+      !excalidrawAPI ||
+      !targetLease ||
+      targetLease.api !== excalidrawAPI ||
+      targetLease.whiteboardId !== whiteboardId
+    ) {
+      return Promise.resolve();
+    }
     if (importInFlightRef.current) return importInFlightRef.current;
 
     const controller = new AbortController();
@@ -352,9 +354,10 @@ const CrdWhiteboardDialog = ({
         const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId, {
           signal: controller.signal,
         });
-        const cancelled = () => controller.signal.aborted;
-        if (cancelled()) return;
-        await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter, cancelled);
+        await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter, {
+          signal: controller.signal,
+          targetLeaseValid: () => editorLeaseRef.current === targetLease && !closeInFlightRef.current,
+        });
       } catch (err) {
         if (controller.signal.aborted) return;
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
@@ -433,7 +436,16 @@ const CrdWhiteboardDialog = ({
           UIOptions: { canvasActions: { export: { saveFileToDisk: true } } },
         }}
         actions={{
-          onInitApi: setExcalidrawAPI,
+          onInitApi: (api, whiteboardId) => {
+            if (api) {
+              editorLeaseRef.current = { api, whiteboardId };
+              setExcalidrawAPI(api);
+            } else if (editorLeaseRef.current?.whiteboardId === whiteboardId) {
+              editorLeaseRef.current = null;
+              setExcalidrawAPI(null);
+              importAbortRef.current?.abort();
+            }
+          },
           onRemoteSave: (error?: string) => {
             if (error) {
               setLastSaveError(error);

@@ -2,11 +2,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { closeCollaborativeWhiteboard } from './CrdWhiteboardDialog';
 
 describe('closeCollaborativeWhiteboard', () => {
-  it('aborts and settles the import before saving metadata and joining durability', async () => {
+  it('saves metadata and joins the ordinary durability owner before teardown', async () => {
     const order: string[] = [];
     const result = await closeCollaborativeWhiteboard({
-      cancelPendingImport: () => order.push('abort-import'),
-      waitForPendingImport: async () => void order.push('import'),
       save: async () => {
         order.push('metadata');
         return true;
@@ -15,7 +13,7 @@ describe('closeCollaborativeWhiteboard', () => {
       teardown: () => order.push('teardown'),
     });
     expect(result).toBe(true);
-    expect(order).toEqual(['abort-import', 'import', 'metadata', 'durability', 'teardown']);
+    expect(order).toEqual(['metadata', 'durability', 'teardown']);
   });
 
   it('keeps the mounted editor open when metadata cannot be saved', async () => {

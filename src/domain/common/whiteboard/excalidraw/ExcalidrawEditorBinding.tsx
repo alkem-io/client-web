@@ -28,7 +28,7 @@ export type WhiteboardEditorEntities = {
 export type WhiteboardEditorBindingProps = {
   entities: WhiteboardEditorEntities;
   options: ExcalidrawProps;
-  onApi: (api: ExcalidrawImperativeAPI, whiteboardId: string) => void;
+  onApi: (api: ExcalidrawImperativeAPI | null, whiteboardId: string) => void;
   loading: boolean;
   collaborating: boolean;
   readOnly: boolean;
@@ -95,7 +95,6 @@ export const ExcalidrawEditorBinding = ({
           <Excalidraw
             key={whiteboard.id}
             onExcalidrawAPI={next => {
-              if (!next) return;
               setApi(next);
               onApi(next, whiteboard.id);
             }}

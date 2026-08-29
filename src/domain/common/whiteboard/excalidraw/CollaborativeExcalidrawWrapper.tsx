@@ -23,7 +23,7 @@ export interface WhiteboardWhiteboardProps {
   entities: WhiteboardEditorEntities;
   options: ExcalidrawProps;
   actions: {
-    onInitApi?: (api: ExcalidrawImperativeAPI) => void;
+    onInitApi?: (api: ExcalidrawImperativeAPI | null, whiteboardId: string) => void;
     onSceneInitChange?: (initialized: boolean) => void;
     onRemoteSave?: (error?: string) => void;
   };
@@ -117,8 +117,10 @@ const CollaborativeExcalidrawWrapper = ({
       entities={entities}
       options={options}
       onApi={(api, whiteboardId) => {
-        setEditor({ api, whiteboardId });
-        actions.onInitApi?.(api);
+        setEditor(current =>
+          api ? { api, whiteboardId } : current?.whiteboardId === whiteboardId ? undefined : current
+        );
+        actions.onInitApi?.(api, whiteboardId);
       }}
       loading={view.lifecycle.kind === 'loading'}
       collaborating={active}
