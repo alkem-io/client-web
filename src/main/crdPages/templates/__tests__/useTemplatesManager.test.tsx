@@ -19,11 +19,20 @@ import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import type { FC, PropsWithChildren } from 'react';
 import { describe, expect, it } from 'vitest';
-import { AllTemplatesInTemplatesSetDocument, DeleteTemplateDocument } from '@/core/apollo/generated/apollo-hooks';
+import {
+  AllTemplatesInTemplatesSetDocument,
+  DeleteTemplateDocument,
+  ImportTemplateDialogAccountTemplatesDocument,
+  ImportTemplateDialogPlatformTemplatesDocument,
+} from '@/core/apollo/generated/apollo-hooks';
 import {
   type AllTemplatesInTemplatesSetQuery,
   type DeleteTemplateMutation,
   TemplateType as GqlTemplateType,
+  type ImportTemplateDialogAccountTemplatesQuery,
+  type ImportTemplateDialogPlatformTemplatesQuery,
+  TagsetType,
+  VisualType,
 } from '@/core/apollo/generated/graphql-schema';
 import { useTemplatesManager } from '../useTemplatesManager';
 
@@ -40,10 +49,39 @@ const tpl = (id: string, type: GqlTemplateType, name: string) => ({
     id: `${id}-profile`,
     displayName: name,
     description: `${name} description`,
-    defaultTagset: { __typename: 'Tagset', id: `${id}-tagset`, tags: [] },
-    visual: { __typename: 'Visual', id: `${id}-visual`, uri: '' },
+    defaultTagset: {
+      __typename: 'Tagset',
+      id: `${id}-tagset`,
+      name: 'default',
+      tags: [],
+      allowedValues: [],
+      type: TagsetType.Freeform,
+    },
+    visual: {
+      __typename: 'Visual',
+      id: `${id}-visual`,
+      uri: '',
+      name: VisualType.Card,
+      alternativeText: '',
+    },
     url: `/template/${id}`,
   },
+  whiteboard: null,
+  callout:
+    type === GqlTemplateType.Callout
+      ? {
+          __typename: 'Callout',
+          id: `${id}-callout`,
+          settings: {
+            __typename: 'CalloutSettings',
+            contribution: {
+              __typename: 'CalloutContributionSettings',
+              enabled: true,
+              allowedTypes: [],
+            },
+          },
+        }
+      : null,
 });
 
 const allTemplatesMock = (
@@ -83,13 +121,59 @@ const deleteMock = (templateId: string): MockedResponse<DeleteTemplateMutation> 
   },
 });
 
+const accountImportMock = (): MockedResponse<ImportTemplateDialogAccountTemplatesQuery> => ({
+  request: {
+    query: ImportTemplateDialogAccountTemplatesDocument,
+    variables: { accountId: 'account-1', includeCallout: false, includeSpace: true },
+  },
+  result: {
+    data: {
+      lookup: {
+        __typename: 'LookupQueryResults',
+        account: { __typename: 'Account', id: 'account-1', innovationPacks: [] },
+      },
+    } as ImportTemplateDialogAccountTemplatesQuery,
+  },
+});
+
+const platformImportMock = (): MockedResponse<ImportTemplateDialogPlatformTemplatesQuery> => ({
+  request: {
+    query: ImportTemplateDialogPlatformTemplatesDocument,
+    variables: { templateTypes: [GqlTemplateType.Space], includeCallout: false, includeSpace: true },
+  },
+  result: {
+    data: {
+      platform: {
+        __typename: 'Platform',
+        id: 'platform-1',
+        library: { __typename: 'Library', id: 'library-1', templates: [] },
+      },
+    } as ImportTemplateDialogPlatformTemplatesQuery,
+  },
+});
+
 // ---------------------------------------------------------------------------
 // Wrapper
 // ---------------------------------------------------------------------------
 
 const makeWrapper = (mocks: MockedResponse[]): FC<PropsWithChildren> => {
   return ({ children }) => (
-    <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
+    <MockedProvider
+      mocks={mocks}
+      cache={
+        new InMemoryCache({
+          typePolicies: {
+            Query: {
+              fields: {
+                lookup: {
+                  merge: (existing = {}, incoming) => ({ ...existing, ...incoming }),
+                },
+              },
+            },
+          },
+        })
+      }
+    >
       {children}
     </MockedProvider>
   );
@@ -129,6 +213,30 @@ describe('useTemplatesManager — initial state', () => {
     ]);
     const calloutCategory = result.current.categories.find(c => c.type === 'callout');
     expect(calloutCategory?.templates.map(t => t.id)).toEqual(['c-1']);
+  });
+
+  it('requests contentSpace data when the Space-template import picker opens', async () => {
+    const wrapper = makeWrapper([
+      allTemplatesMock('set-1', 'space', []),
+      allTemplatesMock('set-1', 'space', []),
+      accountImportMock(),
+      platformImportMock(),
+    ]);
+    const { result } = renderHook(
+      () =>
+        useTemplatesManager({
+          templatesSetId: 'set-1',
+          holderKind: 'space',
+          accountId: 'account-1',
+        }),
+      { wrapper }
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    act(() => result.current.onImport('space'));
+
+    await waitFor(() => expect(result.current.importPicker.open).toBe(true));
+    await waitFor(() => expect(result.current.importPicker.sources.every(source => !source.loading)).toBe(true));
   });
 });
 

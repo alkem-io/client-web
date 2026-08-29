@@ -56,6 +56,32 @@ describe('templateCardMapper', () => {
     ).toBe('c');
   });
 
+  it('uses the canonical Whiteboard card visual before the legacy template visual', () => {
+    const card = mapTemplateToCardData(
+      tpl({
+        id: 'wb',
+        type: GqlTemplateType.Whiteboard,
+        profile: { displayName: 'WB', visual: { uri: 'legacy-parent' } },
+        whiteboard: { profile: { cardBanner: { uri: 'canonical-child' } } },
+      })
+    );
+
+    expect(card.bannerUrl).toBe('canonical-child');
+  });
+
+  it('uses the captured Space card banner before the legacy template visual', () => {
+    const card = mapTemplateToCardData(
+      tpl({
+        id: 'space',
+        type: GqlTemplateType.Space,
+        profile: { displayName: 'Space', visual: { uri: 'legacy-parent' } },
+        contentSpace: { about: { profile: { cardBanner: { uri: 'captured-space' } } } },
+      })
+    );
+
+    expect(card.bannerUrl).toBe('captured-space');
+  });
+
   it('reads tags from defaultTagset, then tagset, filtering non-strings', () => {
     expect(
       mapTemplateToCardData(tpl({ id: 'a', profile: { displayName: 'A', defaultTagset: { tags: ['x', 'y'] } } })).tags

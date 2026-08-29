@@ -350,16 +350,17 @@ export function useTemplatesManager({
   const [importPreviewContent, setImportPreviewContent] = useState<TemplateContent | undefined>(undefined);
   const [importPreviewLoading, setImportPreviewLoading] = useState(false);
   const importOpen = importType !== null;
+  const importIncludesSpace = importType === 'space';
 
   const { data: importAccountData, loading: importAccountLoading } = useImportTemplateDialogAccountTemplatesQuery({
-    variables: { accountId: accountId ?? '', includeCallout: false, includeSpace: false },
+    variables: { accountId: accountId ?? '', includeCallout: false, includeSpace: importIncludesSpace },
     skip: !isSpaceHolder || !accountId || !importOpen,
   });
   const { data: importPlatformData, loading: importPlatformLoading } = useImportTemplateDialogPlatformTemplatesQuery({
     variables: {
       templateTypes: importType ? [toGqlTemplateType(importType)] : [],
       includeCallout: false,
-      includeSpace: false,
+      includeSpace: importIncludesSpace,
     },
     skip: !isSpaceHolder || !importOpen,
   });
