@@ -35,6 +35,16 @@ type ExcalidrawUtils = {
 
 class WhiteboardMergeError extends Error {}
 
+const abortable = <T>(signal: AbortSignal | undefined, operation: Promise<T>): Promise<T> => {
+  if (!signal) return operation;
+  if (signal.aborted) return Promise.reject(new WhiteboardMergeError('Whiteboard template import cancelled'));
+  return new Promise<T>((resolve, reject) => {
+    const abort = () => reject(new WhiteboardMergeError('Whiteboard template import cancelled'));
+    signal.addEventListener('abort', abort, { once: true });
+    operation.then(resolve, reject).finally(() => signal.removeEventListener('abort', abort));
+  });
+};
+
 interface WhiteboardLike {
   elements: ExcalidrawElement[];
   assets: Record<string, string>;
@@ -162,16 +172,17 @@ const mergeWhiteboard = async (
   whiteboardApi: ExcalidrawImperativeAPI,
   whiteboardSnapshot: WhiteboardSnapshot,
   assetAdapter: AssetAdapter,
-  isCancelled: () => boolean = () => false
+  options: { signal?: AbortSignal; targetLeaseValid?: () => boolean } = {}
 ) => {
   const assertActive = () => {
-    if (isCancelled()) {
+    if (options.signal?.aborted || options.targetLeaseValid?.() === false) {
       throw new WhiteboardMergeError('Whiteboard editor changed while importing template');
     }
   };
 
-  const { hashElementsVersion, CaptureUpdateAction } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
-    () => import('@excalidraw-yjs/excalidraw')
+  const { hashElementsVersion, CaptureUpdateAction } = await abortable(
+    options.signal,
+    lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@excalidraw-yjs/excalidraw'))
   );
   assertActive();
 
@@ -197,8 +208,8 @@ const mergeWhiteboard = async (
     throw new WhiteboardMergeError('Template has no visible elements');
   }
   // Template images are opaque locators pointing at the TEMPLATE's storage bucket,
-  // never bytes. They must be re-homed into THIS whiteboard's bucket before the
-  // elements referencing them are inserted (see the asset-copy steps below).
+  // never bytes. Resolve them to unpublished bytes, then let the target editor's
+  // ordinary asset path commit target-owned locators before inserting elements.
   const templateAssets = templateScene.assets as Readonly<Record<string, string>>;
 
   try {
@@ -219,57 +230,45 @@ const mergeWhiteboard = async (
       throw new WhiteboardMergeError(`Template images have no source locator: ${missingSourceLocators.join(', ')}`);
     }
 
-    // 1. Partition the template's images. Readiness is defined ONLY by a committed
-    //    target locator — local cache bytes without a durable locator are NOT
-    //    persisted, so a prior merge that cached bytes but failed to publish must
-    //    still be retried. `unresolvedLocatorIds` = every template image lacking a
-    //    target locator; of those, only the ones whose bytes we don't already have
-    //    cached need a fresh source resolve.
-    const currentFiles = whiteboardApi.getFiles();
-    const currentLocators = whiteboardApi.getSceneAssetLocators();
-    const unresolvedLocatorIds = liveImageFileIds.filter(fileId => !currentLocators[fileId]);
-    const toResolveIds = unresolvedLocatorIds.filter(fileId => !currentFiles[fileId]);
+    // Resolve every referenced source locator before touching the target. The
+    // source locator is deliberately discarded: addFiles receives only bytes,
+    // and the target's ordinary save owner publishes target-owned locators.
+    let resolvedFiles: BinaryFileData[];
+    try {
+      resolvedFiles = await abortable(
+        options.signal,
+        Promise.all(liveImageFileIds.map(fileId => assetAdapter.resolve(fileId, templateAssets[fileId])))
+      );
+    } catch (err) {
+      if (err instanceof WhiteboardMergeError) throw err;
+      throw new WhiteboardMergeError(`Unable to resolve template images: ${err}`);
+    }
 
-    // 2. Resolve EVERY still-uncached source locator to bytes BEFORE mutating the
-    //    target scene. A single failure aborts the whole merge — zero elements.
-    if (toResolveIds.length > 0) {
-      let resolvedFiles: BinaryFileData[];
-      try {
-        resolvedFiles = await Promise.all(
-          toResolveIds.map(fileId => assetAdapter.resolve(fileId as FileId, templateAssets[fileId]))
-        );
-      } catch (err) {
-        throw new WhiteboardMergeError(`Unable to resolve template images: ${err}`);
-      }
-      // 3. Hand the bytes to the editor; it re-publishes them through the SAME
-      //    adapter.store into THIS whiteboard's bucket, minting NEW target locators
-      //    keyed by the unchanged file ids. Never reuse the source locator or
-      //    upload directly.
-      assertActive();
+    // Target publication is deliberately completed before inserting image elements.
+    // Unlike ordinary paste, template import is already asynchronous, so it need not
+    // create a checkpointable scene that temporarily references unpublished bytes.
+    assertActive();
+    if (resolvedFiles.length > 0) {
       whiteboardApi.addFiles(resolvedFiles);
-    }
-
-    // 4. Whenever any image lacks a target locator (freshly resolved OR cached from
-    //    a prior failed merge), block on the publish flush and REQUIRE a committed
-    //    locator for each before inserting anything. A failed store, or a flush that
-    //    reports success yet leaves no locator (replaced/unmounted mid-merge), aborts
-    //    with zero elements. A remote-won skip is a success — its locator is present.
-    if (unresolvedLocatorIds.length > 0) {
-      assertActive();
-      const report = await whiteboardApi.flushAssetPublication();
-      assertActive();
-      if (report.failed.length > 0) {
-        throw new WhiteboardMergeError(`Template image publish failed: ${report.failed.map(f => f.fileId).join(', ')}`);
+      const publication = await abortable(options.signal, whiteboardApi.flushAssetPublication());
+      if (publication.failed.length > 0) {
+        throw new WhiteboardMergeError(
+          `Unable to publish template images: ${publication.failed.map(({ fileId }) => fileId).join(', ')}`
+        );
       }
-      const locatorsAfterPublish = whiteboardApi.getSceneAssetLocators();
-      const unpublished = unresolvedLocatorIds.filter(fileId => !locatorsAfterPublish[fileId]);
-      if (unpublished.length > 0) {
-        throw new WhiteboardMergeError(`Template images have no committed target locator: ${unpublished.join(', ')}`);
+      assertActive();
+      const targetLocators = whiteboardApi.getSceneAssetLocators();
+      const missingTargetLocators = liveImageFileIds.filter(fileId => !targetLocators[fileId]?.trim());
+      if (missingTargetLocators.length > 0) {
+        throw new WhiteboardMergeError(
+          `Template images have no committed target locator: ${missingTargetLocators.join(', ')}`
+        );
       }
     }
 
-    // 5. Only now that every referenced image has a committed target locator,
-    //    insert the re-id'd + displaced template elements.
+    // No await from this lease check through updateScene: either the exact target
+    // receives the complete import once, or no template element enters any scene.
+    assertActive();
     const currentElements = whiteboardApi.getSceneElementsIncludingDeleted();
     const sceneVersion = hashElementsVersion(currentElements);
 

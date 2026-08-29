@@ -686,6 +686,10 @@
       "connected": "Verbonden",
       "connecting": "Verbinden…",
       "disconnected": "Verbinding verbroken",
+      "saved": "Opgeslagen",
+      "saving": "Opslaan…",
+      "offline": "Offline — wordt automatisch gesynchroniseerd",
+      "saveFailed": "Kan wijzigingen niet opslaan",
       "membersOnline_one": "1 lid online",
       "membersOnline_other": "{{count}} leden online",
       "connectedUsersLabel": "Verbonden gebruikers",
@@ -705,6 +709,14 @@
     "errors": {
       "loading": "Memo laden…",
       "loadFailed": "Kan memo niet laden"
+    },
+    "unsavedClose": {
+      "title": "Niet-opgeslagen memowijzigingen",
+      "description": "Deze wijzigingen kunnen nu niet worden opgeslagen. Laat de memo open, exporteer ze of verwerp ze expliciet.",
+      "wait": "Open laten en wachten",
+      "discard": "Verwerpen en sluiten",
+      "export": "Eerst exporteren",
+      "exportFailed": "De memo kon niet worden geëxporteerd. De memo blijft open."
     },
     "deleteConfirm": {
       "title": "Memo verwijderen",
