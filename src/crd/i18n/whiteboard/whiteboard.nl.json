@@ -39,10 +39,18 @@
       "title": "Niet-opgeslagen wijzigingen verwerpen?",
       "description": "Je hebt niet-opgeslagen wijzigingen die verloren zullen gaan. Weet je zeker dat je wilt doorgaan?",
       "confirm": "Verwerpen",
-      "cancel": "Doorgaan met bewerken"
+      "cancel": "Doorgaan met bewerken",
+      "wait": "Open laten en wachten",
+      "export": "Eerst exporteren"
     }
   },
   "footer": {
+    "saveStatus": {
+      "saved": "Opgeslagen",
+      "saving": "Opslaan…",
+      "offline": "Offline — wordt automatisch gesynchroniseerd",
+      "ended": "Niet beschikbaar"
+    },
     "guestContributionsWarning": "Iedereen met de link kan bewerken",
     "readonlyReason": {
       "readonly": "<strong>Alleen bekijken modus</strong> <learnwhy>lees hier waarom</learnwhy>",

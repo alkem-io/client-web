@@ -13,6 +13,7 @@ import CollaborativeExcalidrawWrapper from './CollaborativeExcalidrawWrapper';
 const h = vi.hoisted(() => ({
   mountCount: { value: 0 },
   initCalls: [] as Array<{ apiId: string; roomId: string }>,
+  apiEvents: [] as Array<string | null>,
 }));
 
 // A distinct api per mount (`api-1`, `api-2`, …); keyed remount → a fresh api.
@@ -22,26 +23,50 @@ vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', async () => {
     lazyWithGlobalErrorHandler: () => (props: { onExcalidrawAPI?: (api: unknown) => void }) => {
       React.useEffect(() => {
         h.mountCount.value += 1;
-        props.onExcalidrawAPI?.({ id: `api-${h.mountCount.value}` });
+        const id = `api-${h.mountCount.value}`;
+        props.onExcalidrawAPI?.({ id, encodeSceneStateVector: () => id });
+        return () => props.onExcalidrawAPI?.(null);
       }, []);
       return null;
     },
   };
 });
 
-// Capture every initializeCollab call as (api id, roomId).
-vi.mock('./collab/useCollab', () => ({
-  default: () => [
-    null,
-    (opts: { excalidrawApi: { id: string }; roomId: string }) => {
-      h.initCalls.push({ apiId: opts.excalidrawApi.id, roomId: opts.roomId });
+vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', () => ({
+  UnifiedCollabProvider: class {
+    state = { kind: 'loading' };
+    readOnlyReason = undefined;
+    hasUnsavedChanges = false;
+    awareness = {};
+    ephemeralChannel = {};
+    constructor(opts: { documentId: string; scenePort: { encodeSceneStateVector: () => string } }) {
+      h.initCalls.push({ apiId: opts.scenePort.encodeSceneStateVector(), roomId: opts.documentId });
+    }
+    subscribe(listener: (state: { kind: string }) => void) {
+      listener(this.state);
       return () => {};
-    },
-    { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
-  ],
+    }
+    onSaveResult() {
+      return () => {};
+    }
+    connect() {}
+    destroy() {}
+    requestDurability() {
+      return Promise.resolve();
+    }
+  },
+}));
+vi.mock('./collab/whiteboardEditorBinding', () => ({
+  bindWhiteboardEditor: () => ({
+    setUser: vi.fn(),
+    fitScene: vi.fn(),
+    destroy: vi.fn(),
+    onPointerUpdate: vi.fn(),
+    broadcastEmojiReaction: vi.fn(),
+    broadcastCountdownTimer: vi.fn(),
+  }),
 }));
 
-vi.mock('./useAutoReconnect', () => ({ useAutoReconnect: () => ({ secondsRemaining: null }) }));
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
 vi.mock('@/core/utils/onlineStatus', () => ({ default: () => true }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
@@ -51,22 +76,27 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 vi.mock('@/domain/shared/utils/useCombinedRefs', () => ({ useCombinedRefs: () => ({ current: null }) }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }));
 
-const renderWrapper = (whiteboardId: string) =>
-  render(
-    <CollaborativeExcalidrawWrapper
-      entities={{ whiteboard: { id: whiteboardId }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
-      options={{}}
-      actions={{}}
-      renderDisconnectNotice={() => null}
-    >
-      {({ children }) => <>{children}</>}
-    </CollaborativeExcalidrawWrapper>
-  );
+const wrapper = (whiteboardId?: string) => (
+  <CollaborativeExcalidrawWrapper
+    entities={{
+      whiteboard: whiteboardId ? { id: whiteboardId } : undefined,
+      assetAdapter: {} as never,
+      lastSuccessfulSavedDate: undefined,
+    }}
+    options={{}}
+    actions={{ onInitApi: api => h.apiEvents.push((api as { id?: string } | null)?.id ?? null) }}
+  >
+    {({ children }) => <>{children}</>}
+  </CollaborativeExcalidrawWrapper>
+);
+
+const renderWrapper = (whiteboardId: string) => render(wrapper(whiteboardId));
 
 describe('CollaborativeExcalidrawWrapper — api ↔ whiteboard-id pairing', () => {
   beforeEach(() => {
     h.mountCount.value = 0;
     h.initCalls.length = 0;
+    h.apiEvents.length = 0;
   });
   afterEach(() => vi.clearAllMocks());
 
@@ -76,20 +106,26 @@ describe('CollaborativeExcalidrawWrapper — api ↔ whiteboard-id pairing', () 
     expect(h.initCalls).toContainEqual({ apiId: 'api-1', roomId: 'wb-A' });
 
     // The whiteboard id changes in place; the editor remounts (keyed) and hands back api-2.
-    rerender(
-      <CollaborativeExcalidrawWrapper
-        entities={{ whiteboard: { id: 'wb-B' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
-        options={{}}
-        actions={{}}
-        renderDisconnectNotice={() => null}
-      >
-        {({ children }) => <>{children}</>}
-      </CollaborativeExcalidrawWrapper>
-    );
+    rerender(wrapper('wb-B'));
 
     // The load-bearing invariant: room B is NEVER initialized with editor A's api.
     expect(h.initCalls).not.toContainEqual({ apiId: 'api-1', roomId: 'wb-B' });
     // Room B is initialized only by the editor that mounted under it.
     expect(h.initCalls).toContainEqual({ apiId: 'api-2', roomId: 'wb-B' });
+  });
+
+  it('forwards editor disposal and never retains an api across a same-id remount', () => {
+    const { rerender } = renderWrapper('wb-A');
+    expect(h.apiEvents).toEqual(['api-1']);
+
+    rerender(wrapper());
+    expect(h.apiEvents).toEqual(['api-1', null]);
+
+    rerender(wrapper('wb-A'));
+    expect(h.apiEvents).toEqual(['api-1', null, 'api-2']);
+    expect(h.initCalls.filter(call => call.roomId === 'wb-A')).toEqual([
+      { apiId: 'api-1', roomId: 'wb-A' },
+      { apiId: 'api-2', roomId: 'wb-A' },
+    ]);
   });
 });

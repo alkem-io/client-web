@@ -686,6 +686,10 @@
       "connected": "Conectado",
       "connecting": "Conectando…",
       "disconnected": "Desconectado",
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "offline": "Sin conexión — se sincronizará automáticamente",
+      "saveFailed": "No se pudieron guardar los cambios",
       "membersOnline_one": "1 miembro en línea",
       "membersOnline_other": "{{count}} miembros en línea",
       "connectedUsersLabel": "Usuarios conectados",
@@ -705,6 +709,14 @@
     "errors": {
       "loading": "Cargando nota…",
       "loadFailed": "No se pudo cargar la nota"
+    },
+    "unsavedClose": {
+      "title": "Cambios de memo sin guardar",
+      "description": "Estos cambios no se pueden guardar ahora. Mantén el memo abierto, expórtalos o descártalos explícitamente.",
+      "wait": "Mantener abierto y esperar",
+      "discard": "Descartar y cerrar",
+      "export": "Exportar primero",
+      "exportFailed": "No se pudo exportar el memo. Permanece abierto."
     },
     "deleteConfirm": {
       "title": "Eliminar memo",
