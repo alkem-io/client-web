@@ -1,9 +1,11 @@
 import { CommunityMembershipStatus, ContentUpdatePolicy } from '@/core/apollo/generated/graphql-schema';
 import type { ConnectedUser, ReadonlyReason } from '@/crd/components/memo/MemoCollabFooter';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
+import type { CollaborationSave } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
 type MapMemoFooterParams = {
   connectionStatus: CollabStatus;
+  saveStatus?: CollaborationSave;
   synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
@@ -23,6 +25,7 @@ type MapMemoFooterParams = {
 
 type MemoFooterMappedProps = {
   connectionStatus: CollabStatus;
+  saveStatus?: CollaborationSave;
   memberCount: number;
   connectedUsers: ConnectedUser[];
   isGuest: boolean;
@@ -44,6 +47,7 @@ type MemoFooterMappedProps = {
 export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappedProps {
   const {
     connectionStatus,
+    saveStatus,
     synced,
     isAuthenticated,
     isReadOnly,
@@ -61,11 +65,11 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
 
   return {
     connectionStatus,
+    saveStatus,
     memberCount,
     connectedUsers,
     isGuest: !isAuthenticated,
     readonlyReason: resolveReadonlyReason({
-      connectionStatus,
       synced,
       isAuthenticated,
       isReadOnly,
@@ -78,7 +82,6 @@ export function mapMemoFooterProps(params: MapMemoFooterParams): MemoFooterMappe
 }
 
 type ResolveReadonlyReasonParams = {
-  connectionStatus: CollabStatus;
   synced: boolean;
   isAuthenticated: boolean;
   isReadOnly: boolean;
@@ -88,7 +91,6 @@ type ResolveReadonlyReasonParams = {
 };
 
 function resolveReadonlyReason({
-  connectionStatus,
   synced,
   isAuthenticated,
   isReadOnly,
@@ -96,9 +98,8 @@ function resolveReadonlyReason({
   hasOwner,
   myMembershipStatus,
 }: ResolveReadonlyReasonParams): ReadonlyReason {
-  if (connectionStatus !== 'connected') return 'connecting';
+  if (!synced) return 'connecting';
   if (!isAuthenticated) return 'unauthenticated';
-  if (!synced) return 'notSynced';
   if (!isReadOnly) return null;
   if (
     contentUpdatePolicy === ContentUpdatePolicy.Contributors &&
