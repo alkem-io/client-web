@@ -1,5 +1,21 @@
 import { describe, expect, it, vi } from 'vitest';
-import { closeCollaborativeWhiteboard } from './CrdWhiteboardDialog';
+import { acceptWhiteboardCloseIntent, closeCollaborativeWhiteboard } from './CrdWhiteboardDialog';
+
+describe('acceptWhiteboardCloseIntent', () => {
+  it('leaves an in-flight import running when unsaved changes block the close', () => {
+    const abortImport = vi.fn();
+
+    expect(acceptWhiteboardCloseIntent({ hasUnsaved: true, canPersist: false, abortImport })).toBe(false);
+    expect(abortImport).not.toHaveBeenCalled();
+  });
+
+  it('aborts an in-flight import once the close is accepted', () => {
+    const abortImport = vi.fn();
+
+    expect(acceptWhiteboardCloseIntent({ hasUnsaved: true, canPersist: true, abortImport })).toBe(true);
+    expect(abortImport).toHaveBeenCalledOnce();
+  });
+});
 
 describe('closeCollaborativeWhiteboard', () => {
   it('saves metadata and joins the ordinary durability owner before teardown', async () => {

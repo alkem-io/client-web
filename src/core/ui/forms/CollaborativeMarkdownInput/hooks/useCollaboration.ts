@@ -8,13 +8,19 @@ import {
 } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { useCollaborationBeforeUnload } from '@/domain/collaboration/realTimeCollaboration/useCollaborationBeforeUnload';
 
-interface UseCollaborationProps {
+type UseCollaborationProps = {
   collaborationId?: string;
-}
+};
+
+type CollaborationSession = {
+  collaborationId: string;
+  ydoc: Y.Doc;
+  provider: UnifiedCollabProvider;
+};
 
 /** Memo binding over the same per-document lifecycle used by whiteboards. */
 export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => {
-  const [session, setSession] = useState<{ ydoc: Y.Doc; provider: UnifiedCollabProvider }>();
+  const [session, setSession] = useState<CollaborationSession>();
   const [lifecycle, setLifecycle] = useState<CollaborationState>({ kind: 'loading' });
   const [established, setEstablished] = useState(false);
   const [lastSaveTime, setLastSaveTime] = useState<Date>();
@@ -24,6 +30,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     setSession(undefined);
     setLifecycle({ kind: 'loading' });
     setEstablished(false);
+    setLastSaveTime(undefined);
     setLastSaveError(undefined);
     if (!collaborationId) return;
     const ydoc = new Y.Doc();
@@ -41,7 +48,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       setLastSaveError(error);
       if (!error) setLastSaveTime(new Date());
     });
-    setSession({ ydoc, provider });
+    setSession({ collaborationId, ydoc, provider });
     provider.connect();
     return () => {
       unsubscribeState();
@@ -51,27 +58,32 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
     };
   }, [collaborationId]);
 
-  const { ydoc, provider } = session ?? {};
+  const currentSession = session?.collaborationId === collaborationId ? session : undefined;
+  const { ydoc, provider } = currentSession ?? {};
+  const currentLifecycle: CollaborationState = currentSession ? lifecycle : { kind: 'loading' };
+  const currentEstablished = currentSession ? established : false;
+  const currentLastSaveTime = currentSession ? lastSaveTime : undefined;
+  const currentLastSaveError = currentSession ? lastSaveError : undefined;
 
-  const active = lifecycle.kind === 'active';
+  const active = currentLifecycle.kind === 'active';
   const status = !active
-    ? lifecycle.kind === 'loading'
+    ? currentLifecycle.kind === 'loading'
       ? MemoStatus.CONNECTING
       : MemoStatus.DISCONNECTED
-    : lifecycle.save === 'offline'
+    : currentLifecycle.save === 'offline'
       ? MemoStatus.DISCONNECTED
       : MemoStatus.CONNECTED;
   const readOnlyCode: ReadOnlyCode | undefined = provider?.readOnlyReason;
-  useCollaborationBeforeUnload(lifecycle, !!provider?.hasUnsavedChanges);
+  useCollaborationBeforeUnload(currentLifecycle, !!provider?.hasUnsavedChanges);
 
   return {
     status,
-    synced: established,
-    lastSaveTime,
-    lastSaveError,
-    isReadOnly: !active || lifecycle.access === 'read',
+    synced: currentEstablished,
+    lastSaveTime: currentLastSaveTime,
+    lastSaveError: currentLastSaveError,
+    isReadOnly: !active || currentLifecycle.access === 'read',
     readOnlyCode,
-    lifecycle,
+    lifecycle: currentLifecycle,
     ydoc,
     provider,
   };

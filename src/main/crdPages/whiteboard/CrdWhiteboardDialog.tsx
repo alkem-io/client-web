@@ -144,6 +144,20 @@ type CollaborativeCloseParams = {
   teardown: () => void;
 };
 
+export const acceptWhiteboardCloseIntent = ({
+  hasUnsaved,
+  canPersist,
+  abortImport,
+}: {
+  hasUnsaved: boolean;
+  canPersist: boolean;
+  abortImport: () => void;
+}) => {
+  if (hasUnsaved && !canPersist) return false;
+  abortImport();
+  return true;
+};
+
 /** Close only after metadata and the provider's continuous save owner settle. */
 export async function closeCollaborativeWhiteboard({
   save,
@@ -255,11 +269,17 @@ const CrdWhiteboardDialog = ({
   const onClose = async () => {
     if (closeInFlightRef.current) return;
     closeInFlightRef.current = true;
-    importAbortRef.current?.abort();
     const collabApi = collabApiRef.current;
     const lifecycle = collabApi?.getState();
     const hasUnsaved = !!collabApi?.hasUnsavedChanges();
-    if (hasUnsaved && !(lifecycle?.kind === 'active' && lifecycle.access === 'write' && lifecycle.save !== 'offline')) {
+    const canPersist = !!(lifecycle?.kind === 'active' && lifecycle.access === 'write' && lifecycle.save !== 'offline');
+    if (
+      !acceptWhiteboardCloseIntent({
+        hasUnsaved,
+        canPersist,
+        abortImport: () => importAbortRef.current?.abort(),
+      })
+    ) {
       setCloseBlocked(true);
       closeInFlightRef.current = false;
       return;

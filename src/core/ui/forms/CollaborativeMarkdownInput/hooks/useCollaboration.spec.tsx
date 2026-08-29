@@ -45,7 +45,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
   },
 }));
 
-import { useCollaboration } from './useCollaboration';
+import { useCollaboration } from '@/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration';
 
 describe('useCollaboration', () => {
   beforeEach(() => {
@@ -54,12 +54,15 @@ describe('useCollaboration', () => {
   });
 
   it('owns one fresh document and provider per collaboration id', () => {
-    const { rerender } = renderHook(({ id }) => useCollaboration({ collaborationId: id }), {
+    const { result, rerender } = renderHook(({ id }) => useCollaboration({ collaborationId: id }), {
       initialProps: { id: 'room-A' },
     });
     const first = harness.instances[0];
     const destroyFirstDoc = vi.spyOn(first.options.doc, 'destroy');
     first.options.doc.getText('content').insert(0, 'room A');
+    first.readOnlyReason = 'noUpdateAccess';
+    act(() => first.emitState({ kind: 'active', access: 'read', save: 'saved' }));
+    act(() => first.emitSaved());
 
     rerender({ id: 'room-B' });
 
@@ -68,6 +71,14 @@ describe('useCollaboration', () => {
     expect(second.options.doc.getText('content').toString()).toBe('');
     expect(destroyFirstDoc).toHaveBeenCalledOnce();
     expect(harness.order.indexOf('destroy:room-A')).toBeLessThan(harness.order.indexOf('connect:room-B'));
+    expect(result.current).toMatchObject({
+      status: 'connecting',
+      synced: false,
+      lastSaveTime: undefined,
+      lastSaveError: undefined,
+      readOnlyCode: undefined,
+      lifecycle: { kind: 'loading' },
+    });
   });
 
   it('keeps a previously synced writer editable while the disposable transport is offline', () => {

@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { useCollaborationBeforeUnload } from './useCollaborationBeforeUnload';
+import { useCollaborationBeforeUnload } from '@/domain/collaboration/realTimeCollaboration/useCollaborationBeforeUnload';
 
 describe('useCollaborationBeforeUnload', () => {
   afterEach(() => vi.restoreAllMocks());

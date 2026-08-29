@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import type { CollaborationState } from './unifiedCollabProvider';
+import type { CollaborationState } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
 export const useCollaborationBeforeUnload = (state: CollaborationState, hasUnsaved: boolean) => {
   const warn =
