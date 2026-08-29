@@ -58,6 +58,8 @@ const options = {
 };
 const socket = () => MockWebSocket.instances.at(-1) as MockWebSocket;
 const frameType = (frame: Uint8Array) => decoding.readVarUint(decoding.createDecoder(frame));
+const heartbeatFixtureHex = '050731353030302d31'; // type 5 + VarString('15000-1')
+const toHex = (frame: Uint8Array) => Array.from(frame, byte => byte.toString(16).padStart(2, '0')).join('');
 const control = (body: object) => {
   const encoder = encoding.createEncoder();
   encoding.writeVarUint(encoder, WIRE.CONTROL);
@@ -268,10 +270,12 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
 
   it('an exact heartbeat echo starts the next verified-round-trip interval', async () => {
     vi.useFakeTimers();
+    vi.setSystemTime(0);
     const provider = new UnifiedCollabProvider(options);
     const ws = admitAndSync(provider);
     await vi.advanceTimersByTimeAsync(15_000);
     const probe = ws.sent.at(-1) as Uint8Array;
+    expect(toHex(probe)).toBe(heartbeatFixtureHex);
     ws.receive(probe);
     await vi.advanceTimersByTimeAsync(9_999);
     expect(ws.closes).toEqual([]);
