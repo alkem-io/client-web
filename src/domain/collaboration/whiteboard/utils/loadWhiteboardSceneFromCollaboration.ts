@@ -1,7 +1,12 @@
 import { Scene, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
 import { UnifiedCollabProvider } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
-/** Load one source document through its own ordinary provider, then dispose it. */
+/**
+ * Load one source document through its own ordinary provider, then dispose it.
+ * There is deliberately no wall-clock deadline: progressing templates stay patient.
+ * The owner's AbortSignal settles chooser cancel, target close, scene loss, editor
+ * disposal, and unmount; provider readiness or a terminal end settles the rest.
+ */
 export const loadWhiteboardSceneFromCollaboration = (
   whiteboardId: string,
   options: { signal?: AbortSignal } = {}

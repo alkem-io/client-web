@@ -17,6 +17,14 @@ describe('useCollaborationBeforeUnload', () => {
     expect(add.mock.calls.some(([kind]) => kind === 'beforeunload')).toBe(false);
     rerender({ dirty: true });
     expect(add.mock.calls.some(([kind]) => kind === 'beforeunload')).toBe(true);
+    const beforeUnload = add.mock.calls.find(([kind]) => kind === 'beforeunload')?.[1];
+    const event = {
+      preventDefault: vi.fn(),
+      returnValue: 'unchanged',
+    } as unknown as BeforeUnloadEvent;
+    (beforeUnload as EventListener)(event);
+    expect(event.preventDefault).toHaveBeenCalledOnce();
+    expect(event.returnValue).toBe('');
 
     unmount();
     expect(remove.mock.calls.some(([kind]) => kind === 'beforeunload')).toBe(true);

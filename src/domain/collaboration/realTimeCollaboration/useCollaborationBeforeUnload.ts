@@ -7,7 +7,10 @@ export const useCollaborationBeforeUnload = (state: CollaborationState, hasUnsav
     ((state.kind === 'active' && state.access === 'write' && state.save !== 'saved') || state.kind === 'ended');
   useEffect(() => {
     if (!warn) return;
-    const prevent = (event: BeforeUnloadEvent) => event.preventDefault();
+    const prevent = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
     window.addEventListener('beforeunload', prevent);
     return () => window.removeEventListener('beforeunload', prevent);
   }, [warn]);
