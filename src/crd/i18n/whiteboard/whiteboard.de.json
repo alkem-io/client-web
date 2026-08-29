@@ -39,10 +39,18 @@
       "title": "Ungespeicherte Änderungen verwerfen?",
       "description": "Sie haben ungespeicherte Änderungen, die verloren gehen. Möchten Sie wirklich fortfahren?",
       "confirm": "Verwerfen",
-      "cancel": "Weiter bearbeiten"
+      "cancel": "Weiter bearbeiten",
+      "wait": "Geöffnet lassen und warten",
+      "export": "Zuerst exportieren"
     }
   },
   "footer": {
+    "saveStatus": {
+      "saved": "Gespeichert",
+      "saving": "Wird gespeichert…",
+      "offline": "Offline — wird automatisch synchronisiert",
+      "ended": "Nicht verfügbar"
+    },
     "guestContributionsWarning": "Jeder mit dem Link kann bearbeiten",
     "readonlyReason": {
       "readonly": "<strong>Nur-Lese-Modus</strong> <learnwhy>klicken Sie hier, um zu erfahren, warum</learnwhy>",

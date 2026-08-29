@@ -22,26 +22,49 @@ vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', async () => {
     lazyWithGlobalErrorHandler: () => (props: { onExcalidrawAPI?: (api: unknown) => void }) => {
       React.useEffect(() => {
         h.mountCount.value += 1;
-        props.onExcalidrawAPI?.({ id: `api-${h.mountCount.value}` });
+        const id = `api-${h.mountCount.value}`;
+        props.onExcalidrawAPI?.({ id, encodeSceneStateVector: () => id });
       }, []);
       return null;
     },
   };
 });
 
-// Capture every initializeCollab call as (api id, roomId).
-vi.mock('./collab/useCollab', () => ({
-  default: () => [
-    null,
-    (opts: { excalidrawApi: { id: string }; roomId: string }) => {
-      h.initCalls.push({ apiId: opts.excalidrawApi.id, roomId: opts.roomId });
+vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', () => ({
+  UnifiedCollabProvider: class {
+    state = { kind: 'loading' };
+    readOnlyReason = undefined;
+    hasUnsavedChanges = false;
+    awareness = {};
+    ephemeralChannel = {};
+    constructor(opts: { documentId: string; scenePort: { encodeSceneStateVector: () => string } }) {
+      h.initCalls.push({ apiId: opts.scenePort.encodeSceneStateVector(), roomId: opts.documentId });
+    }
+    subscribe(listener: (state: { kind: string }) => void) {
+      listener(this.state);
       return () => {};
-    },
-    { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
-  ],
+    }
+    onSaveResult() {
+      return () => {};
+    }
+    connect() {}
+    destroy() {}
+    requestDurability() {
+      return Promise.resolve();
+    }
+  },
+}));
+vi.mock('./collab/whiteboardEditorBinding', () => ({
+  bindWhiteboardEditor: () => ({
+    setUser: vi.fn(),
+    fitScene: vi.fn(),
+    destroy: vi.fn(),
+    onPointerUpdate: vi.fn(),
+    broadcastEmojiReaction: vi.fn(),
+    broadcastCountdownTimer: vi.fn(),
+  }),
 }));
 
-vi.mock('./useAutoReconnect', () => ({ useAutoReconnect: () => ({ secondsRemaining: null }) }));
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
 vi.mock('@/core/utils/onlineStatus', () => ({ default: () => true }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
@@ -57,7 +80,6 @@ const renderWrapper = (whiteboardId: string) =>
       entities={{ whiteboard: { id: whiteboardId }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
       options={{}}
       actions={{}}
-      renderDisconnectNotice={() => null}
     >
       {({ children }) => <>{children}</>}
     </CollaborativeExcalidrawWrapper>
@@ -81,7 +103,6 @@ describe('CollaborativeExcalidrawWrapper — api ↔ whiteboard-id pairing', () 
         entities={{ whiteboard: { id: 'wb-B' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
         options={{}}
         actions={{}}
-        renderDisconnectNotice={() => null}
       >
         {({ children }) => <>{children}</>}
       </CollaborativeExcalidrawWrapper>
