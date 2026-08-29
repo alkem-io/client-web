@@ -14,10 +14,10 @@ import type { SessionEndCode } from '@/domain/collaboration/realTimeCollaboratio
 import { resolveWhiteboardGuestIdentity } from '@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useCombinedRefs } from '@/domain/shared/utils/useCombinedRefs';
-import { CollaboratorModeReasons } from './collab/excalidrawAppConstants';
 import useCollab, { type CollabAPI, type CollabState } from './collab/useCollab';
 import { generateIdFromFile } from './collab/utils';
 import { getWhiteboardImageUploadI18nParams, validateWhiteboardImageFile } from './fileStore/fileValidation';
+import { useAutoReconnect } from './useAutoReconnect';
 import useWhiteboardDefaults from './useWhiteboardDefaults';
 
 const FILE_IMPORT_ENABLED = true;
@@ -86,7 +86,6 @@ export interface WhiteboardWhiteboardOptions extends ExcalidrawProps {}
 
 interface CollaborativeExcalidrawWrapperProvided extends CollabState {
   restartCollaboration: () => void;
-  canReconnect: boolean;
 }
 
 /** State handed to a custom "collaboration stopped" notice renderer (see `renderDisconnectNotice`). */
@@ -103,7 +102,7 @@ export type DisconnectNoticeRenderProps = {
   terminalCloseReason: string | null;
   /** A reconnect attempt has failed (not just a transient drop) — surface an immediate reload escape hatch. */
   hasError: boolean;
-  /** Kept for the presentational notice; provider retries do not expose a second countdown. */
+  /** Seconds until auto-reconnect, or `null` when no countdown is active (offline / not scheduled). */
   autoReconnectSeconds: number | null;
   lastSuccessfulSavedDate: Date | undefined;
   onReconnect: () => void;
@@ -164,13 +163,16 @@ const CollaborativeExcalidrawWrapper = ({
 
   // Set to the server's close reason when the collaboration socket is closed with a
   // TERMINAL 1008 policy verdict (forbidden / document deleted / any unrecognised
-  // reason, fail closed). It disables manual retry UI while the provider also keeps
-  // its reconnect timer off. `null` for a transient drop. Cleared on an explicit
-  // user reconnect or once collaboration is re-established.
+  // reason, fail closed). It gates `useAutoReconnect` OFF (see `active` below) so the
+  // wrapper's own reconnect countdown never fires `restartCollaboration` — the second
+  // of the two independent retry loops. `null` for a transient drop, which keeps
+  // retrying as before. Cleared on an explicit user reconnect or once collaboration
+  // is re-established.
   const [terminalCloseReason, setTerminalCloseReason] = useState<string | null>(null);
 
   // True once a reconnect attempt has actually failed (`connect_error`), as opposed to a transient
-  // drop. This lets the notice surface the "Reload page" escape hatch immediately.
+  // drop. While online the auto-reconnect countdown cycles `connecting`, so the notice's own stuck-timer
+  // never elapses — this flag lets the notice surface the "Reload page" escape hatch in that case.
   const [connectionError, setConnectionError] = useState(false);
 
   const { whiteboard, assetAdapter, imageValidation, lastSuccessfulSavedDate } = entities;
@@ -261,7 +263,8 @@ const CollaborativeExcalidrawWrapper = ({
       setCollaborationStoppedNoticeOpen(true);
       setSceneInitialized(false);
       setConnectionError(hasError);
-      // The provider owns retry; this callback only surfaces connection state.
+      // The auto-reconnect countdown is driven by `useAutoReconnect` off the notice-open + connecting
+      // state below — no need to schedule anything from here.
       // event if it's duplicated by the httpLink and Portal handlers, let's log this closeConnection one
       // with additional info here #7492
       logError('WB Connection Closed', {
@@ -297,8 +300,8 @@ const CollaborativeExcalidrawWrapper = ({
     },
     onTerminalClose: (reason: string) => {
       // A TERMINAL policy close: this attempt must not be retried. Record the reason
-      // (the provider does not retry it) and surface the collaboration-stopped notice
-      // WITHOUT a retry countdown — unlike a transient drop, the connection is
+      // (gates auto-reconnect OFF below) and surface the collaboration-stopped notice
+      // WITHOUT a live reconnect countdown — unlike a transient drop, the connection is
       // not coming back on its own.
       setTerminalCloseReason(reason);
       setCollaborationStoppedNoticeOpen(true);
@@ -314,16 +317,16 @@ const CollaborativeExcalidrawWrapper = ({
       notify(t(SESSION_END_MESSAGE_KEYS[code]), disposition === 'transient' ? 'info' : 'warning');
       setSceneInitialized(false);
       if (disposition === 'transient') {
-        // The provider remains the only retry owner; the notice merely reports
-        // the disconnected state and offers an immediate provider retry.
-        setCollaborationStoppedNoticeOpen(true);
+        // The PROVIDER's own scheduler reconnects (1013/1001 → transient). Do NOT open the
+        // retry notice / arm useAutoReconnect — that would be a SECOND reconnect trigger.
         return;
       }
       if (disposition === 'manual') {
         // Discard/tear down the poisoned generation NOW: nulling the api runs the init
         // effect's cleanup → the provider/socket is destroyed immediately, even if no
-        // replacement editor mounts. Keep collaboration init and provider reconnect OFF
-        // (collaborationStartTime=null disables init; a 1008 close never reconnects the provider) until the user
+        // replacement editor mounts. Keep collaboration init AND both reconnect loops OFF
+        // (collaborationStartTime=null disables init; terminalCloseReason disables the
+        // wrapper countdown; a 1008 close never reconnects the provider) until the user
         // explicitly restarts — which mints a FRESH generation first (see restartCollaboration).
         setExcalidrawApi(null);
         setCollaborationStartTime(null);
@@ -364,21 +367,23 @@ const CollaborativeExcalidrawWrapper = ({
       setRecoveryGeneration(generation => generation + 1);
       setManualDiscardPending(false);
     }
-    // An explicit user reconnect clears the terminal verdict. Ordinary transport
-    // recovery retries the SAME provider/Y.Doc. An inactivity downgrade is
-    // different: its socket is still OPEN and the server member is deliberately a
-    // viewer, so reconnect() would correctly no-op. Re-run the binding lifecycle to
-    // destroy that member and join afresh only after the user explicitly asks to
-    // resume editing (automatic rejoin would defeat the inactivity policy).
+    // An explicit user reconnect clears the terminal verdict so the normal machinery
+    // (auto-reconnect included) is re-enabled for the fresh attempt; a fresh terminal
+    // close would set it again and re-disable the loop.
     setTerminalCloseReason(null);
-    if (manualDiscardPending || !collabApi) {
-      setCollaborationStartTime(Date.now());
-    } else if (mode === 'read' && modeReason === CollaboratorModeReasons.INACTIVITY) {
-      setCollaborationStartTime(generation => (generation ?? 0) + 1);
-    } else {
-      collabApi.reconnect();
-    }
+    setCollaborationStartTime(Date.now());
   };
+
+  // Single source of truth for the reconnect countdown + backoff (5s → 10s → 30s → 60s…). It counts
+  // down while the notice is open and we're not yet collaborating, fires `restartCollaboration` at
+  // zero, and resets once the connection is restored. A TERMINAL policy close forces `active` off
+  // (`terminalCloseReason !== null`) so this second retry loop never fires `restartCollaboration`.
+  const { secondsRemaining: autoReconnectSeconds } = useAutoReconnect({
+    active: collaborationStoppedNoticeOpen && !collaborating && terminalCloseReason === null,
+    isOnline,
+    connecting,
+    onReconnect: restartCollaboration,
+  });
 
   useEffect(() => {
     if (!connecting && collaborating) {
@@ -461,9 +466,6 @@ const CollaborativeExcalidrawWrapper = ({
         mode,
         modeReason,
         restartCollaboration,
-        canReconnect:
-          isOnline &&
-          (manualDiscardPending || (!!collabApi && !connecting && !collaborating && terminalCloseReason === null)),
         isReadOnly,
       })}
       {renderDisconnectNotice({
@@ -472,7 +474,7 @@ const CollaborativeExcalidrawWrapper = ({
         hasError: connectionError,
         connecting,
         terminalCloseReason,
-        autoReconnectSeconds: null,
+        autoReconnectSeconds,
         lastSuccessfulSavedDate,
         onReconnect: restartCollaboration,
         onClose: () => setCollaborationStoppedNoticeOpen(false),

@@ -693,17 +693,13 @@
       "moreConnectedUsers_other": "{{count}} utilisateurs connectés de plus",
       "guestWarning": "Vous éditez en tant qu'invité",
       "delete": "Supprimer le mémo",
-      "resumeEditing": "Reprendre la modification",
       "readonlyReason": {
         "connecting": "Connexion au service de collaboration…",
-        "notSynced": "Synchronisation…",
+        "notSynced": "Synchronisation… rouvrez le mémo pour reprendre l'édition.",
         "unauthenticated": "Connectez-vous pour modifier ce mémo.",
         "contentUpdatePolicy": "Vous n'avez pas la permission de modifier ce mémo. Demandez au propriétaire, <ownerlink>{{ownerName}}</ownerlink>, de modifier les paramètres de partage.",
         "contentUpdatePolicyNoOwner": "Vous n'avez pas la permission de modifier ce mémo. Le propriétaire n'est plus disponible — demandez à un administrateur de l'espace de modifier les paramètres de partage.",
-        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer.",
-        "inactivity": "La modification a été suspendue pour cause d'inactivité. Reprenez-la lorsque vous êtes prêt.",
-        "sizeLimitExceeded": "Ce mémo a atteint sa limite de taille et votre dernière modification n’a pas été appliquée. Reprenez à partir de la dernière version enregistrée.",
-        "sessionEnded": "Ce mémo n’est plus disponible pour la collaboration."
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer."
       }
     },
     "errors": {

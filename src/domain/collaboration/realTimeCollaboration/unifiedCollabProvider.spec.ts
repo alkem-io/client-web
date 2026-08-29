@@ -4,26 +4,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import { messageYjsSyncStep2, readSyncMessage, writeSyncStep1, writeSyncStep2, writeUpdate } from 'y-protocols/sync';
 import * as Y from 'yjs';
-import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import {
   type CloseVerdict,
   type ControlMessage,
   classifyClose,
-  controlReasonToReadOnlyCode,
   DURABILITY_REQUEST_TIMEOUT_MS,
-  HEARTBEAT_INTERVAL_MS,
-  HEARTBEAT_TIMEOUT_MS,
-  INITIAL_SYNC_TIMEOUT_MS,
   type SceneSyncPort,
   UnifiedCollabProvider,
   WIRE,
 } from './unifiedCollabProvider';
-
-describe('controlReasonToReadOnlyCode', () => {
-  it('preserves the inactivity downgrade as an actionable read-only reason', () => {
-    expect(controlReasonToReadOnlyCode('inactivity')).toBe(ReadOnlyCode.INACTIVITY);
-  });
-});
 
 /**
  * A controllable WebSocket stand-in. `globalThis.WebSocket` is replaced with this
@@ -31,7 +20,6 @@ describe('controlReasonToReadOnlyCode', () => {
  * without a live server. Each instance records the URL it was opened with.
  */
 class MockWebSocket {
-  static CONNECTING = 0;
   static OPEN = 1;
   static instances: MockWebSocket[] = [];
 
@@ -65,10 +53,6 @@ class MockWebSocket {
     this.readyState = MockWebSocket.OPEN;
     this.emit('open', {});
   }
-  /** Simulate the diagnostic error event that precedes the authoritative close. */
-  error(): void {
-    this.emit('error', {});
-  }
   /** Inject a server→client binary frame. */
   receive(bytes: Uint8Array): void {
     this.emit('message', { data: bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) });
@@ -101,7 +85,6 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
@@ -236,383 +219,6 @@ describe('UnifiedCollabProvider', () => {
     expect(provider.synced).toBe(true);
     expect(provider.doc.getMap('scene').get('seed')).toBe(true);
     provider.destroy();
-  });
-
-  it('drops and retries a socket that opens but never completes the initial sync', () => {
-    vi.useFakeTimers();
-    const provider = new UnifiedCollabProvider(baseOptions);
-    const verdicts: CloseVerdict[] = [];
-    provider.on('close', verdict => verdicts.push(verdict));
-    MockWebSocket.instances[0].open();
-
-    vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS);
-    expect(provider.status).toBe('disconnected');
-    expect(verdicts[verdicts.length - 1]).toMatchObject({
-      reason: 'initial-sync-timeout',
-      disposition: 'transient',
-    });
-
-    vi.advanceTimersByTime(1_000);
-    expect(MockWebSocket.instances).toHaveLength(2);
-
-    MockWebSocket.instances[1].open();
-    vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS + 1_000);
-    expect(MockWebSocket.instances).toHaveLength(2);
-    vi.advanceTimersByTime(1_000);
-    expect(MockWebSocket.instances).toHaveLength(3);
-    provider.destroy();
-  });
-
-  it('keeps a synced connection alive when the service echoes the heartbeat', () => {
-    vi.useFakeTimers();
-    const provider = new UnifiedCollabProvider(baseOptions);
-    const socket = MockWebSocket.instances[0];
-    socket.open();
-    const serverDoc = new Y.Doc();
-    const step2 = encoding.createEncoder();
-    encoding.writeVarUint(step2, WIRE.SYNC);
-    writeSyncStep2(step2, serverDoc);
-    socket.receive(encoding.toUint8Array(step2));
-    socket.sent.length = 0;
-
-    vi.advanceTimersByTime(HEARTBEAT_INTERVAL_MS);
-    expect(readFrameType(socket.sent[0])).toBe(WIRE.HEARTBEAT);
-    socket.receive(socket.sent[0]);
-    vi.advanceTimersByTime(HEARTBEAT_TIMEOUT_MS);
-
-    expect(provider.status).toBe('connected');
-    expect(MockWebSocket.instances).toHaveLength(1);
-    provider.destroy();
-  });
-
-  it('drops and retries a connection that does not answer the heartbeat', () => {
-    vi.useFakeTimers();
-    const provider = new UnifiedCollabProvider(baseOptions);
-    const socket = MockWebSocket.instances[0];
-    socket.open();
-    const step2 = encoding.createEncoder();
-    encoding.writeVarUint(step2, WIRE.SYNC);
-    writeSyncStep2(step2, new Y.Doc());
-    socket.receive(encoding.toUint8Array(step2));
-
-    vi.advanceTimersByTime(HEARTBEAT_INTERVAL_MS + HEARTBEAT_TIMEOUT_MS);
-    expect(provider.status).toBe('disconnected');
-    vi.advanceTimersByTime(1_000);
-    expect(MockWebSocket.instances).toHaveLength(2);
-    provider.destroy();
-  });
-
-  it.each([
-    {
-      socketState: 'CLOSING',
-      readyState: 2,
-      source: 'browser offline',
-      trigger: () => window.dispatchEvent(new Event('offline')),
-      closeCode: 1008,
-      closeReason: 'forbidden',
-      disposition: 'terminal' as const,
-    },
-    {
-      socketState: 'CLOSED',
-      readyState: 3,
-      source: 'browser offline',
-      trigger: () => window.dispatchEvent(new Event('offline')),
-      closeCode: 1000,
-      closeReason: '',
-      disposition: 'normal' as const,
-    },
-    {
-      socketState: 'CLOSING',
-      readyState: 2,
-      source: 'initial-sync timeout',
-      trigger: () => vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS),
-      closeCode: 1008,
-      closeReason: 'forbidden',
-      disposition: 'terminal' as const,
-    },
-    {
-      socketState: 'CLOSED',
-      readyState: 3,
-      source: 'initial-sync timeout',
-      trigger: () => vi.advanceTimersByTime(INITIAL_SYNC_TIMEOUT_MS),
-      closeCode: 1000,
-      closeReason: '',
-      disposition: 'normal' as const,
-    },
-  ])('lets a queued $disposition $socketState close win over a $source transient trigger', ({
-    readyState,
-    trigger,
-    closeCode,
-    closeReason,
-    disposition,
-  }) => {
-    vi.useFakeTimers();
-    const provider = new UnifiedCollabProvider(baseOptions);
-    const verdicts: CloseVerdict[] = [];
-    provider.on('close', verdict => verdicts.push(verdict));
-    const socket = MockWebSocket.instances[0];
-    socket.open();
-    socket.readyState = readyState; // The authoritative close event is queued.
-
-    trigger();
-
-    expect(verdicts).toEqual([]);
-    expect(MockWebSocket.instances).toHaveLength(1);
-
-    socket.serverClose(closeCode, closeReason);
-    window.dispatchEvent(new Event('online'));
-    vi.advanceTimersByTime(60_000);
-
-    expect(verdicts).toEqual([{ code: closeCode, reason: closeReason, disposition }]);
-    expect(MockWebSocket.instances).toHaveLength(1);
-    provider.destroy();
-  });
-
-  it('pauses reconnect while offline and retries immediately when the browser returns online', () => {
-    vi.useFakeTimers();
-    const provider = new UnifiedCollabProvider(baseOptions);
-    MockWebSocket.instances[0].open();
-
-    window.dispatchEvent(new Event('offline'));
-    expect(provider.status).toBe('disconnected');
-    vi.advanceTimersByTime(60_000);
-    expect(MockWebSocket.instances).toHaveLength(1);
-
-    window.dispatchEvent(new Event('online'));
-    expect(MockWebSocket.instances).toHaveLength(2);
-    provider.destroy();
-  });
-
-  it('defers an initial connection while offline and connects when the browser returns online', () => {
-    vi.stubGlobal('navigator', { onLine: false });
-    const provider = new UnifiedCollabProvider({ ...baseOptions, connect: false });
-    const verdicts: CloseVerdict[] = [];
-    provider.on('close', verdict => verdicts.push(verdict));
-
-    provider.connect();
-    provider.connect();
-
-    expect(provider.status).toBe('disconnected');
-    expect(MockWebSocket.instances).toHaveLength(0);
-    expect(verdicts).toEqual([{ code: 4000, reason: 'offline', disposition: 'transient' }]);
-
-    window.dispatchEvent(new Event('online'));
-
-    expect(provider.status).toBe('connecting');
-    expect(MockWebSocket.instances).toHaveLength(1);
-    provider.destroy();
-  });
-
-  it('does not reconnect on an online event after a terminal close', () => {
-    vi.useFakeTimers();
-    const provider = new UnifiedCollabProvider(baseOptions);
-    const socket = MockWebSocket.instances[0];
-    socket.open();
-    socket.serverClose(1008, 'forbidden');
-
-    window.dispatchEvent(new Event('offline'));
-    window.dispatchEvent(new Event('online'));
-    vi.advanceTimersByTime(60_000);
-
-    expect(MockWebSocket.instances).toHaveLength(1);
-    provider.destroy();
-  });
-
-  it('does not reconnect on an online event after an explicit disconnect', () => {
-    vi.useFakeTimers();
-    const provider = new UnifiedCollabProvider(baseOptions);
-    MockWebSocket.instances[0].open();
-    provider.disconnect();
-
-    window.dispatchEvent(new Event('offline'));
-    window.dispatchEvent(new Event('online'));
-    vi.advanceTimersByTime(60_000);
-
-    expect(MockWebSocket.instances).toHaveLength(1);
-    provider.destroy();
-  });
-
-  describe('connection-intent transition matrix', () => {
-    it.each([
-      { connect: false, online: true, socketsBeforeRequest: 0, socketsAfterOnline: 0 },
-      { connect: false, online: false, socketsBeforeRequest: 0, socketsAfterOnline: 0 },
-      { connect: true, online: true, socketsBeforeRequest: 1, socketsAfterOnline: 1 },
-      { connect: true, online: false, socketsBeforeRequest: 0, socketsAfterOnline: 1 },
-    ])('construction connect=$connect online=$online owns the expected initial attempt', ({
-      connect,
-      online,
-      socketsBeforeRequest,
-      socketsAfterOnline,
-    }) => {
-      vi.stubGlobal('navigator', { onLine: online });
-      const provider = new UnifiedCollabProvider({ ...baseOptions, connect });
-
-      expect(provider.status).toBe(connect && online ? 'connecting' : 'disconnected');
-      expect(MockWebSocket.instances).toHaveLength(socketsBeforeRequest);
-
-      window.dispatchEvent(new Event('online'));
-      expect(MockWebSocket.instances).toHaveLength(socketsAfterOnline);
-      provider.destroy();
-    });
-
-    it.each([
-      { socketState: 'CONNECTING', open: false },
-      { socketState: 'OPEN', open: true },
-    ])('preserves one connection request across offline/online while the socket is $socketState', ({ open }) => {
-      const provider = new UnifiedCollabProvider({ ...baseOptions, connect: false });
-      const verdicts: CloseVerdict[] = [];
-      provider.on('close', verdict => verdicts.push(verdict));
-      provider.connect();
-      provider.connect();
-      if (open) MockWebSocket.instances[0].open();
-
-      window.dispatchEvent(new Event('offline'));
-      window.dispatchEvent(new Event('offline'));
-      expect(MockWebSocket.instances).toHaveLength(1);
-      expect(verdicts).toEqual([{ code: 4000, reason: 'offline', disposition: 'transient' }]);
-
-      window.dispatchEvent(new Event('online'));
-      window.dispatchEvent(new Event('online'));
-      expect(MockWebSocket.instances).toHaveLength(2);
-      provider.destroy();
-    });
-
-    it.each([
-      { socketState: 'CLOSING', readyState: 2 },
-      { socketState: 'CLOSED before its close event', readyState: 3 },
-    ])('does not overtake a $socketState socket before its authoritative close event', ({ readyState }) => {
-      vi.useFakeTimers();
-      const provider = new UnifiedCollabProvider(baseOptions);
-      const socket = MockWebSocket.instances[0];
-      socket.readyState = readyState;
-
-      provider.connect();
-      provider.reconnectNow();
-      expect(MockWebSocket.instances).toHaveLength(1);
-
-      socket.serverClose(1006, 'transport-lost');
-      vi.advanceTimersByTime(1_000);
-      expect(MockWebSocket.instances).toHaveLength(2);
-      provider.destroy();
-    });
-
-    it.each([
-      { label: 'transient close', code: 1006, reason: '', resumes: true },
-      { label: 'normal close', code: 1000, reason: '', resumes: false },
-      { label: 'terminal close', code: 1008, reason: 'forbidden', resumes: false },
-    ])('$label has the expected durable connection intent', ({ code, reason, resumes }) => {
-      vi.useFakeTimers();
-      const provider = new UnifiedCollabProvider(baseOptions);
-      MockWebSocket.instances[0].open();
-      MockWebSocket.instances[0].serverClose(code, reason);
-
-      window.dispatchEvent(new Event('offline'));
-      window.dispatchEvent(new Event('online'));
-      vi.runOnlyPendingTimers();
-
-      expect(MockWebSocket.instances).toHaveLength(resumes ? 2 : 1);
-      provider.destroy();
-    });
-
-    it.each([
-      { action: 'disconnect', stop: (provider: UnifiedCollabProvider) => provider.disconnect() },
-      { action: 'destroy', stop: (provider: UnifiedCollabProvider) => provider.destroy() },
-    ])('$action clears connection intent, timers, and browser-event recovery', ({ stop }) => {
-      vi.useFakeTimers();
-      const provider = new UnifiedCollabProvider(baseOptions);
-      MockWebSocket.instances[0].open();
-      stop(provider);
-
-      window.dispatchEvent(new Event('offline'));
-      window.dispatchEvent(new Event('online'));
-      vi.advanceTimersByTime(120_000);
-
-      expect(MockWebSocket.instances).toHaveLength(1);
-      provider.destroy();
-    });
-
-    it('manual reconnect reasserts intent after a terminal close', () => {
-      vi.useFakeTimers();
-      const provider = new UnifiedCollabProvider(baseOptions);
-      MockWebSocket.instances[0].open();
-      MockWebSocket.instances[0].serverClose(1008, 'forbidden');
-
-      provider.reconnectNow();
-
-      expect(MockWebSocket.instances).toHaveLength(2);
-      expect(provider.status).toBe('connecting');
-      provider.destroy();
-    });
-
-    it('does not erase a fresh request started synchronously by a close consumer', () => {
-      const provider = new UnifiedCollabProvider(baseOptions);
-      provider.on('close', verdict => {
-        if (verdict.disposition === 'terminal') provider.reconnectNow();
-      });
-
-      MockWebSocket.instances[0].serverClose(1008, 'forbidden');
-
-      expect(MockWebSocket.instances).toHaveLength(2);
-      window.dispatchEvent(new Event('offline'));
-      window.dispatchEvent(new Event('online'));
-      expect(MockWebSocket.instances).toHaveLength(3);
-      provider.destroy();
-    });
-
-    it('keeps one retry owner when connect and reconnect are repeated during backoff', () => {
-      vi.useFakeTimers();
-      const provider = new UnifiedCollabProvider(baseOptions);
-      MockWebSocket.instances[0].open();
-      MockWebSocket.instances[0].serverClose(1006);
-
-      provider.connect();
-      provider.connect();
-      expect(MockWebSocket.instances).toHaveLength(1);
-
-      provider.reconnectNow();
-      provider.reconnectNow();
-      expect(MockWebSocket.instances).toHaveLength(2);
-      vi.advanceTimersByTime(120_000);
-      expect(MockWebSocket.instances).toHaveLength(2);
-      provider.destroy();
-    });
-
-    it('treats error as diagnostic and the following close as the single retry outcome', () => {
-      vi.useFakeTimers();
-      const provider = new UnifiedCollabProvider(baseOptions);
-      const verdicts: CloseVerdict[] = [];
-      provider.on('close', verdict => verdicts.push(verdict));
-      const socket = MockWebSocket.instances[0];
-
-      socket.error();
-      socket.serverClose(1006, 'transport-lost');
-      socket.serverClose(1006, 'duplicate-close');
-
-      expect(verdicts).toEqual([{ code: 1006, reason: 'transport-lost', disposition: 'transient' }]);
-      vi.advanceTimersByTime(1_000);
-      expect(MockWebSocket.instances).toHaveLength(2);
-      provider.destroy();
-    });
-
-    it('emits readiness loss, disconnected status, and one transient outcome in order', () => {
-      const events: string[] = [];
-      const provider = new UnifiedCollabProvider(baseOptions);
-      provider.on('synced', synced => events.push(`synced:${synced}`));
-      provider.on('status', status => events.push(`status:${status}`));
-      provider.on('close', verdict => events.push(`outcome:${verdict.disposition}:${verdict.reason}`));
-      const socket = MockWebSocket.instances[0];
-      socket.open();
-      const step2 = encoding.createEncoder();
-      encoding.writeVarUint(step2, WIRE.SYNC);
-      writeSyncStep2(step2, new Y.Doc());
-      socket.receive(encoding.toUint8Array(step2));
-      events.length = 0;
-
-      socket.serverClose(1006, 'transport-lost');
-
-      expect(events).toEqual(['synced:false', 'status:disconnected', 'outcome:transient:transport-lost']);
-      provider.destroy();
-    });
   });
 
   it('forwards local doc edits to the server as sync Update frames', () => {
@@ -801,30 +407,16 @@ describe('UnifiedCollabProvider', () => {
     const provider = new UnifiedCollabProvider(baseOptions);
     const socket = MockWebSocket.instances[0];
     socket.open();
-    const step2 = encoding.createEncoder();
-    encoding.writeVarUint(step2, WIRE.SYNC);
-    writeSyncStep2(step2, new Y.Doc());
-    socket.receive(encoding.toUint8Array(step2));
     socket.sent.length = 0;
 
     const durability = provider.requestDurability();
     const timedOut = expect(durability).rejects.toThrow('timed out while persisting the draft');
-    // Keep the transport healthy while the durability reply alone is lost.
-    // Otherwise the independent heartbeat timeout would correctly close first.
-    for (let elapsed = 0; elapsed < DURABILITY_REQUEST_TIMEOUT_MS - HEARTBEAT_INTERVAL_MS; elapsed += 15_000) {
-      await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL_MS);
-      const heartbeat = socket.sent[socket.sent.length - 1];
-      if (!heartbeat) throw new Error('heartbeat was not sent');
-      expect(readFrameType(heartbeat)).toBe(WIRE.HEARTBEAT);
-      socket.receive(heartbeat);
-    }
-    await vi.advanceTimersByTimeAsync(HEARTBEAT_INTERVAL_MS);
+    await vi.advanceTimersByTimeAsync(DURABILITY_REQUEST_TIMEOUT_MS);
     await timedOut;
 
     const retry = provider.requestDurability();
-    const retryFrame = socket.sent[socket.sent.length - 1];
-    if (!retryFrame) throw new Error('durability retry was not sent');
-    const request = readRawJsonFrame(retryFrame).body as { requestId: string };
+    expect(socket.sent).toHaveLength(2);
+    const request = readRawJsonFrame(socket.sent[1]).body as { requestId: string };
     socket.receive(encodeServiceControlFrame({ kind: 'persisted', requestId: request.requestId }));
     await expect(retry).resolves.toBeUndefined();
 
@@ -871,7 +463,7 @@ describe('UnifiedCollabProvider', () => {
 
     // Outbound: channel.send frames a type-2 message.
     provider.ephemeralChannel.send(event);
-    expect(readFrameType(socket.sent[socket.sent.length - 1] as Uint8Array)).toBe(WIRE.EPHEMERAL);
+    expect(readFrameType(socket.sent.at(-1) as Uint8Array)).toBe(WIRE.EPHEMERAL);
     provider.destroy();
   });
 
