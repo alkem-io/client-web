@@ -4,44 +4,37 @@ import type { SessionEndInfo } from '@/domain/collaboration/realTimeCollaboratio
 import CollaborativeExcalidrawWrapper from './CollaborativeExcalidrawWrapper';
 
 /**
- * #3 — the wrapper's session-end outcomes. useCollab is mocked to capture the
- * `onSessionEnd` callback, while the disconnect renderer captures the explicit
- * reconnect action. The <Excalidraw> is a mount-counter so a fresh generation is visible.
+ * #3 — the wrapper's session-end outcomes. useCollab is mocked to capture the `onSessionEnd`
+ * callback the wrapper hands it (so a session-end can be driven without a socket) and
+ * useAutoReconnect is mocked to capture the `active` flag + the `onReconnect` (the wrapper's
+ * restartCollaboration). The <Excalidraw> is a mount-counter so a fresh generation is visible.
  */
 const h = vi.hoisted(() => ({
   onSessionEnd: { value: undefined as ((info: SessionEndInfo) => void) | undefined },
   onReconnect: { value: undefined as (() => void) | undefined },
+  autoReconnectActive: [] as boolean[],
   notifications: [] as string[],
   mountCount: { value: 0 },
   editorInvalidatedCount: { value: 0 },
   publishedApi: { value: null as string | null },
   apiEvents: [] as string[],
-  reconnect: vi.fn(),
-  initializeCount: { value: 0 },
-  cleanupCount: { value: 0 },
-  footerCanReconnect: { value: false },
-  collabState: {
-    connecting: false,
-    collaborating: false,
-    mode: null as 'read' | 'write' | null,
-    modeReason: null as string | null,
-    isReadOnly: false,
-  },
 }));
 
 vi.mock('./collab/useCollab', () => ({
   default: (opts: { onSessionEnd?: (info: SessionEndInfo) => void }) => {
     h.onSessionEnd.value = opts.onSessionEnd;
     return [
-      { reconnect: h.reconnect },
-      () => {
-        h.initializeCount.value += 1;
-        return () => {
-          h.cleanupCount.value += 1;
-        };
-      },
-      h.collabState,
+      null,
+      () => () => {},
+      { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
     ];
+  },
+}));
+vi.mock('./useAutoReconnect', () => ({
+  useAutoReconnect: (params: { active: boolean; onReconnect: () => void }) => {
+    h.autoReconnectActive.push(params.active);
+    h.onReconnect.value = params.onReconnect;
+    return { secondsRemaining: null };
   },
 }));
 vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', async () => {
@@ -83,40 +76,27 @@ const wrapper = (whiteboardId = 'wb-1') => (
         h.apiEvents.push('invalidate');
       },
     }}
-    renderDisconnectNotice={props => {
-      h.onReconnect.value = props.onReconnect;
-      return null;
-    }}
+    renderDisconnectNotice={() => null}
   >
-    {({ children, canReconnect }) => {
-      h.footerCanReconnect.value = canReconnect;
-      return <>{children}</>;
-    }}
+    {({ children }) => <>{children}</>}
   </CollaborativeExcalidrawWrapper>
 );
 
 const renderWrapper = () => render(wrapper());
 
+const lastActive = () => h.autoReconnectActive[h.autoReconnectActive.length - 1];
 const send = (info: SessionEndInfo) => act(() => h.onSessionEnd.value?.(info));
 
 describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
   beforeEach(() => {
     h.onSessionEnd.value = undefined;
     h.onReconnect.value = undefined;
+    h.autoReconnectActive.length = 0;
     h.notifications.length = 0;
     h.mountCount.value = 0;
     h.editorInvalidatedCount.value = 0;
     h.publishedApi.value = null;
     h.apiEvents.length = 0;
-    h.reconnect.mockClear();
-    h.initializeCount.value = 0;
-    h.cleanupCount.value = 0;
-    h.footerCanReconnect.value = false;
-    h.collabState.connecting = false;
-    h.collabState.collaborating = false;
-    h.collabState.mode = null;
-    h.collabState.modeReason = null;
-    h.collabState.isReadOnly = false;
   });
   afterEach(() => vi.clearAllMocks());
 
@@ -124,6 +104,7 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     renderWrapper();
     send({ code: 'update-rate-exceeded', scope: 'member', disposition: 'transient' });
     expect(h.editorInvalidatedCount.value).toBe(0); // nothing discarded
+    expect(lastActive()).toBe(false); // notice not opened → useAutoReconnect NOT armed (provider reconnects)
     expect(h.notifications).toContain('callout.whiteboard.session.rateExceeded');
   });
 
@@ -131,6 +112,7 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     renderWrapper();
     send({ code: 'update-not-accepted', scope: 'member', disposition: 'transient' });
     expect(h.editorInvalidatedCount.value).toBe(0); // nothing discarded
+    expect(lastActive()).toBe(false); // notice not opened → useAutoReconnect NOT armed (provider reconnects)
     expect(h.notifications).toContain('callout.whiteboard.session.updateNotAccepted');
   });
 
@@ -138,6 +120,7 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     renderWrapper();
     send({ code: 'server-shutdown', scope: 'document', disposition: 'transient' });
     expect(h.editorInvalidatedCount.value).toBe(0);
+    expect(lastActive()).toBe(false);
     expect(h.notifications).toContain('callout.whiteboard.session.serverShutdown');
   });
 
@@ -146,52 +129,26 @@ describe('CollaborativeExcalidrawWrapper — session-end outcomes', () => {
     const mountsBefore = h.mountCount.value;
     send({ code: 'document-size-limit-exceeded', scope: 'member', disposition: 'manual' });
     expect(h.editorInvalidatedCount.value).toBe(1); // poisoned generation torn down
+    expect(lastActive()).toBe(false); // both loops off
     expect(h.notifications).toContain('callout.whiteboard.session.sizeLimitExceeded');
-    // The disconnect dialog may be dismissed; the footer must preserve the same
-    // explicit fresh-generation recovery action.
-    expect(h.footerCanReconnect.value).toBe(true);
     // The explicit user restart mints a FRESH generation (remount) before reconnecting.
     act(() => h.onReconnect.value?.());
     expect(h.mountCount.value).toBeGreaterThan(mountsBefore);
   });
 
-  it('an inactivity restart replaces the live downgraded binding instead of reconnecting its open socket', () => {
-    h.collabState.collaborating = true;
-    h.collabState.mode = 'read';
-    h.collabState.modeReason = 'inactivity';
-    renderWrapper();
-    expect(h.initializeCount.value).toBe(1);
-
-    act(() => h.onReconnect.value?.());
-
-    expect(h.cleanupCount.value).toBe(1);
-    expect(h.initializeCount.value).toBe(2);
-    expect(h.reconnect).not.toHaveBeenCalled();
-  });
-
-  it('a disconnected transport retries the existing binding without replacing its scene generation', () => {
-    renderWrapper();
-    expect(h.initializeCount.value).toBe(1);
-
-    act(() => h.onReconnect.value?.());
-
-    expect(h.reconnect).toHaveBeenCalledTimes(1);
-    expect(h.cleanupCount.value).toBe(0);
-    expect(h.initializeCount.value).toBe(1);
-  });
-
   it('terminal edits-not-saved: data-loss copy, no reconnect (distinct from a deletion)', () => {
     renderWrapper();
     send({ code: 'edits-not-saved', scope: 'document', disposition: 'terminal' });
+    expect(lastActive()).toBe(false); // no auto-reconnect
     expect(h.editorInvalidatedCount.value).toBe(0);
     expect(h.notifications).toContain('callout.whiteboard.session.editsNotSaved');
     expect(h.notifications).not.toContain('callout.whiteboard.session.documentDeleted');
-    expect(h.footerCanReconnect.value).toBe(false);
   });
 
   it('terminal document-deleted: no reconnect, deletion copy', () => {
     renderWrapper();
     send({ code: 'document-deleted', scope: 'document', disposition: 'terminal' });
+    expect(lastActive()).toBe(false);
     expect(h.notifications).toContain('callout.whiteboard.session.documentDeleted');
   });
 

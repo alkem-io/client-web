@@ -52,6 +52,10 @@ vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
 }));
 vi.mock('@/domain/common/whiteboard/excalidraw/useWhiteboardDefaults', () => ({ default: () => ({}) }));
 
+vi.mock('@/domain/common/whiteboard/excalidraw/useAutoReconnect', () => ({
+  useAutoReconnect: () => ({ secondsRemaining: null }),
+}));
+
 // Capture the close callbacks the wrapper hands useCollab so a failed/transient close can be
 // simulated directly. Reports a not-collaborating state (the drop condition).
 vi.mock('@/domain/common/whiteboard/excalidraw/collab/useCollab', () => ({

@@ -9,8 +9,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
  * How long the modal may sit in a stuck state — the Reconnect button disabled (`!canReconnect`) or a
  * reconnect attempt busy (`reconnecting`) — before the "Reload page" escape hatch appears. On a
  * network switch `navigator.onLine` can stay stale for seconds to tens of seconds, during which
- * `canReconnect` is false, so the modal looks frozen with no user-actionable escape. This threshold
- * keeps the button off the fast, provider-owned self-healing reconnect path.
+ * `canReconnect` is false AND the auto-reconnect countdown is paused, so the modal looks frozen with
+ * no user-actionable escape. This threshold keeps the button off the fast, self-healing reconnect path.
  */
 const STUCK_RELOAD_THRESHOLD_MS = 6000;
 
@@ -27,7 +27,7 @@ type WhiteboardDisconnectedDialogProps = {
   canReconnect: boolean;
   /** A reconnect attempt is in flight → spinner + busy state. */
   reconnecting?: boolean;
-  /** Optional caller-supplied retry countdown; appended to Reconnect as "(Xs)" when > 0. */
+  /** Seconds until auto-reconnect; appended to the Reconnect label as "(Xs)" when > 0. */
   countdownSeconds?: number | null;
   onReconnect: () => void;
   /** Hide the reconnect action for a terminal unavailable/access verdict. */
@@ -46,9 +46,10 @@ type WhiteboardDisconnectedDialogProps = {
 /**
  * CRD "whiteboard disconnected / collaboration stopped" dialog — the CRD replacement for the MUI notice
  * in `CollaborativeExcalidrawWrapper`. Dismissal is handled by the CRD `Dialog` primitive (built-in
- * close X + outside-click / Escape), so there is no "Ok" button — only the Reconnect action and a
- * "Reload page" escape hatch that surfaces when the modal gets stuck. Feature text (title, message,
- * last-saved) arrives as props; the component owns only its action labels via `crd-whiteboard`.
+ * close X + outside-click / Escape), so there is no "Ok" button — only the Reconnect action, which keeps
+ * the live auto-reconnect countdown, and a "Reload page" escape hatch that surfaces when the modal gets
+ * stuck. Feature text (title, message, last-saved) arrives as props; the component owns only its action
+ * labels via `crd-whiteboard`.
  */
 export function WhiteboardDisconnectedDialog({
   open,
