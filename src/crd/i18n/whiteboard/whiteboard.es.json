@@ -39,10 +39,18 @@
       "title": "¿Descartar cambios no guardados?",
       "description": "Tienes cambios sin guardar que se perderán. ¿Seguro que quieres continuar?",
       "confirm": "Descartar",
-      "cancel": "Seguir editando"
+      "cancel": "Seguir editando",
+      "wait": "Mantener abierto y esperar",
+      "export": "Exportar primero"
     }
   },
   "footer": {
+    "saveStatus": {
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "offline": "Sin conexión — se sincronizará automáticamente",
+      "ended": "No disponible"
+    },
     "guestContributionsWarning": "Cualquiera con el enlace puede editar",
     "readonlyReason": {
       "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",

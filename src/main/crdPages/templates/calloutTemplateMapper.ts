@@ -212,6 +212,11 @@ export function calloutTemplateContentToFormValues(
       pollId: framing.poll?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
+      mediaGalleryId: framing.mediaGallery?.id,
+      originalMediaGalleryVisualIds: framing.mediaGallery?.visuals.map(v => v.id) ?? [],
+      originalMediaGallerySortOrders: Object.fromEntries(
+        framing.mediaGallery?.visuals.map(v => [v.id, v.sortOrder ?? 0]) ?? []
+      ),
       framingProfileId: framing.profile.id,
       originalReferenceIds: (framing.profile.references ?? []).map(r => r.id),
     },

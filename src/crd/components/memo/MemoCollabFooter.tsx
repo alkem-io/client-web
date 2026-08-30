@@ -23,11 +23,16 @@ export type ConnectedUser = {
   color: string;
 };
 
+export type MemoSaveStatus = 'saved' | 'saving' | 'offline';
+
 /** Cap visible avatars to keep the footer compact; overflow collapses to a "+N" badge. */
 const MAX_VISIBLE_AVATARS = 5;
 
 type MemoCollabFooterProps = {
   connectionStatus: CollabStatus;
+  saveStatus?: MemoSaveStatus;
+  statusLabel: string;
+  saveErrorLabel?: string;
   memberCount: number;
   connectedUsers?: ConnectedUser[];
   isGuest?: boolean;
@@ -44,6 +49,9 @@ const READONLY_REASON_DEBOUNCE_MS = 500;
 
 export function MemoCollabFooter({
   connectionStatus,
+  saveStatus,
+  statusLabel,
+  saveErrorLabel,
   memberCount,
   connectedUsers = [],
   isGuest,
@@ -67,14 +75,7 @@ export function MemoCollabFooter({
     return () => clearTimeout(timer);
   }, [readonlyReason]);
 
-  const statusLabel =
-    connectionStatus === 'connected'
-      ? t('memo.footer.connected')
-      : connectionStatus === 'connecting'
-        ? t('memo.footer.connecting')
-        : t('memo.footer.disconnected');
-
-  const StatusIcon = connectionStatus === 'connected' ? Wifi : WifiOff;
+  const StatusIcon = saveStatus !== 'offline' && connectionStatus === 'connected' ? Wifi : WifiOff;
 
   // The policy-locked message names the owner with a link to their profile (parity with the whiteboard
   // footer). When the owner is gone the mapper returns `contentUpdatePolicyNoOwner` instead, so the
@@ -154,6 +155,11 @@ export function MemoCollabFooter({
       </div>
 
       <div className="flex items-center gap-3">
+        {saveErrorLabel && (
+          <span role="alert" className="text-caption text-destructive">
+            {saveErrorLabel}
+          </span>
+        )}
         <div className="flex items-center gap-1 text-caption text-muted-foreground">
           <StatusIcon className="size-3.5" aria-hidden="true" />
           <span>{statusLabel}</span>

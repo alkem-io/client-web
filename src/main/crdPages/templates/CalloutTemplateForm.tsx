@@ -241,7 +241,7 @@ export function CalloutTemplateForm({
         spaceId={spaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
-        whiteboardDraft={editMode ? undefined : defaultWhiteboardDraft}
+        whiteboardDraft={defaultWhiteboardDraft}
         markdownUpload={{ onImageUpload, iframeAllowedUrls, onError }}
       />
     </div>

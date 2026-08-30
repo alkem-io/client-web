@@ -12,6 +12,15 @@ fragment TemplateProfileInfo on Template {
     }
     url
   }
+  whiteboard {
+    id
+    profile {
+      id
+      cardBanner: visual(type: CARD) {
+        ...VisualModel
+      }
+    }
+  }
   type
 }
 
@@ -55,9 +64,6 @@ fragment SpaceTemplate on Template {
 
 fragment WhiteboardTemplate on Template {
   ...TemplateProfileInfo
-  whiteboard {
-    id
-  }
 }
 
 fragment CommunityGuidelinesTemplate on Template {
