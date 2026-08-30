@@ -491,6 +491,9 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
   };
   if (contributionSettings) settings.contribution = contributionSettings;
 
+  const defaultWhiteboardDraftID =
+    values.responseType === 'whiteboard' ? values.contributionDefaults.whiteboardDraft?.whiteboardID : undefined;
+
   const contributionDefaultsInput: UpdateCalloutEntityInput['contributionDefaults'] | undefined = hasResponseType
     ? {
         defaultDisplayName: values.contributionDefaults.defaultDisplayName.trim() || undefined,
@@ -498,11 +501,17 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
           values.responseType === 'post' || values.responseType === 'memo'
             ? values.contributionDefaults.postDescription.trim() || undefined
             : undefined,
+        draftWhiteboardID: defaultWhiteboardDraftID,
         sourceWhiteboardID:
-          values.responseType === 'whiteboard' ? values.contributionDefaults.sourceWhiteboardId : undefined,
-        sourceCalloutID: values.responseType === 'whiteboard' ? values.contributionDefaults.sourceCalloutId : undefined,
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
+            ? values.contributionDefaults.sourceWhiteboardId
+            : undefined,
+        sourceCalloutID:
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
+            ? values.contributionDefaults.sourceCalloutId
+            : undefined,
         clearWhiteboardContent:
-          values.responseType === 'whiteboard'
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
             ? values.contributionDefaults.clearWhiteboardContent || undefined
             : undefined,
       }
