@@ -1,4 +1,9 @@
-import type { Collaborator, ExcalidrawImperativeAPI, SocketId } from '@excalidraw-yjs/excalidraw/types';
+import type {
+  Collaborator,
+  ExcalidrawImperativeAPI,
+  OnUserFollowedPayload,
+  SocketId,
+} from '@excalidraw-yjs/excalidraw/types';
 import type { Awareness } from 'y-protocols/awareness';
 
 /**
@@ -19,6 +24,12 @@ export type PointerPayload = {
   button: 'up' | 'down';
   pointersMap?: Map<number, { x: number; y: number }>;
 };
+
+type ViewportBounds = readonly [number, number, number, number];
+type ExcalidrawViewportUtils = Pick<
+  typeof import('@excalidraw-yjs/excalidraw'),
+  'getVisibleSceneBounds' | 'zoomToFitBounds'
+>;
 
 export type EmojiReactionPayload = {
   id: string;
@@ -48,9 +59,15 @@ export type AwarenessRouterDeps = {
   awareness: Awareness;
   api: Pick<
     ExcalidrawImperativeAPI,
-    'updateScene' | 'dispatchIncomingEmojiReaction' | 'dispatchIncomingCountdownTimer'
+    | 'updateScene'
+    | 'getAppState'
+    | 'onScrollChange'
+    | 'onUserFollow'
+    | 'dispatchIncomingEmojiReaction'
+    | 'dispatchIncomingCountdownTimer'
   >;
   ephemeral?: EphemeralChannel;
+  loadViewportUtils?: () => Promise<ExcalidrawViewportUtils>;
 };
 
 /**
@@ -62,6 +79,8 @@ export class AwarenessRouter {
   private readonly api: AwarenessRouterDeps['api'];
   private readonly ephemeral?: EphemeralChannel;
   private readonly cleanups: Array<() => void> = [];
+  private readonly excalidrawUtils: Promise<ExcalidrawViewportUtils>;
+  private destroyed = false;
 
   // Pointer presence is throttled to POINTER_THROTTLE_MS (~30fps), restoring the cursor
   // throttle the pre-native-Yjs Collab client applied (legacy parity) and keeping presence
@@ -71,13 +90,20 @@ export class AwarenessRouter {
   // move costs one frame, not two. (The dropped throttle also exposed a since-corrected
   // server-side all-frame disconnect; this client change does not depend on that cap.)
   private static readonly POINTER_THROTTLE_MS = 33;
+  private static readonly VIEWPORT_THROTTLE_MS = 100;
   private pointerTimer: ReturnType<typeof setTimeout> | null = null;
   private pendingPointer: PointerPayload | null = null;
+  private viewportTimer: ReturnType<typeof setTimeout> | null = null;
+  private viewportPending = false;
+  private lastPublishedBounds: ViewportBounds | null = null;
+  private followedViewportKey: string | null = null;
+  private suppressedViewportBounds: ViewportBounds | null = null;
 
   constructor(deps: AwarenessRouterDeps) {
     this.awareness = deps.awareness;
     this.api = deps.api;
     this.ephemeral = deps.ephemeral;
+    this.excalidrawUtils = (deps.loadViewportUtils ?? (() => import('@excalidraw-yjs/excalidraw')))();
 
     // Remote awareness → collaborator cursors (touches no elements). The
     // y-protocols 'change' event passes an origin; LOCAL-origin changes (our own
@@ -88,7 +114,7 @@ export class AwarenessRouter {
       if (origin === 'local') {
         return;
       }
-      this.applyRemoteAwareness();
+      void this.applyRemoteAwareness();
     };
     this.awareness.on('change', onChange);
     this.cleanups.push(() => this.awareness.off('change', onChange));
@@ -98,6 +124,10 @@ export class AwarenessRouter {
       const unsub = this.ephemeral.subscribe(event => this.dispatchIncoming(event));
       this.cleanups.push(unsub);
     }
+
+    this.cleanups.push(this.api.onUserFollow(payload => this.handleUserFollow(payload)));
+    this.cleanups.push(this.api.onScrollChange(() => this.scheduleViewportPublish()));
+    void this.publishViewport();
   }
 
   /**
@@ -138,6 +168,41 @@ export class AwarenessRouter {
     this.awareness.setLocalState({ ...current, pointer: payload.pointer, button: payload.button });
   }
 
+  private handleUserFollow(payload: OnUserFollowedPayload): void {
+    this.followedViewportKey = null;
+    this.awareness.setLocalStateField('following', payload.action === 'FOLLOW' ? payload.userToFollow.socketId : null);
+    if (payload.action === 'FOLLOW') void this.applyRemoteAwareness();
+  }
+
+  private scheduleViewportPublish(): void {
+    if (this.viewportTimer === null) {
+      void this.publishViewport();
+      this.viewportTimer = setTimeout(() => {
+        this.viewportTimer = null;
+        if (this.viewportPending) {
+          this.viewportPending = false;
+          this.scheduleViewportPublish();
+        }
+      }, AwarenessRouter.VIEWPORT_THROTTLE_MS);
+    } else {
+      this.viewportPending = true;
+    }
+  }
+
+  private async publishViewport(): Promise<void> {
+    const { getVisibleSceneBounds } = await this.excalidrawUtils;
+    if (this.destroyed) return;
+    const bounds = getVisibleSceneBounds(this.api.getAppState());
+    if (sameBounds(bounds, this.suppressedViewportBounds)) {
+      this.suppressedViewportBounds = null;
+      return;
+    }
+    this.suppressedViewportBounds = null;
+    if (sameBounds(bounds, this.lastPublishedBounds)) return;
+    this.lastPublishedBounds = bounds;
+    this.awareness.setLocalStateField('viewportBounds', bounds);
+  }
+
   /** Local user identity → awareness. */
   setUser(user: Record<string, unknown>): void {
     this.awareness.setLocalStateField('user', user);
@@ -168,14 +233,22 @@ export class AwarenessRouter {
   }
 
   /** Map remote awareness states → collaborators and apply via updateScene. */
-  private applyRemoteAwareness(): void {
+  private async applyRemoteAwareness(): Promise<void> {
+    const { getVisibleSceneBounds, zoomToFitBounds } = await this.excalidrawUtils;
+    if (this.destroyed) return;
     const collaborators = new Map<SocketId, Collaborator>();
     const states = this.awareness.getStates();
+    const ownSocketId = toSocketId(this.awareness.clientID);
+    const followedBy = new Set<SocketId>();
+    const appState = this.api.getAppState();
+    const followedSocketId = appState.userToFollow?.socketId;
+    let followedState: Record<string, unknown> | undefined;
     for (const [clientId, state] of states) {
       if (clientId === this.awareness.clientID) {
         continue; // skip self
       }
-      const socketId = String(clientId) as SocketId;
+      const socketId = toSocketId(clientId);
+      if (socketId === followedSocketId) followedState = state;
       collaborators.set(socketId, {
         pointer: state.pointer ?? undefined,
         button: state.button ?? undefined,
@@ -185,17 +258,56 @@ export class AwarenessRouter {
         id: state.user?.id ?? undefined,
         socketId,
       });
+      if (state.following === ownSocketId) followedBy.add(socketId);
     }
-    this.api.updateScene({ collaborators });
+
+    const targetDeparted = !!followedSocketId && !followedState;
+    if (targetDeparted) {
+      this.followedViewportKey = null;
+      this.awareness.setLocalStateField('following', null);
+    }
+
+    const targetBounds = asViewportBounds(followedState?.viewportBounds);
+    const targetKey = followedSocketId && targetBounds ? `${followedSocketId}:${targetBounds.join(',')}` : null;
+    let viewport: Pick<ReturnType<ExcalidrawImperativeAPI['getAppState']>, 'scrollX' | 'scrollY' | 'zoom'> | undefined;
+    if (targetBounds && targetKey !== this.followedViewportKey) {
+      if (this.destroyed) return;
+      if (this.api.getAppState().userToFollow?.socketId === followedSocketId) {
+        const fitted = zoomToFitBounds({
+          bounds: targetBounds,
+          appState: this.api.getAppState(),
+          fitToViewport: true,
+          viewportZoomFactor: 1,
+        }).appState;
+        viewport = { scrollX: fitted.scrollX, scrollY: fitted.scrollY, zoom: fitted.zoom };
+        this.followedViewportKey = targetKey;
+      }
+    }
+
+    const nextAppState = {
+      scrollX: viewport?.scrollX ?? appState.scrollX,
+      scrollY: viewport?.scrollY ?? appState.scrollY,
+      zoom: viewport?.zoom ?? appState.zoom,
+      userToFollow: targetDeparted ? null : appState.userToFollow,
+      followedBy,
+    };
+    if (viewport) this.suppressedViewportBounds = getVisibleSceneBounds({ ...appState, ...nextAppState });
+    this.api.updateScene({ collaborators, appState: nextAppState });
   }
 
   destroy(): void {
+    this.destroyed = true;
     // Cancel any pending trailing pointer flush so no presence frame lands after teardown.
     if (this.pointerTimer !== null) {
       clearTimeout(this.pointerTimer);
       this.pointerTimer = null;
     }
     this.pendingPointer = null;
+    if (this.viewportTimer !== null) {
+      clearTimeout(this.viewportTimer);
+      this.viewportTimer = null;
+    }
+    this.viewportPending = false;
     for (const cleanup of this.cleanups) {
       cleanup();
     }
@@ -210,3 +322,13 @@ export class AwarenessRouter {
     }
   }
 }
+
+const toSocketId = (clientId: number): SocketId => String(clientId) as SocketId;
+
+const sameBounds = (left: ViewportBounds, right: ViewportBounds | null): boolean =>
+  !!right && left.every((value, index) => value === right[index]);
+
+const asViewportBounds = (value: unknown): ViewportBounds | undefined =>
+  Array.isArray(value) && value.length === 4 && value.every(item => typeof item === 'number' && Number.isFinite(item))
+    ? (value as unknown as ViewportBounds)
+    : undefined;
