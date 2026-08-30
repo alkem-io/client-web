@@ -190,6 +190,10 @@ describe('AwarenessRouter follow mode', () => {
     await vi.runAllTimersAsync();
 
     expect(api.getAppState().followedBy).toEqual(new Set(['2']));
+    const lastScene = api.updateScene.mock.calls[api.updateScene.mock.calls.length - 1]?.[0];
+    expect(lastScene?.appState).not.toHaveProperty('scrollX');
+    expect(lastScene?.appState).not.toHaveProperty('scrollY');
+    expect(lastScene?.appState).not.toHaveProperty('zoom');
     router.destroy();
   });
 
@@ -207,7 +211,26 @@ describe('AwarenessRouter follow mode', () => {
     await vi.advanceTimersByTimeAsync(VIEWPORT_THROTTLE_MS);
 
     expect(viewportWrites()).toHaveLength(2);
-    expect(viewportWrites().at(-1)?.[1]).toEqual([30, 30, 130, 130]);
+    expect(viewportWrites()[viewportWrites().length - 1]?.[1]).toEqual([30, 30, 130, 130]);
+    router.destroy();
+  });
+
+  it('degrades viewport presence silently when the lazy editor utilities fail to load', async () => {
+    const aw = makeAwareness();
+    const api = makeApi();
+    const router = new AwarenessRouter({
+      awareness: aw as never,
+      api: api as never,
+      loadViewportUtils: () => Promise.reject(new Error('chunk unavailable')),
+    });
+
+    await Promise.resolve();
+    aw.emitRemoteChange();
+    api.scrollTo(10, 10);
+    await vi.runAllTimersAsync();
+
+    expect(api.updateScene).not.toHaveBeenCalled();
+    expect(aw.setLocalStateField).not.toHaveBeenCalledWith('viewportBounds', expect.anything());
     router.destroy();
   });
 

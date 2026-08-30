@@ -79,7 +79,7 @@ export class AwarenessRouter {
   private readonly api: AwarenessRouterDeps['api'];
   private readonly ephemeral?: EphemeralChannel;
   private readonly cleanups: Array<() => void> = [];
-  private readonly excalidrawUtils: Promise<ExcalidrawViewportUtils>;
+  private readonly excalidrawUtils: Promise<ExcalidrawViewportUtils | undefined>;
   private destroyed = false;
 
   // Pointer presence is throttled to POINTER_THROTTLE_MS (~30fps), restoring the cursor
@@ -103,7 +103,9 @@ export class AwarenessRouter {
     this.awareness = deps.awareness;
     this.api = deps.api;
     this.ephemeral = deps.ephemeral;
-    this.excalidrawUtils = (deps.loadViewportUtils ?? (() => import('@excalidraw-yjs/excalidraw')))();
+    this.excalidrawUtils = (deps.loadViewportUtils ?? (() => import('@excalidraw-yjs/excalidraw')))().catch(
+      () => undefined
+    );
 
     // Remote awareness → collaborator cursors (touches no elements). The
     // y-protocols 'change' event passes an origin; LOCAL-origin changes (our own
@@ -190,8 +192,9 @@ export class AwarenessRouter {
   }
 
   private async publishViewport(): Promise<void> {
-    const { getVisibleSceneBounds } = await this.excalidrawUtils;
-    if (this.destroyed) return;
+    const utils = await this.excalidrawUtils;
+    if (!utils || this.destroyed) return;
+    const { getVisibleSceneBounds } = utils;
     const bounds = getVisibleSceneBounds(this.api.getAppState());
     if (sameBounds(bounds, this.suppressedViewportBounds)) {
       this.suppressedViewportBounds = null;
@@ -234,8 +237,9 @@ export class AwarenessRouter {
 
   /** Map remote awareness states → collaborators and apply via updateScene. */
   private async applyRemoteAwareness(): Promise<void> {
-    const { getVisibleSceneBounds, zoomToFitBounds } = await this.excalidrawUtils;
-    if (this.destroyed) return;
+    const utils = await this.excalidrawUtils;
+    if (!utils || this.destroyed) return;
+    const { getVisibleSceneBounds, zoomToFitBounds } = utils;
     const collaborators = new Map<SocketId, Collaborator>();
     const states = this.awareness.getStates();
     const ownSocketId = toSocketId(this.awareness.clientID);
@@ -284,15 +288,17 @@ export class AwarenessRouter {
       }
     }
 
-    const nextAppState = {
-      scrollX: viewport?.scrollX ?? appState.scrollX,
-      scrollY: viewport?.scrollY ?? appState.scrollY,
-      zoom: viewport?.zoom ?? appState.zoom,
+    const presenceState = {
       userToFollow: targetDeparted ? null : appState.userToFollow,
       followedBy,
     };
-    if (viewport) this.suppressedViewportBounds = getVisibleSceneBounds({ ...appState, ...nextAppState });
-    this.api.updateScene({ collaborators, appState: nextAppState });
+    if (viewport) {
+      const nextAppState = { ...viewport, ...presenceState };
+      this.suppressedViewportBounds = getVisibleSceneBounds({ ...appState, ...nextAppState });
+      this.api.updateScene({ collaborators, appState: nextAppState });
+    } else {
+      this.api.updateScene({ collaborators, appState: presenceState });
+    }
   }
 
   destroy(): void {
