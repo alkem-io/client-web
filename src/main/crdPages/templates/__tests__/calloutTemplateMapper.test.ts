@@ -481,6 +481,28 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.collaboraDocumentType).toBe(CollaboraDocumentType.Presentation);
   });
 
+  it('captures the media gallery identity and original ordering for edit persistence', () => {
+    const v = calloutTemplateContentToFormValues(
+      baseFragment({
+        type: CalloutFramingType.MediaGallery,
+        mediaGallery: {
+          __typename: 'MediaGallery',
+          id: 'gallery-1',
+          visuals: [
+            { __typename: 'Visual', id: 'visual-2', uri: '/two', sortOrder: 2 },
+            { __typename: 'Visual', id: 'visual-1', uri: '/one', sortOrder: 1 },
+          ],
+        } as never,
+      })
+    );
+
+    expect(v.editMeta).toMatchObject({
+      mediaGalleryId: 'gallery-1',
+      originalMediaGalleryVisualIds: ['visual-2', 'visual-1'],
+      originalMediaGallerySortOrders: { 'visual-2': 2, 'visual-1': 1 },
+    });
+  });
+
   it('falls back to the "none" response type only when allowedTypes is empty', () => {
     const frag = baseFragment();
     frag.settings.contribution.allowedTypes = [];
