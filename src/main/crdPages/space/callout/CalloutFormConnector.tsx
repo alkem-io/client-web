@@ -1177,6 +1177,7 @@ function CalloutFormConnectorInner({
         open={defaultsOpen}
         onOpenChange={setDefaultsOpen}
         type={values.responseType}
+        spaceId={space.levelZeroSpaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
         whiteboardDraft={mode === 'create' ? defaultWhiteboardDraft : undefined}
