@@ -7,6 +7,7 @@ import { AuthorizationPrivilege, SpaceLevel } from '@/core/apollo/generated/grap
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useRegisterFullscreenEditor } from '@/core/ui/fullscreen/FullscreenEditorContext';
 import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
 import { Loading } from '@/crd/components/common/Loading';
 import { ShareButton } from '@/crd/components/common/ShareButton';
@@ -36,11 +37,20 @@ type CrdMemoDialogProps = {
   onDelete?: () => Promise<void> | void;
 };
 
+export const updateMemoMarkdownCache = (
+  editor: Pick<Editor, 'getHTML'> | null,
+  writeMarkdown: (markdown: string) => void
+): Promise<void> => {
+  if (!editor) return Promise.resolve();
+  return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
+};
+
 export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, onDelete }: CrdMemoDialogProps) {
   const { t } = useTranslation('crd-space');
   const { t: tCommon } = useTranslation('crd-common');
   useRegisterFullscreenEditor(open);
   const client = useApolloClient();
+  const notify = useNotification();
   const { memo, loading } = useMemoManager({ id: memoId });
   const editorRef = useRef<Editor | null>(null);
   const { isAuthenticated } = useAuthenticationContext();
@@ -54,18 +64,15 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const {
     ydoc,
     provider,
+    lifecycle,
+    lastSaveError,
     connectionStatus,
     synced,
     isReadOnly,
-    readOnlyCode,
-    sessionEndCode,
-    resumeEditing,
     memberCount,
     connectedUsers,
     user,
-  } = useCrdMemoProvider({
-    collaborationId: memoId,
-  });
+  } = useCrdMemoProvider({ collaborationId: memoId });
 
   // Memo images upload into the memo's own storage bucket (where collaborators have FileUpload),
   // not the ambient space bucket. Mirrors the legacy MUI `MemoDialog`, which passed the memo's
@@ -87,7 +94,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [displayNameDraft, setDisplayNameDraft] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [closeBlocked, setCloseBlocked] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const closeInFlight = useRef(false);
 
   const privileges = memo?.authorization?.myPrivileges ?? [];
   const hasUpdatePrivileges = privileges.includes(AuthorizationPrivilege.Update);
@@ -117,25 +126,48 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   // The collab room debounces its snapshot save by ~2s; fetching from the server immediately returns stale data.
   // Instead, we grab the HTML from Tiptap, convert to markdown, and write it to the normalized
   // cache entry. Connectors schedule a delayed server fetch as a safety net.
-  const handleClose = () => {
-    if (editorRef.current) {
-      const html = editorRef.current.getHTML();
-      // Fire-and-forget: write to cache as soon as conversion completes.
-      // The dialog unmounts on close so we can't rely on timeouts; this runs
-      // outside React lifecycle as a plain promise. Swallow failures — the
-      // connector's delayed server refetch is the safety net.
-      void htmlToMarkdown(html)
-        .then(markdown => {
-          client.cache.modify({
-            id: client.cache.identify({ __typename: 'Memo', id: memoId }),
-            fields: {
-              markdown: () => markdown,
-            },
-          });
-        })
-        .catch(() => {});
+  const currentMarkdown = () => htmlToMarkdown(editorRef.current?.getHTML() ?? '');
+  const finishClose = async () => {
+    try {
+      await updateMemoMarkdownCache(editorRef.current, markdown => {
+        client.cache.modify({
+          id: client.cache.identify({ __typename: 'Memo', id: memoId }),
+          fields: { markdown: () => markdown },
+        });
+      });
+    } catch {
+      // The connector's delayed refetch remains the cache fallback.
     }
     onClose();
+  };
+  const handleClose = async () => {
+    if (closeInFlight.current) return;
+    const unsaved = !!provider?.hasUnsavedChanges;
+    if (unsaved && !(lifecycle.kind === 'active' && lifecycle.access === 'write' && lifecycle.save !== 'offline')) {
+      setCloseBlocked(true);
+      return;
+    }
+    closeInFlight.current = true;
+    try {
+      if (unsaved) await provider?.requestDurability();
+      await finishClose();
+    } catch {
+      setCloseBlocked(true);
+    } finally {
+      closeInFlight.current = false;
+    }
+  };
+  const exportUnsavedMemo = async () => {
+    try {
+      const url = URL.createObjectURL(new Blob([await currentMarkdown()], { type: 'text/markdown' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${displayName || 'memo'}.md`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    } catch {
+      notify(t('memo.unsavedClose.exportFailed'), 'error');
+    }
   };
 
   // The footer Delete button opens the confirmation; the actual delete runs from the
@@ -157,35 +189,35 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
 
   const footerProps = mapMemoFooterProps({
     connectionStatus,
+    saveStatus: lifecycle.kind === 'active' ? lifecycle.save : undefined,
     synced,
     isAuthenticated,
     isReadOnly,
-    readOnlyCode,
-    sessionEndCode,
     memberCount,
     connectedUsers,
     isContribution,
     hasDeletePrivileges,
     onDelete: handleRequestDelete,
-    onResumeEditing: resumeEditing,
     contentUpdatePolicy: memo?.contentUpdatePolicy,
     hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,
   });
+  const footerStatusLabel = footerProps.saveStatus
+    ? t(`memo.footer.${footerProps.saveStatus}` as const)
+    : footerProps.connectionStatus === 'connected'
+      ? t('memo.footer.saved')
+      : footerProps.connectionStatus === 'connecting'
+        ? t('memo.footer.connecting')
+        : t('memo.footer.disconnected');
 
   // The connection-loading overlay below blocks interaction until the provider
   // is `connected` AND the initial sync packet has arrived. By the time the
   // overlay disappears, the editor is built with the final disabled state
   // (permission-driven only), so it does not need to rebuild mid-session.
-  const isConnectionReady = connectionStatus === 'connected' && synced;
+  // Once the document has synced, transient transport loss keeps the same local
+  // Y.Doc mounted and editable; the provider converges it on its next ordinary dial.
+  const isConnectionReady = synced;
   const editorDisabled = isReadOnly || !hasContributePrivileges;
-  const sessionEndMessage = sessionEndCode
-    ? t(
-        sessionEndCode === 'document-size-limit-exceeded'
-          ? 'memo.footer.readonlyReason.sizeLimitExceeded'
-          : 'memo.footer.readonlyReason.sessionEnded'
-      )
-    : undefined;
 
   const title = (
     <MemoDisplayName
@@ -227,6 +259,8 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         footer={
           <MemoCollabFooter
             {...footerProps}
+            statusLabel={footerStatusLabel}
+            saveErrorLabel={lastSaveError ? t('memo.footer.saveFailed') : undefined}
             owner={
               memo?.createdBy?.profile
                 ? { name: memo.createdBy.profile.displayName, url: memo.createdBy.profile.url }
@@ -249,11 +283,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
                 the editor's first render is its final render, with
                 `disabled` driven purely by permissions. Mirrors the MUI
                 memo dialog's "Connecting to collaboration service…" overlay. */}
-            {sessionEndMessage ? (
-              <div className="h-full flex items-center justify-center text-muted-foreground">
-                <p>{sessionEndMessage}</p>
-              </div>
-            ) : isConnectionReady ? (
+            {isConnectionReady ? (
               <CollaborativeMarkdownEditor
                 ydoc={ydoc as unknown as YDocLike}
                 provider={provider as unknown as CollabProviderLike}
@@ -284,6 +314,19 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
           loading={isDeleting}
         />
       )}
+      <ConfirmationDialog
+        open={closeBlocked}
+        onOpenChange={setCloseBlocked}
+        variant="discard"
+        title={t('memo.unsavedClose.title')}
+        description={t('memo.unsavedClose.description')}
+        saveLabel={t('memo.unsavedClose.wait')}
+        discardLabel={t('memo.unsavedClose.discard')}
+        cancelLabel={t('memo.unsavedClose.export')}
+        onSave={() => setCloseBlocked(false)}
+        onDiscard={onClose}
+        onCancel={() => void exportUnsavedMemo()}
+      />
     </>
   );
 }

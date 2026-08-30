@@ -1,5 +1,5 @@
 import type { ExportedDataState } from '@excalidraw-yjs/excalidraw/data/types';
-import type { AssetPublishReport, ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
 import { Formik } from 'formik';
 import type { FormikProps } from 'formik/dist/types';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
@@ -23,10 +23,10 @@ import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog'
 import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog';
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
 import { WhiteboardCollabFooter } from '@/crd/components/whiteboard/WhiteboardCollabFooter';
-import { WhiteboardDisconnectedDialog } from '@/crd/components/whiteboard/WhiteboardDisconnectedDialog';
 import { WhiteboardDisplayName } from '@/crd/components/whiteboard/WhiteboardDisplayName';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
+import type { CollaborationState } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { loadWhiteboardSceneFromCollaboration } from '@/domain/collaboration/whiteboard/utils/loadWhiteboardSceneFromCollaboration';
 import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema, {
@@ -46,10 +46,11 @@ import type {
 } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
 import { WhiteboardPreviewVisualDimensions } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardVisualsDimensions';
 import { useWhiteboardAssetAdapter } from '@/domain/common/whiteboard/excalidraw/assetAdapter/useWhiteboardAssetAdapter';
-import CollaborativeExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
-import type { CollabAPI, CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
+import CollaborativeExcalidrawWrapper, {
+  type CollabAPI,
+} from '@/domain/common/whiteboard/excalidraw/CollaborativeExcalidrawWrapper';
+import { CollaboratorModeReasons } from '@/domain/common/whiteboard/excalidraw/collab/excalidrawAppConstants';
 import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
-import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
@@ -115,7 +116,7 @@ interface CrdWhiteboardDialogProps {
     show: boolean;
     canEdit?: boolean;
     canDelete?: boolean;
-    headerActions?: (state: CollabState) => ReactNode;
+    headerActions?: (state: CollaborationState) => ReactNode;
     dialogTitle: ReactNode;
     fullscreen?: boolean;
     allowFilesAttached?: boolean;
@@ -134,75 +135,38 @@ interface CrdWhiteboardDialogProps {
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
 type CollaborativeCloseParams = {
-  /** The live editor API, or `null` when the editor is already gone / unmounted. */
-  excalidrawAPI: Pick<ExcalidrawImperativeAPI, 'flushAssetPublication'> | null;
-  /** Finish the one editor-owned import before freezing and persisting the scene. */
-  waitForPendingImport?: () => Promise<void>;
-  /** Best-effort preview/profile update after collaborative content is durable. */
-  save: () => Promise<unknown>;
-  /** Report that one or more images failed to publish (a non-empty `failed`). */
-  onPublishFailed: (report: AssetPublishReport) => void;
-  /** Persist every update sent before this request. */
+  /** Persist preview + display name; content persists through the provider below. */
+  save: () => Promise<boolean | undefined>;
+  /** Join the provider's one save owner. It publishes assets before its barrier. */
   requestDurability?: () => Promise<void>;
-  /** Refuse to close when a draft has no live durability barrier. */
   requireDurability?: boolean;
   onDurabilityFailed?: () => void;
-  /** Tear the collaborative session down: evict the cache + run the parent cancel, which unmounts the provider. */
   teardown: () => void;
-  /**
-   * Whether the editor generation captured at close-start was DISCARDED while the flush was
-   * awaited (a server update-rejected, e.g. triggered BY the flush's locator write, remounted
-   * the editor). Checked AFTER the flush, BEFORE the save: if it changed, the captured api and
-   * its scene are dead and stale relative to the recovery's server-canonical resync, so the
-   * save is aborted rather than clobbering the recovered state.
-   */
-  hasEditorChanged?: () => boolean;
 };
 
-/**
- * Gate the collaborative whiteboard close on asset publication.
- *
- * The collaborative session persists through the Yjs provider, so any image the
- * local user just added must have its opaque locator committed to the shared doc
- * BEFORE the provider / socket is torn down. `flushAssetPublication()` publishes the
- * pending stores and reports the outcome; a non-empty `failed` means an image did
- * NOT persist — the saved content would reference bytes no peer can resolve — so we
- * must NOT report a clean close. We surface the failure and leave the session up
- * instead of tearing it down.
- *
- * Order is load-bearing: the flush is awaited FIRST and the teardown runs ONLY on a
- * clean report. If the editor is already gone there is nothing to flush.
- *
- * @returns `true` when the close proceeded (saved + torn down), `false` when a failed
- *          publish blocked it.
- */
+export const acceptWhiteboardCloseIntent = ({
+  hasUnsaved,
+  canPersist,
+  abortImport,
+}: {
+  hasUnsaved: boolean;
+  canPersist: boolean;
+  abortImport: () => void;
+}) => {
+  if (hasUnsaved && !canPersist) return false;
+  abortImport();
+  return true;
+};
+
+/** Close only after metadata and the provider's continuous save owner settle. */
 export async function closeCollaborativeWhiteboard({
-  excalidrawAPI,
-  waitForPendingImport,
   save,
-  onPublishFailed,
   requestDurability,
   requireDurability,
   onDurabilityFailed,
   teardown,
-  hasEditorChanged,
 }: CollaborativeCloseParams): Promise<boolean> {
-  await waitForPendingImport?.();
-  if (hasEditorChanged?.()) return false;
-  if (excalidrawAPI) {
-    const report = await excalidrawAPI.flushAssetPublication();
-    if (report.failed.length > 0) {
-      onPublishFailed(report);
-      return false;
-    }
-  }
-  // A recovery (update-rejected) that fired DURING the flush replaced the editor: the
-  // captured api is dead and its scene is stale versus the recovery's server-canonical
-  // resync. Abort BEFORE the save — never read/persist the dead api, and leave the
-  // (recovered) session up rather than tearing it down on this stale intent.
-  if (hasEditorChanged?.()) {
-    return false;
-  }
+  if ((await save()) === false) return false;
   if (!requestDurability && requireDurability) {
     onDurabilityFailed?.();
     return false;
@@ -215,8 +179,6 @@ export async function closeCollaborativeWhiteboard({
       return false;
     }
   }
-  if (hasEditorChanged?.()) return false;
-  await save();
   teardown();
   return true;
 }
@@ -245,14 +207,11 @@ const CrdWhiteboardDialog = ({
   const spaceAboutProfile = spaceLevel === SpaceLevel.L0 ? space.about.profile : subspace.about.profile;
 
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI | null>(null);
-  // Monotonic editor-generation counter, bumped each time the wrapper discards the editor
-  // (server update-rejected). A close-in-flight compares this to detect a recovery that
-  // replaced the editor mid-flush and abort the save (see `hasEditorChanged`).
-  const editorGenerationRef = useRef(0);
+  const editorLeaseRef = useRef<{ api: ExcalidrawImperativeAPI; whiteboardId: string } | null>(null);
   const importInFlightRef = useRef<Promise<void> | null>(null);
   const importAbortRef = useRef<AbortController | null>(null);
   const closeInFlightRef = useRef(false);
-  const [closing, setClosing] = useState(false);
+  const [closeBlocked, setCloseBlocked] = useState(false);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
 
@@ -295,13 +254,14 @@ const CrdWhiteboardDialog = ({
   const { updateWhiteboardPreviewSettings } = useUpdateWhiteboardPreviewSettings({ whiteboard, excalidrawAPI });
 
   const prepareWhiteboardForUpdate = async (wb: WhiteboardDetails, excState: RelevantExcalidrawState | undefined) => {
-    if (!excState || !wb?.profile?.id) {
+    if (!excState || !wb?.profile?.id || !formikRef.current?.isValid) {
       return { success: false as const };
     }
     const previewImages = await generateWhiteboardVisuals(wb);
+    const displayName = formikRef.current?.values.profile.displayName ?? wb.profile.displayName;
     return {
       success: true as const,
-      whiteboard: wb,
+      whiteboard: { ...wb, profile: { ...wb.profile, displayName } },
       previewImages,
     };
   };
@@ -309,56 +269,60 @@ const CrdWhiteboardDialog = ({
   const onClose = async () => {
     if (closeInFlightRef.current) return;
     closeInFlightRef.current = true;
-    setClosing(true);
     const collabApi = collabApiRef.current;
-    const shouldSave = !!(editModeEnabled && collabApi?.isCollaborating() && whiteboard);
-    // Snapshot the editor generation now; if a recovery (update-rejected) discards it while
-    // the flush is awaited, the captured api is dead and the save must abort.
-    const generationAtClose = editorGenerationRef.current;
-    let closed = false;
+    const lifecycle = collabApi?.getState();
+    const hasUnsaved = !!collabApi?.hasUnsavedChanges();
+    const canPersist = !!(lifecycle?.kind === 'active' && lifecycle.access === 'write' && lifecycle.save !== 'offline');
+    if (
+      !acceptWhiteboardCloseIntent({
+        hasUnsaved,
+        canPersist,
+        abortImport: () => importAbortRef.current?.abort(),
+      })
+    ) {
+      setCloseBlocked(true);
+      closeInFlightRef.current = false;
+      return;
+    }
+    const shouldSave = !!(
+      editModeEnabled &&
+      lifecycle?.kind === 'active' &&
+      lifecycle.access === 'write' &&
+      whiteboard
+    );
     try {
-      closed = await closeCollaborativeWhiteboard({
-        excalidrawAPI,
-        waitForPendingImport: () => importInFlightRef.current ?? Promise.resolve(),
-        hasEditorChanged: () => editorGenerationRef.current !== generationAtClose,
+      await closeCollaborativeWhiteboard({
         requestDurability: shouldSave && collabApi ? () => collabApi.requestDurability() : undefined,
         requireDurability: options.requireDurableClose,
         save: async () => {
           if (!shouldSave || !whiteboard) return true;
-          try {
-            const excState = excalidrawAPI
-              ? {
-                  elements: excalidrawAPI.getSceneElements(),
-                  appState: excalidrawAPI.getAppState(),
-                  files: excalidrawAPI.getFiles(),
-                }
-              : undefined;
-            const result = await prepareWhiteboardForUpdate(whiteboard, excState);
-            if (result.success) {
-              const update = await actions.onUpdate(result.whiteboard, result.previewImages);
-              if (!update.success) {
-                notify(t('callout.whiteboard.saveFailed'), 'error');
+          const excState = excalidrawAPI
+            ? {
+                elements: excalidrawAPI.getSceneElements(),
+                appState: excalidrawAPI.getAppState(),
+                files: excalidrawAPI.getFiles(),
               }
-            } else {
-              logError(new Error('Error preparing whiteboard preview on close'), {
-                category: TagCategoryValues.WHITEBOARD,
-              });
+            : undefined;
+          const result = await prepareWhiteboardForUpdate(whiteboard, excState);
+          if (result.success) {
+            const update = await actions.onUpdate(result.whiteboard, result.previewImages);
+            if (!update.success) {
               notify(t('callout.whiteboard.saveFailed'), 'error');
+              return false;
             }
-          } catch {
-            // Apollo errors may include serialized variables. Never send those
-            // values to browser telemetry.
-            logError(new Error('Whiteboard preview update failed'), {
+            return true;
+          } else {
+            logError(new Error('Error preparing whiteboard for update on close'), {
               category: TagCategoryValues.WHITEBOARD,
             });
             notify(t('callout.whiteboard.saveFailed'), 'error');
+            return false;
           }
-          // Preview/profile metadata is best-effort. The Yjs durability barrier
-          // above is the content-safety boundary and must not be coupled to it.
-          return true;
         },
-        onPublishFailed: () => notify(t('callout.whiteboard.images.uploadFailed'), 'error'),
-        onDurabilityFailed: () => notify(t('callout.whiteboard.saveFailed'), 'error'),
+        onDurabilityFailed: () => {
+          setCloseBlocked(true);
+          notify(t('callout.whiteboard.saveFailed'), 'error');
+        },
         teardown: () => {
           evictFromCache(whiteboard?.id, 'Whiteboard');
           actions.onCancel();
@@ -366,25 +330,54 @@ const CrdWhiteboardDialog = ({
       });
     } finally {
       closeInFlightRef.current = false;
-      if (!closed) setClosing(false);
+    }
+  };
+
+  const exportUnsavedWhiteboard = async () => {
+    if (!excalidrawAPI || !whiteboard) return;
+    try {
+      const { serializeAsJSON } = await import('@excalidraw-yjs/excalidraw');
+      const json = serializeAsJSON(
+        excalidrawAPI.getSceneElements(),
+        excalidrawAPI.getAppState(),
+        excalidrawAPI.getFiles(),
+        'local'
+      );
+      const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${whiteboard.profile.displayName || 'whiteboard'}.excalidraw`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    } catch {
+      notify(t('callout.whiteboard.saveFailed'), 'error');
     }
   };
 
   const handleImportTemplate = (sourceWhiteboardId: string): Promise<void> => {
-    if (closing || !excalidrawAPI) return Promise.resolve();
+    const targetLease = editorLeaseRef.current;
+    const whiteboardId = whiteboard?.id;
+    if (
+      !excalidrawAPI ||
+      !targetLease ||
+      targetLease.api !== excalidrawAPI ||
+      targetLease.whiteboardId !== whiteboardId
+    ) {
+      return Promise.resolve();
+    }
     if (importInFlightRef.current) return importInFlightRef.current;
 
     const controller = new AbortController();
-    const generationAtImport = editorGenerationRef.current;
     importAbortRef.current = controller;
     const operation = (async () => {
       try {
         const templateScene = await loadWhiteboardSceneFromCollaboration(sourceWhiteboardId, {
           signal: controller.signal,
         });
-        const cancelled = () => controller.signal.aborted || editorGenerationRef.current !== generationAtImport;
-        if (cancelled()) return;
-        await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter, cancelled);
+        await mergeWhiteboard(excalidrawAPI, templateScene, assetAdapter, {
+          signal: controller.signal,
+          targetLeaseValid: () => editorLeaseRef.current === targetLease && !closeInFlightRef.current,
+        });
       } catch (err) {
         if (controller.signal.aborted) return;
         notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
@@ -461,14 +454,17 @@ const CrdWhiteboardDialog = ({
         collabApiRef={collabApiRef}
         options={{
           UIOptions: { canvasActions: { export: { saveFileToDisk: true } } },
-          viewModeEnabled: closing,
         }}
         actions={{
-          onInitApi: setExcalidrawAPI,
-          onEditorInvalidated: () => {
-            editorGenerationRef.current += 1;
-            importAbortRef.current?.abort();
-            setExcalidrawAPI(null);
+          onInitApi: (api, whiteboardId) => {
+            if (api) {
+              editorLeaseRef.current = { api, whiteboardId };
+              setExcalidrawAPI(api);
+            } else if (editorLeaseRef.current?.whiteboardId === whiteboardId) {
+              editorLeaseRef.current = null;
+              setExcalidrawAPI(null);
+              importAbortRef.current?.abort();
+            }
           },
           onRemoteSave: (error?: string) => {
             if (error) {
@@ -485,75 +481,22 @@ const CrdWhiteboardDialog = ({
             if (!initialized) importAbortRef.current?.abort();
           },
         }}
-        renderDisconnectNotice={({
-          open,
-          isOnline,
-          connecting,
-          hasError,
-          terminalCloseReason,
-          autoReconnectSeconds,
-          lastSuccessfulSavedDate: lastSaved,
-          onReconnect,
-          onClose: onCloseNotice,
-        }) => {
-          const isManualRecovery = terminalCloseReason === 'document-size-limit-exceeded';
-          const isTerminalUnavailable = terminalCloseReason !== null && !isManualRecovery;
-
-          return (
-            <WhiteboardDisconnectedDialog
-              open={open}
-              onClose={onCloseNotice}
-              title={t(
-                isTerminalUnavailable
-                  ? 'pages.whiteboard.whiteboardDisconnected.unavailableTitle'
-                  : 'pages.whiteboard.whiteboardDisconnected.title'
-              )}
-              message={t(
-                isTerminalUnavailable
-                  ? 'pages.whiteboard.whiteboardDisconnected.unavailableMessage'
-                  : isOnline
-                    ? 'pages.whiteboard.whiteboardDisconnected.message'
-                    : 'pages.whiteboard.whiteboardDisconnected.offline'
-              )}
-              lastSavedText={
-                lastSaved
-                  ? t('pages.whiteboard.whiteboardDisconnected.lastSaved', {
-                      lastSaved: formatTimeElapsed(lastSaved, t, 'long'),
-                    })
-                  : undefined
-              }
-              canReconnect={!isTerminalUnavailable && isOnline}
-              showReconnect={!isTerminalUnavailable}
-              reconnecting={connecting}
-              countdownSeconds={autoReconnectSeconds}
-              onReconnect={onReconnect}
-              // Surface the reload escape hatch immediately once a reconnect attempt has failed.
-              hasError={hasError}
-              // Guaranteed escape hatch: a full page reload, independent of `isOnline` / reconnect state.
-              // Needed because on a network switch `navigator.onLine` can stay stale for seconds to tens
-              // of seconds, disabling Reconnect while the browser is genuinely offline (story #10131).
-              onReloadPage={isTerminalUnavailable ? undefined : () => window.location.reload()}
-            />
-          );
-        }}
       >
-        {({
-          children,
-          mode,
-          modeReason,
-          collaborating,
-          connecting,
-          restartCollaboration,
-          canReconnect,
-          isReadOnly,
-        }) => {
+        {({ children, lifecycle, readOnlyReason }) => {
+          const active = lifecycle.kind === 'active';
+          const mode = active ? lifecycle.access : null;
+          const modeReason =
+            readOnlyReason === 'roomCapacityReached'
+              ? CollaboratorModeReasons.ROOM_CAPACITY_REACHED
+              : readOnlyReason === 'multiUserNotAllowed'
+                ? CollaboratorModeReasons.MULTI_USER_NOT_ALLOWED
+                : null;
           const { readonlyReason, ...footerProps } = mapWhiteboardFooterProps({
             myPrivileges: whiteboard.authorization?.myPrivileges,
             canEdit: !!options.canEdit,
             preventWhiteboardDeletion: !options.canDelete,
             collaboratorMode: mode,
             collaboratorModeReason: modeReason,
-            canReconnect,
             guestContributionsAllowed: whiteboard.guestContributionsAllowed,
             isAuthenticated,
             contentUpdatePolicy: whiteboard.contentUpdatePolicy,
@@ -594,7 +537,6 @@ const CrdWhiteboardDialog = ({
                   />
                 ),
                 learnwhy: (
-                  // biome-ignore lint/a11y/useButtonType: type is fixed below
                   <button
                     type="button"
                     onClick={() => {
@@ -627,22 +569,12 @@ const CrdWhiteboardDialog = ({
                       displayName={whiteboard.profile.displayName}
                       value={values.profile.displayName}
                       onChange={name => setFieldValue('profile.displayName', name)}
-                      readOnly={options.readOnlyDisplayName || closing}
+                      readOnly={options.readOnlyDisplayName}
                       editing={isEditingName}
                       onEdit={() => setIsEditingName(true)}
                       onSave={async () => {
-                        try {
-                          await actions.onChangeDisplayName(whiteboard.id, values.profile.displayName);
-                          setIsEditingName(false);
-                        } catch {
-                          // Keep GraphQL variable values out of telemetry here too.
-                          logError(new Error('Whiteboard rename failed'), {
-                            category: TagCategoryValues.WHITEBOARD,
-                          });
-                          notify(t('callout.whiteboard.saveFailed'), 'error');
-                          setFieldValue('profile.displayName', whiteboard.profile.displayName);
-                          setIsEditingName(false);
-                        }
+                        await actions.onChangeDisplayName(whiteboard.id, values.profile.displayName);
+                        setIsEditingName(false);
                       }}
                       onCancel={() => {
                         setFieldValue('profile.displayName', whiteboard.profile.displayName);
@@ -652,20 +584,19 @@ const CrdWhiteboardDialog = ({
                   }
                   titleExtra={
                     editModeEnabled && mode === 'write' ? (
-                      <WhiteboardTemplatePickerButton
-                        disabled={!isSceneInitialized || closing}
-                        onImport={handleImportTemplate}
-                      />
+                      <WhiteboardTemplatePickerButton disabled={!isSceneInitialized} onImport={handleImportTemplate} />
                     ) : undefined
                   }
-                  headerActions={options.headerActions?.({ mode, modeReason, collaborating, connecting, isReadOnly })}
+                  headerActions={options.headerActions?.(lifecycle)}
                   rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
                   footer={
                     <WhiteboardCollabFooter
                       {...footerProps}
+                      saveStatus={
+                        lifecycle.kind === 'active' ? lifecycle.save : lifecycle.kind === 'ended' ? 'ended' : undefined
+                      }
                       readonlyMessage={readonlyMessage}
                       onDelete={() => setDeleteDialogOpen(true)}
-                      onRestart={restartCollaboration}
                       guestAccessBadge={undefined}
                     />
                   }
@@ -677,6 +608,23 @@ const CrdWhiteboardDialog = ({
           );
         }}
       </CollaborativeExcalidrawWrapper>
+
+      <ConfirmationDialog
+        open={closeBlocked}
+        onOpenChange={setCloseBlocked}
+        variant="discard"
+        title={tWb('editor.unsavedChanges.title')}
+        description={tWb('editor.unsavedChanges.description')}
+        saveLabel={tWb('editor.unsavedChanges.wait')}
+        discardLabel={tWb('editor.unsavedChanges.confirm')}
+        cancelLabel={tWb('editor.unsavedChanges.export')}
+        onSave={() => setCloseBlocked(false)}
+        onDiscard={() => {
+          evictFromCache(whiteboard.id, 'Whiteboard');
+          actions.onCancel();
+        }}
+        onCancel={() => void exportUnsavedWhiteboard()}
+      />
 
       <ConfirmationDialog
         open={deleteDialogOpen}

@@ -11,6 +11,8 @@ import CollaborativeExcalidrawWrapper from './CollaborativeExcalidrawWrapper';
  */
 const h = vi.hoisted(() => ({
   capturedUsername: { value: undefined as string | undefined },
+  providerConstructions: { value: 0 },
+  userName: { value: 'Alice Brown' },
   guestIdentity: {
     value: { isPublicRoute: false, guestName: undefined } as { isPublicRoute: boolean; guestName: string | undefined },
   },
@@ -19,20 +21,54 @@ const h = vi.hoisted(() => ({
 vi.mock('@/domain/collaboration/whiteboard/guestAccess/utils/resolveWhiteboardGuestIdentity', () => ({
   resolveWhiteboardGuestIdentity: () => h.guestIdentity.value,
 }));
-vi.mock('./collab/useCollab', () => ({
-  default: (opts: { username: string }) => {
-    h.capturedUsername.value = opts.username;
-    return [
-      null,
-      () => () => {},
-      { connecting: false, collaborating: false, mode: null, modeReason: null, isReadOnly: false },
-    ];
+vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', () => ({
+  UnifiedCollabProvider: class {
+    state = { kind: 'loading' };
+    readOnlyReason = undefined;
+    hasUnsavedChanges = false;
+    awareness = {};
+    ephemeralChannel = {};
+    constructor() {
+      h.providerConstructions.value += 1;
+    }
+    subscribe(listener: (state: { kind: string }) => void) {
+      listener(this.state);
+      return () => {};
+    }
+    onSaveResult() {
+      return () => {};
+    }
+    connect() {}
+    destroy() {}
+    requestDurability() {
+      return Promise.resolve();
+    }
   },
 }));
-vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
-  useCurrentUserContext: () => ({ userModel: { profile: { displayName: 'Alice Brown' } } }),
+vi.mock('./collab/whiteboardEditorBinding', () => ({
+  bindWhiteboardEditor: () => ({
+    setUser: (username: string) => {
+      h.capturedUsername.value = username;
+    },
+    fitScene: vi.fn(),
+    destroy: vi.fn(),
+    onPointerUpdate: vi.fn(),
+    broadcastEmojiReaction: vi.fn(),
+    broadcastCountdownTimer: vi.fn(),
+  }),
 }));
-vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', () => ({ lazyWithGlobalErrorHandler: () => () => null }));
+vi.mock('@/domain/community/userCurrent/useCurrentUserContext', () => ({
+  useCurrentUserContext: () => ({ userModel: { profile: { displayName: h.userName.value } } }),
+}));
+vi.mock('@/core/lazyLoading/lazyWithGlobalErrorHandler', async () => {
+  const React = await import('react');
+  return {
+    lazyWithGlobalErrorHandler: () => (props: { onExcalidrawAPI?: (api: unknown) => void }) => {
+      React.useEffect(() => props.onExcalidrawAPI?.({}), []);
+      return null;
+    },
+  };
+});
 vi.mock('./useWhiteboardDefaults', () => ({ default: () => ({}) }));
 vi.mock('@/core/utils/onlineStatus', () => ({ default: () => true }));
 vi.mock('@/core/ui/notifications/useNotification', () => ({ useNotification: () => vi.fn() }));
@@ -47,7 +83,6 @@ const renderWrapper = () =>
       entities={{ whiteboard: { id: 'wb-1' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
       options={{}}
       actions={{}}
-      renderDisconnectNotice={() => null}
     >
       {({ children }) => <>{children}</>}
     </CollaborativeExcalidrawWrapper>
@@ -56,6 +91,8 @@ const renderWrapper = () =>
 describe('CollaborativeExcalidrawWrapper — awareness guest identity', () => {
   beforeEach(() => {
     h.capturedUsername.value = undefined;
+    h.providerConstructions.value = 0;
+    h.userName.value = 'Alice Brown';
     h.guestIdentity.value = { isPublicRoute: false, guestName: undefined };
   });
   afterEach(() => vi.clearAllMocks());
@@ -78,5 +115,22 @@ describe('CollaborativeExcalidrawWrapper — awareness guest identity', () => {
     h.guestIdentity.value = { isPublicRoute: false, guestName: undefined };
     renderWrapper();
     expect(h.capturedUsername.value).toBe('Alice Brown');
+  });
+
+  it('updates a late profile name without replacing the document provider', () => {
+    const view = renderWrapper();
+    expect(h.providerConstructions.value).toBe(1);
+    h.userName.value = 'Alice Cooper';
+    view.rerender(
+      <CollaborativeExcalidrawWrapper
+        entities={{ whiteboard: { id: 'wb-1' }, assetAdapter: {} as never, lastSuccessfulSavedDate: undefined }}
+        options={{}}
+        actions={{}}
+      >
+        {({ children }) => <>{children}</>}
+      </CollaborativeExcalidrawWrapper>
+    );
+    expect(h.providerConstructions.value).toBe(1);
+    expect(h.capturedUsername.value).toBe('Alice Cooper');
   });
 });

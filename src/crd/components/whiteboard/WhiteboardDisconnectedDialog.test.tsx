@@ -36,7 +36,7 @@ describe('WhiteboardDisconnectedDialog — Reload page escape hatch (story #1013
 
   test('shows the Reload page button once the modal stays stuck (offline) past the timeout', () => {
     render(<WhiteboardDisconnectedDialog {...baseProps} canReconnect={false} />);
-    // Stale navigator.onLine window: Reconnect disabled → stuck.
+    // Stale navigator.onLine window: Reconnect disabled and countdown paused → stuck.
     expect(screen.queryByText(RELOAD_LABEL)).toBeNull();
     act(() => {
       vi.advanceTimersByTime(6000);

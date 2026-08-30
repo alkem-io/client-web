@@ -48,8 +48,8 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
       const states = provider.awareness?.getStates();
       if (!states) return { count: 0, users: [] as ConnectedUser[] };
       const users: ConnectedUser[] = [];
-      // `user` is written into awareness by Tiptap's CollaborationCaret extension
-      // (see src/core/ui/forms/CollaborativeMarkdownInput/hooks/useCollaboration.ts).
+      // `user` is written into awareness by the collaborative markdown editor's
+      // CollaborationCaret extension.
       // Clients that have not yet announced a user are counted but not rendered.
       states.forEach((state, clientId) => {
         const user = (state as { user?: { id?: string; name?: string; color?: string } } | undefined)?.user;
@@ -110,12 +110,12 @@ export function useCrdMemoProvider({ collaborationId }: UseCrdMemoProviderProps)
   return {
     ydoc: collab.ydoc,
     provider: collab.provider,
+    lifecycle: collab.lifecycle,
+    lastSaveError: collab.lastSaveError,
     connectionStatus,
     synced: collab.synced,
     isReadOnly: collab.isReadOnly ?? false,
     readOnlyCode: collab.readOnlyCode,
-    sessionEndCode: collab.sessionEndCode,
-    resumeEditing: collab.resumeEditing,
     memberCount,
     connectedUsers,
     user: { id: userId, name: userName, color: cursorColor },

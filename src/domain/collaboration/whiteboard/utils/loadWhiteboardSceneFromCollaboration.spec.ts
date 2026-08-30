@@ -23,10 +23,9 @@ const h = vi.hoisted(() => {
     destroy = scene.destroy;
   }
 
-  type Listener = (...args: never[]) => void;
   class MockProvider {
     static instance: MockProvider;
-    listeners = new Map<string, Listener>();
+    listener?: (state: unknown) => void;
     options: unknown;
     connect = vi.fn();
     destroy = vi.fn();
@@ -36,16 +35,14 @@ const h = vi.hoisted(() => {
       MockProvider.instance = this;
     }
 
-    on(event: string, listener: Listener) {
-      this.listeners.set(event, listener);
+    subscribe(listener: (state: unknown) => void) {
+      this.listener = listener;
+      listener({ kind: 'loading' });
+      return vi.fn();
     }
 
-    off(event: string) {
-      this.listeners.delete(event);
-    }
-
-    emit(event: string, value: unknown) {
-      this.listeners.get(event)?.(value as never);
+    emit(state: unknown) {
+      this.listener?.(state);
     }
   }
 
@@ -75,7 +72,7 @@ describe('loadWhiteboardSceneFromCollaboration', () => {
     });
     expect(provider.connect).toHaveBeenCalledTimes(1);
 
-    provider.emit('synced', true);
+    provider.emit({ kind: 'active', access: 'read', save: 'saved' });
 
     await expect(result).resolves.toEqual({
       elements: [{ id: 'template-element' }],
@@ -90,7 +87,7 @@ describe('loadWhiteboardSceneFromCollaboration', () => {
     const result = loadWhiteboardSceneFromCollaboration('forbidden-source');
     const provider = h.MockProvider.instance;
 
-    provider.emit('close', { code: 1008, reason: 'forbidden', disposition: 'terminal' });
+    provider.emit({ kind: 'ended', reason: 'forbidden', recovery: 'none' });
 
     await expect(result).rejects.toThrow('Unable to load whiteboard template: forbidden');
     expect(provider.destroy).toHaveBeenCalledTimes(1);

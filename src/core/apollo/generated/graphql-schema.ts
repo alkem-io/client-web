@@ -9509,6 +9509,8 @@ export type UpdateCalloutContributionDefaultsInput = {
   clearWhiteboardContent?: InputMaybe<Scalars['Boolean']['input']>;
   /** The default title to use for new contributions. */
   defaultDisplayName?: InputMaybe<Scalars['String']['input']>;
+  /** Replace the default from a server-owned live Whiteboard contribution-default draft. Mutually exclusive with either source field and clearWhiteboardContent. */
+  draftWhiteboardID?: InputMaybe<Scalars['UUID']['input']>;
   /** The default description to use for new Post contributions. */
   postDescription?: InputMaybe<Scalars['Markdown']['input']>;
   /** Copy the internal Whiteboard contribution default from this source Callout. Mutually exclusive with sourceWhiteboardID and clearWhiteboardContent. */
@@ -33203,6 +33205,25 @@ export type ImportTemplateDialogQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           }>;
         }
       | undefined;
@@ -33299,6 +33320,25 @@ export type ImportTemplateDialogAccountTemplatesQuery = {
                           }
                         | undefined;
                     };
+                    whiteboard?:
+                      | {
+                          __typename?: 'Whiteboard';
+                          id: string;
+                          profile: {
+                            __typename?: 'Profile';
+                            id: string;
+                            cardBanner?:
+                              | {
+                                  __typename?: 'Visual';
+                                  id: string;
+                                  uri: string;
+                                  name: VisualType;
+                                  alternativeText?: string | undefined;
+                                }
+                              | undefined;
+                          };
+                        }
+                      | undefined;
                   }>;
                 }
               | undefined;
@@ -33377,6 +33417,25 @@ export type ImportTemplateDialogPlatformTemplatesQuery = {
                 }
               | undefined;
           };
+          whiteboard?:
+            | {
+                __typename?: 'Whiteboard';
+                id: string;
+                profile: {
+                  __typename?: 'Profile';
+                  id: string;
+                  cardBanner?:
+                    | {
+                        __typename?: 'Visual';
+                        id: string;
+                        uri: string;
+                        name: VisualType;
+                        alternativeText?: string | undefined;
+                      }
+                    | undefined;
+                };
+              }
+            | undefined;
         };
         innovationPack: {
           __typename?: 'InnovationPack';
@@ -33460,6 +33519,25 @@ export type AllTemplatesInTemplatesSetQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           }>;
           postTemplates: Array<{
             __typename?: 'Template';
@@ -33492,12 +33570,30 @@ export type AllTemplatesInTemplatesSetQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           }>;
           whiteboardTemplates: Array<{
             __typename?: 'Template';
             id: string;
             type: TemplateType;
-            whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
             profile: {
               __typename?: 'Profile';
               id: string;
@@ -33524,6 +33620,25 @@ export type AllTemplatesInTemplatesSetQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           }>;
           communityGuidelinesTemplates: Array<{
             __typename?: 'Template';
@@ -33576,6 +33691,25 @@ export type AllTemplatesInTemplatesSetQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           }>;
           spaceTemplates: Array<{
             __typename?: 'Template';
@@ -33640,6 +33774,25 @@ export type AllTemplatesInTemplatesSetQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           }>;
           classificationTemplates: Array<{
             __typename?: 'Template';
@@ -33678,6 +33831,25 @@ export type AllTemplatesInTemplatesSetQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           }>;
         }
       | undefined;
@@ -35231,6 +35403,19 @@ export type TemplateProfileInfoFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  whiteboard?:
+    | {
+        __typename?: 'Whiteboard';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type CalloutTemplateFragment = {
@@ -35271,6 +35456,19 @@ export type CalloutTemplateFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  whiteboard?:
+    | {
+        __typename?: 'Whiteboard';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type PostTemplateFragment = {
@@ -35298,6 +35496,19 @@ export type PostTemplateFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  whiteboard?:
+    | {
+        __typename?: 'Whiteboard';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type SpaceTemplateFragment = {
@@ -35357,13 +35568,25 @@ export type SpaceTemplateFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  whiteboard?:
+    | {
+        __typename?: 'Whiteboard';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type WhiteboardTemplateFragment = {
   __typename?: 'Template';
   id: string;
   type: TemplateType;
-  whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
   profile: {
     __typename?: 'Profile';
     id: string;
@@ -35384,6 +35607,19 @@ export type WhiteboardTemplateFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  whiteboard?:
+    | {
+        __typename?: 'Whiteboard';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type CommunityGuidelinesTemplateFragment = {
@@ -35431,6 +35667,19 @@ export type CommunityGuidelinesTemplateFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  whiteboard?:
+    | {
+        __typename?: 'Whiteboard';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type ClassificationTemplateFragment = {
@@ -35464,6 +35713,19 @@ export type ClassificationTemplateFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
   };
+  whiteboard?:
+    | {
+        __typename?: 'Whiteboard';
+        id: string;
+        profile: {
+          __typename?: 'Profile';
+          id: string;
+          cardBanner?:
+            | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+            | undefined;
+        };
+      }
+    | undefined;
 };
 
 export type CreateTemplateMutationVariables = Exact<{
@@ -35725,6 +35987,25 @@ export type TemplatesSetTemplatesFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
     };
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
   }>;
   postTemplates: Array<{
     __typename?: 'Template';
@@ -35751,12 +36032,30 @@ export type TemplatesSetTemplatesFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
     };
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
   }>;
   whiteboardTemplates: Array<{
     __typename?: 'Template';
     id: string;
     type: TemplateType;
-    whiteboard?: { __typename?: 'Whiteboard'; id: string } | undefined;
     profile: {
       __typename?: 'Profile';
       id: string;
@@ -35777,6 +36076,25 @@ export type TemplatesSetTemplatesFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
     };
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
   }>;
   communityGuidelinesTemplates: Array<{
     __typename?: 'Template';
@@ -35823,6 +36141,25 @@ export type TemplatesSetTemplatesFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
     };
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
   }>;
   spaceTemplates: Array<{
     __typename?: 'Template';
@@ -35881,6 +36218,25 @@ export type TemplatesSetTemplatesFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
     };
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
   }>;
   classificationTemplates: Array<{
     __typename?: 'Template';
@@ -35913,6 +36269,25 @@ export type TemplatesSetTemplatesFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
     };
+    whiteboard?:
+      | {
+          __typename?: 'Whiteboard';
+          id: string;
+          profile: {
+            __typename?: 'Profile';
+            id: string;
+            cardBanner?:
+              | {
+                  __typename?: 'Visual';
+                  id: string;
+                  uri: string;
+                  name: VisualType;
+                  alternativeText?: string | undefined;
+                }
+              | undefined;
+          };
+        }
+      | undefined;
   }>;
 };
 
@@ -37214,6 +37589,25 @@ export type InnovationLibraryTemplatesPaginatedQuery = {
                   }
                 | undefined;
             };
+            whiteboard?:
+              | {
+                  __typename?: 'Whiteboard';
+                  id: string;
+                  profile: {
+                    __typename?: 'Profile';
+                    id: string;
+                    cardBanner?:
+                      | {
+                          __typename?: 'Visual';
+                          id: string;
+                          uri: string;
+                          name: VisualType;
+                          alternativeText?: string | undefined;
+                        }
+                      | undefined;
+                  };
+                }
+              | undefined;
           };
           innovationPack: {
             __typename?: 'InnovationPack';

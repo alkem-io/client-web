@@ -1,4 +1,4 @@
-import { Globe, RotateCcw, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
+import { Globe, Trash2, Users, Wifi, WifiOff } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import type { CollabStatus } from '@/crd/forms/markdown/collabProviderTypes';
@@ -14,9 +14,6 @@ export type ReadonlyReason =
   | 'contentUpdatePolicy'
   | 'contentUpdatePolicyNoOwner'
   | 'noMembership'
-  | 'inactivity'
-  | 'sizeLimitExceeded'
-  | 'sessionEnded'
   | null;
 
 /** Stable, React-key-safe identifier (e.g. Yjs awareness clientId as a string). */
@@ -26,11 +23,16 @@ export type ConnectedUser = {
   color: string;
 };
 
+export type MemoSaveStatus = 'saved' | 'saving' | 'offline';
+
 /** Cap visible avatars to keep the footer compact; overflow collapses to a "+N" badge. */
 const MAX_VISIBLE_AVATARS = 5;
 
 type MemoCollabFooterProps = {
   connectionStatus: CollabStatus;
+  saveStatus?: MemoSaveStatus;
+  statusLabel: string;
+  saveErrorLabel?: string;
   memberCount: number;
   connectedUsers?: ConnectedUser[];
   isGuest?: boolean;
@@ -38,8 +40,6 @@ type MemoCollabFooterProps = {
   /** The memo owner (`createdBy`), used to render an owner link in the policy-locked message. */
   owner?: { name: string; url?: string };
   onDelete?: () => void;
-  /** Explicitly rejoin after a server inactivity downgrade; never used for transport recovery. */
-  onResumeEditing?: () => void;
   className?: string;
 };
 
@@ -49,13 +49,15 @@ const READONLY_REASON_DEBOUNCE_MS = 500;
 
 export function MemoCollabFooter({
   connectionStatus,
+  saveStatus,
+  statusLabel,
+  saveErrorLabel,
   memberCount,
   connectedUsers = [],
   isGuest,
   readonlyReason,
   owner,
   onDelete,
-  onResumeEditing,
   className,
 }: MemoCollabFooterProps) {
   const { t } = useTranslation('crd-space');
@@ -73,14 +75,7 @@ export function MemoCollabFooter({
     return () => clearTimeout(timer);
   }, [readonlyReason]);
 
-  const statusLabel =
-    connectionStatus === 'connected'
-      ? t('memo.footer.connected')
-      : connectionStatus === 'connecting'
-        ? t('memo.footer.connecting')
-        : t('memo.footer.disconnected');
-
-  const StatusIcon = connectionStatus === 'connected' ? Wifi : WifiOff;
+  const StatusIcon = saveStatus !== 'offline' && connectionStatus === 'connected' ? Wifi : WifiOff;
 
   // The policy-locked message names the owner with a link to their profile (parity with the whiteboard
   // footer). When the owner is gone the mapper returns `contentUpdatePolicyNoOwner` instead, so the
@@ -157,15 +152,14 @@ export function MemoCollabFooter({
           </Button>
         )}
         {readonlyContent && <span className="text-caption text-muted-foreground">{readonlyContent}</span>}
-        {(delayedReason === 'inactivity' || delayedReason === 'sizeLimitExceeded') && onResumeEditing && (
-          <Button variant="outline" size="sm" onClick={onResumeEditing}>
-            <RotateCcw className="size-3 mr-1" aria-hidden="true" />
-            {t('memo.footer.resumeEditing')}
-          </Button>
-        )}
       </div>
 
       <div className="flex items-center gap-3">
+        {saveErrorLabel && (
+          <span role="alert" className="text-caption text-destructive">
+            {saveErrorLabel}
+          </span>
+        )}
         <div className="flex items-center gap-1 text-caption text-muted-foreground">
           <StatusIcon className="size-3.5" aria-hidden="true" />
           <span>{statusLabel}</span>

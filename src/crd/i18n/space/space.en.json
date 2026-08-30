@@ -686,6 +686,10 @@
       "connected": "Connected",
       "connecting": "Connecting…",
       "disconnected": "Disconnected",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "offline": "Offline — will sync automatically",
+      "saveFailed": "Unable to save changes",
       "membersOnline_one": "1 member online",
       "membersOnline_other": "{{count}} members online",
       "connectedUsersLabel": "Connected users",
@@ -693,22 +697,26 @@
       "moreConnectedUsers_other": "{{count}} more connected users",
       "guestWarning": "You are editing as a guest",
       "delete": "Delete memo",
-      "resumeEditing": "Resume editing",
       "readonlyReason": {
         "connecting": "Connecting to the collaboration service…",
-        "notSynced": "Synchronising…",
+        "notSynced": "Synchronising… reopen the memo to resume editing.",
         "unauthenticated": "Sign in to edit this memo.",
         "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings.",
         "contentUpdatePolicyNoOwner": "You don't have permission to edit this memo. The owner is no longer available, but you can ask a space administrator to change the Share settings.",
-        "noMembership": "Only members of this space can edit this memo. Join the space to contribute.",
-        "inactivity": "Editing paused because you were inactive. Resume when you're ready.",
-        "sizeLimitExceeded": "This memo reached its size limit and your last change was not applied. Resume to continue from the last saved version.",
-        "sessionEnded": "This memo is no longer available for collaboration."
+        "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
       }
     },
     "errors": {
       "loading": "Loading memo…",
       "loadFailed": "Unable to load memo"
+    },
+    "unsavedClose": {
+      "title": "Unsaved memo changes",
+      "description": "These changes cannot be saved right now. Keep the memo open, export them, or explicitly discard them.",
+      "wait": "Keep open and wait",
+      "discard": "Discard and close",
+      "export": "Export first",
+      "exportFailed": "The memo could not be exported. It remains open."
     },
     "deleteConfirm": {
       "title": "Delete memo",

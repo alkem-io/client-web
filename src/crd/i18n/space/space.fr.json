@@ -686,6 +686,10 @@
       "connected": "Connecté",
       "connecting": "Connexion…",
       "disconnected": "Déconnecté",
+      "saved": "Enregistré",
+      "saving": "Enregistrement…",
+      "offline": "Hors ligne — synchronisation automatique",
+      "saveFailed": "Impossible d'enregistrer les modifications",
       "membersOnline_one": "1 membre en ligne",
       "membersOnline_other": "{{count}} membres en ligne",
       "connectedUsersLabel": "Utilisateurs connectés",
@@ -693,22 +697,26 @@
       "moreConnectedUsers_other": "{{count}} utilisateurs connectés de plus",
       "guestWarning": "Vous éditez en tant qu'invité",
       "delete": "Supprimer le mémo",
-      "resumeEditing": "Reprendre la modification",
       "readonlyReason": {
         "connecting": "Connexion au service de collaboration…",
-        "notSynced": "Synchronisation…",
+        "notSynced": "Synchronisation… rouvrez le mémo pour reprendre l'édition.",
         "unauthenticated": "Connectez-vous pour modifier ce mémo.",
         "contentUpdatePolicy": "Vous n'avez pas la permission de modifier ce mémo. Demandez au propriétaire, <ownerlink>{{ownerName}}</ownerlink>, de modifier les paramètres de partage.",
         "contentUpdatePolicyNoOwner": "Vous n'avez pas la permission de modifier ce mémo. Le propriétaire n'est plus disponible — demandez à un administrateur de l'espace de modifier les paramètres de partage.",
-        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer.",
-        "inactivity": "La modification a été suspendue pour cause d'inactivité. Reprenez-la lorsque vous êtes prêt.",
-        "sizeLimitExceeded": "Ce mémo a atteint sa limite de taille et votre dernière modification n’a pas été appliquée. Reprenez à partir de la dernière version enregistrée.",
-        "sessionEnded": "Ce mémo n’est plus disponible pour la collaboration."
+        "noMembership": "Seuls les membres de cet espace peuvent modifier ce mémo. Rejoignez l'espace pour contribuer."
       }
     },
     "errors": {
       "loading": "Chargement du mémo…",
       "loadFailed": "Impossible de charger le mémo"
+    },
+    "unsavedClose": {
+      "title": "Modifications du mémo non enregistrées",
+      "description": "Ces modifications ne peuvent pas être enregistrées maintenant. Gardez le mémo ouvert, exportez-les ou abandonnez-les explicitement.",
+      "wait": "Garder ouvert et attendre",
+      "discard": "Abandonner et fermer",
+      "export": "Exporter d’abord",
+      "exportFailed": "Le mémo n’a pas pu être exporté. Il reste ouvert."
     },
     "deleteConfirm": {
       "title": "Supprimer le mémo",
