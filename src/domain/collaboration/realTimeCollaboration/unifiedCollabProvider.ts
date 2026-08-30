@@ -275,6 +275,7 @@ export class UnifiedCollabProvider {
         this.failSave(message.requestId, message.error ?? 'The document could not be persisted');
         break;
       case 'save-error':
+        this.durabilityFailed = true;
         this.emitSaveResult(message.error ?? 'save-error');
         break;
       case 'session-end':
@@ -445,6 +446,7 @@ export class UnifiedCollabProvider {
       try {
         await this.beforeSave();
       } catch (error) {
+        this.durabilityFailed = true;
         this.emitSaveResult(error instanceof Error ? error.message : 'Asset publication failed');
         throw error;
       }
@@ -476,12 +478,14 @@ export class UnifiedCollabProvider {
     clearTimeout(pending.timeout);
     this.barrier = undefined;
     this.ackedRevision = Math.max(this.ackedRevision, pending.coveredRevision);
+    if (this.ackedRevision >= this.localRevision) this.durabilityFailed = false;
     pending.resolve();
     this.emitSaveResult();
   }
 
   private failSave(requestId: string | undefined, message: string): void {
     if (!this.barrier || requestId !== this.barrier.requestId) return;
+    this.durabilityFailed = true;
     this.rejectBarrier(new Error(message));
     this.emitSaveResult(message);
   }
@@ -495,7 +499,6 @@ export class UnifiedCollabProvider {
   }
 
   private emitSaveResult(error?: string): void {
-    this.durabilityFailed = !!error;
     emitListeners(this.saveResultListeners, error);
   }
 

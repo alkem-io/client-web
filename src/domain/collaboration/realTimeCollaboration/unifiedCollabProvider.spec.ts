@@ -478,6 +478,30 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     provider.destroy();
   });
 
+  it('keeps durability risk through a partial recovery ack until the latest edit is covered', async () => {
+    const provider = new UnifiedCollabProvider(options);
+    const ws = admitAndSync(provider);
+    const requests = () => ws.sent.filter(frame => frameType(frame) === WIRE.DURABILITY_REQUEST);
+    const requestId = (index: number) =>
+      (JSON.parse(new TextDecoder().decode(requests()[index].slice(1))) as { requestId: string }).requestId;
+    provider.doc.getText('content').insert(0, 'first');
+
+    const failed = provider.requestDurability();
+    ws.receive(control({ kind: 'persist-failed', requestId: requestId(0), error: 'storage unavailable' }));
+    await expect(failed).rejects.toThrow('storage unavailable');
+
+    const recovered = provider.requestDurability();
+    provider.doc.getText('content').insert(5, ' second');
+    ws.receive(control({ kind: 'persisted', requestId: requestId(1) }));
+    await vi.waitFor(() => expect(requests()).toHaveLength(3));
+    expect(provider.hasChangesAtRisk).toBe(true);
+
+    ws.receive(control({ kind: 'persisted', requestId: requestId(2) }));
+    await expect(recovered).resolves.toBeUndefined();
+    expect(provider.hasChangesAtRisk).toBe(false);
+    provider.destroy();
+  });
+
   it('treats an uncorrelated room save error as durability risk without changing transport state', async () => {
     const provider = new UnifiedCollabProvider(options);
     const ws = admitAndSync(provider);
