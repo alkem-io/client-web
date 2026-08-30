@@ -54,6 +54,7 @@ import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/ex
 import useLoadingState from '@/domain/shared/utils/useLoadingState';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { withCloseFinalizing } from '@/main/crdPages/closeFinalizing';
 import { buildLoginUrl } from '@/main/routing/urlBuilders';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
@@ -212,6 +213,7 @@ const CrdWhiteboardDialog = ({
   const importAbortRef = useRef<AbortController | null>(null);
   const closeInFlightRef = useRef(false);
   const [closeBlocked, setCloseBlocked] = useState(false);
+  const [closeFinalizing, setCloseFinalizing] = useState(false);
   const collabApiRef = useRef<CollabAPI>(null);
   const editModeEnabled = options.canEdit;
 
@@ -292,7 +294,10 @@ const CrdWhiteboardDialog = ({
     );
     try {
       await closeCollaborativeWhiteboard({
-        requestDurability: shouldSave && collabApi ? () => collabApi.requestDurability() : undefined,
+        requestDurability:
+          shouldSave && collabApi
+            ? () => withCloseFinalizing(setCloseFinalizing, () => collabApi.requestDurability())
+            : undefined,
         requireDurability: options.requireDurableClose,
         save: async () => {
           if (!shouldSave || !whiteboard) return true;
@@ -593,7 +598,13 @@ const CrdWhiteboardDialog = ({
                     <WhiteboardCollabFooter
                       {...footerProps}
                       saveStatus={
-                        lifecycle.kind === 'active' ? lifecycle.save : lifecycle.kind === 'ended' ? 'ended' : undefined
+                        closeFinalizing
+                          ? 'finalizing'
+                          : lifecycle.kind === 'active'
+                            ? lifecycle.save
+                            : lifecycle.kind === 'ended'
+                              ? 'ended'
+                              : undefined
                       }
                       readonlyMessage={readonlyMessage}
                       onDelete={() => setDeleteDialogOpen(true)}

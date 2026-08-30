@@ -13,7 +13,7 @@ type WhiteboardCollabFooterProps = {
   onRestart?: () => void;
   guestWarningVisible?: boolean;
   guestAccessBadge?: ReactNode;
-  saveStatus?: 'saved' | 'saving' | 'offline' | 'ended';
+  saveStatus?: 'saved' | 'saving' | 'offline' | 'finalizing' | 'ended';
   className?: string;
 };
 
