@@ -1,7 +1,13 @@
 import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { messageYjsSyncStep1, messageYjsSyncStep2, writeSyncStep1, writeSyncStep2 } from 'y-protocols/sync';
+import {
+  messageYjsSyncStep1,
+  messageYjsSyncStep2,
+  messageYjsUpdate,
+  writeSyncStep1,
+  writeSyncStep2,
+} from 'y-protocols/sync';
 import * as Y from 'yjs';
 import { type CollaborationState, UnifiedCollabProvider, WIRE } from './unifiedCollabProvider';
 
@@ -120,6 +126,7 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     socket().open();
     provider.doc.getText('content').insert(0, 'local');
     expect(socket().sent).toEqual([]);
+    expect(provider.hasChangesAtRisk).toBe(true);
 
     socket().receive(control({ kind: 'admission', mode: 'write' }));
     socket().receive(syncStep1());
@@ -129,6 +136,40 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     decoding.readVarUint(decoder);
     expect(decoding.readVarUint(decoder)).toBe(messageYjsSyncStep2);
     expect(Y.decodeUpdate(decoding.readVarUint8Array(decoder)).structs).not.toHaveLength(0);
+    expect(provider.hasChangesAtRisk).toBe(false);
+    provider.destroy();
+  });
+
+  it('delivers an admitted write update while the server handshake reply is still pending', () => {
+    const provider = new UnifiedCollabProvider(options);
+    socket().open();
+    socket().receive(control({ kind: 'admission', mode: 'write' }));
+    const sentBeforeEdit = socket().sent.length;
+
+    provider.doc.getText('content').insert(0, 'during-handshake');
+
+    expect(socket().sent).toHaveLength(sentBeforeEdit + 1);
+    const decoder = decoding.createDecoder(socket().sent[sentBeforeEdit] as Uint8Array);
+    expect(decoding.readVarUint(decoder)).toBe(WIRE.SYNC);
+    expect(decoding.readVarUint(decoder)).toBe(messageYjsUpdate);
+    expect(provider.hasChangesAtRisk).toBe(false);
+    provider.destroy();
+  });
+
+  it('projects Saved as soon as a local delta is delivered without waiting for persistence', () => {
+    const provider = new UnifiedCollabProvider(options);
+    admitAndSync(provider);
+    const states: CollaborationState[] = [];
+    provider.subscribe(state => states.push(state));
+
+    provider.doc.getText('content').insert(0, 'delivered');
+
+    expect(states.slice(-2)).toEqual([
+      { kind: 'active', access: 'write', save: 'saving' },
+      { kind: 'active', access: 'write', save: 'saved' },
+    ]);
+    expect(provider.hasUnsavedChanges).toBe(true);
+    expect(provider.hasChangesAtRisk).toBe(false);
     provider.destroy();
   });
 
@@ -181,6 +222,7 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
       reason: 'access-changed-with-local-edits',
       recovery: 'reload',
     });
+    expect(provider.hasChangesAtRisk).toBe(true);
     provider.destroy();
   });
 
@@ -232,7 +274,34 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     provider.doc.getText('content').insert(0, 'offline edit');
     expect(states[states.length - 1]).toEqual({ kind: 'active', access: 'write', save: 'offline' });
     expect(provider.hasUnsavedChanges).toBe(true);
+    expect(provider.hasChangesAtRisk).toBe(true);
     provider.destroy();
+  });
+
+  it('re-proves delivery from the server state vector after reconnect', async () => {
+    vi.useFakeTimers();
+    vi.spyOn(Math, 'random').mockReturnValue(0);
+    const provider = new UnifiedCollabProvider(options);
+    admitAndSync(provider);
+    provider.doc.getText('content').insert(0, 'delivered');
+    expect(provider.hasChangesAtRisk).toBe(false);
+    const server = new Y.Doc();
+    Y.applyUpdate(server, Y.encodeStateAsUpdate(provider.doc));
+
+    socket().serverClose(1006);
+    expect(provider.hasChangesAtRisk).toBe(true);
+    await vi.advanceTimersByTimeAsync(0);
+    const reconnect = socket();
+    reconnect.open();
+    reconnect.receive(control({ kind: 'admission', mode: 'write' }));
+    reconnect.receive(syncStep1(server));
+    reconnect.receive(syncStep2(server));
+
+    expect(provider.state).toEqual({ kind: 'active', access: 'write', save: 'saved' });
+    expect(provider.hasUnsavedChanges).toBe(true);
+    expect(provider.hasChangesAtRisk).toBe(false);
+    provider.destroy();
+    server.destroy();
   });
 
   it('fails closed on untyped 1008 and never schedules another dial', async () => {
@@ -381,6 +450,24 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     expect(ws.sent.filter(frame => frameType(frame) === WIRE.DURABILITY_REQUEST)).toEqual([]);
   });
 
+  it('rejects durability immediately when the request frame cannot be sent', async () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(options);
+    const ws = admitAndSync(provider);
+    const saveResults: Array<string | undefined> = [];
+    provider.onSaveResult(error => saveResults.push(error));
+    provider.doc.getText('content').insert(0, 'delivered');
+    ws.readyState = 2;
+    const timersBeforeRequest = vi.getTimerCount();
+
+    const saved = provider.requestDurability();
+
+    await expect(saved).rejects.toThrow('offline');
+    expect(saveResults).toEqual(['The collaboration connection is offline']);
+    expect(vi.getTimerCount()).toBe(timersBeforeRequest);
+    provider.destroy();
+  });
+
   it('coalesces durability callers and does not let a stale ack mark a later edit saved', async () => {
     const provider = new UnifiedCollabProvider(options);
     const ws = admitAndSync(provider);
@@ -393,11 +480,78 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     const requestId = (JSON.parse(new TextDecoder().decode(requests()[0].slice(1))) as { requestId: string }).requestId;
     ws.receive(control({ kind: 'persisted', requestId }));
     await vi.waitFor(() => expect(requests()).toHaveLength(2));
-    expect(provider.state).toEqual({ kind: 'active', access: 'write', save: 'saving' });
+    expect(provider.state).toEqual({ kind: 'active', access: 'write', save: 'saved' });
+    expect(provider.hasUnsavedChanges).toBe(true);
     const nextId = (JSON.parse(new TextDecoder().decode(requests()[1].slice(1))) as { requestId: string }).requestId;
     ws.receive(control({ kind: 'persisted', requestId: nextId }));
     await expect(Promise.all([first, second])).resolves.toEqual([undefined, undefined]);
     expect(provider.state).toEqual({ kind: 'active', access: 'write', save: 'saved' });
+    provider.destroy();
+  });
+
+  it('keeps delivered changes at risk after a durability failure until persistence succeeds', async () => {
+    const provider = new UnifiedCollabProvider(options);
+    const ws = admitAndSync(provider);
+    provider.doc.getText('content').insert(0, 'delivered');
+    expect(provider.hasChangesAtRisk).toBe(false);
+
+    const failed = provider.requestDurability();
+    const request = ws.sent.find(frame => frameType(frame) === WIRE.DURABILITY_REQUEST) as Uint8Array;
+    const failedId = (JSON.parse(new TextDecoder().decode(request.slice(1))) as { requestId: string }).requestId;
+    ws.receive(control({ kind: 'persist-failed', requestId: failedId, error: 'storage unavailable' }));
+    await expect(failed).rejects.toThrow('storage unavailable');
+    expect(provider.state).toEqual({ kind: 'active', access: 'write', save: 'saved' });
+    expect(provider.hasChangesAtRisk).toBe(true);
+
+    const retried = provider.requestDurability();
+    const requests = ws.sent.filter(frame => frameType(frame) === WIRE.DURABILITY_REQUEST);
+    const retriedId = (JSON.parse(new TextDecoder().decode(requests[1].slice(1))) as { requestId: string }).requestId;
+    ws.receive(control({ kind: 'persisted', requestId: retriedId }));
+    await expect(retried).resolves.toBeUndefined();
+    expect(provider.hasChangesAtRisk).toBe(false);
+    provider.destroy();
+  });
+
+  it('keeps durability risk through a partial recovery ack until the latest edit is covered', async () => {
+    const provider = new UnifiedCollabProvider(options);
+    const ws = admitAndSync(provider);
+    const requests = () => ws.sent.filter(frame => frameType(frame) === WIRE.DURABILITY_REQUEST);
+    const requestId = (index: number) =>
+      (JSON.parse(new TextDecoder().decode(requests()[index].slice(1))) as { requestId: string }).requestId;
+    provider.doc.getText('content').insert(0, 'first');
+
+    const failed = provider.requestDurability();
+    ws.receive(control({ kind: 'persist-failed', requestId: requestId(0), error: 'storage unavailable' }));
+    await expect(failed).rejects.toThrow('storage unavailable');
+
+    const recovered = provider.requestDurability();
+    provider.doc.getText('content').insert(5, ' second');
+    ws.receive(control({ kind: 'persisted', requestId: requestId(1) }));
+    await vi.waitFor(() => expect(requests()).toHaveLength(3));
+    expect(provider.hasChangesAtRisk).toBe(true);
+
+    ws.receive(control({ kind: 'persisted', requestId: requestId(2) }));
+    await expect(recovered).resolves.toBeUndefined();
+    expect(provider.hasChangesAtRisk).toBe(false);
+    provider.destroy();
+  });
+
+  it('treats an uncorrelated room save error as durability risk without changing transport state', async () => {
+    const provider = new UnifiedCollabProvider(options);
+    const ws = admitAndSync(provider);
+    provider.doc.getText('content').insert(0, 'delivered');
+
+    ws.receive(control({ kind: 'save-error', error: 'checkpoint failed' }));
+
+    expect(provider.state).toEqual({ kind: 'active', access: 'write', save: 'saved' });
+    expect(provider.hasChangesAtRisk).toBe(true);
+
+    const saved = provider.requestDurability();
+    const request = ws.sent.find(frame => frameType(frame) === WIRE.DURABILITY_REQUEST) as Uint8Array;
+    const requestId = (JSON.parse(new TextDecoder().decode(request.slice(1))) as { requestId: string }).requestId;
+    ws.receive(control({ kind: 'persisted', requestId }));
+    await expect(saved).resolves.toBeUndefined();
+    expect(provider.hasChangesAtRisk).toBe(false);
     provider.destroy();
   });
 });

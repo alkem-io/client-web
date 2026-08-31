@@ -23,7 +23,7 @@ export type ConnectedUser = {
   color: string;
 };
 
-export type MemoSaveStatus = 'saved' | 'saving' | 'offline';
+export type MemoSaveStatus = 'saved' | 'saving' | 'offline' | 'finalizing';
 
 /** Cap visible avatars to keep the footer compact; overflow collapses to a "+N" badge. */
 const MAX_VISIBLE_AVATARS = 5;

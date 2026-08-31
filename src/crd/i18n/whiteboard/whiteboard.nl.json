@@ -48,6 +48,7 @@
     "saveStatus": {
       "saved": "Opgeslagen",
       "saving": "Opslaan…",
+      "finalizing": "Wijzigingen afronden…",
       "offline": "Offline — wordt automatisch gesynchroniseerd",
       "ended": "Niet beschikbaar"
     },
