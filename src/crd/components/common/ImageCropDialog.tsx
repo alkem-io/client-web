@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, {
   type Crop,
@@ -238,6 +238,24 @@ export function ImageCropDialog({
   // What the slider shows: state once the user has moved it, the bounds' max
   // (the 10:1 design default) until then.
   const sliderRatio = selectedAspectRatio ?? aspectRatioBounds?.max;
+  /**
+   * The slider runs `max → min` left-to-right (10:1 slim strip on the left,
+   * 6:1 on the right), but the DOM range input stays ascending and LTR so the
+   * browser keeps its native left-anchored fill and thumb: the rendered value
+   * is mirrored around the bounds' midpoint and mirrored back on change.
+   * Rounded to the 0.1 step so the arithmetic never drifts the value off the
+   * input's step grid (or past the DB's numeric(3,1)).
+   *
+   * Deliberate trade-off: the element's numeric value — and so its implicit
+   * `aria-valuenow` — is the mirror image of the ratio; `aria-valuetext`,
+   * which assistive tech announces in its place, carries the real one. The
+   * conforming alternative (`dir="rtl"` with value == ratio) anchors the
+   * native fill on the wrong (right) edge, and moving it back means fully
+   * restyling the control (see the PR #10222 review threads); the native look
+   * won.
+   */
+  const mirrorAspectRatio = (value: number) =>
+    aspectRatioBounds ? Math.round((aspectRatioBounds.min + aspectRatioBounds.max - value) * 10) / 10 : value;
 
   // `onComplete` fires only on pointer/keyboard interaction with the crop box
   // (plus the very first undefined → crop transition — see `componentDidUpdate`
@@ -358,17 +376,11 @@ export function ImageCropDialog({
                 min={aspectRatioBounds.min}
                 max={aspectRatioBounds.max}
                 step={0.1}
-                // The slider runs `max → min` left-to-right (10:1 slim strip on
-                // the left, 6:1 on the right). `dir="rtl"` gives the browser the
-                // reversed track while the element's real value stays the real
-                // ratio — so `value`, the implicit `aria-valuenow`, and
-                // `aria-valuetext` all agree, and the arrow keys follow the
-                // visible thumb. Mirroring the numeric value instead would have
-                // exposed the inverse ratio to assistive technology.
-                dir="rtl"
-                value={sliderRatio}
+                // Mirrored: thumb at the left edge = `max` (10), right edge =
+                // `min` (6) — see `mirrorAspectRatio` above.
+                value={mirrorAspectRatio(sliderRatio)}
                 onChange={e => {
-                  const ratio = Number(e.target.value);
+                  const ratio = mirrorAspectRatio(Number(e.target.value));
                   setSelectedAspectRatio(ratio);
                   config.onAspectRatioChange?.(ratio);
                   // Reshape what the user already framed rather than starting
@@ -380,17 +392,7 @@ export function ImageCropDialog({
                   applyCrop(previous ? reshapeCropToAspect(image, previous, ratio) : centeredAspectCrop(image, ratio));
                 }}
                 aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', { ratio: sliderRatio.toFixed(1) })}
-                className="w-full crd-range-fill-left"
-                // The fill follows the thumb from the left edge (see
-                // `.crd-range-fill-left`); with the track reversed, the thumb's
-                // offset from the left is its distance below `max`.
-                style={
-                  {
-                    '--crd-range-fill': `${
-                      ((aspectRatioBounds.max - sliderRatio) / (aspectRatioBounds.max - aspectRatioBounds.min)) * 100
-                    }%`,
-                  } as CSSProperties
-                }
+                className="w-full accent-primary"
               />
               <div className="flex justify-between">
                 <span className="text-caption text-muted-foreground">{t('imageCrop.aspectRatio.hintLeft')}</span>

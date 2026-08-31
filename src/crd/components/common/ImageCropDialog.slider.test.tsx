@@ -37,52 +37,43 @@ function renderDialog(config: Partial<ImageCropConfig> = {}) {
 }
 
 describe('ImageCropDialog aspect-ratio slider', () => {
-  // The contract behind the `dir="rtl"` choice: the element's real value (and
-  // therefore its implicit aria-valuenow) is the real ratio, and the announced
-  // text agrees with it. A mirrored numeric value would expose the inverse ratio
-  // to assistive technology.
-  it('opens on the bounds’ max with the DOM value, aria-valuetext and label all agreeing', () => {
+  // The DOM value is deliberately the mirror image of the ratio (see
+  // `mirrorAspectRatio`): the input stays ascending/LTR so the browser keeps
+  // its native left-anchored fill, so the announced 10 sits at DOM value 6.
+  // `aria-valuetext` — which assistive tech announces in preference to the
+  // numeric value — carries the real ratio.
+  it('opens announcing the 10:1 default, mirrored to the DOM minimum', () => {
     const { slider } = renderDialog();
-    expect(slider.value).toBe('10');
+    expect(slider.value).toBe('6');
     expect(slider.min).toBe('6');
     expect(slider.max).toBe('10');
     expect(slider).toHaveAttribute('aria-valuetext', 'imageCrop.aspectRatio.ariaLabel:10.0');
     expect(screen.getByText('imageCrop.aspectRatio.label:10.0')).toBeInTheDocument();
   });
 
-  it('reverses only the track direction, keeping min < max', () => {
+  it('stays a native ascending input — no dir reversal, no custom fill class', () => {
     const { slider } = renderDialog();
-    expect(slider).toHaveAttribute('dir', 'rtl');
+    expect(slider).not.toHaveAttribute('dir');
+    expect(slider.className).toContain('accent-primary');
     expect(Number(slider.min)).toBeLessThan(Number(slider.max));
-  });
-
-  // Browsers fill a range from `min`, which with the reversed track would be
-  // the right edge; the fill is drawn from the left instead and follows the
-  // thumb — no fill at max (thumb at the left edge), full fill at min.
-  it('fills from the left edge up to the thumb', () => {
-    const { slider } = renderDialog();
-    expect(slider.style.getPropertyValue('--crd-range-fill')).toBe('0%');
-    fireEvent.change(slider, { target: { value: '7.5' } });
-    expect(slider.style.getPropertyValue('--crd-range-fill')).toBe('62.5%');
-    fireEvent.change(slider, { target: { value: '6' } });
-    expect(slider.style.getPropertyValue('--crd-range-fill')).toBe('100%');
   });
 
   it('emits the un-mirrored ratio and re-announces it on change', () => {
     const { slider, onAspectRatioChange } = renderDialog();
-    fireEvent.change(slider, { target: { value: '7.5' } });
+    fireEvent.change(slider, { target: { value: '8.5' } });
     expect(onAspectRatioChange).toHaveBeenCalledWith(7.5);
-    expect(slider.value).toBe('7.5');
+    expect(slider.value).toBe('8.5');
     expect(slider).toHaveAttribute('aria-valuetext', 'imageCrop.aspectRatio.ariaLabel:7.5');
   });
 
-  it('opens on a stored ratio when one is configured', () => {
-    const { slider } = renderDialog({ aspectRatio: 8 });
-    expect(slider.value).toBe('8');
+  it('opens on a stored ratio when one is configured, mirrored into the DOM', () => {
+    const { slider } = renderDialog({ aspectRatio: 7 });
+    expect(slider.value).toBe('9');
+    expect(slider).toHaveAttribute('aria-valuetext', 'imageCrop.aspectRatio.ariaLabel:7.0');
   });
 
   it('clamps a configured ratio into the bounds', () => {
-    expect(renderDialog({ aspectRatio: 12 }).slider.value).toBe('10');
+    expect(renderDialog({ aspectRatio: 12 }).slider.value).toBe('6');
   });
 
   it('renders no slider without bounds', () => {
