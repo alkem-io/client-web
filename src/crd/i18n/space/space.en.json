@@ -688,6 +688,7 @@
       "disconnected": "Disconnected",
       "saved": "Saved",
       "saving": "Saving…",
+      "finalizing": "Finalizing changes…",
       "offline": "Offline — will sync automatically",
       "saveFailed": "Unable to save changes",
       "membersOnline_one": "1 member online",

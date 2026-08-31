@@ -26,6 +26,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
     state = { kind: 'loading' };
     readOnlyReason = undefined;
     hasUnsavedChanges = false;
+    hasChangesAtRisk = false;
     awareness = {};
     ephemeralChannel = {};
     constructor() {

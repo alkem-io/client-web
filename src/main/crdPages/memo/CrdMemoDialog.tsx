@@ -22,6 +22,7 @@ import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import useMemoManager from '@/domain/collaboration/memo/MemoManager/useMemoManager';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { useSubSpace } from '@/domain/space/hooks/useSubSpace';
+import { withCloseFinalizing } from '@/main/crdPages/closeFinalizing';
 import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
@@ -39,9 +40,10 @@ type CrdMemoDialogProps = {
 
 export const updateMemoMarkdownCache = (
   editor: Pick<Editor, 'getHTML'> | null,
-  writeMarkdown: (markdown: string) => void
+  writeMarkdown: (markdown: string) => void,
+  hadLocalEdits = true
 ): Promise<void> => {
-  if (!editor) return Promise.resolve();
+  if (!editor || !hadLocalEdits) return Promise.resolve();
   return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
 };
 
@@ -95,6 +97,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const [displayNameDraft, setDisplayNameDraft] = useState('');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [closeBlocked, setCloseBlocked] = useState(false);
+  const [closeFinalizing, setCloseFinalizing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const closeInFlight = useRef(false);
 
@@ -129,12 +132,16 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const currentMarkdown = () => htmlToMarkdown(editorRef.current?.getHTML() ?? '');
   const finishClose = async () => {
     try {
-      await updateMemoMarkdownCache(editorRef.current, markdown => {
-        client.cache.modify({
-          id: client.cache.identify({ __typename: 'Memo', id: memoId }),
-          fields: { markdown: () => markdown },
-        });
-      });
+      await updateMemoMarkdownCache(
+        editorRef.current,
+        markdown => {
+          client.cache.modify({
+            id: client.cache.identify({ __typename: 'Memo', id: memoId }),
+            fields: { markdown: () => markdown },
+          });
+        },
+        !!provider?.hasLocalEdits
+      );
     } catch {
       // The connector's delayed refetch remains the cache fallback.
     }
@@ -149,7 +156,9 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     }
     closeInFlight.current = true;
     try {
-      if (unsaved) await provider?.requestDurability();
+      if (unsaved && provider) {
+        await withCloseFinalizing(setCloseFinalizing, () => provider.requestDurability());
+      }
       await finishClose();
     } catch {
       setCloseBlocked(true);
@@ -202,13 +211,15 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
     hasOwner: !!memo?.createdBy?.profile,
     myMembershipStatus,
   });
-  const footerStatusLabel = footerProps.saveStatus
-    ? t(`memo.footer.${footerProps.saveStatus}` as const)
-    : footerProps.connectionStatus === 'connected'
-      ? t('memo.footer.saved')
-      : footerProps.connectionStatus === 'connecting'
-        ? t('memo.footer.connecting')
-        : t('memo.footer.disconnected');
+  const footerStatusLabel = closeFinalizing
+    ? t('memo.footer.finalizing')
+    : footerProps.saveStatus
+      ? t(`memo.footer.${footerProps.saveStatus}` as const)
+      : footerProps.connectionStatus === 'connected'
+        ? t('memo.footer.saved')
+        : footerProps.connectionStatus === 'connecting'
+          ? t('memo.footer.connecting')
+          : t('memo.footer.disconnected');
 
   // The connection-loading overlay below blocks interaction until the provider
   // is `connected` AND the initial sync packet has arrived. By the time the
@@ -259,6 +270,7 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
         footer={
           <MemoCollabFooter
             {...footerProps}
+            saveStatus={closeFinalizing ? 'finalizing' : footerProps.saveStatus}
             statusLabel={footerStatusLabel}
             saveErrorLabel={lastSaveError ? t('memo.footer.saveFailed') : undefined}
             owner={
