@@ -9,6 +9,13 @@ describe('acceptWhiteboardCloseIntent', () => {
     expect(abortImport).not.toHaveBeenCalled();
   });
 
+  it('accepts a clean close when persistence is unavailable', () => {
+    const abortImport = vi.fn();
+
+    expect(acceptWhiteboardCloseIntent({ hasUnsaved: false, canPersist: false, abortImport })).toBe(true);
+    expect(abortImport).toHaveBeenCalledOnce();
+  });
+
   it('aborts an in-flight import once the close is accepted', () => {
     const abortImport = vi.fn();
 
@@ -18,10 +25,11 @@ describe('acceptWhiteboardCloseIntent', () => {
 });
 
 describe('closeCollaborativeWhiteboard', () => {
-  it('saves metadata and joins the ordinary durability owner before teardown', async () => {
+  it('joins the ordinary durability owner before best-effort metadata and teardown', async () => {
     const order: string[] = [];
     const result = await closeCollaborativeWhiteboard({
-      save: async () => {
+      hadLocalEdits: true,
+      saveMetadata: async () => {
         order.push('metadata');
         return true;
       },
@@ -29,17 +37,55 @@ describe('closeCollaborativeWhiteboard', () => {
       teardown: () => order.push('teardown'),
     });
     expect(result).toBe(true);
-    expect(order).toEqual(['metadata', 'durability', 'teardown']);
+    expect(order).toEqual(['durability', 'metadata', 'teardown']);
   });
 
-  it('keeps the mounted editor open when metadata cannot be saved', async () => {
-    const requestDurability = vi.fn();
+  it('skips preview and metadata work for a look-only writer session', async () => {
+    const saveMetadata = vi.fn();
     const teardown = vi.fn();
-    await expect(closeCollaborativeWhiteboard({ save: async () => false, requestDurability, teardown })).resolves.toBe(
-      false
-    );
-    expect(requestDurability).not.toHaveBeenCalled();
-    expect(teardown).not.toHaveBeenCalled();
+
+    await expect(
+      closeCollaborativeWhiteboard({
+        hadLocalEdits: false,
+        saveMetadata,
+        requestDurability: vi.fn(),
+        teardown,
+      })
+    ).resolves.toBe(true);
+
+    expect(saveMetadata).not.toHaveBeenCalled();
+    expect(teardown).toHaveBeenCalledOnce();
+  });
+
+  it('reports a metadata failure and closes after content durability succeeds', async () => {
+    const metadataFailed = vi.fn();
+    const teardown = vi.fn();
+    await expect(
+      closeCollaborativeWhiteboard({
+        hadLocalEdits: true,
+        saveMetadata: async () => false,
+        requestDurability: vi.fn(),
+        onMetadataFailed: metadataFailed,
+        teardown,
+      })
+    ).resolves.toBe(true);
+    expect(metadataFailed).toHaveBeenCalledOnce();
+    expect(teardown).toHaveBeenCalledOnce();
+  });
+
+  it('reports a thrown metadata failure and still closes', async () => {
+    const metadataFailed = vi.fn();
+    const teardown = vi.fn();
+    await expect(
+      closeCollaborativeWhiteboard({
+        hadLocalEdits: true,
+        saveMetadata: async () => Promise.reject(new Error('metadata unavailable')),
+        onMetadataFailed: metadataFailed,
+        teardown,
+      })
+    ).resolves.toBe(true);
+    expect(metadataFailed).toHaveBeenCalledOnce();
+    expect(teardown).toHaveBeenCalledOnce();
   });
 
   it('keeps the mounted editor open and reports a failed durability operation', async () => {
@@ -47,7 +93,8 @@ describe('closeCollaborativeWhiteboard', () => {
     const teardown = vi.fn();
     await expect(
       closeCollaborativeWhiteboard({
-        save: async () => true,
+        hadLocalEdits: true,
+        saveMetadata: async () => true,
         requestDurability: async () => Promise.reject(new Error('offline')),
         onDurabilityFailed: failed,
         teardown,
@@ -62,7 +109,8 @@ describe('closeCollaborativeWhiteboard', () => {
     const teardown = vi.fn();
     await expect(
       closeCollaborativeWhiteboard({
-        save: async () => true,
+        hadLocalEdits: true,
+        saveMetadata: async () => true,
         requireDurability: true,
         onDurabilityFailed: failed,
         teardown,

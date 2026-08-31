@@ -146,6 +146,22 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     provider.destroy();
   });
 
+  it('distinguishes a look-only session from one with local edits', () => {
+    const provider = new UnifiedCollabProvider(options);
+    const server = new Y.Doc();
+    server.getText('content').insert(0, 'server content');
+
+    socket().open();
+    socket().receive(control({ kind: 'admission', mode: 'write' }));
+    socket().receive(syncStep2(server));
+    expect(provider.hasLocalEdits).toBe(false);
+
+    provider.doc.getText('content').insert(0, 'local edit');
+    expect(provider.hasLocalEdits).toBe(true);
+    server.destroy();
+    provider.destroy();
+  });
+
   it('never sends local state into a read admission and ends only when a local delta exists', () => {
     const local = new Y.Doc();
     local.getText('content').insert(0, 'private edit');
