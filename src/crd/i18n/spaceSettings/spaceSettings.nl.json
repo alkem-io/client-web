@@ -133,7 +133,8 @@
           "addUser": "Uitnodigen",
           "virtualContributors": "Virtual Contributors",
           "guidelines": "Communityrichtlijnen",
-          "index": "Post-index"
+          "index": "Post-index",
+          "search": "Zoeken"
         }
       },
       "postTemplate": {
