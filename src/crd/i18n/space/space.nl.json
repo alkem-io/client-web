@@ -688,6 +688,7 @@
       "disconnected": "Verbinding verbroken",
       "saved": "Opgeslagen",
       "saving": "Opslaan…",
+      "finalizing": "Wijzigingen afronden…",
       "offline": "Offline — wordt automatisch gesynchroniseerd",
       "saveFailed": "Kan wijzigingen niet opslaan",
       "membersOnline_one": "1 lid online",
