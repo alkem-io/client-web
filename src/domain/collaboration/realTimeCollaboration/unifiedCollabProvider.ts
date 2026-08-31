@@ -93,7 +93,9 @@ export class UnifiedCollabProvider {
   private heartbeatFrame: Uint8Array | null = null;
   private heartbeatSequence = 0;
   private localRevision = 0;
+  private sentRevision = 0;
   private ackedRevision = 0;
+  private durabilityFailed = false;
   private saveTimer: ReturnType<typeof setTimeout> | null = null;
   private barrier:
     | {
@@ -149,6 +151,12 @@ export class UnifiedCollabProvider {
 
   get hasUnsavedChanges(): boolean {
     return this.localRevision !== this.ackedRevision;
+  }
+
+  get hasChangesAtRisk(): boolean {
+    return (
+      this.localRevision !== this.sentRevision || (this.durabilityFailed && this.localRevision !== this.ackedRevision)
+    );
   }
 
   get ephemeralChannel(): EphemeralChannel {
@@ -267,6 +275,7 @@ export class UnifiedCollabProvider {
         this.failSave(message.requestId, message.error ?? 'The document could not be persisted');
         break;
       case 'save-error':
+        this.durabilityFailed = true;
         this.emitSaveResult(message.error ?? 'save-error');
         break;
       case 'session-end':
@@ -288,7 +297,8 @@ export class UnifiedCollabProvider {
       encoding.writeVarUint(encoder, WIRE.SYNC);
       encoding.writeVarUint(encoder, messageYjsSyncStep2);
       encoding.writeVarUint8Array(encoder, this.access === 'write' ? localDelta : EMPTY_UPDATE);
-      this.sendFrame(encoding.toUint8Array(encoder));
+      const sent = this.sendFrame(encoding.toUint8Array(encoder));
+      if (this.access === 'write' && sent) this.sentRevision = this.localRevision;
       return;
     }
     if (syncType !== messageYjsSyncStep2 && syncType !== messageYjsUpdate) throw new Error('unknown-sync-type');
@@ -328,6 +338,7 @@ export class UnifiedCollabProvider {
 
   private finishAttempt(): void {
     this.rejectBarrier(new Error('The collaboration connection closed before changes were persisted'));
+    this.sentRevision = this.ackedRevision;
     this.clearHeartbeat();
     this.stopSocket();
     if (!this.running || this.destroyed) return;
@@ -340,6 +351,7 @@ export class UnifiedCollabProvider {
     this.running = false;
     this.attemptReady = false;
     this.access = null;
+    this.sentRevision = this.ackedRevision;
     this.clearReconnect();
     this.clearHeartbeat();
     this.rejectBarrier(new Error(`Collaboration ended: ${end.reason}`));
@@ -397,10 +409,11 @@ export class UnifiedCollabProvider {
 
   private handleLocalUpdate = (update: Uint8Array) => {
     this.localRevision += 1;
-    if (this.access === 'write') {
-      this.sendFrame(encodeFrame(WIRE.SYNC, encoder => writeUpdate(encoder, update)));
-    }
     this.setActive();
+    if (this.access === 'write' && this.sendFrame(encodeFrame(WIRE.SYNC, encoder => writeUpdate(encoder, update)))) {
+      this.sentRevision = this.localRevision;
+      this.setActive();
+    }
     this.scheduleSave();
   };
 
@@ -433,6 +446,7 @@ export class UnifiedCollabProvider {
       try {
         await this.beforeSave();
       } catch (error) {
+        this.durabilityFailed = true;
         this.emitSaveResult(error instanceof Error ? error.message : 'Asset publication failed');
         throw error;
       }
@@ -450,11 +464,12 @@ export class UnifiedCollabProvider {
       DURABILITY_TIMEOUT_MS
     );
     this.barrier = { requestId, coveredRevision: this.localRevision, resolve, reject, timeout };
-    this.sendFrame(
+    const sent = this.sendFrame(
       encodeFrame(WIRE.DURABILITY_REQUEST, encoder =>
         encoding.writeUint8Array(encoder, lib0String.encodeUtf8(JSON.stringify({ requestId })))
       )
     );
+    if (!sent) this.failSave(requestId, 'The collaboration connection is offline');
     return persisted;
   }
 
@@ -464,12 +479,14 @@ export class UnifiedCollabProvider {
     clearTimeout(pending.timeout);
     this.barrier = undefined;
     this.ackedRevision = Math.max(this.ackedRevision, pending.coveredRevision);
+    if (this.ackedRevision >= this.localRevision) this.durabilityFailed = false;
     pending.resolve();
     this.emitSaveResult();
   }
 
   private failSave(requestId: string | undefined, message: string): void {
     if (!this.barrier || requestId !== this.barrier.requestId) return;
+    this.durabilityFailed = true;
     this.rejectBarrier(new Error(message));
     this.emitSaveResult(message);
   }
@@ -491,7 +508,7 @@ export class UnifiedCollabProvider {
     const save: CollaborationSave =
       !this.ws || this.ws.readyState !== WebSocket.OPEN
         ? 'offline'
-        : this.localRevision > this.ackedRevision
+        : this.localRevision > this.sentRevision
           ? 'saving'
           : 'saved';
     this.setState({ kind: 'active', access: this.access, save });
@@ -535,8 +552,10 @@ export class UnifiedCollabProvider {
     this.sendFrame(encodeFrame(WIRE.EPHEMERAL, encoder => encoding.writeVarString(encoder, JSON.stringify(event))));
   }
 
-  private sendFrame(frame: Uint8Array): void {
-    if (this.ws?.readyState === WebSocket.OPEN) this.ws.send(frame as BufferSource);
+  private sendFrame(frame: Uint8Array): boolean {
+    if (this.ws?.readyState !== WebSocket.OPEN) return false;
+    this.ws.send(frame as BufferSource);
+    return true;
   }
 
   private handleError = () => {

@@ -5,17 +5,16 @@ import { useCollaborationBeforeUnload } from '@/domain/collaboration/realTimeCol
 describe('useCollaborationBeforeUnload', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('warns for dirty offline work, but not for a clean offline transport', () => {
+  it('warns only while the provider reports changes at risk', () => {
     const add = vi.spyOn(window, 'addEventListener');
     const remove = vi.spyOn(window, 'removeEventListener');
-    const offline = { kind: 'active', access: 'write', save: 'offline' } as const;
     const { rerender, unmount } = renderHook(
-      ({ dirty }: { dirty: boolean }) => useCollaborationBeforeUnload(offline, dirty),
-      { initialProps: { dirty: false } }
+      ({ atRisk }: { atRisk: boolean }) => useCollaborationBeforeUnload(atRisk),
+      { initialProps: { atRisk: false } }
     );
 
     expect(add.mock.calls.some(([kind]) => kind === 'beforeunload')).toBe(false);
-    rerender({ dirty: true });
+    rerender({ atRisk: true });
     expect(add.mock.calls.some(([kind]) => kind === 'beforeunload')).toBe(true);
     const beforeUnload = add.mock.calls.find(([kind]) => kind === 'beforeunload')?.[1];
     const event = {
