@@ -36,6 +36,7 @@ import type {
 import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { ensureHttps } from '@/crd/lib/ensureHttps';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
+import { useWhiteboardDraft } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { toGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
 import {
@@ -307,6 +308,25 @@ export function useTemplateForms({
     whiteboardFallbackDisplayName: tSpace('callout.whiteboard'),
     collaboraFallbackDisplayName: tSpace('callout.defaultDocumentName'),
   };
+  const calloutFramingDraft = useWhiteboardDraft({
+    scope: { type: 'templatesSet', id: templatesSetId },
+    handle: calloutForm.values.framingWhiteboardDraft,
+    onHandleChange: handle => calloutForm.setField('framingWhiteboardDraft', handle),
+    source: { sourceWhiteboardID: calloutForm.values.editMeta?.whiteboardId },
+  });
+  const calloutDefaultDraft = useWhiteboardDraft({
+    scope: { type: 'templatesSet', id: templatesSetId },
+    handle: calloutForm.values.contributionDefaults.whiteboardDraft,
+    onHandleChange: handle =>
+      calloutForm.setValues(current => ({
+        ...current,
+        contributionDefaults: { ...current.contributionDefaults, whiteboardDraft: handle },
+      })),
+    source: {
+      sourceWhiteboardID: calloutForm.values.contributionDefaults.sourceWhiteboardId,
+      sourceCalloutID: calloutForm.values.contributionDefaults.sourceCalloutId,
+    },
+  });
 
   const commonValue: TemplateCommonValues = {
     name: values.name,
@@ -419,14 +439,24 @@ export function useTemplateForms({
     resetSpaceSourceState();
   };
   const cancel = () => {
+    const discardCalloutDrafts = async () => {
+      const [framingDiscarded, defaultDiscarded] = await Promise.all([
+        calloutFramingDraft.discard(),
+        calloutDefaultDraft.discard(),
+      ]);
+      return framingDiscarded && defaultDiscarded;
+    };
     const draftId = materializedWhiteboardDraftId;
     if (!draftId) {
-      close();
+      void discardCalloutDrafts().then(discarded => {
+        if (discarded) close();
+      });
       return;
     }
     setMaterializingWhiteboard(true);
     void deleteTemplate({ variables: { templateId: draftId } })
-      .then(() => {
+      .then(async () => {
+        if (!(await discardCalloutDrafts())) return;
         setMaterializedWhiteboardDraftId(null);
         close();
       })
@@ -886,6 +916,14 @@ export function useTemplateForms({
         // whiteboard's `WHITEBOARD_PREVIEW` Visual; otherwise the server keeps the previous
         // image even though the content was updated.
         await uploadCalloutWhiteboardPreview(calloutForm.values, result.data?.updateCallout?.framing?.whiteboard);
+        if (calloutForm.values.framingChip === 'image' && editMeta?.mediaGalleryId) {
+          await uploadMediaGalleryVisuals({
+            mediaGalleryId: editMeta.mediaGalleryId,
+            visuals: calloutForm.values.mediaGalleryVisuals,
+            existingVisualIds: editMeta.originalMediaGalleryVisualIds,
+            originalSortOrders: editMeta.originalMediaGallerySortOrders,
+          });
+        }
         return;
       }
     }
@@ -945,6 +983,8 @@ export function useTemplateForms({
         } else {
           await submitCreate(current, setId);
         }
+        calloutFramingDraft.consumed();
+        calloutDefaultDraft.consumed();
         setMaterializedWhiteboardDraftId(null);
         close();
         onSaved?.();
@@ -1015,8 +1055,10 @@ export function useTemplateForms({
       perTypeFormSlot = (
         <CalloutTemplateForm
           form={calloutForm}
+          framingWhiteboardDraft={calloutFramingDraft}
+          defaultWhiteboardDraft={calloutDefaultDraft}
           spaceId={spaceId}
-          disabled={submitting}
+          disabled={submitting || calloutFramingDraft.loading || calloutDefaultDraft.loading}
           editMode={intent === 'edit'}
           onReferenceFileUpload={referenceUpload?.onFileUpload}
           referenceUploadAccept={referenceUpload?.accept}
@@ -1034,7 +1076,7 @@ export function useTemplateForms({
     commonErrors: errors,
     onCommonChange,
     perTypeFormSlot,
-    submitting: submitting || materializingWhiteboard,
+    submitting: submitting || materializingWhiteboard || calloutFramingDraft.loading || calloutDefaultDraft.loading,
     isDirty: !pristine || (values.type === 'callout' && calloutForm.dirty),
     onSubmit,
     onCancel: cancel,

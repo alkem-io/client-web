@@ -30,6 +30,7 @@ import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/M
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { Label } from '@/crd/primitives/label';
+import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import { healContributorCollection } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
 import { ResponseDefaultsConnector } from '@/main/crdPages/space/callout/ResponseDefaultsConnector';
@@ -45,6 +46,8 @@ export type CalloutTemplateFormProps = {
   editMode?: boolean;
   /** Parent space id — passed to `ResponseDefaultsConnector` so its "apply a content template" picker can load. */
   spaceId?: string;
+  framingWhiteboardDraft?: WhiteboardDraftLifecycle;
+  defaultWhiteboardDraft?: WhiteboardDraftLifecycle;
   /** Disable every control while the template create/update mutation is in flight. */
   disabled?: boolean;
   /**
@@ -60,6 +63,8 @@ export type CalloutTemplateFormProps = {
 export function CalloutTemplateForm({
   form,
   spaceId,
+  framingWhiteboardDraft,
+  defaultWhiteboardDraft,
   disabled,
   editMode,
   onReferenceFileUpload,
@@ -150,6 +155,7 @@ export function CalloutTemplateForm({
           whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
           whiteboardConfigured={values.whiteboardConfigured}
           whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
+          whiteboardDraft={editMode ? undefined : framingWhiteboardDraft}
           memoMarkdown={values.memoMarkdown}
           onMemoMarkdownChange={v => setField('memoMarkdown', v)}
           memoUpload={{ onImageUpload, iframeAllowedUrls, onError }}
@@ -235,6 +241,7 @@ export function CalloutTemplateForm({
         spaceId={spaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
+        whiteboardDraft={defaultWhiteboardDraft}
         markdownUpload={{ onImageUpload, iframeAllowedUrls, onError }}
       />
     </div>

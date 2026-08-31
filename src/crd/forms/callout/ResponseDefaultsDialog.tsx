@@ -43,6 +43,10 @@ type ResponseDefaultsDialogProps = {
    * accepted for callers that don't need draft access.
    */
   templateSlot?: ReactNode | ((helpers: { applyDraft: ApplyDraft }) => ReactNode);
+  /** Live whiteboard authoring surface supplied by the integration layer. */
+  whiteboardSlot?: (helpers: { draft: ContributionDefaults; applyDraft: ApplyDraft }) => ReactNode;
+  /** Explicit dialog cancellation must dispose any server-owned draft first. */
+  onCancel?: () => Promise<boolean>;
   disabled?: boolean;
 } & MarkdownUploadProps;
 
@@ -58,6 +62,8 @@ export function ResponseDefaultsDialog({
   values,
   onSave,
   templateSlot,
+  whiteboardSlot,
+  onCancel,
   disabled,
   onImageUpload,
   iframeAllowedUrls,
@@ -96,17 +102,24 @@ export function ResponseDefaultsDialog({
     draft.whiteboardContentAvailable !== openSnapshot.whiteboardContentAvailable ||
     draft.sourceWhiteboardId !== openSnapshot.sourceWhiteboardId ||
     draft.sourceCalloutId !== openSnapshot.sourceCalloutId ||
-    draft.clearWhiteboardContent !== openSnapshot.clearWhiteboardContent;
+    draft.clearWhiteboardContent !== openSnapshot.clearWhiteboardContent ||
+    draft.whiteboardDraft?.whiteboardID !== openSnapshot.whiteboardDraft?.whiteboardID;
+
+  const closeAfterCleanup = async () => {
+    if (onCancel && !(await onCancel())) return;
+    onOpenChange(false);
+  };
 
   const handleRequestClose = () => {
     if (isDirty) {
       setDiscardOpen(true);
       return;
     }
-    onOpenChange(false);
+    void closeAfterCleanup();
   };
 
-  const handleConfirmDiscard = () => {
+  const handleConfirmDiscard = async () => {
+    if (onCancel && !(await onCancel())) return;
     setDiscardOpen(false);
     onOpenChange(false);
   };
@@ -194,32 +207,36 @@ export function ResponseDefaultsDialog({
           {type === 'whiteboard' && (
             <div className="space-y-1.5">
               <Label className="text-body text-foreground">{t('responseDefaults.defaultWhiteboard')}</Label>
-              <div className="flex items-center justify-between gap-3 rounded-md border p-3">
-                <span className="text-body text-muted-foreground">
-                  {draft.whiteboardContentAvailable
-                    ? t('responseDefaults.whiteboardConfigured')
-                    : t('responseDefaults.whiteboardNotConfigured')}
-                </span>
-                {draft.whiteboardContentAvailable && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={disabled}
-                    onClick={() =>
-                      setDraft(prev => ({
-                        ...prev,
-                        sourceWhiteboardId: undefined,
-                        sourceCalloutId: undefined,
-                        whiteboardContentAvailable: false,
-                        clearWhiteboardContent: true,
-                      }))
-                    }
-                  >
-                    <Trash2 className="size-4" aria-hidden="true" />
-                    {t('responseDefaults.clearWhiteboard')}
-                  </Button>
-                )}
-              </div>
+              {whiteboardSlot ? (
+                whiteboardSlot({ draft, applyDraft })
+              ) : (
+                <div className="flex items-center justify-between gap-3 rounded-md border p-3">
+                  <span className="text-body text-muted-foreground">
+                    {draft.whiteboardContentAvailable
+                      ? t('responseDefaults.whiteboardConfigured')
+                      : t('responseDefaults.whiteboardNotConfigured')}
+                  </span>
+                  {draft.whiteboardContentAvailable && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={disabled}
+                      onClick={() =>
+                        setDraft(prev => ({
+                          ...prev,
+                          sourceWhiteboardId: undefined,
+                          sourceCalloutId: undefined,
+                          whiteboardContentAvailable: false,
+                          clearWhiteboardContent: true,
+                        }))
+                      }
+                    >
+                      <Trash2 className="size-4" aria-hidden="true" />
+                      {t('responseDefaults.clearWhiteboard')}
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

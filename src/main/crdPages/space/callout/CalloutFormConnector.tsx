@@ -67,6 +67,7 @@ import { buildFlowStateClassificationTagsets } from '@/domain/collaboration/call
 import { useCalloutCreation } from '@/domain/collaboration/calloutsSet/useCalloutCreation/useCalloutCreation';
 import useUploadMediaGalleryVisuals from '@/domain/collaboration/mediaGallery/useUploadMediaGalleryVisuals';
 import { usePollOptionManagement } from '@/domain/collaboration/poll/hooks/usePollOptionManagement';
+import { useWhiteboardDraft } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import useUploadWhiteboardVisuals from '@/domain/collaboration/whiteboard/WhiteboardVisuals/useUploadWhiteboardVisuals';
 import { useSpace } from '@/domain/space/context/useSpace';
 import {
@@ -247,6 +248,26 @@ function CalloutFormConnectorInner({
   const showContributionComments = mode !== 'create' || !restrictions?.disableContributionComments;
   const disableRichMedia = mode === 'create' && Boolean(restrictions?.disableRichMedia);
   const { values, errors, setField, setValues, validate, reset, prefill, dirty } = form;
+
+  const framingWhiteboardDraft = useWhiteboardDraft({
+    scope: { type: 'calloutsSet', id: calloutsSetId },
+    handle: values.framingWhiteboardDraft,
+    onHandleChange: handle => setField('framingWhiteboardDraft', handle),
+    source: { sourceWhiteboardID: values.editMeta?.whiteboardId },
+  });
+  const defaultWhiteboardDraft = useWhiteboardDraft({
+    scope: { type: 'calloutsSet', id: calloutsSetId },
+    handle: values.contributionDefaults.whiteboardDraft,
+    onHandleChange: handle =>
+      setValues(current => ({
+        ...current,
+        contributionDefaults: { ...current.contributionDefaults, whiteboardDraft: handle },
+      })),
+    source: {
+      sourceWhiteboardID: values.contributionDefaults.sourceWhiteboardId,
+      sourceCalloutID: values.contributionDefaults.sourceCalloutId,
+    },
+  });
 
   // Feature 025: contributor candidates for the custom-selection picker (T005).
   // Only fetched when the contributors chip is active AND the dialog is open.
@@ -494,7 +515,8 @@ function CalloutFormConnectorInner({
   };
 
   // --- Create path -------------------------------------------------------
-  const submitting = creating || updating || mediaGalleryUploading;
+  const submitting =
+    creating || updating || mediaGalleryUploading || framingWhiteboardDraft.loading || defaultWhiteboardDraft.loading;
 
   const createAndUpload = async (visibility: CalloutVisibility) => {
     const validationErrors = validate();
@@ -586,6 +608,8 @@ function CalloutFormConnectorInner({
       logError(new Error('Callout post-create visual upload failed', { cause: err as Error }));
       notify(t('callout.uploadAfterCreateFailed'), 'error');
     } finally {
+      framingWhiteboardDraft.consumed();
+      defaultWhiteboardDraft.consumed();
       reset();
       onOpenChange(false);
     }
@@ -840,6 +864,14 @@ function CalloutFormConnectorInner({
   const handleSaveDraft = () => createAndUpload(CalloutVisibility.Draft);
   const handleSaveEdit = () => saveEdit();
 
+  const discardWhiteboardDrafts = async () => {
+    const [framingDiscarded, defaultDiscarded] = await Promise.all([
+      framingWhiteboardDraft.discard(),
+      defaultWhiteboardDraft.discard(),
+    ]);
+    return framingDiscarded && defaultDiscarded;
+  };
+
   const requestClose = (nextOpen: boolean) => {
     if (nextOpen) {
       onOpenChange(true);
@@ -849,11 +881,16 @@ function CalloutFormConnectorInner({
       setDiscardOpen(true);
       return;
     }
-    reset();
-    onOpenChange(false);
+    void discardWhiteboardDrafts().then(discarded => {
+      if (!discarded) return;
+      reset();
+      onOpenChange(false);
+    });
   };
 
-  const handleDiscardConfirm = () => {
+  const handleDiscardConfirm = async () => {
+    const discarded = await discardWhiteboardDrafts();
+    if (!discarded) return;
     setDiscardOpen(false);
     reset();
     onOpenChange(false);
@@ -926,6 +963,9 @@ function CalloutFormConnectorInner({
                     setField('collaboraUploadFile', null);
                     setCollaboraImportError(null);
                   }
+                  if (chip !== 'whiteboard' && values.framingChip === 'whiteboard') {
+                    void framingWhiteboardDraft.discard();
+                  }
                   setField('framingChip', chip);
                 }}
                 editMode={mode === 'edit'}
@@ -968,6 +1008,7 @@ function CalloutFormConnectorInner({
                 onPollStatusChange={handlePollStatusChange}
                 whiteboardConfigured={values.whiteboardConfigured}
                 whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
+                whiteboardDraft={framingWhiteboardDraft}
                 whiteboardPreviewImages={values.whiteboardPreviewImages}
                 whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
                 memoMarkdown={values.memoMarkdown}
@@ -1136,8 +1177,10 @@ function CalloutFormConnectorInner({
         open={defaultsOpen}
         onOpenChange={setDefaultsOpen}
         type={values.responseType}
+        spaceId={space.levelZeroSpaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
+        whiteboardDraft={mode === 'create' ? defaultWhiteboardDraft : undefined}
         markdownUpload={editorMarkdownUpload}
       />
       {mode === 'create' && (

@@ -242,10 +242,19 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
     const isPostOrMemoResponse = values.responseType === 'post' || values.responseType === 'memo';
     const defaultDisplayName = defaults.defaultDisplayName.trim() || undefined;
     const postDescription = isPostOrMemoResponse ? defaults.postDescription.trim() || undefined : undefined;
-    const sourceWhiteboardID = values.responseType === 'whiteboard' ? defaults.sourceWhiteboardId : undefined;
-    const sourceCalloutID = values.responseType === 'whiteboard' ? defaults.sourceCalloutId : undefined;
-    if (defaultDisplayName || postDescription || sourceWhiteboardID || sourceCalloutID) {
-      callout.contributionDefaults = { defaultDisplayName, postDescription, sourceWhiteboardID, sourceCalloutID };
+    const draftWhiteboardID = values.responseType === 'whiteboard' ? defaults.whiteboardDraft?.whiteboardID : undefined;
+    const sourceWhiteboardID =
+      values.responseType === 'whiteboard' && !draftWhiteboardID ? defaults.sourceWhiteboardId : undefined;
+    const sourceCalloutID =
+      values.responseType === 'whiteboard' && !draftWhiteboardID ? defaults.sourceCalloutId : undefined;
+    if (defaultDisplayName || postDescription || draftWhiteboardID || sourceWhiteboardID || sourceCalloutID) {
+      callout.contributionDefaults = {
+        defaultDisplayName,
+        postDescription,
+        draftWhiteboardID,
+        sourceWhiteboardID,
+        sourceCalloutID,
+      };
     }
   }
 
@@ -272,7 +281,8 @@ export const mapFormToCalloutCreationInput = (values: CalloutFormValues, options
   // the mutation resolves.
   if (framingType === CalloutFramingType.Whiteboard) {
     callout.framing.whiteboard = {
-      sourceWhiteboardID: values.editMeta?.whiteboardId,
+      draftWhiteboardID: values.framingWhiteboardDraft?.whiteboardID,
+      sourceWhiteboardID: values.framingWhiteboardDraft ? undefined : values.editMeta?.whiteboardId,
       profile: { displayName: values.title.trim() || options.whiteboardFallbackDisplayName },
       previewSettings: values.whiteboardPreviewSettings,
     };
@@ -481,6 +491,9 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
   };
   if (contributionSettings) settings.contribution = contributionSettings;
 
+  const defaultWhiteboardDraftID =
+    values.responseType === 'whiteboard' ? values.contributionDefaults.whiteboardDraft?.whiteboardID : undefined;
+
   const contributionDefaultsInput: UpdateCalloutEntityInput['contributionDefaults'] | undefined = hasResponseType
     ? {
         defaultDisplayName: values.contributionDefaults.defaultDisplayName.trim() || undefined,
@@ -488,11 +501,17 @@ export const mapFormToCalloutUpdateInput = (values: CalloutFormValues, options: 
           values.responseType === 'post' || values.responseType === 'memo'
             ? values.contributionDefaults.postDescription.trim() || undefined
             : undefined,
+        draftWhiteboardID: defaultWhiteboardDraftID,
         sourceWhiteboardID:
-          values.responseType === 'whiteboard' ? values.contributionDefaults.sourceWhiteboardId : undefined,
-        sourceCalloutID: values.responseType === 'whiteboard' ? values.contributionDefaults.sourceCalloutId : undefined,
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
+            ? values.contributionDefaults.sourceWhiteboardId
+            : undefined,
+        sourceCalloutID:
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
+            ? values.contributionDefaults.sourceCalloutId
+            : undefined,
         clearWhiteboardContent:
-          values.responseType === 'whiteboard'
+          values.responseType === 'whiteboard' && !defaultWhiteboardDraftID
             ? values.contributionDefaults.clearWhiteboardContent || undefined
             : undefined,
       }

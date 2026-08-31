@@ -102,6 +102,8 @@ export type CalloutFormValues = {
    */
   whiteboardPreviewServerUrl?: string;
   whiteboardConfigured: boolean;
+  /** Server-owned live draft used only while creating a Whiteboard framing. */
+  framingWhiteboardDraft?: import('@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft').WhiteboardDraftHandle;
   mediaGalleryVisuals: MediaGalleryFieldVisual[];
   // Collabora document framing — only submitted when framingType is CollaboraDocument
   collaboraDocumentType: CollaboraDocumentType;
@@ -141,6 +143,9 @@ export type CalloutFormValues = {
     pollId?: string;
     memoId?: string;
     whiteboardId?: string;
+    mediaGalleryId?: string;
+    originalMediaGalleryVisualIds?: string[];
+    originalMediaGallerySortOrders?: Record<string, number>;
     /** Framing profile id — where references live. Used to create newly-added references on edit. */
     framingProfileId: string;
     /** Reference ids present at edit-open, so the submit can detect which references were removed. */
@@ -199,6 +204,7 @@ export const EMPTY_CALLOUT_FORM_VALUES: CalloutFormValues = {
   whiteboardPreviewSettings: DefaultWhiteboardPreviewSettings,
   whiteboardPreviewServerUrl: undefined,
   whiteboardConfigured: false,
+  framingWhiteboardDraft: undefined,
   mediaGalleryVisuals: [],
   collaboraDocumentType: CollaboraDocumentType.Wordprocessing,
   collaboraUploadFile: null,

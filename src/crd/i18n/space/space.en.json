@@ -686,6 +686,11 @@
       "connected": "Connected",
       "connecting": "Connecting…",
       "disconnected": "Disconnected",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "finalizing": "Finalizing changes…",
+      "offline": "Offline — will sync automatically",
+      "saveFailed": "Unable to save changes",
       "membersOnline_one": "1 member online",
       "membersOnline_other": "{{count}} members online",
       "connectedUsersLabel": "Connected users",
@@ -705,6 +710,14 @@
     "errors": {
       "loading": "Loading memo…",
       "loadFailed": "Unable to load memo"
+    },
+    "unsavedClose": {
+      "title": "Unsaved memo changes",
+      "description": "These changes cannot be saved right now. Keep the memo open, export them, or explicitly discard them.",
+      "wait": "Keep open and wait",
+      "discard": "Discard and close",
+      "export": "Export first",
+      "exportFailed": "The memo could not be exported. It remains open."
     },
     "deleteConfirm": {
       "title": "Delete memo",
