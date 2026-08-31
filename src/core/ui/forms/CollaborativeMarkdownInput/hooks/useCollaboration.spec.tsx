@@ -35,6 +35,7 @@ vi.mock('@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider', ()
     connect = () => harness.order.push(`connect:${this.options.documentId}`);
     destroy = () => harness.order.push(`destroy:${this.options.documentId}`);
     requestDurability = vi.fn().mockResolvedValue(undefined);
+    hasChangesAtRisk = false;
     emitState = (state: unknown) => {
       this.state = state as { kind: string };
       for (const listener of this.stateListeners) listener(state);

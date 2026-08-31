@@ -13,6 +13,7 @@ import { ExcalidrawEditorBinding, type WhiteboardEditorEntities } from './Excali
 export type CollabAPI = {
   getState: () => CollaborationState;
   hasUnsavedChanges: () => boolean;
+  hasChangesAtRisk: () => boolean;
   requestDurability: () => Promise<void>;
 };
 export type WhiteboardCollaborationView = {
@@ -50,6 +51,7 @@ const CollaborativeExcalidrawWrapper = ({
     () => ({
       getState: () => providerRef.current?.state ?? { kind: 'loading' },
       hasUnsavedChanges: () => providerRef.current?.hasUnsavedChanges ?? false,
+      hasChangesAtRisk: () => providerRef.current?.hasChangesAtRisk ?? false,
       requestDurability: () =>
         providerRef.current?.requestDurability() ?? Promise.reject(new Error('Collaboration is not ready')),
     }),
@@ -110,7 +112,7 @@ const CollaborativeExcalidrawWrapper = ({
 
   useEffect(() => controls?.setUser(username), [controls, username]);
 
-  useCollaborationBeforeUnload(view.lifecycle, collabApi.hasUnsavedChanges());
+  useCollaborationBeforeUnload(collabApi.hasChangesAtRisk());
   const active = view.lifecycle.kind === 'active';
   return (
     <ExcalidrawEditorBinding
