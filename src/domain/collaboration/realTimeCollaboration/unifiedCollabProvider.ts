@@ -464,11 +464,12 @@ export class UnifiedCollabProvider {
       DURABILITY_TIMEOUT_MS
     );
     this.barrier = { requestId, coveredRevision: this.localRevision, resolve, reject, timeout };
-    this.sendFrame(
+    const sent = this.sendFrame(
       encodeFrame(WIRE.DURABILITY_REQUEST, encoder =>
         encoding.writeUint8Array(encoder, lib0String.encodeUtf8(JSON.stringify({ requestId })))
       )
     );
+    if (!sent) this.failSave(requestId, 'The collaboration connection is offline');
     return persisted;
   }
 

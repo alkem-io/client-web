@@ -434,6 +434,24 @@ describe('UnifiedCollabProvider — one per-document loop', () => {
     expect(ws.sent.filter(frame => frameType(frame) === WIRE.DURABILITY_REQUEST)).toEqual([]);
   });
 
+  it('rejects durability immediately when the request frame cannot be sent', async () => {
+    vi.useFakeTimers();
+    const provider = new UnifiedCollabProvider(options);
+    const ws = admitAndSync(provider);
+    const saveResults: Array<string | undefined> = [];
+    provider.onSaveResult(error => saveResults.push(error));
+    provider.doc.getText('content').insert(0, 'delivered');
+    ws.readyState = 2;
+    const timersBeforeRequest = vi.getTimerCount();
+
+    const saved = provider.requestDurability();
+
+    await expect(saved).rejects.toThrow('offline');
+    expect(saveResults).toEqual(['The collaboration connection is offline']);
+    expect(vi.getTimerCount()).toBe(timersBeforeRequest);
+    provider.destroy();
+  });
+
   it('coalesces durability callers and does not let a stale ack mark a later edit saved', async () => {
     const provider = new UnifiedCollabProvider(options);
     const ws = admitAndSync(provider);
