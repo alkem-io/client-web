@@ -53,11 +53,11 @@ export function bannerPlaceholderSize(aspectRatio: number): { width: number; hei
  * it means anything — or the default.
  *
  * The stored ratio is only honoured when the visual actually has an image. The
- * one control that writes it is the crop dialog's shape slider, so a stored
- * ratio describes an uploaded image's crop; a visual with no image still
- * carries a persisted value, but it is the server's row-creation default (6),
- * chosen by nobody, and letting it through would pin every no-image gradient
- * to the historic shape instead of `DEFAULT`.
+ * server derives it from the uploaded pixels — which the crop dialog cut to
+ * the shape slider's ratio — so a stored ratio describes an uploaded image's
+ * shape; a visual with no image still carries a persisted value, but it is the
+ * server's row-creation default (6), chosen by nobody, and letting it through
+ * would pin every no-image gradient to the historic shape instead of `DEFAULT`.
  *
  * Deliberately does **not** clamp into `MIN`/`MAX`. Those two constants are a
  * fallback for the *edit* control while the server's real bounds are loading;

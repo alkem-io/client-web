@@ -235,17 +235,9 @@ export function ImageCropDialog({
   // A local const (not `config.aspectRatioBounds` inline) so the narrowing from
   // the JSX guard below carries into the slider's onChange closure.
   const aspectRatioBounds = config.aspectRatioBounds;
-  /**
-   * The slider runs `max → min` left-to-right (10:1 slim strip on the left,
-   * 6:1 on the right), while the DOM range input itself must stay ascending —
-   * so the rendered value is mirrored around the bounds' midpoint and mirrored
-   * back on change. Rounded to the 0.1 step so the mirror arithmetic never
-   * drifts the value off the input's step grid (or past the DB's numeric(3,1)).
-   * `aria-valuetext` announces the real ratio, so AT hears what sighted users
-   * see.
-   */
-  const mirrorAspectRatio = (value: number) =>
-    aspectRatioBounds ? Math.round((aspectRatioBounds.min + aspectRatioBounds.max - value) * 10) / 10 : value;
+  // What the slider shows: state once the user has moved it, the bounds' max
+  // (the 10:1 design default) until then.
+  const sliderRatio = selectedAspectRatio ?? aspectRatioBounds?.max;
 
   // `onComplete` fires only on pointer/keyboard interaction with the crop box
   // (plus the very first undefined → crop transition — see `componentDidUpdate`
@@ -349,12 +341,10 @@ export function ImageCropDialog({
             </p>
           )}
 
-          {aspectRatioBounds && (
+          {aspectRatioBounds && sliderRatio !== undefined && (
             <div className="flex flex-col gap-2">
               <label htmlFor={sliderId} className="text-body-emphasis">
-                {t('imageCrop.aspectRatio.label', {
-                  ratio: (selectedAspectRatio ?? aspectRatioBounds.max).toFixed(1),
-                })}
+                {t('imageCrop.aspectRatio.label', { ratio: sliderRatio.toFixed(1) })}
               </label>
               <input
                 id={sliderId}
@@ -368,11 +358,17 @@ export function ImageCropDialog({
                 min={aspectRatioBounds.min}
                 max={aspectRatioBounds.max}
                 step={0.1}
-                // Mirrored: thumb at the left edge = `max` (10), right edge =
-                // `min` (6) — see `mirrorAspectRatio`.
-                value={mirrorAspectRatio(selectedAspectRatio ?? aspectRatioBounds.max)}
+                // The slider runs `max → min` left-to-right (10:1 slim strip on
+                // the left, 6:1 on the right). `dir="rtl"` gives the browser the
+                // reversed track while the element's real value stays the real
+                // ratio — so `value`, the implicit `aria-valuenow`, and
+                // `aria-valuetext` all agree, and the arrow keys follow the
+                // visible thumb. Mirroring the numeric value instead would have
+                // exposed the inverse ratio to assistive technology.
+                dir="rtl"
+                value={sliderRatio}
                 onChange={e => {
-                  const ratio = mirrorAspectRatio(Number(e.target.value));
+                  const ratio = Number(e.target.value);
                   setSelectedAspectRatio(ratio);
                   config.onAspectRatioChange?.(ratio);
                   // Reshape what the user already framed rather than starting
@@ -383,9 +379,7 @@ export function ImageCropDialog({
                   const previous = crop && convertToPixelCrop(crop, image.width, image.height);
                   applyCrop(previous ? reshapeCropToAspect(image, previous, ratio) : centeredAspectCrop(image, ratio));
                 }}
-                aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', {
-                  ratio: (selectedAspectRatio ?? aspectRatioBounds.max).toFixed(1),
-                })}
+                aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', { ratio: sliderRatio.toFixed(1) })}
                 className="w-full accent-primary"
               />
               <div className="flex justify-between">
