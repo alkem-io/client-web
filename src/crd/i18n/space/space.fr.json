@@ -688,6 +688,7 @@
       "disconnected": "Déconnecté",
       "saved": "Enregistré",
       "saving": "Enregistrement…",
+      "finalizing": "Finalisation des modifications…",
       "offline": "Hors ligne — synchronisation automatique",
       "saveFailed": "Impossible d'enregistrer les modifications",
       "membersOnline_one": "1 membre en ligne",

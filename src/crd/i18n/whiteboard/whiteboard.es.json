@@ -48,6 +48,7 @@
     "saveStatus": {
       "saved": "Guardado",
       "saving": "Guardando…",
+      "finalizing": "Finalizando cambios…",
       "offline": "Sin conexión — se sincronizará automáticamente",
       "ended": "No disponible"
     },

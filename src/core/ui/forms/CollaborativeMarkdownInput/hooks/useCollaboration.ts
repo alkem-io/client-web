@@ -74,7 +74,7 @@ export const useCollaboration = ({ collaborationId }: UseCollaborationProps) => 
       ? MemoStatus.DISCONNECTED
       : MemoStatus.CONNECTED;
   const readOnlyCode: ReadOnlyCode | undefined = provider?.readOnlyReason;
-  useCollaborationBeforeUnload(currentLifecycle, !!provider?.hasUnsavedChanges);
+  useCollaborationBeforeUnload(!!provider?.hasChangesAtRisk);
 
   return {
     status,
