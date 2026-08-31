@@ -14,18 +14,7 @@ import {
   TagsetType,
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { serializeWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
-
-// A REAL non-empty snapshot (a drawn rectangle). `drewFreshContent` decodes the content
-// semantically now (byte-equality against the non-deterministic empty encoding is gone),
-// so "the user drew content" fixtures must be genuine encoded scenes, not opaque strings.
-const drawnWhiteboardContent = serializeWhiteboardContent({
-  elements: [{ id: 'r', type: 'rectangle', x: 0, y: 0, width: 10, height: 10, index: 'a0' }],
-  assets: {},
-  appState: {},
-} as never);
 
 import {
   calloutFormValuesToCreateCalloutInput,
@@ -80,70 +69,20 @@ describe('calloutFormValuesToCreateCalloutInput', () => {
     );
   });
 
-  it('carries the drawn whiteboard content (opaque base64 Yjs-V2, never JSON) for whiteboard framing', () => {
-    // Content is a base64 Yjs-V2 snapshot the mapper passes through verbatim — not Excalidraw JSON.
-    const drawnContent = 'AQEBAGRyYXdu'; // opaque base64-shaped placeholder, distinct from the empty one
-    const input = calloutFormValuesToCreateCalloutInput(
-      values({ framingChip: 'whiteboard', whiteboardContent: drawnContent }),
-      fallbacks
-    );
-    expect(input.framing.whiteboard?.content).toBe(drawnContent);
-  });
-
-  // #29 — a whiteboard-framed source's live content is WS-only and unreadable on the client, so the
-  // Save-as-Template / Duplicate flows pass the source whiteboard's id and the server copies its stored
-  // snapshot into the new template whiteboard.
-  it('sends sourceWhiteboardID AND clears content (mutually exclusive) when the source has a whiteboard and content is the empty placeholder (#29)', () => {
+  it('sends sourceWhiteboardID and never sends content for a source-backed whiteboard', () => {
     const input = calloutFormValuesToCreateCalloutInput(
       values({
         framingChip: 'whiteboard',
-        whiteboardContent: EmptyWhiteboardString,
         editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
       }),
       fallbacks
     );
     expect(input.framing.whiteboard?.sourceWhiteboardID).toBe('source-wb-1');
-    // The server rejects a create carrying BOTH content and sourceWhiteboardID (by
-    // presence — the empty placeholder counts). Content must be dropped so only the
-    // source pointer travels; undefined is omitted from the GraphQL variables.
-    expect(input.framing.whiteboard?.content).toBeUndefined();
-  });
-
-  // C4 — clearing a source-derived template's whiteboard to blank ON PURPOSE (whiteboardEdited=true)
-  // must send the empty content and NOT sourceWhiteboardID, so the intentional blank is saved rather
-  // than the server re-copying the source. Emptiness alone no longer classifies it as "untouched".
-  it('sends empty content and NOT sourceWhiteboardID when a source-derived whiteboard was deliberately cleared (C4)', () => {
-    const input = calloutFormValuesToCreateCalloutInput(
-      values({
-        framingChip: 'whiteboard',
-        whiteboardContent: EmptyWhiteboardString,
-        whiteboardEdited: true,
-        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
-      }),
-      fallbacks
-    );
-    expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
-    expect(input.framing.whiteboard?.content).toBe(EmptyWhiteboardString);
-  });
-
-  it('does NOT send sourceWhiteboardID when the user drew fresh content (the real drawing is sent instead)', () => {
-    const input = calloutFormValuesToCreateCalloutInput(
-      values({
-        framingChip: 'whiteboard',
-        whiteboardContent: drawnWhiteboardContent, // a real, non-empty drawn scene
-        editMeta: { framingProfileId: 'fp-1', originalReferenceIds: [], whiteboardId: 'source-wb-1' },
-      }),
-      fallbacks
-    );
-    expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
-    expect(input.framing.whiteboard?.content).toBe(drawnWhiteboardContent);
+    expect((input.framing.whiteboard as { content?: unknown }).content).toBeUndefined();
   });
 
   it('does NOT send sourceWhiteboardID for a from-scratch whiteboard template (no source whiteboard id)', () => {
-    const input = calloutFormValuesToCreateCalloutInput(
-      values({ framingChip: 'whiteboard', whiteboardContent: EmptyWhiteboardString }),
-      fallbacks
-    );
+    const input = calloutFormValuesToCreateCalloutInput(values({ framingChip: 'whiteboard' }), fallbacks);
     expect(input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
   });
 
@@ -176,22 +115,17 @@ describe('calloutFormValuesToUpdateCalloutEntityInput', () => {
     expect(input.framing?.profile?.displayName).toBe('Edited');
   });
 
-  it('adds the whiteboard body + preview settings for whiteboard framing (unlike the live-callout mapper)', () => {
-    const wbContent = 'AQEBAGVkaXQ='; // opaque base64 Yjs-V2 content, passed through verbatim (not JSON)
-    const input = calloutFormValuesToUpdateCalloutEntityInput(
-      values({ framingChip: 'whiteboard', whiteboardContent: wbContent }),
-      'c1'
-    );
-    expect(input.framing?.whiteboardContent).toBe(wbContent);
-    expect(input.framing?.whiteboardPreviewSettings).toBeDefined();
+  it('does not add a whiteboard body for whiteboard framing', () => {
+    const input = calloutFormValuesToUpdateCalloutEntityInput(values({ framingChip: 'whiteboard' }), 'c1');
+    expect((input.framing as { whiteboardContent?: unknown })?.whiteboardContent).toBeUndefined();
   });
 
-  it('adds the memo body for memo framing when non-empty', () => {
+  it('does not add the memo body for memo framing; existing templates use the collaborative editor', () => {
     const input = calloutFormValuesToUpdateCalloutEntityInput(
       values({ framingChip: 'memo', memoMarkdown: '# Notes' }),
       'c1'
     );
-    expect(input.framing?.memoContent).toBe('# Notes');
+    expect(input.framing?.memoContent).toBeUndefined();
   });
 
   it('does not add a memo body for non-memo framing', () => {
@@ -258,7 +192,7 @@ const baseFragment = (
     id: 'cd-1',
     defaultDisplayName: 'Item',
     postDescription: 'A post',
-    whiteboardContent: undefined,
+    whiteboardContentAvailable: false,
   },
 });
 
@@ -276,7 +210,8 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.contributionDefaults).toEqual({
       defaultDisplayName: 'Item',
       postDescription: 'A post',
-      whiteboardContent: '',
+      whiteboardContentAvailable: false,
+      sourceCalloutId: 'callout-1',
     });
     expect(v.referenceRows).toEqual([{ id: 'ref-1', name: 'Docs', uri: 'https://x.test', description: 'd' }]);
     expect(v.editMeta?.framingProfileTagsetId).toBe('ts-1');
@@ -396,8 +331,6 @@ describe('calloutTemplateContentToFormValues', () => {
       })
     );
     expect(v.framingChip).toBe('whiteboard');
-    // #29: the client seeds an empty placeholder; the server copies the source whiteboard's content on create.
-    expect(v.whiteboardContent).toBe(EmptyWhiteboardString);
     expect(v.whiteboardConfigured).toBe(true);
     // D16 (2026-05-18): server preview URL is undefined when the loaded whiteboard has no Visual.
     expect(v.whiteboardPreviewServerUrl).toBeUndefined();
@@ -446,9 +379,9 @@ describe('calloutTemplateContentToFormValues', () => {
     expect(v.whiteboardPreviewServerUrl).toBe('https://cdn.alkem.io/wb/preview.png');
   });
 
-  it('falls back to the empty-whiteboard sentinel when whiteboard framing has no drawing', () => {
+  it('does not expose whiteboard snapshot bytes when whiteboard framing has no drawing', () => {
     const v = calloutTemplateContentToFormValues(baseFragment());
-    expect(v.whiteboardContent).toBe(EmptyWhiteboardString);
+    expect(v.whiteboardContent).toBe(EMPTY_CALLOUT_FORM_VALUES.whiteboardContent);
   });
 
   it('copies the memo body', () => {
@@ -546,6 +479,28 @@ describe('calloutTemplateContentToFormValues', () => {
     );
     expect(v.framingChip).toBe('document');
     expect(v.collaboraDocumentType).toBe(CollaboraDocumentType.Presentation);
+  });
+
+  it('captures the media gallery identity and original ordering for edit persistence', () => {
+    const v = calloutTemplateContentToFormValues(
+      baseFragment({
+        type: CalloutFramingType.MediaGallery,
+        mediaGallery: {
+          __typename: 'MediaGallery',
+          id: 'gallery-1',
+          visuals: [
+            { __typename: 'Visual', id: 'visual-2', uri: '/two', sortOrder: 2 },
+            { __typename: 'Visual', id: 'visual-1', uri: '/one', sortOrder: 1 },
+          ],
+        } as never,
+      })
+    );
+
+    expect(v.editMeta).toMatchObject({
+      mediaGalleryId: 'gallery-1',
+      originalMediaGalleryVisualIds: ['visual-2', 'visual-1'],
+      originalMediaGallerySortOrders: { 'visual-2': 2, 'visual-1': 1 },
+    });
   });
 
   it('falls back to the "none" response type only when allowedTypes is empty', () => {

@@ -1,4 +1,5 @@
 import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import type { ContactLeadRecipient } from '@/crd/components/chat/ContactLeadsDialog';
@@ -19,11 +20,12 @@ import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { VirtualContributorsSection } from '@/crd/components/space/sidebar/VirtualContributorsSection';
 import type { ClassificationTagsetModel } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.model';
 import { useSpace } from '@/domain/space/context/useSpace';
-import { buildSettingsTabUrl, buildSpaceSectionUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import { PostIndexDialogConnector } from '../callout/PostIndexDialogConnector';
 import { getInitials } from '../dataMappers/spacePageDataMapper';
 import { ContactLeadsDialogConnector } from '../dialogs/ContactLeadsDialogConnector';
 import { InviteMembersDialogConnector } from '../dialogs/InviteMembersDialogConnector';
+import { SubspacesDialogConnector } from '../dialogs/SubspacesDialogConnector';
 import { VirtualContributorInviteConnector } from '../dialogs/VirtualContributorInviteConnector';
 import { useCrdCalendarSidebar } from '../hooks/useCrdCalendarSidebar';
 import { useCrdCommunityUpdates } from '../hooks/useCrdCommunityUpdates';
@@ -82,6 +84,7 @@ export function SpaceTabSidebarConnector({
   onCreateSubspace,
 }: SpaceTabSidebarConnectorProps) {
   const { space, permissions } = useSpace();
+  const { t } = useTranslation('crd-space');
   const navigate = useNavigate();
   const locale = useCrdSpaceLocale();
 
@@ -91,6 +94,7 @@ export function SpaceTabSidebarConnector({
   const [inviteOpen, setInviteOpen] = useState(false);
   const [vcInviteOpen, setVcInviteOpen] = useState(false);
   const [indexOpen, setIndexOpen] = useState(false);
+  const [subspacesOpen, setSubspacesOpen] = useState(false);
 
   const plan = resolveSidebarPlan(sidebar);
   const skips = deriveWidgetSkips(plan);
@@ -181,7 +185,10 @@ export function SpaceTabSidebarConnector({
       <SubspacesSection
         key="subspaceLinks"
         subspaces={subspaces}
-        showAllHref={buildSpaceSectionUrl(space.about.profile.url ?? '', 3)}
+        // A dialog instead of a link to the Subspaces tab: the Subspaces callout
+        // can be moved to any tab, so a hardcoded tab redirect may land the user
+        // on a page without it (alkem-io/alkemio#2023).
+        onShowAllClick={() => setSubspacesOpen(true)}
       />
     ),
     events: (
@@ -283,6 +290,25 @@ export function SpaceTabSidebarConnector({
         classificationTagsets={classificationTagsets}
         tabSectionNumber={tabPosition + 1}
       />
+
+      {!skips.subspaceLinks && (
+        <SubspacesDialogConnector
+          open={subspacesOpen}
+          onOpenChange={setSubspacesOpen}
+          spaceId={space.id}
+          emptyText={t('subspaces.empty.title')}
+          onCreateSubspace={
+            permissions.canCreateSubspaces
+              ? () => {
+                  // Close first — two stacked modal Radix dialogs fight over the
+                  // focus trap and leave the create form unresponsive.
+                  setSubspacesOpen(false);
+                  onCreateSubspace();
+                }
+              : undefined
+          }
+        />
+      )}
     </>
   );
 }

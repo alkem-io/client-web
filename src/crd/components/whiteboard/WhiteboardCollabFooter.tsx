@@ -13,6 +13,7 @@ type WhiteboardCollabFooterProps = {
   onRestart?: () => void;
   guestWarningVisible?: boolean;
   guestAccessBadge?: ReactNode;
+  saveStatus?: 'saved' | 'saving' | 'offline' | 'finalizing' | 'ended';
   className?: string;
 };
 
@@ -25,6 +26,7 @@ export function WhiteboardCollabFooter({
   onRestart,
   guestWarningVisible,
   guestAccessBadge,
+  saveStatus,
   className,
 }: WhiteboardCollabFooterProps) {
   const { t } = useTranslation('crd-whiteboard');
@@ -57,6 +59,14 @@ export function WhiteboardCollabFooter({
       </div>
 
       <div className="flex items-center gap-2">
+        {saveStatus && (
+          <output
+            aria-live={saveStatus === 'ended' ? 'assertive' : 'polite'}
+            className={cn('text-caption', saveStatus === 'ended' ? 'text-destructive' : 'text-muted-foreground')}
+          >
+            {t(`footer.saveStatus.${saveStatus}` as 'footer.saveStatus.saved')}
+          </output>
+        )}
         {guestWarningVisible && (
           <div className="flex items-center gap-1 border border-destructive rounded px-2 py-1 text-destructive">
             <Globe className="size-3.5" aria-hidden="true" />

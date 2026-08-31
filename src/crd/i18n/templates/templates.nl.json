@@ -168,6 +168,7 @@
       "uploadBanner": "Voorbeeldafbeelding uploaden"
     },
     "save": "Opslaan",
+    "done": "Gereed",
     "cancel": "Annuleren",
     "whiteboard": {
       "drawing": "Whiteboard",
@@ -313,9 +314,9 @@
       "hidden": "Verborgen"
     },
     "searchVisibilityHints": {
-      "public": "Iedereen — inclusief niet-geauthenticeerde bezoekers — kan dit pakket via zoeken vinden.",
-      "account": "Aangemelde gebruikers kunnen dit pakket via zoeken vinden.",
-      "hidden": "Alleen leden van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
+      "public": "Iedereen kan dit pakket via zoeken vinden.",
+      "account": "Alleen het eigenaarsaccount kan dit pakket via zoeken vinden — inclusief de geassocieerden, als de eigenaar een organisatie is.",
+      "hidden": "Alleen beheerders van het eigenaarsaccount kunnen dit pakket via zoeken vinden."
     },
     "save": "Wijzigingen opslaan",
     "crop": {

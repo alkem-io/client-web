@@ -231,6 +231,11 @@ export function PostCard({
   const hasCollapsibleComments = commentsSlot !== undefined;
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const showPublishDetails = post.showPublishDetails !== false;
+  // Emoji reactions ride on the same switch as comments. When commenting is turned
+  // off for the callout, the whole reactions surface (picker, total pill, who-reacted)
+  // goes with it; with nothing else to show, the footer row disappears too, so the card
+  // looks exactly as it did before reactions existed.
+  const showReactions = post.commentsEnabled !== false;
 
   const handleCommentsOpenChange = (open: boolean) => {
     setIsCommentsOpen(open);
@@ -549,9 +554,10 @@ export function PostCard({
       {/* Footer is hidden entirely when comments are disabled AND there are no existing messages —
           mirrors the MUI behavior. When messages exist, the thread stays visible (read-only via
           consumer-gated `commentInputSlot`) even after the admin disables further commenting.
-          The reactions widget lives here too, bottom-right of the footer. */}
-      {post.commentsEnabled !== false || (post.commentCount ?? 0) > 0 ? (
-        hasCollapsibleComments ? (
+          The reactions widget lives here too, bottom-right of the footer — but only while
+          commenting is enabled, so a comments-disabled card never keeps a reactions-only row. */}
+      {(post.commentsEnabled !== false || (post.commentCount ?? 0) > 0) &&
+        (hasCollapsibleComments ? (
           <CardFooter className="!p-0 flex-col items-stretch gap-0 border-t bg-muted/5">
             <Collapsible open={isCommentsOpen} onOpenChange={handleCommentsOpenChange}>
               {/* Trigger and reactions are SIBLINGS in this row — the reactions must
@@ -573,7 +579,7 @@ export function PostCard({
                     <span>{commentLabel}</span>
                   </button>
                 </CollapsibleTrigger>
-                {reactionsSlot && <div className="shrink-0">{reactionsSlot}</div>}
+                {showReactions && reactionsSlot && <div className="shrink-0">{reactionsSlot}</div>}
               </div>
               <CollapsibleContent className="px-6 pt-4 pb-4">
                 <div className="flex flex-col gap-3">
@@ -597,18 +603,9 @@ export function PostCard({
               <MessageSquare className="w-4 h-4" aria-hidden="true" />
               <span className="text-caption">{commentLabel}</span>
             </Button>
-            {reactionsSlot && <div className="ml-auto shrink-0">{reactionsSlot}</div>}
+            {showReactions && reactionsSlot && <div className="ml-auto shrink-0">{reactionsSlot}</div>}
           </CardFooter>
-        )
-      ) : (
-        // Comments footer suppressed (disabled + none yet) but reactions still
-        // need a home — render a minimal reactions-only footer, right-aligned.
-        reactionsSlot && (
-          <CardFooter className="!py-3 flex items-center border-t bg-muted/5 px-6">
-            <div className="ml-auto shrink-0">{reactionsSlot}</div>
-          </CardFooter>
-        )
-      )}
+        ))}
     </Card>
   );
 }

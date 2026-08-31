@@ -24,6 +24,12 @@ export type GqlTemplateLike = {
     cardinality: GqlClassificationCardinality;
     values: Array<{ id: string; label: string }>;
   } | null;
+  whiteboard?: {
+    profile?: { cardBanner?: { uri: string } | null } | null;
+  } | null;
+  contentSpace?: {
+    about?: { profile?: { cardBanner?: { uri: string } | null } | null } | null;
+  } | null;
 };
 
 /** GraphQL `TemplateType` enum → the CRD string union. */
@@ -72,13 +78,20 @@ export function toGqlTemplateType(type: TemplateType): GqlTemplateType {
  */
 export function mapTemplateToCardData(template: GqlTemplateLike, ownerLabel?: string): TemplateCardData {
   const tags = template.profile.defaultTagset?.tags ?? template.profile.tagset?.tags ?? [];
+  const parentBanner = template.profile.visual?.uri || template.profile.cardBanner?.uri;
+  const bannerUrl =
+    template.type === GqlTemplateType.Whiteboard
+      ? template.whiteboard?.profile?.cardBanner?.uri || parentBanner
+      : template.type === GqlTemplateType.Space
+        ? template.contentSpace?.about?.profile?.cardBanner?.uri || parentBanner
+        : parentBanner;
   return {
     id: template.id,
     type: mapGqlTemplateType(template.type),
     name: template.profile.displayName,
     description: template.profile.description ?? '',
     tags: tags.filter((t): t is string => typeof t === 'string'),
-    bannerUrl: template.profile.visual?.uri || template.profile.cardBanner?.uri || undefined,
+    bannerUrl: bannerUrl || undefined,
     color: pickColorFromId(template.id),
     url: template.profile.url ?? undefined,
     ownerLabel,

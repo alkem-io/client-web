@@ -16,7 +16,6 @@ import { PreviewCropDialog } from '@/crd/components/whiteboard/PreviewCropDialog
 import { PreviewSettingsDialog } from '@/crd/components/whiteboard/PreviewSettingsDialog';
 import { WhiteboardEditorShell } from '@/crd/components/whiteboard/WhiteboardEditorShell';
 import { WhiteboardSaveFooter } from '@/crd/components/whiteboard/WhiteboardSaveFooter';
-import mergeWhiteboard from '@/domain/collaboration/whiteboard/utils/mergeWhiteboard';
 import whiteboardValidationSchema from '@/domain/collaboration/whiteboard/validation/whiteboardFormSchema';
 import {
   DefaultWhiteboardPreviewSettings,
@@ -35,7 +34,6 @@ import { useWhiteboardAssetAdapter } from '@/domain/common/whiteboard/excalidraw
 import ExcalidrawWrapper from '@/domain/common/whiteboard/excalidraw/ExcalidrawWrapper';
 import { handleExcalidrawEscape } from '@/domain/common/whiteboard/excalidraw/excalidrawEscape';
 import { WhiteboardAssistantRailConnector } from './WhiteboardAssistantRailConnector';
-import { WhiteboardTemplatePickerButton } from './WhiteboardTemplatePickerButton';
 
 export interface WhiteboardWithContent {
   id: string;
@@ -211,19 +209,6 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
     actions.onCancel();
   };
 
-  const handleImportTemplate = async (whiteboardContent: string) => {
-    if (excalidrawAPI && options.canEdit) {
-      try {
-        await mergeWhiteboard(excalidrawAPI, whiteboardContent, assetAdapter);
-      } catch (err) {
-        notify(t('templateLibrary.whiteboardTemplates.errorImporting'), 'error');
-        logError(new Error(`Error importing whiteboard template: '${err}'`), {
-          category: TagCategoryValues.WHITEBOARD,
-        });
-      }
-    }
-  };
-
   const formikRef =
     useRef<
       FormikProps<{
@@ -253,9 +238,6 @@ const CrdSingleUserWhiteboardDialog = ({ entities, actions, options, state }: Cr
             // Escape first deselects/cancels in Excalidraw; only closes the dialog when there's nothing to clear.
             onEscapeKeyDown={event => handleExcalidrawEscape(excalidrawAPI, event)}
             title={options.dialogTitle ?? t('common.Whiteboard')}
-            titleExtra={
-              options.canEdit ? <WhiteboardTemplatePickerButton onImport={handleImportTemplate} /> : undefined
-            }
             headerActions={options.headerActions}
             rail={<WhiteboardAssistantRailConnector whiteboardId={whiteboard.id} />}
             footer={

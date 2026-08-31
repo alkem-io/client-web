@@ -94,7 +94,6 @@ export function ContributionsPreviewConnector({
           onOpenChange={setAddOpen}
           calloutId={callout.id}
           defaultDisplayName={defaults?.defaultDisplayName}
-          defaultContent={defaults?.whiteboardContent}
         />
       ) : contributionType === CalloutContributionType.Memo ? (
         <MemoContributionAddConnector

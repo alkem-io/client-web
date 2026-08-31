@@ -24,10 +24,8 @@ import {
 import { TASK_TAGSET_NAME } from '@/crd/components/callout/task-board/taskBoard';
 import { DefaultWhiteboardPreviewSettings } from '@/domain/collaboration/whiteboard/WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
 import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
-import { isEmptyWhiteboardContent } from '@/domain/common/whiteboard/excalidraw/whiteboardContent';
 import {
   allowedActorsFromServer,
-  framingChipToServer,
   mapFormToCalloutCreationInput,
   mapFormToCalloutUpdateInput,
 } from '@/main/crdPages/space/callout/calloutFormMapper';
@@ -49,13 +47,8 @@ export type CalloutTemplateMapperFallbacks = {
  *
  * #29 — a whiteboard-framed source's live content is WS-only and can no longer be read on the client
  * (006-collab-content-unification), so we can't carry the scene over in `framing.whiteboard.content`.
- * Instead, when the source has a whiteboard the user did NOT TOUCH in this dialog (still the empty
- * placeholder AND `whiteboardEdited === false`), we pass `framing.whiteboard.sourceWhiteboardID` and
- * let the SERVER copy the source whiteboard's stored snapshot into the new template whiteboard. This
- * also fixes Duplicate / import-from-library (same mapper, same source pointer in `editMeta.whiteboardId`).
- * If the user drew fresh content — OR deliberately cleared the board (`whiteboardEdited === true`) — the
- * real (possibly empty) content is sent and the source pointer is omitted, so an intentional blank is
- * saved instead of the source being silently re-copied. Emptiness alone is NOT read as "untouched".
+ * Instead, the create mapper carries only the source whiteboard id. The server copies its stored
+ * snapshot and media, or creates a canonical blank when there is no source.
  */
 export function calloutFormValuesToCreateCalloutInput(
   values: CalloutFormValues,
@@ -66,26 +59,6 @@ export function calloutFormValuesToCreateCalloutInput(
     whiteboardFallbackDisplayName: fallbacks.whiteboardFallbackDisplayName,
     collaboraFallbackDisplayName: fallbacks.collaboraFallbackDisplayName,
   });
-
-  const sourceWhiteboardId = values.editMeta?.whiteboardId;
-  // "Untouched" means BOTH still-empty AND the user never opened/saved the editor. A deliberate
-  // clear (`whiteboardEdited === true`) is empty but must NOT re-copy the source — the intentional
-  // blank travels as `content` instead. Emptiness alone is not proof the whiteboard is pristine.
-  const isUntouchedSourceWhiteboard = isEmptyWhiteboardContent(values.whiteboardContent) && !values.whiteboardEdited;
-  if (
-    input.framing?.whiteboard &&
-    framingChipToServer(values.framingChip) === CalloutFramingType.Whiteboard &&
-    sourceWhiteboardId &&
-    isUntouchedSourceWhiteboard
-  ) {
-    input.framing.whiteboard.sourceWhiteboardID = sourceWhiteboardId;
-    // `content` and `sourceWhiteboardID` are mutually exclusive server-side (a create
-    // carrying BOTH is rejected by presence, and the empty placeholder counts as
-    // present). The server copies the source whiteboard's stored snapshot, so the
-    // placeholder `content` mapFormToCalloutCreationInput set must be dropped entirely
-    // (the field is a required string here; omit the key so it never reaches the wire).
-    delete (input.framing.whiteboard as { content?: string }).content;
-  }
 
   // Pick only the fields `CreateCalloutInput` accepts (drops `sendNotification` / `classification`,
   // which are concrete-callout concerns and meaningless on a template). `taskBoard` IS forwarded:
@@ -101,24 +74,14 @@ export function calloutFormValuesToCreateCalloutInput(
 
 /**
  * `CalloutFormValues` → `UpdateCalloutEntityInput` for `updateCalloutTemplate({ calloutData })`.
- * Starts from the live-callout update mapper (handles profile / references / tagsets / link / poll-title /
- * settings / contributionDefaults) then layers on the static body fields a *template* keeps —
- * whiteboard content + preview settings, memo content — which the live mapper deliberately omits
- * (a live callout edits those through its collaborative dialogs; a template stores them directly).
+ * Starts from the live-callout update mapper. Existing whiteboard and memo bodies are edited through
+ * their collaborative dialogs; this metadata mutation never carries Yjs or Markdown body content.
  */
 export function calloutFormValuesToUpdateCalloutEntityInput(
   values: CalloutFormValues,
   calloutId: string
 ): UpdateCalloutEntityInput {
   const { input } = mapFormToCalloutUpdateInput(values, { calloutId });
-  const framingType = framingChipToServer(values.framingChip);
-  if (input.framing && framingType === CalloutFramingType.Whiteboard) {
-    input.framing.whiteboardContent = values.whiteboardContent;
-    input.framing.whiteboardPreviewSettings = values.whiteboardPreviewSettings;
-  }
-  if (input.framing && framingType === CalloutFramingType.Memo && values.memoMarkdown.trim()) {
-    input.framing.memoContent = values.memoMarkdown;
-  }
   return input;
 }
 
@@ -231,9 +194,8 @@ export function calloutTemplateContentToFormValues(
     contributionDefaults: {
       defaultDisplayName: contributionDefaults.defaultDisplayName ?? '',
       postDescription: contributionDefaults.postDescription ?? '',
-      whiteboardContent: isEmptyWhiteboardContent(contributionDefaults.whiteboardContent)
-        ? ''
-        : (contributionDefaults.whiteboardContent ?? ''),
+      whiteboardContentAvailable: contributionDefaults.whiteboardContentAvailable,
+      sourceCalloutId: callout.id,
     },
     prePopulateLinkRows: [],
     referenceRows:
@@ -250,6 +212,11 @@ export function calloutTemplateContentToFormValues(
       pollId: framing.poll?.id,
       memoId: framing.memo?.id,
       whiteboardId: framing.whiteboard?.id,
+      mediaGalleryId: framing.mediaGallery?.id,
+      originalMediaGalleryVisualIds: framing.mediaGallery?.visuals.map(v => v.id) ?? [],
+      originalMediaGallerySortOrders: Object.fromEntries(
+        framing.mediaGallery?.visuals.map(v => [v.id, v.sortOrder ?? 0]) ?? []
+      ),
       framingProfileId: framing.profile.id,
       originalReferenceIds: (framing.profile.references ?? []).map(r => r.id),
     },

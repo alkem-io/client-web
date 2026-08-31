@@ -168,6 +168,7 @@
       "uploadBanner": "Upload preview image"
     },
     "save": "Save",
+    "done": "Done",
     "cancel": "Cancel",
     "whiteboard": {
       "drawing": "Whiteboard",
@@ -313,9 +314,9 @@
       "hidden": "Hidden"
     },
     "searchVisibilityHints": {
-      "public": "Anyone — including unauthenticated visitors — can find this pack via search.",
-      "account": "Signed-in users can find this pack via search.",
-      "hidden": "Only members of the owning account can find this pack via search."
+      "public": "Anyone can find this pack via search.",
+      "account": "Only the owning account can find this pack via search — including its Associates, if the owner is an organization.",
+      "hidden": "Only admins of the owning account can find this pack via search."
     },
     "save": "Save changes",
     "crop": {

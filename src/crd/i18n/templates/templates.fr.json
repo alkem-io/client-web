@@ -168,6 +168,7 @@
       "uploadBanner": "Téléverser une image d’aperçu"
     },
     "save": "Enregistrer",
+    "done": "Terminé",
     "cancel": "Annuler",
     "whiteboard": {
       "drawing": "Tableau blanc",
@@ -313,9 +314,9 @@
       "hidden": "Masqué"
     },
     "searchVisibilityHints": {
-      "public": "Tout le monde — y compris les visiteurs non authentifiés — peut trouver ce pack via la recherche.",
-      "account": "Les utilisateurs connectés peuvent trouver ce pack via la recherche.",
-      "hidden": "Seuls les membres du compte propriétaire peuvent trouver ce pack via la recherche."
+      "public": "Tout le monde peut trouver ce pack via la recherche.",
+      "account": "Seul le compte propriétaire peut trouver ce pack via la recherche — y compris ses Associés, si le propriétaire est une organisation.",
+      "hidden": "Seuls les administrateurs du compte propriétaire peuvent trouver ce pack via la recherche."
     },
     "save": "Enregistrer les modifications",
     "crop": {

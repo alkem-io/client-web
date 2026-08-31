@@ -1131,7 +1131,7 @@ export const CalloutDetailsFragmentDoc = gql`
     id
     defaultDisplayName
     postDescription
-    whiteboardContent
+    whiteboardContentAvailable
   }
   sortOrder
   activity
@@ -2908,7 +2908,7 @@ export const CalloutTemplateContentFragmentDoc = gql`
     id
     defaultDisplayName
     postDescription
-    whiteboardContent
+    whiteboardContentAvailable
   }
 }
     ${TagsetDetailsFragmentDoc}
@@ -3097,6 +3097,15 @@ export const TemplateProfileInfoFragmentDoc = gql`
     }
     url
   }
+  whiteboard {
+    id
+    profile {
+      id
+      cardBanner: visual(type: CARD) {
+        ...VisualModel
+      }
+    }
+  }
   type
 }
     ${TagsetDetailsFragmentDoc}
@@ -3124,9 +3133,6 @@ export const PostTemplateFragmentDoc = gql`
 export const WhiteboardTemplateFragmentDoc = gql`
     fragment WhiteboardTemplate on Template {
   ...TemplateProfileInfo
-  whiteboard {
-    id
-  }
 }
     ${TemplateProfileInfoFragmentDoc}`;
 export const CommunityGuidelinesTemplateFragmentDoc = gql`
@@ -7876,7 +7882,7 @@ export const CalloutContentDocument = gql`
         id
         defaultDisplayName
         postDescription
-        whiteboardContent
+        whiteboardContentAvailable
       }
       classification {
         id
@@ -11149,6 +11155,245 @@ export type UpdateWhiteboardGuestAccessMutationOptions = Apollo.BaseMutationOpti
   SchemaTypes.UpdateWhiteboardGuestAccessMutation,
   SchemaTypes.UpdateWhiteboardGuestAccessMutationVariables
 >;
+export const CreateWhiteboardDraftOnCalloutsSetDocument = gql`
+    mutation CreateWhiteboardDraftOnCalloutsSet($draftData: CreateWhiteboardDraftOnCalloutsSetInput!) {
+  createWhiteboardDraftOnCalloutsSet(draftData: $draftData)
+}
+    `;
+export type CreateWhiteboardDraftOnCalloutsSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+>;
+
+/**
+ * __useCreateWhiteboardDraftOnCalloutsSetMutation__
+ *
+ * To run a mutation, you first call `useCreateWhiteboardDraftOnCalloutsSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardDraftOnCalloutsSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWhiteboardDraftOnCalloutsSetMutation, { data, loading, error }] = useCreateWhiteboardDraftOnCalloutsSetMutation({
+ *   variables: {
+ *      draftData: // value for 'draftData'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardDraftOnCalloutsSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+  >(CreateWhiteboardDraftOnCalloutsSetDocument, options);
+}
+export type CreateWhiteboardDraftOnCalloutsSetMutationHookResult = ReturnType<
+  typeof useCreateWhiteboardDraftOnCalloutsSetMutation
+>;
+export type CreateWhiteboardDraftOnCalloutsSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation>;
+export type CreateWhiteboardDraftOnCalloutsSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnCalloutsSetMutationVariables
+>;
+export const CreateWhiteboardDraftOnTemplatesSetDocument = gql`
+    mutation CreateWhiteboardDraftOnTemplatesSet($draftData: CreateWhiteboardDraftOnTemplatesSetInput!) {
+  createWhiteboardDraftOnTemplatesSet(draftData: $draftData)
+}
+    `;
+export type CreateWhiteboardDraftOnTemplatesSetMutationFn = Apollo.MutationFunction<
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+>;
+
+/**
+ * __useCreateWhiteboardDraftOnTemplatesSetMutation__
+ *
+ * To run a mutation, you first call `useCreateWhiteboardDraftOnTemplatesSetMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWhiteboardDraftOnTemplatesSetMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWhiteboardDraftOnTemplatesSetMutation, { data, loading, error }] = useCreateWhiteboardDraftOnTemplatesSetMutation({
+ *   variables: {
+ *      draftData: // value for 'draftData'
+ *   },
+ * });
+ */
+export function useCreateWhiteboardDraftOnTemplatesSetMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+    SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+  >(CreateWhiteboardDraftOnTemplatesSetDocument, options);
+}
+export type CreateWhiteboardDraftOnTemplatesSetMutationHookResult = ReturnType<
+  typeof useCreateWhiteboardDraftOnTemplatesSetMutation
+>;
+export type CreateWhiteboardDraftOnTemplatesSetMutationResult =
+  Apollo.MutationResult<SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation>;
+export type CreateWhiteboardDraftOnTemplatesSetMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutation,
+  SchemaTypes.CreateWhiteboardDraftOnTemplatesSetMutationVariables
+>;
+export const DeleteWhiteboardDraftDocument = gql`
+    mutation DeleteWhiteboardDraft($whiteboardID: UUID!) {
+  deleteWhiteboardDraft(whiteboardID: $whiteboardID)
+}
+    `;
+export type DeleteWhiteboardDraftMutationFn = Apollo.MutationFunction<
+  SchemaTypes.DeleteWhiteboardDraftMutation,
+  SchemaTypes.DeleteWhiteboardDraftMutationVariables
+>;
+
+/**
+ * __useDeleteWhiteboardDraftMutation__
+ *
+ * To run a mutation, you first call `useDeleteWhiteboardDraftMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWhiteboardDraftMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWhiteboardDraftMutation, { data, loading, error }] = useDeleteWhiteboardDraftMutation({
+ *   variables: {
+ *      whiteboardID: // value for 'whiteboardID'
+ *   },
+ * });
+ */
+export function useDeleteWhiteboardDraftMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.DeleteWhiteboardDraftMutation,
+    SchemaTypes.DeleteWhiteboardDraftMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.DeleteWhiteboardDraftMutation,
+    SchemaTypes.DeleteWhiteboardDraftMutationVariables
+  >(DeleteWhiteboardDraftDocument, options);
+}
+export type DeleteWhiteboardDraftMutationHookResult = ReturnType<typeof useDeleteWhiteboardDraftMutation>;
+export type DeleteWhiteboardDraftMutationResult = Apollo.MutationResult<SchemaTypes.DeleteWhiteboardDraftMutation>;
+export type DeleteWhiteboardDraftMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.DeleteWhiteboardDraftMutation,
+  SchemaTypes.DeleteWhiteboardDraftMutationVariables
+>;
+export const WhiteboardDraftDetailsByIdDocument = gql`
+    query WhiteboardDraftDetailsById($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      id
+      nameID
+      guestContributionsAllowed
+      contentUpdatePolicy
+      authorization {
+        id
+        myPrivileges
+      }
+      profile {
+        id
+        displayName
+        storageBucket {
+          id
+          allowedMimeTypes
+          maxFileSize
+        }
+      }
+      previewSettings {
+        ...whiteboardPreviewSettings
+      }
+    }
+  }
+}
+    ${WhiteboardPreviewSettingsFragmentDoc}`;
+
+/**
+ * __useWhiteboardDraftDetailsByIdQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardDraftDetailsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardDraftDetailsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardDraftDetailsByIdQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardDraftDetailsByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  > &
+    ({ variables: SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >(WhiteboardDraftDetailsByIdDocument, options);
+}
+export function useWhiteboardDraftDetailsByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >(WhiteboardDraftDetailsByIdDocument, options);
+}
+export function useWhiteboardDraftDetailsByIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+        SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+    SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+  >(WhiteboardDraftDetailsByIdDocument, options);
+}
+export type WhiteboardDraftDetailsByIdQueryHookResult = ReturnType<typeof useWhiteboardDraftDetailsByIdQuery>;
+export type WhiteboardDraftDetailsByIdLazyQueryHookResult = ReturnType<typeof useWhiteboardDraftDetailsByIdLazyQuery>;
+export type WhiteboardDraftDetailsByIdSuspenseQueryHookResult = ReturnType<
+  typeof useWhiteboardDraftDetailsByIdSuspenseQuery
+>;
+export type WhiteboardDraftDetailsByIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardDraftDetailsByIdQuery,
+  SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+>;
+export function refetchWhiteboardDraftDetailsByIdQuery(
+  variables: SchemaTypes.WhiteboardDraftDetailsByIdQueryVariables
+) {
+  return { query: WhiteboardDraftDetailsByIdDocument, variables: variables };
+}
 export const UpdateWhiteboardPreviewSettingsDocument = gql`
     mutation UpdateWhiteboardPreviewSettings($whiteboardId: UUID!, $previewSettings: UpdateWhiteboardPreviewSettingsInput!) {
   updateWhiteboard(
@@ -11204,6 +11449,56 @@ export type UpdateWhiteboardPreviewSettingsMutationResult =
 export type UpdateWhiteboardPreviewSettingsMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.UpdateWhiteboardPreviewSettingsMutation,
   SchemaTypes.UpdateWhiteboardPreviewSettingsMutationVariables
+>;
+export const ReplaceWhiteboardContentFromSourceDocument = gql`
+    mutation ReplaceWhiteboardContentFromSource($input: ReplaceWhiteboardContentFromSourceInput!) {
+  replaceWhiteboardContentFromSource(input: $input) {
+    id
+  }
+}
+    `;
+export type ReplaceWhiteboardContentFromSourceMutationFn = Apollo.MutationFunction<
+  SchemaTypes.ReplaceWhiteboardContentFromSourceMutation,
+  SchemaTypes.ReplaceWhiteboardContentFromSourceMutationVariables
+>;
+
+/**
+ * __useReplaceWhiteboardContentFromSourceMutation__
+ *
+ * To run a mutation, you first call `useReplaceWhiteboardContentFromSourceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReplaceWhiteboardContentFromSourceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [replaceWhiteboardContentFromSourceMutation, { data, loading, error }] = useReplaceWhiteboardContentFromSourceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useReplaceWhiteboardContentFromSourceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    SchemaTypes.ReplaceWhiteboardContentFromSourceMutation,
+    SchemaTypes.ReplaceWhiteboardContentFromSourceMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    SchemaTypes.ReplaceWhiteboardContentFromSourceMutation,
+    SchemaTypes.ReplaceWhiteboardContentFromSourceMutationVariables
+  >(ReplaceWhiteboardContentFromSourceDocument, options);
+}
+export type ReplaceWhiteboardContentFromSourceMutationHookResult = ReturnType<
+  typeof useReplaceWhiteboardContentFromSourceMutation
+>;
+export type ReplaceWhiteboardContentFromSourceMutationResult =
+  Apollo.MutationResult<SchemaTypes.ReplaceWhiteboardContentFromSourceMutation>;
+export type ReplaceWhiteboardContentFromSourceMutationOptions = Apollo.BaseMutationOptions<
+  SchemaTypes.ReplaceWhiteboardContentFromSourceMutation,
+  SchemaTypes.ReplaceWhiteboardContentFromSourceMutationVariables
 >;
 export const WhiteboardFromCalloutDocument = gql`
     query WhiteboardFromCallout($calloutId: UUID!, $contributionId: UUID!) {
@@ -11368,6 +11663,81 @@ export type WhiteboardLastUpdatedDateQueryResult = Apollo.QueryResult<
 >;
 export function refetchWhiteboardLastUpdatedDateQuery(variables: SchemaTypes.WhiteboardLastUpdatedDateQueryVariables) {
   return { query: WhiteboardLastUpdatedDateDocument, variables: variables };
+}
+export const WhiteboardDetailsByIdDocument = gql`
+    query WhiteboardDetailsById($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      ...WhiteboardDetails
+    }
+  }
+}
+    ${WhiteboardDetailsFragmentDoc}`;
+
+/**
+ * __useWhiteboardDetailsByIdQuery__
+ *
+ * To run a query within a React component, call `useWhiteboardDetailsByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWhiteboardDetailsByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWhiteboardDetailsByIdQuery({
+ *   variables: {
+ *      whiteboardId: // value for 'whiteboardId'
+ *   },
+ * });
+ */
+export function useWhiteboardDetailsByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SchemaTypes.WhiteboardDetailsByIdQuery,
+    SchemaTypes.WhiteboardDetailsByIdQueryVariables
+  > &
+    ({ variables: SchemaTypes.WhiteboardDetailsByIdQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.WhiteboardDetailsByIdQuery, SchemaTypes.WhiteboardDetailsByIdQueryVariables>(
+    WhiteboardDetailsByIdDocument,
+    options
+  );
+}
+export function useWhiteboardDetailsByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.WhiteboardDetailsByIdQuery,
+    SchemaTypes.WhiteboardDetailsByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<SchemaTypes.WhiteboardDetailsByIdQuery, SchemaTypes.WhiteboardDetailsByIdQueryVariables>(
+    WhiteboardDetailsByIdDocument,
+    options
+  );
+}
+export function useWhiteboardDetailsByIdSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.WhiteboardDetailsByIdQuery,
+        SchemaTypes.WhiteboardDetailsByIdQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.WhiteboardDetailsByIdQuery,
+    SchemaTypes.WhiteboardDetailsByIdQueryVariables
+  >(WhiteboardDetailsByIdDocument, options);
+}
+export type WhiteboardDetailsByIdQueryHookResult = ReturnType<typeof useWhiteboardDetailsByIdQuery>;
+export type WhiteboardDetailsByIdLazyQueryHookResult = ReturnType<typeof useWhiteboardDetailsByIdLazyQuery>;
+export type WhiteboardDetailsByIdSuspenseQueryHookResult = ReturnType<typeof useWhiteboardDetailsByIdSuspenseQuery>;
+export type WhiteboardDetailsByIdQueryResult = Apollo.QueryResult<
+  SchemaTypes.WhiteboardDetailsByIdQuery,
+  SchemaTypes.WhiteboardDetailsByIdQueryVariables
+>;
+export function refetchWhiteboardDetailsByIdQuery(variables: SchemaTypes.WhiteboardDetailsByIdQueryVariables) {
+  return { query: WhiteboardDetailsByIdDocument, variables: variables };
 }
 export const DeleteWhiteboardDocument = gql`
     mutation deleteWhiteboard($input: DeleteWhiteboardInput!) {
@@ -23674,6 +24044,7 @@ export const SpaceSubspaceCardsDocument = gql`
       id
       level
       about {
+        id
         profile {
           id
           url
@@ -27401,12 +27772,15 @@ export const CreateTemplateDocument = gql`
   ) {
     id
     nameID
-    profile @include(if: $includeProfileVisuals) {
+    profile {
       id
-      cardVisual: visual(type: CARD) {
+      defaultTagset: tagset {
         id
       }
-      previewVisual: visual(type: BANNER) {
+      cardVisual: visual(type: CARD) @include(if: $includeProfileVisuals) {
+        id
+      }
+      previewVisual: visual(type: BANNER) @include(if: $includeProfileVisuals) {
         id
       }
     }
@@ -27428,6 +27802,9 @@ export const CreateTemplateDocument = gql`
           id
         }
       }
+    }
+    whiteboard {
+      id
     }
   }
 }
@@ -27591,9 +27968,9 @@ export type CreateTemplateFromSpaceMutationOptions = Apollo.BaseMutationOptions<
   SchemaTypes.CreateTemplateFromSpaceMutationVariables
 >;
 export const UpdateTemplateDocument = gql`
-    mutation UpdateTemplate($templateId: UUID!, $profile: UpdateProfileInput!, $postDefaultDescription: Markdown, $whiteboardContent: WhiteboardContent, $classificationData: CreateClassificationTemplateContentInput, $includeProfileVisuals: Boolean = false) {
+    mutation UpdateTemplate($templateId: UUID!, $profile: UpdateProfileInput!, $postDefaultDescription: Markdown, $sourceWhiteboardID: UUID, $classificationData: CreateClassificationTemplateContentInput, $includeProfileVisuals: Boolean = false) {
   updateTemplate(
-    updateData: {ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription, whiteboardContent: $whiteboardContent, classificationData: $classificationData}
+    updateData: {ID: $templateId, profile: $profile, postDefaultDescription: $postDefaultDescription, sourceWhiteboardID: $sourceWhiteboardID, classificationData: $classificationData}
   ) {
     id
     nameID
@@ -27633,7 +28010,7 @@ export type UpdateTemplateMutationFn = Apollo.MutationFunction<
  *      templateId: // value for 'templateId'
  *      profile: // value for 'profile'
  *      postDefaultDescription: // value for 'postDefaultDescription'
- *      whiteboardContent: // value for 'whiteboardContent'
+ *      sourceWhiteboardID: // value for 'sourceWhiteboardID'
  *      classificationData: // value for 'classificationData'
  *      includeProfileVisuals: // value for 'includeProfileVisuals'
  *   },
@@ -27701,7 +28078,7 @@ export const UpdateCalloutTemplateDocument = gql`
     contributionDefaults {
       id
       postDescription
-      whiteboardContent
+      whiteboardContentAvailable
     }
     settings {
       ...CalloutSettingsFull

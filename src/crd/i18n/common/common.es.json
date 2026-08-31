@@ -1394,7 +1394,9 @@
         "lastSaved": "El contenido de este $t(common.whiteboard) se guardó por última vez {{lastSaved}}.",
         "message": "¡Disculpa las molestias! El $t(common.whiteboard) no está disponible para editar en este momento, posiblemente debido a un problema de red o pérdida de acceso. Por favor, intenta cerrar y volver a abrir el $t(common.whiteboard) o actualizar la página. Si el problema persiste, contacta al $t(common.admin) de tu $t(common.space) para obtener ayuda.",
         "offline": "Actualmente estás desconectado. El $t(common.whiteboard) intentará reconectarse cuando vuelvas a estar en línea.",
-        "title": "Conexión perdida con $t(common.Whiteboards)"
+        "title": "Conexión perdida con $t(common.Whiteboards)",
+        "unavailableMessage": "Este $t(common.whiteboard) no está disponible. Es posible que no tengas acceso o que ya no esté disponible.",
+        "unavailableTitle": "$t(common.Whiteboard) no disponible"
       }
     }
   },
