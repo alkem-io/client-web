@@ -40,9 +40,10 @@ type CrdMemoDialogProps = {
 
 export const updateMemoMarkdownCache = (
   editor: Pick<Editor, 'getHTML'> | null,
-  writeMarkdown: (markdown: string) => void
+  writeMarkdown: (markdown: string) => void,
+  hadLocalEdits = true
 ): Promise<void> => {
-  if (!editor) return Promise.resolve();
+  if (!editor || !hadLocalEdits) return Promise.resolve();
   return htmlToMarkdown(editor.getHTML()).then(writeMarkdown);
 };
 
@@ -131,12 +132,16 @@ export function CrdMemoDialog({ open, memoId, onClose, isContribution = false, o
   const currentMarkdown = () => htmlToMarkdown(editorRef.current?.getHTML() ?? '');
   const finishClose = async () => {
     try {
-      await updateMemoMarkdownCache(editorRef.current, markdown => {
-        client.cache.modify({
-          id: client.cache.identify({ __typename: 'Memo', id: memoId }),
-          fields: { markdown: () => markdown },
-        });
-      });
+      await updateMemoMarkdownCache(
+        editorRef.current,
+        markdown => {
+          client.cache.modify({
+            id: client.cache.identify({ __typename: 'Memo', id: memoId }),
+            fields: { markdown: () => markdown },
+          });
+        },
+        !!provider?.hasLocalEdits
+      );
     } catch {
       // The connector's delayed refetch remains the cache fallback.
     }

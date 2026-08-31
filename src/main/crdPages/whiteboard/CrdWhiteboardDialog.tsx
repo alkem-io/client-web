@@ -136,12 +136,14 @@ interface CrdWhiteboardDialogProps {
 type RelevantExcalidrawState = Pick<ExportedDataState, 'appState' | 'elements' | 'files'>;
 
 type CollaborativeCloseParams = {
-  /** Persist preview + display name; content persists through the provider below. */
-  save: () => Promise<boolean | undefined>;
+  hadLocalEdits: boolean;
+  /** Persist preview + display name after content is durable; invoked only after local edits. */
+  saveMetadata?: () => Promise<boolean | undefined>;
   /** Join the provider's one save owner. It publishes assets before its barrier. */
   requestDurability?: () => Promise<void>;
   requireDurability?: boolean;
   onDurabilityFailed?: () => void;
+  onMetadataFailed?: () => void;
   teardown: () => void;
 };
 
@@ -159,15 +161,16 @@ export const acceptWhiteboardCloseIntent = ({
   return true;
 };
 
-/** Close only after metadata and the provider's continuous save owner settle. */
+/** Close after durable content, treating derived metadata as best-effort. */
 export async function closeCollaborativeWhiteboard({
-  save,
+  hadLocalEdits,
+  saveMetadata,
   requestDurability,
   requireDurability,
   onDurabilityFailed,
+  onMetadataFailed,
   teardown,
 }: CollaborativeCloseParams): Promise<boolean> {
-  if ((await save()) === false) return false;
   if (!requestDurability && requireDurability) {
     onDurabilityFailed?.();
     return false;
@@ -178,6 +181,13 @@ export async function closeCollaborativeWhiteboard({
     } catch {
       onDurabilityFailed?.();
       return false;
+    }
+  }
+  if (hadLocalEdits && saveMetadata) {
+    try {
+      if ((await saveMetadata()) === false) onMetadataFailed?.();
+    } catch {
+      onMetadataFailed?.();
     }
   }
   teardown();
@@ -273,6 +283,7 @@ const CrdWhiteboardDialog = ({
     closeInFlightRef.current = true;
     const collabApi = collabApiRef.current;
     const lifecycle = collabApi?.getState();
+    const hasLocalEdits = !!collabApi?.hasLocalEdits();
     const hasUnsaved = !!collabApi?.hasUnsavedChanges();
     const canPersist = !!(lifecycle?.kind === 'active' && lifecycle.access === 'write' && lifecycle.save !== 'offline');
     if (
@@ -286,7 +297,7 @@ const CrdWhiteboardDialog = ({
       closeInFlightRef.current = false;
       return;
     }
-    const shouldSave = !!(
+    const canRequestDurability = !!(
       editModeEnabled &&
       lifecycle?.kind === 'active' &&
       lifecycle.access === 'write' &&
@@ -294,35 +305,35 @@ const CrdWhiteboardDialog = ({
     );
     try {
       await closeCollaborativeWhiteboard({
+        hadLocalEdits: hasLocalEdits,
         requestDurability:
-          shouldSave && collabApi
+          canRequestDurability && collabApi
             ? () => withCloseFinalizing(setCloseFinalizing, () => collabApi.requestDurability())
             : undefined,
         requireDurability: options.requireDurableClose,
-        save: async () => {
-          if (!shouldSave || !whiteboard) return true;
-          const excState = excalidrawAPI
-            ? {
-                elements: excalidrawAPI.getSceneElements(),
-                appState: excalidrawAPI.getAppState(),
-                files: excalidrawAPI.getFiles(),
+        saveMetadata:
+          canRequestDurability && whiteboard
+            ? async () => {
+                const excState = excalidrawAPI
+                  ? {
+                      elements: excalidrawAPI.getSceneElements(),
+                      appState: excalidrawAPI.getAppState(),
+                      files: excalidrawAPI.getFiles(),
+                    }
+                  : undefined;
+                const result = await prepareWhiteboardForUpdate(whiteboard, excState);
+                if (result.success) {
+                  const update = await actions.onUpdate(result.whiteboard, result.previewImages);
+                  return update.success;
+                }
+                logError(new Error('Error preparing whiteboard for update on close'), {
+                  category: TagCategoryValues.WHITEBOARD,
+                });
+                return false;
               }
-            : undefined;
-          const result = await prepareWhiteboardForUpdate(whiteboard, excState);
-          if (result.success) {
-            const update = await actions.onUpdate(result.whiteboard, result.previewImages);
-            if (!update.success) {
-              notify(t('callout.whiteboard.saveFailed'), 'error');
-              return false;
-            }
-            return true;
-          } else {
-            logError(new Error('Error preparing whiteboard for update on close'), {
-              category: TagCategoryValues.WHITEBOARD,
-            });
-            notify(t('callout.whiteboard.saveFailed'), 'error');
-            return false;
-          }
+            : undefined,
+        onMetadataFailed: () => {
+          notify(t('callout.whiteboard.saveFailed'), 'error');
         },
         onDurabilityFailed: () => {
           setCloseBlocked(true);
