@@ -688,6 +688,7 @@
       "disconnected": "Getrennt",
       "saved": "Gespeichert",
       "saving": "Wird gespeichert…",
+      "finalizing": "Änderungen werden abgeschlossen…",
       "offline": "Offline — wird automatisch synchronisiert",
       "saveFailed": "Änderungen konnten nicht gespeichert werden",
       "membersOnline_one": "1 Mitglied online",
