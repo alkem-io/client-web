@@ -173,7 +173,12 @@ export class AwarenessRouter {
   private handleUserFollow(payload: OnUserFollowedPayload): void {
     this.followedViewportKey = null;
     this.awareness.setLocalStateField('following', payload.action === 'FOLLOW' ? payload.userToFollow.socketId : null);
-    if (payload.action === 'FOLLOW') void this.applyRemoteAwareness();
+    if (payload.action === 'FOLLOW') {
+      void this.applyRemoteAwareness();
+    } else {
+      this.suppressedViewportBounds = null;
+      this.scheduleViewportPublish();
+    }
   }
 
   private scheduleViewportPublish(): void {
@@ -238,8 +243,7 @@ export class AwarenessRouter {
   /** Map remote awareness states → collaborators and apply via updateScene. */
   private async applyRemoteAwareness(): Promise<void> {
     const utils = await this.excalidrawUtils;
-    if (!utils || this.destroyed) return;
-    const { getVisibleSceneBounds, zoomToFitBounds } = utils;
+    if (this.destroyed) return;
     const collaborators = new Map<SocketId, Collaborator>();
     const states = this.awareness.getStates();
     const ownSocketId = toSocketId(this.awareness.clientID);
@@ -274,10 +278,10 @@ export class AwarenessRouter {
     const targetBounds = asViewportBounds(followedState?.viewportBounds);
     const targetKey = followedSocketId && targetBounds ? `${followedSocketId}:${targetBounds.join(',')}` : null;
     let viewport: Pick<ReturnType<ExcalidrawImperativeAPI['getAppState']>, 'scrollX' | 'scrollY' | 'zoom'> | undefined;
-    if (targetBounds && targetKey !== this.followedViewportKey) {
+    if (utils && targetBounds && targetKey !== this.followedViewportKey) {
       if (this.destroyed) return;
       if (this.api.getAppState().userToFollow?.socketId === followedSocketId) {
-        const fitted = zoomToFitBounds({
+        const fitted = utils.zoomToFitBounds({
           bounds: targetBounds,
           appState: this.api.getAppState(),
           fitToViewport: true,
@@ -294,7 +298,7 @@ export class AwarenessRouter {
     };
     if (viewport) {
       const nextAppState = { ...viewport, ...presenceState };
-      this.suppressedViewportBounds = getVisibleSceneBounds({ ...appState, ...nextAppState });
+      this.suppressedViewportBounds = utils?.getVisibleSceneBounds({ ...appState, ...nextAppState }) ?? null;
       this.api.updateScene({ collaborators, appState: nextAppState });
     } else {
       this.api.updateScene({ collaborators, appState: presenceState });

@@ -69,7 +69,7 @@ function makeApi() {
     userToFollow: null as { socketId: string; username: string } | null,
     followedBy: new Set<string>(),
   };
-  const updateScene = vi.fn((scene: { appState?: Partial<typeof appState> }) => {
+  const updateScene = vi.fn((scene: { appState?: Partial<typeof appState>; collaborators?: Map<string, unknown> }) => {
     const viewportChanged =
       scene.appState && ('scrollX' in scene.appState || 'scrollY' in scene.appState || 'zoom' in scene.appState);
     appState = { ...appState, ...scene.appState };
@@ -218,6 +218,12 @@ describe('AwarenessRouter follow mode', () => {
   it('degrades viewport presence silently when the lazy editor utilities fail to load', async () => {
     const aw = makeAwareness();
     const api = makeApi();
+    aw.setStates(
+      new Map([
+        [1, {}],
+        [2, { pointer: { x: 5, y: 8 }, following: '1', user: { username: 'Peer' } }],
+      ])
+    );
     const router = new AwarenessRouter({
       awareness: aw as never,
       api: api as never,
@@ -229,8 +235,33 @@ describe('AwarenessRouter follow mode', () => {
     api.scrollTo(10, 10);
     await vi.runAllTimersAsync();
 
-    expect(api.updateScene).not.toHaveBeenCalled();
+    const lastScene = api.updateScene.mock.calls[api.updateScene.mock.calls.length - 1]?.[0];
+    expect(lastScene?.collaborators?.get('2')).toMatchObject({ pointer: { x: 5, y: 8 }, username: 'Peer' });
+    expect(lastScene?.appState).toMatchObject({ followedBy: new Set(['2']) });
+    expect(lastScene?.appState).not.toHaveProperty('scrollX');
     expect(aw.setLocalStateField).not.toHaveBeenCalledWith('viewportBounds', expect.anything());
+    router.destroy();
+  });
+
+  it('publishes the current viewport immediately after unfollowing', async () => {
+    const aw = makeAwareness();
+    const api = makeApi();
+    aw.setStates(
+      new Map([
+        [1, {}],
+        [2, { viewportBounds: [25, 40, 125, 140] }],
+      ])
+    );
+    const router = makeRouter(aw, api);
+    await vi.runAllTimersAsync();
+    api.follow('2');
+    await vi.runAllTimersAsync();
+
+    api.follow('2', 'UNFOLLOW');
+    await vi.runAllTimersAsync();
+
+    const viewportWrites = aw.setLocalStateField.mock.calls.filter(([key]) => key === 'viewportBounds');
+    expect(viewportWrites[viewportWrites.length - 1]?.[1]).toEqual([25, 40, 125, 140]);
     router.destroy();
   });
 
