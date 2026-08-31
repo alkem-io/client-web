@@ -22,8 +22,8 @@
     "inactive": "Este Espacio está actualmente inactivo."
   },
   "knowledge": {
-    "searchPlaceholder": "Buscar...",
-    "searchLabel": "Buscar en la base de conocimiento",
+    "searchPlaceholder": "Buscar publicaciones...",
+    "searchLabel": "Buscar publicaciones",
     "noResults": "Sin resultados",
     "search": {
       "emptyTitle": "Sin resultados",
@@ -33,8 +33,9 @@
       "retry": "Reintentar",
       "loadingLabel": "Cargando resultados de búsqueda",
       "appendingLabel": "Cargando más resultados",
-      "removeTerm": "Eliminar término {{term}}",
-      "removeTag": "Eliminar etiqueta {{tag}}"
+      "matchText": "<b>{{matches}}</b> elementos coinciden con la búsqueda de <b>{{text}}</b>",
+      "matchTags": "<b>{{matches}}</b> elementos coinciden con la etiqueta <b>{{tags}}</b>",
+      "matchBoth": "<b>{{matches}}</b> elementos coinciden con la etiqueta <b>{{tags}}</b> y la búsqueda de <b>{{text}}</b>"
     },
     "viewGrid": "Vista de tarjetas",
     "viewList": "Vista de lista",

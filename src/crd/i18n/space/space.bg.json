@@ -22,8 +22,8 @@
     "inactive": "Това пространство е неактивно в момента."
   },
   "knowledge": {
-    "searchPlaceholder": "Търсене...",
-    "searchLabel": "Търсене в базата знания",
+    "searchPlaceholder": "Търсене на публикации...",
+    "searchLabel": "Търсене на публикации",
     "noResults": "Няма съвпадения",
     "search": {
       "emptyTitle": "Няма съвпадения",
@@ -33,8 +33,9 @@
       "retry": "Опитайте отново",
       "loadingLabel": "Зареждане на резултатите от търсенето",
       "appendingLabel": "Зареждане на още резултати",
-      "removeTerm": "Премахни термина {{term}}",
-      "removeTag": "Премахни етикета {{tag}}"
+      "matchText": "<b>{{matches}}</b> елемента отговарят на търсенето за <b>{{text}}</b>",
+      "matchTags": "<b>{{matches}}</b> елемента отговарят на таг <b>{{tags}}</b>",
+      "matchBoth": "<b>{{matches}}</b> елемента отговарят на таг <b>{{tags}}</b> и търсенето за <b>{{text}}</b>"
     },
     "viewGrid": "Изглед с карти",
     "viewList": "Списъчен изглед",

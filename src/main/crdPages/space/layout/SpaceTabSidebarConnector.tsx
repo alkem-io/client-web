@@ -15,6 +15,7 @@ import { EventsSection } from '@/crd/components/space/sidebar/EventsSection';
 import { InfoBlock } from '@/crd/components/space/sidebar/InfoBlock';
 import { InviteButton } from '@/crd/components/space/sidebar/InviteButton';
 import { PostIndexButton } from '@/crd/components/space/sidebar/PostIndexButton';
+import { SearchSection, type SearchSectionProps } from '@/crd/components/space/sidebar/SearchSection';
 import { SubspacesSection } from '@/crd/components/space/sidebar/SubspacesSection';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
 import { VirtualContributorsSection } from '@/crd/components/space/sidebar/VirtualContributorsSection';
@@ -65,6 +66,10 @@ type SpaceTabSidebarConnectorProps = {
    *  slot for this button is retired (A-03) — it renders ONLY as a configured
    *  widget now. */
   onCreateSubspace: () => void;
+  /** Search state + handlers are owned by the page — the widget stays pure
+   *  because `SpaceSidebarPortal` mounts this subtree twice (desktop column
+   *  and mobile drawer). */
+  search: SearchSectionProps;
 };
 
 /**
@@ -82,6 +87,7 @@ export function SpaceTabSidebarConnector({
   onCreatePost,
   onAboutClick,
   onCreateSubspace,
+  search,
 }: SpaceTabSidebarConnectorProps) {
   const { space, permissions } = useSpace();
   const { t } = useTranslation('crd-space');
@@ -232,6 +238,7 @@ export function SpaceTabSidebarConnector({
       />
     ),
     index: <PostIndexButton key="index" onClick={() => setIndexOpen(true)} />,
+    search: <SearchSection key="search" {...search} />,
   };
 
   return (
