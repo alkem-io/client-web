@@ -61,14 +61,30 @@ describe('SearchMatchSummary', () => {
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
-  it('renders an unsafe tag name without creating any element or executing script', () => {
+  it('renders an unsafe tag name as literal text without creating any element or executing script', () => {
     renderSummary(
       <SearchMatchSummary matchCount="1" text="" tags={['<img src=x onerror=alert(1)>']} onClear={vi.fn()} />
     );
+
+    // The tag name reaches the screen verbatim — never interpreted as markup.
+    expect(screen.getByText('"<img src=x onerror=alert(1)>"', { selector: 'strong' })).toBeInTheDocument();
 
     // Never an actual element — no attribute (in particular no onerror handler) ever
     // reaches the live DOM, so nothing can execute.
     expect(document.querySelector('img')).toBeNull();
     expect(document.querySelector('[onerror]')).toBeNull();
+  });
+
+  it('renders a tag name containing ampersand, quote and angle-bracket characters as literal text', () => {
+    renderSummary(<SearchMatchSummary matchCount="2" text="" tags={['R&D "beta" > v2']} onClear={vi.fn()} />);
+
+    expect(screen.getByText('"R&D "beta" > v2"', { selector: 'strong' })).toBeInTheDocument();
+  });
+
+  it('renders a search term containing markup-like text as literal text', () => {
+    renderSummary(<SearchMatchSummary matchCount="4" text="<b>bold</b>" tags={[]} onClear={vi.fn()} />);
+
+    expect(screen.getByText('"<b>bold</b>"', { selector: 'strong' })).toBeInTheDocument();
+    expect(document.querySelector('b')).toBeNull();
   });
 });

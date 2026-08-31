@@ -43,6 +43,8 @@ export function SearchMatchSummary({ matchCount, text, tags, onClear, className 
           ns="crd-space"
           values={{ matches: matchCount, tags: quotedTags, text: quotedText }}
           components={{ b: <strong className="font-semibold text-foreground" /> }}
+          shouldUnescape={true}
+          tOptions={{ interpolation: { escapeValue: true } }}
         />
       </span>
       <button
