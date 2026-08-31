@@ -8717,6 +8717,7 @@ export enum SidebarWidget {
   Guidelines = 'GUIDELINES',
   Index = 'INDEX',
   Intent = 'INTENT',
+  Search = 'SEARCH',
   SubspaceLinks = 'SUBSPACE_LINKS',
   Updates = 'UPDATES',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',

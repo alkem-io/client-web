@@ -841,7 +841,9 @@ enum SearchVisibility {
   PUBLIC
 }
 
-"""The widgets available for the Space sidepanel, per InnovationFlow state (tab)."""
+"""
+The widgets available for the Space sidepanel, per InnovationFlow state (tab).
+"""
 enum SidebarWidget {
   ABOUT
   ADD_USER
@@ -853,6 +855,7 @@ enum SidebarWidget {
   GUIDELINES
   INDEX
   INTENT
+  SEARCH
   SUBSPACE_LINKS
   UPDATES
   VIRTUAL_CONTRIBUTORS
@@ -3405,7 +3408,9 @@ type InnovationFlowStateSettings {
   Whether Posts in this State show publish details (publisher, publish date, avatar) in the feed. Presentation only — does not restrict access to publisher data. Default true.
   """
   showPublishDetails: Boolean!
-  """Ordered widgets shown in the Space sidepanel for this State. May be empty."""
+  """
+  Ordered widgets shown in the Space sidepanel for this State. May be empty.
+  """
   sidebar: [SidebarWidget!]!
   """
   Whether this State/phase is shown in the member-facing navigation. Default true. UI-affordance only: it does NOT gate access to the phase content.
