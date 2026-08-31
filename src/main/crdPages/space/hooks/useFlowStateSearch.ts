@@ -12,15 +12,22 @@ type CalloutResultItems = CalloutResults['results'];
 
 export type UseFlowStateSearchParams = {
   /**
-   * The viewed InnovationFlowState UUID — the sole scope (FR-008/012). Its
-   * globally-unique UUID transitively pins the Collaboration, so no separate
-   * CalloutsSet scope is needed.
+   * The viewed InnovationFlowState UUID. Its globally-unique UUID
+   * transitively pins the Collaboration, so no separate CalloutsSet scope is
+   * needed.
    */
   flowStateID: string | undefined;
   /**
-   * The active query terms: the submitted free-text term split into words PLUS
-   * each selected tag pill (FR-004). An empty array is browse mode (FR-018) —
-   * still a valid scoped request, served paginated.
+   * The current L0 Space UUID — hard-scopes callout documents to the Space
+   * tree. The flow-state filter alone is "absent OR equals": a callout whose
+   * search document was never stamped with a flow state would otherwise
+   * match every flow-state-scoped search across the whole platform: this
+   * bounds that soft leak to the current Space.
+   */
+  spaceID?: string;
+  /**
+   * The active query terms: `[]` (browse) or exactly ONE joined term built
+   * from the applied text and the selected tags — never split into words.
    */
   terms: string[];
   /** Skip while the scope UUIDs are not yet resolved. */
@@ -51,7 +58,12 @@ const concat = (a: CalloutResultItems = [], b: CalloutResultItems = []): Callout
  * always -1), and a fresh page-1 reset that discards in-flight pages of a prior
  * term/tag set (FR-022, latest-wins).
  */
-export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSearchParams): UseFlowStateSearchResult {
+export function useFlowStateSearch({
+  flowStateID,
+  spaceID,
+  terms,
+  skip,
+}: UseFlowStateSearchParams): UseFlowStateSearchResult {
   const shouldSkip = skip || !flowStateID;
 
   // A stable signature for the current term/tag set. When it changes, the query
@@ -84,6 +96,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
       searchData: {
         terms,
         searchInFlowStateFilter: flowStateID,
+        searchInSpaceFilter: spaceID,
         // Match in the callout framing resources and contributions too; matches
         // fold up to the containing callout, deduped, in calloutResults.
         foldCalloutResources: true,
@@ -155,6 +168,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
         searchData: {
           terms,
           searchInFlowStateFilter: flowStateID,
+          searchInSpaceFilter: spaceID,
           foldCalloutResources: true,
           filters: [
             {
@@ -194,7 +208,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
           setAppending(false);
         }
       });
-  }, [inView, shouldSkip, cursor, appending, loading, terms, flowStateID, fetchMore]);
+  }, [inView, shouldSkip, cursor, appending, loading, terms, flowStateID, spaceID, fetchMore]);
 
   const retry = () => {
     void refetch();

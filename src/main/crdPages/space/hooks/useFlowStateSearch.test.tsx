@@ -27,6 +27,7 @@ type QueryArgs = {
     searchData: {
       terms: string[];
       searchInFlowStateFilter?: string;
+      searchInSpaceFilter?: string;
       foldCalloutResources?: boolean;
       filters: Array<{ cursor?: string; size: number; category: string }>;
     };
@@ -35,6 +36,7 @@ type QueryArgs = {
 };
 
 const FLOW_STATE = 'flow-state-uuid';
+const SPACE = 'space-uuid';
 
 const calloutResult = (id: string) => ({ id, type: 'CALLOUT', score: 1, terms: [] });
 
@@ -59,10 +61,11 @@ describe('useFlowStateSearch', () => {
       refetch: vi.fn(),
     });
 
-    renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: ['governance'] }));
+    renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] }));
 
     const args = useFlowStateSearchQueryMock.mock.calls.at(-1)?.[0] as QueryArgs;
     expect(args.variables.searchData.searchInFlowStateFilter).toBe(FLOW_STATE);
+    expect(args.variables.searchData.searchInSpaceFilter).toBe(SPACE);
     expect(args.variables.searchData.terms).toEqual(['governance']);
     // Fold framing resources and contributions up to the matching callout.
     expect(args.variables.searchData.foldCalloutResources).toBe(true);
@@ -101,15 +104,22 @@ describe('useFlowStateSearch', () => {
   // a stale page into the new query.
   test('discards an in-flight page when the term set changed mid-flight (FR-022 latest-wins)', () => {
     let capturedUpdateQuery: ((prev: unknown, opts: { fetchMoreResult: unknown }) => unknown) | undefined;
+    let capturedFetchMoreArgs: { variables: QueryArgs['variables'] } | undefined;
 
-    const fetchMore = vi.fn((opts: { updateQuery: (prev: unknown, o: { fetchMoreResult: unknown }) => unknown }) => {
-      // Capture only the FIRST page's updateQuery — the one tied to the prior
-      // term set whose result must later be discarded.
-      if (!capturedUpdateQuery) {
-        capturedUpdateQuery = opts.updateQuery;
+    const fetchMore = vi.fn(
+      (opts: {
+        variables: QueryArgs['variables'];
+        updateQuery: (prev: unknown, o: { fetchMoreResult: unknown }) => unknown;
+      }) => {
+        // Capture only the FIRST page's updateQuery — the one tied to the prior
+        // term set whose result must later be discarded.
+        if (!capturedUpdateQuery) {
+          capturedUpdateQuery = opts.updateQuery;
+          capturedFetchMoreArgs = opts;
+        }
+        return Promise.resolve();
       }
-      return Promise.resolve();
-    });
+    );
 
     useFlowStateSearchQueryMock.mockReturnValue({
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } },
@@ -122,12 +132,15 @@ describe('useFlowStateSearch', () => {
     // Sentinel in view → the infinite-scroll effect fires fetchMore (page 2).
     mockInView = true;
     const { rerender } = renderHook(
-      (props: { terms: string[] }) => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: props.terms }),
+      (props: { terms: string[] }) =>
+        useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: props.terms }),
       { initialProps: { terms: ['governance'] } }
     );
 
     expect(fetchMore).toHaveBeenCalledTimes(1);
     expect(capturedUpdateQuery).toBeDefined();
+    // The Space scope rides fetchMore's variables too, not only the page-1 query.
+    expect(capturedFetchMoreArgs?.variables.searchData.searchInSpaceFilter).toBe(SPACE);
 
     const prev = { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } };
     const stalePage = { search: { calloutResults: { results: [calloutResult('b')], cursor: 'c2' } } };
