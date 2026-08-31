@@ -25,14 +25,30 @@ type CalloutResult = Extract<
  * feed (`LazyCalloutItem`) rather than a bespoke search card — so all the mapper
  * needs to surface is each callout's id, in the server's relevance order.
  *
- * The list is already deduped to one callout per match server-side; this mapper
- * only reshapes — it never filters (beyond the type guard) or sorts (ordering is
- * the server's, FR-019).
+ * The mapper owns the client-visible dedup: a single callout can be returned more
+ * than once across paginated fetches (it matches via more than one contained
+ * document — its own framing doc AND a post/whiteboard/memo — and the server folds
+ * per page, not across pages). Left unchecked that would render the same callout
+ * card twice and inflate the "N items match" count (R3, count = distinct callouts).
+ * So we dedup by callout id here, keeping the first occurrence (highest relevance,
+ * server order preserved — FR-019). Order is otherwise the server's; this mapper
+ * never sorts, and filters only the type guard + the dedup.
  */
 export function mapFlowStateSearchCalloutIds(
   results: FlowStateSearchQuery['search']['calloutResults']['results']
 ): string[] {
-  return results
-    .filter((r): r is CalloutResult => r.type === SearchResultType.Callout)
-    .map(result => result.callout.id);
+  const seen = new Set<string>();
+  const ids: string[] = [];
+  for (const r of results) {
+    if (r.type !== SearchResultType.Callout) {
+      continue;
+    }
+    const id = (r as CalloutResult).callout.id;
+    if (seen.has(id)) {
+      continue;
+    }
+    seen.add(id);
+    ids.push(id);
+  }
+  return ids;
 }

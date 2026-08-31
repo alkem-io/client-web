@@ -50,4 +50,15 @@ describe('mapFlowStateSearchCalloutIds', () => {
 
     expect(mapFlowStateSearchCalloutIds(results)).toEqual(['callout-1']);
   });
+
+  it('dedupes a callout id repeated across folded pages, keeping first (relevance) order', () => {
+    const results = [
+      { type: SearchResultType.Callout, callout: { id: 'callout-1' } },
+      { type: SearchResultType.Callout, callout: { id: 'callout-2' } },
+      { type: SearchResultType.Callout, callout: { id: 'callout-1' } },
+      { type: SearchResultType.Callout, callout: { id: 'callout-3' } },
+    ] as unknown as Parameters<typeof mapFlowStateSearchCalloutIds>[0];
+
+    expect(mapFlowStateSearchCalloutIds(results)).toEqual(['callout-1', 'callout-2', 'callout-3']);
+  });
 });
