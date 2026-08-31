@@ -153,6 +153,10 @@ export class UnifiedCollabProvider {
     return this.localRevision !== this.ackedRevision;
   }
 
+  get hasLocalEdits(): boolean {
+    return this.localRevision > 0;
+  }
+
   get hasChangesAtRisk(): boolean {
     return (
       this.localRevision !== this.sentRevision || (this.durabilityFailed && this.localRevision !== this.ackedRevision)
