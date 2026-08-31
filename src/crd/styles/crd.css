@@ -69,3 +69,52 @@
     cursor: pointer;
   }
 }
+
+@layer components {
+  /*
+   * A range input whose fill runs from the LEFT edge to the thumb whatever its
+   * `dir`. Browsers always draw the native (`accent-color`) fill from `min`,
+   * so a `dir="rtl"` slider — max on the left, used where the a11y contract
+   * needs the DOM value to stay the real value — would fill from the right
+   * edge, reading as the inverse of every other slider. The consumer sets
+   * `--crd-range-fill` to the thumb's offset from the left edge, in percent.
+   */
+  .crd-range-fill-left {
+    appearance: none;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: linear-gradient(
+      to right,
+      var(--primary) var(--crd-range-fill, 0%),
+      var(--muted) var(--crd-range-fill, 0%)
+    );
+    cursor: pointer;
+  }
+  .crd-range-fill-left:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  .crd-range-fill-left::-webkit-slider-thumb {
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    border: 2px solid var(--background);
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+  .crd-range-fill-left::-moz-range-thumb {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 9999px;
+    background: var(--primary);
+    border: 2px solid var(--background);
+    box-shadow: 0 0 0 1px var(--primary);
+  }
+  /* Firefox paints its own track and min→thumb progress over the input's
+     background; clear both so the gradient above is the only fill. */
+  .crd-range-fill-left::-moz-range-track,
+  .crd-range-fill-left::-moz-range-progress {
+    background: transparent;
+  }
+}

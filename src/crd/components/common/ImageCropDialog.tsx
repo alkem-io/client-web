@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { type CSSProperties, useEffect, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import ReactCrop, {
   type Crop,
@@ -380,7 +380,17 @@ export function ImageCropDialog({
                   applyCrop(previous ? reshapeCropToAspect(image, previous, ratio) : centeredAspectCrop(image, ratio));
                 }}
                 aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', { ratio: sliderRatio.toFixed(1) })}
-                className="w-full accent-primary"
+                className="w-full crd-range-fill-left"
+                // The fill follows the thumb from the left edge (see
+                // `.crd-range-fill-left`); with the track reversed, the thumb's
+                // offset from the left is its distance below `max`.
+                style={
+                  {
+                    '--crd-range-fill': `${
+                      ((aspectRatioBounds.max - sliderRatio) / (aspectRatioBounds.max - aspectRatioBounds.min)) * 100
+                    }%`,
+                  } as CSSProperties
+                }
               />
               <div className="flex justify-between">
                 <span className="text-caption text-muted-foreground">{t('imageCrop.aspectRatio.hintLeft')}</span>

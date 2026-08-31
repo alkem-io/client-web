@@ -56,6 +56,18 @@ describe('ImageCropDialog aspect-ratio slider', () => {
     expect(Number(slider.min)).toBeLessThan(Number(slider.max));
   });
 
+  // Browsers fill a range from `min`, which with the reversed track would be
+  // the right edge; the fill is drawn from the left instead and follows the
+  // thumb — no fill at max (thumb at the left edge), full fill at min.
+  it('fills from the left edge up to the thumb', () => {
+    const { slider } = renderDialog();
+    expect(slider.style.getPropertyValue('--crd-range-fill')).toBe('0%');
+    fireEvent.change(slider, { target: { value: '7.5' } });
+    expect(slider.style.getPropertyValue('--crd-range-fill')).toBe('62.5%');
+    fireEvent.change(slider, { target: { value: '6' } });
+    expect(slider.style.getPropertyValue('--crd-range-fill')).toBe('100%');
+  });
+
   it('emits the un-mirrored ratio and re-announces it on change', () => {
     const { slider, onAspectRatioChange } = renderDialog();
     fireEvent.change(slider, { target: { value: '7.5' } });
