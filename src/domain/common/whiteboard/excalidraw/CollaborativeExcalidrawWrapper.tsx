@@ -12,6 +12,7 @@ import { ExcalidrawEditorBinding, type WhiteboardEditorEntities } from './Excali
 
 export type CollabAPI = {
   getState: () => CollaborationState;
+  hasLocalEdits: () => boolean;
   hasUnsavedChanges: () => boolean;
   hasChangesAtRisk: () => boolean;
   requestDurability: () => Promise<void>;
@@ -50,6 +51,7 @@ const CollaborativeExcalidrawWrapper = ({
   const collabApi = useMemo<CollabAPI>(
     () => ({
       getState: () => providerRef.current?.state ?? { kind: 'loading' },
+      hasLocalEdits: () => providerRef.current?.hasLocalEdits ?? false,
       hasUnsavedChanges: () => providerRef.current?.hasUnsavedChanges ?? false,
       hasChangesAtRisk: () => providerRef.current?.hasChangesAtRisk ?? false,
       requestDurability: () =>
