@@ -134,11 +134,15 @@ export function ConnectedAccountsView({
         // the identity-provider session stays lapsed, so a retry would re-run the same failing
         // request and land right back here. The way out is the sign-out action in the card below,
         // which this reason names. Styled as information rather than an alert for the same reason
-        // the tab-level card is — nothing is broken, a session simply ended.
-        <div className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
+        // the tab-level card is — nothing is broken, a session simply ended. `<output>` carries an
+        // implicit `role="status"`, the polite counterpart to the `role="alert"` the unavailable
+        // branch uses: the outcome of the load still has to reach assistive technology, but it does
+        // not warrant interrupting. Spelled as the element rather than the ARIA attribute because
+        // that is what the repo's a11y lint requires wherever a semantic equivalent exists.
+        <output className="flex items-start gap-2 rounded-md border bg-muted/30 p-4 text-body text-muted-foreground">
           <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           <p>{unavailableReason}</p>
-        </div>
+        </output>
       ) : status === 'unavailable' ? (
         <div className="flex flex-col gap-3">
           <div

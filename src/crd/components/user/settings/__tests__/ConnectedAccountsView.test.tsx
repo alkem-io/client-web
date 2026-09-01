@@ -133,6 +133,9 @@ describe('ConnectedAccountsView', () => {
     expect(screen.getByText('your sign-in provider session has expired')).toBeInTheDocument();
     // Not an alert: nothing is broken, a session simply ended — same reading the tab-level card takes.
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    // Still announced, politely: the section's whole content is replaced by this reason, so the
+    // outcome of the load has to reach assistive technology rather than only sighted users.
+    expect(screen.getByRole('status')).toHaveTextContent('your sign-in provider session has expired');
     // The rows stay withheld exactly as they are while unavailable...
     expect(screen.queryByText('Cleverbase')).not.toBeInTheDocument();
     // ...but no retry is offered, because retrying provably cannot clear this state — the way out is

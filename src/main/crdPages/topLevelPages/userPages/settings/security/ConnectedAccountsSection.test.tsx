@@ -325,6 +325,11 @@ describe('ConnectedAccountsSection — lapsed identity-provider session', () => 
     );
 
     expect(readConnectedAccountsMarker()).toBeNull();
-    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    // The section's own session-expired reason is a live region (the polite counterpart to the
+    // `unavailable` alert), so "announces nothing" is asserted as "announces nothing *else*": that
+    // reason is the only status node, with no marker-derived outcome message beside it.
+    const announced = screen.getAllByRole('status');
+    expect(announced).toHaveLength(1);
+    expect(announced[0]).toHaveTextContent('user.security.connectedAccounts.sessionExpired.message');
   });
 });
