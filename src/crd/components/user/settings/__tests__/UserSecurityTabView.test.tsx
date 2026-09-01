@@ -108,4 +108,35 @@ describe('UserSecurityTabView', () => {
       expect(onRetry).toHaveBeenCalledTimes(1);
     }
   );
+
+  it(
+    'renders the lapsed-identity-provider-session state with a way out rather than the generic ' +
+      "'try refreshing' card — refreshing provably cannot mint a new identity-provider session, " +
+      'so telling someone to do it is a dead end',
+    () => {
+      const sessionExpiredState: UserSecurityViewState = { kind: 'sessionExpired', reauthHref: '/logout' };
+
+      render(
+        <UserSecurityTabView
+          state={sessionExpiredState}
+          passwordForm={null}
+          webauthnForm={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={null}
+        />
+      );
+
+      expect(screen.getByText('user.security.sessionExpired.description')).toBeInTheDocument();
+      // The generic failure copy — the one that tells people to refresh — must NOT appear.
+      expect(screen.queryByText('user.security.errorDescription')).not.toBeInTheDocument();
+
+      // The action points at the platform's sign-out route, not straight back at
+      // sign-in: re-entering sign-in alone leaves the lapsed session lapsed,
+      // because the login provider accepts the subject the broker still holds
+      // for this browser without ever re-authenticating. Signing out ends the
+      // broker session too, forcing the next sign-in to be a real one.
+      const action = screen.getByRole('link', { name: 'user.security.sessionExpired.action' });
+      expect(action).toHaveAttribute('href', '/logout');
+    }
+  );
 });

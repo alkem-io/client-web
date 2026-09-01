@@ -1,10 +1,20 @@
 import type { SettingsFlow, UiNode } from '@ory/kratos-client';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import useKratosFlow, { FlowTypeName } from '@/core/auth/authentication/hooks/useKratosFlow';
+import useKratosFlow, {
+  FlowTypeName,
+  isKratosSessionExpiredError,
+} from '@/core/auth/authentication/hooks/useKratosFlow';
 
 export type UserSecuritySettingsFlowResult =
   | { kind: 'loading'; refetch: () => void }
+  /**
+   * The identity provider's own session has lapsed while the platform session
+   * is still alive. Distinct from `error` because the recovery is different:
+   * signing in again, not retrying or reloading — neither of which can mint a
+   * new identity-provider session.
+   */
+  | { kind: 'sessionExpired'; refetch: () => void }
   | { kind: 'error'; error: Error; refetch: () => void }
   | { kind: 'ready'; flow: SettingsFlow; hasWebauthn: boolean; flowWasResumed: boolean; refetch: () => void };
 
@@ -95,6 +105,10 @@ const useUserSecuritySettingsFlow = (returnTo?: string): UserSecuritySettingsFlo
   };
 
   if (loading) return { kind: 'loading', refetch: retry };
+  // A lapsed identity-provider session is reported ahead of the generic error
+  // branch: retrying only repeats the same rejection, so the surface must offer
+  // signing in again instead of a retry.
+  if (error && isKratosSessionExpiredError(error)) return { kind: 'sessionExpired', refetch: retry };
   if (error) return { kind: 'error', error, refetch: retry };
   if (!flow) return { kind: 'error', error: new Error('Kratos settings flow unavailable'), refetch: retry };
 
