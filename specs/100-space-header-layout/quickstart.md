@@ -33,10 +33,10 @@ Browser DevTools → Toggle device toolbar → set responsive width.
 
 | # | Check | Pass criterion |
 |---|-------|----------------|
-| 1.1 | Open a Space with a banner image | Banner image touches both viewport edges (no gutter, no padding). Inspect element: banner `<div>` has `w-full aspect-[6/1]`, no horizontal `px-*` on its wrapper. |
+| 1.1 | Open a Space with a banner image | Banner image touches both viewport edges (no gutter, no padding). Inspect element: banner `<img>` carries `width`/`height` attributes at the space's stored ratio (`bannerPlaceholderSize`) — no fixed `aspect-[6/1]` class *(superseded 2026-08-31, spec A8)* — and no horizontal `px-*` on its wrapper. |
 | 1.2 | Open a Subspace with a parent banner image | Same — edge-to-edge, identical aspect ratio at the same viewport. |
-| 1.3 | Open a Space without a banner image | Deterministic colour-gradient fills the same `aspect-[6/1]` region edge-to-edge. |
-| 1.4 | Resize from 320 → 1920 | Banner height scales smoothly with viewport (no jumps). At 1920px banner is ~320px tall; at 1024px ~171px; at 768px ~128px. |
+| 1.3 | Open a Space without a banner image | Deterministic colour-gradient fills a region at the 10:1 design default (`DEFAULT_BANNER_ASPECT_RATIO`) edge-to-edge *(was 6:1 — superseded 2026-08-31)*. |
+| 1.4 | Resize from 320 → 1920 | Banner height scales smoothly with viewport (no jumps). Height = width / the space's stored ratio (6–10): at the 10:1 default 1920px → ~192px, 1024px → ~102px, 768px → ~77px; a 6:1 banner gives ~320 / ~171 / ~128px. |
 | 1.5 | Inner content below banner | Sidebar and main-body widths byte-identical to `develop` branch at the same viewport (use DevTools "Computed → width" panel — record before/after). |
 
 ## US2 — Title and subtitle below the banner
