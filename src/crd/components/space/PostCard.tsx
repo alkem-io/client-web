@@ -227,7 +227,6 @@ export function PostCard({
   className,
 }: PostCardProps) {
   const { t } = useTranslation('crd-space');
-  const TypeIcon = POST_TYPE_DESCRIPTORS[post.type].icon;
   const hasCollapsibleComments = commentsSlot !== undefined;
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const showPublishDetails = post.showPublishDetails !== false;
@@ -333,10 +332,6 @@ export function PostCard({
                     {t('callout.draft')}
                   </Badge>
                 )}
-                <span className="text-caption text-muted-foreground flex items-center gap-1">
-                  <TypeIcon className="w-4 h-4" aria-hidden="true" />
-                  {t(POST_TYPE_DESCRIPTORS[post.type].labelKey)}
-                </span>
               </div>
             </div>
           </div>

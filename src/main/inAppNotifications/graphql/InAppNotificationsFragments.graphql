@@ -253,8 +253,6 @@ fragment InAppNotificationPayloadPlatformUser on InAppNotificationPayloadPlatfor
 
 fragment InAppNotificationPayloadPlatformUserProfileRemoved on InAppNotificationPayloadPlatformUserProfileRemoved {
   type
-  userEmail
-  userDisplayName
 }
 
 fragment InAppNotificationPayloadSpaceCommunityApplication on InAppNotificationPayloadSpaceCommunityApplication {

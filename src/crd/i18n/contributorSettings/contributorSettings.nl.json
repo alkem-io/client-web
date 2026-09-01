@@ -246,6 +246,10 @@
       "description": "Beheer passkeys en WebAuthn-aanmeldgegevens voor je account.",
       "notEnabled": "WebAuthn / Passkey is niet ingeschakeld op dit account.",
       "errorDescription": "Beveiligingsinstellingen konden niet worden geladen — probeer de pagina te vernieuwen.",
+      "sessionExpired": {
+        "description": "Je sessie bij onze aanmeldprovider is verlopen, waardoor deze instellingen niet geladen kunnen worden. Vernieuwen helpt niet — meld je af en opnieuw aan om de sessie te herstellen. De rest van Alkemio blijft ondertussen gewoon werken.",
+        "action": "Afmelden en opnieuw aanmelden"
+      },
       "password": {
         "title": "Wachtwoord wijzigen",
         "description": "Wijzig het wachtwoord waarmee je inlogt op je account.",
@@ -357,6 +361,9 @@
           "message": "We kunnen je inlogmethoden nu niet tonen. Probeer het zo opnieuw - de pagina herladen is niet nodig.",
           "retry": "Opnieuw proberen"
         },
+        "sessionExpired": {
+          "message": "Je sessie bij onze aanmeldprovider is verlopen, waardoor je inlogmethoden niet geladen kunnen worden. Opnieuw proberen helpt niet — gebruik de afmeldactie hieronder om de sessie te herstellen."
+        },
         "messages": {
           "changesSaved": "Je wijzigingen zijn opgeslagen!",
           "identityAlreadyLinked": "Die identiteit is al gekoppeld aan een ander Alkemio-account. Er is niets veranderd op beide accounts.",
@@ -379,6 +386,43 @@
             "set": "Ingesteld",
             "notSet": "Niet ingesteld",
             "manage": "Passkeys beheren"
+          }
+        }
+      },
+      "deleteAccount": {
+        "title": "Account verwijderen",
+        "description": "Verwijder je Alkemio-account permanent.",
+        "cardBody": "Het verwijderen van je account is onmiddellijk en permanent. Je profiel, instellingen, geüploade bestanden en inloggegevens worden verwijderd, en dit kan niet ongedaan worden gemaakt.",
+        "trigger": "Account verwijderen",
+        "preflightError": "Kon niet controleren of je account verwijderd kan worden - probeer het opnieuw.",
+        "reauthFailed": "Je sessie kon niet worden vernieuwd. Log uit en weer in, en probeer het daarna opnieuw.",
+        "confirm": {
+          "title": "Account verwijderen?",
+          "description": "Dit verwijdert je Alkemio-account permanent. Dit kan niet ongedaan worden gemaakt.",
+          "instructions": "Typ je naam - {{name}} - om te bevestigen.",
+          "namePlaceholder": "Typ je naam om te bevestigen",
+          "subscriptionNotice": "Aan je account is een actief abonnement gekoppeld. Verwijdering gaat door; facturering wordt apart afgehandeld.",
+          "cancel": "Annuleren",
+          "confirmLabel": "Mijn account verwijderen",
+          "deleting": "Bezig met verwijderen…",
+          "genericError": "Je account kon niet worden verwijderd - probeer het opnieuw."
+        },
+        "blocked": {
+          "title": "Je kunt je account nog niet verwijderen",
+          "description": "Je account bevat nog items die eerst opgelost moeten worden.",
+          "truncatedNotice": "Toont de eerste {{count}} van {{total}} items.",
+          "resolveLink": "Mijn accountresources beheren",
+          "supportLink": "Contact opnemen met support",
+          "close": "Sluiten",
+          "soleOwner": {
+            "notice": "Je bent de enige eigenaar van {{name}}. Wijs een andere eigenaar aan voordat je je account verwijdert, of neem contact op met support voor hulp."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovatiepakket",
+            "ACCOUNT_INNOVATION_HUB": "Innovatiehub",
+            "SOLE_ORGANIZATION_OWNER": "Organisatie (enige eigenaar)"
           }
         }
       }

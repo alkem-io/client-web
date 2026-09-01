@@ -246,6 +246,10 @@
       "description": "Verwalte Passkeys und WebAuthn-Anmeldedaten für dein Konto.",
       "notEnabled": "WebAuthn / Passkey ist für dieses Konto nicht aktiviert.",
       "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite.",
+      "sessionExpired": {
+        "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
+        "action": "Abmelden und erneut anmelden"
+      },
       "password": {
         "title": "Passwort ändern",
         "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
@@ -357,6 +361,9 @@
           "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen. Versuche es gleich erneut - die Seite muss nicht neu geladen werden.",
           "retry": "Erneut versuchen"
         },
+        "sessionExpired": {
+          "message": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können deine Anmeldemethoden nicht geladen werden. Ein erneuter Versuch hilft nicht — melde dich über die Aktion unten ab, um sie wiederherzustellen."
+        },
         "messages": {
           "changesSaved": "Deine Änderungen wurden gespeichert!",
           "identityAlreadyLinked": "Diese Identität ist bereits mit einem anderen Alkemio-Konto verbunden. An keinem der beiden Konten wurde etwas geändert.",
@@ -379,6 +386,43 @@
             "set": "Eingerichtet",
             "notSet": "Nicht eingerichtet",
             "manage": "Passkeys verwalten"
+          }
+        }
+      },
+      "deleteAccount": {
+        "title": "Konto löschen",
+        "description": "Löscht dein Alkemio-Konto dauerhaft.",
+        "cardBody": "Das Löschen deines Kontos ist sofort und endgültig. Dein Profil, deine Einstellungen, hochgeladene Dateien und Anmeldedaten werden entfernt und können nicht wiederhergestellt werden.",
+        "trigger": "Konto löschen",
+        "preflightError": "Es konnte nicht geprüft werden, ob dein Konto gelöscht werden kann - versuche es erneut.",
+        "reauthFailed": "Deine Sitzung konnte nicht aktualisiert werden. Melde dich ab und wieder an und versuche es dann erneut.",
+        "confirm": {
+          "title": "Konto löschen?",
+          "description": "Dies löscht dein Alkemio-Konto dauerhaft. Dies kann nicht rückgängig gemacht werden.",
+          "instructions": "Gib deinen Namen - {{name}} - ein, um zu bestätigen.",
+          "namePlaceholder": "Gib deinen Namen zur Bestätigung ein",
+          "subscriptionNotice": "Mit deinem Konto ist ein aktives Abonnement verknüpft. Die Löschung wird fortgesetzt; die Abrechnung erfolgt separat.",
+          "cancel": "Abbrechen",
+          "confirmLabel": "Mein Konto löschen",
+          "deleting": "Wird gelöscht…",
+          "genericError": "Dein Konto konnte nicht gelöscht werden - versuche es erneut."
+        },
+        "blocked": {
+          "title": "Du kannst dein Konto noch nicht löschen",
+          "description": "Dein Konto enthält noch Elemente, die zuerst aufgelöst werden müssen.",
+          "truncatedNotice": "Zeigt die ersten {{count}} von {{total}} Elementen.",
+          "resolveLink": "Meine Kontoressourcen verwalten",
+          "supportLink": "Support kontaktieren",
+          "close": "Schließen",
+          "soleOwner": {
+            "notice": "Du bist der einzige Eigentümer von {{name}}. Ernenne einen weiteren Eigentümer, bevor du dein Konto löschst, oder kontaktiere den Support."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovationspaket",
+            "ACCOUNT_INNOVATION_HUB": "Innovations-Hub",
+            "SOLE_ORGANIZATION_OWNER": "Organisation (einziger Eigentümer)"
           }
         }
       }

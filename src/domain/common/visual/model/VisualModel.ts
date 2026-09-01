@@ -18,5 +18,8 @@ export type VisualConstraints = {
   minWidth: number;
   minHeight: number;
   aspectRatio: number;
+  /** Adjustable range for the ratio; equal to each other (and to `aspectRatio`) when the shape is fixed. */
+  minAspectRatio?: number;
+  maxAspectRatio?: number;
   allowedTypes: string[];
 };

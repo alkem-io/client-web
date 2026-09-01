@@ -362,7 +362,10 @@ export function ContributorCollection({
             <div className="space-y-3">
               <h3 className="text-label text-muted-foreground uppercase">{t('contributors.noLocationData')}</h3>
               <p className="text-caption text-muted-foreground">{t('contributors.noLocationDescription')}</p>
-              <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {/* `auto-rows-fr` equalizes rows across the whole grid, so cards
+                  with and without a location line all get the same height —
+                  content-driven (the tallest card sets it), not a fixed value. */}
+              <ul className="grid auto-rows-fr grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {unlocated.map(c => (
                   <li key={c.id}>
                     <ContributorCard contributor={c} onContributorClick={onContributorClick} />
@@ -376,7 +379,9 @@ export function ContributorCollection({
         <EmptyState searching={query.length > 0} />
       ) : (
         <>
-          <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {/* `auto-rows-fr` — see the unlocated grid above: every row (and so
+              every card, via the card's own `h-full`) shares the same height. */}
+          <ul className="grid auto-rows-fr grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {pageCards.map(c => (
               <li key={c.id}>
                 <ContributorCard contributor={c} onContributorClick={onContributorClick} />
