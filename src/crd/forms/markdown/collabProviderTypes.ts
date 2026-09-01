@@ -1,10 +1,10 @@
 /**
  * Opaque collaboration types for CRD markdown editor.
  *
- * These shapes keep `src/crd/` free of any `yjs` or `@hocuspocus/provider` imports
+ * These shapes keep `src/crd/` free of any `yjs` or collaboration-provider imports
  * (runtime OR type). The integration layer under `src/main/crdPages/memo/` creates
- * real Y.Doc / Hocuspocus provider instances and casts them to these opaque shapes
- * at the boundary.
+ * the real Y.Doc / unified collaboration provider instances and casts them to these
+ * opaque shapes at the boundary.
  */
 
 export type YDocLike = { readonly __ydocBrand: unique symbol } & Record<string, unknown>;

@@ -27,6 +27,7 @@ query SpaceTab($spaceId: UUID!) {
               visible
               descriptionDisplayMode
               showPublishDetails
+              sidebar
             }
             defaultCalloutTemplate {
               id

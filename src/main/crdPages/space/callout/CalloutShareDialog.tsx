@@ -7,6 +7,9 @@ type CalloutShareDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   callout: CalloutDetailsModelExtended;
+  /** Raise the dialog above a custom overlay (e.g. the fullscreen task board). */
+  className?: string;
+  overlayClassName?: string;
 };
 
 /**
@@ -17,7 +20,13 @@ type CalloutShareDialogProps = {
  * dialog header, reactions bar) can share a single open state instead of each
  * mounting their own dialog instance.
  */
-export function CalloutShareDialog({ open, onOpenChange, callout }: CalloutShareDialogProps) {
+export function CalloutShareDialog({
+  open,
+  onOpenChange,
+  callout,
+  className,
+  overlayClassName,
+}: CalloutShareDialogProps) {
   const { t } = useTranslation();
   const url = callout.framing.profile.url;
   return (
@@ -25,6 +34,8 @@ export function CalloutShareDialog({ open, onOpenChange, callout }: CalloutShare
       open={open}
       onOpenChange={onOpenChange}
       url={url}
+      className={className}
+      overlayClassName={overlayClassName}
       // Key by `url` so the form remounts (and seeds `message` from the new
       // default) if a different callout is ever shown through the same dialog
       // instance — local message/selectedUsers state would otherwise go stale.

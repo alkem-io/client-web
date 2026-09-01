@@ -331,6 +331,56 @@
           "loadError": "No se pudieron cargar tus claves API — intenta recargar la página.",
           "retry": "Reintentar"
         }
+      },
+      "connectedAccounts": {
+        "title": "Cuentas conectadas",
+        "description": "Todas las formas en que puedes iniciar sesión en esta cuenta actualmente.",
+        "provider": {
+          "notConnected": "No conectada",
+          "connected": "Conectada"
+        },
+        "actions": {
+          "connect": "Conectar",
+          "connectAria": "Conectar {{provider}}",
+          "disconnect": "Desconectar",
+          "disconnectAria": "Desconectar {{provider}}"
+        },
+        "confirmDisconnect": {
+          "title": "¿Desconectar {{provider}}?",
+          "description": "Ya no podrá iniciar sesión con {{provider}}. Si vuelve a conectarlo más tarde y el proveedor ha cambiado la forma de identificarle, es posible que esta conexión exacta no se pueda recuperar.",
+          "confirm": "Desconectar"
+        },
+        "locked": {
+          "reason": "Esta es tu única forma de iniciar sesión ahora mismo: añade una contraseña o una passkey a continuación antes de poder desconectarla."
+        },
+        "unavailable": {
+          "message": "No podemos mostrar tus métodos de inicio de sesión en este momento. Inténtalo de nuevo en un momento - no hace falta recargar la página.",
+          "retry": "Intentar de nuevo"
+        },
+        "messages": {
+          "changesSaved": "¡Tus cambios se han guardado!",
+          "identityAlreadyLinked": "Esa identidad ya está conectada a otra cuenta de Alkemio. No se ha modificado ninguna de las dos cuentas.",
+          "linked": "{{provider}} conectada.",
+          "unlinked": "{{provider}} desconectada.",
+          "connectFailed": "No se pudo conectar {{provider}} — inténtalo de nuevo.",
+          "disconnectFailed": "No se pudo desconectar {{provider}} — inténtalo de nuevo.",
+          "reauthRequiredConnect": "Confirma que eres tú y vuelve a intentar conectar {{provider}}.",
+          "reauthRequiredDisconnect": "Confirma que eres tú y vuelve a intentar desconectar {{provider}}."
+        },
+        "credentials": {
+          "password": {
+            "label": "Contraseña",
+            "set": "Configurada",
+            "notSet": "No configurada",
+            "manage": "Cambiar contraseña"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Configurada",
+            "notSet": "No configurada",
+            "manage": "Gestionar passkeys"
+          }
+        }
       }
     },
     "settings": {
@@ -414,6 +464,7 @@
         "space": {
           "communicationUpdates": "Recibir una notificación cuando se comparte una nueva comunicación en una comunidad",
           "collaborationCalloutPublished": "Recibir una notificación cuando se publica una llamada en una comunidad de la que soy miembro",
+          "collaborationCalloutReaction": "Recibir una notificación cuando alguien reacciona a mi Post con un emoji",
           "collaborationCalloutPostContributionComment": "Recibir una notificación cuando se comenta una publicación que sigo",
           "collaborationCalloutContributionCreated": "Recibir una notificación cuando se crea una nueva contribución en una llamada",
           "collaborationCalloutComment": "Recibir una notificación cuando se añade un nuevo comentario a una llamada que sigo",

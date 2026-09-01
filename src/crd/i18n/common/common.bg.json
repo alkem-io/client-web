@@ -157,7 +157,10 @@
     "sign-in": "Моля, влезете в системата, за да видите потребителите, свързани с тази $t(common.organization)."
   },
   "authentication": {
-    "lockout": "Your account has been temporarily locked due to too many failed sign-in attempts. Please try again in {{minutes}} minute(s).",
+    "lockout": "Акаунтът ви е временно заключен поради твърде много неуспешни опита за вход. Опитайте отново след {{duration}}.",
+    "lockoutRetry": "Опитайте отново",
+    "flowUnavailable": "Не успяхме да започнем сигурно вписването ви. Моля, започнете отново.",
+    "flowUnavailableRetry": "Започнете вписването отново",
     "passkey": {
       "not-supported": "Passkeys are not supported by your browser",
       "script-loading": "Loading passkey support...",
@@ -184,22 +187,40 @@
   },
   "callout": {
     "whiteboard": {
+      "saveFailed": "Промените в бялата дъска не могат да бъдат запазени",
       "images": {
-        "downloadFailed": "Couldn't load the image. Please try again.",
-        "maxSizeFallback": "the allowed limit",
-        "multipleFailures_one": "{{count}} image could not be loaded",
-        "multipleFailures_other": "{{count}} images could not be loaded",
-        "retry": "Retry",
-        "singleFailure": "An image could not be loaded",
-        "tooLarge": "Image is too large. Max size is {{maxSize}}.",
-        "unsupportedType": "Unsupported image format. Please use {{formats}}.",
-        "uploadFailed": "Couldn't upload the image. Please try again."
+        "downloadFailed": "Изображението не можа да бъде заредено. Опитайте отново.",
+        "maxSizeFallback": "разрешения лимит",
+        "multipleFailures_one": "{{count}} изображение не можа да бъде заредено",
+        "multipleFailures_other": "{{count}} изображения не можаха да бъдат заредени",
+        "uploadMultipleFailures_one": "{{count}} изображение не можа да бъде качено",
+        "uploadMultipleFailures_other": "{{count}} изображения не можаха да бъдат качени",
+        "retry": "Опитайте отново",
+        "singleFailure": "Едно изображение не можа да бъде заредено",
+        "tooLarge": "Изображението е твърде голямо. Максималният размер е {{maxSize}}.",
+        "unsupportedType": "Неподдържан формат на изображението. Използвайте {{formats}}.",
+        "uploadFailed": "Изображението не можа да бъде качено. Опитайте отново."
+      },
+      "session": {
+        "rateExceeded": "Редактирате твърде бързо — повторно свързване…",
+        "updateNotAccepted": "Промяната ви не можа да бъде изпратена — повторно свързване…",
+        "sizeLimitExceeded": "Тази бяла дъска достигна ограничението за размер и последната ви промяна не беше приложена. Свържете се отново, за да продължите от последно запазената версия.",
+        "documentDeleted": "Тази бяла дъска беше изтрита.",
+        "editsNotSaved": "Скорошните ви промени не можаха да бъдат запазени и бяха загубени. Съвместната работа е спряна.",
+        "serverShutdown": "Сървърът за съвместна работа се рестартира — повторно свързване…",
+        "updateRejected": "Последната ви промяна не можа да бъде запазена. Опитайте отново."
       },
       "export": {
         "title": "Запазване в Alkemio",
         "description": "Запазете сцената в Alkemio и я споделете с други.",
         "save": "Запазване в Alkemio"
       }
+    },
+    "memo": {
+      "saveFailed": "Промените не могат да бъдат запазени",
+      "updateRejected": "Последната ви промяна не можа да бъде запазена. Опитайте отново.",
+      "updateNotAccepted": "Промяната ви не можа да бъде изпратена — повторно свързване…",
+      "sessionEnded": "Съвместната работа приключи. Презаредете страницата, за да продължите."
     }
   },
   "cancel": "Отказ",
@@ -214,6 +235,7 @@
     }
   },
   "common": {
+    "guestUserFallback": "Гост",
     "Account": "Акаунт",
     "Admin": "Администратор",
     "Admins": "Администратори",
@@ -793,6 +815,10 @@
           "description": "{{triggeredByName}} публикува нов $t(common.post) в {{spaceLevel}}: {{spaceName}}, с име: {{calloutName}}.",
           "subject": "{{spaceName}} – Нов $t(common.post) е публикуван „{{calloutName}}“, хвърлете един поглед!"
         },
+        "SPACE_COLLABORATION_CALLOUT_REACTION": {
+          "description": "",
+          "subject": "<b>{{triggeredByName}}</b> реагира на вашия $t(common.post) с {{emoji}}"
+        },
         "SPACE_COLLABORATION_POLL_MODIFIED_ON_POLL_I_VOTED_ON": {
           "description": "{{triggeredByName}} modified a $t(common.poll) you voted on",
           "subject": "The $t(common.poll) \"{{calloutName}}\" in {{spaceName}} has been modified"
@@ -1012,14 +1038,16 @@
       "claim-missing": "You haven't verified your Cleverbase identity. Please verify your identity and try again or try another sign up method.",
       "invalid-credentials": "Въведеният имейл адрес или парола е невалиден. Моля, проверете вашите идентификационни данни и опитайте отново. Искате ли вместо това да се регистрирате? Можете да го направите, като кликнете върху връзката по-горе.",
       "login-flow-account-exists": "Този имейл вече е свързан с $t(common.account). Ако преди това сте се регистрирали през LinkedIn, GitHub или Microsoft, моля използвайте този метод за вход. В противен случай, нулирайте паролата си.",
-      "oidc-account-linking-conflict": "You tried to sign in with {{provider}}, but that email is already used by another account.",
+      "oidc-account-linking-conflict": "Опитахте да продължите с {{provider}}, но вече съществува акаунт с този имейл. Влезте в този акаунт по-долу, за да потвърдите, че сте вие - {{provider}} ще бъде свързан към него и занапред ще можете да влизате и по двата начина.",
       "pick-password": "Изберете парола за вашия $t(common.account)",
       "property-missing": "{{field}} is required.",
       "recovery-flow-expired": "Този линк за нулиране на парола е изтекъл. Моля, поискайте нов, като въведете отново вашия имейл адрес.",
       "request-recover-password": "<strong>Имейл, съдържащ връзка за възстановяване, беше изпратен до посочения от вас имейл адрес.</strong><br /> <br/>Ако не сте получили имейл, моля проверете следното:<br /> <br/><li> <strong>Проверете правописа</strong> на имейл адреса.</li><li> <strong>Уверете се, че използвате имейл адреса</strong>, с който сте се регистрирали.</li><li> <strong>Проверете папката със спам или нежелана поща</strong>, в случай че имейла е филтриран.</li><li> <strong>Aко сте се регистрирали чрез LinkedIn, Microsoft или друга социална мрежа,</strong> възстановяването на парола чрез имейл няма да работи. Моля, използвайте съответната опция за вход през социална мрежа.</li><br/><br/><i>Забележка: Това не потвърждава, че $t(common.account) е регистриран с този имейл.</i>",
       "successfully-recovered-password": "Моля, въведете нова парола в рамките на следващите 15 минути, за да завършите нулирането на паролата си.",
       "verification-flow-continue": "Продължете",
-      "verification-flow-expired": "Връзката за потвърждение е изтекла. Моля, поискайте нова, като въведете отново вашия имейл адрес."
+      "verification-flow-expired": "Връзката за потвърждение е изтекла. Моля, поискайте нова, като въведете отново вашия имейл адрес.",
+      "settings-changes-saved": "Промените ви бяха запазени!",
+      "confirm-it-is-you": "Моля, потвърдете това действие, като удостоверите, че сте вие."
     }
   },
   "languages": {
@@ -1366,7 +1394,9 @@
         "lastSaved": "Съдържанието на този $t(common.whiteboard) е запазено за последно {{lastSaved}}.",
         "message": "Съжаляваме за неудобството! $t(common.whiteboard) не е достъпен за редактиране в момента, вероятно поради проблем с мрежата или загуба на достъп. Моля, опитайте да затворите и отново отворите $t(common.whiteboard) или да презаредите страницата. Ако проблемът продължава, свържете се с вашия $t(common.space) $t(common.admin) за помощ.",
         "offline": "В момента сте офлайн. $t(common.whiteboard) ще се опита да се свърже отново, когато отново сте онлайн.",
-        "title": "$t(common.Whiteboards) връзката е прекъсната"
+        "title": "$t(common.Whiteboards) връзката е прекъсната",
+        "unavailableMessage": "Тази $t(common.whiteboard) не е достъпна. Възможно е да нямате достъп или тя вече да не е налична.",
+        "unavailableTitle": "$t(common.Whiteboard) не е достъпна"
       }
     }
   },

@@ -1,5 +1,8 @@
 overwrite: true
-schema: 'http://localhost:3000/graphql'
+# Codegen reads the schema from a local SDL snapshot so type generation is
+# reproducible without a running backend. Override with a live endpoint when
+# refreshing the snapshot, e.g. CODEGEN_SCHEMA=http://localhost:3000/graphql.
+schema: '${CODEGEN_SCHEMA:./schema.graphql}'
 documents:
   - 'src/**/*.graphql'
 hooks:

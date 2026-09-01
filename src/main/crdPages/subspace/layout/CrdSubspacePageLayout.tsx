@@ -1,4 +1,4 @@
-import { Layers, Layout as LayoutIcon } from 'lucide-react';
+import { Layout as LayoutIcon, Plus } from 'lucide-react';
 import { type ReactNode, Suspense, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useLocation } from 'react-router-dom';
@@ -7,20 +7,24 @@ import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { LoadingSpinner } from '@/crd/components/common/LoadingSpinner';
 import { ShareDialog } from '@/crd/components/common/ShareDialog';
-import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { CommunityUpdatesDialog } from '@/crd/components/space/CommunityUpdatesDialog';
+import { HeaderActionIcons } from '@/crd/components/space/HeaderActionIcons';
 import { SpaceVisibilityNotice } from '@/crd/components/space/SpaceVisibilityNotice';
 import { SubspaceHeader } from '@/crd/components/space/SubspaceHeader';
 import { type SubspaceQuickActionId, SubspaceSidebar } from '@/crd/components/space/SubspaceSidebar';
-import { CreateSubspaceDialog } from '@/crd/components/space/settings/CreateSubspaceDialog';
 import { SpaceSettingsHeader } from '@/crd/components/space/settings/SpaceSettingsHeader';
 import { SpaceSettingsTabStrip } from '@/crd/components/space/settings/SpaceSettingsTabStrip';
 import { UpdatesSection } from '@/crd/components/space/sidebar/UpdatesSection';
-import { TemplatePicker } from '@/crd/components/templates/TemplatePicker';
+import { useEdgeSwipe } from '@/crd/hooks/useEdgeSwipe';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { contentColumnClass } from '@/crd/lib/contentColumn';
+import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
+import { IconButton } from '@/crd/primitives/icon-button';
 import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
 import { DirtyTabGuardContext } from '@/main/crdPages/topLevelPages/spaceSettings/DirtyTabGuardContext';
+import { CreateSubspaceDialogs } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
 import { useDirtyTabGuard } from '@/main/crdPages/topLevelPages/spaceSettings/useDirtyTabGuard';
 import {
@@ -38,8 +42,10 @@ import { useEnableBannerOverlay } from '@/main/ui/layout/BannerOverlayContext';
 import { useEnableSpaceFullWidth } from '@/main/ui/layout/LayoutWidthContext';
 import { useDownNoticeBanner } from '@/main/ui/layout/useDownNoticeBanner';
 import { useLayoutWidthPreference } from '@/main/ui/layout/useLayoutWidthPreference';
+import { CalloutFormConnector } from '../../space/callout/CalloutFormConnector';
 import { CalloutShareOnAlkemioForm } from '../../space/callout/CalloutShareOnAlkemioForm';
 import { CrdSpaceCommunityDialogConnector } from '../../space/dialogs/CrdSpaceCommunityDialogConnector';
+import { SubspacesDialogConnector } from '../../space/dialogs/SubspacesDialogConnector';
 import { useCrdCommunityUpdates } from '../../space/hooks/useCrdCommunityUpdates';
 import { useCrdSpaceLocale } from '../../space/hooks/useCrdSpaceLocale';
 import { SpaceApplyButtonConnector } from '../../space/SpaceApplyButtonConnector';
@@ -47,8 +53,8 @@ import { CrdSubspaceAbout } from '../about/CrdSubspaceAbout';
 import { CrdSubspaceActivityDialogConnector } from '../dialogs/CrdSubspaceActivityDialogConnector';
 import { CrdSubspaceEventsDialogConnector } from '../dialogs/CrdSubspaceEventsDialogConnector';
 import { CrdSubspaceIndexDialogConnector } from '../dialogs/CrdSubspaceIndexDialogConnector';
-import { CrdSubspaceSubspacesDialogConnector } from '../dialogs/CrdSubspaceSubspacesDialogConnector';
 import { useCrdSubspace } from '../hooks/useCrdSubspace';
+import { useCrdSubspaceFlow } from '../hooks/useCrdSubspaceFlow';
 import { useSubspaceSidebarCollapsed } from '../hooks/useSubspaceSidebarCollapsed';
 
 export type SubspaceMobileMenu = {
@@ -60,6 +66,9 @@ export type SubspaceMobileMenu = {
 export type SubspaceOutletContext = {
   data: ReturnType<typeof useCrdSubspace>;
   mobileMenu: SubspaceMobileMenu;
+  /** The gray header action icons — the page renders them on the sticky
+   *  flow-tabs row (desktop) so they stay visible on scroll. */
+  headerActionIcons?: ReactNode;
 };
 
 export default function CrdSubspacePageLayout() {
@@ -79,6 +88,11 @@ export default function CrdSubspacePageLayout() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [updatesOpen, setUpdatesOpen] = useState(false);
+  const [createPostOpen, setCreatePostOpen] = useState(false);
+  // Active flow phase (URL-driven, shared with the callouts page) — the Add Post
+  // dialog pre-selects it, exactly as the old flow-tabs button did.
+  const { activePhaseId } = useCrdSubspaceFlow(data.phases, data.currentPhaseId);
+  const activePhase = data.phases.find(phase => phase.id === activePhaseId);
   const { collapsed: sidebarCollapsed, toggle: toggleSidebarCollapsed } = useSubspaceSidebarCollapsed();
   const locale = useCrdSpaceLocale();
   const communityUpdates = useCrdCommunityUpdates(data.communityId);
@@ -99,6 +113,13 @@ export default function CrdSubspacePageLayout() {
   }, [pathname]);
 
   const isOnSettings = pathname.includes('/settings');
+
+  // Edge-swipe from the left opens the mobile menu drawer (the Sheet rendered by
+  // SubspaceFlowTabs, whose open state lives here). Only armed while a drawer
+  // trigger exists: below lg (desktop sidebar takes over) and off settings.
+  const belowLg = useMediaQuery('(max-width: 1023px)');
+  useEdgeSwipe(() => setMobileMenuOpen(true), { enabled: belowLg && !isOnSettings });
+
   const settingsLevel: 'L1' | 'L2' = spaceLevel === SpaceLevel.L2 ? 'L2' : 'L1';
   const visibleSettingsTabs = getVisibleSettingsTabs(settingsLevel);
   const settingsTabDescriptors = useSettingsTabDescriptors(settingsLevel);
@@ -122,12 +143,26 @@ export default function CrdSubspacePageLayout() {
   const baseTrail =
     data.parentSpaceName && data.subspaceName
       ? [
-          // biome-ignore lint/style/noNonNullAssertion: includeL0Crumb == true requires levelZeroSpaceName to be set
-          ...(includeL0Crumb ? [{ label: data.levelZeroSpaceName!, href: data.levelZeroSpaceUrl, icon: Layers }] : []),
-          { label: data.parentSpaceName, href: data.parentSpaceUrl, icon: Layers },
+          ...(includeL0Crumb
+            ? [
+                {
+                  // biome-ignore lint/style/noNonNullAssertion: includeL0Crumb == true requires levelZeroSpaceName to be set
+                  label: data.levelZeroSpaceName!,
+                  href: data.levelZeroSpaceUrl,
+                  // biome-ignore lint/style/noNonNullAssertion: includeL0Crumb == true requires levelZeroSpaceName to be set
+                  avatar: { src: data.levelZeroSpaceAvatarUrl, initials: getInitials(data.levelZeroSpaceName!) },
+                },
+              ]
+            : []),
+          {
+            label: data.parentSpaceName,
+            href: data.parentSpaceUrl,
+            avatar: { src: data.parentSpaceAvatarUrl, initials: getInitials(data.parentSpaceName) },
+          },
           {
             label: data.subspaceName,
-            ...(isOnSettings ? { href: data.subspaceUrl, icon: Layers } : {}),
+            avatar: { src: data.subspaceAvatarUrl, initials: getInitials(data.subspaceName) },
+            ...(isOnSettings ? { href: data.subspaceUrl } : {}),
           },
         ]
       : [];
@@ -158,6 +193,10 @@ export default function CrdSubspacePageLayout() {
 
   const editFlowHref = data.subspaceUrl ? buildSettingsTabUrl(data.subspaceUrl, 'layout') : undefined;
 
+  // Add Post gate, shared by the sidebar slots and the dialog mount: CreateCallout
+  // on the calloutsSet (same as the L0 tabs) and a flow with phases to post into.
+  const canCreatePost = data.canCreateCallout && data.phases.length > 0;
+
   // Single source of truth for the create-subspace handler. Both the sidebar
   // widget (when there are 0 nested subspaces) and the Subspaces dialog footer
   // call it; `data.canCreateSubspace` is the only privilege gate.
@@ -174,6 +213,7 @@ export default function CrdSubspacePageLayout() {
 
   const sidebarCommonProps = {
     ...data.sidebar,
+    parentSpaces: data.parentSpaceStack,
     // Only offer the edit pencil to users with Update on the subspace — otherwise it just lands
     // on the access-restricted page.
     onEditClick: data.canUpdate
@@ -187,6 +227,32 @@ export default function CrdSubspacePageLayout() {
       setAboutOpen(true);
     },
     onQuickActionClick: handleQuickAction,
+    // Add Post lives in the sidebar (see `canCreatePost` above).
+    actionsSlot: canCreatePost ? (
+      <Button
+        className="w-full gap-2 text-body-emphasis"
+        onClick={() => {
+          setMobileMenuOpen(false);
+          setCreatePostOpen(true);
+        }}
+      >
+        <Plus className="w-4 h-4" aria-hidden="true" />
+        {t('crd-subspace:flow.addPost')}
+      </Button>
+    ) : undefined,
+    // Same action, icon-only, for the collapsed rail — same gate.
+    collapsedActionsSlot: canCreatePost ? (
+      <IconButton
+        tooltipLabel={t('crd-subspace:flow.addPost')}
+        tooltipSide="right"
+        onClick={() => {
+          setMobileMenuOpen(false);
+          setCreatePostOpen(true);
+        }}
+      >
+        <Plus className="w-4 h-4" aria-hidden="true" />
+      </IconButton>
+    ) : undefined,
     subspaces: data.subspaces,
     onShowAllSubspaces: () => {
       setMobileMenuOpen(false);
@@ -209,6 +275,20 @@ export default function CrdSubspacePageLayout() {
       />
     ),
   };
+
+  const headerActions = {
+    ...data.bannerActions,
+    showFullWidthToggle: true,
+    fullWidth,
+    onActivityClick: () => setActiveDialog('activity'),
+    onShareClick: () => setShareDialogOpen(true),
+    onToggleFullWidth: toggleFullWidth,
+    onMenuClick: () => setMobileMenuOpen(true),
+  };
+  // At sm+ the gray icons ride the sticky flow-tabs row (rendered by the
+  // callouts page via outlet context) so they stay visible on scroll; below sm
+  // the header renders its own copy.
+  const headerActionIcons = <HeaderActionIcons actions={headerActions} />;
 
   // Desktop sidebar is collapsible (persisted); the mobile drawer always shows
   // the full sidebar and has no collapse affordance.
@@ -250,20 +330,24 @@ export default function CrdSubspacePageLayout() {
           <div className="flex flex-col bg-background min-h-screen">
             <SpaceSettingsHeader
               title={data.banner.title}
+              titleHref={data.subspaceUrl || undefined}
               tagline={data.banner.tagline ?? null}
-              avatarUrl={data.banner.subspaceAvatarUrl ?? null}
-              initials={data.banner.subspaceInitials}
-              avatarColor={data.banner.subspaceColor}
               fullWidth={fullWidth}
-              tabs={
-                <SpaceSettingsTabStrip
-                  activeTab={activeSettingsTab}
-                  onTabChange={handleSettingsTabChange}
-                  tabs={settingsTabDescriptors}
-                />
-              }
             />
-            <main className="flex-1 w-full px-6 md:px-8 pb-8">
+            {/* Sticky settings tab row — mirrors SpaceShell's tabs slot so the
+                strip stays pinned under the h-16 platform header on scroll. */}
+            <div className="w-full px-6 md:px-8 sm:sticky sm:top-16 sm:z-30 sm:pt-4 sm:bg-background/95 sm:backdrop-blur-[8px]">
+              <div className="grid grid-cols-12 gap-6">
+                <div className={cn('col-span-12', contentColumnClass(fullWidth))}>
+                  <SpaceSettingsTabStrip
+                    activeTab={activeSettingsTab}
+                    onTabChange={handleSettingsTabChange}
+                    tabs={settingsTabDescriptors}
+                  />
+                </div>
+              </div>
+            </div>
+            <main className="flex-1 w-full px-6 md:px-8 pb-8 pt-6">
               <div className="grid grid-cols-12 gap-6 items-start">
                 <div className={cn('col-span-12 min-w-0', contentColumnClass(fullWidth))}>
                   <Suspense fallback={<LoadingSpinner />}>
@@ -304,15 +388,7 @@ export default function CrdSubspacePageLayout() {
         <SubspaceHeader
           {...data.banner}
           fullWidth={fullWidth}
-          actions={{
-            ...data.bannerActions,
-            showFullWidthToggle: true,
-            fullWidth,
-            onActivityClick: () => setActiveDialog('activity'),
-            onShareClick: () => setShareDialogOpen(true),
-            onToggleFullWidth: toggleFullWidth,
-            onMenuClick: () => setMobileMenuOpen(true),
-          }}
+          actions={headerActions}
           overlayHeader={enableBannerOverlay}
         />
 
@@ -333,7 +409,7 @@ export default function CrdSubspacePageLayout() {
               />
 
               <Suspense fallback={<LoadingSpinner />}>
-                <Outlet context={{ data, mobileMenu }} />
+                <Outlet context={{ data, mobileMenu, headerActionIcons }} />
               </Suspense>
             </div>
           </div>
@@ -365,10 +441,22 @@ export default function CrdSubspacePageLayout() {
         phaseNames={data.phases.map(phase => phase.label)}
       />
 
-      <CrdSubspaceSubspacesDialogConnector
+      {/* Add Post — opened from the sidebar actions slot; pre-selects the active phase. */}
+      {canCreatePost && data.calloutsSetId && (
+        <CalloutFormConnector
+          open={createPostOpen}
+          onOpenChange={setCreatePostOpen}
+          calloutsSetId={data.calloutsSetId}
+          activeFlowStateName={activePhase?.label}
+          defaultTemplateId={activePhase?.defaultCalloutTemplateId}
+        />
+      )}
+
+      <SubspacesDialogConnector
         open={activeDialog === 'subspaces'}
         onOpenChange={open => setActiveDialog(open ? 'subspaces' : null)}
-        subspaceId={data.subspaceId}
+        spaceId={data.subspaceId}
+        emptyText={t('crd-subspace:subspaces.empty')}
         onCreateSubspace={handleCreateSubspace}
       />
 
@@ -400,42 +488,7 @@ export default function CrdSubspacePageLayout() {
         }
       />
 
-      {data.canCreateSubspace && (
-        <>
-          <CreateSubspaceDialog
-            open={createSubspace.open}
-            onOpenChange={open => {
-              if (!open) createSubspace.closeDialog();
-            }}
-            values={createSubspace.values}
-            errors={createSubspace.errors}
-            selectedTemplateName={createSubspace.selectedTemplateName}
-            selectedTemplateContent={createSubspace.selectedTemplateContent}
-            selectedTemplateLoading={createSubspace.selectedTemplateLoading}
-            onOpenTemplatePicker={createSubspace.onOpenTemplatePicker}
-            onClearTemplate={createSubspace.onClearTemplate}
-            submitting={createSubspace.submitting}
-            canSubmit={createSubspace.canSubmit}
-            avatarConstraints={createSubspace.avatarConstraints}
-            cardBannerConstraints={createSubspace.cardBannerConstraints}
-            onChange={createSubspace.onChange}
-            onSubmit={() => void createSubspace.onSubmit()}
-          />
-          <TemplatePicker {...createSubspace.picker} />
-          <ConfirmationDialog
-            open={createSubspace.overwriteConfirmOpen}
-            onOpenChange={open => {
-              if (!open) createSubspace.onCancelOverwriteTemplate();
-            }}
-            title={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.title')}
-            description={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.description')}
-            confirmLabel={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.confirm')}
-            cancelLabel={t('crd-spaceSettings:subspaces.createDialog.template.overwriteConfirm.cancel')}
-            onConfirm={createSubspace.onConfirmOverwriteTemplate}
-            onCancel={createSubspace.onCancelOverwriteTemplate}
-          />
-        </>
-      )}
+      {data.canCreateSubspace && <CreateSubspaceDialogs createSubspace={createSubspace} />}
     </StorageConfigContextProvider>
   );
 }

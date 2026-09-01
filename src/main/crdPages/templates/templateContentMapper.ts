@@ -21,6 +21,7 @@ import type {
   TemplateFormValues,
   TemplateType,
 } from '@/crd/components/templates/types';
+import { mapGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
 
 /** `data.lookup.template` from a `TemplateContent` query (non-null). */
 export type TemplateContentTemplate = NonNullable<TemplateContentQuery['lookup']['template']>;
@@ -28,6 +29,7 @@ type CalloutContentGql = NonNullable<TemplateContentTemplate['callout']>;
 type WhiteboardContentGql = NonNullable<TemplateContentTemplate['whiteboard']>;
 type CommunityGuidelinesContentGql = NonNullable<TemplateContentTemplate['communityGuidelines']>;
 type SpaceContentGql = NonNullable<TemplateContentTemplate['contentSpace']>;
+type ClassificationContentGql = NonNullable<TemplateContentTemplate['classification']>;
 
 export function mapGqlFramingType(gql: CalloutFramingType): FramingKind {
   switch (gql) {
@@ -74,10 +76,10 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
   const framingKind = mapGqlFramingType(framing.type);
   return {
     type: 'callout',
+    sourceCalloutId: callout.id,
     framingKind,
     framingTitle: framing.profile.displayName,
     framingDescription: framing.profile.description ?? '',
-    framingWhiteboardContent: framingKind === 'whiteboard' ? framing.whiteboard?.content : undefined,
     // Server-rendered whiteboard preview image — D16, 2026-05-18. The Preview dialog (and any
     // read-only preview surface) renders an `<img>` of this when present; falls back to the
     // placeholder text only when the visual is genuinely missing on the server.
@@ -118,7 +120,7 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
     allowedContributionTypes: mapAllowedContributionTypes(settings.contribution.allowedTypes),
     commentsEnabled: settings.framing.commentsEnabled,
     defaultPostDescription: contributionDefaults.postDescription || undefined,
-    defaultWhiteboardContent: contributionDefaults.whiteboardContent || undefined,
+    defaultWhiteboardAvailable: contributionDefaults.whiteboardContentAvailable,
     defaultWhiteboardName: contributionDefaults.defaultDisplayName || undefined,
   };
 }
@@ -126,8 +128,8 @@ function mapCalloutContent(callout: CalloutContentGql): Extract<TemplateContent,
 function mapWhiteboardContent(whiteboard: WhiteboardContentGql): Extract<TemplateContent, { type: 'whiteboard' }> {
   return {
     type: 'whiteboard',
-    whiteboardContent: whiteboard.content,
     previewImageUrl: whiteboard.profile.preview?.uri || undefined,
+    sourceWhiteboardId: whiteboard.id,
   };
 }
 
@@ -193,6 +195,16 @@ export function mapSpaceContentFromSpace(
   return mapSpaceStructure(space);
 }
 
+function mapClassificationContent(
+  classification: ClassificationContentGql
+): Extract<TemplateContent, { type: 'classification' }> {
+  return {
+    type: 'classification',
+    cardinality: mapGqlClassificationCardinality(classification.cardinality),
+    values: classification.values.map(v => ({ id: v.id, label: v.label })),
+  };
+}
+
 function mapCommunityGuidelinesContent(
   cg: CommunityGuidelinesContentGql
 ): Extract<TemplateContent, { type: 'communityGuidelines' }> {
@@ -218,6 +230,7 @@ export function mapTemplateContent(template: TemplateContentTemplate, type: Temp
         ? mapCalloutContent(template.callout)
         : {
             type: 'callout',
+            sourceCalloutId: '',
             framingKind: 'none',
             framingTitle: '',
             framingDescription: '',
@@ -225,9 +238,7 @@ export function mapTemplateContent(template: TemplateContentTemplate, type: Temp
             commentsEnabled: false,
           };
     case 'whiteboard':
-      return template.whiteboard
-        ? mapWhiteboardContent(template.whiteboard)
-        : { type: 'whiteboard', whiteboardContent: '' };
+      return template.whiteboard ? mapWhiteboardContent(template.whiteboard) : { type: 'whiteboard' };
     case 'post':
       return { type: 'post', defaultDescription: template.postDefaultDescription ?? '' };
     case 'space':
@@ -238,6 +249,10 @@ export function mapTemplateContent(template: TemplateContentTemplate, type: Temp
       return template.communityGuidelines
         ? mapCommunityGuidelinesContent(template.communityGuidelines)
         : { type: 'communityGuidelines', title: '', guidelinesMarkdown: '', references: [] };
+    case 'classification':
+      return template.classification
+        ? mapClassificationContent(template.classification)
+        : { type: 'classification', cardinality: 'MULTI_SELECT', values: [] };
   }
 }
 
@@ -249,6 +264,7 @@ export function templateContentIncludeVars(type: TemplateType) {
     includePost: type === 'post',
     includeSpace: type === 'space',
     includeCommunityGuidelines: type === 'communityGuidelines',
+    includeClassification: type === 'classification',
   };
 }
 
@@ -269,7 +285,11 @@ export function templateContentToFormValues(
     case 'post':
       return { ...common, type: 'post', defaultDescription: content.defaultDescription };
     case 'whiteboard':
-      return { ...common, type: 'whiteboard', whiteboardContent: content.whiteboardContent };
+      return {
+        ...common,
+        type: 'whiteboard',
+        sourceWhiteboardId: content.sourceWhiteboardId,
+      };
     case 'communityGuidelines':
       return {
         ...common,
@@ -278,6 +298,8 @@ export function templateContentToFormValues(
         guidelinesMarkdown: content.guidelinesMarkdown,
         references: content.references,
       };
+    case 'classification':
+      return { ...common, type: 'classification', cardinality: content.cardinality, values: content.values };
     case 'space':
     case 'callout':
       return null;

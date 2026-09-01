@@ -188,6 +188,7 @@
     "openAria": "Отвори {{title}}",
     "draft": "Чернова",
     "expand": "Покажи повече",
+    "fullscreen": "Цял екран",
     "collapse": "Покажи по-малко",
     "openWhiteboard": "Отвори дъска",
     "openMemo": "Отвори бележка",
@@ -287,6 +288,10 @@
     "postTagsLabel": "Етикети",
     "postSave": "Запази",
     "postCreate": "Публикувай",
+    "createTask": "Създай задача",
+    "editTask": "Редактирай задачата",
+    "taskCreate": "Създай задача",
+    "tasksHeader": "Задачи ({{count}})",
     "postDelete": "Изтрий публикацията",
     "postDeleteConfirmTitle": "Да се изтрие ли тази публикация?",
     "postDeleteConfirmDescription": "Това ще премахне публикацията и всички коментари за постоянно. Действието е необратимо.",
@@ -326,7 +331,6 @@
   },
   "members": {
     "subtitle": "{{users}} членове и {{organizations}} организации в това пространство.",
-    "inviteMember": "Покани член",
     "search": "Търсене на членове или организации...",
     "filterAll": "Всички",
     "filterLead": "Ръководител",
@@ -411,7 +415,8 @@
         "why": "Защо това подпространство?",
         "who": "Кой участва?"
       }
-    }
+    },
+    "tags": "Етикети"
   },
   "apply": {
     "apply": "Кандидатствай",
@@ -501,6 +506,9 @@
     "comments_other": "Ще се изтрият {{count}} коментара",
     "success": "$t(common.Callout)-ът “{{title}}” беше изтрит.",
     "saveFailed": "$t(common.Callout)-ът не можа да бъде изтрит. Опитайте отново."
+  },
+  "deleteTask": {
+    "title": "Да изтрия ли тази задача?"
   },
   "deleteContribution": {
     "title": "Да изтрия ли този принос?",
@@ -648,6 +656,9 @@
     "template": "Шаблон",
     "templatePlaceholder": "Избери шаблон…",
     "templateLoading": "Зареждане на шаблоните…",
+    "whiteboardConfigured": "Конфигурирана е бяла дъска по подразбиране.",
+    "whiteboardNotConfigured": "Новите приноси ще започват с празна бяла дъска.",
+    "clearWhiteboard": "Изчистване по подразбиране",
     "save": "Запази"
   },
   "calloutDialog": {
@@ -675,6 +686,11 @@
       "connected": "Свързан",
       "connecting": "Свързване…",
       "disconnected": "Прекъсната връзка",
+      "saved": "Запазено",
+      "saving": "Запазване…",
+      "finalizing": "Завършване на промените…",
+      "offline": "Офлайн — ще се синхронизира автоматично",
+      "saveFailed": "Промените не могат да бъдат запазени",
       "membersOnline_one": "1 член онлайн",
       "membersOnline_other": "{{count}} члена онлайн",
       "connectedUsersLabel": "Свързани потребители",
@@ -694,6 +710,14 @@
     "errors": {
       "loading": "Зареждане на бележка…",
       "loadFailed": "Неуспешно зареждане на бележка"
+    },
+    "unsavedClose": {
+      "title": "Незапазени промени в бележката",
+      "description": "Тези промени не могат да бъдат запазени сега. Оставете бележката отворена, експортирайте ги или ги отхвърлете изрично.",
+      "wait": "Оставете отворено и изчакайте",
+      "discard": "Отхвърлете и затворете",
+      "export": "Първо експортирайте",
+      "exportFailed": "Бележката не можа да бъде експортирана. Тя остава отворена."
     },
     "deleteConfirm": {
       "title": "Изтриване на бележка",
@@ -817,6 +841,7 @@
     "seeFullDescription": "Виж пълното описание"
   },
   "postPreview": {
+    "createdBy": "Създадено от",
     "label": "Преглед на избрания отговор",
     "edit": "Редактиране на отговора",
     "share": "Споделяне на отговора",
@@ -1027,5 +1052,15 @@
       "title": "Все още няма подпространства",
       "description": "Това пространство все още няма подпространства."
     }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Класификации"
+  },
+  "parentStack": {
+    "goTo": "Към {{name}}"
   }
 }

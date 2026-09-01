@@ -1,0 +1,40 @@
+mutation CreateWhiteboardDraftOnCalloutsSet($draftData: CreateWhiteboardDraftOnCalloutsSetInput!) {
+  createWhiteboardDraftOnCalloutsSet(draftData: $draftData)
+}
+
+mutation CreateWhiteboardDraftOnTemplatesSet($draftData: CreateWhiteboardDraftOnTemplatesSetInput!) {
+  createWhiteboardDraftOnTemplatesSet(draftData: $draftData)
+}
+
+mutation DeleteWhiteboardDraft($whiteboardID: UUID!) {
+  deleteWhiteboardDraft(whiteboardID: $whiteboardID)
+}
+
+# Drafts are intentionally unattached, so this lookup must not select URL fields
+# whose resolvers require a framing, contribution, or template location.
+query WhiteboardDraftDetailsById($whiteboardId: UUID!) {
+  lookup {
+    whiteboard(ID: $whiteboardId) {
+      id
+      nameID
+      guestContributionsAllowed
+      contentUpdatePolicy
+      authorization {
+        id
+        myPrivileges
+      }
+      profile {
+        id
+        displayName
+        storageBucket {
+          id
+          allowedMimeTypes
+          maxFileSize
+        }
+      }
+      previewSettings {
+        ...whiteboardPreviewSettings
+      }
+    }
+  }
+}

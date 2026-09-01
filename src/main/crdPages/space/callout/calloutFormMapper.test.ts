@@ -12,7 +12,6 @@ import {
   WhiteboardPreviewMode,
 } from '@/core/apollo/generated/graphql-schema';
 import type { WhiteboardPreviewImage } from '@/domain/collaboration/whiteboard/WhiteboardVisuals/WhiteboardPreviewImagesModels';
-import { EmptyWhiteboardString } from '@/domain/common/whiteboard/EmptyWhiteboard';
 import { type CalloutFormValues, EMPTY_CALLOUT_FORM_VALUES } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
 import {
   allowedActorsFromServer,
@@ -92,20 +91,25 @@ describe('tagsStringToArray', () => {
 });
 
 describe('mapFormToCalloutCreationInput — framing branches', () => {
-  it('Whiteboard framing emits framing.whiteboard with content + previewSettings, hoists preview blobs out-of-band', () => {
+  it('Whiteboard framing emits metadata + source id without Yjs content', () => {
     const previewSettings = { mode: WhiteboardPreviewMode.Custom, coordinates: undefined };
     const result = mapFormToCalloutCreationInput(
       baseValues({
         framingChip: 'whiteboard',
-        whiteboardContent: '<wb/>',
         whiteboardPreviewSettings: previewSettings,
         whiteboardPreviewImages: [previewBlob],
+        editMeta: {
+          whiteboardId: 'source-wb',
+          framingProfileId: 'framing-profile-id',
+          originalReferenceIds: [],
+        },
       }),
       createOptions
     );
 
     expect(result.input.framing.type).toBe(CalloutFramingType.Whiteboard);
-    expect(result.input.framing.whiteboard?.content).toBe('<wb/>');
+    expect(result.input.framing.whiteboard?.sourceWhiteboardID).toBe('source-wb');
+    expect((result.input.framing.whiteboard as { content?: unknown }).content).toBeUndefined();
     expect(result.input.framing.whiteboard?.profile.displayName).toBe('My callout');
     expect(result.input.framing.whiteboard?.previewSettings).toEqual(previewSettings);
     // Preview blobs travel out-of-band, never on the input
@@ -119,6 +123,28 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
       createOptions
     );
     expect(result.input.framing.whiteboard?.profile.displayName).toBe('Untitled whiteboard');
+  });
+
+  it('Whiteboard framing sends only the draft id when a live draft exists', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({
+        framingChip: 'whiteboard',
+        framingWhiteboardDraft: {
+          whiteboardID: 'live-wb-1',
+          sourceKey: 'source-wb:',
+        },
+        editMeta: {
+          whiteboardId: 'source-wb',
+          framingProfileId: 'profile-1',
+          originalReferenceIds: [],
+        },
+      }),
+      createOptions
+    );
+
+    expect(result.input.framing.whiteboard).toMatchObject({ draftWhiteboardID: 'live-wb-1' });
+    expect(result.input.framing.whiteboard?.sourceWhiteboardID).toBeUndefined();
+    expect(result.input.framing.whiteboard).not.toHaveProperty('content');
   });
 
   it('Memo framing emits framing.memo.markdown when present, undefined when blank', () => {
@@ -287,6 +313,46 @@ describe('mapFormToCalloutCreationInput — framing branches', () => {
   });
 });
 
+describe('mapFormToCalloutCreationInput — Tasks board', () => {
+  it('taskBoard option sends an empty taskBoard input and forces the POST-only contribution type', () => {
+    const result = mapFormToCalloutCreationInput(baseValues({ taskBoard: true }), createOptions);
+    expect(result.input.taskBoard).toEqual({});
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('taskBoard forces POST even when a different response chip was picked', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: true, responseType: 'whiteboard' }),
+      createOptions
+    );
+    expect(result.input.taskBoard).toEqual({});
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('absent taskBoard option emits no taskBoard field', () => {
+    const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'post' }), createOptions);
+    expect(result.input.taskBoard).toBeUndefined();
+  });
+
+  it('taskBoard with explicit columns sends them (board template round-trip)', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: true, taskBoardColumns: [' A ', 'B', '', 'C'] }),
+      createOptions
+    );
+    // Trimmed and empty entries dropped; the template's column order is preserved.
+    expect(result.input.taskBoard).toEqual({ columns: ['A', 'B', 'C'] });
+    expect(result.input.settings?.contribution?.allowedTypes).toEqual([CalloutContributionType.Post]);
+  });
+
+  it('taskBoard columns are ignored when the board toggle is off', () => {
+    const result = mapFormToCalloutCreationInput(
+      baseValues({ taskBoard: false, taskBoardColumns: ['A', 'B'], responseType: 'post' }),
+      createOptions
+    );
+    expect(result.input.taskBoard).toBeUndefined();
+  });
+});
+
 describe('mapFormToCalloutCreationInput — contribution settings', () => {
   it('responseType=none → permissive default (enabled, empty allowedTypes, Members, comments on)', () => {
     const result = mapFormToCalloutCreationInput(baseValues({ responseType: 'none' }), createOptions);
@@ -375,7 +441,7 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     const allBlank = mapFormToCalloutCreationInput(
       baseValues({
         responseType: 'post',
-        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContentAvailable: false },
       }),
       createOptions
     );
@@ -384,60 +450,113 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     const populated = mapFormToCalloutCreationInput(
       baseValues({
         responseType: 'whiteboard',
-        contributionDefaults: { defaultDisplayName: 'Title', postDescription: '', whiteboardContent: '<wb/>' },
+        contributionDefaults: {
+          defaultDisplayName: 'Title',
+          postDescription: '',
+          whiteboardContentAvailable: true,
+          sourceWhiteboardId: 'source-wb',
+        },
       }),
       createOptions
     );
     expect(populated.input.contributionDefaults).toEqual({
       defaultDisplayName: 'Title',
       postDescription: undefined,
-      whiteboardContent: '<wb/>',
+      sourceWhiteboardID: 'source-wb',
+      sourceCalloutID: undefined,
     });
 
     const noResponse = mapFormToCalloutCreationInput(
       baseValues({
         responseType: 'none',
-        contributionDefaults: { defaultDisplayName: 'X', postDescription: '', whiteboardContent: '' },
+        contributionDefaults: { defaultDisplayName: 'X', postDescription: '', whiteboardContentAvailable: false },
       }),
       createOptions
     );
     expect(noResponse.input.contributionDefaults).toBeUndefined();
   });
 
-  it('contributionDefaults on create: empty whiteboardContent falls back to EmptyWhiteboardString (MUI parity)', () => {
-    // MUI's CreateCalloutDialog (CreateCalloutDialog.tsx) always sends
-    // `contributionDefaults.whiteboardContent` when allowedTypes includes
-    // Whiteboard — its form initializes the field to `EmptyWhiteboardString`,
-    // not `''`. The server requires a valid initial canvas to seed new
-    // whiteboard contributions; omitting it makes "+ Add whiteboard" fail
-    // even though the callout itself was created.
+  it('contributionDefaults on create omit binary content when no source is selected', () => {
     const create = mapFormToCalloutCreationInput(
       baseValues({
         responseType: 'whiteboard',
-        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContentAvailable: false },
       }),
       createOptions
     );
-    expect(create.input.contributionDefaults).toEqual({
-      defaultDisplayName: undefined,
-      postDescription: undefined,
-      whiteboardContent: EmptyWhiteboardString,
-    });
+    expect(create.input.contributionDefaults).toBeUndefined();
   });
 
-  it('contributionDefaults on update: empty whiteboardContent stays undefined (server preserves existing default)', () => {
+  it('contribution defaults prefer a live draft id over source identifiers', () => {
+    const create = mapFormToCalloutCreationInput(
+      baseValues({
+        responseType: 'whiteboard',
+        contributionDefaults: {
+          defaultDisplayName: 'Default',
+          postDescription: '',
+          whiteboardContentAvailable: true,
+          sourceWhiteboardId: 'source-wb',
+          whiteboardDraft: {
+            whiteboardID: 'live-default-1',
+            sourceKey: 'source-wb:',
+          },
+        },
+      }),
+      createOptions
+    );
+
+    expect(create.input.contributionDefaults).toMatchObject({ draftWhiteboardID: 'live-default-1' });
+    expect(create.input.contributionDefaults?.sourceWhiteboardID).toBeUndefined();
+    expect(create.input.contributionDefaults).not.toHaveProperty('content');
+  });
+
+  it('contributionDefaults on update preserve existing default when source and clear are omitted', () => {
     const update = mapFormToCalloutUpdateInput(
       baseValues({
         responseType: 'whiteboard',
-        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContent: '' },
+        contributionDefaults: { defaultDisplayName: '', postDescription: '', whiteboardContentAvailable: true },
       }),
       updateOptions
     );
     expect(update.input.contributionDefaults).toEqual({
       defaultDisplayName: undefined,
       postDescription: undefined,
-      whiteboardContent: undefined,
+      draftWhiteboardID: undefined,
+      sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
+      clearWhiteboardContent: undefined,
     });
+  });
+
+  it('contributionDefaults on update send a live draft id instead of persisted source or clear fields', () => {
+    const update = mapFormToCalloutUpdateInput(
+      baseValues({
+        responseType: 'whiteboard',
+        contributionDefaults: {
+          defaultDisplayName: 'Default drawing',
+          postDescription: '',
+          whiteboardContentAvailable: true,
+          sourceWhiteboardId: 'source-whiteboard',
+          sourceCalloutId: 'source-callout',
+          clearWhiteboardContent: true,
+          whiteboardDraft: {
+            whiteboardID: 'draft-whiteboard',
+            sourceKey: 'source-callout:source-callout',
+          },
+        },
+      }),
+      updateOptions
+    );
+
+    expect(update.input.contributionDefaults).toEqual({
+      defaultDisplayName: 'Default drawing',
+      postDescription: undefined,
+      draftWhiteboardID: 'draft-whiteboard',
+      sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
+      clearWhiteboardContent: undefined,
+    });
+    expect(JSON.stringify(update.input)).not.toContain('content');
   });
 
   it('prePopulateLinkRows: only sent when responseType=link, blanks dropped', () => {
@@ -561,7 +680,7 @@ describe('mapFormToCalloutUpdateInput', () => {
       updateOptions
     );
     expect(result.input.framing?.type).toBe(CalloutFramingType.Whiteboard);
-    expect(result.input.framing?.whiteboardContent).toBeUndefined();
+    expect(result.input.framing).not.toHaveProperty('whiteboardContent');
     expect(result.input.framing?.whiteboardPreviewSettings).toBeUndefined();
     // Preview blobs still travel out-of-band when present
     expect(result.whiteboardPreviewImages).toEqual([previewBlob]);
@@ -640,44 +759,67 @@ describe('mapFormToCalloutUpdateInput', () => {
     expect((post.input.settings?.contribution as { allowedTypes?: unknown }).allowedTypes).toBeUndefined();
   });
 
-  it('contributionDefaults on update: post/memo populate postDescription; whiteboard populates whiteboardContent', () => {
+  it('contributionDefaults on update: post/memo use Markdown; whiteboard uses source id or explicit clear', () => {
     const post = mapFormToCalloutUpdateInput(
       baseValues({
         responseType: 'post',
-        contributionDefaults: { defaultDisplayName: 'Name', postDescription: 'desc', whiteboardContent: '<wb/>' },
+        contributionDefaults: {
+          defaultDisplayName: 'Name',
+          postDescription: 'desc',
+          whiteboardContentAvailable: false,
+        },
       }),
       updateOptions
     );
     expect(post.input.contributionDefaults).toEqual({
       defaultDisplayName: 'Name',
       postDescription: 'desc',
-      whiteboardContent: undefined,
+      draftWhiteboardID: undefined,
+      sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
+      clearWhiteboardContent: undefined,
     });
 
     const wb = mapFormToCalloutUpdateInput(
       baseValues({
         responseType: 'whiteboard',
-        contributionDefaults: { defaultDisplayName: 'N', postDescription: 'p', whiteboardContent: '<wb/>' },
+        contributionDefaults: {
+          defaultDisplayName: 'N',
+          postDescription: 'p',
+          whiteboardContentAvailable: true,
+          sourceWhiteboardId: 'source-wb',
+          sourceCalloutId: 'source-callout',
+        },
       }),
       updateOptions
     );
     expect(wb.input.contributionDefaults).toEqual({
       defaultDisplayName: 'N',
       postDescription: undefined,
-      whiteboardContent: '<wb/>',
+      draftWhiteboardID: undefined,
+      sourceWhiteboardID: 'source-wb',
+      sourceCalloutID: 'source-callout',
+      clearWhiteboardContent: undefined,
     });
 
     const memo = mapFormToCalloutUpdateInput(
       baseValues({
         responseType: 'memo',
-        contributionDefaults: { defaultDisplayName: '', postDescription: 'p', whiteboardContent: '' },
+        contributionDefaults: {
+          defaultDisplayName: '',
+          postDescription: 'p',
+          whiteboardContentAvailable: false,
+        },
       }),
       updateOptions
     );
     expect(memo.input.contributionDefaults).toEqual({
       defaultDisplayName: undefined,
       postDescription: 'p',
-      whiteboardContent: undefined,
+      draftWhiteboardID: undefined,
+      sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
+      clearWhiteboardContent: undefined,
     });
 
     const none = mapFormToCalloutUpdateInput(baseValues({ responseType: 'none' }), updateOptions);

@@ -43,8 +43,8 @@
     "showMore": "Meer tonen",
     "noActivity": "Geen recente activiteit",
     "iconLabel": {
-      "CALLOUT_PUBLISHED": "Nieuwe post",
-      "CALLOUT_POST_CREATED": "Nieuwe post",
+      "CALLOUT_PUBLISHED": "Nieuwe Post",
+      "CALLOUT_POST_CREATED": "Nieuwe Post",
       "CALLOUT_POST_COMMENT": "Nieuwe reactie",
       "DISCUSSION_COMMENT": "Nieuwe reactie",
       "CALLOUT_WHITEBOARD_CREATED": "Nieuw whiteboard",

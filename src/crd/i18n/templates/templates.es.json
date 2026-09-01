@@ -33,6 +33,10 @@
       "communityGuidelines": {
         "title": "Plantillas de pautas de la comunidad",
         "subtitle": "Reglas y expectativas para una comunidad."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
       }
     }
   },
@@ -43,7 +47,11 @@
     "edit": "Editar",
     "duplicate": "Duplicar",
     "delete": "Eliminar",
-    "noPreview": "Sin vista previa"
+    "noPreview": "Sin vista previa",
+    "classification": {
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única"
+    }
   },
   "framingKind": {
     "none": "Texto",
@@ -101,6 +109,13 @@
       "title": "Título de las pautas",
       "body": "Pautas",
       "references": "Referencias"
+    },
+    "classification": {
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única",
+      "valueCount_one": "{{count}} valor",
+      "valueCount_other": "{{count}} valores",
+      "definedValues": "Valores definidos"
     }
   },
   "picker": {
@@ -129,14 +144,16 @@
       "callout": "Crear plantilla de herramienta de colaboración",
       "whiteboard": "Crear plantilla de pizarra",
       "post": "Crear plantilla de publicación",
-      "communityGuidelines": "Crear plantilla de pautas de la comunidad"
+      "communityGuidelines": "Crear plantilla de pautas de la comunidad",
+      "classification": "Create classification template"
     },
     "editTitle": {
       "space": "Editar plantilla de espacio",
       "callout": "Editar plantilla de herramienta de colaboración",
       "whiteboard": "Editar plantilla de pizarra",
       "post": "Editar plantilla de publicación",
-      "communityGuidelines": "Editar plantilla de pautas de la comunidad"
+      "communityGuidelines": "Editar plantilla de pautas de la comunidad",
+      "classification": "Edit classification template"
     },
     "common": {
       "name": "Nombre de plantilla",
@@ -151,6 +168,7 @@
       "uploadBanner": "Subir imagen de vista previa"
     },
     "save": "Guardar",
+    "done": "Hecho",
     "cancel": "Cancelar",
     "whiteboard": {
       "drawing": "Pizarra",
@@ -192,6 +210,27 @@
       "body": "Pautas",
       "bodyPlaceholder": "Escribe las pautas para esta comunidad…",
       "references": "Referencias"
+    },
+    "classification": {
+      "cardinality": "Tipo de selección",
+      "cardinalitySingle": "Selección única — los usuarios eligen un valor",
+      "cardinalityMulti": "Selección múltiple — los usuarios pueden elegir varios valores",
+      "values": "Values",
+      "moveValueUp": "Subir el valor {{position}}",
+      "moveValueDown": "Bajar el valor {{position}}",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Define los valores permitidos para esta clasificación. Escribe un valor y pulsa Intro.",
+      "quickAddPlaceholder": "p. ej. ODS 1 – Fin de la pobreza",
+      "valuesDefined_one": "{{count}} valor definido",
+      "valuesDefined_other": "{{count}} valores definidos"
     }
   },
   "references": {
@@ -271,13 +310,13 @@
     "searchVisibility": "Visibilidad en búsquedas",
     "searchVisibilityOptions": {
       "public": "Público",
-      "authenticated": "Usuarios autenticados",
-      "account": "Solo la cuenta"
+      "account": "Cuenta",
+      "hidden": "Oculto"
     },
     "searchVisibilityHints": {
-      "public": "Cualquiera — incluidos los visitantes no autenticados — puede encontrar este paquete mediante búsqueda.",
-      "authenticated": "Los usuarios autenticados pueden encontrar este paquete mediante búsqueda.",
-      "account": "Solo los miembros de la cuenta propietaria pueden encontrar este paquete mediante búsqueda."
+      "public": "Cualquiera puede encontrar este paquete mediante búsqueda.",
+      "account": "Solo la cuenta propietaria puede encontrar este paquete mediante búsqueda — incluidos sus Asociados, si el propietario es una organización.",
+      "hidden": "Solo los administradores de la cuenta propietaria pueden encontrar este paquete mediante búsqueda."
     },
     "save": "Guardar cambios",
     "crop": {
@@ -344,7 +383,8 @@
         "callout": "Herramientas de colaboración",
         "whiteboard": "Pizarras",
         "post": "Publicaciones",
-        "communityGuidelines": "Normas de la comunidad"
+        "communityGuidelines": "Normas de la comunidad",
+        "classification": "Classifications"
       },
       "summary": "{{first}} y {{count}} más",
       "pair": "{{first}} y {{second}}"

@@ -12,6 +12,14 @@ export type InnovationFlowStateModel = {
      * authorization or content access.
      */
     visible?: boolean;
+    /**
+     * Ordered widget IDs (wire enum names, e.g. `'INTENT'`) configuring this
+     * tab's sidebar. Optional on the client for the same reason as `visible`:
+     * `undefined` when a query hasn't selected the field yet, in which case
+     * the sidebar connector's own `resolveSidebarPlan` normalization falls
+     * back to an empty plan.
+     */
+    sidebar?: string[];
   };
   sortOrder: number;
   defaultCalloutTemplate?: {

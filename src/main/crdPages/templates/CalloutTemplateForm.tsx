@@ -21,6 +21,7 @@
 import { Hash } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useWhiteboardDetailsByIdQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AllowCommentsField } from '@/crd/forms/callout/AllowCommentsField';
 import { FramingChipStrip } from '@/crd/forms/callout/FramingChipStrip';
 import { ResponsePanel } from '@/crd/forms/callout/ResponsePanel';
@@ -29,6 +30,7 @@ import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/M
 import { ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
 import { Label } from '@/crd/primitives/label';
+import type { WhiteboardDraftLifecycle } from '@/domain/collaboration/whiteboard/WhiteboardDraft/useWhiteboardDraft';
 import { healContributorCollection } from '@/main/crdPages/space/callout/contributorCollectionMapper';
 import { FramingEditorConnector } from '@/main/crdPages/space/callout/FramingEditorConnector';
 import { ResponseDefaultsConnector } from '@/main/crdPages/space/callout/ResponseDefaultsConnector';
@@ -44,6 +46,8 @@ export type CalloutTemplateFormProps = {
   editMode?: boolean;
   /** Parent space id — passed to `ResponseDefaultsConnector` so its "apply a content template" picker can load. */
   spaceId?: string;
+  framingWhiteboardDraft?: WhiteboardDraftLifecycle;
+  defaultWhiteboardDraft?: WhiteboardDraftLifecycle;
   /** Disable every control while the template create/update mutation is in flight. */
   disabled?: boolean;
   /**
@@ -59,6 +63,8 @@ export type CalloutTemplateFormProps = {
 export function CalloutTemplateForm({
   form,
   spaceId,
+  framingWhiteboardDraft,
+  defaultWhiteboardDraft,
   disabled,
   editMode,
   onReferenceFileUpload,
@@ -70,6 +76,12 @@ export function CalloutTemplateForm({
   const { t } = useTranslation('crd-space');
   const { values, errors, setField } = form;
   const [defaultsOpen, setDefaultsOpen] = useState(false);
+  const editableWhiteboardId = editMode ? values.editMeta?.whiteboardId : undefined;
+  const { data: whiteboardData } = useWhiteboardDetailsByIdQuery({
+    variables: { whiteboardId: editableWhiteboardId ?? '' },
+    skip: !editableWhiteboardId,
+  });
+  const editableWhiteboard = whiteboardData?.lookup.whiteboard;
 
   const responseTypeSupportsDefaults =
     values.responseType === 'post' || values.responseType === 'memo' || values.responseType === 'whiteboard';
@@ -114,7 +126,10 @@ export function CalloutTemplateForm({
           editMode={editMode}
         />
         <FramingEditorConnector
-          mode="create"
+          mode={editMode ? 'edit' : 'create'}
+          editMemoId={editMode ? values.editMeta?.memoId : undefined}
+          editWhiteboard={editableWhiteboard}
+          editWhiteboardShareUrl={editableWhiteboard?.profile.url ?? undefined}
           framingType={values.framingChip}
           linkUrl={values.linkUrl}
           onLinkUrlChange={v => setField('linkUrl', v)}
@@ -136,18 +151,11 @@ export function CalloutTemplateForm({
           onPollHideResultsUntilVotedChange={v => setField('pollHideResultsUntilVoted', v)}
           pollShowVoterAvatars={values.pollShowVoterAvatars}
           onPollShowVoterAvatarsChange={v => setField('pollShowVoterAvatars', v)}
-          whiteboardContent={values.whiteboardContent}
-          whiteboardPreviewSettings={values.whiteboardPreviewSettings}
           whiteboardPreviewImages={values.whiteboardPreviewImages}
           whiteboardPreviewServerUrl={values.whiteboardPreviewServerUrl}
           whiteboardConfigured={values.whiteboardConfigured}
           whiteboardTitle={values.title.trim() || t('callout.whiteboard')}
-          onWhiteboardChange={(content, previewImages, previewSettings) => {
-            setField('whiteboardContent', content);
-            setField('whiteboardPreviewImages', previewImages ?? []);
-            setField('whiteboardPreviewSettings', previewSettings);
-            setField('whiteboardConfigured', true);
-          }}
+          whiteboardDraft={editMode ? undefined : framingWhiteboardDraft}
           memoMarkdown={values.memoMarkdown}
           onMemoMarkdownChange={v => setField('memoMarkdown', v)}
           memoUpload={{ onImageUpload, iframeAllowedUrls, onError }}
@@ -233,6 +241,7 @@ export function CalloutTemplateForm({
         spaceId={spaceId}
         values={values.contributionDefaults}
         onSave={next => setField('contributionDefaults', next)}
+        whiteboardDraft={defaultWhiteboardDraft}
         markdownUpload={{ onImageUpload, iframeAllowedUrls, onError }}
       />
     </div>

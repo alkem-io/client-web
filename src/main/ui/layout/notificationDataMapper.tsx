@@ -14,13 +14,20 @@
  */
 import type { TFunction } from 'i18next';
 import { Trans } from 'react-i18next';
-import type { ForumDiscussionCategory, NotificationEventInAppState } from '@/core/apollo/generated/graphql-schema';
+import {
+  type ForumDiscussionCategory,
+  NotificationEvent,
+  type NotificationEventInAppState,
+} from '@/core/apollo/generated/graphql-schema';
 import { kebabToConstantCase } from '@/core/utils/string';
 import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
+import { glyphForSlug } from '@/crd/components/reactions/reactionEmoji';
 import type { CrdNotificationItemData } from '@/crd/layouts/types';
 import { getInitials } from '@/crd/lib/getInitials';
 import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
 import type { InAppNotificationModel } from '@/main/inAppNotifications/model/InAppNotificationModel';
+import type { InAppNotificationPayloadModel } from '@/main/inAppNotifications/model/InAppNotificationPayloadModel';
+import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 
 const TRANS_COMPONENTS = {
   b: <strong />,
@@ -86,8 +93,37 @@ function buildTranslationValues(
           `common.enums.discussion-category.${kebabToConstantCase(payload.discussion.category) as ForumDiscussionCategory}`
         )
       : undefined,
+    // emoji: used by SPACE_COLLABORATION_CALLOUT_REACTION — slug resolved to glyph;
+    // unknown slug yields undefined so the placeholder renders empty, never crashes
+    emoji: payload.emoji ? glyphForSlug(payload.emoji) : undefined,
   };
 }
+
+/**
+ * Per-type destination overrides, applied before the generic payload fallback below.
+ *
+ * The fallback takes the first URL the payload happens to carry, and almost every
+ * space-scoped payload carries its space — so anything without a callout or a message
+ * lands on the space home page. That is the wrong destination whenever the notification
+ * is about an action to take elsewhere, or about an entity whose own URL the space
+ * would shadow.
+ *
+ * A type absent from this map keeps the generic fallback; only add an entry when the
+ * destination is unambiguous.
+ */
+const URL_OVERRIDES_BY_TYPE: Partial<
+  Record<NotificationEvent, (payload: InAppNotificationPayloadModel) => string | undefined>
+> = {
+  // Applications are reviewed (approved/rejected) on the Community tab of the space
+  // settings, so the space home page leaves the admin with nowhere to act.
+  [NotificationEvent.SpaceAdminCommunityApplication]: payload =>
+    buildSettingsTabUrl(payload.space?.about?.profile?.url, 'community'),
+  // The subject of the notification is the contributor who joined, not the space.
+  [NotificationEvent.SpaceAdminCommunityNewMember]: payload => payload.actor?.profile?.url,
+  // Calendar payloads carry both the event and its space; the space must not win.
+  [NotificationEvent.SpaceCommunityCalendarEventCreated]: payload => payload.calendarEvent?.profile?.url,
+  [NotificationEvent.SpaceCommunityCalendarEventComment]: payload => payload.calendarEvent?.profile?.url,
+};
 
 /**
  * Resolves the URL that clicking a notification should navigate to.
@@ -95,6 +131,13 @@ function buildTranslationValues(
  */
 function resolveNotificationUrl(notification: InAppNotificationModel): string | undefined {
   const { payload } = notification;
+
+  // An override that cannot build its URL (missing payload fields) falls through to the
+  // generic chain rather than leaving the notification unclickable.
+  const overrideUrl = URL_OVERRIDES_BY_TYPE[notification.type]?.(payload);
+  if (overrideUrl) {
+    return overrideUrl;
+  }
 
   return (
     payload.messageDetails?.parent?.url ??
@@ -107,12 +150,48 @@ function resolveNotificationUrl(notification: InAppNotificationModel): string | 
   );
 }
 
+/**
+ * The profile shape the item's avatar needs. Both `triggeredBy.profile` and the optional
+ * contributor profiles carried on the payload satisfy it.
+ */
+type NotificationAvatarProfile = {
+  displayName: string;
+  visual?: { uri?: string } | undefined;
+};
+
+/**
+ * Per-type overrides for whose avatar the item shows.
+ *
+ * The avatar defaults to the user who triggered the notification, which is right for every
+ * template that opens with `{{triggeredByName}}`. A few templates are worded about someone
+ * else entirely, and for those the triggering user is not the subject — their avatar beside
+ * another person's name reads as if the wrong person acted.
+ *
+ * A type absent from this map keeps `triggeredBy`, and so does an entry whose profile the
+ * payload does not carry. Only add an entry where the template unambiguously names someone
+ * other than the triggering user as its subject.
+ */
+const AVATAR_SUBJECT_BY_TYPE: Partial<
+  Record<NotificationEvent, (payload: InAppNotificationPayloadModel) => NotificationAvatarProfile | undefined>
+> = {
+  // "<member> joined <space>" — the member is the payload actor, whereas the trigger is
+  // whoever performed the join: on the invitation and admin-adds-a-member paths that is a
+  // lead, not the new member.
+  [NotificationEvent.SpaceAdminCommunityNewMember]: payload => payload.actor?.profile,
+};
+
+/** Resolves the profile whose avatar and initials the item renders. */
+function resolveAvatarProfile(notification: InAppNotificationModel): NotificationAvatarProfile {
+  return AVATAR_SUBJECT_BY_TYPE[notification.type]?.(notification.payload) ?? notification.triggeredBy.profile;
+}
+
 export function mapNotificationToItemData(
   notification: InAppNotificationModel,
   t: TFunction,
   unreadState: NotificationEventInAppState
 ): CrdNotificationItemData {
   const values = buildTranslationValues(notification, t);
+  const avatarProfile = resolveAvatarProfile(notification);
   const typeKey = `components.inAppNotifications.type.${notification.type}`;
   const subjectKey = `${typeKey}.subject`;
   const descriptionKey = `${typeKey}.description`;
@@ -136,8 +215,8 @@ export function mapNotificationToItemData(
       <Trans i18nKey={descriptionKey as any} values={values} components={TRANS_COMPONENTS} />
     ) : undefined,
     comment: rawComment ? <InlineMarkdown content={rawComment} clampLines={2} className="text-body" /> : undefined,
-    avatarUrl: notification.triggeredBy.profile.visual?.uri,
-    avatarFallback: getInitials(notification.triggeredBy.profile.displayName),
+    avatarUrl: avatarProfile.visual?.uri,
+    avatarFallback: getInitials(avatarProfile.displayName),
     timestamp: formatTimeElapsed(notification.triggeredAt, t),
     isUnread: notification.state === unreadState,
     href: resolveNotificationUrl(notification),

@@ -263,7 +263,7 @@ export function ContributorCollection({
               setPage(0);
             }}
             aria-label={t('contributors.search')}
-            className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+            className="w-full h-10 pl-9 pr-4 border border-border bg-input-background rounded-lg text-body text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
           />
         </div>
 

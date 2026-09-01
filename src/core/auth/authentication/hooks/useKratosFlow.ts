@@ -7,7 +7,7 @@ import type {
   VerificationFlow,
 } from '@ory/kratos-client';
 import type { AxiosResponse } from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useKratosClient } from './useKratosClient';
 
@@ -36,14 +36,31 @@ interface ReturnValue<Name extends FlowTypeName> {
   refetch: () => void;
 }
 
+interface UseKratosFlowOptions {
+  /**
+   * Settings flow only (currently). Forwarded to `createBrowserSettingsFlow`
+   * so the flow's own `return_to` — which takes precedence over the
+   * configured default browser return URL — lands the person back where
+   * they started once an OIDC link callback or a re-auth interruption
+   * completes. Ignored for every other flow type.
+   */
+  returnTo?: string;
+}
+
 const useKratosFlow = <Name extends FlowTypeName>(
   flowTypeName: Name,
-  flowId: string | undefined
+  flowId: string | undefined,
+  options?: UseKratosFlowOptions
 ): ReturnValue<Name> => {
   const client = useKratosClient();
   const [flow, setFlow] = useState<ReturnFlowType[Name]>();
   const [error, setError] = useState<Error>();
   const [loading, setLoading] = useState(false);
+  // Bumped on every request kickoff; a response is only applied if it is still the most recent
+  // request in flight when it resolves. Without this, an earlier request that resolves after a
+  // later one (e.g. `options.returnTo` flipping from empty to a real value right after mount)
+  // can overwrite the newer flow with a stale one via `setFlow`'s last-write-wins semantics.
+  const requestSeqRef = useRef(0);
 
   const handleFlowError = (err: unknown) => {
     const response = (
@@ -82,19 +99,29 @@ const useKratosFlow = <Name extends FlowTypeName>(
   };
 
   const handlePromise = async (promise: Promise<AxiosResponse<FlowTypes>>) => {
+    const seq = ++requestSeqRef.current;
     try {
       setLoading(true);
       const { status, data } = await promise;
+      // A newer request has since been kicked off (e.g. `options.returnTo` resolved right after
+      // this one started) — this response is stale and must never win over the newer flow.
+      if (seq !== requestSeqRef.current) return;
       if (status !== 200) {
         const error = new Error(`Error loading flow! Status: ${status}`);
         setError(error);
         logError(error, { category: TagCategoryValues.AUTH });
+      } else {
+        // A successful load supersedes any error from an earlier attempt —
+        // without this, a retry after an outage keeps reporting the stale
+        // error and the consumer never leaves its failure state.
+        setError(undefined);
       }
       setFlow(data as ReturnFlowType[Name]);
     } catch (error) {
+      if (seq !== requestSeqRef.current) return;
       handleFlowError(error);
     } finally {
-      setLoading(false);
+      if (seq === requestSeqRef.current) setLoading(false);
     }
   };
 
@@ -109,7 +136,7 @@ const useKratosFlow = <Name extends FlowTypeName>(
       case FlowTypeName.Verification:
         return client.createBrowserVerificationFlow();
       case FlowTypeName.Settings:
-        return client.createBrowserSettingsFlow();
+        return client.createBrowserSettingsFlow(options?.returnTo ? { returnTo: options.returnTo } : undefined);
     }
   };
 
@@ -129,14 +156,35 @@ const useKratosFlow = <Name extends FlowTypeName>(
   };
 
   const getOrInitializeFlow = () => {
-    if (client) {
-      handlePromise(typeof flowId === 'undefined' ? initializeFlow(client) : getFlow(client, flowId));
+    if (!client) {
+      return;
     }
+    if (typeof flowId !== 'undefined') {
+      handlePromise(getFlow(client, flowId));
+      return;
+    }
+    // A login is only ever started through the OIDC BFF (Hydra → Kratos), which
+    // lands back on `/login?flow=<id>`; `LoginCrdRoute` redirects there itself
+    // when no flow id is present. Self-initiating a Kratos-native login flow
+    // here is therefore never what the caller wants, and it is actively
+    // harmful: `createBrowserLoginFlow` rotates the anti-CSRF cookie
+    // server-side, so the Hydra-minted flow whose id arrives moments later can
+    // no longer be read — Kratos answers `getLoginFlow` with 403
+    // `security_csrf_violation` and sign-in dead-ends. `requestSeqRef` cannot
+    // save this: the harm is the request's server-side side effect, not a
+    // stale response winning a race, and by the time the response is discarded
+    // the cookie has already moved on.
+    if (flowTypeName === FlowTypeName.Login) {
+      return;
+    }
+    handlePromise(initializeFlow(client));
   };
 
+  // `options?.returnTo` only affects the Settings flow's initial creation
+  // (`flowId` undefined); once a flow id is on the URL, `getFlow` ignores it.
   useEffect(() => {
     getOrInitializeFlow();
-  }, [client, flowId]);
+  }, [client, flowId, options?.returnTo]);
 
   return {
     flow,
