@@ -3097,6 +3097,15 @@ export const TemplateProfileInfoFragmentDoc = gql`
     }
     url
   }
+  whiteboard {
+    id
+    profile {
+      id
+      cardBanner: visual(type: CARD) {
+        ...VisualModel
+      }
+    }
+  }
   type
 }
     ${TagsetDetailsFragmentDoc}
@@ -3124,9 +3133,6 @@ export const PostTemplateFragmentDoc = gql`
 export const WhiteboardTemplateFragmentDoc = gql`
     fragment WhiteboardTemplate on Template {
   ...TemplateProfileInfo
-  whiteboard {
-    id
-  }
 }
     ${TemplateProfileInfoFragmentDoc}`;
 export const CommunityGuidelinesTemplateFragmentDoc = gql`

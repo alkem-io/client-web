@@ -686,6 +686,11 @@
       "connected": "Verbunden",
       "connecting": "Verbindung wird hergestellt…",
       "disconnected": "Getrennt",
+      "saved": "Gespeichert",
+      "saving": "Wird gespeichert…",
+      "finalizing": "Änderungen werden abgeschlossen…",
+      "offline": "Offline — wird automatisch synchronisiert",
+      "saveFailed": "Änderungen konnten nicht gespeichert werden",
       "membersOnline_one": "1 Mitglied online",
       "membersOnline_other": "{{count}} Mitglieder online",
       "connectedUsersLabel": "Verbundene Benutzer",
@@ -705,6 +710,14 @@
     "errors": {
       "loading": "Notiz wird geladen…",
       "loadFailed": "Notiz konnte nicht geladen werden"
+    },
+    "unsavedClose": {
+      "title": "Ungespeicherte Memo-Änderungen",
+      "description": "Diese Änderungen können gerade nicht gespeichert werden. Lassen Sie das Memo geöffnet, exportieren Sie sie oder verwerfen Sie sie ausdrücklich.",
+      "wait": "Geöffnet lassen und warten",
+      "discard": "Verwerfen und schließen",
+      "export": "Zuerst exportieren",
+      "exportFailed": "Das Memo konnte nicht exportiert werden. Es bleibt geöffnet."
     },
     "deleteConfirm": {
       "title": "Memo löschen",

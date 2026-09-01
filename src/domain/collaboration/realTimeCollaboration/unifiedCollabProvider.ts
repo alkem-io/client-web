@@ -2,245 +2,72 @@ import * as decoding from 'lib0/decoding';
 import * as encoding from 'lib0/encoding';
 import * as lib0String from 'lib0/string';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate, removeAwarenessStates } from 'y-protocols/awareness';
-import {
-  messageYjsSyncStep1,
-  messageYjsSyncStep2,
-  messageYjsUpdate,
-  readSyncMessage,
-  writeSyncStep1,
-  writeUpdate,
-} from 'y-protocols/sync';
+import { messageYjsSyncStep1, messageYjsSyncStep2, messageYjsUpdate, writeUpdate } from 'y-protocols/sync';
 import * as Y from 'yjs';
 import { warn as logWarn, TagCategoryValues } from '@/core/logging/sentry/log';
 import { ReadOnlyCode } from '@/core/ui/forms/CollaborativeMarkdownInput/stateless-messaging/read.only.code';
 import type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
 
-/**
- * Wire message types of the unified collaboration service
- * (collaboration-service `internal/domain/model/control.go`). Types 0/1 are
- * owned by y-protocols (sync/awareness); 2/3 are this service's custom channels,
- * framed with the same `[type as VarUint][payload]` envelope, one message per
- * binary WebSocket frame (the y-websocket model — one document per connection).
- */
-export const WIRE = {
-  /** y-protocols sync (SyncStep1 / SyncStep2 / Update). Persisted via the debounced snapshot. */
-  SYNC: 0,
-  /** y-protocols awareness (cursors / online / idle / mode). Never persisted. */
-  AWARENESS: 1,
-  /** Custom whiteboard ephemeral events (cursor/emoji/countdown/bounds). Volatile, lossy, never persisted. */
-  EPHEMERAL: 2,
-  /** Server→client JSON control (saved / save-error / read-only-state / collaborator-mode / room-user-change / update-rejected / session-end). */
-  CONTROL: 3,
-  /** Client→server request to persist every preceding update on this connection. */
-  DURABILITY_REQUEST: 4,
-} as const;
+export const WIRE = { SYNC: 0, AWARENESS: 1, EPHEMERAL: 2, CONTROL: 3, DURABILITY_REQUEST: 4, HEARTBEAT: 5 } as const;
 
-/**
- * A server-authoritative session-end cause. The `disposition` (carried on the control)
- * decides the client outcome; `code` names the cause and always equals the subsequent
- * close reason. No Error/Reason string-branching — route on the code + disposition.
- */
-export type SessionEndCode =
-  | 'update-rate-exceeded' // member  · transient · close 1013
-  | 'update-not-accepted' // member  · transient · an inbound update could not be admitted to the room command queue (not applied/saved) — reconnect/backoff
-  | 'document-size-limit-exceeded' // member  · manual    · close 1008
-  | 'document-deleted' // document · terminal  · close 1008
-  | 'edits-not-saved' // document · terminal  · close 1008
-  | 'server-shutdown'; // document · transient · close 1001
+export type CollaborationAccess = 'read' | 'write';
+export type CollaborationSave = 'saved' | 'saving' | 'offline';
+export type CollaborationState =
+  | { kind: 'loading' }
+  | { kind: 'active'; access: CollaborationAccess; save: CollaborationSave }
+  | { kind: 'ended'; reason: string; recovery: 'none' | 'reload' };
 
-export type SessionEndDisposition = 'transient' | 'terminal' | 'manual';
-
-export type SessionEndScope = 'member' | 'document';
-
-export type SessionEndInfo = { code: SessionEndCode; scope: SessionEndScope; disposition: SessionEndDisposition };
-
-/**
- * The KNOWN session-end tuples. The `code` is the key; scope + disposition are derived from
- * THIS table (the authority), never trusted from the wire — a control whose wire scope or
- * disposition disagrees with the table, or whose code is unknown, is rejected (fail closed).
- */
-export const SESSION_END_TABLE: Record<SessionEndCode, { scope: SessionEndScope; disposition: SessionEndDisposition }> =
-  {
-    'update-rate-exceeded': { scope: 'member', disposition: 'transient' },
-    'update-not-accepted': { scope: 'member', disposition: 'transient' },
-    'document-size-limit-exceeded': { scope: 'member', disposition: 'manual' },
-    'document-deleted': { scope: 'document', disposition: 'terminal' },
-    'edits-not-saved': { scope: 'document', disposition: 'terminal' },
-    'server-shutdown': { scope: 'document', disposition: 'transient' },
-  };
-
-/**
- * Classify a `session-end` control against {@link SESSION_END_TABLE}. Returns the
- * authoritative tuple (from the table), or `null` when the code is unknown OR the wire
- * scope/disposition is inconsistent with the table — the caller must then fail CLOSED
- * (terminal, no reconnect) rather than trust an arbitrary wire string.
- */
-export function classifySessionEnd(
-  message: Pick<ControlMessage, 'code' | 'scope' | 'disposition'>
-): SessionEndInfo | null {
-  const code = message.code;
-  const known = code ? SESSION_END_TABLE[code] : undefined;
-  if (!code || !known) {
-    return null;
-  }
-  if (message.scope !== known.scope || message.disposition !== known.disposition) {
-    return null;
-  }
-  return { code, scope: known.scope, disposition: known.disposition };
-}
-
-/** A `WireControl` payload — server→client JSON (collaboration-service `ControlMessage`). */
+type SessionEndDisposition = 'transient' | 'manual' | 'terminal';
 export type ControlMessage = {
-  kind:
-    | 'saved'
-    | 'save-error'
-    | 'read-only-state'
-    | 'collaborator-mode'
-    | 'room-user-change'
-    // The server's ingress validator rejected a local update (e.g. a bad assets-root
-    // struct). The local scene is poisoned: the client must discard this generation
-    // and resync a fresh scene from the server rather than resend the rejected state.
-    | 'update-rejected'
-    // The server is ending this session. `disposition` is AUTHORITATIVE — the socket close
-    // that follows must not override or duplicate it. `code` names the cause, `scope` its
-    // extent (a member limit vs a whole-document condition).
-    | 'session-end'
-    // Durability-barrier replies: each answers ONE `persist-request` by its `requestId`.
-    // `persisted` = the requested state reached the configured stores; `persist-failed` =
-    // it could not (with `error`). `requestDurability` below consumes them over the
-    // same raw-JSON control channel.
-    | 'persisted'
-    | 'persist-failed';
-  version?: number;
-  /** Correlates `persisted` / `persist-failed` with the durability request that asked. */
+  kind: string;
   requestId?: string;
-  /** Human-readable failure reason on `save-error` and `persist-failed` (never secrets). */
+  version?: number;
   error?: string;
   readOnly?: boolean;
   reason?: string;
-  mode?: 'read' | 'write';
+  mode?: CollaborationAccess | 'viewer' | 'collaborator';
   users?: number;
-  code?: SessionEndCode;
+  code?: string;
   scope?: 'member' | 'document';
   disposition?: SessionEndDisposition;
 };
 
-export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';
-
-/**
- * How a socket close should be handled — an EXPLICIT 3-way disposition, never
- * `retry = !terminal` (a clean 1000 close is neither terminal nor something to
- * retry):
- * - `normal`: a clean 1000 close. NEITHER retried NOR surfaced as a reconnect
- *   notice — no mechanism should reconnect it.
- * - `transient`: a drop to reconnect from with backoff (and the reconnect notice):
- *   `room-capacity-reached` (1008), 1011 (authz-backend outage), a transport error
- *   (1006), etc.
- * - `terminal`: a policy close this attempt must NEVER retry — `forbidden` /
- *   `document deleted` / any unrecognised 1008 (fail closed). The provider's timer
- *   AND consumers' retry loops (e.g. the wrapper's `useAutoReconnect`) both stay off.
- * `reason` is carried through so a consumer can tell the terminal reasons apart.
- */
-export type CloseDisposition = 'normal' | 'transient' | 'terminal';
-
-export type CloseVerdict = {
-  code: number;
-  reason: string;
-  disposition: CloseDisposition;
-};
-
-/**
- * The excalidraw editor's scene-sync port: the four y-protocol operations a
- * collaboration transport needs, sourced from / sinked into the editor's scene
- * `Y.Doc` without ever touching the raw doc. It carries the editor's one-origin
- * policy — `onLocalSceneUpdate` fires only for LOCAL edits, never for updates
- * applied via `applyRemoteSceneUpdate` — so the transport needs no echo guard.
- * Fixed to the `'v1'` wire format (the y-protocols update encoding on the socket).
- */
 export type SceneSyncPort = {
-  /** This replica's state vector — what it already has (`Y.encodeStateVector`). */
   encodeSceneStateVector: () => Uint8Array;
-  /** Encode the scene as an update; pass a peer's state vector for just the delta. */
   encodeSceneAsUpdate: (format: 'v1', targetStateVector?: Uint8Array) => Uint8Array;
-  /** Integrate a peer's update: never re-broadcast, never captured into local undo. */
   applyRemoteSceneUpdate: (update: Uint8Array, format: 'v1') => void;
-  /** Subscribe to LOCAL scene edits (unsub returned); remote applies never fire this. */
   onLocalSceneUpdate: (cb: (update: Uint8Array) => void, format: 'v1') => () => void;
 };
 
-export type ConnectionStatus = 'connecting' | 'connected' | 'disconnected';
-
-type ProviderEvent = 'status' | 'synced' | 'control' | 'close';
-
-type StatusListener = (status: ConnectionStatus) => void;
-type SyncedListener = (synced: boolean) => void;
-type ControlListener = (message: ControlMessage) => void;
-type CloseListener = (verdict: CloseVerdict) => void;
-
-type UnifiedCollabProviderCommonOptions = {
-  /** The collaborative document id (the room) — `/collab/<documentId>`. */
+type CommonOptions = {
   documentId: string;
-  /** Document content type, selecting the room's seed convention server-side. */
   type: 'memo' | 'whiteboard';
-  /** Reuse an existing awareness (e.g. the whiteboard binding's). A fresh one is created when omitted. */
   awareness?: Awareness;
-  /** Override the service base URL (defaults to the platform or browser origin). */
   baseUrl?: string;
-  /** Override the service path prefix (defaults to `/collab`). */
   path?: string;
-  /** Anonymous display name for a guest connection (`?guestName=`). The BFF session cookie is reused otherwise. */
   guestName?: string;
-  /** Connect on construction. Defaults to true. */
   connect?: boolean;
+  beforeSave?: () => Promise<void>;
 };
+export type UnifiedCollabProviderOptions = CommonOptions &
+  ({ doc?: Y.Doc; scenePort?: never } | { doc?: never; scenePort: SceneSyncPort });
 
-/**
- * `doc` (memo — Tiptap's editor doc) and `scenePort` (whiteboard — the excalidraw
- * editor's scene-sync port) are MUTUALLY EXCLUSIVE. Memo drives sync over the raw
- * `Y.Doc`; whiteboard drives it through the port and never passes a `doc` (the
- * editor owns the scene doc). Omitting both is the memo path with a fresh doc.
- */
-export type UnifiedCollabProviderOptions = UnifiedCollabProviderCommonOptions &
-  (
-    | {
-        /** Reuse an existing `Y.Doc` (the editor's). A fresh one is created when omitted. */
-        doc?: Y.Doc;
-        scenePort?: never;
-      }
-    | {
-        doc?: never;
-        /** Drive whiteboard sync through the excalidraw editor's scene-sync port. */
-        scenePort: SceneSyncPort;
-      }
-  );
+type StateListener = (state: CollaborationState) => void;
+type SaveResultListener = (error?: string) => void;
 
-const RECONNECT_BACKOFF_MS = [1_000, 2_000, 5_000, 10_000, 30_000];
-export const DURABILITY_REQUEST_TIMEOUT_MS = 60_000;
-const NORMAL_CLOSURE = 1000;
-/**
- * WebSocket policy-violation close code (RFC 6455 §7.4.1). The unified collaboration
- * service uses it for every room-policy close, discriminated by the close `reason`
- * (collaboration-service `internal/transport/ws`): `room-capacity-reached` is
- * transient (a later retry may find room); `forbidden` and `document deleted` are
- * terminal, and any UNRECOGNISED 1008 reason is treated as terminal (fail closed)
- * so a policy the client does not understand is never blindly retried forever.
- */
+const SAVE_DEBOUNCE_MS = 2_000;
+const DURABILITY_TIMEOUT_MS = 60_000;
+const HEARTBEAT_IDLE_MS = 15_000;
+const HEARTBEAT_REPLY_MS = 10_000;
+const BACKOFF_MAX_MS = 30_000;
 const POLICY_VIOLATION = 1008;
-/** The only 1008 reason that is transient — every other 1008 reason is terminal. */
-const TRANSIENT_POLICY_REASON = 'room-capacity-reached';
+const emptyDoc = new Y.Doc();
+const EMPTY_UPDATE = Y.encodeStateAsUpdate(emptyDoc);
+emptyDoc.destroy();
 
 /**
- * `UnifiedCollabProvider` connects a `Y.Doc` (memo or whiteboard) to the unified
- * collaboration service over a single WebSocket at
- * `wss://<host>/collab/<documentId>?type=memo|whiteboard`, reusing the OIDC/BFF
- * session (the session cookie rides the same-site handshake; a guest passes
- * `?guestName=`). It speaks the four-channel protocol directly — sync(0) +
- * awareness(1) via y-protocols, plus the service's custom ephemeral(2) and
- * control(3) JSON channels — so it replaces both the legacy memo Hocuspocus
- * provider and the legacy whiteboard Socket.IO portal with one transport.
- *
- * It is transport-only: it owns no editor state. The whiteboard binding consumes
- * its `awareness` + `ephemeralChannel`; Tiptap binds its `doc`.
+ * One local-first document over a disposable transport. Initial connect and every
+ * later attempt use one path: dial → admission → sync → pump → close → classify → backoff.
  */
 export class UnifiedCollabProvider {
   readonly doc: Y.Doc;
@@ -249,581 +76,580 @@ export class UnifiedCollabProvider {
   private readonly documentId: string;
   private readonly type: 'memo' | 'whiteboard';
   private readonly url: string | null;
+  private readonly beforeSave?: () => Promise<void>;
   private readonly ownsDoc: boolean;
   private readonly ownsAwareness: boolean;
-  /** Whiteboard mode: the editor's scene-sync port. `null` in the memo raw-doc path. */
-  private readonly scenePort: SceneSyncPort | null;
-  /** Unsubscribe handle for `scenePort.onLocalSceneUpdate` (whiteboard outbound). */
-  private unsubscribeScene: (() => void) | null = null;
-
+  private readonly sync: SceneSyncPort;
+  private readonly unsubscribeSync: () => void;
   private ws: WebSocket | null = null;
-  private _status: ConnectionStatus = 'connecting';
-  private _synced = false;
+  private running = false;
   private destroyed = false;
+  private attemptReady = false;
+  private access: CollaborationAccess | null = null;
+  private accessReason: string | undefined;
   private reconnectAttempt = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-
-  private readonly statusListeners = new Set<StatusListener>();
-  private readonly syncedListeners = new Set<SyncedListener>();
-  private readonly controlListeners = new Set<ControlListener>();
-  private readonly closeListeners = new Set<CloseListener>();
-  private readonly ephemeralListeners = new Set<(event: EphemeralEvent) => void>();
-  private durabilitySequence = 0;
-  private pendingDurability:
+  private heartbeatTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatFrame: Uint8Array | null = null;
+  private heartbeatSequence = 0;
+  private localRevision = 0;
+  private sentRevision = 0;
+  private ackedRevision = 0;
+  private durabilityFailed = false;
+  private saveTimer: ReturnType<typeof setTimeout> | null = null;
+  private barrier:
     | {
         requestId: string;
-        promise: Promise<void>;
+        coveredRevision: number;
         resolve: () => void;
         reject: (error: Error) => void;
         timeout: ReturnType<typeof setTimeout>;
       }
     | undefined;
-  /** Serializes callers so every call receives a barrier sent after that call. */
-  private durabilityQueueTail: Promise<void> | undefined;
+  private saveInFlight: Promise<void> | null = null;
+  private durabilitySequence = 0;
+  private _state: CollaborationState = { kind: 'loading' };
+  private readonly stateListeners = new Set<StateListener>();
+  private readonly saveResultListeners = new Set<SaveResultListener>();
+  private readonly ephemeralListeners = new Set<(event: EphemeralEvent) => void>();
 
   constructor(options: UnifiedCollabProviderOptions) {
     this.documentId = options.documentId;
     this.type = options.type;
-    this.scenePort = options.scenePort ?? null;
-
-    if (this.scenePort) {
-      // Whiteboard: the editor owns the scene doc behind the port. This provider
-      // owns an awareness-only `Y.Doc` purely to host Awareness — a separate
-      // channel whose clientID need not match the scene doc's. No external
-      // consumer reads `provider.doc` for whiteboard content (the editor does),
-      // so an awareness-only doc here is fine.
-      this.doc = new Y.Doc();
-      this.ownsDoc = true;
-    } else {
-      this.doc = options.doc ?? new Y.Doc();
-      this.ownsDoc = !options.doc;
-    }
+    this.beforeSave = options.beforeSave;
+    this.doc = options.scenePort ? new Y.Doc() : (options.doc ?? new Y.Doc());
+    this.ownsDoc = !!options.scenePort || !options.doc;
+    this.sync = options.scenePort ?? {
+      encodeSceneStateVector: () => Y.encodeStateVector(this.doc),
+      encodeSceneAsUpdate: (_format, target) => Y.encodeStateAsUpdate(this.doc, target),
+      applyRemoteSceneUpdate: update => Y.applyUpdate(this.doc, update, this),
+      onLocalSceneUpdate: listener => {
+        const onUpdate = (update: Uint8Array, origin: unknown) => {
+          if (origin !== this) listener(update);
+        };
+        this.doc.on('update', onUpdate);
+        return () => this.doc.off('update', onUpdate);
+      },
+    };
     this.awareness = options.awareness ?? new Awareness(this.doc);
     this.ownsAwareness = !options.awareness;
     this.url = buildCollabUrl(options);
-
-    if (this.scenePort) {
-      // Outbound: local scene edits are framed as sync Updates. The port never
-      // delivers remote-applied updates here (its one-origin policy), so unlike
-      // the raw-doc path this needs no origin/echo guard.
-      this.unsubscribeScene = this.scenePort.onLocalSceneUpdate(update => this.broadcastSceneUpdate(update), 'v1');
-    } else {
-      this.doc.on('update', this.handleDocUpdate);
-    }
+    this.unsubscribeSync = this.sync.onLocalSceneUpdate(this.handleLocalUpdate, 'v1');
     this.awareness.on('update', this.handleAwarenessUpdate);
-
-    if (options.connect !== false) {
-      this.connect();
-    }
+    globalThis.window?.addEventListener('online', this.handleOnline);
+    globalThis.document?.addEventListener('visibilitychange', this.handleVisibilityChange);
+    if (options.connect !== false) this.connect();
   }
 
-  get status(): ConnectionStatus {
-    return this._status;
+  get state(): CollaborationState {
+    return this._state;
   }
 
-  get synced(): boolean {
-    return this._synced;
+  get readOnlyReason(): ReadOnlyCode | undefined {
+    return controlReasonToReadOnlyCode(this.accessReason);
   }
 
-  /**
-   * The whiteboard binding's ephemeral transport: outbound events are JSON-framed
-   * as `WireEphemeral` (type 2); inbound type-2 frames are decoded back to events.
-   * The doc is never touched (presence stays out of the persisted snapshot).
-   */
+  get hasUnsavedChanges(): boolean {
+    return this.localRevision !== this.ackedRevision;
+  }
+
+  get hasLocalEdits(): boolean {
+    return this.localRevision > 0;
+  }
+
+  get hasChangesAtRisk(): boolean {
+    return (
+      this.localRevision !== this.sentRevision || (this.durabilityFailed && this.localRevision !== this.ackedRevision)
+    );
+  }
+
   get ephemeralChannel(): EphemeralChannel {
     return {
-      send: (event: EphemeralEvent) => this.sendEphemeral(event),
-      subscribe: (handler: (event: EphemeralEvent) => void) => {
-        this.ephemeralListeners.add(handler);
-        return () => this.ephemeralListeners.delete(handler);
+      send: event => this.sendEphemeral(event),
+      subscribe: listener => {
+        this.ephemeralListeners.add(listener);
+        return () => this.ephemeralListeners.delete(listener);
       },
     };
   }
 
-  on(event: 'status', listener: StatusListener): void;
-  on(event: 'synced', listener: SyncedListener): void;
-  on(event: 'control', listener: ControlListener): void;
-  on(event: 'close', listener: CloseListener): void;
-  on(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener | CloseListener): void {
-    if (event === 'status') this.statusListeners.add(listener as StatusListener);
-    else if (event === 'synced') this.syncedListeners.add(listener as SyncedListener);
-    else if (event === 'control') this.controlListeners.add(listener as ControlListener);
-    else this.closeListeners.add(listener as CloseListener);
+  subscribe(listener: StateListener): () => void {
+    this.stateListeners.add(listener);
+    listener(this._state);
+    return () => this.stateListeners.delete(listener);
   }
 
-  off(event: 'status', listener: StatusListener): void;
-  off(event: 'synced', listener: SyncedListener): void;
-  off(event: 'control', listener: ControlListener): void;
-  off(event: 'close', listener: CloseListener): void;
-  off(event: ProviderEvent, listener: StatusListener | SyncedListener | ControlListener | CloseListener): void {
-    if (event === 'status') this.statusListeners.delete(listener as StatusListener);
-    else if (event === 'synced') this.syncedListeners.delete(listener as SyncedListener);
-    else if (event === 'control') this.controlListeners.delete(listener as ControlListener);
-    else this.closeListeners.delete(listener as CloseListener);
+  onSaveResult(listener: SaveResultListener): () => void {
+    this.saveResultListeners.add(listener);
+    return () => this.saveResultListeners.delete(listener);
   }
 
   connect(): void {
-    if (this.destroyed || !this.url || this.ws) return;
+    if (this.destroyed) return;
+    this.running = true;
+    if (this._state.kind === 'ended') this.setState({ kind: 'loading' });
+    this.dial();
+  }
 
-    this.setStatus('connecting');
+  destroy(): void {
+    if (this.destroyed) return;
+    this.destroyed = true;
+    this.running = false;
+    this.clearReconnect();
+    this.clearHeartbeat();
+    this.clearSaveTimer();
+    this.rejectBarrier(new Error('The collaboration editor closed before changes were persisted'));
+    removeAwarenessStates(this.awareness, [this.awareness.clientID], 'provider-destroy');
+    this.stopSocket();
+    this.unsubscribeSync();
+    this.awareness.off('update', this.handleAwarenessUpdate);
+    globalThis.window?.removeEventListener('online', this.handleOnline);
+    globalThis.document?.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    this.stateListeners.clear();
+    this.saveResultListeners.clear();
+    this.ephemeralListeners.clear();
+    if (this.ownsAwareness) this.awareness.destroy();
+    if (this.ownsDoc) this.doc.destroy();
+  }
 
+  async requestDurability(): Promise<void> {
+    while (this.ackedRevision < this.localRevision) await this.ensureSave();
+  }
+
+  private dial(): void {
+    if (!this.running || this.destroyed || !this.url || this.ws) return;
+    this.access = null;
+    this.accessReason = undefined;
+    this.attemptReady = false;
     const ws = new WebSocket(this.url);
     ws.binaryType = 'arraybuffer';
     this.ws = ws;
-
-    ws.addEventListener('open', this.handleOpen);
     ws.addEventListener('message', this.handleMessage);
     ws.addEventListener('close', this.handleClose);
     ws.addEventListener('error', this.handleError);
   }
 
-  /** Tear down the socket without reconnecting and without destroying the doc. */
-  disconnect(): void {
-    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
-    this.clearReconnect();
-    this.teardownSocket(NORMAL_CLOSURE);
-    this.setSynced(false);
-    this.setStatus('disconnected');
-  }
-
-  /** Permanently dispose: stop reconnecting, close the socket, free any doc/awareness this provider created. */
-  destroy(): void {
-    if (this.destroyed) return;
-    this.destroyed = true;
-    this.rejectPendingDurability('The collaboration editor closed before the draft was persisted');
-    this.clearReconnect();
-    // Publish the local leave while the socket and awareness listener are still
-    // active. The service also cleans up on disconnect; this makes normal client
-    // disposal immediate without depending on that fallback.
-    removeAwarenessStates(this.awareness, [this.awareness.clientID], 'provider-destroy');
-    this.teardownSocket(NORMAL_CLOSURE);
-
-    if (this.scenePort) {
-      // Whiteboard: stop listening for local scene edits.
-      this.unsubscribeScene?.();
-      this.unsubscribeScene = null;
-    } else {
-      this.doc.off('update', this.handleDocUpdate);
-    }
-    this.awareness.off('update', this.handleAwarenessUpdate);
-
-    this.statusListeners.clear();
-    this.syncedListeners.clear();
-    this.controlListeners.clear();
-    this.closeListeners.clear();
-    this.ephemeralListeners.clear();
-
-    if (this.ownsAwareness) this.awareness.destroy();
-    if (this.ownsDoc) this.doc.destroy();
-  }
-
-  /**
-   * Ask the collaboration service to persist every update sent before this frame.
-   * The wire allows one in-flight request per connection. A later caller is queued
-   * behind it and receives its own frame, because updates may have been sent after
-   * the earlier barrier.
-   */
-  requestDurability(): Promise<void> {
-    if (!this.pendingDurability && !this.durabilityQueueTail) {
-      return this.startDurabilityRequest();
-    }
-
-    const predecessor = this.durabilityQueueTail ?? this.pendingDurability?.promise ?? Promise.resolve();
-    const start = () => this.startDurabilityRequest();
-    const queued = predecessor.then(start, start);
-    const settled = queued.then(
-      () => undefined,
-      () => undefined
-    );
-    this.durabilityQueueTail = settled;
-    void settled.then(() => {
-      if (this.durabilityQueueTail === settled) {
-        this.durabilityQueueTail = undefined;
+  private handleMessage = (event: MessageEvent) => {
+    if (!(event.data instanceof ArrayBuffer)) return;
+    const bytes = new Uint8Array(event.data);
+    try {
+      const decoder = decoding.createDecoder(bytes);
+      switch (decoding.readVarUint(decoder)) {
+        case WIRE.SYNC:
+          this.readSync(decoder);
+          break;
+        case WIRE.AWARENESS:
+          applyAwarenessUpdate(this.awareness, decoding.readVarUint8Array(decoder), this);
+          break;
+        case WIRE.EPHEMERAL: {
+          const event = readVarStringJson(decoder) as EphemeralEvent | undefined;
+          if (event && typeof event.type === 'string') emitListeners(this.ephemeralListeners, event);
+          break;
+        }
+        case WIRE.CONTROL:
+          this.handleControl(readRawJson(decoder) as ControlMessage | undefined);
+          break;
+        case WIRE.HEARTBEAT:
+          this.receiveHeartbeat(bytes);
+          break;
+        default:
+          break;
       }
-    });
-    return queued;
+    } catch {
+      this.ws?.close(4000, 'protocol-decode-failed');
+    }
+  };
+
+  private handleControl(message: ControlMessage | undefined): void {
+    if (!message || typeof message.kind !== 'string') return;
+    switch (message.kind) {
+      case 'admission':
+        if (message.mode !== 'read' && message.mode !== 'write') {
+          this.end({ reason: 'invalid-admission', recovery: 'none' });
+          return;
+        }
+        this.access = message.mode;
+        this.accessReason = message.reason;
+        this.sendSyncStep1();
+        break;
+      case 'persisted':
+        this.finishSave(message.requestId);
+        break;
+      case 'persist-failed':
+        this.failSave(message.requestId, message.error ?? 'The document could not be persisted');
+        break;
+      case 'save-error':
+        this.durabilityFailed = true;
+        this.emitSaveResult(message.error ?? 'save-error');
+        break;
+      case 'session-end':
+        this.applyTypedEnd(message);
+        break;
+      default:
+        break;
+    }
   }
 
-  private startDurabilityRequest(): Promise<void> {
-    if (this.destroyed || this._status !== 'connected' || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      return Promise.reject(new Error('The collaboration connection is not ready to persist the draft'));
+  private readSync(decoder: decoding.Decoder): void {
+    if (!this.access) throw new Error('sync-before-admission');
+    const syncType = decoding.readVarUint(decoder);
+    if (syncType === messageYjsSyncStep1) {
+      const localDelta = this.sync.encodeSceneAsUpdate('v1', decoding.readVarUint8Array(decoder));
+      const hasLocalDelta = !isEmptyUpdate(localDelta);
+      if (hasLocalDelta && this.localRevision === this.ackedRevision) this.localRevision += 1;
+      const encoder = encoding.createEncoder();
+      encoding.writeVarUint(encoder, WIRE.SYNC);
+      encoding.writeVarUint(encoder, messageYjsSyncStep2);
+      encoding.writeVarUint8Array(encoder, this.access === 'write' ? localDelta : EMPTY_UPDATE);
+      const sent = this.sendFrame(encoding.toUint8Array(encoder));
+      if (this.access === 'write' && sent) this.sentRevision = this.localRevision;
+      return;
     }
+    if (syncType !== messageYjsSyncStep2 && syncType !== messageYjsUpdate) throw new Error('unknown-sync-type');
+    this.sync.applyRemoteSceneUpdate(decoding.readVarUint8Array(decoder), 'v1');
+    if (syncType === messageYjsSyncStep2 && !this.attemptReady) this.becomeReady();
+  }
 
+  private becomeReady(): void {
+    if (!this.access) return;
+    this.attemptReady = true;
+    this.reconnectAttempt = 0;
+    if (this.access === 'read' && this.hasUnsavedChanges) {
+      this.end({ reason: 'access-changed-with-local-edits', recovery: 'reload' });
+      return;
+    }
+    this.setActive();
+    this.armHeartbeat(HEARTBEAT_IDLE_MS);
+    if (this.awareness.getLocalState() !== null) this.broadcastAwareness([this.awareness.clientID]);
+    if (this.localRevision > this.ackedRevision && this.access === 'write') this.scheduleSave();
+  }
+
+  private applyTypedEnd(end: Pick<ControlMessage, 'code' | 'disposition'>): void {
+    if (!isDisposition(end.disposition)) {
+      this.end({ reason: end.code ?? 'unknown-session-end', recovery: 'none' });
+    } else if (end.disposition === 'transient') {
+      this.finishAttempt();
+    } else {
+      this.end({ reason: end.code ?? 'session-ended', recovery: end.disposition === 'manual' ? 'reload' : 'none' });
+    }
+  }
+
+  private handleClose = (event: CloseEvent) => {
+    if (this.ws !== event.currentTarget) return;
+    if (event.code !== POLICY_VIOLATION) this.finishAttempt();
+    else this.end({ reason: event.reason || 'forbidden', recovery: 'none' });
+  };
+
+  private finishAttempt(): void {
+    this.rejectBarrier(new Error('The collaboration connection closed before changes were persisted'));
+    this.sentRevision = this.ackedRevision;
+    this.clearHeartbeat();
+    this.stopSocket();
+    if (!this.running || this.destroyed) return;
+    if (this._state.kind === 'active') this.setState({ ...this._state, save: 'offline' });
+    else this.setState({ kind: 'loading' });
+    this.scheduleReconnect();
+  }
+
+  private end(end: { reason: string; recovery: 'none' | 'reload' }): void {
+    this.running = false;
+    this.attemptReady = false;
+    this.access = null;
+    this.sentRevision = this.ackedRevision;
+    this.clearReconnect();
+    this.clearHeartbeat();
+    this.rejectBarrier(new Error(`Collaboration ended: ${end.reason}`));
+    this.stopSocket();
+    this.setState({ kind: 'ended', ...end });
+  }
+
+  private scheduleReconnect(): void {
+    if (!this.running || this.destroyed || this.reconnectTimer) return;
+    const cap = Math.min(1_000 * 2 ** this.reconnectAttempt, BACKOFF_MAX_MS);
+    this.reconnectAttempt += 1;
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null;
+      this.dial();
+    }, Math.random() * cap);
+  }
+
+  private handleOnline = () => {
+    if (this.running && !this.ws) {
+      this.clearReconnect();
+      this.dial();
+    }
+  };
+
+  private handleVisibilityChange = () => {
+    if (globalThis.document?.visibilityState !== 'visible' || this._state.kind !== 'active') return;
+    this.clearHeartbeat();
+    this.sendHeartbeat();
+  };
+
+  private armHeartbeat(delay: number): void {
+    if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
+    this.heartbeatTimer = setTimeout(() => {
+      if (this.heartbeatFrame) this.ws?.close(4000, 'heartbeat-timeout');
+      else this.sendHeartbeat();
+    }, delay);
+  }
+
+  private sendHeartbeat(): void {
+    if (this.heartbeatFrame || this._state.kind !== 'active' || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      return;
+    }
+    this.heartbeatFrame = encodeFrame(WIRE.HEARTBEAT, encoder =>
+      encoding.writeVarString(encoder, `${Date.now()}-${++this.heartbeatSequence}`)
+    );
+    this.sendFrame(this.heartbeatFrame);
+    this.armHeartbeat(HEARTBEAT_REPLY_MS);
+  }
+
+  private receiveHeartbeat(frame: Uint8Array): void {
+    if (!this.heartbeatFrame || !equalBytes(frame, this.heartbeatFrame)) return;
+    this.heartbeatFrame = null;
+    this.armHeartbeat(HEARTBEAT_IDLE_MS);
+  }
+
+  private handleLocalUpdate = (update: Uint8Array) => {
+    this.localRevision += 1;
+    this.setActive();
+    if (this.access === 'write' && this.sendFrame(encodeFrame(WIRE.SYNC, encoder => writeUpdate(encoder, update)))) {
+      this.sentRevision = this.localRevision;
+      this.setActive();
+    }
+    this.scheduleSave();
+  };
+
+  private scheduleSave(): void {
+    if (this.saveTimer || this.saveInFlight || !this.canSave()) return;
+    this.saveTimer = setTimeout(() => {
+      this.saveTimer = null;
+      void this.ensureSave().catch(() => undefined);
+    }, SAVE_DEBOUNCE_MS);
+  }
+
+  private ensureSave(): Promise<void> {
+    if (this.ackedRevision >= this.localRevision) return Promise.resolve();
+    if (this.saveInFlight) return this.saveInFlight;
+    if (!this.canSave()) return Promise.reject(new Error('The collaboration connection is offline'));
+    const operation = this.performSave();
+    this.saveInFlight = operation;
+    const settled = () => {
+      if (this.saveInFlight !== operation) return;
+      this.saveInFlight = null;
+      this.setActive();
+      if (this.localRevision > this.ackedRevision) this.scheduleSave();
+    };
+    void operation.then(settled, settled);
+    return operation;
+  }
+
+  private async performSave(): Promise<void> {
+    if (this.beforeSave) {
+      try {
+        await this.beforeSave();
+      } catch (error) {
+        this.durabilityFailed = true;
+        this.emitSaveResult(error instanceof Error ? error.message : 'Asset publication failed');
+        throw error;
+      }
+    }
+    if (!this.canSave()) throw new Error('The collaboration connection is offline');
     const requestId = `${Date.now().toString(36)}-${(++this.durabilitySequence).toString(36)}`;
     let resolve!: () => void;
     let reject!: (error: Error) => void;
-    const promise = new Promise<void>((resolvePromise, rejectPromise) => {
-      resolve = resolvePromise;
-      reject = rejectPromise;
+    const persisted = new Promise<void>((ok, fail) => {
+      resolve = ok;
+      reject = fail;
     });
-    const timeout = setTimeout(() => {
-      this.rejectPendingDurability('The collaboration service timed out while persisting the draft');
-    }, DURABILITY_REQUEST_TIMEOUT_MS);
-    this.pendingDurability = { requestId, promise, resolve, reject, timeout };
-
-    const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, WIRE.DURABILITY_REQUEST);
-    encoding.writeUint8Array(encoder, lib0String.encodeUtf8(JSON.stringify({ requestId })));
-    this.sendFrame(encoding.toUint8Array(encoder));
-    return promise;
+    const timeout = setTimeout(
+      () => this.failSave(requestId, 'The collaboration service timed out'),
+      DURABILITY_TIMEOUT_MS
+    );
+    this.barrier = { requestId, coveredRevision: this.localRevision, resolve, reject, timeout };
+    const sent = this.sendFrame(
+      encodeFrame(WIRE.DURABILITY_REQUEST, encoder =>
+        encoding.writeUint8Array(encoder, lib0String.encodeUtf8(JSON.stringify({ requestId })))
+      )
+    );
+    if (!sent) this.failSave(requestId, 'The collaboration connection is offline');
+    return persisted;
   }
 
-  private handleOpen = () => {
-    this.reconnectAttempt = 0;
-    this.setStatus('connected');
-    // Initiate the handshake: send SyncStep1 so the server replies SyncStep2
-    // (+ its own SyncStep1 and an awareness snapshot). Mirrors the y-websocket client.
-    const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, WIRE.SYNC);
-    if (this.scenePort) {
-      // Byte-identical to `writeSyncStep1(encoder, doc)` for a doc whose state
-      // vector equals `encodeSceneStateVector()`: both emit
-      // `messageYjsSyncStep1` + a var-uint8-array of the state vector.
-      encoding.writeVarUint(encoder, messageYjsSyncStep1);
-      encoding.writeVarUint8Array(encoder, this.scenePort.encodeSceneStateVector());
-    } else {
-      writeSyncStep1(encoder, this.doc);
-    }
-    this.sendFrame(encoding.toUint8Array(encoder));
-
-    // Announce our current local awareness state to the room.
-    if (this.awareness.getLocalState() !== null) {
-      this.broadcastAwareness([this.awareness.clientID]);
-    }
-  };
-
-  private handleMessage = (event: MessageEvent) => {
-    if (!(event.data instanceof ArrayBuffer)) return;
-    const decoder = decoding.createDecoder(new Uint8Array(event.data));
-    const messageType = decoding.readVarUint(decoder);
-
-    switch (messageType) {
-      case WIRE.SYNC: {
-        const encoder = encoding.createEncoder();
-        encoding.writeVarUint(encoder, WIRE.SYNC);
-        // Drives the canonical sync state machine. A server SyncStep1 yields a
-        // SyncStep2 reply; SyncStep2 / Update are applied. In the raw-doc (memo)
-        // path `this` is the origin so our doc 'update' observer does not echo
-        // them back; in the scene-port (whiteboard) path the port's
-        // `applyRemoteSceneUpdate` is itself non-echoing.
-        const replyType = this.scenePort
-          ? this.readSceneSyncMessage(decoder, encoder, this.scenePort)
-          : readSyncMessage(decoder, encoder, this.doc, this);
-        if (encoding.length(encoder) > 1) {
-          this.sendFrame(encoding.toUint8Array(encoder));
-        }
-        // The first SyncStep2 means our initial state has been received: synced.
-        if (replyType === messageYjsSyncStep2 && !this._synced) {
-          this.setSynced(true);
-        }
-        break;
-      }
-      case WIRE.AWARENESS: {
-        const update = decoding.readVarUint8Array(decoder);
-        applyAwarenessUpdate(this.awareness, update, this);
-        break;
-      }
-      case WIRE.EPHEMERAL: {
-        const parsed = readJsonPayload(decoder) as EphemeralEvent | undefined;
-        if (parsed && typeof parsed.type === 'string') {
-          this.ephemeralListeners.forEach(listener => listener(parsed));
-        }
-        break;
-      }
-      case WIRE.CONTROL: {
-        const parsed = readRawJsonPayload(decoder) as ControlMessage | undefined;
-        if (parsed && typeof parsed.kind === 'string') {
-          this.settleDurability(parsed);
-          this.controlListeners.forEach(listener => listener(parsed));
-        }
-        break;
-      }
-      default:
-        // y-protocols leniency: ignore unknown types.
-        break;
-    }
-  };
-
-  private handleClose = (event: CloseEvent) => {
-    this.rejectPendingDurability('The collaboration connection closed before the draft was persisted');
-    this.setSynced(false);
-    this.detachSocketListeners();
-    this.ws = null;
-    if (this.destroyed) return;
-    this.setStatus('disconnected');
-
-    // Classify the close from BOTH the code and the reason, then hand the verdict
-    // to consumers so a terminal policy close stops their retry loops too — not
-    // just this provider's timer.
-    const verdict = classifyClose(event.code, event.reason);
-    this.closeListeners.forEach(listener => listener(verdict));
-
-    // ONLY a transient drop reconnects with backoff (1011, a transport error 1006,
-    // or `room-capacity-reached` — so an authz-backend outage stays retryable). A
-    // `normal` clean close and a `terminal` policy close both stay closed.
-    if (verdict.disposition === 'transient') {
-      this.scheduleReconnect();
-    }
-  };
-
-  private settleDurability(message: ControlMessage): void {
-    const pending = this.pendingDurability;
-    if (
-      !pending ||
-      message.requestId !== pending.requestId ||
-      (message.kind !== 'persisted' && message.kind !== 'persist-failed')
-    ) {
-      return;
-    }
+  private finishSave(requestId: string | undefined): void {
+    const pending = this.barrier;
+    if (!pending || requestId !== pending.requestId) return;
     clearTimeout(pending.timeout);
-    if (message.kind === 'persisted') {
-      this.pendingDurability = undefined;
-      pending.resolve();
-    } else if (message.kind === 'persist-failed') {
-      this.pendingDurability = undefined;
-      pending.reject(new Error(message.error ?? 'The draft could not be persisted'));
-    }
+    this.barrier = undefined;
+    this.ackedRevision = Math.max(this.ackedRevision, pending.coveredRevision);
+    if (this.ackedRevision >= this.localRevision) this.durabilityFailed = false;
+    pending.resolve();
+    this.emitSaveResult();
   }
 
-  private rejectPendingDurability(message: string): void {
-    const pending = this.pendingDurability;
+  private failSave(requestId: string | undefined, message: string): void {
+    if (!this.barrier || requestId !== this.barrier.requestId) return;
+    this.durabilityFailed = true;
+    this.rejectBarrier(new Error(message));
+    this.emitSaveResult(message);
+  }
+
+  private rejectBarrier(error: Error): void {
+    const pending = this.barrier;
     if (!pending) return;
     clearTimeout(pending.timeout);
-    this.pendingDurability = undefined;
-    pending.reject(new Error(message));
+    this.barrier = undefined;
+    pending.reject(error);
   }
 
-  private handleError = () => {
-    // 'close' fires after 'error'; the reconnect is scheduled there.
-    logWarn('Unified collab WebSocket error', {
-      category: this.type === 'memo' ? TagCategoryValues.MEMO : TagCategoryValues.WHITEBOARD,
-      label: `doc: ${this.documentId}`,
-    });
-  };
-
-  private handleDocUpdate = (update: Uint8Array, origin: unknown) => {
-    // Skip updates we applied FROM the server (origin === this).
-    if (origin === this) return;
-    const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, WIRE.SYNC);
-    writeUpdate(encoder, update);
-    this.sendFrame(encoding.toUint8Array(encoder));
-  };
-
-  /**
-   * Hand-rolled y-protocols sync dispatch for the scene-port (whiteboard) path,
-   * mirroring `readSyncMessage` but sourcing/sinking via the editor's port instead
-   * of a raw `Y.Doc`. Frame-for-frame identical to the raw-doc path: a SyncStep1
-   * yields a SyncStep2 (delta) reply; SyncStep2 / Update are applied. Returns the
-   * sub-type read, so the caller's `synced` and reply-suppression logic is shared.
-   */
-  private readSceneSyncMessage(decoder: decoding.Decoder, encoder: encoding.Encoder, port: SceneSyncPort): number {
-    const messageType = decoding.readVarUint(decoder);
-    switch (messageType) {
-      case messageYjsSyncStep1: {
-        const stateVector = decoding.readVarUint8Array(decoder);
-        encoding.writeVarUint(encoder, messageYjsSyncStep2);
-        encoding.writeVarUint8Array(encoder, port.encodeSceneAsUpdate('v1', stateVector));
-        break;
-      }
-      case messageYjsSyncStep2:
-      case messageYjsUpdate: {
-        const update = decoding.readVarUint8Array(decoder);
-        // Do NOT swallow a decode/apply failure — let it escape and fail loud. There
-        // is no decode-failure resync handler and none is needed: post-cutover the
-        // coordinated ingress validation (candidate-apply + no mixed fleet) means
-        // malformed bytes have no route to a client, so a catch here would only hide
-        // a real bug.
-        port.applyRemoteSceneUpdate(update, 'v1');
-        break;
-      }
-      default:
-        // Frame-for-frame parity with y-protocols `readSyncMessage`: an unknown sync
-        // sub-type is a protocol violation and throws rather than silently diverging.
-        throw new Error('Unknown message type');
-    }
-    return messageType;
+  private emitSaveResult(error?: string): void {
+    emitListeners(this.saveResultListeners, error);
   }
 
-  /**
-   * Outbound framing for a local scene edit — identical to `handleDocUpdate`'s:
-   * `writeUpdate` frames `messageYjsUpdate` + payload under the WIRE.SYNC prefix.
-   */
-  private broadcastSceneUpdate(update: Uint8Array): void {
-    const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, WIRE.SYNC);
-    writeUpdate(encoder, update);
-    this.sendFrame(encoding.toUint8Array(encoder));
+  private setActive(): void {
+    if (!this.attemptReady || !this.access) return;
+    const save: CollaborationSave =
+      !this.ws || this.ws.readyState !== WebSocket.OPEN
+        ? 'offline'
+        : this.localRevision > this.sentRevision
+          ? 'saving'
+          : 'saved';
+    this.setState({ kind: 'active', access: this.access, save });
+  }
+
+  private canSave(): boolean {
+    return (
+      this.running &&
+      !this.destroyed &&
+      this.access === 'write' &&
+      this._state.kind === 'active' &&
+      this._state.save !== 'offline'
+    );
+  }
+
+  private sendSyncStep1(): void {
+    this.sendFrame(
+      encodeFrame(WIRE.SYNC, encoder => {
+        encoding.writeVarUint(encoder, messageYjsSyncStep1);
+        encoding.writeVarUint8Array(encoder, this.sync.encodeSceneStateVector());
+      })
+    );
   }
 
   private handleAwarenessUpdate = (
     changes: { added: number[]; updated: number[]; removed: number[] },
     origin: unknown
   ) => {
-    // Skip awareness we applied FROM the server (origin === this).
-    if (origin === this) return;
-    const changedClients = [...changes.added, ...changes.updated, ...changes.removed];
-    this.broadcastAwareness(changedClients);
+    if (origin !== this) this.broadcastAwareness([...changes.added, ...changes.updated, ...changes.removed]);
   };
 
   private broadcastAwareness(clients: number[]): void {
-    const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, WIRE.AWARENESS);
-    encoding.writeVarUint8Array(encoder, encodeAwarenessUpdate(this.awareness, clients));
-    this.sendFrame(encoding.toUint8Array(encoder));
+    this.sendFrame(
+      encodeFrame(WIRE.AWARENESS, encoder =>
+        encoding.writeVarUint8Array(encoder, encodeAwarenessUpdate(this.awareness, clients))
+      )
+    );
   }
 
   private sendEphemeral(event: EphemeralEvent): void {
-    const encoder = encoding.createEncoder();
-    encoding.writeVarUint(encoder, WIRE.EPHEMERAL);
-    encoding.writeVarString(encoder, JSON.stringify(event));
-    this.sendFrame(encoding.toUint8Array(encoder));
+    this.sendFrame(encodeFrame(WIRE.EPHEMERAL, encoder => encoding.writeVarString(encoder, JSON.stringify(event))));
   }
 
-  private sendFrame(bytes: Uint8Array): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      // `bytes` is ArrayBuffer-backed (lib0 `toUint8Array`); the cast bridges TS 5.7+'s
-      // generic typed-array lib (`Uint8Array<ArrayBufferLike>` no longer implicitly a `BufferSource`).
-      this.ws.send(bytes as BufferSource);
+  private sendFrame(frame: Uint8Array): boolean {
+    if (this.ws?.readyState !== WebSocket.OPEN) return false;
+    this.ws.send(frame as BufferSource);
+    return true;
+  }
+
+  private handleError = () => {
+    logWarn('Unified collab WebSocket error', {
+      category: this.type === 'memo' ? TagCategoryValues.MEMO : TagCategoryValues.WHITEBOARD,
+      label: `doc: ${this.documentId}`,
+    });
+  };
+
+  private stopSocket(): void {
+    const ws = this.ws;
+    if (!ws) return;
+    ws.removeEventListener('message', this.handleMessage);
+    ws.removeEventListener('close', this.handleClose);
+    ws.removeEventListener('error', this.handleError);
+    this.ws = null;
+    try {
+      ws.close(1000);
+    } catch {
+      // best-effort disposal
     }
-  }
-
-  private scheduleReconnect(): void {
-    if (this.destroyed || this.reconnectTimer) return;
-    const delay = RECONNECT_BACKOFF_MS[Math.min(this.reconnectAttempt, RECONNECT_BACKOFF_MS.length - 1)];
-    this.reconnectAttempt += 1;
-    this.reconnectTimer = setTimeout(() => {
-      this.reconnectTimer = null;
-      this.connect();
-    }, delay);
   }
 
   private clearReconnect(): void {
-    if (this.reconnectTimer) {
-      clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = null;
-    }
-    this.reconnectAttempt = 0;
+    if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    this.reconnectTimer = null;
   }
 
-  private teardownSocket(code: number): void {
-    if (!this.ws) return;
-    this.detachSocketListeners();
-    try {
-      this.ws.close(code);
-    } catch {
-      // already closing/closed
-    }
-    this.ws = null;
+  private clearHeartbeat(): void {
+    if (this.heartbeatTimer) clearTimeout(this.heartbeatTimer);
+    this.heartbeatTimer = null;
+    this.heartbeatFrame = null;
   }
 
-  private detachSocketListeners(): void {
-    if (!this.ws) return;
-    this.ws.removeEventListener('open', this.handleOpen);
-    this.ws.removeEventListener('message', this.handleMessage);
-    this.ws.removeEventListener('close', this.handleClose);
-    this.ws.removeEventListener('error', this.handleError);
+  private clearSaveTimer(): void {
+    if (this.saveTimer) clearTimeout(this.saveTimer);
+    this.saveTimer = null;
   }
 
-  private setStatus(status: ConnectionStatus): void {
-    if (this._status === status) return;
-    this._status = status;
-    this.statusListeners.forEach(listener => listener(status));
-  }
-
-  private setSynced(synced: boolean): void {
-    if (this._synced === synced) return;
-    this._synced = synced;
-    this.syncedListeners.forEach(listener => listener(synced));
+  private setState(state: CollaborationState): void {
+    this._state = state;
+    emitListeners(this.stateListeners, state);
   }
 }
 
-/**
- * Classify a WebSocket close into one of three dispositions from its `(code, reason)`:
- * `normal` (a clean 1000 close — neither retried NOR surfaced as a terminal state),
- * `terminal` (never retry), or `transient` (retry). The disposition is authoritative:
- * a normal close is its OWN category, not a special-cased `terminal`, so callers must
- * not conflate "don't retry" with "surface a terminal notice" — a clean close does
- * neither, which is why both independent retry loops (this provider's timer and the
- * wrapper's `useAutoReconnect`) must gate on the disposition rather than on `!terminal`.
- *
- * Only a `1008` policy close is reason-sensitive: `room-capacity-reached` is the
- * single transient reason (retrying may later find room); `forbidden` and
- * `document deleted` are terminal, and any OTHER/unknown 1008 reason is treated as
- * terminal too — FAIL CLOSED, so a policy the client does not recognise is never
- * retried blindly. Every other non-1000 code is transient (a `1011` authz-backend
- * outage or a `1006` transport drop must stay retryable).
- */
-export function classifyClose(code: number, reason: string): CloseVerdict {
-  if (code === NORMAL_CLOSURE) {
-    return { code, reason, disposition: 'normal' };
-  }
-  if (code === POLICY_VIOLATION && reason !== TRANSIENT_POLICY_REASON) {
-    return { code, reason, disposition: 'terminal' };
-  }
-  return { code, reason, disposition: 'transient' };
+function isDisposition(value: string | undefined): value is SessionEndDisposition {
+  return value === 'transient' || value === 'manual' || value === 'terminal';
 }
-
-/**
- * Read a `[VarString]` JSON payload (a `writeVarString` length prefix + UTF-8
- * bytes), returning `undefined` on malformed input. Used for EPHEMERAL (type 2):
- * those frames are CLIENT-originated (`sendEphemeral` frames them with
- * `writeVarString`) and the service relays them to peers verbatim, so a received
- * ephemeral frame still carries the client's VarString length prefix.
- */
-function readJsonPayload(decoder: decoding.Decoder): unknown {
+function emitListeners<T>(listeners: Set<(value: T) => void>, value: T): void {
+  for (const listener of listeners) listener(value);
+}
+function encodeFrame(kind: number, write: (encoder: encoding.Encoder) => void): Uint8Array {
+  const encoder = encoding.createEncoder();
+  encoding.writeVarUint(encoder, kind);
+  write(encoder);
+  return encoding.toUint8Array(encoder);
+}
+function isEmptyUpdate(update: Uint8Array): boolean {
+  const decoded = Y.decodeUpdate(update);
+  return decoded.structs.length === 0 && decoded.ds.clients.size === 0;
+}
+function equalBytes(a: Uint8Array, b: Uint8Array): boolean {
+  return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+function readVarStringJson(decoder: decoding.Decoder): unknown {
   try {
     return JSON.parse(decoding.readVarString(decoder));
   } catch {
     return undefined;
   }
 }
-
-/**
- * Read a raw-JSON control payload, returning `undefined` on malformed input.
- * CONTROL (type 3) is SERVER-originated: the service frames it via go-yjs
- * `protocol.WriteMessage(buf, WireControl, json.Marshal(msg))`, which writes
- * `[type VarUint][raw JSON bytes]` — the marshalled JSON is copied verbatim
- * (`buf.Write(payload)`), with NO VarString length prefix. So after the type
- * varuint is consumed the JSON is the entire remainder of the frame: decode the
- * tail bytes as UTF-8 and parse. (Reading a VarString here would misread the
- * leading `{` byte, 0x7B = 123, as a 123-byte length and drop every control.)
- */
-function readRawJsonPayload(decoder: decoding.Decoder): unknown {
+function readRawJson(decoder: decoding.Decoder): unknown {
   try {
     return JSON.parse(lib0String.decodeUtf8(decoding.readTailAsUint8Array(decoder)));
   } catch {
     return undefined;
   }
 }
-
-/**
- * Build `wss://<host><path>/<documentId>?type=<type>[&guestName=...]` from the
- * platform origin. `http(s)` is upgraded to `ws(s)`. An explicit `baseUrl`
- * remains available for tests and non-platform embedding.
- */
-function buildCollabUrl(
-  options: Pick<UnifiedCollabProviderOptions, 'documentId' | 'type' | 'baseUrl' | 'path' | 'guestName'>
-): string | null {
-  const baseUrl =
+function buildCollabUrl(options: UnifiedCollabProviderOptions): string | null {
+  const base =
     options.baseUrl || globalThis.window?._env_?.VITE_APP_ALKEMIO_DOMAIN || globalThis.window?.location.origin;
-  if (!baseUrl) return null;
-
+  if (!base) return null;
   const path = options.path ?? globalThis.window?._env_?.VITE_APP_COLLAB_PATH ?? '/collab';
-  const wsBase = baseUrl.replace(/^http/, 'ws').replace(/\/$/, '');
+  const wsBase = base.replace(/^http/, 'ws').replace(/\/$/, '');
   const normalizedPath = path.startsWith('/') ? path.replace(/\/$/, '') : `/${path.replace(/\/$/, '')}`;
-
   const params = new URLSearchParams({ type: options.type });
   if (options.guestName) params.set('guestName', options.guestName);
-
   return `${wsBase}${normalizedPath}/${encodeURIComponent(options.documentId)}?${params.toString()}`;
 }
 
-/**
- * Map a control message's granular `reason` (the server's `ReadOnlyReason`) to the
- * client's `ReadOnlyCode` so the memo footer keeps its read-only UX granularity.
- * The vocabularies are 1:1 by design (collaboration-service `control.go`).
- */
 export function controlReasonToReadOnlyCode(reason: string | undefined): ReadOnlyCode | undefined {
   switch (reason) {
     case 'not-authenticated':
@@ -838,3 +664,5 @@ export function controlReasonToReadOnlyCode(reason: string | undefined): ReadOnl
       return undefined;
   }
 }
+
+export type { EphemeralChannel, EphemeralEvent } from '@/domain/common/whiteboard/excalidraw/collab/awarenessRouter';

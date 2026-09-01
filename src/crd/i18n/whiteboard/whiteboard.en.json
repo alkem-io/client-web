@@ -39,10 +39,19 @@
       "title": "Discard unsaved changes?",
       "description": "You have unsaved changes that will be lost. Are you sure you want to continue?",
       "confirm": "Discard",
-      "cancel": "Keep editing"
+      "cancel": "Keep editing",
+      "wait": "Keep open and wait",
+      "export": "Export first"
     }
   },
   "footer": {
+    "saveStatus": {
+      "saved": "Saved",
+      "saving": "Saving…",
+      "finalizing": "Finalizing changes…",
+      "offline": "Offline — will sync automatically",
+      "ended": "Unavailable"
+    },
     "guestContributionsWarning": "Anyone with the link can edit",
     "readonlyReason": {
       "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
