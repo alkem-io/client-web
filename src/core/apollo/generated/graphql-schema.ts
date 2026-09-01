@@ -21194,7 +21194,13 @@ export type UploadVisualMutationVariables = Exact<{
 
 export type UploadVisualMutation = {
   __typename?: 'Mutation';
-  uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
+  uploadImageOnVisual: {
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    alternativeText?: string | undefined;
+    aspectRatio: number;
+  };
 };
 
 export type WhiteboardAssetDocumentQueryVariables = Exact<{
@@ -25579,6 +25585,7 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -28505,6 +28512,7 @@ export type SpaceAboutBaseQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -28990,7 +28998,14 @@ export type SpaceAboutLightFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          aspectRatio: number;
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+        }
       | undefined;
   };
   membership: {
@@ -29012,7 +29027,14 @@ export type SubspaceVisualsFragment = {
     | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
     | undefined;
   banner?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        aspectRatio: number;
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+      }
     | undefined;
 };
 
@@ -29045,7 +29067,14 @@ export type SpaceAboutTileFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          aspectRatio: number;
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+        }
       | undefined;
   };
 };
@@ -29273,7 +29302,14 @@ export type CreateSpaceMutation = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
@@ -30647,6 +30683,7 @@ export type SubspacePageQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -30708,7 +30745,14 @@ export type SubspacePageSpaceFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            aspectRatio: number;
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+          }
         | undefined;
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
@@ -30771,6 +30815,7 @@ export type SpaceTabQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -31463,6 +31508,7 @@ export type SpaceAccountQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -34476,6 +34522,7 @@ export type TemplateContentQuery = {
                       banner?:
                         | {
                             __typename?: 'Visual';
+                            aspectRatio: number;
                             id: string;
                             uri: string;
                             name: VisualType;
@@ -34710,6 +34757,7 @@ export type SpaceTemplateContentQuery = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -35197,7 +35245,14 @@ export type SpaceTemplateContentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -35356,7 +35411,14 @@ export type SpaceTemplateContent_SubspacesFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          aspectRatio: number;
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+        }
       | undefined;
   };
 };
@@ -38517,6 +38579,7 @@ export type FlowStateSearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -39423,6 +39486,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -39773,6 +39837,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -39840,6 +39905,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -39906,6 +39972,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -39981,6 +40048,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40065,6 +40133,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40123,6 +40192,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40191,6 +40261,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40250,6 +40321,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40308,6 +40380,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40388,6 +40461,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40472,6 +40546,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40536,6 +40611,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40600,6 +40676,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40658,6 +40735,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40744,6 +40822,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40986,6 +41065,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41053,6 +41133,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41119,6 +41200,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41194,6 +41276,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41278,6 +41361,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41336,6 +41420,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41404,6 +41489,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41463,6 +41549,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41521,6 +41608,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41601,6 +41689,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41685,6 +41774,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41749,6 +41839,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41813,6 +41904,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41871,6 +41963,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41957,6 +42050,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -42205,6 +42299,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42272,6 +42367,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42338,6 +42434,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42413,6 +42510,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42497,6 +42595,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42555,6 +42654,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42623,6 +42723,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42682,6 +42783,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42740,6 +42842,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42820,6 +42923,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42904,6 +43008,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42968,6 +43073,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43032,6 +43138,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43090,6 +43197,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43176,6 +43284,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43261,7 +43370,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutReactionFragment = 
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43310,7 +43426,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43350,7 +43473,14 @@ export type InAppNotificationSpaceCommunityActorFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43404,7 +43534,14 @@ export type SpaceNotificationFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            aspectRatio: number;
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+          }
         | undefined;
     };
   };
@@ -43534,7 +43671,14 @@ export type InAppNotificationPayloadSpaceFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43600,7 +43744,14 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43667,7 +43818,14 @@ export type InAppNotificationPayloadSpaceCommunicationUpdateFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43708,7 +43866,14 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirectFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43748,7 +43913,14 @@ export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43788,7 +43960,14 @@ export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43829,7 +44008,14 @@ export type InAppNotificationPayloadVirtualContributorFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43921,7 +44107,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43978,7 +44171,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44027,7 +44227,14 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44073,7 +44280,14 @@ export type InAppNotificationPayloadSpaceCollaborationPollFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44122,7 +44336,14 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragment =
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44411,6 +44632,7 @@ export type SearchQuery = {
                       banner?:
                         | {
                             __typename?: 'Visual';
+                            aspectRatio: number;
                             id: string;
                             uri: string;
                             name: VisualType;
@@ -44584,6 +44806,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -44724,6 +44947,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -44834,6 +45058,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -44953,6 +45178,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45077,6 +45303,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45187,6 +45414,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45304,6 +45532,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45415,6 +45644,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45622,7 +45852,14 @@ export type SearchResultPostFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45672,7 +45909,14 @@ export type PostParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45817,7 +46061,14 @@ export type SearchResultCalloutFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45857,7 +46108,14 @@ export type CalloutParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45984,6 +46242,7 @@ export type SearchResultSpaceFragment = {
             banner?:
               | {
                   __typename?: 'Visual';
+                  aspectRatio: number;
                   id: string;
                   uri: string;
                   name: VisualType;
@@ -46098,7 +46357,14 @@ export type SearchResultMemoFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46148,7 +46414,14 @@ export type MemoParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46230,7 +46503,14 @@ export type SearchResultWhiteboardFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46280,7 +46560,14 @@ export type WhiteboardParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46363,7 +46650,14 @@ export type SearchResultCollaboraDocumentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46413,7 +46707,14 @@ export type CollaboraDocumentParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46707,6 +47008,7 @@ export type PendingInvitationsQuery = {
             banner?:
               | {
                   __typename?: 'Visual';
+                  aspectRatio: number;
                   id: string;
                   uri: string;
                   name: VisualType;
@@ -48858,6 +49160,7 @@ export type NewVirtualContributorMySpacesQuery = {
                       banner?:
                         | {
                             __typename?: 'Visual';
+                            aspectRatio: number;
                             id: string;
                             uri: string;
                             name: VisualType;
@@ -48951,6 +49254,7 @@ export type AllSpaceSubspacesQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -49019,6 +49323,7 @@ export type AllSpaceSubspacesQuery = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -49081,7 +49386,14 @@ export type SpaceProfileCommunityDetailsFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            aspectRatio: number;
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+          }
         | undefined;
     };
     membership: {
