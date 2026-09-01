@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserSecurityAuthenticationMethodsQuery } from '@/core/apollo/generated/apollo-hooks';
 import { AuthenticationType } from '@/core/apollo/generated/graphql-schema';
+import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import useNavigate from '@/core/routing/useNavigate';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
@@ -112,12 +113,21 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
   } = useUserSecurityAuthenticationMethodsQuery();
   const hasPasswordCredential = Boolean(authData?.me.user?.authentication?.methods.includes(AuthenticationType.Email));
 
+  // A lapsed identity-provider session gets its own state, ahead of the generic
+  // error one. The way out is the platform's sign-out route, not sign-in:
+  // re-entering sign-in alone leaves the lapsed session lapsed, because the
+  // login provider accepts the subject the broker still holds for this browser
+  // without ever re-authenticating against the identity provider. Signing out
+  // ends the broker session as well, so the next sign-in has to be genuine and
+  // mints the session this tab needs.
   const state: UserSecurityViewState =
     flowResult.kind === 'loading' || authMethodsLoading
       ? { kind: 'loading' }
-      : flowResult.kind === 'error'
-        ? { kind: 'error' }
-        : { kind: 'ready', hasPassword: hasPasswordCredential, hasWebauthn: flowResult.hasWebauthn };
+      : flowResult.kind === 'sessionExpired'
+        ? { kind: 'sessionExpired', reauthHref: AUTH_LOGOUT_PATH }
+        : flowResult.kind === 'error'
+          ? { kind: 'error' }
+          : { kind: 'ready', hasPassword: hasPasswordCredential, hasWebauthn: flowResult.hasWebauthn };
 
   const passwordForm =
     flowResult.kind === 'ready' && hasPasswordCredential ? <PasswordChangeForm flow={flowResult.flow} /> : null;
@@ -153,7 +163,10 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
   const authenticationMethods = authData?.me.user?.authentication?.methods;
   const connectedAccountsModel = adaptConnectedAccountsFlow(
     flowResult.kind === 'ready' ? flowResult.flow : undefined,
-    flowResult.kind === 'error' ? undefined : authenticationMethods
+    // A lapsed identity-provider session withholds the methods for the same
+    // fail-closed reason a load error does: without the settings flow there is
+    // nothing to reconcile them against.
+    flowResult.kind === 'error' || flowResult.kind === 'sessionExpired' ? undefined : authenticationMethods
   );
   const connectedAccountsStatus: 'loading' | 'unavailable' | 'ready' =
     flowResult.kind === 'loading' || authMethodsLoading
