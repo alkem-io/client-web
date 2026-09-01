@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) е премахнат от платформата"
+          "subject": "Потребителски профил беше премахнат от платформата"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",
@@ -999,8 +999,8 @@
     "aspectRatio": {
       "label": "Съотношение на екрана: {{ratio}}:1",
       "ariaLabel": "Съотношение на екрана: {{ratio}}",
-      "hintLeft": "Ляво: по-високо изрязване на изображението",
-      "hintRight": "Дясно: по-ниско изрязване на изображението",
+      "hintLeft": "Ляво: по-ниско изрязване на изображението",
+      "hintRight": "Дясно: по-високо изрязване на изображението",
       "name": "Форма на банера"
     }
   },

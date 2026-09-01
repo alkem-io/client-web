@@ -31,25 +31,37 @@ describe('bannerPlaceholderSize', () => {
 });
 
 describe('resolveBannerAspectRatio', () => {
-  it('returns what the server stored, unclamped', () => {
-    expect(resolveBannerAspectRatio(MIN_BANNER_ASPECT_RATIO)).toBe(MIN_BANNER_ASPECT_RATIO);
-    expect(resolveBannerAspectRatio(MAX_BANNER_ASPECT_RATIO)).toBe(MAX_BANNER_ASPECT_RATIO);
-    expect(resolveBannerAspectRatio(7.5)).toBe(7.5);
+  const withImage = (aspectRatio: number | null | undefined) => ({ uri: 'https://cdn/banner.jpg', aspectRatio });
+
+  it('returns what the server stored for an uploaded image, unclamped', () => {
+    expect(resolveBannerAspectRatio(withImage(MIN_BANNER_ASPECT_RATIO))).toBe(MIN_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(withImage(MAX_BANNER_ASPECT_RATIO))).toBe(MAX_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(withImage(7.5))).toBe(7.5);
   });
 
   // The local MIN/MAX are a loading-time fallback for the editor, not a render
   // rule: ops can widen the range in platform config, and a read path that
   // clamped would reserve a differently-shaped box than the image really is.
   it('does not clamp a value outside the local fallback bounds', () => {
-    expect(resolveBannerAspectRatio(4)).toBe(4);
-    expect(resolveBannerAspectRatio(12)).toBe(12);
+    expect(resolveBannerAspectRatio(withImage(4))).toBe(4);
+    expect(resolveBannerAspectRatio(withImage(12))).toBe(12);
+  });
+
+  // The server stamps its row-creation default (6) on every banner visual it
+  // creates, image or not — a stored ratio only means anything once an image
+  // was actually cropped to it, so the no-image gradient keeps the default shape.
+  it('ignores the stored ratio when the visual has no image', () => {
+    expect(resolveBannerAspectRatio({ uri: null, aspectRatio: 6 })).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio({ uri: '', aspectRatio: 7.5 })).toBe(DEFAULT_BANNER_ASPECT_RATIO);
   });
 
   it('falls back to the default for missing or unusable values', () => {
     expect(resolveBannerAspectRatio(undefined)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
     expect(resolveBannerAspectRatio(null)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
-    expect(resolveBannerAspectRatio(0)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
-    expect(resolveBannerAspectRatio(Number.NaN)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
-    expect(resolveBannerAspectRatio(Number.POSITIVE_INFINITY)).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(withImage(undefined))).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(withImage(null))).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(withImage(0))).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(withImage(Number.NaN))).toBe(DEFAULT_BANNER_ASPECT_RATIO);
+    expect(resolveBannerAspectRatio(withImage(Number.POSITIVE_INFINITY))).toBe(DEFAULT_BANNER_ASPECT_RATIO);
   });
 });

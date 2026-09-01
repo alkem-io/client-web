@@ -246,6 +246,10 @@
       "description": "Manage passkeys and WebAuthn credentials for your account.",
       "notEnabled": "WebAuthn / Passkey is not enabled on this account.",
       "errorDescription": "Couldn't load security settings — try refreshing the page.",
+      "sessionExpired": {
+        "description": "Your session with our sign-in provider has expired, so these settings can't be loaded. Refreshing won't help — sign out and sign in again to restore it. The rest of Alkemio keeps working in the meantime.",
+        "action": "Sign out and sign in again"
+      },
       "password": {
         "title": "Change password",
         "description": "Update the password used to sign in to your account.",
@@ -357,6 +361,9 @@
           "message": "We can't show your sign-in methods right now. Try again in a moment - no reload needed.",
           "retry": "Try again"
         },
+        "sessionExpired": {
+          "message": "Your session with our sign-in provider has expired, so your sign-in methods can't be loaded. Trying again won't help — use the sign-out action below to restore it."
+        },
         "messages": {
           "changesSaved": "Your changes have been saved!",
           "identityAlreadyLinked": "That identity is already connected to a different Alkemio account. Nothing has changed on either account.",
@@ -379,6 +386,43 @@
             "set": "Set",
             "notSet": "Not set",
             "manage": "Manage passkeys"
+          }
+        }
+      },
+      "deleteAccount": {
+        "title": "Delete account",
+        "description": "Permanently delete your Alkemio account.",
+        "cardBody": "Deleting your account is immediate and permanent. Your profile, settings, uploaded files, and sign-in credentials are removed, and this cannot be undone.",
+        "trigger": "Delete account",
+        "preflightError": "Couldn't check whether your account can be deleted - try again.",
+        "reauthFailed": "We couldn't refresh your session. Sign out and sign back in, then try again.",
+        "confirm": {
+          "title": "Delete your account?",
+          "description": "This permanently deletes your Alkemio account. This cannot be undone.",
+          "instructions": "Type your name - {{name}} - to confirm.",
+          "namePlaceholder": "Type your name to confirm",
+          "subscriptionNotice": "Your account has an active subscription linked to it. Deletion will proceed; billing is reconciled separately.",
+          "cancel": "Cancel",
+          "confirmLabel": "Delete my account",
+          "deleting": "Deleting…",
+          "genericError": "Couldn't delete your account - try again."
+        },
+        "blocked": {
+          "title": "You can't delete your account yet",
+          "description": "Your account still holds items that must be resolved first.",
+          "truncatedNotice": "Showing the first {{count}} of {{total}} items.",
+          "resolveLink": "Manage my account resources",
+          "supportLink": "Contact support",
+          "close": "Close",
+          "soleOwner": {
+            "notice": "You're the only owner of {{name}}. Appoint another owner before deleting your account, or contact support for help."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovation Pack",
+            "ACCOUNT_INNOVATION_HUB": "Innovation Hub",
+            "SOLE_ORGANIZATION_OWNER": "Organization (sole owner)"
           }
         }
       }

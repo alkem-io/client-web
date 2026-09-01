@@ -97,7 +97,7 @@ type SaveBarState =
 | `country` | `string` (2-char ISO code) | `profile.location.country` |
 | `city` | `string` | `profile.location.city` |
 | `avatar` | `AboutVisual` | `profile.avatar` (Visual) |
-| `pageBanner` | `AboutVisual` | `profile.banner` (Visual, 1536×256) |
+| `pageBanner` | `AboutVisual` | `profile.banner` (Visual, ≥1536 wide at a 6:1–10:1 ratio — 10:1 default → ≥1536×154; *was 1536×256*) |
 | `cardBanner` | `AboutVisual` | `profile.cardBanner` (Visual, 416×256) |
 | `tagsetId` | `string` | `profile.tagset[0].id` (required by `UpdateTagsetInput`) |
 | `tags` | `string[]` | `profile.tagset[0].tags` |
