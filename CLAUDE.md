@@ -157,10 +157,14 @@ When in doubt, check [caniuse.com](https://caniuse.com) before introducing a new
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
-2. Run `pnpm codegen` (requires backend running at `localhost:3000/graphql`)
+2. Run `pnpm codegen` (requires backend running at `localhost:3000/graphql` — the `CODEGEN_SCHEMA` value in the committed `.env`)
 3. Generated files go to `src/core/apollo/generated/`
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
+
+### Hard rule — no `schema.graphql` in the repo
+
+The client **never** commits a GraphQL schema snapshot. Codegen obtains the schema from a running server by default (`CODEGEN_SCHEMA=http://localhost:3000/graphql` in the committed `.env`). A local `./schema.graphql` may be used for offline work by overriding `CODEGEN_SCHEMA` in `.env.local`, but the file is gitignored and must **never** be added, committed, or pushed — nor may `codegen.yml` or `.env` be changed to point at a snapshot by default. The server is the single source of truth for the schema; a committed copy silently drifts.
 
 ### No `__typename` discrimination
 
@@ -264,7 +268,7 @@ Adding `fetchPolicy`, `nextFetchPolicy`, debug flags, or other workarounds witho
 ### GraphQL Code Generation
 
 - Always regenerate types after editing `.graphql` files with `pnpm codegen`
-- Codegen requires a running backend server
+- Codegen requires a running backend server (`CODEGEN_SCHEMA` in `.env`); a local `schema.graphql` snapshot is gitignored and must never be committed
 - Generated files are large; search for specific types instead of opening files wholesale
 - Commit all generated outputs
 
