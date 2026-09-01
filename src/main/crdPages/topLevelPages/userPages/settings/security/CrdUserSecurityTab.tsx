@@ -6,6 +6,7 @@ import { AUTH_LOGOUT_PATH } from '@/core/auth/authentication/constants/authentic
 import usePasskeyScript from '@/core/auth/authentication/hooks/usePasskeyScript';
 import useNavigate from '@/core/routing/useNavigate';
 import { CrdKratosFlow } from '@/crd/components/auth/CrdKratosFlow';
+import { DeleteAccountCard } from '@/crd/components/user/settings/DeleteAccountCard';
 import { McpApiKeyCreateDialog } from '@/crd/components/user/settings/McpApiKeyCreateDialog';
 import { McpApiKeyRevealPanel } from '@/crd/components/user/settings/McpApiKeyRevealPanel';
 import { McpApiKeysCard } from '@/crd/components/user/settings/McpApiKeysCard';
@@ -14,13 +15,14 @@ import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
 import { platformBaseAddress } from '@/main/constants/endpoints';
 import { flowDescriptorAdapter } from '@/main/crdPages/auth/flowDescriptorAdapter';
 import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
-import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
+import { buildSettingsTabUrl, buildUserAccountUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
 import { ConnectedAccountsSection, type ConnectedAccountsSectionStatus } from './ConnectedAccountsSection';
 import { adaptConnectedAccountsFlow } from './connectedAccountsFlowAdapter';
 import PasswordChangeForm from './PasswordChangeForm';
 import { passkeyOwnsFlowMessages } from './passkeyFlowMessages';
+import useDeleteAccount from './useDeleteAccount';
 import useMcpApiKeys from './useMcpApiKeys';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
 
@@ -43,7 +45,7 @@ import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
  */
 const CrdUserSecurityTab = () => {
   const navigate = useNavigate();
-  const { userId, profileUrl, loading: routeContextLoading } = useUserPageRouteContext();
+  const { userId, userModel, profileUrl, loading: routeContextLoading } = useUserPageRouteContext();
   const { isOwner, loading: predicateLoading } = useCanEditUserSettings({ profileUserId: userId });
   const loading = predicateLoading || routeContextLoading;
 
@@ -78,20 +80,36 @@ const CrdUserSecurityTab = () => {
         webauthnForm={null}
         mcpApiKeysCard={null}
         connectedAccountsSection={null}
+        deleteAccountCard={null}
       />
     );
   }
 
-  return <OwnerSecurityTabContent profileUrl={profileUrl} />;
+  return (
+    <OwnerSecurityTabContent
+      userId={userId}
+      displayName={userModel?.profile?.displayName ?? ''}
+      profileUrl={profileUrl}
+    />
+  );
 };
 
-const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
+const OwnerSecurityTabContent = ({
+  userId,
+  displayName,
+  profileUrl,
+}: {
+  userId: string | undefined;
+  displayName: string;
+  profileUrl: string;
+}) => {
   const { i18n } = useTranslation('crd-contributorSettings');
   // The Settings flow is created with `return_to` = this same Security tab
   // URL so an OIDC link's provider round trip and a re-auth resume both land
   // back on the Connected Accounts section instead of the platform apex.
   const flowResult = useUserSecuritySettingsFlow(buildSettingsTabUrl(profileUrl, 'security'));
   const mcpApiKeys = useMcpApiKeys();
+  const deleteAccount = useDeleteAccount(userId, buildSettingsTabUrl(profileUrl, 'security'));
   const dateLocale = resolveDateFnsLocale(i18n.language);
 
   // Load the Ory passkey script so the WebAuthn registration button can run
@@ -222,6 +240,19 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
     </>
   );
 
+  const deleteAccountCard = (
+    <DeleteAccountCard
+      displayName={displayName}
+      dialog={deleteAccount.dialog}
+      onOpen={deleteAccount.onOpen}
+      onTypedNameChange={deleteAccount.onTypedNameChange}
+      onConfirm={deleteAccount.onConfirm}
+      onCancel={deleteAccount.onCancel}
+      onDialogOpenChange={deleteAccount.onDialogOpenChange}
+      accountResourcesUrl={buildUserAccountUrl(profileUrl)}
+    />
+  );
+
   return (
     <UserSecurityTabView
       state={state}
@@ -229,6 +260,7 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
       webauthnForm={webauthnForm}
       mcpApiKeysCard={mcpApiKeysCard}
       connectedAccountsSection={connectedAccountsSection}
+      deleteAccountCard={deleteAccountCard}
     />
   );
 };

@@ -388,6 +388,43 @@
             "manage": "Manage passkeys"
           }
         }
+      },
+      "deleteAccount": {
+        "title": "Delete account",
+        "description": "Permanently delete your Alkemio account.",
+        "cardBody": "Deleting your account is immediate and permanent. Your profile, settings, uploaded files, and sign-in credentials are removed, and this cannot be undone.",
+        "trigger": "Delete account",
+        "preflightError": "Couldn't check whether your account can be deleted - try again.",
+        "reauthFailed": "We couldn't refresh your session. Sign out and sign back in, then try again.",
+        "confirm": {
+          "title": "Delete your account?",
+          "description": "This permanently deletes your Alkemio account. This cannot be undone.",
+          "instructions": "Type your name - {{name}} - to confirm.",
+          "namePlaceholder": "Type your name to confirm",
+          "subscriptionNotice": "Your account has an active subscription linked to it. Deletion will proceed; billing is reconciled separately.",
+          "cancel": "Cancel",
+          "confirmLabel": "Delete my account",
+          "deleting": "Deleting…",
+          "genericError": "Couldn't delete your account - try again."
+        },
+        "blocked": {
+          "title": "You can't delete your account yet",
+          "description": "Your account still holds items that must be resolved first.",
+          "truncatedNotice": "Showing the first {{count}} of {{total}} items.",
+          "resolveLink": "Manage my account resources",
+          "supportLink": "Contact support",
+          "close": "Close",
+          "soleOwner": {
+            "notice": "You're the only owner of {{name}}. Appoint another owner before deleting your account, or contact support for help."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovation Pack",
+            "ACCOUNT_INNOVATION_HUB": "Innovation Hub",
+            "SOLE_ORGANIZATION_OWNER": "Organization (sole owner)"
+          }
+        }
       }
     },
     "settings": {

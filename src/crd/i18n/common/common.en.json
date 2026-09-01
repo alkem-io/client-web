@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) has been removed from the platform"
+          "subject": "A user profile was removed from the platform"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",

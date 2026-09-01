@@ -35,6 +35,8 @@ type ConfirmationDialogConfirmProps = {
   onCancel?: () => void;
   variant?: 'default' | 'destructive';
   loading?: boolean;
+  /** Disables the confirm action independently of `loading` (e.g. a typed-name guard that hasn't matched yet). */
+  confirmDisabled?: boolean;
   /** Optional structured body rendered beneath the description (e.g. a content list). */
   children?: ReactNode;
   /** Show an X close control in the title bar — closes via the cancel path (no action performed). */
@@ -129,6 +131,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
     onCancel,
     variant = 'default',
     loading = false,
+    confirmDisabled = false,
     children,
     showCloseButton = false,
     overlayClassName,
@@ -166,7 +169,7 @@ export function ConfirmationDialog(props: ConfirmationDialogProps) {
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            disabled={loading}
+            disabled={loading || confirmDisabled}
             aria-busy={loading}
             className={cn(
               variant === 'destructive' && 'bg-destructive text-destructive-foreground hover:bg-destructive/90'

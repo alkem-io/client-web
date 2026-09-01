@@ -388,6 +388,43 @@
             "manage": "Passkeys beheren"
           }
         }
+      },
+      "deleteAccount": {
+        "title": "Account verwijderen",
+        "description": "Verwijder je Alkemio-account permanent.",
+        "cardBody": "Het verwijderen van je account is onmiddellijk en permanent. Je profiel, instellingen, geüploade bestanden en inloggegevens worden verwijderd, en dit kan niet ongedaan worden gemaakt.",
+        "trigger": "Account verwijderen",
+        "preflightError": "Kon niet controleren of je account verwijderd kan worden - probeer het opnieuw.",
+        "reauthFailed": "Je sessie kon niet worden vernieuwd. Log uit en weer in, en probeer het daarna opnieuw.",
+        "confirm": {
+          "title": "Account verwijderen?",
+          "description": "Dit verwijdert je Alkemio-account permanent. Dit kan niet ongedaan worden gemaakt.",
+          "instructions": "Typ je naam - {{name}} - om te bevestigen.",
+          "namePlaceholder": "Typ je naam om te bevestigen",
+          "subscriptionNotice": "Aan je account is een actief abonnement gekoppeld. Verwijdering gaat door; facturering wordt apart afgehandeld.",
+          "cancel": "Annuleren",
+          "confirmLabel": "Mijn account verwijderen",
+          "deleting": "Bezig met verwijderen…",
+          "genericError": "Je account kon niet worden verwijderd - probeer het opnieuw."
+        },
+        "blocked": {
+          "title": "Je kunt je account nog niet verwijderen",
+          "description": "Je account bevat nog items die eerst opgelost moeten worden.",
+          "truncatedNotice": "Toont de eerste {{count}} van {{total}} items.",
+          "resolveLink": "Mijn accountresources beheren",
+          "supportLink": "Contact opnemen met support",
+          "close": "Sluiten",
+          "soleOwner": {
+            "notice": "Je bent de enige eigenaar van {{name}}. Wijs een andere eigenaar aan voordat je je account verwijdert, of neem contact op met support voor hulp."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovatiepakket",
+            "ACCOUNT_INNOVATION_HUB": "Innovatiehub",
+            "SOLE_ORGANIZATION_OWNER": "Organisatie (enige eigenaar)"
+          }
+        }
       }
     },
     "settings": {
