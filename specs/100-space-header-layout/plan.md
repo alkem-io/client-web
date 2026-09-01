@@ -5,7 +5,7 @@
 
 ## Summary
 
-Reshape the Space and Subspace headers in the CRD layer so the banner becomes full-width and fluid (`aspect-[6/1]`), and the title, subtitle, and action buttons move into a single below-banner section that sits inside the existing inner content width (`lg:col-start-2 / lg:col-span-10`). The change is presentational only — no GraphQL fields, no domain logic, no MUI changes. Member-avatar stack, Subspace level badge, and Subspace layered avatar pair are removed; Subspace uses a single ~56px avatar inline with the title *(superseded 2026-08-21: that inline avatar was removed as well — the header shows the bare title, and identity images live in the breadcrumb trail)*.
+Reshape the Space and Subspace headers in the CRD layer so the banner becomes full-width and fluid (`aspect-[6/1]` *— since superseded by the per-space ratio stored on the BANNER visual, 6–10 with a 10:1 default; see spec A8*), and the title, subtitle, and action buttons move into a single below-banner section that sits inside the existing inner content width (`lg:col-start-2 / lg:col-span-10`). The change is presentational only — no GraphQL fields, no domain logic, no MUI changes. Member-avatar stack, Subspace level badge, and Subspace layered avatar pair are removed; Subspace uses a single ~56px avatar inline with the title *(superseded 2026-08-21: that inline avatar was removed as well — the header shows the bare title, and identity images live in the breadcrumb trail)*.
 
 Touchpoints: `src/crd/components/space/SpaceHeader.tsx`, `src/crd/components/space/SubspaceHeader.tsx`, and the two consumer integration layouts (`src/main/crdPages/space/layout/CrdSpacePageLayout.tsx`, `src/main/crdPages/subspace/layout/CrdSubspacePageLayout.tsx`) — the latter only to stop passing now-unused props.
 
@@ -24,7 +24,7 @@ Touchpoints: `src/crd/components/space/SpaceHeader.tsx`, `src/crd/components/spa
 - Tailwind-only styling, semantic typography tokens (CRD golden rule § 5 + § 8).
 - WCAG 2.1 AA contrast (now strictly easier — text moves off photographic backgrounds).
 - Inner content width (`lg:col-start-2 / lg:col-span-10`) must remain byte-identical (SC-005).
-- `aspect-ratio: 6 / 1` only (no `-64px` transparent-header underlap — that's deferred to the next adjacent spec).
+- Fluid banner height only — originally a fixed `aspect-ratio: 6 / 1`, since 2026-08 the per-space ratio from `Visual.aspectRatio` (6–10, 10:1 default; spec A8). No `-64px` transparent-header underlap — that's deferred to the next adjacent spec.
 
 **Scale/Scope**: Two presentational components, two consumer integration files, two translation namespaces (six languages each). Approximately 200 lines of code net reduction (deletions exceed additions because we strip member-avatar / badge / layered-avatar markup).
 
@@ -101,7 +101,7 @@ src/
 ├── crd/
 │   └── components/
 │       └── space/
-│           ├── SpaceHeader.tsx          # REWRITE: banner aspect-[6/1] full-width, title/buttons row below, member-avatar stack removed
+│           ├── SpaceHeader.tsx          # REWRITE: banner full-width at the per-space ratio (was aspect-[6/1]; see spec A8), title/buttons row below, member-avatar stack removed
 │           └── SubspaceHeader.tsx       # REWRITE: same pattern, layered avatar + level badge removed (interim single 56px inline avatar itself removed 2026-08-21)
 ├── main/
 │   └── crdPages/

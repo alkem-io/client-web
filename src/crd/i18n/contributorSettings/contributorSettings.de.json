@@ -246,6 +246,10 @@
       "description": "Verwalte Passkeys und WebAuthn-Anmeldedaten für dein Konto.",
       "notEnabled": "WebAuthn / Passkey ist für dieses Konto nicht aktiviert.",
       "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite.",
+      "sessionExpired": {
+        "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
+        "action": "Abmelden und erneut anmelden"
+      },
       "password": {
         "title": "Passwort ändern",
         "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
@@ -356,6 +360,9 @@
         "unavailable": {
           "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen. Versuche es gleich erneut - die Seite muss nicht neu geladen werden.",
           "retry": "Erneut versuchen"
+        },
+        "sessionExpired": {
+          "message": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können deine Anmeldemethoden nicht geladen werden. Ein erneuter Versuch hilft nicht — melde dich über die Aktion unten ab, um sie wiederherzustellen."
         },
         "messages": {
           "changesSaved": "Deine Änderungen wurden gespeichert!",

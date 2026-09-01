@@ -2453,6 +2453,7 @@ export const SubspaceVisualsFragmentDoc = gql`
   }
   banner: visual(type: BANNER) {
     ...VisualModel
+    aspectRatio
   }
 }
     ${VisualModelFragmentDoc}`;
@@ -12063,6 +12064,7 @@ export const UploadVisualDocument = gql`
     id
     uri
     alternativeText
+    aspectRatio
   }
 }
     `;

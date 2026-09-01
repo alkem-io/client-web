@@ -147,7 +147,7 @@ export function reshapeCropToAspect(image: HTMLImageElement, previous: PixelCrop
  */
 function initialAspectRatio({ aspectRatio, aspectRatioBounds }: ImageCropConfig): number | undefined {
   if (!aspectRatioBounds) return aspectRatio;
-  return Math.min(Math.max(aspectRatio ?? aspectRatioBounds.min, aspectRatioBounds.min), aspectRatioBounds.max);
+  return Math.min(Math.max(aspectRatio ?? aspectRatioBounds.max, aspectRatioBounds.min), aspectRatioBounds.max);
 }
 
 /**
@@ -231,6 +231,31 @@ export function ImageCropDialog({
   const blockSave = tooSmall && Boolean(config.blockBelowMinSize);
 
   const currentAspectRatio = selectedAspectRatio ?? config.aspectRatio;
+
+  // A local const (not `config.aspectRatioBounds` inline) so the narrowing from
+  // the JSX guard below carries into the slider's onChange closure.
+  const aspectRatioBounds = config.aspectRatioBounds;
+  // What the slider shows: state once the user has moved it, the bounds' max
+  // (the 10:1 design default) until then.
+  const sliderRatio = selectedAspectRatio ?? aspectRatioBounds?.max;
+  /**
+   * The slider runs `max → min` left-to-right (10:1 slim strip on the left,
+   * 6:1 on the right), but the DOM range input stays ascending and LTR so the
+   * browser keeps its native left-anchored fill and thumb: the rendered value
+   * is mirrored around the bounds' midpoint and mirrored back on change.
+   * Rounded to the 0.1 step so the arithmetic never drifts the value off the
+   * input's step grid (or past the DB's numeric(3,1)).
+   *
+   * Deliberate trade-off: the element's numeric value — and so its implicit
+   * `aria-valuenow` — is the mirror image of the ratio; `aria-valuetext`,
+   * which assistive tech announces in its place, carries the real one. The
+   * conforming alternative (`dir="rtl"` with value == ratio) anchors the
+   * native fill on the wrong (right) edge, and moving it back means fully
+   * restyling the control (see the PR #10222 review threads); the native look
+   * won.
+   */
+  const mirrorAspectRatio = (value: number) =>
+    aspectRatioBounds ? Math.round((aspectRatioBounds.min + aspectRatioBounds.max - value) * 10) / 10 : value;
 
   // `onComplete` fires only on pointer/keyboard interaction with the crop box
   // (plus the very first undefined → crop transition — see `componentDidUpdate`
@@ -334,12 +359,10 @@ export function ImageCropDialog({
             </p>
           )}
 
-          {config.aspectRatioBounds && (
+          {aspectRatioBounds && sliderRatio !== undefined && (
             <div className="flex flex-col gap-2">
               <label htmlFor={sliderId} className="text-body-emphasis">
-                {t('imageCrop.aspectRatio.label', {
-                  ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
-                })}
+                {t('imageCrop.aspectRatio.label', { ratio: sliderRatio.toFixed(1) })}
               </label>
               <input
                 id={sliderId}
@@ -350,12 +373,14 @@ export function ImageCropDialog({
                 // the value is announced separately via `aria-valuetext`.
                 aria-label={t('imageCrop.aspectRatio.name')}
                 type="range"
-                min={config.aspectRatioBounds.min}
-                max={config.aspectRatioBounds.max}
+                min={aspectRatioBounds.min}
+                max={aspectRatioBounds.max}
                 step={0.1}
-                value={selectedAspectRatio ?? config.aspectRatioBounds.min}
+                // Mirrored: thumb at the left edge = `max` (10), right edge =
+                // `min` (6) — see `mirrorAspectRatio` above.
+                value={mirrorAspectRatio(sliderRatio)}
                 onChange={e => {
-                  const ratio = Number(e.target.value);
+                  const ratio = mirrorAspectRatio(Number(e.target.value));
                   setSelectedAspectRatio(ratio);
                   config.onAspectRatioChange?.(ratio);
                   // Reshape what the user already framed rather than starting
@@ -366,9 +391,7 @@ export function ImageCropDialog({
                   const previous = crop && convertToPixelCrop(crop, image.width, image.height);
                   applyCrop(previous ? reshapeCropToAspect(image, previous, ratio) : centeredAspectCrop(image, ratio));
                 }}
-                aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', {
-                  ratio: (selectedAspectRatio ?? config.aspectRatioBounds.min).toFixed(1),
-                })}
+                aria-valuetext={t('imageCrop.aspectRatio.ariaLabel', { ratio: sliderRatio.toFixed(1) })}
                 className="w-full accent-primary"
               />
               <div className="flex justify-between">
