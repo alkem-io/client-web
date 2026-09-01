@@ -96,12 +96,14 @@ export function UserSecurityTabView({
   }
 
   if (state.kind === 'sessionExpired') {
-    // Same shape as the generic error branch below — Connected Accounts still
-    // renders its own fails-closed state — but the card names the actual cause
-    // and offers the only action that resolves it. Sending someone to refresh
+    // Same shape as the generic error branch below, and the card names the actual
+    // cause and offers the only action that resolves it. Sending someone to refresh
     // here would strand them: the platform session that keeps every other page
     // working renews itself without ever consulting the identity provider, so
-    // no number of reloads will produce the session this tab needs.
+    // no number of reloads will produce the session this tab needs. Connected
+    // Accounts still renders above, in its own `sessionExpired` state — it withholds
+    // the retry its `unavailable` state offers, for the same reason, and its reason
+    // copy points at the action below rather than repeating it.
     return (
       <div className="space-y-6">
         <SettingsCard

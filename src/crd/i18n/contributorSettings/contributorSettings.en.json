@@ -361,6 +361,9 @@
           "message": "We can't show your sign-in methods right now. Try again in a moment - no reload needed.",
           "retry": "Try again"
         },
+        "sessionExpired": {
+          "message": "Your session with our sign-in provider has expired, so your sign-in methods can't be loaded. Trying again won't help — use the sign-out action below to restore it."
+        },
         "messages": {
           "changesSaved": "Your changes have been saved!",
           "identityAlreadyLinked": "That identity is already connected to a different Alkemio account. Nothing has changed on either account.",

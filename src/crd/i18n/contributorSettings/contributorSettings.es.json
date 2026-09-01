@@ -361,6 +361,9 @@
           "message": "No podemos mostrar tus métodos de inicio de sesión en este momento. Inténtalo de nuevo en un momento - no hace falta recargar la página.",
           "retry": "Intentar de nuevo"
         },
+        "sessionExpired": {
+          "message": "Tu sesión con nuestro proveedor de inicio de sesión ha caducado, por lo que no se pueden cargar tus métodos de inicio de sesión. Volver a intentarlo no sirve: usa la acción de cierre de sesión de abajo para restaurarla."
+        },
         "messages": {
           "changesSaved": "¡Tus cambios se han guardado!",
           "identityAlreadyLinked": "Esa identidad ya está conectada a otra cuenta de Alkemio. No se ha modificado ninguna de las dos cuentas.",

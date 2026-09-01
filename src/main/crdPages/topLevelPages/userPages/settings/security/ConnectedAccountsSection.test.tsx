@@ -263,3 +263,68 @@ describe('ConnectedAccountsSection — privileged-session re-auth interruption',
     expect(status).toHaveTextContent('user.security.connectedAccounts.messages.unlinked:GitHub');
   });
 });
+
+describe('ConnectedAccountsSection — lapsed identity-provider session', () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
+  it('takes its own reason copy instead of the adapter generic one, and offers no retry', () => {
+    // The adapter only ever reports the generic "try again in a moment", which is the same advice
+    // the tab-level card was fixed for giving: the settings flow answers 401 until the person signs
+    // out and back in, so a retry lands right back here.
+    render(
+      <ConnectedAccountsSection
+        status="sessionExpired"
+        model={baseModel({
+          status: 'unavailable',
+          unavailableReasonKey: 'user.security.connectedAccounts.unavailable.message',
+        })}
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText('user.security.connectedAccounts.sessionExpired.message')).toBeInTheDocument();
+    expect(screen.queryByText('user.security.connectedAccounts.unavailable.message')).not.toBeInTheDocument();
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
+  });
+
+  it('keeps the adapter reason and the retry action for a plain unavailable', () => {
+    const onRetry = vi.fn();
+    render(
+      <ConnectedAccountsSection
+        status="unavailable"
+        model={baseModel({
+          status: 'unavailable',
+          unavailableReasonKey: 'user.security.connectedAccounts.unavailable.message',
+        })}
+        flowWasResumed={false}
+        onRetry={onRetry}
+      />
+    );
+
+    expect(screen.getByRole('alert')).toHaveTextContent('user.security.connectedAccounts.unavailable.message');
+    expect(
+      screen.getByRole('button', { name: 'user.security.connectedAccounts.unavailable.retry' })
+    ).toBeInTheDocument();
+  });
+
+  it('consumes the marker when the section settles session-expired, and announces nothing', () => {
+    // Same reasoning as the `unavailable` case: this is a settled outcome, so a marker left in place
+    // would let a 15-minute-old attempt announce itself on some later, unrelated visit.
+    writeConnectedAccountsMarker('link', 'github');
+
+    render(
+      <ConnectedAccountsSection
+        status="sessionExpired"
+        model={baseModel({ status: 'unavailable' })}
+        flowWasResumed={false}
+        onRetry={vi.fn()}
+      />
+    );
+
+    expect(readConnectedAccountsMarker()).toBeNull();
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+  });
+});

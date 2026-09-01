@@ -361,6 +361,9 @@
           "message": "We kunnen je inlogmethoden nu niet tonen. Probeer het zo opnieuw - de pagina herladen is niet nodig.",
           "retry": "Opnieuw proberen"
         },
+        "sessionExpired": {
+          "message": "Je sessie bij onze aanmeldprovider is verlopen, waardoor je inlogmethoden niet geladen kunnen worden. Opnieuw proberen helpt niet — gebruik de afmeldactie hieronder om de sessie te herstellen."
+        },
         "messages": {
           "changesSaved": "Je wijzigingen zijn opgeslagen!",
           "identityAlreadyLinked": "Die identiteit is al gekoppeld aan een ander Alkemio-account. Er is niets veranderd op beide accounts.",

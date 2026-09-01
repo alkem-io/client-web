@@ -117,6 +117,33 @@ describe('ConnectedAccountsView', () => {
     expect(onRetry).toHaveBeenCalledTimes(1);
   });
 
+  it('renders the session-expired state as information with no retry action — a retry re-runs the request that answers 401', () => {
+    const onRetry = vi.fn();
+    render(
+      <ConnectedAccountsView
+        status="sessionExpired"
+        unavailableReason="your sign-in provider session has expired"
+        onRetry={onRetry}
+        providers={[notConnectedRow, connectedRow, lockedRow]}
+        credentials={credentials}
+        messages={[]}
+      />
+    );
+
+    expect(screen.getByText('your sign-in provider session has expired')).toBeInTheDocument();
+    // Not an alert: nothing is broken, a session simply ended — same reading the tab-level card takes.
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    // The rows stay withheld exactly as they are while unavailable...
+    expect(screen.queryByText('Cleverbase')).not.toBeInTheDocument();
+    // ...but no retry is offered, because retrying provably cannot clear this state — the way out is
+    // the sign-out action on the card below, which the reason names.
+    expect(screen.queryAllByRole('button')).toHaveLength(0);
+    expect(
+      screen.queryByRole('button', { name: 'user.security.connectedAccounts.unavailable.retry' })
+    ).not.toBeInTheDocument();
+    expect(onRetry).not.toHaveBeenCalled();
+  });
+
   it('renders a not-connected provider row with a link-submitting form carrying the CSRF token and correct submit name/value', () => {
     render(
       <ConnectedAccountsView

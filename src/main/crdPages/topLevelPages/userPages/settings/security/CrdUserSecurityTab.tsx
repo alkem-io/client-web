@@ -17,7 +17,7 @@ import { invokePasskeyTrigger } from '@/main/crdPages/auth/passkeyTrigger';
 import { buildSettingsTabUrl } from '@/main/routing/urlBuilders';
 import useCanEditUserSettings from '../../useCanEditUserSettings';
 import useUserPageRouteContext from '../../useUserPageRouteContext';
-import { ConnectedAccountsSection } from './ConnectedAccountsSection';
+import { ConnectedAccountsSection, type ConnectedAccountsSectionStatus } from './ConnectedAccountsSection';
 import { adaptConnectedAccountsFlow } from './connectedAccountsFlowAdapter';
 import PasswordChangeForm from './PasswordChangeForm';
 import { passkeyOwnsFlowMessages } from './passkeyFlowMessages';
@@ -168,12 +168,17 @@ const OwnerSecurityTabContent = ({ profileUrl }: { profileUrl: string }) => {
     // nothing to reconcile them against.
     flowResult.kind === 'error' || flowResult.kind === 'sessionExpired' ? undefined : authenticationMethods
   );
-  const connectedAccountsStatus: 'loading' | 'unavailable' | 'ready' =
+  // A lapsed identity-provider session is kept distinct from a generic unavailable here too, for the
+  // same reason the tab-level state is: the section's `unavailable` state offers a retry, and a retry
+  // re-runs the very request that answers 401 until the person signs out and back in.
+  const connectedAccountsStatus: ConnectedAccountsSectionStatus =
     flowResult.kind === 'loading' || authMethodsLoading
       ? 'loading'
-      : connectedAccountsModel.status === 'unavailable'
-        ? 'unavailable'
-        : 'ready';
+      : flowResult.kind === 'sessionExpired'
+        ? 'sessionExpired'
+        : connectedAccountsModel.status === 'unavailable'
+          ? 'unavailable'
+          : 'ready';
   const connectedAccountsSection = (
     <ConnectedAccountsSection
       status={connectedAccountsStatus}

@@ -23,7 +23,7 @@ const MESSAGE_CODE_IDENTITY_ALREADY_LINKED = 4000007;
 
 const NS = 'crd-contributorSettings';
 
-export type ConnectedAccountsSectionStatus = 'loading' | 'unavailable' | 'ready';
+export type ConnectedAccountsSectionStatus = 'loading' | 'unavailable' | 'sessionExpired' | 'ready';
 
 export type ConnectedAccountsSectionProps = {
   status: ConnectedAccountsSectionStatus;
@@ -94,10 +94,21 @@ export function ConnectedAccountsSection({ status, model, flowWasResumed, onRetr
     writeConnectedAccountsMarker(row.action.kind, row.providerId);
   };
 
+  // A lapsed identity-provider session takes its own copy rather than the adapter's generic
+  // unavailable reason. The adapter only ever reports "we can't show these right now — try again in
+  // a moment", which is the same advice the tab-level card was fixed for giving: retrying re-runs a
+  // request that answers 401 until the person signs out and back in.
+  const unavailableReason =
+    status === 'sessionExpired'
+      ? t('user.security.connectedAccounts.sessionExpired.message')
+      : model.unavailableReasonKey
+        ? t(model.unavailableReasonKey)
+        : undefined;
+
   return (
     <ConnectedAccountsView
       status={status}
-      unavailableReason={model.unavailableReasonKey ? t(model.unavailableReasonKey) : undefined}
+      unavailableReason={unavailableReason}
       onRetry={onRetry}
       providers={providers}
       credentials={credentials}
@@ -135,11 +146,11 @@ function useConnectedAccountsMarkerMessage({
 
   useEffect(() => {
     // Consume on the first *settled* render, not the first `ready` one. A redirect that
-    // lands while the flow or the auth-methods query is failing settles as `unavailable`,
-    // and leaving the marker in place there lets a 15-minute-old attempt announce itself
-    // on some later, unrelated visit to the section. Read it once the outcome is knowable
-    // either way, and only turn it into a message when the section can actually show the
-    // state that message claims.
+    // lands while the flow or the auth-methods query is failing settles as `unavailable`
+    // (or `sessionExpired`), and leaving the marker in place there lets a 15-minute-old
+    // attempt announce itself on some later, unrelated visit to the section. Read it once
+    // the outcome is knowable either way, and only turn it into a message when the section
+    // can actually show the state that message claims.
     if (status === 'loading') return;
     if (processedRef.current) return;
     processedRef.current = true;

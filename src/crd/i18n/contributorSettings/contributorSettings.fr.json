@@ -361,6 +361,9 @@
           "message": "Nous ne pouvons pas afficher vos méthodes de connexion pour le moment. Réessayez dans un instant - pas besoin de recharger la page.",
           "retry": "Réessayer"
         },
+        "sessionExpired": {
+          "message": "Votre session auprès de notre fournisseur de connexion a expiré, vos méthodes de connexion ne peuvent donc pas être chargées. Réessayer n'y changera rien : utilisez l'action de déconnexion ci-dessous pour la rétablir."
+        },
         "messages": {
           "changesSaved": "Vos modifications ont été enregistrées !",
           "identityAlreadyLinked": "Cette identité est déjà connectée à un autre compte Alkemio. Aucun des deux comptes n'a été modifié.",

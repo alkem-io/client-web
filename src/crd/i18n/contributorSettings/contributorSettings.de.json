@@ -361,6 +361,9 @@
           "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen. Versuche es gleich erneut - die Seite muss nicht neu geladen werden.",
           "retry": "Erneut versuchen"
         },
+        "sessionExpired": {
+          "message": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können deine Anmeldemethoden nicht geladen werden. Ein erneuter Versuch hilft nicht — melde dich über die Aktion unten ab, um sie wiederherzustellen."
+        },
         "messages": {
           "changesSaved": "Deine Änderungen wurden gespeichert!",
           "identityAlreadyLinked": "Diese Identität ist bereits mit einem anderen Alkemio-Konto verbunden. An keinem der beiden Konten wurde etwas geändert.",
