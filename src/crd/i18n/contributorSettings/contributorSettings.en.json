@@ -246,6 +246,10 @@
       "description": "Manage passkeys and WebAuthn credentials for your account.",
       "notEnabled": "WebAuthn / Passkey is not enabled on this account.",
       "errorDescription": "Couldn't load security settings — try refreshing the page.",
+      "sessionExpired": {
+        "description": "Your session with our sign-in provider has expired, so these settings can't be loaded. Refreshing won't help — sign out and sign in again to restore it. The rest of Alkemio keeps working in the meantime.",
+        "action": "Sign out and sign in again"
+      },
       "password": {
         "title": "Change password",
         "description": "Update the password used to sign in to your account.",
@@ -356,6 +360,9 @@
         "unavailable": {
           "message": "We can't show your sign-in methods right now. Try again in a moment - no reload needed.",
           "retry": "Try again"
+        },
+        "sessionExpired": {
+          "message": "Your session with our sign-in provider has expired, so your sign-in methods can't be loaded. Trying again won't help — use the sign-out action below to restore it."
         },
         "messages": {
           "changesSaved": "Your changes have been saved!",

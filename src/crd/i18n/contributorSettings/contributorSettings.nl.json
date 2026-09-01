@@ -246,6 +246,10 @@
       "description": "Beheer passkeys en WebAuthn-aanmeldgegevens voor je account.",
       "notEnabled": "WebAuthn / Passkey is niet ingeschakeld op dit account.",
       "errorDescription": "Beveiligingsinstellingen konden niet worden geladen — probeer de pagina te vernieuwen.",
+      "sessionExpired": {
+        "description": "Je sessie bij onze aanmeldprovider is verlopen, waardoor deze instellingen niet geladen kunnen worden. Vernieuwen helpt niet — meld je af en opnieuw aan om de sessie te herstellen. De rest van Alkemio blijft ondertussen gewoon werken.",
+        "action": "Afmelden en opnieuw aanmelden"
+      },
       "password": {
         "title": "Wachtwoord wijzigen",
         "description": "Wijzig het wachtwoord waarmee je inlogt op je account.",
@@ -356,6 +360,9 @@
         "unavailable": {
           "message": "We kunnen je inlogmethoden nu niet tonen. Probeer het zo opnieuw - de pagina herladen is niet nodig.",
           "retry": "Opnieuw proberen"
+        },
+        "sessionExpired": {
+          "message": "Je sessie bij onze aanmeldprovider is verlopen, waardoor je inlogmethoden niet geladen kunnen worden. Opnieuw proberen helpt niet — gebruik de afmeldactie hieronder om de sessie te herstellen."
         },
         "messages": {
           "changesSaved": "Je wijzigingen zijn opgeslagen!",

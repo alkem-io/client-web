@@ -521,10 +521,42 @@ describe('mapFormToCalloutCreationInput — cross-cutting fields', () => {
     expect(update.input.contributionDefaults).toEqual({
       defaultDisplayName: undefined,
       postDescription: undefined,
+      draftWhiteboardID: undefined,
       sourceWhiteboardID: undefined,
       sourceCalloutID: undefined,
       clearWhiteboardContent: undefined,
     });
+  });
+
+  it('contributionDefaults on update send a live draft id instead of persisted source or clear fields', () => {
+    const update = mapFormToCalloutUpdateInput(
+      baseValues({
+        responseType: 'whiteboard',
+        contributionDefaults: {
+          defaultDisplayName: 'Default drawing',
+          postDescription: '',
+          whiteboardContentAvailable: true,
+          sourceWhiteboardId: 'source-whiteboard',
+          sourceCalloutId: 'source-callout',
+          clearWhiteboardContent: true,
+          whiteboardDraft: {
+            whiteboardID: 'draft-whiteboard',
+            sourceKey: 'source-callout:source-callout',
+          },
+        },
+      }),
+      updateOptions
+    );
+
+    expect(update.input.contributionDefaults).toEqual({
+      defaultDisplayName: 'Default drawing',
+      postDescription: undefined,
+      draftWhiteboardID: 'draft-whiteboard',
+      sourceWhiteboardID: undefined,
+      sourceCalloutID: undefined,
+      clearWhiteboardContent: undefined,
+    });
+    expect(JSON.stringify(update.input)).not.toContain('content');
   });
 
   it('prePopulateLinkRows: only sent when responseType=link, blanks dropped', () => {
@@ -742,6 +774,7 @@ describe('mapFormToCalloutUpdateInput', () => {
     expect(post.input.contributionDefaults).toEqual({
       defaultDisplayName: 'Name',
       postDescription: 'desc',
+      draftWhiteboardID: undefined,
       sourceWhiteboardID: undefined,
       sourceCalloutID: undefined,
       clearWhiteboardContent: undefined,
@@ -763,6 +796,7 @@ describe('mapFormToCalloutUpdateInput', () => {
     expect(wb.input.contributionDefaults).toEqual({
       defaultDisplayName: 'N',
       postDescription: undefined,
+      draftWhiteboardID: undefined,
       sourceWhiteboardID: 'source-wb',
       sourceCalloutID: 'source-callout',
       clearWhiteboardContent: undefined,
@@ -782,6 +816,7 @@ describe('mapFormToCalloutUpdateInput', () => {
     expect(memo.input.contributionDefaults).toEqual({
       defaultDisplayName: undefined,
       postDescription: 'p',
+      draftWhiteboardID: undefined,
       sourceWhiteboardID: undefined,
       sourceCalloutID: undefined,
       clearWhiteboardContent: undefined,

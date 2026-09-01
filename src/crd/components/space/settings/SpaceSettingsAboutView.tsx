@@ -10,7 +10,7 @@ import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard'
 import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
 import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
 import { TagsInput } from '@/crd/forms/tags-input';
-import { DEFAULT_BANNER_ASPECT_RATIO } from '@/crd/lib/bannerAspectRatio';
+import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
@@ -112,8 +112,9 @@ export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
   const showAvatar = level !== 'L0';
 
   // The shape is chosen in the crop dialog, not here — this only sizes the
-  // preview box to whatever the visual currently is.
-  const pageBannerRatio = pageBanner.aspectRatio ?? DEFAULT_BANNER_ASPECT_RATIO;
+  // preview box to whatever the visual currently is (default shape until an
+  // image has actually been cropped).
+  const pageBannerRatio = resolveBannerAspectRatio(pageBanner);
 
   return (
     <div className={cn('flex flex-col gap-0', className)}>

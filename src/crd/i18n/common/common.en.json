@@ -999,8 +999,8 @@
     "aspectRatio": {
       "label": "Aspect Ratio: {{ratio}}:1",
       "ariaLabel": "Aspect ratio: {{ratio}}",
-      "hintLeft": "Left: taller image crop",
-      "hintRight": "Right: shorter image crop",
+      "hintLeft": "Left: shorter image crop",
+      "hintRight": "Right: taller image crop",
       "name": "Banner shape"
     }
   },

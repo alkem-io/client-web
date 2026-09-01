@@ -1,12 +1,12 @@
 import { Scene, type WhiteboardSnapshot } from '@excalidraw-yjs/excalidraw/headless';
-import {
-  type CloseVerdict,
-  UnifiedCollabProvider,
-} from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+import { UnifiedCollabProvider } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 
-const LOAD_TIMEOUT_MS = 30_000;
-
-/** Load a whiteboard through the collaboration transport without exposing its Yjs update through GraphQL. */
+/**
+ * Load one source document through its own ordinary provider, then dispose it.
+ * There is deliberately no wall-clock deadline: progressing templates stay patient.
+ * The owner's AbortSignal settles chooser cancel, target close, scene loss, editor
+ * disposal, and unmount; provider readiness or a terminal end settles the rest.
+ */
 export const loadWhiteboardSceneFromCollaboration = (
   whiteboardId: string,
   options: { signal?: AbortSignal } = {}
@@ -26,50 +26,31 @@ export const loadWhiteboardSceneFromCollaboration = (
 
   return new Promise((resolve, reject) => {
     let settled = false;
-    let timeout: ReturnType<typeof setTimeout> | undefined;
-
-    const finish = (result: { scene: WhiteboardSnapshot } | { error: Error }) => {
+    let unsubscribe = () => {};
+    const finish = (result: WhiteboardSnapshot | Error) => {
       if (settled) return;
       settled = true;
-      if (timeout) clearTimeout(timeout);
-      options.signal?.removeEventListener('abort', handleAbort);
-      provider.off('synced', handleSynced);
-      provider.off('close', handleClose);
+      options.signal?.removeEventListener('abort', abort);
+      unsubscribe();
       provider.destroy();
       scene.destroy();
-      if ('scene' in result) resolve(result.scene);
-      else reject(result.error);
+      if (result instanceof Error) reject(result);
+      else resolve(result);
     };
-
-    const handleSynced = (synced: boolean) => {
-      if (!synced) return;
-      finish({
-        scene: {
+    const abort = () => finish(new Error('Whiteboard template load cancelled'));
+    unsubscribe = provider.subscribe(state => {
+      if (state.kind === 'active') {
+        finish({
           elements: [...scene.getElementsIncludingDeleted()],
           assets: scene.getAssetLocators(),
           appState: scene.getPersistedAppState(),
-        },
-      });
-    };
-
-    const handleClose = (verdict: CloseVerdict) => {
-      if (verdict.disposition === 'terminal' || verdict.disposition === 'normal') {
-        finish({ error: new Error(`Unable to load whiteboard template: ${verdict.reason || verdict.code}`) });
+        });
+      } else if (state.kind === 'ended') {
+        finish(new Error(`Unable to load whiteboard template: ${state.reason}`));
       }
-    };
-
-    const handleAbort = () => {
-      finish({ error: new Error('Whiteboard template load cancelled') });
-    };
-
-    timeout = setTimeout(() => finish({ error: new Error('Timed out loading whiteboard template') }), LOAD_TIMEOUT_MS);
-    provider.on('synced', handleSynced);
-    provider.on('close', handleClose);
-    options.signal?.addEventListener('abort', handleAbort, { once: true });
-    if (options.signal?.aborted) {
-      handleAbort();
-      return;
-    }
-    provider.connect();
+    });
+    options.signal?.addEventListener('abort', abort, { once: true });
+    if (options.signal?.aborted) abort();
+    else provider.connect();
   });
 };

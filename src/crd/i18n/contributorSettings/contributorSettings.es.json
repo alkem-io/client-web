@@ -246,6 +246,10 @@
       "description": "Gestiona las claves de acceso y las credenciales WebAuthn de tu cuenta.",
       "notEnabled": "WebAuthn / Passkey no está habilitado en esta cuenta.",
       "errorDescription": "No se pudieron cargar los ajustes de seguridad — intenta recargar la página.",
+      "sessionExpired": {
+        "description": "Tu sesión con nuestro proveedor de inicio de sesión ha caducado, por lo que no se puede cargar esta configuración. Actualizar la página no sirve: cierra sesión y vuelve a iniciarla para restaurarla. Mientras tanto, el resto de Alkemio sigue funcionando.",
+        "action": "Cerrar sesión e iniciar sesión de nuevo"
+      },
       "password": {
         "title": "Cambiar contraseña",
         "description": "Actualiza la contraseña que usas para iniciar sesión en tu cuenta.",
@@ -356,6 +360,9 @@
         "unavailable": {
           "message": "No podemos mostrar tus métodos de inicio de sesión en este momento. Inténtalo de nuevo en un momento - no hace falta recargar la página.",
           "retry": "Intentar de nuevo"
+        },
+        "sessionExpired": {
+          "message": "Tu sesión con nuestro proveedor de inicio de sesión ha caducado, por lo que no se pueden cargar tus métodos de inicio de sesión. Volver a intentarlo no sirve: usa la acción de cierre de sesión de abajo para restaurarla."
         },
         "messages": {
           "changesSaved": "¡Tus cambios se han guardado!",

@@ -999,8 +999,8 @@
     "aspectRatio": {
       "label": "Beeldverhouding: {{ratio}}:1",
       "ariaLabel": "Beeldverhouding: {{ratio}}",
-      "hintLeft": "Links: hoger beeldsnijden",
-      "hintRight": "Rechts: lager beeldsnijden",
+      "hintLeft": "Links: lager beeldsnijden",
+      "hintRight": "Rechts: hoger beeldsnijden",
       "name": "Bannervorm"
     }
   },

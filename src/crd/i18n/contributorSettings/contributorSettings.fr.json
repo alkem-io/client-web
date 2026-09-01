@@ -246,6 +246,10 @@
       "description": "Gérez les passkeys et les identifiants WebAuthn de votre compte.",
       "notEnabled": "WebAuthn / Passkey n'est pas activé pour ce compte.",
       "errorDescription": "Impossible de charger les paramètres de sécurité — essayez de recharger la page.",
+      "sessionExpired": {
+        "description": "Votre session auprès de notre fournisseur de connexion a expiré, ces paramètres ne peuvent donc pas être chargés. Actualiser la page n'y changera rien : déconnectez-vous puis reconnectez-vous pour la rétablir. Le reste d'Alkemio continue de fonctionner entre-temps.",
+        "action": "Se déconnecter et se reconnecter"
+      },
       "password": {
         "title": "Changer le mot de passe",
         "description": "Mettez à jour le mot de passe utilisé pour vous connecter à votre compte.",
@@ -356,6 +360,9 @@
         "unavailable": {
           "message": "Nous ne pouvons pas afficher vos méthodes de connexion pour le moment. Réessayez dans un instant - pas besoin de recharger la page.",
           "retry": "Réessayer"
+        },
+        "sessionExpired": {
+          "message": "Votre session auprès de notre fournisseur de connexion a expiré, vos méthodes de connexion ne peuvent donc pas être chargées. Réessayer n'y changera rien : utilisez l'action de déconnexion ci-dessous pour la rétablir."
         },
         "messages": {
           "changesSaved": "Vos modifications ont été enregistrées !",

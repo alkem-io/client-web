@@ -686,6 +686,11 @@
       "connected": "Connecté",
       "connecting": "Connexion…",
       "disconnected": "Déconnecté",
+      "saved": "Enregistré",
+      "saving": "Enregistrement…",
+      "finalizing": "Finalisation des modifications…",
+      "offline": "Hors ligne — synchronisation automatique",
+      "saveFailed": "Impossible d'enregistrer les modifications",
       "membersOnline_one": "1 membre en ligne",
       "membersOnline_other": "{{count}} membres en ligne",
       "connectedUsersLabel": "Utilisateurs connectés",
@@ -705,6 +710,14 @@
     "errors": {
       "loading": "Chargement du mémo…",
       "loadFailed": "Impossible de charger le mémo"
+    },
+    "unsavedClose": {
+      "title": "Modifications du mémo non enregistrées",
+      "description": "Ces modifications ne peuvent pas être enregistrées maintenant. Gardez le mémo ouvert, exportez-les ou abandonnez-les explicitement.",
+      "wait": "Garder ouvert et attendre",
+      "discard": "Abandonner et fermer",
+      "export": "Exporter d’abord",
+      "exportFailed": "Le mémo n’a pas pu être exporté. Il reste ouvert."
     },
     "deleteConfirm": {
       "title": "Supprimer le mémo",
