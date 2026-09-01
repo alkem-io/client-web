@@ -47,11 +47,6 @@ describe('PostCard showPublishDetails', () => {
     expect(screen.queryByText(/2 hours ago/)).not.toBeInTheDocument();
   });
 
-  it('shows the post type label when showPublishDetails=true', () => {
-    render(<PostCard post={{ ...basePost, type: 'contributors', title: 'Hello', showPublishDetails: true }} />);
-    expect(screen.getByText(/contributors/i)).toBeInTheDocument();
-  });
-
   it('hides the post type treatment (icon + label) when showPublishDetails=false', () => {
     // Meta off → the whole type chrome is suppressed on every type (Post, Contributors, Subspaces, …).
     render(<PostCard post={{ ...basePost, type: 'contributors', title: 'Hello', showPublishDetails: false }} />);

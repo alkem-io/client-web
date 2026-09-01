@@ -9,8 +9,8 @@ import { ShareButton } from '@/crd/components/common/ShareButton';
 import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
 import { Button } from '@/crd/primitives/button';
 import { Separator } from '@/crd/primitives/separator';
+import type { CollaborationState } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
 import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/WhiteboardsManagement/useWhiteboardViewState';
-import type { CollabState } from '@/domain/common/whiteboard/excalidraw/collab/useCollab';
 import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
 import { CrdWhiteboardGuestAccessControls } from '@/main/crdPages/whiteboard/CrdWhiteboardGuestAccessControls';
 import { WhiteboardAssistantButton } from '@/main/crdPages/whiteboard/WhiteboardAssistantButton';
@@ -28,6 +28,7 @@ export interface CrdWhiteboardViewProps {
   readOnlyDisplayName?: boolean;
   loadingWhiteboards: boolean;
   preventWhiteboardDeletion?: boolean;
+  requireDurableClose?: boolean;
   backToWhiteboards: () => void;
   onWhiteboardDeleted?: () => void;
 }
@@ -43,6 +44,7 @@ const CrdWhiteboardView = ({
   displayName,
   readOnlyDisplayName,
   preventWhiteboardDeletion,
+  requireDurableClose,
   onWhiteboardDeleted,
 }: CrdWhiteboardViewProps) => {
   // aria-label-only use; disable suspense so this hook never suspends above the
@@ -102,7 +104,8 @@ const CrdWhiteboardView = ({
           readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
           fullscreen: isFullscreen,
           previewSettingsDialogOpen,
-          headerActions: (collabState: CollabState) => (
+          requireDurableClose,
+          headerActions: (collabState: CollaborationState) => (
             <>
               <ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl}>
                 <CrdWhiteboardGuestAccessControls whiteboard={whiteboard} guestAccess={guestAccess} />
@@ -122,7 +125,7 @@ const CrdWhiteboardView = ({
 
               <CrdWhiteboardSaveStatus isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
 
-              {hasUpdatePrivileges && collabState.mode === 'write' && (
+              {hasUpdatePrivileges && collabState.kind === 'active' && collabState.access === 'write' && (
                 <Button
                   variant="ghost"
                   size="icon"

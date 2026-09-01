@@ -25,6 +25,7 @@ export function TemplateFormDialog({
   const { t } = useTranslation('crd-templates');
 
   const titleKey = intent === 'create' ? 'form.createTitle' : 'form.editTitle';
+  const editIsPristine = intent === 'edit' && !isDirty;
 
   const { handleOpenChange, requestClose, guardElement } = useDialogCloseGuard({
     isDirty: Boolean(isDirty),
@@ -35,7 +36,10 @@ export function TemplateFormDialog({
   return (
     <>
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="w-full sm:max-w-4xl max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden">
+        <DialogContent
+          aria-describedby={undefined}
+          className="w-full sm:max-w-4xl max-h-[90vh] p-0 gap-0 flex flex-col overflow-hidden"
+        >
           <DialogHeader className="px-6 pt-6 pb-4 pr-12 border-b">
             <DialogTitle>{t(`${titleKey}.${type}`)}</DialogTitle>
           </DialogHeader>
@@ -90,7 +94,7 @@ export function TemplateFormDialog({
 
           <DialogFooter className="px-6 py-4 border-t">
             <Button variant="outline" onClick={requestClose} disabled={submitting}>
-              {t('form.cancel')}
+              {t(editIsPristine ? 'form.done' : 'form.cancel')}
             </Button>
             <Button
               variant="default"

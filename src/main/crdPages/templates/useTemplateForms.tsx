@@ -916,6 +916,14 @@ export function useTemplateForms({
         // whiteboard's `WHITEBOARD_PREVIEW` Visual; otherwise the server keeps the previous
         // image even though the content was updated.
         await uploadCalloutWhiteboardPreview(calloutForm.values, result.data?.updateCallout?.framing?.whiteboard);
+        if (calloutForm.values.framingChip === 'image' && editMeta?.mediaGalleryId) {
+          await uploadMediaGalleryVisuals({
+            mediaGalleryId: editMeta.mediaGalleryId,
+            visuals: calloutForm.values.mediaGalleryVisuals,
+            existingVisualIds: editMeta.originalMediaGalleryVisualIds,
+            originalSortOrders: editMeta.originalMediaGallerySortOrders,
+          });
+        }
         return;
       }
     }

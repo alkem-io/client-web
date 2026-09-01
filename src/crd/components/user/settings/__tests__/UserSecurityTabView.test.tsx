@@ -40,6 +40,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -53,6 +54,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -92,6 +94,7 @@ describe('UserSecurityTabView', () => {
           webauthnForm={null}
           mcpApiKeysCard={null}
           connectedAccountsSection={connectedAccountsSection}
+          deleteAccountCard={null}
         />
       );
 
@@ -106,6 +109,82 @@ describe('UserSecurityTabView', () => {
 
       await user.click(retryButton);
       expect(onRetry).toHaveBeenCalledTimes(1);
+    }
+  );
+
+  it.each<[string, UserSecurityViewState]>([
+    ['loading', { kind: 'loading' }],
+    ['error', { kind: 'error' }],
+    ['ready', { kind: 'ready', hasPassword: true, hasWebauthn: false }],
+  ])(
+    "renders the Delete-account slot in the '%s' state (spec-cw-3, FR-001) — the app-store-mandated " +
+      'deletion entry point is self-contained and must never disappear because an unrelated Kratos ' +
+      'settings-flow load is slow or failed',
+    (_label, state) => {
+      render(
+        <UserSecurityTabView
+          state={state}
+          passwordForm={null}
+          webauthnForm={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={null}
+          deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
+        />
+      );
+
+      expect(screen.getByTestId('delete-account-card-probe')).toBeInTheDocument();
+    }
+  );
+
+  // The one deliberate exception to the rule above. `sessionExpired` is not a
+  // failure to load the Security tab — it means the identity-provider session
+  // is gone, so a deletion attempted from here could not satisfy the server's
+  // session-age gate anyway. Offering the entry point would be a dead end, so
+  // it is withheld on purpose rather than by oversight.
+  it('withholds the Delete-account slot in the lapsed-session state, where deletion could not succeed', () => {
+    render(
+      <UserSecurityTabView
+        state={{ kind: 'sessionExpired', reauthHref: '/logout' }}
+        passwordForm={null}
+        webauthnForm={null}
+        mcpApiKeysCard={null}
+        connectedAccountsSection={null}
+        deleteAccountCard={<div data-testid="delete-account-card-probe">delete card</div>}
+      />
+    );
+
+    expect(screen.queryByTestId('delete-account-card-probe')).not.toBeInTheDocument();
+  });
+
+  it(
+    'renders the lapsed-identity-provider-session state with a way out rather than the generic ' +
+      "'try refreshing' card — refreshing provably cannot mint a new identity-provider session, " +
+      'so telling someone to do it is a dead end',
+    () => {
+      const sessionExpiredState: UserSecurityViewState = { kind: 'sessionExpired', reauthHref: '/logout' };
+
+      render(
+        <UserSecurityTabView
+          state={sessionExpiredState}
+          passwordForm={null}
+          webauthnForm={null}
+          mcpApiKeysCard={null}
+          connectedAccountsSection={null}
+          deleteAccountCard={null}
+        />
+      );
+
+      expect(screen.getByText('user.security.sessionExpired.description')).toBeInTheDocument();
+      // The generic failure copy — the one that tells people to refresh — must NOT appear.
+      expect(screen.queryByText('user.security.errorDescription')).not.toBeInTheDocument();
+
+      // The action points at the platform's sign-out route, not straight back at
+      // sign-in: re-entering sign-in alone leaves the lapsed session lapsed,
+      // because the login provider accepts the subject the broker still holds
+      // for this browser without ever re-authenticating. Signing out ends the
+      // broker session too, forcing the next sign-in to be a real one.
+      const action = screen.getByRole('link', { name: 'user.security.sessionExpired.action' });
+      expect(action).toHaveAttribute('href', '/logout');
     }
   );
 });

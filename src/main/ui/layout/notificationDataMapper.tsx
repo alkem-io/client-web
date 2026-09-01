@@ -63,8 +63,6 @@ function buildTranslationValues(
       payload.organizationMessage,
     discussionName: payload.discussion?.displayName,
     role: payload.role,
-    userEmail: payload.userEmail,
-    userDisplayName: payload.userDisplayName,
     // memberName: used by SPACE_ADMIN_COMMUNITY_NEW_MEMBER — the new member is the actor
     memberName: payload.actor?.profile?.displayName,
     // parentName: used by USER_COMMENT_REPLY — the parent message/thread name

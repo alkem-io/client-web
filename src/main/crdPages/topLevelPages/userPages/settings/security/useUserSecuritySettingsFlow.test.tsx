@@ -3,6 +3,7 @@ import { act, renderHook } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
 import { MemoryRouter, useSearchParams } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { KratosSessionExpiredError } from '@/core/auth/authentication/hooks/useKratosFlow';
 import useUserSecuritySettingsFlow from './useUserSecuritySettingsFlow';
 
 const mockUseKratosFlow = vi.fn();
@@ -95,5 +96,36 @@ describe('useUserSecuritySettingsFlow', () => {
     });
 
     expect(mockRefetch).toHaveBeenCalledTimes(1);
+  });
+
+  // A lapsed identity-provider session must not collapse into the generic error
+  // state: that state's copy tells the person to refresh, and refreshing cannot
+  // mint a new identity-provider session — the platform session that keeps
+  // every other page working renews itself without ever consulting it. The tab
+  // needs the distinction to offer the one action that actually recovers.
+  it('reports a lapsed identity-provider session as its own kind, not a generic error', () => {
+    mockUseKratosFlow.mockReturnValue({
+      flow: undefined,
+      error: new KratosSessionExpiredError('Kratos Settings flow: identity provider session expired (401)'),
+      loading: false,
+      refetch: mockRefetch,
+    });
+
+    const { result } = renderHook(useHarness, { wrapper: wrapperWithUrl('/security') });
+
+    expect(result.current.result.kind).toBe('sessionExpired');
+  });
+
+  it('still reports any other flow failure as a generic error', () => {
+    mockUseKratosFlow.mockReturnValue({
+      flow: undefined,
+      error: new Error('Request failed with status code 500'),
+      loading: false,
+      refetch: mockRefetch,
+    });
+
+    const { result } = renderHook(useHarness, { wrapper: wrapperWithUrl('/security') });
+
+    expect(result.current.result.kind).toBe('error');
   });
 });

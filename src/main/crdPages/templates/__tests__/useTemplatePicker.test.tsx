@@ -143,7 +143,11 @@ const platformMock = (
   },
 });
 
-const whiteboardContentMock = (templateId: string, previewUri?: string): MockedResponse<TemplateContentQuery> => ({
+const whiteboardContentMock = (
+  templateId: string,
+  previewUri?: string,
+  delay?: number
+): MockedResponse<TemplateContentQuery> => ({
   request: {
     query: TemplateContentDocument,
     variables: {
@@ -190,6 +194,23 @@ const whiteboardContentMock = (templateId: string, previewUri?: string): MockedR
       },
     } as unknown as TemplateContentQuery,
   },
+  delay,
+});
+
+const whiteboardContentErrorMock = (templateId: string): MockedResponse<TemplateContentQuery> => ({
+  request: {
+    query: TemplateContentDocument,
+    variables: {
+      templateId,
+      includeCallout: false,
+      includeWhiteboard: true,
+      includePost: false,
+      includeSpace: false,
+      includeCommunityGuidelines: false,
+      includeClassification: false,
+    },
+  },
+  error: new Error('template content unavailable'),
 });
 
 // ---------------------------------------------------------------------------
@@ -360,6 +381,46 @@ describe('useTemplatePicker — selection lifecycle', () => {
     });
 
     expect(result.current.selectedTemplateId).toBeNull();
+    expect(result.current.selectedTemplateContent).toBeNull();
+  });
+
+  it('keeps the selected id and content paired when an older content request resolves last', async () => {
+    const wrapper = makeWrapper([
+      whiteboardContentMock('template-a', undefined, 50),
+      whiteboardContentMock('template-b', undefined, 1),
+    ]);
+    const { result } = renderHook(() => useTemplatePicker({ allowedTypes: ['whiteboard'] }), { wrapper });
+
+    act(() => {
+      result.current.pickerProps.onSelect('template-a');
+      result.current.pickerProps.onSelect('template-b');
+    });
+
+    await waitFor(() => {
+      expect(result.current.selectedTemplateId).toBe('template-b');
+      expect(result.current.selectedTemplateContent).toMatchObject({
+        type: 'whiteboard',
+        sourceWhiteboardId: 'template-b-whiteboard',
+      });
+    });
+    await act(() => new Promise(resolve => setTimeout(resolve, 60)));
+
+    expect(result.current.selectedTemplateId).toBe('template-b');
+    expect(result.current.selectedTemplateContent).toMatchObject({
+      type: 'whiteboard',
+      sourceWhiteboardId: 'template-b-whiteboard',
+    });
+  });
+
+  it('clears a transient selection when its content request fails', async () => {
+    const wrapper = makeWrapper([whiteboardContentErrorMock('template-a')]);
+    const { result } = renderHook(() => useTemplatePicker({ allowedTypes: ['whiteboard'] }), { wrapper });
+
+    act(() => result.current.pickerProps.onSelect('template-a'));
+    expect(result.current.selectedTemplateId).toBe('template-a');
+    expect(result.current.selectedTemplateContent).toBeNull();
+
+    await waitFor(() => expect(result.current.selectedTemplateId).toBeNull());
     expect(result.current.selectedTemplateContent).toBeNull();
   });
 });
