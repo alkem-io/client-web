@@ -17,7 +17,8 @@ This is a presentational layout change. **No domain entities, no GraphQL types, 
 |------|------|-------|
 | `title` | `string` | Renders as `<h1 className="text-hero text-foreground truncate">` in the title row. Now sits below the banner, not overlaid. |
 | `tagline` | `string \| undefined` | Renders below the title as `<p className="text-body text-muted-foreground truncate">`. Hidden when undefined. |
-| `bannerUrl` | `string \| undefined` | Renders as a `background-image` on the full-width `aspect-[6/1]` banner div. Falls back to `color` gradient. |
+| `bannerUrl` | `string \| undefined` | Renders as a full-width `<img>` whose `width`/`height` attributes come from `bannerPlaceholderSize(bannerAspectRatio)` *(superseded 2026-08-31 — was a `background-image` on a fixed `aspect-[6/1]` div)*. Falls back to `color` gradient at the same ratio. |
+| `bannerAspectRatio` | `number \| undefined` | *(added 2026-08)* Width / height ratio from the BANNER visual's `Visual.aspectRatio` (server-bounded 6–10). Defaults to `DEFAULT_BANNER_ASPECT_RATIO` (10). See spec A8. |
 | `color` | `string \| undefined` | Deterministic accent colour (from `pickColorFromId`, applied by the consumer). Gradient fallback when `bannerUrl` is missing. |
 | `isHomeSpace` | `boolean \| undefined` | Renders a `<Home>` icon next to the title (theme-tokenised, no longer white-on-banner). |
 | `actions` | `SpaceHeaderActions` | Subset of `{ showVideoCall, showShare, showSettings, showActivity, onActivityClick, onVideoCallClick, onShareClick, videoCallUrl, settingsHref, onSettingsClick }`. Rendered as a right-aligned `<Button variant="ghost" size="icon">` group inside the title row. |
@@ -27,8 +28,8 @@ This is a presentational layout change. **No domain entities, no GraphQL types, 
 
 ```tsx
 <div className={cn('flex flex-col bg-background', className)}>
-  {/* Banner: full-width, fluid aspect-[6/1] */}
-  <div className="relative w-full aspect-[6/1] overflow-hidden" role="img" aria-label={t('a11y.spaceBanner', { name: title })}>
+  {/* Banner: full-width, fluid at the per-space ratio (was a fixed aspect-[6/1] — superseded 2026-08-31, see spec A8) */}
+  <div className="relative w-full overflow-hidden" style={{ aspectRatio: bannerAspectRatio }} role="img" aria-label={t('a11y.spaceBanner', { name: title })}>
     {/* bg image or gradient fallback — UNCHANGED logic */}
   </div>
 
@@ -83,8 +84,8 @@ This is a presentational layout change. **No domain entities, no GraphQL types, 
 
 ```tsx
 <div className={cn('flex flex-col bg-background', className)}>
-  {/* Banner: full-width, fluid aspect-[6/1] */}
-  <div className="relative w-full aspect-[6/1] overflow-hidden" role="img" aria-label={t('a11y.subspaceBanner', { name: title })}>
+  {/* Banner: full-width, fluid at the L0 banner's ratio (was a fixed aspect-[6/1] — superseded 2026-08-31, see spec A8) */}
+  <div className="relative w-full overflow-hidden" style={{ aspectRatio: bannerAspectRatio }} role="img" aria-label={t('a11y.subspaceBanner', { name: title })}>
     {/* bg image (parentBannerUrl) or deterministic accent gradient — UNCHANGED logic */}
   </div>
 
