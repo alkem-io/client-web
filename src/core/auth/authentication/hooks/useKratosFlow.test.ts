@@ -284,6 +284,42 @@ describe('useKratosFlow', () => {
 
       Object.defineProperty(window, 'location', { value: originalLocation, writable: true });
     });
+
+    it('leaves every other flow type on its previous generic-error behaviour', async () => {
+      const originalLocation = window.location;
+      const replaceMock = vi.fn();
+      Object.defineProperty(window, 'location', { value: { replace: replaceMock }, writable: true });
+
+      // The settings flow is the only one the identity provider answers with a
+      // 401, and the reading this hook puts on that status ("sign out and back
+      // in") is specific to it. A 401 reaching any other flow — a gateway in
+      // front of the identity provider, say — must not acquire a redirect or a
+      // session-expired prompt it never had.
+      mockCreateBrowserRegistrationFlow.mockRejectedValue({
+        response: {
+          status: 401,
+          data: {
+            error: {
+              id: 'session_inactive',
+              details: { redirect_browser_to: 'https://identity.example.test/login?flow=re-auth' },
+            },
+          },
+        },
+        message: 'Request failed with status code 401',
+      });
+
+      const { result } = renderHook(() => useKratosFlow(FlowTypeName.Registration, undefined));
+
+      await waitFor(() => {
+        expect(result.current.error).toBeDefined();
+      });
+
+      expect(isKratosSessionExpiredError(result.current.error)).toBe(false);
+      expect(result.current.error?.message).toBe('Request failed with status code 401');
+      expect(replaceMock).not.toHaveBeenCalled();
+
+      Object.defineProperty(window, 'location', { value: originalLocation, writable: true });
+    });
   });
 
   // A failure with no HTTP response at all — CORS rejection, DNS/network

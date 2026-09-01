@@ -119,11 +119,22 @@ const useKratosFlow = <Name extends FlowTypeName>(
         // `redirect_browser_to`. Follow the redirect so the user re-authenticates;
         // Kratos will then return to the Settings flow.
         window.location.replace(redirectTarget);
-      } else if (response.status === 401) {
+      } else if (response.status === 401 && flowTypeName === FlowTypeName.Settings) {
         // The identity provider's session has lapsed (`session_inactive`)
         // while the platform's BFF session is still alive and renewing itself.
         // Recoverable by re-authenticating, never by reloading — see
         // `KratosSessionExpiredError`.
+        //
+        // Scoped to the Settings flow, unlike the 410 and 403 branches above.
+        // Those two describe conditions any flow can be in (the flow expired;
+        // this flow needs a fresher session). A 401 is different: the identity
+        // provider's own endpoints only answer 401 for the settings flow, and
+        // the reading placed on it here — "your identity-provider session
+        // outlived the platform one, so sign out and back in" — is the
+        // Settings-only divergence described above. Applying that reading to a
+        // Login, Registration, Recovery or Verification 401 would attach a
+        // navigation or a re-authentication prompt to a condition never
+        // observed there; those flows keep the generic error they had.
         if (redirectTarget) {
           // Kratos named where to go (a login flow that returns here once
           // completed) — the same hand-off the 403 re-auth branch takes.
