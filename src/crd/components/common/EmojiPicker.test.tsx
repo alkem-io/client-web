@@ -79,16 +79,19 @@ describe('EmojiPicker scroll containment', () => {
   it('detaches its listeners when the picker unmounts', () => {
     const seen = spyOnDocument('wheel');
     const { unmount } = renderPicker();
+    // The listener lives on the container, not on the list, so the container is
+    // what has to survive the unmount: re-attaching the list alone would bubble
+    // straight past the listener host and pass whether or not cleanup ran.
+    const container = screen.getByTestId('emoji-picker-scroll-container');
     const list = screen.getByTestId('epr-body');
     unmount();
 
+    // Detached nodes do not bubble to the document, so re-attach the container
+    // with the list still inside it to prove the containment listener itself is
+    // gone rather than the tree.
+    document.body.appendChild(container);
     list.dispatchEvent(new Event('wheel', { bubbles: true, cancelable: true }));
-
-    // Detached nodes do not bubble to the document, so re-attach the list to
-    // prove the containment listener itself is gone rather than the tree.
-    document.body.appendChild(list);
-    list.dispatchEvent(new Event('wheel', { bubbles: true, cancelable: true }));
-    list.remove();
+    container.remove();
 
     expect(seen).toHaveBeenCalledTimes(1);
   });
