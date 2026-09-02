@@ -3,8 +3,10 @@ import { Trans, useTranslation } from 'react-i18next';
 import { cn } from '@/crd/lib/utils';
 
 export type SearchMatchSummaryProps = {
-  /** Rendered result-card count — an exact number or an "N+" placeholder while more pages remain. */
-  matchCount: string;
+  /** Number of result cards rendered so far. */
+  count: number;
+  /** True while more pages remain — the count is then read as "N+". */
+  hasMore: boolean;
   /** The applied (searched) text, empty when no text filter is active. */
   text: string;
   /** Selected tags, in the order they were toggled on. */
@@ -15,18 +17,28 @@ export type SearchMatchSummaryProps = {
 
 /**
  * Gray summary strip under the sidebar search field's tag chips — states how
- * many result cards match the active text and/or tag filters, and offers a
+ * many result cards relate to the active text and/or tags, and offers a
  * single control to clear both at once. Purely presentational: the count and
- * terms are supplied by the page that owns the search state; the three
- * sentences are resolved through translation-layer component interpolation
- * so a tag or search term can never be interpreted as markup.
+ * terms are supplied by the page that owns the search state.
+ *
+ * The user-typed text and the tag names are rendered by the `<text>` /
+ * `<tags>` translation components as their own prop — never as interpolation
+ * values. `<Trans>` interpolates its text nodes a second time after `t()` has
+ * run, so a value such as `{{count}}` typed into the field would be
+ * substituted instead of shown literally; a prop rendered by a component is
+ * inert text.
  */
-export function SearchMatchSummary({ matchCount, text, tags, onClear, className }: SearchMatchSummaryProps) {
+/** A user-provided term, rendered verbatim by React (see above). */
+const Term = ({ value }: { value: string }) => <strong className="font-semibold text-foreground">{value}</strong>;
+
+export function SearchMatchSummary({ count, hasMore, text, tags, onClear, className }: SearchMatchSummaryProps) {
   const { t } = useTranslation(['crd-space', 'crd-common']);
 
   const hasTags = tags.length > 0;
   const hasText = text.length > 0;
-  const i18nKey = hasTags && hasText ? 'matchBoth' : hasTags ? 'matchTags' : 'matchText';
+  const sentence = hasTags && hasText ? 'matchBoth' : hasTags ? 'matchTags' : 'matchText';
+  // "N+ items" is always plural; the exact count picks its own plural form.
+  const i18nKey = hasMore ? (`knowledge.search.${sentence}More` as const) : (`knowledge.search.${sentence}` as const);
   const quotedTags = tags.map(tag => `"${tag}"`).join(' + ');
   const quotedText = `"${text}"`;
 
@@ -37,16 +49,19 @@ export function SearchMatchSummary({ matchCount, text, tags, onClear, className 
         className
       )}
     >
-      <span>
+      <output aria-live="polite" aria-atomic="true">
         <Trans
-          i18nKey={`knowledge.search.${i18nKey}`}
+          i18nKey={i18nKey}
           ns="crd-space"
-          values={{ matches: matchCount, tags: quotedTags, text: quotedText }}
-          components={{ b: <strong className="font-semibold text-foreground" /> }}
-          shouldUnescape={true}
-          tOptions={{ interpolation: { escapeValue: true } }}
+          count={count}
+          values={{ tagLabel: t('crd-space:knowledge.search.tagLabel', { count: tags.length }) }}
+          components={{
+            b: <strong className="font-semibold text-foreground" />,
+            text: <Term value={quotedText} />,
+            tags: <Term value={quotedTags} />,
+          }}
         />
-      </span>
+      </output>
       <button
         type="button"
         aria-label={t('crd-common:filters.clear')}

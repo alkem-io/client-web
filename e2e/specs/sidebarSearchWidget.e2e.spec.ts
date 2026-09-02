@@ -8,10 +8,14 @@ import type { Page } from '@playwright/test';
  * (workspace spec 055-sidebar-search-widget, US1-AS1..AS14).
  *
  * Reproduces, as a durable live-stack walk, the acceptance scenarios /forge
- * verified manually (see specs/055-sidebar-search-widget/.forge/evidence/US1/,
- * run 3 — the regression walk after the AS13 `<Trans>` literal-text fix,
- * client-web commit 6be0a6503, and the server folded-callout-pagination fix,
- * server commit 1304b8c6b).
+ * verified manually — screenshots in the agents-hq workspace under
+ * `specs/055-sidebar-search-widget/forge/evidence-run1/US1/` (the regression
+ * walk after the AS13 `<Trans>` literal-text fix, shipped in client-web
+ * PR #10253). The server folded-callout-pagination fix that walk also
+ * exercised was pulled out of the feature and is NOT on `develop` (see the
+ * workspace's `forge/search-fold-pagination-followup/ISSUE-DRAFT.md`): the
+ * widget dedupes callout ids client-side instead, and a short page may still
+ * carry a continuation cursor.
  *
  * Fixture (see specs/055-sidebar-search-widget/quickstart.md):
  *   E2E_SPACE_URL              — a top-level Space whose tab-1 (Home) sidebar
@@ -97,9 +101,9 @@ async function expandChipsIfCollapsed(page: Page) {
   }
 }
 
-/** The gray summary label's flattened text, or null when not rendered (FR-006/D-04). */
+/** The gray summary label's sentence — the strip's live region — or null when not rendered (FR-006/D-04). */
 async function readLabel(page: Page): Promise<string | null> {
-  const label = sidebarNav(page).getByText(/items match/i).first();
+  const label = sidebarNav(page).getByRole('status').filter({ hasText: /related to/i }).first();
   if (!(await label.isVisible({ timeout: 2_000 }).catch(() => false))) return null;
   return (await label.textContent())?.trim() ?? null;
 }
@@ -131,7 +135,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await expect(page.getByText(new RegExp(`Quarterly ${REPORT_TERM}`, 'i'))).toHaveCount(0);
 
     const label = await readLabel(page);
-    expect(label).toMatch(/^\d+ items match search for/);
+    expect(label).toMatch(/^\d+ items? related to "/);
     expect(label).toContain(`"${SEARCH_TEXT}"`);
   });
 
@@ -141,7 +145,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await page.waitForTimeout(1_500);
 
     let label = await readLabel(page);
-    expect(label).toMatch(/^\d+ items match tagged/);
+    expect(label).toMatch(/^\d+ items? related to tag "/);
     expect(label).toContain(`"${TAG_1}"`);
     await expect(chip(page, TAG_1)).toHaveAttribute('aria-pressed', 'true');
 
@@ -149,6 +153,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await page.waitForTimeout(1_500);
 
     label = await readLabel(page);
+    expect(label).toMatch(/^\d+ items? related to tags "/);
     expect(label).toContain(`"${TAG_1}" + "${TAG_2}"`);
   });
 
@@ -161,10 +166,9 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await typeAndSettle(page, SEARCH_TEXT);
 
     const label = await readLabel(page);
-    expect(label).toMatch(/^\d+ items match tagged/);
+    expect(label).toMatch(/^\d+ items? related to "/);
+    expect(label).toContain(`"${SEARCH_TEXT}" and tags`);
     expect(label).toContain(`"${TAG_1}" + "${TAG_2}"`);
-    expect(label).toContain(`and search for`);
-    expect(label).toContain(`"${SEARCH_TEXT}"`);
   });
 
   test('US1-AS4 — the X clears text and every selected tag in one click', async ({ authedPage: page }) => {
@@ -183,7 +187,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await expect(chip(page, TAG_1)).toHaveAttribute('aria-pressed', 'false');
   });
 
-  test('US1-AS5 — a keystroke burst inside the debounce window issues exactly one search request', async ({
+  test('US1-AS5 — a keystroke burst inside the debounce window settles into a single search, not one per key', async ({
     authedPage: page,
   }) => {
     const searchRequests: string[] = [];
@@ -202,9 +206,20 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     }
     await page.waitForTimeout(1_500);
 
-    expect(searchRequests.length).toBe(1);
     const label = await readLabel(page);
     expect(label).toContain('"clima"');
+    // Five keystrokes, one debounced term → one page-1 request. An empty page
+    // has no cursor, so a term with no matches issues exactly one. A SHORT
+    // first page still carries a cursor (the server emits one for every
+    // non-empty folded page) and the client eagerly confirms it with at most
+    // ONE more request (a full first page waits for the sentinel instead), so
+    // a term with matches issues one or two. Never one request per keystroke.
+    if (label?.startsWith('0 items')) {
+      expect(searchRequests.length).toBe(1);
+    } else {
+      expect(searchRequests.length).toBeGreaterThanOrEqual(1);
+      expect(searchRequests.length).toBeLessThanOrEqual(2);
+    }
   });
 
   test('US1-AS6 — a long multi-word query renders results or the empty state, never the error state', async ({
@@ -223,7 +238,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await page.waitForTimeout(1_000);
 
     const midLabel = await readLabel(page);
-    expect(midLabel).toMatch(/^\d+\+ items match/);
+    expect(midLabel).toMatch(/^\d+\+ items related to/);
 
     for (let i = 0; i < 8; i++) {
       await page.mouse.wheel(0, 3_000);
@@ -232,7 +247,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await page.waitForTimeout(1_000);
 
     const finalLabel = await readLabel(page);
-    expect(finalLabel).toContain(`${REPORT_COUNT} items match`);
+    expect(finalLabel).toMatch(new RegExp(`^${REPORT_COUNT} items related to`));
   });
 
   test('US1-AS8 — no matches renders the empty state and a "0 items" label', async ({ authedPage: page }) => {
@@ -241,7 +256,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
 
     await expect(page.getByText('No matches')).toBeVisible();
     const label = await readLabel(page);
-    expect(label).toContain('0 items match search for');
+    expect(label).toMatch(/^0 items related to "/);
     expect(label).toContain(`"${NO_MATCH_TERM}"`);
   });
 
@@ -258,14 +273,14 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
     await typeAndSettle(page, OTHER_SPACE_UNIQUE_TERM);
     await page.waitForTimeout(1_000);
     const otherSpaceLabel = await readLabel(page);
-    expect(otherSpaceLabel, 'the fixture term must match in the other Space').toMatch(/^[1-9]\d*\+? items match/);
+    expect(otherSpaceLabel, 'the fixture term must match in the other Space').toMatch(/^[1-9]\d*\+? items? related to/);
 
     // Now the Space under test: the same term must match nothing.
     await gotoTab(page, TAB_HOME);
     await typeAndSettle(page, OTHER_SPACE_UNIQUE_TERM);
     await page.waitForTimeout(1_000);
     const label = await readLabel(page);
-    expect(label).toContain('0 items match search for');
+    expect(label).toMatch(/^0 items related to "/);
   });
 
   test('US1-AS10 — search state resets on tab switch and never leaks to the next tab', async ({
@@ -303,7 +318,7 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
 
     await page.getByRole('button', { name: 'Menu', exact: true }).click();
     await expect(drawerSearchField).toHaveValue(SEARCH_TEXT);
-    await expect(drawer.getByText(/items match/i).first()).toBeVisible();
+    await expect(drawer.getByRole('status').filter({ hasText: /related to/i }).first()).toBeVisible();
 
     await context.close();
   });
