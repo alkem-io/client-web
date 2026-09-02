@@ -359,13 +359,15 @@
         "CHALLENGE_CENTRIC": "Работа по предизвикателства",
         "COMMUNITY_BUILDING": "Градене на $t(common.community)",
         "GENERAL": "Общи",
-        "HELP": "Нуждаете се от помощ?",
+        "HELP": "Q&A",
         "IDEAS": "Идеи",
+        "NEWSLETTER": "Бюлетин",
         "OTHER": "Друго",
         "PLATFORM_FUNCTIONALITIES": "Функционалности на платформата",
         "QUESTIONS": "Въпроси",
         "RELEASES": "Актуализации",
-        "SHARING": "Споделяне"
+        "SHARING": "Споделяне",
+        "TIPS_AND_TRICKS": "Съвети и трикове"
       },
       "edit-mode": {
         "edit": "Редактиране",
