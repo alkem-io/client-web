@@ -12484,6 +12484,7 @@ export const PlatformDiscussionDocument = gql`
     id
     forum {
       id
+      discussionCategories
       authorization {
         id
         myPrivileges
