@@ -133,7 +133,8 @@
           "addUser": "Invitar",
           "virtualContributors": "Contribuidores virtuales",
           "guidelines": "Directrices de la comunidad",
-          "index": "Índice de publicaciones"
+          "index": "Índice de publicaciones",
+          "search": "Buscar"
         }
       },
       "postTemplate": {

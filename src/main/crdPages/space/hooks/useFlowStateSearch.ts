@@ -12,15 +12,22 @@ type CalloutResultItems = CalloutResults['results'];
 
 export type UseFlowStateSearchParams = {
   /**
-   * The viewed InnovationFlowState UUID — the sole scope (FR-008/012). Its
-   * globally-unique UUID transitively pins the Collaboration, so no separate
-   * CalloutsSet scope is needed.
+   * The viewed InnovationFlowState UUID. Its globally-unique UUID
+   * transitively pins the Collaboration, so no separate CalloutsSet scope is
+   * needed.
    */
   flowStateID: string | undefined;
   /**
-   * The active query terms: the submitted free-text term split into words PLUS
-   * each selected tag pill (FR-004). An empty array is browse mode (FR-018) —
-   * still a valid scoped request, served paginated.
+   * The current L0 Space UUID — hard-scopes callout documents to the Space
+   * tree. The flow-state filter alone is "absent OR equals": a callout whose
+   * search document was never stamped with a flow state would otherwise
+   * match every flow-state-scoped search across the whole platform: this
+   * bounds that soft leak to the current Space.
+   */
+  spaceID?: string;
+  /**
+   * The active query terms: `[]` (browse) or exactly ONE joined term built
+   * from the applied text and the selected tags — never split into words.
    */
   terms: string[];
   /** Skip while the scope UUIDs are not yet resolved. */
@@ -51,7 +58,12 @@ const concat = (a: CalloutResultItems = [], b: CalloutResultItems = []): Callout
  * always -1), and a fresh page-1 reset that discards in-flight pages of a prior
  * term/tag set (FR-022, latest-wins).
  */
-export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSearchParams): UseFlowStateSearchResult {
+export function useFlowStateSearch({
+  flowStateID,
+  spaceID,
+  terms,
+  skip,
+}: UseFlowStateSearchParams): UseFlowStateSearchResult {
   const shouldSkip = skip || !flowStateID;
 
   // A stable signature for the current term/tag set. When it changes, the query
@@ -62,7 +74,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   // when a term itself contains spaces — `['foo bar']` and `['foo', 'bar']` would
   // collapse to the same key, letting a stale in-flight page from the prior term
   // set pass the latest-wins check and merge into the new query.
-  const requestKey = JSON.stringify({ flowStateID: flowStateID ?? '', terms });
+  const requestKey = JSON.stringify({ flowStateID: flowStateID ?? '', spaceID: spaceID ?? '', terms });
   const requestKeyRef = useRef(requestKey);
   // Sync the latest-wins signature inside an effect (never during render).
   useEffect(() => {
@@ -84,6 +96,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
       searchData: {
         terms,
         searchInFlowStateFilter: flowStateID,
+        searchInSpaceFilter: spaceID,
         // Match in the callout framing resources and contributions too; matches
         // fold up to the containing callout, deduped, in calloutResults.
         foldCalloutResources: true,
@@ -114,6 +127,26 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   const cursor = data?.search.calloutResults.cursor;
   const hasMore = Boolean(cursor);
 
+  // Size of the most recently received page (page 1, or the last appended
+  // page). The server only signals the end of results by omitting the cursor
+  // on the request AFTER the last one, so a short page still carries a cursor
+  // and the count label would read "N+" with every card already on screen —
+  // for good, on a list tall enough that the sentinel never comes into view.
+  // A short page is therefore confirmed eagerly (below), without waiting for
+  // the sentinel: the follow-up request either returns nothing and drops the
+  // cursor, settling the count to the exact "N" (FR-006), or returns real
+  // results that were going to be needed anyway. A short page is never
+  // treated as the end by itself — authorization can thin a page while more
+  // readable results remain, and only the server may say "no more".
+  const resultsLength = results.length;
+  const previousResultsLengthRef = useRef(0);
+  const [lastPageSize, setLastPageSize] = useState(0);
+  useEffect(() => {
+    setLastPageSize(resultsLength - previousResultsLengthRef.current);
+    previousResultsLengthRef.current = resultsLength;
+  }, [resultsLength, requestKey]);
+  const lastPageWasShort = resultsLength > 0 && lastPageSize > 0 && lastPageSize < PAGE_SIZE;
+
   // Distinguish a first-page load (skeleton) from a subsequent append (footer
   // spinner): if we already hold results, an in-flight network call is an
   // append; otherwise it is the first page.
@@ -131,7 +164,8 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
     status = 'empty';
   }
 
-  // Infinite scroll (FR-013): auto-load the next page as the sentinel nears view.
+  // Infinite scroll (FR-013): auto-load the next page as the sentinel nears view,
+  // or right away to confirm a short page (see `lastPageWasShort` above).
   // The load is inlined in the effect with complete dependencies so the rules of
   // React (and the React Compiler) hold without disabling any lint rule.
   const { ref: sentinelRef, inView } = useInView({ rootMargin: '200px', delay: 100 });
@@ -145,7 +179,10 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
   }, [inView]);
 
   useEffect(() => {
-    if (!inView || shouldSkip || !cursor || appending || loading || failedCursorRef.current === cursor) {
+    if (shouldSkip || !cursor || appending || loading || failedCursorRef.current === cursor) {
+      return;
+    }
+    if (!inView && !lastPageWasShort) {
       return;
     }
     const keyAtRequest = requestKeyRef.current;
@@ -155,6 +192,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
         searchData: {
           terms,
           searchInFlowStateFilter: flowStateID,
+          searchInSpaceFilter: spaceID,
           foldCalloutResources: true,
           filters: [
             {
@@ -194,7 +232,7 @@ export function useFlowStateSearch({ flowStateID, terms, skip }: UseFlowStateSea
           setAppending(false);
         }
       });
-  }, [inView, shouldSkip, cursor, appending, loading, terms, flowStateID, fetchMore]);
+  }, [inView, lastPageWasShort, shouldSkip, cursor, appending, loading, terms, flowStateID, spaceID, fetchMore]);
 
   const retry = () => {
     void refetch();

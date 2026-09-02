@@ -22,6 +22,7 @@ const WIRE_TO_WIDGET_ID: Record<string, SidebarWidgetId> = {
   [SidebarWidget.VirtualContributors]: 'virtualContributors',
   [SidebarWidget.Guidelines]: 'guidelines',
   [SidebarWidget.Index]: 'index',
+  [SidebarWidget.Search]: 'search',
 };
 
 const WIDGET_ID_TO_WIRE: Record<SidebarWidgetId, SidebarWidget> = {
@@ -38,6 +39,7 @@ const WIDGET_ID_TO_WIRE: Record<SidebarWidgetId, SidebarWidget> = {
   virtualContributors: SidebarWidget.VirtualContributors,
   guidelines: SidebarWidget.Guidelines,
   index: SidebarWidget.Index,
+  search: SidebarWidget.Search,
 };
 
 /**

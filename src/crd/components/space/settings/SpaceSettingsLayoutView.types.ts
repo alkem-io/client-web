@@ -63,9 +63,9 @@ export type LayoutSaveBarState =
   | { kind: 'saveError'; message: string };
 
 /**
- * Plain, CRD-safe union of the platform's sidebar widget vocabulary
- * (FR-001) — the client-side counterpart of the server's `SidebarWidget`
- * enum. CRD components never import the generated GraphQL enum (D-12); the
+ * Plain, CRD-safe union of the platform's sidebar widget vocabulary — the
+ * client-side counterpart of the server's `SidebarWidget` enum. CRD
+ * components never import the generated GraphQL enum (D-12); the
  * `crdPages` mapper translates between this and the wire enum.
  */
 export type SidebarWidgetId =
@@ -81,9 +81,10 @@ export type SidebarWidgetId =
   | 'addUser'
   | 'virtualContributors'
   | 'guidelines'
-  | 'index';
+  | 'index'
+  | 'search';
 
-/** The full vocabulary, in the platform's canonical (FR-001 table) order. */
+/** The full vocabulary (fourteen widgets), in the platform's canonical order. */
 export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
   'intent',
   'about',
@@ -98,6 +99,7 @@ export const SIDEBAR_WIDGET_IDS: readonly SidebarWidgetId[] = [
   'virtualContributors',
   'guidelines',
   'index',
+  'search',
 ];
 
 /** Per-phase layout settings passed from the Layout modal to the column menu handler. */

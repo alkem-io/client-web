@@ -22,8 +22,8 @@
     "inactive": "Deze Space is momenteel inactief."
   },
   "knowledge": {
-    "searchPlaceholder": "Zoeken...",
-    "searchLabel": "Zoek in de kennisbank",
+    "searchPlaceholder": "Zoek posts...",
+    "searchLabel": "Posts zoeken",
     "noResults": "Geen resultaten",
     "search": {
       "emptyTitle": "Geen resultaten",
@@ -33,8 +33,9 @@
       "retry": "Opnieuw proberen",
       "loadingLabel": "Zoekresultaten laden",
       "appendingLabel": "Meer resultaten laden",
-      "removeTerm": "Term {{term}} verwijderen",
-      "removeTag": "Tag {{tag}} verwijderen"
+      "matchText": "<b>{{matches}}</b> items komen overeen met de zoekopdracht <b>{{text}}</b>",
+      "matchTags": "<b>{{matches}}</b> items komen overeen met tag <b>{{tags}}</b>",
+      "matchBoth": "<b>{{matches}}</b> items komen overeen met tag <b>{{tags}}</b> en de zoekopdracht <b>{{text}}</b>"
     },
     "viewGrid": "Kaartweergave",
     "viewList": "Lijstweergave",

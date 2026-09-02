@@ -27,6 +27,7 @@ type QueryArgs = {
     searchData: {
       terms: string[];
       searchInFlowStateFilter?: string;
+      searchInSpaceFilter?: string;
       foldCalloutResources?: boolean;
       filters: Array<{ cursor?: string; size: number; category: string }>;
     };
@@ -35,6 +36,7 @@ type QueryArgs = {
 };
 
 const FLOW_STATE = 'flow-state-uuid';
+const SPACE = 'space-uuid';
 
 const calloutResult = (id: string) => ({ id, type: 'CALLOUT', score: 1, terms: [] });
 
@@ -55,14 +57,15 @@ describe('useFlowStateSearch', () => {
       data: undefined,
       loading: true,
       error: undefined,
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
-    renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: ['governance'] }));
+    renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] }));
 
     const args = useFlowStateSearchQueryMock.mock.calls.at(-1)?.[0] as QueryArgs;
     expect(args.variables.searchData.searchInFlowStateFilter).toBe(FLOW_STATE);
+    expect(args.variables.searchData.searchInSpaceFilter).toBe(SPACE);
     expect(args.variables.searchData.terms).toEqual(['governance']);
     // Fold framing resources and contributions up to the matching callout.
     expect(args.variables.searchData.foldCalloutResources).toBe(true);
@@ -78,7 +81,7 @@ describe('useFlowStateSearch', () => {
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } },
       loading: false,
       error: undefined,
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
@@ -101,15 +104,22 @@ describe('useFlowStateSearch', () => {
   // a stale page into the new query.
   test('discards an in-flight page when the term set changed mid-flight (FR-022 latest-wins)', () => {
     let capturedUpdateQuery: ((prev: unknown, opts: { fetchMoreResult: unknown }) => unknown) | undefined;
+    let capturedFetchMoreArgs: { variables: QueryArgs['variables'] } | undefined;
 
-    const fetchMore = vi.fn((opts: { updateQuery: (prev: unknown, o: { fetchMoreResult: unknown }) => unknown }) => {
-      // Capture only the FIRST page's updateQuery — the one tied to the prior
-      // term set whose result must later be discarded.
-      if (!capturedUpdateQuery) {
-        capturedUpdateQuery = opts.updateQuery;
+    const fetchMore = vi.fn(
+      (opts: {
+        variables: QueryArgs['variables'];
+        updateQuery: (prev: unknown, o: { fetchMoreResult: unknown }) => unknown;
+      }) => {
+        // Capture only the FIRST page's updateQuery — the one tied to the prior
+        // term set whose result must later be discarded.
+        if (!capturedUpdateQuery) {
+          capturedUpdateQuery = opts.updateQuery;
+          capturedFetchMoreArgs = opts;
+        }
+        return Promise.resolve();
       }
-      return Promise.resolve();
-    });
+    );
 
     useFlowStateSearchQueryMock.mockReturnValue({
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } },
@@ -122,12 +132,15 @@ describe('useFlowStateSearch', () => {
     // Sentinel in view → the infinite-scroll effect fires fetchMore (page 2).
     mockInView = true;
     const { rerender } = renderHook(
-      (props: { terms: string[] }) => useFlowStateSearch({ flowStateID: FLOW_STATE, terms: props.terms }),
+      (props: { terms: string[] }) =>
+        useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: props.terms }),
       { initialProps: { terms: ['governance'] } }
     );
 
     expect(fetchMore).toHaveBeenCalledTimes(1);
     expect(capturedUpdateQuery).toBeDefined();
+    // The Space scope rides fetchMore's variables too, not only the page-1 query.
+    expect(capturedFetchMoreArgs?.variables.searchData.searchInSpaceFilter).toBe(SPACE);
 
     const prev = { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } };
     const stalePage = { search: { calloutResults: { results: [calloutResult('b')], cursor: 'c2' } } };
@@ -147,6 +160,68 @@ describe('useFlowStateSearch', () => {
     expect(merged.search.calloutResults.results[0].id).toBe('a');
   });
 
+  // FR-006: a short page still carries a cursor (the server only drops it on
+  // the request after the last page), so it is confirmed eagerly — without the
+  // sentinel — and the "N+" count can settle to "N" on a tall, unscrolled list.
+  test('a short page with a cursor is confirmed eagerly, without the sentinel (FR-006)', () => {
+    const fetchMore = vi.fn((_opts: { variables: QueryArgs['variables'] }) => Promise.resolve());
+    useFlowStateSearchQueryMock.mockReturnValue({
+      data: {
+        search: { calloutResults: { results: [calloutResult('a'), calloutResult('b')], cursor: 'c1' } },
+      },
+      loading: false,
+      error: undefined,
+      fetchMore,
+      refetch: vi.fn(),
+    });
+
+    mockInView = false;
+    renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] }));
+
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+    expect(fetchMore.mock.calls[0][0].variables.searchData.filters[0].cursor).toBe('c1');
+  });
+
+  test('a full page waits for the sentinel before loading the next one (FR-013)', () => {
+    const fetchMore = vi.fn(() => Promise.resolve());
+    const fullPage = Array.from({ length: 10 }, (_, i) => calloutResult(`r${i}`));
+    useFlowStateSearchQueryMock.mockReturnValue({
+      data: { search: { calloutResults: { results: fullPage, cursor: 'c1' } } },
+      loading: false,
+      error: undefined,
+      fetchMore,
+      refetch: vi.fn(),
+    });
+
+    mockInView = false;
+    const { rerender } = renderHook(() =>
+      useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] })
+    );
+    expect(fetchMore).not.toHaveBeenCalled();
+
+    mockInView = true;
+    rerender();
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+  });
+
+  test('a short page without a cursor is the end: nothing is fetched (FR-013)', () => {
+    const fetchMore = vi.fn(() => Promise.resolve());
+    useFlowStateSearchQueryMock.mockReturnValue({
+      data: { search: { calloutResults: { results: [calloutResult('a')], cursor: undefined } } },
+      loading: false,
+      error: undefined,
+      fetchMore,
+      refetch: vi.fn(),
+    });
+
+    mockInView = false;
+    const { result } = renderHook(() =>
+      useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] })
+    );
+    expect(fetchMore).not.toHaveBeenCalled();
+    expect(result.current.hasMore).toBe(false);
+  });
+
   // FR-013: end-of-results is driven off cursor presence (no count). With a
   // cursor present, more pages may exist; absent, the list is complete.
   test('hasMore is driven off cursor presence, not a count (FR-013)', () => {
@@ -154,7 +229,7 @@ describe('useFlowStateSearch', () => {
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: undefined } } },
       loading: false,
       error: undefined,
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
@@ -171,7 +246,7 @@ describe('useFlowStateSearch', () => {
       data: undefined,
       loading: false,
       error: new Error('boom'),
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
@@ -185,7 +260,7 @@ describe('useFlowStateSearch', () => {
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } },
       loading: false,
       error: new Error('boom'),
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
     rerender();

@@ -22,8 +22,8 @@
     "inactive": "Dieser Bereich ist derzeit inaktiv."
   },
   "knowledge": {
-    "searchPlaceholder": "Suchen...",
-    "searchLabel": "Wissensdatenbank durchsuchen",
+    "searchPlaceholder": "Beiträge suchen...",
+    "searchLabel": "Beiträge suchen",
     "noResults": "Keine Treffer",
     "search": {
       "emptyTitle": "Keine Treffer",
@@ -33,8 +33,9 @@
       "retry": "Erneut versuchen",
       "loadingLabel": "Suchergebnisse werden geladen",
       "appendingLabel": "Weitere Ergebnisse werden geladen",
-      "removeTerm": "Begriff {{term}} entfernen",
-      "removeTag": "Tag {{tag}} entfernen"
+      "matchText": "<b>{{matches}}</b> Einträge entsprechen der Suche nach <b>{{text}}</b>",
+      "matchTags": "<b>{{matches}}</b> Einträge entsprechen dem Tag <b>{{tags}}</b>",
+      "matchBoth": "<b>{{matches}}</b> Einträge entsprechen dem Tag <b>{{tags}}</b> und der Suche nach <b>{{text}}</b>"
     },
     "viewGrid": "Kartenansicht",
     "viewList": "Listenansicht",

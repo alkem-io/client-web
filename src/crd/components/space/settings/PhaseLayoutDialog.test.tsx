@@ -239,6 +239,16 @@ describe('PhaseLayoutDialog', () => {
     ).toBe(true);
   });
 
+  test('lists Search in the widget pool (055)', () => {
+    renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: [] });
+
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'layout.column.sidebarDialog.toggleAriaLabel:layout.column.sidebarDialog.widgets.search',
+      })
+    ).toBeInTheDocument();
+  });
+
   test('toggling a selected widget off removes it from the save payload', async () => {
     const onSave = vi.fn();
     renderDialog({ descriptionCollapsed: false, showPublishDetails: true, sidebar: ['intent', 'events'] }, onSave);

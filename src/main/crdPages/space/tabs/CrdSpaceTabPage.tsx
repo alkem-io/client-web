@@ -6,30 +6,26 @@ import {
   useSpaceTemplatesManagerQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { TemplateDefaultType } from '@/core/apollo/generated/graphql-schema';
-import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
 import { FlowStateSearchResults } from '@/crd/components/search/FlowStateSearchResults';
 import { TabStateHeader } from '@/crd/components/space/TabStateHeader';
-import { FlowStateSearchField } from '@/crd/forms/FlowStateSearchField';
 import { classificationTagsetModelToTagsetArgs } from '@/domain/collaboration/calloutsSet/Classification/ClassificationTagset.utils';
 import { useSpace } from '@/domain/space/context/useSpace';
 import { CreateSubspaceDialogs } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/CreateSubspaceDialogs';
 import { useCreateSubspace } from '@/main/crdPages/topLevelPages/spaceSettings/subspaces/useCreateSubspace';
+import { useDebouncedValue } from '@/main/crdPages/utils/useDebouncedValue';
 import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { CalloutFormConnector } from '../callout/CalloutFormConnector';
 import { CalloutListConnector } from '../callout/CalloutListConnector';
 import { LazyCalloutItem } from '../callout/LazyCalloutItem';
-import { mapFlowStateSearchCalloutIds } from '../dataMappers/flowStateSearchDataMapper';
+import { buildFlowStateSearchTerms, mapFlowStateSearchCalloutIds } from '../dataMappers/flowStateSearchDataMapper';
 import { useCrdCalloutList } from '../hooks/useCrdCalloutList';
 import { useFlowStateSearch } from '../hooks/useFlowStateSearch';
 import { SpaceTabSidebarConnector } from '../layout/SpaceTabSidebarConnector';
 import { resolveSidebarPlan } from '../layout/sidebarWidgetPlan';
 
-// Fixed L0 tab position carrying the one remaining position-keyed affordance:
-// the search block on every custom/added tab (3+). Create Subspace is now the
-// `createSubspace` widget (its position-driven action slot is retired, A-03),
-// Add Post the `createPost` widget, and Invite the `addUser` widget — all
-// owned by the sidebar connector.
-const FIRST_CUSTOM_TAB_POSITION = 3;
+/** Debounce window between a keystroke and the search it drives (SC-003). */
+const SEARCH_DEBOUNCE_MS = 300;
+const isEmptySearchText = (text: string) => text === '';
 
 type CrdSpaceTabPageProps = {
   tabPosition: number;
@@ -87,11 +83,18 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
     defaultTemplateId: defaultSubspaceTemplateId,
   });
 
-  // Search block (custom/added tabs only, position 3+).
-  const isCustomTab = tabPosition >= FIRST_CUSTOM_TAB_POSITION;
+  // Search widget (the sidebar `search` widget — every tab it's configured
+  // on, not position-keyed). The page owns all of the search state and data
+  // fetching because the sidebar subtree is portalled into two hosts
+  // (desktop column, mobile drawer); the widget itself is a pure controlled
+  // component.
+  const hasSearchWidget = sidebarPlan.includes('search');
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
-  // Free-text terms, each formed into a pill on Enter (FR-010) — not live keystrokes.
-  const [termPills, setTermPills] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState('');
+  // Clearing the field applies immediately — only a non-empty value waits out
+  // the debounce, so the X button (and deleting down to empty) never lags, and
+  // a term typed right after a clear can never re-apply the cleared one.
+  const appliedText = useDebouncedValue(searchText, SEARCH_DEBOUNCE_MS, { immediate: isEmptySearchText }).trim();
   const flowStateId = flowStateForNewCallouts?.id;
   const { data: tagsData } = useCalloutsSetTagsQuery({
     variables: {
@@ -99,23 +102,33 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
       calloutsSetId: calloutsSetId!,
       classificationTagsets: classificationTagsetModelToTagsetArgs(classificationTagsets),
     },
-    skip: !calloutsSetId || !isCustomTab,
+    skip: !calloutsSetId || !hasSearchWidget,
   });
   const allTags = tagsData?.lookup.calloutsSet?.tags ?? [];
   const handleToggleTag = (tag: string) => {
     setTagsFilter(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
   };
-  const termWords = termPills.flatMap(pill => pill.trim().split(/\s+/)).filter(Boolean);
-  const searchTerms = [...termWords, ...tagsFilter];
-  const isSearching = isCustomTab && searchTerms.length > 0;
+  // The applied text and every selected tag are joined into exactly one term —
+  // identical to what the search service does internally, and it keeps the
+  // request's term count structurally under the service's limit regardless of
+  // how many tags are selected.
+  const searchTerms = buildFlowStateSearchTerms(appliedText, tagsFilter);
+  const isSearching = hasSearchWidget && searchTerms.length > 0;
   const search = useFlowStateSearch({
     flowStateID: flowStateId,
+    spaceID: space.id,
     terms: searchTerms,
     skip: !isSearching,
   });
   const searchCalloutIds = mapFlowStateSearchCalloutIds(search.results);
-  const handleTermAdd = (term: string) => setTermPills(prev => [...prev, term]);
-  const handleTermRemove = (index: number) => setTermPills(prev => prev.filter((_, i) => i !== index));
+  const matchCount =
+    search.status === 'results' || search.status === 'empty'
+      ? `${searchCalloutIds.length}${search.hasMore ? '+' : ''}`
+      : undefined;
+  const clearSearch = () => {
+    setSearchText('');
+    setTagsFilter([]);
+  };
   const searchLabels = {
     emptyTitle: t('crd-space:knowledge.search.emptyTitle'),
     emptyDescription: t('crd-space:knowledge.search.emptyDescription'),
@@ -137,28 +150,20 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
         onCreatePost={() => setCreateOpen(true)}
         onAboutClick={onOpenAbout}
         onCreateSubspace={createSubspace.openDialog}
+        search={{
+          text: searchText,
+          onTextChange: setSearchText,
+          appliedText,
+          allTags,
+          selectedTags: tagsFilter,
+          onToggleTag: handleToggleTag,
+          matchCount,
+          onClear: clearSearch,
+        }}
       />
 
       <div className="space-y-6">
         <TabStateHeader description={tabDescription} />
-
-        {isCustomTab && (
-          <div className="flex items-start gap-2">
-            <FlowStateSearchField
-              terms={termPills}
-              onTermAdd={handleTermAdd}
-              onTermRemove={handleTermRemove}
-              tags={tagsFilter}
-              onTagRemove={handleToggleTag}
-              removeTagAriaLabel={tag => t('crd-space:knowledge.search.removeTag', { tag })}
-              placeholder={t('crd-space:knowledge.searchPlaceholder')}
-              ariaLabel={t('crd-space:knowledge.searchLabel')}
-              removeTermAriaLabel={term => t('crd-space:knowledge.search.removeTerm', { term })}
-              className="flex-1"
-            />
-            <TagFilterPopover tags={allTags} selectedTags={tagsFilter} onTagClick={handleToggleTag} />
-          </div>
-        )}
 
         {isSearching ? (
           <FlowStateSearchResults
