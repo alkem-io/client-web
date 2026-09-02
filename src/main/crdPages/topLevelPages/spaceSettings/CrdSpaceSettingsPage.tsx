@@ -708,7 +708,7 @@ export default function CrdSpaceSettingsPage() {
         open={about.pendingCrop !== null}
         file={about.pendingCrop?.file}
         config={about.pendingCrop?.config ?? {}}
-        onSave={({ file, altText, aspectRatio }) => about.onCropComplete(file, altText, aspectRatio)}
+        onSave={({ file, altText }) => about.onCropComplete(file, altText)}
         onCancel={about.onCropCancel}
         saveLabel={t('about.branding.cropDialog.save')}
         savingLabel={t('about.branding.cropDialog.saving')}

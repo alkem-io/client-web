@@ -22,8 +22,8 @@
     "inactive": "Това пространство е неактивно в момента."
   },
   "knowledge": {
-    "searchPlaceholder": "Търсене...",
-    "searchLabel": "Търсене в базата знания",
+    "searchPlaceholder": "Търсене на публикации...",
+    "searchLabel": "Търсене на публикации",
     "noResults": "Няма съвпадения",
     "search": {
       "emptyTitle": "Няма съвпадения",
@@ -33,8 +33,17 @@
       "retry": "Опитайте отново",
       "loadingLabel": "Зареждане на резултатите от търсенето",
       "appendingLabel": "Зареждане на още резултати",
-      "removeTerm": "Премахни термина {{term}}",
-      "removeTag": "Премахни етикета {{tag}}"
+      "tagLabel_one": "таг",
+      "tagLabel_other": "тагове",
+      "matchText_one": "<b>{{count}}</b> елемент, свързан с <text></text>",
+      "matchText_other": "<b>{{count}}</b> елемента, свързани с <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> елемента, свързани с <text></text>",
+      "matchTags_one": "<b>{{count}}</b> елемент, свързан с {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> елемента, свързани с {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> елемента, свързани с {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> елемент, свързан с <text></text> и {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> елемента, свързани с <text></text> и {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> елемента, свързани с <text></text> и {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Изглед с карти",
     "viewList": "Списъчен изглед",

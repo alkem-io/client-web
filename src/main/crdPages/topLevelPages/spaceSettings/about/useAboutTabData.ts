@@ -49,7 +49,7 @@ export type UseAboutTabDataResult = {
   /** Server-defined range the page banner's aspect ratio may be set to. Null while loading. */
   pageBannerAspectRatioBounds: AboutVisualAspectRatioBounds | null;
   pendingCrop: PendingCrop | null;
-  onCropComplete: (croppedFile: File, altText: string, aspectRatio?: number) => void;
+  onCropComplete: (croppedFile: File, altText: string) => void;
   onCropCancel: () => void;
   /** Re-crop an already-uploaded visual. Opens the crop dialog with the existing image. */
   onRecropVisual: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
@@ -253,8 +253,7 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     // Passed explicitly rather than read back off `valuesRef`: the caller queues
     // a `setValues` for this same alt text, and that updater runs at render, not
     // at dispatch, so the ref still holds the pre-edit value at this point.
-    altText: string,
-    aspectRatio?: number
+    altText: string
   ) => {
     const current = valuesRef.current;
     const visual = current?.[key];
@@ -274,7 +273,11 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
                 ...base[key],
                 uri: uploaded.uri,
                 altText: uploaded.alternativeText ?? null,
-                ...(aspectRatio !== undefined && { aspectRatio }),
+                // The server derives the stored ratio from the uploaded pixels
+                // (the crop is cut to the slider's ratio, so they agree to the
+                // 0.1 the DB keeps); take its value as the truth so local state
+                // and the Apollo cache never disagree.
+                aspectRatio: uploaded.aspectRatio,
               },
             };
             valuesRef.current = next;
@@ -305,8 +308,16 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
     // Page banner is the only visual with adjustable aspect ratio.
     const aspectRatioBounds = key === 'pageBanner' ? (pageBannerAspectRatioBounds ?? undefined) : undefined;
 
+    // A stored banner ratio describes an uploaded image's shape — the server
+    // derives it from the pixels the crop dialog cut. With no image the row
+    // still carries the server's creation default (10 today, 6 on legacy
+    // rows), chosen by nobody; passing it through would open the first-ever
+    // crop on that value instead of the dialog's own default (the bounds'
+    // max, 10).
+    const hasImage = Boolean(values?.[key]?.uri ?? visualRaw?.uri);
+
     return {
-      aspectRatio: aspectRatio ?? visualRaw?.aspectRatio ?? 1,
+      aspectRatio: key === 'pageBanner' && !hasImage ? undefined : (aspectRatio ?? visualRaw?.aspectRatio ?? 1),
       maxHeight: visualRaw?.maxHeight,
       minHeight: visualRaw?.minHeight,
       maxWidth: visualRaw?.maxWidth,
@@ -364,13 +375,14 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
   // A re-crop save waiting on the replace-original confirmation. The crop
   // dialog stays open underneath, so cancelling the confirmation drops the
   // user back into the crop they already framed.
-  const [pendingRecropSave, setPendingRecropSave] = useState<{
-    file: File;
-    altText: string;
-    aspectRatio?: number;
-  } | null>(null);
+  const [pendingRecropSave, setPendingRecropSave] = useState<{ file: File; altText: string } | null>(null);
 
-  const commitCrop = (crop: PendingCrop, croppedFile: File, altText: string, aspectRatio?: number) => {
+  // Only the alt text is written here. The ratio the dialog was cut to lands
+  // in `values` together with `uri` once the upload resolves (see
+  // `uploadVisualForField`): writing it now would have the preview claim a
+  // shape the server does not hold yet — and keep claiming it after a failed
+  // upload, with the old image letterboxed into the new box.
+  const commitCrop = (crop: PendingCrop, croppedFile: File, altText: string) => {
     setPendingCrop(null);
     setPendingRecropSave(null);
     const key = crop.key;
@@ -379,29 +391,29 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
       if (!base) return prev;
       const next: AboutFormValues = {
         ...base,
-        [key]: { ...base[key], altText, ...(aspectRatio !== undefined && { aspectRatio }) },
+        [key]: { ...base[key], altText },
       };
       valuesRef.current = next;
       return next;
     });
-    void uploadVisualForField(key, croppedFile, altText, aspectRatio);
+    void uploadVisualForField(key, croppedFile, altText);
   };
 
-  const onCropComplete = (croppedFile: File, altText: string, aspectRatio?: number) => {
+  const onCropComplete = (croppedFile: File, altText: string) => {
     if (!pendingCrop) return;
     if (pendingCrop.isRecrop) {
       // Re-cropping overwrites the stored original irreversibly (#10148), so
       // the upload waits for an explicit confirmation. A fresh upload commits
       // straight away — the original is still on the user's disk.
-      setPendingRecropSave({ file: croppedFile, altText, aspectRatio });
+      setPendingRecropSave({ file: croppedFile, altText });
       return;
     }
-    commitCrop(pendingCrop, croppedFile, altText, aspectRatio);
+    commitCrop(pendingCrop, croppedFile, altText);
   };
 
   const onConfirmRecrop = () => {
     if (!pendingCrop || !pendingRecropSave) return;
-    commitCrop(pendingCrop, pendingRecropSave.file, pendingRecropSave.altText, pendingRecropSave.aspectRatio);
+    commitCrop(pendingCrop, pendingRecropSave.file, pendingRecropSave.altText);
   };
 
   const onCancelRecropConfirm = () => setPendingRecropSave(null);

@@ -2453,6 +2453,7 @@ export const SubspaceVisualsFragmentDoc = gql`
   }
   banner: visual(type: BANNER) {
     ...VisualModel
+    aspectRatio
   }
 }
     ${VisualModelFragmentDoc}`;
@@ -3627,8 +3628,6 @@ export const InAppNotificationPayloadPlatformUserFragmentDoc = gql`
 export const InAppNotificationPayloadPlatformUserProfileRemovedFragmentDoc = gql`
     fragment InAppNotificationPayloadPlatformUserProfileRemoved on InAppNotificationPayloadPlatformUserProfileRemoved {
   type
-  userEmail
-  userDisplayName
 }
     `;
 export const InAppNotificationPayloadSpaceCollaborationCalloutFragmentDoc = gql`
@@ -12063,6 +12062,7 @@ export const UploadVisualDocument = gql`
     id
     uri
     alternativeText
+    aspectRatio
   }
 }
     `;
@@ -15430,6 +15430,95 @@ export type UserAccountQueryResult = Apollo.QueryResult<
 >;
 export function refetchUserAccountQuery(variables: SchemaTypes.UserAccountQueryVariables) {
   return { query: UserAccountDocument, variables: variables };
+}
+export const AccountDeletionPreflightDocument = gql`
+    query accountDeletionPreflight {
+  me {
+    accountDeletion {
+      canDelete
+      sessionFresh
+      truncated
+      externalSubscriptionLinked
+      blockers {
+        kind
+        resourceID
+        displayName
+        url
+        selfResolvable
+      }
+      totals {
+        kind
+        total
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAccountDeletionPreflightQuery__
+ *
+ * To run a query within a React component, call `useAccountDeletionPreflightQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAccountDeletionPreflightQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAccountDeletionPreflightQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAccountDeletionPreflightQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    SchemaTypes.AccountDeletionPreflightQuery,
+    SchemaTypes.AccountDeletionPreflightQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<SchemaTypes.AccountDeletionPreflightQuery, SchemaTypes.AccountDeletionPreflightQueryVariables>(
+    AccountDeletionPreflightDocument,
+    options
+  );
+}
+export function useAccountDeletionPreflightLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SchemaTypes.AccountDeletionPreflightQuery,
+    SchemaTypes.AccountDeletionPreflightQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SchemaTypes.AccountDeletionPreflightQuery,
+    SchemaTypes.AccountDeletionPreflightQueryVariables
+  >(AccountDeletionPreflightDocument, options);
+}
+export function useAccountDeletionPreflightSuspenseQuery(
+  baseOptions?:
+    | Apollo.SkipToken
+    | Apollo.SuspenseQueryHookOptions<
+        SchemaTypes.AccountDeletionPreflightQuery,
+        SchemaTypes.AccountDeletionPreflightQueryVariables
+      >
+) {
+  const options = baseOptions === Apollo.skipToken ? baseOptions : { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<
+    SchemaTypes.AccountDeletionPreflightQuery,
+    SchemaTypes.AccountDeletionPreflightQueryVariables
+  >(AccountDeletionPreflightDocument, options);
+}
+export type AccountDeletionPreflightQueryHookResult = ReturnType<typeof useAccountDeletionPreflightQuery>;
+export type AccountDeletionPreflightLazyQueryHookResult = ReturnType<typeof useAccountDeletionPreflightLazyQuery>;
+export type AccountDeletionPreflightSuspenseQueryHookResult = ReturnType<
+  typeof useAccountDeletionPreflightSuspenseQuery
+>;
+export type AccountDeletionPreflightQueryResult = Apollo.QueryResult<
+  SchemaTypes.AccountDeletionPreflightQuery,
+  SchemaTypes.AccountDeletionPreflightQueryVariables
+>;
+export function refetchAccountDeletionPreflightQuery(variables?: SchemaTypes.AccountDeletionPreflightQueryVariables) {
+  return { query: AccountDeletionPreflightDocument, variables: variables };
 }
 export const UserDocument = gql`
     query user($id: UUID!) {

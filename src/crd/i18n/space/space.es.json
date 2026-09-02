@@ -22,8 +22,8 @@
     "inactive": "Este Espacio está actualmente inactivo."
   },
   "knowledge": {
-    "searchPlaceholder": "Buscar...",
-    "searchLabel": "Buscar en la base de conocimiento",
+    "searchPlaceholder": "Buscar publicaciones...",
+    "searchLabel": "Buscar publicaciones",
     "noResults": "Sin resultados",
     "search": {
       "emptyTitle": "Sin resultados",
@@ -33,8 +33,17 @@
       "retry": "Reintentar",
       "loadingLabel": "Cargando resultados de búsqueda",
       "appendingLabel": "Cargando más resultados",
-      "removeTerm": "Eliminar término {{term}}",
-      "removeTag": "Eliminar etiqueta {{tag}}"
+      "tagLabel_one": "la etiqueta",
+      "tagLabel_other": "las etiquetas",
+      "matchText_one": "<b>{{count}}</b> elemento relacionado con <text></text>",
+      "matchText_other": "<b>{{count}}</b> elementos relacionados con <text></text>",
+      "matchTextMore": "<b>{{count}}+</b> elementos relacionados con <text></text>",
+      "matchTags_one": "<b>{{count}}</b> elemento relacionado con {{tagLabel}} <tags></tags>",
+      "matchTags_other": "<b>{{count}}</b> elementos relacionados con {{tagLabel}} <tags></tags>",
+      "matchTagsMore": "<b>{{count}}+</b> elementos relacionados con {{tagLabel}} <tags></tags>",
+      "matchBoth_one": "<b>{{count}}</b> elemento relacionado con <text></text> y {{tagLabel}} <tags></tags>",
+      "matchBoth_other": "<b>{{count}}</b> elementos relacionados con <text></text> y {{tagLabel}} <tags></tags>",
+      "matchBothMore": "<b>{{count}}+</b> elementos relacionados con <text></text> y {{tagLabel}} <tags></tags>"
     },
     "viewGrid": "Vista de tarjetas",
     "viewList": "Vista de lista",

@@ -1,0 +1,21 @@
+query accountDeletionPreflight {
+  me {
+    accountDeletion {
+      canDelete
+      sessionFresh
+      truncated
+      externalSubscriptionLinked
+      blockers {
+        kind
+        resourceID
+        displayName
+        url
+        selfResolvable
+      }
+      totals {
+        kind
+        total
+      }
+    }
+  }
+}

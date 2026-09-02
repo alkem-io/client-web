@@ -133,7 +133,8 @@
           "addUser": "Uitnodigen",
           "virtualContributors": "Virtual Contributors",
           "guidelines": "Communityrichtlijnen",
-          "index": "Post-index"
+          "index": "Post-index",
+          "search": "Zoeken"
         }
       },
       "postTemplate": {
@@ -921,7 +922,7 @@
       },
       "pageBanner": {
         "title": "Paginabanner",
-        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1536 × 154px.",
+        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1200 × 120px.",
         "recrop": "Huidige paginabanner bijsnijden"
       },
       "cardBanner": {

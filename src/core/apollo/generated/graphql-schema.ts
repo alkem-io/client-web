@@ -97,6 +97,34 @@ export type AccountAuthorizationResetInput = {
   accountID: Scalars['UUID']['input'];
 };
 
+/** One item blocking a user from deleting their own account — a space, virtual contributor, innovation pack, innovation hub, or an organization the user is the sole owner of. */
+export type AccountDeletionBlocker = {
+  __typename?: 'AccountDeletionBlocker';
+  displayName: Scalars['String']['output'];
+  kind: AccountDeletionBlockerKind;
+  resourceID: Scalars['UUID']['output'];
+  /** True when the user can resolve the blocker alone, via the existing account-resources page. False for a sole-owned organization — ownership must be handed over, or support contacted. */
+  selfResolvable: Scalars['Boolean']['output'];
+  /** Client-navigable URL of the blocking resource, when one exists. */
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+/** The kind of resource blocking a user from deleting their own account. */
+export enum AccountDeletionBlockerKind {
+  AccountInnovationHub = 'ACCOUNT_INNOVATION_HUB',
+  AccountInnovationPack = 'ACCOUNT_INNOVATION_PACK',
+  AccountSpace = 'ACCOUNT_SPACE',
+  AccountVirtualContributor = 'ACCOUNT_VIRTUAL_CONTRIBUTOR',
+  SoleOrganizationOwner = 'SOLE_ORGANIZATION_OWNER',
+}
+
+/** Accurate per-kind total, independent of whether the itemized blocker list was truncated. */
+export type AccountDeletionBlockerTotal = {
+  __typename?: 'AccountDeletionBlockerTotal';
+  kind: AccountDeletionBlockerKind;
+  total: Scalars['Int']['output'];
+};
+
 export type AccountLicensePlan = {
   __typename?: 'AccountLicensePlan';
   /** The number of Innovation Packs allowed. */
@@ -2515,7 +2543,7 @@ export type CreateInnovationFlowStateSettingsData = {
   descriptionDisplayMode?: Maybe<CalloutDescriptionDisplayMode>;
   /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
   showPublishDetails?: Maybe<Scalars['Boolean']['output']>;
-  /** Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, INDEX] when omitted. */
+  /** Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, SEARCH, INDEX] when omitted. */
   sidebar?: Maybe<Array<SidebarWidget>>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: Maybe<Scalars['Boolean']['output']>;
@@ -2528,7 +2556,7 @@ export type CreateInnovationFlowStateSettingsInput = {
   descriptionDisplayMode?: InputMaybe<CalloutDescriptionDisplayMode>;
   /** Optional. Whether Posts in this State show publish details in the feed. Defaults to true when omitted. */
   showPublishDetails?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, INDEX] when omitted. */
+  /** Optional. Ordered sidebar widgets; defaults to [INTENT, CREATE_POST, APPLICATION_BUTTON, SEARCH, INDEX] when omitted. */
   sidebar?: InputMaybe<Array<SidebarWidget>>;
   /** Optional. Whether the phase is shown in member-facing navigation. Defaults to true when omitted. */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
@@ -3630,10 +3658,6 @@ export type InAppNotificationPayloadPlatformUserProfileRemoved = InAppNotificati
   __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
   /** The payload type. */
   type: NotificationEventPayload;
-  /** The display name of the User that was removed. */
-  userDisplayName: Scalars['String']['output'];
-  /** The email of the User that was removed. */
-  userEmail: Scalars['String']['output'];
 };
 
 export type InAppNotificationPayloadSpace = InAppNotificationPayload & {
@@ -4859,6 +4883,23 @@ export enum McpApiKeyStatus {
   Revoked = 'REVOKED',
 }
 
+/** Self-scoped pre-flight read for account deletion: whether the calling user can delete their own account right now, and if not, exactly what blocks them. Computed by the same predicate the deleteUser mutation's self-branch guard uses, so the two can never drift. Not gated on session freshness — see sessionFresh. */
+export type MeAccountDeletionStatus = {
+  __typename?: 'MeAccountDeletionStatus';
+  /** Itemized blockers, capped at 25. */
+  blockers: Array<AccountDeletionBlocker>;
+  /** True iff no blockers exist for the self branch. */
+  canDelete: Scalars['Boolean']['output'];
+  /** True when the account carries a stored external billing linkage. Surfaced for transparency and captured in the audit record on deletion — never a blocker. */
+  externalSubscriptionLinked: Scalars['Boolean']['output'];
+  /** True iff the calling session currently satisfies the privileged freshness window. Advisory for client routing; the deleteUser mutation re-enforces this authoritatively at mutation time. */
+  sessionFresh: Scalars['Boolean']['output'];
+  /** Accurate per-kind totals, independent of truncation. */
+  totals: Array<AccountDeletionBlockerTotal>;
+  /** True when the blocker list above was truncated at the cap. */
+  truncated: Scalars['Boolean']['output'];
+};
+
 export type MeConversationsResult = {
   __typename?: 'MeConversationsResult';
   /** All conversations (direct and group) for the current authenticated user. Client handles categorization by room type and member actor types. */
@@ -4867,6 +4908,8 @@ export type MeConversationsResult = {
 
 export type MeQueryResults = {
   __typename?: 'MeQueryResults';
+  /** Self-scoped pre-flight read for account deletion: whether the calling user can delete their own account right now, and if not, exactly what blocks them. */
+  accountDeletion: MeAccountDeletionStatus;
   /** The community applications current authenticated user can act on. */
   communityApplications: Array<CommunityApplicationResult>;
   /** The invitations the current authenticated user can act on. */
@@ -8717,6 +8760,7 @@ export enum SidebarWidget {
   Guidelines = 'GUIDELINES',
   Index = 'INDEX',
   Intent = 'INTENT',
+  Search = 'SEARCH',
   SubspaceLinks = 'SUBSPACE_LINKS',
   Updates = 'UPDATES',
   VirtualContributors = 'VIRTUAL_CONTRIBUTORS',
@@ -21194,7 +21238,13 @@ export type UploadVisualMutationVariables = Exact<{
 
 export type UploadVisualMutation = {
   __typename?: 'Mutation';
-  uploadImageOnVisual: { __typename?: 'Visual'; id: string; uri: string; alternativeText?: string | undefined };
+  uploadImageOnVisual: {
+    __typename?: 'Visual';
+    id: string;
+    uri: string;
+    alternativeText?: string | undefined;
+    aspectRatio: number;
+  };
 };
 
 export type WhiteboardAssetDocumentQueryVariables = Exact<{
@@ -23996,6 +24046,31 @@ export type UserAccountQuery = {
   };
 };
 
+export type AccountDeletionPreflightQueryVariables = Exact<{ [key: string]: never }>;
+
+export type AccountDeletionPreflightQuery = {
+  __typename?: 'Query';
+  me: {
+    __typename?: 'MeQueryResults';
+    accountDeletion: {
+      __typename?: 'MeAccountDeletionStatus';
+      canDelete: boolean;
+      sessionFresh: boolean;
+      truncated: boolean;
+      externalSubscriptionLinked: boolean;
+      blockers: Array<{
+        __typename?: 'AccountDeletionBlocker';
+        kind: AccountDeletionBlockerKind;
+        resourceID: string;
+        displayName: string;
+        url?: string | undefined;
+        selfResolvable: boolean;
+      }>;
+      totals: Array<{ __typename?: 'AccountDeletionBlockerTotal'; kind: AccountDeletionBlockerKind; total: number }>;
+    };
+  };
+};
+
 export type UserQueryVariables = Exact<{
   id: Scalars['UUID']['input'];
 }>;
@@ -25579,6 +25654,7 @@ export type SpaceBodyOfKnowledgeAboutQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -28505,6 +28581,7 @@ export type SpaceAboutBaseQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -28990,7 +29067,14 @@ export type SpaceAboutLightFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          aspectRatio: number;
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+        }
       | undefined;
   };
   membership: {
@@ -29012,7 +29096,14 @@ export type SubspaceVisualsFragment = {
     | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
     | undefined;
   banner?:
-    | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+    | {
+        __typename?: 'Visual';
+        aspectRatio: number;
+        id: string;
+        uri: string;
+        name: VisualType;
+        alternativeText?: string | undefined;
+      }
     | undefined;
 };
 
@@ -29045,7 +29136,14 @@ export type SpaceAboutTileFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          aspectRatio: number;
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+        }
       | undefined;
   };
 };
@@ -29273,7 +29371,14 @@ export type CreateSpaceMutation = {
         description?: string | undefined;
         tagset?: { __typename?: 'Tagset'; id: string; tags: Array<string> } | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
         cardBanner?:
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
@@ -30647,6 +30752,7 @@ export type SubspacePageQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -30708,7 +30814,14 @@ export type SubspacePageSpaceFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            aspectRatio: number;
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+          }
         | undefined;
     };
     guidelines: { __typename?: 'CommunityGuidelines'; id: string };
@@ -30771,6 +30884,7 @@ export type SpaceTabQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -31463,6 +31577,7 @@ export type SpaceAccountQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -34476,6 +34591,7 @@ export type TemplateContentQuery = {
                       banner?:
                         | {
                             __typename?: 'Visual';
+                            aspectRatio: number;
                             id: string;
                             uri: string;
                             name: VisualType;
@@ -34710,6 +34826,7 @@ export type SpaceTemplateContentQuery = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -35197,7 +35314,14 @@ export type SpaceTemplateContentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -35356,7 +35480,14 @@ export type SpaceTemplateContent_SubspacesFragment = {
       | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
       | undefined;
     banner?:
-      | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+      | {
+          __typename?: 'Visual';
+          aspectRatio: number;
+          id: string;
+          uri: string;
+          name: VisualType;
+          alternativeText?: string | undefined;
+        }
       | undefined;
   };
 };
@@ -38517,6 +38648,7 @@ export type FlowStateSearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -39423,6 +39555,7 @@ export type SpaceExplorerWelcomeSpaceQuery = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -39719,12 +39852,7 @@ export type InAppNotificationReceivedSubscription = {
               }
             | undefined;
         }
-      | {
-          __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
-          type: NotificationEventPayload;
-          userEmail: string;
-          userDisplayName: string;
-        }
+      | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
       | {
           __typename?: 'InAppNotificationPayloadSpace';
           type: NotificationEventPayload;
@@ -39773,6 +39901,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -39840,6 +39969,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -39906,6 +40036,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -39981,6 +40112,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40065,6 +40197,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40123,6 +40256,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40191,6 +40325,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40250,6 +40385,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40308,6 +40444,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40388,6 +40525,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40472,6 +40610,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40536,6 +40675,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40600,6 +40740,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40658,6 +40799,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40744,6 +40886,7 @@ export type InAppNotificationReceivedSubscription = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -40932,12 +41075,7 @@ export type InAppNotificationsQuery = {
                   }
                 | undefined;
             }
-          | {
-              __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
-              type: NotificationEventPayload;
-              userEmail: string;
-              userDisplayName: string;
-            }
+          | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
           | {
               __typename?: 'InAppNotificationPayloadSpace';
               type: NotificationEventPayload;
@@ -40986,6 +41124,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41053,6 +41192,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41119,6 +41259,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41194,6 +41335,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41278,6 +41420,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41336,6 +41479,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41404,6 +41548,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41463,6 +41608,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41521,6 +41667,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41601,6 +41748,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41685,6 +41833,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41749,6 +41898,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41813,6 +41963,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41871,6 +42022,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -41957,6 +42109,7 @@ export type InAppNotificationsQuery = {
                     banner?:
                       | {
                           __typename?: 'Visual';
+                          aspectRatio: number;
                           id: string;
                           uri: string;
                           name: VisualType;
@@ -42151,12 +42304,7 @@ export type InAppNotificationAllTypesFragment = {
             }
           | undefined;
       }
-    | {
-        __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
-        type: NotificationEventPayload;
-        userEmail: string;
-        userDisplayName: string;
-      }
+    | { __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved'; type: NotificationEventPayload }
     | {
         __typename?: 'InAppNotificationPayloadSpace';
         type: NotificationEventPayload;
@@ -42205,6 +42353,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42272,6 +42421,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42338,6 +42488,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42413,6 +42564,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42497,6 +42649,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42555,6 +42708,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42623,6 +42777,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42682,6 +42837,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42740,6 +42896,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42820,6 +42977,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42904,6 +43062,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -42968,6 +43127,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43032,6 +43192,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43090,6 +43251,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43176,6 +43338,7 @@ export type InAppNotificationAllTypesFragment = {
               banner?:
                 | {
                     __typename?: 'Visual';
+                    aspectRatio: number;
                     id: string;
                     uri: string;
                     name: VisualType;
@@ -43261,7 +43424,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutReactionFragment = 
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43310,7 +43480,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43350,7 +43527,14 @@ export type InAppNotificationSpaceCommunityActorFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43404,7 +43588,14 @@ export type SpaceNotificationFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            aspectRatio: number;
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+          }
         | undefined;
     };
   };
@@ -43534,7 +43725,14 @@ export type InAppNotificationPayloadSpaceFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43563,8 +43761,6 @@ export type InAppNotificationPayloadPlatformUserFragment = {
 export type InAppNotificationPayloadPlatformUserProfileRemovedFragment = {
   __typename?: 'InAppNotificationPayloadPlatformUserProfileRemoved';
   type: NotificationEventPayload;
-  userEmail: string;
-  userDisplayName: string;
 };
 
 export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
@@ -43600,7 +43796,14 @@ export type InAppNotificationPayloadSpaceCommunityApplicationFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43667,7 +43870,14 @@ export type InAppNotificationPayloadSpaceCommunicationUpdateFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43708,7 +43918,14 @@ export type InAppNotificationPayloadSpaceCommunicationMessageDirectFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43748,7 +43965,14 @@ export type InAppNotificationPayloadSpaceCommunityInvitationFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43788,7 +44012,14 @@ export type InAppNotificationPayloadSpaceCommunityInvitationPlatformFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43829,7 +44060,14 @@ export type InAppNotificationPayloadVirtualContributorFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43921,7 +44159,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutCommentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -43978,7 +44223,14 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFragment
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44027,7 +44279,14 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44073,7 +44332,14 @@ export type InAppNotificationPayloadSpaceCollaborationPollFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44122,7 +44388,14 @@ export type InAppNotificationPayloadSpaceCommunityCalendarEventCommentFragment =
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
     };
@@ -44411,6 +44684,7 @@ export type SearchQuery = {
                       banner?:
                         | {
                             __typename?: 'Visual';
+                            aspectRatio: number;
                             id: string;
                             uri: string;
                             name: VisualType;
@@ -44584,6 +44858,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -44724,6 +44999,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -44834,6 +45110,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -44953,6 +45230,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45077,6 +45355,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45187,6 +45466,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45304,6 +45584,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45415,6 +45696,7 @@ export type SearchQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -45622,7 +45904,14 @@ export type SearchResultPostFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45672,7 +45961,14 @@ export type PostParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45817,7 +46113,14 @@ export type SearchResultCalloutFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45857,7 +46160,14 @@ export type CalloutParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -45984,6 +46294,7 @@ export type SearchResultSpaceFragment = {
             banner?:
               | {
                   __typename?: 'Visual';
+                  aspectRatio: number;
                   id: string;
                   uri: string;
                   name: VisualType;
@@ -46098,7 +46409,14 @@ export type SearchResultMemoFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46148,7 +46466,14 @@ export type MemoParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46230,7 +46555,14 @@ export type SearchResultWhiteboardFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46280,7 +46612,14 @@ export type WhiteboardParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46363,7 +46702,14 @@ export type SearchResultCollaboraDocumentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46413,7 +46759,14 @@ export type CollaboraDocumentParentFragment = {
           | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
           | undefined;
         banner?:
-          | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+          | {
+              __typename?: 'Visual';
+              aspectRatio: number;
+              id: string;
+              uri: string;
+              name: VisualType;
+              alternativeText?: string | undefined;
+            }
           | undefined;
       };
       membership: {
@@ -46707,6 +47060,7 @@ export type PendingInvitationsQuery = {
             banner?:
               | {
                   __typename?: 'Visual';
+                  aspectRatio: number;
                   id: string;
                   uri: string;
                   name: VisualType;
@@ -48858,6 +49212,7 @@ export type NewVirtualContributorMySpacesQuery = {
                       banner?:
                         | {
                             __typename?: 'Visual';
+                            aspectRatio: number;
                             id: string;
                             uri: string;
                             name: VisualType;
@@ -48951,6 +49306,7 @@ export type AllSpaceSubspacesQuery = {
                   banner?:
                     | {
                         __typename?: 'Visual';
+                        aspectRatio: number;
                         id: string;
                         uri: string;
                         name: VisualType;
@@ -49019,6 +49375,7 @@ export type AllSpaceSubspacesQuery = {
                 banner?:
                   | {
                       __typename?: 'Visual';
+                      aspectRatio: number;
                       id: string;
                       uri: string;
                       name: VisualType;
@@ -49081,7 +49438,14 @@ export type SpaceProfileCommunityDetailsFragment = {
         | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
         | undefined;
       banner?:
-        | { __typename?: 'Visual'; id: string; uri: string; name: VisualType; alternativeText?: string | undefined }
+        | {
+            __typename?: 'Visual';
+            aspectRatio: number;
+            id: string;
+            uri: string;
+            name: VisualType;
+            alternativeText?: string | undefined;
+          }
         | undefined;
     };
     membership: {

@@ -769,7 +769,7 @@
         },
         "PLATFORM_ADMIN_USER_PROFILE_REMOVED": {
           "description": "",
-          "subject": "{{userName}} ({{userEmail}}) is verwijderd van het platform"
+          "subject": "Een gebruikersprofiel is van het platform verwijderd"
         },
         "PLATFORM_ADMIN_USER_SIGNED_UP": {
           "description": "",
@@ -999,8 +999,8 @@
     "aspectRatio": {
       "label": "Beeldverhouding: {{ratio}}:1",
       "ariaLabel": "Beeldverhouding: {{ratio}}",
-      "hintLeft": "Links: hoger beeldsnijden",
-      "hintRight": "Rechts: lager beeldsnijden",
+      "hintLeft": "Links: lager beeldsnijden",
+      "hintRight": "Rechts: hoger beeldsnijden",
       "name": "Bannervorm"
     }
   },
