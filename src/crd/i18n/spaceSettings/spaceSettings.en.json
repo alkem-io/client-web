@@ -922,7 +922,7 @@
       },
       "pageBanner": {
         "title": "Page Banner",
-        "hint": "Shown at the top of the Space page. Use an image at least 1536 × 154px.",
+        "hint": "Shown at the top of the Space page. Use an image at least 1200 × 120px.",
         "recrop": "Crop current page banner"
       },
       "cardBanner": {

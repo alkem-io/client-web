@@ -38,8 +38,8 @@ const EMPTY_VALUES: CreateSpaceFormValues = {
 const BANNER_CONSTRAINTS: CreateSpaceVisualConstraints = {
   maxWidth: 3840,
   maxHeight: 640,
-  minWidth: 1536,
-  minHeight: 154,
+  minWidth: 1200,
+  minHeight: 120,
   aspectRatio: 6,
   allowedTypes: ['image/png', 'image/jpeg'],
 };
