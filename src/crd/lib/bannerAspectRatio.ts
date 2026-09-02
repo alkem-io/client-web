@@ -9,11 +9,11 @@
  * the authoritative bounds always come from
  * `platform.configuration.defaultVisualTypeConstraints(type: BANNER)`.
  *
- * `DEFAULT` is the *design* default — the 10:1 slim strip — and deliberately
- * does NOT mirror the server's row-creation default: the server stamps 6 (the
- * historic shape) on every banner visual it creates, chosen by nobody, which
- * is why `resolveBannerAspectRatio` only trusts a stored ratio when an image
- * was actually cropped to it.
+ * `DEFAULT` is the 10:1 slim strip and mirrors the server's row-creation
+ * default (`DEFAULT_VISUAL_CONSTRAINTS[BANNER].aspectRatio`, also 10). Rows
+ * created before that default changed still carry the historic 6, chosen by
+ * nobody, which is why `resolveBannerAspectRatio` only trusts a stored ratio
+ * when an image was actually cropped to it.
  *
  * The ratio cannot be expressed as a Tailwind `aspect-[10/1]` class because the
  * JIT scanner needs a literal string at build time, so consumers apply it as an
@@ -55,9 +55,10 @@ export function bannerPlaceholderSize(aspectRatio: number): { width: number; hei
  * The stored ratio is only honoured when the visual actually has an image. The
  * server derives it from the uploaded pixels — which the crop dialog cut to
  * the shape slider's ratio — so a stored ratio describes an uploaded image's
- * shape; a visual with no image still carries a persisted value, but it is the
- * server's row-creation default (6), chosen by nobody, and letting it through
- * would pin every no-image gradient to the historic shape instead of `DEFAULT`.
+ * shape; a visual with no image still carries a persisted value, but it is only
+ * the server's row-creation default (10 today, 6 on rows created before the
+ * default changed), chosen by nobody, and letting it through would pin a
+ * legacy no-image gradient to the historic shape instead of `DEFAULT`.
  *
  * Deliberately does **not** clamp into `MIN`/`MAX`. Those two constants are a
  * fallback for the *edit* control while the server's real bounds are loading;
