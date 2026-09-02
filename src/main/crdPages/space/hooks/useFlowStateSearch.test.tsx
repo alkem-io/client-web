@@ -182,6 +182,153 @@ describe('useFlowStateSearch', () => {
     expect(fetchMore.mock.calls[0][0].variables.searchData.filters[0].cursor).toBe('c1');
   });
 
+  // A page result as the Apollo hook reports it. `loading` is only raised by
+  // the deadlock test to mimic a stuck networkStatus.
+  const queryResult = (ids: string[], cursor: string | undefined, loading = false) => ({
+    data: { search: { calloutResults: { results: ids.map(calloutResult), cursor } } },
+    loading,
+    error: undefined,
+    refetch: vi.fn(),
+  });
+
+  // A `fetchMore` mock that serves the given pages in order and — as Apollo
+  // does on success — swaps the hook's reported data to the merged page before
+  // the promise settles. Any call beyond the scripted pages rejects.
+  const pagedFetchMore = (pages: Array<{ ids: string[]; cursor: string | undefined }>) =>
+    vi.fn((_opts: { variables: QueryArgs['variables'] }) => {
+      const next = pages.shift();
+      if (!next) {
+        return Promise.reject(new Error('unscripted page'));
+      }
+      useFlowStateSearchQueryMock.mockReturnValue({ ...queryResult(next.ids, next.cursor), fetchMore });
+      return Promise.resolve();
+    });
+  let fetchMore: ReturnType<typeof pagedFetchMore>;
+
+  const flush = () => act(() => new Promise<void>(resolve => setTimeout(resolve, 0)));
+
+  // Regression: the server emits a cursor for every non-empty folded page and
+  // folding thins pages below PAGE_SIZE, so an uncapped confirmation chained
+  // sequential requests on a single keystroke. Exactly one eager confirmation
+  // per term/tag set: page-1 query + one fetchMore = 2 requests, no matter how
+  // many short pages follow; later pages are sentinel-driven.
+  test('consecutive short pages with cursors issue exactly one eager fetchMore (page-1 + 1 = 2 requests)', async () => {
+    // Page 1 is short with a cursor; its confirmation is short with a cursor
+    // again; so is the page after that. Only the sentinel may ask for it.
+    fetchMore = pagedFetchMore([
+      { ids: ['a', 'b', 'c'], cursor: 'c2' },
+      { ids: ['a', 'b', 'c', 'd'], cursor: undefined },
+      { ids: ['x'], cursor: undefined },
+    ]);
+    useFlowStateSearchQueryMock.mockReturnValue({ ...queryResult(['a', 'b'], 'c1'), fetchMore });
+
+    mockInView = false;
+    const { result, rerender } = renderHook(
+      (props: { terms: string[] }) =>
+        useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: props.terms }),
+      { initialProps: { terms: ['governance'] } }
+    );
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+    expect(fetchMore.mock.calls[0][0].variables.searchData.filters[0].cursor).toBe('c1');
+
+    // The confirmation lands as another short page with a cursor: no further
+    // eager request — the count honestly stays "3+" until the sentinel enters.
+    await flush();
+    expect(result.current.results).toHaveLength(3);
+    expect(result.current.hasMore).toBe(true);
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+
+    // Further pages are sentinel-driven: entering view loads the next one.
+    mockInView = true;
+    await act(async () => {
+      rerender({ terms: ['governance'] });
+    });
+    expect(fetchMore).toHaveBeenCalledTimes(2);
+    expect(fetchMore.mock.calls[1][0].variables.searchData.filters[0].cursor).toBe('c2');
+    await flush();
+    expect(result.current.results).toHaveLength(4);
+    expect(result.current.hasMore).toBe(false);
+
+    // A new term/tag set gets a fresh single allowance.
+    mockInView = false;
+    await act(async () => {
+      useFlowStateSearchQueryMock.mockReturnValue({ ...queryResult(['x'], 'd1'), fetchMore });
+      rerender({ terms: ['budget'] });
+    });
+    expect(fetchMore).toHaveBeenCalledTimes(3);
+    expect(fetchMore.mock.calls[2][0].variables.searchData.filters[0].cursor).toBe('d1');
+  });
+
+  // Regression: with Apollo 3.x a rejected fetchMore leaves the query at
+  // networkStatus=fetchMore (`loading` true) indefinitely. Paging must not gate
+  // on that flag, or one transient failure would block every later page.
+  test('a rejected fetchMore does not block later pages: the next sentinel entry retries and the page loads', async () => {
+    const fullPage = Array.from({ length: 10 }, (_, i) => `r${i}`);
+    fetchMore = pagedFetchMore([{ ids: [...fullPage, 'p2'], cursor: undefined }]).mockRejectedValueOnce(
+      new Error('network')
+    );
+    useFlowStateSearchQueryMock.mockReturnValue({ ...queryResult(fullPage, 'c1'), fetchMore });
+
+    mockInView = true;
+    const { result, rerender } = renderHook(() =>
+      useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] })
+    );
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+
+    // Let the rejection settle; Apollo now reports `loading: true` for good.
+    await act(async () => {
+      useFlowStateSearchQueryMock.mockReturnValue({ ...queryResult(fullPage, 'c1', true), fetchMore });
+      await new Promise(resolve => setTimeout(resolve, 0));
+    });
+    expect(result.current.appending).toBe(false);
+    expect(result.current.results).toHaveLength(10);
+    // No tight loop: the failed cursor is not retried while nothing changed.
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+
+    // The sentinel leaves and re-enters view → the same cursor is retried…
+    mockInView = false;
+    await act(async () => {
+      rerender();
+    });
+    mockInView = true;
+    await act(async () => {
+      rerender();
+    });
+    expect(fetchMore).toHaveBeenCalledTimes(2);
+    expect(fetchMore.mock.calls[1][0].variables.searchData.filters[0].cursor).toBe('c1');
+
+    // …and the second page loads.
+    await flush();
+    expect(result.current.results).toHaveLength(11);
+    expect(result.current.appending).toBe(false);
+  });
+
+  // A failure while the sentinel is OUT of view (an eager short-page
+  // confirmation) must be retried on the sentinel's FIRST entry — not only
+  // after a leave-and-re-enter cycle.
+  test("a failed eager confirmation is retried on the sentinel's first entry", async () => {
+    fetchMore = pagedFetchMore([{ ids: ['a', 'b'], cursor: undefined }]).mockRejectedValueOnce(new Error('network'));
+    useFlowStateSearchQueryMock.mockReturnValue({ ...queryResult(['a'], 'c1'), fetchMore });
+
+    mockInView = false;
+    const { result, rerender } = renderHook(() =>
+      useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] })
+    );
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+    await flush();
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+
+    mockInView = true;
+    await act(async () => {
+      rerender();
+    });
+    expect(fetchMore).toHaveBeenCalledTimes(2);
+    expect(fetchMore.mock.calls[1][0].variables.searchData.filters[0].cursor).toBe('c1');
+    await flush();
+    expect(result.current.results).toHaveLength(2);
+    expect(result.current.hasMore).toBe(false);
+  });
+
   test('a full page waits for the sentinel before loading the next one (FR-013)', () => {
     const fetchMore = vi.fn(() => Promise.resolve());
     const fullPage = Array.from({ length: 10 }, (_, i) => calloutResult(`r${i}`));

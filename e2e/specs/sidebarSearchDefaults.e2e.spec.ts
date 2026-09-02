@@ -10,7 +10,8 @@ import type { Locator, Page } from '@playwright/test';
  * Reproduces, as a durable live-stack walk, the UI-observable half of the
  * acceptance scenarios that /forge verified data-side via a direct read of
  * `innovation_flow_state.settings->'sidebar'` and the migration's real-DB
- * fixture matrix (see specs/055-sidebar-search-widget/.forge/evidence/US2/).
+ * fixture matrix (see the agents-hq workspace's
+ * `specs/055-sidebar-search-widget/forge/evidence-run1/US2/`).
  * That data-level evidence is the primary proof per the story's own
  * Independent Test ("read the stored sidebar lists ... create a new Space
  * and a new tab afterwards"); this spec adds the rendered-order assertion a
@@ -143,7 +144,8 @@ test.describe('sidebar search widget — default placement (US2)', () => {
     test.skip(!SUBSPACE_URL, 'E2E_SUBSPACE_URL not set — no subspace fixture to walk');
     await authedPage.goto(SUBSPACE_URL!);
     // FR-013: subspace states store `search` (asserted at the data layer —
-    // see the live-stack DB read in .forge/evidence/US2/) but the subspace
+    // see the live-stack DB read in the workspace's forge/evidence-run1/US2/)
+    // but the subspace
     // page must not render the widget — dormant scope, unchanged by 055.
     // Pin that the subspace page actually rendered its tab strip first: a
     // count of 0 on a blank or errored page would pass for the wrong reason.
