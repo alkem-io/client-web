@@ -22,10 +22,15 @@ import type { Page } from '@playwright/test';
  *                                 chips overflow into a "Show N more"
  *                                 affordance), and one post tagged the unsafe
  *                                 E2E_UNSAFE_TAG_NAME string.
- *   E2E_OTHER_SPACE_UNIQUE_TERM — a term unique to a post in a *different*
- *                                 top-level Space, on a same-named tab, used
- *                                 to prove the search never leaks across
- *                                 Spaces (US1-AS9).
+ *   E2E_OTHER_SPACE_URL        — a *different* top-level Space whose tab-1
+ *                                 (Home) sidebar also carries the `search`
+ *                                 widget (US1-AS9). Required for AS9: the
+ *                                 test is skipped when absent, never silently
+ *                                 passed.
+ *   E2E_OTHER_SPACE_UNIQUE_TERM — a term unique to a post in that other
+ *                                 Space, used to prove the search never leaks
+ *                                 across Spaces (US1-AS9): it must match >= 1
+ *                                 item there (positive control) and 0 here.
  *
  * US1-AS14 (search backend unavailable) needs an operator/orchestrator lever
  * outside Playwright's reach (stopping the search backend container) and is
@@ -47,6 +52,7 @@ const TAG_2 = process.env.E2E_TAG_2 || 'Solar';
 const REPORT_TERM = process.env.E2E_REPORT_TERM || 'report';
 const REPORT_COUNT = Number(process.env.E2E_REPORT_COUNT || 12);
 const NO_MATCH_TERM = process.env.E2E_NO_MATCH_TERM || 'zzqx-nothing';
+const OTHER_SPACE_URL = process.env.E2E_OTHER_SPACE_URL;
 const OTHER_SPACE_UNIQUE_TERM = process.env.E2E_OTHER_SPACE_UNIQUE_TERM || 'zebra-unique-9271';
 const UNSAFE_TAG_NAME = process.env.E2E_UNSAFE_TAG_NAME || '<img src=x onerror=alert(1)>';
 const SEARCH_BACKEND_DOWN = process.env.E2E_SEARCH_BACKEND_DOWN === 'true';
@@ -98,8 +104,8 @@ async function readLabel(page: Page): Promise<string | null> {
   return (await label.textContent())?.trim() ?? null;
 }
 
-async function gotoTab(page: Page, tabName: string) {
-  await page.goto(SPACE_URL);
+async function gotoTab(page: Page, tabName: string, spaceUrl: string = SPACE_URL) {
+  await page.goto(spaceUrl);
   await page.getByRole('tab', { name: tabName }).click();
   await expect(page.getByRole('tab', { name: tabName })).toHaveAttribute('aria-selected', 'true');
   await expect(searchField(page)).toBeVisible();
@@ -242,9 +248,22 @@ test.describe('sidebar search widget — member search & filter (US1)', () => {
   test('US1-AS9 — a term unique to another Space never leaks into this Space\'s results', async ({
     authedPage: page,
   }) => {
+    test.skip(!OTHER_SPACE_URL, 'E2E_OTHER_SPACE_URL not set — no second Space to prove the term exists in');
+
+    // Positive control first: the term really matches something in the OTHER
+    // Space. Without it, "0 items" here would also pass for a term that
+    // matches nothing anywhere (a misspelt or unindexed fixture, or a stale
+    // index) — and would keep passing if the Space scoping were deleted.
+    await gotoTab(page, TAB_HOME, OTHER_SPACE_URL!);
     await typeAndSettle(page, OTHER_SPACE_UNIQUE_TERM);
     await page.waitForTimeout(1_000);
+    const otherSpaceLabel = await readLabel(page);
+    expect(otherSpaceLabel, 'the fixture term must match in the other Space').toMatch(/^[1-9]\d*\+? items match/);
 
+    // Now the Space under test: the same term must match nothing.
+    await gotoTab(page, TAB_HOME);
+    await typeAndSettle(page, OTHER_SPACE_UNIQUE_TERM);
+    await page.waitForTimeout(1_000);
     const label = await readLabel(page);
     expect(label).toContain('0 items match search for');
   });

@@ -71,6 +71,11 @@ export function SpaceShell({
                 'hidden',
                 showSidebar && [
                   'lg:block col-span-2 sticky top-[8.5rem] self-start max-h-[calc(100vh-8.5rem)] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+                  // `overflow-y-auto` also clips horizontally, which cut the sides of the
+                  // search field's 2px focus ring. Pad the scroll box by that ring width and
+                  // pull the margins back by the same amount: the column keeps its width and
+                  // the ring now paints inside the clip box.
+                  'px-0.5 -mx-0.5',
                   fullWidth ? 'lg:col-start-1' : 'lg:col-start-2',
                 ]
               )}

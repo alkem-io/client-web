@@ -1,5 +1,5 @@
 import { expect, test } from '../fixtures/authFixture';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 /**
  * @forge-acceptance
@@ -51,20 +51,42 @@ function sidebarNav(page: Page) {
   return page.getByRole('navigation', { name: SIDEBAR_NAV_NAME });
 }
 
+/** `<input type="search">` — ARIA role `searchbox`, never `textbox`. */
+function searchField(page: Page) {
+  return sidebarNav(page).getByRole('searchbox', { name: SEARCH_FIELD_NAME });
+}
+
+function addPostButton(page: Page) {
+  return sidebarNav(page).getByRole('button', { name: ADD_POST_NAME });
+}
+
+function createSubspaceButton(page: Page) {
+  return sidebarNav(page).getByRole('button', { name: CREATE_SUBSPACE_NAME });
+}
+
+function postIndexButton(page: Page) {
+  return sidebarNav(page).getByRole('button', { name: /Index$/ });
+}
+
 /**
  * The desktop sidebar is a single vertical column rendered directly from the
  * tab's resolved widget plan, in order (`plan.map(widgetId => sections[widgetId])`
- * — no reordering, see SpaceTabSidebarConnector.tsx). Flattened `innerText`
- * therefore preserves the stored list's order, so a plain substring-index
- * comparison is a deterministic, DOM-order assertion — not a layout/pixel one.
+ * — no reordering, see SpaceTabSidebarConnector.tsx). DOM order therefore IS
+ * the stored list's order, so comparing the two widgets' document positions
+ * is a deterministic slot-order assertion — not a layout/pixel one. (The
+ * search widget's name lives only in its input's accessible name, so a text
+ * search of the sidebar could never locate it — hence element positions.)
  */
-async function expectRenderedBefore(page: Page, firstName: string, secondName: string) {
-  const text = await sidebarNav(page).innerText();
-  const firstIndex = text.indexOf(firstName);
-  const secondIndex = text.indexOf(secondName);
-  expect(firstIndex, `"${firstName}" must be present in the sidebar`).toBeGreaterThanOrEqual(0);
-  expect(secondIndex, `"${secondName}" must be present in the sidebar`).toBeGreaterThanOrEqual(0);
-  expect(firstIndex, `"${firstName}" must render before "${secondName}"`).toBeLessThan(secondIndex);
+async function expectRenderedBefore(first: Locator, second: Locator) {
+  await expect(first).toBeVisible();
+  await expect(second).toBeVisible();
+  const firstHandle = await first.elementHandle();
+  const secondHandle = await second.elementHandle();
+  const firstPrecedesSecond = await firstHandle!.evaluate(
+    (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING),
+    secondHandle!
+  );
+  expect(firstPrecedesSecond, 'the first widget must render before the second').toBe(true);
 }
 
 async function gotoTab(page: Page, spaceUrl: string, tabName: string) {
@@ -77,29 +99,22 @@ async function gotoTab(page: Page, spaceUrl: string, tabName: string) {
  *  Create Subspace/Add Post on tab 3, right before Post Index on tab 4+. */
 async function assertDefaultSidebarOrder(page: Page, spaceUrl: string) {
   await gotoTab(page, spaceUrl, TAB_HOME);
-  await expect(sidebarNav(page).getByRole('textbox', { name: SEARCH_FIELD_NAME })).toBeVisible();
-  await expectRenderedBefore(page, ADD_POST_NAME, SEARCH_FIELD_NAME);
+  await expectRenderedBefore(addPostButton(page), searchField(page));
 
   await gotoTab(page, spaceUrl, TAB_COMMUNITY);
-  await expect(sidebarNav(page).getByRole('textbox', { name: SEARCH_FIELD_NAME })).toBeVisible();
-  await expectRenderedBefore(page, ADD_POST_NAME, SEARCH_FIELD_NAME);
+  await expectRenderedBefore(addPostButton(page), searchField(page));
 
   await gotoTab(page, spaceUrl, TAB_SUBSPACES);
-  await expect(sidebarNav(page).getByRole('textbox', { name: SEARCH_FIELD_NAME })).toBeVisible();
-  await expectRenderedBefore(page, CREATE_SUBSPACE_NAME, SEARCH_FIELD_NAME);
-  await expectRenderedBefore(page, ADD_POST_NAME, SEARCH_FIELD_NAME);
+  await expectRenderedBefore(createSubspaceButton(page), searchField(page));
+  await expectRenderedBefore(addPostButton(page), searchField(page));
 
   await gotoTab(page, spaceUrl, TAB_KNOWLEDGE);
-  await expect(sidebarNav(page).getByRole('textbox', { name: SEARCH_FIELD_NAME })).toBeVisible();
-  const postIndexButton = sidebarNav(page).getByRole('button', { name: /Index$/ });
-  await expect(postIndexButton).toBeVisible();
-  const postIndexName = (await postIndexButton.textContent()) ?? '';
-  await expectRenderedBefore(page, SEARCH_FIELD_NAME, postIndexName.trim());
+  await expectRenderedBefore(searchField(page), postIndexButton(page));
 
   // Removed-content-row guard (FR-008): the Knowledge tab's main content area
   // must carry no second search field — the sidebar widget is the only entry
   // point.
-  await expect(page.getByRole('textbox', { name: SEARCH_FIELD_NAME })).toHaveCount(1);
+  await expect(page.getByRole('searchbox', { name: SEARCH_FIELD_NAME })).toHaveCount(1);
 }
 
 test.describe('sidebar search widget — default placement (US2)', () => {
@@ -113,7 +128,7 @@ test.describe('sidebar search widget — default placement (US2)', () => {
     authedPage,
   }) => {
     // E2E_SPACE_URL is expected to be a Space bootstrapped/created AFTER the
-    // 1788100000000-AddSearchSidebarWidget migration ran on the target stack
+    // 1788200000000-AddSearchSidebarWidget migration ran on the target stack
     // (the default rollout order per plan.md — server merges + migrates
     // first). Both US2-AS1 and US2-AS7 assert the identical FR-003 shapes
     // because they share one code path (SIDEBAR_DEFAULT_* constants +
@@ -130,7 +145,10 @@ test.describe('sidebar search widget — default placement (US2)', () => {
     // FR-013: subspace states store `search` (asserted at the data layer —
     // see the live-stack DB read in .forge/evidence/US2/) but the subspace
     // page must not render the widget — dormant scope, unchanged by 055.
-    await expect(authedPage.getByRole('textbox', { name: SEARCH_FIELD_NAME })).toHaveCount(0);
+    // Pin that the subspace page actually rendered its tab strip first: a
+    // count of 0 on a blank or errored page would pass for the wrong reason.
+    await expect(authedPage.getByRole('tab').first()).toBeVisible();
+    await expect(authedPage.getByRole('searchbox', { name: SEARCH_FIELD_NAME })).toHaveCount(0);
   });
 
   test('US2-AS8 — adding a new tab stores the generic default and renders Search before Post Index', async ({
@@ -148,10 +166,6 @@ test.describe('sidebar search widget — default placement (US2)', () => {
     await authedPage.getByRole('tab', { name: tabName }).click();
     await expect(authedPage.getByRole('tab', { name: tabName })).toHaveAttribute('aria-selected', 'true');
 
-    await expect(sidebarNav(authedPage).getByRole('textbox', { name: SEARCH_FIELD_NAME })).toBeVisible();
-    const postIndexButton = sidebarNav(authedPage).getByRole('button', { name: /Index$/ });
-    await expect(postIndexButton).toBeVisible();
-    const postIndexName = (await postIndexButton.textContent()) ?? '';
-    await expectRenderedBefore(authedPage, SEARCH_FIELD_NAME, postIndexName.trim());
+    await expectRenderedBefore(searchField(authedPage), postIndexButton(authedPage));
   });
 });

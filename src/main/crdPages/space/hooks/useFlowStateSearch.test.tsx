@@ -57,7 +57,7 @@ describe('useFlowStateSearch', () => {
       data: undefined,
       loading: true,
       error: undefined,
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
@@ -81,7 +81,7 @@ describe('useFlowStateSearch', () => {
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } },
       loading: false,
       error: undefined,
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
@@ -160,6 +160,68 @@ describe('useFlowStateSearch', () => {
     expect(merged.search.calloutResults.results[0].id).toBe('a');
   });
 
+  // FR-006: a short page still carries a cursor (the server only drops it on
+  // the request after the last page), so it is confirmed eagerly — without the
+  // sentinel — and the "N+" count can settle to "N" on a tall, unscrolled list.
+  test('a short page with a cursor is confirmed eagerly, without the sentinel (FR-006)', () => {
+    const fetchMore = vi.fn((_opts: { variables: QueryArgs['variables'] }) => Promise.resolve());
+    useFlowStateSearchQueryMock.mockReturnValue({
+      data: {
+        search: { calloutResults: { results: [calloutResult('a'), calloutResult('b')], cursor: 'c1' } },
+      },
+      loading: false,
+      error: undefined,
+      fetchMore,
+      refetch: vi.fn(),
+    });
+
+    mockInView = false;
+    renderHook(() => useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] }));
+
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+    expect(fetchMore.mock.calls[0][0].variables.searchData.filters[0].cursor).toBe('c1');
+  });
+
+  test('a full page waits for the sentinel before loading the next one (FR-013)', () => {
+    const fetchMore = vi.fn(() => Promise.resolve());
+    const fullPage = Array.from({ length: 10 }, (_, i) => calloutResult(`r${i}`));
+    useFlowStateSearchQueryMock.mockReturnValue({
+      data: { search: { calloutResults: { results: fullPage, cursor: 'c1' } } },
+      loading: false,
+      error: undefined,
+      fetchMore,
+      refetch: vi.fn(),
+    });
+
+    mockInView = false;
+    const { rerender } = renderHook(() =>
+      useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] })
+    );
+    expect(fetchMore).not.toHaveBeenCalled();
+
+    mockInView = true;
+    rerender();
+    expect(fetchMore).toHaveBeenCalledTimes(1);
+  });
+
+  test('a short page without a cursor is the end: nothing is fetched (FR-013)', () => {
+    const fetchMore = vi.fn(() => Promise.resolve());
+    useFlowStateSearchQueryMock.mockReturnValue({
+      data: { search: { calloutResults: { results: [calloutResult('a')], cursor: undefined } } },
+      loading: false,
+      error: undefined,
+      fetchMore,
+      refetch: vi.fn(),
+    });
+
+    mockInView = false;
+    const { result } = renderHook(() =>
+      useFlowStateSearch({ flowStateID: FLOW_STATE, spaceID: SPACE, terms: ['governance'] })
+    );
+    expect(fetchMore).not.toHaveBeenCalled();
+    expect(result.current.hasMore).toBe(false);
+  });
+
   // FR-013: end-of-results is driven off cursor presence (no count). With a
   // cursor present, more pages may exist; absent, the list is complete.
   test('hasMore is driven off cursor presence, not a count (FR-013)', () => {
@@ -167,7 +229,7 @@ describe('useFlowStateSearch', () => {
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: undefined } } },
       loading: false,
       error: undefined,
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
@@ -184,7 +246,7 @@ describe('useFlowStateSearch', () => {
       data: undefined,
       loading: false,
       error: new Error('boom'),
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
 
@@ -198,7 +260,7 @@ describe('useFlowStateSearch', () => {
       data: { search: { calloutResults: { results: [calloutResult('a')], cursor: 'c1' } } },
       loading: false,
       error: new Error('boom'),
-      fetchMore: vi.fn(),
+      fetchMore: vi.fn(() => Promise.resolve()),
       refetch: vi.fn(),
     });
     rerender();

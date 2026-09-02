@@ -74,7 +74,7 @@ export function useFlowStateSearch({
   // when a term itself contains spaces — `['foo bar']` and `['foo', 'bar']` would
   // collapse to the same key, letting a stale in-flight page from the prior term
   // set pass the latest-wins check and merge into the new query.
-  const requestKey = JSON.stringify({ flowStateID: flowStateID ?? '', terms });
+  const requestKey = JSON.stringify({ flowStateID: flowStateID ?? '', spaceID: spaceID ?? '', terms });
   const requestKeyRef = useRef(requestKey);
   // Sync the latest-wins signature inside an effect (never during render).
   useEffect(() => {
@@ -127,6 +127,26 @@ export function useFlowStateSearch({
   const cursor = data?.search.calloutResults.cursor;
   const hasMore = Boolean(cursor);
 
+  // Size of the most recently received page (page 1, or the last appended
+  // page). The server only signals the end of results by omitting the cursor
+  // on the request AFTER the last one, so a short page still carries a cursor
+  // and the count label would read "N+" with every card already on screen —
+  // for good, on a list tall enough that the sentinel never comes into view.
+  // A short page is therefore confirmed eagerly (below), without waiting for
+  // the sentinel: the follow-up request either returns nothing and drops the
+  // cursor, settling the count to the exact "N" (FR-006), or returns real
+  // results that were going to be needed anyway. A short page is never
+  // treated as the end by itself — authorization can thin a page while more
+  // readable results remain, and only the server may say "no more".
+  const resultsLength = results.length;
+  const previousResultsLengthRef = useRef(0);
+  const [lastPageSize, setLastPageSize] = useState(0);
+  useEffect(() => {
+    setLastPageSize(resultsLength - previousResultsLengthRef.current);
+    previousResultsLengthRef.current = resultsLength;
+  }, [resultsLength, requestKey]);
+  const lastPageWasShort = resultsLength > 0 && lastPageSize > 0 && lastPageSize < PAGE_SIZE;
+
   // Distinguish a first-page load (skeleton) from a subsequent append (footer
   // spinner): if we already hold results, an in-flight network call is an
   // append; otherwise it is the first page.
@@ -144,7 +164,8 @@ export function useFlowStateSearch({
     status = 'empty';
   }
 
-  // Infinite scroll (FR-013): auto-load the next page as the sentinel nears view.
+  // Infinite scroll (FR-013): auto-load the next page as the sentinel nears view,
+  // or right away to confirm a short page (see `lastPageWasShort` above).
   // The load is inlined in the effect with complete dependencies so the rules of
   // React (and the React Compiler) hold without disabling any lint rule.
   const { ref: sentinelRef, inView } = useInView({ rootMargin: '200px', delay: 100 });
@@ -158,7 +179,10 @@ export function useFlowStateSearch({
   }, [inView]);
 
   useEffect(() => {
-    if (!inView || shouldSkip || !cursor || appending || loading || failedCursorRef.current === cursor) {
+    if (shouldSkip || !cursor || appending || loading || failedCursorRef.current === cursor) {
+      return;
+    }
+    if (!inView && !lastPageWasShort) {
       return;
     }
     const keyAtRequest = requestKeyRef.current;
@@ -208,7 +232,7 @@ export function useFlowStateSearch({
           setAppending(false);
         }
       });
-  }, [inView, shouldSkip, cursor, appending, loading, terms, flowStateID, spaceID, fetchMore]);
+  }, [inView, lastPageWasShort, shouldSkip, cursor, appending, loading, terms, flowStateID, spaceID, fetchMore]);
 
   const retry = () => {
     void refetch();

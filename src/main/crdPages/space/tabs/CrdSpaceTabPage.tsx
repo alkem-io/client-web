@@ -25,6 +25,7 @@ import { resolveSidebarPlan } from '../layout/sidebarWidgetPlan';
 
 /** Debounce window between a keystroke and the search it drives (SC-003). */
 const SEARCH_DEBOUNCE_MS = 300;
+const isEmptySearchText = (text: string) => text === '';
 
 type CrdSpaceTabPageProps = {
   tabPosition: number;
@@ -90,10 +91,10 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
   const hasSearchWidget = sidebarPlan.includes('search');
   const [tagsFilter, setTagsFilter] = useState<string[]>([]);
   const [searchText, setSearchText] = useState('');
-  const debouncedText = useDebouncedValue(searchText, SEARCH_DEBOUNCE_MS);
   // Clearing the field applies immediately — only a non-empty value waits out
-  // the debounce, so the X button (and deleting down to empty) never lags.
-  const appliedText = searchText === '' ? '' : debouncedText.trim();
+  // the debounce, so the X button (and deleting down to empty) never lags, and
+  // a term typed right after a clear can never re-apply the cleared one.
+  const appliedText = useDebouncedValue(searchText, SEARCH_DEBOUNCE_MS, { immediate: isEmptySearchText }).trim();
   const flowStateId = flowStateForNewCallouts?.id;
   const { data: tagsData } = useCalloutsSetTagsQuery({
     variables: {
