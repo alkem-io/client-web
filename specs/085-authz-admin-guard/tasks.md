@@ -65,9 +65,9 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 
 ### Tests
 
-- [ ] T013 [P] [US1] Add a test to `src/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment.test.ts` asserting a `FORBIDDEN` rejection produces exactly one `useNotification` call with severity `error` (spec SC-001).
-- [ ] T014 [P] [US1] Add a test to the same file asserting a `FORBIDDEN_POLICY` rejection behaves identically, and that a network/validation rejection produces **zero** call-site notifications, so the global handler is not doubled.
-- [ ] T015 [P] [US1] Add a test to the same file asserting a rejected mutation triggers no refetch and no cache eviction (spec FR-016), and that the rejection still propagates to the caller.
+- [ ] T013 [US1] Create `src/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment.test.ts` (it does not exist yet) with a test asserting a `FORBIDDEN` rejection produces exactly one `useNotification` call with severity `error` (spec SC-001).
+- [ ] T014 [P] [US1] Add a test to `src/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment.test.ts` asserting a `FORBIDDEN_POLICY` rejection behaves identically, and that a network/validation rejection produces **zero** call-site notifications, so the global handler is not doubled.
+- [ ] T015 [P] [US1] Add a test to `src/domain/access/RoleSetManager/RolesAssignment/useRoleSetManagerRolesAssignment.test.ts` asserting a rejected mutation triggers no refetch and no cache eviction (spec FR-016), and that the rejection still propagates to the caller.
 
 **Checkpoint**: No role-assignment failure is silent anywhere in the app. US1 is independently shippable.
 
@@ -81,7 +81,7 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 
 ### Shared building blocks
 
-- [ ] T016 [P] [US2] Create `src/domain/access/permissions/useActionPermission.ts` implementing the hook contract in `specs/085-authz-admin-guard/data-model.md`: `(myPrivileges, required, loading) => { allowed, reason }` with `reason` in `'allowed' | 'checking' | 'denied' | 'unverifiable'`. Every non-affirmative input state must fail closed, an empty `required` array must yield `denied`, and all listed privileges must be present for `allowed`.
+- [ ] T016 [P] [US2] Create `src/domain/access/permissions/useActionPermission.ts` implementing the hook contract in `specs/085-authz-admin-guard/data-model.md`: `(myPrivileges, required, loading) => { allowed, reason }` with `reason` in `'allowed' | 'checking' | 'denied' | 'unverifiable'`. Every non-affirmative input state must fail closed, an empty `required` array must yield `denied`, and all listed privileges must be present for `allowed`. Write it as a plain derivation — no `useMemo`/`useCallback` (React Compiler is enabled and the `react-compiler` ESLint rule will flag manual memoization).
 - [ ] T017 [P] [US2] Create `src/crd/components/common/GatedAction.tsx` implementing the component contract in `specs/085-authz-admin-guard/data-model.md`: an optional `disabledReason` string and a single child. When set, apply `aria-disabled="true"`, keep the child in the tab order, suppress activation, and wrap it with `Tooltip`/`TooltipTrigger`/`TooltipContent` from `src/crd/primitives/tooltip.tsx`. Never apply the native `disabled` attribute (research Decision 3). No imports from `@/domain`, `@/core/apollo`, `@apollo/client`, `react-router-dom`, or `formik`.
 - [ ] T018 [P] [US2] Add `src/domain/access/permissions/useActionPermission.test.ts` covering every row of the derivation table in `data-model.md`, including the multi-privilege case and the empty-`required` case.
 - [ ] T019 [P] [US2] Add `src/crd/components/common/__tests__/GatedAction.test.tsx` covering: ungated pass-through with no added ARIA; gated rendering with `aria-disabled`; the child remaining focusable; tooltip shown on hover **and** on keyboard focus; activation suppressed (spec SC-007); and the native `disabled` attribute never being applied.
@@ -104,9 +104,9 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 
 - [ ] T028 [US2] Fix Open Risk R2: forward `canAddUsers` from `useCommunityAdmin` through the `permissions` object returned by `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts`, which currently drops it, leaving the add-member path entirely ungated.
 - [ ] T029 [US2] Add a `disabledReason?: string` prop to `src/crd/components/space/settings/AddCommunityMemberDialog.tsx` and apply it via `GatedAction` on the add control, keeping the existing `disabled={isAdding}` in-flight behavior distinct from permission gating.
-- [ ] T030 [US2] Add the equivalent prop to `src/crd/components/space/settings/MemberSettingsDialog.tsx` and apply it to the member remove and role-toggle controls, using the organization token pair (`ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` + `GRANT`) for organization rows per `useCommunityAdmin.ts`.
-- [ ] T031 [US2] In `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`, map the forwarded permissions to reason strings and pass them into both dialogs.
-- [ ] T032 [P] [US2] Add tests for surface 4 asserting the add-member control is gated without `ROLESET_ENTRY_ROLE_ASSIGN` — a regression test for the previously ungated path.
+- [ ] T030 [US2] Add `disabledReason?: string` props to `src/crd/components/space/settings/MemberSettingsDialog.tsx` and apply them via `GatedAction` to the member remove and role-toggle controls. The component receives finished strings only — no privilege token, no `AuthorizationPrivilege` import, no `@/domain` import (CRD boundary, per `specs/085-authz-admin-guard/contracts/ui-contract.md`).
+- [ ] T031 [US2] In `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`, evaluate the privileges and map them to reason strings before passing them into both dialogs — including the organization token pair (`ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` + `GRANT`) for organization rows, per `useCommunityAdmin.ts:198-207`. All token logic lives here, never in the CRD components.
+- [ ] T032 [P] [US2] Add `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.permissions.test.ts` asserting `canAddUsers` is forwarded (T028) and that the add-member control is gated without `ROLESET_ENTRY_ROLE_ASSIGN` — a regression test for the previously ungated path.
 
 **Checkpoint**: All four surfaces gate their controls. Combined with US1, the feature is complete.
 
@@ -119,6 +119,7 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 - [ ] T035 [P] Confirm SC-004 by asserting the network request count on a covered surface is unchanged from before the feature.
 - [ ] T036 Run `pnpm lint` and `pnpm vitest run` and confirm both pass.
 - [ ] T037 Update `specs/085-authz-admin-guard/research.md` to close Open Risks R1 and R2 with what was actually implemented, and link issue #10258 in the PR description.
+- [ ] T038 Verify spec FR-014 held: confirm `git diff` shows no change to `src/core/apollo/graphqlLinks/useErrorHandlerLink.ts` and that `EXCLUDE_FROM_GLOBAL_HANDLER_ERRORS` still lists `FORBIDDEN` and `FORBIDDEN_POLICY`. If that list were changed, the call-site handler added in T011-T012 would double-notify.
 
 ---
 
@@ -126,7 +127,7 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 
 ```text
 Phase 1 (T001-T002)  ──►  Phase 2 (T003-T009)  ──┬──►  Phase 3: US1 (T010-T015)  ──┐
-                                                  │                                 ├──►  Phase 5 (T033-T037)
+                                                  │                                 ├──►  Phase 5 (T033-T038)
                                                   └──►  Phase 4: US2 (T016-T032)  ──┘
 ```
 
@@ -139,7 +140,7 @@ Phase 1 (T001-T002)  ──►  Phase 2 (T003-T009)  ──┬──►  Phase 3
 
 **Phase 2** — T004 through T008 are five separate locale files, all parallel after T003 establishes the key shape.
 
-**US1** — T013, T014 and T015 are parallel once T010–T012 land.
+**US1** — T013 creates the test file once T010–T012 land; T014 and T015 then append to it in parallel.
 
 **US2 building blocks** — T016, T017, T018 and T019 are four separate files, all parallel.
 
