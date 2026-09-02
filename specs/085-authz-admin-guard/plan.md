@@ -24,11 +24,11 @@ The technical approach has three parts:
 **Performance Goals**: No additional network requests on any surface (SC-004). Enablement is a synchronous array-membership test over data the page already loads.
 **Constraints**:
 - **CRD only.** Constitution v1.1.0 Arch Std #2 freezes MUI, and the legacy MUI app has since been deleted outright — `@mui/*` and `@emotion/*` are gone from `package.json` and from every file in `src/`. All four inventoried surfaces are CRD, and no MUI variant of the gated control exists or may be created.
-- **`src/crd/` takes no business logic.** The privilege decision is computed in `src/main/crdPages/` glue and passed down as a plain string prop.
-- **i18n:** new strings go to a CRD per-feature namespace with all six locales (en, nl, es, bg, de, fr) edited in the same PR. `src/core/i18n/en/translation.en.json` is FROZEN for new keys (Arch Std #3).
+- **`src/crd/` takes no business logic.** Privilege derivation is owned by the domain layer: `useActionPermission` in `src/domain/access/permissions/` is the single place the decision is made. The `src/main/crdPages/` glue *invokes* that domain hook and maps its `reason` to localized copy; it does not re-implement the derivation. CRD components receive only the resulting plain string.
+- **i18n:** new strings go to a CRD namespace with all six locales (en, nl, es, bg, de, fr) edited in the same PR and key parity enforced (Arch Std #3). The legacy core file that standard calls frozen, `src/core/i18n/en/translation.en.json`, no longer exists — it went with the MUI app — so a CRD namespace is the only destination.
 - WCAG 2.1 AA: the control must be keyboard-focusable *and* non-activatable — this rules out the native `disabled` attribute (see research Decision 3).
 - No manual `useMemo`/`useCallback`/`React.memo` (React Compiler); no barrel exports.
-**Scale/Scope**: 4 surfaces, 3 shared CRD presentational components, 8 mutations, 1 new hook, 1 new CRD component, 6 locale files. Order of magnitude: ~15 files.
+**Scale/Scope**: 4 surfaces, 4 existing CRD presentational components edited (`RoleMembersEditor`, `RoleAssignmentView` — shared by surfaces 2 and 3 — `AddCommunityMemberDialog`, `MemberSettingsDialog`), 8 mutations, 1 new domain hook, 1 new CRD component, 6 locale files. Order of magnitude: ~18 files.
 
 ## Constitution Check
 
@@ -36,7 +36,7 @@ The technical approach has three parts:
 
 | Principle | Status | Notes |
 |-----------|--------|-------|
-| I. Domain-Driven Frontend Boundaries | PASS | Privilege derivation lives in `src/domain/access/`; CRD components consume a plain `disabledReason` string. No authorization rule inside a component. |
+| I. Domain-Driven Frontend Boundaries | PASS | Privilege derivation lives solely in `src/domain/access/permissions/useActionPermission.ts`; `src/main/crdPages/` invokes it and maps `reason` to copy; CRD components consume a plain `disabledReason` string. No authorization rule inside a component, and no second derivation path. |
 | II. React 19 Concurrent UX Discipline | PASS | Pure derivation from loaded data; no effects, no lifecycle work. Loading state is an explicit, accessible fallback (FR-008), not a flicker. |
 | III. GraphQL Contract Fidelity | PASS | Consumes the existing `Authorization.myPrivileges` field through generated hooks. No schema change, no new query, no codegen run required (see research Decision 1). Component props are plain TS, never generated types. |
 | IV. State & Side-Effect Isolation | PASS | The single side effect (error toast) is funnelled through the existing `useNotification()` adapter, raised once at the mutation-owning hook rather than scattered per call site. |
@@ -93,10 +93,11 @@ src/
     ├── admin/authorization/CrdAdminGlobalRolesPage.tsx           # TOUCH — surface 1
     ├── organizationPages/settings/authorization/useOrgRoleAssignment.ts  # TOUCH — surface 2
     ├── organizationPages/settings/community/useOrgAssociates.ts   # TOUCH — surface 3
-    └── spaceSettings/community/useCommunityTabData.ts             # TOUCH — surface 4 (forward canAddUsers)
+    ├── spaceSettings/community/useCommunityTabData.ts             # TOUCH — surface 4 (forward raw privileges + canAddUsers)
+    └── spaceSettings/CrdSpaceSettingsPage.tsx                     # TOUCH — surface 4 (invoke hook, map reasons into both dialogs)
 ```
 
-**Structure Decision**: Single-project frontend SPA. New code is deliberately minimal — one domain hook and one CRD component — with every other change being an in-place edit at an inventoried site. The three shared CRD views (`RoleMembersEditor`, `RoleAssignmentView`, the two space-settings dialogs) mean four surfaces are covered by editing three presentational components.
+**Structure Decision**: Single-project frontend SPA. New code is deliberately minimal — one domain hook and one CRD component — with every other change being an in-place edit at an inventoried site. Four CRD presentational components are edited to cover the four surfaces; the saving is that `RoleAssignmentView` is shared by surfaces 2 and 3, and `useCommunityAdmin` additionally exposes its raw privileges so surface 4 uses the same derivation path as the rest rather than a second one.
 
 ## Complexity Tracking
 

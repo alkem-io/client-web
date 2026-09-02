@@ -3,7 +3,7 @@
 **Feature**: 085-authz-admin-guard
 **Date**: 2026-09-02
 
-No new persisted entities and no schema changes. This documents the shapes consumed and the two contracts introduced.
+No new persisted entities and no schema changes. This documents the shapes consumed and the three contracts introduced.
 
 ## Consumed GraphQL shapes (existing)
 
@@ -48,16 +48,19 @@ declare function useActionPermission(
 
 ### Derivation rules
 
-| `loading` | `myPrivileges` | `required` satisfied | `allowed` | `reason` |
-|---|---|---|---|---|
-| `true` | any | — | `false` | `checking` |
-| `false` | `undefined` | — | `false` | `unverifiable` |
-| `false` | array | no | `false` | `denied` |
-| `false` | array | yes | `true` | `allowed` |
+Rules are evaluated **in this order**; the first matching row wins.
 
+| # | `required` | `loading` | `myPrivileges` | satisfied | `allowed` | `reason` |
+|---|---|---|---|---|---|---|
+| 1 | empty | any | any | — | `false` | `denied` |
+| 2 | non-empty | `true` | any | — | `false` | `checking` |
+| 3 | non-empty | `false` | `undefined` | — | `false` | `unverifiable` |
+| 4 | non-empty | `false` | array | no | `false` | `denied` |
+| 5 | non-empty | `false` | array | yes | `true` | `allowed` |
+
+- **Precedence**: an empty `required` array outranks every other input, including `loading`. It is a programming error — a caller that forgot to supply a token — never a permissive default, and never a transient "still checking" state that would later resolve to allowed. Row 1 therefore precedes row 2.
 - `required` is satisfied only when **every** listed privilege is present (surface 4's organization case needs two).
-- An empty `required` array is a programming error, not a permissive default; it is treated as `denied`.
-- `unverifiable` is the spec's Edge Case 3 (entity exposes no privilege list) and carries distinct copy from `denied`.
+- `checking` (row 2) and `unverifiable` (row 3) are deliberately distinct: row 2 is an in-flight query that will resolve, row 3 is a completed query whose response carried no privilege list (spec Edge Case 3). They carry different copy and MUST NOT be collapsed into one state.
 
 ## Contract 2 — `GatedAction` (CRD presentational)
 
@@ -101,7 +104,27 @@ Each glue site computes the decision and passes down a string; no CRD component 
 | 1 — Platform global roles | `useRoleSetManager().myPrivileges` | per R1 | `addDisabledReason`, `removeDisabledReason` |
 | 2 — Org authorization | `useRoleSetManager().myPrivileges` | per R1 | same |
 | 3 — Org associates | `useRoleSetManager().myPrivileges` | per R1 | same |
-| 4 — Space community | `useCommunityAdmin().permissions` (already computed) | `ROLESET_ENTRY_ROLE_ASSIGN`; organizations additionally `GRANT` | same, after `useCommunityTabData` forwards `canAddUsers` (R2) |
+| 4 — Space community | `useCommunityAdmin()` raw `myPrivileges` + `loading` — see below | `ROLESET_ENTRY_ROLE_ASSIGN`; organizations additionally `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` + `GRANT` | one reason string per gated control (see below) |
+
+### Surface 4 — explicit contract
+
+Surface 4 is the one surface that does **not** already hand the glue layer a privilege array. `useCommunityAdmin` computes booleans (`canAddUsers`, `canAddOrganizations`, …) from `authorizationPrivileges` internally and returns only those booleans plus `loading`. Booleans cannot feed `useActionPermission`: they carry no `myPrivileges` array, and they collapse `checking`, `unverifiable` and `denied` into a single `false`.
+
+Surface 4 therefore uses the **same** contract as surfaces 1–3 rather than a second decision path:
+
+1. `useCommunityAdmin` additionally exposes the raw `myPrivileges` array and its `loading` flag alongside the existing `permissions` booleans. The existing booleans stay for their current consumers — nothing is removed.
+2. `useCommunityTabData` forwards both, plus the previously-dropped `canAddUsers` (Risk R2).
+3. `CrdSpaceSettingsPage` calls `useActionPermission` once per distinct gated action and maps each `reason` to copy.
+
+`MemberSettingsDialog` needs more than one decision, because it exposes independently-gated controls (its `MemberSettingsLeadGate` already separates `canAddLead` from `canRemoveLead`, and `onAdminChange` is separate again). The required decisions are:
+
+| Control | Required privilege(s) | Prop |
+|---|---|---|
+| Add member | `ROLESET_ENTRY_ROLE_ASSIGN` | `addDisabledReason` |
+| Remove member | `ROLESET_ENTRY_ROLE_ASSIGN` | `removeDisabledReason` |
+| Lead toggle (add / remove) | `ROLESET_ENTRY_ROLE_ASSIGN` | `leadDisabledReason` |
+| Admin toggle | `ROLESET_ENTRY_ROLE_ASSIGN` | `adminDisabledReason` |
+| Organization rows (add / remove) | `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` **and** `GRANT` | `organizationDisabledReason` |
 
 ## State transitions
 

@@ -37,7 +37,7 @@ Surfaces 2 and 3 share one presentational component (`src/crd/components/contrib
 ## Decision 1: Read privileges from `useRoleSetManager` — no new query, no codegen
 
 - **Decision**: Drive enablement from the `myPrivileges` array that `useRoleSetManager` already returns.
-- **Rationale**: `useRoleSetManager.ts:100` runs `useRoleSetAuthorizationQuery`, and line 107 extracts `lookup.roleSet.authorization.myPrivileges`, which is returned publicly at line 246. All four surfaces already call this hook. This satisfies FR-010 (same data the backend evaluates) and SC-004 (no additional request) by construction, and avoids a `pnpm codegen` run — which would otherwise require a live backend at `localhost:4000`.
+- **Rationale**: `useRoleSetManager.ts:100` runs `useRoleSetAuthorizationQuery`, and line 107 extracts `lookup.roleSet.authorization.myPrivileges`, which is returned publicly at line 246. All four surfaces already call this hook. This satisfies FR-010 (same data the backend evaluates) and SC-004 (no additional request) by construction, and avoids a `pnpm codegen` run — which would otherwise require a live backend, since `codegen.yml` resolves its schema from `${CODEGEN_SCHEMA:http://localhost:3000/graphql}`.
 - **Note**: `PlatformRoleSet.graphql` selects only `roleSet { id }`, which initially looks like a gap on surface 1. It is not — the privileges arrive via the separate `RoleSetAuthorization` query that `useRoleSetManager` issues.
 - **Alternatives rejected**: adding a `canAssignRole` boolean to the schema (duplicates existing data, needs backend work); a dedicated per-site privileges query (extra round-trips, violates SC-004); inferring from role names (brittle, drifts from backend rules).
 
@@ -69,13 +69,13 @@ Surfaces 2 and 3 share one presentational component (`src/crd/components/contrib
 ## Decision 5: New strings live in `crd-common`, all six locales
 
 - **Decision**: Tooltip and error copy go into `src/crd/i18n/common/common.{en,nl,es,bg,de,fr}.json`.
-- **Rationale**: Constitution v1.1.0 Arch Std #3 freezes `src/core/i18n/en/translation.en.json` for new keys and requires all six languages in the same PR with key parity (there is already a `common.parity.test.ts` enforcing this). `crd-common` is the default namespace and is eagerly loaded (`src/core/i18n/config.ts:16,38,309`), so the tooltip needs no lazy-load boundary. Because Q3 settled on a single surface-agnostic string with no privilege token and no escalation target, one shared key serves all four surfaces.
-- **Alternatives rejected**: per-surface namespaces (`crd-admin`, `crd-spaceSettings`) — would duplicate identical copy four times; `src/core/i18n` — frozen by the constitution.
+- **Rationale**: Constitution v1.1.0 Arch Std #3 requires new strings in CRD namespaces across all six languages in the same PR, with key parity (there is already a `common.parity.test.ts` enforcing this). The legacy core file the constitution describes as frozen, `src/core/i18n/en/translation.en.json`, no longer exists — it was deleted with the MUI app — so CRD namespaces are the only option, not merely the preferred one. `crd-common` is the default namespace and is eagerly loaded (`src/core/i18n/config.ts:16,38,309`), so the tooltip needs no lazy-load boundary. Because Q3 settled on a single surface-agnostic string with no privilege token and no escalation target, one shared key serves all four surfaces.
+- **Alternatives rejected**: per-surface namespaces (`crd-admin`, `crd-spaceSettings`) — would duplicate identical copy four times; `src/core/i18n` — no longer exists.
 
 ## Decision 6: Loading resolves to the same disabled path
 
-- **Decision**: While `myPrivileges` is `undefined` (query in flight, or the field absent), the hook returns `{ allowed: false, reason: 'checking' }` and the control renders gated with neutral "checking permissions" copy.
-- **Rationale**: Satisfies FR-008 and SC-006 — there is no render in which the control is enabled before privileges are known, so no enabled-then-disabled flip. The absent-field case (spec Edge Case 3) collapses into the same branch with its own copy.
+- **Decision**: Both "privileges not yet known" cases gate the control, but they are **two distinct states**, not one. While the query is in flight the hook returns `{ allowed: false, reason: 'checking' }` ("checking permissions"). Once the query has completed and `myPrivileges` is still `undefined`, it returns `{ allowed: false, reason: 'unverifiable' }` ("permissions could not be verified"). Distinguishing them requires the caller to pass the query's `loading` flag alongside the array — which is why `useActionPermission` takes `loading` as a third argument rather than inferring everything from `myPrivileges === undefined`.
+- **Rationale**: Satisfies FR-008 and SC-006 — there is no render in which the control is enabled before privileges are known, so no enabled-then-disabled flip. Keeping the two states separate is required by spec FR-008 and Edge Case 3, which mandate different copy for a transient wait versus a backend response that carried no privilege list.
 - **Alternatives rejected**: rendering enabled while loading (SC-006 violation); hiding until resolved (layout shift).
 
 ---

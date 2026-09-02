@@ -81,7 +81,7 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 
 ### Shared building blocks
 
-- [ ] T016 [P] [US2] Create `src/domain/access/permissions/useActionPermission.ts` implementing the hook contract in `specs/085-authz-admin-guard/data-model.md`: `(myPrivileges, required, loading) => { allowed, reason }` with `reason` in `'allowed' | 'checking' | 'denied' | 'unverifiable'`. Every non-affirmative input state must fail closed, an empty `required` array must yield `denied`, and all listed privileges must be present for `allowed`. Write it as a plain derivation — no `useMemo`/`useCallback` (React Compiler is enabled and the `react-compiler` ESLint rule will flag manual memoization).
+- [ ] T016 [P] [US2] Create `src/domain/access/permissions/useActionPermission.ts` implementing the hook contract in `specs/085-authz-admin-guard/data-model.md`: `(myPrivileges, required, loading) => { allowed, reason }` with `reason` in `'allowed' | 'checking' | 'denied' | 'unverifiable'`. Evaluate the precedence table in `data-model.md` **in order**: an empty `required` array yields `denied` and outranks `loading`; a non-empty `required` with `loading` true yields `checking`; a completed query with `myPrivileges` still undefined yields `unverifiable` — `checking` and `unverifiable` must stay distinct. Every non-affirmative state fails closed, and all listed privileges must be present for `allowed`. Write it as a plain derivation — no `useMemo`/`useCallback` (React Compiler is enabled and the `react-compiler` ESLint rule will flag manual memoization).
 - [ ] T017 [P] [US2] Create `src/crd/components/common/GatedAction.tsx` implementing the component contract in `specs/085-authz-admin-guard/data-model.md`: an optional `disabledReason` string and a single child. When set, apply `aria-disabled="true"`, keep the child in the tab order, suppress activation, and wrap it with `Tooltip`/`TooltipTrigger`/`TooltipContent` from `src/crd/primitives/tooltip.tsx`. Never apply the native `disabled` attribute (research Decision 3). No imports from `@/domain`, `@/core/apollo`, `@apollo/client`, `react-router-dom`, or `formik`.
 - [ ] T018 [P] [US2] Add `src/domain/access/permissions/useActionPermission.test.ts` covering every row of the derivation table in `data-model.md`, including the multi-privilege case and the empty-`required` case.
 - [ ] T019 [P] [US2] Add `src/crd/components/common/__tests__/GatedAction.test.tsx` covering: ungated pass-through with no added ARIA; gated rendering with `aria-disabled`; the child remaining focusable; tooltip shown on hover **and** on keyboard focus; activation suppressed (spec SC-007); and the native `disabled` attribute never being applied.
@@ -102,11 +102,11 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 
 ### Surface 4 — Space settings community
 
-- [ ] T028 [US2] Fix Open Risk R2: forward `canAddUsers` from `useCommunityAdmin` through the `permissions` object returned by `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts`, which currently drops it, leaving the add-member path entirely ungated.
-- [ ] T029 [US2] Add a `disabledReason?: string` prop to `src/crd/components/space/settings/AddCommunityMemberDialog.tsx` and apply it via `GatedAction` on the add control, keeping the existing `disabled={isAdding}` in-flight behavior distinct from permission gating.
-- [ ] T030 [US2] Add `disabledReason?: string` props to `src/crd/components/space/settings/MemberSettingsDialog.tsx` and apply them via `GatedAction` to the member remove and role-toggle controls. The component receives finished strings only — no privilege token, no `AuthorizationPrivilege` import, no `@/domain` import (CRD boundary, per `specs/085-authz-admin-guard/contracts/ui-contract.md`).
+- [ ] T028 [US2] Expose the raw `myPrivileges` array and the privilege-query `loading` flag from `src/domain/spaceAdmin/SpaceAdminCommunity/hooks/useCommunityAdmin.ts` alongside its existing `permissions` booleans (which stay, for current consumers), then forward both — plus the previously-dropped `canAddUsers` (Open Risk R2) — through `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.ts`. The booleans alone cannot feed `useActionPermission`: they carry no privilege array and collapse `checking`, `unverifiable` and `denied` into one `false`.
+- [ ] T029 [US2] Add an `addDisabledReason?: string` prop to `src/crd/components/space/settings/AddCommunityMemberDialog.tsx` and apply it via `GatedAction` on the add control, keeping the existing `disabled={isAdding}` in-flight behavior distinct from permission gating.
+- [ ] T030 [US2] Add four separate reason props to `src/crd/components/space/settings/MemberSettingsDialog.tsx` — `removeDisabledReason`, `leadDisabledReason`, `adminDisabledReason` and `organizationDisabledReason` — and apply each via `GatedAction` to its own control per the Surface 4 table in `specs/085-authz-admin-guard/data-model.md`. One shared prop is insufficient: the dialog already separates `canAddLead` from `canRemoveLead` in `MemberSettingsLeadGate` and carries a distinct `onAdminChange`, and organization rows require a different privilege pair. The component receives finished strings only — no privilege token, no `AuthorizationPrivilege` import, no `@/domain` import (CRD boundary, per `contracts/ui-contract.md`).
 - [ ] T031 [US2] In `src/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage.tsx`, evaluate the privileges and map them to reason strings before passing them into both dialogs — including the organization token pair (`ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` + `GRANT`) for organization rows, per `useCommunityAdmin.ts:198-207`. All token logic lives here, never in the CRD components.
-- [ ] T032 [P] [US2] Add `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.permissions.test.ts` asserting `canAddUsers` is forwarded (T028) and that the add-member control is gated without `ROLESET_ENTRY_ROLE_ASSIGN` — a regression test for the previously ungated path.
+- [ ] T032 [P] [US2] Add `src/main/crdPages/topLevelPages/spaceSettings/community/useCommunityTabData.permissions.test.ts` covering **every** Surface 4 control, not just add-member: raw privileges and `canAddUsers` are forwarded (T028); add-member, remove-member, the lead toggle and the admin toggle are each gated without `ROLESET_ENTRY_ROLE_ASSIGN`; organization rows are gated unless **both** `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` and `GRANT` are held; and each control resolves correctly through the `checking`, `unverifiable` and `denied` states. Partial coverage would let Surface 4 pass while a required control stays ungated.
 
 **Checkpoint**: All four surfaces gate their controls. Combined with US1, the feature is complete.
 
@@ -126,10 +126,13 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 ## Dependencies
 
 ```text
-Phase 1 (T001-T002)  ──►  Phase 2 (T003-T009)  ──┬──►  Phase 3: US1 (T010-T015)  ──┐
-                                                  │                                 ├──►  Phase 5 (T033-T038)
-                                                  └──►  Phase 4: US2 (T016-T032)  ──┘
+T002 (reproduce) ─────────────────────────┐
+                                          ├──►  Phase 2 (T003-T009)  ──┬──►  Phase 3: US1 (T010-T015)  ──┐
+                                          │                            │                                 ├──►  Phase 5 (T033-T038)
+T001 (resolve privilege tokens) ──────────┴────────────────────────────►  Phase 4: US2 (T016-T032)  ─────┘
 ```
+
+T001 gates US2 only. US1 needs no privilege token, so it depends on Phase 2 alone and stays independently shippable as the MVP.
 
 - **T001 blocks US2 only** — US1 needs no privilege token and can start as soon as Phase 2 is done.
 - **Phase 2 blocks both stories** — US1 needs `permissions.errorDenied`, US2 needs the three tooltip strings.

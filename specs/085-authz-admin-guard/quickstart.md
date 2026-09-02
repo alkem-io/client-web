@@ -7,7 +7,7 @@ How to verify the feature end-to-end once implemented.
 
 ## Prerequisites
 
-- Alkemio backend running at `localhost:3000`; client dev server via `pnpm start` (serves `localhost:3001`).
+- Alkemio backend running locally. `pnpm start` runs Vite on `localhost:3001`, but open the application at `http://localhost:3000` — Traefik proxies it and serves the GraphQL endpoint at `http://localhost:3000/graphql`.
 - Two accounts per surface under test:
   - **Privileged** — holds the required token on the target role set.
   - **Unprivileged** — can read the page but lacks that token. On surface 1 this is a platform admin who lacks the role-set token: `/admin` gates on `PLATFORM_ADMIN` on the *platform*, while the action is authorized against the *role set*, so this combination is reachable.
@@ -49,7 +49,9 @@ For each surface, as **Unprivileged**:
 
 Simulates privileges revoked mid-session, where the UI still believes the action is permitted.
 
-1. As **Unprivileged**, open DevTools → Elements and remove `aria-disabled` from the control so it activates.
+1. Force a genuine backend rejection — editing the DOM will **not** work here, because `GatedAction` still holds a `disabledReason` and suppresses the handler regardless of the rendered attribute. Use one of:
+   - **Revoke mid-session**: load the surface as **Privileged**, then remove that privilege in another session, then act on the still-loaded page; or
+   - **Force the response**: intercept the mutation at the network boundary (DevTools request override, or a proxy) and return a `FORBIDDEN` GraphQL error.
 2. Complete the flow and submit.
 3. A visible, dismissible error toast appears, worded as a permission problem and distinct from a generic network error.
 4. The roster is unchanged.
