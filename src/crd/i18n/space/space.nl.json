@@ -1,5 +1,14 @@
 {
-  "banner": { "homeSpace": "Hoofdruimte", "homeSpaceSettings": "Instellingen hoofdruimte" },
+  "common": {
+    "Callout": "Post",
+    "callout": "Post",
+    "Callouts": "Posts",
+    "callouts": "Posts"
+  },
+  "banner": {
+    "homeSpace": "Home Space",
+    "homeSpaceSettings": "Instellingen Home Space"
+  },
   "tabs": {
     "dashboard": "Dashboard",
     "community": "Community",
@@ -8,56 +17,295 @@
   },
   "visibility": {
     "archived": "Deze Space is gearchiveerd en alleen-lezen.",
-    "archivedContact": "Neem contact op met de Space-leider voor meer informatie.",
+    "archivedContact": "Neem contact op met de Space-Lead voor meer informatie.",
     "demo": "Dit is een demo-Space voor testdoeleinden.",
     "inactive": "Deze Space is momenteel inactief."
+  },
+  "knowledge": {
+    "searchPlaceholder": "Zoek posts...",
+    "searchLabel": "Posts zoeken",
+    "noResults": "Geen resultaten",
+    "search": {
+      "emptyTitle": "Geen resultaten",
+      "emptyDescription": "Geen inhoud in deze sectie komt overeen met je zoekopdracht.",
+      "errorTitle": "Zoeken is niet beschikbaar",
+      "errorDescription": "Er is iets misgegaan tijdens het zoeken. Probeer het opnieuw.",
+      "retry": "Opnieuw proberen",
+      "loadingLabel": "Zoekresultaten laden",
+      "appendingLabel": "Meer resultaten laden",
+      "matchText": "<b>{{matches}}</b> items komen overeen met de zoekopdracht <b>{{text}}</b>",
+      "matchTags": "<b>{{matches}}</b> items komen overeen met tag <b>{{tags}}</b>",
+      "matchBoth": "<b>{{matches}}</b> items komen overeen met tag <b>{{tags}}</b> en de zoekopdracht <b>{{text}}</b>"
+    },
+    "viewGrid": "Kaartweergave",
+    "viewList": "Lijstweergave",
+    "count": {
+      "post_one": "{{count}} Post",
+      "post_other": "{{count}} Posts",
+      "whiteboard_one": "{{count}} whiteboard",
+      "whiteboard_other": "{{count}} whiteboards",
+      "memo_one": "{{count}} memo",
+      "memo_other": "{{count}} memo's",
+      "link_one": "{{count}} link",
+      "link_other": "{{count}} links",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documenten"
+    }
+  },
+  "postIndexDialog": {
+    "close": "Sluiten",
+    "loadingLabel": "Post-index laden",
+    "empty": "Nog geen Posts"
   },
   "sidebar": {
     "aboutSpace": "Over deze Space",
     "subspaces": "Subspaces",
     "showAll": "Alles tonen",
+    "create": "Aanmaken",
     "events": "Evenementen",
     "noEvents": "Geen aankomende evenementen",
     "showCalendar": "Kalender tonen",
-    "spaceLead": "Space-leider",
-    "spaceLeads": "Space-leiders",
-    "contactLead": "Leiders contacteren",
+    "spaceLead": "Space-Lead",
+    "spaceLeads": "Space-Leads",
+    "contactLead": "Leads contacteren",
     "invite": "Uitnodigen",
-    "virtualContributors": "Virtuele bijdragers",
+    "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Communityrichtlijnen",
-    "postIndex": "Berichtenindex",
+    "updates": "Updates",
+    "updatesSeeAll": "Alle updates bekijken",
+    "updatesEmpty": "Er zijn nog geen updates geplaatst.",
+    "updatesLoading": "Updates laden",
+    "postIndex": "$t(common.Callout)-index",
     "readMore": "Lees meer",
-    "addEvent": "Evenement toevoegen"
+    "editDescription": "Beschrijving bewerken",
+    "addEvent": "Evenement toevoegen",
+    "eventDateRelative": {
+      "today": "Vandaag",
+      "tomorrow": "Morgen",
+      "in_days_one": "over 1 dag",
+      "in_days_other": "over {{count}} dagen"
+    },
+    "inviteVirtualContributor": "Virtual Contributor uitnodigen"
+  },
+  "calendar": {
+    "title": "Evenementen",
+    "addEvent": "Evenement toevoegen",
+    "editEvent": "Evenement bewerken",
+    "eventDetail": "Evenement: {{title}}",
+    "noUpcomingEvents": "Geen aankomende evenementen",
+    "pastEvents": "Eerdere evenementen",
+    "back": "Terug",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "edit": "Bewerken",
+    "deleteConfirm": {
+      "title": "Evenement verwijderen",
+      "body": "Weet je zeker dat je \"{{title}}\" uit deze {{entity}} wilt verwijderen?",
+      "confirm": "Verwijderen",
+      "cancel": "Annuleren"
+    },
+    "fields": {
+      "displayName": "Titel",
+      "type": "Type",
+      "date": "Datum",
+      "startTime": "Starttijd",
+      "endTime": "Eindtijd",
+      "duration": "Duur",
+      "startDate": "Startdatum",
+      "endDate": "Einddatum",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} uur",
+        "hours_other": "{{count}} uur",
+        "hoursMinutes": "{{hours}}u {{minutes}}min"
+      },
+      "wholeDay": "Hele dag",
+      "description": "Beschrijving",
+      "location": "Locatie",
+      "tags": "Labels",
+      "visibleOnParentCalendar": "Zichtbaar op bovenliggende kalender",
+      "endsAt": "eindigt om {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Titel is vereist",
+      "typeRequired": "Type is vereist",
+      "invalidDuration": "Ongeldige duur",
+      "endBeforeStart": "Einde moet na begin liggen",
+      "descriptionTooLong": "Beschrijving is te lang"
+    },
+    "type": {
+      "DEADLINE": "Deadline",
+      "EVENT": "Evenement",
+      "MEETING": "Vergadering",
+      "MILESTONE": "Mijlpaal",
+      "OTHER": "Overig",
+      "TRAINING": "Training",
+      "unknown": "Evenement"
+    },
+    "addToCalendar": {
+      "trigger": "Toevoegen aan kalender",
+      "google": "Google Agenda",
+      "outlook": "Outlook-agenda",
+      "ics": "ICS downloaden",
+      "exportAll": "Aankomende evenementen exporteren naar ICS",
+      "loading": "Laden…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Vorige maand",
+      "nextMonth": "Volgende maand",
+      "pickDate": "Kies een datum",
+      "dayWithEvents_one": "{{date}}, 1 evenement",
+      "dayWithEvents_other": "{{date}}, {{count}} evenementen"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Hele dag"
+    },
+    "details": {
+      "comments": "Reacties",
+      "references": "Referenties",
+      "tags": "Labels",
+      "loadingEvent": "Evenement laden…",
+      "subspaceLabel": "in {{name}}",
+      "createdBy": "door {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Space",
+      "subspace": "Subspace"
+    },
+    "notFound": {
+      "title": "Evenement niet gevonden",
+      "body": "Dit evenement bestaat niet meer of is verwijderd.",
+      "backToList": "Terug naar evenementen"
+    }
   },
   "feed": {
-    "addPost": "Bericht toevoegen",
+    "addPost": "$t(common.Callout) toevoegen",
     "showMore": "Meer tonen",
     "activity": "Activiteit",
     "noCallouts": "Nog geen inhoud",
     "loading": "Inhoud laden..."
   },
   "callout": {
+    "openAria": "{{title}} openen",
     "draft": "Concept",
     "expand": "Meer tonen",
+    "fullscreen": "Volledig scherm",
     "collapse": "Minder tonen",
     "openWhiteboard": "Whiteboard openen",
+    "openMemo": "Memo openen",
+    "openDocument": "Document openen",
+    "openDocumentPdf": "Bekijken",
+    "document": "Document",
+    "documentText": "Tekstdocument",
+    "documentSpreadsheet": "Spreadsheet",
+    "documentPresentation": "Presentatie",
+    "documentPdf": "PDF",
+    "addDocument": "Document toevoegen",
+    "defaultDocumentName": "Nieuw document",
+    "createDocument": "Nieuw document aanmaken",
+    "documentNameLabel": "Documenttitel",
+    "documentTypeLabel": "Documenttype",
+    "createNew": "Nieuw maken",
+    "documentImportOr": "of",
+    "documentImportHint": "Sleep een bestand of klik om te uploaden",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf tot {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} tot {{cap}} MB",
+    "documentImportRemoveFile": "Bestand verwijderen",
+    "documentImportErrorUnsupported": "Dit bestandstype wordt niet ondersteund. Probeer {{formats}}.",
+    "documentImportErrorTooLarge": "Bestand is te groot. Maximale grootte is {{cap}} MB.",
+    "documentImportErrorMultiple": "Sleep één bestand per keer.",
+    "documentImportErrorFolder": "Sleep een bestand, geen map.",
+    "documentImportErrorServiceUnavailable": "De documentservice is tijdelijk niet beschikbaar. Probeer het zo opnieuw.",
+    "documentReplace": "Bestand vervangen",
+    "documentReplaceTitle": "Bestand vervangen",
+    "documentReplaceDescription": "Een vervanging uploaden overschrijft het huidige bestand voor iedereen en kan niet ongedaan worden gemaakt.",
+    "documentReplaceCurrentTitleLabel": "Huidig document",
+    "documentReplaceTitleFieldLabel": "Titel",
+    "documentReplaceConfirm": "Bestand vervangen",
+    "documentReplaceErrorSameType": "De vervanging moet hetzelfde soort document zijn als het huidige: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "Bestand vervangen.",
+    "documentReplaceError": "Kon het bestand niet vervangen. Probeer het opnieuw.",
     "comments": "{{count}} reacties",
     "commentsZero": "0 reacties",
-    "post": "Bericht",
+    "expandComments": "Reacties uitvouwen",
+    "collapseComments": "Reacties inklappen",
+    "post": "Post",
     "whiteboard": "Whiteboard",
     "collection": "Collectie",
     "callForWhiteboards": "Oproep voor whiteboards",
     "poll": "Peiling",
     "link": "Link",
+    "callToAction": "Oproep tot actie",
     "mediaGallery": "Mediagalerij",
     "memo": "Memo",
     "moreWhiteboards": "+{{count}} meer",
+    "moreContributions": "+{{count}} meer",
+    "contributionsHeader": "Bijdragen ({{count}})",
     "vote": "Stemmen",
     "votes": "{{count}} stemmen",
     "totalVotes": "{{count}} stemmen totaal",
-    "resultsCount": "{{count}} resultaten",
-    "clearFilters": "Filters wissen",
-    "sendComment": "Reactie verzenden"
+    "sendComment": "Reactie verzenden",
+    "addWhiteboard": "Whiteboard toevoegen",
+    "createWhiteboard": "Nieuw whiteboard maken",
+    "defaultWhiteboardName": "Nieuw whiteboard",
+    "whiteboardNameLabel": "Whiteboardtitel",
+    "addMemo": "Memo toevoegen",
+    "createMemo": "Nieuw memo aanmaken",
+    "defaultMemoName": "Nieuwe memo",
+    "memoNameLabel": "Memotitel",
+    "addLinkOrFile": "Link of bestand toevoegen",
+    "createLink": "Voeg links of documenten toe",
+    "editLink": "Link bewerken",
+    "linkSave": "Opslaan",
+    "linkCreate": "Toevoegen",
+    "linkAddAnother": "Nog een link toevoegen",
+    "linkRemoveRow": "Deze link verwijderen",
+    "linkDefaultName": "Nieuwe link",
+    "linkDefaultNameNumbered": "Nieuwe link ({{count}})",
+    "linkCancelConfirmTitle": "Wijzigingen verwerpen?",
+    "linkCancelConfirmDescription": "Als je nu sluit, worden de toegevoegde links niet opgeslagen.",
+    "linkCancelConfirm": "Verwerpen",
+    "linkUrlLabel": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkNameLabel": "Weergavenaam",
+    "linkNamePlaceholder": "Geef je link een naam",
+    "linkDescriptionLabel": "Beschrijving",
+    "linkDescriptionPlaceholder": "Waar gaat deze link over?",
+    "linkTermsHelper": "<terms>Klik hier</terms> voor de algemene voorwaarden.",
+    "linkUrlInvalid": "Voer een geldige URL in (moet beginnen met http:// of https://).",
+    "linkNameRequired": "Weergavenaam is verplicht.",
+    "linkEditAriaLabel": "Link bewerken",
+    "linkDeleteAriaLabel": "Link verwijderen",
+    "linkDelete": "Link verwijderen",
+    "linkDeleteConfirmTitle": "Deze link verwijderen?",
+    "linkDeleteConfirmDescription": "Hiermee verwijder je de link permanent uit deze $t(common.callout). Deze actie kan niet ongedaan worden gemaakt.",
+    "addPost": "Post toevoegen",
+    "createPost": "Post aanmaken",
+    "editPost": "Post bewerken",
+    "defaultPostName": "Nieuwe Post",
+    "postNameLabel": "Titel",
+    "postDescriptionLabel": "Beschrijving",
+    "postDescriptionPlaceholder": "Schrijf je Post...",
+    "postTagsLabel": "Tags",
+    "postSave": "Opslaan",
+    "postCreate": "Post",
+    "createTask": "Task aanmaken",
+    "editTask": "Task bewerken",
+    "taskCreate": "Task aanmaken",
+    "tasksHeader": "Tasks ({{count}})",
+    "postDelete": "Post verwijderen",
+    "postDeleteConfirmTitle": "Deze Post verwijderen?",
+    "postDeleteConfirmDescription": "Hiermee verwijder je de Post en alle reacties definitief. Deze actie kan niet ongedaan worden gemaakt.",
+    "postUnsavedCloseTitle": "Niet-opgeslagen wijzigingen verwijderen?",
+    "postUnsavedCloseDescription": "Je hebt niet-opgeslagen wijzigingen. Als je nu sluit, gaan ze verloren.",
+    "postUnsavedCloseConfirm": "Wijzigingen verwijderen",
+    "postUnsavedCloseCancel": "Verder bewerken",
+    "uploadAfterCreateFailed": "De $t(common.callout) is aangemaakt, maar het uploaden van de voorbeeldafbeelding is mislukt. Je kunt het opnieuw proberen via het bewerkscherm van de $t(common.callout).",
+    "pollOptionsSaveFailed": "Een of meer wijzigingen aan peilingsopties konden niet worden opgeslagen. Je kunt het opnieuw proberen vanuit dit venster.",
+    "referencesSaveFailed": "Een of meer nieuwe referenties konden niet worden opgeslagen. De overige wijzigingen zijn niet toegepast. Probeer het opnieuw.",
+    "updateFailed": "De wijzigingen aan de $t(common.callout) konden niet worden opgeslagen. Probeer het opnieuw.",
+    "contributors": "Contributors",
+    "subspaces": "Subspaces"
   },
   "contribution": {
     "edit": "Bewerken",
@@ -69,19 +317,24 @@
   "framing": {
     "newWhiteboard": "Nieuw whiteboard",
     "readyToCreate": "Klaar om aan te maken",
+    "configured": "Geconfigureerd",
     "configure": "Configureren",
+    "edit": "Bewerken",
     "memo": "Memo",
-    "richTextEditor": "Teksteditor met opmaak"
+    "richTextEditor": "Teksteditor met opmaak",
+    "comingSoon": "Binnenkort beschikbaar",
+    "memoPlaceholder": "Schrijf je memo…",
+    "memoOpenHint": "Memo-inhoud wordt in een eigen venster bewerkt.",
+    "openMemo": "Memo openen",
+    "openWhiteboard": "Whiteboard openen",
+    "openWhiteboardHint": "Whiteboard-inhoud wordt in een eigen venster bewerkt.",
+    "officeDocumentsNotEnabled": "Office-documenten zijn niet ingeschakeld voor deze Space."
   },
   "members": {
-    "title": "Community",
     "subtitle": "{{users}} leden en {{organizations}} organisaties in deze space.",
-    "inviteMember": "Lid uitnodigen",
     "search": "Zoek leden of organisaties...",
     "filterAll": "Alle",
-    "filterAdmin": "Beheerder",
-    "filterLead": "Leider",
-    "filterMember": "Lid",
+    "filterLead": "Lead",
     "filterOrganization": "Organisatie",
     "noMembers": "Geen leden gevonden",
     "previousPage": "Vorige",
@@ -93,8 +346,7 @@
       "clearFilters": "Filters wissen"
     },
     "role": {
-      "admin": "Beheerder",
-      "lead": "Leider",
+      "lead": "Lead",
       "member": "Lid",
       "organization": "Organisatie"
     }
@@ -106,6 +358,11 @@
     "search": "Subspaces zoeken...",
     "showMore": "Toon {{count}} meer",
     "showLess": "Minder tonen",
+    "filter": {
+      "all": "Alle",
+      "active": "Actief",
+      "archived": "Gearchiveerd"
+    },
     "empty": {
       "title": "Geen subspaces gevonden",
       "description": "Geen subspaces komen overeen met je huidige zoekopdracht of filter.",
@@ -119,17 +376,74 @@
     "who": "Wie",
     "why": "Waarom",
     "host": "Host",
-    "leadUsers": "Leidende gebruikers",
-    "leadOrganizations": "Leidende organisaties",
+    "hostedBy": "Gehost door",
+    "members": "leden",
+    "editMembers": "Leden bewerken",
+    "editProfile": "Space-profiel bewerken",
+    "manageCommunity": "Community beheren",
+    "leads": "Leads",
+    "leadUsers": "Lead-gebruikers",
+    "leadOrganizations": "Lead-organisaties",
     "guidelines": "Communityrichtlijnen",
-    "references": "Referenties"
+    "guidelinesAdminsOnly": "Alleen beheerders kunnen deze sectie zien. Voeg communityrichtlijnen toe zodat leden weten wat ze kunnen verwachten.",
+    "references": "Referenties",
+    "close": "Sluiten",
+    "edit": "Bewerken",
+    "readMore": "Meer lezen",
+    "lockTooltip": "Je hebt geen toegang tot deze Space.",
+    "learnWhy": "Lees hoe je toegang aanvraagt",
+    "hostTooltip": "The host organization or person responsible for this space.",
+    "contactHost": "Contact opnemen met de host",
+    "apply": "Toegang aanvragen",
+    "join": "Lid worden",
+    "member": "Lid",
+    "applyPending": "Aanvraag in behandeling",
+    "parentPending": "Aanvraag voor bovenliggende Space in behandeling",
+    "applyDisabled": "Aanvragen niet beschikbaar",
+    "acceptInvitation": "Uitnodiging accepteren",
+    "signIn": "Log in om toegang aan te vragen",
+    "signInHelper": "Je wordt eerst doorgestuurd om in te loggen bij Alkemio.",
+    "context": {
+      "L0": {
+        "why": "Waarom zijn we hier?",
+        "who": "Wie is erbij betrokken?"
+      },
+      "L1": {
+        "why": "Waarom deze subspace?",
+        "who": "Wie is erbij betrokken?"
+      },
+      "L2": {
+        "why": "Waarom deze subspace?",
+        "who": "Wie is erbij betrokken?"
+      }
+    },
+    "tags": "Tags"
+  },
+  "apply": {
+    "apply": "Toegang aanvragen",
+    "join": "Lid worden",
+    "cancel": "Annuleren",
+    "processing": "Bezig…",
+    "applyTitle": "Toegang aanvragen tot {{name}}",
+    "joinTitle": "Lid worden van {{name}}",
+    "subheader": "Vertel ons kort waarom je lid wilt worden.",
+    "subheaderJoin": "Je staat op het punt lid te worden van {{name}}.",
+    "required": "Dit veld is verplicht.",
+    "maxLength": "Maximaal {{count}} tekens.",
+    "submitted": {
+      "title": "Aanvraag ingediend",
+      "body": "Je aanvraag voor {{communityName}} is ingediend.",
+      "review": "Je aanvraag wordt beoordeeld. Zodra deze is goedgekeurd ontvang je een melding <bell/> en kun je de community binnengaan vanaf je Home-dashboard."
+    }
   },
   "mobile": {
-    "more": "Meer",
+    "menu": "Menu",
     "activity": "Activiteit",
     "videoCall": "Videogesprek",
     "share": "Delen",
-    "settings": "Instellingen"
+    "settings": "Instellingen",
+    "expandWidth": "Volledige breedte",
+    "collapseWidth": "Gecentreerde weergave"
   },
   "contextMenu": {
     "edit": "Bewerken",
@@ -137,12 +451,80 @@
     "unpublish": "Depubliceren",
     "share": "Delen",
     "sortContributions": "Bijdragen sorteren",
-    "saveAsTemplate": "Opslaan als sjabloon",
+    "saveAsTemplate": "Opslaan als template",
+    "saveAsTemplateUnsupported": "Documenten opslaan als template wordt nog niet ondersteund",
     "moveToTop": "Naar boven verplaatsen",
     "moveUp": "Omhoog verplaatsen",
     "moveDown": "Omlaag verplaatsen",
     "moveToBottom": "Naar onder verplaatsen",
-    "delete": "Verwijderen"
+    "delete": "Verwijderen",
+    "moveFailed": "Herschikken mislukt. Probeer het opnieuw."
+  },
+  "visibilityChange": {
+    "publishTitle": "Deze $t(common.callout) publiceren?",
+    "publishDescription": "De $t(common.callout) wordt zichtbaar voor elk lid van de space.",
+    "publishConfirm": "Publiceren",
+    "unpublishTitle": "Deze $t(common.callout) als concept zetten?",
+    "unpublishDescription": "De $t(common.callout) is niet langer zichtbaar voor leden van de space.",
+    "unpublishConfirm": "Naar concept",
+    "notifyMembers": "Leden van de space waarschuwen",
+    "saveFailed": "De zichtbaarheid kon niet worden gewijzigd. Probeer het opnieuw."
+  },
+  "sortContributions": {
+    "title": "Bijdragen sorteren",
+    "description": "Sleep om de volgorde te wijzigen. De nieuwe volgorde wordt pas bij opslaan actief.",
+    "empty": "Deze $t(common.callout) heeft nog geen bijdragen om te sorteren.",
+    "confirm": "Volgorde opslaan",
+    "dragHandle": "Sleep om te herschikken",
+    "saveFailed": "De nieuwe volgorde kon niet worden opgeslagen. Probeer het opnieuw."
+  },
+  "deleteCallout": {
+    "title": "Deze $t(common.callout) verwijderen?",
+    "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+    "confirm": "Verwijderen",
+    "confirmAll": "$t(common.Callout) en alle inhoud verwijderen",
+    "headerContributions_one": "{{count}} bijdrage wordt verwijderd",
+    "headerContributions_other": "{{count}} bijdragen worden verwijderd",
+    "headerRich": "{{content}} wordt verwijderd",
+    "headerRichContributions_one": "{{content}} en {{count}} bijdrage worden verwijderd",
+    "headerRichContributions_other": "{{content}} en {{count}} bijdragen worden verwijderd",
+    "headerRichPoll": "De peiling en de resultaten worden verwijderd",
+    "headerRichPollContributions_one": "De peiling, de resultaten en {{count}} bijdrage worden verwijderd",
+    "headerRichPollContributions_other": "De peiling, de resultaten en {{count}} bijdragen worden verwijderd",
+    "callToAction": "Oproep tot actie",
+    "moreContributions_one": "nog {{count}} bijdrage...",
+    "moreContributions_other": "nog {{count}} bijdragen...",
+    "attachmentsNote": "inclusief bijgevoegde bestanden en links",
+    "contentType": {
+      "whiteboard": "Het whiteboard",
+      "memo": "De memo",
+      "mediaGallery": "De mediagalerij",
+      "document": "Het document"
+    },
+    "moreLinks_one": "en nog {{count}} link",
+    "moreLinks_other": "en nog {{count}} links",
+    "comments_one": "{{count}} reactie wordt verwijderd",
+    "comments_other": "{{count}} reacties worden verwijderd",
+    "success": "$t(common.Callout) “{{title}}” is verwijderd.",
+    "saveFailed": "De $t(common.callout) kon niet worden verwijderd. Probeer het opnieuw."
+  },
+  "deleteTask": {
+    "title": "Deze task verwijderen?"
+  },
+  "deleteContribution": {
+    "title": "Deze bijdrage verwijderen?",
+    "description": "“{{title}}” wordt definitief verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+    "confirm": "Verwijderen",
+    "saveFailed": "De bijdrage kon niet worden verwijderd. Probeer het opnieuw."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "De template kon niet worden opgeslagen. Probeer het opnieuw."
+  },
+  "findTemplate": {
+    "overwriteTitle": "Huidige inhoud vervangen?",
+    "overwriteDescription": "Door deze template te laden worden de velden die je al hebt ingevuld overschreven. Dit kan niet ongedaan worden gemaakt.",
+    "overwriteConfirm": "Template laden",
+    "saveAsTemplateTitle": "Opslaan als template"
   },
   "dates": {
     "today": "Vandaag",
@@ -153,24 +535,44 @@
   "validation": {
     "titleRequired": "Titel is verplicht",
     "urlRequired": "URL is verplicht",
-    "urlInvalid": "URL moet beginnen met http:// of https://",
+    "urlInvalid": "Voer een geldige URL in",
     "displayNameRequired": "Weergavenaam is verplicht",
-    "questionRequired": "Vraag is verplicht"
+    "questionRequired": "Vraag is verplicht",
+    "required": "Dit veld is verplicht",
+    "minDisplayName": "Moet minimaal {{count}} tekens zijn",
+    "maxSmall": "Moet {{count}} tekens of minder zijn",
+    "maxMid": "Moet {{count}} tekens of minder zijn",
+    "maxMarkdown": "Moet {{count}} tekens of minder zijn",
+    "minPollOptions": "Minimaal {{count}} opties zijn vereist",
+    "maxPollOptions": "Maximaal {{count}} opties zijn toegestaan",
+    "pollOptionRequired": "Optietekst is verplicht",
+    "referenceTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
+    "linkRowTitleRequired": "Titel is verplicht wanneer een URL is opgegeven",
+    "contributorTypesRequired": "Selecteer ten minste één type contributor."
   },
   "forms": {
     "titleLabel": "Titel",
-    "titlePlaceholder": "Geef je bericht een titel...",
+    "titlePlaceholder": "Geef je $t(common.callout) een titel...",
+    "insertEmoji": "Emoji invoegen",
     "descriptionLabel": "Beschrijving",
     "descriptionPlaceholder": "Schrijf iets...",
     "tagsLabel": "Tags",
-    "framingType": "Inhoudstype",
+    "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
+    "tagsTooShort": "Elke tag moet minimaal {{min}} tekens lang zijn.",
+    "framingType": "Toevoegen aan Post",
+    "typeLockedHint": "Instellingen voor aanvullende inhoud kunnen na het aanmaken niet meer worden gewijzigd",
     "visibility": "Zichtbaarheid",
     "publishedLabel": "Gepubliceerd",
     "draftLabel": "Concept",
     "notifyMembers": "Space-leden informeren",
+    "titleRequiredHint": "Voeg een titel toe aan je $t(common.callout) om verder te gaan",
     "saveDraft": "Concept opslaan",
-    "publish": "Publiceren",
-    "findTemplate": "Sjabloon zoeken",
+    "save": "Opslaan",
+    "publish": "Post",
+    "createPost": "$t(common.Callout) maken",
+    "editPost": "$t(common.Callout) bewerken",
+    "moreOptions": "Meer opties",
+    "findTemplate": "Template zoeken",
     "contributionTypes": "Toegestane bijdragen",
     "commentsEnabled": "Reacties inschakelen",
     "linkUrl": "URL",
@@ -179,7 +581,86 @@
     "pollQuestion": "Vraag",
     "pollOption": "Optie {{number}}",
     "addOption": "Optie toevoegen",
-    "removeOption": "Optie verwijderen"
+    "removeOption": "Optie verwijderen",
+    "allowComments": "Reacties toestaan",
+    "allowCommentsDescription": "Leden kunnen reacties plaatsen op de $t(common.callout)-framing.",
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Handmatige selectie",
+      "contributors": {
+        "autoDescription": "Toon de contributors van deze community als een zelf-bijwerkende verzameling.",
+        "customDescription": "Toont alleen de contributors die je selecteert."
+      },
+      "spaces": {
+        "autoDescription": "Toont automatisch alle subspaces en wordt bijgewerkt wanneer ze worden toegevoegd of verwijderd.",
+        "customDescription": "Toont alleen de subspaces die je hieronder selecteert."
+      },
+      "noLongerAvailable": "Niet meer beschikbaar",
+      "searchPlaceholder": "Leden zoeken…",
+      "searchAriaLabel": "Leden zoeken",
+      "searchSubspacePlaceholder": "Subspaces zoeken…",
+      "searchSubspaceAriaLabel": "Subspaces zoeken",
+      "noResults": "Geen overeenkomende resultaten",
+      "loading": "Laden…",
+      "loadMore": "Meer laden…",
+      "removeAriaLabel": "{{name}} verwijderen",
+      "clearSearch": "Zoekopdracht wissen"
+    }
+  },
+  "contributionSettings": {
+    "heading": "Reacties",
+    "typeLockedHint": "Bijdrage-instellingen kunnen na het aanmaken niet meer worden gewijzigd",
+    "types": {
+      "link": "Links & bestanden",
+      "post": "Posts",
+      "memo": "Memo's",
+      "whiteboard": "Whiteboards",
+      "document": "Documenten"
+    },
+    "actors": {
+      "members": "Leden mogen toevoegen",
+      "admins": "Beheerders mogen toevoegen"
+    },
+    "commentsEnabled": "Reacties inschakelen",
+    "setDefaults": "Standaardwaarden instellen",
+    "prePopulate": {
+      "heading": "Collectie vooraf vullen",
+      "description": "Voeg links toe die zichtbaar zijn zodra deze $t(common.callout) wordt aangemaakt.",
+      "empty": "Nog geen vooraf ingevulde links.",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Titel van de link",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://",
+      "descriptionLabel": "Beschrijving",
+      "descriptionPlaceholder": "Optionele beschrijving",
+      "addRow": "Nog een link toevoegen",
+      "removeRow": "Link verwijderen",
+      "attachFile": "Bestand bijvoegen"
+    }
+  },
+  "responseDefaults": {
+    "srDescription": "Stel de standaardwaarden in voor nieuwe bijdragen in deze $t(common.callout).",
+    "title": {
+      "post": "Standaardwaarden voor Posts",
+      "memo": "Standaardwaarden voor memo's",
+      "whiteboard": "Standaardwaarden voor whiteboards",
+      "document": "Standaardwaarden voor documenten",
+      "generic": "Standaardwaarden"
+    },
+    "defaultTitle": "Standaardtitel",
+    "defaultTitlePlaceholder": "Geef nieuwe bijdragen een standaardtitel",
+    "defaultDescription": "Standaardbeschrijving",
+    "defaultDescriptionPlaceholder": "Aanwijzingen die verschijnen bij een nieuwe bijdrage",
+    "defaultWhiteboard": "Standaardwhiteboard",
+    "configureWhiteboard": "Whiteboard configureren",
+    "editWhiteboard": "Whiteboard bewerken",
+    "template": "Template",
+    "templatePlaceholder": "Kies een template…",
+    "templateLoading": "Templates laden…",
+    "whiteboardConfigured": "Er is een standaardwhiteboard ingesteld.",
+    "whiteboardNotConfigured": "Nieuwe bijdragen beginnen met een leeg whiteboard.",
+    "clearWhiteboard": "Standaard wissen",
+    "save": "Opslaan"
   },
   "calloutDialog": {
     "close": "Dialoog sluiten",
@@ -191,29 +672,249 @@
     "reactionCount_one": "1 reactie",
     "contributions": "Bijdragen"
   },
+  "memo": {
+    "close": "Sluiten",
+    "stubDialog": {
+      "message": "Memo-editor komt binnenkort — platte tekst-preview wordt getoond."
+    },
+    "displayName": {
+      "inputLabel": "Titel",
+      "edit": "Memotitel bewerken",
+      "save": "Memotitel opslaan",
+      "cancel": "Bewerking annuleren"
+    },
+    "footer": {
+      "connected": "Verbonden",
+      "connecting": "Verbinden…",
+      "disconnected": "Verbinding verbroken",
+      "saved": "Opgeslagen",
+      "saving": "Opslaan…",
+      "finalizing": "Wijzigingen afronden…",
+      "offline": "Offline — wordt automatisch gesynchroniseerd",
+      "saveFailed": "Kan wijzigingen niet opslaan",
+      "membersOnline_one": "1 lid online",
+      "membersOnline_other": "{{count}} leden online",
+      "connectedUsersLabel": "Verbonden gebruikers",
+      "moreConnectedUsers_one": "{{count}} extra verbonden gebruiker",
+      "moreConnectedUsers_other": "{{count}} extra verbonden gebruikers",
+      "guestWarning": "Je bewerkt als gast",
+      "delete": "Memo verwijderen",
+      "readonlyReason": {
+        "connecting": "Verbinden met de samenwerkingsservice…",
+        "notSynced": "Synchroniseren… heropen de memo om verder te bewerken.",
+        "unauthenticated": "Meld je aan om deze memo te bewerken.",
+        "contentUpdatePolicy": "Je hebt geen toestemming om deze memo te bewerken. Vraag de eigenaar, <ownerlink>{{ownerName}}</ownerlink>, om de deelinstellingen te wijzigen.",
+        "contentUpdatePolicyNoOwner": "Je hebt geen toestemming om deze memo te bewerken. De eigenaar is niet meer beschikbaar — vraag een beheerder van de Space om de deelinstellingen te wijzigen.",
+        "noMembership": "Alleen leden van deze space kunnen deze memo bewerken. Word lid om bij te dragen."
+      }
+    },
+    "errors": {
+      "loading": "Memo laden…",
+      "loadFailed": "Kan memo niet laden"
+    },
+    "unsavedClose": {
+      "title": "Niet-opgeslagen memowijzigingen",
+      "description": "Deze wijzigingen kunnen nu niet worden opgeslagen. Laat de memo open, exporteer ze of verwerp ze expliciet.",
+      "wait": "Open laten en wachten",
+      "discard": "Verwerpen en sluiten",
+      "export": "Eerst exporteren",
+      "exportFailed": "De memo kon niet worden geëxporteerd. De memo blijft open."
+    },
+    "deleteConfirm": {
+      "title": "Memo verwijderen",
+      "body": "Weet je zeker dat je dit memo wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "Deze link opent een externe site in een nieuw tabblad.",
+    "linkAriaLabel": "{{displayName}} (opent {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (opent {{url}} in een nieuw tabblad)",
+    "validation": {
+      "invalidUrl": "Ongeldige URL"
+    }
+  },
+  "collabora": {
+    "rename": {
+      "inputLabel": "Documentnaam",
+      "edit": "Hernoemen",
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "saving": "Bezig met opslaan…",
+      "errors": {
+        "blank": "Voer een naam in.",
+        "tooShort": "De naam moet minstens {{min}} tekens bevatten.",
+        "tooLong": "De naam mag maximaal {{max}} tekens bevatten.",
+        "invalid": "Voer een geldige naam in.",
+        "saveFailed": "Kan het document niet hernoemen. Probeer het opnieuw."
+      }
+    },
+    "editor": {
+      "error": {
+        "runtime": "Collabora-fout: {{message}}",
+        "sessionClosed": "De samenwerkingssessie is gesloten."
+      }
+    },
+    "footer": {
+      "connected": "Verbonden",
+      "connecting": "Verbinden…",
+      "disconnected": "Verbinding verbroken",
+      "saved": "Opgeslagen",
+      "saving": "Opslaan…",
+      "unsaved": "Niet-opgeslagen wijzigingen",
+      "error": "Fout bij opslaan",
+      "membersOnline_one": "1 lid online",
+      "membersOnline_other": "{{count}} leden online",
+      "connectedUsersLabel": "Verbonden gebruikers",
+      "moreConnectedUsers_one": "{{count}} andere verbonden gebruiker",
+      "moreConnectedUsers_other": "{{count}} andere verbonden gebruikers",
+      "guestWarning": "Je bewerkt als gast",
+      "delete": "Document verwijderen",
+      "readonlyReason": {
+        "connecting": "Verbinden met de samenwerkingsdienst…",
+        "unauthenticated": "Meld je aan om dit document te bewerken.",
+        "contentUpdatePolicy": "Je hebt geen toestemming om dit document te bewerken. Vraag de eigenaar om de deelinstellingen te wijzigen.",
+        "noMembership": "Alleen leden van deze space kunnen dit document bewerken. Word lid om bij te dragen."
+      },
+      "disconnect": {
+        "atRisk": "Verbinding verbroken — recente wijzigingen zijn mogelijk niet opgeslagen",
+        "status": "Verbinding verbroken",
+        "cause": {
+          "network": "Je lijkt offline te zijn.",
+          "tokenExpiry": "Je bewerkingssessie is verlopen.",
+          "service": "Een service is tijdelijk niet beschikbaar.",
+          "unknown": "Verbinding verloren.",
+          "unloading": "Het document wordt nog afgesloten van een vorige sessie. Probeer het zo meteen opnieuw."
+        },
+        "reconnect": "Opnieuw verbinden",
+        "reload": "Herladen",
+        "terminal": {
+          "notFound": "Dit document is niet meer beschikbaar.",
+          "forbidden": "Je hebt geen toegang meer tot dit document.",
+          "generic": "Dit document kan niet opnieuw worden geopend."
+        },
+        "warning": {
+          "reconnectTitle": "Editor opnieuw verbinden?",
+          "reconnectBody": "Hiermee wordt de huidige bewerkingssessie beëindigd en het document ter plekke opnieuw geopend — de pagina wordt niet opnieuw geladen. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reconnectConfirm": "Opnieuw verbinden",
+          "reloadTitle": "Pagina opnieuw laden?",
+          "reloadBody": "Hiermee wordt de hele pagina opnieuw geladen en het document helemaal opnieuw geopend. Wijzigingen sinds de laatste keer opslaan kunnen verloren gaan; kopieer eerst wat u nodig hebt.",
+          "reloadConfirm": "Pagina opnieuw laden",
+          "cancel": "Annuleren"
+        },
+        "reconnecting": "Opnieuw verbinden…"
+      }
+    },
+    "serviceUnavailable": {
+      "message": "Een service is niet beschikbaar. Sla lopend werk op, want niet-opgeslagen gegevens kunnen verloren gaan."
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Afbeelding openen",
+    "more_one": "+{{count}} meer",
+    "more_other": "+{{count}} meer",
+    "previous": "Vorige afbeelding",
+    "next": "Volgende afbeelding",
+    "goToImage": "Ga naar afbeelding {{index}}",
+    "thumbnailsLabel": "Miniaturen",
+    "download": "Afbeelding downloaden",
+    "fullscreen": "Volledig scherm",
+    "exitFullscreen": "Volledig scherm verlaten",
+    "emptyState": {
+      "title": "Nog geen afbeeldingen",
+      "action": "Afbeeldingen toevoegen"
+    },
+    "altTextLabel": "Alternatieve tekst",
+    "deleteImage": "Afbeelding verwijderen",
+    "reorderImage": "Afbeelding herordenen",
+    "dismissError": "Fout sluiten",
+    "uploading": "Uploaden…",
+    "downloadError": "De afbeelding kon niet worden gedownload.",
+    "validation": {
+      "type": "Niet-ondersteund bestandstype",
+      "tooSmall": "Afbeelding is te klein",
+      "tooLarge": "Afbeelding is te groot"
+    }
+  },
+  "postSnippet": {
+    "readMore": "… Lees meer",
+    "readLess": "Lees minder",
+    "seeFullDescription": "Volledige beschrijving"
+  },
+  "postPreview": {
+    "createdBy": "Aangemaakt door",
+    "label": "Voorbeeld van geselecteerde bijdrage",
+    "edit": "Reactie bewerken",
+    "share": "Reactie delen",
+    "delete": "Reactie verwijderen",
+    "close": "Voorbeeld sluiten",
+    "emptyDescription": "Geen beschrijving",
+    "references": "Referenties"
+  },
+  "postLocation": {
+    "label": "Postlocatie",
+    "warning": "Wees voorzichtig met het wijzigen van de reactielocatie. Door de reactie naar een andere Post te verplaatsen, verdwijnt deze uit de huidige Post. Dit kan het voor mensen, waaronder de persoon die deze reactie heeft gemaakt, moeilijk maken om hem terug te vinden. Houd er rekening mee dat je reacties alleen binnen dezelfde Space of Subspace kunt verplaatsen.",
+    "moved": "Reactie succesvol verplaatst.",
+    "moveFailed": "Reactie kon niet worden verplaatst. Probeer het opnieuw."
+  },
+  "whiteboardPreview": {
+    "label": "Voorbeeld van geselecteerd whiteboard",
+    "edit": "Whiteboard bewerken",
+    "share": "Whiteboard delen",
+    "delete": "Whiteboard verwijderen",
+    "close": "Voorbeeld sluiten",
+    "openFull": "Klik om het volledige whiteboard te zien"
+  },
   "comments": {
     "title": "Discussie",
     "showMore": "Meer tonen",
     "showLess": "Minder tonen",
-    "sortNewest": "Nieuwste eerst",
-    "sortOldest": "Oudste eerst",
     "reply": "Antwoorden",
+    "replyInThread": "Antwoorden in deze thread",
     "delete": "Verwijderen",
     "deleted": "Deze opmerking is verwijderd",
+    "deleteConfirmTitle": "Opmerking verwijderen?",
+    "deleteConfirmDescription": "Weet je zeker dat je deze opmerking wilt verwijderen?",
     "addComment": "Voeg een opmerking toe...",
+    "mention": "Iemand noemen",
+    "mentionVirtualContributor": "AI",
     "send": "Verzenden",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Reactie toevoegen",
-      "overflow": "+{{count}} meer"
+      "overflow": "+{{count}} meer",
+      "unknownReactors": "Onbekend"
     },
     "count": "{{count}} opmerkingen",
     "count_one": "1 opmerking",
     "loading": "Opmerkingen laden...",
-    "empty": "Nog geen opmerkingen"
+    "empty": "Nog geen opmerkingen",
+    "unknownUser": "Onbekende gebruiker",
+    "signInToComment": "Log in om te reageren, antwoorden of een reactie te geven.",
+    "cantComment": "Je hebt geen toestemming om hier te reageren, antwoorden of een reactie te geven."
   },
   "dialogs": {
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "create": "Maken",
+    "discardChanges": {
+      "title": "Wijzigingen verwerpen?",
+      "description": "Je hebt niet-opgeslagen wijzigingen. Als je dit venster sluit, gaan ze verloren.",
+      "confirm": "Ja, sluiten",
+      "cancel": "Blijven bewerken"
+    },
+    "deleteFraming": {
+      "title": "Framing-inhoud verwijderen?",
+      "description": "De framing-inhoud van deze $t(common.callout) wordt verwijderd. Dit kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen",
+      "cancel": "Behouden"
+    },
+    "confirmClose": {
+      "title": "Dit venster sluiten?",
+      "description": "Niet-opgeslagen opmerkingstekst gaat verloren.",
+      "confirm": "Sluiten",
+      "cancel": "Open houden"
+    }
   },
   "poll": {
     "status": {
@@ -254,13 +955,22 @@
     "settings.title": "Peilinginstellingen",
     "settings.votingOptions": "Stemopties",
     "settings.allowMultiple": "Meerdere antwoorden toestaan",
-    "settings.allowCustomOptions": "Bijdragers toestaan opties toe te voegen",
+    "settings.allowCustomOptions": "Deelnemers toestaan opties toe te voegen",
     "settings.displayOptions": "Weergaveopties",
     "settings.hideResultsUntilVoted": "Resultaten verbergen tot gebruiker heeft gestemd",
     "settings.showVoterAvatars": "Avatars van stemmers tonen",
     "settings.close": "Sluiten",
-    "openPoll": "Peiling is open",
-    "closePoll": "Peiling is gesloten",
+    "closePoll": "Peiling sluiten",
+    "reopenPoll": "Peiling heropenen",
+    "closePollHint": {
+      "open": "Deze peiling staat open voor stemmen",
+      "closed": "Niemand kan nog op deze peiling stemmen"
+    },
+    "statusChange": {
+      "closeSuccess": "De peiling is nu gesloten.",
+      "reopenSuccess": "De peiling staat nu open voor stemmen.",
+      "failed": "De status van de peiling kon niet worden gewijzigd. Probeer het opnieuw."
+    },
     "closePollConfirm": {
       "title": "Deze peiling sluiten?",
       "description": "Het sluiten van de peiling voorkomt nieuwe stemmen en vergrendelt bewerking. Je kunt deze later heropenen.",
@@ -271,6 +981,11 @@
       "description": "Het heropenen van de peiling staat nieuwe stemmen en bewerking weer toe.",
       "confirm": "Peiling heropenen"
     },
+    "deleteOptionConfirm": {
+      "title": "Optie verwijderen?",
+      "description": "Deze optie wordt uit de peiling verwijderd.",
+      "descriptionWithText": "“{{text}}” wordt uit de peiling verwijderd."
+    },
     "dragHandle": "Slepen om te herordenen"
   },
   "a11y": {
@@ -280,10 +995,73 @@
     "feedRegion": "Inhoudsfeed van de space",
     "membersGrid": "Ledenraster van de community",
     "subspacesGrid": "Subspace-raster",
+    "statusFilter": "Subspaces filteren op status",
     "visibilityNotice": "Zichtbaarheidsmelding van de space",
     "mobileTabBar": "Tabbladnavigatie",
     "moreActionsDrawer": "Extra acties",
     "close": "Sluiten",
-    "loadingPost": "Bericht laden"
+    "loadingPost": "$t(common.callout) laden"
+  },
+  "activity": {
+    "dialogTitle": "Recente activiteit"
+  },
+  "contributors": {
+    "title": "Contributors",
+    "search": "Zoeken op naam…",
+    "empty": "Geen contributors om weer te geven.",
+    "emptySearch": "Geen contributors komen overeen met je zoekopdracht.",
+    "noLocationData": "Geen locatiegegevens",
+    "noLocationDescription": "Deze contributors hebben geen locatiegegevens ingesteld.",
+    "viewList": "Lijst",
+    "viewMap": "Kaart",
+    "expandMap": "Kaart vergroten",
+    "closeMap": "Kaart sluiten",
+    "types": {
+      "user": "Personen",
+      "organization": "Organisaties",
+      "virtualContributor": "Virtual Contributors"
+    },
+    "counts": {
+      "users": "{{count}} personen",
+      "organizations": "{{count}} organisaties",
+      "virtualContributors": "{{count}} virtual contributors"
+    },
+    "config": {
+      "title": "Contributors",
+      "typesLabel": "Typen contributor",
+      "typesHint": "Selecteer ten minste één type.",
+      "defaultTypeLabel": "Standaardtype",
+      "defaultTypeHint": "Het type dat als eerste wordt getoond.",
+      "defaultViewLabel": "Standaardweergave",
+      "viewList": "Lijst",
+      "viewMap": "Kaart"
+    },
+    "mapView": {
+      "helper": "Kies de startpositie die iedereen op de kaart ziet, of laat deze automatisch op je bijdragers passen.",
+      "stateAutomatic": "Kaartweergave: automatisch",
+      "stateFixed": "Kaartweergave: vast",
+      "useCurrent": "Gebruik huidige weergave",
+      "resetAuto": "Herstellen naar automatisch",
+      "mapAriaLabel": "Kaartvoorvertoning van bijdragers — versleep en zoom om de vaste weergave in te stellen",
+      "captureHint": "Versleep en zoom de kaart en klik daarna op 'Gebruik huidige weergave' om de beginpositie vast te leggen.",
+      "controlAriaLabel": "Kaartweergave-instellingen"
+    }
+  },
+  "spaceCollection": {
+    "search": "Zoek subspaces...",
+    "empty": {
+      "title": "Nog geen subspaces",
+      "description": "Deze space heeft nog geen subspaces."
+    }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classificaties"
+  },
+  "parentStack": {
+    "goTo": "Ga naar {{name}}"
   }
 }

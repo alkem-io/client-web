@@ -1,0 +1,107 @@
+import { X } from 'lucide-react';
+import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { cn } from '@/crd/lib/utils';
+import { Dialog, DialogContentRaw, DialogOverlay, DialogPortal, DialogTitle } from '@/crd/primitives/dialog';
+
+type WhiteboardEditorShellProps = {
+  open: boolean;
+  fullscreen?: boolean;
+  onClose: () => void;
+  title: ReactNode;
+  titleExtra?: ReactNode;
+  headerActions?: ReactNode;
+  children: ReactNode;
+  /** Optional docked rail rendered to the RIGHT of the canvas (push layout). */
+  rail?: ReactNode;
+  footer?: ReactNode;
+  className?: string;
+  /**
+   * Optional Escape-key interceptor. Radix invokes this during the capture phase, before the
+   * dialog content (e.g. Excalidraw) processes the key. Return `true` to consume the Escape and
+   * keep the dialog open (letting the inner content act on it); return `false`/`undefined` to let
+   * the dialog close as usual.
+   */
+  onEscapeKeyDown?: (event: KeyboardEvent) => boolean | void;
+};
+
+export function WhiteboardEditorShell({
+  open,
+  fullscreen,
+  onClose,
+  title,
+  titleExtra,
+  headerActions,
+  children,
+  rail,
+  footer,
+  className,
+  onEscapeKeyDown,
+}: WhiteboardEditorShellProps) {
+  const { t } = useTranslation('crd-whiteboard');
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={isOpen => {
+        if (!isOpen) onClose();
+      }}
+    >
+      <DialogPortal>
+        <DialogOverlay className="z-[60] bg-background/80 backdrop-blur-sm" />
+        <DialogContentRaw
+          onInteractOutside={e => e.preventDefault()}
+          onPointerDownOutside={e => e.preventDefault()}
+          onEscapeKeyDown={e => {
+            // Always prevent Radix's built-in dismiss; closing is routed through `onClose`.
+            e.preventDefault();
+            // Give the content a chance to consume the Escape (e.g. Excalidraw deselecting).
+            if (onEscapeKeyDown?.(e)) {
+              return;
+            }
+            onClose();
+          }}
+          className={cn(
+            'fixed z-[60] bg-background flex flex-col',
+            fullscreen
+              ? 'inset-0'
+              : 'top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] max-w-[95vw] max-h-[90vh] w-full h-[85vh] rounded-lg border shadow-lg',
+            className
+          )}
+        >
+          {/* Header */}
+          <div className="flex items-center gap-2 px-4 py-2 border-b border-border shrink-0">
+            <DialogTitle asChild={true}>
+              <div className="flex-1 min-w-0 flex items-center gap-2">
+                {title}
+                {titleExtra}
+              </div>
+            </DialogTitle>
+            <div className="flex items-center gap-1 shrink-0">
+              {headerActions}
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer p-1"
+                aria-label={t('editor.closeWhiteboard')}
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Content: Excalidraw canvas (or any children) + optional docked rail.
+              The rail is a flex SIBLING, so opening it shrinks the canvas (push
+              layout) instead of overlaying it. */}
+          <div className="flex-1 min-h-0 flex flex-row">
+            <div className="flex-1 min-h-0 relative">{children}</div>
+            {rail}
+          </div>
+
+          {/* Footer */}
+          {footer && <div className="shrink-0">{footer}</div>}
+        </DialogContentRaw>
+      </DialogPortal>
+    </Dialog>
+  );
+}

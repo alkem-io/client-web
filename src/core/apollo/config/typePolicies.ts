@@ -11,6 +11,19 @@ export const typePolicies: TypedTypePolicies = {
   Platform: {
     merge: true,
   },
+  Library: {
+    fields: {
+      // `keyArgs: ['filter']` keeps an independently-paged cached list per type filter,
+      // so changing the template-type filter naturally serves a fresh first page (FR-007).
+      // `TemplateResult` is a non-normalized wrapper (no own id) — the relay merge's
+      // id-dedup is a no-op; continuity relies on the server's stable rowId-DESC cursors.
+      // Accepted risk (no page-seam dedup); see research.md Decision 6 for the rationale
+      // and the remediation path if the server ever returns overlapping pages.
+      templatesPaginated: paginationFieldPolicy(['filter'], 'TemplateResult'),
+      // Packs now take a `filter` (searchTerm); key on it so a search re-keys to a fresh first page (FR-017).
+      innovationPacksPaginated: paginationFieldPolicy(['filter'], 'InnovationPack'),
+    },
+  },
   MeQueryResults: {
     merge: true,
   },
@@ -59,6 +72,20 @@ export const typePolicies: TypedTypePolicies = {
     },
   },
   CalloutSettings: {
+    merge: true,
+  },
+  // Non-normalized (no id). Queries select different slices of `Space.settings`
+  // (e.g. `SpaceSubspaceCards` reads only `sortMode` while `SpaceSettings` reads
+  // the full object); without a merge a partial write replaces the object and
+  // drops the other fields, forcing every watcher of them into a network refetch.
+  SpaceSettings: {
+    merge: true,
+  },
+  // Non-normalized (no id). The feed-list `Callout` fragment and the full
+  // `CalloutDetails` query both write `Callout.settings.contribution`; without a
+  // merge here a partial list write can replace the object and drop `enabled` /
+  // `canAddContributions`, which silently hides the "Add contribution" affordance.
+  CalloutSettingsContribution: {
     merge: true,
   },
   WhiteboardPreviewSettings: {
@@ -119,6 +146,7 @@ export const typePolicies: TypedTypePolicies = {
     },
   },
   PlatformAdminQueryResults: {
+    merge: true,
     fields: {
       users: paginationFieldPolicy(['filter'], 'User'),
       organizations: paginationFieldPolicy(['filter'], 'Organization'),

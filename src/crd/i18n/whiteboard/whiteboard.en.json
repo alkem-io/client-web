@@ -1,0 +1,108 @@
+{
+  "join": {
+    "welcome": "Welcome to",
+    "title": "Join Whiteboard",
+    "description": "Enter your name to join the whiteboard session. Other participants will see this name.",
+    "placeholder": "Your name",
+    "guestNameLabel": "Guest display name",
+    "joinButton": "Join as Guest",
+    "joiningButton": "Joining...",
+    "signInButton": "Sign In to Alkemio"
+  },
+  "error": {
+    "notFound": {
+      "title": "Whiteboard Not Found",
+      "message": "This whiteboard doesn't exist or is no longer available."
+    },
+    "serverError": {
+      "title": "Something Went Wrong",
+      "message": "We couldn't load this whiteboard. Please try again."
+    },
+    "retry": "Try Again"
+  },
+  "editor": {
+    "editDisplayName": "Edit title",
+    "saveDisplayName": "Save title",
+    "cancelEdit": "Cancel editing",
+    "delete": "Delete whiteboard",
+    "save": "Save",
+    "restart": "Restart collaboration",
+    "guestContributionsWarning": "Guest contributions are enabled",
+    "closeWhiteboard": "Close whiteboard",
+    "saveStatus": {
+      "label": "Save status",
+      "close": "Close"
+    },
+    "loadingWhiteboard": "Loading whiteboard",
+    "untitled": "Whiteboard",
+    "unsavedChanges": {
+      "title": "Discard unsaved changes?",
+      "description": "You have unsaved changes that will be lost. Are you sure you want to continue?",
+      "confirm": "Discard",
+      "cancel": "Keep editing",
+      "wait": "Keep open and wait",
+      "export": "Export first"
+    }
+  },
+  "footer": {
+    "saveStatus": {
+      "saved": "Saved",
+      "saving": "Saving…",
+      "finalizing": "Finalizing changes…",
+      "offline": "Offline — will sync automatically",
+      "ended": "Unavailable"
+    },
+    "guestContributionsWarning": "Anyone with the link can edit",
+    "readonlyReason": {
+      "readonly": "<strong>View only mode</strong> <learnwhy>click here to learn why</learnwhy>",
+      "contentUpdatePolicy": "You don't have the rights to edit this whiteboard. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings if you want to contribute.",
+      "contentUpdatePolicyNoOwner": "You don't have the rights to edit this whiteboard. The owner is no longer available but you can ask a Space administrator to change the Share settings if you want to contribute.",
+      "noMembership": "You have to be a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <spacelink>join/apply</spacelink>",
+      "unauthenticated": "You have to be signed in and a member of the {{spaceLevel}} this whiteboard is in, to be able to edit. Click here to <signinlink>sign in</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "View only mode",
+      "reason": {
+        "inactivity": "You can't edit this whiteboard because you were inactive for too long. Please try reopening the whiteboard to continue editing.",
+        "multiUserNotAllowed": "You can't edit this whiteboard because this space only allows one whiteboard editor at a time",
+        "roomCapacityReached": "You can't edit this whiteboard because this space allows for multiple editors simultaneously, but the maximum is reached",
+        "generic": "You can't edit this whiteboard for one of the following reasons:\n\n- You were inactive for 2 hours or more\n- You are not a member of the space\n- This space only allows one whiteboard editor at a time\n- This space allows for more editors, but the maximum is reached"
+      }
+    }
+  },
+  "disconnected": {
+    "reconnect": "Reconnect",
+    "reloadPage": "Reload page",
+    "countdown": "({{seconds}}s)",
+    "close": "Close"
+  },
+  "preview": {
+    "editButton": "Edit whiteboard preview settings",
+    "settings": {
+      "title": "Preview Settings",
+      "subtitle": "Choose how the whiteboard thumbnail looks in cards and previews"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Auto",
+        "description": "Automatically capture the full canvas view"
+      },
+      "CUSTOM": {
+        "title": "Custom",
+        "description": "Choose your own crop area"
+      },
+      "FIXED": {
+        "title": "Fixed",
+        "description": "Lock to a specific area of the canvas"
+      }
+    },
+    "crop": {
+      "previewArea": "Whiteboard preview area",
+      "reset": "Reset",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "loading": "Loading",
+      "zoom": "Zoom"
+    }
+  }
+}

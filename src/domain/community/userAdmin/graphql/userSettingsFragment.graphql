@@ -2,6 +2,7 @@ fragment userSettingsFragment on UserSettings {
   id
   communication {
     allowOtherUsersToSendMessages
+    allowOtherUsersToContactViaEmail
   }
   privacy {
     contributionRolesPubliclyVisible
@@ -9,6 +10,9 @@ fragment userSettingsFragment on UserSettings {
   homeSpace {
     spaceID
     autoRedirect
+  }
+  dashboard {
+    activityView
   }
   notification {
     platform {
@@ -29,6 +33,11 @@ fragment userSettingsFragment on UserSettings {
           push
         }
         userGlobalRoleChanged {
+          email
+          inApp
+          push
+        }
+        userEmailChanged {
           email
           inApp
           push
@@ -81,6 +90,11 @@ fragment userSettingsFragment on UserSettings {
           inApp
           push
         }
+        userEmailChanged {
+          email
+          inApp
+          push
+        }
       }
       # Member related notifications
       collaborationCalloutContributionCreated {
@@ -94,6 +108,11 @@ fragment userSettingsFragment on UserSettings {
         push
       }
       collaborationCalloutPublished {
+        email
+        inApp
+        push
+      }
+      collaborationCalloutReaction {
         email
         inApp
         push
@@ -162,6 +181,16 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+      conversationMessageDirect {
+        email
+        inApp
+        push
+      }
+      conversationMessageGroup {
+        email
+        inApp
+        push
+      }
     }
     virtualContributor {
       adminSpaceCommunityInvitation {
@@ -169,6 +198,10 @@ fragment userSettingsFragment on UserSettings {
         inApp
         push
       }
+    }
+    sound {
+      chatMessage
+      inAppNotification
     }
   }
 }

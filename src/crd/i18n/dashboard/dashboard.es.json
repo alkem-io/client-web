@@ -11,6 +11,7 @@
     "innovationPacks": "Paquetes de Innovación",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
+    "navigation": "Navegación del panel",
     "pendingCount": "{{count}} pendiente(s)"
   },
   "recentSpaces": {
@@ -40,7 +41,21 @@
       }
     },
     "showMore": "Mostrar más",
-    "noActivity": "Sin actividad reciente"
+    "noActivity": "Sin actividad reciente",
+    "iconLabel": {
+      "CALLOUT_PUBLISHED": "Nuevo post",
+      "CALLOUT_POST_CREATED": "Nuevo post",
+      "CALLOUT_POST_COMMENT": "Nuevo comentario",
+      "DISCUSSION_COMMENT": "Nuevo comentario",
+      "CALLOUT_WHITEBOARD_CREATED": "Nuevo whiteboard",
+      "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "Whiteboard actualizado",
+      "CALLOUT_MEMO_CREATED": "Nueva nota",
+      "CALLOUT_LINK_CREATED": "Nuevo enlace",
+      "MEMBER_JOINED": "Nuevo miembro",
+      "SUBSPACE_CREATED": "Nuevo subespacio",
+      "CALENDAR_EVENT_CREATED": "Nuevo evento",
+      "UPDATE_SENT": "Nueva actualización"
+    }
   },
   "dialogs": {
     "tipsAndTricks": "Consejos y Trucos",
@@ -128,7 +143,12 @@
     "loading": "Cargando invitaciones",
     "accept": "Aceptar",
     "decline": "Rechazar",
-    "noInvitations": "Sin invitaciones pendientes"
+    "noInvitations": "Sin invitaciones pendientes",
+    "invitedBy": "Invitado por {{name}}"
+  },
+  "applications": {
+    "title": "Solicitudes Pendientes",
+    "pending": "Pendiente"
   },
   "campaign": {
     "title": "Crea tu Colaborador Virtual",
@@ -171,5 +191,29 @@
       "joinAriaLabel": "Unirse a {{spaceName}}"
     },
     "applicationAriaLabel": "Ver solicitud pendiente para {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Fijados y Actividad reciente",
+      "mostActivity": "Espacios con más actividad",
+      "leadAdmin": "Espacios que lidero y administro",
+      "host": "Espacios que alojo"
+    },
+    "showMore_one": "Mostrar más: {{count}} espacio",
+    "showMore_other": "Mostrar más: {{count}} espacios"
+  },
+  "welcome": {
+    "title": "Bienvenido a Alkemio",
+    "message": "Aún no formas parte de ningún Espacio. Explora el Espacio de bienvenida para ver lo que es posible, o consulta la documentación para empezar.",
+    "welcomeSpaceLink": "Visitar el Espacio de bienvenida",
+    "documentationLink": "Documentación",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Solicitudes e invitaciones pendientes"
+  },
+  "explore": {
+    "title": "Explorar Espacios",
+    "exploreAll": "Explorar todos los Espacios"
   }
 }

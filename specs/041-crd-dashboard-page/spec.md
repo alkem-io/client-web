@@ -135,6 +135,7 @@ The CRD dashboard adapts to different screen sizes. On mobile/small screens, the
 - What happens when pending invitations are accepted/declined while the dashboard is open? The invitation is removed from the InvitationsBlock and the badge count in the sidebar updates.
 - What happens when the `?dialog=invitations` URL parameter is present but the user has no pending invitations? The dialog opens with an empty state message.
 - What happens when a release notes banner is dismissed? It stays dismissed across page reloads (persisted in localStorage).
+- What happens when the platform is accessed via an innovation-hub subdomain with CRD enabled (in development, `?subdomain=<hubNameId>`)? `RedirectToLanding` sends `/` → `/home` (preserving the query string), and the `/home` dispatcher detects the hub via `useInnovationHub()` and renders the (MUI) innovation-hub home page instead of the dashboard — matching the MUI shell. The hub query is `cache-first` and already warmed by `RedirectToLanding`, so there is no extra request or layout flash.
 
 ## Requirements *(mandatory)*
 
@@ -176,6 +177,7 @@ The CRD dashboard adapts to different screen sizes. On mobile/small screens, the
 - **FR-032**: Activity feed items MUST convey their full content to screen readers: user name, action performed, target entity, and timestamp -- without relying solely on visual layout to group related information
 - **FR-033**: The dashboard MUST define landmark regions: `<main>` for the primary content area, `<nav>` for the sidebar, and `<aside>` for supplementary sections (banners, campaigns) -- enabling screen reader users to jump between regions
 - **FR-034**: Loading and empty states MUST be announced to assistive technology: skeleton loaders MUST use `aria-busy="true"` on their container, and empty state messages MUST use `role="status"` or an equivalent live region
+- **FR-035**: When the CRD toggle is enabled, the `/home` route MUST render the innovation-hub home page (the existing MUI `InnovationHubHomePage`) when the active domain/subdomain resolves to an innovation hub, and the CRD dashboard otherwise — mirroring the MUI `HomePage`'s branch on `useInnovationHub()`. The hub home page MUST NOT be wrapped in `CrdLayoutWrapper` (it provides its own `TopLevelLayout`); the dashboard branch MUST be wrapped in `CrdLayoutWrapper`. While the hub lookup is loading, the route MUST render a loading indicator and MUST NOT render the dashboard.
 
 ### Key Entities
 
@@ -198,6 +200,7 @@ The CRD dashboard adapts to different screen sizes. On mobile/small screens, the
 - **SC-007**: Toggling CRD off renders the existing MUI dashboard with zero regressions -- all existing functionality preserved
 - **SC-008**: All existing unit tests continue to pass and the build succeeds with zero new errors
 - **SC-009**: CRD components achieve WCAG 2.1 AA compliance: all interactive elements are keyboard-navigable and screen-reader accessible
+- **SC-010**: With CRD enabled, visiting an innovation-hub subdomain renders that hub's home page (banner, description, selected spaces), not the personal dashboard — matching the MUI shell exactly
 
 ## Scope Boundary
 
@@ -209,10 +212,11 @@ The CRD dashboard adapts to different screen sizes. On mobile/small screens, the
 - Integration page, data mappers, and data hooks
 - New `crd-dashboard` i18n namespace with 6 language files
 - Route toggle wiring in `TopLevelRoutes.tsx`
+- The `/home` **dispatcher** (`CrdHomePage`) that mirrors the MUI `HomePage`: it branches on `useInnovationHub()` to render either the innovation-hub home page (on a hub subdomain) or the CRD dashboard — so hub subdomains keep their curated home page under CRD instead of falling through to the dashboard
 - Primitives to port: Switch, ScrollArea (if needed)
 
 ### Out of Scope
-- `InnovationHubHomePage` (separate ticket)
+- **CRD migration of `InnovationHubHomePage`** (separate ticket) — on an innovation-hub subdomain the `/home` dispatcher renders the **existing MUI** `InnovationHubHomePage` unchanged (it carries its own `TopLevelLayout`). Porting that page to the CRD design system is deferred; only the dispatch to it is in scope here.
 - `VirtualContributorWizard` (stays MUI, invoked via callback from CRD)
 - `DirectMessageDialog`, `SearchDialog`, `PendingMembershipsDialog`, `CreateSpaceDialog` (global dialogs, not page-specific)
 - GraphQL schema or query changes (all existing hooks reused as-is)
@@ -222,7 +226,7 @@ The CRD dashboard adapts to different screen sizes. On mobile/small screens, the
 
 - **Activity View vs Spaces View toggle**: Keep both views. Migrate both the activity feed view and the hierarchical DashboardSpaces view. Toggle preserved.
 - **Sidebar resources scope**: All 4 resource types. Sidebar includes spaces, VCs, innovation hubs, and innovation packs (extends beyond prototype).
-- **InnovationHubHomePage**: Separate ticket. This ticket covers only the `MyDashboard` branch.
+- **InnovationHubHomePage**: The CRD `/home` route uses a dispatcher (`CrdHomePage`) that mirrors the MUI `HomePage`. When the active domain/subdomain resolves to an innovation hub (`useInnovationHub()` returns a hub), it renders the **existing MUI** `InnovationHubHomePage` — which provides its own `TopLevelLayout`, so it is **not** wrapped in `CrdLayoutWrapper`. Otherwise it renders the CRD dashboard inside `CrdLayoutWrapper`. CRD-migrating the hub page itself is a separate ticket (see Out of Scope). Without this dispatcher the CRD route renders the dashboard unconditionally, so hub subdomains silently lose their curated home page and land on the personal dashboard — the regression this resolves.
 
 ## Components Missing from Prototype
 

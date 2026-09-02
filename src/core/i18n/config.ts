@@ -2,13 +2,18 @@ import i18n from 'i18next';
 import 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
+// CRD common namespace — the default namespace. Eagerly loaded (EN) because it is
+// resolved by every component that calls useTranslation() without a namespace arg.
+import crdCommonEN from '@/crd/i18n/common/common.en.json';
+// CRD error namespace — eagerly loaded so the top-level (above-router) error
+// boundary can render a CRD error page even when a crash happens at boot,
+// before the lazy backend has a chance to fetch it.
+import crdErrorEN from '@/crd/i18n/error/error.en.json';
 // CRD layout namespace — eagerly loaded (renders on every CRD page)
 import crdLayoutEN from '@/crd/i18n/layout/layout.en.json';
 import { env } from '@/main/env';
-// Eagerly import default English translation to bundle it with main chunk
-import translationEN from './en/translation.en.json';
 
-export const defaultNS = 'translation';
+export const defaultNS = 'crd-common';
 
 const defaultLang = 'en';
 type SupportedLang = 'en' | 'nl' | 'es' | 'bg' | 'de' | 'fr';
@@ -17,35 +22,6 @@ export const supportedLngs: (SupportedLang | 'inContextTool')[] = [defaultLang, 
 if (env?.VITE_APP_IN_CONTEXT_TRANSLATION === 'true') {
   supportedLngs.push('inContextTool');
 }
-
-// Lazy loading function for translations using dynamic imports
-// English is eagerly loaded above for better initial page performance
-const loadTranslation = async (lng: string) => {
-  try {
-    switch (lng) {
-      case 'es':
-        return (await import('./es/translation.es.json')).default;
-      case 'nl':
-        return (await import('./nl/translation.nl.json')).default;
-      case 'bg':
-        return (await import('./bg/translation.bg.json')).default;
-      case 'de':
-        return (await import('./de/translation.de.json')).default;
-      case 'fr':
-        return (await import('./fr/translation.fr.json')).default;
-      // case 'pt':
-      //    return (await import('./pt/translation.pt.json')).default;
-      case 'inContextTool':
-        return (await import('./ach/translation.ach.json')).default;
-      default:
-        // Return eagerly loaded English translation
-        return translationEN;
-    }
-  } catch (_error) {
-    // Fallback to English
-    return translationEN;
-  }
-};
 
 // Registry of CRD namespace imports for lazy loading
 // Each namespace maps language codes to dynamic import functions.
@@ -66,6 +42,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     bg: () => import('@/crd/i18n/common/common.bg.json'),
     de: () => import('@/crd/i18n/common/common.de.json'),
     fr: () => import('@/crd/i18n/common/common.fr.json'),
+  },
+  'crd-chat': {
+    en: () => import('@/crd/i18n/chat/chat.en.json'),
+    es: () => import('@/crd/i18n/chat/chat.es.json'),
+    nl: () => import('@/crd/i18n/chat/chat.nl.json'),
+    bg: () => import('@/crd/i18n/chat/chat.bg.json'),
+    de: () => import('@/crd/i18n/chat/chat.de.json'),
+    fr: () => import('@/crd/i18n/chat/chat.fr.json'),
   },
   'crd-exploreSpaces': {
     en: () => import('@/crd/i18n/exploreSpaces/exploreSpaces.en.json'),
@@ -99,6 +83,14 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/space/space.de.json'),
     fr: () => import('@/crd/i18n/space/space.fr.json'),
   },
+  'crd-taskBoard': {
+    en: () => import('@/crd/i18n/taskBoard/taskBoard.en.json'),
+    es: () => import('@/crd/i18n/taskBoard/taskBoard.es.json'),
+    nl: () => import('@/crd/i18n/taskBoard/taskBoard.nl.json'),
+    bg: () => import('@/crd/i18n/taskBoard/taskBoard.bg.json'),
+    de: () => import('@/crd/i18n/taskBoard/taskBoard.de.json'),
+    fr: () => import('@/crd/i18n/taskBoard/taskBoard.fr.json'),
+  },
   'crd-markdown': {
     en: () => import('@/crd/i18n/markdown/markdown.en.json'),
     es: () => import('@/crd/i18n/markdown/markdown.es.json'),
@@ -115,13 +107,150 @@ const crdNamespaceImports: Record<string, Record<string, () => Promise<{ default
     de: () => import('@/crd/i18n/search/search.de.json'),
     fr: () => import('@/crd/i18n/search/search.fr.json'),
   },
+  'crd-error': {
+    en: () => import('@/crd/i18n/error/error.en.json'),
+    es: () => import('@/crd/i18n/error/error.es.json'),
+    nl: () => import('@/crd/i18n/error/error.nl.json'),
+    bg: () => import('@/crd/i18n/error/error.bg.json'),
+    de: () => import('@/crd/i18n/error/error.de.json'),
+    fr: () => import('@/crd/i18n/error/error.fr.json'),
+  },
+  'crd-auth': {
+    en: () => import('@/crd/i18n/auth/auth.en.json'),
+    es: () => import('@/crd/i18n/auth/auth.es.json'),
+    nl: () => import('@/crd/i18n/auth/auth.nl.json'),
+    bg: () => import('@/crd/i18n/auth/auth.bg.json'),
+    de: () => import('@/crd/i18n/auth/auth.de.json'),
+    fr: () => import('@/crd/i18n/auth/auth.fr.json'),
+  },
+  'crd-spaceSettings': {
+    en: () => import('@/crd/i18n/spaceSettings/spaceSettings.en.json'),
+    es: () => import('@/crd/i18n/spaceSettings/spaceSettings.es.json'),
+    nl: () => import('@/crd/i18n/spaceSettings/spaceSettings.nl.json'),
+    bg: () => import('@/crd/i18n/spaceSettings/spaceSettings.bg.json'),
+    de: () => import('@/crd/i18n/spaceSettings/spaceSettings.de.json'),
+    fr: () => import('@/crd/i18n/spaceSettings/spaceSettings.fr.json'),
+  },
+  'crd-community': {
+    en: () => import('@/crd/i18n/community/community.en.json'),
+    es: () => import('@/crd/i18n/community/community.es.json'),
+    nl: () => import('@/crd/i18n/community/community.nl.json'),
+    bg: () => import('@/crd/i18n/community/community.bg.json'),
+    de: () => import('@/crd/i18n/community/community.de.json'),
+    fr: () => import('@/crd/i18n/community/community.fr.json'),
+  },
+  'crd-subspace': {
+    en: () => import('@/crd/i18n/subspace/subspace.en.json'),
+    es: () => import('@/crd/i18n/subspace/subspace.es.json'),
+    nl: () => import('@/crd/i18n/subspace/subspace.nl.json'),
+    bg: () => import('@/crd/i18n/subspace/subspace.bg.json'),
+    de: () => import('@/crd/i18n/subspace/subspace.de.json'),
+    fr: () => import('@/crd/i18n/subspace/subspace.fr.json'),
+  },
+  'crd-createSpace': {
+    en: () => import('@/crd/i18n/createSpace/createSpace.en.json'),
+    es: () => import('@/crd/i18n/createSpace/createSpace.es.json'),
+    nl: () => import('@/crd/i18n/createSpace/createSpace.nl.json'),
+    bg: () => import('@/crd/i18n/createSpace/createSpace.bg.json'),
+    de: () => import('@/crd/i18n/createSpace/createSpace.de.json'),
+    fr: () => import('@/crd/i18n/createSpace/createSpace.fr.json'),
+  },
+  'crd-whiteboard': {
+    en: () => import('@/crd/i18n/whiteboard/whiteboard.en.json'),
+    es: () => import('@/crd/i18n/whiteboard/whiteboard.es.json'),
+    nl: () => import('@/crd/i18n/whiteboard/whiteboard.nl.json'),
+    bg: () => import('@/crd/i18n/whiteboard/whiteboard.bg.json'),
+    de: () => import('@/crd/i18n/whiteboard/whiteboard.de.json'),
+    fr: () => import('@/crd/i18n/whiteboard/whiteboard.fr.json'),
+  },
+  'crd-forum': {
+    en: () => import('@/crd/i18n/forum/forum.en.json'),
+    es: () => import('@/crd/i18n/forum/forum.es.json'),
+    nl: () => import('@/crd/i18n/forum/forum.nl.json'),
+    bg: () => import('@/crd/i18n/forum/forum.bg.json'),
+    de: () => import('@/crd/i18n/forum/forum.de.json'),
+    fr: () => import('@/crd/i18n/forum/forum.fr.json'),
+  },
+  'crd-documentation': {
+    en: () => import('@/crd/i18n/documentation/documentation.en.json'),
+    es: () => import('@/crd/i18n/documentation/documentation.es.json'),
+    nl: () => import('@/crd/i18n/documentation/documentation.nl.json'),
+    bg: () => import('@/crd/i18n/documentation/documentation.bg.json'),
+    de: () => import('@/crd/i18n/documentation/documentation.de.json'),
+    fr: () => import('@/crd/i18n/documentation/documentation.fr.json'),
+  },
+  'crd-profilePages': {
+    en: () => import('@/crd/i18n/profilePages/profilePages.en.json'),
+    es: () => import('@/crd/i18n/profilePages/profilePages.es.json'),
+    nl: () => import('@/crd/i18n/profilePages/profilePages.nl.json'),
+    bg: () => import('@/crd/i18n/profilePages/profilePages.bg.json'),
+    de: () => import('@/crd/i18n/profilePages/profilePages.de.json'),
+    fr: () => import('@/crd/i18n/profilePages/profilePages.fr.json'),
+  },
+  'crd-templates': {
+    en: () => import('@/crd/i18n/templates/templates.en.json'),
+    es: () => import('@/crd/i18n/templates/templates.es.json'),
+    nl: () => import('@/crd/i18n/templates/templates.nl.json'),
+    bg: () => import('@/crd/i18n/templates/templates.bg.json'),
+    de: () => import('@/crd/i18n/templates/templates.de.json'),
+    fr: () => import('@/crd/i18n/templates/templates.fr.json'),
+  },
+  'crd-contributorSettings': {
+    en: () => import('@/crd/i18n/contributorSettings/contributorSettings.en.json'),
+    es: () => import('@/crd/i18n/contributorSettings/contributorSettings.es.json'),
+    nl: () => import('@/crd/i18n/contributorSettings/contributorSettings.nl.json'),
+    bg: () => import('@/crd/i18n/contributorSettings/contributorSettings.bg.json'),
+    de: () => import('@/crd/i18n/contributorSettings/contributorSettings.de.json'),
+    fr: () => import('@/crd/i18n/contributorSettings/contributorSettings.fr.json'),
+  },
+  'crd-innovationHub': {
+    en: () => import('@/crd/i18n/innovationHub/innovationHub.en.json'),
+    es: () => import('@/crd/i18n/innovationHub/innovationHub.es.json'),
+    nl: () => import('@/crd/i18n/innovationHub/innovationHub.nl.json'),
+    bg: () => import('@/crd/i18n/innovationHub/innovationHub.bg.json'),
+    de: () => import('@/crd/i18n/innovationHub/innovationHub.de.json'),
+    fr: () => import('@/crd/i18n/innovationHub/innovationHub.fr.json'),
+  },
+  'crd-admin': {
+    en: () => import('@/crd/i18n/admin/admin.en.json'),
+    es: () => import('@/crd/i18n/admin/admin.es.json'),
+    nl: () => import('@/crd/i18n/admin/admin.nl.json'),
+    bg: () => import('@/crd/i18n/admin/admin.bg.json'),
+    de: () => import('@/crd/i18n/admin/admin.de.json'),
+    fr: () => import('@/crd/i18n/admin/admin.fr.json'),
+  },
+  'crd-help': {
+    en: () => import('@/crd/i18n/help/help.en.json'),
+    es: () => import('@/crd/i18n/help/help.es.json'),
+    nl: () => import('@/crd/i18n/help/help.nl.json'),
+    bg: () => import('@/crd/i18n/help/help.bg.json'),
+    de: () => import('@/crd/i18n/help/help.de.json'),
+    fr: () => import('@/crd/i18n/help/help.fr.json'),
+  },
+  'crd-language': {
+    en: () => import('@/crd/i18n/language/language.en.json'),
+    es: () => import('@/crd/i18n/language/language.es.json'),
+    nl: () => import('@/crd/i18n/language/language.nl.json'),
+    bg: () => import('@/crd/i18n/language/language.bg.json'),
+    de: () => import('@/crd/i18n/language/language.de.json'),
+    fr: () => import('@/crd/i18n/language/language.fr.json'),
+  },
+  'crd-reactions': {
+    en: () => import('@/crd/i18n/reactions/reactions.en.json'),
+    es: () => import('@/crd/i18n/reactions/reactions.es.json'),
+    nl: () => import('@/crd/i18n/reactions/reactions.nl.json'),
+    bg: () => import('@/crd/i18n/reactions/reactions.bg.json'),
+    de: () => import('@/crd/i18n/reactions/reactions.de.json'),
+    fr: () => import('@/crd/i18n/reactions/reactions.fr.json'),
+  },
 };
 
 // Cache for loaded translations
 const translationCache = new Map<string, Record<string, unknown>>();
 // Pre-populate cache with eagerly loaded English translations
-translationCache.set(`${defaultLang}-${defaultNS}`, translationEN);
+translationCache.set(`${defaultLang}-${defaultNS}`, crdCommonEN);
 translationCache.set(`${defaultLang}-crd-layout`, crdLayoutEN);
+translationCache.set(`${defaultLang}-crd-error`, crdErrorEN);
 
 // Custom backend for lazy loading
 const lazyBackend = {
@@ -142,9 +271,7 @@ const lazyBackend = {
     try {
       let translation: Record<string, unknown>;
 
-      if (namespace === 'translation') {
-        translation = await loadTranslation(language);
-      } else if (crdNamespaceImports[namespace]) {
+      if (crdNamespaceImports[namespace]) {
         const langImports = crdNamespaceImports[namespace];
         if (langImports[language]) {
           translation = (await langImports[language]()).default;
@@ -171,7 +298,7 @@ i18n
   .init({
     fallbackLng: defaultLang,
     supportedLngs,
-    ns: [defaultNS, 'crd-layout'],
+    ns: [defaultNS, 'crd-layout', 'crd-error'],
     defaultNS,
     preload: [defaultLang], // English is preloaded
     // Required when mixing bundled resources with a backend for other languages
@@ -179,9 +306,29 @@ i18n
     // Add English translations as initial resources for instant availability
     resources: {
       en: {
-        translation: translationEN,
+        'crd-common': crdCommonEN,
         'crd-layout': crdLayoutEN,
+        'crd-error': crdErrorEN,
       },
+    },
+    // DL-10 / SC-001c / FR-004 / SC-005: reconfigure the language detector so the
+    // library never reads navigator or writes i18nextLng browser storage.
+    //
+    // Navigator is deliberately EXCLUDED from detection.order: including it would
+    // cause i18next to set i18n.language = navigator.languages[0] (e.g. 'nl') at
+    // boot, silently switching the display for anonymous visitors BEFORE they
+    // answer the offer — a direct violation of FR-004, SC-005, and DL-6.
+    //
+    // Browser-language reading for the OFFER is done explicitly by
+    // detectBrowserLanguage() in useLanguageResolution.ts; the i18next detector
+    // does not need navigator and must not touch display.
+    //
+    // The querystring source is kept for the in-context-translation tooling only.
+    // ALL browser writes are handled explicitly by the language-offer subsystem
+    // behind the new `preference` consent category.
+    detection: {
+      order: ['querystring'] as const,
+      caches: [] as string[],
     },
     interpolation: {
       format: (value, format, _lng) => {
@@ -192,5 +339,17 @@ i18n
       escapeValue: false, // React already protects from XSS unless you use dangerouslySetInnerHTML (which we shouldn't)
     },
   });
+
+// Keep the document's <html lang> attribute in sync with the active display
+// language (a11y / SEO). i18next does not fire `languageChanged` for the initial
+// value, so set it once on `initialized` and then on every subsequent change
+// (offer accept, the settings switcher, legacy reconciliation, anonymous carry).
+const syncHtmlLang = (lng: string | undefined): void => {
+  if (typeof document !== 'undefined' && lng) {
+    document.documentElement.lang = lng;
+  }
+};
+i18n.on('languageChanged', syncHtmlLang);
+i18n.on('initialized', () => syncHtmlLang(i18n.language));
 
 export default i18n;

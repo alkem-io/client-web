@@ -1,7 +1,7 @@
 import { Check, Loader2, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PollVoterAvatars } from '@/crd/components/common/PollVoterAvatars';
+import { StackedPersonAvatars } from '@/crd/components/common/StackedPersonAvatars';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Checkbox } from '@/crd/primitives/checkbox';
@@ -64,6 +64,7 @@ function OptionLabel({
   showResults: boolean;
   resultsDetail: 'full' | 'count' | 'percentage';
 }) {
+  const { t } = useTranslation('crd-space');
   const showCount = showResults && option.voteCount != null && resultsDetail !== 'percentage';
   const showPercentage = showResults && option.votePercentage != null && resultsDetail !== 'count';
   const showBar = showResults && option.votePercentage != null;
@@ -85,13 +86,22 @@ function OptionLabel({
       )}
       <div className="relative z-[1]">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm text-foreground">{option.text}</span>
-          <span className="flex items-center gap-1 shrink-0 text-xs text-muted-foreground">
+          <span className="text-body text-foreground">{option.text}</span>
+          <span className="flex items-center gap-1 shrink-0 text-caption text-muted-foreground">
             {showPercentage && <span>{Math.round(option.votePercentage ?? 0)}%</span>}
             {showCount && <span>({option.voteCount})</span>}
           </span>
         </div>
-        {showVoters && option.voters && <PollVoterAvatars voters={option.voters} className="mt-1" />}
+        {showVoters && option.voters ? (
+          <StackedPersonAvatars
+            people={option.voters}
+            className="mt-1"
+            groupAriaLabel={t('poll.results.totalVotes', { count: option.voters.length })}
+            overflowTooltipLabel={
+              option.voters.length > 10 ? t('poll.results.votersMore', { count: option.voters.length - 10 }) : undefined
+            }
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -142,7 +152,7 @@ function CustomOptionRow({
           onActivate();
         }}
       >
-        <span className="text-xs text-muted-foreground">{t('poll.customOption.placeholder')}</span>
+        <span className="text-caption text-muted-foreground">{t('poll.customOption.placeholder')}</span>
       </button>
     );
   }
@@ -160,7 +170,7 @@ function CustomOptionRow({
           disabled={isLoading}
           maxLength={512}
           aria-label={t('poll.customOption.placeholder')}
-          className="flex-1 h-8 px-2 border border-border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="flex-1 h-8 px-2 border border-border rounded-md bg-input-background text-body focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         <Button
           variant="ghost"
@@ -239,9 +249,9 @@ export function CalloutPoll({
       <div className={cn('space-y-3', className)}>
         {title && (
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-foreground">{title}</span>
+            <span className="text-body-emphasis text-foreground">{title}</span>
             {showTotalOnly && totalVotes != null && (
-              <span className="text-xs text-muted-foreground">
+              <span className="text-caption text-muted-foreground">
                 {t('poll.results.totalVotes', { count: totalVotes })}
               </span>
             )}
@@ -313,9 +323,11 @@ export function CalloutPoll({
     <div className={cn('space-y-3', className)}>
       {title && (
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-foreground">{title}</span>
+          <span className="text-body-emphasis text-foreground">{title}</span>
           {showTotalOnly && totalVotes != null && (
-            <span className="text-xs text-muted-foreground">{t('poll.results.totalVotes', { count: totalVotes })}</span>
+            <span className="text-caption text-muted-foreground">
+              {t('poll.results.totalVotes', { count: totalVotes })}
+            </span>
           )}
         </div>
       )}
@@ -420,32 +432,32 @@ function PollFooter({
             ) : (
               <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" aria-hidden="true" />
             )}
-            <span className="text-xs text-muted-foreground">{statusMessage}</span>
+            <span className="text-caption text-muted-foreground">{statusMessage}</span>
           </output>
         )}
         {!loading && hasVoted && !isClosed && onRemoveVote && (
-          <span className="text-xs text-muted-foreground">
+          <span className="text-caption text-muted-foreground">
             {t('poll.status.voted')}{' '}
             <button
               type="button"
-              className="text-xs text-primary hover:underline cursor-pointer"
+              className="text-caption text-primary hover:underline cursor-pointer"
               onClick={onRemoveVote}
             >
               {t('poll.status.removeMyVote')}
             </button>
           </span>
         )}
-        {isClosed && <span className="text-xs text-muted-foreground">{t('poll.status.closed')}</span>}
-        {isAnonymous && <span className="text-xs text-muted-foreground">{t('poll.status.anonymous')}</span>}
+        {isClosed && <span className="text-caption text-muted-foreground">{t('poll.status.closed')}</span>}
+        {isAnonymous && <span className="text-caption text-muted-foreground">{t('poll.status.anonymous')}</span>}
       </div>
 
       {!showResults && !showTotalOnly && totalVotes === 0 && (
-        <p className="text-xs text-muted-foreground text-center py-2">{t('poll.results.noVotes')}</p>
+        <p className="text-caption text-muted-foreground text-center py-2">{t('poll.results.noVotes')}</p>
       )}
 
-      {warningMessage && <p className="text-xs text-amber-600">{warningMessage}</p>}
+      {warningMessage && <p className="text-caption text-amber-600">{warningMessage}</p>}
 
-      {errorMessage && <p className="text-xs text-destructive">{errorMessage}</p>}
+      {errorMessage && <p className="text-caption text-destructive">{errorMessage}</p>}
     </div>
   );
 }

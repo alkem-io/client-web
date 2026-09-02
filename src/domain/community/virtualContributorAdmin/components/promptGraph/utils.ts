@@ -35,24 +35,6 @@ export function transformNodeToPromptGraphNode(name: string, value: FormNodeValu
   return node;
 }
 
-export function transformNodesMapToArray(nodesMap: Record<string, FormNodeValue> | undefined) {
-  if (!nodesMap) return [];
-  return Object.entries(nodesMap).map(([name, value]) => transformNodeToPromptGraphNode(name, value));
-}
-
-export function extractVariablesFromText(text: string) {
-  const vars: string[] = [];
-  if (!text) return vars;
-  const re = /\{\{.*?\}\}|\{([A-Za-z0-9_\\]+)\}/g;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(text)) !== null) {
-    if (m[1]) {
-      vars.push(m[1].replaceAll('\\', ''));
-    }
-  }
-  return Array.from(new Set(vars));
-}
-
 export const prepareGraph = (promptGraph: PromptGraph, startNodeName: string = 'START') => {
   // Build a simple lookup map: from -> to (O(n))
   const nextNode = new Map<string, string>();

@@ -13,7 +13,7 @@ import {
   ActorType,
 } from '@/core/apollo/generated/graphql-schema';
 import createUseSubscriptionToSubEntityHook from '@/core/apollo/subscriptions/useSubscriptionToSubEntity';
-import type { ActivityLogResultType } from '../ActivityLog/ActivityComponent';
+import type { ActivityLogResultType } from '../ActivityLog/ActivityComponent.model';
 
 const useActivityOnCollaborationSubscription = (collaborationID: string, { types }: { types?: ActivityEventType[] }) =>
   createUseSubscriptionToSubEntityHook<

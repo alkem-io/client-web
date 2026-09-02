@@ -6,6 +6,28 @@
 }
 
 /**
+ * Restore pointer events on Excalidraw's built-in dialogs (Help, Save to, Image Export,
+ * Mermaid, …) inside the CRD whiteboard editor.
+ *
+ * The CRD `WhiteboardEditorShell` is a Radix `Dialog`. While it is open, Radix sets
+ * `pointer-events: none` on `document.body` and re-enables it only on its own content
+ * subtree. Excalidraw portals its modal-container to `document.body` — a sibling of the
+ * Radix content, not a descendant — so the whole dialog subtree inherits
+ * `pointer-events: none` and clicks fall through to the interactive canvas (which lives
+ * inside the Radix content and keeps `pointer-events: auto`). This is why the bug is
+ * CRD-only: the MUI surface never blanks `body`'s pointer events.
+ *
+ * Re-asserting `pointer-events: auto` on the modal-container restores it for the entire
+ * dialog subtree (the property is inherited), including the backdrop's click-to-close.
+ * It is a no-op on MUI pages, where `body` is already interactive. Not a stacking issue:
+ * the modal sits at `z-index: 1301` (from `src/root.tsx`) and already paints above the
+ * editor shell's `z-[60]`.
+ */
+.excalidraw.excalidraw-modal-container {
+  pointer-events: auto;
+}
+
+/**
  * Hide the Library button
  */
 

@@ -1,0 +1,11 @@
+query LatestUserEmailChangeAuditEntry($userID: UUID!) {
+  platformAdmin {
+    latestUserEmailChangeAuditEntry(userID: $userID) {
+      id
+      outcome
+      oldEmail
+      newEmail
+      timestamp
+    }
+  }
+}

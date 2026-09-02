@@ -1,24 +1,57 @@
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Error404 } from '@/core/pages/Errors/Error404';
+import { lazyWithGlobalErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
+import Loading from '@/core/ui/loading/Loading';
+import { CrdNotFoundBranch } from '@/main/crdPages/error/CrdNotFoundBranch';
 import { nameOfUrl } from '@/main/routing/urlParams';
-import AdminInnovationPackPage from './admin/AdminInnovationPackPage';
-import InnovationPackProfilePage from './InnovationPackProfilePage/InnovationPackProfilePage';
+import { CrdLayoutWrapper } from '@/main/ui/layout/CrdLayoutWrapper';
 
-// TODO the Innovationpack layout is too heavily coupled with the innovation pack so it's kept iniside the pages rather than here
-// will revise ASAP
+const CrdInnovationPackAdminPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/innovationPack/CrdInnovationPackAdminPage')
+);
+const CrdInnovationPackProfilePage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/innovationPack/CrdInnovationPackProfilePage')
+);
+
 const InnovationPackRoute = () => (
   <Routes>
-    <Route path={`:${nameOfUrl.innovationPackNameId}`} element={<InnovationPackProfilePage />} />
-    <Route
-      path={`:${nameOfUrl.innovationPackNameId}/:${nameOfUrl.templateNameId}`}
-      element={<InnovationPackProfilePage />}
-    />
-    <Route path={`:${nameOfUrl.innovationPackNameId}/settings`} element={<AdminInnovationPackPage />} />
-    <Route
-      path={`:${nameOfUrl.innovationPackNameId}/settings/:${nameOfUrl.templateNameId}`}
-      element={<AdminInnovationPackPage />}
-    />
-    <Route path="*" element={<Error404 />} />
+    {/* Public profile + admin BOTH wrapped in CrdLayoutWrapper. Anonymous access is preserved —
+        the public-profile routes are not behind an identity gate (FR-050). */}
+    <Route element={<CrdLayoutWrapper />}>
+      <Route
+        path={`:${nameOfUrl.innovationPackNameId}`}
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdInnovationPackProfilePage />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`:${nameOfUrl.innovationPackNameId}/:${nameOfUrl.templateNameId}`}
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdInnovationPackProfilePage />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`:${nameOfUrl.innovationPackNameId}/settings`}
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdInnovationPackAdminPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path={`:${nameOfUrl.innovationPackNameId}/settings/:${nameOfUrl.templateNameId}`}
+        element={
+          <Suspense fallback={<Loading />}>
+            <CrdInnovationPackAdminPage />
+          </Suspense>
+        }
+      />
+    </Route>
+    <Route path="*" element={<CrdNotFoundBranch />} />
   </Routes>
 );
 export default InnovationPackRoute;

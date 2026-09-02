@@ -7,25 +7,21 @@ export enum NotificationFilterType {
   Platform = 'PLATFORM',
 }
 
-// User notifications - messages, mentions, and replies
-const USER_NOTIFICATION_TYPES: NotificationEvent[] = [
+// Messages & Replies — only person-to-person conversation events. Direct
+// messages, replies to my comments, and @mentions of me (as user OR as org
+// admin). Anything *about* a space or the platform belongs on its own tab.
+const MESSAGES_AND_REPLIES_TYPES: NotificationEvent[] = [
   NotificationEvent.UserCommentReply,
   NotificationEvent.UserMentioned,
   NotificationEvent.UserMessage,
-  NotificationEvent.UserSignUpWelcome,
-  NotificationEvent.UserSpaceCommunityInvitation,
-  NotificationEvent.UserSpaceCommunityApplicationDeclined,
-  NotificationEvent.UserSpaceCommunityJoined,
-];
-
-// Organization notifications - messages and mentions for organization admins
-const ORGANIZATION_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.OrganizationAdminMentioned,
   NotificationEvent.OrganizationAdminMessage,
   NotificationEvent.OrganizationMessageSender,
 ];
 
-// Space notifications - both member and admin space-related notifications
+// Space notifications - any event tied to a Space (admin OR member view), and
+// space-membership lifecycle events on the user side (invitation, joined,
+// application declined) which previously leaked into Messages & Replies.
 const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceAdminCollaborationCalloutContribution,
   NotificationEvent.SpaceAdminCommunityApplication,
@@ -35,6 +31,7 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceCollaborationCalloutContribution,
   NotificationEvent.SpaceCollaborationCalloutPostContributionComment,
   NotificationEvent.SpaceCollaborationCalloutPublished,
+  NotificationEvent.SpaceCollaborationCalloutReaction,
   NotificationEvent.SpaceCommunicationUpdate,
   NotificationEvent.SpaceCommunityInvitationUserPlatform,
   NotificationEvent.SpaceLeadCommunicationMessage,
@@ -44,9 +41,16 @@ const SPACE_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.SpaceCollaborationPollVoteCastOnPollIVotedOn,
   NotificationEvent.SpaceCollaborationPollModifiedOnPollIVotedOn,
   NotificationEvent.SpaceCollaborationPollVoteAffectedByOptionChange,
+  NotificationEvent.UserSpaceCommunityInvitation,
+  NotificationEvent.UserSpaceCommunityApplicationDeclined,
+  NotificationEvent.UserSpaceCommunityJoined,
+  // VC-admin notification about the VC being invited to a space community —
+  // still a space-membership event from the recipient's perspective.
+  NotificationEvent.VirtualAdminSpaceCommunityInvitation,
 ];
 
-// Platform notifications - platform admin and forum notifications
+// Platform notifications - platform admin, forum, and the Alkemio sign-up
+// welcome (a platform-wide event, not a per-space message).
 const PLATFORM_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.PlatformAdminGlobalRoleChanged,
   NotificationEvent.PlatformAdminSpaceCreated,
@@ -54,26 +58,14 @@ const PLATFORM_NOTIFICATION_TYPES: NotificationEvent[] = [
   NotificationEvent.PlatformAdminUserProfileRemoved,
   NotificationEvent.PlatformForumDiscussionComment,
   NotificationEvent.PlatformForumDiscussionCreated,
-];
-
-// Virtual Contributor notifications
-const VIRTUAL_CONTRIBUTOR_NOTIFICATION_TYPES: NotificationEvent[] = [
-  NotificationEvent.VirtualAdminSpaceCommunityInvitation,
-];
-
-// Messages & Replies filter combines User and Organization notifications
-const MESSAGES_AND_REPLIES_TYPES: NotificationEvent[] = [
-  ...USER_NOTIFICATION_TYPES,
-  ...ORGANIZATION_NOTIFICATION_TYPES,
+  NotificationEvent.UserSignUpWelcome,
 ];
 
 // All notification types
 const ALL_NOTIFICATION_TYPES: NotificationEvent[] = [
-  ...USER_NOTIFICATION_TYPES,
-  ...ORGANIZATION_NOTIFICATION_TYPES,
+  ...MESSAGES_AND_REPLIES_TYPES,
   ...SPACE_NOTIFICATION_TYPES,
   ...PLATFORM_NOTIFICATION_TYPES,
-  ...VIRTUAL_CONTRIBUTOR_NOTIFICATION_TYPES,
 ];
 
 export const getNotificationTypesForFilter = (filter: NotificationFilterType): NotificationEvent[] => {
@@ -89,4 +81,11 @@ export const getNotificationTypesForFilter = (filter: NotificationFilterType): N
     default:
       return ALL_NOTIFICATION_TYPES;
   }
+};
+
+export const getCategoryFilterForNotificationType = (type: NotificationEvent): NotificationFilterType | null => {
+  if (MESSAGES_AND_REPLIES_TYPES.includes(type)) return NotificationFilterType.MessagesAndReplies;
+  if (SPACE_NOTIFICATION_TYPES.includes(type)) return NotificationFilterType.Space;
+  if (PLATFORM_NOTIFICATION_TYPES.includes(type)) return NotificationFilterType.Platform;
+  return null;
 };

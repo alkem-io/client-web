@@ -35,16 +35,18 @@ export function Footer({
 
   return (
     <footer className={cn('py-8 px-4 sm:px-6 mt-auto border-t border-border bg-card', className)}>
-      <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-        {/* Copyright */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row items-center gap-4">
+        {/* Copyright — prefixed with the Alkemio logo so the copyright reads as
+            platform attribution, unambiguous even on branded space subdomains. */}
+        <div className="md:flex-1 flex items-center gap-2 text-body text-muted-foreground">
+          <AlkemioLogo className="w-5 h-5 shrink-0" />
           <span>{t('footer.copyright')}</span>
         </div>
 
-        {/* Links + centered logo */}
+        {/* Links */}
         <nav
           aria-label="Footer"
-          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-6 text-sm text-muted-foreground"
+          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-6 text-body text-muted-foreground"
         >
           {links?.terms && (
             <a href={links.terms} className={linkClassName}>
@@ -62,16 +64,11 @@ export function Footer({
             </a>
           )}
 
-          <AlkemioLogo aria-hidden="true" className="w-5 h-5 opacity-40 hidden sm:block" />
-
           {onSupportClick ? (
             <button
               type="button"
               onClick={onSupportClick}
-              className={cn(
-                linkClassName,
-                'cursor-pointer bg-transparent border-none p-0 font-inherit text-inherit text-sm'
-              )}
+              className={cn(linkClassName, 'cursor-pointer bg-transparent border-none p-0 font-inherit text-body')}
             >
               {t('footer.support')}
             </button>
@@ -84,34 +81,36 @@ export function Footer({
         </nav>
 
         {/* Language selector */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild={true}>
-            <button
-              type="button"
-              className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-accent transition-colors text-sm text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <Globe aria-hidden="true" className="w-3.5 h-3.5" />
-              <span>{currentLabel}</span>
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
-            {languages.map(lang => (
-              <DropdownMenuItem
-                key={lang.code}
-                onClick={() => onLanguageChange(lang.code)}
-                className={cn(
-                  'flex items-center justify-between cursor-pointer',
-                  currentLanguage.startsWith(lang.code) && 'bg-accent'
-                )}
+        <div className="md:flex-1 flex md:justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild={true}>
+              <button
+                type="button"
+                className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-accent transition-colors text-body text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <span className="text-sm">{lang.label}</span>
-                {currentLanguage.startsWith(lang.code) && (
-                  <Check aria-hidden="true" className="w-4 h-4 shrink-0 text-primary" />
-                )}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+                <Globe aria-hidden="true" className="w-3.5 h-3.5" />
+                <span>{currentLabel}</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-44">
+              {languages.map(lang => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => onLanguageChange(lang.code)}
+                  className={cn(
+                    'flex items-center justify-between cursor-pointer',
+                    currentLanguage.startsWith(lang.code) && 'bg-accent'
+                  )}
+                >
+                  <span className="text-body">{lang.label}</span>
+                  {currentLanguage.startsWith(lang.code) && (
+                    <Check aria-hidden="true" className="w-4 h-4 shrink-0 text-primary" />
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </footer>
   );

@@ -23,7 +23,7 @@ pnpm start
 # → localhost:3001
 
 # Enable CRD toggle in browser console
-localStorage.setItem('alkemio-crd-enabled', 'true');
+localStorage.setItem('alkemio-design-version', '2');
 location.reload();
 
 # Navigate to /home to see the CRD dashboard

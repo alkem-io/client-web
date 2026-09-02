@@ -4,7 +4,7 @@
 
 ## Overview
 
-- React + TypeScript single-page app served by Vite; design system built on MUI and Emotion, GraphQL data layer via Apollo Client.
+- React + TypeScript single-page app served by Vite; GraphQL data layer via Apollo Client. The design system is **CRD** (shadcn/ui + Tailwind CSS, `src/crd/`) — the only layer for new client-facing features. MUI + Emotion (`src/core/ui/`) are **legacy and frozen**: only removed as pages migrate, never extended; no new MUI view components.
 - Repository is large (≈18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`. GraphQL documents live alongside features and generate strongly-typed hooks in `src/core/apollo/generated`.
 - Requires Node ≥22.0.0 and pnpm ≥10.17.1 (workspace is pinned to Node 22.21.1 via Volta). Always use pnpm; the lockfile is authoritative.
 
@@ -37,7 +37,7 @@
 - **Unit tests**: `pnpm vitest run --reporter=basic`
   - Vitest default is interactive watch; append `--watch=false` to exit automatically. Execution (~1.2s) passes 19 files / 247 tests; one UI spec is explicitly skipped. Use `--coverage.enabled` flags only when needed (`pnpm test:coverage`).
 - **GraphQL codegen**: `pnpm codegen`
-  - Requires the Alkemio GraphQL API at `http://localhost:3000/graphql` or update `codegen.yml`. Runs ESLint + Prettier on generated files via hooks.
+  - Requires the Alkemio GraphQL API at `http://localhost:3000/graphql` (`CODEGEN_SCHEMA` in the committed `.env`, loaded via dotenv-flow; override in `.env.local` only). Runs Biome on generated files via hooks. **Never commit a `schema.graphql` snapshot** — it is gitignored; the schema always comes from a running server.
 - **Formatting**: `pnpm format` (Prettier over `src/**/*.ts{,x}`) and `pnpm lint:fix` for autofixes.
 - **Serve built assets**: `pnpm serve:dev` (serves `build/` on port 3001).
 
@@ -66,9 +66,9 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
   - `build-release-docker-hub.yml` publishes images to DockerHub on tagged releases.
 - CI effectively enforces: successful Docker build, passing TypeScript + ESLint, and working Vite build. Matching local steps (lint, vitest, build) before PR keeps pipelines green. Husky pre-commit mirrors lint-staged formatting, so run `pnpm lint` and `pnpm vitest run --reporter=basic` prior to staging changes.
 
-## Excluded Paths
+## Prototype Design Reference
 
-- **`prototype/`** — Read-only design reference (verbatim copy of Jeroen's prototype). Do not modify, review, lint, or flag any file under this directory. It is excluded from CodeRabbit, ESLint, and Biome. See `prototype/CLAUDE.md`.
+- The prototype (Jeroen's design prototype) now lives in its own repository, **https://github.com/alkem-io/client-web-prototype** — it is no longer part of this repo. Consult it there when building `src/crd/` components.
 
 ## Practical Tips & Gotchas
 
@@ -89,10 +89,11 @@ _Observed behavior (Oct 2025): all commands above complete without manual tweaks
   - Prefer MCP servers supporting **feedback and validation** (e.g., GitHub comments, Context7 evaluation).
   - Use them to cross-check and refine responses before completion.
 - For Git operations, **all commits must be signed**.
-- Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches schema from a running server.
-- **Internationalization (i18n)**: Only edit `src/core/i18n/en/translation.en.json` directly. All other locale files (`translation.ach.json`, `translation.bg.json`, `translation.nl.json`, etc.) are **generated automatically via Crowdin** and must never be edited manually. Changes to the English source file will be synchronized to Crowdin, translated, and pulled back automatically via CI. The project uses `react-i18next` with custom formatters (lowercase, capitalize, uppercase) configured in `src/core/i18n/config.ts`.
+- Always regenerate types after editing `.graphql` files with `pnpm codegen`; commit generated outputs. Codegen fetches the schema from a running server (`CODEGEN_SCHEMA` in `.env`); a `schema.graphql` snapshot must never be added to the repo — it is gitignored and a local copy is only ever a personal `.env.local` override.
+- **Internationalization (i18n)**: New user-facing strings go to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all six supported languages (en, nl, es, bg, de, fr) edited in the same PR (key parity required; managed manually, not Crowdin). The legacy core file `src/core/i18n/en/translation.en.json` is **frozen for new keys** — do not add new strings there; it serves the not-yet-migrated MUI app. For legacy upkeep, **Crowdin is no longer used** — all core locale files (`translation.en.json` and every non-English `translation.<lang>.json`) are now edited directly in-repo, in the same PR, preserving key parity across languages. The project uses `react-i18next` with custom formatters (lowercase, capitalize, uppercase) configured in `src/core/i18n/config.ts`.
 - New env vars must be prefixed with `VITE_` to be exposed. For runtime injection, ensure they flow through `.env` and `buildConfiguration.js` so they end up in `public/env-config.js` and `window._env_`.
 - React components should remain function-based; hooks live close to their domain. Follow `docs/code-guidelines.md` for naming (PascalCase components, `camelCase` hooks) and folder placement (`src/domain/<entity>`).
+- **Browser Compatibility**: Only use JavaScript/CSS features with **>90% global browser support** per [caniuse.com](https://caniuse.com). Avoid `Array.prototype.at()`, `Object.hasOwn()`, CSS `@container` queries, and `structuredClone()`. Use traditional alternatives (e.g., `arr[arr.length - 1]` instead of `arr.at(-1)`). When in doubt, check caniuse before introducing a newer API.
 - Large build output can consume memory; Vite already raises `max-old-space-size`. If builds fail on low-memory runners, reuse the same command but consider pruning node_modules (`pnpm prune` shortcut).
 - If Vite dev server stops responding due to file watch limits on Linux, run `.scripts/fix-dev-vite.sh` (requires sudo) to raise inotify limits; restart the terminal afterward.
 - Do not edit generated artifacts in `build/` or `public/env-config.js` manually—run the appropriate scripts instead.

@@ -6,8 +6,9 @@ import {
 } from '@/core/apollo/generated/apollo-hooks';
 import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
 import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
+import type { UserConversation } from './models';
 import type { ConversationMessage } from './useConversationMessages';
-import type { UserConversation } from './useUserConversations';
+import { useIsDocumentActive } from './useIsDocumentActive';
 
 export const useConversationView = (
   conversation: UserConversation | null,
@@ -20,13 +21,29 @@ export const useConversationView = (
   useSubscribeOnRoomEvents(conversation?.roomId, !conversation);
   const [markAsRead] = useMarkMessageAsReadMutation();
   const lastMarkedRef = useRef<string | null>(null);
+  const isDocumentActive = useIsDocumentActive();
 
+  // Read receipts are gated on the user being genuinely present — the document
+  // both visible and focused (FR-018b). This is not cosmetic: the server cancels
+  // a pending message digest when the recipient's unread count drops to zero, so
+  // an open-but-unattended tab reporting everything as read would silently
+  // suppress every notification that user should have received.
   useEffect(() => {
+    if (!isDocumentActive) {
+      // Forget what was last reported so RETURNING to a conversation that is
+      // still open, with no new message since, marks it read again — the key
+      // would otherwise still hold that same last message and block it.
+      lastMarkedRef.current = null;
+      return;
+    }
+
     if (!conversation?.roomId || !messages.length) return;
 
     const lastMessage = messages[messages.length - 1];
     const key = `${conversation.roomId}:${lastMessage.id}`;
 
+    // Still keyed on the last message, so regaining activity marks the visible
+    // thread read exactly once rather than on every subsequent re-render.
     if (lastMarkedRef.current === key) return;
     lastMarkedRef.current = key;
 
@@ -38,7 +55,7 @@ export const useConversationView = (
         },
       },
     }).catch(_error => {});
-  }, [conversation?.roomId, messages, markAsRead]);
+  }, [conversation?.roomId, messages, markAsRead, isDocumentActive]);
 
   const handleLeaveGroup = async () => {
     if (!conversation) return;

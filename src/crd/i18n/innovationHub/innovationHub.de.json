@@ -1,0 +1,284 @@
+{
+  "home": {
+    "settingsAria": "Hub-Einstellungen",
+    "expandWidth": "Auf volle Breite erweitern",
+    "collapseWidth": "Auf Standardbreite zurücksetzen",
+    "spacesSection": {
+      "title": "{{hubName}} Spaces",
+      "loading": "Spaces werden geladen…",
+      "searchPlaceholder": "Spaces suchen…",
+      "showingCount": "{{visible}} von {{total}} Spaces werden angezeigt",
+      "spacesLabel": "Spaces",
+      "noResultsTitle": "Keine Spaces gefunden",
+      "noResultsMessage": "Versuche einen anderen Suchbegriff.",
+      "clearSearch": "Suche zurücksetzen",
+      "filters": "Filter",
+      "filterPrivacy": "Datenschutz",
+      "filterAll": "Alle",
+      "filterPublicOnly": "Nur öffentliche",
+      "filterPrivateOnly": "Nur private",
+      "clearFilters": "Alle Filter zurücksetzen",
+      "removeFilter": "Filter entfernen"
+    },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Virtuelle Mitwirkende",
+      "virtualContributorsLabel": "Virtuelle Mitwirkende",
+      "vcType": "Virtueller Mitwirkender"
+    },
+    "allSpacesCta": "Alle Spaces auf Alkemio durchsuchen"
+  },
+  "breadcrumbs": {
+    "settings": "Einstellungen"
+  },
+  "settings": {
+    "tabs": {
+      "about": "Über",
+      "spaces": "Spaces",
+      "packs": "Innovation Packs",
+      "virtualContributors": "Virtuelle Mitwirkende",
+      "navAria": "Einstellungsbereiche"
+    },
+    "header": {
+      "expandWidth": "Auf volle Breite erweitern",
+      "collapseWidth": "Auf Standardbreite zurücksetzen"
+    },
+    "guard": {
+      "redirecting": "Weiterleitung…"
+    },
+    "about": {
+      "subdomain": {
+        "label": "Subdomain",
+        "placeholder": "z. B. vng",
+        "readOnlyHelp": "Die Subdomain wird bei der Erstellung festgelegt und kann nicht geändert werden.",
+        "errors": {
+          "required": "Subdomain ist erforderlich.",
+          "invalidFormat": "Nur Kleinbuchstaben, Zahlen und Bindestriche verwenden.",
+          "tooLong": "Muss 3 bis 25 Zeichen lang sein."
+        }
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "z. B. VNG Innovation Hub",
+        "errors": {
+          "required": "Name ist erforderlich.",
+          "tooLong": "Muss zwischen 3 und 128 Zeichen lang sein."
+        }
+      },
+      "tagline": {
+        "label": "Slogan",
+        "placeholder": "Eine kurze, einprägsame Zeile",
+        "errors": {
+          "tooLong": "Maximal 512 Zeichen."
+        }
+      },
+      "description": {
+        "label": "Beschreibung",
+        "errors": {
+          "required": "Beschreibung ist erforderlich.",
+          "tooLong": "Maximal 8000 Zeichen."
+        }
+      },
+      "tags": {
+        "label": "Tags",
+        "placeholder": "Tag eingeben und Enter drücken",
+        "emptyHelp": "Standard"
+      },
+      "banner": {
+        "label": "Banner",
+        "change": "Banner ändern",
+        "uploading": "Wird hochgeladen…",
+        "helperText": "Wird oben auf der Innovation-Hub-Seite angezeigt.",
+        "errors": {
+          "uploadFailed": "Banner-Upload fehlgeschlagen."
+        },
+        "crop": {
+          "title": "Banner zuschneiden",
+          "description": "Schneide das Bild auf die Bannerabmessungen zu und füge eine kurze Beschreibung für die Barrierefreiheit hinzu.",
+          "save": "Banner speichern",
+          "saving": "Speichern…",
+          "cancel": "Abbrechen",
+          "altLabel": "Alt-Text",
+          "altPlaceholder": "Beschreibe das Bild für Screenreader"
+        }
+      },
+      "save": {
+        "save": "Speichern",
+        "saving": "Speichern…",
+        "saved": "Gespeichert",
+        "errorPrefix": "Speichern fehlgeschlagen."
+      }
+    },
+    "spaces": {
+      "title": "Spaces",
+      "subtitle": "Verwalten Sie, welche Spaces auf der Innovation-Hub-Startseite angezeigt werden. Zum Umordnen ziehen.",
+      "visibilityManaged": "Dieser Innovation Hub zeigt automatisch alle {{visibility}}-Spaces an. Seine Spaces werden durch die Sichtbarkeit bestimmt und können hier nicht verwaltet werden.",
+      "columns": {
+        "name": "Name",
+        "visibility": "Sichtbarkeit",
+        "host": "Host-Konto",
+        "actions": "Aktionen"
+      },
+      "visibility": {
+        "active": "Aktiv",
+        "demo": "Demo",
+        "inactive": "Inaktiv",
+        "archived": "Archiviert",
+        "unknown": "Unbekannt"
+      },
+      "actions": {
+        "add": "Space hinzufügen",
+        "remove": "Entfernen"
+      },
+      "removeAria": "{{name}} aus diesem Hub entfernen",
+      "dragHandle": "Zum Umordnen ziehen",
+      "empty": "Noch keine Spaces hinzugefügt. Verwenden Sie „Space hinzufügen“, um einen aufzunehmen.",
+      "confirmRemove": {
+        "title": "Space entfernen?",
+        "body": "„{{name}}“ aus diesem Innovation Hub entfernen? Der Space selbst wird nicht gelöscht; er erscheint nur nicht mehr auf der Hub-Startseite.",
+        "confirm": "Entfernen",
+        "cancel": "Abbrechen"
+      },
+      "toast": {
+        "added": "Space hinzugefügt.",
+        "removed": "Space entfernt.",
+        "reordered": "Reihenfolge aktualisiert.",
+        "error": "Aktion fehlgeschlagen."
+      }
+    },
+    "packs": {
+      "title": "Innovation Packs",
+      "subtitle": "Verwalten Sie, welche Innovation Packs auf der Innovation-Hub-Startseite angezeigt werden. Zum Umordnen ziehen.",
+      "columns": {
+        "name": "Name",
+        "templates": "Vorlagen",
+        "provider": "Anbieter",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "add": "Innovation Pack hinzufügen",
+        "remove": "Entfernen"
+      },
+      "removeAria": "{{name}} aus diesem Hub entfernen",
+      "dragHandle": "Zum Umordnen ziehen",
+      "empty": "Noch keine Innovation Packs hinzugefügt. Verwenden Sie „Innovation Pack hinzufügen“, um eines aufzunehmen.",
+      "confirmRemove": {
+        "title": "Innovation Pack entfernen?",
+        "body": "„{{name}}“ aus diesem Innovation Hub entfernen? Das Innovation Pack selbst wird nicht gelöscht; es erscheint nur nicht mehr auf der Hub-Startseite.",
+        "confirm": "Entfernen",
+        "cancel": "Abbrechen"
+      },
+      "toast": {
+        "added": "Innovation Pack hinzugefügt.",
+        "removed": "Innovation Pack entfernt.",
+        "reordered": "Reihenfolge aktualisiert.",
+        "error": "Aktion fehlgeschlagen."
+      }
+    },
+    "virtualContributors": {
+      "title": "Virtuelle Mitwirkende",
+      "subtitle": "Verwalten Sie, welche virtuellen Mitwirkenden auf der Innovation-Hub-Startseite angezeigt werden. Zum Umordnen ziehen.",
+      "columns": {
+        "name": "Name",
+        "provider": "Anbieter",
+        "actions": "Aktionen"
+      },
+      "actions": {
+        "add": "Virtuellen Mitwirkenden hinzufügen",
+        "remove": "Entfernen"
+      },
+      "removeAria": "{{name}} aus diesem Hub entfernen",
+      "dragHandle": "Zum Umordnen ziehen",
+      "empty": "Noch keine virtuellen Mitwirkenden hinzugefügt. Verwenden Sie „Virtuellen Mitwirkenden hinzufügen“, um einen aufzunehmen.",
+      "confirmRemove": {
+        "title": "Virtuellen Mitwirkenden entfernen?",
+        "body": "„{{name}}“ aus diesem Innovation Hub entfernen? Der virtuelle Mitwirkende selbst wird nicht gelöscht; er erscheint nur nicht mehr auf der Hub-Startseite.",
+        "confirm": "Entfernen",
+        "cancel": "Abbrechen"
+      },
+      "toast": {
+        "added": "Virtueller Mitwirkender hinzugefügt.",
+        "removed": "Virtueller Mitwirkender entfernt.",
+        "reordered": "Reihenfolge aktualisiert.",
+        "error": "Aktion fehlgeschlagen."
+      }
+    },
+    "addResourceDialog": {
+      "candidatesTab": "Aus diesem Konto",
+      "urlTab": "Per URL hinzufügen",
+      "addToHub": "Zum Innovation Hub hinzufügen",
+      "candidatesLoading": "Verfügbare Ressourcen werden geladen…",
+      "close": "Schließen",
+      "url": {
+        "submit": "Hinzufügen",
+        "validating": "URL wird validiert…",
+        "submitting": "Wird hinzugefügt…",
+        "submitError": "Beim Hinzufügen ist etwas schiefgelaufen. Bitte erneut versuchen."
+      },
+      "space": {
+        "title": "Space hinzufügen",
+        "description": "Wählen Sie einen Space dieses Kontos oder fügen Sie einen beliebigen Alkemio-Space per URL hinzu.",
+        "candidatesEmpty": "Alle Spaces dieses Kontos sind bereits in diesem Hub.",
+        "candidatesAria": "Zum Hinzufügen verfügbare Spaces",
+        "urlLabel": "Space-URL",
+        "urlPlaceholder": "https://alkem.io/welcome-space",
+        "invalid": "An dieser URL konnten wir keinen Space finden.",
+        "duplicate": "Dieser Space ist bereits in diesem Hub."
+      },
+      "pack": {
+        "title": "Innovation Pack hinzufügen",
+        "description": "Wählen Sie ein Innovation Pack dieses Kontos oder fügen Sie ein beliebiges Innovation Pack auf Alkemio per URL hinzu.",
+        "candidatesEmpty": "Alle Innovation Packs dieses Kontos sind bereits in diesem Hub.",
+        "candidatesAria": "Zum Hinzufügen verfügbare Innovation Packs",
+        "urlLabel": "Innovation-Pack-URL",
+        "urlPlaceholder": "https://alkem.io/innovation-packs/example",
+        "invalid": "An dieser URL konnten wir kein Innovation Pack finden.",
+        "duplicate": "Dieses Innovation Pack ist bereits in diesem Hub."
+      },
+      "virtualContributor": {
+        "title": "Virtuellen Mitwirkenden hinzufügen",
+        "description": "Wählen Sie einen virtuellen Mitwirkenden dieses Kontos oder fügen Sie einen beliebigen virtuellen Mitwirkenden auf Alkemio per URL hinzu.",
+        "candidatesEmpty": "Alle virtuellen Mitwirkenden dieses Kontos sind bereits in diesem Hub.",
+        "candidatesAria": "Zum Hinzufügen verfügbare virtuelle Mitwirkende",
+        "urlLabel": "URL des virtuellen Mitwirkenden",
+        "urlPlaceholder": "https://alkem.io/vc/example",
+        "invalid": "An dieser URL konnten wir keinen virtuellen Mitwirkenden finden.",
+        "duplicate": "Dieser virtuelle Mitwirkende ist bereits in diesem Hub."
+      }
+    }
+  },
+  "createHub": {
+    "title": "Innovation Hub erstellen",
+    "subtitleUser": "Erstelle einen neuen Innovation Hub in deinem Konto.",
+    "subtitleAccount": "Erstelle einen neuen Innovation Hub im Konto von {{account}}.",
+    "subdomain": "Subdomain",
+    "subdomainPlaceholder": "z. B. mein-hub",
+    "subdomainHint": "Nur Kleinbuchstaben, Zahlen und Bindestriche.",
+    "name": "Name",
+    "namePlaceholder": "z. B. Mein Innovation Hub",
+    "tagline": "Slogan",
+    "taglinePlaceholder": "Ein kurzer, prägnanter Slogan",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "Worum geht es bei diesem Innovation Hub?",
+    "saveForMoreDetails": "Tags und ein Banner kannst du nach dem Erstellen des Hubs hinzufügen.",
+    "create": "Erstellen",
+    "cancel": "Abbrechen",
+    "creating": "Wird erstellt…",
+    "validation": {
+      "min3": "Muss mindestens 3 Zeichen lang sein.",
+      "maxSmall": "Darf höchstens {{count}} Zeichen lang sein.",
+      "maxMid": "Darf höchstens {{count}} Zeichen lang sein.",
+      "maxMarkdown": "Darf höchstens {{count}} Zeichen lang sein.",
+      "required": "Dieses Feld ist erforderlich.",
+      "subdomainRequired": "Eine Subdomain ist erforderlich.",
+      "subdomainFormat": "Nur Kleinbuchstaben, Zahlen und Bindestriche sind erlaubt.",
+      "subdomainMin": "Muss mindestens 3 Zeichen lang sein.",
+      "subdomainMax": "Darf höchstens 25 Zeichen lang sein."
+    },
+    "createError": "Beim Erstellen des Innovation Hubs ist ein Fehler aufgetreten.",
+    "createSuccess": "Der Innovation Hub wurde erfolgreich erstellt!"
+  }
+}

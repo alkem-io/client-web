@@ -1,0 +1,302 @@
+import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+  useCalloutContentLazyQuery,
+  useCalloutContributionsSortOrderQuery,
+  useSpaceTemplatesManagerQuery,
+  useUpdateContributionsSortOrderMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import { CalloutFramingType, CalloutVisibility } from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
+import { CalloutContextMenu } from '@/crd/components/callout/CalloutContextMenu';
+import { CalloutContributionsSortDialog } from '@/crd/components/callout/CalloutContributionsSortDialog';
+import { CalloutVisibilityChangeDialog } from '@/crd/components/callout/CalloutVisibilityChangeDialog';
+import { DeleteCalloutDialog } from '@/crd/components/dialogs/DeleteCalloutDialog';
+import { TemplateFormDialog } from '@/crd/components/templates/TemplateFormDialog';
+import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { useCalloutManager } from '@/domain/collaboration/callout/utils/useCalloutManager';
+import { useSpace } from '@/domain/space/context/useSpace';
+import type { CalloutFormValues } from '@/main/crdPages/space/hooks/useCrdCalloutForm';
+import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import { useSaveAsTemplate } from '@/main/crdPages/templates/useSaveAsTemplate';
+import { CalloutEditConnector } from './CalloutEditConnector';
+import { CollaboraFramingReplaceConnector } from './CollaboraFramingReplaceConnector';
+import { mapCalloutDetailsToFormValues } from './dataMappers/mapCalloutDetailsToFormValues';
+import { mapCalloutToDeletionSummary } from './dataMappers/mapCalloutToDeletionSummary';
+import { deriveCalloutMenuVisibility } from './deriveCalloutMenuVisibility';
+import { TaskBoardColumnsConnector } from './TaskBoardColumnsConnector';
+
+type CalloutSettingsConnectorProps = {
+  callout: CalloutDetailsModelExtended;
+  /** Move-action prop bag (plan D9). Hooked up by the list / detail connector. */
+  moveActions?: CalloutMoveActions;
+  /**
+   * Open the Share dialog. Mounted by the parent (LazyCalloutItem /
+   * CalloutDetailDialogConnector) so multiple Share triggers — the 3-dots
+   * menu, the detail dialog header icon, the reactions bar — can share a
+   * single dialog instance. When omitted, the Share menu item is hidden.
+   */
+  onShare?: () => void;
+  /**
+   * True when this callout renders as a Tasks board. Hides the manual "Sort
+   * contributions" menu item — the board owns its ordering via drag-and-drop,
+   * so the two paths would desync. Resolved asynchronously by the parent
+   * (`LazyCalloutItem` / the deep-link view), since the callout model here does
+   * not carry the board marker tagset.
+   */
+  isTaskBoard?: boolean;
+  /**
+   * Fires after the callout has been deleted (FR-018). The detail dialog uses
+   * it to close itself — the feed card needs nothing, it unmounts when the
+   * feed list drops the deleted id.
+   */
+  onDeleted?: () => void;
+};
+
+/**
+ * Hosts the 3-dots menu for a single callout, plus the lifecycle dialogs it
+ * triggers: visibility change, delete, sort contributions, and "Save as
+ * template" (plan T062 / T069). Rendered inside `LazyCalloutItem` (feed 3-dots)
+ * and `CalloutDetailDialogConnector` (sticky-header 3-dots).
+ *
+ * Permissions are derived via `deriveCalloutMenuVisibility` (pure helper).
+ * Mutations flow through `useCalloutManager` (`changeCalloutVisibility`,
+ * `deleteCallout`) + the callouts sort-order mutation exposed via `moveActions`.
+ * Save-as-Template now goes through the CRD `useSaveAsTemplate` flow (the legacy
+ * MUI `CreateTemplateDialog` bridge was removed in T036/T025).
+ *
+ * Share is owned by the parent connector via `onShare` (so the detail dialog's
+ * header / reactions-bar Share buttons share state with the menu's Share item).
+ */
+export function CalloutSettingsConnector({
+  callout,
+  moveActions,
+  onShare,
+  isTaskBoard,
+  onDeleted,
+}: CalloutSettingsConnectorProps) {
+  const { t } = useTranslation('crd-space');
+  const notify = useNotification();
+  const {
+    space: { levelZeroSpaceId },
+  } = useSpace();
+  const [editOpen, setEditOpen] = useState(false);
+  const [visibilityAction, setVisibilityAction] = useState<'publish' | 'unpublish' | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [replaceOpen, setReplaceOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+  const [columnsOpen, setColumnsOpen] = useState(false);
+  const [mutating, setMutating] = useState(false);
+
+  const { changeCalloutVisibility, deleteCallout } = useCalloutManager();
+  const [fetchCalloutContent] = useCalloutContentLazyQuery();
+
+  // Save-as-template — the level-zero space owns the templates set.
+  const { data: templatesManagerData } = useSpaceTemplatesManagerQuery({
+    variables: { spaceId: levelZeroSpaceId ?? '' },
+    skip: !levelZeroSpaceId,
+  });
+  const saveAsTemplatesSetId = templatesManagerData?.lookup.space?.templatesManager?.templatesSet?.id;
+  const saveAs = useSaveAsTemplate({ templatesSetId: saveAsTemplatesSetId, spaceId: levelZeroSpaceId });
+
+  // Contributions sort — fetched only while the dialog is open.
+  const { data: sortData, loading: sortLoading } = useCalloutContributionsSortOrderQuery({
+    variables: { calloutId: callout.id },
+    skip: !sortOpen,
+    fetchPolicy: 'cache-and-network',
+  });
+  const [updateContributionsSortOrder, { loading: updatingSort }] = useUpdateContributionsSortOrderMutation();
+
+  const sortableContributions = [...(sortData?.lookup.callout?.contributions ?? [])]
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(c => ({
+      id: c.id,
+      title:
+        c.post?.profile.displayName ??
+        c.link?.profile.displayName ??
+        c.whiteboard?.profile.displayName ??
+        c.memo?.profile.displayName ??
+        '',
+    }));
+
+  const collaboraDocument = callout.framing.collaboraDocument;
+
+  const perms = deriveCalloutMenuVisibility({
+    myPrivileges: callout.authorization?.myPrivileges,
+    visibility: callout.settings.visibility,
+    // Set-level Update is not exposed on `callout.authorization`; the parent
+    // list connector (LazyCalloutItem / CalloutListConnector) only hands down
+    // `moveActions` when the user has it, so its presence is the authoritative
+    // signal. `hasMoveNeighbours` then narrows further to "is there a sibling
+    // to swap with?".
+    canMoveSet: !!moveActions,
+    contributionsEnabled: callout.settings.contribution.enabled,
+    contributionsCount: callout.contributions.length,
+    isTaskBoard: isTaskBoard ?? false,
+    canBeSavedAsTemplate: callout.canBeSavedAsTemplate,
+    saveAsTemplateFeatureEnabled: true,
+    // Saving a document callout as a template is not yet supported — the menu
+    // item is shown greyed out rather than hidden (mirrors the old UI hiding
+    // it for documents, but with a visible "coming soon" affordance).
+    isCollaboraDocument: callout.framing.type === CalloutFramingType.CollaboraDocument,
+    collaboraDocumentType: collaboraDocument?.documentType,
+    hasMoveNeighbours: !!moveActions && (!moveActions.isTop || !moveActions.isBottom),
+  });
+
+  const handleVisibilityConfirm = async (sendNotification: boolean) => {
+    if (!visibilityAction) return;
+    const nextVisibility = visibilityAction === 'publish' ? CalloutVisibility.Published : CalloutVisibility.Draft;
+    setMutating(true);
+    try {
+      await changeCalloutVisibility(callout, nextVisibility, sendNotification);
+      setVisibilityAction(null);
+    } catch (err) {
+      logError(new Error('Callout visibility change failed', { cause: err as Error }));
+      notify(t('visibilityChange.saveFailed'), 'error');
+    } finally {
+      setMutating(false);
+    }
+  };
+
+  // Synchronous re-entry guard: `mutating` is React state, so it updates a tick
+  // later — a fast double-click (or a double-invoked confirm) can fire the delete
+  // twice before the button disables, and the second call hits the already-deleted
+  // callout with ENTITY_NOT_FOUND. A ref blocks the second call immediately.
+  const deletingRef = useRef(false);
+
+  const handleDeleteConfirm = async () => {
+    if (deletingRef.current) return;
+    deletingRef.current = true;
+    setMutating(true);
+    try {
+      await deleteCallout(callout);
+      notify(t('deleteCallout.success', { title: callout.framing.profile.displayName }), 'success');
+      setDeleteOpen(false);
+      onDeleted?.();
+    } catch (err) {
+      logError(new Error('Callout delete failed', { cause: err as Error }));
+      notify(t('deleteCallout.saveFailed'), 'error');
+    } finally {
+      setMutating(false);
+      deletingRef.current = false;
+    }
+  };
+
+  const handleSortConfirm = async (sortedIds: string[]) => {
+    try {
+      await updateContributionsSortOrder({
+        variables: { calloutID: callout.id, contributionIds: sortedIds },
+        refetchQueries: ['CalloutDetails', 'CalloutContributionsSortOrder'],
+      });
+      setSortOpen(false);
+    } catch (err) {
+      logError(new Error('Contribution sort-order update failed', { cause: err as Error }));
+      notify(t('sortContributions.saveFailed'), 'error');
+    }
+  };
+
+  // Fetch the callout's full content, map it to CRD callout-form values (incl. the whiteboard / memo
+  // body, which the live-edit prefill omits but a template stores statically), then open the dialog.
+  const handleSaveAsTemplate = async () => {
+    const { data } = await fetchCalloutContent({ variables: { calloutId: callout.id } });
+    const loaded = data?.lookup.callout;
+    const body: Partial<CalloutFormValues> = mapCalloutDetailsToFormValues(data);
+    body.memoMarkdown = loaded?.framing.memo?.markdown ?? '';
+    saveAs.openSaveAs({
+      kind: 'callout',
+      calloutBody: body,
+    });
+  };
+
+  return (
+    <>
+      <CalloutContextMenu
+        isDraft={perms.isDraft}
+        editable={perms.editable}
+        movable={perms.movable}
+        canSaveAsTemplate={perms.showSaveAsTemplate}
+        saveAsTemplateDisabled={perms.saveAsTemplateDisabled}
+        saveAsTemplateDisabledReason={t('contextMenu.saveAsTemplateUnsupported')}
+        onEdit={perms.showEdit ? () => setEditOpen(true) : undefined}
+        onManageColumns={isTaskBoard && perms.editable ? () => setColumnsOpen(true) : undefined}
+        onReplace={perms.showReplace ? () => setReplaceOpen(true) : undefined}
+        onPublish={perms.showPublish ? () => setVisibilityAction('publish') : undefined}
+        onUnpublish={perms.showUnpublish ? () => setVisibilityAction('unpublish') : undefined}
+        onDelete={perms.showDelete ? () => setDeleteOpen(true) : undefined}
+        onSortContributions={perms.showSortContributions ? () => setSortOpen(true) : undefined}
+        onSaveAsTemplate={
+          perms.showSaveAsTemplate && !perms.saveAsTemplateDisabled ? () => void handleSaveAsTemplate() : undefined
+        }
+        onShare={perms.showShare && onShare ? onShare : undefined}
+        onMoveTop={moveActions?.onMoveToTop}
+        onMoveUp={moveActions?.onMoveUp}
+        onMoveDown={moveActions?.onMoveDown}
+        onMoveBottom={moveActions?.onMoveToBottom}
+      />
+
+      {editOpen && (
+        <CalloutEditConnector
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          calloutId={callout.id}
+          calloutsSetId={callout.calloutsSetId}
+          editCallout={callout}
+        />
+      )}
+
+      {perms.showReplace && collaboraDocument && (
+        <CollaboraFramingReplaceConnector
+          open={replaceOpen}
+          onOpenChange={setReplaceOpen}
+          collaboraDocumentId={collaboraDocument.id}
+          currentDocumentType={collaboraDocument.documentType}
+          currentTitle={collaboraDocument.profile?.displayName ?? callout.framing.profile.displayName}
+        />
+      )}
+
+      <CalloutVisibilityChangeDialog
+        open={visibilityAction !== null}
+        onOpenChange={open => !open && setVisibilityAction(null)}
+        action={visibilityAction ?? 'publish'}
+        loading={mutating}
+        onConfirm={handleVisibilityConfirm}
+      />
+
+      <DeleteCalloutDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        calloutTitle={callout.framing.profile.displayName}
+        content={mapCalloutToDeletionSummary(callout)}
+        loading={mutating}
+        onConfirm={handleDeleteConfirm}
+      />
+
+      <CalloutContributionsSortDialog
+        open={sortOpen}
+        onOpenChange={setSortOpen}
+        contributions={sortableContributions}
+        loading={sortLoading || updatingSort}
+        onConfirm={handleSortConfirm}
+      />
+
+      {isTaskBoard && perms.editable && (
+        <TaskBoardColumnsConnector calloutId={callout.id} open={columnsOpen} onOpenChange={setColumnsOpen} />
+      )}
+
+      <TemplateFormDialog
+        open={saveAs.form.open}
+        intent={saveAs.form.intent}
+        type={saveAs.form.type}
+        commonValue={saveAs.form.commonValue}
+        commonErrors={saveAs.form.commonErrors}
+        onCommonChange={saveAs.form.onCommonChange}
+        perTypeFormSlot={saveAs.form.perTypeFormSlot}
+        submitting={saveAs.form.submitting}
+        onSubmit={saveAs.form.onSubmit}
+        onCancel={saveAs.form.onCancel}
+        isDirty={saveAs.form.isDirty}
+      />
+    </>
+  );
+}

@@ -1,9 +1,14 @@
 import type { VisualType } from '@/core/apollo/generated/graphql-schema';
 import type { WhiteboardPreviewSettings } from '../WhiteboardPreviewSettings/WhiteboardPreviewSettingsModel';
-import type { WhiteboardPreviewImage } from '../WhiteboardVisuals/WhiteboardPreviewImagesModels';
 
 export interface WhiteboardFieldSubmittedValues {
-  content: string;
+  /** ID of the server-owned live draft Whiteboard consumed as the final source. */
+  draftWhiteboardID?: string;
+  /**
+   * Seed the new whiteboard from an existing whiteboard on the server. A live whiteboard's
+   * content is WS-only; ordinary GraphQL carries ids and metadata, never Yjs snapshots.
+   */
+  sourceWhiteboardID?: string;
   profile: {
     displayName: string;
     visuals?: {
@@ -13,9 +18,4 @@ export interface WhiteboardFieldSubmittedValues {
     }[];
   };
   previewSettings: WhiteboardPreviewSettings | undefined; // used if we edit the whiteboard and produces it's own visuals
-}
-
-export interface WhiteboardFieldSubmittedValuesWithPreviewImages extends WhiteboardFieldSubmittedValues {
-  // Whiteboard Preview Images are sent as visuals in a different call to the server after the callout is saved (See useCalloutCreationWithPreviewImages.ts)
-  previewImages: WhiteboardPreviewImage[] | undefined;
 }

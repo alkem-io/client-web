@@ -1,16 +1,10 @@
 export interface ContributionDefaultsModel {
   defaultDisplayName?: string;
   postDescription?: string;
-  whiteboardContent?: string;
+  whiteboardContentAvailable?: boolean;
+  /** ID of the server-owned live draft Whiteboard. */
+  draftWhiteboardID?: string;
+  sourceWhiteboardID?: string;
+  sourceCalloutID?: string;
+  clearWhiteboardContent?: boolean;
 }
-
-export const mapContributionDefaultsModelToCalloutFormValues = (
-  contributionDefaults: ContributionDefaultsModel | undefined
-): ContributionDefaultsModel | undefined =>
-  contributionDefaults
-    ? {
-        defaultDisplayName: contributionDefaults.defaultDisplayName,
-        postDescription: contributionDefaults.postDescription,
-        whiteboardContent: contributionDefaults.whiteboardContent,
-      }
-    : undefined;

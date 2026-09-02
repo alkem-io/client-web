@@ -1,0 +1,12 @@
+{
+  "title": "Brauchst du Hilfe?",
+  "text": "Wir helfen dir, das Beste aus der Alkemio-Plattform herauszuholen und einen Beitrag zu den Themen zu leisten, die dir wichtig sind. Klicke unten, um Antworten zu finden, unser Team zu kontaktieren oder loszulegen!",
+  "close": "Schließen",
+  "icons": {
+    "exploreDocumentation": "Dokumentation erkunden",
+    "contactTheTeam": "Team kontaktieren",
+    "joinTheWelcomeSpace": "Dem Welcome Space beitreten"
+  },
+  "versionNumber": "Versionsnummer: <b>v{{version}}</b>",
+  "serverVersionNumber": "Server-Versionsnummer: <b>v{{version}}</b>"
+}

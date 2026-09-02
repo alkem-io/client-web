@@ -1,43 +1,38 @@
+import { useCommunityGuidelinesQuery } from '@/core/apollo/generated/apollo-hooks';
 import { ActorType, LicenseEntitlementType, RoleName, SearchVisibility } from '@/core/apollo/generated/graphql-schema';
-import type { MemberCardData } from '@/crd/components/space/SpaceMembers';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
-import useCalloutsSet from '@/domain/collaboration/calloutsSet/useCalloutsSet/useCalloutsSet';
 import { useSpace } from '@/domain/space/context/useSpace';
-import useSpaceTabProvider from '@/domain/space/layout/tabbedLayout/SpaceTabProvider';
 import {
   mapRoleSetMemberToSidebarLead,
-  mapRoleSetToMemberCards,
   mapVirtualContributorToSidebar,
   type SidebarLeadData,
   type SidebarVirtualContributorData,
 } from '../dataMappers/communityDataMapper';
 
-export function useCrdSpaceCommunity() {
+type UseCrdSpaceCommunityParams = {
+  /** Suppresses the contributor-roster fetch (roleSet leads + virtual
+   *  contributors). The sidebar connector passes this when NEITHER
+   *  contactLeads NOR virtualContributors is configured on the active tab
+   *  (FR-019) — those two widgets genuinely share this one query. */
+  skipContributors?: boolean;
+  /** Suppresses the community-guidelines content fetch — gated solely on the
+   *  `guidelines` widget's presence. */
+  skipGuidelines?: boolean;
+};
+
+export function useCrdSpaceCommunity({ skipContributors, skipGuidelines }: UseCrdSpaceCommunityParams = {}) {
   const { space, permissions, entitlements } = useSpace();
-
-  const {
-    calloutsSetId,
-    classificationTagsets,
-    tabDescription,
-    loading: tabLoading,
-  } = useSpaceTabProvider({ tabPosition: 1 });
-
-  const calloutsSetProvided = useCalloutsSet({
-    calloutsSetId,
-    classificationTagsets,
-  });
 
   const roleSetId = space.about.membership?.roleSetID;
 
-  // Fetch contributors across all relevant roles. The flat `users` /
-  // `organizations` arrays are deduplicated across roles, and each entry
-  // carries its full `roles` list, which the mapper uses to derive
-  // role/roleType for the UI badge. The per-role `usersByRole[Lead]` +
-  // `organizationsByRole[Lead]` feeds the sidebar lead block, and
-  // `virtualContributorsByRole[Member]` feeds the sidebar VC section.
+  // Fetch contributors across all relevant roles for the SIDEBAR only. The
+  // per-role `usersByRole[Lead]` + `organizationsByRole[Lead]` feeds the sidebar
+  // lead block, and `virtualContributorsByRole[Member]` feeds the sidebar VC
+  // section. The full member grid that the hard-coded `SpaceMembers` widget used
+  // to render was removed (feature 008, US6) — the community tab now relies on a
+  // contributor-collection callout instead, so the flat `users` / `organizations`
+  // arrays are no longer fetched/mapped here.
   const {
-    users,
-    organizations,
     usersByRole,
     organizationsByRole,
     virtualContributorsByRole,
@@ -47,11 +42,8 @@ export function useCrdSpaceCommunity() {
     relevantRoles: [RoleName.Admin, RoleName.Lead, RoleName.Member],
     contributorTypes: [ActorType.User, ActorType.Organization, ActorType.VirtualContributor],
     fetchContributors: true,
+    skip: skipContributors,
   });
-
-  const members: MemberCardData[] = mapRoleSetToMemberCards(users, organizations);
-  const usersCount = users.length;
-  const organizationsCount = organizations.length;
 
   // Sidebar leads (users + organizations with the Lead role)
   const leadUsers: SidebarLeadData[] = (usersByRole[RoleName.Lead] ?? [])
@@ -71,24 +63,35 @@ export function useCrdSpaceCommunity() {
     .map(mapVirtualContributorToSidebar)
     .filter((vc): vc is SidebarVirtualContributorData => vc !== undefined);
 
-  const guidelines = space.about.guidelines;
+  // Community guidelines (markdown title + description + references) for the
+  // sidebar block. The SpaceContext only carries the id, so fetch the content.
+  const guidelinesId = space.about.guidelines?.id || undefined;
+  const { data: guidelinesData, loading: guidelinesLoading } = useCommunityGuidelinesQuery({
+    variables: { communityGuidelinesId: guidelinesId ?? '' },
+    skip: skipGuidelines || !guidelinesId,
+  });
+  const guidelinesProfile = guidelinesData?.lookup.communityGuidelines?.profile;
+  const guidelines = {
+    id: guidelinesId,
+    displayName: guidelinesProfile?.displayName,
+    description: guidelinesProfile?.description ?? undefined,
+    references: (guidelinesProfile?.references ?? []).map(r => ({
+      name: r.name,
+      uri: r.uri,
+      description: r.description ?? undefined,
+    })),
+    loading: guidelinesLoading,
+  };
 
   return {
-    callouts: calloutsSetProvided.callouts ?? [],
-    calloutsSetId,
-    canCreateCallout: calloutsSetProvided.canCreateCallout,
-    tabDescription: tabDescription ?? '',
     leadUsers,
     leadOrganizations,
     virtualContributors,
     hasVcEntitlement,
     guidelines,
-    members,
-    usersCount,
-    organizationsCount,
     roleSetId,
     communityId: space.about.membership?.communityID,
     canInvite: permissions.canUpdate,
-    loading: tabLoading || calloutsSetProvided.loading || roleSetLoading,
+    loading: roleSetLoading,
   };
 }

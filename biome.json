@@ -89,7 +89,7 @@
     }
   },
   "files": {
-    "maxSize": 1500000,
+    "maxSize": 2000000,
     "includes": [
       "**/src/**/*.ts",
       "**/src/**/*.tsx",
@@ -97,14 +97,13 @@
       "**/src/**/*.jsx",
       "**/*.json",
       "**/*.md",
-      "!**/node_modules/",
-      "!**/build/",
-      "!**/dist/",
-      "!**/coverage/",
+      "!**/node_modules/**",
+      "!**/build/**",
+      "!**/dist/**",
+      "!**/coverage/**",
       "!**/public/env-config.js",
       "!**/public/meta.json",
       "!**/*.min.js",
-      "!**/prototype",
       "!**/src/crd/app"
     ]
   },

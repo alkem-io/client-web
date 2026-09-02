@@ -1,11 +1,13 @@
 {
   "header": {
+    "skipToContent": "Saltar al contenido",
     "menu": "Menú",
     "home": "Inicio",
     "search": "Buscar",
     "messages": "Mensajes",
     "notifications": "Notificaciones",
     "unreadNotifications": "{{count}} notificaciones sin leer",
+    "unreadMessages": "{{count}} mensajes no leídos",
     "spaces": "Espacios",
     "platformNavigation": "Navegación de la plataforma",
     "myAccount": "Mi cuenta",
@@ -18,6 +20,7 @@
     "pendingMemberships": "Membresías pendientes",
     "administration": "Administración",
     "changeLanguage": "Cambiar idioma",
+    "changeLanguageError": "No se pudo guardar la preferencia de idioma — inténtalo de nuevo.",
     "getHelp": "Obtener ayuda",
     "showGrid": "Mostrar cuadrícula",
     "hideGrid": "Ocultar cuadrícula"
@@ -29,5 +32,24 @@
     "security": "Seguridad",
     "support": "Soporte",
     "about": "Acerca de"
+  },
+  "appVersion": {
+    "message": "Hay una nueva versión de la aplicación disponible.",
+    "recurringMessage": "Por favor, cierra todas las pestañas de Alkemio y recarga para actualizar.",
+    "reload": "Recargar"
+  },
+  "onlineStatus": {
+    "offline": "Actualmente estás sin conexión. Guarda localmente cualquier trabajo pendiente, ya que los datos no guardados pueden perderse.",
+    "restored": "Tu conexión se ha restablecido.",
+    "close": "Cerrar"
+  },
+  "cookieConsent": {
+    "consent": "Al hacer clic en \"Aceptar todas las cookies\", aceptas el almacenamiento de cookies en tu dispositivo para mejorar la navegación y analizar el uso del sitio.",
+    "settingsIntro": "Al visitar un sitio web, se puede almacenar información en tu navegador en forma de cookies. Esta información puede ser sobre ti, tus preferencias y tu dispositivo. Principalmente, esta información se utiliza para que el sitio web funcione lo mejor posible. Algunos sitios web la usan con fines de marketing. Como Alkemio no permite publicidad en su sitio web, solo distinguimos dos tipos de cookies.",
+    "technical": "Cookies técnicamente necesarios: te permiten navegar y usar las funciones básicas, así como almacenar preferencias.",
+    "analysis": "Cookies de análisis: nos permiten determinar cómo interactúan los visitantes con nuestros servicios para mejorar la experiencia de usuario.",
+    "settings": "configuración",
+    "acceptAll": "Aceptar todas las cookies",
+    "confirmChoice": "Confirmar elección"
   }
 }

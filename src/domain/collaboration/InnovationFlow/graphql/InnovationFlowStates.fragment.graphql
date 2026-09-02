@@ -7,6 +7,10 @@ fragment InnovationFlowStates on InnovationFlow {
     sortOrder
     settings {
       allowNewCallouts
+      visible
+      descriptionDisplayMode
+      showPublishDetails
+      sidebar
     }
     defaultCalloutTemplate {
       id

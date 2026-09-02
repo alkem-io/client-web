@@ -1,0 +1,104 @@
+{
+  "launcher": {
+    "open": "Ouvrir le chat",
+    "close": "Fermer le chat",
+    "unreadLabel": "Vous avez des messages non lus"
+  },
+  "panel": {
+    "title": "Chat",
+    "settings": "Paramètres de notification"
+  },
+  "actions": {
+    "cancel": "Annuler"
+  },
+  "newChat": {
+    "title": "Nouveau message",
+    "searchPlaceholder": "Rechercher des personnes…",
+    "searchHint": "Commencez à taper pour rechercher des personnes",
+    "noResults": "Aucune personne trouvée",
+    "create": "Démarrer la discussion",
+    "createGroup": "Démarrer la discussion de groupe",
+    "removeAria": "Supprimer {{name}}"
+  },
+  "group": {
+    "settings": "Paramètres du groupe",
+    "nameLabel": "Nom du groupe",
+    "members": "Membres",
+    "addPlaceholder": "Ajouter des personnes…",
+    "noResults": "Aucune personne trouvée",
+    "leave": "Quitter le groupe",
+    "save": "Enregistrer",
+    "you": "Vous",
+    "avatar": {
+      "edit": "Changer la photo",
+      "cropTitle": "Recadrer la photo",
+      "saving": "Enregistrement…",
+      "altLabel": "Description (facultatif)",
+      "altPlaceholder": "Décrivez l'image"
+    },
+    "removeMemberAria": "Supprimer {{name}}",
+    "removeMemberConfirm": {
+      "title": "Retirer le membre ?",
+      "description": "Retirer cette personne du groupe ?",
+      "confirm": "Retirer"
+    },
+    "leaveConfirm": {
+      "title": "Quitter le groupe ?",
+      "description": "Vous ne recevrez plus de messages de ce groupe.",
+      "confirm": "Quitter"
+    }
+  },
+  "list": {
+    "searchPlaceholder": "Rechercher des conversations…",
+    "newMessage": "Nouveau message",
+    "empty": "Aucune conversation pour le moment",
+    "emptyHint": "Commencez un nouveau message pour discuter.",
+    "noResults": "Aucune conversation ne correspond à votre recherche.",
+    "loading": "Chargement des conversations",
+    "draft": "Brouillon :"
+  },
+  "guidance": {
+    "beta": "Bêta",
+    "intro": "Bonjour ! Je suis là pour vous aider à vous repérer dans Alkemio. Posez-moi toutes vos questions sur les espaces, la collaboration ou le fonctionnement des choses.",
+    "infoButton": "À propos de l'assistant",
+    "clear": "Effacer la conversation",
+    "thinking": "L'assistant réfléchit…",
+    "infoDialog": {
+      "title": "À propos de l'assistant",
+      "content": "Cet assistant est un guide IA pour Alkemio, actuellement en version bêta. Il peut vous aider à comprendre les fonctionnalités et à vous repérer. Les réponses peuvent être imparfaites : veuillez vérifier les informations importantes."
+    },
+    "clearConfirm": {
+      "title": "Effacer cette conversation ?",
+      "description": "Cela démarre une nouvelle conversation avec l'assistant. La conversation actuelle sera effacée.",
+      "confirm": "Effacer la conversation"
+    }
+  },
+  "thread": {
+    "back": "Retour aux conversations",
+    "loading": "Chargement des messages",
+    "addReaction": "Ajouter une réaction"
+  },
+  "sendConfirmation": {
+    "title": "Message envoyé",
+    "description": "Votre message a été envoyé sous forme de discussion privée.",
+    "partialDescription": "Votre message a été envoyé, mais certaines personnes n'ont pas pu être contactées.",
+    "notReachedTitle": "Non contactées",
+    "openChat": "Ouvrir la discussion",
+    "close": "Fermer"
+  },
+  "contactLeads": {
+    "title": "Contacter les responsables",
+    "explanation": "Ce message sera envoyé à chaque responsable individuellement. Pour contacter un responsable en particulier, consultez directement son profil.",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Rédigez votre message…",
+    "recipientsLabel": "Destinataires",
+    "send": "Envoyer",
+    "cancel": "Annuler",
+    "sending": "Envoi…",
+    "errors": {
+      "messageRequired": "Le message ne peut pas être vide.",
+      "messageTooLong": "Le message doit comporter au maximum {{max}} caractères.",
+      "sendFailed": "Impossible d'envoyer le message. Veuillez réessayer."
+    }
+  }
+}

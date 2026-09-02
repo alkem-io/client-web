@@ -9,18 +9,15 @@ import type { FC, PropsWithChildren } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import i18n from '@/core/i18n/config';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { sessionStorageMock } from '../tests/utils/sessionStorageMock';
 import { useGuestSession } from './useGuestSession';
 
 const wrapper: FC<PropsWithChildren> = ({ children }) => (
   <MockedProvider mocks={[]} cache={new InMemoryCache()}>
-    <RootThemeProvider>
-      <I18nextProvider i18n={i18n}>
-        <GuestSessionProvider>{children}</GuestSessionProvider>
-      </I18nextProvider>
-    </RootThemeProvider>
+    <I18nextProvider i18n={i18n}>
+      <GuestSessionProvider>{children}</GuestSessionProvider>
+    </I18nextProvider>
   </MockedProvider>
 );
 
@@ -31,7 +28,7 @@ describe('useGuestSession', () => {
   });
 
   describe('anonymization algorithm', () => {
-    it('should anonymize "First Last" as "First L."', () => {
+    it('should anonymize "First Last" as the period-free "First L" form', () => {
       // This test assumes we can mock the current user context
       // For now, testing the logic through the hook interface
       const { result } = renderHook(() => useGuestSession(), { wrapper });

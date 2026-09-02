@@ -6,12 +6,13 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { BarChart3, GripVertical, Plus, Trash2 } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { BarChart3, GripVertical, Lock, LockOpen, Plus, Trash2 } from 'lucide-react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
-import { Switch } from '@/crd/primitives/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
 
 export const MIN_POLL_OPTIONS = 2;
 export const MAX_POLL_OPTIONS = 10;
@@ -27,6 +28,12 @@ type PollOptionsEditorProps = {
   questionError?: string;
   options: PollOptionValue[];
   onOptionsChange: (options: PollOptionValue[]) => void;
+  /**
+   * Aggregated validation message for the options list (e.g. "At least 2 options
+   * are required"). Surface so the user sees why submit is blocked instead of
+   * a silent no-op.
+   */
+  optionsError?: string;
   settingsSlot?: ReactNode;
   pollStatus?: 'open' | 'closed';
   onStatusChange?: (status: 'open' | 'closed') => void;
@@ -80,7 +87,7 @@ function SortableOptionRow({
         placeholder={t('forms.pollOption', { number: index + 1 })}
         disabled={disabled}
         maxLength={512}
-        className="flex-1 h-9 px-3 border border-border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex-1 h-9 px-3 border border-border rounded-md bg-input-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label={t('forms.pollOption', { number: index + 1 })}
       />
       {canRemove && (
@@ -105,6 +112,7 @@ export function PollOptionsEditor({
   questionError,
   options,
   onOptionsChange,
+  optionsError,
   settingsSlot,
   pollStatus,
   onStatusChange,
@@ -139,10 +147,21 @@ export function PollOptionsEditor({
     }
   };
 
-  const removeOption = (index: number) => {
+  // CRD CLAUDE.md Rule #9: every deletion is confirmed. The trash icon stages
+  // the index in `pendingDeleteIndex`; the actual remove only runs from the
+  // ConfirmationDialog's `onConfirm`. Cancel resets the staged index.
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(null);
+
+  const requestRemoveOption = (index: number) => {
     if (options.length > MIN_POLL_OPTIONS) {
-      onOptionsChange(options.filter((_, i) => i !== index));
+      setPendingDeleteIndex(index);
     }
+  };
+
+  const confirmRemoveOption = () => {
+    if (pendingDeleteIndex === null) return;
+    onOptionsChange(options.filter((_, i) => i !== pendingDeleteIndex));
+    setPendingDeleteIndex(null);
   };
 
   const updateOption = (index: number, text: string) => {
@@ -151,15 +170,44 @@ export function PollOptionsEditor({
     onOptionsChange(updated);
   };
 
+  const pendingDeleteOptionText = pendingDeleteIndex !== null ? options[pendingDeleteIndex]?.text.trim() : undefined;
+
   return (
     <div className={cn('space-y-3 p-4 border rounded-xl bg-muted/30', className)}>
-      <div className="flex items-center gap-2 mb-2">
-        <BarChart3 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
-        <span className="text-sm font-medium">{t('callout.poll')}</span>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+          <span className="text-body-emphasis">{t('callout.poll')}</span>
+        </div>
+
+        {/* The lock is both the state indicator and the toggle: the icon shows what the
+            poll IS (open padlock / closed padlock) while the label names what clicking
+            DOES. The tooltip describes the current state, so all three never collide. */}
+        {pollStatus && onStatusChange && (
+          <Tooltip>
+            <TooltipTrigger asChild={true}>
+              <button
+                type="button"
+                onClick={() => onStatusChange(pollStatus === 'closed' ? 'open' : 'closed')}
+                className="flex items-center gap-1.5 rounded-md px-2 py-1 text-caption text-muted-foreground hover:text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+              >
+                {pollStatus === 'closed' ? (
+                  <Lock className="w-3.5 h-3.5" aria-hidden="true" />
+                ) : (
+                  <LockOpen className="w-3.5 h-3.5" aria-hidden="true" />
+                )}
+                {pollStatus === 'closed' ? t('pollForm.reopenPoll') : t('pollForm.closePoll')}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {pollStatus === 'closed' ? t('pollForm.closePollHint.closed') : t('pollForm.closePollHint.open')}
+            </TooltipContent>
+          </Tooltip>
+        )}
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="poll-question" className="text-xs text-muted-foreground">
+        <label htmlFor="poll-question" className="text-caption text-muted-foreground">
           {t('forms.pollQuestion')}
         </label>
         <input
@@ -170,11 +218,11 @@ export function PollOptionsEditor({
           placeholder={t('forms.pollQuestion')}
           disabled={isClosed}
           className={cn(
-            'w-full h-9 px-3 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed',
+            'w-full h-9 px-3 border rounded-md bg-input-background text-control focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed',
             questionError ? 'border-destructive' : 'border-border'
           )}
         />
-        {questionError && <p className="text-xs text-destructive">{questionError}</p>}
+        {questionError && <p className="text-caption text-destructive">{questionError}</p>}
       </div>
 
       <div className="space-y-2">
@@ -187,13 +235,18 @@ export function PollOptionsEditor({
                 index={index}
                 option={option}
                 canRemove={options.length > MIN_POLL_OPTIONS}
-                onRemove={() => removeOption(index)}
+                onRemove={() => requestRemoveOption(index)}
                 onTextChange={text => updateOption(index, text)}
                 disabled={isClosed}
               />
             ))}
           </SortableContext>
         </DndContext>
+        {optionsError && (
+          <p className="text-caption text-destructive" aria-live="polite">
+            {optionsError}
+          </p>
+        )}
       </div>
 
       <div className="flex items-center justify-between">
@@ -204,23 +257,26 @@ export function PollOptionsEditor({
               {t('forms.addOption')}
             </Button>
           )}
-          {isClosed && <span className="text-xs text-muted-foreground">{t('poll.status.closed')}</span>}
+          {isClosed && <span className="text-caption text-muted-foreground">{t('poll.status.closed')}</span>}
         </div>
 
-        <div className="flex items-center gap-2">
-          {pollStatus && onStatusChange && (
-            <div className="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground">
-              <Switch
-                checked={pollStatus === 'open'}
-                onCheckedChange={checked => onStatusChange(checked ? 'open' : 'closed')}
-                aria-label={pollStatus === 'open' ? t('pollForm.openPoll') : t('pollForm.closePoll')}
-              />
-              {pollStatus === 'open' ? t('pollForm.openPoll') : t('pollForm.closePoll')}
-            </div>
-          )}
-          {settingsSlot}
-        </div>
+        <div className="flex items-center gap-2">{settingsSlot}</div>
       </div>
+      <ConfirmationDialog
+        open={pendingDeleteIndex !== null}
+        onOpenChange={open => {
+          if (!open) setPendingDeleteIndex(null);
+        }}
+        title={t('pollForm.deleteOptionConfirm.title')}
+        description={
+          pendingDeleteOptionText
+            ? t('pollForm.deleteOptionConfirm.descriptionWithText', { text: pendingDeleteOptionText })
+            : t('pollForm.deleteOptionConfirm.description')
+        }
+        confirmLabel={t('forms.removeOption')}
+        variant="destructive"
+        onConfirm={confirmRemoveOption}
+      />
     </div>
   );
 }

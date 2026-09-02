@@ -1,0 +1,331 @@
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  type DragOverEvent,
+  DragOverlay,
+  type DragStartEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { rectSortingStrategy, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { Loader2, Plus } from 'lucide-react';
+import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { SpaceSettingsSaveBar } from '@/crd/components/space/settings/SpaceSettingsSaveBar';
+import type { MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
+import { AddPhaseDialog } from './AddPhaseDialog';
+import { LayoutCalloutRowPreview } from './LayoutCalloutRow';
+import { LayoutPoolColumn } from './LayoutPoolColumn';
+import type {
+  ColumnMenuActions,
+  LayoutCallout,
+  LayoutColumnId,
+  LayoutPoolColumn as LayoutPoolColumnData,
+  LayoutReorderTarget,
+  LayoutSaveBarState,
+} from './SpaceSettingsLayoutView.types';
+
+export type SpaceSettingsLayoutViewProps = {
+  /**
+   * Space hierarchy level. Drives column-DnD (reorder stays L1/L2-only) and the user-facing
+   * wording (tab vs phase):
+   * - L0: admins may add/delete additional tabs (the four built-in tabs stay protected via each
+   *   column's `isDeletable` flag); column reorder is hidden — the built-in tabs keep their order.
+   * - L1/L2: admins can add/remove phases and drag columns to reorder them.
+   */
+  level: 'L0' | 'L1' | 'L2';
+  /**
+   * Whether the admin may add/delete tabs. When omitted, falls back to the prior `level !== 'L0'`
+   * behaviour so existing subspace callers are unaffected. The L0 settings page passes `true` for
+   * admins to enable additional-tab management; the four built-in L0 tabs remain protected via each
+   * column's `isDeletable` flag, not via this prop.
+   */
+  canManageTabs?: boolean;
+  /**
+   * User-facing noun for a column: 'tab' on L0 Spaces, 'phase' on subspaces. Drives the Add
+   * button label, the Add dialog wording, and the per-column Delete wording. Defaults to 'phase'
+   * so existing subspace callers are unchanged.
+   */
+  entityNoun?: 'tab' | 'phase';
+  columns: LayoutPoolColumnData[];
+  saveBar: LayoutSaveBarState;
+  onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
+  /** Column-level reorder — called with the new order of column IDs. Only invoked at L1/L2. */
+  onReorderColumns?: (orderedColumnIds: LayoutColumnId[]) => void;
+  onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
+  onViewPost: (calloutId: string) => void;
+  onSave: () => void;
+  onDiscardChanges: () => void;
+  columnMenuActions: ColumnMenuActions;
+  /** Phase add — only invoked when `level !== 'L0'` and `columns.length < maximumNumberOfStates`. */
+  onCreatePhase?: (input: { displayName: string; description: string }) => Promise<void>;
+  /** Maximum allowed states from innovation-flow settings. Caps the Add Phase button. */
+  maximumNumberOfStates?: number;
+  /** True while a structural mutation is in flight — disables Add Phase. */
+  isStructureMutating?: boolean;
+  /**
+   * Admin slot rendered in the page header (next to "Add Phase") — used to
+   * inject the "Replace innovation flow" button connector at L1/L2. Consumers
+   * MUST omit this on L0 (the home flow is fixed and not template-replaceable).
+   */
+  headerActionsSlot?: ReactNode;
+  /**
+   * When true, dims the columns area and overlays a "Loading new flow…" spinner
+   * — used while the Replace-innovation-flow mutation + refetch are in flight.
+   * The page header (buttons) stays visible so the user still has context.
+   */
+  isReplacingFlow?: boolean;
+  className?: string;
+} & MarkdownUploadProps;
+
+/**
+ * Layout tab — dynamic column count driven by `innovationFlow.states`.
+ *
+ * Scope:
+ *  - Renders one column card per backend state (dynamic order).
+ *  - Drag-and-drop reorder + cross-column move (dnd-kit with keyboard sensor).
+ *  - Column title + description editing via the per-column menu → Edit details.
+ *  - Three-dot per-column menu: Active phase + Default post template.
+ *  - Per-callout kebab (two entries: Move to + View Post).
+ *  - Per-phase Layout modal (description collapse + publish details) via column menu.
+ *  - Save Changes / Discard Changes action bar at the bottom-right.
+ */
+export function SpaceSettingsLayoutView({
+  level,
+  canManageTabs,
+  entityNoun = 'phase',
+  columns,
+  saveBar,
+  onReorder,
+  onReorderColumns,
+  onMoveToColumn,
+  onViewPost,
+  onSave,
+  onDiscardChanges,
+  columnMenuActions,
+  onCreatePhase,
+  maximumNumberOfStates = Number.POSITIVE_INFINITY,
+  isStructureMutating = false,
+  headerActionsSlot,
+  isReplacingFlow = false,
+  className,
+  onImageUpload,
+  iframeAllowedUrls,
+  onError,
+}: SpaceSettingsLayoutViewProps) {
+  const { t } = useTranslation('crd-spaceSettings');
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+  const [activeCallout, setActiveCallout] = useState<LayoutCallout | null>(null);
+  const [addPhaseOpen, setAddPhaseOpen] = useState(false);
+  // Capability admits L0 when the consumer passes `canManageTabs`. When omitted, fall back to the
+  // prior `level !== 'L0'` behaviour so existing subspace callers are unchanged. The four built-in
+  // L0 tabs stay protected per-column via `column.isDeletable`, not via this gate.
+  const canManagePhases = (canManageTabs ?? level !== 'L0') && !!onCreatePhase;
+  const addButtonLabel = entityNoun === 'tab' ? t('layout.addTab.button') : t('layout.addPhase.button');
+  // `isReplacingFlow` also locks structural actions: starting a create-state
+  // mutation while the replace-flow mutation + refetch are in flight would race
+  // two structural changes against the same innovation flow, and the reseed
+  // would land on whichever refetch wins.
+  const canAddPhase =
+    canManagePhases && columns.length < maximumNumberOfStates && !isStructureMutating && !isReplacingFlow;
+  const canReorderColumns = level !== 'L0' && !!onReorderColumns;
+  // Sortable column items are prefixed so they don't collide with the per-column
+  // droppable zones (those keep `column.id` as their droppable id — see
+  // LayoutPoolColumn — so the existing callout cross-column move handler keeps
+  // resolving columns by their unprefixed id).
+  const sortableColumnIds = columns.map(c => `col:${c.id}`);
+
+  const findColumnIdForCallout = (calloutId: string): LayoutColumnId | null => {
+    for (const col of columns) {
+      if (col.callouts.some(c => c.id === calloutId)) return col.id;
+    }
+    return null;
+  };
+
+  const resolveTargetColumn = (overId: string): LayoutPoolColumnData | null => {
+    return columns.find(c => c.id === overId) ?? columns.find(c => c.callouts.some(cb => cb.id === overId)) ?? null;
+  };
+
+  const resolveTargetIndex = (targetCol: LayoutPoolColumnData, overId: string): number => {
+    const idx = targetCol.callouts.findIndex(cb => cb.id === overId);
+    return idx === -1 ? targetCol.callouts.length : idx;
+  };
+
+  const isColumnDrag = (event: DragStartEvent | DragOverEvent | DragEndEvent): boolean =>
+    event.active.data.current?.type === 'column';
+
+  const handleDragStart = (event: DragStartEvent) => {
+    if (isColumnDrag(event)) return; // No DragOverlay for columns — useSortable transform is enough.
+    const id = String(event.active.id);
+    for (const col of columns) {
+      const found = col.callouts.find(c => c.id === id);
+      if (found) {
+        setActiveCallout(found);
+        return;
+      }
+    }
+  };
+
+  // Cross-column only: when the active callout hovers over a different column,
+  // move it into that column in local state so the target column's siblings
+  // shift aside (creating the gap/drop indicator the user sees while dragging).
+  // Within-column reorder is handled natively by SortableContext's shuffle.
+  // Column-vs-column hover is also handled by SortableContext (rectSortingStrategy),
+  // so we skip our cross-column callout logic for column drags.
+  const handleDragOver = (event: DragOverEvent) => {
+    if (isColumnDrag(event)) return;
+    const { active, over } = event;
+    if (!over) return;
+    const activeId = String(active.id);
+    const overId = String(over.id);
+    if (activeId === overId) return;
+
+    const sourceColId = findColumnIdForCallout(activeId);
+    const targetCol = resolveTargetColumn(overId);
+    if (!sourceColId || !targetCol) return;
+    if (sourceColId === targetCol.id) return;
+
+    onReorder(activeId, { columnId: targetCol.id, index: resolveTargetIndex(targetCol, overId) });
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveCallout(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    if (isColumnDrag(event)) {
+      // active.id / over.id are the prefixed sortable ids (`col:${columnId}`).
+      // Strip the prefix to get the underlying column ids the consumer expects.
+      const stripPrefix = (id: string) => (id.startsWith('col:') ? id.slice(4) : id);
+      const activeColId = stripPrefix(String(active.id));
+      const overColId = stripPrefix(String(over.id));
+      const fromIndex = columns.findIndex(c => c.id === activeColId);
+      const toIndex = columns.findIndex(c => c.id === overColId);
+      if (fromIndex < 0 || toIndex < 0 || fromIndex === toIndex) return;
+      const next = columns.map(c => c.id);
+      next.splice(toIndex, 0, next.splice(fromIndex, 1)[0]);
+      onReorderColumns?.(next);
+      return;
+    }
+
+    const calloutId = String(active.id);
+    const overId = String(over.id);
+    const targetCol = resolveTargetColumn(overId);
+    if (!targetCol) return;
+    onReorder(calloutId, { columnId: targetCol.id, index: resolveTargetIndex(targetCol, overId) });
+  };
+
+  const handleDragCancel = () => {
+    setActiveCallout(null);
+  };
+
+  return (
+    <div className={cn('flex flex-col gap-6', className)}>
+      {/* Page header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-page-title">{t('layout.pageHeader.title')}</h2>
+          <p className="text-body text-muted-foreground mt-1">{t('layout.pageHeader.subtitle')}</p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {headerActionsSlot}
+          {canManagePhases && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="gap-2 shrink-0"
+              disabled={!canAddPhase}
+              onClick={() => setAddPhaseOpen(true)}
+            >
+              <Plus aria-hidden="true" className="size-4" />
+              {addButtonLabel}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Columns + Save bar inside a bordered container */}
+      <div className="rounded-xl border p-4 relative">
+        {isReplacingFlow && (
+          <output
+            aria-live="polite"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-xl bg-background/80 backdrop-blur-sm text-muted-foreground"
+          >
+            <Loader2 aria-hidden="true" className="size-8 animate-spin" />
+            <p className="text-body-emphasis">{t('layout.replaceFlow.loading')}</p>
+          </output>
+        )}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragOver={handleDragOver}
+          onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
+        >
+          <SortableContext items={sortableColumnIds} strategy={rectSortingStrategy}>
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 items-start">
+              {columns.map(column => {
+                const otherColumns = columns.filter(c => c.id !== column.id).map(c => ({ id: c.id, title: c.title }));
+                return (
+                  <LayoutPoolColumn
+                    key={column.id}
+                    column={column}
+                    otherColumns={otherColumns}
+                    showDescription={true}
+                    onMoveToColumn={onMoveToColumn}
+                    onViewPost={onViewPost}
+                    columnMenuActions={columnMenuActions}
+                    entityNoun={entityNoun}
+                    draggable={canReorderColumns}
+                    // Sidebar widget configuration is L0-only for now — subspace phases
+                    // hide the section in the Layout dialog (stored values untouched).
+                    sidebarSettingsEnabled={level === 'L0'}
+                    onImageUpload={onImageUpload}
+                    iframeAllowedUrls={iframeAllowedUrls}
+                    onError={onError}
+                  />
+                );
+              })}
+            </div>
+          </SortableContext>
+          <DragOverlay dropAnimation={null}>
+            {activeCallout ? <LayoutCalloutRowPreview callout={activeCallout} showDescription={true} /> : null}
+          </DragOverlay>
+        </DndContext>
+
+        <SpaceSettingsSaveBar
+          // Lock both Save and Reset while a structural mutation (phase
+          // create/delete) or a flow replacement is in flight: the snapshot is
+          // being reseeded and a Save click in that window would race against
+          // the refetch.
+          state={isStructureMutating || isReplacingFlow ? { kind: 'saving' } : saveBar}
+          onSave={onSave}
+          onDiscard={onDiscardChanges}
+          saveLabel={t('saveBar.save')}
+          discardLabel={t('saveBar.discard')}
+          savingLabel={t('saveBar.saving')}
+        />
+      </div>
+
+      {canManagePhases && onCreatePhase && (
+        <AddPhaseDialog
+          open={addPhaseOpen}
+          onOpenChange={setAddPhaseOpen}
+          onSubmit={onCreatePhase}
+          existingPhaseNames={columns.map(c => c.title)}
+          entityNoun={entityNoun}
+        />
+      )}
+    </div>
+  );
+}

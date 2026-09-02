@@ -1,0 +1,152 @@
+import { ScanEye } from 'lucide-react';
+import { type ReactNode, Suspense, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
+import { useFullscreen } from '@/core/ui/fullscreen/useFullscreen';
+import { CrdFullscreenButton } from '@/crd/components/common/CrdFullscreenButton';
+import { Loading } from '@/crd/components/common/Loading';
+import { ShareButton } from '@/crd/components/common/ShareButton';
+import { useMediaQuery } from '@/crd/hooks/useMediaQuery';
+import { Button } from '@/crd/primitives/button';
+import { Separator } from '@/crd/primitives/separator';
+import type { CollaborationState } from '@/domain/collaboration/realTimeCollaboration/unifiedCollabProvider';
+import { useWhiteboardViewState } from '@/domain/collaboration/whiteboard/WhiteboardsManagement/useWhiteboardViewState';
+import { CrdCollaborationSettings } from '@/main/crdPages/whiteboard/CrdCollaborationSettings';
+import { CrdWhiteboardGuestAccessControls } from '@/main/crdPages/whiteboard/CrdWhiteboardGuestAccessControls';
+import { WhiteboardAssistantButton } from '@/main/crdPages/whiteboard/WhiteboardAssistantButton';
+import type { WhiteboardDetails } from './CrdWhiteboardDialog';
+import CrdWhiteboardDialog from './CrdWhiteboardDialog';
+import { CrdWhiteboardSaveStatus } from './CrdWhiteboardSaveStatus';
+
+export interface CrdWhiteboardViewProps {
+  whiteboardId?: string;
+  whiteboard: WhiteboardDetails | undefined;
+  authorization: { myPrivileges?: AuthorizationPrivilege[] } | undefined;
+  whiteboardShareUrl: string;
+  guestShareUrl?: string;
+  displayName?: ReactNode;
+  readOnlyDisplayName?: boolean;
+  loadingWhiteboards: boolean;
+  preventWhiteboardDeletion?: boolean;
+  requireDurableClose?: boolean;
+  backToWhiteboards: () => void;
+  onWhiteboardDeleted?: () => void;
+}
+
+const CrdWhiteboardView = ({
+  whiteboardId,
+  whiteboard,
+  authorization,
+  backToWhiteboards,
+  loadingWhiteboards,
+  whiteboardShareUrl,
+  guestShareUrl,
+  displayName,
+  readOnlyDisplayName,
+  preventWhiteboardDeletion,
+  requireDurableClose,
+  onWhiteboardDeleted,
+}: CrdWhiteboardViewProps) => {
+  // aria-label-only use; disable suspense so this hook never suspends above the
+  // component's internal <Suspense>, which would tear down the live canvas
+  // (see docs/crd/suspense-teardown-audit.md).
+  const { t: tWb } = useTranslation('crd-whiteboard', { useSuspense: false });
+  const { t: tCommon } = useTranslation('crd-common', { useSuspense: false });
+  const [consecutiveSaveErrors, setConsecutiveSaveErrors] = useState(0);
+  const [previewSettingsDialogOpen, setPreviewSettingsDialogOpen] = useState(false);
+
+  const {
+    lastSuccessfulSavedDate,
+    setLastSuccessfulSavedDate,
+    hasUpdatePrivileges,
+    hasUpdateContentPrivileges,
+    hasDeletePrivileges,
+    hasPublicSharePrivilege,
+    guestAccess,
+    actionsState,
+    actions,
+  } = useWhiteboardViewState({ whiteboard, authorization, guestShareUrl, preventWhiteboardDeletion });
+
+  const { fullscreen, setFullscreen } = useFullscreen();
+  const isSmallScreen = useMediaQuery('(max-width: 599.95px)');
+  const isFullscreen = fullscreen || isSmallScreen;
+
+  const handleCancel = () => {
+    backToWhiteboards();
+    if (fullscreen) {
+      setFullscreen(false);
+    }
+  };
+
+  return (
+    <Suspense fallback={<Loading />}>
+      <CrdWhiteboardDialog
+        entities={{ whiteboard }}
+        lastSuccessfulSavedDate={lastSuccessfulSavedDate}
+        actions={{
+          onCancel: handleCancel,
+          setConsecutiveSaveErrors,
+          onUpdate: actions.onUpdate,
+          onDelete: async () => {
+            if (!whiteboard) return;
+            await actions.onDelete(whiteboard);
+            onWhiteboardDeleted?.();
+          },
+          setLastSuccessfulSavedDate,
+          onChangeDisplayName: actions.onChangeDisplayName,
+          onClosePreviewSettingsDialog: () => setPreviewSettingsDialogOpen(false),
+        }}
+        options={{
+          canEdit: hasUpdateContentPrivileges,
+          canDelete: hasDeletePrivileges,
+          show: Boolean(whiteboardId),
+          dialogTitle: displayName,
+          readOnlyDisplayName: readOnlyDisplayName || !hasUpdatePrivileges,
+          fullscreen: isFullscreen,
+          previewSettingsDialogOpen,
+          requireDurableClose,
+          headerActions: (collabState: CollaborationState) => (
+            <>
+              <ShareButton url={whiteboardShareUrl} disabled={!whiteboardShareUrl}>
+                <CrdWhiteboardGuestAccessControls whiteboard={whiteboard} guestAccess={guestAccess} />
+                {hasUpdatePrivileges && (
+                  <>
+                    {hasPublicSharePrivilege && <Separator />}
+                    <CrdCollaborationSettings
+                      element={whiteboard}
+                      elementType="whiteboard"
+                      guestAccessEnabled={guestAccess.enabled}
+                    />
+                  </>
+                )}
+              </ShareButton>
+
+              {!isSmallScreen && <CrdFullscreenButton label={tCommon('fullscreen')} />}
+
+              <CrdWhiteboardSaveStatus isSaved={consecutiveSaveErrors < 6} date={lastSuccessfulSavedDate} />
+
+              {hasUpdatePrivileges && collabState.kind === 'active' && collabState.access === 'write' && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setPreviewSettingsDialogOpen(true)}
+                  aria-label={tWb('preview.editButton')}
+                >
+                  <ScanEye />
+                </Button>
+              )}
+
+              {whiteboard && <WhiteboardAssistantButton whiteboard={whiteboard} />}
+            </>
+          ),
+        }}
+        state={{
+          loadingWhiteboardValue: loadingWhiteboards,
+          ...actionsState,
+        }}
+      />
+    </Suspense>
+  );
+};
+
+export default CrdWhiteboardView;

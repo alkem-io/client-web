@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/crd/primitives/button';
-import { Dialog, DialogClose, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Separator } from '@/crd/primitives/separator';
 import { Switch } from '@/crd/primitives/switch';
 
@@ -35,21 +34,16 @@ export function PollSettingsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <div className="flex items-center justify-between">
-          <DialogTitle className="text-lg font-semibold">{t('pollForm.settings.title')}</DialogTitle>
-          <DialogClose asChild={true}>
-            <Button variant="ghost" size="sm" aria-label={t('pollForm.settings.close')}>
-              {t('pollForm.settings.close')}
-            </Button>
-          </DialogClose>
-        </div>
+      <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+        {/* DialogContent already renders a top-right "X" close button — no extra
+            "Close" button needed. */}
+        <DialogTitle className="text-subsection-title shrink-0">{t('pollForm.settings.title')}</DialogTitle>
 
-        <Separator />
+        <Separator className="shrink-0" />
 
-        <div className="space-y-5">
+        <div className="space-y-5 flex-1 min-h-0 overflow-y-auto">
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-foreground">{t('pollForm.settings.votingOptions')}</h3>
+            <h3 className="text-body-emphasis text-foreground">{t('pollForm.settings.votingOptions')}</h3>
             <SettingRow
               label={t('pollForm.settings.allowMultiple')}
               checked={allowMultiple}
@@ -67,7 +61,7 @@ export function PollSettingsDialog({
           <Separator />
 
           <div className="space-y-3">
-            <h3 className="text-sm font-medium text-foreground">{t('pollForm.settings.displayOptions')}</h3>
+            <h3 className="text-body-emphasis text-foreground">{t('pollForm.settings.displayOptions')}</h3>
             <SettingRow
               label={t('pollForm.settings.hideResultsUntilVoted')}
               checked={hideResultsUntilVoted}
@@ -100,7 +94,7 @@ function SettingRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-3 cursor-pointer">
-      <span className="text-sm text-foreground">{label}</span>
+      <span className="text-body text-foreground">{label}</span>
       <Switch checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} aria-label={label} />
     </div>
   );

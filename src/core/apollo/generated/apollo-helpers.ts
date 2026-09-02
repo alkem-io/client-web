@@ -49,6 +49,26 @@ export type AccountFieldPolicy = {
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type AccountDeletionBlockerKeySpecifier = (
+  | 'displayName'
+  | 'kind'
+  | 'resourceID'
+  | 'selfResolvable'
+  | 'url'
+  | AccountDeletionBlockerKeySpecifier
+)[];
+export type AccountDeletionBlockerFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  kind?: FieldPolicy<any> | FieldReadFunction<any>;
+  resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
+  selfResolvable?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AccountDeletionBlockerTotalKeySpecifier = ('kind' | 'total' | AccountDeletionBlockerTotalKeySpecifier)[];
+export type AccountDeletionBlockerTotalFieldPolicy = {
+  kind?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type AccountLicensePlanKeySpecifier = (
   | 'innovationPacks'
   | 'spaceFree'
@@ -544,6 +564,7 @@ export type ApplicationKeySpecifier = (
   | 'questions'
   | 'state'
   | 'updatedDate'
+  | 'user'
   | ApplicationKeySpecifier
 )[];
 export type ApplicationFieldPolicy = {
@@ -557,6 +578,29 @@ export type ApplicationFieldPolicy = {
   questions?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AssistantCapabilityKeySpecifier = (
+  | 'description'
+  | 'displayName'
+  | 'kind'
+  | 'name'
+  | AssistantCapabilityKeySpecifier
+)[];
+export type AssistantCapabilityFieldPolicy = {
+  description?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  kind?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type AssistantCapabilityToggleKeySpecifier = (
+  | 'capability'
+  | 'enabled'
+  | AssistantCapabilityToggleKeySpecifier
+)[];
+export type AssistantCapabilityToggleFieldPolicy = {
+  capability?: FieldPolicy<any> | FieldReadFunction<any>;
+  enabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type AuthenticationConfigKeySpecifier = ('providers' | AuthenticationConfigKeySpecifier)[];
 export type AuthenticationConfigFieldPolicy = {
@@ -699,8 +743,11 @@ export type CalloutKeySpecifier = (
   | 'posts'
   | 'publishedBy'
   | 'publishedDate'
+  | 'reactions'
+  | 'reactionsSummary'
   | 'settings'
   | 'sortOrder'
+  | 'taskColumnCounts'
   | 'updatedDate'
   | CalloutKeySpecifier
 )[];
@@ -721,12 +768,17 @@ export type CalloutFieldPolicy = {
   posts?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedBy?: FieldPolicy<any> | FieldReadFunction<any>;
   publishedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  reactions?: FieldPolicy<any> | FieldReadFunction<any>;
+  reactionsSummary?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  taskColumnCounts?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionKeySpecifier = (
   | 'authorization'
+  | 'classification'
+  | 'collaboraDocument'
   | 'createdBy'
   | 'createdDate'
   | 'id'
@@ -740,6 +792,8 @@ export type CalloutContributionKeySpecifier = (
 )[];
 export type CalloutContributionFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  classification?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -756,7 +810,7 @@ export type CalloutContributionDefaultsKeySpecifier = (
   | 'id'
   | 'postDescription'
   | 'updatedDate'
-  | 'whiteboardContent'
+  | 'whiteboardContentAvailable'
   | CalloutContributionDefaultsKeySpecifier
 )[];
 export type CalloutContributionDefaultsFieldPolicy = {
@@ -765,9 +819,10 @@ export type CalloutContributionDefaultsFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  whiteboardContentAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutContributionsCountOutputKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'post'
@@ -775,13 +830,41 @@ export type CalloutContributionsCountOutputKeySpecifier = (
   | CalloutContributionsCountOutputKeySpecifier
 )[];
 export type CalloutContributionsCountOutputFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type CalloutContributorsMapViewKeySpecifier = (
+  | 'latitude'
+  | 'longitude'
+  | 'zoom'
+  | CalloutContributorsMapViewKeySpecifier
+)[];
+export type CalloutContributorsMapViewFieldPolicy = {
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  zoom?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutContributorsSettingsKeySpecifier = (
+  | 'contributorTypes'
+  | 'defaultContributorType'
+  | 'defaultView'
+  | 'mapView'
+  | CalloutContributorsSettingsKeySpecifier
+)[];
+export type CalloutContributorsSettingsFieldPolicy = {
+  contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+  mapView?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CalloutFramingKeySpecifier = (
   | 'authorization'
+  | 'collaboraDocument'
+  | 'contributorCounts'
+  | 'contributors'
   | 'createdDate'
   | 'id'
   | 'link'
@@ -789,6 +872,7 @@ export type CalloutFramingKeySpecifier = (
   | 'memo'
   | 'poll'
   | 'profile'
+  | 'subspaces'
   | 'type'
   | 'updatedDate'
   | 'whiteboard'
@@ -796,6 +880,9 @@ export type CalloutFramingKeySpecifier = (
 )[];
 export type CalloutFramingFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributorCounts?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributors?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -803,6 +890,7 @@ export type CalloutFramingFieldPolicy = {
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  subspaces?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -819,6 +907,31 @@ export type CalloutPostCreatedFieldPolicy = {
   contributionID?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutReactionKeySpecifier = ('emoji' | 'id' | 'updatedDate' | 'user' | CalloutReactionKeySpecifier)[];
+export type CalloutReactionFieldPolicy = {
+  emoji?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  user?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutReactionsSummaryKeySpecifier = (
+  | 'allowedEmojis'
+  | 'emojis'
+  | 'myReactionEmoji'
+  | 'total'
+  | CalloutReactionsSummaryKeySpecifier
+)[];
+export type CalloutReactionsSummaryFieldPolicy = {
+  allowedEmojis?: FieldPolicy<any> | FieldReadFunction<any>;
+  emojis?: FieldPolicy<any> | FieldReadFunction<any>;
+  myReactionEmoji?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CalloutSelectionSettingsKeySpecifier = ('mode' | 'selectedIds' | CalloutSelectionSettingsKeySpecifier)[];
+export type CalloutSelectionSettingsFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedIds?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutSettingsKeySpecifier = ('contribution' | 'framing' | 'visibility' | CalloutSettingsKeySpecifier)[];
 export type CalloutSettingsFieldPolicy = {
@@ -839,9 +952,16 @@ export type CalloutSettingsContributionFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
   enabled?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type CalloutSettingsFramingKeySpecifier = ('commentsEnabled' | CalloutSettingsFramingKeySpecifier)[];
+export type CalloutSettingsFramingKeySpecifier = (
+  | 'commentsEnabled'
+  | 'contributors'
+  | 'selection'
+  | CalloutSettingsFramingKeySpecifier
+)[];
 export type CalloutSettingsFramingFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributors?: FieldPolicy<any> | FieldReadFunction<any>;
+  selection?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CalloutsSetKeySpecifier = (
   | 'authorization'
@@ -881,6 +1001,73 @@ export type ClassificationFieldPolicy = {
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type ClassificationEntryKeySpecifier = (
+  | 'cardinality'
+  | 'createdDate'
+  | 'display'
+  | 'displayLabel'
+  | 'id'
+  | 'selectedValueIDs'
+  | 'selectedValues'
+  | 'sortOrder'
+  | 'updatedDate'
+  | 'values'
+  | ClassificationEntryKeySpecifier
+)[];
+export type ClassificationEntryFieldPolicy = {
+  cardinality?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  display?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayLabel?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedValueIDs?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedValues?: FieldPolicy<any> | FieldReadFunction<any>;
+  sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  values?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ClassificationTemplateContentKeySpecifier = (
+  | 'cardinality'
+  | 'values'
+  | ClassificationTemplateContentKeySpecifier
+)[];
+export type ClassificationTemplateContentFieldPolicy = {
+  cardinality?: FieldPolicy<any> | FieldReadFunction<any>;
+  values?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ClassificationValueKeySpecifier = ('id' | 'label' | ClassificationValueKeySpecifier)[];
+export type ClassificationValueFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  label?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaboraDocumentKeySpecifier = (
+  | 'authorization'
+  | 'createdBy'
+  | 'createdDate'
+  | 'documentType'
+  | 'id'
+  | 'profile'
+  | 'updatedDate'
+  | CollaboraDocumentKeySpecifier
+)[];
+export type CollaboraDocumentFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  documentType?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaboraEditorUrlResultKeySpecifier = (
+  | 'accessTokenTTL'
+  | 'editorUrl'
+  | CollaboraEditorUrlResultKeySpecifier
+)[];
+export type CollaboraEditorUrlResultFieldPolicy = {
+  accessTokenTTL?: FieldPolicy<any> | FieldReadFunction<any>;
+  editorUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type CollaborationKeySpecifier = (
   | 'authorization'
   | 'calloutsSet'
@@ -903,6 +1090,30 @@ export type CollaborationFieldPolicy = {
   license?: FieldPolicy<any> | FieldReadFunction<any>;
   timeline?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaborationMigrationIssueKeySpecifier = ('id' | 'reason' | CollaborationMigrationIssueKeySpecifier)[];
+export type CollaborationMigrationIssueFieldPolicy = {
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  reason?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CollaborationMigrationResultKeySpecifier = (
+  | 'failed'
+  | 'failedDocuments'
+  | 'flagged'
+  | 'flaggedDocuments'
+  | 'migrated'
+  | 'total'
+  | 'unattached'
+  | CollaborationMigrationResultKeySpecifier
+)[];
+export type CollaborationMigrationResultFieldPolicy = {
+  failed?: FieldPolicy<any> | FieldReadFunction<any>;
+  failedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
+  flagged?: FieldPolicy<any> | FieldReadFunction<any>;
+  flaggedDocuments?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrated?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+  unattached?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CommunicationKeySpecifier = (
   | 'authorization'
@@ -1101,6 +1312,7 @@ export type ConfigKeySpecifier = (
   | 'defaultVisualTypeConstraints'
   | 'featureFlags'
   | 'geo'
+  | 'language'
   | 'locations'
   | 'sentry'
   | 'storage'
@@ -1112,9 +1324,55 @@ export type ConfigFieldPolicy = {
   defaultVisualTypeConstraints?: FieldPolicy<any> | FieldReadFunction<any>;
   featureFlags?: FieldPolicy<any> | FieldReadFunction<any>;
   geo?: FieldPolicy<any> | FieldReadFunction<any>;
+  language?: FieldPolicy<any> | FieldReadFunction<any>;
   locations?: FieldPolicy<any> | FieldReadFunction<any>;
   sentry?: FieldPolicy<any> | FieldReadFunction<any>;
   storage?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContributorCollectionCountsKeySpecifier = (
+  | 'organizations'
+  | 'users'
+  | 'virtualContributors'
+  | ContributorCollectionCountsKeySpecifier
+)[];
+export type ContributorCollectionCountsFieldPolicy = {
+  organizations?: FieldPolicy<any> | FieldReadFunction<any>;
+  users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContributorCollectionItemKeySpecifier = (
+  | 'avatarUrl'
+  | 'displayName'
+  | 'id'
+  | 'location'
+  | 'roleLabel'
+  | 'type'
+  | 'url'
+  | ContributorCollectionItemKeySpecifier
+)[];
+export type ContributorCollectionItemFieldPolicy = {
+  avatarUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  location?: FieldPolicy<any> | FieldReadFunction<any>;
+  roleLabel?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  url?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type ContributorLocationKeySpecifier = (
+  | 'city'
+  | 'country'
+  | 'hasValidCoordinates'
+  | 'latitude'
+  | 'longitude'
+  | ContributorLocationKeySpecifier
+)[];
+export type ContributorLocationFieldPolicy = {
+  city?: FieldPolicy<any> | FieldReadFunction<any>;
+  country?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasValidCoordinates?: FieldPolicy<any> | FieldReadFunction<any>;
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type ConversationKeySpecifier = (
   | 'authorization'
@@ -1221,32 +1479,64 @@ export type ConversationUpdatedEventFieldPolicy = {
   conversation?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDataKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'post'
   | 'sortOrder'
+  | 'taskColumn'
   | 'type'
   | 'whiteboard'
   | CreateCalloutContributionDataKeySpecifier
 )[];
 export type CreateCalloutContributionDataFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   post?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  taskColumn?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutContributionDefaultsDataKeySpecifier = (
   | 'defaultDisplayName'
+  | 'draftWhiteboardID'
   | 'postDescription'
-  | 'whiteboardContent'
+  | 'sourceCalloutID'
+  | 'sourceWhiteboardID'
   | CreateCalloutContributionDefaultsDataKeySpecifier
 )[];
 export type CreateCalloutContributionDefaultsDataFieldPolicy = {
   defaultDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  draftWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
   postDescription?: FieldPolicy<any> | FieldReadFunction<any>;
-  whiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceCalloutID?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutContributorsMapViewDataKeySpecifier = (
+  | 'latitude'
+  | 'longitude'
+  | 'zoom'
+  | CreateCalloutContributorsMapViewDataKeySpecifier
+)[];
+export type CreateCalloutContributorsMapViewDataFieldPolicy = {
+  latitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  longitude?: FieldPolicy<any> | FieldReadFunction<any>;
+  zoom?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutContributorsSettingsDataKeySpecifier = (
+  | 'contributorTypes'
+  | 'defaultContributorType'
+  | 'defaultView'
+  | 'mapView'
+  | CreateCalloutContributorsSettingsDataKeySpecifier
+)[];
+export type CreateCalloutContributorsSettingsDataFieldPolicy = {
+  contributorTypes?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultContributorType?: FieldPolicy<any> | FieldReadFunction<any>;
+  defaultView?: FieldPolicy<any> | FieldReadFunction<any>;
+  mapView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutDataKeySpecifier = (
   | 'classification'
@@ -1257,6 +1547,7 @@ export type CreateCalloutDataKeySpecifier = (
   | 'sendNotification'
   | 'settings'
   | 'sortOrder'
+  | 'taskBoard'
   | CreateCalloutDataKeySpecifier
 )[];
 export type CreateCalloutDataFieldPolicy = {
@@ -1268,8 +1559,10 @@ export type CreateCalloutDataFieldPolicy = {
   sendNotification?: FieldPolicy<any> | FieldReadFunction<any>;
   settings?: FieldPolicy<any> | FieldReadFunction<any>;
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  taskBoard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutFramingDataKeySpecifier = (
+  | 'collaboraDocument'
   | 'link'
   | 'memo'
   | 'poll'
@@ -1280,6 +1573,7 @@ export type CreateCalloutFramingDataKeySpecifier = (
   | CreateCalloutFramingDataKeySpecifier
 )[];
 export type CreateCalloutFramingDataFieldPolicy = {
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   link?: FieldPolicy<any> | FieldReadFunction<any>;
   memo?: FieldPolicy<any> | FieldReadFunction<any>;
   poll?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1287,6 +1581,15 @@ export type CreateCalloutFramingDataFieldPolicy = {
   tags?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutSelectionSettingsDataKeySpecifier = (
+  | 'mode'
+  | 'selectedIds'
+  | CreateCalloutSelectionSettingsDataKeySpecifier
+)[];
+export type CreateCalloutSelectionSettingsDataFieldPolicy = {
+  mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  selectedIds?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutSettingsContributionDataKeySpecifier = (
   | 'allowedTypes'
@@ -1314,10 +1617,18 @@ export type CreateCalloutSettingsDataFieldPolicy = {
 };
 export type CreateCalloutSettingsFramingDataKeySpecifier = (
   | 'commentsEnabled'
+  | 'contributors'
+  | 'selection'
   | CreateCalloutSettingsFramingDataKeySpecifier
 )[];
 export type CreateCalloutSettingsFramingDataFieldPolicy = {
   commentsEnabled?: FieldPolicy<any> | FieldReadFunction<any>;
+  contributors?: FieldPolicy<any> | FieldReadFunction<any>;
+  selection?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCalloutTaskBoardDataKeySpecifier = ('columns' | CreateCalloutTaskBoardDataKeySpecifier)[];
+export type CreateCalloutTaskBoardDataFieldPolicy = {
+  columns?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCalloutsSetDataKeySpecifier = ('calloutsData' | CreateCalloutsSetDataKeySpecifier)[];
 export type CreateCalloutsSetDataFieldPolicy = {
@@ -1326,6 +1637,15 @@ export type CreateCalloutsSetDataFieldPolicy = {
 export type CreateClassificationDataKeySpecifier = ('tagsets' | CreateClassificationDataKeySpecifier)[];
 export type CreateClassificationDataFieldPolicy = {
   tagsets?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type CreateCollaboraDocumentDataKeySpecifier = (
+  | 'displayName'
+  | 'documentType'
+  | CreateCollaboraDocumentDataKeySpecifier
+)[];
+export type CreateCollaboraDocumentDataFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  documentType?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateCollaborationDataKeySpecifier = (
   | 'calloutsSetData'
@@ -1360,10 +1680,18 @@ export type CreateInnovationFlowStateDataFieldPolicy = {
 };
 export type CreateInnovationFlowStateSettingsDataKeySpecifier = (
   | 'allowNewCallouts'
+  | 'descriptionDisplayMode'
+  | 'showPublishDetails'
+  | 'sidebar'
+  | 'visible'
   | CreateInnovationFlowStateSettingsDataKeySpecifier
 )[];
 export type CreateInnovationFlowStateSettingsDataFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  descriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  showPublishDetails?: FieldPolicy<any> | FieldReadFunction<any>;
+  sidebar?: FieldPolicy<any> | FieldReadFunction<any>;
+  visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateLinkDataKeySpecifier = ('profile' | 'uri' | CreateLinkDataKeySpecifier)[];
 export type CreateLinkDataFieldPolicy = {
@@ -1441,17 +1769,19 @@ export type CreateVisualOnProfileDataFieldPolicy = {
   uri?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateWhiteboardDataKeySpecifier = (
-  | 'content'
+  | 'draftWhiteboardID'
   | 'nameID'
   | 'previewSettings'
   | 'profile'
+  | 'sourceWhiteboardID'
   | CreateWhiteboardDataKeySpecifier
 )[];
 export type CreateWhiteboardDataFieldPolicy = {
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
+  draftWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   previewSettings?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  sourceWhiteboardID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type CreateWhiteboardPreviewSettingsDataKeySpecifier = (
   | 'coordinates'
@@ -1485,6 +1815,17 @@ export type CredentialDefinitionKeySpecifier = ('resourceID' | 'type' | Credenti
 export type CredentialDefinitionFieldPolicy = {
   resourceID?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type DirectMessageDeliveryResultKeySpecifier = (
+  | 'conversationID'
+  | 'receiverID'
+  | 'status'
+  | DirectMessageDeliveryResultKeySpecifier
+)[];
+export type DirectMessageDeliveryResultFieldPolicy = {
+  conversationID?: FieldPolicy<any> | FieldReadFunction<any>;
+  receiverID?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type DiscussionKeySpecifier = (
   | 'authorization'
@@ -1557,6 +1898,12 @@ export type DocumentFieldPolicy = {
   uploadedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   url?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type EmailChangeApproverKeySpecifier = ('name' | 'organization' | 'role' | EmailChangeApproverKeySpecifier)[];
+export type EmailChangeApproverFieldPolicy = {
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  organization?: FieldPolicy<any> | FieldReadFunction<any>;
+  role?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type ExternalConfigKeySpecifier = ('apiKey' | 'assistantId' | 'model' | ExternalConfigKeySpecifier)[];
 export type ExternalConfigFieldPolicy = {
   apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -1604,6 +1951,7 @@ export type ForumKeySpecifier = (
   | 'discussionCategories'
   | 'discussions'
   | 'id'
+  | 'mentionableContributors'
   | 'updatedDate'
   | ForumKeySpecifier
 )[];
@@ -1614,6 +1962,7 @@ export type ForumFieldPolicy = {
   discussionCategories?: FieldPolicy<any> | FieldReadFunction<any>;
   discussions?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mentionableContributors?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type GeoKeySpecifier = ('enabled' | 'endpoint' | GeoKeySpecifier)[];
@@ -1746,14 +2095,10 @@ export type InAppNotificationPayloadPlatformUserMessageRoomFieldPolicy = {
 };
 export type InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier = (
   | 'type'
-  | 'userDisplayName'
-  | 'userEmail'
   | InAppNotificationPayloadPlatformUserProfileRemovedKeySpecifier
 )[];
 export type InAppNotificationPayloadPlatformUserProfileRemovedFieldPolicy = {
   type?: FieldPolicy<any> | FieldReadFunction<any>;
-  userDisplayName?: FieldPolicy<any> | FieldReadFunction<any>;
-  userEmail?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InAppNotificationPayloadSpaceKeySpecifier = (
   | 'space'
@@ -1798,6 +2143,19 @@ export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpeci
 export type InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy = {
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
   messageDetails?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier = (
+  | 'callout'
+  | 'emoji'
+  | 'space'
+  | 'type'
+  | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier
+)[];
+export type InAppNotificationPayloadSpaceCollaborationCalloutReactionFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  emoji?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -1977,15 +2335,27 @@ export type InnovationFlowStateFieldPolicy = {
   sortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
-export type InnovationFlowStateSettingsKeySpecifier = ('allowNewCallouts' | InnovationFlowStateSettingsKeySpecifier)[];
+export type InnovationFlowStateSettingsKeySpecifier = (
+  | 'allowNewCallouts'
+  | 'descriptionDisplayMode'
+  | 'showPublishDetails'
+  | 'sidebar'
+  | 'visible'
+  | InnovationFlowStateSettingsKeySpecifier
+)[];
 export type InnovationFlowStateSettingsFieldPolicy = {
   allowNewCallouts?: FieldPolicy<any> | FieldReadFunction<any>;
+  descriptionDisplayMode?: FieldPolicy<any> | FieldReadFunction<any>;
+  showPublishDetails?: FieldPolicy<any> | FieldReadFunction<any>;
+  sidebar?: FieldPolicy<any> | FieldReadFunction<any>;
+  visible?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationHubKeySpecifier = (
   | 'account'
   | 'authorization'
   | 'createdDate'
   | 'id'
+  | 'innovationPackListFilter'
   | 'listedInStore'
   | 'nameID'
   | 'profile'
@@ -1996,6 +2366,7 @@ export type InnovationHubKeySpecifier = (
   | 'subdomain'
   | 'type'
   | 'updatedDate'
+  | 'virtualContributorListFilter'
   | InnovationHubKeySpecifier
 )[];
 export type InnovationHubFieldPolicy = {
@@ -2003,6 +2374,7 @@ export type InnovationHubFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPackListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
   listedInStore?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2013,6 +2385,7 @@ export type InnovationHubFieldPolicy = {
   subdomain?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualContributorListFilter?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type InnovationPackKeySpecifier = (
   | 'authorization'
@@ -2066,6 +2439,7 @@ export type InvitationKeySpecifier = (
   | 'lifecycle'
   | 'nextEvents'
   | 'state'
+  | 'suggestedLanguage'
   | 'updatedDate'
   | 'welcomeMessage'
   | InvitationKeySpecifier
@@ -2082,6 +2456,7 @@ export type InvitationFieldPolicy = {
   lifecycle?: FieldPolicy<any> | FieldReadFunction<any>;
   nextEvents?: FieldPolicy<any> | FieldReadFunction<any>;
   state?: FieldPolicy<any> | FieldReadFunction<any>;
+  suggestedLanguage?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2121,6 +2496,11 @@ export type KratosIdentityFieldPolicy = {
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   verificationStatus?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type LanguageConfigKeySpecifier = ('default' | 'eligible' | LanguageConfigKeySpecifier)[];
+export type LanguageConfigFieldPolicy = {
+  default?: FieldPolicy<any> | FieldReadFunction<any>;
+  eligible?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type LatestReleaseDiscussionKeySpecifier = ('id' | 'nameID' | LatestReleaseDiscussionKeySpecifier)[];
 export type LatestReleaseDiscussionFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2132,7 +2512,9 @@ export type LibraryKeySpecifier = (
   | 'id'
   | 'innovationHubs'
   | 'innovationPacks'
+  | 'innovationPacksPaginated'
   | 'templates'
+  | 'templatesPaginated'
   | 'updatedDate'
   | 'virtualContributors'
   | LibraryKeySpecifier
@@ -2143,7 +2525,9 @@ export type LibraryFieldPolicy = {
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  innovationPacksPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   templates?: FieldPolicy<any> | FieldReadFunction<any>;
+  templatesPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -2485,16 +2869,61 @@ export type LookupQueryResultsFieldPolicy = {
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   whiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type McpApiKeyKeySpecifier = (
+  | 'createdDate'
+  | 'expiresAt'
+  | 'id'
+  | 'lastUsedAt'
+  | 'lastUsedFromIp'
+  | 'name'
+  | 'operations'
+  | 'status'
+  | McpApiKeyKeySpecifier
+)[];
+export type McpApiKeyFieldPolicy = {
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  expiresAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastUsedAt?: FieldPolicy<any> | FieldReadFunction<any>;
+  lastUsedFromIp?: FieldPolicy<any> | FieldReadFunction<any>;
+  name?: FieldPolicy<any> | FieldReadFunction<any>;
+  operations?: FieldPolicy<any> | FieldReadFunction<any>;
+  status?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type McpApiKeyMintResultKeySpecifier = ('apiKey' | 'key' | McpApiKeyMintResultKeySpecifier)[];
+export type McpApiKeyMintResultFieldPolicy = {
+  apiKey?: FieldPolicy<any> | FieldReadFunction<any>;
+  key?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type MeAccountDeletionStatusKeySpecifier = (
+  | 'blockers'
+  | 'canDelete'
+  | 'externalSubscriptionLinked'
+  | 'sessionFresh'
+  | 'totals'
+  | 'truncated'
+  | MeAccountDeletionStatusKeySpecifier
+)[];
+export type MeAccountDeletionStatusFieldPolicy = {
+  blockers?: FieldPolicy<any> | FieldReadFunction<any>;
+  canDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  externalSubscriptionLinked?: FieldPolicy<any> | FieldReadFunction<any>;
+  sessionFresh?: FieldPolicy<any> | FieldReadFunction<any>;
+  totals?: FieldPolicy<any> | FieldReadFunction<any>;
+  truncated?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type MeConversationsResultKeySpecifier = ('conversations' | MeConversationsResultKeySpecifier)[];
 export type MeConversationsResultFieldPolicy = {
   conversations?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MeQueryResultsKeySpecifier = (
+  | 'accountDeletion'
   | 'communityApplications'
   | 'communityInvitations'
   | 'communityInvitationsCount'
   | 'conversations'
   | 'id'
+  | 'mcpApiKeys'
   | 'mySpaces'
   | 'notifications'
   | 'notificationsUnreadCount'
@@ -2504,11 +2933,13 @@ export type MeQueryResultsKeySpecifier = (
   | MeQueryResultsKeySpecifier
 )[];
 export type MeQueryResultsFieldPolicy = {
+  accountDeletion?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplications?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitations?: FieldPolicy<any> | FieldReadFunction<any>;
   communityInvitationsCount?: FieldPolicy<any> | FieldReadFunction<any>;
   conversations?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  mcpApiKeys?: FieldPolicy<any> | FieldReadFunction<any>;
   mySpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   notifications?: FieldPolicy<any> | FieldReadFunction<any>;
   notificationsUnreadCount?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2537,7 +2968,6 @@ export type MediaGalleryFieldPolicy = {
 };
 export type MemoKeySpecifier = (
   | 'authorization'
-  | 'content'
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
@@ -2551,7 +2981,6 @@ export type MemoKeySpecifier = (
 )[];
 export type MemoFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2642,9 +3071,11 @@ export type ModelCardSpaceUsageResultFieldPolicy = {
   modelCardEntry?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type MutationKeySpecifier = (
+  | 'addClassificationEntryFromTemplate'
   | 'addIframeAllowedURL'
   | 'addNotificationEmailToBlacklist'
   | 'addPollOption'
+  | 'addReactionToCallout'
   | 'addReactionToMessageInRoom'
   | 'addVisualToMediaGallery'
   | 'adminCommunicationEnsureAccessToCommunications'
@@ -2657,10 +3088,13 @@ export type MutationKeySpecifier = (
   | 'adminLicensePolicyCreateCredentialRule'
   | 'adminLicensePolicyDeleteCredentialRule'
   | 'adminLicensePolicyUpdateCredentialRule'
+  | 'adminRevokeMcpApiKey'
   | 'adminSearchIngestFromScratch'
   | 'adminUpdateContributorAvatars'
   | 'adminUpdateGeoLocationData'
   | 'adminUserAccountDelete'
+  | 'adminUserEmailChange'
+  | 'adminUserEmailChangeDriftResolve'
   | 'adminWingbackCreateTestCustomer'
   | 'adminWingbackGetCustomerEntitlements'
   | 'aiServerAuthorizationPolicyReset'
@@ -2691,6 +3125,7 @@ export type MutationKeySpecifier = (
   | 'convertSpaceL2ToSpaceL1'
   | 'convertVirtualContributorToUseKnowledgeBase'
   | 'createCalloutOnCalloutsSet'
+  | 'createClassificationEntry'
   | 'createContributionOnCallout'
   | 'createConversation'
   | 'createDiscussion'
@@ -2706,15 +3141,20 @@ export type MutationKeySpecifier = (
   | 'createStateOnInnovationFlow'
   | 'createSubspace'
   | 'createTagsetOnProfile'
+  | 'createTaskColumnOnCallout'
   | 'createTemplate'
   | 'createTemplateFromContentSpace'
   | 'createTemplateFromSpace'
   | 'createUser'
   | 'createVirtualContributor'
+  | 'createWhiteboardDraftOnCalloutsSet'
+  | 'createWhiteboardDraftOnTemplatesSet'
   | 'createWingbackAccount'
   | 'deleteApplication'
   | 'deleteCalendarEvent'
   | 'deleteCallout'
+  | 'deleteClassificationEntry'
+  | 'deleteCollaboraDocument'
   | 'deleteContribution'
   | 'deleteConversation'
   | 'deleteDiscussion'
@@ -2732,12 +3172,14 @@ export type MutationKeySpecifier = (
   | 'deleteSpace'
   | 'deleteStateOnInnovationFlow'
   | 'deleteStorageBucket'
+  | 'deleteTaskColumnOnCallout'
   | 'deleteTemplate'
   | 'deleteUser'
   | 'deleteUserGroup'
   | 'deleteVirtualContributor'
   | 'deleteVisualFromMediaGallery'
   | 'deleteWhiteboard'
+  | 'deleteWhiteboardDraft'
   | 'enablePushSubscription'
   | 'eventOnApplication'
   | 'eventOnInvitation'
@@ -2745,6 +3187,7 @@ export type MutationKeySpecifier = (
   | 'grantCredentialToActor'
   | 'grantCredentialToOrganization'
   | 'grantCredentialToUser'
+  | 'importCollaboraDocument'
   | 'inviteForEntryRoleOnRoleSet'
   | 'joinRoleSet'
   | 'leaveConversation'
@@ -2752,9 +3195,14 @@ export type MutationKeySpecifier = (
   | 'markMessageAsReadInRoom'
   | 'markNotificationsAsRead'
   | 'markNotificationsAsUnread'
+  | 'migrateLegacyMemoContent'
+  | 'migrateLegacyWhiteboardContent'
+  | 'mintMcpApiKey'
   | 'moveContributionToCallout'
   | 'moveSpaceL1ToSpaceL0'
   | 'moveSpaceL1ToSpaceL2'
+  | 'moveSpaceL2ToSpaceL1'
+  | 'moveTaskToColumn'
   | 'refreshAllBodiesOfKnowledge'
   | 'refreshVirtualContributorBodyOfKnowledge'
   | 'removeCommunityGuidelinesContent'
@@ -2766,6 +3214,7 @@ export type MutationKeySpecifier = (
   | 'removePlatformRoleFromUser'
   | 'removePollOption'
   | 'removePollVote'
+  | 'removeReactionFromCallout'
   | 'removeReactionToMessageInRoom'
   | 'removeRole'
   | 'removeRoleFromOrganization'
@@ -2773,6 +3222,8 @@ export type MutationKeySpecifier = (
   | 'removeRoleFromVirtualContributor'
   | 'removeUserFromGroup'
   | 'reorderPollOptions'
+  | 'replaceCollaboraDocument'
+  | 'replaceWhiteboardContentFromSource'
   | 'resetConversationVc'
   | 'resetLicenseOnAccounts'
   | 'revokeCredentialFromActor'
@@ -2780,6 +3231,8 @@ export type MutationKeySpecifier = (
   | 'revokeCredentialFromUser'
   | 'revokeLicensePlanFromAccount'
   | 'revokeLicensePlanFromSpace'
+  | 'revokeMcpApiKey'
+  | 'sendDirectMessageToUsers'
   | 'sendMessageReplyToRoom'
   | 'sendMessageToCommunityLeads'
   | 'sendMessageToOrganization'
@@ -2795,13 +3248,18 @@ export type MutationKeySpecifier = (
   | 'transferVirtualContributorToAccount'
   | 'unsubscribeFromPushNotifications'
   | 'updateApplicationFormOnRoleSet'
+  | 'updateAssistantActorCapabilities'
   | 'updateBaselineLicensePlanOnAccount'
   | 'updateCalendarEvent'
   | 'updateCallout'
   | 'updateCalloutPublishInfo'
   | 'updateCalloutVisibility'
   | 'updateCalloutsSortOrder'
+  | 'updateClassificationEntry'
+  | 'updateClassificationEntryDisplay'
+  | 'updateClassificationEntrySelection'
   | 'updateClassificationTagset'
+  | 'updateCollaboraDocument'
   | 'updateCollaborationFromSpaceTemplate'
   | 'updateCommunityGuidelines'
   | 'updateContributionsSortOrder'
@@ -2833,6 +3291,8 @@ export type MutationKeySpecifier = (
   | 'updateSubspacePinned'
   | 'updateSubspacesSortOrder'
   | 'updateTagset'
+  | 'updateTaskColumnOnCallout'
+  | 'updateTaskColumnsSortOrderOnCallout'
   | 'updateTemplate'
   | 'updateTemplateContentSpace'
   | 'updateTemplateDefault'
@@ -2854,9 +3314,11 @@ export type MutationKeySpecifier = (
   | MutationKeySpecifier
 )[];
 export type MutationFieldPolicy = {
+  addClassificationEntryFromTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   addIframeAllowedURL?: FieldPolicy<any> | FieldReadFunction<any>;
   addNotificationEmailToBlacklist?: FieldPolicy<any> | FieldReadFunction<any>;
   addPollOption?: FieldPolicy<any> | FieldReadFunction<any>;
+  addReactionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   addReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   addVisualToMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   adminCommunicationEnsureAccessToCommunications?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2869,10 +3331,13 @@ export type MutationFieldPolicy = {
   adminLicensePolicyCreateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyDeleteCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
   adminLicensePolicyUpdateCredentialRule?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminRevokeMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   adminSearchIngestFromScratch?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateContributorAvatars?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUpdateGeoLocationData?: FieldPolicy<any> | FieldReadFunction<any>;
   adminUserAccountDelete?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUserEmailChange?: FieldPolicy<any> | FieldReadFunction<any>;
+  adminUserEmailChangeDriftResolve?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackCreateTestCustomer?: FieldPolicy<any> | FieldReadFunction<any>;
   adminWingbackGetCustomerEntitlements?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServerAuthorizationPolicyReset?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2903,6 +3368,7 @@ export type MutationFieldPolicy = {
   convertSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
   convertVirtualContributorToUseKnowledgeBase?: FieldPolicy<any> | FieldReadFunction<any>;
   createCalloutOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  createClassificationEntry?: FieldPolicy<any> | FieldReadFunction<any>;
   createContributionOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   createDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2918,15 +3384,20 @@ export type MutationFieldPolicy = {
   createStateOnInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   createSubspace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTagsetOnProfile?: FieldPolicy<any> | FieldReadFunction<any>;
+  createTaskColumnOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplateFromContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createTemplateFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createUser?: FieldPolicy<any> | FieldReadFunction<any>;
   createVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
+  createWhiteboardDraftOnCalloutsSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  createWhiteboardDraftOnTemplatesSet?: FieldPolicy<any> | FieldReadFunction<any>;
   createWingbackAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteClassificationEntry?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteContribution?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteConversation?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteDiscussion?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2944,12 +3415,14 @@ export type MutationFieldPolicy = {
   deleteSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteStateOnInnovationFlow?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteStorageBucket?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteTaskColumnOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUser?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteUserGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteVisualFromMediaGallery?: FieldPolicy<any> | FieldReadFunction<any>;
   deleteWhiteboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  deleteWhiteboardDraft?: FieldPolicy<any> | FieldReadFunction<any>;
   enablePushSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnApplication?: FieldPolicy<any> | FieldReadFunction<any>;
   eventOnInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2957,6 +3430,7 @@ export type MutationFieldPolicy = {
   grantCredentialToActor?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   grantCredentialToUser?: FieldPolicy<any> | FieldReadFunction<any>;
+  importCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   inviteForEntryRoleOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   joinRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
   leaveConversation?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2964,9 +3438,14 @@ export type MutationFieldPolicy = {
   markMessageAsReadInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsRead?: FieldPolicy<any> | FieldReadFunction<any>;
   markNotificationsAsUnread?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrateLegacyMemoContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  migrateLegacyWhiteboardContent?: FieldPolicy<any> | FieldReadFunction<any>;
+  mintMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
   moveContributionToCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL0?: FieldPolicy<any> | FieldReadFunction<any>;
   moveSpaceL1ToSpaceL2?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveSpaceL2ToSpaceL1?: FieldPolicy<any> | FieldReadFunction<any>;
+  moveTaskToColumn?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshAllBodiesOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   refreshVirtualContributorBodyOfKnowledge?: FieldPolicy<any> | FieldReadFunction<any>;
   removeCommunityGuidelinesContent?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2978,6 +3457,7 @@ export type MutationFieldPolicy = {
   removePlatformRoleFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollOption?: FieldPolicy<any> | FieldReadFunction<any>;
   removePollVote?: FieldPolicy<any> | FieldReadFunction<any>;
+  removeReactionFromCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   removeReactionToMessageInRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRole?: FieldPolicy<any> | FieldReadFunction<any>;
   removeRoleFromOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2985,6 +3465,8 @@ export type MutationFieldPolicy = {
   removeRoleFromVirtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
   removeUserFromGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   reorderPollOptions?: FieldPolicy<any> | FieldReadFunction<any>;
+  replaceCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  replaceWhiteboardContentFromSource?: FieldPolicy<any> | FieldReadFunction<any>;
   resetConversationVc?: FieldPolicy<any> | FieldReadFunction<any>;
   resetLicenseOnAccounts?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeCredentialFromActor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -2992,6 +3474,8 @@ export type MutationFieldPolicy = {
   revokeCredentialFromUser?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   revokeLicensePlanFromSpace?: FieldPolicy<any> | FieldReadFunction<any>;
+  revokeMcpApiKey?: FieldPolicy<any> | FieldReadFunction<any>;
+  sendDirectMessageToUsers?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageReplyToRoom?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToCommunityLeads?: FieldPolicy<any> | FieldReadFunction<any>;
   sendMessageToOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3007,13 +3491,18 @@ export type MutationFieldPolicy = {
   transferVirtualContributorToAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   unsubscribeFromPushNotifications?: FieldPolicy<any> | FieldReadFunction<any>;
   updateApplicationFormOnRoleSet?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateAssistantActorCapabilities?: FieldPolicy<any> | FieldReadFunction<any>;
   updateBaselineLicensePlanOnAccount?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalendarEvent?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutPublishInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCalloutsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationEntry?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationEntryDisplay?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateClassificationEntrySelection?: FieldPolicy<any> | FieldReadFunction<any>;
   updateClassificationTagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateCollaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCollaborationFromSpaceTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateCommunityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   updateContributionsSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3045,6 +3534,8 @@ export type MutationFieldPolicy = {
   updateSubspacePinned?: FieldPolicy<any> | FieldReadFunction<any>;
   updateSubspacesSortOrder?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTagset?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateTaskColumnOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
+  updateTaskColumnsSortOrderOnCallout?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplate?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateContentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   updateTemplateDefault?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3217,6 +3708,28 @@ export type PaginatedInAppNotificationsFieldPolicy = {
   pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
   total?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type PaginatedInnovationPacksKeySpecifier = (
+  | 'innovationPacks'
+  | 'pageInfo'
+  | 'total'
+  | PaginatedInnovationPacksKeySpecifier
+)[];
+export type PaginatedInnovationPacksFieldPolicy = {
+  innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type PaginatedLibraryTemplateResultsKeySpecifier = (
+  | 'pageInfo'
+  | 'templateResults'
+  | 'total'
+  | PaginatedLibraryTemplateResultsKeySpecifier
+)[];
+export type PaginatedLibraryTemplateResultsFieldPolicy = {
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  templateResults?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type PaginatedOrganizationKeySpecifier = (
   | 'organization'
   | 'pageInfo'
@@ -3268,6 +3781,7 @@ export type PlatformKeySpecifier = (
   | 'storageAggregator'
   | 'templatesManager'
   | 'updatedDate'
+  | 'virtualAssistantAccess'
   | 'wellKnownVirtualContributors'
   | PlatformKeySpecifier
 )[];
@@ -3288,6 +3802,7 @@ export type PlatformFieldPolicy = {
   storageAggregator?: FieldPolicy<any> | FieldReadFunction<any>;
   templatesManager?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualAssistantAccess?: FieldPolicy<any> | FieldReadFunction<any>;
   wellKnownVirtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformAccessRoleKeySpecifier = ('grantedPrivileges' | 'roleName' | PlatformAccessRoleKeySpecifier)[];
@@ -3317,9 +3832,13 @@ export type PlatformAdminQueryResultsKeySpecifier = (
   | 'identity'
   | 'innovationHubs'
   | 'innovationPacks'
+  | 'latestUserEmailChangeAuditEntry'
+  | 'mcpApiKeys'
   | 'organizations'
   | 'spaces'
+  | 'userEmailChangeAuditEntries'
   | 'users'
+  | 'virtualAssistant'
   | 'virtualContributors'
   | PlatformAdminQueryResultsKeySpecifier
 )[];
@@ -3329,9 +3848,13 @@ export type PlatformAdminQueryResultsFieldPolicy = {
   identity?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationHubs?: FieldPolicy<any> | FieldReadFunction<any>;
   innovationPacks?: FieldPolicy<any> | FieldReadFunction<any>;
+  latestUserEmailChangeAuditEntry?: FieldPolicy<any> | FieldReadFunction<any>;
+  mcpApiKeys?: FieldPolicy<any> | FieldReadFunction<any>;
   organizations?: FieldPolicy<any> | FieldReadFunction<any>;
   spaces?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmailChangeAuditEntries?: FieldPolicy<any> | FieldReadFunction<any>;
   users?: FieldPolicy<any> | FieldReadFunction<any>;
+  virtualAssistant?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributors?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type PlatformFeatureFlagKeySpecifier = ('enabled' | 'name' | PlatformFeatureFlagKeySpecifier)[];
@@ -3360,6 +3883,7 @@ export type PlatformInvitationKeySpecifier = (
   | 'profileCreated'
   | 'roleSetExtraRoles'
   | 'roleSetInvitedToParent'
+  | 'suggestedLanguage'
   | 'updatedDate'
   | 'welcomeMessage'
   | PlatformInvitationKeySpecifier
@@ -3376,6 +3900,7 @@ export type PlatformInvitationFieldPolicy = {
   profileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetExtraRoles?: FieldPolicy<any> | FieldReadFunction<any>;
   roleSetInvitedToParent?: FieldPolicy<any> | FieldReadFunction<any>;
+  suggestedLanguage?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
   welcomeMessage?: FieldPolicy<any> | FieldReadFunction<any>;
 };
@@ -3769,6 +4294,8 @@ export type QueryKeySpecifier = (
   | 'actorsWithCredential'
   | 'adminIdentitiesUnverified'
   | 'aiServer'
+  | 'collaboraEditorUrl'
+  | 'collaboraServiceAvailable'
   | 'exploreSpaces'
   | 'inputCreator'
   | 'lookup'
@@ -3781,6 +4308,7 @@ export type QueryKeySpecifier = (
   | 'organizationsPaginated'
   | 'platform'
   | 'platformAdmin'
+  | 'platformCapabilities'
   | 'restrictedSpaceNames'
   | 'rolesOrganization'
   | 'rolesUser'
@@ -3808,6 +4336,8 @@ export type QueryFieldPolicy = {
   actorsWithCredential?: FieldPolicy<any> | FieldReadFunction<any>;
   adminIdentitiesUnverified?: FieldPolicy<any> | FieldReadFunction<any>;
   aiServer?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraEditorUrl?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraServiceAvailable?: FieldPolicy<any> | FieldReadFunction<any>;
   exploreSpaces?: FieldPolicy<any> | FieldReadFunction<any>;
   inputCreator?: FieldPolicy<any> | FieldReadFunction<any>;
   lookup?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3820,6 +4350,7 @@ export type QueryFieldPolicy = {
   organizationsPaginated?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
+  platformCapabilities?: FieldPolicy<any> | FieldReadFunction<any>;
   restrictedSpaceNames?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesOrganization?: FieldPolicy<any> | FieldReadFunction<any>;
   rolesUser?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3876,6 +4407,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
+  | 'activityScore'
   | 'actor'
   | 'authorization'
   | 'collaboration'
@@ -3887,6 +4419,7 @@ export type RelayPaginatedSpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
+  | 'mentionableContributors'
   | 'nameID'
   | 'pinned'
   | 'platformAccess'
@@ -3908,6 +4441,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -3919,6 +4453,7 @@ export type RelayPaginatedSpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  mentionableContributors?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4039,12 +4574,14 @@ export type RoleSetFieldPolicy = {
   virtualContributorsInRoles?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type RoleSetInvitationResultKeySpecifier = (
+  | 'application'
   | 'invitation'
   | 'platformInvitation'
   | 'type'
   | RoleSetInvitationResultKeySpecifier
 )[];
 export type RoleSetInvitationResultFieldPolicy = {
+  application?: FieldPolicy<any> | FieldReadFunction<any>;
   invitation?: FieldPolicy<any> | FieldReadFunction<any>;
   platformInvitation?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4207,6 +4744,27 @@ export type SearchResultCalloutFieldPolicy = {
   terms?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type SearchResultCollaboraDocumentKeySpecifier = (
+  | 'callout'
+  | 'collaboraDocument'
+  | 'id'
+  | 'isContribution'
+  | 'score'
+  | 'space'
+  | 'terms'
+  | 'type'
+  | SearchResultCollaboraDocumentKeySpecifier
+)[];
+export type SearchResultCollaboraDocumentFieldPolicy = {
+  callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaboraDocument?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContribution?: FieldPolicy<any> | FieldReadFunction<any>;
+  score?: FieldPolicy<any> | FieldReadFunction<any>;
+  space?: FieldPolicy<any> | FieldReadFunction<any>;
+  terms?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type SearchResultMemoKeySpecifier = (
   | 'callout'
   | 'id'
@@ -4331,6 +4889,7 @@ export type SpaceKeySpecifier = (
   | 'about'
   | 'account'
   | 'activeSubscription'
+  | 'activityScore'
   | 'actor'
   | 'authorization'
   | 'collaboration'
@@ -4342,6 +4901,7 @@ export type SpaceKeySpecifier = (
   | 'level'
   | 'levelZeroSpaceID'
   | 'license'
+  | 'mentionableContributors'
   | 'nameID'
   | 'pinned'
   | 'platformAccess'
@@ -4363,6 +4923,7 @@ export type SpaceFieldPolicy = {
   about?: FieldPolicy<any> | FieldReadFunction<any>;
   account?: FieldPolicy<any> | FieldReadFunction<any>;
   activeSubscription?: FieldPolicy<any> | FieldReadFunction<any>;
+  activityScore?: FieldPolicy<any> | FieldReadFunction<any>;
   actor?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   collaboration?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4374,6 +4935,7 @@ export type SpaceFieldPolicy = {
   level?: FieldPolicy<any> | FieldReadFunction<any>;
   levelZeroSpaceID?: FieldPolicy<any> | FieldReadFunction<any>;
   license?: FieldPolicy<any> | FieldReadFunction<any>;
+  mentionableContributors?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   pinned?: FieldPolicy<any> | FieldReadFunction<any>;
   platformAccess?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4392,6 +4954,7 @@ export type SpaceFieldPolicy = {
 };
 export type SpaceAboutKeySpecifier = (
   | 'authorization'
+  | 'classifications'
   | 'createdDate'
   | 'guidelines'
   | 'id'
@@ -4407,6 +4970,7 @@ export type SpaceAboutKeySpecifier = (
 )[];
 export type SpaceAboutFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  classifications?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   guidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4501,11 +5065,13 @@ export type SpaceSettingsMembershipFieldPolicy = {
 export type SpaceSettingsPrivacyKeySpecifier = (
   | 'allowPlatformSupportAsAdmin'
   | 'mode'
+  | 'userInformationVisibility'
   | SpaceSettingsPrivacyKeySpecifier
 )[];
 export type SpaceSettingsPrivacyFieldPolicy = {
   allowPlatformSupportAsAdmin?: FieldPolicy<any> | FieldReadFunction<any>;
   mode?: FieldPolicy<any> | FieldReadFunction<any>;
+  userInformationVisibility?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type SpaceSubscriptionKeySpecifier = ('expires' | 'name' | SpaceSubscriptionKeySpecifier)[];
 export type SpaceSubscriptionFieldPolicy = {
@@ -4696,9 +5262,15 @@ export type TaskFieldPolicy = {
   status?: FieldPolicy<any> | FieldReadFunction<any>;
   type?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type TaskColumnCountKeySpecifier = ('column' | 'count' | TaskColumnCountKeySpecifier)[];
+export type TaskColumnCountFieldPolicy = {
+  column?: FieldPolicy<any> | FieldReadFunction<any>;
+  count?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type TemplateKeySpecifier = (
   | 'authorization'
   | 'callout'
+  | 'classification'
   | 'communityGuidelines'
   | 'contentSpace'
   | 'createdDate'
@@ -4714,6 +5286,7 @@ export type TemplateKeySpecifier = (
 export type TemplateFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   callout?: FieldPolicy<any> | FieldReadFunction<any>;
+  classification?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelines?: FieldPolicy<any> | FieldReadFunction<any>;
   contentSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4793,6 +5366,8 @@ export type TemplatesSetKeySpecifier = (
   | 'authorization'
   | 'calloutTemplates'
   | 'calloutTemplatesCount'
+  | 'classificationTemplates'
+  | 'classificationTemplatesCount'
   | 'communityGuidelinesTemplates'
   | 'communityGuidelinesTemplatesCount'
   | 'createdDate'
@@ -4812,6 +5387,8 @@ export type TemplatesSetFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   calloutTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
+  classificationTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
+  classificationTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplates?: FieldPolicy<any> | FieldReadFunction<any>;
   communityGuidelinesTemplatesCount?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -4992,6 +5569,7 @@ export type UserKeySpecifier = (
   | 'firstName'
   | 'id'
   | 'isContactable'
+  | 'isContactableViaEmail'
   | 'lastName'
   | 'nameID'
   | 'phone'
@@ -5013,6 +5591,7 @@ export type UserFieldPolicy = {
   firstName?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
   isContactable?: FieldPolicy<any> | FieldReadFunction<any>;
+  isContactableViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   lastName?: FieldPolicy<any> | FieldReadFunction<any>;
   nameID?: FieldPolicy<any> | FieldReadFunction<any>;
   phone?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5033,6 +5612,62 @@ export type UserAuthenticationResultFieldPolicy = {
   createdAt?: FieldPolicy<any> | FieldReadFunction<any>;
   methods?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UserEmailChangeAuditEntriesKeySpecifier = (
+  | 'auditEntries'
+  | 'pageInfo'
+  | 'total'
+  | UserEmailChangeAuditEntriesKeySpecifier
+)[];
+export type UserEmailChangeAuditEntriesFieldPolicy = {
+  auditEntries?: FieldPolicy<any> | FieldReadFunction<any>;
+  pageInfo?: FieldPolicy<any> | FieldReadFunction<any>;
+  total?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserEmailChangeAuditEntriesPageInfoKeySpecifier = (
+  | 'endCursor'
+  | 'hasNextPage'
+  | 'hasPreviousPage'
+  | 'startCursor'
+  | UserEmailChangeAuditEntriesPageInfoKeySpecifier
+)[];
+export type UserEmailChangeAuditEntriesPageInfoFieldPolicy = {
+  endCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>;
+  startCursor?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserEmailChangeAuditEntryKeySpecifier = (
+  | 'approver'
+  | 'failureReason'
+  | 'id'
+  | 'initiator'
+  | 'initiatorRole'
+  | 'newEmail'
+  | 'oldEmail'
+  | 'outcome'
+  | 'reason'
+  | 'subject'
+  | 'timestamp'
+  | UserEmailChangeAuditEntryKeySpecifier
+)[];
+export type UserEmailChangeAuditEntryFieldPolicy = {
+  approver?: FieldPolicy<any> | FieldReadFunction<any>;
+  failureReason?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  initiator?: FieldPolicy<any> | FieldReadFunction<any>;
+  initiatorRole?: FieldPolicy<any> | FieldReadFunction<any>;
+  newEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  oldEmail?: FieldPolicy<any> | FieldReadFunction<any>;
+  outcome?: FieldPolicy<any> | FieldReadFunction<any>;
+  reason?: FieldPolicy<any> | FieldReadFunction<any>;
+  subject?: FieldPolicy<any> | FieldReadFunction<any>;
+  timestamp?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserEmailChangeResultKeySpecifier = ('email' | 'success' | UserEmailChangeResultKeySpecifier)[];
+export type UserEmailChangeResultFieldPolicy = {
+  email?: FieldPolicy<any> | FieldReadFunction<any>;
+  success?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UserGroupKeySpecifier = (
   | 'authorization'
   | 'createdDate'
@@ -5052,33 +5687,58 @@ export type UserGroupFieldPolicy = {
   profile?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UserProfileSummaryKeySpecifier = ('displayName' | 'id' | UserProfileSummaryKeySpecifier)[];
+export type UserProfileSummaryFieldPolicy = {
+  displayName?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UserSettingsKeySpecifier = (
+  | 'assistant'
   | 'authorization'
   | 'communication'
   | 'createdDate'
+  | 'dashboard'
+  | 'designVersion'
   | 'homeSpace'
   | 'id'
+  | 'language'
+  | 'languageOfferAnswered'
   | 'notification'
   | 'privacy'
   | 'updatedDate'
   | UserSettingsKeySpecifier
 )[];
 export type UserSettingsFieldPolicy = {
+  assistant?: FieldPolicy<any> | FieldReadFunction<any>;
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   communication?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  dashboard?: FieldPolicy<any> | FieldReadFunction<any>;
+  designVersion?: FieldPolicy<any> | FieldReadFunction<any>;
   homeSpace?: FieldPolicy<any> | FieldReadFunction<any>;
   id?: FieldPolicy<any> | FieldReadFunction<any>;
+  language?: FieldPolicy<any> | FieldReadFunction<any>;
+  languageOfferAnswered?: FieldPolicy<any> | FieldReadFunction<any>;
   notification?: FieldPolicy<any> | FieldReadFunction<any>;
   privacy?: FieldPolicy<any> | FieldReadFunction<any>;
   updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type UserSettingsAssistantKeySpecifier = ('enabledCapabilities' | UserSettingsAssistantKeySpecifier)[];
+export type UserSettingsAssistantFieldPolicy = {
+  enabledCapabilities?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type UserSettingsCommunicationKeySpecifier = (
+  | 'allowOtherUsersToContactViaEmail'
   | 'allowOtherUsersToSendMessages'
   | UserSettingsCommunicationKeySpecifier
 )[];
 export type UserSettingsCommunicationFieldPolicy = {
+  allowOtherUsersToContactViaEmail?: FieldPolicy<any> | FieldReadFunction<any>;
   allowOtherUsersToSendMessages?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsDashboardKeySpecifier = ('activityView' | UserSettingsDashboardKeySpecifier)[];
+export type UserSettingsDashboardFieldPolicy = {
+  activityView?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsHomeSpaceKeySpecifier = ('autoRedirect' | 'spaceID' | UserSettingsHomeSpaceKeySpecifier)[];
 export type UserSettingsHomeSpaceFieldPolicy = {
@@ -5088,6 +5748,7 @@ export type UserSettingsHomeSpaceFieldPolicy = {
 export type UserSettingsNotificationKeySpecifier = (
   | 'organization'
   | 'platform'
+  | 'sound'
   | 'space'
   | 'user'
   | 'virtualContributor'
@@ -5096,6 +5757,7 @@ export type UserSettingsNotificationKeySpecifier = (
 export type UserSettingsNotificationFieldPolicy = {
   organization?: FieldPolicy<any> | FieldReadFunction<any>;
   platform?: FieldPolicy<any> | FieldReadFunction<any>;
+  sound?: FieldPolicy<any> | FieldReadFunction<any>;
   space?: FieldPolicy<any> | FieldReadFunction<any>;
   user?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributor?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5133,6 +5795,7 @@ export type UserSettingsNotificationPlatformFieldPolicy = {
 };
 export type UserSettingsNotificationPlatformAdminKeySpecifier = (
   | 'spaceCreated'
+  | 'userEmailChanged'
   | 'userGlobalRoleChanged'
   | 'userProfileCreated'
   | 'userProfileRemoved'
@@ -5140,9 +5803,19 @@ export type UserSettingsNotificationPlatformAdminKeySpecifier = (
 )[];
 export type UserSettingsNotificationPlatformAdminFieldPolicy = {
   spaceCreated?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmailChanged?: FieldPolicy<any> | FieldReadFunction<any>;
   userGlobalRoleChanged?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   userProfileRemoved?: FieldPolicy<any> | FieldReadFunction<any>;
+};
+export type UserSettingsNotificationSoundKeySpecifier = (
+  | 'chatMessage'
+  | 'inAppNotification'
+  | UserSettingsNotificationSoundKeySpecifier
+)[];
+export type UserSettingsNotificationSoundFieldPolicy = {
+  chatMessage?: FieldPolicy<any> | FieldReadFunction<any>;
+  inAppNotification?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'admin'
@@ -5150,6 +5823,7 @@ export type UserSettingsNotificationSpaceKeySpecifier = (
   | 'collaborationCalloutContributionCreated'
   | 'collaborationCalloutPostContributionComment'
   | 'collaborationCalloutPublished'
+  | 'collaborationCalloutReaction'
   | 'collaborationPollModifiedOnPollIVotedOn'
   | 'collaborationPollVoteAffectedByOptionChange'
   | 'collaborationPollVoteCastOnOwnPoll'
@@ -5164,6 +5838,7 @@ export type UserSettingsNotificationSpaceFieldPolicy = {
   collaborationCalloutContributionCreated?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPostContributionComment?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationCalloutPublished?: FieldPolicy<any> | FieldReadFunction<any>;
+  collaborationCalloutReaction?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollModifiedOnPollIVotedOn?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollVoteAffectedByOptionChange?: FieldPolicy<any> | FieldReadFunction<any>;
   collaborationPollVoteCastOnOwnPoll?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5176,6 +5851,7 @@ export type UserSettingsNotificationSpaceAdminKeySpecifier = (
   | 'communicationMessageReceived'
   | 'communityApplicationReceived'
   | 'communityNewMember'
+  | 'userEmailChanged'
   | UserSettingsNotificationSpaceAdminKeySpecifier
 )[];
 export type UserSettingsNotificationSpaceAdminFieldPolicy = {
@@ -5183,9 +5859,12 @@ export type UserSettingsNotificationSpaceAdminFieldPolicy = {
   communicationMessageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityApplicationReceived?: FieldPolicy<any> | FieldReadFunction<any>;
   communityNewMember?: FieldPolicy<any> | FieldReadFunction<any>;
+  userEmailChanged?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type UserSettingsNotificationUserKeySpecifier = (
   | 'commentReply'
+  | 'conversationMessageDirect'
+  | 'conversationMessageGroup'
   | 'membership'
   | 'mentioned'
   | 'messageReceived'
@@ -5193,6 +5872,8 @@ export type UserSettingsNotificationUserKeySpecifier = (
 )[];
 export type UserSettingsNotificationUserFieldPolicy = {
   commentReply?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationMessageDirect?: FieldPolicy<any> | FieldReadFunction<any>;
+  conversationMessageGroup?: FieldPolicy<any> | FieldReadFunction<any>;
   membership?: FieldPolicy<any> | FieldReadFunction<any>;
   mentioned?: FieldPolicy<any> | FieldReadFunction<any>;
   messageReceived?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5227,6 +5908,29 @@ export type VcInteractionFieldPolicy = {
   threadID?: FieldPolicy<any> | FieldReadFunction<any>;
   virtualContributorID?: FieldPolicy<any> | FieldReadFunction<any>;
 };
+export type VirtualAssistantKeySpecifier = (
+  | 'authorization'
+  | 'capabilityGrant'
+  | 'createdDate'
+  | 'credentials'
+  | 'id'
+  | 'nameID'
+  | 'profile'
+  | 'type'
+  | 'updatedDate'
+  | VirtualAssistantKeySpecifier
+)[];
+export type VirtualAssistantFieldPolicy = {
+  authorization?: FieldPolicy<any> | FieldReadFunction<any>;
+  capabilityGrant?: FieldPolicy<any> | FieldReadFunction<any>;
+  createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
+  credentials?: FieldPolicy<any> | FieldReadFunction<any>;
+  id?: FieldPolicy<any> | FieldReadFunction<any>;
+  nameID?: FieldPolicy<any> | FieldReadFunction<any>;
+  profile?: FieldPolicy<any> | FieldReadFunction<any>;
+  type?: FieldPolicy<any> | FieldReadFunction<any>;
+  updatedDate?: FieldPolicy<any> | FieldReadFunction<any>;
+};
 export type VirtualContributorKeySpecifier = (
   | 'account'
   | 'actor'
@@ -5234,6 +5938,7 @@ export type VirtualContributorKeySpecifier = (
   | 'authorization'
   | 'bodyOfKnowledgeDescription'
   | 'bodyOfKnowledgeID'
+  | 'bodyOfKnowledgeLastUpdated'
   | 'bodyOfKnowledgeType'
   | 'createdDate'
   | 'credentials'
@@ -5265,6 +5970,7 @@ export type VirtualContributorFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeDescription?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeID?: FieldPolicy<any> | FieldReadFunction<any>;
+  bodyOfKnowledgeLastUpdated?: FieldPolicy<any> | FieldReadFunction<any>;
   bodyOfKnowledgeType?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
   credentials?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5378,8 +6084,10 @@ export type VisualFieldPolicy = {
 export type VisualConstraintsKeySpecifier = (
   | 'allowedTypes'
   | 'aspectRatio'
+  | 'maxAspectRatio'
   | 'maxHeight'
   | 'maxWidth'
+  | 'minAspectRatio'
   | 'minHeight'
   | 'minWidth'
   | VisualConstraintsKeySpecifier
@@ -5387,14 +6095,15 @@ export type VisualConstraintsKeySpecifier = (
 export type VisualConstraintsFieldPolicy = {
   allowedTypes?: FieldPolicy<any> | FieldReadFunction<any>;
   aspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
+  maxAspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   maxHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   maxWidth?: FieldPolicy<any> | FieldReadFunction<any>;
+  minAspectRatio?: FieldPolicy<any> | FieldReadFunction<any>;
   minHeight?: FieldPolicy<any> | FieldReadFunction<any>;
   minWidth?: FieldPolicy<any> | FieldReadFunction<any>;
 };
 export type WhiteboardKeySpecifier = (
   | 'authorization'
-  | 'content'
   | 'contentUpdatePolicy'
   | 'createdBy'
   | 'createdDate'
@@ -5409,7 +6118,6 @@ export type WhiteboardKeySpecifier = (
 )[];
 export type WhiteboardFieldPolicy = {
   authorization?: FieldPolicy<any> | FieldReadFunction<any>;
-  content?: FieldPolicy<any> | FieldReadFunction<any>;
   contentUpdatePolicy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdBy?: FieldPolicy<any> | FieldReadFunction<any>;
   createdDate?: FieldPolicy<any> | FieldReadFunction<any>;
@@ -5460,6 +6168,17 @@ export type StrictTypedTypePolicies = {
   Account?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountKeySpecifier | (() => undefined | AccountKeySpecifier);
     fields?: AccountFieldPolicy;
+  };
+  AccountDeletionBlocker?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AccountDeletionBlockerKeySpecifier | (() => undefined | AccountDeletionBlockerKeySpecifier);
+    fields?: AccountDeletionBlockerFieldPolicy;
+  };
+  AccountDeletionBlockerTotal?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AccountDeletionBlockerTotalKeySpecifier
+      | (() => undefined | AccountDeletionBlockerTotalKeySpecifier);
+    fields?: AccountDeletionBlockerTotalFieldPolicy;
   };
   AccountLicensePlan?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AccountLicensePlanKeySpecifier | (() => undefined | AccountLicensePlanKeySpecifier);
@@ -5596,6 +6315,17 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ApplicationKeySpecifier | (() => undefined | ApplicationKeySpecifier);
     fields?: ApplicationFieldPolicy;
   };
+  AssistantCapability?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | AssistantCapabilityKeySpecifier | (() => undefined | AssistantCapabilityKeySpecifier);
+    fields?: AssistantCapabilityFieldPolicy;
+  };
+  AssistantCapabilityToggle?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | AssistantCapabilityToggleKeySpecifier
+      | (() => undefined | AssistantCapabilityToggleKeySpecifier);
+    fields?: AssistantCapabilityToggleFieldPolicy;
+  };
   AuthenticationConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | AuthenticationConfigKeySpecifier | (() => undefined | AuthenticationConfigKeySpecifier);
     fields?: AuthenticationConfigFieldPolicy;
@@ -5655,6 +6385,20 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CalloutContributionsCountOutputKeySpecifier);
     fields?: CalloutContributionsCountOutputFieldPolicy;
   };
+  CalloutContributorsMapView?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributorsMapViewKeySpecifier
+      | (() => undefined | CalloutContributorsMapViewKeySpecifier);
+    fields?: CalloutContributorsMapViewFieldPolicy;
+  };
+  CalloutContributorsSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CalloutContributorsSettingsKeySpecifier
+      | (() => undefined | CalloutContributorsSettingsKeySpecifier);
+    fields?: CalloutContributorsSettingsFieldPolicy;
+  };
   CalloutFraming?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutFramingKeySpecifier | (() => undefined | CalloutFramingKeySpecifier);
     fields?: CalloutFramingFieldPolicy;
@@ -5662,6 +6406,18 @@ export type StrictTypedTypePolicies = {
   CalloutPostCreated?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutPostCreatedKeySpecifier | (() => undefined | CalloutPostCreatedKeySpecifier);
     fields?: CalloutPostCreatedFieldPolicy;
+  };
+  CalloutReaction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutReactionKeySpecifier | (() => undefined | CalloutReactionKeySpecifier);
+    fields?: CalloutReactionFieldPolicy;
+  };
+  CalloutReactionsSummary?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutReactionsSummaryKeySpecifier | (() => undefined | CalloutReactionsSummaryKeySpecifier);
+    fields?: CalloutReactionsSummaryFieldPolicy;
+  };
+  CalloutSelectionSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CalloutSelectionSettingsKeySpecifier | (() => undefined | CalloutSelectionSettingsKeySpecifier);
+    fields?: CalloutSelectionSettingsFieldPolicy;
   };
   CalloutSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CalloutSettingsKeySpecifier | (() => undefined | CalloutSettingsKeySpecifier);
@@ -5686,9 +6442,46 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ClassificationKeySpecifier | (() => undefined | ClassificationKeySpecifier);
     fields?: ClassificationFieldPolicy;
   };
+  ClassificationEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ClassificationEntryKeySpecifier | (() => undefined | ClassificationEntryKeySpecifier);
+    fields?: ClassificationEntryFieldPolicy;
+  };
+  ClassificationTemplateContent?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ClassificationTemplateContentKeySpecifier
+      | (() => undefined | ClassificationTemplateContentKeySpecifier);
+    fields?: ClassificationTemplateContentFieldPolicy;
+  };
+  ClassificationValue?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ClassificationValueKeySpecifier | (() => undefined | ClassificationValueKeySpecifier);
+    fields?: ClassificationValueFieldPolicy;
+  };
+  CollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CollaboraDocumentKeySpecifier | (() => undefined | CollaboraDocumentKeySpecifier);
+    fields?: CollaboraDocumentFieldPolicy;
+  };
+  CollaboraEditorUrlResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | CollaboraEditorUrlResultKeySpecifier | (() => undefined | CollaboraEditorUrlResultKeySpecifier);
+    fields?: CollaboraEditorUrlResultFieldPolicy;
+  };
   Collaboration?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CollaborationKeySpecifier | (() => undefined | CollaborationKeySpecifier);
     fields?: CollaborationFieldPolicy;
+  };
+  CollaborationMigrationIssue?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CollaborationMigrationIssueKeySpecifier
+      | (() => undefined | CollaborationMigrationIssueKeySpecifier);
+    fields?: CollaborationMigrationIssueFieldPolicy;
+  };
+  CollaborationMigrationResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CollaborationMigrationResultKeySpecifier
+      | (() => undefined | CollaborationMigrationResultKeySpecifier);
+    fields?: CollaborationMigrationResultFieldPolicy;
   };
   Communication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CommunicationKeySpecifier | (() => undefined | CommunicationKeySpecifier);
@@ -5776,6 +6569,24 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | ConfigKeySpecifier | (() => undefined | ConfigKeySpecifier);
     fields?: ConfigFieldPolicy;
   };
+  ContributorCollectionCounts?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ContributorCollectionCountsKeySpecifier
+      | (() => undefined | ContributorCollectionCountsKeySpecifier);
+    fields?: ContributorCollectionCountsFieldPolicy;
+  };
+  ContributorCollectionItem?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | ContributorCollectionItemKeySpecifier
+      | (() => undefined | ContributorCollectionItemKeySpecifier);
+    fields?: ContributorCollectionItemFieldPolicy;
+  };
+  ContributorLocation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | ContributorLocationKeySpecifier | (() => undefined | ContributorLocationKeySpecifier);
+    fields?: ContributorLocationFieldPolicy;
+  };
   Conversation?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ConversationKeySpecifier | (() => undefined | ConversationKeySpecifier);
     fields?: ConversationFieldPolicy;
@@ -5848,6 +6659,20 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CreateCalloutContributionDefaultsDataKeySpecifier);
     fields?: CreateCalloutContributionDefaultsDataFieldPolicy;
   };
+  CreateCalloutContributorsMapViewData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributorsMapViewDataKeySpecifier
+      | (() => undefined | CreateCalloutContributorsMapViewDataKeySpecifier);
+    fields?: CreateCalloutContributorsMapViewDataFieldPolicy;
+  };
+  CreateCalloutContributorsSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutContributorsSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutContributorsSettingsDataKeySpecifier);
+    fields?: CreateCalloutContributorsSettingsDataFieldPolicy;
+  };
   CreateCalloutData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutDataKeySpecifier | (() => undefined | CreateCalloutDataKeySpecifier);
     fields?: CreateCalloutDataFieldPolicy;
@@ -5855,6 +6680,13 @@ export type StrictTypedTypePolicies = {
   CreateCalloutFramingData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutFramingDataKeySpecifier | (() => undefined | CreateCalloutFramingDataKeySpecifier);
     fields?: CreateCalloutFramingDataFieldPolicy;
+  };
+  CreateCalloutSelectionSettingsData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutSelectionSettingsDataKeySpecifier
+      | (() => undefined | CreateCalloutSelectionSettingsDataKeySpecifier);
+    fields?: CreateCalloutSelectionSettingsDataFieldPolicy;
   };
   CreateCalloutSettingsContributionData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -5877,6 +6709,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | CreateCalloutSettingsFramingDataKeySpecifier);
     fields?: CreateCalloutSettingsFramingDataFieldPolicy;
   };
+  CreateCalloutTaskBoardData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCalloutTaskBoardDataKeySpecifier
+      | (() => undefined | CreateCalloutTaskBoardDataKeySpecifier);
+    fields?: CreateCalloutTaskBoardDataFieldPolicy;
+  };
   CreateCalloutsSetData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCalloutsSetDataKeySpecifier | (() => undefined | CreateCalloutsSetDataKeySpecifier);
     fields?: CreateCalloutsSetDataFieldPolicy;
@@ -5884,6 +6723,13 @@ export type StrictTypedTypePolicies = {
   CreateClassificationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateClassificationDataKeySpecifier | (() => undefined | CreateClassificationDataKeySpecifier);
     fields?: CreateClassificationDataFieldPolicy;
+  };
+  CreateCollaboraDocumentData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | CreateCollaboraDocumentDataKeySpecifier
+      | (() => undefined | CreateCollaboraDocumentDataKeySpecifier);
+    fields?: CreateCollaboraDocumentDataFieldPolicy;
   };
   CreateCollaborationData?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | CreateCollaborationDataKeySpecifier | (() => undefined | CreateCollaborationDataKeySpecifier);
@@ -5972,6 +6818,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | CredentialDefinitionKeySpecifier | (() => undefined | CredentialDefinitionKeySpecifier);
     fields?: CredentialDefinitionFieldPolicy;
   };
+  DirectMessageDeliveryResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | DirectMessageDeliveryResultKeySpecifier
+      | (() => undefined | DirectMessageDeliveryResultKeySpecifier);
+    fields?: DirectMessageDeliveryResultFieldPolicy;
+  };
   Discussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DiscussionKeySpecifier | (() => undefined | DiscussionKeySpecifier);
     fields?: DiscussionFieldPolicy;
@@ -5983,6 +6836,10 @@ export type StrictTypedTypePolicies = {
   Document?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | DocumentKeySpecifier | (() => undefined | DocumentKeySpecifier);
     fields?: DocumentFieldPolicy;
+  };
+  EmailChangeApprover?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | EmailChangeApproverKeySpecifier | (() => undefined | EmailChangeApproverKeySpecifier);
+    fields?: EmailChangeApproverFieldPolicy;
   };
   ExternalConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | ExternalConfigKeySpecifier | (() => undefined | ExternalConfigKeySpecifier);
@@ -6109,6 +6966,13 @@ export type StrictTypedTypePolicies = {
       | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutPostCommentKeySpecifier);
     fields?: InAppNotificationPayloadSpaceCollaborationCalloutPostCommentFieldPolicy;
   };
+  InAppNotificationPayloadSpaceCollaborationCalloutReaction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier
+      | (() => undefined | InAppNotificationPayloadSpaceCollaborationCalloutReactionKeySpecifier);
+    fields?: InAppNotificationPayloadSpaceCollaborationCalloutReactionFieldPolicy;
+  };
   InAppNotificationPayloadSpaceCollaborationPoll?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
       | false
@@ -6229,6 +7093,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | KratosIdentityKeySpecifier | (() => undefined | KratosIdentityKeySpecifier);
     fields?: KratosIdentityFieldPolicy;
   };
+  LanguageConfig?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | LanguageConfigKeySpecifier | (() => undefined | LanguageConfigKeySpecifier);
+    fields?: LanguageConfigFieldPolicy;
+  };
   LatestReleaseDiscussion?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LatestReleaseDiscussionKeySpecifier | (() => undefined | LatestReleaseDiscussionKeySpecifier);
     fields?: LatestReleaseDiscussionFieldPolicy;
@@ -6297,6 +7165,18 @@ export type StrictTypedTypePolicies = {
   LookupQueryResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | LookupQueryResultsKeySpecifier | (() => undefined | LookupQueryResultsKeySpecifier);
     fields?: LookupQueryResultsFieldPolicy;
+  };
+  McpApiKey?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | McpApiKeyKeySpecifier | (() => undefined | McpApiKeyKeySpecifier);
+    fields?: McpApiKeyFieldPolicy;
+  };
+  McpApiKeyMintResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | McpApiKeyMintResultKeySpecifier | (() => undefined | McpApiKeyMintResultKeySpecifier);
+    fields?: McpApiKeyMintResultFieldPolicy;
+  };
+  MeAccountDeletionStatus?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | MeAccountDeletionStatusKeySpecifier | (() => undefined | MeAccountDeletionStatusKeySpecifier);
+    fields?: MeAccountDeletionStatusFieldPolicy;
   };
   MeConversationsResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | MeConversationsResultKeySpecifier | (() => undefined | MeConversationsResultKeySpecifier);
@@ -6422,6 +7302,17 @@ export type StrictTypedTypePolicies = {
       | PaginatedInAppNotificationsKeySpecifier
       | (() => undefined | PaginatedInAppNotificationsKeySpecifier);
     fields?: PaginatedInAppNotificationsFieldPolicy;
+  };
+  PaginatedInnovationPacks?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | PaginatedInnovationPacksKeySpecifier | (() => undefined | PaginatedInnovationPacksKeySpecifier);
+    fields?: PaginatedInnovationPacksFieldPolicy;
+  };
+  PaginatedLibraryTemplateResults?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | PaginatedLibraryTemplateResultsKeySpecifier
+      | (() => undefined | PaginatedLibraryTemplateResultsKeySpecifier);
+    fields?: PaginatedLibraryTemplateResultsFieldPolicy;
   };
   PaginatedOrganization?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | PaginatedOrganizationKeySpecifier | (() => undefined | PaginatedOrganizationKeySpecifier);
@@ -6717,6 +7608,13 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | SearchResultCalloutKeySpecifier | (() => undefined | SearchResultCalloutKeySpecifier);
     fields?: SearchResultCalloutFieldPolicy;
   };
+  SearchResultCollaboraDocument?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | SearchResultCollaboraDocumentKeySpecifier
+      | (() => undefined | SearchResultCollaboraDocumentKeySpecifier);
+    fields?: SearchResultCollaboraDocumentFieldPolicy;
+  };
   SearchResultMemo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | SearchResultMemoKeySpecifier | (() => undefined | SearchResultMemoKeySpecifier);
     fields?: SearchResultMemoFieldPolicy;
@@ -6842,6 +7740,10 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | TaskKeySpecifier | (() => undefined | TaskKeySpecifier);
     fields?: TaskFieldPolicy;
   };
+  TaskColumnCount?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | TaskColumnCountKeySpecifier | (() => undefined | TaskColumnCountKeySpecifier);
+    fields?: TaskColumnCountFieldPolicy;
+  };
   Template?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | TemplateKeySpecifier | (() => undefined | TemplateKeySpecifier);
     fields?: TemplateFieldPolicy;
@@ -6945,13 +7847,46 @@ export type StrictTypedTypePolicies = {
     keyFields?: false | UserAuthenticationResultKeySpecifier | (() => undefined | UserAuthenticationResultKeySpecifier);
     fields?: UserAuthenticationResultFieldPolicy;
   };
+  UserEmailChangeAuditEntries?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserEmailChangeAuditEntriesKeySpecifier
+      | (() => undefined | UserEmailChangeAuditEntriesKeySpecifier);
+    fields?: UserEmailChangeAuditEntriesFieldPolicy;
+  };
+  UserEmailChangeAuditEntriesPageInfo?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserEmailChangeAuditEntriesPageInfoKeySpecifier
+      | (() => undefined | UserEmailChangeAuditEntriesPageInfoKeySpecifier);
+    fields?: UserEmailChangeAuditEntriesPageInfoFieldPolicy;
+  };
+  UserEmailChangeAuditEntry?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserEmailChangeAuditEntryKeySpecifier
+      | (() => undefined | UserEmailChangeAuditEntryKeySpecifier);
+    fields?: UserEmailChangeAuditEntryFieldPolicy;
+  };
+  UserEmailChangeResult?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserEmailChangeResultKeySpecifier | (() => undefined | UserEmailChangeResultKeySpecifier);
+    fields?: UserEmailChangeResultFieldPolicy;
+  };
   UserGroup?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserGroupKeySpecifier | (() => undefined | UserGroupKeySpecifier);
     fields?: UserGroupFieldPolicy;
   };
+  UserProfileSummary?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserProfileSummaryKeySpecifier | (() => undefined | UserProfileSummaryKeySpecifier);
+    fields?: UserProfileSummaryFieldPolicy;
+  };
   UserSettings?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsKeySpecifier | (() => undefined | UserSettingsKeySpecifier);
     fields?: UserSettingsFieldPolicy;
+  };
+  UserSettingsAssistant?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserSettingsAssistantKeySpecifier | (() => undefined | UserSettingsAssistantKeySpecifier);
+    fields?: UserSettingsAssistantFieldPolicy;
   };
   UserSettingsCommunication?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -6959,6 +7894,10 @@ export type StrictTypedTypePolicies = {
       | UserSettingsCommunicationKeySpecifier
       | (() => undefined | UserSettingsCommunicationKeySpecifier);
     fields?: UserSettingsCommunicationFieldPolicy;
+  };
+  UserSettingsDashboard?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | UserSettingsDashboardKeySpecifier | (() => undefined | UserSettingsDashboardKeySpecifier);
+    fields?: UserSettingsDashboardFieldPolicy;
   };
   UserSettingsHomeSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | UserSettingsHomeSpaceKeySpecifier | (() => undefined | UserSettingsHomeSpaceKeySpecifier);
@@ -6995,6 +7934,13 @@ export type StrictTypedTypePolicies = {
       | UserSettingsNotificationPlatformAdminKeySpecifier
       | (() => undefined | UserSettingsNotificationPlatformAdminKeySpecifier);
     fields?: UserSettingsNotificationPlatformAdminFieldPolicy;
+  };
+  UserSettingsNotificationSound?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?:
+      | false
+      | UserSettingsNotificationSoundKeySpecifier
+      | (() => undefined | UserSettingsNotificationSoundKeySpecifier);
+    fields?: UserSettingsNotificationSoundFieldPolicy;
   };
   UserSettingsNotificationSpace?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?:
@@ -7042,6 +7988,10 @@ export type StrictTypedTypePolicies = {
   VcInteraction?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VcInteractionKeySpecifier | (() => undefined | VcInteractionKeySpecifier);
     fields?: VcInteractionFieldPolicy;
+  };
+  VirtualAssistant?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
+    keyFields?: false | VirtualAssistantKeySpecifier | (() => undefined | VirtualAssistantKeySpecifier);
+    fields?: VirtualAssistantFieldPolicy;
   };
   VirtualContributor?: Omit<TypePolicy, 'fields' | 'keyFields'> & {
     keyFields?: false | VirtualContributorKeySpecifier | (() => undefined | VirtualContributorKeySpecifier);

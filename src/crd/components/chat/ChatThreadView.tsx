@@ -1,0 +1,106 @@
+import { Loader2 } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { CommentInput } from '@/crd/components/comment/CommentInput';
+import type { CommentAuthor } from '@/crd/components/comment/types';
+import { ChatMessageBubble } from './ChatMessageBubble';
+import { computeMessageRunFlags } from './messageRuns';
+import type { ChatMessage, ChatThreadHeader } from './types';
+
+type ChatThreadViewProps = {
+  conversation?: ChatThreadHeader;
+  messages: ChatMessage[];
+  messagesLoading: boolean;
+  currentUser?: CommentAuthor;
+  isSending?: boolean;
+  canReact?: boolean;
+  /** Guidance only: the assistant is generating a reply — show a loader, disable input. */
+  isAwaitingGuidanceResponse?: boolean;
+  /**
+   * Composer text, owned by the consumer so an unsent draft outlives this view.
+   * Omit both to let the composer keep its own text (preview surfaces).
+   */
+  draft?: string;
+  onDraftChange?: (value: string) => void;
+  onSendMessage?: (content: string) => void;
+  onAddReaction?: (messageId: string, emoji: string) => void;
+  onRemoveReaction?: (messageId: string, emoji: string) => void;
+};
+
+/**
+ * The message thread for a selected conversation. The back affordance and the
+ * conversation title live in the panel header; this view owns the scrollable
+ * message list and the composer. Auto-scrolls to the latest message.
+ */
+export function ChatThreadView({
+  conversation,
+  messages,
+  messagesLoading,
+  currentUser,
+  isSending,
+  canReact,
+  isAwaitingGuidanceResponse,
+  draft,
+  onDraftChange,
+  onSendMessage,
+  onAddReaction,
+  onRemoveReaction,
+}: ChatThreadViewProps) {
+  const { t } = useTranslation('crd-chat');
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const lastMessageId = messages.length > 0 ? messages[messages.length - 1].id : null;
+  const runFlags = computeMessageRunFlags(messages, conversation?.isGroup ?? false);
+
+  // Keep the latest message in view as the thread loads / receives messages.
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ block: 'end' });
+  }, [lastMessageId]);
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-3 py-3">
+        {messagesLoading && messages.length === 0 ? (
+          <output className="m-auto text-caption text-muted-foreground" aria-label={t('thread.loading')}>
+            {t('thread.loading')}
+          </output>
+        ) : (
+          messages.map((message, index) => (
+            <ChatMessageBubble
+              key={message.id}
+              message={message}
+              showAuthor={runFlags[index].showAuthor}
+              showAvatar={runFlags[index].showAvatar}
+              avatarGutter={runFlags[index].avatarGutter}
+              canReact={canReact}
+              onAddReaction={onAddReaction ? emoji => onAddReaction(message.id, emoji) : undefined}
+              onRemoveReaction={onRemoveReaction ? emoji => onRemoveReaction(message.id, emoji) : undefined}
+            />
+          ))
+        )}
+        {isAwaitingGuidanceResponse && (
+          <output
+            className="flex items-center gap-2 self-start rounded-2xl rounded-bl-sm bg-muted px-3 py-2 text-caption text-muted-foreground"
+            aria-label={t('guidance.thinking')}
+          >
+            <Loader2 aria-hidden="true" className="size-4 animate-spin" />
+            {t('guidance.thinking')}
+          </output>
+        )}
+        <div ref={bottomRef} />
+      </div>
+      {onSendMessage && (
+        <div className="shrink-0 border-t border-border p-2">
+          <CommentInput
+            currentUser={currentUser}
+            onSubmit={onSendMessage}
+            disabled={isSending || isAwaitingGuidanceResponse}
+            refocusAfterSubmit={true}
+            value={draft}
+            onValueChange={onDraftChange}
+          />
+        </div>
+      )}
+    </div>
+  );
+}

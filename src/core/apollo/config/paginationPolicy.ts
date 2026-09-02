@@ -2,6 +2,7 @@ import type { FieldFunctionOptions, FieldPolicy } from '@apollo/client';
 
 type KeyArgs = FieldPolicy<unknown>['keyArgs'];
 const pageInfoFieldName = 'pageInfo';
+const totalFieldName = 'total';
 
 type TRelayPageInfo = {
   hasPreviousPage: boolean;
@@ -38,10 +39,13 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
         return existing;
       }
 
-      const nonMetaFields = Object.keys(incoming).filter(x => x !== pageInfoFieldName && x !== '__typename');
-      // we expect 'incoming' to be { __typename: string, pageInfo: {}, items: [] };
+      const nonMetaFields = Object.keys(incoming).filter(
+        x => x !== pageInfoFieldName && x !== '__typename' && x !== totalFieldName
+      );
+      // we expect 'incoming' to be { __typename: string, pageInfo: {}, total?: number, items: [] };
       // items is a placeholder field - it's calculated on the server based on what entity you have requested, e.g. 'users'
-      // if after filtering out the two other fields, we still have more fields, throw an exception.
+      // `total` is the connection's count (present on Paginated* types when the operation selects it).
+      // if after filtering out the meta fields, we still have more fields, throw an exception.
       if (nonMetaFields.length === 0) {
         throw new Error('Missing data field');
       }
@@ -127,11 +131,21 @@ export const paginationFieldPolicy = (keyArgs: KeyArgs = false, typeName: string
         pageInfo.hasNextPage = hasNextPageOverride;
       }
 
-      return {
+      const merged = {
         [dataFieldName]: edges,
         [pageInfoFieldName]: pageInfo,
         __typename: (incoming ?? existing).__typename,
       } as PaginatedResponse<Item, FieldName>;
+
+      // Carry the connection `total` through the splice when the operation selects it
+      // (Paginated* types expose it; queries that omit it are unaffected).
+      const incomingTotal = (incoming as Record<string, unknown>)[totalFieldName];
+      const existingTotal = (existing as Record<string, unknown>)[totalFieldName];
+      if (incomingTotal !== undefined || existingTotal !== undefined) {
+        (merged as Record<string, unknown>)[totalFieldName] = incomingTotal ?? existingTotal;
+      }
+
+      return merged;
     },
   } as FieldPolicy;
 };

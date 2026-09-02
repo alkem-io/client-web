@@ -1,5 +1,7 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 @import './theme.css';
+@import './typography.css';
 @import '../forms/markdown/styles.css';
 
 @source "../primitives/**/*.{ts,tsx}";
@@ -25,7 +27,14 @@
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    /*
+     * `clip` (not `hidden`) prevents horizontal page scroll without
+     * establishing a scroll container. `overflow: hidden` would capture
+     * `position: sticky` descendants (including the Header) and stop them
+     * from pinning to the viewport. `clip` is widely supported (≥93%) and
+     * is the correct primitive for "clip overflow, don't scroll".
+     */
+    overflow-x: clip;
   }
 
   .crd-root *,
@@ -39,5 +48,24 @@
 
   .crd-root * {
     @apply border-border outline-ring/50;
+  }
+
+  /*
+   * Tailwind preflight removes the browser default `cursor: pointer` on
+   * <button> and other interactive elements. Restore it inside .crd-root so
+   * every clickable affordance — native buttons, role="button"/role="tab"
+   * wrappers, and <label>s for checkboxes/radios — gets the pointer cursor.
+   * Disabled / aria-disabled elements stay on the default cursor so the
+   * "not clickable" affordance reads correctly.
+   */
+  .crd-root button:not(:disabled):not([aria-disabled='true']),
+  .crd-root [role='button']:not([aria-disabled='true']),
+  .crd-root [role='tab']:not([aria-disabled='true']),
+  .crd-root [role='menuitem']:not([aria-disabled='true']),
+  .crd-root [role='option']:not([aria-disabled='true']),
+  .crd-root summary,
+  .crd-root label:has(> input[type='checkbox']:not(:disabled)),
+  .crd-root label:has(> input[type='radio']:not(:disabled)) {
+    cursor: pointer;
   }
 }

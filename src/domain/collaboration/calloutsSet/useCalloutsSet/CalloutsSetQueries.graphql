@@ -33,13 +33,21 @@ fragment Callout on Callout {
       id
       url
       displayName
+      description
+      tagset {
+        id
+        tags
+      }
     }
     type
   }
   settings {
     visibility
     contribution {
+      enabled
       allowedTypes
+      canAddContributions
+      commentsEnabled
     }
   }
 }
@@ -97,12 +105,15 @@ fragment CalloutDetails on Callout {
     poll {
       ...PollDetails
     }
+    collaboraDocument {
+      ...CollaboraDocumentGate
+    }
   }
   contributionDefaults {
     id
     defaultDisplayName
     postDescription
-    whiteboardContent
+    whiteboardContentAvailable
   }
   sortOrder
   activity
@@ -111,6 +122,39 @@ fragment CalloutDetails on Callout {
     sortOrder
     link {
       ...LinkDetailsWithAuthorization
+    }
+    # Title + description-preview stubs so the delete confirmation can name contributions without an extra query (feature 114).
+    post {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    whiteboard {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    memo {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
+    }
+    collaboraDocument {
+      id
+      profile {
+        id
+        displayName
+        description
+      }
     }
   }
   comments {
@@ -124,15 +168,35 @@ fragment CalloutDetails on Callout {
     ...CalloutSettingsFull
   }
   publishedDate
+  createdDate
   createdBy {
     id
     profile {
       id
       displayName
+      url
       avatar: visual(type: AVATAR) {
         id
         uri
       }
     }
+  }
+  publishedBy {
+    id
+    profile {
+      id
+      displayName
+      url
+      avatar: visual(type: AVATAR) {
+        id
+        uri
+      }
+    }
+  }
+  reactionsSummary {
+    total
+    emojis
+    myReactionEmoji
+    allowedEmojis
   }
 }

@@ -1,0 +1,202 @@
+import type { SubspaceFlowPhase } from '@/crd/components/space/SubspaceFlowTabs';
+import type { SubspaceHeaderActionsData, SubspaceHeaderProps } from '@/crd/components/space/SubspaceHeader';
+import type {
+  SubspaceLeadData,
+  SubspaceSidebarData,
+  SubspaceVirtualContributorData,
+} from '@/crd/components/space/SubspaceSidebar';
+import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { buildSubspaceSettingsUrl } from '@/main/routing/urlBuilders';
+import { getInitials } from '../../space/dataMappers/spacePageDataMapper';
+
+// ---------------------------------------------------------------------------
+// Banner
+// ---------------------------------------------------------------------------
+
+type ProfileLike = {
+  displayName?: string | null;
+  tagline?: string | null;
+  banner?: { uri?: string | null; alternativeText?: string | null; aspectRatio?: number | null } | null;
+  url?: string | null;
+};
+
+export type SubspaceBannerSourceData = {
+  subspaceProfile: ProfileLike | undefined;
+  /**
+   * The L0 root of this subspace's ancestry chain. For an L1 this is the same as the immediate
+   * parent; for an L2 this is the grandparent — *not* the immediate L1 parent. The page banner
+   * is always inherited from the L0 root because L1/L2 do not have a settable page banner.
+   */
+  levelZeroSpaceId: string | undefined;
+  levelZeroProfile: ProfileLike | undefined;
+};
+
+export type SubspaceBannerProps = Pick<
+  SubspaceHeaderProps,
+  'title' | 'tagline' | 'bannerUrl' | 'bannerAlt' | 'bannerAspectRatio' | 'color'
+>;
+
+export function mapSubspaceBanner({
+  subspaceProfile,
+  levelZeroSpaceId,
+  levelZeroProfile,
+}: SubspaceBannerSourceData): SubspaceBannerProps {
+  const title = subspaceProfile?.displayName ?? '';
+  const levelZeroName = levelZeroProfile?.displayName ?? '';
+  return {
+    title,
+    tagline: subspaceProfile?.tagline ?? undefined,
+    bannerUrl: levelZeroProfile?.banner?.uri || undefined,
+    bannerAlt: levelZeroProfile?.banner?.alternativeText || undefined,
+    // Inherited from the L0 root along with the image itself, so a subspace
+    // banner is always the same shape as its parent space's.
+    bannerAspectRatio: resolveBannerAspectRatio(levelZeroProfile?.banner),
+    color: pickColorFromId(levelZeroSpaceId ?? levelZeroName),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Header actions
+// ---------------------------------------------------------------------------
+
+export type SubspaceHeaderActionsSource = {
+  shareUrl: string | undefined;
+  canUpdate: boolean;
+  videoCallEnabled: boolean;
+  videoCallUrl: string | undefined;
+};
+
+export function mapSubspaceHeaderActions({
+  shareUrl,
+  canUpdate,
+  videoCallEnabled,
+  videoCallUrl,
+}: SubspaceHeaderActionsSource): SubspaceHeaderActionsData {
+  return {
+    showActivity: true,
+    showVideoCall: videoCallEnabled && !!videoCallUrl,
+    videoCallUrl,
+    showShare: true,
+    showSettings: canUpdate,
+    // `shareUrl` is intentionally NOT output: the SubspaceHeader's Share button is wired by the
+    // consumer via `onShareClick` (which opens the ShareDialog with the subspace URL). The input
+    // `shareUrl` is still consumed here purely to derive `settingsHref`.
+    settingsHref: shareUrl && canUpdate ? buildSubspaceSettingsUrl(shareUrl) : undefined,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Innovation flow tabs
+// ---------------------------------------------------------------------------
+
+type InnovationFlowStateLike = {
+  id?: string;
+  displayName?: string | null;
+  description?: string | null;
+  defaultCalloutTemplate?: { id: string } | null;
+};
+
+export function mapInnovationFlowPhases(states: InnovationFlowStateLike[] | undefined): SubspaceFlowPhase[] {
+  if (!states) return [];
+  return states
+    .filter((state): state is InnovationFlowStateLike & { id: string } => !!state.id)
+    .map(state => ({
+      id: state.id,
+      label: state.displayName ?? '',
+      description: state.description ?? undefined,
+      defaultCalloutTemplateId: state.defaultCalloutTemplate?.id,
+    }));
+}
+
+// ---------------------------------------------------------------------------
+// Right sidebar
+// ---------------------------------------------------------------------------
+
+type LeadUserLike = {
+  id?: string;
+  profile?: {
+    displayName?: string | null;
+    avatar?: { uri?: string | null } | null;
+    url?: string | null;
+    location?: { city?: string | null; country?: string | null } | null;
+  } | null;
+};
+
+type VirtualContributorLike = {
+  id?: string;
+  profile?: {
+    displayName?: string | null;
+    description?: string | null;
+    tagline?: string | null;
+    avatar?: { uri?: string | null } | null;
+    url?: string | null;
+  } | null;
+};
+
+function mapLeadContributors(leads: LeadUserLike[] | undefined, type: SubspaceLeadData['type']): SubspaceLeadData[] {
+  if (!leads) return [];
+  return leads
+    .filter(
+      (lead): lead is LeadUserLike & { id: string; profile: NonNullable<LeadUserLike['profile']> } =>
+        !!lead.id && !!lead.profile
+    )
+    .map(lead => {
+      const name = lead.profile.displayName ?? '';
+      const cityCountry = [lead.profile.location?.city, lead.profile.location?.country].filter(Boolean).join(', ');
+      return {
+        id: lead.id,
+        name,
+        avatarUrl: lead.profile.avatar?.uri ?? undefined,
+        initials: getInitials(name) || '??',
+        href: lead.profile.url ?? '',
+        location: cityCountry || undefined,
+        type,
+      };
+    });
+}
+
+export function mapSubspaceLeads(leadUsers: LeadUserLike[] | undefined): SubspaceLeadData[] {
+  return mapLeadContributors(leadUsers, 'person');
+}
+
+export function mapSubspaceLeadOrganizations(leadOrganizations: LeadUserLike[] | undefined): SubspaceLeadData[] {
+  return mapLeadContributors(leadOrganizations, 'org');
+}
+
+export function mapSubspaceVirtualContributor(
+  vc: VirtualContributorLike | undefined
+): SubspaceVirtualContributorData | undefined {
+  if (!vc?.id || !vc.profile) return undefined;
+  const name = vc.profile.displayName ?? '';
+  return {
+    id: vc.id,
+    name,
+    initials: getInitials(name) || '??',
+    avatarUrl: vc.profile.avatar?.uri ?? undefined,
+    description: vc.profile.description ?? vc.profile.tagline ?? undefined,
+    href: vc.profile.url ?? '',
+  };
+}
+
+export type SubspaceSidebarSource = {
+  description?: string | null;
+  leadUsers: LeadUserLike[] | undefined;
+  leadOrganizations: LeadUserLike[] | undefined;
+  virtualContributor?: VirtualContributorLike;
+};
+
+export function mapSubspaceSidebar({
+  description,
+  leadUsers,
+  leadOrganizations,
+  virtualContributor,
+}: SubspaceSidebarSource): SubspaceSidebarData {
+  return {
+    description: description ?? '',
+    // Lead organisations are surfaced alongside lead users (matching the legacy
+    // dashboard), so the Subspace description shows the lead org(s) — issue #9864.
+    leads: [...mapSubspaceLeads(leadUsers), ...mapSubspaceLeadOrganizations(leadOrganizations)],
+    virtualContributor: mapSubspaceVirtualContributor(virtualContributor),
+  };
+}

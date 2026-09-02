@@ -1,5 +1,5 @@
-import type { ExcalidrawImperativeAPI } from '@alkemio/excalidraw/dist/types/excalidraw/types';
-import type { exportToCanvas as ExcalidrawExportToCanvas } from '@alkemio/excalidraw/dist/types/utils/src/export';
+import type { ExcalidrawImperativeAPI } from '@excalidraw-yjs/excalidraw/types';
+import type { exportToCanvas as ExcalidrawExportToCanvas } from '@excalidraw-yjs/excalidraw/utils/export';
 import { lazyImportWithErrorHandler } from '@/core/lazyLoading/lazyWithGlobalErrorHandler';
 import { error as logError } from '@/core/logging/sentry/log';
 import { padImage } from '@/core/utils/images/padImage';
@@ -15,23 +15,25 @@ type ExcalidrawUtils = {
  * The maximum depends on the browser, computer memory, and other factors.
  * This value has been chosen as a reasonable compromise to avoid crashes in most cases and avoid pixellation.
  */
-const MAX_DIMENSION = 16000;
+export const MAX_DIMENSION = 12000;
 
 /**
  * Generates the preview of the image calling Excalidraw's exportToCanvas function
  * @param excalidrawAPI
- * @param desiredDimensions Desired dimensions for the preview image
- * @param crop Function to get CropConfig given resulting preview image dimensions
+ * @param exportScale Multiplier applied to the natural export resolution. The scene is vector, so
+ *   exporting at a higher scale re-renders it crisply instead of upscaling a raster — used to keep
+ *   small crop regions sharp. Clamped per-axis so neither dimension exceeds `MAX_DIMENSION`.
  * @returns
  */
 const getWhiteboardPreviewImage = async (
-  excalidrawAPI: ExcalidrawImperativeAPI
+  excalidrawAPI: ExcalidrawImperativeAPI,
+  exportScale: number = 1
 ): Promise<{ image: HTMLCanvasElement; error: boolean }> => {
   const appState = excalidrawAPI.getAppState(),
     elements = excalidrawAPI.getSceneElements(),
     files = excalidrawAPI.getFiles();
 
-  const getDimensions = (width: number, height: number) => {
+  const getBaseDimensions = (width: number, height: number) => {
     // Handle edge case of zero-dimension whiteboards
     if (width <= 0 || height <= 0) {
       return {
@@ -89,7 +91,24 @@ const getWhiteboardPreviewImage = async (
     };
   };
 
-  const { exportToCanvas } = await lazyImportWithErrorHandler<ExcalidrawUtils>(() => import('@alkemio/excalidraw'));
+  const getDimensions = (width: number, height: number) => {
+    const base = getBaseDimensions(width, height);
+    if (exportScale <= 1) {
+      return base;
+    }
+    // Re-render at higher resolution, but never let either axis cross MAX_DIMENSION.
+    const maxScale = MAX_DIMENSION / Math.max(base.width, base.height);
+    const appliedScale = Math.max(1, Math.min(exportScale, maxScale));
+    return {
+      width: base.width * appliedScale,
+      height: base.height * appliedScale,
+      scale: base.scale * appliedScale,
+    };
+  };
+
+  const { exportToCanvas } = await lazyImportWithErrorHandler<ExcalidrawUtils>(
+    () => import('@excalidraw-yjs/excalidraw')
+  );
   let errorGenerating = false;
 
   const canvas = await exportToCanvas({

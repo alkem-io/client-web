@@ -1,27 +1,105 @@
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CalloutContributionType, CalloutFramingType } from '@/core/apollo/generated/graphql-schema';
+import {
+  useCalloutContributionQuery,
+  useDeleteContributionMutation,
+  useMemoMarkdownLazyQuery,
+} from '@/core/apollo/generated/apollo-hooks';
+import {
+  AuthorizationPrivilege,
+  CalloutContributionType,
+  CalloutFramingType,
+} from '@/core/apollo/generated/graphql-schema';
+import { error as logError } from '@/core/logging/sentry/log';
+import { useNotification } from '@/core/ui/notifications/useNotification';
 import { CalloutDetailDialog } from '@/crd/components/callout/CalloutDetailDialog';
+import { CalloutPostPreview } from '@/crd/components/callout/CalloutPostPreview';
+import { CalloutWhiteboardContributionPreview } from '@/crd/components/callout/CalloutWhiteboardContributionPreview';
+import { ShareButton } from '@/crd/components/common/ShareButton';
+import { ContributionLinkList } from '@/crd/components/contribution/ContributionLinkList';
+import { ConfirmationDialog } from '@/crd/components/dialogs/ConfirmationDialog';
+import { resolveDateFnsLocale } from '@/crd/lib/dateFnsLocale';
+import { formatRelativeFromNow } from '@/crd/lib/dateTimeFormat';
 import type { CalloutDetailsModelExtended } from '@/domain/collaboration/callout/models/CalloutDetailsModel';
+import { canRenameCollaboraDocument } from '@/domain/collaboration/calloutContributions/collaboraDocument/canRenameCollaboraDocument';
+import useCalloutCollaborationPermissions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutCollaborationPermissions';
 import useCalloutContributions from '@/domain/collaboration/calloutContributions/useCalloutContributions/useCalloutContributions';
-import { mapCalloutDetailsToDialogData } from '../dataMappers/calloutDataMapper';
-import { type ContributionCardData, mapAnyContributionToCardData } from '../dataMappers/contributionDataMapper';
+import { CrdMemoDialog } from '@/main/crdPages/memo/CrdMemoDialog';
+import type { CalloutMoveActions } from '@/main/crdPages/space/hooks/useCrdCalloutMoveActions';
+import {
+  getCalloutContributionType,
+  mapCalloutDetailsToDialogData,
+  mapReferenceToStripData,
+} from '../dataMappers/calloutDataMapper';
+import {
+  type ContributionCardData,
+  mapAnyContributionToCardData,
+  mapContributionToLinkItem,
+} from '../dataMappers/contributionDataMapper';
 import { CalloutCommentsConnector } from './CalloutCommentsConnector';
 import { CalloutPollConnector } from './CalloutPollConnector';
+import { CalloutReactionsConnector } from './CalloutReactionsConnector';
+import { CalloutSettingsConnector } from './CalloutSettingsConnector';
+import { CalloutShareDialog } from './CalloutShareDialog';
+import { CallToActionFramingConnector } from './CallToActionFramingConnector';
+import { CollaboraFramingConnector } from './CollaboraFramingConnector';
+import { CollaboraFramingEditorOverlay } from './CollaboraFramingEditorOverlay';
 import { ContributionGridConnector } from './ContributionGridConnector';
+import { ContributorCollectionConnector } from './ContributorCollectionConnector';
+import { toCollaboraPreviewType } from './collaboraDocumentTypeMap';
+import { DocumentContributionAddConnector } from './DocumentContributionAddConnector';
+import { DocumentContributionConnector } from './DocumentContributionConnector';
+import { LinkContributionAddConnector } from './LinkContributionAddConnector';
+import { LinkContributionEditConnector } from './LinkContributionEditConnector';
+import { MediaGalleryFramingConnector } from './MediaGalleryFramingConnector';
+import { MemoContributionAddConnector } from './MemoContributionAddConnector';
+import { MemoContributionConnector } from './MemoContributionConnector';
+import { MemoFramingConnector } from './MemoFramingConnector';
+import { PostContributionAddConnector } from './PostContributionAddConnector';
+import { PostContributionConnector } from './PostContributionConnector';
+import { SpaceCollectionConnector } from './SpaceCollectionConnector';
+import { WhiteboardContributionAddConnector } from './WhiteboardContributionAddConnector';
+import { WhiteboardContributionConnector } from './WhiteboardContributionConnector';
+import { WhiteboardFramingConnector } from './WhiteboardFramingConnector';
 
 type CalloutDetailDialogConnectorProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   callout: CalloutDetailsModelExtended;
+  /** If set, the matching contribution dialog opens immediately on top of the callout dialog.
+   *  Routed to whiteboard / memo / post overlay based on `callout.settings.contribution.type`. */
+  initialContributionId?: string;
+  /** For memo contributions only: the underlying memo id (the contribution wrapper id goes into `initialContributionId`). */
+  initialMemoId?: string;
+  /** For post contributions only: the underlying post id (the contribution wrapper id goes into `initialContributionId`). */
+  initialPostId?: string;
+  /** Move-action prop bag forwarded from the feed (plan T064) so the detail-dialog's 3-dots menu offers the same Move items as the card's. */
+  moveActions?: CalloutMoveActions;
+  /**
+   * When true, the dialog is opened over the fullscreen task board (z-[100]), so
+   * it and every dialog it spawns (edit, delete, share) must stack above it.
+   */
+  elevated?: boolean;
 };
 
-function getContributionType(callout: CalloutDetailsModelExtended): CalloutContributionType | undefined {
-  const allowedTypes = callout.settings.contribution.allowedTypes;
-  return allowedTypes.length > 0 ? allowedTypes[0] : undefined;
-}
-
-function ContributionsSlot({ callout, open }: { callout: CalloutDetailsModelExtended; open: boolean }) {
-  const contributionType = getContributionType(callout);
+function ContributionsSlot({
+  callout,
+  open,
+  onContributionClick,
+  onContributionCreated,
+}: {
+  callout: CalloutDetailsModelExtended;
+  open: boolean;
+  onContributionClick?: (id: string, entityId?: string) => void;
+  onContributionCreated?: () => void;
+}) {
+  const { i18n } = useTranslation('crd-space');
+  const locale = resolveDateFnsLocale(i18n.language);
+  const contributionType = getCalloutContributionType(callout);
+  const { canCreateContribution } = useCalloutCollaborationPermissions({
+    callout,
+    contributionType: contributionType ?? CalloutContributionType.Post,
+  });
 
   const {
     inViewRef,
@@ -30,61 +108,841 @@ function ContributionsSlot({ callout, open }: { callout: CalloutDetailsModelExte
   } = useCalloutContributions({
     callout,
     contributionType: contributionType ?? CalloutContributionType.Post,
-    skip: !open || !contributionType || !callout.settings.contribution.enabled,
+    skip: !open || !contributionType,
   });
 
-  if (!contributionType || !callout.settings.contribution.enabled) {
+  // Visibility follows MUI: presence of `allowedTypes` (i.e. `contributionType`)
+  // is what marks the callout as collecting contributions. `enabled: false`
+  // (turning both Members/Admins switches off) is a soft-disable — existing
+  // contributions stay visible and the section header is still there; only the
+  // Add tile is suppressed via `canCreateContribution`.
+  if (!contributionType) {
     return null;
   }
 
-  const mapped = items.map(item => mapAnyContributionToCardData(item)).filter(Boolean) as ContributionCardData[];
+  const mapped = items
+    .map(item => mapAnyContributionToCardData(item, locale))
+    .filter(Boolean) as ContributionCardData[];
 
-  return <div ref={inViewRef}>{!loading && <ContributionGridConnector contributions={mapped} />}</div>;
-}
-
-export function CalloutDetailDialogConnector({ open, onOpenChange, callout }: CalloutDetailDialogConnectorProps) {
-  const { t } = useTranslation('crd-space');
-  const formatDate = (key: string, options?: Record<string, unknown>) => String(t(key as never, options as never));
-
-  const hasPoll = callout.framing.type === CalloutFramingType.Poll;
-  const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
-
-  const hasContributionType = Boolean(getContributionType(callout)) && callout.settings.contribution.enabled;
-  const contributionsSlot = hasContributionType ? <ContributionsSlot callout={callout} open={open} /> : undefined;
-
-  if (!callout.comments?.id) {
-    return (
-      <CalloutDetailDialog
-        open={open}
-        onOpenChange={onOpenChange}
-        callout={mapCalloutDetailsToDialogData(callout, formatDate)}
-        commentsSlot={<p className="text-sm text-muted-foreground">{t('comments.empty')}</p>}
-        pollSlot={pollSlot}
-        hasContributions={hasContributionType}
-        contributionsSlot={contributionsSlot}
-        contributionsCount={callout.contributions.length}
+  const defaults = callout.contributionDefaults;
+  const trailingSlot = canCreateContribution ? (
+    contributionType === CalloutContributionType.Whiteboard ? (
+      <WhiteboardContributionAddConnector
+        calloutId={callout.id}
+        defaultDisplayName={defaults?.defaultDisplayName}
+        onCreated={onContributionCreated}
       />
+    ) : contributionType === CalloutContributionType.Memo ? (
+      <MemoContributionAddConnector
+        calloutId={callout.id}
+        // Posts and Memos share `contributionDefaults.defaultDisplayName` + `postDescription`
+        // (FR-33 / FR-42 / FR-43). Mirror the Post branch below — without these the create-memo
+        // dialog always opens with the i18n fallback title and an empty body (T157, 2026-05-19).
+        defaultDisplayName={defaults?.defaultDisplayName}
+        defaultMarkdown={defaults?.postDescription}
+        onCreated={onContributionCreated}
+      />
+    ) : contributionType === CalloutContributionType.Post ? (
+      <PostContributionAddConnector
+        calloutId={callout.id}
+        defaultDisplayName={defaults?.defaultDisplayName}
+        defaultDescription={defaults?.postDescription}
+        onCreated={onContributionCreated}
+      />
+    ) : contributionType === CalloutContributionType.CollaboraDocument ? (
+      <DocumentContributionAddConnector
+        calloutId={callout.id}
+        calloutPrivileges={callout.authorization?.myPrivileges}
+        onCreated={onContributionCreated}
+      />
+    ) : null
+  ) : null;
+
+  // Link contributions render as a list (not a card grid), with inline add + edit / delete
+  // affordances gated by per-link authorization.
+  if (contributionType === CalloutContributionType.Link) {
+    return (
+      <div ref={inViewRef}>
+        {!loading && (
+          <LinkContributionListSlot
+            calloutId={callout.id}
+            contributions={mapped}
+            canCreateContribution={canCreateContribution}
+            onContributionCreated={onContributionCreated}
+          />
+        )}
+      </div>
     );
   }
 
   return (
-    <CalloutCommentsConnector roomId={callout.comments.id} calloutId={callout.id} roomData={callout.comments}>
-      {({ thread, commentInput, commentCount }) => (
+    <div ref={inViewRef}>
+      {!loading && (
+        <ContributionGridConnector
+          contributions={mapped}
+          onContributionClick={onContributionClick}
+          trailingSlot={trailingSlot}
+        />
+      )}
+    </div>
+  );
+}
+
+function LinkContributionListSlot({
+  calloutId,
+  contributions,
+  canCreateContribution,
+  onContributionCreated,
+}: {
+  calloutId: string;
+  contributions: ContributionCardData[];
+  canCreateContribution: boolean;
+  onContributionCreated?: () => void;
+}) {
+  const [addOpen, setAddOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<
+    | {
+        contributionId: string;
+        linkId: string;
+        url: string;
+        displayName: string;
+        description?: string;
+        canDelete: boolean;
+        intent: 'edit' | 'delete';
+      }
+    | undefined
+  >(undefined);
+
+  const links = contributions.map(mapContributionToLinkItem);
+
+  const openTarget = (contributionId: string, intent: 'edit' | 'delete') => {
+    const c = contributions.find(item => item.id === contributionId);
+    if (!c || !c.linkId) return;
+    setEditTarget({
+      contributionId: c.id,
+      linkId: c.linkId,
+      url: c.linkUrl ?? '',
+      displayName: c.title,
+      description: c.linkDescription,
+      canDelete: Boolean(c.canDeleteLink),
+      intent,
+    });
+  };
+
+  return (
+    <>
+      <ContributionLinkList
+        links={links}
+        canAdd={canCreateContribution}
+        onAdd={() => setAddOpen(true)}
+        onEdit={id => openTarget(id, 'edit')}
+        onDelete={id => openTarget(id, 'delete')}
+      />
+      {canCreateContribution && (
+        <LinkContributionAddConnector
+          calloutId={calloutId}
+          inlineTrigger={true}
+          open={addOpen}
+          onOpenChange={setAddOpen}
+          onCreated={onContributionCreated}
+        />
+      )}
+      <LinkContributionEditConnector
+        calloutId={calloutId}
+        target={editTarget}
+        canDelete={editTarget?.canDelete}
+        onClose={() => setEditTarget(undefined)}
+      />
+    </>
+  );
+}
+
+export function CalloutDetailDialogConnector({
+  open,
+  onOpenChange,
+  callout,
+  initialContributionId,
+  initialMemoId,
+  initialPostId,
+  moveActions,
+  elevated = false,
+}: CalloutDetailDialogConnectorProps) {
+  const { t, i18n } = useTranslation('crd-space');
+  // Over the fullscreen board (z-[100]) the detail dialog sits at z-[110], and
+  // any dialog it spawns (edit, delete, share) at z-[120] so it clears both.
+  const elevatedDialog = elevated ? { overlayClassName: 'z-[110]', contentClassName: 'z-[110]' } : {};
+  const elevatedNested = elevated ? { overlayClassName: 'z-[120]', contentClassName: 'z-[120]' } : {};
+  const contributionType = getCalloutContributionType(callout);
+  const initialIsMemo = contributionType === CalloutContributionType.Memo;
+  const initialIsPost = contributionType === CalloutContributionType.Post;
+  const initialIsWhiteboard = contributionType === CalloutContributionType.Whiteboard;
+  const initialIsDocument = open && contributionType === CalloutContributionType.CollaboraDocument;
+
+  const [whiteboardContributionId, setWhiteboardContributionId] = useState<string | undefined>(
+    initialIsWhiteboard ? initialContributionId : undefined
+  );
+  const [documentContributionId, setDocumentContributionId] = useState<string | undefined>(
+    initialIsDocument ? initialContributionId : undefined
+  );
+  const [documentEditorOpen, setDocumentEditorOpen] = useState(initialIsDocument && Boolean(initialContributionId));
+  const [memoContributionId, setMemoContributionId] = useState<string | undefined>(
+    initialIsMemo ? initialContributionId : undefined
+  );
+  const [memoId, setMemoId] = useState<string | undefined>(initialMemoId);
+  const [postContributionId, setPostContributionId] = useState<string | undefined>(
+    initialIsPost ? initialContributionId : undefined
+  );
+  const [postId, setPostId] = useState<string | undefined>(initialPostId);
+  // Whiteboard preview / editor flow (MUI parity): selecting a whiteboard
+  // contribution swaps the grid for an inline preview thumbnail; the
+  // collaborative editor only opens when the user clicks the preview.
+  const [whiteboardEditorOpen, setWhiteboardEditorOpen] = useState(false);
+  // Post-edit dialog opens on top of the inline preview when the user clicks the
+  // edit pencil. Clicking a contribution card no longer opens the edit form
+  // directly — it selects the post and the connector renders the read-only
+  // preview inside the dialog body (MUI parity).
+  const [postEditOpen, setPostEditOpen] = useState(false);
+  const [framingMemoOpen, setFramingMemoOpen] = useState(false);
+  const [framingCollaboraOpen, setFramingCollaboraOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  // Trash icon in the contribution-preview title bar → confirmation → delete
+  // mutation (Golden Rule #9: the icon only stages the id, never mutates).
+  const [confirmDeleteContribution, setConfirmDeleteContribution] = useState<
+    { id: string; title: string; kind: 'post' | 'whiteboard' | 'document' } | undefined
+  >(undefined);
+  const [deletingContribution, setDeletingContribution] = useState(false);
+  const notify = useNotification();
+  const [deleteContribution] = useDeleteContributionMutation();
+  const [fetchFramingMarkdown] = useMemoMarkdownLazyQuery({ fetchPolicy: 'network-only' });
+  const framingRefreshRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // CrdMemoDialog writes the editor content to Apollo cache on close for instant preview updates.
+  // Schedule a delayed server fetch as a safety net to reconcile with the canonical server markdown
+  // once the collab room has persisted its snapshot (~2s lag).
+  const handleFramingMemoClose = () => {
+    const fmId = callout.framing.memo?.id;
+    if (framingRefreshRef.current) {
+      clearTimeout(framingRefreshRef.current);
+      framingRefreshRef.current = null;
+    }
+    if (fmId) {
+      framingRefreshRef.current = setTimeout(() => {
+        void fetchFramingMarkdown({ variables: { id: fmId } });
+        framingRefreshRef.current = null;
+      }, 2500);
+    }
+    setFramingMemoOpen(false);
+  };
+
+  // Clear the pending refresh on unmount — otherwise an unmount during the
+  // 2.5s window still fires the delayed fetch (wasted request, possible cache
+  // population for a component that's gone).
+  useEffect(() => {
+    return () => {
+      if (framingRefreshRef.current) {
+        clearTimeout(framingRefreshRef.current);
+        framingRefreshRef.current = null;
+      }
+    };
+  }, []);
+
+  // Sync when the parent passes a new initial contribution ID (e.g. feed thumbnail click)
+  useEffect(() => {
+    if (!open || !initialContributionId) return;
+    if (contributionType === CalloutContributionType.Memo) {
+      setMemoContributionId(initialContributionId);
+      setMemoId(initialMemoId);
+    } else if (contributionType === CalloutContributionType.Post) {
+      setPostContributionId(initialContributionId);
+      setPostId(initialPostId);
+    } else if (contributionType === CalloutContributionType.Whiteboard) {
+      // Deep-linked whiteboard contributions open the editor immediately —
+      // MUI parity (`openContributionDialogOnLoad`). The inline preview slot
+      // becomes visible after the user closes the editor.
+      setWhiteboardContributionId(initialContributionId);
+      setWhiteboardEditorOpen(true);
+    } else if (contributionType === CalloutContributionType.CollaboraDocument) {
+      // Document responses open their editor directly on load too — same
+      // pattern as Whiteboard (spec FR-012).
+      setDocumentContributionId(initialContributionId);
+      setDocumentEditorOpen(true);
+    }
+    // Other contribution types (Link) don't have a dedicated overlay; the
+    // grid card itself owns the navigation.
+  }, [open, initialContributionId, initialMemoId, initialPostId, contributionType]);
+
+  // Reset per-contribution state whenever the dialog closes so reopening
+  // starts from the fresh initial values rather than stale selections from
+  // the previous session.
+  useEffect(() => {
+    if (open) return;
+    setWhiteboardContributionId(initialIsWhiteboard ? initialContributionId : undefined);
+    setDocumentContributionId(initialIsDocument ? initialContributionId : undefined);
+    setMemoContributionId(initialIsMemo ? initialContributionId : undefined);
+    setMemoId(initialMemoId);
+    setPostContributionId(initialIsPost ? initialContributionId : undefined);
+    setPostId(initialPostId);
+    setWhiteboardEditorOpen(false);
+    setDocumentEditorOpen(false);
+    setPostEditOpen(false);
+  }, [
+    open,
+    initialContributionId,
+    initialIsDocument,
+    initialIsMemo,
+    initialIsPost,
+    initialIsWhiteboard,
+    initialMemoId,
+    initialPostId,
+  ]);
+
+  const hasPoll = callout.framing.type === CalloutFramingType.Poll;
+  const pollSlot = hasPoll ? <CalloutPollConnector callout={callout} /> : undefined;
+
+  const hasWhiteboardFraming = callout.framing.type === CalloutFramingType.Whiteboard && !!callout.framing.whiteboard;
+  const whiteboardFramingSlot = hasWhiteboardFraming ? <WhiteboardFramingConnector callout={callout} /> : undefined;
+
+  const hasMemoFraming = callout.framing.type === CalloutFramingType.Memo && !!callout.framing.memo;
+  const memoFramingSlot = hasMemoFraming ? (
+    <MemoFramingConnector callout={callout} onOpen={() => setFramingMemoOpen(true)} />
+  ) : undefined;
+  const framingMemoId = callout.framing.memo?.id;
+
+  const hasMediaGalleryFraming =
+    callout.framing.type === CalloutFramingType.MediaGallery && !!callout.framing.mediaGallery;
+  // MUI parity (CalloutFramingMediaGallery): when the user has Update on the callout
+  // the connector owns the file picker + upload mutation directly — clicking
+  // "Add images" goes straight to the OS file picker, not through the edit dialog.
+  const canEditMediaGallery = callout.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ?? false;
+  const mediaGalleryFramingSlot = hasMediaGalleryFraming ? (
+    <MediaGalleryFramingConnector callout={callout} canEdit={canEditMediaGallery} />
+  ) : undefined;
+
+  const hasCollaboraFraming =
+    callout.framing.type === CalloutFramingType.CollaboraDocument && !!callout.framing.collaboraDocument;
+  const collaboraFramingSlot = hasCollaboraFraming ? (
+    <CollaboraFramingConnector callout={callout} onOpen={() => setFramingCollaboraOpen(true)} />
+  ) : undefined;
+  const framingCollaboraDocument = callout.framing.collaboraDocument;
+  const framingCollaboraTitle = framingCollaboraDocument?.profile?.displayName ?? callout.framing.profile.displayName;
+  // Editor-header pencil: content editors (UPDATE_CONTENT) may rename too, not just UPDATE holders.
+  const canRenameFramingDocument = canRenameCollaboraDocument({
+    documentPrivileges: framingCollaboraDocument?.authorization?.myPrivileges,
+    calloutPrivileges: callout.authorization?.myPrivileges,
+    includeContentEditors: true,
+  });
+
+  const hasCallToAction = callout.framing.type === CalloutFramingType.Link && !!callout.framing.link;
+  const callToActionFramingSlot = hasCallToAction ? <CallToActionFramingConnector callout={callout} /> : undefined;
+
+  // Contributor-collection body (feature 008) — the self-updating cards/map for
+  // the active type. Rendered in the detail dialog just like the inline feed card
+  // (LazyCalloutItem), so opening the callout shows the collection too.
+  const hasContributors = callout.framing.type === CalloutFramingType.Contributors;
+  const contributorsFramingSlot = hasContributors ? (
+    <ContributorCollectionConnector calloutId={callout.id} />
+  ) : undefined;
+
+  // Spaces-collection body (feature 013) — the host space's subspaces as cards.
+  // Rendered in the detail dialog just like the inline feed card (LazyCalloutItem).
+  const hasSpaces = callout.framing.type === CalloutFramingType.Spaces;
+  const spacesFramingSlot = hasSpaces ? <SpaceCollectionConnector calloutId={callout.id} /> : undefined;
+
+  // Omit the slot entirely when the callout has no reactions summary (the server
+  // module may not be deployed), or when commenting is turned off for the callout —
+  // reactions share the comments switch, and an omitted slot also drops the bordered
+  // section that hosts them. The framing-level flag is read here rather than from the
+  // dialog's `commentsEnabled` prop, which swaps to the contribution-level switch while
+  // a post contribution is selected and would gate callout reactions on the wrong toggle.
+  const reactionsSlot =
+    callout.reactionsSummary == null || !callout.settings.framing.commentsEnabled ? undefined : (
+      <CalloutReactionsConnector
+        calloutId={callout.id}
+        reactionsSummary={callout.reactionsSummary}
+        myPrivileges={callout.authorization?.myPrivileges?.map(p => p as string)}
+        isPublished={!callout.draft}
+      />
+    );
+
+  const handleContributionClick = (contributionId: string, clickedEntityId?: string) => {
+    if (contributionType === CalloutContributionType.Memo) {
+      setMemoContributionId(contributionId);
+      setMemoId(clickedEntityId);
+    } else if (contributionType === CalloutContributionType.Post) {
+      setPostContributionId(contributionId);
+      setPostId(clickedEntityId);
+    } else if (contributionType === CalloutContributionType.Whiteboard) {
+      // MUI parity (`CalloutContributionPreview` with `openContributionDialogOnLoad`):
+      // clicking a whiteboard card jumps the user straight into the collaborative
+      // editor. The inline preview then becomes visible underneath when the user
+      // closes the editor (since `whiteboardContributionId` stays set).
+      setWhiteboardContributionId(contributionId);
+      setWhiteboardEditorOpen(true);
+    } else if (contributionType === CalloutContributionType.CollaboraDocument) {
+      // Document responses open their editor directly on click, same as Whiteboard (FR-012).
+      setDocumentContributionId(contributionId);
+      setDocumentEditorOpen(true);
+    }
+  };
+
+  // See `ContributionsSlot` above for why `enabled` is intentionally NOT in this gate.
+  const hasContributionType = Boolean(getCalloutContributionType(callout));
+  const contributionsSlot = hasContributionType ? (
+    <ContributionsSlot callout={callout} open={open} onContributionClick={handleContributionClick} />
+  ) : undefined;
+
+  // Inline preview of the selected post contribution — mirrors the MUI flow
+  // where clicking a post card swaps the contributions grid for a read-only
+  // preview of the chosen post (`CalloutContributionPreview` + `CalloutContributionPreviewPost`).
+  const { data: postContributionData, loading: loadingPostContribution } = useCalloutContributionQuery({
+    variables: { contributionId: postContributionId ?? '', includePost: true },
+    skip: !open || !postContributionId || contributionType !== CalloutContributionType.Post,
+  });
+  const selectedPost = postContributionData?.lookup.contribution?.post;
+  const selectedPostUrl = selectedPost?.profile?.url;
+  // Edit privileges live on the contribution wrapper, not the inner post — same
+  // shape MUI uses in `useCalloutContributionQuery` to gate the edit button.
+  const canEditSelectedPost =
+    postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Update) ??
+    false;
+  const canDeleteSelectedPost =
+    postContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(AuthorizationPrivilege.Delete) ??
+    false;
+
+  // Whiteboard contribution data — drives the inline preview (header + thumbnail
+  // + click-to-open overlay). MUI parity: clicking a whiteboard card surfaces
+  // this preview first; the full collaborative editor only mounts when the user
+  // clicks through. Fetching from `lookup.contribution` keeps the preview
+  // independent from the costlier WhiteboardFromCallout query that the editor
+  // uses internally.
+  const { data: whiteboardContributionData, loading: loadingWhiteboardContribution } = useCalloutContributionQuery({
+    variables: { contributionId: whiteboardContributionId ?? '', includeWhiteboard: true },
+    skip: !open || !whiteboardContributionId || contributionType !== CalloutContributionType.Whiteboard,
+  });
+  const selectedWhiteboard = whiteboardContributionData?.lookup.contribution?.whiteboard;
+  const canEditSelectedWhiteboard =
+    whiteboardContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.Update
+    ) ?? false;
+  const canDeleteSelectedWhiteboard =
+    whiteboardContributionData?.lookup.contribution?.authorization?.myPrivileges?.includes(
+      AuthorizationPrivilege.Delete
+    ) ?? false;
+
+  const handleDeleteContributionConfirm = async () => {
+    if (!confirmDeleteContribution) return;
+    setDeletingContribution(true);
+    try {
+      await deleteContribution({
+        variables: { contributionId: confirmDeleteContribution.id },
+        awaitRefetchQueries: true,
+        refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+      });
+      // Clear the inline preview/editor too — otherwise the grid refreshes without the
+      // contribution but the preview keeps rendering its cached snapshot.
+      if (confirmDeleteContribution.kind === 'post') {
+        setPostContributionId(undefined);
+        setPostId(undefined);
+        // On a Tasks board the dialog is a focused single-task view layered over
+        // the board (not a contributions grid). Clearing the selection alone would
+        // flip it back to the full "post with responses" grid on top of the board;
+        // close the dialog instead. Non-board callouts keep the grid fallback.
+        if (elevated) {
+          onOpenChange(false);
+        }
+      } else if (confirmDeleteContribution.kind === 'whiteboard') {
+        setWhiteboardEditorOpen(false);
+        setWhiteboardContributionId(undefined);
+      } else {
+        setDocumentEditorOpen(false);
+        setDocumentContributionId(undefined);
+      }
+      setConfirmDeleteContribution(undefined);
+    } catch (err) {
+      logError(new Error('Contribution delete failed', { cause: err as Error }));
+      notify(t('deleteContribution.saveFailed'), 'error');
+    } finally {
+      setDeletingContribution(false);
+    }
+  };
+
+  const deleteContributionDialog = (
+    <ConfirmationDialog
+      open={confirmDeleteContribution !== undefined}
+      onOpenChange={isOpen => !isOpen && setConfirmDeleteContribution(undefined)}
+      // Over a task board the focused post is a task, so name the delete prompt
+      // accordingly; the description/confirm stay generic (shared with posts).
+      title={elevated ? t('deleteTask.title') : t('deleteContribution.title')}
+      description={t('deleteContribution.description', { title: confirmDeleteContribution?.title ?? '' })}
+      confirmLabel={t('deleteContribution.confirm')}
+      cancelLabel={t('dialogs.cancel')}
+      onConfirm={handleDeleteContributionConfirm}
+      variant="destructive"
+      loading={deletingContribution}
+      {...elevatedNested}
+    />
+  );
+
+  const selectedWhiteboardContributionSlot =
+    whiteboardContributionId && contributionType === CalloutContributionType.Whiteboard ? (
+      <CalloutWhiteboardContributionPreview
+        loading={loadingWhiteboardContribution && !selectedWhiteboard}
+        whiteboard={{
+          id: selectedWhiteboard?.id ?? whiteboardContributionId,
+          title: selectedWhiteboard?.profile.displayName ?? '',
+          author: selectedWhiteboard?.createdBy?.profile
+            ? {
+                name: selectedWhiteboard.createdBy.profile.displayName,
+                avatarUrl: selectedWhiteboard.createdBy.profile.avatar?.uri,
+                profileUrl: selectedWhiteboard.createdBy.profile.url,
+              }
+            : undefined,
+          timestamp: formatRelativeFromNow(
+            selectedWhiteboard?.createdDate as string | number | Date | undefined,
+            resolveDateFnsLocale(i18n.language)
+          ),
+          previewUrl: selectedWhiteboard?.profile.preview?.uri,
+        }}
+        onOpen={() => setWhiteboardEditorOpen(true)}
+        onEdit={canEditSelectedWhiteboard ? () => setWhiteboardEditorOpen(true) : undefined}
+        onDelete={
+          canDeleteSelectedWhiteboard
+            ? () =>
+                setConfirmDeleteContribution({
+                  id: whiteboardContributionId,
+                  title: selectedWhiteboard?.profile.displayName ?? '',
+                  kind: 'whiteboard',
+                })
+            : undefined
+        }
+        onClose={() => setWhiteboardContributionId(undefined)}
+        shareSlot={
+          selectedWhiteboard?.profile?.url ? (
+            <ShareButton
+              url={selectedWhiteboard.profile.url}
+              tooltip={t('whiteboardPreview.share')}
+              dialogTitle={t('whiteboardPreview.share')}
+            />
+          ) : undefined
+        }
+      />
+    ) : undefined;
+
+  const selectedPostContributionSlot =
+    postContributionId && contributionType === CalloutContributionType.Post ? (
+      <CalloutPostPreview
+        loading={loadingPostContribution && !selectedPost}
+        // On a Tasks board (elevated) the task is worked by several assignees, so
+        // de-emphasise the single creator: drop the avatar, prefix "Created by".
+        deEmphasizeCreator={elevated}
+        post={{
+          id: selectedPost?.id ?? postContributionId,
+          title: selectedPost?.profile.displayName ?? '',
+          author: selectedPost?.createdBy?.profile
+            ? {
+                name: selectedPost.createdBy.profile.displayName,
+                avatarUrl: selectedPost.createdBy.profile.avatar?.uri,
+                profileUrl: selectedPost.createdBy.profile.url,
+              }
+            : undefined,
+          // Match MUI's contribution-preview header ("1 hour ago" / "5 minutes ago")
+          // — the precise date is shown on the contribution card itself; in the
+          // inline preview we want the at-a-glance relative distance.
+          timestamp: formatRelativeFromNow(
+            selectedPost?.createdDate as string | number | Date | undefined,
+            resolveDateFnsLocale(i18n.language)
+          ),
+          description: selectedPost?.profile.description ?? undefined,
+          tags: selectedPost?.profile.tagset?.tags ?? [],
+          references: selectedPost?.profile.references?.map(mapReferenceToStripData),
+        }}
+        onEdit={canEditSelectedPost ? () => setPostEditOpen(true) : undefined}
+        onDelete={
+          canDeleteSelectedPost
+            ? () =>
+                setConfirmDeleteContribution({
+                  id: postContributionId,
+                  title: selectedPost?.profile.displayName ?? '',
+                  kind: 'post',
+                })
+            : undefined
+        }
+        onClose={() => {
+          // In focused mode the preview IS the dialog (no grid to fall back to),
+          // so its close control closes the whole dialog.
+          if (elevated) {
+            onOpenChange(false);
+            return;
+          }
+          setPostContributionId(undefined);
+          setPostId(undefined);
+        }}
+        shareSlot={
+          selectedPostUrl ? (
+            <ShareButton
+              url={selectedPostUrl}
+              tooltip={t('postPreview.share')}
+              dialogTitle={t('postPreview.share')}
+              // Over the fullscreen board the share dialog must clear the board.
+              dialogClassName={elevated ? 'z-[120]' : undefined}
+              overlayClassName={elevated ? 'z-[120]' : undefined}
+            />
+          ) : undefined
+        }
+      />
+    ) : undefined;
+
+  // Single slot consumed by `CalloutDetailDialog` — either the post preview or
+  // the whiteboard preview, never both (the contribution-type strip is uniform
+  // per callout, so only one of these is set at a time).
+  const selectedContributionSlot = selectedWhiteboardContributionSlot ?? selectedPostContributionSlot;
+
+  const whiteboardOverlay =
+    whiteboardEditorOpen && whiteboardContributionId ? (
+      <WhiteboardContributionConnector
+        open={true}
+        calloutId={callout.id}
+        contributionId={whiteboardContributionId}
+        // Returning from the editor lands on the inline preview, not the grid —
+        // matches the MUI nav pattern. The user closes the preview explicitly
+        // (via its X button) to return to the grid.
+        onClose={() => setWhiteboardEditorOpen(false)}
+      />
+    ) : null;
+
+  const documentOverlay =
+    open && documentEditorOpen && documentContributionId ? (
+      <DocumentContributionConnector
+        open={true}
+        contributionId={documentContributionId}
+        calloutPrivileges={callout.authorization?.myPrivileges}
+        onClose={() => {
+          setDocumentEditorOpen(false);
+          setDocumentContributionId(undefined);
+        }}
+        onDelete={(id, title) => setConfirmDeleteContribution({ id, title, kind: 'document' })}
+      />
+    ) : null;
+
+  const memoOverlay =
+    memoContributionId && memoId ? (
+      <MemoContributionConnector
+        open={true}
+        contributionId={memoContributionId}
+        memoId={memoId}
+        onClose={() => {
+          setMemoContributionId(undefined);
+          setMemoId(undefined);
+        }}
+      />
+    ) : null;
+
+  // Fall back to the fetched post's id when the entry point (feed thumbnail
+  // click, deep link) didn't plumb `postId` through. The contribution-query
+  // resolution above already returns `selectedPost.id`, so the edit overlay
+  // can open against it even if the `postId` URL/click state was empty —
+  // matches the MUI `CalloutContributionPreviewPost` edit pencil, which
+  // never depended on a route param for the post id.
+  const resolvedPostId = postId ?? selectedPost?.id;
+  const postOverlay =
+    postEditOpen && postContributionId && resolvedPostId ? (
+      <PostContributionConnector
+        open={true}
+        calloutId={callout.id}
+        calloutsSetId={callout.calloutsSetId}
+        contributionId={postContributionId}
+        postId={resolvedPostId}
+        // Closing the edit dialog returns to the read-only preview — only
+        // explicit close on the preview itself clears the selection.
+        onClose={() => setPostEditOpen(false)}
+        // Deleting the post must clear the inline preview too — otherwise the
+        // grid refreshes without the post but the preview keeps rendering its
+        // cached snapshot, making it look like the deletion failed.
+        onDeleted={() => {
+          setPostEditOpen(false);
+          setPostContributionId(undefined);
+          setPostId(undefined);
+          // On a board (elevated) the focused-task dialog has no contributions
+          // grid behind it — deleting the task via the edit dialog must close it,
+          // not fall back to the "post with responses" grid on top of the board.
+          if (elevated) {
+            onOpenChange(false);
+          }
+        }}
+        isTaskBoard={elevated}
+        {...elevatedNested}
+      />
+    ) : null;
+
+  const framingMemoOverlay =
+    framingMemoOpen && framingMemoId ? (
+      <CrdMemoDialog
+        open={true}
+        memoId={framingMemoId}
+        isContribution={false}
+        onClose={() => handleFramingMemoClose()}
+      />
+    ) : null;
+
+  const framingCollaboraOverlay = framingCollaboraDocument ? (
+    <CollaboraFramingEditorOverlay
+      open={framingCollaboraOpen}
+      collaboraDocumentId={framingCollaboraDocument.id}
+      title={framingCollaboraTitle}
+      documentType={toCollaboraPreviewType(framingCollaboraDocument.documentType)}
+      canRename={canRenameFramingDocument}
+      onClose={() => setFramingCollaboraOpen(false)}
+    />
+  ) : null;
+
+  const handleShareClick = () => setShareOpen(true);
+  const settingsSlot = (
+    <CalloutSettingsConnector
+      callout={callout}
+      moveActions={moveActions}
+      onShare={handleShareClick}
+      isTaskBoard={elevated}
+      onDeleted={() => onOpenChange(false)}
+    />
+  );
+
+  const shareDialog = (
+    <CalloutShareDialog open={shareOpen} onOpenChange={setShareOpen} callout={callout} {...elevatedNested} />
+  );
+
+  // Mirrors MUI: when the admin disables commenting, suppress the comment input but keep
+  // existing messages readable. The dialog itself hides the discussion section entirely
+  // when commentsEnabled is false AND there are no existing messages.
+  //
+  // Post-contribution comment-swap (Phase 22 / T155, 2026-05-19): when a post contribution is
+  // selected, the bottom comment surface swaps from callout-level to that post's comments.
+  // The two surfaces are mutually exclusive — never stacked. Gating switches to
+  // `settings.contribution.commentsEnabled` (the *contribution*-level switch, distinct from
+  // the framing-level one used for callout comments). The dialog's existing
+  // `showDiscussion = commentsEnabled !== false || commentCount > 0` rule handles all three
+  // commentsEnabled / messagesCount cases (US12 scenarios 2a / 2b / 2c) without extra branching:
+  // - 2a (enabled + any count)  → thread + input shown.
+  // - 2b (disabled + count > 0) → thread shown read-only (we pass commentInputSlot={null}).
+  // - 2c (disabled + count = 0) → entire section hidden by `showDiscussion`.
+  const isPostSelected = Boolean(postContributionId) && contributionType === CalloutContributionType.Post;
+  const calloutCommentsEnabled = callout.settings.framing.commentsEnabled;
+  const postCommentsEnabled = callout.settings.contribution.commentsEnabled ?? false;
+  const activeCommentsEnabled = isPostSelected ? postCommentsEnabled : calloutCommentsEnabled;
+  const postCommentsRoomId = selectedPost?.comments?.id;
+  const activeCommentsRoomId = isPostSelected ? postCommentsRoomId : callout.comments?.id;
+  const activeRoomData = isPostSelected ? undefined : callout.comments;
+  // Pre-load count fallback for case 2c — when comments are disabled and the live thread isn't
+  // mounted yet, this seeds the dialog's `showDiscussion` rule so the section stays hidden
+  // until/unless we actually have messages.
+  const postMessagesCount = selectedPost?.comments?.messagesCount ?? 0;
+
+  if (!activeCommentsRoomId) {
+    return (
+      <>
         <CalloutDetailDialog
           open={open}
           onOpenChange={onOpenChange}
+          {...elevatedDialog}
+          focusedPost={elevated && isPostSelected}
           callout={{
-            ...mapCalloutDetailsToDialogData(callout, formatDate),
-            commentCount,
+            ...mapCalloutDetailsToDialogData(callout, t),
+            commentCount: isPostSelected ? postMessagesCount : undefined,
           }}
-          commentsSlot={thread}
-          commentInputSlot={commentInput}
+          commentsSlot={<p className="text-body text-muted-foreground">{t('comments.empty')}</p>}
+          commentsEnabled={activeCommentsEnabled}
+          pollSlot={pollSlot}
+          whiteboardFramingSlot={whiteboardFramingSlot}
+          memoFramingSlot={memoFramingSlot}
+          mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+          collaboraFramingSlot={collaboraFramingSlot}
+          callToActionFramingSlot={callToActionFramingSlot}
+          contributorsFramingSlot={contributorsFramingSlot}
+          spacesFramingSlot={spacesFramingSlot}
           hasContributions={hasContributionType}
           contributionsSlot={contributionsSlot}
           contributionsCount={callout.contributions.length}
-          pollSlot={pollSlot}
+          selectedContributionSlot={selectedContributionSlot}
+          reactionsSlot={reactionsSlot}
+          settingsSlot={settingsSlot}
+          onShareClick={handleShareClick}
         />
-      )}
-    </CalloutCommentsConnector>
+        {whiteboardOverlay}
+        {documentOverlay}
+        {memoOverlay}
+        {postOverlay}
+        {framingMemoOverlay}
+        {framingCollaboraOverlay}
+        {shareDialog}
+        {deleteContributionDialog}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <CalloutCommentsConnector
+        // `key` on `roomId` so the inner intersection-observer + subscription state resets
+        // cleanly when the user swaps between callout-level and post-level comment surfaces.
+        key={activeCommentsRoomId}
+        roomId={activeCommentsRoomId}
+        calloutId={callout.id}
+        contributionId={isPostSelected ? postContributionId : undefined}
+        roomData={activeRoomData}
+        // In the focused-task dialog on a board (elevated, z-[110]) the comment
+        // delete-confirmation would otherwise open behind it and block the UI —
+        // lift it to the same nested tier as the dialog's other confirmations.
+        confirmOverlayClassName={elevated ? 'z-[120]' : undefined}
+        confirmContentClassName={elevated ? 'z-[120]' : undefined}
+        // The connector's wrapper `<div ref={ref}>` ends up in the feed-card's React tree
+        // (alongside the dialog trigger), NOT inside the dialog's Radix portal. With the user
+        // scrolled away from that card, `useInView` never fires and the post-comments query
+        // stays skipped — surfacing as "Discussion · 0 comments" even when the post has them.
+        // Eager loading is correct here: the dialog is open, the section IS visible.
+        eager={true}
+      >
+        {({ thread, commentInput, commentCount }) => (
+          <CalloutDetailDialog
+            open={open}
+            onOpenChange={onOpenChange}
+            {...elevatedDialog}
+            focusedPost={elevated && isPostSelected}
+            callout={{
+              ...mapCalloutDetailsToDialogData(callout, t),
+              // While the live thread is still loading, fall back to the post's `messagesCount`
+              // (already on the prefetched preview payload) so the dialog header doesn't say
+              // "0 comments" for a post that actually has them. The live count takes over once
+              // the thread resolves.
+              commentCount: isPostSelected ? Math.max(commentCount, postMessagesCount) : commentCount,
+            }}
+            commentsSlot={thread}
+            commentInputSlot={activeCommentsEnabled ? commentInput : null}
+            commentsEnabled={activeCommentsEnabled}
+            hasContributions={hasContributionType}
+            contributionsSlot={contributionsSlot}
+            contributionsCount={callout.contributions.length}
+            selectedContributionSlot={selectedContributionSlot}
+            pollSlot={pollSlot}
+            whiteboardFramingSlot={whiteboardFramingSlot}
+            memoFramingSlot={memoFramingSlot}
+            mediaGalleryFramingSlot={mediaGalleryFramingSlot}
+            collaboraFramingSlot={collaboraFramingSlot}
+            callToActionFramingSlot={callToActionFramingSlot}
+            contributorsFramingSlot={contributorsFramingSlot}
+            spacesFramingSlot={spacesFramingSlot}
+            reactionsSlot={reactionsSlot}
+            settingsSlot={settingsSlot}
+            onShareClick={handleShareClick}
+          />
+        )}
+      </CalloutCommentsConnector>
+      {whiteboardOverlay}
+      {documentOverlay}
+      {memoOverlay}
+      {postOverlay}
+      {framingMemoOverlay}
+      {framingCollaboraOverlay}
+      {shareDialog}
+      {deleteContributionDialog}
+    </>
   );
 }

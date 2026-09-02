@@ -1,8 +1,7 @@
 import { Building2, FileText, Globe, MessageSquare, Users } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
-import { useSearchQuery, useSpaceUrlResolverQuery } from '@/core/apollo/generated/apollo-hooks';
+import { useSearchQuery, useSpaceAboutBaseQuery } from '@/core/apollo/generated/apollo-hooks';
 import { SearchCategory, type SearchQuery, SearchResultType } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { OrgResultCard } from '@/crd/components/search/OrgResultCard';
@@ -18,6 +17,7 @@ import type { SearchFilterOption } from '@/crd/components/search/SearchResultSec
 
 import { UserResultCard } from '@/crd/components/search/UserResultCard';
 import { SpaceCard } from '@/crd/components/space/SpaceCard';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 import { useSearch } from '../../search/SearchContext';
 import type { SearchResultMetaType } from '../../search/searchTypes';
 import {
@@ -56,15 +56,11 @@ function toResultType(query?: SearchQuery) {
   };
 }
 
-function extractSpaceNameIdFromPath(pathname: string): string | undefined {
-  const match = pathname.match(/^\/space\/([^/]+)/);
-  return match?.[1];
-}
+type ActiveScope = 'space' | 'all';
 
 export function CrdSearchOverlay() {
   const { t } = useTranslation('crd-search');
   const { isOpen, closeSearch, initialQuery, clearInitialQuery } = useSearch();
-  const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const [searchTags, setSearchTags] = useState<string[]>([]);
@@ -90,16 +86,27 @@ export function CrdSearchOverlay() {
   const [canContributionLoadMore, setCanContributionLoadMore] = useState(true);
   const [canContributorLoadMore, setCanContributorLoadMore] = useState(true);
 
-  // Detect space from current route pathname
-  const spaceNameId = extractSpaceNameIdFromPath(pathname);
-
-  const { data: spaceIdData, loading: resolvingSpace } = useSpaceUrlResolverQuery({
-    variables: { spaceNameId: spaceNameId ?? '' },
-    skip: !spaceNameId,
+  // Detect the level-zero (top-level) Space from the URL resolver context. The
+  // UrlResolverProvider only wraps Space routes; on non-Space routes useUrlResolver()
+  // returns the default empty context (loading: true permanently). We therefore
+  // derive "is loading" only from whether we have a levelZeroSpaceId AND the
+  // displayName lookup for it is still in flight — never from the resolver's own
+  // loading flag, which is unreliable when the provider isn't mounted.
+  const { levelZeroSpaceId } = useUrlResolver();
+  const { data: spaceAboutData, loading: spaceQueryLoading } = useSpaceAboutBaseQuery({
+    variables: { spaceId: levelZeroSpaceId ?? '' },
+    skip: !levelZeroSpaceId,
   });
-  const spaceId = spaceIdData?.lookupByName.space?.id;
+  const spaceDisplayName = spaceAboutData?.lookup.space?.about.profile.displayName ?? '';
+  const spaceContextLoading = Boolean(levelZeroSpaceId) && spaceQueryLoading;
 
-  // spaceId is used for scoping the search query — no UI for scope switching
+  // Active scope drives both the UI selector and the search query's space filter.
+  const [activeScope, setActiveScope] = useState<ActiveScope>(levelZeroSpaceId ? 'space' : 'all');
+  const handleScopeChange = (next: 'all' | string) => setActiveScope(next === 'all' ? 'all' : 'space');
+
+  // The level-zero Space id is applied as the search filter only when the active
+  // scope is the current Space; passing undefined produces a platform-wide search.
+  const searchInSpaceFilter = activeScope === 'space' ? levelZeroSpaceId : undefined;
 
   // Direct search query — local state only, no URL navigation
   const {
@@ -111,7 +118,7 @@ export function CrdSearchOverlay() {
       searchData: {
         tagsetNames,
         terms: searchTags,
-        searchInSpaceFilter: spaceId,
+        searchInSpaceFilter,
         filters: [
           {
             category: SearchCategory.Spaces,
@@ -128,13 +135,18 @@ export function CrdSearchOverlay() {
           {
             category: SearchCategory.Framings,
             size: SEARCH_RESULTS_COUNT,
-            types: [SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [SearchResultType.Whiteboard, SearchResultType.Memo, SearchResultType.CollaboraDocument],
             cursor: undefined,
           },
           {
             category: SearchCategory.Contributions,
             size: SEARCH_RESULTS_COUNT,
-            types: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [
+              SearchResultType.Post,
+              SearchResultType.Whiteboard,
+              SearchResultType.Memo,
+              SearchResultType.CollaboraDocument,
+            ],
             cursor: undefined,
           },
           {
@@ -147,17 +159,17 @@ export function CrdSearchOverlay() {
       },
     },
     fetchPolicy: 'no-cache',
-    skip: searchTags.length === 0 || resolvingSpace,
+    skip: searchTags.length === 0 || spaceContextLoading,
   });
 
-  // Track canLoadMore flags from initial query results
+  // Track canLoadMore flags from the response cursor: a null cursor means the backend has no more results.
   useEffect(() => {
     if (data?.search && !isSearching) {
-      setCanSpaceLoadMore((data.search.spaceResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanCalloutLoadMore((data.search.calloutResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanFramingLoadMore((data.search.framingResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanContributionLoadMore((data.search.contributionResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
-      setCanContributorLoadMore((data.search.actorResults?.results?.length ?? 0) >= SEARCH_RESULTS_COUNT);
+      setCanSpaceLoadMore(!!data.search.spaceResults?.cursor);
+      setCanCalloutLoadMore(!!data.search.calloutResults?.cursor);
+      setCanFramingLoadMore(!!data.search.framingResults?.cursor);
+      setCanContributionLoadMore(!!data.search.contributionResults?.cursor);
+      setCanContributorLoadMore(!!data.search.actorResults?.cursor);
     }
   }, [data, isSearching]);
 
@@ -200,8 +212,9 @@ export function CrdSearchOverlay() {
       setCanFramingLoadMore(true);
       setCanContributionLoadMore(true);
       setCanContributorLoadMore(true);
+      setActiveScope(levelZeroSpaceId ? 'space' : 'all');
     }
-  }, [isOpen]);
+  }, [isOpen, levelZeroSpaceId]);
 
   // Map results
   const { spaceResults, calloutResults, framingResults, contributionResults, contributorResults } = toResultType(
@@ -289,6 +302,7 @@ export function CrdSearchOverlay() {
     { value: 'all', label: t('search.filters.all') },
     { value: 'whiteboard', label: t('search.filters.whiteboards') },
     { value: 'memo', label: t('search.filters.memos') },
+    { value: 'collaboraDocument', label: t('search.filters.documents') },
   ];
 
   const responseFilterOptions: SearchFilterOption[] = [
@@ -296,6 +310,7 @@ export function CrdSearchOverlay() {
     { value: 'post', label: t('search.filters.posts') },
     { value: 'whiteboard', label: t('search.filters.whiteboards') },
     { value: 'memo', label: t('search.filters.memos') },
+    { value: 'collaboraDocument', label: t('search.filters.documents') },
   ];
 
   // Section filter change handler
@@ -312,11 +327,19 @@ export function CrdSearchOverlay() {
         case SearchCategory.CollaborationTools:
           return { cursor: calloutCursor, types: [SearchResultType.Callout] };
         case SearchCategory.Framings:
-          return { cursor: framingCursor, types: [SearchResultType.Whiteboard, SearchResultType.Memo] };
+          return {
+            cursor: framingCursor,
+            types: [SearchResultType.Whiteboard, SearchResultType.Memo, SearchResultType.CollaboraDocument],
+          };
         case SearchCategory.Contributions:
           return {
             cursor: contributionCursor,
-            types: [SearchResultType.Post, SearchResultType.Whiteboard, SearchResultType.Memo],
+            types: [
+              SearchResultType.Post,
+              SearchResultType.Whiteboard,
+              SearchResultType.Memo,
+              SearchResultType.CollaboraDocument,
+            ],
           };
         case SearchCategory.Contributors:
           return { cursor: contributorCursor, types: [SearchResultType.User, SearchResultType.Organization] };
@@ -332,14 +355,14 @@ export function CrdSearchOverlay() {
         searchData: {
           tagsetNames,
           terms: searchTags,
-          searchInSpaceFilter: spaceId,
+          searchInSpaceFilter,
           filters: [{ category: resultsType, size: SEARCH_RESULTS_COUNT, types, cursor }],
         },
       },
       updateQuery: (prev: SearchQuery, { fetchMoreResult }: { fetchMoreResult: SearchQuery }) => {
         switch (resultsType) {
           case SearchCategory.Spaces:
-            setCanSpaceLoadMore((fetchMoreResult?.search?.spaceResults?.results?.length ?? 0) > 0);
+            setCanSpaceLoadMore(!!fetchMoreResult?.search?.spaceResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -353,7 +376,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.CollaborationTools:
-            setCanCalloutLoadMore((fetchMoreResult?.search?.calloutResults?.results?.length ?? 0) > 0);
+            setCanCalloutLoadMore(!!fetchMoreResult?.search?.calloutResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -367,7 +390,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.Framings:
-            setCanFramingLoadMore((fetchMoreResult?.search?.framingResults?.results?.length ?? 0) > 0);
+            setCanFramingLoadMore(!!fetchMoreResult?.search?.framingResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -381,7 +404,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.Contributions:
-            setCanContributionLoadMore((fetchMoreResult?.search?.contributionResults?.results?.length ?? 0) > 0);
+            setCanContributionLoadMore(!!fetchMoreResult?.search?.contributionResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -395,7 +418,7 @@ export function CrdSearchOverlay() {
               },
             };
           case SearchCategory.Contributors:
-            setCanContributorLoadMore((fetchMoreResult?.search?.actorResults?.results?.length ?? 0) > 0);
+            setCanContributorLoadMore(!!fetchMoreResult?.search?.actorResults?.cursor);
             return {
               search: {
                 ...prev.search,
@@ -570,15 +593,35 @@ export function CrdSearchOverlay() {
   // Use unfiltered counts so sidebar reflects total results, not filtered subset
   const allSidebarCategories: SidebarCategory[] = [
     { id: 'spaces', label: t('search.categories.spaces'), icon: Globe, count: mappedSpaces.length },
-    { id: 'posts', label: t('search.categories.posts'), icon: FileText, count: mappedPosts.length },
-    { id: 'responses', label: t('search.categories.responses'), icon: MessageSquare, count: mappedResponses.length },
+    {
+      id: 'posts',
+      label: t('search.categories.posts'),
+      icon: FileText,
+      count: mappedPosts.length,
+    },
+    {
+      id: 'responses',
+      label: t('search.categories.responses'),
+      icon: MessageSquare,
+      count: mappedResponses.length,
+    },
     { id: 'users', label: t('search.categories.users'), icon: Users, count: mappedUsers.length },
     { id: 'organizations', label: t('search.categories.organizations'), icon: Building2, count: mappedOrgs.length },
   ];
 
-  // Scope is determined by the current route pathname. The overlay does not render
-  // a scope dropdown because changing scope would require navigation, which the
-  // overlay should not do. If inside a space, search is automatically scoped.
+  // Scope dropdown is shown only when a Space context is fully resolved. When
+  // inside a Space, the dropdown defaults to that Space and lets the user widen
+  // to platform-wide search; outside a Space, no dropdown is shown.
+  const scope =
+    levelZeroSpaceId && !spaceContextLoading
+      ? {
+          currentSpaceName: spaceDisplayName,
+          activeScope: activeScope === 'space' ? spaceDisplayName : ('all' as const),
+        }
+      : undefined;
+
+  // Recovery action — only when inside a Space and currently scoped to it.
+  const onSearchAll = levelZeroSpaceId && activeScope === 'space' ? () => setActiveScope('all') : undefined;
 
   return (
     <SearchOverlay
@@ -591,6 +634,9 @@ export function CrdSearchOverlay() {
       onTagAdd={handleTagAdd}
       onTagRemove={handleTagRemove}
       maxTags={MAX_TAGS}
+      scope={scope}
+      onScopeChange={scope ? handleScopeChange : undefined}
+      onSearchAll={onSearchAll}
       categories={categories}
       allSidebarCategories={allSidebarCategories}
       disclaimer={t('search.disclaimer')}

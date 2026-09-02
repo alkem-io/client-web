@@ -1,6 +1,9 @@
-import { Folder, Plus, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Folder } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FilterResultsSummary } from '@/crd/components/common/FilterResultsSummary';
+import { TagFilterPopover } from '@/crd/components/common/TagFilterPopover';
+import { SearchField } from '@/crd/forms/SearchField';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { SpaceCard, type SpaceCardData } from './SpaceCard';
@@ -9,19 +12,18 @@ type StatusFilter = 'all' | 'active' | 'archived';
 
 type SpaceSubspacesListProps = {
   subspaces: SpaceCardData[];
-  /** Optional title override — defaults to t('subspaces.title'). */
+  /** Optional section title — heading is hidden when omitted. */
   title?: string;
-  /** Optional subtitle override — defaults to t('subspaces.subtitle'). */
+  /** Optional subtitle rendered under the title. */
   subtitle?: string;
-  /** "Create Subspace" button only renders when both `canCreate` and `onCreateClick` are set. */
-  canCreate?: boolean;
-  onCreateClick?: () => void;
   onSubspaceClick?: (space: SpaceCardData) => void;
   /**
    * Initial number of subspace cards rendered before a "Show more" button
    * appears. Defaults to 6 (a 3-column grid with 2 rows).
    */
   initialVisibleCount?: number;
+  /** Hide the status filter pills and tag filter chips — keep only the search. */
+  disableFilters?: boolean;
   className?: string;
 };
 
@@ -51,10 +53,9 @@ export function SpaceSubspacesList({
   subspaces,
   title,
   subtitle,
-  canCreate,
-  onCreateClick,
   onSubspaceClick,
   initialVisibleCount = DEFAULT_INITIAL_VISIBLE,
+  disableFilters = false,
   className,
 }: SpaceSubspacesListProps) {
   const { t } = useTranslation('crd-space');
@@ -63,17 +64,19 @@ export function SpaceSubspacesList({
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [showAll, setShowAll] = useState(false);
 
-  const allTags = collectTags(subspaces);
+  const allTags = disableFilters ? [] : collectTags(subspaces);
 
   // Show status filter pills only when subspaces carry status data and at least
   // one subspace has a non-active status (otherwise the pills add no value).
-  const hasStatusVariety = useMemo(() => subspaces.some(s => s.status && s.status !== 'active'), [subspaces]);
+  const hasStatusVariety = !disableFilters && subspaces.some(s => s.status && s.status !== 'active');
 
   const STATUS_OPTIONS: StatusFilter[] = ['all', 'active', 'archived'];
 
-  // Apply status + search + tag filters.
+  // Apply status + search + tag filters. When `disableFilters` is true, the
+  // status/tag controls are hidden — also skip their predicates so any residual
+  // state from before the prop flipped can't filter results invisibly.
   let filtered = subspaces;
-  if (statusFilter !== 'all') {
+  if (!disableFilters && statusFilter !== 'all') {
     filtered = filtered.filter(s => s.status === statusFilter);
   }
   if (searchQuery) {
@@ -82,7 +85,7 @@ export function SpaceSubspacesList({
       s => s.name.toLowerCase().includes(query) || s.description.toLowerCase().includes(query)
     );
   }
-  if (selectedTags.length > 0) {
+  if (!disableFilters && selectedTags.length > 0) {
     filtered = filtered.filter(s => selectedTags.every(tag => s.tags.includes(tag)));
   }
 
@@ -98,40 +101,34 @@ export function SpaceSubspacesList({
     setShowAll(false);
   };
 
-  const hasActiveFilter = searchQuery.length > 0 || selectedTags.length > 0 || statusFilter !== 'all';
+  const hasActiveFilter =
+    searchQuery.length > 0 || (!disableFilters && (selectedTags.length > 0 || statusFilter !== 'all'));
   const visibleSubspaces = showAll ? filtered : filtered.slice(0, initialVisibleCount);
   const hiddenCount = filtered.length - visibleSubspaces.length;
 
   return (
     <section className={cn('space-y-6', className)} aria-label={t('a11y.subspacesGrid')}>
-      {/* Section header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Section header — rendered only when an explicit title is provided. */}
+      {title && (
         <div>
-          <h2 className="text-2xl font-bold text-foreground tracking-tight">{title ?? t('subspaces.title')}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{subtitle ?? t('subspaces.subtitle')}</p>
+          <h2 className="text-page-title text-foreground">{title}</h2>
+          {subtitle && <p className="mt-1 text-body text-muted-foreground">{subtitle}</p>}
         </div>
-        {canCreate && onCreateClick && (
-          <Button className="shrink-0 gap-2" onClick={onCreateClick}>
-            <Plus className="w-4 h-4" aria-hidden="true" />
-            {t('subspaces.createSubspace')}
-          </Button>
-        )}
-      </div>
+      )}
 
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
-        <input
-          type="text"
-          placeholder={t('subspaces.search')}
+      {/* Search + tag filter */}
+      <div className="flex items-center gap-2">
+        <SearchField
           value={searchQuery}
-          onChange={e => {
-            setSearchQuery(e.target.value);
+          onValueChange={value => {
+            setSearchQuery(value);
             setShowAll(false);
           }}
-          aria-label={t('subspaces.search')}
-          className="w-full h-10 pl-9 pr-4 border border-border bg-background rounded-lg text-sm text-foreground transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary"
+          placeholder={t('subspaces.search')}
+          ariaLabel={t('subspaces.search')}
+          className="flex-1"
         />
+        {!disableFilters && <TagFilterPopover tags={allTags} selectedTags={selectedTags} onTagClick={toggleTag} />}
       </div>
 
       {/* Status filter pills — only shown when subspaces have mixed statuses */}
@@ -150,7 +147,7 @@ export function SpaceSubspacesList({
                   setShowAll(false);
                 }}
                 className={cn(
-                  'px-3 py-1.5 text-sm font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                  'px-3 py-1.5 text-body-emphasis rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
                   isSelected
                     ? 'bg-primary text-primary-foreground border-primary'
                     : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -163,30 +160,18 @@ export function SpaceSubspacesList({
         </fieldset>
       )}
 
-      {/* Tag filter chips — wrap onto multiple rows */}
-      {allTags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {allTags.map(tag => {
-            const isSelected = selectedTags.includes(tag);
-            return (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => toggleTag(tag)}
-                aria-pressed={isSelected}
-                className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-full border whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  isSelected
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-background text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                )}
-              >
-                {tag}
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Active search/tag filters summary */}
+      <FilterResultsSummary
+        searchTerm={searchQuery}
+        tags={disableFilters ? undefined : selectedTags}
+        onClear={() => {
+          setSearchQuery('');
+          if (!disableFilters) {
+            setSelectedTags([]);
+          }
+          setShowAll(false);
+        }}
+      />
 
       {/* Grid */}
       {filtered.length === 0 ? (
@@ -220,8 +205,8 @@ function EmptyState({ hasActiveFilter, onClear }: { hasActiveFilter: boolean; on
   return (
     <div className="flex flex-col items-center justify-center py-16 border-2 border-dashed border-border rounded-lg">
       <Folder className="w-10 h-10 text-muted-foreground opacity-50 mb-3" aria-hidden="true" />
-      <h3 className="text-lg font-medium text-foreground">{t('subspaces.empty.title')}</h3>
-      <p className="text-sm text-muted-foreground mt-1">{t('subspaces.empty.description')}</p>
+      <h3 className="text-subsection-title text-foreground">{t('subspaces.empty.title')}</h3>
+      <p className="text-body text-muted-foreground mt-1">{t('subspaces.empty.description')}</p>
       {hasActiveFilter && (
         <Button variant="link" className="mt-2 text-primary" onClick={onClear}>
           {t('subspaces.empty.clearFilters')}

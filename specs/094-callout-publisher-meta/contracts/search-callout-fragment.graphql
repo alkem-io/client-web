@@ -1,0 +1,123 @@
+# GraphQL Contract Delta — SearchResultCallout Fragment
+
+# This file documents the *additive* change to the existing `SearchResultCallout`
+# fragment in `src/main/search/SearchQueries.graphql`. Today this fragment does
+# NOT select `createdBy`, `createdDate`, `publishedBy`, or `publishedDate` on the
+# nested `callout`, which is why `searchDataMapper.ts` falls back to `Unknown`
+# and an empty date string for callout search results.
+
+# ─── BEFORE (current state, lines 130–164) ────────────────────────────────────
+#
+# fragment SearchResultCallout on SearchResultCallout {
+#   id
+#   callout {
+#     id
+#     framing {
+#       id
+#       profile {
+#         id
+#         displayName
+#         description
+#         url
+#         tagset { ...TagsetDetails }
+#       }
+#     }
+#     contributions {
+#       id
+#       post { id }
+#       whiteboard { id }
+#       link { id }
+#     }
+#     comments {
+#       id
+#       messagesCount
+#     }
+#   }
+#   ...CalloutParent
+# }
+
+# ─── AFTER (new state) ────────────────────────────────────────────────────────
+
+fragment SearchResultCallout on SearchResultCallout {
+  id
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        displayName
+        description
+        url
+        tagset { ...TagsetDetails }
+      }
+    }
+    contributions {
+      id
+      post { id }
+      whiteboard { id }
+      link { id }
+    }
+    comments {
+      id
+      messagesCount
+    }
+
+    createdDate           # NEW — last-resort date fallback
+    publishedDate         # NEW — preferred date
+
+    createdBy {           # NEW — last-resort author fallback (before unknownLabel)
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+
+    publishedBy {         # NEW — preferred author
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+  }
+  ...CalloutParent
+}
+
+# ─── Why all four fields are added here (vs. just publishedBy / createdDate) ─
+#
+# The main Callout fragment already had two of the four fields, so its delta is
+# only `publishedBy` + `createdDate`. The SearchResultCallout fragment had NONE
+# of them — so all four are new additions. This is the only fragment change
+# that requires more than two field additions in this feature.
+
+# ─── Mapper behaviour after this change ──────────────────────────────────────
+#
+# In `src/main/crdPages/search/searchDataMapper.ts` (mappedCallouts, ~line 145):
+#
+#   const authorSource = r.callout.publishedBy ?? r.callout.createdBy;
+#   const dateSource   = r.callout.publishedDate ?? r.callout.createdDate;
+#   return {
+#     // …
+#     author: { name: authorSource?.profile?.displayName ?? unknownLabel,
+#               avatarUrl: authorSource?.profile?.avatar?.uri },
+#     date: dateSource ? formatDate(dateSource) : '',
+#   };
+#
+# The `?? unknownLabel` last-resort matches the pattern already in use for
+# whiteboard / memo / post search results (see lines 172, 187, 220, 236, 252).
+
+# ─── Codegen ─────────────────────────────────────────────────────────────────
+#
+# A single `pnpm codegen` run picks up both this fragment and the main Callout
+# fragment delta. Generated outputs in `src/core/apollo/generated/` ship in the
+# same PR per Constitution Principle III.

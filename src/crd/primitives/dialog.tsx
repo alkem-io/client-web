@@ -4,6 +4,29 @@ import * as React from 'react';
 
 import { cn } from '@/crd/lib/utils';
 
+/**
+ * Marker attribute for fixed overlays that live OUTSIDE the Radix dialog layer
+ * (e.g. the cookie-consent banner) but must not dismiss an open modal when
+ * clicked: Radix treats any pointer-down outside its layer as a backdrop
+ * dismiss. Tag the overlay's root element with this attribute and dialog
+ * content ignores interactions originating from it — a generic escape hatch,
+ * no overlay-specific knowledge in the dialog.
+ */
+export const DIALOG_DISMISS_IGNORE_ATTR = 'data-dialog-dismiss-ignore';
+
+type InteractOutsideHandler = React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>['onInteractOutside'];
+
+const guardInteractOutside =
+  (userHandler: InteractOutsideHandler): NonNullable<InteractOutsideHandler> =>
+  event => {
+    const target = event.target as Element | null;
+    if (target?.closest?.(`[${DIALOG_DISMISS_IGNORE_ATTR}]`)) {
+      event.preventDefault();
+      return;
+    }
+    userHandler?.(event);
+  };
+
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
@@ -36,15 +59,42 @@ const DialogOverlay = React.forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+/**
+ * Raw Radix Dialog.Content wrapper without default styling or close button.
+ * Use when a composite needs full control over header/footer layout and keyboard/outside-click handlers
+ * (e.g. blocking modals, fullscreen editor shells). Consumers must render their own close control and
+ * wrap the trigger in `Dialog` + `DialogPortal` + `DialogOverlay`.
+ */
+const DialogContentRaw = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, onInteractOutside, ...props }, ref) => (
+  <DialogPrimitive.Content
+    ref={ref}
+    data-slot="dialog-content-raw"
+    className={cn('pointer-events-auto', className)}
+    onInteractOutside={guardInteractOutside(onInteractOutside)}
+    {...props}
+  />
+));
+DialogContentRaw.displayName = 'DialogContentRaw';
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { closeLabel?: string }
->(({ className, children, closeLabel, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    closeLabel?: string;
+    /** Optional className for the overlay — escape hatch for stacking fixes (e.g. when this dialog is opened on top of another z-[60] dialog like the whiteboard editor). */
+    overlayClassName?: string;
+    /** Suppress the built-in top-right close — for dialogs whose content already provides its own close control. */
+    hideClose?: boolean;
+  }
+>(({ className, children, closeLabel, overlayClassName, hideClose, onInteractOutside, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay />
+    <DialogOverlay className={overlayClassName} />
     <DialogPrimitive.Content
       ref={ref}
       data-slot="dialog-content"
+      onInteractOutside={guardInteractOutside(onInteractOutside)}
       className={cn(
         'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg',
         className
@@ -52,12 +102,14 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close
-        className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none cursor-pointer [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-        aria-label={closeLabel}
-      >
-        <XIcon />
-      </DialogPrimitive.Close>
+      {!hideClose && (
+        <DialogPrimitive.Close
+          className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none cursor-pointer [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+          aria-label={closeLabel}
+        >
+          <XIcon />
+        </DialogPrimitive.Close>
+      )}
     </DialogPrimitive.Content>
   </DialogPortal>
 ));
@@ -90,7 +142,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     data-slot="dialog-title"
-    className={cn('text-lg leading-none font-semibold', className)}
+    className={cn('text-subsection-title leading-none', className)}
     {...props}
   />
 ));
@@ -103,7 +155,7 @@ const DialogDescription = React.forwardRef<
   <DialogPrimitive.Description
     ref={ref}
     data-slot="dialog-description"
-    className={cn('text-muted-foreground text-sm', className)}
+    className={cn('text-muted-foreground text-body', className)}
     {...props}
   />
 ));
@@ -113,6 +165,7 @@ export {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogContentRaw,
   DialogDescription,
   DialogFooter,
   DialogHeader,

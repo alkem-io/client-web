@@ -11,12 +11,3 @@ export const mapReferenceModelsToUpdateReferenceInputs = (
     name: reference.name,
   }));
 };
-
-export const mapReferenceModelToReferenceFormValues = (reference: ReferenceModel) => {
-  // TODO: This `as` shouldn't be here
-  return {
-    name: reference.name,
-    description: reference.description,
-    uri: reference.uri,
-  } as ReferenceModel;
-};

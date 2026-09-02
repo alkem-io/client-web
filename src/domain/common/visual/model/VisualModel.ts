@@ -7,11 +7,19 @@ export interface VisualModel {
   alternativeText?: string;
 }
 
-export interface VisualModelFull extends VisualModel {
-  allowedTypes: string[];
-  aspectRatio: number;
-  maxHeight: number;
+/**
+ * Upload constraints for a visual (avatar / banner / cardBanner): the allowed mime
+ * types plus the min/max dimensions and aspect ratio an image must satisfy. Sourced
+ * from `platform.configuration.defaultVisualTypeConstraints`.
+ */
+export type VisualConstraints = {
   maxWidth: number;
-  minHeight: number;
+  maxHeight: number;
   minWidth: number;
-}
+  minHeight: number;
+  aspectRatio: number;
+  /** Adjustable range for the ratio; equal to each other (and to `aspectRatio`) when the shape is fixed. */
+  minAspectRatio?: number;
+  maxAspectRatio?: number;
+  allowedTypes: string[];
+};

@@ -2,7 +2,6 @@ import { BellOff, MailOpen, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NotificationItem } from '@/crd/components/notifications/NotificationItem';
 import type { CrdNotificationFilter, CrdNotificationItemData } from '@/crd/layouts/types';
-import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogTitle } from '@/crd/primitives/dialog';
 import { Skeleton } from '@/crd/primitives/skeleton';
@@ -63,12 +62,12 @@ export function NotificationsPanel({
   return (
     <Dialog open={open} onOpenChange={isOpen => !isOpen && onClose()}>
       <DialogContent
-        className="max-w-none h-[100dvh] sm:h-auto sm:max-w-lg md:max-w-xl rounded-none sm:rounded-lg p-0 gap-0 overflow-hidden flex flex-col"
+        className="max-w-none h-[100dvh] sm:h-[560px] md:h-[600px] sm:max-w-lg md:max-w-xl rounded-none sm:rounded-lg p-0 gap-0 overflow-hidden flex flex-col"
         closeLabel={t('notifications.close')}
       >
         {/* Header */}
         <div className="flex items-center justify-between pl-4 pr-10 pt-[10px] pb-3 border-b border-border bg-muted/30">
-          <DialogTitle className="text-sm font-semibold">{t('notifications.title')}</DialogTitle>
+          <DialogTitle className="text-card-title">{t('notifications.title')}</DialogTitle>
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
@@ -97,9 +96,10 @@ export function NotificationsPanel({
                 key={filter.key}
                 variant={selectedFilter === filter.key ? 'secondary' : 'ghost'}
                 size="sm"
-                className={cn('h-7 text-xs rounded-full shrink-0', selectedFilter === filter.key && 'font-semibold')}
+                className="h-7 text-caption rounded-full shrink-0"
                 onClick={() => onFilterChange(filter.key)}
               >
+                {filter.hasUnread && <span aria-hidden="true" className="size-1.5 rounded-full bg-primary shrink-0" />}
                 {filter.label}
               </Button>
             ))}
@@ -107,7 +107,7 @@ export function NotificationsPanel({
         )}
 
         {/* Notification list */}
-        <div className="flex-1 overflow-y-auto sm:max-h-[60vh]">
+        <div className="flex-1 overflow-y-auto">
           {showSkeletons && (
             <output aria-label={t('notifications.loading')}>
               {Array.from({ length: 5 }).map((_, i) => (
@@ -133,8 +133,8 @@ export function NotificationsPanel({
           {showEmpty && (
             <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
               <BellOff aria-hidden="true" className="h-10 w-10 text-muted-foreground opacity-50 mb-3" />
-              <p className="text-base font-semibold mb-1 text-foreground">{t('notifications.emptyTitle')}</p>
-              <p className="text-sm text-muted-foreground max-w-[280px] leading-normal">
+              <p className="text-subsection-title mb-1 text-foreground">{t('notifications.emptyTitle')}</p>
+              <p className="text-body text-muted-foreground max-w-[280px] leading-normal">
                 {t('notifications.emptyMessage')}
               </p>
             </div>
@@ -143,7 +143,7 @@ export function NotificationsPanel({
           {/* Load more */}
           {hasMore && items.length > 0 && !loading && (
             <div className="flex justify-center p-3 border-t border-border bg-muted/30">
-              <Button variant="ghost" size="sm" className="w-full h-8 text-xs" onClick={onLoadMore}>
+              <Button variant="ghost" size="sm" className="w-full h-8 text-caption" onClick={onLoadMore}>
                 {t('notifications.loadMore')}
               </Button>
             </div>

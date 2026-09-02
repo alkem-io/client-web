@@ -1,6 +1,7 @@
 import { Menu, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { contentColumnClass } from '@/crd/lib/contentColumn';
 import { cn } from '@/crd/lib/utils';
 import { Button } from '@/crd/primitives/button';
 
@@ -80,35 +81,42 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
 
   return (
     <>
-      <div
-        className={cn(
-          'grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6 max-w-[1600px] mx-auto px-4 sm:px-6 py-6',
-          className
-        )}
-      >
-        {/* Desktop sidebar */}
-        <nav aria-label="Dashboard navigation" className="hidden md:block">
-          {sidebar}
-        </nav>
+      <div className={cn('w-full px-6 md:px-8 py-6', className)}>
+        <div className="grid grid-cols-12 gap-6">
+          <div className={cn('col-span-12', contentColumnClass())}>
+            <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6">
+              {/* Desktop sidebar */}
+              <nav aria-label={t('sidebar.navigation')} className="hidden md:block">
+                {sidebar}
+              </nav>
 
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <Button
+              {/* Content. Bottom padding on mobile clears the fixed hamburger bar (h-14). */}
+              <div className="min-w-0 space-y-6 pb-14 md:pb-0">{children}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile-only fixed bottom bar — mirrors the SpaceNavigationTabs pattern. */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border md:hidden"
+        aria-label={t('sidebar.openMenu')}
+      >
+        <div className="flex items-stretch justify-end h-14">
+          <button
             ref={triggerRef}
-            variant="ghost"
-            size="sm"
+            type="button"
             onClick={() => setDrawerOpen(true)}
+            className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
             aria-label={t('sidebar.openMenu')}
+            aria-haspopup="dialog"
             aria-expanded={drawerOpen}
             aria-controls="dashboard-mobile-drawer"
           >
             <Menu className="h-5 w-5" aria-hidden="true" />
-          </Button>
+          </button>
         </div>
-
-        {/* Content */}
-        <div className="min-w-0 space-y-6">{children}</div>
-      </div>
+      </nav>
 
       {/* Mobile drawer */}
       {drawerOpen && (
@@ -128,7 +136,7 @@ export function DashboardLayout({ sidebar, children, className }: DashboardLayou
             id="dashboard-mobile-drawer"
             role="dialog"
             aria-modal="true"
-            aria-label="Dashboard navigation"
+            aria-label={t('sidebar.navigation')}
             className={cn(
               'absolute inset-y-0 left-0 w-[280px] bg-background shadow-xl overflow-y-auto transition-transform duration-200 ease-out',
               visible ? 'translate-x-0' : '-translate-x-full'

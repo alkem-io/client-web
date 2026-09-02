@@ -1,5 +1,0 @@
-mutation createUserNewRegistration($userData: CreateUserInput!) {
-  createUser(userData: $userData) {
-    id
-  }
-}

@@ -1,0 +1,7 @@
+mutation SendDirectMessageToUsers($messageData: SendDirectMessageToUsersInput!) {
+  sendDirectMessageToUsers(messageData: $messageData) {
+    receiverID
+    status
+    conversationID
+  }
+}

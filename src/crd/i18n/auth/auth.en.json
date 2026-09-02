@@ -1,0 +1,79 @@
+{
+  "tagline": "Collaboration in the spaces between organisations",
+  "continueWith": "or continue with",
+  "loading": "Loading",
+  "signIn": {
+    "title": "Sign in",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "No account?",
+    "signUp": "Sign up",
+    "preparing": "Preparing secure sign-in…"
+  },
+  "signUp": {
+    "title": "Sign up",
+    "haveAccount": "Have an account?",
+    "signIn": "Sign in",
+    "intro": "Alkemio is designed to benefit society. Please read and accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy> before you continue.",
+    "acceptTerms": "I accept the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>.",
+    "openTerms": "Open Terms of Use in a new tab",
+    "openPrivacy": "Open Privacy Policy in a new tab",
+    "signpost": {
+      "warning": "You are trying to sign up with {{provider}}. If you already have an Alkemio account with the same email, {{provider}} will be connected to that account and you can use both sign-in methods from then on.",
+      "signInAction": "Sign in with a different account"
+    },
+    "continuation": {
+      "divider": "or",
+      "heading": "Finish signing up with {{provider}}",
+      "intro": "These details were shared by the provider - check they're right and accept the terms to finish creating your account.",
+      "cta": "Create account with {{provider}}"
+    }
+  },
+  "recovery": {
+    "title": "Password recovery",
+    "intro": "Please enter your email address below to receive a recovery link that will allow you to reset your password.",
+    "resendNotice": "<strong>Haven't received the email?</strong><br/>Check your spam folder, confirm the address below is correct, then request a new recovery email once the timer ends."
+  },
+  "settings": {
+    "title": "Set new password"
+  },
+  "verification": {
+    "title": "Verify your email",
+    "intro": "Please check your inbox for an email with instructions to verify your address."
+  },
+  "verificationReminder": {
+    "title": "Verify your email",
+    "body": "The last step is to verify your email address. Please check your inbox for an email with instructions."
+  },
+  "error": {
+    "title": "Something went wrong",
+    "generic": "An unexpected error occurred during authentication. Please try signing in again.",
+    "code": "Error code: {{code}}",
+    "backToSignIn": "Back to sign in"
+  },
+  "fields": {
+    "email": "E-Mail",
+    "password": "Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "invalidEmail": "Please enter a valid email address."
+  },
+  "providers": {
+    "connectWith": "Continue with {{provider}}",
+    "fallback": "Other provider",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "You've left your whiteboard",
+    "description": "Your guest session is still active. You can return to your whiteboard, or explore what Alkemio has to offer.",
+    "backButton": "Back to whiteboard",
+    "websiteButton": "Go to our website",
+    "contributeTitle": "Want to contribute more?",
+    "contributeDescription": "Sign up for an Alkemio account below to collaborate with teams and access advanced tools."
+  }
+}

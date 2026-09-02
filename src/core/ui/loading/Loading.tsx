@@ -1,23 +1,15 @@
-import { Box, CircularProgress } from '@mui/material';
-import { Caption } from '../typography';
+import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-const Loading = ({ text = 'Loading' }: { text?: string }) => {
+const Loading = ({ text }: { text?: string }) => {
+  const { t } = useTranslation();
+  const resolvedText = text ?? t('common.loading');
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexGrow: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        gap: 2,
-      }}
-    >
-      <CircularProgress sx={{ color: 'primary.main' }} />
-      <Caption textTransform="uppercase" fontWeight="medium" color="primary.main">
-        {text}
-      </Caption>
-    </Box>
+    <div className="flex grow items-center justify-center gap-4 h-full text-primary">
+      <Loader2 className="size-10 animate-spin" aria-hidden="true" />
+      <span className="text-xs font-medium uppercase leading-none">{resolvedText}</span>
+    </div>
   );
 };
 

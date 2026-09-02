@@ -1,0 +1,591 @@
+import { CropIcon, ImageIcon, Plus } from 'lucide-react';
+import { useId, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ClassificationEntryCard } from '@/crd/components/classification/ClassificationEntryCard';
+import type { ClassificationEntryData } from '@/crd/components/classification/types';
+import { CountryCombobox } from '@/crd/components/common/CountryCombobox';
+import { type SectionSaveStatus, FieldFooter as SharedFieldFooter } from '@/crd/components/common/FieldFooter';
+import { InlineEditText } from '@/crd/components/common/InlineEditText';
+import { SpaceCard, type SpaceCardData } from '@/crd/components/space/SpaceCard';
+import { MarkdownEditor, type MarkdownUploadProps } from '@/crd/forms/markdown/MarkdownEditor';
+import { type ReferenceRow, ReferencesEditor } from '@/crd/forms/references/ReferencesEditor';
+import { TagsInput } from '@/crd/forms/tags-input';
+import { resolveBannerAspectRatio } from '@/crd/lib/bannerAspectRatio';
+import { cn } from '@/crd/lib/utils';
+import { Button } from '@/crd/primitives/button';
+import { Separator } from '@/crd/primitives/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/crd/primitives/tooltip';
+import type {
+  AboutFormValues,
+  AboutSectionKey,
+  AboutSectionSaveStatus,
+  AboutVisual,
+  SpaceCardPreview,
+  SpaceSettingsLevel,
+} from './SpaceSettingsAboutView.types';
+
+export type SpaceSettingsAboutViewProps = AboutFormValues & {
+  /**
+   * Space hierarchy level. Drives which visuals are editable: L0 spaces show
+   * avatar + page banner + card banner; L1/L2 subspaces show avatar + card
+   * banner only (subspaces have no page banner).
+   */
+  level: SpaceSettingsLevel;
+  previewCard: SpaceCardPreview;
+  countries: ReadonlyArray<{ name: string; code: string }>;
+  /** Which sections differ from the server value. */
+  dirtyByField: Partial<Record<AboutSectionKey, boolean>>;
+  /** Per-section save status (idle / saving / saved / error). */
+  saveStatusByField: Partial<Record<AboutSectionKey, AboutSectionSaveStatus>>;
+  onChange: (patch: Partial<AboutFormValues>) => void;
+  onUploadAvatar: (file: File) => void;
+  onUploadPageBanner: (file: File) => void;
+  onUploadCardBanner: (file: File) => void;
+  /** Re-crop an already-uploaded visual. */
+  onRecropVisual?: (key: 'avatar' | 'pageBanner' | 'cardBanner') => void;
+  /**
+  /** Replace the whole references list — the shared ReferencesEditor owns add/edit/remove + delete-confirm. */
+  onReferencesChange: (rows: ReferenceRow[]) => void;
+  /** Reference file-upload (paperclip) — passed through to the shared editor. */
+  onReferenceFileUpload?: (file: File) => Promise<string | null>;
+  referenceUploadAccept?: string;
+  onSaveSection: (section: AboutSectionKey) => void;
+  className?: string;
+
+  // ── Classifications (D1) — each action commits immediately, FR-006a; never buffered ──
+  classifications: ClassificationEntryData[];
+  /** Entry ids with a selection write in flight — the entry's value selector renders disabled. */
+  classificationSelectionPendingIds: string[];
+  /** Step A — opens the template picker (owned by the connector). */
+  onAddClassification: () => void;
+  /** Step B — full-replacement selection write. */
+  onSelectClassificationValues: (entryId: string, selectedValueIDs: string[]) => void;
+  /** The shown/hidden toggle (FR-010b/FR-010d) — worded "not shown on the Space page", never "private". */
+  onToggleClassificationDisplay: (entryId: string, display: boolean) => void;
+  /** Opens the removal confirmation (owned by the connector, FR-014b). */
+  onRequestRemoveClassification: (entryId: string) => void;
+} & MarkdownUploadProps;
+
+export function SpaceSettingsAboutView(props: SpaceSettingsAboutViewProps) {
+  const { t } = useTranslation('crd-spaceSettings');
+  const {
+    level,
+    name,
+    tagline,
+    country,
+    city,
+    avatar,
+    pageBanner,
+    cardBanner,
+    tags,
+    references,
+    what,
+    why,
+    who,
+    previewCard,
+    dirtyByField,
+    saveStatusByField,
+    onChange,
+    onUploadAvatar,
+    onUploadPageBanner,
+    onUploadCardBanner,
+    onRecropVisual,
+    onReferencesChange,
+    onReferenceFileUpload,
+    referenceUploadAccept,
+    onSaveSection,
+    className,
+    onImageUpload,
+    iframeAllowedUrls,
+    onError,
+    classifications,
+    classificationSelectionPendingIds,
+    onAddClassification,
+    onSelectClassificationValues,
+    onToggleClassificationDisplay,
+    onRequestRemoveClassification,
+  } = props;
+  // Canonical visual fields (see spec 100-space-header-layout § "Visual fields — canonical usage"):
+  //   - L0: page banner + cardBanner only — L0 has NO avatar concept (L0 cards show title + cardBanner)
+  //   - L1/L2: avatar + cardBanner — L1/L2 have NO settable page banner (they inherit L0 root's)
+  const showPageBanner = level === 'L0';
+  const showAvatar = level !== 'L0';
+
+  // The shape is chosen in the crop dialog, not here — this only sizes the
+  // preview box to whatever the visual currently is (default shape until an
+  // image has actually been cropped).
+  const pageBannerRatio = resolveBannerAspectRatio(pageBanner);
+
+  return (
+    <div className={cn('flex flex-col gap-0', className)}>
+      <div className="mb-6">
+        <h2 className="text-page-title">{t('about.pageHeader.title')}</h2>
+        <p className="text-body text-muted-foreground mt-1">{t('about.pageHeader.subtitle')}</p>
+      </div>
+
+      <div className="grid gap-0 lg:grid-cols-[2fr_1fr] lg:gap-8">
+        <div className="flex flex-col min-w-0">
+          {/* Space Name */}
+          <FieldSection>
+            <FieldLabel>{t('about.name.title')}</FieldLabel>
+            <InlineEditText
+              value={name}
+              onChange={next => onChange({ name: next })}
+              ariaLabel="Space name"
+              editAriaLabel="Edit space name"
+              placeholder="Space Name"
+              className="mt-2 text-subheader font-normal"
+            />
+            <FieldFooter
+              hint={t('about.name.description')}
+              dirty={!!dirtyByField.name}
+              status={saveStatusByField.name ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('name')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Tagline */}
+          <FieldSection>
+            <FieldLabel>{t('about.tagline.title')}</FieldLabel>
+            <InlineEditText
+              value={tagline}
+              onChange={next => onChange({ tagline: next })}
+              ariaLabel="Tagline"
+              editAriaLabel="Edit tagline"
+              placeholder="Tagline"
+              className="mt-2 text-subheader font-normal"
+            />
+            <FieldFooter
+              hint={t('about.tagline.description')}
+              dirty={!!dirtyByField.tagline}
+              status={saveStatusByField.tagline ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('tagline')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Space Branding */}
+          <div className="py-6">
+            <h3 className="text-card-title">{t('about.branding.title')}</h3>
+
+            {showAvatar && (
+              <div className="mt-4">
+                <FieldLabel>{t('about.branding.avatar.title')}</FieldLabel>
+                <BannerUpload
+                  visual={avatar}
+                  onUpload={onUploadAvatar}
+                  aspectRatio={1}
+                  widthClass="max-w-[160px]"
+                  t={t}
+                  onRecrop={() => onRecropVisual?.('avatar')}
+                  recropLabel={t('about.branding.avatar.recrop')}
+                />
+                <FieldHint>{t('about.branding.avatar.hint')}</FieldHint>
+              </div>
+            )}
+
+            {showPageBanner && (
+              <div className="mt-4">
+                <FieldLabel>{t('about.branding.pageBanner.title')}</FieldLabel>
+                <BannerUpload
+                  visual={pageBanner}
+                  onUpload={onUploadPageBanner}
+                  aspectRatio={pageBannerRatio}
+                  fit="contain"
+                  t={t}
+                  onRecrop={() => onRecropVisual?.('pageBanner')}
+                  recropLabel={t('about.branding.pageBanner.recrop')}
+                />
+                <FieldHint>{t('about.branding.pageBanner.hint')}</FieldHint>
+              </div>
+            )}
+
+            <div className="mt-6">
+              <FieldLabel>{t('about.branding.cardBanner.title')}</FieldLabel>
+              <BannerUpload
+                visual={cardBanner}
+                onUpload={onUploadCardBanner}
+                aspectRatio={1.6}
+                widthClass="max-w-[260px]"
+                t={t}
+                onRecrop={() => onRecropVisual?.('cardBanner')}
+                recropLabel={t('about.branding.cardBanner.recrop')}
+              />
+              <FieldHint>{t('about.branding.cardBanner.hint')}</FieldHint>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* What */}
+          <FieldSection id="description">
+            <FieldLabel>{t('about.what.title')}</FieldLabel>
+            <MarkdownEditor
+              value={what}
+              onChange={next => onChange({ what: next })}
+              placeholder="What's this space about…"
+              className="mt-2"
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
+            />
+            <FieldFooter
+              hint={t('about.what.description')}
+              dirty={!!dirtyByField.what}
+              status={saveStatusByField.what ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('what')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Why */}
+          <FieldSection id="why">
+            <FieldLabel>{t('about.why.title')}</FieldLabel>
+            <MarkdownEditor
+              value={why}
+              onChange={next => onChange({ why: next })}
+              placeholder="Why does this space exist…"
+              className="mt-2"
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
+            />
+            <FieldFooter
+              hint={t('about.why.description')}
+              dirty={!!dirtyByField.why}
+              status={saveStatusByField.why ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('why')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Who */}
+          <FieldSection id="who">
+            <FieldLabel>{t('about.who.title')}</FieldLabel>
+            <MarkdownEditor
+              value={who}
+              onChange={next => onChange({ who: next })}
+              placeholder="Who is this space for…"
+              className="mt-2"
+              onImageUpload={onImageUpload}
+              iframeAllowedUrls={iframeAllowedUrls}
+              onError={onError}
+            />
+            <FieldFooter
+              hint={t('about.who.description')}
+              dirty={!!dirtyByField.who}
+              status={saveStatusByField.who ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('who')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Location */}
+          <FieldSection>
+            <FieldLabel>{t('about.location.title')}</FieldLabel>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-2">
+              <InlineEditText
+                value={city}
+                onChange={next => onChange({ city: next })}
+                ariaLabel="City"
+                editAriaLabel="Edit city"
+                placeholder="City"
+              />
+              <CountryCombobox
+                value={country}
+                onChange={next => onChange({ country: next })}
+                countries={props.countries}
+                placeholder="Country"
+                className="w-full"
+              />
+            </div>
+            <FieldFooter
+              hint={t('about.location.description')}
+              dirty={!!dirtyByField.location}
+              status={saveStatusByField.location ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('location')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Tags */}
+          <FieldSection>
+            <FieldLabel>{t('about.tags.title')}</FieldLabel>
+            <TagsInput
+              value={tags}
+              onChange={next => onChange({ tags: next })}
+              placeholder="Add a tag and press Enter"
+              className="mt-2"
+            />
+            <FieldFooter
+              hint={t('about.tags.description')}
+              dirty={!!dirtyByField.tags}
+              status={saveStatusByField.tags ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('tags')}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* Classifications (D1, product#2161 design 01) */}
+          <FieldSection id="classifications">
+            <FieldLabel>{t('classifications.sectionTitle')}</FieldLabel>
+            {classifications.length > 0 && (
+              <div className="mt-4 space-y-4">
+                {classifications.map(entry => (
+                  <ClassificationEntryCard
+                    key={entry.id}
+                    entry={entry}
+                    selectionPending={classificationSelectionPendingIds.includes(entry.id)}
+                    onSelectValues={onSelectClassificationValues}
+                    onToggleDisplay={onToggleClassificationDisplay}
+                    onRequestRemove={onRequestRemoveClassification}
+                  />
+                ))}
+              </div>
+            )}
+            {/* Below the list, per design 01 — Step A entry point. */}
+            <Button type="button" variant="outline" size="sm" className="mt-4" onClick={onAddClassification}>
+              <Plus className="size-3.5 mr-1.5" aria-hidden="true" />
+              {t('classifications.addButton')}
+            </Button>
+
+            {/*
+             * Never dirty — each classification action commits on its own, immediately (FR-006a),
+             * so there is nothing to buffer and no manual Save button to show. Reusing FieldFooter
+             * here only surfaces the transient saving/saved feedback for the in-flight selection
+             * write (see `classificationSelectionPendingIds` above), the same status shape every
+             * other About section already uses.
+             */}
+            <FieldFooter
+              hint={t('classifications.sectionDescription')}
+              dirty={false}
+              status={saveStatusByField.classifications ?? { kind: 'idle' }}
+              onSave={() => {}}
+              t={t}
+            />
+          </FieldSection>
+
+          <Separator />
+
+          {/* References */}
+          <FieldSection id="references">
+            <ReferencesEditor
+              label={t('about.references.title')}
+              rows={references.map(r => ({ id: r.id, name: r.title, uri: r.uri, description: r.description }))}
+              onChange={onReferencesChange}
+              onFileUpload={onReferenceFileUpload}
+              uploadAccept={referenceUploadAccept}
+            />
+            <FieldFooter
+              hint={t('about.references.description')}
+              dirty={!!dirtyByField.references}
+              status={saveStatusByField.references ?? { kind: 'idle' }}
+              onSave={() => onSaveSection('references')}
+              t={t}
+            />
+          </FieldSection>
+        </div>
+
+        {/* Preview */}
+        <div className="hidden min-w-0 lg:block">
+          <div className="sticky top-6">
+            <p className="text-label uppercase text-muted-foreground mb-3">{t('about.preview.label')}</p>
+            <SpaceCard space={previewCardToSpaceCardData(previewCard, level)} />
+            {/* Live Preview info */}
+            <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-border bg-muted/30 px-5 py-4">
+              <span className="mt-0.5 text-muted-foreground">ⓘ</span>
+              <div>
+                <p className="text-card-title text-foreground">{t('about.preview.livePreview.title')}</p>
+                <p className="text-body text-muted-foreground mt-1">{t('about.preview.livePreview.description')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function previewCardToSpaceCardData(preview: SpaceCardPreview, level: SpaceSettingsLevel): SpaceCardData {
+  const isL0 = level === 'L0';
+  return {
+    id: preview.href || 'preview',
+    name: preview.name,
+    description: preview.tagline,
+    bannerImageUrl: preview.bannerUrl ?? undefined,
+    // L0 cards have no avatar (per canonical visual-fields rule).
+    avatarUrl: isL0 ? undefined : (preview.avatarUrl ?? undefined),
+    initials: preview.initials,
+    avatarColor: preview.color,
+    hideAvatar: isL0,
+    isPrivate: false,
+    tags: preview.tags,
+    leads: [],
+    href: preview.href,
+  };
+}
+
+function FieldSection({ id, children }: { id?: string; children: React.ReactNode }) {
+  return (
+    <div id={id} className="py-6 scroll-mt-32">
+      {children}
+    </div>
+  );
+}
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <h3 className="text-card-title">{children}</h3>;
+}
+
+function FieldHint({ children }: { children: React.ReactNode }) {
+  return <p className="mt-1.5 text-caption text-muted-foreground">{children}</p>;
+}
+
+type TFn = ReturnType<typeof useTranslation<'crd-spaceSettings'>>['t'];
+
+/**
+ * Thin wrapper around the shared `FieldFooter` (extracted to
+ * `@/crd/components/common/FieldFooter.tsx` for cross-feature reuse). Keeps
+ * the local `t`-based call sites unchanged. The shared status type
+ * (`SectionSaveStatus`) is structurally compatible with 045's
+ * `AboutSectionSaveStatus` (the `at` field is now optional).
+ */
+function FieldFooter({
+  hint,
+  dirty,
+  status,
+  onSave,
+  t,
+}: {
+  hint: string;
+  dirty: boolean;
+  status: AboutSectionSaveStatus;
+  onSave: () => void;
+  t: TFn;
+}) {
+  return (
+    <SharedFieldFooter
+      hint={hint}
+      dirty={dirty}
+      status={status as SectionSaveStatus}
+      onSave={onSave}
+      labels={{
+        save: t('about.inlineSave.save'),
+        saving: t('about.inlineSave.saving'),
+        saved: t('about.inlineSave.saved'),
+        retry: t('about.inlineSave.retry'),
+      }}
+    />
+  );
+}
+
+function BannerUpload({
+  visual,
+  onUpload,
+  aspectRatio,
+  fit = 'cover',
+  widthClass,
+  t,
+  onRecrop,
+  recropLabel,
+}: {
+  visual: AboutVisual;
+  onUpload: (file: File) => void;
+  /** Must match how the page that displays this visual renders it, or the
+   *  preview lies: the page banner is `object-contain` (never cropped), so a
+   *  `cover` preview would show the admin a crop the page does not apply and
+   *  invite them to re-crop a banner that was rendering fine. */
+  fit?: 'cover' | 'contain';
+  /** Numeric width / height. Inline rather than an `aspect-[x/y]` class because
+   *  the page banner's value is chosen at runtime and Tailwind's JIT scanner
+   *  needs class literals at build time. */
+  aspectRatio: number;
+  widthClass?: string;
+  t: TFn;
+  /** Trigger re-cropping of an existing visual. */
+  onRecrop?: () => void;
+  /** Accessible name + tooltip for the re-crop button, named per visual by the caller. */
+  recropLabel?: string;
+}) {
+  const inputId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const handlePick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) onUpload(file);
+    if (e.target) e.target.value = '';
+  };
+  return (
+    <div
+      // `min-h-14` keeps the box tall enough for the controls it contains. At
+      // the widest allowed banner shape (10:1) a full-width settings card on a
+      // phone works out under 30px, which clips the "Change banner" label and
+      // hides the corner crop button entirely — the controls would disappear at
+      // exactly the shapes this feature exists to offer.
+      className={cn('group relative mt-2 min-h-14 overflow-hidden rounded-md', widthClass ?? 'w-full')}
+      style={{ aspectRatio }}
+    >
+      {visual.uri ? (
+        <>
+          <img
+            src={visual.uri}
+            alt={visual.altText ?? ''}
+            className={cn('h-full w-full', fit === 'contain' ? 'object-contain' : 'object-cover')}
+          />
+          {/* Touch devices have no hover, so the change action is always visible on mobile;
+              on md+ it fades in only on hover or keyboard focus to keep the image readable. */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/40 opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+            <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="shadow-lg">
+              <ImageIcon aria-hidden="true" className="mr-2 size-4" />
+              {t('about.branding.changeBanner')}
+            </Button>
+          </div>
+          {/* Re-crop sits outside the hover overlay, pinned to the corner: it acts
+              on the image already there, so it stays reachable (and its tooltip
+              usable) rather than being one of two stacked centre buttons. */}
+          {onRecrop && recropLabel && (
+            <Tooltip>
+              <TooltipTrigger asChild={true}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  onClick={onRecrop}
+                  aria-label={recropLabel}
+                  className="absolute top-2 right-2 shadow-lg opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+                >
+                  <CropIcon aria-hidden="true" className="size-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{recropLabel}</TooltipContent>
+            </Tooltip>
+          )}
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => inputRef.current?.click()}
+          className="flex h-full w-full items-center justify-center border border-dashed rounded-md bg-muted text-muted-foreground hover:bg-muted/80 transition-colors cursor-pointer"
+        >
+          <ImageIcon aria-hidden="true" className="mr-2 size-4" />
+          <span className="text-control">{t('about.branding.upload')}</span>
+        </button>
+      )}
+      <input ref={inputRef} id={inputId} type="file" accept="image/*" className="hidden" onChange={handlePick} />
+    </div>
+  );
+}

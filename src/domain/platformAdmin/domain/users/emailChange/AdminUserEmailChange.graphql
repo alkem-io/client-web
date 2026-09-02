@@ -1,0 +1,13 @@
+mutation AdminUserEmailChange(
+  $userID: UUID!
+  $newEmail: String!
+  $reason: String!
+  $approver: EmailChangeApproverInput!
+) {
+  adminUserEmailChange(
+    adminUserEmailChangeData: { userID: $userID, newEmail: $newEmail, reason: $reason, approver: $approver }
+  ) {
+    success
+    email
+  }
+}

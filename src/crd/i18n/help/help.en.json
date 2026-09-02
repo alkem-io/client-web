@@ -1,0 +1,12 @@
+{
+  "title": "Looking for help?",
+  "text": "We're here to help you make the most of the Alkemio platform and create an impact on the topics you care about. Click below to find answers, contact our team, or get started!",
+  "close": "Close",
+  "icons": {
+    "exploreDocumentation": "Explore Documentation",
+    "contactTheTeam": "Contact the Team",
+    "joinTheWelcomeSpace": "Join the Welcome Space"
+  },
+  "versionNumber": "Version Number: <b>v{{version}}</b>",
+  "serverVersionNumber": "Server Version Number: <b>v{{version}}</b>"
+}

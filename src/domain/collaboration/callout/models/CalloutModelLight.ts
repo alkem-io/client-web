@@ -13,6 +13,9 @@ export interface CalloutModelLight {
       displayName: string;
       description?: string;
       url?: string;
+      tagset?: {
+        tags: string[];
+      };
     };
     type: CalloutFramingType;
     whiteboard?: {
@@ -45,11 +48,26 @@ export type CalloutModelExtension<T> = T & {
   canBeSavedAsTemplate: boolean;
   classificationTagsets: ClassificationTagsetModel[];
   publishedDate?: Date | undefined;
+  publishedBy?:
+    | {
+        id: string;
+        profile?: {
+          displayName: string;
+          url: string;
+          avatar?: {
+            id: string;
+            uri: string;
+          };
+        };
+      }
+    | undefined;
+  createdDate?: Date | undefined;
   createdBy?:
     | {
         id: string;
         profile?: {
           displayName: string;
+          url: string;
           avatar?: {
             id: string;
             uri: string;

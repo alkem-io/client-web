@@ -3,7 +3,8 @@ import {
   useAvailableVirtualContributorsInSpaceAccountLazyQuery,
   useAvailableVirtualContributorsInSpaceLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
-import { type AiPersonaEngine, SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import type { VirtualContributorFullFragment } from '@/core/apollo/generated/graphql-schema';
+import { SearchVisibility, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
 import type { Identifiable } from '@/core/utils/Identifiable';
 
 interface useVirtualContributorsAdminParams {
@@ -20,30 +21,8 @@ export interface ContributorNameProps extends Identifiable {
 
 export interface useVirtualContributorsAdminProvided {
   virtualContributorAdmin: {
-    getAvailable: (filter?: string) => Promise<
-      {
-        id: string;
-        profile?: {
-          displayName: string;
-          url: string;
-        };
-        aiPersona?: {
-          engine: AiPersonaEngine;
-        };
-      }[]
-    >;
-    getAvailableInLibrary: (filter: string | undefined) => Promise<
-      {
-        id: string;
-        profile?: {
-          displayName: string;
-          url: string;
-        };
-        aiPersona?: {
-          engine: AiPersonaEngine;
-        };
-      }[]
-    >;
+    getAvailable: (filter?: string) => Promise<VirtualContributorFullFragment[]>;
+    getAvailableInLibrary: (filter: string | undefined) => Promise<VirtualContributorFullFragment[]>;
   };
 }
 

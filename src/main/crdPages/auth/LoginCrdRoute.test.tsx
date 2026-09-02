@@ -1,0 +1,272 @@
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { LoginCrdRoute } from './LoginCrdRoute';
+
+let mockSearch = '';
+const mockIsAuthenticated = vi.fn<() => boolean>();
+const replaceSpy = vi.fn<(url: string) => void>();
+
+vi.mock('@/core/routing/useQueryParams', () => ({
+  useQueryParams: () => new URLSearchParams(mockSearch),
+}));
+
+// The OIDC BFF (/api/auth/oidc/*) is apex-only; the redirect must be prefixed
+// with the apex origin returned by this hook (mirrors `LoginPage`).
+vi.mock('@/domain/platform/routes/usePlatformOrigin', () => ({
+  default: () => 'https://sandbox-alkem.io',
+}));
+
+vi.mock('@/core/auth/authentication/hooks/useAuthenticationContext', () => ({
+  useAuthenticationContext: () => ({ isAuthenticated: mockIsAuthenticated() }),
+}));
+
+// Render a cheap sentinel for the login screen so we can assert whether it
+// mounted without pulling in the full CRD auth UI / Kratos stack.
+vi.mock('@/crd/components/auth/LoginCard', () => ({
+  LoginCard: ({
+    descriptor,
+    notice,
+  }: {
+    descriptor?: { flowType?: string };
+    notice?: { text: string; actionLabel: string; actionHref: string };
+  }) => (
+    <div data-testid="crd-login-card">
+      {descriptor?.flowType ?? 'no-descriptor'}
+      {notice ? (
+        <div data-testid="card-notice">
+          <span>{notice.text}</span>
+          <a href={notice.actionHref}>{notice.actionLabel}</a>
+        </div>
+      ) : null}
+    </div>
+  ),
+}));
+vi.mock('./AuthShellWrapper', () => ({
+  AuthShellWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+vi.mock('@/core/auth/authentication/pages/LoginSuccessPage', () => ({ default: () => <div /> }));
+// Mutable so a test can put the hook into its error state — the shape it
+// reports when Kratos refuses the flow id on the URL (403 security_csrf_violation).
+let mockFlowState: { flow: unknown; error: Error | undefined; loading: boolean } = {
+  flow: undefined,
+  error: undefined,
+  loading: false,
+};
+vi.mock('@/core/auth/authentication/hooks/useKratosFlow', () => ({
+  default: () => ({ ...mockFlowState, refetch: vi.fn() }),
+  FlowTypeName: { Login: 'Login' },
+}));
+vi.mock('@/core/auth/authentication/hooks/usePasskeyScript', () => ({
+  default: () => ({ status: 'idle', error: null, isReady: false }),
+}));
+vi.mock('@/core/auth/authentication/utils/useSignUpReturnUrl', () => ({
+  useReturnUrl: () => ({ returnUrl: undefined, setReturnUrl: vi.fn(), clearReturnUrl: vi.fn() }),
+}));
+vi.mock('@/core/analytics/SentryTransactionScopeContext', () => ({ useTransactionScope: () => {} }));
+vi.mock('@/core/routing/usePageTitle', () => ({ usePageTitle: () => {} }));
+vi.mock('./useKratosMessageCopy', () => ({
+  useTranslateDescriptor: () => (descriptor: unknown) => descriptor,
+  useKratosMessageCopy: () => (messages: unknown) => messages,
+}));
+vi.mock('./flowDescriptorAdapter', () => ({ flowDescriptorAdapter: () => ({}) }));
+vi.mock('./passkeyTrigger', () => ({
+  invokePasskeyTrigger: vi.fn(),
+  PasskeyTriggerError: class extends Error {},
+}));
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    // Surfaces the interpolated `duration` so the lockout copy can be asserted on.
+    t: (key: string, options?: Record<string, unknown>) =>
+      options?.duration === undefined ? key : `${key}:${String(options.duration)}`,
+    i18n: { language: 'en' },
+  }),
+}));
+
+const renderRoute = () =>
+  render(
+    <MemoryRouter initialEntries={['/']}>
+      <LoginCrdRoute />
+    </MemoryRouter>
+  );
+
+describe('LoginCrdRoute', () => {
+  beforeEach(() => {
+    mockSearch = '';
+    mockFlowState = { flow: undefined, error: undefined, loading: false };
+    mockIsAuthenticated.mockReset();
+    replaceSpy.mockReset();
+    // Simulate the page being served on the identity subdomain (where signup
+    // lives), so a same-origin-relative redirect would land on the unrouted
+    // identity host. `origin` feeds the returnTo same-origin check.
+    vi.stubGlobal('location', {
+      origin: 'https://identity.sandbox-alkem.io',
+      replace: replaceSpy,
+      assign: vi.fn(),
+      href: '',
+      pathname: '/login',
+      search: '',
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('renders the login page for an unauthenticated user with no flow', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+
+    renderRoute();
+
+    expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+  });
+
+  it('redirects an authenticated user away when there is no flow id', () => {
+    mockIsAuthenticated.mockReturnValue(true);
+
+    renderRoute();
+
+    expect(screen.queryByTestId('crd-login-card')).not.toBeInTheDocument();
+  });
+
+  it('a lockout arrival renders the notice instead of redirecting into the OIDC entry', () => {
+    // The login-backoff proxy 303s a locked-out browser to a flow-less
+    // /login?lockout=true&retry_after=N. Treating that as a fresh OIDC entry
+    // discarded the params before the notice could render (the silent-lockout
+    // walk finding) — the page must stay put and explain.
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'lockout=true&retry_after=120';
+
+    renderRoute();
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    const notice = screen.getByTestId('card-notice');
+    expect(notice).toHaveTextContent('authentication.lockout');
+    expect(notice.querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+  });
+
+  it.each([
+    ['120', '2 minutes'],
+    ['110', '1 minute 50 seconds'],
+    // date-fns's `intervalToDuration` banks whole hours in a `hours` field this format
+    // list omits, so these two used to render "" and "1 minute" respectively — a lockout
+    // notice that says nothing about how long, or understates it by an hour.
+    ['3600', '60 minutes'],
+    ['3660', '61 minutes'],
+  ])('a lockout of %s seconds states the full remaining time', (retryAfter, expected) => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = `lockout=true&retry_after=${retryAfter}`;
+
+    renderRoute();
+
+    expect(screen.getByTestId('card-notice')).toHaveTextContent(`authentication.lockout:${expected}`);
+  });
+
+  it('a lockout arrival keeps the pending returnUrl in the retry action', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'lockout=true&retry_after=120&returnUrl=https%3A%2F%2Fsandbox-alkem.io%2Fhome';
+
+    renderRoute();
+
+    expect(screen.getByTestId('card-notice').querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome'
+    );
+  });
+
+  it('OIDC entry hands off to the apex BFF absolutely, not the current (identity) subdomain', () => {
+    // Repro of the signup → "Sign in" → /login redirect bug. The signup form is
+    // served on identity.<domain>, so its sign-in link bakes that origin into
+    // returnUrl. On /login (no flow id → OIDC entry) the page must redirect to
+    // the apex BFF; a relative replace would hit identity.<domain>/api/auth/oidc/login
+    // which Traefik routes to the SPA catch-all (404 / no OIDC flow).
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'returnUrl=https://identity.sandbox-alkem.io/home';
+
+    renderRoute();
+
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome');
+  });
+
+  it('OIDC entry keeps an apex-absolute returnUrl when rendered on the identity subdomain', () => {
+    // The sign-up / verify screens are served on identity.<domain> and link back
+    // to /login relatively, so this page runs there with an apex-absolute
+    // returnUrl. Resolving it against `window.location.origin` (identity) would
+    // judge it cross-origin and collapse returnTo to '/', dropping the
+    // destination on every deployed sign-up — it must resolve against the apex.
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'returnUrl=https://sandbox-alkem.io/challenges/my-subspace';
+
+    renderRoute();
+
+    expect(replaceSpy).toHaveBeenCalledWith(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fchallenges%2Fmy-subspace'
+    );
+  });
+
+  it('OIDC entry refuses an off-platform returnUrl', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'returnUrl=https://evil.example.com/steal';
+
+    renderRoute();
+
+    expect(replaceSpy).toHaveBeenCalledWith('https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F');
+  });
+
+  it('renders the login page for an authenticated user when a flow id is present (refresh / step-up re-auth)', () => {
+    // Kratos redirects refresh logins here as `/login?flow=<id>` while the user
+    // still holds a (non-privileged) session — the page must render so the
+    // re-authentication can complete and the Settings change can proceed.
+    mockSearch = 'flow=refresh-flow-123';
+    mockIsAuthenticated.mockReturnValue(true);
+
+    renderRoute();
+
+    expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+  });
+
+  // Kratos rejects a flow id whose anti-CSRF cookie has moved on with 403
+  // `security_csrf_violation`. `useKratosFlow` reports that as `error` with no
+  // flow, but the page used to read only `flow`/`loading` — so a terminal
+  // failure rendered identically to "still loading" and sign-in sat on
+  // "Preparing secure sign-in…" for ever, with no way out. Restarting through
+  // the BFF is the only real recovery: it mints a fresh flow AND a matching
+  // cookie, which re-reading the dead flow id never could.
+  it('a flow that cannot be read offers a restart instead of a permanent spinner', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'flow=dead-flow-id';
+    mockFlowState = { flow: undefined, error: new Error('Request failed with status code 403'), loading: false };
+
+    renderRoute();
+
+    const notice = screen.getByTestId('card-notice');
+    expect(notice).toHaveTextContent('authentication.flowUnavailable');
+    expect(notice.querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2F'
+    );
+  });
+
+  it('a flow error keeps the pending returnUrl in the restart action', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'flow=dead-flow-id&returnUrl=https%3A%2F%2Fsandbox-alkem.io%2Fhome';
+    mockFlowState = { flow: undefined, error: new Error('boom'), loading: false };
+
+    renderRoute();
+
+    expect(screen.getByTestId('card-notice').querySelector('a')?.getAttribute('href')).toBe(
+      'https://sandbox-alkem.io/api/auth/oidc/login?returnTo=%2Fhome'
+    );
+  });
+
+  it('still shows the loading state while the flow request is in flight', () => {
+    mockIsAuthenticated.mockReturnValue(false);
+    mockSearch = 'flow=pending-flow-id';
+    mockFlowState = { flow: undefined, error: undefined, loading: true };
+
+    renderRoute();
+
+    expect(screen.queryByTestId('card-notice')).not.toBeInTheDocument();
+    expect(screen.getByTestId('crd-login-card')).toBeInTheDocument();
+  });
+});

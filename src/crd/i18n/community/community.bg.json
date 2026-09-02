@@ -1,0 +1,77 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Поканете други да се присъединят към \"{{spaceName}}\"",
+      "searchHint": "Потърсете хора по-долу или директно добавете техния имейл адрес",
+      "searchPlaceholder": "Потребителско име или имейл…",
+      "searchAriaLabel": "Търсене на потребители по име или имейл",
+      "noResultsLabel": "Няма съответстващи потребители",
+      "loadingLabel": "Зареждане на потребители…",
+      "loadMoreLabel": "Зареждане на още…",
+      "removeAriaLabel": "Премахване на {{label}}",
+      "welcomeMessageLabel": "Съобщение към поканата",
+      "welcomeMessagePlaceholder": "Напишете кратко съобщение, което ще бъде изпратено с поканата",
+      "defaultWelcomeMessage": "Здравей, бих искал/а да те поканя в {{spaceName}}. Разгледай Space-а или щракни бутона по-долу, за да приемеш или отхвърлиш поканата.",
+      "emailVisibilityNote": "Имайте предвид, че личният Ви имейл адрес ще бъде видим за всички, които поканите.",
+      "inviteToRoleLabel": "Покани като:",
+      "rolePopoverHelper": "Member се предоставя винаги при приемане на поканата.",
+      "rolePopoverAriaLabel": "Изберете роли за поканените",
+      "suggestedLanguageLabel": "Предложен език за поканения",
+      "suggestedLanguagePlaceholder": "Без предпочитание",
+      "sendButtonLabel": "Изпрати",
+      "sendingButtonLabel": "Изпращане…",
+      "backButtonLabel": "Назад",
+      "closeButtonLabel": "Затвори",
+      "closeAriaLabel": "Затваряне на диалога за покана"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "Това не е валиден имейл адрес.",
+      "duplicateEmail": "Този имейл вече е в списъка.",
+      "networkFailure": "Поканите не можаха да бъдат изпратени. Моля, опитайте отново."
+    },
+    "results": {
+      "sent": "Поканата е изпратена",
+      "alreadyInvited": "Вече поканен",
+      "alreadyMember": "Вече е член на това пространство",
+      "alreadyHasApplication": "Вече има подадена заявка за това пространство",
+      "parentNotAuthorized": "Не може да се покани — лицето трябва да се присъедини и към родителското пространство, а нямате права да каните там.",
+      "error": "Поканата е неуспешна."
+    },
+    "toast": {
+      "someFailed": "{{count}} покани не можаха да бъдат изпратени — вижте резултатите за подробности."
+    }
+  },
+  "inviteVc": {
+    "title": "Покани виртуален сътрудник",
+    "description": "Добавете виртуален сътрудник от вашия акаунт или поканете такъв от библиотеката на Alkemio.",
+    "searchPlaceholder": "Търсене на виртуални сътрудници…",
+    "loading": "Зареждане на виртуални сътрудници",
+    "onAccount": "Във вашия акаунт",
+    "onAccountEmpty": "Няма налични виртуални сътрудници във вашия акаунт.",
+    "inLibrary": "В библиотеката",
+    "inLibraryEmpty": "Никой виртуален сътрудник в библиотеката не съответства на търсенето ви.",
+    "add": "Добави",
+    "invite": "Покани",
+    "addAriaLabel": "Добави {{name}}",
+    "inviteAriaLabel": "Покани {{name}}",
+    "back": "Назад",
+    "welcomeMessageLabel": "Приветствено съобщение",
+    "welcomeMessagePlaceholder": "Добавете съобщение към поканата…",
+    "sendInvite": "Изпрати покана",
+    "defaultWelcomeMessage": "Бихме искали да ви поканим да допринесете за {{space}}.",
+    "addedNotice": "Виртуалният сътрудник е добавен.",
+    "invitedNotice": "Поканата е изпратена.",
+    "error": "Нещо се обърка. Моля, опитайте отново.",
+    "previewAriaLabel": "Преглед на {{name}}",
+    "preview": {
+      "tagsLabel": "Етикети",
+      "hostedBy": "Хоствано от {{name}}",
+      "noDescription": "Няма предоставено описание."
+    }
+  }
+}

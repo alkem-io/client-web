@@ -5,13 +5,17 @@ import type {
   CalloutContributionType,
   CalloutFramingType,
   CalloutVisibility,
+  CollaboraDocumentType,
   CreateCalloutContributionInput,
+  CreateCalloutContributorsSettingsInput,
   CreateCalloutMutation,
   CreateCalloutOnCalloutsSetInput,
+  CreateCalloutSelectionSettingsInput,
   CreateReferenceInput,
   CreateTagsetInput,
   VisualType,
 } from '@/core/apollo/generated/graphql-schema';
+import type { LinkFramingFieldSubmittedValues } from '../../callout/CalloutFramings/LinkFramingFieldSubmittedValues';
 import type { ContributionDefaultsModel } from '../../callout/models/ContributionDefaultsModel';
 import type { PollFormFieldSubmittedValues } from '../../poll/models/PollModels';
 import type { WhiteboardFieldSubmittedValues } from '../../whiteboard/WhiteboardPreview/WhiteboardField';
@@ -30,7 +34,17 @@ export interface CalloutCreationType {
       tagsets?: CreateTagsetInput[];
     };
     whiteboard?: WhiteboardFieldSubmittedValues;
+    /**
+     * Collabora-document framing input. On the blank-create path, both fields are sent.
+     * On the upload path, both are omitted (server derives `documentType` from the
+     * uploaded file's MIME and defaults `displayName` from the filename when absent).
+     */
+    collaboraDocument?: {
+      displayName?: string;
+      documentType?: CollaboraDocumentType;
+    };
     tags?: string[];
+    link?: LinkFramingFieldSubmittedValues;
     mediaGallery?: {
       nameID?: string;
       visuals: {
@@ -49,6 +63,10 @@ export interface CalloutCreationType {
   settings?: {
     framing?: {
       commentsEnabled?: boolean;
+      /** Contributor-collection config — set only for CONTRIBUTORS framing (feature 008). */
+      contributors?: CreateCalloutContributorsSettingsInput;
+      /** Selection mode + curated ids — for CONTRIBUTORS or SPACES framing (feature 025). */
+      selection?: CreateCalloutSelectionSettingsInput;
     };
     contribution?: {
       enabled?: boolean;
@@ -70,7 +88,8 @@ export interface CalloutCreationParams {
 
 export interface CalloutCreationUtils {
   handleCreateCallout: (
-    callout: CalloutCreationType
+    callout: CalloutCreationType,
+    file?: File
   ) => Promise<CreateCalloutMutation['createCalloutOnCalloutsSet'] | undefined>;
   loading: boolean;
   canCreateCallout: boolean;
@@ -114,7 +133,7 @@ export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): Ca
     refetchQueries: ['CalloutsSetTags'],
   });
 
-  const handleCreateCallout = async (callout: CalloutCreationType) => {
+  const handleCreateCallout = async (callout: CalloutCreationType, file?: File) => {
     if (!calloutsSetId) {
       return;
     }
@@ -128,9 +147,7 @@ export const useCalloutCreation = ({ calloutsSetId }: CalloutCreationParams): Ca
 
     try {
       const result = await createCallout({
-        variables: {
-          calloutData,
-        },
+        variables: file ? { calloutData, file } : { calloutData },
       });
 
       return result.data?.createCalloutOnCalloutsSet;

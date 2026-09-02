@@ -1,4 +1,4 @@
-import { BookOpen, Compass, Lightbulb, MessageCircle } from 'lucide-react';
+import { Bot, BookOpen, Compass, FileText, Lightbulb, MessageCircle, Package, ShieldCheck, Tag } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
@@ -18,9 +18,28 @@ import {
   MOCK_PENDING_INVITATIONS,
   MOCK_PENDING_VC_INVITATIONS,
 } from './data/dashboard';
+import { CommunityGuidelinesPage } from './pages/CommunityGuidelinesPage';
+import { CreateInnovationHubPage } from './pages/CreateInnovationHubPage';
+import { CreateInnovationPackPage } from './pages/CreateInnovationPackPage';
+import { CreateSpacePage } from './pages/CreateSpacePage';
 import { DashboardPage } from './pages/DashboardPage';
+import { InnovationLibraryPage } from './pages/InnovationLibraryPage';
+import { InnovationPackAdminPage } from './pages/InnovationPackAdminPage';
+import { InnovationPackProfilePage } from './pages/InnovationPackProfilePage';
+import { OrganizationProfileDemoPage } from './pages/OrganizationProfileDemoPage';
 import { SpacePage } from './pages/SpacePage';
 import { SpacesPage } from './pages/SpacesPage';
+import { SubspacePage } from './pages/SubspacePage';
+import { TagsShowcasePage } from './pages/TagsShowcasePage';
+import { TemplatesPage } from './pages/TemplatesPage';
+import { UserProfileOtherDemoPage } from './pages/UserProfileOtherDemoPage';
+import { UserProfileSelfDemoPage } from './pages/UserProfileSelfDemoPage';
+import { VCAddToCommunityDemoPage } from './pages/VCAddToCommunityDemoPage';
+import { VCAdminConfigDemoPage } from './pages/VCAdminConfigDemoPage';
+import { VCCreationWizardDemoPage } from './pages/VCCreationWizardDemoPage';
+import { VCKnowledgeBaseDemoPage } from './pages/VCKnowledgeBaseDemoPage';
+import { VCProfileDemoPage } from './pages/VCProfileDemoPage';
+import { WhiteboardPage } from './pages/WhiteboardPage';
 
 const MOCK_USER = {
   name: 'Alex Rivera',
@@ -41,10 +60,24 @@ const NAVIGATION_HREFS = {
 };
 
 const MOCK_PLATFORM_NAVIGATION_ITEMS = [
-  { icon: <Lightbulb className="h-4 w-4" />, label: 'Innovation Library', href: '/innovation-library' },
+  { icon: <Lightbulb className="h-4 w-4" />, label: 'Template Library', href: '/innovation-library' },
   { icon: <MessageCircle className="h-4 w-4" />, label: 'Forum', href: '/forum' },
   { icon: <Compass className="h-4 w-4" />, label: 'Explore Spaces', href: '/spaces' },
   { icon: <BookOpen className="h-4 w-4" />, label: 'Documentation', href: '/docs' },
+  // Templates feature preview pages (T088) — exposed in nav so designers can reach them.
+  { icon: <FileText className="h-4 w-4" />, label: 'Templates (preview)', href: '/templates' },
+  { icon: <Package className="h-4 w-4" />, label: 'Pack profile (preview)', href: '/innovation-packs/pack-1' },
+  { icon: <Package className="h-4 w-4" />, label: 'Pack admin (preview)', href: '/innovation-packs/pack-1/settings' },
+  { icon: <ShieldCheck className="h-4 w-4" />, label: 'Community guidelines (preview)', href: '/community-guidelines' },
+  { icon: <Tag className="h-4 w-4" />, label: 'Tags showcase', href: '/tags-showcase' },
+  { icon: <Compass className="h-4 w-4" />, label: 'Create Space (preview)', href: '/create-space' },
+  { icon: <Package className="h-4 w-4" />, label: 'Create Innovation Pack (preview)', href: '/create-innovation-pack' },
+  { icon: <Package className="h-4 w-4" />, label: 'Create Innovation Hub (preview)', href: '/create-innovation-hub' },
+  // Virtual Contributor migrated surfaces (106) — preview against mock data.
+  { icon: <Bot className="h-4 w-4" />, label: 'VC creation wizard (preview)', href: '/vc/create' },
+  { icon: <Bot className="h-4 w-4" />, label: 'VC knowledge base (preview)', href: '/vc/datasynth-bot/knowledge-base' },
+  { icon: <Bot className="h-4 w-4" />, label: 'VC add to community (preview)', href: '/vc/add-to-community' },
+  { icon: <Bot className="h-4 w-4" />, label: 'VC admin config (preview)', href: '/vc/datasynth-bot/settings' },
 ];
 
 const MOCK_LANGUAGES = [
@@ -97,6 +130,27 @@ export function CrdApp() {
           <Route path="/" element={<DashboardPage onPendingMembershipsClick={() => setShowPendingDialog(true)} />} />
           <Route path="/spaces" element={<SpacesPage />} />
           <Route path="/space/:spaceSlug" element={<SpacePage />} />
+          <Route path="/space/:spaceSlug/challenges/:subspaceSlug" element={<SubspacePage />} />
+          <Route path="/whiteboard" element={<WhiteboardPage />} />
+          {/* Templates feature preview pages (T088) */}
+          <Route path="/templates" element={<TemplatesPage />} />
+          <Route path="/innovation-library" element={<InnovationLibraryPage />} />
+          <Route path="/innovation-packs/:packSlug" element={<InnovationPackProfilePage />} />
+          <Route path="/innovation-packs/:packSlug/settings" element={<InnovationPackAdminPage />} />
+          <Route path="/community-guidelines" element={<CommunityGuidelinesPage />} />
+          <Route path="/user/me" element={<UserProfileSelfDemoPage />} />
+          <Route path="/user/alex-rivera" element={<UserProfileOtherDemoPage />} />
+          <Route path="/organization/alkemio" element={<OrganizationProfileDemoPage />} />
+          <Route path="/vc/datasynth-bot" element={<VCProfileDemoPage />} />
+          {/* Virtual Contributor migrated surfaces (106) */}
+          <Route path="/vc/create" element={<VCCreationWizardDemoPage />} />
+          <Route path="/vc/datasynth-bot/knowledge-base" element={<VCKnowledgeBaseDemoPage />} />
+          <Route path="/vc/add-to-community" element={<VCAddToCommunityDemoPage />} />
+          <Route path="/vc/datasynth-bot/settings" element={<VCAdminConfigDemoPage />} />
+          <Route path="/tags-showcase" element={<TagsShowcasePage />} />
+          <Route path="/create-space" element={<CreateSpacePage />} />
+          <Route path="/create-innovation-pack" element={<CreateInnovationPackPage />} />
+          <Route path="/create-innovation-hub" element={<CreateInnovationHubPage />} />
           <Route path="*" element={<Navigate to="/" replace={true} />} />
         </Routes>
       </CrdLayout>

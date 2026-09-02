@@ -1,8 +1,8 @@
 import { MessageSquare } from 'lucide-react';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { MarkdownContent } from '@/crd/components/common/MarkdownContent';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 
 type ContributionPostCardProps = {
   title: string;
@@ -25,42 +25,52 @@ export function ContributionPostCard({
   onClick,
   className,
 }: ContributionPostCardProps) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!onClick) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
-    <button
-      type="button"
+    // biome-ignore lint/a11y/useSemanticElements: a <button> here would nest interactive descendants (CollapsibleTagList renders a "+N" <button>; MarkdownContent can render <a> links) which is invalid HTML
+    <div
+      role="button"
+      tabIndex={0}
       className={cn(
-        'w-full text-left p-3 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'w-full text-left p-4 border border-border rounded-lg bg-card hover:bg-muted/50 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+        'flex flex-col',
         className
       )}
       onClick={onClick}
+      onKeyDown={handleKeyDown}
     >
-      <p className="text-sm font-medium text-foreground truncate">{title}</p>
+      <p className="text-card-title text-foreground truncate">{title}</p>
       {author && (
         <div className="flex items-center gap-2 mt-1.5">
           <Avatar className="w-5 h-5">
             {author.avatarUrl && <AvatarImage src={author.avatarUrl} alt={author.name} />}
-            <AvatarFallback className="text-[8px]">{author.name.charAt(0)}</AvatarFallback>
+            <AvatarFallback className="text-badge">{author.name.charAt(0)}</AvatarFallback>
           </Avatar>
-          <span className="text-xs text-muted-foreground">{author.name}</span>
-          {createdDate && <span className="text-xs text-muted-foreground">• {createdDate}</span>}
+          <span className="text-caption text-muted-foreground">{author.name}</span>
+          {createdDate && <span className="text-caption text-muted-foreground">• {createdDate}</span>}
         </div>
       )}
       {description && (
-        <MarkdownContent content={description} className="text-xs text-muted-foreground line-clamp-2 mt-1.5" />
+        <div className="mt-2 max-h-[3.4rem] overflow-hidden">
+          <MarkdownContent content={description} className="text-body text-muted-foreground line-clamp-2" />
+        </div>
       )}
-      <div className="flex items-center gap-2 mt-2">
-        {tags?.slice(0, 3).map(tag => (
-          <Badge key={tag} variant="secondary" className="text-[9px] px-1 h-4">
-            {tag}
-          </Badge>
-        ))}
+      <div className="flex items-center gap-1.5 mt-auto pt-2 min-w-0">
+        {tags && tags.length > 0 && <CollapsibleTagList tags={tags} maxRows={1} className="flex-1 min-w-0" />}
         {commentCount !== undefined && commentCount > 0 && (
-          <span className="flex items-center gap-1 text-xs text-muted-foreground ml-auto">
+          <span className="flex items-center gap-1 text-caption text-muted-foreground ml-auto shrink-0">
             <MessageSquare className="w-3 h-3" aria-hidden="true" />
             {commentCount}
           </span>
         )}
       </div>
-    </button>
+    </div>
   );
 }

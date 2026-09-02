@@ -1,0 +1,79 @@
+{
+  "tagline": "Zusammenarbeit zwischen Organisationen",
+  "continueWith": "oder weiter mit",
+  "loading": "Wird geladen",
+  "signIn": {
+    "title": "Anmelden",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Kein Konto?",
+    "signUp": "Registrieren",
+    "preparing": "Sichere Anmeldung wird vorbereitet…"
+  },
+  "signUp": {
+    "title": "Registrieren",
+    "haveAccount": "Schon ein Konto?",
+    "signIn": "Anmelden",
+    "intro": "Alkemio dient dem Wohl der Gesellschaft. Bitte lies und akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>, bevor du fortfährst.",
+    "acceptTerms": "Ich akzeptiere die <terms>Nutzungsbedingungen</terms> und die <privacy>Datenschutzrichtlinie</privacy>.",
+    "openTerms": "Nutzungsbedingungen in einem neuen Tab öffnen",
+    "openPrivacy": "Datenschutzrichtlinie in einem neuen Tab öffnen",
+    "signpost": {
+      "warning": "Du versuchst, dich mit {{provider}} zu registrieren. Wenn du bereits ein Alkemio-Konto mit derselben E-Mail-Adresse hast, wird {{provider}} mit diesem Konto verbunden und du kannst künftig beide Anmeldemethoden nutzen.",
+      "signInAction": "Mit einem anderen Konto anmelden"
+    },
+    "continuation": {
+      "divider": "oder",
+      "heading": "Registrierung abschließen mit {{provider}}",
+      "intro": "Diese Angaben wurden vom Anbieter übermittelt - prüfe, ob sie stimmen, und akzeptiere die Bedingungen, um dein Konto fertig zu erstellen.",
+      "cta": "Konto erstellen mit {{provider}}"
+    }
+  },
+  "recovery": {
+    "title": "Passwort-Wiederherstellung",
+    "intro": "Bitte gib unten deine E-Mail-Adresse ein, um einen Wiederherstellungslink zu erhalten, mit dem du dein Passwort zurücksetzen kannst.",
+    "resendNotice": "<strong>Keine E-Mail erhalten?</strong><br/>Überprüfe deinen Spam-Ordner, bestätige, dass die untenstehende Adresse korrekt ist, und fordere eine neue Wiederherstellungs-E-Mail an, sobald der Timer abgelaufen ist."
+  },
+  "settings": {
+    "title": "Neues Passwort festlegen"
+  },
+  "verification": {
+    "title": "E-Mail bestätigen",
+    "intro": "Bitte prüfe deinen Posteingang auf eine E-Mail mit Anweisungen zur Bestätigung deiner Adresse."
+  },
+  "verificationReminder": {
+    "title": "E-Mail bestätigen",
+    "body": "Der letzte Schritt ist die Bestätigung deiner E-Mail-Adresse. Bitte prüfe deinen Posteingang auf eine E-Mail mit Anweisungen."
+  },
+  "error": {
+    "title": "Etwas ist schiefgelaufen",
+    "generic": "Bei der Authentifizierung ist ein unerwarteter Fehler aufgetreten. Bitte versuche, dich erneut anzumelden.",
+    "code": "Fehlercode: {{code}}",
+    "backToSignIn": "Zurück zur Anmeldung"
+  },
+  "fields": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen",
+    "invalidEmail": "Bitte gib eine gültige E-Mail-Adresse ein."
+  },
+  "providers": {
+    "connectWith": "Weiter mit {{provider}}",
+    "fallback": "Anderer Anbieter",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "Du hast dein Whiteboard verlassen",
+    "description": "Deine Gastsitzung ist noch aktiv. Du kannst zu deinem Whiteboard zurückkehren oder entdecken, was Alkemio zu bieten hat.",
+    "backButton": "Zurück zum Whiteboard",
+    "websiteButton": "Zu unserer Website",
+    "contributeTitle": "Möchtest du mehr beitragen?",
+    "contributeDescription": "Registriere dich unten für ein Alkemio-Konto, um mit Teams zusammenzuarbeiten und auf erweiterte Tools zuzugreifen."
+  }
+}

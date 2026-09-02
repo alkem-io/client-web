@@ -1,0 +1,398 @@
+{
+  "manager": {
+    "title": "Plantillas",
+    "subtitle": "Plantillas reutilizables para este espacio.",
+    "search": "Buscar plantillas…",
+    "addNew": "Añadir",
+    "createNew": "Crear nueva",
+    "selectFromLibrary": "Seleccionar de la biblioteca",
+    "duplicating": "Creando…",
+    "deleting": "Eliminando…",
+    "noTemplates": "Aún no hay plantillas",
+    "noTemplatesHint": "Crea una o importa una desde la biblioteca.",
+    "noTemplatesReadOnly": "Aún no hay plantillas.",
+    "sectionList": "Secciones de plantillas",
+    "templateList": "Plantillas",
+    "sections": {
+      "space": {
+        "title": "Plantillas de espacio",
+        "subtitle": "Estructura un espacio con fases predefinidas y herramientas iniciales."
+      },
+      "callout": {
+        "title": "Herramientas de colaboración",
+        "subtitle": "Callouts reutilizables para talleres, sesiones de ideación y actividades grupales."
+      },
+      "whiteboard": {
+        "title": "Plantillas de pizarra",
+        "subtitle": "Diseños de lienzo para la colaboración visual."
+      },
+      "post": {
+        "title": "Plantillas de publicación",
+        "subtitle": "Documentos estandarizados para proyectos y decisiones."
+      },
+      "communityGuidelines": {
+        "title": "Plantillas de pautas de la comunidad",
+        "subtitle": "Reglas y expectativas para una comunidad."
+      },
+      "classification": {
+        "title": "Classification templates",
+        "subtitle": "Structured, reusable vocabularies such as SDGs, Language, or Sector."
+      }
+    }
+  },
+  "card": {
+    "actions": "Acciones de plantilla",
+    "preview": "Vista previa",
+    "use": "Usar plantilla",
+    "edit": "Editar",
+    "duplicate": "Duplicar",
+    "delete": "Eliminar",
+    "noPreview": "Sin vista previa",
+    "classification": {
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única"
+    }
+  },
+  "framingKind": {
+    "none": "Texto",
+    "whiteboard": "Pizarra",
+    "memo": "Memo",
+    "document": "Documento",
+    "cta": "Enlace",
+    "image": "Galería",
+    "poll": "Encuesta",
+    "contributors": "Colaboradores",
+    "spaces": "Subespacios"
+  },
+  "contributionType": {
+    "post": "Publicaciones",
+    "whiteboard": "Pizarras",
+    "link": "Enlaces",
+    "memo": "Memos"
+  },
+  "preview": {
+    "loading": "Cargando plantilla…",
+    "edit": "Editar plantilla",
+    "close": "Cerrar",
+    "empty": "—",
+    "callout": {
+      "framingKind": "Tipo de contenido",
+      "framing": "Contenido",
+      "allowedContributions": "Contribuciones permitidas",
+      "noContributions": "Sin contribuciones",
+      "comments": "Comentarios habilitados",
+      "commentsDisabled": "Comentarios deshabilitados",
+      "defaultPostDescription": "Descripción predeterminada de publicación",
+      "defaultWhiteboard": "Pizarra predeterminada",
+      "links": "Enlaces",
+      "gallery": "Galería",
+      "pollQuestion": "Pregunta",
+      "pollOptions": "Opciones"
+    },
+    "whiteboard": {
+      "empty": "Esta plantilla de pizarra no tiene dibujo."
+    },
+    "post": {
+      "defaultDescription": "Descripción predeterminada"
+    },
+    "space": {
+      "phases": "Fases",
+      "starterCallouts": "Herramientas iniciales",
+      "subspaceTemplates": "Plantillas de subespacio",
+      "includesSubspaces": "Esta plantilla también incluye estos subespacios:",
+      "noCallouts": "No hay herramientas en esta fase.",
+      "noDescription": "Sin descripción",
+      "privateSubspace": "Subespacio privado",
+      "none": "Ninguno"
+    },
+    "communityGuidelines": {
+      "title": "Título de las pautas",
+      "body": "Pautas",
+      "references": "Referencias"
+    },
+    "classification": {
+      "multiSelect": "Selección múltiple",
+      "singleSelect": "Selección única",
+      "valueCount_one": "{{count}} valor",
+      "valueCount_other": "{{count}} valores",
+      "definedValues": "Valores definidos"
+    }
+  },
+  "picker": {
+    "title": "Usar una plantilla",
+    "importTitle": "Biblioteca de plantillas",
+    "search": "Buscar plantillas…",
+    "noTemplates": "No hay plantillas disponibles.",
+    "noTemplatesForType": "No hay plantillas disponibles para este tipo.",
+    "sources": {
+      "space": "Este espacio",
+      "account": "Tu cuenta",
+      "platform": "Plataforma"
+    },
+    "select": "Usar esta plantilla",
+    "noTemplate": "Sin plantilla — empezar en blanco",
+    "import": "Importar",
+    "inThisSet": "En este conjunto",
+    "remove": "Quitar del conjunto",
+    "selectPreviewHint": "Selecciona una plantilla para ver una vista previa.",
+    "close": "Cerrar",
+    "done": "Listo"
+  },
+  "form": {
+    "createTitle": {
+      "space": "Crear plantilla de espacio",
+      "callout": "Crear plantilla de herramienta de colaboración",
+      "whiteboard": "Crear plantilla de pizarra",
+      "post": "Crear plantilla de publicación",
+      "communityGuidelines": "Crear plantilla de pautas de la comunidad",
+      "classification": "Create classification template"
+    },
+    "editTitle": {
+      "space": "Editar plantilla de espacio",
+      "callout": "Editar plantilla de herramienta de colaboración",
+      "whiteboard": "Editar plantilla de pizarra",
+      "post": "Editar plantilla de publicación",
+      "communityGuidelines": "Editar plantilla de pautas de la comunidad",
+      "classification": "Edit classification template"
+    },
+    "common": {
+      "name": "Nombre de plantilla",
+      "namePlaceholder": "p. ej. Inicio del proyecto",
+      "nameRequired": "Se requiere un nombre de plantilla.",
+      "descriptionRequired": "Se requiere una descripción.",
+      "description": "Descripción",
+      "descriptionPlaceholder": "¿Para qué sirve esta plantilla?",
+      "tags": "Etiquetas",
+      "tagsPlaceholder": "Añade una etiqueta y pulsa Intro",
+      "banner": "Imagen de vista previa",
+      "uploadBanner": "Subir imagen de vista previa"
+    },
+    "save": "Guardar",
+    "done": "Hecho",
+    "cancel": "Cancelar",
+    "whiteboard": {
+      "drawing": "Pizarra",
+      "editDrawing": "Editar dibujo",
+      "startDrawing": "Empezar a dibujar",
+      "previewSettings": "Ajustes de vista previa",
+      "editPreview": "Editar vista previa",
+      "previewImage": "Imagen de vista previa",
+      "uploadPreviewImage": "Subir imagen de vista previa"
+    },
+    "post": {
+      "defaultDescription": "Descripción predeterminada",
+      "defaultDescriptionPlaceholder": "Contenido precargado para nuevas publicaciones que usen esta plantilla"
+    },
+    "space": {
+      "source": "Espacio fuente",
+      "sourceRequired": "Pega primero una URL de espacio y haz clic en \"Usar este espacio\".",
+      "recursive": "Incluir subespacios anidados",
+      "capturedStructure": "Estructura capturada",
+      "alwaysIncluded": "Siempre incluido: información Acerca de y Configuración",
+      "urlLoader": {
+        "description": "Pega la URL de un espacio o subespacio cuya estructura quieras copiar.",
+        "placeholder": "https://…",
+        "use": "Usar este espacio",
+        "selectAnother": "Elegir otro espacio",
+        "resolving": "Comprobando…",
+        "errors": {
+          "required": "Pega primero una URL de espacio.",
+          "invalidUrl": "Esta URL no apunta a un espacio.",
+          "notFound": "Espacio no encontrado.",
+          "noRights": "Necesitas permisos de administrador sobre el espacio que quieres copiar como plantilla."
+        }
+      }
+    },
+    "communityGuidelines": {
+      "title": "Título de las pautas",
+      "titlePlaceholder": "p. ej. Nuestros valores comunitarios",
+      "titleRequired": "Se requiere un título de pautas.",
+      "body": "Pautas",
+      "bodyPlaceholder": "Escribe las pautas para esta comunidad…",
+      "references": "Referencias"
+    },
+    "classification": {
+      "cardinality": "Tipo de selección",
+      "cardinalitySingle": "Selección única — los usuarios eligen un valor",
+      "cardinalityMulti": "Selección múltiple — los usuarios pueden elegir varios valores",
+      "values": "Values",
+      "moveValueUp": "Subir el valor {{position}}",
+      "moveValueDown": "Bajar el valor {{position}}",
+      "valueLabelPlaceholder": "Value label",
+      "valueIdOverride": "Custom id (optional)",
+      "valueIdOverridePlaceholder": "Leave blank to derive an id from the label",
+      "valueIdCollision": "This id is already used by another value in this set.",
+      "addValue": "Add value",
+      "removeValue": "Remove value",
+      "atLeastOneValue": "A value set needs at least one value.",
+      "tooManyValues": "A value set can hold at most 50 values.",
+      "valuesRequired": "Add at least one value.",
+      "valuesHint": "Define los valores permitidos para esta clasificación. Escribe un valor y pulsa Intro.",
+      "quickAddPlaceholder": "p. ej. ODS 1 – Fin de la pobreza",
+      "valuesDefined_one": "{{count}} valor definido",
+      "valuesDefined_other": "{{count}} valores definidos"
+    }
+  },
+  "references": {
+    "add": "Añadir referencia",
+    "name": "Nombre",
+    "uri": "URL",
+    "description": "Descripción",
+    "remove": "Quitar referencia",
+    "nameRequired": "Se requiere un nombre.",
+    "uriRequired": "Se requiere una URL."
+  },
+  "discard": {
+    "title": "¿Descartar cambios?",
+    "body": "Tienes cambios sin guardar. ¿Quieres descartarlos?",
+    "confirm": "Descartar",
+    "cancel": "Seguir editando"
+  },
+  "delete": {
+    "title": "¿Eliminar plantilla?",
+    "body": "“{{name}}” se eliminará permanentemente. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar plantilla",
+    "cancel": "Cancelar"
+  },
+  "removeFromSet": {
+    "title": "¿Quitar esta plantilla?",
+    "body": "“{{name}}” se quitará de este conjunto. El original en la biblioteca no se ve afectado.",
+    "confirm": "Quitar",
+    "cancel": "Cancelar"
+  },
+  "setDefault": {
+    "subspaceTitle": "Plantilla de subespacio predeterminada",
+    "subspaceSubtitle": "Se usa para precargar el formulario al crear un subespacio de este espacio.",
+    "flowStateTitle": "Plantilla de callout predeterminada",
+    "flowStateSubtitle": "Se usa para precargar el formulario al añadir un callout a esta fase.",
+    "current": "Predeterminada actual",
+    "none": "Sin predeterminada",
+    "noCandidates": "Aún no hay plantillas de espacio en este conjunto.",
+    "confirm": "Establecer como predeterminada",
+    "clear": "Borrar predeterminada",
+    "previewHint": "Selecciona una plantilla para ver una vista previa.",
+    "cancel": "Cancelar"
+  },
+  "saveAs": {
+    "fromCalloutTitle": "Guardar callout como plantilla",
+    "fromGuidelinesTitle": "Guardar pautas como plantilla",
+    "fromSubspaceTitle": "Guardar subespacio como plantilla",
+    "unsavedSourceTitle": "Guarda primero tus cambios",
+    "unsavedSourceBody": "Guarda o descarta los cambios sin guardar antes de crear una plantilla a partir de esto.",
+    "unsavedSourceConfirm": "OK"
+  },
+  "breadcrumbs": {
+    "settings": "Ajustes"
+  },
+  "packAdmin": {
+    "subtitle": "Plantillas en este Innovation Pack",
+    "detailsHeading": "Detalles del paquete",
+    "detailsSubtitle": "Actualiza el nombre, la descripción, la configuración del proveedor y las referencias del paquete.",
+    "templatesHeading": "Plantillas"
+  },
+  "packForm": {
+    "name": "Nombre del paquete",
+    "namePlaceholder": "p. ej. Kit de incorporación",
+    "nameRequired": "Se requiere un nombre de paquete.",
+    "provider": "Proveedor",
+    "providerHint": "El proveedor es la organización propietaria y no se puede cambiar aquí.",
+    "avatar": "Avatar",
+    "avatarHint": "Imagen cuadrada, usada en tarjetas y encabezados del paquete.",
+    "uploadAvatar": "Subir avatar",
+    "changeAvatar": "Cambiar avatar",
+    "description": "Descripción",
+    "descriptionPlaceholder": "¿De qué trata este Innovation Pack?",
+    "tags": "Etiquetas",
+    "tagsPlaceholder": "Añade una etiqueta y pulsa Intro",
+    "references": "Referencias",
+    "listedInStore": "Listado en la tienda",
+    "listedInStoreHint": "Muestra este paquete en la Biblioteca de plantillas.",
+    "searchVisibility": "Visibilidad en búsquedas",
+    "searchVisibilityOptions": {
+      "public": "Público",
+      "account": "Cuenta",
+      "hidden": "Oculto"
+    },
+    "searchVisibilityHints": {
+      "public": "Cualquiera puede encontrar este paquete mediante búsqueda.",
+      "account": "Solo la cuenta propietaria puede encontrar este paquete mediante búsqueda — incluidos sus Asociados, si el propietario es una organización.",
+      "hidden": "Solo los administradores de la cuenta propietaria pueden encontrar este paquete mediante búsqueda."
+    },
+    "save": "Guardar cambios",
+    "crop": {
+      "title": "Recortar avatar",
+      "description": "Ajusta el encuadre de tu imagen antes de añadirla al pack.",
+      "altLabel": "Texto alternativo",
+      "altPlaceholder": "Describe la imagen para lectores de pantalla",
+      "save": "Aplicar",
+      "saving": "Aplicando…",
+      "cancel": "Cancelar"
+    }
+  },
+  "createPack": {
+    "title": "Crear Innovation Pack",
+    "name": "Nombre",
+    "namePlaceholder": "p. ej. Kit de incorporación",
+    "nameRequired": "Se requiere un nombre de paquete.",
+    "description": "Descripción",
+    "descriptionPlaceholder": "¿De qué trata este Innovation Pack?",
+    "create": "Crear",
+    "cancel": "Cancelar",
+    "subtitleUser": "Crea un nuevo Innovation Pack en tu cuenta.",
+    "subtitleAccount": "Crea un nuevo Innovation Pack en la cuenta de {{account}}.",
+    "saveForMoreDetails": "Podrás añadir un avatar, etiquetas, referencias y la visibilidad en la tienda después de crear el pack.",
+    "creating": "Creando…",
+    "validation": {
+      "min3": "Debe tener al menos 3 caracteres.",
+      "maxSmall": "Debe tener como máximo {{count}} caracteres.",
+      "maxMarkdown": "Debe tener como máximo {{count}} caracteres.",
+      "required": "Este campo es obligatorio."
+    }
+  },
+  "deletePack": {
+    "title": "¿Eliminar Innovation Pack?",
+    "body": "“{{name}}” y todas sus plantillas se eliminarán permanentemente. Esta acción no se puede deshacer.",
+    "confirm": "Eliminar paquete",
+    "cancel": "Cancelar"
+  },
+  "packProfile": {
+    "shareTooltip": "Comparte este Innovation Pack",
+    "manage": "Administrar este paquete"
+  },
+  "library": {
+    "title": "Biblioteca de plantillas",
+    "subtitle": "Descubre plantillas e Innovation Packs publicados en la plataforma.",
+    "pageTitle": "Biblioteca de plantillas",
+    "loadedOfTotal": "{{loaded}} de {{total}}",
+    "packs": {
+      "heading": "Innovation Packs",
+      "empty": "Aún no hay Innovation Packs disponibles.",
+      "searchPlaceholder": "Buscar Innovation Packs"
+    },
+    "templates": {
+      "heading": "Plantillas",
+      "empty": "Ninguna plantilla coincide con los filtros seleccionados.",
+      "loading": "Cargando plantillas",
+      "searchPlaceholder": "Buscar plantillas"
+    },
+    "filter": {
+      "label": "Filtrar por tipo",
+      "all": "Todos",
+      "types": {
+        "space": "Espacios",
+        "callout": "Herramientas de colaboración",
+        "whiteboard": "Pizarras",
+        "post": "Publicaciones",
+        "communityGuidelines": "Normas de la comunidad",
+        "classification": "Classifications"
+      },
+      "summary": "{{first}} y {{count}} más",
+      "pair": "{{first}} y {{second}}"
+    }
+  },
+  "packCard": {
+    "templateCount_one": "{{count}} plantilla",
+    "templateCount_other": "{{count}} plantillas",
+    "byProvider": "por {{name}}"
+  }
+}

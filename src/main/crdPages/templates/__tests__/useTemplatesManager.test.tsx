@@ -1,0 +1,410 @@
+/**
+ * @vitest-environment jsdom
+ *
+ * T038 — `useTemplatesManager` delete-flow Apollo test.
+ *
+ * Verifies the `ConfirmationDialog`-driven delete contract that the Space Settings → Templates tab
+ * and the Innovation Pack admin both consume:
+ *   - `onTemplateAction(id, 'delete')` → `pendingDelete = { id, name }`
+ *   - `cancelDelete()` → `pendingDelete = null`
+ *   - `confirmDelete()` → fires the `deleteTemplate` mutation, clears `pendingDelete`, sets `deletingId`
+ *     transiently, returns to idle once the mutation resolves.
+ *
+ * The FR-019 / V3 "client clears dangling defaults" path is closed (session 32 — the backend
+ * cascades and the client just refetches dependent queries); there is no `isUsedAsDefault` flag
+ * to test for any more — see `specs/098-crd-templates/incongruencies.md` session 32.
+ */
+import { InMemoryCache } from '@apollo/client';
+import { MockedProvider, type MockedResponse } from '@apollo/client/testing';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import type { FC, PropsWithChildren } from 'react';
+import { describe, expect, it } from 'vitest';
+import {
+  AllTemplatesInTemplatesSetDocument,
+  DeleteTemplateDocument,
+  ImportTemplateDialogAccountTemplatesDocument,
+  ImportTemplateDialogPlatformTemplatesDocument,
+} from '@/core/apollo/generated/apollo-hooks';
+import {
+  type AllTemplatesInTemplatesSetQuery,
+  type DeleteTemplateMutation,
+  TemplateType as GqlTemplateType,
+  type ImportTemplateDialogAccountTemplatesQuery,
+  type ImportTemplateDialogPlatformTemplatesQuery,
+  TagsetType,
+  VisualType,
+} from '@/core/apollo/generated/graphql-schema';
+import { useTemplatesManager } from '../useTemplatesManager';
+
+// ---------------------------------------------------------------------------
+// Fixture builders
+// ---------------------------------------------------------------------------
+
+const tpl = (id: string, type: GqlTemplateType, name: string) => ({
+  __typename: 'Template',
+  id,
+  type,
+  profile: {
+    __typename: 'Profile',
+    id: `${id}-profile`,
+    displayName: name,
+    description: `${name} description`,
+    defaultTagset: {
+      __typename: 'Tagset',
+      id: `${id}-tagset`,
+      name: 'default',
+      tags: [],
+      allowedValues: [],
+      type: TagsetType.Freeform,
+    },
+    visual: {
+      __typename: 'Visual',
+      id: `${id}-visual`,
+      uri: '',
+      name: VisualType.Card,
+      alternativeText: '',
+    },
+    url: `/template/${id}`,
+  },
+  whiteboard: null,
+  callout:
+    type === GqlTemplateType.Callout
+      ? {
+          __typename: 'Callout',
+          id: `${id}-callout`,
+          settings: {
+            __typename: 'CalloutSettings',
+            contribution: {
+              __typename: 'CalloutContributionSettings',
+              enabled: true,
+              allowedTypes: [],
+            },
+          },
+        }
+      : null,
+});
+
+const allTemplatesMock = (
+  templatesSetId: string,
+  bucket: 'callout' | 'post' | 'whiteboard' | 'space' | 'communityGuidelines' | 'classification',
+  templates: ReturnType<typeof tpl>[]
+): MockedResponse<AllTemplatesInTemplatesSetQuery> => {
+  const bucketKey = `${bucket}Templates`;
+  return {
+    request: { query: AllTemplatesInTemplatesSetDocument, variables: { templatesSetId } },
+    result: {
+      data: {
+        lookup: {
+          __typename: 'LookupQueryResults',
+          templatesSet: {
+            __typename: 'TemplatesSet',
+            id: templatesSetId,
+            authorization: { __typename: 'Authorization', id: 'auth-1', myPrivileges: [] },
+            calloutTemplates: [],
+            postTemplates: [],
+            whiteboardTemplates: [],
+            spaceTemplates: [],
+            communityGuidelinesTemplates: [],
+            classificationTemplates: [],
+            [bucketKey]: templates,
+          },
+        },
+      } as unknown as AllTemplatesInTemplatesSetQuery,
+    },
+  };
+};
+
+const deleteMock = (templateId: string): MockedResponse<DeleteTemplateMutation> => ({
+  request: { query: DeleteTemplateDocument, variables: { templateId } },
+  result: {
+    data: { deleteTemplate: { __typename: 'Template', id: templateId } } as unknown as DeleteTemplateMutation,
+  },
+});
+
+const accountImportMock = (): MockedResponse<ImportTemplateDialogAccountTemplatesQuery> => ({
+  request: {
+    query: ImportTemplateDialogAccountTemplatesDocument,
+    variables: { accountId: 'account-1', includeCallout: false, includeSpace: true },
+  },
+  result: {
+    data: {
+      lookup: {
+        __typename: 'LookupQueryResults',
+        account: {
+          __typename: 'Account',
+          id: 'account-1',
+          innovationPacks: [
+            {
+              __typename: 'InnovationPack',
+              id: 'pack-1',
+              profile: {
+                __typename: 'Profile',
+                id: 'pack-1-profile',
+                displayName: 'Account Space Pack',
+                url: '/innovation-packs/pack-1',
+              },
+              provider: {
+                __typename: 'Actor',
+                id: 'provider-1',
+                profile: {
+                  __typename: 'Profile',
+                  id: 'provider-1-profile',
+                  displayName: 'Pack Provider',
+                  avatar: {
+                    __typename: 'Visual',
+                    id: 'provider-1-avatar',
+                    uri: 'https://example.com/provider-avatar.png',
+                  },
+                  url: '/contributors/provider-1',
+                },
+              },
+              templatesSet: {
+                __typename: 'TemplatesSet',
+                id: 'pack-1-templates',
+                templates: [
+                  {
+                    ...tpl('space-import-1', GqlTemplateType.Space, 'Space starter'),
+                    contentSpace: {
+                      __typename: 'TemplateContentSpace',
+                      id: 'space-content-1',
+                      about: {
+                        __typename: 'SpaceAbout',
+                        id: 'space-content-1-about',
+                        profile: {
+                          __typename: 'Profile',
+                          id: 'space-content-1-profile',
+                          cardBanner: {
+                            __typename: 'Visual',
+                            id: 'space-content-1-banner',
+                            uri: 'https://example.com/space-banner.png',
+                          },
+                        },
+                      },
+                      collaboration: {
+                        __typename: 'Collaboration',
+                        id: 'space-content-1-collaboration',
+                        innovationFlow: {
+                          __typename: 'InnovationFlow',
+                          id: 'space-content-1-flow',
+                          states: [],
+                        },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    } as unknown as ImportTemplateDialogAccountTemplatesQuery,
+  },
+});
+
+const platformImportMock = (): MockedResponse<ImportTemplateDialogPlatformTemplatesQuery> => ({
+  request: {
+    query: ImportTemplateDialogPlatformTemplatesDocument,
+    variables: { templateTypes: [GqlTemplateType.Space], includeCallout: false, includeSpace: true },
+  },
+  result: {
+    data: {
+      platform: {
+        __typename: 'Platform',
+        id: 'platform-1',
+        library: { __typename: 'Library', id: 'library-1', templates: [] },
+      },
+    } as ImportTemplateDialogPlatformTemplatesQuery,
+  },
+});
+
+// ---------------------------------------------------------------------------
+// Wrapper
+// ---------------------------------------------------------------------------
+
+const makeWrapper = (mocks: MockedResponse[]): FC<PropsWithChildren> => {
+  return ({ children }) => (
+    <MockedProvider
+      mocks={mocks}
+      cache={
+        new InMemoryCache({
+          typePolicies: {
+            Query: {
+              fields: {
+                lookup: {
+                  merge: (existing = {}, incoming) => ({ ...existing, ...incoming }),
+                },
+              },
+            },
+          },
+        })
+      }
+    >
+      {children}
+    </MockedProvider>
+  );
+};
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+describe('useTemplatesManager — initial state', () => {
+  it('exposes templatesSetId + an empty pendingDelete + a deletingId of null until something happens', () => {
+    const wrapper = makeWrapper([allTemplatesMock('set-1', 'callout', [])]);
+    const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
+      wrapper,
+    });
+    expect(result.current.templatesSetId).toBe('set-1');
+    expect(result.current.pendingDelete).toBeNull();
+    expect(result.current.deletingId).toBeNull();
+  });
+
+  it('returns 6 sections (one per type) in TEMPLATE_TYPE_ORDER once the list query resolves', async () => {
+    const callout = tpl('c-1', GqlTemplateType.Callout, 'My callout template');
+    const wrapper = makeWrapper([allTemplatesMock('set-1', 'callout', [callout])]);
+    const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    expect(result.current.categories.map(c => c.type)).toEqual([
+      'space',
+      'callout',
+      'whiteboard',
+      'post',
+      'classification',
+      'communityGuidelines',
+    ]);
+    const calloutCategory = result.current.categories.find(c => c.type === 'callout');
+    expect(calloutCategory?.templates.map(t => t.id)).toEqual(['c-1']);
+  });
+
+  it('requests contentSpace data when the Space-template import picker opens', async () => {
+    const wrapper = makeWrapper([
+      allTemplatesMock('set-1', 'space', []),
+      allTemplatesMock('set-1', 'space', []),
+      accountImportMock(),
+      platformImportMock(),
+    ]);
+    const { result } = renderHook(
+      () =>
+        useTemplatesManager({
+          templatesSetId: 'set-1',
+          holderKind: 'space',
+          accountId: 'account-1',
+        }),
+      { wrapper }
+    );
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    act(() => result.current.onImport('space'));
+
+    await waitFor(() => expect(result.current.importPicker.open).toBe(true));
+    await waitFor(() => expect(result.current.importPicker.sources.every(source => !source.loading)).toBe(true));
+    expect(result.current.importPicker.sources[0].templates).toEqual([
+      expect.objectContaining({
+        id: 'space-import-1',
+        type: 'space',
+        name: 'Space starter',
+        bannerUrl: 'https://example.com/space-banner.png',
+        ownerLabel: 'Account Space Pack',
+      }),
+    ]);
+  });
+});
+
+describe('useTemplatesManager — delete confirmation lifecycle', () => {
+  it('onTemplateAction(id, "delete") sets pendingDelete to { id, name } drawn from the matching card', async () => {
+    const callout = tpl('c-2', GqlTemplateType.Callout, 'Survey starter');
+    const wrapper = makeWrapper([allTemplatesMock('set-1', 'callout', [callout])]);
+    const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => {
+      result.current.onTemplateAction('c-2', 'delete');
+    });
+
+    expect(result.current.pendingDelete).toEqual({ id: 'c-2', name: 'Survey starter' });
+  });
+
+  it('cancelDelete() clears pendingDelete without firing the mutation', async () => {
+    const callout = tpl('c-3', GqlTemplateType.Callout, 'Vote template');
+    // Notice: no DeleteTemplate mock provided — the test asserts the mutation does NOT fire on cancel.
+    const wrapper = makeWrapper([allTemplatesMock('set-1', 'callout', [callout])]);
+    const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => {
+      result.current.onTemplateAction('c-3', 'delete');
+    });
+    expect(result.current.pendingDelete).not.toBeNull();
+
+    act(() => {
+      result.current.cancelDelete();
+    });
+    expect(result.current.pendingDelete).toBeNull();
+  });
+
+  it('confirmDelete() fires the deleteTemplate mutation, clears pendingDelete, and resolves deletingId back to null', async () => {
+    const callout = tpl('c-4', GqlTemplateType.Callout, 'Daily standup');
+    const wrapper = makeWrapper([
+      allTemplatesMock('set-1', 'callout', [callout]),
+      deleteMock('c-4'),
+      // After the mutation, the manager refetches `AllTemplatesInTemplatesSet` — provide the empty list response.
+      allTemplatesMock('set-1', 'callout', []),
+    ]);
+    const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => {
+      result.current.onTemplateAction('c-4', 'delete');
+    });
+    expect(result.current.pendingDelete).not.toBeNull();
+
+    await act(async () => {
+      await result.current.confirmDelete();
+    });
+
+    expect(result.current.pendingDelete).toBeNull();
+    expect(result.current.deletingId).toBeNull();
+  });
+
+  it('confirmDelete() is a no-op when there is no pendingDelete to confirm', async () => {
+    const wrapper = makeWrapper([allTemplatesMock('set-1', 'callout', [])]);
+    const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    // No pendingDelete — confirmDelete must resolve without throwing.
+    await act(async () => {
+      await result.current.confirmDelete();
+    });
+    expect(result.current.deletingId).toBeNull();
+  });
+
+  it('onTemplateAction(id, "delete") for an unknown id is a no-op (defensive)', async () => {
+    const wrapper = makeWrapper([allTemplatesMock('set-1', 'callout', [])]);
+    const { result } = renderHook(() => useTemplatesManager({ templatesSetId: 'set-1', holderKind: 'space' }), {
+      wrapper,
+    });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => {
+      result.current.onTemplateAction('does-not-exist', 'delete');
+    });
+    expect(result.current.pendingDelete).toBeNull();
+  });
+});

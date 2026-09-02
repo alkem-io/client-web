@@ -1,6 +1,29 @@
+import type { ActorType } from '@/core/apollo/generated/graphql-schema';
 /**
  * Shared types and utilities for user messaging
  */
+export interface ConversationMember {
+  id: string;
+  type: ActorType;
+  displayName: string;
+  avatarUri?: string;
+  url?: string;
+}
+
+export interface UserConversation {
+  id: string;
+  roomId: string;
+  isGroup: boolean;
+  displayName?: string;
+  /** Raw room displayName from server (undefined when auto-generated). Use for editing, not display. */
+  roomDisplayName?: string;
+  avatarUri?: string;
+  unreadCount: number;
+  messagesCount: number;
+  createdDate: Date;
+  lastMessage?: ConversationMessage;
+  members: ConversationMember[];
+}
 
 // Message sender type used across messaging components
 export interface MessageSender {

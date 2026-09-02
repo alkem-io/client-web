@@ -1,0 +1,79 @@
+{
+  "tagline": "Colaboración en los espacios entre organizaciones",
+  "continueWith": "o continúa con",
+  "loading": "Cargando",
+  "signIn": {
+    "title": "Iniciar sesión",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "signUp": "Regístrate",
+    "preparing": "Preparando inicio de sesión seguro…"
+  },
+  "signUp": {
+    "title": "Regístrate",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "signIn": "Iniciar sesión",
+    "intro": "Alkemio está diseñado para beneficiar a la sociedad. Lee y acepta las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy> antes de continuar.",
+    "acceptTerms": "Acepto las <terms>Condiciones de uso</terms> y la <privacy>Política de privacidad</privacy>.",
+    "openTerms": "Abrir las Condiciones de uso en una pestaña nueva",
+    "openPrivacy": "Abrir la Política de privacidad en una pestaña nueva",
+    "signpost": {
+      "warning": "Estás intentando registrarte con {{provider}}. Si ya tienes una cuenta de Alkemio con el mismo correo, {{provider}} se conectará a esa cuenta y podrás usar ambos métodos de inicio de sesión.",
+      "signInAction": "Iniciar sesión con otra cuenta"
+    },
+    "continuation": {
+      "divider": "o",
+      "heading": "Termina de registrarte con {{provider}}",
+      "intro": "Estos datos los compartió el proveedor - comprueba que son correctos y acepta los términos para terminar de crear tu cuenta.",
+      "cta": "Crear cuenta con {{provider}}"
+    }
+  },
+  "recovery": {
+    "title": "Recuperación de contraseña",
+    "intro": "Introduce tu correo electrónico a continuación para recibir un enlace de recuperación que te permitirá restablecer tu contraseña.",
+    "resendNotice": "<strong>¿No has recibido el correo?</strong><br/>Revisa tu carpeta de spam, confirma que la dirección de abajo es correcta y solicita un nuevo correo de recuperación cuando termine el temporizador."
+  },
+  "settings": {
+    "title": "Establecer nueva contraseña"
+  },
+  "verification": {
+    "title": "Verifica tu correo electrónico",
+    "intro": "Revisa tu bandeja de entrada para ver un correo con instrucciones para verificar tu dirección."
+  },
+  "verificationReminder": {
+    "title": "Verifica tu correo electrónico",
+    "body": "El último paso es verificar tu dirección de correo electrónico. Revisa tu bandeja de entrada para ver un correo con instrucciones."
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "generic": "Se produjo un error inesperado durante la autenticación. Vuelve a iniciar sesión.",
+    "code": "Código de error: {{code}}",
+    "backToSignIn": "Volver a iniciar sesión"
+  },
+  "fields": {
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "invalidEmail": "Introduce una dirección de correo válida."
+  },
+  "providers": {
+    "connectWith": "Continuar con {{provider}}",
+    "fallback": "Otro proveedor",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "Has abandonado tu whiteboard",
+    "description": "Tu sesión de invitado sigue activa. Puedes volver a tu whiteboard, o explorar lo que Alkemio tiene para ofrecer.",
+    "backButton": "Volver a whiteboard",
+    "websiteButton": "Ir a nuestro sitio web",
+    "contributeTitle": "¿Quieres contribuir más?",
+    "contributeDescription": "Regístrate a continuación en una cuenta Alkemio para colaborar con equipos y acceder a herramientas avanzadas."
+  }
+}

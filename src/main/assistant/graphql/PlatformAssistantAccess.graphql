@@ -1,0 +1,6 @@
+query PlatformAssistantAccess {
+  platform {
+    id
+    virtualAssistantAccess
+  }
+}

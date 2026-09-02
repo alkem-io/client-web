@@ -10,6 +10,12 @@ import { mapResourcesToSidebarItems } from './dashboardDataMappers';
 type UseDashboardSidebarOptions = {
   onInvitationsClick: () => void;
   onTipsAndTricksClick: () => void;
+  /**
+   * When provided, the "Create my own space" item opens the Create Space dialog
+   * directly. When omitted, the item falls back to its original link (→ account
+   * page) — so we only swap the dialog in where that link actually exists.
+   */
+  onCreateSpaceClick?: () => void;
   onMyActivityClick?: () => void;
   onMySpaceActivityClick?: () => void;
 };
@@ -17,6 +23,7 @@ type UseDashboardSidebarOptions = {
 export function useDashboardSidebar({
   onInvitationsClick,
   onTipsAndTricksClick,
+  onCreateSpaceClick,
   onMyActivityClick,
   onMySpaceActivityClick,
 }: UseDashboardSidebarOptions) {
@@ -74,7 +81,7 @@ export function useDashboardSidebar({
       id: 'create-space',
       label: t('sidebar.createSpace'),
       iconName: 'Rocket',
-      href: createSpaceLink,
+      ...(onCreateSpaceClick ? { onClick: onCreateSpaceClick } : { href: createSpaceLink }),
     },
   ];
 
@@ -89,7 +96,7 @@ export function useDashboardSidebar({
     : { spaces: [], virtualContributors: [], innovationHubs: [], innovationPacks: [] };
 
   const resourceSections: SidebarResourceSection[] = [
-    { title: t('sidebar.mySpaces'), items: resources.spaces },
+    { title: t('sidebar.mySpaces'), items: resources.spaces, square: true },
     { title: t('sidebar.virtualContributors'), items: resources.virtualContributors },
     { title: t('sidebar.innovationHubs'), items: resources.innovationHubs },
     { title: t('sidebar.innovationPacks'), items: resources.innovationPacks },

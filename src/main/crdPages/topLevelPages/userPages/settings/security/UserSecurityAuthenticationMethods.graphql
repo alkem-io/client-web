@@ -1,0 +1,10 @@
+query UserSecurityAuthenticationMethods {
+  me {
+    user {
+      id
+      authentication {
+        methods
+      }
+    }
+  }
+}

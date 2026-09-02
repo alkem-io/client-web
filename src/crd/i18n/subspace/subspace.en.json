@@ -1,0 +1,62 @@
+{
+  "members": {
+    "memberCount_one": "{{count}} member",
+    "memberCount_other": "{{count}} members"
+  },
+  "flow": {
+    "editFlow": "Edit innovation flow",
+    "addPost": "Add Post",
+    "emptyState": "No phases configured yet for this subspace.",
+    "phaseTab": "Switch to phase {{name}}",
+    "connectorAlt": "Next phase",
+    "menu": "Menu"
+  },
+  "sidebar": {
+    "about": "About this Subspace",
+    "lead": "Lead",
+    "leads": "Leads",
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "quickActions": {
+      "heading": "Quick Actions",
+      "community": "Community",
+      "events": "Events",
+      "activity": "Recent Activity",
+      "index": "Post Index",
+      "subspaces": "Subspaces"
+    },
+    "virtualContributor": {
+      "heading": "Virtual Contributor",
+      "open": "Open"
+    }
+  },
+  "community": {
+    "dialogTitle": "Community",
+    "dialogDescription": "People and organisations participating in this subspace."
+  },
+  "events": {
+    "dialogTitle": "Events"
+  },
+  "activity": {
+    "dialogTitle": "Recent Activity"
+  },
+  "index": {
+    "dialogTitle": "Post Index",
+    "empty": "No Posts yet."
+  },
+  "subspaces": {
+    "empty": "This subspace has no nested subspaces."
+  },
+  "breadcrumbs": {
+    "home": "Home"
+  },
+  "a11y": {
+    "subspaceBanner": "SubSpace banner for {{name}}",
+    "flowTabs": "Innovation flow phases",
+    "sidebarNavigation": "SubSpace sidebar",
+    "communityDialog": "Community members dialog",
+    "close": "Close",
+    "openMenu": "Open menu",
+    "bottomBar": "Phase navigation"
+  }
+}

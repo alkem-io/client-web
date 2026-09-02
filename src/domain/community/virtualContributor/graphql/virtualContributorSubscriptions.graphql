@@ -3,6 +3,10 @@ subscription virtualContributorUpdates($virtualContributorID: UUID!) {
     virtualContributor {
       id
       status
+      aiPersona {
+        id
+        bodyOfKnowledgeLastUpdated
+      }
     }
   }
 }

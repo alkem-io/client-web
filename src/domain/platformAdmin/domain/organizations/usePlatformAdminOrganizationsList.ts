@@ -16,7 +16,7 @@ import {
   OrgVerificationLifecycleEvents,
   OrgVerificationLifecycleStates,
 } from '@/domain/community/organization/model/OrganizationVerification';
-import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SimpleSearchableTable';
+import type { SearchableListItem } from '@/domain/shared/components/SearchableList/SearchableListTypes';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
 
 const PAGE_SIZE = 10;
@@ -39,6 +39,7 @@ export const usePlatformAdminOrganizationsList = () => {
 
   const pageInfo = data?.platformAdmin.organizations.pageInfo;
   const hasMore = pageInfo?.hasNextPage ?? false;
+  const total = data?.platformAdmin.organizations.total;
 
   const fetchMore = async (itemsNumber = PAGE_SIZE) => {
     if (!data) {
@@ -189,6 +190,7 @@ export const usePlatformAdminOrganizationsList = () => {
     error,
     fetchMore,
     hasMore,
+    total,
     pageSize: PAGE_SIZE,
     firstPageSize: PAGE_SIZE,
   };

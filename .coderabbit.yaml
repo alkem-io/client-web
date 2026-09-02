@@ -16,13 +16,12 @@ reviews:
     - "!**/public/**"        # Exclude public assets
     - "!**/node_modules/**"  # Exclude dependencies
     - "!**/dist/**"          # Exclude build files
-    - "!prototype/**"        # Read-only design reference — never modified
     - "!src/crd/app/**"      # Standalone CRD preview app with mock data
   path_instructions:
     - path: "**/*"
       instructions: |
         Repository overview:
-        - React 19 + TypeScript single-page app for the Alkemio platform. Uses Vite 5, Apollo Client 3, MUI 7, Emotion, Vitest.
+        - React 19 + TypeScript single-page app for the Alkemio platform. Uses Vite 5, Apollo Client 3, Vitest. CRD (shadcn/ui + Tailwind, `src/crd/`) is the only design system. MUI/Emotion were fully removed (story #9885) and must never be reintroduced.
         - Large surface (production build transforms ~18k modules). Core implementation lives in src/core, src/domain, and src/main; generated GraphQL hooks reside in src/core/apollo/generated.
         - Authoritative docs: README.md, docs/development-setup.md, .specify/memory/constitution.md, agents.md, .github/copilot-instructions.md.
 
@@ -51,8 +50,11 @@ reviews:
         - Follow the hierarchy: constitution → agents.md → .github/copilot-instructions.md.
         - Require `pnpm codegen` and schema diff summaries when `*.graphql` changes; prohibit ad-hoc `useQuery` usage.
         - Enforce React 19 concurrency hygiene, WCAG 2.1 AA accessibility, and localization via `react-i18next` (no hard-coded copy).
-        - **i18n/Crowdin**: Only `src/core/i18n/en/translation.en.json` may be edited directly. All other locale files are generated via Crowdin and must never be modified manually. Reject PRs that change non-English translation files.
+        - **MUI/Emotion are removed**: MUI and Emotion were fully removed (story #9885); the packages are uninstalled. Flag ANY `@mui/*` or `@emotion/*` import in any file as a BLOCKING issue — they must never be reintroduced; use the CRD design system (`src/crd/`) instead.
+        - **i18n — all strings live in CRD**: The legacy default `translation` namespace and its `src/core/i18n/<lang>/translation.<lang>.json` files were REMOVED (story #9885). The default namespace is now `crd-common` (`src/crd/i18n/common/`). Every user-facing string belongs in the CRD per-feature namespaces under `src/crd/i18n/<feature>/`. There is no longer a frozen legacy core file. Flag any reintroduction of a `src/core/i18n/**/translation.*.json` file or a `useTranslation('translation')` / `{ ns: 'translation' }` reference as a BLOCKING issue.
+        - **i18n/CRD (manual translations + parity)**: Translations under `src/crd/i18n/**/*.json` are NOT managed by Crowdin. They are maintained manually (AI-assisted) per `src/crd/CLAUDE.md`; changes to any CRD locale file — including non-English ones — are expected and must pass review without Crowdin-compliance objections. All six supported languages (en, nl, es, bg, de, fr) are edited in the same PR. Enforce KEY PARITY: any key added or removed MUST be mirrored across all six language files — flag a missing or orphaned key in any locale as a blocking issue.
         - Reject commits containing build artifacts (`.build/`, `public/env-config.js`, `build/`) or missing validation evidence.
+        - **No GraphQL schema snapshot in the repo**: the client obtains the schema from a running server (`CODEGEN_SCHEMA=http://localhost:3000/graphql` in the committed `.env`; `pnpm codegen` loads it via dotenv-flow). Flag as a BLOCKING issue: any added `schema.graphql` (or other GraphQL SDL snapshot) file, removal of `/schema.graphql` from `.gitignore`, or a change to `codegen.yml`/`.env` that makes codegen read a local file by default instead of the live endpoint. A local snapshot is allowed only as a gitignored, uncommitted developer override via `.env.local`.
         - Ensure new env vars use the `VITE_APP_*` prefix and flow through `buildConfiguration.js` into `window._env_`.
 
         Trust this onboarding note first;
@@ -68,12 +70,17 @@ reviews:
         Rely on global error handling and logging; only flag missing local try/catch or logging when additional mitigation is required.
         Non-null assertions are discouraged except when paired with skip guards on GraphQL queries (see existing patterns).
         Watch for security issues (XSS, CSRF, sensitive data exposure) and TypeScript typing violations.
+        MUI/Emotion are removed (story #9885) and the packages are uninstalled. All client-facing UI is built in the CRD design system (`src/crd/`). Flag ANY `@mui/*` or `@emotion/*` import in any file as a BLOCKING issue — they must never be reintroduced; use CRD instead.
     - path: "src/**/*.{graphql,gql}"
       instructions: |
         Ensure documents follow generated fragment conventions, stay in sync with server schema, and include matching codegen artifacts. Flag missing schema diffs or cache update plans.
+        Generated artifacts must come from `pnpm codegen` against a running server — never from a committed `schema.graphql` snapshot (BLOCKING if one is added).
     - path: "src/**/*.json"
       instructions: |
         Validate structure, schema compliance, and absence of secrets. Keep localization payloads consistent.
+    - path: "src/crd/i18n/**/*.json"
+      instructions: |
+        Manual (AI-assisted) translations per `src/crd/CLAUDE.md`. NOT managed by Crowdin. `crd-common` (`src/crd/i18n/common/`) is the DEFAULT namespace, resolved by every `useTranslation()` call with no namespace argument; the legacy `src/core/i18n` `translation` namespace was removed (story #9885). All six supported languages (en, nl, es, bg, de, fr) are edited in the same PR. ENFORCE KEY PARITY: every key added or removed in one `<feature>.<lang>.json` MUST be added or removed in all six language files for that feature — flag any key that is present in some locales but missing from others (a missing translation) as a blocking issue. Validate JSON structure and absence of secrets.
     - path: "public/**/*.html"
       instructions: |
         Enforce semantic HTML and accessibility requirements. Confirm injected env placeholders remain intact.
@@ -83,5 +90,13 @@ reviews:
     - path: "**/*.md"
       instructions: |
         Ensure documentation stays current, references the constitution hierarchy, and captures new risks or mitigations.
+    - path: "**/*.py"
+      instructions: |
+        This is a JavaScript/TypeScript repository — Python files do not belong here, anywhere.
+        The prototype design reference ships helper scripts under `utils/*.py` (font merging,
+        corruption fixes), but those live only in the external `alkem-io/client-web-prototype`
+        repo and must never appear here.
+        Flag EVERY added or modified `.py` file as a blocking issue and request its removal before merge.
+        Do not review the script's logic — the only acceptable resolution is deleting the file.
 chat:
   auto_reply: true

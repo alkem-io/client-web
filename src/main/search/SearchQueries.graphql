@@ -33,6 +33,7 @@ query search($searchData: SearchInput!) {
         terms
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -47,6 +48,7 @@ query search($searchData: SearchInput!) {
         ...SearchResultPost
         ...SearchResultMemo
         ...SearchResultWhiteboard
+        ...SearchResultCollaboraDocument
       }
       total
     }
@@ -159,6 +161,28 @@ fragment SearchResultCallout on SearchResultCallout {
       id
       messagesCount
     }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
+    publishedBy {
+      id
+      profile {
+        id
+        displayName
+        avatar: visual(type: AVATAR) {
+          id
+          uri
+        }
+      }
+    }
   }
   ...CalloutParent
 }
@@ -235,24 +259,6 @@ fragment SearchResultSpace on SearchResultSpace {
       isContentPublic
     }
     visibility
-  }
-}
-
-query userRolesSearchCards($userId: UUID!) {
-  rolesUser(rolesData: { actorID: $userId, filter: { visibilities: [ACTIVE, DEMO, INACTIVE] } }) {
-    id
-    spaces {
-      id
-      roles
-      subspaces {
-        id
-        roles
-      }
-    }
-    organizations {
-      id
-      roles
-    }
   }
 }
 
@@ -334,6 +340,56 @@ fragment SearchResultWhiteboard on SearchResultWhiteboard {
 }
 
 fragment WhiteboardParent on SearchResultWhiteboard {
+  space {
+    id
+    level
+    visibility
+    about {
+      ...SpaceAboutLight
+    }
+  }
+  callout {
+    id
+    framing {
+      id
+      profile {
+        id
+        url
+        displayName
+      }
+    }
+  }
+}
+
+fragment SearchResultCollaboraDocument on SearchResultCollaboraDocument {
+  isContribution
+  collaboraDocument {
+    id
+    profile {
+      id
+      url
+      displayName
+      description
+      visual(type: CARD) {
+        ...VisualModel
+      }
+      tagset {
+        ...TagsetDetails
+      }
+    }
+    createdBy {
+      id
+      profile {
+        id
+        displayName
+      }
+    }
+    createdDate
+  }
+  ...CollaboraDocumentParent
+}
+
+fragment CollaboraDocumentParent on SearchResultCollaboraDocument {
   space {
     id
     level

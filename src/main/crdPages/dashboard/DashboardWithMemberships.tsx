@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  refetchUserSettingsQuery,
+  useDashboardExploreSpacesQuery,
   useHomeSpaceLookupQuery,
   useLatestContributionsQuery,
   useLatestContributionsSpacesFlatQuery,
   useMyMembershipsQuery,
+  useNonActivityHostedSpacesQuery,
   useRecentSpacesQuery,
+  useUpdateUserSettingsMutation,
 } from '@/core/apollo/generated/apollo-hooks';
 import {
   ActivityEventType,
-  type ActivityFeedRoles,
+  ActivityFeedRoles,
   LicenseEntitlementType,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
@@ -24,13 +28,22 @@ import { RecentSpaces } from '@/crd/components/dashboard/RecentSpaces';
 import { TipsAndTricksDialog } from '@/crd/components/dashboard/TipsAndTricksDialog';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
 import { useHomeSpaceSettings } from '@/domain/community/userCurrent/useHomeSpaceSettings';
+import { CrdCreateSpaceDialog } from '@/main/crdPages/topLevelPages/createSpace/CrdCreateSpaceDialog';
+import { CrdVCCreationWizardDialog } from '@/main/crdPages/topLevelPages/vcPages/creationWizard/CrdVCCreationWizardDialog';
 import { URL_SPACE_EXPLORER } from '@/main/routing/urlBuilders';
-import useVirtualContributorWizard from '@/main/topLevelPages/myDashboard/newVirtualContributorWizard/useVirtualContributorWizard';
+import { LEGACY_VIEW_KEY, resolveActivityView, SEED_FLAG_KEY, shouldSeedFromLegacy } from './activityViewPreference';
 import {
   mapActivityToFeedItems,
+  mapHostedSpacesToPanelItems,
+  mapHostSection,
+  mapLastActiveSection,
+  mapLeadAdminSection,
   mapMembershipsToPanelItems,
+  mapMostActivitySection,
   mapRecentSpacesToCompactCards,
+  type RecentSpaceEntry,
 } from './dashboardDataMappers';
+import { NonActivityHomeSections } from './NonActivityHomeSections';
 import type { DashboardDialogType } from './useDashboardDialogs';
 import { useDashboardSidebar } from './useDashboardSidebar';
 
@@ -47,7 +60,9 @@ type DashboardWithMembershipsProps = {
 };
 
 const EXCLUDED_ACTIVITY_TYPES = [ActivityEventType.CalloutWhiteboardContentModified];
-const ACTIVITY_LIMIT = 10;
+const ACTIVITY_PAGE_SIZE = 20;
+const SECTION_ACTIVITY_DAYS = 7;
+const SECTION_ITEM_CAP = 4;
 
 export default function DashboardWithMemberships({
   dialogState,
@@ -56,17 +71,50 @@ export default function DashboardWithMemberships({
   const { t } = useTranslation('crd-dashboard');
   const { t: tMain } = useTranslation();
   const navigate = useNavigate();
-  const { platformRoles, accountEntitlements } = useCurrentUserContext();
+  const { platformRoles, accountEntitlements, accountId, userModel } = useCurrentUserContext();
+  const [createSpaceOpen, setCreateSpaceOpen] = useState(false);
+  const [createVcOpen, setCreateVcOpen] = useState(false);
 
-  // Activity view toggle — persisted in localStorage
-  const [activityEnabled, setActivityEnabledState] = useState(() => {
-    const cached = localStorage.getItem('dashboardView');
-    return cached !== 'SPACES';
-  });
-  const setActivityEnabled = (enabled: boolean) => {
-    localStorage.setItem('dashboardView', enabled ? 'ACTIVITY' : 'SPACES');
-    setActivityEnabledState(enabled);
+  // Activity view toggle — persisted per-user in UserSettings.dashboard.activityView.
+  // Default: Activity view on (true) when the user has never set it (FR-024). A local
+  // override gives the toggle instant feedback ahead of the mutation resolving.
+  const userId = userModel?.id;
+  const settingActivityView = userModel?.settings?.dashboard?.activityView;
+  const [activityOverride, setActivityOverride] = useState<boolean | null>(null);
+  const activityEnabled = resolveActivityView(activityOverride, settingActivityView);
+
+  const [updateUserSettings] = useUpdateUserSettingsMutation();
+
+  const persistActivityView = (enabled: boolean) => {
+    if (!userId) return;
+    updateUserSettings({
+      variables: { settingsData: { userID: userId, settings: { dashboard: { activityView: enabled } } } },
+      refetchQueries: [refetchUserSettingsQuery({ userID: userId })],
+    }).catch(() => {
+      // Persist failed — drop the local override so the UI falls back to the
+      // last-known server value rather than showing a change that didn't save.
+      setActivityOverride(null);
+    });
   };
+
+  const setActivityEnabled = (enabled: boolean) => {
+    setActivityOverride(enabled);
+    persistActivityView(enabled);
+  };
+
+  // Seed-once (FR-026): on the first post-release load with no explicitly-set account
+  // preference, migrate a legacy localStorage "SPACES" choice into the setting. An
+  // ACTIVITY / unset legacy value already matches the default, so no write is needed.
+  useEffect(() => {
+    if (!userId) return;
+    if (localStorage.getItem(SEED_FLAG_KEY)) return;
+    const legacy = localStorage.getItem(LEGACY_VIEW_KEY);
+    if (shouldSeedFromLegacy(legacy, settingActivityView)) {
+      setActivityOverride(false);
+      persistActivityView(false);
+    }
+    localStorage.setItem(SEED_FLAG_KEY, '1');
+  }, [userId, settingActivityView]);
 
   // Recent spaces
   const { homeSpaceId, membershipSettingsUrl } = useHomeSpaceSettings();
@@ -78,18 +126,52 @@ export default function DashboardWithMemberships({
     skip: !homeSpaceId,
   });
 
+  const myRecentSpaces = recentSpacesData?.me.mySpaces ?? [];
+  const recentSpacesEmpty = !recentSpacesLoading && myRecentSpaces.length === 0;
+
+  // Memberships — drives the "Explore all" panel, the non-activity Lead & Administer
+  // section, and (when the user has no recent contributions) the Recent-spaces fallback.
+  const needMemberships = dialogState.openDialog === 'memberships' || !activityEnabled || recentSpacesEmpty;
+  const { data: myMembershipsData, loading: membershipsLoading } = useMyMembershipsQuery({
+    skip: !needMemberships,
+  });
+
   const recentSpaces = (() => {
-    const spaces = recentSpacesData?.me.mySpaces ?? [];
-    const filtered = spaces.filter(s => s.space.id !== homeSpaceId).slice(0, 3);
     const homeSpace = homeSpaceData?.lookup.space;
+    const memberships = myMembershipsData?.me?.spaceMembershipsHierarchical ?? [];
+    // New members with no contributions have an empty mySpaces; fall back to the
+    // top-level spaces they're a member of. Subspaces are intentionally NOT flattened
+    // in — without activity we only surface the parent spaces, not sub-communities.
+    const source: RecentSpaceEntry[] = myRecentSpaces.length > 0 ? myRecentSpaces : memberships;
+    // Show every available space (home space first), not an arbitrary few.
+    const filtered = source.filter(s => s.space.id !== homeSpaceId);
     const all = homeSpace ? [{ space: homeSpace }, ...filtered] : filtered;
     return mapRecentSpacesToCompactCards(all, homeSpaceId);
   })();
+
+  // Non-activity home sections (024)
+  const { data: exploreData } = useDashboardExploreSpacesQuery({
+    variables: { daysOld: SECTION_ACTIVITY_DAYS, limit: SECTION_ITEM_CAP },
+    skip: activityEnabled,
+  });
+  const { data: hostedData, loading: hostedLoading } = useNonActivityHostedSpacesQuery({
+    skip: activityEnabled,
+  });
+
+  const hierarchicalMemberships = myMembershipsData?.me?.spaceMembershipsHierarchical ?? [];
+  const hostedSpaces = hostedData?.me.user?.account?.spaces ?? [];
+
+  const lastActiveItems = mapLastActiveSection(myRecentSpaces, homeSpaceData?.lookup.space ?? undefined, homeSpaceId);
+  const mostActivityItems = mapMostActivitySection(exploreData?.exploreSpaces ?? []);
+  const leadAdminItems = mapLeadAdminSection(hierarchicalMemberships);
+  const hostItems = mapHostSection(hostedSpaces);
+  const hostedPanelItems = mapHostedSpacesToPanelItems(hostedSpaces);
 
   // Sidebar
   const sidebarData = useDashboardSidebar({
     onInvitationsClick: onPendingMembershipsClick,
     onTipsAndTricksClick: dialogState.openTipsAndTricks,
+    onCreateSpaceClick: () => setCreateSpaceOpen(true),
     onMyActivityClick: activityEnabled ? undefined : dialogState.openMyActivity,
     onMySpaceActivityClick: activityEnabled ? undefined : dialogState.openMySpaceActivity,
   });
@@ -112,9 +194,9 @@ export default function DashboardWithMemberships({
 
   const roleFilterOptions = [
     { value: 'all', label: t('activity.filter.role.all') },
-    { value: 'member', label: t('activity.filter.role.member') },
-    { value: 'lead', label: t('activity.filter.role.lead') },
-    { value: 'admin', label: t('activity.filter.role.admin') },
+    { value: ActivityFeedRoles.Member, label: t('activity.filter.role.member') },
+    { value: ActivityFeedRoles.Lead, label: t('activity.filter.role.lead') },
+    { value: ActivityFeedRoles.Admin, label: t('activity.filter.role.admin') },
   ];
 
   const spaceActivitySpaceIds = spaceActivityFilter === 'all' ? flatSpaces.map(m => m.space.id) : [spaceActivityFilter];
@@ -124,40 +206,77 @@ export default function DashboardWithMemberships({
     dialogState.openDialog === 'my-activity' || dialogState.openDialog === 'my-space-activity';
   const needsActivityData = activityEnabled || isActivityDialogOpen;
 
-  const { data: spaceActivityData, loading: spaceActivityLoading } = useLatestContributionsQuery({
-    variables: {
-      first: ACTIVITY_LIMIT,
-      filter: {
-        spaceIds: spaceActivitySpaceIds,
-        roles: roleFilter === 'all' ? undefined : [roleFilter as ActivityFeedRoles],
-        excludeTypes: EXCLUDED_ACTIVITY_TYPES,
-      },
-    },
+  const spaceActivityFilter_ = {
+    spaceIds: spaceActivitySpaceIds,
+    roles: roleFilter === 'all' ? undefined : [roleFilter as ActivityFeedRoles],
+    excludeTypes: EXCLUDED_ACTIVITY_TYPES,
+  };
+
+  const personalActivityFilter_ = {
+    spaceIds: personalSpaceIds,
+    myActivity: true,
+    excludeTypes: EXCLUDED_ACTIVITY_TYPES,
+  };
+
+  const {
+    data: spaceActivityData,
+    loading: spaceActivityLoading,
+    fetchMore: fetchMoreSpaceActivity,
+  } = useLatestContributionsQuery({
+    variables: { first: ACTIVITY_PAGE_SIZE, filter: spaceActivityFilter_ },
     skip: !needsActivityData || flatSpaces.length === 0,
+    notifyOnNetworkStatusChange: true,
   });
 
-  const { data: personalActivityData, loading: personalActivityLoading } = useLatestContributionsQuery({
-    variables: {
-      first: ACTIVITY_LIMIT,
-      filter: { spaceIds: personalSpaceIds, myActivity: true, excludeTypes: EXCLUDED_ACTIVITY_TYPES },
-    },
+  const {
+    data: personalActivityData,
+    loading: personalActivityLoading,
+    fetchMore: fetchMorePersonalActivity,
+  } = useLatestContributionsQuery({
+    variables: { first: ACTIVITY_PAGE_SIZE, filter: personalActivityFilter_ },
     skip: !needsActivityData || flatSpaces.length === 0,
+    notifyOnNetworkStatusChange: true,
   });
 
   const spaceActivityItems = mapActivityToFeedItems(spaceActivityData?.activityFeed?.activityFeed ?? [], tMain);
   const personalActivityItems = mapActivityToFeedItems(personalActivityData?.activityFeed?.activityFeed ?? [], tMain);
 
-  // Memberships panel
-  const { data: myMembershipsData, loading } = useMyMembershipsQuery({
-    skip: dialogState.openDialog !== 'memberships',
-  });
+  const spacePageInfo = spaceActivityData?.activityFeed?.pageInfo;
+  const personalPageInfo = personalActivityData?.activityFeed?.pageInfo;
+  const [loadingMoreSpaceActivity, setLoadingMoreSpaceActivity] = useState(false);
+  const [loadingMorePersonalActivity, setLoadingMorePersonalActivity] = useState(false);
+
+  const loadMoreSpaceActivity = async () => {
+    if (loadingMoreSpaceActivity || !spacePageInfo?.endCursor) return;
+    setLoadingMoreSpaceActivity(true);
+    try {
+      await fetchMoreSpaceActivity({
+        variables: { first: ACTIVITY_PAGE_SIZE, after: spacePageInfo.endCursor, filter: spaceActivityFilter_ },
+      });
+    } finally {
+      setLoadingMoreSpaceActivity(false);
+    }
+  };
+
+  const loadMorePersonalActivity = async () => {
+    if (loadingMorePersonalActivity || !personalPageInfo?.endCursor) return;
+    setLoadingMorePersonalActivity(true);
+    try {
+      await fetchMorePersonalActivity({
+        variables: { first: ACTIVITY_PAGE_SIZE, after: personalPageInfo.endCursor, filter: personalActivityFilter_ },
+      });
+    } finally {
+      setLoadingMorePersonalActivity(false);
+    }
+  };
+
+  // Memberships panel — reuses the same query loaded above.
   const membershipsItems = mapMembershipsToPanelItems(myMembershipsData?.me?.spaceMembershipsHierarchical ?? []);
 
   // Campaign
   const showCampaign =
     platformRoles?.some(role => role === RoleName.PlatformVcCampaign) &&
     accountEntitlements?.some(e => e === LicenseEntitlementType.AccountVirtualContributor);
-  const { startWizard, virtualContributorWizard } = useVirtualContributorWizard();
 
   // Tips — from crd-dashboard namespace
   const tipsRaw = t('tips.items', { returnObjects: true });
@@ -186,25 +305,27 @@ export default function DashboardWithMemberships({
           />
         }
       >
-        <RecentSpaces
-          spaces={recentSpaces}
-          loading={recentSpacesLoading}
-          hasHomeSpace={!!homeSpaceId}
-          homeSpaceSettingsHref={membershipSettingsUrl}
-          onExploreAllClick={dialogState.openMemberships}
-          onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
-        />
-
-        {showCampaign && <CampaignBanner onAction={() => startWizard()} />}
-
         {activityEnabled && (
+          <RecentSpaces
+            spaces={recentSpaces}
+            loading={recentSpacesLoading || (recentSpacesEmpty && membershipsLoading)}
+            hasHomeSpace={!!homeSpaceId}
+            homeSpaceSettingsHref={membershipSettingsUrl}
+            onExploreAllClick={dialogState.openMemberships}
+            onPinClick={() => membershipSettingsUrl && navigate(membershipSettingsUrl)}
+          />
+        )}
+
+        {showCampaign && <CampaignBanner onAction={() => setCreateVcOpen(true)} />}
+
+        {activityEnabled ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <ActivityFeed
               variant="spaces"
               feedId="inline-spaces"
               title={t('activity.spacesTitle')}
               items={spaceActivityItems}
-              loading={spaceActivityLoading}
+              loading={spaceActivityLoading && spaceActivityItems.length === 0}
               spaceFilter={spaceActivityFilter}
               spaceFilterOptions={spaceFilterOptions}
               onSpaceFilterChange={setSpaceActivityFilter}
@@ -219,7 +340,7 @@ export default function DashboardWithMemberships({
               feedId="inline-personal"
               title={t('activity.personalTitle')}
               items={personalActivityItems}
-              loading={personalActivityLoading}
+              loading={personalActivityLoading && personalActivityItems.length === 0}
               spaceFilter={personalSpaceFilter}
               spaceFilterOptions={spaceFilterOptions}
               onSpaceFilterChange={setPersonalSpaceFilter}
@@ -227,9 +348,26 @@ export default function DashboardWithMemberships({
               maxItems={7}
             />
           </div>
+        ) : (
+          <NonActivityHomeSections
+            pinnedLastActive={lastActiveItems}
+            mostActivity={mostActivityItems}
+            leadAdmin={leadAdminItems}
+            host={hostItems}
+            membershipsItems={membershipsItems}
+            hostedPanelItems={hostedPanelItems}
+            pinnedLoading={recentSpacesLoading}
+            membershipsLoading={membershipsLoading}
+            hostedLoading={hostedLoading}
+            homeSpaceId={homeSpaceId}
+            membershipSettingsUrl={membershipSettingsUrl}
+            onNavigate={navigate}
+          />
         )}
       </DashboardLayout>
-      {virtualContributorWizard}
+      {accountId && (
+        <CrdCreateSpaceDialog open={createSpaceOpen} accountId={accountId} onClose={() => setCreateSpaceOpen(false)} />
+      )}
 
       <TipsAndTricksDialog
         open={dialogState.openDialog === 'tips-and-tricks'}
@@ -249,10 +387,13 @@ export default function DashboardWithMemberships({
           feedId="dialog-personal"
           title=""
           items={personalActivityItems}
-          loading={personalActivityLoading}
+          loading={personalActivityLoading && personalActivityItems.length === 0}
           spaceFilter={personalSpaceFilter}
           spaceFilterOptions={spaceFilterOptions}
           onSpaceFilterChange={setPersonalSpaceFilter}
+          onLoadMore={loadMorePersonalActivity}
+          hasMore={personalPageInfo?.hasNextPage ?? false}
+          loadingMore={loadingMorePersonalActivity}
           embedded={true}
         />
       </ActivityDialog>
@@ -267,13 +408,16 @@ export default function DashboardWithMemberships({
           feedId="dialog-spaces"
           title=""
           items={spaceActivityItems}
-          loading={spaceActivityLoading}
+          loading={spaceActivityLoading && spaceActivityItems.length === 0}
           spaceFilter={spaceActivityFilter}
           spaceFilterOptions={spaceFilterOptions}
           onSpaceFilterChange={setSpaceActivityFilter}
           roleFilter={roleFilter}
           roleFilterOptions={roleFilterOptions}
           onRoleFilterChange={setRoleFilter}
+          onLoadMore={loadMoreSpaceActivity}
+          hasMore={spacePageInfo?.hasNextPage ?? false}
+          loadingMore={loadingMoreSpaceActivity}
           embedded={true}
         />
       </ActivityDialog>
@@ -282,13 +426,15 @@ export default function DashboardWithMemberships({
         open={dialogState.openDialog === 'memberships'}
         onClose={dialogState.closeDialog}
         items={membershipsItems}
-        loading={loading}
+        loading={membershipsLoading}
         onNavigate={href => {
           dialogState.closeDialog();
           navigate(href);
         }}
         browseAllHref={URL_SPACE_EXPLORER}
       />
+
+      {createVcOpen && <CrdVCCreationWizardDialog open={true} onClose={() => setCreateVcOpen(false)} />}
     </>
   );
 }

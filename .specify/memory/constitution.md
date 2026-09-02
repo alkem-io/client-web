@@ -1,9 +1,10 @@
 <!--
 Sync Impact Report
-Version change: 1.0.5 → 1.0.6 (added root cause analysis requirement)
-Modified principles: (none)
-Modified sections: Engineering Workflow
-Added sections: Engineering Workflow #5 (Root Cause Analysis Before Fixes)
+Version change: 1.0.6 → 1.1.0 (CRD is the only design system for new features; CRD-first i18n)
+Modified principles: Architecture Standards #2 (MUI frozen, CRD-only for new features),
+  Architecture Standards #3 (new strings in CRD per-feature namespaces; core EN frozen)
+Modified sections: Architecture Standards
+Added sections: (none)
 Removed sections: (none)
 Templates requiring updates: (none)
 Deferred TODOs: None
@@ -81,13 +82,20 @@ safeguards ensure sustainable delivery.
    surface owns routing composition, layout shells, and entry points for feature toggles; it MUST
    remain thin, delegating domain logic back into `src/domain` or `src/core`. New directories require
    alignment with this taxonomy.
-2. Styling is transitioning from MUI theming (`src/core/ui`) to a new design system based on
-   shadcn/ui + Tailwind CSS (`src/crd/`). New pages MUST use the CRD design system; existing MUI
-   pages remain until migrated. See `src/crd/CLAUDE.md` for CRD conventions.
+2. The CRD design system (`src/crd/`, shadcn/ui + Tailwind CSS) is the ONLY design system for new
+   client-facing features. MUI theming (`src/core/ui`) is legacy and FROZEN: it MAY only be removed
+   as pages are migrated, and MUST NOT be extended. No new view or presentational component may
+   import from `@mui/*` or `@emotion/*`; such imports are permitted only inside already-existing MUI
+   files until they are migrated. New features are built in `src/crd/` with their integration glue in
+   `src/main/crdPages/`. See `src/crd/CLAUDE.md` for CRD conventions.
 3. Internationalization uses `react-i18next`. All user-visible strings MUST be declared via the
-   localization pipeline; hard-coded copy is forbidden. Only the English source file
-   (`src/core/i18n/en/translation.en.json`) MAY be edited directly. All other locale files are
-   generated downstream and MUST remain untouched in this repository.
+   localization pipeline; hard-coded copy is forbidden. New strings MUST be added to the CRD
+   per-feature namespaces under `src/crd/i18n/<feature>/`, with all six supported languages
+   (en, nl, es, bg, de, fr) edited in the same PR; key parity across languages is required. The
+   legacy core source file (`src/core/i18n/en/translation.en.json`) is FROZEN for new keys — it and
+   its sibling locale files serve only the not-yet-migrated MUI app. Crowdin is no longer used; for
+   upkeep of existing keys, the non-English core locale files are now edited directly in-repo (same
+   PR, key parity preserved) rather than generated downstream.
 4. Build artifacts remain deterministic: Vite config changes require documenting their impact on
    chunking, env exposure, and React Server Component compatibility.
 5. Import transparency requires explicit module paths. Barrel exports via `index.ts` files are
@@ -169,4 +177,4 @@ Compliance expectations:
   violations remain unmitigated.
 - CI workflows SHOULD enforce linting, testing, and type generation steps aligned with these rules.
 
-**Version**: 1.0.6 | **Ratified**: 2025-10-30 | **Last Amended**: 2026-01-17
+**Version**: 1.1.0 | **Ratified**: 2025-10-30 | **Last Amended**: 2026-06-10

@@ -179,7 +179,7 @@ For each task in the new phase (in dependency order):
 ## Important Rules
 
 - **Never modify files in `prototype/`** — read-only reference
-- **Never modify non-English translation files** in `src/core/i18n/` — those are managed by Crowdin
+- **Legacy core translations** (`src/core/i18n/`) are frozen for new keys (new strings go to CRD); Crowdin is no longer used, so for upkeep of existing keys all locale files there are edited directly in-repo
 - **CRD translations** (`src/crd/i18n/`) are managed manually — update all 6 language files (en, nl, es, bg, de, fr)
 - **Data hooks stay untouched** — reuse existing GraphQL queries and hooks; the CRD migration is UI-only
 - **Keep the old MUI page files** — don't delete them, they may still be referenced by other routes

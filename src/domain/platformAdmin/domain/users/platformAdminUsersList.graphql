@@ -1,6 +1,7 @@
 query platformAdminUsersList($first: Int!, $after: UUID, $filter: UserFilterInput) {
   platformAdmin {
     users(first: $first, after: $after, filter: $filter) {
+      total
       users {
         id
         account {

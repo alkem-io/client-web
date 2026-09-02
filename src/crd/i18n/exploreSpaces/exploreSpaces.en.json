@@ -28,6 +28,7 @@
     "in": "in",
     "loading": "Loading spaces",
     "moreLeads": "{{count}} more leads",
+    "moreTags": "{{count}} more tags",
     "removeFilter": "remove filter"
   }
 }

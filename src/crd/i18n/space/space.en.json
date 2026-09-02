@@ -1,4 +1,10 @@
 {
+  "common": {
+    "Callout": "Post",
+    "callout": "Post",
+    "Callouts": "Posts",
+    "callouts": "Posts"
+  },
   "banner": {
     "homeSpace": "Home Space",
     "homeSpaceSettings": "Home space settings"
@@ -15,10 +21,47 @@
     "demo": "This is a demo Space for testing purposes.",
     "inactive": "This Space is currently inactive."
   },
+  "knowledge": {
+    "searchPlaceholder": "Search posts...",
+    "searchLabel": "Search posts",
+    "noResults": "No matches",
+    "search": {
+      "emptyTitle": "No matches",
+      "emptyDescription": "No content in this section matches your search.",
+      "errorTitle": "Search is unavailable",
+      "errorDescription": "Something went wrong while searching. Please try again.",
+      "retry": "Try again",
+      "loadingLabel": "Loading search results",
+      "appendingLabel": "Loading more results",
+      "matchText": "<b>{{matches}}</b> items match search for <b>{{text}}</b>",
+      "matchTags": "<b>{{matches}}</b> items match tagged <b>{{tags}}</b>",
+      "matchBoth": "<b>{{matches}}</b> items match tagged <b>{{tags}}</b> and search for <b>{{text}}</b>"
+    },
+    "viewGrid": "Card view",
+    "viewList": "List view",
+    "count": {
+      "post_one": "{{count}} Post",
+      "post_other": "{{count}} Posts",
+      "whiteboard_one": "{{count}} whiteboard",
+      "whiteboard_other": "{{count}} whiteboards",
+      "memo_one": "{{count}} memo",
+      "memo_other": "{{count}} memos",
+      "link_one": "{{count}} link",
+      "link_other": "{{count}} links",
+      "document_one": "{{count}} document",
+      "document_other": "{{count}} documents"
+    }
+  },
+  "postIndexDialog": {
+    "close": "Close",
+    "loadingLabel": "Loading Post Index",
+    "empty": "No Posts yet"
+  },
   "sidebar": {
     "aboutSpace": "About this Space",
     "subspaces": "Subspaces",
     "showAll": "Show all",
+    "create": "Create",
     "events": "Events",
     "noEvents": "No upcoming events",
     "showCalendar": "Show calendar",
@@ -28,39 +71,241 @@
     "invite": "Invite",
     "virtualContributors": "Virtual Contributors",
     "communityGuidelines": "Community Guidelines",
-    "postIndex": "Post Index",
+    "updates": "Updates",
+    "updatesSeeAll": "See all updates",
+    "updatesEmpty": "No updates have been posted yet.",
+    "updatesLoading": "Loading updates",
+    "postIndex": "$t(common.Callout) Index",
     "readMore": "Read more",
-    "addEvent": "Add event"
+    "editDescription": "Edit description",
+    "addEvent": "Add event",
+    "eventDateRelative": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "in_days_one": "in 1 day",
+      "in_days_other": "in {{count}} days"
+    },
+    "inviteVirtualContributor": "Invite Virtual Contributor"
+  },
+  "calendar": {
+    "title": "Events",
+    "addEvent": "Add event",
+    "editEvent": "Edit event",
+    "eventDetail": "Event: {{title}}",
+    "noUpcomingEvents": "No upcoming events",
+    "pastEvents": "Past events",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "deleteConfirm": {
+      "title": "Delete event",
+      "body": "Are you sure you want to delete \"{{title}}\" from this {{entity}}?",
+      "confirm": "Delete",
+      "cancel": "Cancel"
+    },
+    "fields": {
+      "displayName": "Title",
+      "type": "Type",
+      "date": "Date",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "duration": "Duration",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "durationOption": {
+        "minutes": "{{count}} min",
+        "hours_one": "{{count}} hour",
+        "hours_other": "{{count}} hours",
+        "hoursMinutes": "{{hours}}h {{minutes}}min"
+      },
+      "wholeDay": "Whole day",
+      "description": "Description",
+      "location": "Location",
+      "tags": "Tags",
+      "visibleOnParentCalendar": "Visible on parent calendar",
+      "endsAt": "ends at {{time}}"
+    },
+    "validation": {
+      "displayNameRequired": "Title is required",
+      "typeRequired": "Type is required",
+      "invalidDuration": "Invalid duration",
+      "endBeforeStart": "End must be after start",
+      "descriptionTooLong": "Description is too long"
+    },
+    "type": {
+      "DEADLINE": "Deadline",
+      "EVENT": "Event",
+      "MEETING": "Meeting",
+      "MILESTONE": "Milestone",
+      "OTHER": "Other",
+      "TRAINING": "Training",
+      "unknown": "Event"
+    },
+    "addToCalendar": {
+      "trigger": "Add to calendar",
+      "google": "Google Calendar",
+      "outlook": "Outlook Calendar",
+      "ics": "Download ICS",
+      "exportAll": "Export upcoming events to ICS",
+      "loading": "Loading…"
+    },
+    "calendarA11y": {
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "pickDate": "Pick a date",
+      "dayWithEvents_one": "{{date}}, 1 event",
+      "dayWithEvents_other": "{{date}}, {{count}} events"
+    },
+    "tooltip": {
+      "wholeDayPrefix": "Whole day"
+    },
+    "details": {
+      "comments": "Comments",
+      "references": "References",
+      "tags": "Tags",
+      "loadingEvent": "Loading event…",
+      "subspaceLabel": "in {{name}}",
+      "createdBy": "by {{name}} • {{date}}"
+    },
+    "entity": {
+      "space": "Space",
+      "subspace": "Subspace"
+    },
+    "notFound": {
+      "title": "Event not found",
+      "body": "This event no longer exists or has been removed.",
+      "backToList": "Back to events"
+    }
   },
   "feed": {
-    "addPost": "Add Post",
+    "addPost": "Add $t(common.Callout)",
     "showMore": "Show More",
     "activity": "Activity",
     "noCallouts": "No content yet",
     "loading": "Loading content..."
   },
   "callout": {
+    "openAria": "Open {{title}}",
     "draft": "Draft",
     "expand": "Show more",
+    "fullscreen": "Fullscreen",
     "collapse": "Show less",
     "openWhiteboard": "Open Whiteboard",
+    "openMemo": "Open Memo",
     "comments": "{{count}} Comments",
     "commentsZero": "0 Comments",
+    "expandComments": "Expand comments",
+    "collapseComments": "Collapse comments",
     "post": "Post",
     "whiteboard": "Whiteboard",
     "collection": "Collection",
     "callForWhiteboards": "Call for Whiteboards",
     "poll": "Poll",
     "link": "Link",
+    "callToAction": "Call to Action",
     "mediaGallery": "Media Gallery",
     "memo": "Memo",
+    "document": "Document",
     "moreWhiteboards": "+{{count}} more",
+    "moreContributions": "+{{count}} more",
+    "contributionsHeader": "Contributions ({{count}})",
     "vote": "Vote",
     "votes": "{{count}} votes",
     "totalVotes": "{{count}} total votes",
-    "resultsCount": "{{count}} results",
-    "clearFilters": "Clear filters",
-    "sendComment": "Send comment"
+    "sendComment": "Send comment",
+    "addWhiteboard": "Add whiteboard",
+    "createWhiteboard": "Create new whiteboard",
+    "defaultWhiteboardName": "New Whiteboard",
+    "whiteboardNameLabel": "Whiteboard title",
+    "addMemo": "Add memo",
+    "createMemo": "Create new memo",
+    "defaultMemoName": "New Memo",
+    "memoNameLabel": "Memo title",
+    "documentText": "Text Document",
+    "documentSpreadsheet": "Spreadsheet",
+    "documentPresentation": "Presentation",
+    "documentPdf": "PDF",
+    "openDocument": "Open Document",
+    "openDocumentPdf": "View",
+    "addDocument": "Add document",
+    "defaultDocumentName": "New Document",
+    "createDocument": "Create new document",
+    "documentNameLabel": "Document title",
+    "documentTypeLabel": "Document type",
+    "createNew": "Create new",
+    "documentImportOr": "or",
+    "documentImportHint": "Drag & drop a file, or click to upload",
+    "documentImportMaxSize": ".docx, .xlsx, .pptx, .pdf up to {{cap}} MB",
+    "documentReplaceAccepts": "{{ext}} up to {{cap}} MB",
+    "documentImportRemoveFile": "Remove file",
+    "documentImportErrorUnsupported": "This file type isn't supported. Try {{formats}}.",
+    "documentImportErrorTooLarge": "File is too large. Maximum size is {{cap}} MB.",
+    "documentImportErrorMultiple": "Drop a single file at a time.",
+    "documentImportErrorFolder": "Drop a single file, not a folder.",
+    "documentImportErrorServiceUnavailable": "Document service is temporarily unavailable. Please try again in a moment.",
+    "documentReplace": "Replace file",
+    "documentReplaceTitle": "Replace file",
+    "documentReplaceDescription": "Uploading a replacement overwrites the current file for everyone, and this can't be undone.",
+    "documentReplaceCurrentTitleLabel": "Current document",
+    "documentReplaceTitleFieldLabel": "Title",
+    "documentReplaceConfirm": "Replace file",
+    "documentReplaceErrorSameType": "The replacement must be the same kind of document as the current one: {{type}} ({{ext}}).",
+    "documentReplaceSuccess": "File replaced.",
+    "documentReplaceError": "Couldn't replace the file. Please try again.",
+    "addLinkOrFile": "Add link or file",
+    "createLink": "Add links or attach documents",
+    "editLink": "Edit link",
+    "linkSave": "Save",
+    "linkCreate": "Add",
+    "linkAddAnother": "Add another link",
+    "linkRemoveRow": "Remove this link",
+    "linkDefaultName": "New link",
+    "linkDefaultNameNumbered": "New link ({{count}})",
+    "linkCancelConfirmTitle": "Discard your changes?",
+    "linkCancelConfirmDescription": "If you close now, the links you've added here will not be saved.",
+    "linkCancelConfirm": "Discard",
+    "linkUrlLabel": "URL",
+    "linkUrlPlaceholder": "https://",
+    "linkNameLabel": "Display name",
+    "linkNamePlaceholder": "Give your link a name",
+    "linkDescriptionLabel": "Description",
+    "linkDescriptionPlaceholder": "What is this link about?",
+    "linkTermsHelper": "<terms>Click here</terms> for the terms and conditions.",
+    "linkUrlInvalid": "Enter a valid URL (must start with http:// or https://).",
+    "linkNameRequired": "Display name is required.",
+    "linkEditAriaLabel": "Edit link",
+    "linkDeleteAriaLabel": "Delete link",
+    "linkDelete": "Delete link",
+    "linkDeleteConfirmTitle": "Delete this link?",
+    "linkDeleteConfirmDescription": "This will permanently remove the link from this $t(common.callout). This action cannot be undone.",
+    "addPost": "Add Post",
+    "createPost": "Create Post",
+    "editPost": "Edit Post",
+    "defaultPostName": "New Post",
+    "postNameLabel": "Title",
+    "postDescriptionLabel": "Description",
+    "postDescriptionPlaceholder": "Write your Post...",
+    "postTagsLabel": "Tags",
+    "postSave": "Save",
+    "postCreate": "Post",
+    "createTask": "Create task",
+    "editTask": "Edit task",
+    "taskCreate": "Create task",
+    "tasksHeader": "Tasks ({{count}})",
+    "postDelete": "Delete Post",
+    "postDeleteConfirmTitle": "Delete this Post?",
+    "postDeleteConfirmDescription": "This will permanently remove the Post and its comments. This action cannot be undone.",
+    "postUnsavedCloseTitle": "Discard unsaved changes?",
+    "postUnsavedCloseDescription": "You have unsaved changes. If you close now, your edits will be lost.",
+    "postUnsavedCloseConfirm": "Discard changes",
+    "postUnsavedCloseCancel": "Keep editing",
+    "uploadAfterCreateFailed": "The $t(common.callout) was created, but uploading the preview image failed. You can retry from the $t(common.callout)'s edit dialog.",
+    "pollOptionsSaveFailed": "Could not save one or more poll option changes. You can retry from this dialog.",
+    "referencesSaveFailed": "Could not save one or more new references. Other changes were not applied. Please try again.",
+    "updateFailed": "Could not save changes to the $t(common.callout). Please try again.",
+    "contributors": "Contributors",
+    "subspaces": "Subspaces"
   },
   "contribution": {
     "edit": "Edit",
@@ -72,20 +317,25 @@
   "framing": {
     "newWhiteboard": "New Whiteboard",
     "readyToCreate": "Ready to be created",
+    "configured": "Configured",
     "configure": "Configure",
+    "edit": "Edit",
     "memo": "Memo",
-    "richTextEditor": "Rich text content editor"
+    "richTextEditor": "Rich text content editor",
+    "comingSoon": "Coming soon",
+    "memoPlaceholder": "Write your memo…",
+    "memoOpenHint": "Memo content is edited in its own dialog.",
+    "openMemo": "Open memo",
+    "openWhiteboard": "Open whiteboard",
+    "openWhiteboardHint": "Whiteboard content is edited in its own dialog.",
+    "officeDocumentsNotEnabled": "Office documents are not enabled for this space."
   },
   "members": {
-    "title": "Community",
-    "subtitle": "{{users}} members and {{organizations}} organizations in this space.",
-    "inviteMember": "Invite Member",
-    "search": "Search members or organizations...",
+    "subtitle": "{{users}} members and {{organizations}} organisations in this space.",
+    "search": "Search members or organisations...",
     "filterAll": "All",
-    "filterAdmin": "Admin",
     "filterLead": "Lead",
-    "filterMember": "Member",
-    "filterOrganization": "Organization",
+    "filterOrganization": "Organisation",
     "noMembers": "No members found",
     "previousPage": "Previous",
     "nextPage": "Next",
@@ -96,10 +346,9 @@
       "clearFilters": "Clear filters"
     },
     "role": {
-      "admin": "Admin",
       "lead": "Lead",
       "member": "Member",
-      "organization": "Organization"
+      "organization": "Organisation"
     }
   },
   "subspaces": {
@@ -121,23 +370,80 @@
     }
   },
   "about": {
-    "title": "About",
+    "title": "About This Space",
     "location": "Location",
     "metrics": "Key Metrics",
     "who": "Who",
     "why": "Why",
     "host": "Host",
+    "hostedBy": "Hosted by",
+    "members": "members",
+    "editMembers": "Edit members",
+    "editProfile": "Edit space profile",
+    "manageCommunity": "Manage community",
+    "leads": "Leads",
     "leadUsers": "Lead Users",
-    "leadOrganizations": "Lead Organizations",
+    "leadOrganizations": "Lead Organisations",
     "guidelines": "Community Guidelines",
-    "references": "References"
+    "guidelinesAdminsOnly": "Only admins can see this section. Add community guidelines so members know what to expect.",
+    "references": "References",
+    "close": "Close",
+    "edit": "Edit",
+    "readMore": "Read more",
+    "lockTooltip": "You don't have access to this space.",
+    "learnWhy": "Learn how to apply",
+    "hostTooltip": "The host organisation or person responsible for this space.",
+    "contactHost": "Contact host",
+    "apply": "Apply",
+    "join": "Join",
+    "member": "Member",
+    "applyPending": "Application pending",
+    "parentPending": "Parent application pending",
+    "applyDisabled": "Apply not available",
+    "acceptInvitation": "Accept invitation",
+    "signIn": "Sign in to apply",
+    "signInHelper": "You'll be redirected to sign in to Alkemio first.",
+    "context": {
+      "L0": {
+        "why": "Why are we here?",
+        "who": "Who is involved?"
+      },
+      "L1": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      },
+      "L2": {
+        "why": "Why this subspace?",
+        "who": "Who is involved?"
+      }
+    },
+    "tags": "Tags"
+  },
+  "apply": {
+    "apply": "Apply",
+    "join": "Join",
+    "cancel": "Cancel",
+    "processing": "Processing…",
+    "applyTitle": "Apply to {{name}}",
+    "joinTitle": "Join {{name}}",
+    "subheader": "Tell us a bit about why you want to join.",
+    "subheaderJoin": "You're about to join {{name}}.",
+    "required": "This field is required.",
+    "maxLength": "Maximum {{count}} characters.",
+    "submitted": {
+      "title": "Application submitted",
+      "body": "Your application to {{communityName}} has been submitted.",
+      "review": "Your application will be reviewed. Once it is approved you will get a notification <bell/> and you will be able to enter the community from your Home dashboard."
+    }
   },
   "mobile": {
-    "more": "More",
+    "menu": "Menu",
     "activity": "Activity",
     "videoCall": "Video Call",
     "share": "Share",
-    "settings": "Settings"
+    "settings": "Settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to centred layout"
   },
   "contextMenu": {
     "edit": "Edit",
@@ -146,11 +452,79 @@
     "share": "Share",
     "sortContributions": "Sort Contributions",
     "saveAsTemplate": "Save as Template",
+    "saveAsTemplateUnsupported": "Saving documents as templates is not yet supported",
     "moveToTop": "Move to Top",
     "moveUp": "Move Up",
     "moveDown": "Move Down",
     "moveToBottom": "Move to Bottom",
-    "delete": "Delete"
+    "delete": "Delete",
+    "moveFailed": "Could not reorder. Please try again."
+  },
+  "visibilityChange": {
+    "publishTitle": "Publish this $t(common.callout)?",
+    "publishDescription": "The $t(common.callout) will become visible to every member of the space.",
+    "publishConfirm": "Publish",
+    "unpublishTitle": "Move this $t(common.callout) to draft?",
+    "unpublishDescription": "The $t(common.callout) will no longer be visible to space members.",
+    "unpublishConfirm": "Move to draft",
+    "notifyMembers": "Notify space members",
+    "saveFailed": "Could not change the visibility. Please try again."
+  },
+  "sortContributions": {
+    "title": "Sort contributions",
+    "description": "Drag to reorder. The new order applies on save.",
+    "empty": "This $t(common.callout) has no contributions to sort yet.",
+    "confirm": "Save order",
+    "dragHandle": "Drag to reorder",
+    "saveFailed": "Could not save the new order. Please try again."
+  },
+  "deleteCallout": {
+    "title": "Delete this $t(common.callout)?",
+    "description": "“{{title}}” will be deleted permanently. This cannot be undone.",
+    "confirm": "Delete",
+    "confirmAll": "Delete $t(common.callout) and all contents",
+    "headerContributions_one": "{{count}} contribution will be deleted",
+    "headerContributions_other": "{{count}} contributions will be deleted",
+    "headerRich": "{{content}} will be deleted",
+    "headerRichContributions_one": "{{content}} and {{count}} contribution will be deleted",
+    "headerRichContributions_other": "{{content}} and {{count}} contributions will be deleted",
+    "headerRichPoll": "The poll and its results will be deleted",
+    "headerRichPollContributions_one": "The poll, its results and {{count}} contribution will be deleted",
+    "headerRichPollContributions_other": "The poll, its results and {{count}} contributions will be deleted",
+    "callToAction": "Call to Action",
+    "moreContributions_one": "{{count}} contribution more...",
+    "moreContributions_other": "{{count}} contributions more...",
+    "attachmentsNote": "including attached files and links",
+    "contentType": {
+      "whiteboard": "The whiteboard",
+      "memo": "The memo",
+      "mediaGallery": "The media gallery",
+      "document": "The document"
+    },
+    "moreLinks_one": "and {{count}} more link",
+    "moreLinks_other": "and {{count}} more links",
+    "comments_one": "{{count}} comment will be deleted",
+    "comments_other": "{{count}} comments will be deleted",
+    "success": "$t(common.Callout) “{{title}}” was deleted.",
+    "saveFailed": "Could not delete the $t(common.callout). Please try again."
+  },
+  "deleteTask": {
+    "title": "Delete this task?"
+  },
+  "deleteContribution": {
+    "title": "Delete this contribution?",
+    "description": "“{{title}}” will be deleted permanently. This cannot be undone.",
+    "confirm": "Delete",
+    "saveFailed": "Could not delete the contribution. Please try again."
+  },
+  "saveAsTemplate": {
+    "saveFailed": "Could not save the template. Please try again."
+  },
+  "findTemplate": {
+    "overwriteTitle": "Replace your current content?",
+    "overwriteDescription": "Loading this template will replace the fields you've already filled in. This cannot be undone.",
+    "overwriteConfirm": "Load template",
+    "saveAsTemplateTitle": "Save as template"
   },
   "dates": {
     "today": "Today",
@@ -161,23 +535,43 @@
   "validation": {
     "titleRequired": "Title is required",
     "urlRequired": "URL is required",
-    "urlInvalid": "URL must start with http:// or https://",
+    "urlInvalid": "Please enter a valid URL",
     "displayNameRequired": "Display name is required",
-    "questionRequired": "Question is required"
+    "questionRequired": "Question is required",
+    "required": "This field is required",
+    "minDisplayName": "Must be at least {{count}} characters",
+    "maxSmall": "Must be {{count}} characters or fewer",
+    "maxMid": "Must be {{count}} characters or fewer",
+    "maxMarkdown": "Must be {{count}} characters or fewer",
+    "minPollOptions": "At least {{count}} options are required",
+    "maxPollOptions": "At most {{count}} options are allowed",
+    "pollOptionRequired": "Option text is required",
+    "referenceTitleRequired": "Title is required when a URL is provided",
+    "linkRowTitleRequired": "Title is required when a URL is provided",
+    "contributorTypesRequired": "Select at least one contributor type."
   },
   "forms": {
     "titleLabel": "Title",
-    "titlePlaceholder": "Give your post a title...",
+    "titlePlaceholder": "Give your $t(common.callout) a title...",
+    "insertEmoji": "Insert emoji",
     "descriptionLabel": "Description",
     "descriptionPlaceholder": "Write something...",
     "tagsLabel": "Tags",
-    "framingType": "Content Type",
+    "tagsPlaceholder": "Add a tag and press Enter",
+    "tagsTooShort": "Each tag must be at least {{min}} characters.",
+    "framingType": "Add to Post",
+    "typeLockedHint": "Additional content settings cannot be changed after creation",
     "visibility": "Visibility",
     "publishedLabel": "Published",
     "draftLabel": "Draft",
     "notifyMembers": "Notify space members",
+    "titleRequiredHint": "Add a title to your $t(common.callout) to continue",
     "saveDraft": "Save Draft",
+    "save": "Save",
     "publish": "Post",
+    "createPost": "Create $t(common.Callout)",
+    "editPost": "Edit $t(common.Callout)",
+    "moreOptions": "More options",
     "findTemplate": "Find Template",
     "contributionTypes": "Allowed Contributions",
     "commentsEnabled": "Enable comments",
@@ -187,7 +581,86 @@
     "pollQuestion": "Question",
     "pollOption": "Option {{number}}",
     "addOption": "Add Option",
-    "removeOption": "Remove option"
+    "removeOption": "Remove option",
+    "allowComments": "Allow comments",
+    "allowCommentsDescription": "Members can post comments on the $t(common.callout) framing.",
+    "titleCharacterCount": "{{current}}/{{max}}",
+    "selection": {
+      "label": "Manual selection",
+      "contributors": {
+        "autoDescription": "Show this community’s contributors as a self-updating collection.",
+        "customDescription": "Shows only the contributors you select."
+      },
+      "spaces": {
+        "autoDescription": "Automatically shows all subspaces and updates as they are added or removed.",
+        "customDescription": "Shows only the subspaces you select below."
+      },
+      "noLongerAvailable": "No longer available",
+      "searchPlaceholder": "Search members…",
+      "searchAriaLabel": "Search members",
+      "searchSubspacePlaceholder": "Search subspaces…",
+      "searchSubspaceAriaLabel": "Search subspaces",
+      "noResults": "No matching results",
+      "loading": "Loading…",
+      "loadMore": "Loading more…",
+      "removeAriaLabel": "Remove {{name}}",
+      "clearSearch": "Clear search"
+    }
+  },
+  "contributionSettings": {
+    "heading": "Responses",
+    "typeLockedHint": "Contribution settings cannot be changed after creation",
+    "types": {
+      "link": "Links & Files",
+      "post": "Posts",
+      "memo": "Memos",
+      "whiteboard": "Whiteboards",
+      "document": "Documents"
+    },
+    "actors": {
+      "members": "Members can add",
+      "admins": "Admins can add"
+    },
+    "commentsEnabled": "Enable comments",
+    "setDefaults": "Set Default Response",
+    "prePopulate": {
+      "heading": "Pre-populate collection",
+      "description": "Add link items that appear in this $t(common.callout) as soon as it is created.",
+      "empty": "No pre-populated links yet.",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Link title",
+      "urlLabel": "URL",
+      "urlPlaceholder": "https://",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Optional description",
+      "addRow": "Add another link",
+      "removeRow": "Remove link",
+      "attachFile": "Attach file"
+    }
+  },
+  "responseDefaults": {
+    "srDescription": "Configure the default values for new contributions in this $t(common.callout).",
+    "title": {
+      "post": "Posts defaults",
+      "memo": "Memos defaults",
+      "whiteboard": "Whiteboards defaults",
+      "document": "Documents defaults",
+      "generic": "Response defaults"
+    },
+    "defaultTitle": "Default title",
+    "defaultTitlePlaceholder": "Give new contributions a default title",
+    "defaultDescription": "Default description",
+    "defaultDescriptionPlaceholder": "Guidance shown when a member starts a new contribution",
+    "defaultWhiteboard": "Default whiteboard",
+    "configureWhiteboard": "Configure whiteboard",
+    "editWhiteboard": "Edit whiteboard",
+    "template": "Template",
+    "templatePlaceholder": "Choose a template…",
+    "templateLoading": "Loading templates…",
+    "whiteboardConfigured": "A default whiteboard is configured.",
+    "whiteboardNotConfigured": "New contributions will start with a blank whiteboard.",
+    "clearWhiteboard": "Clear default",
+    "save": "Save"
   },
   "calloutDialog": {
     "close": "Close dialog",
@@ -199,29 +672,249 @@
     "reactionCount_one": "1 reaction",
     "contributions": "Contributions"
   },
+  "memo": {
+    "close": "Close",
+    "stubDialog": {
+      "message": "Memo editor coming soon — showing plain-text preview."
+    },
+    "displayName": {
+      "inputLabel": "Title",
+      "edit": "Edit memo title",
+      "save": "Save memo title",
+      "cancel": "Cancel edit"
+    },
+    "footer": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "disconnected": "Disconnected",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "finalizing": "Finalizing changes…",
+      "offline": "Offline — will sync automatically",
+      "saveFailed": "Unable to save changes",
+      "membersOnline_one": "1 member online",
+      "membersOnline_other": "{{count}} members online",
+      "connectedUsersLabel": "Connected users",
+      "moreConnectedUsers_one": "{{count}} more connected user",
+      "moreConnectedUsers_other": "{{count}} more connected users",
+      "guestWarning": "You are editing as a guest",
+      "delete": "Delete memo",
+      "readonlyReason": {
+        "connecting": "Connecting to the collaboration service…",
+        "notSynced": "Synchronising… reopen the memo to resume editing.",
+        "unauthenticated": "Sign in to edit this memo.",
+        "contentUpdatePolicy": "You don't have permission to edit this memo. Ask the owner, <ownerlink>{{ownerName}}</ownerlink>, to change the Share settings.",
+        "contentUpdatePolicyNoOwner": "You don't have permission to edit this memo. The owner is no longer available, but you can ask a space administrator to change the Share settings.",
+        "noMembership": "Only members of this space can edit this memo. Join the space to contribute."
+      }
+    },
+    "errors": {
+      "loading": "Loading memo…",
+      "loadFailed": "Unable to load memo"
+    },
+    "unsavedClose": {
+      "title": "Unsaved memo changes",
+      "description": "These changes cannot be saved right now. Keep the memo open, export them, or explicitly discard them.",
+      "wait": "Keep open and wait",
+      "discard": "Discard and close",
+      "export": "Export first",
+      "exportFailed": "The memo could not be exported. It remains open."
+    },
+    "deleteConfirm": {
+      "title": "Delete memo",
+      "body": "Are you sure you want to delete this memo? This action cannot be undone.",
+      "confirm": "Delete"
+    }
+  },
+  "collabora": {
+    "rename": {
+      "inputLabel": "Document name",
+      "edit": "Rename",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "errors": {
+        "blank": "Please enter a name.",
+        "tooShort": "Name must be at least {{min}} characters.",
+        "tooLong": "Name must be at most {{max}} characters.",
+        "invalid": "Please enter a valid name.",
+        "saveFailed": "Couldn't rename the document. Please try again."
+      }
+    },
+    "editor": {
+      "error": {
+        "runtime": "Collabora error: {{message}}",
+        "sessionClosed": "The collaboration session was closed."
+      }
+    },
+    "footer": {
+      "connected": "Connected",
+      "connecting": "Connecting…",
+      "disconnected": "Disconnected",
+      "saved": "Saved",
+      "saving": "Saving…",
+      "unsaved": "Unsaved changes",
+      "error": "Error saving",
+      "membersOnline_one": "1 member online",
+      "membersOnline_other": "{{count}} members online",
+      "connectedUsersLabel": "Connected users",
+      "moreConnectedUsers_one": "{{count}} more connected user",
+      "moreConnectedUsers_other": "{{count}} more connected users",
+      "guestWarning": "You are editing as a guest",
+      "delete": "Delete document",
+      "readonlyReason": {
+        "connecting": "Connecting to the collaboration service…",
+        "unauthenticated": "Sign in to edit this document.",
+        "contentUpdatePolicy": "You don't have permission to edit this document. Ask the owner to change the share settings.",
+        "noMembership": "Only members of this space can edit this document. Join the space to contribute."
+      },
+      "disconnect": {
+        "atRisk": "Disconnected — recent changes may not be saved",
+        "status": "Disconnected",
+        "cause": {
+          "network": "You appear to be offline.",
+          "tokenExpiry": "Your editing session expired.",
+          "service": "A service is temporarily unavailable.",
+          "unknown": "Connection lost.",
+          "unloading": "The document is still closing from a previous session. Try again in a moment."
+        },
+        "reconnect": "Reconnect",
+        "reload": "Reload",
+        "terminal": {
+          "notFound": "This document is no longer available.",
+          "forbidden": "You no longer have access to this document.",
+          "generic": "This document can't be reopened."
+        },
+        "warning": {
+          "reconnectTitle": "Reconnect the editor?",
+          "reconnectBody": "This drops the current editing session and reopens the document in place — the page won't reload. Anything changed since the last save may be lost, so copy what you need first.",
+          "reconnectConfirm": "Reconnect",
+          "reloadTitle": "Reload the page?",
+          "reloadBody": "This reloads the whole page and reopens the document from scratch. Anything changed since the last save may be lost, so copy what you need first.",
+          "reloadConfirm": "Reload page",
+          "cancel": "Cancel"
+        },
+        "reconnecting": "Reconnecting…"
+      }
+    },
+    "serviceUnavailable": {
+      "message": "A service is unavailable. Please save any pending work as unsaved data may be lost."
+    }
+  },
+  "callToAction": {
+    "externalLinkDisclaimer": "This link opens an external site in a new tab.",
+    "linkAriaLabel": "{{displayName}} (opens {{url}})",
+    "linkAriaLabelExternal": "{{displayName}} (opens {{url}} in a new tab)",
+    "validation": {
+      "invalidUrl": "Invalid URL"
+    }
+  },
+  "mediaGallery": {
+    "openImage": "Open image",
+    "more_one": "+{{count}} more",
+    "more_other": "+{{count}} more",
+    "previous": "Previous image",
+    "next": "Next image",
+    "goToImage": "Go to image {{index}}",
+    "thumbnailsLabel": "Image thumbnails",
+    "download": "Download image",
+    "fullscreen": "Enter fullscreen",
+    "exitFullscreen": "Exit fullscreen",
+    "emptyState": {
+      "title": "No images yet",
+      "action": "Add images"
+    },
+    "altTextLabel": "Alt text",
+    "deleteImage": "Delete image",
+    "reorderImage": "Reorder image",
+    "dismissError": "Dismiss error",
+    "uploading": "Uploading…",
+    "downloadError": "Could not download the image.",
+    "validation": {
+      "type": "Unsupported file type",
+      "tooSmall": "Image is too small",
+      "tooLarge": "Image is too large"
+    }
+  },
+  "postSnippet": {
+    "readMore": "… Read more",
+    "readLess": "Read less",
+    "seeFullDescription": "See full description"
+  },
+  "postPreview": {
+    "createdBy": "Created by",
+    "label": "Selected contribution preview",
+    "edit": "Edit response",
+    "share": "Share response",
+    "delete": "Delete response",
+    "close": "Close preview",
+    "emptyDescription": "No description",
+    "references": "References"
+  },
+  "postLocation": {
+    "label": "Post location",
+    "warning": "Be careful changing the response location. Moving the response to another Post will make it disappear from the current Post. This might make it difficult for people, including the person who created this response, to retrieve it. Note that you can only move responses within the same Space or Subspace.",
+    "moved": "Response moved successfully.",
+    "moveFailed": "Could not move the response. Please try again."
+  },
+  "whiteboardPreview": {
+    "label": "Selected whiteboard preview",
+    "edit": "Edit whiteboard",
+    "share": "Share whiteboard",
+    "delete": "Delete whiteboard",
+    "close": "Close preview",
+    "openFull": "Click to see the full whiteboard"
+  },
   "comments": {
     "title": "Discussion",
     "showMore": "Show more",
     "showLess": "Show less",
-    "sortNewest": "Newest first",
-    "sortOldest": "Oldest first",
     "reply": "Reply",
+    "replyInThread": "Reply in this thread",
     "delete": "Delete",
     "deleted": "This comment was deleted",
+    "deleteConfirmTitle": "Delete comment?",
+    "deleteConfirmDescription": "Are you sure you want to delete this comment?",
     "addComment": "Add a comment...",
+    "mention": "Mention someone",
+    "mentionVirtualContributor": "AI",
     "send": "Send",
     "charCount": "{{count}}/{{max}}",
     "reactions": {
       "add": "Add reaction",
-      "overflow": "+{{count}} more"
+      "overflow": "+{{count}} more",
+      "unknownReactors": "Unknown"
     },
     "count": "{{count}} comments",
     "count_one": "1 comment",
     "loading": "Loading comments...",
-    "empty": "No comments yet"
+    "empty": "No comments yet",
+    "unknownUser": "Unknown user",
+    "signInToComment": "Sign in to comment, reply or react.",
+    "cantComment": "You don't have permission to comment, reply or react here."
   },
   "dialogs": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "close": "Close",
+    "create": "Create",
+    "discardChanges": {
+      "title": "Discard your changes?",
+      "description": "You have unsaved changes. If you close this dialog, your changes will be lost.",
+      "confirm": "Yes, close",
+      "cancel": "Keep editing"
+    },
+    "deleteFraming": {
+      "title": "Remove framing content?",
+      "description": "The framing content for this $t(common.callout) will be removed. This cannot be undone.",
+      "confirm": "Remove",
+      "cancel": "Keep"
+    },
+    "confirmClose": {
+      "title": "Close this dialog?",
+      "description": "Any unsaved comment text will be lost.",
+      "confirm": "Close",
+      "cancel": "Keep open"
+    }
   },
   "poll": {
     "status": {
@@ -267,8 +960,17 @@
     "settings.hideResultsUntilVoted": "Hide results until user votes",
     "settings.showVoterAvatars": "Show voter avatars",
     "settings.close": "Close",
-    "openPoll": "Poll is open",
-    "closePoll": "Poll is closed",
+    "closePoll": "Close poll",
+    "reopenPoll": "Reopen poll",
+    "closePollHint": {
+      "open": "This poll is open for votes",
+      "closed": "No one will be able to vote on this poll anymore"
+    },
+    "statusChange": {
+      "closeSuccess": "The poll is now closed.",
+      "reopenSuccess": "The poll is now open for votes.",
+      "failed": "The poll status could not be changed. Please try again."
+    },
     "closePollConfirm": {
       "title": "Close this poll?",
       "description": "Closing the poll will prevent new votes and lock editing. You can reopen it later.",
@@ -278,6 +980,11 @@
       "title": "Reopen this poll?",
       "description": "Reopening the poll will allow new votes and editing.",
       "confirm": "Reopen poll"
+    },
+    "deleteOptionConfirm": {
+      "title": "Delete option?",
+      "description": "This option will be removed from the poll.",
+      "descriptionWithText": "“{{text}}” will be removed from the poll."
     },
     "dragHandle": "Drag to reorder"
   },
@@ -293,6 +1000,68 @@
     "mobileTabBar": "Tab navigation",
     "moreActionsDrawer": "Additional actions",
     "close": "Close",
-    "loadingPost": "Loading post"
+    "loadingPost": "Loading $t(common.callout)"
+  },
+  "activity": {
+    "dialogTitle": "Recent Activity"
+  },
+  "contributors": {
+    "title": "Contributors",
+    "search": "Search by name…",
+    "empty": "No contributors to show.",
+    "emptySearch": "No contributors match your search.",
+    "noLocationData": "No location data",
+    "noLocationDescription": "These contributors have no location data set.",
+    "viewList": "List",
+    "viewMap": "Map",
+    "expandMap": "Expand map",
+    "closeMap": "Close map",
+    "types": {
+      "user": "People",
+      "organization": "Organizations",
+      "virtualContributor": "Virtual Contributors"
+    },
+    "counts": {
+      "users": "{{count}} people",
+      "organizations": "{{count}} organizations",
+      "virtualContributors": "{{count}} virtual contributors"
+    },
+    "config": {
+      "title": "Contributors",
+      "typesLabel": "Contributor types",
+      "typesHint": "Select at least one type to include.",
+      "defaultTypeLabel": "Default type",
+      "defaultTypeHint": "The type shown first.",
+      "defaultViewLabel": "Default display",
+      "viewList": "List",
+      "viewMap": "Map"
+    },
+    "mapView": {
+      "helper": "Choose the starting position everyone sees on the map, or let it fit to your contributors automatically.",
+      "stateAutomatic": "Map view: automatic",
+      "stateFixed": "Map view: fixed",
+      "useCurrent": "Use current view",
+      "resetAuto": "Reset to automatic",
+      "mapAriaLabel": "Contributor map preview — pan and zoom to set the fixed view",
+      "captureHint": "Pan and zoom the map, then click 'Use current view' to fix the starting position.",
+      "controlAriaLabel": "Map view settings"
+    }
+  },
+  "spaceCollection": {
+    "search": "Search subspaces...",
+    "empty": {
+      "title": "No subspaces yet",
+      "description": "This space has no subspaces yet."
+    }
+  },
+  "classifications": {
+    "emptyGroup": "No values selected yet.",
+    "editHint": "Add values in Settings → About.",
+    "hiddenBadge": "Not shown on the Space page",
+    "editInSettings": "Edit in Settings",
+    "sectionTitle": "Classifications"
+  },
+  "parentStack": {
+    "goTo": "Go to {{name}}"
   }
 }

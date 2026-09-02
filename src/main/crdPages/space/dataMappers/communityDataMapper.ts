@@ -2,48 +2,6 @@ import { RoleName } from '@/core/apollo/generated/graphql-schema';
 import type { MemberCardData, MemberRoleKey, MemberRoleType } from '@/crd/components/space/SpaceMembers';
 import { getInitials } from './spacePageDataMapper';
 
-type UserLike = {
-  id: string;
-  profile: {
-    displayName: string;
-    url: string;
-    avatar?: { uri: string } | null;
-    tagline?: string | null;
-    location?: { city?: string; country?: string } | null;
-    tagsets?: Array<{ tags: string[] }> | null;
-  };
-};
-
-export function mapUserToMemberCard(user: UserLike, type: 'user' | 'organization' = 'user'): MemberCardData {
-  const location = [user.profile.location?.city, user.profile.location?.country].filter(Boolean).join(', ');
-
-  const tags = user.profile.tagsets?.flatMap(ts => ts.tags) ?? [];
-
-  return {
-    id: user.id,
-    name: user.profile.displayName,
-    avatarUrl: user.profile.avatar?.uri,
-    type,
-    location: location || undefined,
-    tagline: user.profile.tagline ?? undefined,
-    tags,
-    href: user.profile.url,
-  };
-}
-
-export function mapLeadToSidebarData(user: UserLike) {
-  const location = [user.profile.location?.city, user.profile.location?.country].filter(Boolean).join(', ');
-
-  return {
-    name: user.profile.displayName,
-    avatarUrl: user.profile.avatar?.uri,
-    initials: getInitials(user.profile.displayName),
-    location: location || undefined,
-    bio: user.profile.tagline ?? undefined,
-    href: user.profile.url,
-  };
-}
-
 type RoleSetMember = {
   id: string;
   roles?: RoleName[];
@@ -59,40 +17,35 @@ type RoleSetMember = {
 };
 
 /**
- * Derive the user's most elevated role from their role list — used only
- * for the display badge (precedence Admin > Lead > Member).
+ * Derive the user's display role from their role list — used only for the
+ * display badge (precedence Lead > Member). Administrative status is never
+ * surfaced, so an admin who is not also a Lead displays as Member.
  */
 function deriveUserRole(roles: RoleName[] | undefined): {
-  role: 'admin' | 'lead' | 'member';
+  role: 'lead' | 'member';
   roleType: MemberRoleType;
 } {
-  if (!roles || roles.length === 0) {
-    return { role: 'member', roleType: 'member' };
-  }
-  if (roles.includes(RoleName.Admin)) {
-    return { role: 'admin', roleType: 'admin' };
-  }
-  if (roles.includes(RoleName.Lead)) {
+  if (roles?.includes(RoleName.Lead)) {
     return { role: 'lead', roleType: 'moderator' };
   }
   return { role: 'member', roleType: 'member' };
 }
 
 /**
- * Convert the full `RoleName[]` into the `MemberRoleKey[]` array used
- * by the filter pills. Admin + Lead are NOT mutually exclusive — a user
- * who holds both roles should match both filters.
+ * Convert the full `RoleName[]` into the `MemberRoleKey[]` array used by the
+ * filter pills. Administrative status is never surfaced, so the Admin role is
+ * not mapped. Lead + Member are not mutually exclusive — a user who holds both
+ * should match both the Lead filter and the (implicit) member set.
  */
 function deriveUserRolesList(roles: RoleName[] | undefined): MemberRoleKey[] {
   const keys: MemberRoleKey[] = [];
   if (!roles || roles.length === 0) {
     return ['member'];
   }
-  if (roles.includes(RoleName.Admin)) keys.push('admin');
   if (roles.includes(RoleName.Lead)) keys.push('lead');
   if (roles.includes(RoleName.Member)) keys.push('member');
-  // Fallback: if the user has none of the three "member grid" roles
-  // (shouldn't happen in practice), still surface them under `member`.
+  // Fallback: if the user has neither the Lead nor Member role (e.g. an
+  // admin-only contributor), still surface them under `member`.
   return keys.length > 0 ? keys : ['member'];
 }
 
@@ -139,24 +92,6 @@ export function mapRoleSetToMemberCards(users: RoleSetMember[], organizations: R
   const userCards = users.map(toUserCard).filter((c): c is MemberCardData => c !== undefined);
   const orgCards = organizations.map(toOrgCard).filter((c): c is MemberCardData => c !== undefined);
   return [...userCards, ...orgCards];
-}
-
-export function mapVirtualContributor(vc: {
-  id: string;
-  profile: {
-    displayName: string;
-    url: string;
-    avatar?: { uri: string } | null;
-    tagline?: string | null;
-  };
-}) {
-  return {
-    name: vc.profile.displayName,
-    description: vc.profile.tagline ?? undefined,
-    avatarUrl: vc.profile.avatar?.uri,
-    initials: getInitials(vc.profile.displayName),
-    href: vc.profile.url,
-  };
 }
 
 // ── Sidebar data mappers ───────────────────────────────

@@ -254,7 +254,7 @@ const UrlResolverProvider = ({ children }: { children: ReactNode }) => {
         spaceId: data.space?.id,
         spaceLevel: data.space?.level,
         levelZeroSpaceId: data.space?.levelZeroSpaceID,
-        parentSpaceId: (data.space?.parentSpaces ?? []).at(-1),
+        parentSpaceId: (ps => ps[ps.length - 1])(data.space?.parentSpaces ?? []),
         spaceHierarchyPath: spaceHierarchyPath,
 
         // Collaboration:

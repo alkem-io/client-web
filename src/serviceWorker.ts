@@ -17,9 +17,12 @@ type Config =
   | undefined;
 
 export function register(config?: Config): void {
+  if (window.location.hostname.startsWith('identity.')) {
+    return;
+  }
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      const swUrl = 'service-worker.js';
+      const swUrl = '/service-worker.js';
 
       navigator.serviceWorker
         .register(swUrl, { scope: '/' })

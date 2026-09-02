@@ -208,7 +208,7 @@ export function SearchOverlay({
           className={cn(
             'col-span-12 lg:col-start-2 lg:col-span-10 max-md:col-span-12',
             'flex flex-col overflow-hidden pointer-events-auto',
-            'bg-background border border-border rounded-xl shadow-lg',
+            'bg-popover border border-border rounded-xl shadow-lg',
             'transition-all duration-200 ease-out',
             visible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.97] translate-y-2.5'
           )}
@@ -240,8 +240,8 @@ export function SearchOverlay({
                   <div className="inline-flex items-center justify-center rounded-full bg-secondary size-12 mb-3">
                     <Search aria-hidden="true" className="size-[22px] text-muted-foreground" />
                   </div>
-                  <p className="text-base font-medium mb-1.5 text-foreground">{t('search.emptyTitle')}</p>
-                  <p className="text-sm text-muted-foreground">{t('search.emptyDescription')}</p>
+                  <p className="text-subsection-title mb-1.5 text-foreground">{t('search.emptyTitle')}</p>
+                  <p className="text-body text-muted-foreground">{t('search.emptyDescription')}</p>
                 </div>
               </div>
             )}
@@ -249,7 +249,7 @@ export function SearchOverlay({
             {state === 'loading' && (
               <output aria-label={t('search.loading')} className="flex flex-col items-center justify-center p-8 gap-3">
                 <Loader2 aria-hidden="true" className="size-7 text-primary animate-spin" />
-                <p className="text-sm text-muted-foreground">{t('search.loading')}</p>
+                <p className="text-body text-muted-foreground">{t('search.loading')}</p>
               </output>
             )}
 
@@ -259,10 +259,10 @@ export function SearchOverlay({
                   <div className="inline-flex items-center justify-center rounded-full bg-secondary size-12 mb-3">
                     <Search aria-hidden="true" className="size-[22px] text-muted-foreground" />
                   </div>
-                  <p className="text-base font-medium mb-1.5 text-foreground">
+                  <p className="text-subsection-title mb-1.5 text-foreground">
                     {t('search.noResultsTitle', { terms: noResultsTerms })}
                   </p>
-                  <p className="text-sm text-muted-foreground mb-4">{t('search.noResultsSuggestion')}</p>
+                  <p className="text-body text-muted-foreground mb-4">{t('search.noResultsSuggestion')}</p>
                   {onSearchAll && (
                     <Button variant="outline" size="sm" onClick={onSearchAll}>
                       {t('search.searchAllSpaces')}
@@ -301,7 +301,7 @@ export function SearchOverlay({
                 >
                   {/* Disclaimer banner */}
                   <div className="px-5 md:px-6 pt-4">
-                    <p className="rounded-lg px-3 py-2 text-sm text-muted-foreground bg-secondary">{disclaimer}</p>
+                    <p className="rounded-lg px-3 py-2 text-body text-muted-foreground bg-secondary">{disclaimer}</p>
                   </div>
 
                   {/* Category sections */}

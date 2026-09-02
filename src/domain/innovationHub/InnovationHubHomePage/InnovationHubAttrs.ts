@@ -2,16 +2,7 @@ import {
   AuthorizationPrivilege,
   type InnovationHubHomeInnovationHubFragment,
 } from '@/core/apollo/generated/graphql-schema';
-import type { Visual } from '@/domain/common/visual/Visual';
 import { buildSettingsUrl } from '@/main/routing/urlBuilders';
-
-export interface InnovationHubAttrs {
-  displayName: string;
-  tagline?: string;
-  description: string | undefined;
-  banner: Visual | undefined;
-  settingsUrl: string | undefined;
-}
 
 const useInnovationHubAttrs = (innovationHub: InnovationHubHomeInnovationHubFragment | undefined) =>
   (() => {
@@ -33,6 +24,9 @@ const useInnovationHubAttrs = (innovationHub: InnovationHubHomeInnovationHubFrag
       description,
       banner,
       settingsUrl: canEdit ? buildSettingsUrl(`/hub/${nameID}`) : undefined,
+      type: innovationHub.type,
+      spaceListFilterIds: innovationHub.spaceListFilter?.map(s => s.id) ?? [],
+      spaceVisibilityFilter: innovationHub.spaceVisibilityFilter ?? undefined,
     };
   })();
 

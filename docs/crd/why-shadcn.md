@@ -1,8 +1,8 @@
 # Why shadcn/ui? Component Library Decision Record
 
 **Date**: 2026-03-31
-**Status**: Confirmed
-**Context**: CRD (Client Re-Design) migration — replacing MUI with a new design system
+**Status**: Confirmed — the migration is complete (MUI fully removed, story #9885)
+**Context**: CRD (Client Re-Design) — the design system that replaced MUI. This DR records why shadcn/ui was chosen. The MUI removal is now done; this remains as the rationale of record.
 
 ## Decision
 
@@ -14,13 +14,13 @@ Use **shadcn/ui** (Radix UI + Tailwind CSS v4) as the component foundation for t
 |---|---|---|
 | React 19 + React Compiler compatibility | Must-have | App uses React 19 with babel-plugin-react-compiler enabled |
 | Tailwind CSS v4 | Must-have | Prototype (Figma Make) outputs Tailwind; chosen as the styling strategy |
-| Code ownership (copy-paste, not npm) | Must-have | Multi-month migration across 765+ MUI files; need to freely modify/debug components |
+| Code ownership (copy-paste, not npm) | Must-have | Multi-month migration across 765+ MUI files (now complete); needed to freely modify/debug components |
 | WCAG 2.1 AA accessibility | Must-have | Platform requirement for all interactive elements |
 | Design flexibility (no opinionated visual style) | Must-have | Matching Figma designs, not adopting a library's look |
 | Active community and ecosystem | High | Enterprise project needs battle-tested components, tutorials, and third-party resources |
 | Small bundle, tree-shakeable | High | App is ~18k modules; every kilobyte counts |
 | TypeScript-first | Must-have | Entire codebase is TypeScript |
-| CSS coexistence with MUI during migration | Must-have | Both systems must run simultaneously without style conflicts |
+| CSS coexistence with MUI during migration | Must-have (at the time) | Both systems had to run simultaneously without style conflicts while migration was in progress; MUI is now fully removed |
 
 ## Alternatives Evaluated (March 2026)
 
@@ -123,7 +123,7 @@ Use **shadcn/ui** (Radix UI + Tailwind CSS v4) as the component foundation for t
 The Figma Make prototype already outputs Radix + Tailwind components. Any other choice means rewriting the designer's output for every future page migration — an ongoing cost multiplied across every page in the CRD migration.
 
 ### 2. Code Ownership for a Multi-Month Migration
-With 765+ files depending on MUI, the CRD migration will take months. During that time, we need to freely modify, extend, and debug every component without waiting on upstream releases or working around library opinions. Only shadcn, Park UI, and Catalyst offer this. Catalyst is too limited; Park UI's community is too small.
+With 765+ files depending on MUI, the CRD migration took months. Throughout it we needed to freely modify, extend, and debug every component without waiting on upstream releases or working around library opinions. Only shadcn, Park UI, and Catalyst offered this. Catalyst was too limited; Park UI's community was too small.
 
 ### 3. Full Stack Compatibility
 shadcn/ui is fully compatible with React 19, React Compiler, Tailwind CSS v4, and Vite. No gaps, no workarounds. HeroUI and Base UI have compatibility issues that would block adoption.
@@ -132,7 +132,7 @@ shadcn/ui is fully compatible with React 19, React Compiler, Tailwind CSS v4, an
 shadcn has the largest community of any copy-paste component system. More third-party extensions, tutorials, Stack Overflow answers, and production deployments. For an enterprise project with multiple developers, this reduces onboarding time and debugging risk.
 
 ### 5. Proven CSS Coexistence
-The `.crd-root` scoping strategy for Tailwind + MUI coexistence is working in production. Tailwind's utility-class approach makes scoping straightforward. This would be harder with Mantine's CSS-in-JS or HeroUI's Framer Motion animations.
+The `.crd-root` scoping strategy for Tailwind + MUI coexistence worked in production throughout the migration. Tailwind's utility-class approach made scoping straightforward — harder with Mantine's CSS-in-JS or HeroUI's Framer Motion animations. (With MUI now removed, there is no second system to coexist with.)
 
 ## Known Risks and Mitigations
 
@@ -154,6 +154,6 @@ The `.crd-root` scoping strategy for Tailwind + MUI coexistence is working in pr
 
 ## Recommendation
 
-**Stick with shadcn/ui as the primary system.** Supplement with React Aria for complex accessible components if needed in the future. No alternative checks all the boxes as well given the project's constraints.
+**shadcn/ui is the primary (and only) system.** Supplement with React Aria for complex accessible components if needed in the future. No alternative checked all the boxes as well given the project's constraints, and the now-completed MUI removal confirmed the call.
 
-The decision is not just about which library is "best" in isolation — it's about which choice minimizes total migration cost across 765+ files while maintaining quality, accessibility, and developer velocity.
+The decision was not just about which library is "best" in isolation — it was about which choice minimized total migration cost across 765+ files while maintaining quality, accessibility, and developer velocity.

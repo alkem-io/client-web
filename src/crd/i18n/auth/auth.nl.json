@@ -1,0 +1,79 @@
+{
+  "tagline": "Samenwerken in de ruimtes tussen organisaties",
+  "continueWith": "of ga verder met",
+  "loading": "Laden",
+  "signIn": {
+    "title": "Inloggen",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "noAccount": "Geen account?",
+    "signUp": "Registreren",
+    "preparing": "Veilige aanmelding voorbereiden…"
+  },
+  "signUp": {
+    "title": "Registreren",
+    "haveAccount": "Heb je al een account?",
+    "signIn": "Inloggen",
+    "intro": "Alkemio is ontworpen ten dienste van de samenleving. Lees en accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy> voordat je verdergaat.",
+    "acceptTerms": "Ik accepteer de <terms>Gebruiksvoorwaarden</terms> en het <privacy>Privacybeleid</privacy>.",
+    "openTerms": "Open de Gebruiksvoorwaarden in een nieuw tabblad",
+    "openPrivacy": "Open het Privacybeleid in een nieuw tabblad",
+    "signpost": {
+      "warning": "Je probeert je te registreren met {{provider}}. Als je al een Alkemio-account met hetzelfde e-mailadres hebt, wordt {{provider}} aan dat account gekoppeld en kun je voortaan beide inlogmethoden gebruiken.",
+      "signInAction": "Inloggen met een ander account"
+    },
+    "continuation": {
+      "divider": "of",
+      "heading": "Registratie afronden met {{provider}}",
+      "intro": "Deze gegevens zijn gedeeld door de provider - controleer of ze kloppen en accepteer de voorwaarden om je account aan te maken.",
+      "cta": "Account aanmaken met {{provider}}"
+    }
+  },
+  "recovery": {
+    "title": "Wachtwoordherstel",
+    "intro": "Voer hieronder je e-mailadres in om een herstellink te ontvangen waarmee je je wachtwoord opnieuw kunt instellen.",
+    "resendNotice": "<strong>Geen e-mail ontvangen?</strong><br/>Controleer je spammap, bevestig dat het onderstaande adres klopt en vraag daarna een nieuwe herstel-e-mail aan zodra de timer is afgelopen."
+  },
+  "settings": {
+    "title": "Nieuw wachtwoord instellen"
+  },
+  "verification": {
+    "title": "Verifieer je e-mail",
+    "intro": "Controleer je inbox voor een e-mail met instructies om je adres te verifiëren."
+  },
+  "verificationReminder": {
+    "title": "Verifieer je e-mail",
+    "body": "De laatste stap is het verifiëren van je e-mailadres. Controleer je inbox voor een e-mail met instructies."
+  },
+  "error": {
+    "title": "Er is iets misgegaan",
+    "generic": "Er is een onverwachte fout opgetreden tijdens het authenticeren. Probeer opnieuw in te loggen.",
+    "code": "Foutcode: {{code}}",
+    "backToSignIn": "Terug naar inloggen"
+  },
+  "fields": {
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "showPassword": "Wachtwoord tonen",
+    "hidePassword": "Wachtwoord verbergen",
+    "invalidEmail": "Voer een geldig e-mailadres in."
+  },
+  "providers": {
+    "connectWith": "Doorgaan met {{provider}}",
+    "fallback": "Andere aanbieder",
+    "linkedin": "LinkedIn",
+    "microsoft": "Microsoft",
+    "github": "GitHub",
+    "apple": "Apple",
+    "cleverbase": "Cleverbase"
+  },
+  "guestReturn": {
+    "title": "Je hebt je whiteboard verlaten",
+    "description": "Je gastsessie is nog steeds actief. Je kunt terugkeren naar je whiteboard of verkennen wat Alkemio te bieden heeft.",
+    "backButton": "Terug naar whiteboard",
+    "websiteButton": "Ga naar onze website",
+    "contributeTitle": "Wil je meer bijdragen?",
+    "contributeDescription": "Meld je hieronder aan voor een Alkemio account om samen te werken met teams en toegang te krijgen tot geavanceerde hulpmiddelen."
+  }
+}

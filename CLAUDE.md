@@ -1,13 +1,23 @@
 # CLAUDE.md
 
+> **Workspace context.** This repo is part of the Alkemio polyrepo at
+> [alkem-io/agents-hq](https://github.com/alkem-io/agents-hq).
+> Cross-repo (vertical) feature specs live there under `specs/NNN-*/`. When
+> working on a `feat/NNN-...` branch in this repo, the matching workspace
+> spec is the single source of truth.
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Overview
 
-Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. It uses MUI and Emotion for the design system, and Apollo Client for the GraphQL data layer.
+Alkemio Client Web is a React 19 + TypeScript single-page application served by Vite. Its design system is **CRD** (shadcn/ui + Tailwind, under `src/crd/`) — the **sole** design system. **CRD is the only runtime path** — every route renders its CRD page. **MUI and Emotion have been fully removed** (epic #1888, story #9885): the `@mui/*` and `@emotion/*` packages are uninstalled, no source file imports them, the legacy `src/core/ui/` MUI design system is deleted, and the `designVersion` toggle is gone. Global styles live in `src/index.css`. Apollo Client is the GraphQL data layer.
+
+> **Hard rule — never reintroduce MUI/Emotion.** Do not add `@mui/*` or `@emotion/*` (or `material-ui`) imports or dependencies anywhere. They are removed; CRD (`src/crd/`) is the only design system. New client-facing features are built in `src/crd/` with their integration glue in `src/main/crdPages/`.
+
+The completed MUI removal is recorded in `specs/111-remove-mui-library/mui-footprint-baseline.md` and `specs/111-remove-mui-library/mui-removal-inventory.md`.
 
 - Repository is large (~18k modules built); main work happens under `src/core`, `src/domain`, and `src/main`
-- Requires Node ≥22.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
+- Requires Node ≥24.0.0 and pnpm ≥10.17.1 (pinned via Volta to Node 24.14.0)
 - Always use pnpm; the lockfile is authoritative
 - All commits must be signed
 
@@ -38,7 +48,7 @@ pnpm test
 # Test with coverage
 pnpm test:coverage
 
-# GraphQL codegen (requires running backend at localhost:4000/graphql)
+# GraphQL codegen (requires running backend at localhost:3000/graphql)
 pnpm codegen
 
 # Format code
@@ -76,9 +86,9 @@ pnpm serve:dev
   - `ui/`: App-specific layouts (footer, navigation, `CrdLayoutWrapper`)
   - `constants/`: Environment helpers and constants
 
-- **`src/main/crdPages`**: Page-level integration for CRD-migrated pages
+- **`src/main/crdPages`**: Page-level integration for CRD pages
   - Contains page components, data mappers, hooks, and GraphQL queries for pages using the CRD design system
-  - Imports from `@/crd/`, `@/domain/`, `@/core/` — **MUST NOT import from `@mui/*` or `@emotion/*`**
+  - Imports from `@/crd/`, `@/domain/`, `@/core/` — never `@mui/*` or `@emotion/*` (removed)
   - Organized as `topLevelPages/<pageName>/` mirroring `src/main/topLevelPages/` structure
   - The "glue" layer: wires CRD presentational components to business logic and data
 
@@ -130,25 +140,50 @@ Use `@/` for imports from `src/` (e.g., `import { Button } from '@/core/ui/butto
 - Admin pages go under `src/main/admin`
 - CRD page integration goes under `src/main/crdPages/<pageName>/`
 
+### Browser Compatibility
+
+Only use JavaScript/CSS features with **>90% global browser support** according to [caniuse.com](https://caniuse.com). This ensures broad compatibility without requiring polyfills.
+
+**Avoid** (insufficient browser coverage):
+- `Array.prototype.at()` — use `arr[arr.length - 1]` instead of `arr.at(-1)`
+- `Object.hasOwn()` — use `Object.prototype.hasOwnProperty.call(obj, key)` or the `in` operator
+- CSS `@container` queries — use media queries or JS-based responsive logic
+- `structuredClone()` — use `JSON.parse(JSON.stringify())` or lodash `cloneDeep`
+
+**Safe to use** (>95% support): `Array.prototype.flat/flatMap`, `Object.entries/fromEntries`, optional chaining (`?.`), nullish coalescing (`??`), `Promise.allSettled`, `globalThis`, `String.prototype.replaceAll`.
+
+When in doubt, check [caniuse.com](https://caniuse.com) before introducing a newer API.
+
 ## GraphQL Workflow
 
 1. Add/modify `.graphql` files alongside domain features
-2. Run `pnpm codegen` (requires backend running at `localhost:4000/graphql`)
+2. Run `pnpm codegen` (requires backend running at `localhost:3000/graphql` — the `CODEGEN_SCHEMA` value in the committed `.env`)
 3. Generated files go to `src/core/apollo/generated/`
 4. Commit generated outputs
 5. Always use generated hooks from `src/core/apollo/generated/apollo-hooks.ts`; raw `useQuery` or unchecked responses are prohibited
+
+### Hard rule — no `schema.graphql` in the repo
+
+The client **never** commits a GraphQL schema snapshot. Codegen obtains the schema from a running server by default (`CODEGEN_SCHEMA=http://localhost:3000/graphql` in the committed `.env`). A local `./schema.graphql` may be used for offline work by overriding `CODEGEN_SCHEMA` in `.env.local`, but the file is gitignored and must **never** be added, committed, or pushed — nor may `codegen.yml` or `.env` be changed to point at a snapshot by default. The server is the single source of truth for the schema; a committed copy silently drifts.
+
+### No `__typename` discrimination
+
+Do **not** branch on `__typename` in CRD code (`src/crd/**`, `src/main/crdPages/**`) or in the data mappers/models that feed it. Prefer an explicit, schema-defined discriminator field instead — e.g. `actor.type === ActorType.VirtualContributor`, a `status` enum, a `kind` field.
+
+**Why:** `__typename` is the *runtime object type*, which is frequently NOT what you expect. A field typed as a concrete object type (e.g. `Message.sender: Actor`) always has `__typename === 'Actor'`, so a check like `sender.__typename === 'VirtualContributor'` is silently *always false* — it type-checks, passes review, and fails only at runtime. (This exact bug shipped once: the comment VC badge never rendered. The fix was to select `Actor.type` and compare against `ActorType`.) `__typename` is also fragile across schema refactors (object type → interface/union and back) in a way an explicit enum is not.
+
+If there is genuinely no schema field to discriminate on and `__typename` is the only option, it is allowed **only** with a comment that (a) states why no proper discriminator exists and (b) names the exact `__typename` values the code relies on, so a schema change that breaks them is caught in review.
 
 ## Internationalization (i18n)
 
 - All user-visible strings MUST use `react-i18next` via the `t()` function
 - Never hardcode text or pass string literals as fallback to `t()`—add missing keys to the appropriate translation file
-- The project uses Crowdin for translations
-- Only edit English translation files; all other locale files are generated automatically via Crowdin and must never be edited manually
-- If you need to change a non-English translation file, do it from Crowdin, not in the codebase
+- **All strings live in CRD** — every user-facing string MUST be added to the CRD per-feature namespaces under `src/crd/i18n/<feature>/`, with all supported languages (en, nl, es, bg, de, fr) edited directly in the same PR that introduces or removes a key. Key parity across all six languages is required and is enforced in review (CodeRabbit), not via Crowdin.
+- **The legacy core `translation` namespace was removed** (story #9885) — `src/core/i18n/<lang>/translation.<lang>.json` no longer exists. The default namespace is now **`crd-common`** (`src/crd/i18n/common/`), so a `useTranslation()` call with no namespace argument resolves against `crd-common`. **Crowdin is no longer used.** Never reintroduce a `translation` namespace or a `src/core/i18n` locale file.
 
 ### Namespaces
 
-- **`translation`** (default): Main app strings in `src/core/i18n/en/translation.en.json`. Used by all components outside `src/crd/`.
+- **`crd-common`** (default): The default namespace, in `src/crd/i18n/common/`. Eagerly loaded for English. Resolved by every `useTranslation()` call that omits a namespace argument (and the `{ ns: 'crd-common' }` form). Replaced the removed legacy `translation` namespace in story #9885.
 - **`crd-layout`**: Layout UI strings (header/footer) in `src/crd/i18n/layout/`. Eagerly loaded for English. Used by `src/crd/layouts/` via `useTranslation('crd-layout')`.
 - **`crd-exploreSpaces`**: Space explorer UI strings in `src/crd/i18n/exploreSpaces/`. Lazy-loaded on demand. Used by `src/crd/components/space/` via `useTranslation('crd-exploreSpaces')`.
 - **`crd-<feature>`**: Future feature namespaces follow the same pattern: `src/crd/i18n/<feature>/<feature>.<lang>.json`, lazy-loaded, used via `useTranslation('crd-<feature>')`.
@@ -197,7 +232,7 @@ For more details, see `specs/023-react-compiler-adoption/react-compiler.md`.
 
 - Takes ~20s, outputs to `build/`
 - Warns about large chunks (known, non-blocking)
-- Generates extensive code splitting for vendor libraries (Apollo, MUI, Tiptap, etc.)
+- Generates extensive code splitting for vendor libraries (Apollo, Tiptap, Excalidraw, etc.)
 
 ### Bundle Analysis
 
@@ -233,7 +268,7 @@ Adding `fetchPolicy`, `nextFetchPolicy`, debug flags, or other workarounds witho
 ### GraphQL Code Generation
 
 - Always regenerate types after editing `.graphql` files with `pnpm codegen`
-- Codegen requires a running backend server
+- Codegen requires a running backend server (`CODEGEN_SCHEMA` in `.env`); a local `schema.graphql` snapshot is gitignored and must never be committed
 - Generated files are large; search for specific types instead of opening files wholesale
 - Commit all generated outputs
 
@@ -291,13 +326,19 @@ Allows anonymous and authenticated users to view and edit whiteboards without fu
 
 **Documentation**: See `specs/005-guest-whiteboard-access/` for full specification and implementation details.
 
-## prototype/ — Read-Only Reference (DO NOT MODIFY)
+## Prototype — External Design Reference
 
-The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modify, lint, review, or flag any file in it.** It exists only as a design reference for building `src/crd/` components. Both `biome.json` and `eslint.config.mjs` exclude `prototype/` from linting. See `prototype/CLAUDE.md` for full details.
+The prototype (Jeroen's design prototype) **is no longer part of this repo** — it lives in its own repository: **https://github.com/alkem-io/client-web-prototype**. It is the design reference for building `src/crd/` components; consult it there, not in this tree. Any `prototype/` folder appearing locally is stale and should not be committed.
+
+**No Python — anywhere.** This is a JavaScript/TypeScript repo; `.py` files must never be committed or merged into it. The prototype ships helper scripts under `utils/*.py` (font merging, corruption fixes), but those now live only in the external `alkem-io/client-web-prototype` repo and must never appear here. `.coderabbit.yaml` flags any added/modified `.py` as a blocking issue so a stray script gets caught in review.
 
 ## src/crd — New UI Layer (shadcn/ui + Tailwind)
 
-`src/crd/` is the new presentational UI layer replacing `src/core/ui/` (MUI). Full conventions are in `src/crd/CLAUDE.md`. The critical rules:
+`src/crd/` is the presentational UI layer. Full conventions are in `src/crd/CLAUDE.md`.
+
+**CRD is the only design system.** All client-facing features MUST be built in `src/crd/` (presentational components) with their integration glue in `src/main/crdPages/`. MUI/Emotion were fully removed (story #9885) — `@mui/*` and `@emotion/*` are uninstalled and must **never** be reintroduced.
+
+The critical rules:
 
 **Hard restrictions — every file in `src/crd/`:**
 - **NO MUI** — zero imports from `@mui/*` or `@emotion/*`
@@ -308,49 +349,37 @@ The `prototype/` folder is a verbatim copy of Jeroen's prototype. **Do not modif
 - **State is visual only** — `useState` for open/close, expanded, active tab. Nothing else.
 
 **Structure:**
-- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `prototype/src/app/components/ui/`
+- `primitives/` — shadcn/ui atoms (button, card, dialog). Source: `src/app/components/ui/` in the external `alkem-io/client-web-prototype` repo
 - `components/` — composites of primitives (PostCard, SpaceCard), organized by feature area
 - `forms/` — form UI (inputs with labels/validation display), no form state libraries
 - `layouts/` — page shells (PageLayout, TwoColumnLayout, ContentBlock)
-- `styles/` — CSS tokens (`theme.css` from prototype) + Tailwind entry (`crd.css`)
+- `styles/` — CSS tokens (`theme.css` from the external prototype repo) + Tailwind entry (`crd.css`)
 - `lib/` — `cn()` utility
 - `hooks/` — UI-only hooks (`useMediaQuery`)
 
 Consumers in `src/main/crdPages/`, `src/domain/`, and `src/main/` map GraphQL data to crd component props. The data mapping never happens inside crd.
 
-## CSS Isolation Strategy
+## CSS Strategy
 
-Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
+Tailwind CSS (via `@tailwindcss/vite`) is loaded globally from `src/index.tsx` via `@/crd/styles/crd.css`; other global styles live in `src/index.css`. True CSS code-splitting is not feasible with Vite + Tailwind v4 — the CSS is processed at build time and bundled into the output regardless of where the import lives.
 
-**Isolation mechanisms:**
-- `.crd-root` class scopes Tailwind preflight/resets to CRD pages only — MUI pages outside `.crd-root` are unaffected
-- MUI `ThemeProvider` wraps the entire app (including CRD routes) but is unused by CRD components — they never call `useTheme()` or import MUI
-- `src/main/crdPages/` pages **MUST NOT** import from `@mui/*` — ensuring no MUI code is loaded for CRD routes
+There is no second design system to isolate from: MUI/Emotion are removed, so there is no MUI `ThemeProvider`, no `useTheme()`, and no MUI CSS. The `.crd-root` class (which historically scoped Tailwind preflight/resets away from MUI pages) wraps the app; with MUI gone it is just the app root.
 
-**The pragmatic choice:** Global CSS load + `.crd-root` scoping. Moving MUI's ThemeProvider below non-CRD routes would require significant `root.tsx` restructuring with no functional benefit. The current approach works, is simple, and avoids unnecessary complexity.
+## CRD is the only runtime path
 
-## CRD Feature Toggle
+Every top-level route renders its `Crd*` page unconditionally — there is no toggle and no legacy MUI route tree. Story #9885 (epic #1888) removed the `designVersion` toggle machinery (`useCrdEnabled`, the design-version sync/upgrade hooks, the user-menu Design Version switch, the Sentry/APM `designVersion` tags) and deleted the entire legacy MUI app, then removed `@mui/*`/`@emotion/*` themselves. The only remaining trace is the server-side `UserSettings.designVersion` GraphQL field, which the client no longer reads.
 
-The CRD design system migration uses a localStorage toggle (default: **OFF**). Deployed environments render the old MUI pages; developers/QA can opt in to the new CRD pages.
-
-```js
-// Enable:  open browser console and run:
-localStorage.setItem('alkemio-crd-enabled', 'true');
-location.reload();
-
-// Disable:
-localStorage.removeItem('alkemio-crd-enabled');
-location.reload();
-```
-
-Toggle logic lives in `src/main/crdPages/useCrdEnabled.ts`. Conditional routing is in `TopLevelRoutes.tsx`. When all pages are migrated and validated, remove the toggle, delete old MUI page files, and make CRD routes the only routes.
+The `Contributors` (`/contributors`) and `InnovationHubs` (`/innovation-hubs/*`) routes were product-dropped during the removal; `InnovationPacks` (`/innovation-packs/*`) was kept on its CRD pages.
 
 ## Recent Changes
-- 042-crd-space-page: Added TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
-- 041-crd-dashboard-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
-- 039-crd-exploreSpaces-page: Added TypeScript 5.x, React 19, Node >= 22.0.0 + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged)
+- 116-postcard-file-thumbnail: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + CRD layer (`@/crd/primitives/*`, `@/crd/lib/utils` `cn()`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation`/`RefreshCw` icons, no new icon import), `react-i18next` (existing `crd-space` namespace, no new keys — see Research R4). All existing — **no new runtime dependencies**.
+- 116-document-responses: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`), Node ≥24 (Volta-pinned) + `@apollo/client` (generated hooks only), `apollo-upload-client` (already wired at the transport level — `importCollaboraDocument` uploads through it, same as the framing upload path), `react-i18next`, shadcn/ui + Tailwind v4 + Radix UI (`@/crd/*`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation` icons — no new icon import)
+- 114-callout-delete-context: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `react-i18next`, `lucide-react`, Apollo Client (generated hooks only — unchanged), `date-fns` (only if a date is rendered)
+- 113-innovation-hub-ui: Added TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + shadcn/ui + Tailwind CSS v4 + Radix UI (`@/crd/*`), `lucide-react`, `react-i18next`, Apollo Client (generated hooks only — already wired, unchanged this story)
 
 
 ## Active Technologies
-- TypeScript 5.x / React 19 / Node 24.14.0 (Volta-pinned) + shadcn/ui (Radix UI + Tailwind CSS v4), class-variance-authority, lucide-react, Apollo Client (existing, unchanged) (042-crd-space-page)
-- N/A (frontend SPA; data via existing GraphQL queries, no new backend APIs) (042-crd-space-page)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`) + CRD layer (`@/crd/primitives/*`, `@/crd/lib/utils` `cn()`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation`/`RefreshCw` icons, no new icon import), `react-i18next` (existing `crd-space` namespace, no new keys — see Research R4). All existing — **no new runtime dependencies**. (116-postcard-file-thumbnail)
+- N/A (frontend SPA; CRD presentational component plus `src/main/crdPages/` mapper field threading, no persisted storage). No GraphQL query changes. (116-postcard-file-thumbnail)
+- TypeScript 5.x, React 19 (React Compiler enabled — no manual `useMemo`/`useCallback`/`React.memo`), Node ≥24 (Volta-pinned) + `@apollo/client` (generated hooks only), `apollo-upload-client` (already wired at the transport level — `importCollaboraDocument` uploads through it, same as the framing upload path), `react-i18next`, shadcn/ui + Tailwind v4 + Radix UI (`@/crd/*`), `lucide-react` (existing `FileText`/`Sheet`/`Presentation` icons — no new icon import) (116-document-responses)
+- N/A client-side — uploaded bytes go server-side via `importCollaboraDocument` (file-service-go), unchanged transport already used by the framing upload path (116-document-responses)

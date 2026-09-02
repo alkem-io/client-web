@@ -51,7 +51,7 @@ export const formatTimeElapsed = (date: Date | string, t: TFunction, format: 'sh
   const timeDiff = Math.round(diffInTime / ONE_SECOND);
 
   if (timeDiff === 0) {
-    return 'just now';
+    return t(`common.time.${format}.justNow` as const);
   }
 
   return t(`common.time.${format}.timeAgo` as const, {

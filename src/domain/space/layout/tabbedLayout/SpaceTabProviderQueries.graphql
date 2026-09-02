@@ -24,6 +24,10 @@ query SpaceTab($spaceId: UUID!) {
             sortOrder
             settings {
               allowNewCallouts
+              visible
+              descriptionDisplayMode
+              showPublishDetails
+              sidebar
             }
             defaultCalloutTemplate {
               id

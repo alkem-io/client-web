@@ -36,6 +36,7 @@ type StorageConfigLocation =
 
 interface UseStorageConfigOptionsBase {
   locationType: StorageConfigLocation;
+  temporaryLocation?: boolean;
   skip?: boolean;
 }
 
@@ -115,6 +116,10 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
   const { data: spaceStorageConfigData } = useSpaceStorageConfigQuery({
     variables: {
       spaceId: spaceOptions.spaceId!,
+      // Only request the auth-gated SPACE bucket (`space.profile`) when we actually need it — i.e. the
+      // temporary-upload (callout-create) flow. Leaving it false keeps the shared space-page query safe
+      // for anonymous visitors / non-members on private spaces.
+      includeSpaceProfile: locationType === 'space' && Boolean(spaceOptions.temporaryLocation),
     },
     skip: skip || locationType !== 'space' || !spaceOptions.spaceId,
   });
@@ -189,12 +194,18 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
     skip: skip || locationType !== 'account' || !accountOptions.accountId,
   });
 
-  const space = spaceStorageConfigData?.lookup.space;
+  const space =
+    locationType === 'space'
+      ? options.temporaryLocation
+        ? spaceStorageConfigData?.lookup.space
+        : // Non-temporary location: use the ABOUT bucket (`space.about.profile.storageBucket`).
+          spaceStorageConfigData?.lookup.space?.about
+      : undefined;
 
   const callout = calloutStorageConfigData?.lookup.callout;
 
   const { profile } =
-    space?.about ??
+    space ??
     callout?.framing ??
     postStorageConfigData?.lookup.post ??
     templateStorageConfigData?.lookup.template ??
@@ -217,7 +228,7 @@ const useStorageConfig = ({ locationType, skip, ...options }: StorageConfigOptio
           allowedMimeTypes: storageConfig.allowedMimeTypes,
           maxFileSize: storageConfig.maxFileSize,
           canUpload: (storageConfig?.authorization?.myPrivileges ?? []).includes(AuthorizationPrivilege.FileUpload),
-          temporaryLocation: false, // Here should be false by default. Change it to true only on the components that need it.
+          temporaryLocation: options.temporaryLocation ?? false, // Here should be false by default. Change it to true only on the components that need it.
         }
       : undefined,
   };

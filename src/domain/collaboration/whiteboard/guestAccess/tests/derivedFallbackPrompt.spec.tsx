@@ -14,7 +14,6 @@ import type { FC, PropsWithChildren } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { CurrentUserLightDocument } from '@/core/apollo/generated/apollo-hooks';
 import i18n from '@/core/i18n/config';
-import RootThemeProvider from '@/core/ui/themes/RootThemeProvider';
 import { GuestSessionProvider } from '../context/GuestSessionContext';
 import { useGuestSession } from '../hooks/useGuestSession';
 import { sessionStorageMock } from './utils/sessionStorageMock';
@@ -22,11 +21,9 @@ import { sessionStorageMock } from './utils/sessionStorageMock';
 const createWrapper = (mocks: MockedResponse[]): FC<PropsWithChildren> => {
   const Wrapper: FC<PropsWithChildren> = ({ children }) => (
     <MockedProvider mocks={mocks} cache={new InMemoryCache()}>
-      <RootThemeProvider>
-        <I18nextProvider i18n={i18n}>
-          <GuestSessionProvider>{children}</GuestSessionProvider>
-        </I18nextProvider>
-      </RootThemeProvider>
+      <I18nextProvider i18n={i18n}>
+        <GuestSessionProvider>{children}</GuestSessionProvider>
+      </I18nextProvider>
     </MockedProvider>
   );
 

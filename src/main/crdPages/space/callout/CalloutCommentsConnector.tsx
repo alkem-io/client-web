@@ -1,140 +1,93 @@
 import type { ReactNode } from 'react';
 import { useInView } from 'react-intersection-observer';
-import {
-  useCalloutContributionCommentsQuery,
-  useRemoveMessageOnRoomMutation,
-} from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import { evictFromCache } from '@/core/apollo/utils/removeFromCache';
-import { CommentInput } from '@/crd/components/comment/CommentInput';
-import { CommentThread } from '@/crd/components/comment/CommentThread';
-import useSubscribeOnRoomEvents from '@/domain/collaboration/callout/useSubscribeOnRoomEvents';
-import useCommentReactionsMutations from '@/domain/communication/room/Comments/useCommentReactionsMutations';
-import usePostMessageMutations from '@/domain/communication/room/Comments/usePostMessageMutations';
+import { useCalloutContributionCommentsQuery } from '@/core/apollo/generated/apollo-hooks';
 import type { CommentsWithMessagesModel } from '@/domain/communication/room/models/CommentsWithMessagesModel';
-import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import { mapRoomToCommentData } from '../dataMappers/commentDataMapper';
+import { useCrdRoomComments } from '../hooks/useCrdRoomComments';
 
 type CalloutCommentsConnectorProps = {
   roomId: string;
   calloutId?: string;
   contributionId?: string;
   roomData?: CommentsWithMessagesModel;
+  /**
+   * Override the default subscription gate. When omitted, the subscription
+   * starts once the connector scrolls into view (`!inView`) — the dialog path
+   * relies on this. The list-view path passes `!commentsExpanded` so the live
+   * subscription only starts after the user has expanded the inline footer
+   * at least once, and stays active afterwards (sticky).
+   */
+  skipSubscription?: boolean;
+  /**
+   * Bypass the `useInView` gate that lazy-loads the contribution-comments query
+   * and the live subscription. Set to `true` when the caller knows the comment
+   * section is visible the moment the connector mounts — e.g. inside an open
+   * dialog (Phase 22 / T155, 2026-05-19). The default-`false` path keeps the
+   * lazy behaviour the feed-level inline-comments flow relies on: the wrapper
+   * `<div ref={ref}>` observes a slot in the feed, and the query only fires
+   * once the user actually scrolls that slot into view.
+   *
+   * **Why this matters for the dialog path** — when the dialog connector
+   * mounts a `<CalloutCommentsConnector>` for a selected post contribution,
+   * the wrapper `<div ref={ref}>` ends up rendered in the parent component's
+   * tree (alongside the dialog *trigger* on the feed card), NOT inside the
+   * dialog's Radix portal. If the user has scrolled the feed but the dialog
+   * is centred on screen, the wrapper div is off-screen and `inView` never
+   * fires — the query stays skipped, the thread stays empty, and the dialog
+   * shows "0 comments" even when the post has comments. `eager={true}`
+   * decouples the dialog flow from feed scroll detection.
+   */
+  eager?: boolean;
+  /** z-index escape hatches forwarded to the comment delete-confirmation dialog,
+   *  so it stacks above an elevated host (e.g. the focused-task dialog on a board). */
+  confirmOverlayClassName?: string;
+  confirmContentClassName?: string;
   children?: (slots: { thread: ReactNode; commentInput: ReactNode | null; commentCount: number }) => ReactNode;
 };
 
+/**
+ * Lazy-loading wrapper around `useCrdRoomComments` for callout/contribution
+ * comments. Owns the intersection-observer gate + the contribution Apollo
+ * query; everything else (mutations, subscription, rendering) lives in the
+ * shared hook (see research.md R4).
+ */
 export function CalloutCommentsConnector({
   roomId,
   calloutId: _calloutId,
   contributionId,
   roomData,
+  skipSubscription,
+  eager = false,
+  confirmOverlayClassName,
+  confirmContentClassName,
   children,
 }: CalloutCommentsConnectorProps) {
   const { ref, inView } = useInView({ triggerOnce: true, delay: 200 });
-  const { userModel, isAuthenticated } = useCurrentUserContext();
+  const effectiveInView = inView || eager;
 
-  const { data, loading } = useCalloutContributionCommentsQuery({
+  const { data } = useCalloutContributionCommentsQuery({
     variables: {
       contributionId: contributionId ?? '',
       includePost: true,
     },
-    skip: !contributionId || Boolean(roomData) || !inView,
+    skip: !contributionId || Boolean(roomData) || !effectiveInView,
   });
 
   const room = roomData ?? data?.lookup.contribution?.post?.comments;
-  const privileges = room?.authorization?.myPrivileges ?? [];
 
-  const canComment = isAuthenticated && privileges.includes(AuthorizationPrivilege.CreateMessage);
-
-  const isSubscribed = useSubscribeOnRoomEvents(roomId, !inView);
-
-  const { postMessage, postReply, postingMessage, postingReply } = usePostMessageMutations({
+  // The lazy contribution-query loading state is intentionally not surfaced
+  // here: useInView keeps this connector unmounted until the slot scrolls
+  // into view, so the in-flight window is invisible to the user. The shared
+  // hook surfaces in-flight mutation state via the inner CommentThread/Input.
+  const { thread, commentInput, commentCount } = useCrdRoomComments({
     roomId,
-    isSubscribedToMessages: isSubscribed,
+    room,
+    skipSubscription: skipSubscription ?? !effectiveInView,
+    confirmOverlayClassName,
+    confirmContentClassName,
   });
-
-  const { addReaction, removeReaction } = useCommentReactionsMutations(roomId);
-
-  const [deleteMessage, { loading: deletingMessage }] = useRemoveMessageOnRoomMutation({
-    update: (cache, { data }) =>
-      data?.removeMessageOnRoom && evictFromCache(cache, String(data.removeMessageOnRoom), 'Message'),
-  });
-
-  const comments = mapRoomToCommentData(room, { currentUserId: userModel?.id });
-
-  const handleDelete = async (commentId: string) => {
-    await deleteMessage({
-      variables: {
-        messageData: {
-          roomID: roomId,
-          messageID: commentId,
-        },
-      },
-    });
-  };
-
-  const currentUser = userModel
-    ? {
-        id: userModel.id,
-        name: userModel.profile?.displayName ?? 'Unknown user',
-        avatarUrl: userModel.profile?.avatar?.uri,
-      }
-    : undefined;
-
-  const messagesLookup = new Map(room?.messages.map(message => [message.id, message]) ?? []);
-
-  const thread = (
-    <CommentThread
-      loading={loading || postingMessage || postingReply || deletingMessage}
-      comments={comments}
-      canComment={canComment}
-      currentUser={currentUser}
-      onAddComment={content => {
-        void postMessage(content);
-      }}
-      onReply={(parentId, content) => {
-        void postReply({ messageText: content, threadId: parentId });
-      }}
-      onDelete={commentId => {
-        void handleDelete(commentId);
-      }}
-      onAddReaction={(commentId, emoji) => {
-        void addReaction({ messageId: commentId, emoji });
-      }}
-      onRemoveReaction={(commentId, emoji) => {
-        const reactionId = messagesLookup
-          .get(commentId)
-          ?.reactions.find(reaction => reaction.emoji === emoji && reaction.sender?.id === userModel?.id)?.id;
-
-        if (!reactionId) {
-          return;
-        }
-
-        void removeReaction(reactionId);
-      }}
-    />
-  );
-
-  const commentInput = canComment ? (
-    <CommentInput
-      currentUser={currentUser}
-      disabled={loading || postingMessage || postingReply || deletingMessage}
-      onSubmit={content => {
-        void postMessage(content);
-      }}
-    />
-  ) : null;
 
   if (children) {
-    return (
-      <div ref={ref}>
-        {children({
-          thread,
-          commentInput,
-          commentCount: comments.length,
-        })}
-      </div>
-    );
+    return <div ref={ref}>{children({ thread, commentInput, commentCount })}</div>;
   }
 
   return (

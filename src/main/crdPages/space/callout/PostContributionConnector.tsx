@@ -1,0 +1,61 @@
+import { StorageConfigContextProvider } from '@/domain/storage/StorageBucket/StorageConfigContext';
+import { CrdPostContributionDialog } from '@/main/crdPages/post/CrdPostContributionDialog';
+
+type PostContributionConnectorProps = {
+  open: boolean;
+  calloutId: string;
+  /** Threaded through so the edit dialog can list sibling callouts in the same
+   *  set as "Post location" move targets (MUI parity — `PostCalloutsInCalloutSet`). */
+  calloutsSetId?: string;
+  contributionId: string;
+  postId: string;
+  /** Fires when the edit dialog is dismissed (Cancel / X / Save). The inline
+   *  preview in the parent dialog stays selected. */
+  onClose: () => void;
+  /** Fires after a successful delete. Distinct from `onClose` so the parent can
+   *  also clear its selected-post preview (otherwise the user sees the cached
+   *  preview of a post that no longer exists). */
+  onDeleted?: () => void;
+  /** Raise the edit dialog above a custom overlay (e.g. the fullscreen task board). */
+  overlayClassName?: string;
+  contentClassName?: string;
+  /** When editing a task on a Tasks board, use task-specific wording ("Edit task"). */
+  isTaskBoard?: boolean;
+};
+
+export function PostContributionConnector({
+  open,
+  calloutId,
+  calloutsSetId,
+  contributionId,
+  postId,
+  onClose,
+  onDeleted,
+  overlayClassName,
+  contentClassName,
+  isTaskBoard,
+}: PostContributionConnectorProps) {
+  if (!open) return null;
+  return (
+    // Scope uploads to the post's own storage bucket (where the author/editor has FileUpload)
+    // rather than the ambient space bucket. Mirrors the legacy MUI post-edit dialog
+    // (`CalloutContributionDialogPost` → `locationType="post"`).
+    <StorageConfigContextProvider locationType="post" postId={postId} skip={!open}>
+      <CrdPostContributionDialog
+        open={open}
+        onOpenChange={isOpen => {
+          if (!isOpen) onClose();
+        }}
+        mode="edit"
+        calloutId={calloutId}
+        calloutsSetId={calloutsSetId}
+        postId={postId}
+        contributionId={contributionId}
+        onDeleted={onDeleted}
+        overlayClassName={overlayClassName}
+        contentClassName={contentClassName}
+        isTaskBoard={isTaskBoard}
+      />
+    </StorageConfigContextProvider>
+  );
+}

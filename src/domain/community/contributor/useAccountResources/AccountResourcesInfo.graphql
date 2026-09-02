@@ -23,7 +23,6 @@ query AccountResourcesInfo($accountId: UUID!) {
         id
         profile {
           ...AccountResourceProfile
-          tagline
         }
       }
       innovationPacks {
@@ -42,6 +41,7 @@ query AccountResourcesInfo($accountId: UUID!) {
       }
       innovationHubs {
         id
+        nameID
         profile {
           ...AccountResourceProfile
           banner: visual(type: BANNER_WIDE) {
@@ -57,6 +57,7 @@ query AccountResourcesInfo($accountId: UUID!) {
 fragment AccountResourceProfile on Profile {
   id
   displayName
+  tagline
   url
   avatar: visual(type: AVATAR) {
     ...VisualModel

@@ -10,10 +10,17 @@ import { type NotificationEvent, NotificationEventInAppState } from '@/core/apol
 import { error as logError, TagCategoryValues } from '@/core/logging/sentry/log';
 import { useInAppNotificationsContext } from './InAppNotificationsContext';
 import type { InAppNotificationModel } from './model/InAppNotificationModel';
-import { getNotificationTypesForFilter } from './notificationFilters';
+import {
+  getCategoryFilterForNotificationType,
+  getNotificationTypesForFilter,
+  NotificationFilterType,
+} from './notificationFilters';
 import { mapInAppNotificationToModel } from './util/mapInAppNotificationToModel';
 
 export const IN_APP_NOTIFICATIONS_PAGE_SIZE = 10;
+// Pulled separately to drive the per-tab unread indicator. Large enough to
+// reflect recent unread across categories without paginating.
+const ALL_TYPES_PROBE_SIZE = 50;
 
 // Update the cache as refetching all could be expensive
 const updateNotificationsCache = (
@@ -71,6 +78,32 @@ export const useInAppNotifications = () => {
   const { data: unreadCountData } = useInAppNotificationsUnreadCountQuery({
     skip: !isEnabled,
   });
+
+  // Probe all categories so we can render per-tab unread indicators independently
+  // of the currently-selected filter's paginated list.
+  const { data: allTypesData, refetch: refetchAllTypes } = useInAppNotificationsQuery({
+    variables: {
+      types: getNotificationTypesForFilter(NotificationFilterType.All),
+      first: ALL_TYPES_PROBE_SIZE,
+    },
+    errorPolicy: 'ignore',
+    skip: !isEnabled || !isOpen,
+  });
+
+  const unreadCountsByFilter: Record<NotificationFilterType, number> = {
+    [NotificationFilterType.All]: 0,
+    [NotificationFilterType.MessagesAndReplies]: 0,
+    [NotificationFilterType.Space]: 0,
+    [NotificationFilterType.Platform]: 0,
+  };
+  for (const notification of allTypesData?.me?.notifications?.inAppNotifications ?? []) {
+    if (notification.state !== NotificationEventInAppState.Unread) continue;
+    unreadCountsByFilter[NotificationFilterType.All] += 1;
+    const categoryFilter = getCategoryFilterForNotificationType(notification.type);
+    if (categoryFilter) {
+      unreadCountsByFilter[categoryFilter] += 1;
+    }
+  }
 
   // Memoize the filtered and mapped notifications to avoid unnecessary re-processing
   const notificationsInApp = (() => {
@@ -165,6 +198,7 @@ export const useInAppNotifications = () => {
           if (result?.data?.markNotificationsAsRead) {
             // far simpler than updating the cache manually
             refetch?.();
+            refetchAllTypes?.();
           }
         },
       });
@@ -174,6 +208,7 @@ export const useInAppNotifications = () => {
   return {
     notificationsInApp,
     unreadCount,
+    unreadCountsByFilter,
     isLoading: loading,
     updateNotificationState,
     markNotificationsAsRead,

@@ -1,27 +1,39 @@
-import { MoreHorizontal } from 'lucide-react';
-import type { ReactNode } from 'react';
-import { useEffect, useRef } from 'react';
+import { Menu } from 'lucide-react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDragScroll } from '@/crd/hooks/useDragScroll';
 import { cn } from '@/crd/lib/utils';
-import { Button } from '@/crd/primitives/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/crd/primitives/sheet';
 
 type TabItem = {
   label: string;
   index: number;
+  href?: string;
 };
 
-type MobileAction = {
-  label: string;
-  icon: ReactNode;
-  onClick: () => void;
-};
+const MOBILE_TAB_LIST_CLASSES =
+  'flex items-center gap-3 flex-1 min-w-0 overflow-x-auto scrollbar-hide [-ms-overflow-style:none] [scrollbar-width:none] px-3';
+
+/* Edge fades hinting at clipped tabs — applied only on the side(s) that
+   actually have more content, so the last tab never fades when everything fits. */
+const FADE_LEFT =
+  '[mask-image:linear-gradient(to_right,transparent,black_2rem)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_2rem)]';
+const FADE_RIGHT =
+  '[mask-image:linear-gradient(to_right,black_calc(100%_-_2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,black_calc(100%_-_2rem),transparent)]';
+const FADE_BOTH =
+  '[mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%_-_2rem),transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_2rem,black_calc(100%_-_2rem),transparent)]';
 
 type SpaceNavigationTabsProps = {
   tabs: TabItem[];
   activeIndex: number;
   onTabChange: (index: number) => void;
-  mobileActions?: MobileAction[];
+  /** Mobile-only: opens the hamburger drawer. The drawer itself lives in the consumer layout. */
+  onMenuClick?: () => void;
+  /**
+   * Desktop-only: right-aligned action slot rendered on the same row as the
+   * tabs (e.g. an "Add Post" / "Create Subspace" button). Not shown on the
+   * mobile bottom bar — consumers fall back to an in-content action there.
+   */
+  action?: ReactNode;
   isSmallScreen?: boolean;
   className?: string;
 };
@@ -30,70 +42,119 @@ export function SpaceNavigationTabs({
   tabs,
   activeIndex,
   onTabChange,
-  mobileActions,
+  onMenuClick,
+  action,
   isSmallScreen,
   className,
 }: SpaceNavigationTabsProps) {
   if (isSmallScreen) {
-    return (
-      <MobileTabBar tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} mobileActions={mobileActions} />
-    );
+    return <MobileTabBar tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} onMenuClick={onMenuClick} />;
   }
 
-  return <DesktopTabs tabs={tabs} activeIndex={activeIndex} onTabChange={onTabChange} className={className} />;
+  return (
+    <DesktopTabs
+      tabs={tabs}
+      activeIndex={activeIndex}
+      onTabChange={onTabChange}
+      action={action}
+      className={className}
+    />
+  );
 }
 
 function DesktopTabs({
   tabs,
   activeIndex,
   onTabChange,
+  action,
   className,
 }: {
   tabs: TabItem[];
   activeIndex: number;
   onTabChange: (index: number) => void;
+  action?: ReactNode;
   className?: string;
 }) {
   const { t } = useTranslation('crd-space');
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const dragScroll = useDragScroll<HTMLDivElement>();
+  const [overflow, setOverflow] = useState({ left: false, right: false });
+
+  const updateOverflow = () => {
+    const el = dragScroll.ref.current;
+    if (!el) return;
+    const left = el.scrollLeft > 1;
+    const right = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+    setOverflow(prev => (prev.left === left && prev.right === right ? prev : { left, right }));
+  };
 
   useEffect(() => {
-    if (scrollRef.current) {
-      const activeTab = scrollRef.current.querySelector('[data-active="true"]');
+    if (dragScroll.ref.current) {
+      const activeTab = dragScroll.ref.current.querySelector('[data-active="true"]');
       if (activeTab) {
         activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     }
   }, [activeIndex]);
 
+  // Track overflow so the edge fades only show when tabs are actually clipped
+  // (long flow-state names, narrow viewports).
+  useEffect(() => {
+    updateOverflow();
+    const el = dragScroll.ref.current;
+    if (!el) return;
+    const observer = new ResizeObserver(updateOverflow);
+    observer.observe(el);
+    return () => observer.disconnect();
+    // `tabs` (not just its length) so label changes without a container resize
+    // (locale switch, async rename) also refresh the fade state.
+  }, [tabs]);
+
   return (
     <nav className={cn('w-full', className)} aria-label={t('a11y.tabNavigation')}>
-      <div
-        ref={scrollRef}
-        className="flex items-center gap-6 overflow-x-auto scrollbar-hide overscroll-x-contain"
-        role="tablist"
-      >
-        {tabs.map(tab => {
-          const active = tab.index === activeIndex;
-          return (
-            <button
-              key={tab.index}
-              type="button"
-              role="tab"
-              aria-selected={active}
-              data-active={active}
-              className={cn(
-                'pb-2 transition-all duration-200 whitespace-nowrap border-b-2 select-none text-sm cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                active
-                  ? 'border-primary text-primary font-semibold'
-                  : 'border-transparent text-muted-foreground hover:text-foreground hover:border-muted font-medium'
-              )}
-              onClick={() => onTabChange(tab.index)}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
+      <div className="relative flex items-end justify-between gap-4">
+        {/* Bottom border line that runs the full width — the active tab covers it with -mb-px */}
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-border" aria-hidden="true" />
+        <div
+          ref={dragScroll.ref}
+          onPointerDown={dragScroll.onPointerDown}
+          onScroll={updateOverflow}
+          className={cn(
+            'flex items-end overflow-x-auto overscroll-x-contain min-w-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            (overflow.left || overflow.right) && 'cursor-grab',
+            overflow.left && overflow.right && FADE_BOTH,
+            overflow.left && !overflow.right && FADE_LEFT,
+            !overflow.left && overflow.right && FADE_RIGHT
+          )}
+          role="tablist"
+        >
+          {tabs.map(tab => {
+            const active = tab.index === activeIndex;
+            return (
+              <a
+                key={tab.index}
+                href={tab.href ?? '#'}
+                role="tab"
+                aria-selected={active}
+                data-active={active}
+                // Native link-dragging would hijack the pointer-drag scroll gesture.
+                draggable={false}
+                className={cn(
+                  'relative px-5 py-3 text-body transition-all duration-200 whitespace-nowrap select-none rounded-t-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset',
+                  active
+                    ? 'bg-background text-foreground font-semibold border border-border border-b-0 z-10 -mb-px'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-transparent'
+                )}
+                onClick={e => {
+                  e.preventDefault();
+                  onTabChange(tab.index);
+                }}
+              >
+                {tab.label}
+              </a>
+            );
+          })}
+        </div>
+        {action && <div className="shrink-0 pb-3 relative z-10">{action}</div>}
       </div>
     </nav>
   );
@@ -103,91 +164,65 @@ function MobileTabBar({
   tabs,
   activeIndex,
   onTabChange,
-  mobileActions,
+  onMenuClick,
 }: {
   tabs: TabItem[];
   activeIndex: number;
   onTabChange: (index: number) => void;
-  mobileActions?: MobileAction[];
+  onMenuClick?: () => void;
 }) {
   const { t } = useTranslation('crd-space');
-  const visibleTabs = tabs.slice(0, 4);
-  const hasMore = tabs.length > 4 || (mobileActions && mobileActions.length > 0);
+  const scrollRef = useRef<HTMLUListElement>(null);
+  const activeTabRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    activeTabRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }, [activeIndex]);
 
   return (
-    <>
-      {/* Fixed bottom bar */}
-      <nav
-        className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border"
-        aria-label={t('a11y.mobileTabBar')}
-      >
-        <div className="flex items-center justify-around h-14" role="tablist">
-          {visibleTabs.map(tab => {
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border lg:hidden"
+      aria-label={t('a11y.mobileTabBar')}
+    >
+      <div className="flex items-stretch h-14">
+        {onMenuClick && (
+          <>
+            <button
+              type="button"
+              onClick={onMenuClick}
+              className="shrink-0 px-4 flex items-center justify-center text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
+              aria-label={t('mobile.menu')}
+              aria-haspopup="dialog"
+            >
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            </button>
+            <div className="w-px h-6 self-center bg-border" aria-hidden="true" />
+          </>
+        )}
+        {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
+        {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
+        <ul ref={scrollRef} role="list" className={MOBILE_TAB_LIST_CLASSES}>
+          {tabs.map(tab => {
             const active = tab.index === activeIndex;
             return (
-              <button
-                key={tab.index}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                className={cn(
-                  'flex flex-col items-center justify-center flex-1 h-full text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                  active ? 'text-primary font-semibold' : 'text-muted-foreground'
-                )}
-                onClick={() => onTabChange(tab.index)}
-              >
-                <span className="truncate max-w-[80px]">{tab.label}</span>
-              </button>
-            );
-          })}
-          {hasMore && (
-            <Sheet>
-              <SheetTrigger asChild={true}>
+              <li key={tab.index} ref={active ? activeTabRef : undefined} className="inline-flex items-center shrink-0">
                 <button
                   type="button"
-                  className="flex flex-col items-center justify-center flex-1 h-full text-xs text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  aria-label={t('mobile.more')}
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => onTabChange(tab.index)}
+                  className={cn(
+                    'whitespace-nowrap py-2 px-1 text-control transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                    active ? 'text-primary font-semibold' : 'text-muted-foreground hover:text-foreground'
+                  )}
                 >
-                  <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
-                  <span>{t('mobile.more')}</span>
+                  {tab.label}
                 </button>
-              </SheetTrigger>
-              <SheetContent side="bottom" aria-label={t('a11y.moreActionsDrawer')} closeLabel={t('a11y.close')}>
-                <SheetHeader>
-                  <SheetTitle>{t('mobile.more')}</SheetTitle>
-                </SheetHeader>
-                <div className="py-4 space-y-2">
-                  {/* Overflow tabs */}
-                  {tabs.slice(4).map(tab => (
-                    <Button
-                      key={tab.index}
-                      variant="ghost"
-                      className="w-full justify-start"
-                      onClick={() => onTabChange(tab.index)}
-                    >
-                      {tab.label}
-                    </Button>
-                  ))}
-                  {/* Action buttons */}
-                  {mobileActions?.map(action => (
-                    <Button
-                      key={action.label}
-                      variant="ghost"
-                      className="w-full justify-start gap-3"
-                      onClick={action.onClick}
-                    >
-                      {action.icon}
-                      {action.label}
-                    </Button>
-                  ))}
-                </div>
-              </SheetContent>
-            </Sheet>
-          )}
-        </div>
-      </nav>
-      {/* Spacer to prevent content from being hidden behind the fixed bar */}
-      <div className="h-14 lg:hidden" />
-    </>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </nav>
   );
 }

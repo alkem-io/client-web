@@ -4,7 +4,7 @@ import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useWhiteboardActions from '../containers/useWhiteboardActions';
 import useWhiteboardGuestAccess from '../hooks/useWhiteboardGuestAccess';
 import { buildGuestShareUrl } from '../utils/buildGuestShareUrl';
-import type { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog';
+import type { WhiteboardDetails } from '../WhiteboardDialog/WhiteboardDialog.model';
 
 interface UseWhiteboardViewStateParams {
   whiteboard: WhiteboardDetails | undefined;

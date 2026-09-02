@@ -1,0 +1,213 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Write a message…",
+      "send": "Send",
+      "cancel": "Cancel",
+      "sending": "Sending…",
+      "errorTitle": "Could not send your message",
+      "ariaLabel": "Compose message",
+      "title": "Send a private message",
+      "notice": "Starts a private chat you can continue.",
+      "successToast": "Your message has been sent.",
+      "emailTitle": "Send an email",
+      "emailNotice": "Sent to this person's account email address.",
+      "emailPlaceholder": "Write an email…",
+      "emailSuccessToast": "Your email has been sent.",
+      "cannotBeReached": "This person cannot be contacted.",
+      "openChatError": "We couldn't open the chat. Please try again."
+    },
+    "resourceTabsAriaLabel": "Resource sections",
+    "loading": {
+      "hero": "Loading profile header",
+      "sidebar": "Loading profile details",
+      "organizations": "Loading organisations",
+      "hostedResources": "Loading hosted resources",
+      "memberships": "Loading memberships",
+      "contentView": "Loading content",
+      "bodyOfKnowledge": "Loading body of knowledge"
+    },
+    "spacePrivacy": {
+      "private": "Private space",
+      "public": "Public space"
+    }
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "User settings",
+      "messageButton": "Message",
+      "emailButton": "Email",
+      "settingsAriaLabel": "Open user settings"
+    },
+    "tabs": {
+      "resourcesHosted": "Resources Hosted",
+      "leading": "Leading",
+      "memberOf": "Member Of"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtual Contributors",
+      "spacesLeading": "Spaces Leading",
+      "memberOf": "Member of"
+    },
+    "sidebar": {
+      "aboutTitle": "About",
+      "organizationsTitle": "Organisations",
+      "referencesTitle": "Links",
+      "socialLinksTitle": "Social",
+      "bioEmpty": "No bio yet.",
+      "organizationsEmpty": "Not part of any organisation yet.",
+      "memberCountLine_one": "{{count}} member",
+      "memberCountLine_other": "{{count}} members"
+    },
+    "empty": {
+      "resourcesHosted": "No resources hosted yet.",
+      "leading": "Not leading any spaces yet.",
+      "membership": "No memberships yet."
+    },
+    "vcType": "Virtual Contributor"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Organisation settings",
+      "settingsAriaLabel": "Open organisation settings",
+      "messageButton": "Message",
+      "messageEmailTitle": "Send an email",
+      "messageEmailNotice": "Delivered to the organisation's administrators.",
+      "messageEmailPlaceholder": "Write an email…",
+      "verifiedBadge": "Verified",
+      "verifiedTooltip": "This organisation has been verified by Alkemio."
+    },
+    "sidebar": {
+      "bioTitle": "Bio",
+      "bioEmpty": "No bio yet.",
+      "tagsetKeywords": "Keywords",
+      "tagsetCapabilities": "Capabilities",
+      "referencesTitle": "Links",
+      "associatesTitle": "Associates",
+      "associatesCount_one": "{{count}} associate",
+      "associatesCount_other": "{{count}} associates",
+      "socialLinksTitle": "Social"
+    },
+    "tabs": {
+      "resourcesHosted": "Resources Hosted",
+      "leading": "Lead Spaces",
+      "memberOf": "All Memberships"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtual Contributors",
+      "spacesLeading": "Lead Spaces",
+      "memberOf": "All Memberships"
+    },
+    "empty": {
+      "resourcesHosted": "No resources hosted yet.",
+      "leading": "Not leading any spaces yet."
+    },
+    "vcType": "Virtual Contributor"
+  },
+  "vcProfile": {
+    "typeBadge": "Virtual Contributor",
+    "hero": {
+      "settingsTooltip": "Virtual contributor settings",
+      "settingsAriaLabel": "Open virtual contributor settings"
+    },
+    "sidebar": {
+      "descriptionTitle": "Description",
+      "descriptionEmpty": "No description provided.",
+      "hostTitle": "Host",
+      "hostEmpty": "No host."
+    },
+    "functionality": {
+      "heading": "Functionality",
+      "capabilities": {
+        "title": "Functional Capabilities",
+        "tagging": "Answer questions in comments",
+        "createContent": "Create new Posts",
+        "communityManagement": "Invite other contributors"
+      },
+      "dataAccess": {
+        "title": "Data access from the Space where it is a member",
+        "about": "About page",
+        "content": "Posts & Contributions",
+        "subspaces": "Subspaces"
+      },
+      "roleRequirements": {
+        "title": "Role Requirements",
+        "memberRequired": "This VC needs to be granted <strong>member rights</strong> to function correctly",
+        "noneRequired": "No special member rights required"
+      }
+    },
+    "aiEngine": {
+      "heading": "AI Engine: {{engineName}}",
+      "engineName": {
+        "alkemio": "Alkemio AI",
+        "assistant": "External AI Assistant",
+        "external": "External AI"
+      },
+      "seeDocumentation": "SEE DOCUMENTATION",
+      "notAvailable": "Not available",
+      "unknown": "Unknown",
+      "yes": "Yes",
+      "no": "No",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Open Model Transparency",
+          "description": "Does the VC use an open-weight model?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Data Usage Disclosure",
+          "description": "Is interaction data used in any way for model training?"
+        },
+        "knowledgeRestriction": {
+          "title": "Knowledge Restriction",
+          "description": "Is the VC prompted to limit the responses to a specific body of knowledge?"
+        },
+        "webAccess": {
+          "title": "Web Access",
+          "description": "Can the VC access or search the web?"
+        },
+        "physicalLocation": {
+          "title": "Physical Location",
+          "description": "Where is the AI service hosted?"
+        },
+        "technicalReferences": {
+          "title": "Technical References",
+          "description": "Access to detailed information on the underlying models specifications"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Monitoring by Alkemio",
+      "body": "Since Alkemio facilitates the interaction with the external provider, it holds an operational responsibility to monitor the service. As with all data and interactions on the platform, these are governed by our <a>Terms & Conditions</a>."
+    }
+  },
+  "knowledgeBase": {
+    "title": "Knowledge Base",
+    "loading": "Loading knowledge base",
+    "refresh": "Refresh",
+    "addCallout": "Add",
+    "lastUpdated": "Last updated:",
+    "never": "Never",
+    "description": {
+      "edit": "Edit description",
+      "empty": "This Virtual Contributor is based on its own curated collection of documents, text, and links.",
+      "placeholder": "Describe what this Virtual Contributor knows…",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saving": "Saving…",
+      "saveError": "Couldn't save the description — try again."
+    },
+    "empty": {
+      "title": "No knowledge yet",
+      "description": "This Virtual Contributor's knowledge base is empty."
+    },
+    "noAccess": {
+      "title": "No access",
+      "description": "You don't have access to this knowledge base."
+    }
+  }
+}

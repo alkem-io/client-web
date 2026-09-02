@@ -5,7 +5,6 @@
 
 [![Build & Deploy to Dev](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-hetzner.yml/badge.svg)](https://github.com/alkem-io/client-web/actions/workflows/build-deploy-k8s-dev-azure.yml)
 [![Coverage Status](https://coveralls.io/repos/github/alkem-io/client-web/badge.svg?branch=develop)](https://coveralls.io/github/alkem-io/client-web?branch=develop)
-[![Crowdin](https://badges.crowdin.net/alkemio/localized.svg)](https://crowdin.com/project/alkemio)
 
 # Alkemio Web Client
 
@@ -136,7 +135,8 @@ The repo is also set up to generate a Docker image.
 - To create the docker image: `docker build -t alkemio/client-web:[tag]` where [tag] can be any value
 - To add build arguments - docker build --build-arg [argument]=[value]
   - Argument can be the following: ARG_BUILD_ENVIRONMENT
-- To run a container based on the image: `docker container run -p 80:80 alkemio/client-web:[tag]` and then navigate with a browser to `http://localhost:80`
+- To run a container based on the image: `docker container run -p 8080:8080 alkemio/client-web:[tag]` and then navigate with a browser to `http://localhost:8080`
+  - The image runs unprivileged (UID 101, `nginx-unprivileged`) and therefore listens on **8080**, not 80 — a non-root process cannot bind a privileged port. In Kubernetes the Service still exposes port 80 and forwards to the container's 8080.
 
 ## Pushing code the dockerspace
 

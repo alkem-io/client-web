@@ -1,0 +1,77 @@
+{
+  "inviteMembers": {
+    "dialog": {
+      "title": "Anderen uitnodigen voor \"{{spaceName}}\"",
+      "searchHint": "Zoek hieronder naar mensen of voeg hun e-mailadres direct toe",
+      "searchPlaceholder": "Gebruikersnaam of e-mail…",
+      "searchAriaLabel": "Zoek gebruikers op naam of e-mailadres",
+      "noResultsLabel": "Geen overeenkomende gebruikers",
+      "loadingLabel": "Gebruikers laden…",
+      "loadMoreLabel": "Meer laden…",
+      "removeAriaLabel": "{{label}} verwijderen",
+      "welcomeMessageLabel": "Uitnodigingsbericht",
+      "welcomeMessagePlaceholder": "Schrijf een korte boodschap die met de uitnodiging meegestuurd wordt",
+      "defaultWelcomeMessage": "Hoi, ik wil je uitnodigen voor {{spaceName}}. Bekijk de Space of klik op de knop hieronder om de uitnodiging te accepteren of af te wijzen.",
+      "emailVisibilityNote": "Houd er rekening mee dat je persoonlijke e-mailadres zichtbaar is voor iedereen die je uitnodigt.",
+      "inviteToRoleLabel": "Uitnodigen als:",
+      "rolePopoverHelper": "Member wordt altijd toegekend bij het accepteren van de uitnodiging.",
+      "rolePopoverAriaLabel": "Kies rollen voor de genodigden",
+      "suggestedLanguageLabel": "Voorgestelde taal voor de genodigde",
+      "suggestedLanguagePlaceholder": "Geen voorkeur",
+      "sendButtonLabel": "Verstuur",
+      "sendingButtonLabel": "Versturen…",
+      "backButtonLabel": "Terug",
+      "closeButtonLabel": "Sluiten",
+      "closeAriaLabel": "Uitnodigingsdialoog sluiten"
+    },
+    "roles": {
+      "Member": "Member",
+      "Lead": "Lead",
+      "Admin": "Admin"
+    },
+    "errors": {
+      "invalidEmail": "Dit is geen geldig e-mailadres.",
+      "duplicateEmail": "Dit e-mailadres staat al in de lijst.",
+      "networkFailure": "Kon de uitnodigingen niet versturen. Probeer het opnieuw."
+    },
+    "results": {
+      "sent": "Uitnodiging verstuurd",
+      "alreadyInvited": "Al uitgenodigd",
+      "alreadyMember": "Al lid van deze Space",
+      "alreadyHasApplication": "Heeft al een openstaande aanvraag voor deze Space",
+      "parentNotAuthorized": "Uitnodigen lukt niet — diegene zou ook lid moeten worden van de bovenliggende Space, en je hebt geen rechten om daar uit te nodigen.",
+      "error": "Uitnodiging mislukt."
+    },
+    "toast": {
+      "someFailed": "{{count}} uitnodigingen konden niet worden verstuurd — bekijk de resultaten voor details."
+    }
+  },
+  "inviteVc": {
+    "title": "Virtual Contributor uitnodigen",
+    "description": "Voeg een Virtual Contributor van je account toe, of nodig er een uit de Alkemio-bibliotheek uit.",
+    "searchPlaceholder": "Virtual Contributors zoeken…",
+    "loading": "Virtual Contributors laden",
+    "onAccount": "Op je account",
+    "onAccountEmpty": "Geen Virtual Contributors beschikbaar op je account.",
+    "inLibrary": "In de bibliotheek",
+    "inLibraryEmpty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht.",
+    "add": "Toevoegen",
+    "invite": "Uitnodigen",
+    "addAriaLabel": "{{name}} toevoegen",
+    "inviteAriaLabel": "{{name}} uitnodigen",
+    "back": "Terug",
+    "welcomeMessageLabel": "Welkomstbericht",
+    "welcomeMessagePlaceholder": "Voeg een bericht toe aan de uitnodiging…",
+    "sendInvite": "Uitnodiging versturen",
+    "defaultWelcomeMessage": "We willen je graag uitnodigen om bij te dragen aan {{space}}.",
+    "addedNotice": "Virtual Contributor toegevoegd.",
+    "invitedNotice": "Uitnodiging verzonden.",
+    "error": "Er ging iets mis. Probeer het opnieuw.",
+    "previewAriaLabel": "Voorbeeld van {{name}}",
+    "preview": {
+      "tagsLabel": "Tags",
+      "hostedBy": "Gehost door {{name}}",
+      "noDescription": "Geen beschrijving opgegeven."
+    }
+  }
+}

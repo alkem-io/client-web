@@ -1,0 +1,104 @@
+{
+  "launcher": {
+    "open": "Abrir chat",
+    "close": "Cerrar chat",
+    "unreadLabel": "Tienes mensajes sin leer"
+  },
+  "panel": {
+    "title": "Chat",
+    "settings": "Configuración de notificaciones"
+  },
+  "actions": {
+    "cancel": "Cancelar"
+  },
+  "newChat": {
+    "title": "Nuevo mensaje",
+    "searchPlaceholder": "Buscar personas…",
+    "searchHint": "Empieza a escribir para buscar personas",
+    "noResults": "No se encontraron personas",
+    "create": "Iniciar chat",
+    "createGroup": "Iniciar chat grupal",
+    "removeAria": "Quitar a {{name}}"
+  },
+  "group": {
+    "settings": "Configuración del grupo",
+    "nameLabel": "Nombre del grupo",
+    "members": "Miembros",
+    "addPlaceholder": "Añadir personas…",
+    "noResults": "No se encontraron personas",
+    "leave": "Salir del grupo",
+    "save": "Guardar",
+    "you": "Tú",
+    "avatar": {
+      "edit": "Cambiar foto",
+      "cropTitle": "Recortar foto",
+      "saving": "Guardando…",
+      "altLabel": "Descripción (opcional)",
+      "altPlaceholder": "Describe la imagen"
+    },
+    "removeMemberAria": "Quitar a {{name}}",
+    "removeMemberConfirm": {
+      "title": "¿Quitar miembro?",
+      "description": "¿Quitar a esta persona del grupo?",
+      "confirm": "Quitar"
+    },
+    "leaveConfirm": {
+      "title": "¿Salir del grupo?",
+      "description": "Ya no recibirás mensajes de este grupo.",
+      "confirm": "Salir"
+    }
+  },
+  "list": {
+    "searchPlaceholder": "Buscar conversaciones…",
+    "newMessage": "Nuevo mensaje",
+    "empty": "Aún no hay conversaciones",
+    "emptyHint": "Inicia un mensaje nuevo para empezar a chatear.",
+    "noResults": "Ninguna conversación coincide con tu búsqueda.",
+    "loading": "Cargando conversaciones",
+    "draft": "Borrador:"
+  },
+  "guidance": {
+    "beta": "Beta",
+    "intro": "¡Hola! Estoy aquí para ayudarte a orientarte en Alkemio. Pregúntame lo que quieras sobre espacios, colaboración o cómo funcionan las cosas.",
+    "infoButton": "Acerca del asistente",
+    "clear": "Borrar chat",
+    "thinking": "El asistente está pensando…",
+    "infoDialog": {
+      "title": "Acerca del asistente",
+      "content": "Este asistente es una guía de IA para Alkemio, actualmente en beta. Puede ayudarte a entender las funciones y orientarte. Las respuestas pueden no ser perfectas: verifica la información importante."
+    },
+    "clearConfirm": {
+      "title": "¿Borrar esta conversación?",
+      "description": "Esto inicia una nueva conversación con el asistente. La conversación actual se borrará.",
+      "confirm": "Borrar chat"
+    }
+  },
+  "thread": {
+    "back": "Volver a las conversaciones",
+    "loading": "Cargando mensajes",
+    "addReaction": "Añadir reacción"
+  },
+  "sendConfirmation": {
+    "title": "Mensaje enviado",
+    "description": "Tu mensaje se ha enviado como un chat privado.",
+    "partialDescription": "Tu mensaje se ha enviado, pero no se pudo contactar con algunas personas.",
+    "notReachedTitle": "No contactadas",
+    "openChat": "Abrir chat",
+    "close": "Cerrar"
+  },
+  "contactLeads": {
+    "title": "Contactar con los responsables",
+    "explanation": "Este mensaje se enviará a cada responsable de forma individual. Para contactar con un responsable concreto, visita su perfil directamente.",
+    "messageLabel": "Mensaje",
+    "messagePlaceholder": "Escribe tu mensaje…",
+    "recipientsLabel": "Destinatarios",
+    "send": "Enviar",
+    "cancel": "Cancelar",
+    "sending": "Enviando…",
+    "errors": {
+      "messageRequired": "El mensaje no puede estar vacío.",
+      "messageTooLong": "El mensaje debe tener {{max}} caracteres o menos.",
+      "sendFailed": "No se pudo enviar el mensaje. Inténtalo de nuevo."
+    }
+  }
+}

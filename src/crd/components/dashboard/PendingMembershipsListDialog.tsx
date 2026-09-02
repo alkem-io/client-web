@@ -49,7 +49,7 @@ function PendingMembershipsListDialog({
             </output>
           )}
           {!loading && empty && (
-            <output className="block text-center py-8 text-sm text-muted-foreground">
+            <output className="block text-center py-8 text-body text-muted-foreground">
               {t('pendingMemberships.empty')}
             </output>
           )}

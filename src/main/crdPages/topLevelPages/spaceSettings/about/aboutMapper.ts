@@ -1,0 +1,115 @@
+import type { SpaceAboutDetailsQuery } from '@/core/apollo/generated/graphql-schema';
+import type { ClassificationEntryData } from '@/crd/components/classification/types';
+import type {
+  AboutFormValues,
+  AboutReference,
+  AboutVisual,
+  SpaceCardPreview,
+  SpaceSettingsLevel,
+} from '@/crd/components/space/settings/SpaceSettingsAboutView.types';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { mapGqlClassificationCardinality } from '@/domain/space/about/model/classificationCardinality';
+
+export type { AboutFormValues, AboutReference, AboutVisual, SpaceCardPreview };
+
+/** The subset of the SpaceAboutDetailsQuery the mapper consumes. */
+export type AboutSpace = NonNullable<SpaceAboutDetailsQuery['lookup']['space']>;
+
+/** Empty visual used when the backend returns no avatar / banner / cardBanner. */
+const EMPTY_VISUAL: AboutVisual = { id: '', uri: null, altText: null };
+
+/** Generate 2-character fallback initials from a name. */
+export function computeInitials(name: string): string {
+  const trimmed = name.trim();
+  if (!trimmed) return '??';
+  const words = trimmed.split(/\s+/);
+  if (words.length >= 2) {
+    return (words[0][0] + words[1][0]).toUpperCase();
+  }
+  return trimmed.slice(0, 2).toUpperCase();
+}
+
+export function mapSpaceToAboutFormValues(space: AboutSpace): AboutFormValues {
+  const profile = space.about.profile;
+  const tagset = profile.tagset;
+
+  return {
+    name: profile.displayName ?? '',
+    tagline: profile.tagline ?? '',
+    country: profile.location?.country ?? '',
+    city: profile.location?.city ?? '',
+    avatar: profile.avatar
+      ? { id: profile.avatar.id, uri: profile.avatar.uri ?? null, altText: profile.avatar.alternativeText ?? null }
+      : EMPTY_VISUAL,
+    pageBanner: profile.banner
+      ? {
+          id: profile.banner.id,
+          uri: profile.banner.uri ?? null,
+          altText: profile.banner.alternativeText ?? null,
+          aspectRatio: profile.banner.aspectRatio ?? undefined,
+        }
+      : EMPTY_VISUAL,
+    cardBanner: profile.cardBanner
+      ? {
+          id: profile.cardBanner.id,
+          uri: profile.cardBanner.uri ?? null,
+          altText: profile.cardBanner.alternativeText ?? null,
+        }
+      : EMPTY_VISUAL,
+    tagsetId: tagset?.id ?? '',
+    tags: tagset?.tags ?? [],
+    profileId: profile.id,
+    references:
+      profile.references?.map(reference => ({
+        id: reference.id,
+        title: reference.name ?? '',
+        uri: reference.uri ?? '',
+        description: reference.description ?? '',
+      })) ?? [],
+    what: profile.description ?? '',
+    why: space.about.why ?? '',
+    who: space.about.who ?? '',
+  };
+}
+
+/**
+ * `about.classifications` (the `ClassificationEntryFull` fragment) → the CRD
+ * plain-TS shape. The read path is `about.classifications[].values[]` (D1) —
+ * there is no container hop, and the array is `[]` (never null) when the
+ * Space carries none.
+ */
+export function mapClassificationEntries(space: AboutSpace): ClassificationEntryData[] {
+  return (space.about.classifications ?? []).map(entry => ({
+    id: entry.id,
+    displayLabel: entry.displayLabel,
+    cardinality: mapGqlClassificationCardinality(entry.cardinality),
+    values: entry.values.map(v => ({ id: v.id, label: v.label })),
+    selectedValueIDs: entry.selectedValueIDs,
+    display: entry.display,
+    sortOrder: entry.sortOrder,
+  }));
+}
+
+/** Build the live Preview card view from current form values + space id. */
+export function buildPreviewCard(
+  spaceId: string,
+  values: AboutFormValues,
+  href: string,
+  level: SpaceSettingsLevel
+): SpaceCardPreview {
+  return {
+    name: values.name,
+    tagline: values.tagline,
+    // The Preview is a SpaceCard (Explore-card shape), so its banner is the
+    // card banner — not the page banner. L0 spaces have both, but the Explore
+    // card uses cardBanner regardless. L1/L2 subspaces have no page banner.
+    bannerUrl: values.cardBanner.uri ?? null,
+    avatarUrl: values.avatar.uri ?? null,
+    tags: values.tags,
+    color: pickColorFromId(spaceId),
+    initials: computeInitials(values.name),
+    href,
+    level,
+    what: values.what,
+  };
+}

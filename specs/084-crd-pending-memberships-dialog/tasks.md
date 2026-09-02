@@ -109,7 +109,7 @@
 - [ ] T021 [P] Verify screen reader accessibility — dialog is announced on open, list lengths are conveyed (`role="list"`), button labels include space names (`aria-label`), loading state announced (`role="status"`), back button has accessible name.
 - [x] T022 Run `pnpm lint` and fix any linting/type errors across all new files
 - [x] T023 Run `pnpm vitest run` and verify no test regressions
-- [ ] T024 Verify CRD toggle OFF — disable CRD via `localStorage.removeItem('alkemio-crd-enabled')`, reload. Confirm MUI `PendingMembershipsDialog` still renders and functions correctly.
+- [ ] T024 Verify CRD toggle OFF — disable CRD via `localStorage.setItem('alkemio-design-version', '1')`, reload. Confirm MUI `PendingMembershipsDialog` still renders and functions correctly.
 
 ---
 

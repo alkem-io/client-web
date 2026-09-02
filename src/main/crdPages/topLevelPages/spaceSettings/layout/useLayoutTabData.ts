@@ -1,0 +1,600 @@
+import { useEffect, useRef, useState } from 'react';
+import {
+  refetchInnovationFlowSettingsQuery,
+  useInnovationFlowSettingsQuery,
+  useSpaceSettingsQuery,
+  useUpdateCalloutFlowStateMutation,
+  useUpdateCalloutsSortOrderMutation,
+  useUpdateInnovationFlowStateMutation,
+  useUpdateInnovationFlowStateSettingsMutation,
+  useUpdateInnovationFlowStatesSortOrderMutation,
+} from '@/core/apollo/generated/apollo-hooks';
+import type {
+  LayoutColumnId,
+  LayoutPoolColumn,
+  LayoutReorderTarget,
+  LayoutSaveBarState,
+  PhaseLayoutInput,
+} from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
+import useInnovationFlowSettings from '@/domain/collaboration/InnovationFlow/InnovationFlowDialogs/useInnovationFlowSettings';
+import { mapCollaborationToLayoutColumns, type SpaceLevelTag } from './layoutMapper';
+
+export type {
+  LayoutPoolColumn,
+  LayoutSaveBarState,
+} from '@/crd/components/space/settings/SpaceSettingsLayoutView.types';
+
+export type UseLayoutTabDataResult = {
+  columns: LayoutPoolColumn[];
+  saveBar: LayoutSaveBarState;
+  loading: boolean;
+  error: Error | null;
+  onReorder: (calloutId: string, target: LayoutReorderTarget) => void;
+  onReorderColumns: (orderedColumnIds: LayoutColumnId[]) => void;
+  onMoveToColumn: (calloutId: string, target: LayoutColumnId) => void;
+  onSave: () => void;
+  onReset: () => void;
+  isDirty: boolean;
+  /** Update both buffer AND snapshot for a column saved via the Edit Details dialog. */
+  markColumnSaved: (columnId: LayoutColumnId, title: string, description: string) => void;
+  /**
+   * Update both buffer AND snapshot for a column saved via the Layout dialog.
+   * Mirrors `markColumnSaved` but patches `column.layout` so the Layout dialog
+   * is pre-filled with the just-saved values on the next open (FR-011).
+   */
+  markLayoutSaved: (columnId: LayoutColumnId, layout: PhaseLayoutInput) => void;
+  /**
+   * Update both buffer AND snapshot after a phase's default Callout template is set/cleared.
+   * Mirrors `markLayoutSaved` (the seed guard blocks re-derivation from the refetched query),
+   * so the Post Template modal's "Clear template" affordance reflects the new state without a
+   * reload. `null` = the phase now has no default template.
+   */
+  markTemplateSaved: (
+    columnId: LayoutColumnId,
+    defaultCalloutTemplate: { id: string; displayName: string } | null
+  ) => void;
+  /**
+   * Optimistic update for "Mark as active phase" — flips `isCurrentPhase` on
+   * both buffer and snapshot so the kebab menu reflects the new state without
+   * waiting for the server refetch.
+   */
+  markCurrentPhaseChanged: (columnId: LayoutColumnId) => void;
+  /**
+   * Toggle a phase's member-facing visibility (immediate-save, UI-only — never touches
+   * content access). Optimistically flips `isHidden` on buffer + snapshot, then persists
+   * via the settings-only mutation carrying only the `visible` flag so the change is shared
+   * across all viewers without disturbing any other setting.
+   */
+  onToggleVisibility: (columnId: LayoutColumnId, nextHidden: boolean) => Promise<void>;
+  /** Underlying ids — useful for the view's useColumnMenu consumer. */
+  collaborationId: string;
+  innovationFlowId: string;
+  calloutsSetId: string;
+  /**
+   * Phase add/delete (immediate-save) — adds a new flow state at the end (or
+   * after `afterStateId` if provided) and resets the rename buffer so the
+   * snapshot reseeds from the refetched query.
+   */
+  onCreateState: (input: { displayName: string; description: string; afterStateId?: string }) => Promise<void>;
+  onDeleteState: (stateId: string) => Promise<void>;
+  /** Min/max state count from the innovation-flow settings; drives Add/Delete enablement. */
+  minimumNumberOfStates: number;
+  maximumNumberOfStates: number;
+  /**
+   * Total callouts currently attached to this collaboration, read from the
+   * already-resolved InnovationFlowSettings query (the same query that seeds
+   * the columns). Drives the destructive "replace all" confirmation in the
+   * Replace-innovation-flow flow — must come from loaded data, never a
+   * separate query that can still be 0 while the user confirms.
+   */
+  existingCalloutsCount: number;
+  /** True while a structural mutation (create/delete state) is in flight. */
+  isStructureMutating: boolean;
+  /**
+   * Discards the current local snapshot so the seed effect re-runs from the
+   * next InnovationFlowSettings query result. Call this after an out-of-band
+   * mutation (e.g. "Replace innovation flow") that the parent already
+   * refetched — without it the buffer keeps showing the pre-mutation columns.
+   */
+  reseedFromServer: () => void;
+  /**
+   * Innovation flow state ids from the server — passed to `useColumnMenu`'s
+   * `innovationFlowStates` option so `onSaveLayout` can verify the target state exists.
+   */
+  innovationFlowStates: ReadonlyArray<{ id: string }>;
+};
+
+type Snapshot = {
+  columns: LayoutPoolColumn[];
+};
+
+function toSnapshot(columns: LayoutPoolColumn[]): Snapshot {
+  // Deep clone so the snapshot is immune to later local mutation.
+  return {
+    columns: columns.map(c => ({
+      ...c,
+      callouts: c.callouts.map(cb => ({ ...cb })),
+    })),
+  };
+}
+
+function columnsEqual(a: LayoutPoolColumn[], b: LayoutPoolColumn[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    const left = a[i];
+    const right = b[i];
+    if (left.id !== right.id) return false;
+    if (left.title !== right.title) return false;
+    if (left.description !== right.description) return false;
+    if (left.callouts.length !== right.callouts.length) return false;
+    for (let j = 0; j < left.callouts.length; j++) {
+      if (left.callouts[j].id !== right.callouts[j].id) return false;
+    }
+  }
+  return true;
+}
+
+export function useLayoutTabData(spaceId: string, level: SpaceLevelTag): UseLayoutTabDataResult {
+  // Fetch the space settings to resolve the collaboration ID (on
+  // space.collaboration.id). The per-phase layout settings (descriptionDisplayMode,
+  // showPublishDetails) are now on the innovation flow states themselves and are
+  // seeded from the InnovationFlowSettings query below; the space-wide
+  // calloutDescriptionDisplayMode is deprecated (REMOVE_AFTER=2026-10-31).
+  const {
+    data: settingsData,
+    loading: settingsLoading,
+    error: settingsError,
+  } = useSpaceSettingsQuery({ variables: { spaceId }, skip: !spaceId });
+
+  const collaborationId = settingsData?.lookup.space?.collaboration.id ?? '';
+
+  const {
+    data: flowData,
+    loading: flowLoading,
+    error: flowError,
+  } = useInnovationFlowSettingsQuery({
+    variables: { collaborationId },
+    skip: !collaborationId,
+  });
+
+  const [columns, setColumns] = useState<LayoutPoolColumn[]>([]);
+  const snapshotRef = useRef<Snapshot | null>(null);
+  const [saveBar, setSaveBar] = useState<LayoutSaveBarState>({ kind: 'clean' });
+  const [isStructureMutating, setIsStructureMutating] = useState(false);
+  // Bumped by `reseedFromServer` to force the seed effect to re-run even when
+  // the flowData/settingsData references haven't changed since the last render
+  // (the refetch landed BEFORE the snapshot was dropped, so the effect already
+  // bailed once with the new data still in scope).
+  const [reseedToken, setReseedToken] = useState(0);
+
+  const [updateInnovationFlowState] = useUpdateInnovationFlowStateMutation();
+  const [updateInnovationFlowStateSettings] = useUpdateInnovationFlowStateSettingsMutation();
+  const [updateCalloutFlowState] = useUpdateCalloutFlowStateMutation();
+  const [updateCalloutsSortOrder] = useUpdateCalloutsSortOrderMutation();
+  const [updateInnovationFlowStatesSortOrder] = useUpdateInnovationFlowStatesSortOrderMutation();
+
+  // Borrow only the structural action handlers from the legacy hook —
+  // they handle the create+sortOrder atomicity and refetches.
+  const innovationFlowSettings = useInnovationFlowSettings({
+    collaborationId,
+    skip: !collaborationId,
+  });
+
+  // Seed the buffer once, from the first successful query pair.
+  // Per-phase layout settings (descriptionDisplayMode, showPublishDetails) are now on
+  // innovation flow states and seeded via mapCollaborationToLayoutColumns.
+  useEffect(() => {
+    if (snapshotRef.current !== null) return;
+    const collaboration = flowData?.lookup.collaboration;
+    // settingsData is used only for the collaborationId (resolved above). The
+    // per-phase layout values come from the flow states in flowData.
+    if (!collaboration || !settingsData) return;
+    const nextColumns = mapCollaborationToLayoutColumns(collaboration, level);
+    snapshotRef.current = toSnapshot(nextColumns);
+    setColumns(nextColumns);
+  }, [flowData, settingsData, reseedToken, level]);
+
+  // Dirty flag — tracks whether the buffer differs from the snapshot.
+  // Using state (not useMemo on a ref) so it updates when onSave/onReset clear it.
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Recompute whenever columns change.
+  useEffect(() => {
+    const snap = snapshotRef.current;
+    const dirty = snap ? !columnsEqual(snap.columns, columns) : false;
+    setIsDirty(dirty);
+    setSaveBar(prev => {
+      if (prev.kind === 'saving' || prev.kind === 'saveError') return prev;
+      return dirty ? { kind: 'dirty', canSave: true } : { kind: 'clean' };
+    });
+  }, [columns]);
+
+  // ────────────────── Buffered actions ──────────────────
+
+  const onReorder = (calloutId: string, target: LayoutReorderTarget) => {
+    setColumns(prev => {
+      const next = prev.map(c => ({ ...c, callouts: [...c.callouts] }));
+      // Remove from wherever it is.
+      let removed: LayoutPoolColumn['callouts'][number] | null = null;
+      for (const col of next) {
+        const idx = col.callouts.findIndex(c => c.id === calloutId);
+        if (idx >= 0) {
+          removed = col.callouts.splice(idx, 1)[0];
+          break;
+        }
+      }
+      if (!removed) return prev;
+      const targetCol = next.find(c => c.id === target.columnId);
+      if (!targetCol) return prev;
+      const index = Math.max(0, Math.min(target.index, targetCol.callouts.length));
+      targetCol.callouts.splice(index, 0, removed);
+      return next;
+    });
+  };
+
+  const onReorderColumns = (orderedColumnIds: LayoutColumnId[]) => {
+    setColumns(prev => {
+      // Build the new column list in the requested order. Any column not
+      // present in `orderedColumnIds` (defensive — shouldn't happen for a
+      // simple swap) is appended at the end in its current order.
+      const byId = new Map(prev.map(c => [c.id, c] as const));
+      const reordered: LayoutPoolColumn[] = [];
+      for (const id of orderedColumnIds) {
+        const found = byId.get(id);
+        if (found) {
+          reordered.push(found);
+          byId.delete(id);
+        }
+      }
+      // Preserve any unaccounted-for column at the end in its original order.
+      for (const col of prev) {
+        if (byId.has(col.id)) reordered.push(col);
+      }
+      return reordered;
+    });
+  };
+
+  const onMoveToColumn = (calloutId: string, target: LayoutColumnId) => {
+    setColumns(prev => {
+      const targetCol = prev.find(c => c.id === target);
+      if (!targetCol) return prev;
+      const next = prev.map(c => ({ ...c, callouts: [...c.callouts] }));
+      let removed: LayoutPoolColumn['callouts'][number] | null = null;
+      for (const col of next) {
+        const idx = col.callouts.findIndex(c => c.id === calloutId);
+        if (idx >= 0) {
+          removed = col.callouts.splice(idx, 1)[0];
+          break;
+        }
+      }
+      if (!removed) return prev;
+      const mutTarget = next.find(c => c.id === target);
+      if (!mutTarget) return prev;
+      mutTarget.callouts.push(removed);
+      return next;
+    });
+  };
+
+  // ────────────────── Save / Reset ──────────────────
+
+  const onReset = () => {
+    const snap = snapshotRef.current;
+    if (!snap) return;
+    setColumns(snap.columns.map(c => ({ ...c, callouts: c.callouts.map(cb => ({ ...cb })) })));
+    setIsDirty(false);
+    setSaveBar({ kind: 'clean' });
+  };
+
+  const markCurrentPhaseChanged = (columnId: LayoutColumnId) => {
+    const updateCol = (cols: LayoutPoolColumn[]) => cols.map(c => ({ ...c, isCurrentPhase: c.id === columnId }));
+    setColumns(prev => updateCol(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = {
+        ...snapshotRef.current,
+        columns: updateCol(snapshotRef.current.columns),
+      };
+    }
+  };
+
+  /**
+   * Visibility toggle — immediate-save, NOT part of the Save Changes buffer (mirrors the
+   * active-phase + default-template actions). Optimistically flips `isHidden` on buffer and
+   * snapshot so the kebab + badge update instantly, then persists via the settings-only
+   * mutation carrying ONLY `visible` — omitting the other settings/description leaves them
+   * unchanged, so a concurrent layout or description edit is never reverted (FR-013).
+   */
+  const onToggleVisibility = async (columnId: LayoutColumnId, nextHidden: boolean): Promise<void> => {
+    const state = innovationFlowSettings.data.innovationFlow?.states?.find(s => s.id === columnId);
+    if (!state) return;
+
+    // Snapshot the pre-toggle state so a failed persist can roll the optimistic flip back —
+    // otherwise the kebab/badge stay toggled while the server is unchanged, and because the
+    // snapshot is mutated too, dirty-tracking would wrongly read as clean.
+    const previousColumns = columns;
+    const previousSnapshot = snapshotRef.current;
+
+    const applyHidden = (cols: LayoutPoolColumn[]) =>
+      cols.map(c => (c.id === columnId ? { ...c, isHidden: nextHidden } : c));
+    setColumns(prev => applyHidden(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = { ...snapshotRef.current, columns: applyHidden(snapshotRef.current.columns) };
+    }
+
+    try {
+      await updateInnovationFlowStateSettings({
+        variables: {
+          innovationFlowStateId: columnId,
+          // Settings-only: send just `visible` (inverse of `isHidden`); everything else omitted
+          // is left unchanged, so a concurrent rename/description/layout edit is never clobbered.
+          settings: { visible: !nextHidden },
+        },
+        refetchQueries: [refetchInnovationFlowSettingsQuery({ collaborationId })],
+      });
+    } catch (error) {
+      setColumns(previousColumns);
+      snapshotRef.current = previousSnapshot;
+      throw error;
+    }
+  };
+
+  /** Update both buffer and snapshot for a column saved directly via the Edit Details dialog. */
+  const markColumnSaved = (columnId: LayoutColumnId, title: string, description: string) => {
+    const updateCol = (cols: LayoutPoolColumn[]) =>
+      cols.map(c => (c.id === columnId ? { ...c, title, description } : c));
+    setColumns(prev => updateCol(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = {
+        ...snapshotRef.current,
+        columns: updateCol(snapshotRef.current.columns),
+      };
+    }
+    setIsDirty(false);
+  };
+
+  /**
+   * Update both buffer and snapshot for a column saved directly via the Layout dialog.
+   * Mirrors `markColumnSaved` but patches `column.layout` so the Layout dialog is
+   * pre-filled with the just-saved values on the next open (FR-011).
+   * The Apollo refetch from `onSaveLayout` already updates the normalized cache, but
+   * the seed guard (`snapshotRef.current !== null`) blocks the seed effect from
+   * re-deriving the buffer from the fresh data — so we patch the buffer + snapshot
+   * manually, keeping them in sync with the server response.
+   */
+  const markLayoutSaved = (columnId: LayoutColumnId, layout: PhaseLayoutInput) => {
+    const updateCol = (cols: LayoutPoolColumn[]) => cols.map(c => (c.id === columnId ? { ...c, layout } : c));
+    setColumns(prev => updateCol(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = {
+        ...snapshotRef.current,
+        columns: updateCol(snapshotRef.current.columns),
+      };
+    }
+  };
+
+  /**
+   * Update both buffer and snapshot after a phase's default Callout template is set/cleared.
+   * Mirrors `markLayoutSaved`; no `setIsDirty` — `defaultCalloutTemplate` isn't part of the
+   * dirty comparison (`columnsEqual`), so this immediate-save action never flips the Save bar.
+   */
+  const markTemplateSaved = (
+    columnId: LayoutColumnId,
+    defaultCalloutTemplate: { id: string; displayName: string } | null
+  ) => {
+    const updateCol = (cols: LayoutPoolColumn[]) =>
+      cols.map(c => (c.id === columnId ? { ...c, defaultCalloutTemplate } : c));
+    setColumns(prev => updateCol(prev));
+    if (snapshotRef.current) {
+      snapshotRef.current = {
+        ...snapshotRef.current,
+        columns: updateCol(snapshotRef.current.columns),
+      };
+    }
+  };
+
+  const onSave = async () => {
+    const snap = snapshotRef.current;
+    if (!snap) return;
+    setSaveBar({ kind: 'saving' });
+
+    try {
+      // 0) Column reorder — fire first so subsequent column-rename mutations
+      //    (and the local snapshot we set at the end) reflect the final order.
+      //    The mutation persists the new sortOrder; we already updated the
+      //    local buffer when the drag ended, so no UI shuffle on success.
+      const innovationFlowId = flowData?.lookup.collaboration?.innovationFlow.id ?? '';
+      const priorOrder = snap.columns.map(c => c.id);
+      const nextOrder = columns.map(c => c.id);
+      const orderChanged =
+        innovationFlowId.length > 0 &&
+        priorOrder.length === nextOrder.length &&
+        priorOrder.some((id, i) => id !== nextOrder[i]);
+      if (orderChanged) {
+        await updateInnovationFlowStatesSortOrder({
+          variables: { innovationFlowID: innovationFlowId, stateIDs: nextOrder },
+        });
+      }
+
+      // 1) Column renames — only fire when title or description actually changed.
+      const renames = columns.filter(col => {
+        const prior = snap.columns.find(p => p.id === col.id);
+        return prior && (prior.title !== col.title || prior.description !== col.description);
+      });
+      for (const col of renames) {
+        await updateInnovationFlowState({
+          variables: {
+            innovationFlowStateId: col.id,
+            displayName: col.title,
+            description: col.description,
+          },
+        });
+      }
+
+      // 2) Callout moves — only retag callouts that actually changed column.
+      //    A callout needs retagging if:
+      //    (a) it was dragged to a different column (its snapshot column title ≠ its buffer column title), OR
+      //    (b) it stayed in the same column but that column's title was renamed.
+      //    We use the SNAPSHOT's column titles to detect changes (not the buffer's).
+      const titleRenameMap = new Map<string, string>(); // old title → new title
+      for (const col of renames) {
+        const prior = snap.columns.find(p => p.id === col.id);
+        if (prior && prior.title !== col.title) {
+          titleRenameMap.set(prior.title, col.title);
+        }
+      }
+
+      const calloutMoves: Array<{ calloutId: string; flowStateTagsetId: string; value: string }> = [];
+      for (const col of columns) {
+        for (const callout of col.callouts) {
+          const prior = findCalloutInSnapshot(snap.columns, callout.id);
+          if (!prior) continue;
+          // What tag does this callout currently carry on the server?
+          const serverTag = prior.columnTitle;
+          // What tag should it carry after save?
+          const targetTag = col.title;
+          // Only issue a mutation if the tag will actually change.
+          if (serverTag !== targetTag) {
+            calloutMoves.push({
+              calloutId: callout.id,
+              flowStateTagsetId: callout.flowStateTagsetId,
+              value: targetTag,
+            });
+          }
+        }
+      }
+      for (const move of calloutMoves) {
+        await updateCalloutFlowState({ variables: move });
+      }
+
+      // 3) Within-column reorders — only fire for columns whose order changed.
+      const calloutsSetId = flowData?.lookup.collaboration?.calloutsSet.id ?? '';
+      if (calloutsSetId) {
+        for (const col of columns) {
+          const prior = snap.columns.find(p => p.id === col.id);
+          if (!prior) continue;
+          const orderChanged =
+            prior.callouts.length !== col.callouts.length ||
+            prior.callouts.some((c, i) => c.id !== col.callouts[i]?.id);
+          if (orderChanged) {
+            await updateCalloutsSortOrder({
+              variables: { calloutsSetID: calloutsSetId, calloutIds: col.callouts.map(c => c.id) },
+            });
+          }
+        }
+      }
+
+      // No refetch needed — update the snapshot to match the buffer directly.
+      // We know exactly what the server state is now (our buffer was accepted).
+      snapshotRef.current = toSnapshot(columns);
+      setIsDirty(false);
+      setSaveBar({ kind: 'clean' });
+    } catch (err) {
+      setSaveBar({
+        kind: 'saveError',
+        message: err instanceof Error ? err.message : 'Save failed',
+      });
+    }
+  };
+
+  // Structural actions — fire immediately, then reset the rename buffer so the
+  // seed effect re-seeds from the refetched query.
+  const resetSnapshotForReseed = () => {
+    snapshotRef.current = null;
+    setIsDirty(false);
+    setSaveBar({ kind: 'clean' });
+    // Bump the seed token so the seed effect re-runs even when flowData /
+    // settingsData haven't changed since their last render — common when the
+    // refetched data landed BEFORE we nulled the snapshot.
+    setReseedToken(t => t + 1);
+  };
+
+  const onCreateState = async ({
+    displayName,
+    description,
+    afterStateId,
+  }: {
+    displayName: string;
+    description: string;
+    afterStateId?: string;
+  }): Promise<void> => {
+    setIsStructureMutating(true);
+    try {
+      await innovationFlowSettings.actions.createState(
+        { displayName, description, sortOrder: 0, settings: { allowNewCallouts: true } },
+        afterStateId
+      );
+      // `createState` now awaits its refetch queries, so by the time it
+      // resolves the InnovationFlowSettings cache holds the final, de-collided
+      // column order — safe to drop the snapshot and reseed straight away.
+      resetSnapshotForReseed();
+    } finally {
+      setIsStructureMutating(false);
+    }
+  };
+
+  const onDeleteState = async (stateId: string): Promise<void> => {
+    setIsStructureMutating(true);
+    try {
+      // The backend rejects deleting the currently-active state. If the user
+      // targets the active phase, advance the active state to the *adjacent*
+      // surviving state first, then delete: prefer the next state by sortOrder
+      // (so phase progression continues forward), and fall back to the
+      // previous state when the active phase being deleted is the last one.
+      const flow = innovationFlowSettings.data.innovationFlow;
+      if (flow?.currentState?.id === stateId) {
+        const deleted = (flow.states ?? []).find(s => s.id === stateId);
+        const remaining = (flow.states ?? []).filter(s => s.id !== stateId).sort((a, b) => a.sortOrder - b.sortOrder);
+        const nextActive =
+          remaining.find(s => s.sortOrder > (deleted?.sortOrder ?? -1)) ?? remaining[remaining.length - 1];
+        if (nextActive) {
+          await innovationFlowSettings.actions.updateInnovationFlowCurrentState(nextActive.id);
+        }
+      }
+      await innovationFlowSettings.actions.deleteState(stateId);
+      // `deleteState` now awaits its refetch, so the cache already reflects the
+      // post-delete column set — reseed directly.
+      resetSnapshotForReseed();
+    } finally {
+      setIsStructureMutating(false);
+    }
+  };
+
+  const flowSettings = innovationFlowSettings.data.innovationFlow?.settings;
+
+  return {
+    columns,
+    saveBar,
+    loading: settingsLoading || flowLoading,
+    error: settingsError ?? flowError ?? null,
+    onReorder,
+    onReorderColumns,
+    onMoveToColumn,
+    onSave,
+    onReset,
+    isDirty,
+    markColumnSaved,
+    markLayoutSaved,
+    markTemplateSaved,
+    markCurrentPhaseChanged,
+    onToggleVisibility,
+    collaborationId,
+    innovationFlowId: flowData?.lookup.collaboration?.innovationFlow.id ?? '',
+    calloutsSetId: flowData?.lookup.collaboration?.calloutsSet.id ?? '',
+    onCreateState,
+    onDeleteState,
+    minimumNumberOfStates: flowSettings?.minimumNumberOfStates ?? 0,
+    maximumNumberOfStates: flowSettings?.maximumNumberOfStates ?? Number.POSITIVE_INFINITY,
+    existingCalloutsCount: flowData?.lookup.collaboration?.calloutsSet.callouts?.length ?? 0,
+    isStructureMutating,
+    reseedFromServer: resetSnapshotForReseed,
+    innovationFlowStates: innovationFlowSettings.data.innovationFlow?.states ?? [],
+  };
+}
+
+function findCalloutInSnapshot(columns: LayoutPoolColumn[], calloutId: string): { columnTitle: string } | null {
+  for (const col of columns) {
+    if (col.callouts.some(c => c.id === calloutId)) {
+      return { columnTitle: col.title };
+    }
+  }
+  return null;
+}

@@ -1,0 +1,213 @@
+{
+  "common": {
+    "locationFormat": "{{city}}, {{country}}",
+    "locationCityOnly": "{{city}}",
+    "locationCountryOnly": "{{country}}",
+    "messagePopover": {
+      "placeholder": "Nachricht schreiben…",
+      "send": "Senden",
+      "cancel": "Abbrechen",
+      "sending": "Senden…",
+      "errorTitle": "Nachricht konnte nicht gesendet werden",
+      "ariaLabel": "Nachricht verfassen",
+      "title": "Private Nachricht senden",
+      "notice": "Startet einen privaten Chat, den du fortsetzen kannst.",
+      "successToast": "Deine Nachricht wurde gesendet.",
+      "emailTitle": "E-Mail senden",
+      "emailNotice": "Wird an die Konto-E-Mail-Adresse dieser Person gesendet.",
+      "emailPlaceholder": "E-Mail schreiben…",
+      "emailSuccessToast": "Deine E-Mail wurde gesendet.",
+      "cannotBeReached": "Diese Person kann nicht kontaktiert werden.",
+      "openChatError": "Der Chat konnte nicht geöffnet werden. Bitte versuche es erneut."
+    },
+    "resourceTabsAriaLabel": "Ressourcenbereiche",
+    "loading": {
+      "hero": "Profilkopf wird geladen",
+      "sidebar": "Profildetails werden geladen",
+      "organizations": "Organisationen werden geladen",
+      "hostedResources": "Gehostete Ressourcen werden geladen",
+      "memberships": "Mitgliedschaften werden geladen",
+      "contentView": "Inhalt wird geladen",
+      "bodyOfKnowledge": "Wissensbasis wird geladen"
+    },
+    "spacePrivacy": {
+      "private": "Privater Space",
+      "public": "Öffentlicher Space"
+    }
+  },
+  "userProfile": {
+    "hero": {
+      "settingsTooltip": "Benutzereinstellungen",
+      "messageButton": "Nachricht",
+      "emailButton": "E-Mail",
+      "settingsAriaLabel": "Benutzereinstellungen öffnen"
+    },
+    "tabs": {
+      "resourcesHosted": "Gehostete Ressourcen",
+      "leading": "Leitend",
+      "memberOf": "Mitglied von"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtuelle Mitwirkende",
+      "spacesLeading": "Geleitete Spaces",
+      "memberOf": "Mitglied von"
+    },
+    "sidebar": {
+      "aboutTitle": "Über",
+      "organizationsTitle": "Organisationen",
+      "referencesTitle": "Links",
+      "socialLinksTitle": "Soziale Links",
+      "bioEmpty": "Noch keine Biografie.",
+      "organizationsEmpty": "Noch in keiner Organisation.",
+      "memberCountLine_one": "{{count}} Mitglied",
+      "memberCountLine_other": "{{count}} Mitglieder"
+    },
+    "empty": {
+      "resourcesHosted": "Noch keine gehosteten Ressourcen.",
+      "leading": "Leitet noch keine Spaces.",
+      "membership": "Noch keine Mitgliedschaften."
+    },
+    "vcType": "Virtueller Mitwirkender"
+  },
+  "orgProfile": {
+    "hero": {
+      "settingsTooltip": "Organisationseinstellungen",
+      "settingsAriaLabel": "Organisationseinstellungen öffnen",
+      "messageButton": "Nachricht",
+      "messageEmailTitle": "E-Mail senden",
+      "messageEmailNotice": "Wird an die Administratoren der Organisation zugestellt.",
+      "messageEmailPlaceholder": "E-Mail schreiben…",
+      "verifiedBadge": "Verifiziert",
+      "verifiedTooltip": "Diese Organisation wurde von Alkemio verifiziert."
+    },
+    "sidebar": {
+      "bioTitle": "Biografie",
+      "bioEmpty": "Noch keine Biografie.",
+      "tagsetKeywords": "Schlüsselwörter",
+      "tagsetCapabilities": "Fähigkeiten",
+      "referencesTitle": "Links",
+      "associatesTitle": "Zugehörige",
+      "associatesCount_one": "{{count}} Zugehöriger",
+      "associatesCount_other": "{{count}} Zugehörige",
+      "socialLinksTitle": "Soziale Links"
+    },
+    "tabs": {
+      "resourcesHosted": "Gehostete Ressourcen",
+      "leading": "Geleitete Spaces",
+      "memberOf": "Alle Mitgliedschaften"
+    },
+    "sections": {
+      "spacesSubsection": "Spaces",
+      "virtualContributorsSubsection": "Virtuelle Mitwirkende",
+      "spacesLeading": "Geleitete Spaces",
+      "memberOf": "Alle Mitgliedschaften"
+    },
+    "empty": {
+      "resourcesHosted": "Noch keine gehosteten Ressourcen.",
+      "leading": "Leitet noch keine Spaces."
+    },
+    "vcType": "Virtueller Mitwirkender"
+  },
+  "vcProfile": {
+    "typeBadge": "Virtueller Mitwirkender",
+    "hero": {
+      "settingsTooltip": "Einstellungen virtueller Mitwirkender",
+      "settingsAriaLabel": "Einstellungen virtueller Mitwirkender öffnen"
+    },
+    "sidebar": {
+      "descriptionTitle": "Beschreibung",
+      "descriptionEmpty": "Keine Beschreibung verfügbar.",
+      "hostTitle": "Anbieter",
+      "hostEmpty": "Kein Anbieter."
+    },
+    "functionality": {
+      "heading": "Funktionalität",
+      "capabilities": {
+        "title": "Funktionale Fähigkeiten",
+        "tagging": "Fragen in Kommentaren beantworten",
+        "createContent": "Neue Beiträge erstellen",
+        "communityManagement": "Andere Mitwirkende einladen"
+      },
+      "dataAccess": {
+        "title": "Datenzugriff aus dem Space, in dem er Mitglied ist",
+        "about": "Seite „Über“",
+        "content": "Beiträge & Mitwirkungen",
+        "subspaces": "Subspaces"
+      },
+      "roleRequirements": {
+        "title": "Rollenanforderungen",
+        "memberRequired": "Diesem VC müssen <strong>Mitgliedsrechte</strong> erteilt werden, damit er korrekt funktioniert",
+        "noneRequired": "Keine besonderen Mitgliedsrechte erforderlich"
+      }
+    },
+    "aiEngine": {
+      "heading": "KI-Engine: {{engineName}}",
+      "engineName": {
+        "alkemio": "Alkemio-KI",
+        "assistant": "Externer KI-Assistent",
+        "external": "Externe KI"
+      },
+      "seeDocumentation": "DOKUMENTATION ANZEIGEN",
+      "notAvailable": "Nicht verfügbar",
+      "unknown": "Unbekannt",
+      "yes": "Ja",
+      "no": "Nein",
+      "cards": {
+        "openModelTransparency": {
+          "title": "Transparenz offener Modelle",
+          "description": "Verwendet der VC ein Modell mit offenen Gewichten?"
+        },
+        "dataUsageDisclosure": {
+          "title": "Offenlegung der Datennutzung",
+          "description": "Werden Interaktionsdaten in irgendeiner Weise für das Modelltraining genutzt?"
+        },
+        "knowledgeRestriction": {
+          "title": "Wissensbeschränkung",
+          "description": "Wird der VC angewiesen, Antworten auf einen bestimmten Wissensbestand zu beschränken?"
+        },
+        "webAccess": {
+          "title": "Webzugriff",
+          "description": "Kann der VC auf das Web zugreifen oder darin suchen?"
+        },
+        "physicalLocation": {
+          "title": "Physischer Standort",
+          "description": "Wo wird der KI-Dienst gehostet?"
+        },
+        "technicalReferences": {
+          "title": "Technische Referenzen",
+          "description": "Zugriff auf detaillierte Informationen zu den Spezifikationen der zugrunde liegenden Modelle"
+        }
+      }
+    },
+    "monitoring": {
+      "heading": "Überwachung durch Alkemio",
+      "body": "Da Alkemio die Interaktion mit dem externen Anbieter ermöglicht, trägt es eine operative Verantwortung für die Überwachung des Dienstes. Wie alle Daten und Interaktionen auf der Plattform unterliegen sie unseren <a>Allgemeinen Geschäftsbedingungen</a>."
+    }
+  },
+  "knowledgeBase": {
+    "title": "Wissensdatenbank",
+    "loading": "Wissensdatenbank wird geladen",
+    "refresh": "Aktualisieren",
+    "addCallout": "Hinzufügen",
+    "lastUpdated": "Zuletzt aktualisiert:",
+    "never": "Nie",
+    "description": {
+      "edit": "Beschreibung bearbeiten",
+      "empty": "Dieser Virtual Contributor basiert auf seiner eigenen kuratierten Sammlung von Dokumenten, Texten und Links.",
+      "placeholder": "Beschreibe, was dieser Virtual Contributor weiß…",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "saving": "Speichern…",
+      "saveError": "Die Beschreibung konnte nicht gespeichert werden — bitte erneut versuchen."
+    },
+    "empty": {
+      "title": "Noch kein Wissen",
+      "description": "Die Wissensdatenbank dieses Virtual Contributors ist leer."
+    },
+    "noAccess": {
+      "title": "Kein Zugriff",
+      "description": "Du hast keinen Zugriff auf diese Wissensdatenbank."
+    }
+  }
+}

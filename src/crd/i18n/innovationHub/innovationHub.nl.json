@@ -1,0 +1,284 @@
+{
+  "home": {
+    "settingsAria": "Hub-instellingen",
+    "expandWidth": "Uitvouwen naar volledige breedte",
+    "collapseWidth": "Inklappen naar standaardbreedte",
+    "spacesSection": {
+      "title": "{{hubName}} Spaces",
+      "loading": "Spaces laden…",
+      "searchPlaceholder": "Spaces zoeken…",
+      "showingCount": "{{visible}} van {{total}} Spaces weergegeven",
+      "spacesLabel": "Spaces",
+      "noResultsTitle": "Geen Spaces gevonden",
+      "noResultsMessage": "Probeer een andere zoekterm.",
+      "clearSearch": "Zoekopdracht wissen",
+      "filters": "Filters",
+      "filterPrivacy": "Privacy",
+      "filterAll": "Alle",
+      "filterPublicOnly": "Alleen openbaar",
+      "filterPrivateOnly": "Alleen privé",
+      "clearFilters": "Alle filters wissen",
+      "removeFilter": "filter verwijderen"
+    },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Virtual Contributors",
+      "virtualContributorsLabel": "Virtual Contributors",
+      "vcType": "Virtual Contributor"
+    },
+    "allSpacesCta": "Bekijk alle Spaces op Alkemio"
+  },
+  "breadcrumbs": {
+    "settings": "Instellingen"
+  },
+  "settings": {
+    "tabs": {
+      "about": "Over",
+      "spaces": "Spaces",
+      "packs": "Innovation Packs",
+      "virtualContributors": "Virtual Contributors",
+      "navAria": "Instellingen-secties"
+    },
+    "header": {
+      "expandWidth": "Uitvouwen naar volledige breedte",
+      "collapseWidth": "Inklappen naar standaardbreedte"
+    },
+    "guard": {
+      "redirecting": "Doorverwijzen…"
+    },
+    "about": {
+      "subdomain": {
+        "label": "Subdomein",
+        "placeholder": "bijv. vng",
+        "readOnlyHelp": "Het subdomein wordt bij aanmaak vastgelegd en kan niet worden gewijzigd.",
+        "errors": {
+          "required": "Subdomein is verplicht.",
+          "invalidFormat": "Gebruik alleen kleine letters, cijfers en koppeltekens.",
+          "tooLong": "Moet 3 tot 25 tekens lang zijn."
+        }
+      },
+      "name": {
+        "label": "Naam",
+        "placeholder": "bijv. VNG Innovation Hub",
+        "errors": {
+          "required": "Naam is verplicht.",
+          "tooLong": "Moet tussen 3 en 128 tekens zijn."
+        }
+      },
+      "tagline": {
+        "label": "Tagline",
+        "placeholder": "Een korte, pakkende zin",
+        "errors": {
+          "tooLong": "Maximaal 512 tekens."
+        }
+      },
+      "description": {
+        "label": "Beschrijving",
+        "errors": {
+          "required": "Beschrijving is verplicht.",
+          "tooLong": "Maximaal 8000 tekens."
+        }
+      },
+      "tags": {
+        "label": "Tags",
+        "placeholder": "Typ een tag en druk op Enter",
+        "emptyHelp": "Standaard"
+      },
+      "banner": {
+        "label": "Banner",
+        "change": "Banner wijzigen",
+        "uploading": "Uploaden…",
+        "helperText": "Wordt bovenaan de Innovation Hub-pagina weergegeven.",
+        "errors": {
+          "uploadFailed": "Banner uploaden mislukt."
+        },
+        "crop": {
+          "title": "Banner bijsnijden",
+          "description": "Snijd de afbeelding bij om binnen de bannerafmetingen te passen, en voeg een korte beschrijving toe voor toegankelijkheid.",
+          "save": "Banner opslaan",
+          "saving": "Opslaan…",
+          "cancel": "Annuleren",
+          "altLabel": "Alt-tekst",
+          "altPlaceholder": "Beschrijf de afbeelding voor schermlezers"
+        }
+      },
+      "save": {
+        "save": "Opslaan",
+        "saving": "Opslaan…",
+        "saved": "Opgeslagen",
+        "errorPrefix": "Opslaan mislukt."
+      }
+    },
+    "spaces": {
+      "title": "Spaces",
+      "subtitle": "Beheer welke Spaces op de Innovation Hub-startpagina verschijnen. Sleep om de volgorde te wijzigen.",
+      "visibilityManaged": "Deze Innovation Hub toont automatisch elke {{visibility}} Space. De Spaces worden bepaald door zichtbaarheid en worden hier niet beheerd.",
+      "columns": {
+        "name": "Naam",
+        "visibility": "Zichtbaarheid",
+        "host": "Host-account",
+        "actions": "Acties"
+      },
+      "visibility": {
+        "active": "Actief",
+        "demo": "Demo",
+        "inactive": "Inactief",
+        "archived": "Gearchiveerd",
+        "unknown": "Onbekend"
+      },
+      "actions": {
+        "add": "Space toevoegen",
+        "remove": "Verwijderen"
+      },
+      "removeAria": "{{name}} uit deze hub verwijderen",
+      "dragHandle": "Sleep om te herordenen",
+      "empty": "Er zijn nog geen Spaces toegevoegd. Gebruik 'Space toevoegen' om er een toe te voegen.",
+      "confirmRemove": {
+        "title": "Space verwijderen?",
+        "body": "„{{name}}” uit deze Innovation Hub verwijderen? De Space zelf wordt niet verwijderd; alleen niet meer op de hub-startpagina getoond.",
+        "confirm": "Verwijderen",
+        "cancel": "Annuleren"
+      },
+      "toast": {
+        "added": "Space toegevoegd.",
+        "removed": "Space verwijderd.",
+        "reordered": "Volgorde bijgewerkt.",
+        "error": "Actie mislukt."
+      }
+    },
+    "packs": {
+      "title": "Innovation Packs",
+      "subtitle": "Beheer welke Innovation Packs op de Innovation Hub-startpagina verschijnen. Sleep om de volgorde te wijzigen.",
+      "columns": {
+        "name": "Naam",
+        "templates": "Templates",
+        "provider": "Aanbieder",
+        "actions": "Acties"
+      },
+      "actions": {
+        "add": "Innovation Pack toevoegen",
+        "remove": "Verwijderen"
+      },
+      "removeAria": "{{name}} uit deze hub verwijderen",
+      "dragHandle": "Sleep om te herordenen",
+      "empty": "Er zijn nog geen Innovation Packs toegevoegd. Gebruik 'Innovation Pack toevoegen' om er een toe te voegen.",
+      "confirmRemove": {
+        "title": "Innovation Pack verwijderen?",
+        "body": "„{{name}}” uit deze Innovation Hub verwijderen? Het Innovation Pack zelf wordt niet verwijderd; het wordt alleen niet meer op de hub-startpagina getoond.",
+        "confirm": "Verwijderen",
+        "cancel": "Annuleren"
+      },
+      "toast": {
+        "added": "Innovation Pack toegevoegd.",
+        "removed": "Innovation Pack verwijderd.",
+        "reordered": "Volgorde bijgewerkt.",
+        "error": "Actie mislukt."
+      }
+    },
+    "virtualContributors": {
+      "title": "Virtual Contributors",
+      "subtitle": "Beheer welke Virtual Contributors op de Innovation Hub-startpagina verschijnen. Sleep om de volgorde te wijzigen.",
+      "columns": {
+        "name": "Naam",
+        "provider": "Aanbieder",
+        "actions": "Acties"
+      },
+      "actions": {
+        "add": "Virtual Contributor toevoegen",
+        "remove": "Verwijderen"
+      },
+      "removeAria": "{{name}} uit deze hub verwijderen",
+      "dragHandle": "Sleep om te herordenen",
+      "empty": "Er zijn nog geen Virtual Contributors toegevoegd. Gebruik 'Virtual Contributor toevoegen' om er een toe te voegen.",
+      "confirmRemove": {
+        "title": "Virtual Contributor verwijderen?",
+        "body": "„{{name}}” uit deze Innovation Hub verwijderen? De Virtual Contributor zelf wordt niet verwijderd; deze wordt alleen niet meer op de hub-startpagina getoond.",
+        "confirm": "Verwijderen",
+        "cancel": "Annuleren"
+      },
+      "toast": {
+        "added": "Virtual Contributor toegevoegd.",
+        "removed": "Virtual Contributor verwijderd.",
+        "reordered": "Volgorde bijgewerkt.",
+        "error": "Actie mislukt."
+      }
+    },
+    "addResourceDialog": {
+      "candidatesTab": "Uit dit account",
+      "urlTab": "Toevoegen via URL",
+      "addToHub": "Toevoegen aan de Innovation Hub",
+      "candidatesLoading": "Beschikbare resources laden…",
+      "close": "Sluiten",
+      "url": {
+        "submit": "Toevoegen",
+        "validating": "URL valideren…",
+        "submitting": "Toevoegen…",
+        "submitError": "Er ging iets mis bij het toevoegen. Probeer het opnieuw."
+      },
+      "space": {
+        "title": "Space toevoegen",
+        "description": "Kies een van de Spaces van dit account, of voeg een willekeurige Alkemio Space toe via URL.",
+        "candidatesEmpty": "Alle Spaces van dit account staan al in deze hub.",
+        "candidatesAria": "Beschikbare Spaces om toe te voegen",
+        "urlLabel": "Space-URL",
+        "urlPlaceholder": "https://alkem.io/welcome-space",
+        "invalid": "We konden geen Space op die URL vinden.",
+        "duplicate": "Die Space staat al in deze hub."
+      },
+      "pack": {
+        "title": "Innovation Pack toevoegen",
+        "description": "Kies een van de Innovation Packs van dit account, of voeg een willekeurig Innovation Pack op Alkemio toe via URL.",
+        "candidatesEmpty": "Alle Innovation Packs van dit account staan al in deze hub.",
+        "candidatesAria": "Beschikbare Innovation Packs om toe te voegen",
+        "urlLabel": "Innovation Pack-URL",
+        "urlPlaceholder": "https://alkem.io/innovation-packs/example",
+        "invalid": "We konden geen Innovation Pack op die URL vinden.",
+        "duplicate": "Dat Innovation Pack staat al in deze hub."
+      },
+      "virtualContributor": {
+        "title": "Virtual Contributor toevoegen",
+        "description": "Kies een van de Virtual Contributors van dit account, of voeg een willekeurige Virtual Contributor op Alkemio toe via URL.",
+        "candidatesEmpty": "Alle Virtual Contributors van dit account staan al in deze hub.",
+        "candidatesAria": "Beschikbare Virtual Contributors om toe te voegen",
+        "urlLabel": "Virtual Contributor-URL",
+        "urlPlaceholder": "https://alkem.io/vc/example",
+        "invalid": "We konden geen Virtual Contributor op die URL vinden.",
+        "duplicate": "Die Virtual Contributor staat al in deze hub."
+      }
+    }
+  },
+  "createHub": {
+    "title": "Innovation Hub aanmaken",
+    "subtitleUser": "Maak een nieuwe Innovation Hub aan in je account.",
+    "subtitleAccount": "Maak een nieuwe Innovation Hub aan in het account van {{account}}.",
+    "subdomain": "Subdomein",
+    "subdomainPlaceholder": "bijv. mijn-hub",
+    "subdomainHint": "Alleen kleine letters, cijfers en koppeltekens.",
+    "name": "Naam",
+    "namePlaceholder": "bijv. Mijn Innovation Hub",
+    "tagline": "Slogan",
+    "taglinePlaceholder": "Een korte, pakkende slogan",
+    "description": "Beschrijving",
+    "descriptionPlaceholder": "Waar gaat deze Innovation Hub over?",
+    "saveForMoreDetails": "Je kunt tags en een banner toevoegen nadat de hub is aangemaakt.",
+    "create": "Aanmaken",
+    "cancel": "Annuleren",
+    "creating": "Aanmaken…",
+    "validation": {
+      "min3": "Moet minimaal 3 tekens bevatten.",
+      "maxSmall": "Mag maximaal {{count}} tekens bevatten.",
+      "maxMid": "Mag maximaal {{count}} tekens bevatten.",
+      "maxMarkdown": "Mag maximaal {{count}} tekens bevatten.",
+      "required": "Dit veld is verplicht.",
+      "subdomainRequired": "Een subdomein is verplicht.",
+      "subdomainFormat": "Alleen kleine letters, cijfers en koppeltekens zijn toegestaan.",
+      "subdomainMin": "Moet minimaal 3 tekens bevatten.",
+      "subdomainMax": "Mag maximaal 25 tekens bevatten."
+    },
+    "createError": "Er is een fout opgetreden bij het aanmaken van de Innovation Hub.",
+    "createSuccess": "De Innovation Hub is succesvol aangemaakt!"
+  }
+}

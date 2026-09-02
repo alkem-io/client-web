@@ -1,42 +1,46 @@
-import { Smile } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/crd/primitives/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/crd/primitives/popover';
-import { CommentEmojiPicker } from './CommentEmojiPicker';
+import { ReactionPill } from './ReactionPill';
 import type { CommentReaction } from './types';
 
+// The add-NEW-reaction picker (smiley used to pick an emoji that isn't yet
+// on this comment) now lives in CommentItem's action row next to Reply /
+// Delete, so it is always reachable — including for comments with zero
+// existing reactions. This component renders only:
+//   - the reaction-count pills (clicking a pill toggles the viewer's
+//     reaction for that emoji on or off),
+//   - and the overflow popover for the 6th+ reaction kinds.
+// When there are no reactions the row hides itself entirely (no empty row).
 type CommentReactionsProps = {
   reactions: CommentReaction[];
+  /** When false, pills are rendered as non-interactive labels — viewers
+   *  who aren't allowed to react can still see who reacted, but can't
+   *  toggle anything. Defaults to true. */
+  canReact?: boolean;
   onAdd: (emoji: string) => void;
   onRemove: (emoji: string) => void;
 };
 
 const MAX_VISIBLE_REACTIONS = 5;
 
-export function CommentReactions({ reactions, onAdd, onRemove }: CommentReactionsProps) {
+export function CommentReactions({ reactions, canReact = true, onAdd, onRemove }: CommentReactionsProps) {
   const { t } = useTranslation('crd-space');
+
+  if (reactions.length === 0) return null;
 
   const visibleReactions = reactions.slice(0, MAX_VISIBLE_REACTIONS);
   const hiddenReactions = reactions.slice(MAX_VISIBLE_REACTIONS);
 
   return (
-    <div className="group/reactions flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center gap-1.5">
       {visibleReactions.map(reaction => (
-        <button
+        <ReactionPill
           key={reaction.emoji}
-          type="button"
-          className={[
-            'inline-flex items-center gap-1 rounded-full border px-2 py-1 text-xs transition-colors',
-            reaction.hasReacted
-              ? 'border-primary/50 bg-primary/10 text-primary'
-              : 'border-border bg-background text-muted-foreground hover:bg-muted',
-          ].join(' ')}
-          aria-pressed={reaction.hasReacted}
-          onClick={() => (reaction.hasReacted ? onRemove(reaction.emoji) : onAdd(reaction.emoji))}
-        >
-          <span>{reaction.emoji}</span>
-          <span>{reaction.count}</span>
-        </button>
+          reaction={reaction}
+          canReact={canReact}
+          emptyLabel={t('comments.reactions.unknownReactors')}
+          onToggle={() => (reaction.hasReacted ? onRemove(reaction.emoji) : onAdd(reaction.emoji))}
+        />
       ))}
 
       {hiddenReactions.length > 0 && (
@@ -44,7 +48,7 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           <PopoverTrigger asChild={true}>
             <button
               type="button"
-              className="inline-flex items-center rounded-full border border-border px-2 py-1 text-xs text-muted-foreground hover:bg-muted"
+              className="inline-flex cursor-pointer items-center rounded-full border border-border px-2 py-0.5 text-caption text-muted-foreground hover:bg-muted"
               aria-label={t('comments.reactions.overflow', { count: hiddenReactions.length })}
             >
               {t('comments.reactions.overflow', { count: hiddenReactions.length })}
@@ -53,14 +57,14 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           <PopoverContent side="top" align="start" className="w-64 p-3">
             <div className="space-y-2">
               {hiddenReactions.map(reaction => (
-                <div key={reaction.emoji} className="rounded-md border border-border p-2 text-sm">
+                <div key={reaction.emoji} className="rounded-md border border-border p-2 text-body">
                   <div className="mb-1 font-medium">
                     {reaction.emoji} {reaction.count}
                   </div>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-caption text-muted-foreground">
                     {reaction.senders?.length
                       ? reaction.senders.map(sender => sender.name).join(', ')
-                      : t('comments.reactions.add')}
+                      : t('comments.reactions.unknownReactors')}
                   </div>
                 </div>
               ))}
@@ -68,21 +72,6 @@ export function CommentReactions({ reactions, onAdd, onRemove }: CommentReaction
           </PopoverContent>
         </Popover>
       )}
-
-      <CommentEmojiPicker
-        onSelect={onAdd}
-        trigger={
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 opacity-0 transition-opacity group-hover/reactions:opacity-100"
-            aria-label={t('comments.reactions.add')}
-          >
-            <Smile className="h-4 w-4" aria-hidden="true" />
-          </Button>
-        }
-      />
     </div>
   );
 }

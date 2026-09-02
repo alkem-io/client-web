@@ -11,6 +11,7 @@
     "innovationPacks": "Иновационни пакети",
     "openMenu": "Отвори менюто",
     "closeMenu": "Затвори менюто",
+    "navigation": "Навигация в таблото",
     "pendingCount": "{{count}} чакащи"
   },
   "recentSpaces": {
@@ -40,7 +41,21 @@
       }
     },
     "showMore": "Покажи повече",
-    "noActivity": "Няма скорошна активност"
+    "noActivity": "Няма скорошна активност",
+    "iconLabel": {
+      "CALLOUT_PUBLISHED": "Нова публикация",
+      "CALLOUT_POST_CREATED": "Нова публикация",
+      "CALLOUT_POST_COMMENT": "Нов коментар",
+      "DISCUSSION_COMMENT": "Нов коментар",
+      "CALLOUT_WHITEBOARD_CREATED": "Нова бяла дъска",
+      "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "Бялата дъска е актуализирана",
+      "CALLOUT_MEMO_CREATED": "Нова бележка",
+      "CALLOUT_LINK_CREATED": "Нов линк",
+      "MEMBER_JOINED": "Нов член",
+      "SUBSPACE_CREATED": "Ново подпространство",
+      "CALENDAR_EVENT_CREATED": "Ново събитие",
+      "UPDATE_SENT": "Ново обновление"
+    }
   },
   "dialogs": {
     "tipsAndTricks": "Съвети и трикове",
@@ -128,7 +143,12 @@
     "loading": "Зареждане на покани",
     "accept": "Приеми",
     "decline": "Откажи",
-    "noInvitations": "Няма чакащи покани"
+    "noInvitations": "Няма чакащи покани",
+    "invitedBy": "Поканен(а) от {{name}}"
+  },
+  "applications": {
+    "title": "Чакащи заявления",
+    "pending": "Чакащо"
   },
   "campaign": {
     "title": "Създай свой виртуален сътрудник",
@@ -171,5 +191,29 @@
       "joinAriaLabel": "Присъедини се към {{spaceName}}"
     },
     "applicationAriaLabel": "Виж чакащо заявление за {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Закачени & Последна активност",
+      "mostActivity": "Пространства с най-голяма активност",
+      "leadAdmin": "Пространства, които ръководя и администрирам",
+      "host": "Пространства, които домакинствам"
+    },
+    "showMore_one": "Покажи още: {{count}} пространство",
+    "showMore_other": "Покажи още: {{count}} пространства"
+  },
+  "welcome": {
+    "title": "Добре дошли в Alkemio",
+    "message": "Все още не участвате в нито едно пространство. Разгледайте приветственото пространство, за да видите какво е възможно, или прегледайте документацията, за да започнете.",
+    "welcomeSpaceLink": "Посетете приветственото пространство",
+    "documentationLink": "Документация",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Чакащи заявки и покани"
+  },
+  "explore": {
+    "title": "Разгледай пространства",
+    "exploreAll": "Разгледай всички пространства"
   }
 }

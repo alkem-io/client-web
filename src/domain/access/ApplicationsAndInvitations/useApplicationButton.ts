@@ -12,12 +12,19 @@ import clearCacheForType from '@/core/apollo/utils/clearCacheForType';
 import { useAuthenticationContext } from '@/core/auth/authentication/hooks/useAuthenticationContext';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
-import type { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton';
+import type { ApplicationButtonProps } from '../../community/applicationButton/ApplicationButton.model';
 
 export interface UseApplicationButtonParams {
   parentSpaceId?: string;
   spaceId?: string;
   loading?: boolean;
+  /**
+   * When true, NO query this hook drives is issued — neither the per-space
+   * ApplicationButton query nor the global UserPendingMemberships list.
+   * Distinct from `loading`, which only defers the per-space query while the
+   * caller's own inputs are still resolving.
+   */
+  skip?: boolean;
   onJoin?: (params: { communityId: string }) => void;
 }
 
@@ -25,14 +32,25 @@ const useApplicationButton = ({
   parentSpaceId,
   spaceId,
   loading: loadingParams = false,
+  skip = false,
   onJoin,
 }: UseApplicationButtonParams) => {
   const { t } = useTranslation();
   const notify = useNotification();
   const { isAuthenticated } = useAuthenticationContext();
   const { userModel, loadingMe: membershipLoading } = useCurrentUserContext();
-  const { data: pendingMembershipsData } = useUserPendingMembershipsQuery({
-    skip: !isAuthenticated || !userModel,
+  // `cache-and-network` (not the default cache-first): this global list is the
+  // source of `userInvitation`/`userApplication`. When a fresh invitation arrives
+  // (e.g. the user deep-links here from its notification), a cache-first read
+  // returns the previously-cached list WITHOUT that invitation — so the button,
+  // which sees `InvitationPending` from the per-space status query, has no
+  // invitation to open and the click silently does nothing until a full refresh.
+  // Revalidating on mount keeps the list in sync with the per-space status; the
+  // in-flight network load feeds `loading` below so the button isn't actionable
+  // until the invitation is actually available.
+  const { data: pendingMembershipsData, loading: pendingMembershipsLoading } = useUserPendingMembershipsQuery({
+    skip: skip || !isAuthenticated || !userModel,
+    fetchPolicy: 'cache-and-network',
   });
   const { communityApplications: pendingApplications, communityInvitations: pendingInvitations } =
     pendingMembershipsData?.me ?? {};
@@ -51,7 +69,7 @@ const useApplicationButton = ({
       parentSpaceId,
       includeParentSpace: !!parentSpaceId,
     },
-    skip: loadingParams || !spaceId,
+    skip: skip || loadingParams || !spaceId,
   });
 
   // TODO ideally this should be a dependency passed from the context where the button is rendered
@@ -102,32 +120,43 @@ const useApplicationButton = ({
 
   const isMember = space?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
-  const isSubspace = !!parentSpaceId;
   const isParentMember = parentSpace?.about.membership.myMembershipStatus === CommunityMembershipStatus.Member;
 
   const parentUrl = parentSpace?.about.profile.url;
 
   const rolesetPrivileges = space?.about.membership.myPrivileges ?? [];
 
-  const canJoinCommunity =
-    (isSubspace && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin)) ||
-    (!isSubspace && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin));
+  // The server privilege is the single signal for eligibility, on both spaces and
+  // subspaces: for a subspace the server grants JOIN/APPLY to an eligible
+  // non-parent-member (public ancestor chain + the parent setting enabled), so we
+  // no longer gate on `isParentMember`. When the privilege is absent the button
+  // cascade falls back to the parent-first prompts.
+  const canJoinCommunity = rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin);
 
   // Changed from parent to current space
   const canAcceptInvitation =
     space?.about.membership.myMembershipStatus === CommunityMembershipStatus.InvitationPending;
 
-  const canApplyToCommunity =
-    (isSubspace && isParentMember && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply)) ||
-    (!isSubspace && rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply));
+  const canApplyToCommunity = rolesetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply);
 
   const parentRoleSetPrivileges = parentSpace?.about.membership.myPrivileges ?? [];
 
   const canJoinParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleJoin);
   const canApplyToParentCommunity = parentRoleSetPrivileges.includes(AuthorizationPrivilege.RolesetEntryRoleApply);
 
+  // `pendingMembershipsLoading` MUST be included: `canAcceptInvitation` /
+  // `canApplyToCommunity` are derived from the membership-status query, but the
+  // actual `userInvitation` / `userApplication` items come from this separate
+  // pending-memberships query. Without it the button can render an enabled
+  // "Accept invitation" before the invitation item is available, so the click
+  // opens an empty invitation dialog (it has nothing to hydrate).
   const loading =
-    loadingParams || membershipLoading || communityPrivilegesLoading || joiningCommunity || gettingUserProfile;
+    loadingParams ||
+    membershipLoading ||
+    communityPrivilegesLoading ||
+    pendingMembershipsLoading ||
+    joiningCommunity ||
+    gettingUserProfile;
 
   const handleJoin = async () => {
     const roleSetId = space?.about.membership.roleSetID;

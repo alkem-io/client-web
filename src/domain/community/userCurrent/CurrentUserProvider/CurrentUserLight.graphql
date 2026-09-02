@@ -2,6 +2,12 @@ query CurrentUserLight {
   me {
     user {
       ...UserDetailsLight
+      settings {
+        id
+        designVersion
+        language
+        languageOfferAnswered
+      }
       account {
         id
         authorization {

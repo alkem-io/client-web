@@ -1,10 +1,10 @@
 import { ArrowLeft, Check, X } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
 import { getInitials } from '@/crd/lib/getInitials';
 import { cn } from '@/crd/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
-import { Badge } from '@/crd/primitives/badge';
 import { Button } from '@/crd/primitives/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
 
@@ -89,50 +89,50 @@ function InvitationDetailDialog({
 
         <div className="flex-1 min-h-0 overflow-y-auto py-1">
           <div className="flex flex-col sm:flex-row gap-4">
-            {/* Space card */}
-            <a
-              href={invitation.spaceHref}
-              className="shrink-0 sm:w-[200px] rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none flex flex-col items-center text-center gap-2"
-            >
-              <Avatar className="size-16 rounded-lg">
-                {invitation.spaceAvatarUrl ? (
-                  <AvatarImage
-                    src={invitation.spaceAvatarUrl}
-                    alt={invitation.spaceName}
-                    className="rounded-lg object-cover"
-                  />
-                ) : null}
-                <AvatarFallback
-                  className={cn('rounded-lg text-lg', invitation.color && 'text-white')}
-                  color={invitation.color}
-                >
-                  {getInitials(invitation.spaceName)}
-                </AvatarFallback>
-              </Avatar>
-              <p className="text-sm font-semibold leading-tight">{invitation.spaceName}</p>
-              {invitation.spaceTagline && (
-                <p className="text-xs text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
-              )}
+            {/* Space card. The tag list is intentionally OUTSIDE the link: it
+                contains an interactive `+N` popover button (invalid inside an
+                <a>), and tag/`+N` clicks must reveal the hidden tags rather than
+                navigate to the space — only the avatar/name/tagline navigate. */}
+            <div className="shrink-0 sm:w-[200px] rounded-lg border border-border bg-card p-4 flex flex-col items-center text-center gap-2">
+              <a
+                href={invitation.spaceHref}
+                className="-m-2 p-2 w-full rounded-md transition-colors hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none flex flex-col items-center text-center gap-2"
+              >
+                <Avatar className="size-16 rounded-lg">
+                  {invitation.spaceAvatarUrl ? (
+                    <AvatarImage
+                      src={invitation.spaceAvatarUrl}
+                      alt={invitation.spaceName}
+                      className="rounded-lg object-cover"
+                    />
+                  ) : null}
+                  <AvatarFallback
+                    className={cn('rounded-lg text-subsection-title', invitation.color && 'text-white')}
+                    color={invitation.color}
+                  >
+                    {getInitials(invitation.spaceName)}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="text-card-title leading-tight">{invitation.spaceName}</p>
+                {invitation.spaceTagline && (
+                  <p className="text-caption text-muted-foreground line-clamp-2">{invitation.spaceTagline}</p>
+                )}
+              </a>
               {invitation.spaceTags.length > 0 && (
-                <ul className="flex flex-wrap justify-center gap-1 mt-1">
-                  {invitation.spaceTags.slice(0, 5).map(tag => (
-                    <li key={tag}>
-                      <Badge variant="secondary" className="text-[10px]">
-                        {tag}
-                      </Badge>
-                    </li>
-                  ))}
-                </ul>
+                <CollapsibleTagList tags={invitation.spaceTags} className="justify-center mt-1" />
               )}
-            </a>
+            </div>
 
             {/* Content area */}
             <div className="flex-1 min-w-0 space-y-3">
-              {descriptionSlot && <div className="text-sm">{descriptionSlot}</div>}
-              {welcomeMessageSlot && <div className="text-sm">{welcomeMessageSlot}</div>}
-              {guidelinesSlot && <div className="text-sm">{guidelinesSlot}</div>}
+              {descriptionSlot && <div className="text-body">{descriptionSlot}</div>}
+              {welcomeMessageSlot && <div className="text-body">{welcomeMessageSlot}</div>}
+              {guidelinesSlot && <div className="text-body">{guidelinesSlot}</div>}
             </div>
           </div>
+          {invitation.timeElapsed && (
+            <p className="text-caption text-muted-foreground text-right mt-3">{invitation.timeElapsed}</p>
+          )}
         </div>
 
         <DialogFooter className="shrink-0 border-t border-border pt-4 flex-col-reverse sm:flex-row gap-2">

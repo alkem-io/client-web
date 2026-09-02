@@ -12,9 +12,11 @@ import CrdSpaceProtectedRoutes from './CrdSpaceProtectedRoutes';
 
 const CrdSpaceTabbedPages = lazyWithGlobalErrorHandler(() => import('../tabs/CrdSpaceTabbedPages'));
 const CrdSpaceAboutPage = lazyWithGlobalErrorHandler(() => import('../about/CrdSpaceAboutPage'));
-const SpaceAdminL0Route = lazyWithGlobalErrorHandler(() => import('@/domain/spaceAdmin/routing/SpaceAdminRouteL0'));
-const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/domain/space/routing/SubspaceRoutes'));
-const SpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('@/domain/space/pages/SpaceCalloutPage'));
+const CrdSpaceSettingsPage = lazyWithGlobalErrorHandler(
+  () => import('@/main/crdPages/topLevelPages/spaceSettings/CrdSpaceSettingsPage')
+);
+const SubspaceRoutes = lazyWithGlobalErrorHandler(() => import('@/main/crdPages/subspace/routing/CrdSubspaceRoutes'));
+const CrdSpaceCalloutPage = lazyWithGlobalErrorHandler(() => import('../CrdSpaceCalloutPage'));
 
 export default function CrdSpaceRoutes() {
   return (
@@ -42,11 +44,34 @@ export default function CrdSpaceRoutes() {
               }
             />
 
+            {/* Calendar dialog routes — render the active tab so the URL
+                resolver populates calendarEventId; the dialog opens on top via
+                CrdCalendarDialogConnector inside the sidebar connector, which
+                mounts it route-driven whenever the URL is in the /calendar tree
+                (deep links work on every tab) and widget-driven when the tab's
+                plan includes the events widget. */}
+            <Route
+              path="calendar"
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CrdSpaceTabbedPages />
+                </Suspense>
+              }
+            />
+            <Route
+              path={`calendar/:${nameOfUrl.calendarEventNameId}`}
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <CrdSpaceTabbedPages />
+                </Suspense>
+              }
+            />
+
             <Route
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}`}
               element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SpaceCalloutPage />
+                  <CrdSpaceCalloutPage />
                 </Suspense>
               }
             />
@@ -55,7 +80,7 @@ export default function CrdSpaceRoutes() {
               path={`${EntityPageSection.Collaboration}/:${nameOfUrl.calloutNameId}/*`}
               element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SpaceCalloutPage />
+                  <CrdSpaceCalloutPage />
                 </Suspense>
               }
             />
@@ -64,23 +89,27 @@ export default function CrdSpaceRoutes() {
               path={`${EntityPageSection.Settings}/*`}
               element={
                 <Suspense fallback={<LoadingSpinner />}>
-                  <SpaceAdminL0Route />
+                  <CrdSpaceSettingsPage />
                 </Suspense>
               }
             />
-
-            {/* Subspace routes have their own layout */}
-            <Route
-              path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
-              element={
-                <SubspaceContextProvider>
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <SubspaceRoutes />
-                  </Suspense>
-                </SubspaceContextProvider>
-              }
-            />
           </Route>
+
+          {/* Subspaces have their own protections (the subspace-level `canRead` guard in
+              CrdSubspaceProtectedRoutes), so they must sit OUTSIDE the parent space's read gate.
+              Otherwise a user invited to a private subspace — who has no access to the parent —
+              gets bounced to the parent's About ("Apply") and can never reach the subspace's own
+              About to accept the invitation. Mirrors the legacy MUI SpaceRoutes. */}
+          <Route
+            path={`/challenges/:${nameOfUrl.subspaceNameId}/*`}
+            element={
+              <SubspaceContextProvider>
+                <Suspense fallback={<LoadingSpinner />}>
+                  <SubspaceRoutes />
+                </Suspense>
+              </SubspaceContextProvider>
+            }
+          />
           {/* Legacy route redirects — old bookmarks/links use path-based sections */}
           <Route
             path={EntityPageSection.Dashboard}

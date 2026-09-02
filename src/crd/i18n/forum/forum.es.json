@@ -1,0 +1,61 @@
+{
+  "banner": {
+    "title": "Bienvenido al Foro de Alkemio",
+    "subtitle": "Conecta con otros, haz preguntas y mantente al día con las notas de versión de Alkemio",
+    "iconLabel": "Foro"
+  },
+  "categories": {
+    "all": "Mostrar todo",
+    "sectionLabel": "Categorías",
+    "selectAriaLabel": "Filtrar por categoría"
+  },
+  "list": {
+    "headerCount_one": "Discusiones ({{count}})",
+    "headerCount_other": "Discusiones ({{count}})",
+    "initiate": "Iniciar discusión",
+    "searchPlaceholder": "Buscar",
+    "searchAriaLabel": "Buscar discusiones",
+    "itemAriaLabel_one": "{{title}} por {{author}}, {{date}}, {{count}} comentario",
+    "itemAriaLabel_other": "{{title}} por {{author}}, {{date}}, {{count}} comentarios",
+    "metaLine_one": "{{author}} el {{date}} · {{count}} comentario",
+    "metaLine_other": "{{author}} el {{date}} · {{count}} comentarios",
+    "sort": {
+      "ariaLabel": "Ordenar discusiones",
+      "newest": "Más recientes",
+      "oldest": "Más antiguas"
+    },
+    "empty": {
+      "title": "No se encontraron discusiones",
+      "subtitle": "Intenta ajustar tu búsqueda o el filtro de categoría"
+    },
+    "loading": "Cargando discusiones"
+  },
+  "detail": {
+    "back": "Ver todas las discusiones de esta categoría",
+    "share": "Compartir",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "loading": "Cargando discusión"
+  },
+  "dialog": {
+    "create": {
+      "title": "Crear discusión",
+      "submit": "Crear discusión"
+    },
+    "update": {
+      "title": "Editar discusión",
+      "submit": "Guardar cambios"
+    },
+    "fields": {
+      "title": "Título",
+      "category": "Categoría *",
+      "body": "Comparte tus ideas..."
+    },
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "delete": {
+      "description": "Esta acción no se puede deshacer.",
+      "confirm": "Eliminar"
+    }
+  }
+}

@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { ContributionDocumentCard } from '@/crd/components/contribution/ContributionDocumentCard';
 import { ContributionGrid } from '@/crd/components/contribution/ContributionGrid';
 import { ContributionMemoCard } from '@/crd/components/contribution/ContributionMemoCard';
 import { ContributionPostCard } from '@/crd/components/contribution/ContributionPostCard';
@@ -6,14 +8,26 @@ import type { ContributionCardData } from '../dataMappers/contributionDataMapper
 
 type ContributionGridConnectorProps = {
   contributions: ContributionCardData[];
-  onContributionClick?: (id: string) => void;
+  /**
+   * Click handler for contribution cards.
+   * Memo and post types pass their underlying entity id as the second argument
+   * (memos via `memoId`, posts via `postId`) — the connector uses one optional
+   * `entityId` slot to keep the signature flat.
+   */
+  onContributionClick?: (id: string, entityId?: string) => void;
+  /** Rendered at the end of the grid — used for the "Add Response" card */
+  trailingSlot?: ReactNode;
 };
 
-export function ContributionGridConnector({ contributions, onContributionClick }: ContributionGridConnectorProps) {
-  if (contributions.length === 0) return null;
+export function ContributionGridConnector({
+  contributions,
+  onContributionClick,
+  trailingSlot,
+}: ContributionGridConnectorProps) {
+  if (contributions.length === 0 && !trailingSlot) return null;
 
   return (
-    <ContributionGrid totalCount={contributions.length}>
+    <ContributionGrid totalCount={contributions.length + (trailingSlot ? 1 : 0)}>
       {contributions.map(contribution => {
         switch (contribution.type) {
           case 'whiteboard':
@@ -22,6 +36,7 @@ export function ContributionGridConnector({ contributions, onContributionClick }
                 key={contribution.id}
                 title={contribution.title}
                 previewUrl={contribution.previewUrl}
+                author={contribution.author?.name}
                 onClick={() => onContributionClick?.(contribution.id)}
               />
             );
@@ -31,7 +46,18 @@ export function ContributionGridConnector({ contributions, onContributionClick }
                 key={contribution.id}
                 title={contribution.title}
                 markdownContent={contribution.markdownContent}
-                onClick={() => onContributionClick?.(contribution.id)}
+                author={contribution.author?.name}
+                onClick={() => onContributionClick?.(contribution.id, contribution.memoId)}
+              />
+            );
+          case 'document':
+            return (
+              <ContributionDocumentCard
+                key={contribution.id}
+                title={contribution.title}
+                documentType={contribution.documentType ?? 'text'}
+                author={contribution.author?.name}
+                onClick={() => onContributionClick?.(contribution.id, contribution.documentId)}
               />
             );
           default:
@@ -44,11 +70,12 @@ export function ContributionGridConnector({ contributions, onContributionClick }
                 description={contribution.description}
                 tags={contribution.tags}
                 commentCount={contribution.commentCount}
-                onClick={() => onContributionClick?.(contribution.id)}
+                onClick={() => onContributionClick?.(contribution.id, contribution.postId)}
               />
             );
         }
       })}
+      {trailingSlot}
     </ContributionGrid>
   );
 }

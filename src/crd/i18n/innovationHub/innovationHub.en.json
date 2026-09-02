@@ -1,0 +1,284 @@
+{
+  "home": {
+    "settingsAria": "Hub settings",
+    "expandWidth": "Expand to full width",
+    "collapseWidth": "Collapse to default width",
+    "spacesSection": {
+      "title": "{{hubName}} Spaces",
+      "loading": "Loading Spaces…",
+      "searchPlaceholder": "Search Spaces…",
+      "showingCount": "Showing {{visible}} of {{total}} Spaces",
+      "spacesLabel": "Spaces",
+      "noResultsTitle": "No Spaces found",
+      "noResultsMessage": "Try a different search term.",
+      "clearSearch": "Clear search",
+      "filters": "Filters",
+      "filterPrivacy": "Privacy",
+      "filterAll": "All",
+      "filterPublicOnly": "Public only",
+      "filterPrivateOnly": "Private only",
+      "clearFilters": "Clear all filters",
+      "removeFilter": "remove filter"
+    },
+    "packsSection": {
+      "title": "Innovation Packs",
+      "packsLabel": "Innovation Packs"
+    },
+    "virtualContributorsSection": {
+      "title": "Virtual Contributors",
+      "virtualContributorsLabel": "Virtual Contributors",
+      "vcType": "Virtual Contributor"
+    },
+    "allSpacesCta": "Browse all Spaces on Alkemio"
+  },
+  "breadcrumbs": {
+    "settings": "Settings"
+  },
+  "settings": {
+    "tabs": {
+      "about": "About",
+      "spaces": "Spaces",
+      "packs": "Innovation Packs",
+      "virtualContributors": "Virtual Contributors",
+      "navAria": "Settings sections"
+    },
+    "header": {
+      "expandWidth": "Expand to full width",
+      "collapseWidth": "Collapse to default width"
+    },
+    "guard": {
+      "redirecting": "Redirecting…"
+    },
+    "about": {
+      "subdomain": {
+        "label": "Subdomain",
+        "placeholder": "e.g. vng",
+        "readOnlyHelp": "The subdomain is fixed at creation and cannot be changed.",
+        "errors": {
+          "required": "Subdomain is required.",
+          "invalidFormat": "Use only lowercase letters, numbers, and hyphens.",
+          "tooLong": "Must be 3–25 characters long."
+        }
+      },
+      "name": {
+        "label": "Name",
+        "placeholder": "e.g. VNG Innovation Hub",
+        "errors": {
+          "required": "Name is required.",
+          "tooLong": "Must be between 3 and 128 characters."
+        }
+      },
+      "tagline": {
+        "label": "Tagline",
+        "placeholder": "A short, memorable line",
+        "errors": {
+          "tooLong": "Must be 512 characters or fewer."
+        }
+      },
+      "description": {
+        "label": "Description",
+        "errors": {
+          "required": "Description is required.",
+          "tooLong": "Must be 8000 characters or fewer."
+        }
+      },
+      "tags": {
+        "label": "Tags",
+        "placeholder": "Type a tag and press Enter",
+        "emptyHelp": "Default"
+      },
+      "banner": {
+        "label": "Banner",
+        "change": "Change Banner",
+        "uploading": "Uploading…",
+        "helperText": "Shown at the top of the Innovation Hub page.",
+        "errors": {
+          "uploadFailed": "Banner upload failed."
+        },
+        "crop": {
+          "title": "Crop banner",
+          "description": "Crop the image to fit the banner dimensions, then add a short description for accessibility.",
+          "save": "Save banner",
+          "saving": "Saving…",
+          "cancel": "Cancel",
+          "altLabel": "Alt text",
+          "altPlaceholder": "Describe the image for screen readers"
+        }
+      },
+      "save": {
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Saved",
+        "errorPrefix": "Save failed."
+      }
+    },
+    "spaces": {
+      "title": "Spaces",
+      "subtitle": "Manage which Spaces appear on the Innovation Hub home page. Drag to reorder.",
+      "visibilityManaged": "This Innovation Hub automatically shows every {{visibility}} Space. Its Spaces are determined by visibility and aren't managed here.",
+      "columns": {
+        "name": "Name",
+        "visibility": "Visibility",
+        "host": "Host Account",
+        "actions": "Actions"
+      },
+      "visibility": {
+        "active": "Active",
+        "demo": "Demo",
+        "inactive": "Inactive",
+        "archived": "Archived",
+        "unknown": "Unknown"
+      },
+      "actions": {
+        "add": "Add Space",
+        "remove": "Remove"
+      },
+      "removeAria": "Remove {{name}} from this hub",
+      "dragHandle": "Drag to reorder",
+      "empty": "No Spaces have been added yet. Use Add Space to include one.",
+      "confirmRemove": {
+        "title": "Remove Space?",
+        "body": "Remove “{{name}}” from this Innovation Hub? The Space itself is not deleted; it just no longer appears on the hub home page.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "added": "Space added.",
+        "removed": "Space removed.",
+        "reordered": "Order updated.",
+        "error": "Action failed."
+      }
+    },
+    "packs": {
+      "title": "Innovation Packs",
+      "subtitle": "Manage which Innovation Packs appear on the Innovation Hub home page. Drag to reorder.",
+      "columns": {
+        "name": "Name",
+        "templates": "Templates",
+        "provider": "Provider",
+        "actions": "Actions"
+      },
+      "actions": {
+        "add": "Add Innovation Pack",
+        "remove": "Remove"
+      },
+      "removeAria": "Remove {{name}} from this hub",
+      "dragHandle": "Drag to reorder",
+      "empty": "No Innovation Packs have been added yet. Use Add Innovation Pack to include one.",
+      "confirmRemove": {
+        "title": "Remove Innovation Pack?",
+        "body": "Remove “{{name}}” from this Innovation Hub? The Innovation Pack itself is not deleted; it just no longer appears on the hub home page.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "added": "Innovation Pack added.",
+        "removed": "Innovation Pack removed.",
+        "reordered": "Order updated.",
+        "error": "Action failed."
+      }
+    },
+    "virtualContributors": {
+      "title": "Virtual Contributors",
+      "subtitle": "Manage which Virtual Contributors appear on the Innovation Hub home page. Drag to reorder.",
+      "columns": {
+        "name": "Name",
+        "provider": "Provider",
+        "actions": "Actions"
+      },
+      "actions": {
+        "add": "Add Virtual Contributor",
+        "remove": "Remove"
+      },
+      "removeAria": "Remove {{name}} from this hub",
+      "dragHandle": "Drag to reorder",
+      "empty": "No Virtual Contributors have been added yet. Use Add Virtual Contributor to include one.",
+      "confirmRemove": {
+        "title": "Remove Virtual Contributor?",
+        "body": "Remove “{{name}}” from this Innovation Hub? The Virtual Contributor itself is not deleted; it just no longer appears on the hub home page.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "added": "Virtual Contributor added.",
+        "removed": "Virtual Contributor removed.",
+        "reordered": "Order updated.",
+        "error": "Action failed."
+      }
+    },
+    "addResourceDialog": {
+      "candidatesTab": "From this account",
+      "urlTab": "Add by URL",
+      "addToHub": "Add to the Innovation Hub",
+      "candidatesLoading": "Loading available resources…",
+      "close": "Close",
+      "url": {
+        "submit": "Add",
+        "validating": "Validating URL…",
+        "submitting": "Adding…",
+        "submitError": "Something went wrong while adding it. Please try again."
+      },
+      "space": {
+        "title": "Add Space",
+        "description": "Pick one of this account's Spaces, or add any Space on Alkemio by URL.",
+        "candidatesEmpty": "All of this account's Spaces are already in this hub.",
+        "candidatesAria": "Spaces available to add",
+        "urlLabel": "Space URL",
+        "urlPlaceholder": "https://alkem.io/welcome-space",
+        "invalid": "We couldn't find a Space at that URL.",
+        "duplicate": "That Space is already in this hub."
+      },
+      "pack": {
+        "title": "Add Innovation Pack",
+        "description": "Pick one of this account's Innovation Packs, or add any Innovation Pack on Alkemio by URL.",
+        "candidatesEmpty": "All of this account's Innovation Packs are already in this hub.",
+        "candidatesAria": "Innovation Packs available to add",
+        "urlLabel": "Innovation Pack URL",
+        "urlPlaceholder": "https://alkem.io/innovation-packs/example",
+        "invalid": "We couldn't find an Innovation Pack at that URL.",
+        "duplicate": "That Innovation Pack is already in this hub."
+      },
+      "virtualContributor": {
+        "title": "Add Virtual Contributor",
+        "description": "Pick one of this account's Virtual Contributors, or add any Virtual Contributor on Alkemio by URL.",
+        "candidatesEmpty": "All of this account's Virtual Contributors are already in this hub.",
+        "candidatesAria": "Virtual Contributors available to add",
+        "urlLabel": "Virtual Contributor URL",
+        "urlPlaceholder": "https://alkem.io/vc/example",
+        "invalid": "We couldn't find a Virtual Contributor at that URL.",
+        "duplicate": "That Virtual Contributor is already in this hub."
+      }
+    }
+  },
+  "createHub": {
+    "title": "Create Innovation Hub",
+    "subtitleUser": "Create a new Innovation Hub in your account.",
+    "subtitleAccount": "Create a new Innovation Hub in the {{account}} account.",
+    "subdomain": "Subdomain",
+    "subdomainPlaceholder": "e.g. my-hub",
+    "subdomainHint": "Only lowercase letters, numbers and hyphens.",
+    "name": "Name",
+    "namePlaceholder": "e.g. My Innovation Hub",
+    "tagline": "Tagline",
+    "taglinePlaceholder": "A short, catchy strapline",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this Innovation Hub about?",
+    "saveForMoreDetails": "You can add tags and a banner after creating the hub.",
+    "create": "Create",
+    "cancel": "Cancel",
+    "creating": "Creating…",
+    "validation": {
+      "min3": "Must be at least 3 characters.",
+      "maxSmall": "Must be at most {{count}} characters.",
+      "maxMid": "Must be at most {{count}} characters.",
+      "maxMarkdown": "Must be at most {{count}} characters.",
+      "required": "This field is required.",
+      "subdomainRequired": "A subdomain is required.",
+      "subdomainFormat": "Only lowercase letters, numbers and hyphens are allowed.",
+      "subdomainMin": "Must be at least 3 characters.",
+      "subdomainMax": "Must be at most 25 characters."
+    },
+    "createError": "An error occurred while creating the Innovation Hub.",
+    "createSuccess": "The Innovation Hub was created successfully!"
+  }
+}

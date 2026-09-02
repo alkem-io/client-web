@@ -8,7 +8,7 @@ type PendingMembershipsSectionProps = {
 function PendingMembershipsSection({ title, children }: PendingMembershipsSectionProps) {
   return (
     <section>
-      <h3 className="text-sm font-semibold text-muted-foreground mb-2">{title}</h3>
+      <h3 className="text-card-title text-muted-foreground mb-2">{title}</h3>
       {/* biome-ignore lint/a11y/noRedundantRoles: Tailwind preflight removes list-style */}
       {/* biome-ignore lint/a11y/useSemanticElements: role="list" needed to restore semantics after Tailwind reset */}
       <ul role="list" className="space-y-2">

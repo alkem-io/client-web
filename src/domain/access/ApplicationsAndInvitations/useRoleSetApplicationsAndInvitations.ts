@@ -16,6 +16,7 @@ import {
   type AuthorizationPrivilege,
   RoleName,
 } from '@/core/apollo/generated/graphql-schema';
+import { evictFromCache } from '@/core/apollo/utils/evictFromCache';
 import type { ApplicationModel } from '../model/ApplicationModel';
 import type { InvitationModel } from '../model/InvitationModel';
 import type InvitationResultModel from '../model/InvitationResultModel';
@@ -41,12 +42,15 @@ type useRoleSetApplicationsAndInvitationsProvided = {
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
+    /** T013 — Suggested language for the invitee (FR-014/FR-015). Omit to leave absent. */
+    suggestedLanguage?: string;
   }) => Promise<InvitationResultModel[]>;
   invitationStateChange: (invitationId: string, eventName: string) => Promise<unknown>;
   deleteInvitation: (invitationId: string) => Promise<unknown>;
   deletePlatformInvitation: (invitationId: string) => Promise<unknown>;
   refetch: () => Promise<unknown>;
   loading: boolean;
+  errored: boolean;
   isApplying: boolean;
 };
 
@@ -62,6 +66,7 @@ const useRoleSetApplicationsAndInvitations = ({
   const {
     data,
     loading,
+    error,
     refetch: refetchCommunityApplicationsInvitations,
   } = useCommunityApplicationsInvitationsQuery({
     // biome-ignore lint/style/noNonNullAssertion: guarded by skip
@@ -123,6 +128,8 @@ const useRoleSetApplicationsAndInvitations = ({
               ? { ...app.actor.profile, email: getActorEmail(actorDetailsMap[app.actor.id]) }
               : undefined,
           },
+          questions: app.questions,
+          user: app.user,
         })) ?? [],
       invitations:
         data?.lookup.roleSet?.invitations.map(inv => ({
@@ -160,6 +167,11 @@ const useRoleSetApplicationsAndInvitations = ({
           applicationID: applicationId,
           eventName: newState,
         },
+      },
+      update: cache => {
+        if (roleSetId) {
+          evictFromCache(cache, roleSetId, 'RoleSet');
+        }
       },
       onCompleted: () => refetch(),
     });
@@ -199,12 +211,14 @@ const useRoleSetApplicationsAndInvitations = ({
     invitedUserEmails,
     welcomeMessage,
     extraRoles,
+    suggestedLanguage,
   }: {
     roleSetId: string;
     invitedContributorIds: string[];
     invitedUserEmails: string[];
     welcomeMessage: string;
     extraRoles?: RoleName[];
+    suggestedLanguage?: string;
   }) => {
     // Filter out the Member role as it's not an extra role
     const filteredExtraRoles = (extraRoles ?? []).filter(role => role !== RoleName.Member);
@@ -216,6 +230,7 @@ const useRoleSetApplicationsAndInvitations = ({
         invitedUserEmails,
         welcomeMessage,
         extraRoles: filteredExtraRoles,
+        suggestedLanguage,
       },
       onCompleted: () => refetch(),
     });
@@ -229,6 +244,7 @@ const useRoleSetApplicationsAndInvitations = ({
     authorizationPrivileges: data?.lookup.roleSet?.authorization?.myPrivileges ?? [],
     refetch,
     loading,
+    errored: !!error,
     applyForEntryRoleOnRoleSet: handleApplyForEntryRoleOnRoleSet,
     applicationStateChange: handleApplicationStateChange,
     inviteContributorsOnRoleSet: handleInviteContributorsOnRoleSet,

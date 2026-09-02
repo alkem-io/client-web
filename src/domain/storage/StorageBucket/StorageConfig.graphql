@@ -1,7 +1,14 @@
-query SpaceStorageConfig($spaceId: UUID!) {
+query SpaceStorageConfig($spaceId: UUID!, $includeSpaceProfile: Boolean = false) {
   lookup {
     space(ID: $spaceId) {
       id
+      # The SPACE bucket (`space.profile.storageBucket`) is authorization-gated and FAILS for anonymous
+      # visitors / non-members on private spaces. It's only requested when explicitly needed (the callout-
+      # create flow passes `temporaryLocation`, which sets this flag). The shared space-page provider leaves
+      # it false, so anonymous space pages never request it.
+      profile @include(if: $includeSpaceProfile) {
+        ...ProfileStorageConfig
+      }
       about {
         id
         profile {

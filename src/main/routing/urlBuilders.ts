@@ -1,32 +1,30 @@
 import { _AUTH_LOGIN_PATH, AUTH_SIGN_UP_PATH } from '@/core/auth/authentication/constants/authentication.constants';
 import { isAbsoluteUrl } from '@/core/utils/links';
 import { ROUTE_HOME } from '@/domain/platform/routes/constants';
-import { DIALOG_PARAM_VALUES } from '@/main/topLevelPages/myDashboard/useMyDashboardDialogs';
 
 export const KNOWLEDGE_BASE_PATH = 'knowledge-base';
 export const URL_SPACE_EXPLORER = '/spaces';
 
-// Keep these in sync with the consts in TabbedLayoutPage.tsx and don't import,
-// tests fail to import because they are in different modules
-const URL_PARAM_SECTION = 'tab';
-const URL_PARAM_DIALOG = 'dialog';
-
 export enum TabbedLayoutParams {
-  Section = URL_PARAM_SECTION,
-  Dialog = URL_PARAM_DIALOG,
+  Section = 'tab',
+  Dialog = 'dialog',
 }
 
 export const buildSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings`;
 };
 
+// Single migration point for the L1 settings link. Returns the legacy MUI
+// settings URL until the SubSpace settings page is itself CRD-migrated.
+export const buildSubspaceSettingsUrl = (subspaceUrl: string) => buildSettingsUrl(subspaceUrl);
+
 export const buildNotificationSettingsUrl = (entityUrl: string) => {
   return `${entityUrl}/settings/notifications`;
 };
 
-export const buildSettingsCommunityUrl = (entityUrl: string) => {
-  return `${buildSettingsUrl(entityUrl)}/community`;
-};
+// The current user's own notification-settings tab (where the sound toggles live).
+// Distinct from `buildNotificationSettingsUrl` above, which is for *spaces*.
+export const buildUserNotificationSettingsUrl = () => '/user/me/settings/notifications';
 
 export const buildVCKnowledgeBaseUrl = (vcUrl: string = '.') => `${vcUrl}/${KNOWLEDGE_BASE_PATH}`;
 
@@ -37,12 +35,18 @@ export const buildReturnUrlParam = (returnUrl = ROUTE_HOME, origin = window.loca
 
 export const hasReturnUrlParam = (params?: string) => params?.includes('returnUrl=');
 
+// With no returnUrl these emit a bare path rather than defaulting the param to
+// home. `LoginCrdRoute` stores whatever `?returnUrl=` it sees, so a defaulted
+// param overwrites the destination a user is mid-way through — and on the
+// identity subdomain it would store `https://identity.<domain>/home`, an origin
+// the apex must never navigate to. `buildReturnUrlParam` keeps its own default:
+// the `/required` gate relies on it.
 export const buildLoginUrl = (returnUrl?: string, params?: string) => {
   if (hasReturnUrlParam(params)) {
     return `${_AUTH_LOGIN_PATH}${params}`;
   }
 
-  return `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}`;
+  return returnUrl ? `${_AUTH_LOGIN_PATH}${buildReturnUrlParam(returnUrl)}` : _AUTH_LOGIN_PATH;
 };
 
 export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
@@ -50,11 +54,8 @@ export const buildSignUpUrl = (returnUrl?: string, params?: string) => {
     return `${AUTH_SIGN_UP_PATH}${params}`;
   }
 
-  return `${AUTH_SIGN_UP_PATH}${buildReturnUrlParam(returnUrl)}${params ? params : ''}`;
-};
-
-export const buildUpdatesUrl = (spaceUrl: string) => {
-  return `${spaceUrl}/updates`;
+  const returnUrlParam = returnUrl ? buildReturnUrlParam(returnUrl) : '';
+  return `${AUTH_SIGN_UP_PATH}${returnUrlParam}${params ?? ''}`;
 };
 
 export const buildSpaceSectionUrl = (
@@ -73,12 +74,12 @@ export const buildSpaceSectionUrl = (
   }
 
   if (sectionNumber) {
-    params.set(URL_PARAM_SECTION, sectionNumber.toString());
+    params.set(TabbedLayoutParams.Section, sectionNumber.toString());
   }
   if (dialog) {
-    params.set(URL_PARAM_DIALOG, dialog);
+    params.set(TabbedLayoutParams.Dialog, dialog);
   } else {
-    params.delete(URL_PARAM_DIALOG);
+    params.delete(TabbedLayoutParams.Dialog);
   }
 
   return `${result}?${params.toString()}`;
@@ -110,6 +111,84 @@ export const buildInnovationHubUrl = (subdomain: string): string => {
   }
 };
 
+/**
+ * Normalise `locations.domain` into a fully-qualified origin (`<protocol>//<host>`).
+ *
+ * The Configuration GraphQL field is documented as a bare host (e.g. `alkemio.org`)
+ * but some environments ship a full URL (`http://localhost:3000`) — this helper
+ * tolerates both shapes so consumers never have to second-guess the format.
+ *
+ * - `'alkemio.org'`           → `'https://alkemio.org'` (or matches page protocol)
+ * - `'http://localhost:3000'` → `'http://localhost:3000'` (used verbatim, trailing slash stripped)
+ * - `''` / `undefined`        → `undefined`
+ */
+const normaliseLocationOrigin = (domain: string | undefined): string | undefined => {
+  if (!domain) return undefined;
+  const trimmed = domain.replace(/\/+$/, '');
+  if (/^[a-z]+:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+  // Bare host — use the page's current protocol so `//<host>` works in both
+  // http (dev) and https (prod) without forcing one.
+  const protocol = typeof window !== 'undefined' ? window.location.protocol : 'https:';
+  return `${protocol}//${trimmed}`;
+};
+
+/**
+ * Build an absolute URL to the canonical platform host (`locations.domain`)
+ * for an in-app `path`. Used by every call site that wants to navigate to the
+ * main domain regardless of where the visitor currently is — top nav off a
+ * hub subdomain, the "Browse all Spaces on Alkemio" CTA, etc.
+ *
+ * Returns the path unchanged when no `domain` is configured (graceful
+ * fallback — clicking the link stays on the current host).
+ */
+export const buildMainDomainUrl = (path: string, canonicalDomain: string | undefined): string => {
+  const origin = normaliseLocationOrigin(canonicalDomain);
+  if (!origin) return path;
+  // Already absolute — leave alone.
+  if (/^[a-z]+:\/\//i.test(path) || path.startsWith('//')) {
+    return path;
+  }
+  return `${origin}${path.startsWith('/') ? path : `/${path}`}`;
+};
+
+/**
+ * True when the current host is a sub-host of the configured canonical domain
+ * — used as the signal "we're on a hub subdomain" by the top navigation. On
+ * development (no real subdomains on `localhost`) this is always `false`.
+ *
+ * Tolerates `locations.domain` shaped as either a bare host or a full URL:
+ * the host portion is extracted before the suffix check.
+ */
+export const isOnHubSubdomain = (canonicalDomain: string | undefined): boolean => {
+  if (import.meta.env.MODE !== 'production' || !canonicalDomain || typeof window === 'undefined') {
+    return false;
+  }
+  // Strip protocol/path from the configured value so the suffix match works
+  // regardless of whether the config ships a bare host or a full URL.
+  const canonicalHost = canonicalDomain
+    .replace(/^[a-z]+:\/\//i, '')
+    .replace(/\/.*$/, '')
+    .replace(/:\d+$/, '');
+  const { hostname } = window.location;
+  return hostname !== canonicalHost && hostname.endsWith(`.${canonicalHost}`);
+};
+
+/**
+ * Absolutise an in-app path against the canonical platform host when the
+ * visitor is on a hub subdomain. Used by the top navigation so clicking "Home"
+ * or any other platform link hops the user off the subdomain back to the main
+ * domain. On dev (or when already on the canonical host), returns the path
+ * unchanged.
+ */
+export const absolutiseToMainDomain = (path: string, canonicalDomain: string | undefined): string => {
+  if (!isOnHubSubdomain(canonicalDomain)) {
+    return path;
+  }
+  return buildMainDomainUrl(path, canonicalDomain);
+};
+
 export const buildUserAccountUrl = (profileUrl?: string) => {
   return profileUrl ? `${buildSettingsUrl(profileUrl)}/account` : '';
 };
@@ -118,9 +197,15 @@ export const buildMembershipSettingsUrl = (profileUrl?: string) => {
   return profileUrl ? `${buildSettingsUrl(profileUrl)}/membership` : '';
 };
 
-export const buildWelcomeSpaceUrl = () => '/welcome-space';
+// Generic per-tab settings URL composer used by the CRD contributor + space
+// settings shells. Caller passes the entity's `profile.url`, a tab id, and an
+// optional in-page anchor (e.g. 'description', 'members'); never call sites
+// template `<url>/settings/<tab>#<anchor>` by hand.
+export const buildSettingsTabUrl = (profileUrl: string | undefined, tabId: string, anchor?: string) => {
+  return profileUrl ? `${buildSettingsUrl(profileUrl)}/${tabId}${anchor ? `#${anchor}` : ''}` : '';
+};
 
-export const getInvitationsDialogUrl = () => `/home?${URL_PARAM_DIALOG}=${DIALOG_PARAM_VALUES.INVITATIONS}`;
+export const buildWelcomeSpaceUrl = () => '/welcome-space';
 
 const VIDEO_CALL_BASE_URL = 'https://meet.jit.si/';
 

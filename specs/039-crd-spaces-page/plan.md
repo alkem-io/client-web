@@ -153,10 +153,10 @@ When a route is migrated to CRD, the **entire page** renders in CRD — header, 
 
 ### D3: localStorage Feature Toggle (Safe Merge Strategy)
 
-During migration, CRD routes are gated behind a localStorage toggle so the branch can be merged to develop without affecting end users. The toggle defaults to OFF — deployed environments render the old MUI page. Developers and QA opt in via `localStorage.setItem('alkemio-crd-enabled', 'true')` + page refresh.
+During migration, CRD routes are gated behind a localStorage toggle so the branch can be merged to develop without affecting end users. The toggle defaults to OFF — deployed environments render the old MUI page. Developers and QA opt in via `localStorage.setItem('alkemio-design-version', '2')` + page refresh.
 
 **Implementation:**
-- `src/main/crdPages/useCrdEnabled.ts` — reads `alkemio-crd-enabled` from localStorage (default `false`)
+- `src/main/crdPages/useCrdEnabled.ts` — reads `alkemio-design-version` from localStorage (default OFF — anything other than `'2'` resolves to MUI)
 - `TopLevelRoutes.tsx` — conditionally routes `/spaces` to either `CrdSpaceExplorerPage` (with `CrdLayoutWrapper`) or `MuiSpaceExplorerPage` (with `TopLevelLayout`)
 - Old MUI page files are restored at `src/main/topLevelPages/topLevelSpaces/` alongside the CRD alternatives in `src/main/crdPages/spaces/`
 - Both versions are lazy-loaded — the unused chunk is never fetched, so there is no bundle penalty

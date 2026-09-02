@@ -1,0 +1,131 @@
+import { PenTool } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/apollo-hooks';
+import type { CreateWhiteboardOnCalloutMutation } from '@/core/apollo/generated/graphql-schema';
+import { ContributionAddCard } from '@/crd/components/contribution/ContributionAddCard';
+import { Button } from '@/crd/primitives/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/crd/primitives/dialog';
+import { Input } from '@/crd/primitives/input';
+import useLoadingState from '@/domain/shared/utils/useLoadingState';
+import CrdWhiteboardView from '@/main/crdPages/whiteboard/CrdWhiteboardView';
+
+type CreatedWhiteboard = NonNullable<CreateWhiteboardOnCalloutMutation['createContributionOnCallout']['whiteboard']>;
+
+// `open` + `onOpenChange` form a discriminated pair: pass both (controlled) or neither
+// (uncontrolled). Passing only one would compile but leave the dialog inert in one direction.
+type ControlledOpen = { open: boolean; onOpenChange: (open: boolean) => void };
+type UncontrolledOpen = { open?: undefined; onOpenChange?: undefined };
+
+type WhiteboardContributionAddConnectorProps = {
+  calloutId: string;
+  defaultDisplayName?: string;
+  onCreated?: () => void;
+  /** When true, suppresses the in-grid trigger card; a parent renders its own trigger and controls `open`. */
+  inlineTrigger?: boolean;
+} & (ControlledOpen | UncontrolledOpen);
+
+export function WhiteboardContributionAddConnector({
+  calloutId,
+  defaultDisplayName,
+  onCreated,
+  inlineTrigger,
+  open: controlledOpen,
+  onOpenChange,
+}: WhiteboardContributionAddConnectorProps) {
+  const { t } = useTranslation('crd-space');
+  const fallbackName = defaultDisplayName ?? t('callout.defaultWhiteboardName');
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = controlledOpen !== undefined;
+  const dialogOpen = isControlled ? controlledOpen : internalOpen;
+  const setDialogOpen = (next: boolean) => {
+    if (!isControlled) setInternalOpen(next);
+    onOpenChange?.(next);
+  };
+  const [whiteboardName, setWhiteboardName] = useState(fallbackName);
+  const [editingWhiteboard, setEditingWhiteboard] = useState<CreatedWhiteboard | undefined>();
+  const [createWhiteboard] = useCreateWhiteboardOnCalloutMutation();
+
+  const handleOpen = () => {
+    setWhiteboardName(fallbackName);
+    setDialogOpen(true);
+  };
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
+
+  // When the parent opens the dialog (inline-trigger path), reset the name to the fallback.
+  // This mirrors what `handleOpen` does for the in-grid trigger card path.
+  useEffect(() => {
+    if (dialogOpen) setWhiteboardName(fallbackName);
+  }, [dialogOpen, fallbackName]);
+
+  const [handleCreate, creating] = useLoadingState(async () => {
+    const trimmed = whiteboardName.trim();
+    if (!trimmed) return;
+    const { data } = await createWhiteboard({
+      variables: {
+        calloutId,
+        whiteboard: {
+          profile: { displayName: trimmed },
+        },
+      },
+      refetchQueries: ['CalloutDetails', 'CalloutContributions'],
+      awaitRefetchQueries: true,
+    });
+    onCreated?.();
+    handleClose();
+    const created = data?.createContributionOnCallout.whiteboard;
+    if (created) setEditingWhiteboard(created);
+  });
+
+  return (
+    <>
+      {!inlineTrigger && <ContributionAddCard label={t('callout.addWhiteboard')} icon={PenTool} onClick={handleOpen} />}
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={open => {
+          if (!open) handleClose();
+        }}
+      >
+        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col overflow-hidden" closeLabel={t('a11y.close')}>
+          <DialogHeader className="shrink-0">
+            <DialogTitle>{t('callout.createWhiteboard')}</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-2 flex-1 min-h-0 overflow-y-auto">
+            <label htmlFor="crd-create-whiteboard-name" className="text-caption text-muted-foreground">
+              {t('callout.whiteboardNameLabel')}
+            </label>
+            <Input
+              id="crd-create-whiteboard-name"
+              value={whiteboardName}
+              onChange={e => setWhiteboardName(e.target.value)}
+              autoFocus={true}
+              disabled={creating}
+            />
+          </div>
+          <DialogFooter className="shrink-0">
+            <Button variant="outline" onClick={handleClose} disabled={creating}>
+              {t('dialogs.cancel')}
+            </Button>
+            <Button onClick={handleCreate} disabled={!whiteboardName.trim() || creating} aria-busy={creating}>
+              {t('dialogs.create')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {editingWhiteboard && (
+        <CrdWhiteboardView
+          whiteboardId={editingWhiteboard.id}
+          whiteboard={editingWhiteboard}
+          authorization={editingWhiteboard.authorization}
+          whiteboardShareUrl={editingWhiteboard.profile.url ?? ''}
+          loadingWhiteboards={false}
+          preventWhiteboardDeletion={true}
+          backToWhiteboards={() => setEditingWhiteboard(undefined)}
+        />
+      )}
+    </>
+  );
+}

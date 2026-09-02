@@ -11,6 +11,7 @@
     "innovationPacks": "Innovation Packs",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
+    "navigation": "Dashboard navigation",
     "pendingCount": "{{count}} pending"
   },
   "recentSpaces": {
@@ -18,7 +19,7 @@
     "exploreAll": "Explore all your Spaces",
     "homeSpacePlaceholder": {
       "title": "Set your Home Space",
-      "subtitle": "Pin your favorite space to the dashboard"
+      "subtitle": "Pin your favourite space to the dashboard"
     },
     "homeSpaceSettings": "Home space settings",
     "private": "Private"
@@ -40,7 +41,21 @@
       }
     },
     "showMore": "Show more",
-    "noActivity": "No recent activity"
+    "noActivity": "No recent activity",
+    "iconLabel": {
+      "CALLOUT_PUBLISHED": "New Post",
+      "CALLOUT_POST_CREATED": "New Post",
+      "CALLOUT_POST_COMMENT": "New comment",
+      "DISCUSSION_COMMENT": "New comment",
+      "CALLOUT_WHITEBOARD_CREATED": "New whiteboard",
+      "CALLOUT_WHITEBOARD_CONTENT_MODIFIED": "Whiteboard updated",
+      "CALLOUT_MEMO_CREATED": "New memo",
+      "CALLOUT_LINK_CREATED": "New link",
+      "MEMBER_JOINED": "New member",
+      "SUBSPACE_CREATED": "New subspace",
+      "CALENDAR_EVENT_CREATED": "New event",
+      "UPDATE_SENT": "New update"
+    }
   },
   "dialogs": {
     "tipsAndTricks": "Tips & Tricks",
@@ -128,7 +143,12 @@
     "loading": "Loading invitations",
     "accept": "Accept",
     "decline": "Decline",
-    "noInvitations": "No pending invitations"
+    "noInvitations": "No pending invitations",
+    "invitedBy": "Invited by {{name}}"
+  },
+  "applications": {
+    "title": "Pending Applications",
+    "pending": "Pending"
   },
   "campaign": {
     "title": "Create your Virtual Contributor",
@@ -171,5 +191,29 @@
       "joinAriaLabel": "Join {{spaceName}}"
     },
     "applicationAriaLabel": "View pending application for {{spaceName}}"
+  },
+  "nonActivity": {
+    "sections": {
+      "pinnedLastActive": "Pinned & Last Active In",
+      "mostActivity": "Spaces with Most Activity",
+      "leadAdmin": "Spaces I Lead & Administer",
+      "host": "Spaces I Host"
+    },
+    "showMore_one": "Show More: {{count}} Space",
+    "showMore_other": "Show More: {{count}} Spaces"
+  },
+  "welcome": {
+    "title": "Welcome to Alkemio",
+    "message": "You are not part of any Spaces yet. Explore the Welcome Space to see what is possible, or browse the documentation to get started.",
+    "welcomeSpaceLink": "Visit the Welcome Space",
+    "documentationLink": "Documentation",
+    "documentationUrl": "https://alkem.io/docs"
+  },
+  "pending": {
+    "title": "Pending Applications & Invitations"
+  },
+  "explore": {
+    "title": "Explore Spaces",
+    "exploreAll": "Explore all Spaces"
   }
 }

@@ -1,23 +1,17 @@
-import { Box, Button, SnackbarContent } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import type TranslationKey from '@/core/i18n/utils/TranslationKey';
 import { info as logInfo, warn as logWarn } from '@/core/logging/sentry/log';
-import NotificationView from '@/core/ui/notifications/NotificationView';
-import { rem } from '@/core/ui/typography/utils';
+import { AppVersionBanner } from '@/crd/components/common/AppVersionBanner';
 import { cleanupVersionUpdateListeners, onVersionUpdate, syncClientVersion } from '@/serviceWorker';
 
 const LAST_VERSION_MISMATCH_LS_KEY = 'lastVersionMismatch';
 
 /**
- * Listens for service worker messages about new versions and triggers a notification.
+ * Listens for service worker messages about new versions and renders the CRD update banner.
  */
 export const VersionHandling = () => {
-  const { t } = useTranslation();
   const appVersion = import.meta.env.VITE_VERSION;
-  const [open, setOpenToast] = useState(false);
-  const defaultMessageKey = 'snackbars.appVersion.message';
-  const [messageKeys, setMessageKeys] = useState<TranslationKey[]>([defaultMessageKey]);
+  const [open, setOpen] = useState(false);
+  const [recurring, setRecurring] = useState(false);
 
   const buildVersionMismatchPair = (oldVersion: string, newVersion: string) => {
     return `${oldVersion}|${newVersion}`;
@@ -38,13 +32,6 @@ export const VersionHandling = () => {
   const isRecurringMismatch = (oldVersion: string, newVersion: string) => {
     return getLastVersionDetected() === buildVersionMismatchPair(oldVersion, newVersion);
   };
-  const setMessageBasedOnRecurringMismatch = (oldVersion: string, newVersion: string) => {
-    if (isRecurringMismatch(oldVersion, newVersion)) {
-      setMessageKeys([defaultMessageKey, 'snackbars.appVersion.recurringMessage']);
-    } else {
-      setMessageKeys([defaultMessageKey]);
-    }
-  };
 
   useEffect(() => {
     syncClientVersion(appVersion);
@@ -54,8 +41,8 @@ export const VersionHandling = () => {
       // however in Sentry, there are logs with matching versions
       if (appVersion !== latestBuildVersion) {
         logInfo(`Current: ${appVersion}; New: ${latestBuildVersion};`, { label: 'VERSION_MISMATCH' });
-        setMessageBasedOnRecurringMismatch(appVersion, latestBuildVersion);
-        setOpenToast(true);
+        setRecurring(isRecurringMismatch(appVersion, latestBuildVersion));
+        setOpen(true);
         setLastVersionDetected(appVersion, latestBuildVersion);
       }
     });
@@ -67,37 +54,10 @@ export const VersionHandling = () => {
     return null;
   }
 
-  return (
-    <NotificationView
-      open={open}
-      onClose={(_, reason) => {
-        if (reason === 'clickaway') return;
-        setOpenToast(false);
-      }}
-      autoHideDuration={null}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-    >
-      <SnackbarContent
-        message={messageKeys.map(messageKey => <Box key={messageKey}>{t(messageKey)}</Box>)}
-        sx={{
-          backgroundColor: 'highlight.dark',
-          color: 'white',
-          fontSize: rem(15),
-        }}
-        action={
-          <Button
-            sx={{
-              color: 'white',
-            }}
-            onClick={() => {
-              // using window to avoid redundant re-rendering
-              window.location.replace(window.location.pathname + window.location.search);
-            }}
-          >
-            {t('pages.error.buttons.reload')}
-          </Button>
-        }
-      />
-    </NotificationView>
-  );
+  const handleReload = () => {
+    // using window to avoid redundant re-rendering
+    window.location.replace(window.location.pathname + window.location.search);
+  };
+
+  return <AppVersionBanner recurring={recurring} onReload={handleReload} />;
 };

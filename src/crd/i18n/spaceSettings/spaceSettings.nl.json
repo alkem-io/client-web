@@ -1,0 +1,1066 @@
+{
+  "tabs": {
+    "about": "Over",
+    "layout": "Layout",
+    "community": "Community",
+    "subspaces": "Subspaces",
+    "templates": "Templates",
+    "updates": "Updates",
+    "storage": "Opslag",
+    "settings": "Instellingen",
+    "account": "Account"
+  },
+  "dirtyGuard": {
+    "save": "Opslaan",
+    "discard": "Verwerpen en verlaten",
+    "cancel": "Annuleren",
+    "tabSwitch": {
+      "title": "Niet-opgeslagen wijzigingen",
+      "description": "Je hebt niet-opgeslagen wijzigingen op dit tabblad. Sla ze op, verwerp ze of blijf op dit tabblad?"
+    },
+    "navAway": {
+      "title": "Niet-opgeslagen wijzigingen",
+      "description": "Als je deze pagina verlaat, worden je niet-opgeslagen wijzigingen verworpen."
+    }
+  },
+  "saveBar": {
+    "save": "Wijzigingen opslaan",
+    "discard": "Wijzigingen verwerpen",
+    "saving": "Opslaan…"
+  },
+  "layout": {
+    "pageHeader": {
+      "title": "Layout",
+      "subtitle": "Pas de navigatietabbladen van je Space aan. Hernoem, herorden en beheer toewijzingen van Posts."
+    },
+    "discardChangesDialog": {
+      "title": "Wijzigingen verwerpen?",
+      "description": "Je niet-opgeslagen Layout-wijzigingen worden teruggezet naar de laatst opgeslagen staat. Dit kan niet ongedaan worden gemaakt.",
+      "confirm": "Wijzigingen verwerpen"
+    },
+    "column": {
+      "titlePlaceholder": "Kolomtitel",
+      "descriptionPlaceholder": "Beschrijf deze kolom…",
+      "menu": "Kolomacties",
+      "drag": "Sleep om de fase te herschikken",
+      "empty": "Nog geen callouts in deze kolom.",
+      "activePhase": {
+        "set": "Markeer als actieve fase",
+        "current": "Actieve fase (huidige)",
+        "badge": "Actieve fase"
+      },
+      "defaultCalloutTemplate": {
+        "set": "Standaard callout-template instellen…",
+        "clear": "Standaard callout-template wissen"
+      },
+      "editDetails": {
+        "menuLabel": "Details bewerken",
+        "dialogTitle": "Details bewerken: Innovation Flow-fase",
+        "titleLabel": "Titel",
+        "titleTooShort": "De titel moet minimaal 3 tekens lang zijn",
+        "titleDuplicate": "Er bestaat al een fase met deze naam.",
+        "insertEmoji": "Emoji invoegen",
+        "descriptionLabel": "Beschrijving",
+        "descriptionPlaceholder": "Beschrijving",
+        "cancel": "Annuleren",
+        "saving": "Opslaan…",
+        "save": "Opslaan"
+      },
+      "deletePhase": {
+        "menuLabel": "Fase verwijderen",
+        "confirm": {
+          "title": "Deze fase verwijderen?",
+          "description": "Callouts die nu met deze fase zijn getagd verliezen de tag. Deze actie kan niet ongedaan worden gemaakt.",
+          "confirm": "Fase verwijderen",
+          "cancel": "Annuleren"
+        }
+      },
+      "deleteTab": {
+        "menuLabel": "Tab verwijderen",
+        "confirm": {
+          "title": "Deze tab verwijderen?",
+          "description": "Posts in deze tab worden verplaatst naar de eerste tab. Deze actie kan niet ongedaan worden gemaakt.",
+          "confirm": "Tab verwijderen",
+          "cancel": "Annuleren"
+        }
+      },
+      "hideShow": {
+        "hideMenuLabel": "Verbergen in menu",
+        "showMenuLabel": "Tonen in menu",
+        "hiddenBadge": "Verborgen",
+        "confirm": {
+          "title": "Deze fase verbergen?",
+          "description": "Dit verbergt de fase alleen in het menu. Het ontneemt geen toegang tot de inhoud: iedereen met een link naar de fase, of naar een Post erin, kan deze nog steeds openen.",
+          "confirm": "Verbergen",
+          "cancel": "Annuleren"
+        }
+      },
+      "phaseLayout": {
+        "menuLabel": "Layout",
+        "dialogTitle": "Layout: {{phaseName}}",
+        "descriptionHeight": {
+          "label": "Post-beschrijving",
+          "collapsedHint": "Posts beginnen ingeklapt — leden kunnen ze uitklappen om te lezen.",
+          "expandedHint": "Posts zijn standaard volledig uitgevouwen.",
+          "switchLabel": "Post-beschrijvingen inklappen"
+        },
+        "publishDetails": {
+          "label": "Publicatiegegevens",
+          "onHint": "Naam, avatar en datum van de auteur worden getoond bij elke Post.",
+          "offHint": "Naam, avatar en datum van de auteur zijn verborgen bij Posts in deze fase.",
+          "switchLabel": "Publicatiegegevens tonen"
+        },
+        "cancel": "Annuleren",
+        "saving": "Opslaan…",
+        "save": "Opslaan"
+      },
+      "sidebarDialog": {
+        "title": "Sidebar-widgets",
+        "help": "Kies welke widgets in de sidebar van dit tabblad verschijnen en in welke volgorde.",
+        "emptyNote": "Geen widgets geselecteerd — de sidebar is leeg voor dit tabblad.",
+        "toggleAriaLabel": "{{widget}} in-/uitschakelen",
+        "dragHandleAriaLabel": "{{widget}} herordenen",
+        "widgets": {
+          "intent": "Intentie & Leads",
+          "about": "Over deze Space",
+          "createPost": "Post toevoegen",
+          "applicationButton": "Aanmelden / Deelnemen",
+          "createSubspace": "Subspace aanmaken",
+          "subspaceLinks": "Subspaces",
+          "events": "Aankomende evenementen",
+          "updates": "Laatste update",
+          "contactLeads": "Leads contacteren",
+          "addUser": "Uitnodigen",
+          "virtualContributors": "Virtual Contributors",
+          "guidelines": "Communityrichtlijnen",
+          "index": "Post-index",
+          "search": "Zoeken"
+        }
+      },
+      "postTemplate": {
+        "menuLabel": "Post-template",
+        "dialogTitle": "Post-template: {{phaseName}}",
+        "choose": "Kies template…",
+        "clear": "Template verwijderen",
+        "clearConfirm": {
+          "title": "Post-template verwijderen?",
+          "description": "De standaard Post-template voor deze fase wordt verwijderd. Nieuwe Posts in deze fase gebruiken geen standaard template. Bestaande Posts worden niet beïnvloed.",
+          "confirm": "Template verwijderen",
+          "cancel": "Annuleren"
+        }
+      }
+    },
+    "addPhase": {
+      "button": "Fase toevoegen",
+      "dialog": {
+        "title": "Voeg een nieuwe fase toe",
+        "description": "Maak een nieuwe Innovation Flow-fase. Je kunt deze later hernoemen of verwijderen.",
+        "nameLabel": "Naam van de fase",
+        "namePlaceholder": "bv. Ontdekking",
+        "descriptionLabel": "Beschrijving (optioneel)",
+        "descriptionPlaceholder": "Wat gebeurt er in deze fase?",
+        "duplicate": "Er bestaat al een fase met deze naam.",
+        "errorGeneric": "De fase kon niet worden gemaakt. Probeer het opnieuw.",
+        "cancel": "Annuleren",
+        "confirm": "Fase toevoegen"
+      }
+    },
+    "addTab": {
+      "button": "Tab toevoegen",
+      "dialog": {
+        "title": "Voeg een nieuwe tab toe",
+        "description": "Maak een nieuwe tab op deze Space. Je kunt deze later hernoemen of verwijderen.",
+        "nameLabel": "Naam van de tab",
+        "namePlaceholder": "bv. Archief",
+        "descriptionLabel": "Beschrijving (optioneel)",
+        "descriptionPlaceholder": "Waarvoor dient deze tab?",
+        "duplicate": "Er bestaat al een tab met deze naam.",
+        "errorGeneric": "De tab kon niet worden gemaakt. Probeer het opnieuw.",
+        "cancel": "Annuleren",
+        "confirm": "Tab toevoegen"
+      }
+    },
+    "replaceFlow": {
+      "button": "Innovation Flow vervangen",
+      "loading": "Nieuwe flow laden…",
+      "error": "Het vervangen van de innovation flow is mislukt. De flow is ongewijzigd — probeer het opnieuw.",
+      "applyDialog": {
+        "title": "Nieuwe template toepassen",
+        "description": "Je staat op het punt een nieuwe template toe te passen. Deze actie verwijdert je huidige innovation flow permanent. De bestaande Posts die aan verschillende fasen zijn gekoppeld, blijven echter behouden en worden gegroepeerd onder de eerste fase van de nieuwe opzet.<br/><br/>Kies een van de volgende opties:",
+        "option1": {
+          "label": "Vervangen door nieuwe flow",
+          "description": "Hiermee wordt je huidige innovation flow met alle bestaande Posts verwijderd en vervangen door de nieuwe flow inclusief de template-Posts."
+        },
+        "option2": {
+          "label": "Vervangen en template-Posts aan bestaande toevoegen",
+          "description": "Hiermee worden de nieuwe Posts uit de template toegevoegd aan je bestaande Posts."
+        },
+        "option3": {
+          "label": "Flow vervangen zonder template-Posts toe te voegen",
+          "description": "Vervang alleen de innovation flow zonder template-Posts toe te voegen."
+        },
+        "apply": "Toepassen",
+        "cancel": "Annuleren",
+        "confirmDelete": {
+          "title": "Verwijdering bevestigen",
+          "description": "Deze actie verwijdert permanent alle bestaande Posts en vervangt ze door Posts uit de template. Dit kan niet ongedaan worden gemaakt. Weet je zeker dat je wilt doorgaan?",
+          "confirm": "Bevestigen",
+          "cancel": "Annuleren"
+        }
+      }
+    },
+    "row": {
+      "drag": "Sleep om te herordenen",
+      "menu": "Calloutacties",
+      "moveTo": "Verplaatsen naar",
+      "viewPost": "Post bekijken",
+      "noOtherColumns": "Geen andere kolommen"
+    }
+  },
+  "community": {
+    "pageHeader": {
+      "title": "Community",
+      "subtitle": "Beheer leden, organisaties en Virtual Contributors in deze Space."
+    },
+    "applications": {
+      "title": "Lopende aanvragen",
+      "approve": "Goedkeuren",
+      "reject": "Afwijzen"
+    },
+    "invitations": {
+      "title": "Lopende uitnodigingen",
+      "revoke": "Uitnodiging intrekken",
+      "platformInvite": "Platformuitnodiging"
+    },
+    "pendingMemberships": {
+      "title": "Lopende lidmaatschappen",
+      "name": "Naam",
+      "email": "E-mail",
+      "date": "Datum",
+      "type": "Type",
+      "actions": "Acties",
+      "approve": "Goedkeuren",
+      "reject": "Afwijzen",
+      "delete": "Verwijderen",
+      "empty": "Geen lopende lidmaatschappen.",
+      "noMatch": "Geen lopende lidmaatschappen komen overeen met de geselecteerde filters.",
+      "filterLabel": "Filteren op status",
+      "sortBy": "Sorteren op {{column}}",
+      "viewApplication": "Aanvraag bekijken",
+      "viewInvitation": "Uitnodiging bekijken",
+      "viewDialog": {
+        "created": "Aangemaakt op {{date}}",
+        "updated": "Bijgewerkt op {{date}}",
+        "welcomeMessage": "Welkomstbericht",
+        "noWelcomeMessage": "Geen welkomstbericht opgegeven.",
+        "noAnswers": "Geen antwoorden opgegeven.",
+        "close": "Sluiten",
+        "loading": "Details laden"
+      },
+      "pagination": {
+        "showing": "{{from}} tot {{to}} van {{total}} weergegeven",
+        "previous": "Vorige pagina",
+        "page": "Pagina {{page}} van {{total}}",
+        "next": "Volgende pagina"
+      },
+      "status": {
+        "column": "Status",
+        "applicationReceived": "Aanvraag ontvangen",
+        "applicationApproved": "Aanvraag goedgekeurd",
+        "applicationRejected": "Aanvraag afgewezen",
+        "invited": "Uitgenodigd",
+        "invitationAccepted": "Uitnodiging geaccepteerd",
+        "invitationRejected": "Uitnodiging afgewezen",
+        "invitedExternal": "Uitgenodigd (extern)"
+      },
+      "contributorType": {
+        "user": "Gebruiker",
+        "organization": "Organisatie",
+        "virtualContributor": "Virtual Contributor"
+      }
+    },
+    "members": {
+      "title": "Space-leden",
+      "search": "Leden zoeken…",
+      "invite": "Uitnodigen",
+      "name": "Naam",
+      "email": "E-mail",
+      "role": {
+        "lead": "Lead",
+        "member": "Lid",
+        "promoteToLead": "Maak Lead",
+        "demoteFromLead": "Verwijder als Lead"
+      },
+      "actions": "Acties",
+      "empty": "Geen leden gevonden.",
+      "remove": "Lid verwijderen",
+      "joined": "Lid geworden",
+      "viewProfile": "Profiel bekijken",
+      "dropdown": {
+        "viewProfile": "Profiel bekijken",
+        "changeRole": "Rol wijzigen",
+        "removeFromSpace": "Uit Space verwijderen"
+      },
+      "pagination": {
+        "showing": "{{from}} tot {{to}} van {{total}} leden weergegeven",
+        "previous": "Vorige pagina",
+        "page": "Pagina {{page}} van {{total}}",
+        "next": "Volgende pagina"
+      },
+      "roleColumn": "Rol",
+      "export": "Exporteer volledig ledenoverzicht"
+    },
+    "memberSettings": {
+      "title": "Lidinstellingen",
+      "lead": "Dit lid is een <b>Lead</b>: Leads worden weergegeven als de hosts van de community.",
+      "admin": "Dit lid is een <b>admin</b>: zij kunnen deze community en alle inhoud en deelnemers ervan beheren.",
+      "maxLeadsWarning": "Let op dat er een <b>maximum aantal Leads</b> is voor de communities. Als het maximale aantal wordt bereikt, wordt deze optie voor anderen uitgeschakeld.",
+      "section": {
+        "role": "Rol",
+        "authorization": "Autorisatie",
+        "removeMember": "Lid verwijderen"
+      },
+      "remove": {
+        "link": "Klik hier om dit lid uit deze community te verwijderen. Wees voorzichtig, deze actie kan niet ongedaan worden gemaakt."
+      },
+      "footer": {
+        "save": "Opslaan",
+        "cancel": "Annuleren"
+      },
+      "close": "Sluiten"
+    },
+    "organizations": {
+      "title": "Aangesloten organisaties",
+      "name": "Naam",
+      "role": "Rol",
+      "actions": "Acties",
+      "empty": "Geen organisaties.",
+      "remove": "Organisatie verwijderen",
+      "description": "Overzicht van alle leden- en Lead-organisaties. Om een organisatie toe te voegen, neem contact op met het Alkemio-team via support@alkem.io.",
+      "add": "Organisatie toevoegen",
+      "dropdown": {
+        "viewProfile": "Profiel bekijken",
+        "changeRole": "Rol wijzigen",
+        "removeFromSpace": "Uit Space verwijderen"
+      },
+      "addDialog": {
+        "title": "Organisatie toevoegen",
+        "description": "Deze organisaties worden zichtbaar als leden in deze Space en op hun organisatieprofiel.",
+        "search": "Organisaties zoeken…",
+        "empty": "Geen organisaties komen overeen met je zoekopdracht."
+      }
+    },
+    "virtualContributors": {
+      "title": "Virtual Contributors",
+      "name": "Naam",
+      "actions": "Acties",
+      "empty": "Geen Virtual Contributors.",
+      "remove": "Virtual Contributor verwijderen",
+      "description": "Beheer AI-agents en bots die deelnemen aan deze Space.",
+      "add": "Virtual Contributor toevoegen",
+      "addExternal": "Externe Virtual Contributor uitnodigen",
+      "addDialog": {
+        "title": "Virtual Contributor toevoegen",
+        "description": "Kies een Virtual Contributor uit dit account om aan de Space toe te voegen.",
+        "search": "Virtual Contributors zoeken…",
+        "empty": "Geen Virtual Contributors beschikbaar in dit account."
+      },
+      "addExternalDialog": {
+        "title": "Externe Virtual Contributor uitnodigen",
+        "description": "Nodig een Virtual Contributor uit de Alkemio-bibliotheek uit. De eigenaar moet de uitnodiging accepteren.",
+        "search": "Zoek in de bibliotheek…",
+        "empty": "Geen Virtual Contributors in de bibliotheek komen overeen met je zoekopdracht.",
+        "welcomeMessageLabel": "Welkomstbericht",
+        "welcomeMessagePlaceholder": "Voeg een bericht toe aan de uitnodiging…",
+        "defaultWelcomeMessage": "We willen je graag uitnodigen om met ons samen te werken."
+      }
+    },
+    "applicationForm": {
+      "title": "Aanvraagformulier",
+      "description": "Pas de vragen aan die gebruikers moeten beantwoorden wanneer ze lid willen worden van deze Space."
+    },
+    "guidelines": {
+      "title": "Communityrichtlijnen",
+      "description": "Stel regels en verwachtingen voor het gedrag van leden op.",
+      "hint": "Wordt aan nieuwe leden getoond bij hun lidmaatschap.",
+      "placeholder": "Beschrijf de gedragscode van je Space…",
+      "titleLabel": "Titel",
+      "titlePlaceholder": "Geef je communityrichtlijnen een naam",
+      "referencesLabel": "Gerelateerde links",
+      "applyTemplate": "Een template gebruiken",
+      "saveAsTemplate": "Opslaan als template",
+      "applyConfirm": {
+        "title": "De huidige richtlijnen vervangen?",
+        "description": "Het toepassen van een template overschrijft de huidige titel, tekst en links. Dit kan niet ongedaan worden gemaakt.",
+        "confirm": "Vervangen",
+        "cancel": "Annuleren"
+      },
+      "save": "Richtlijnen opslaan",
+      "saving": "Opslaan…"
+    },
+    "confirmRemove": {
+      "confirm": "Bevestigen",
+      "user": {
+        "title": "Weet je zeker dat je dit lid wilt verwijderen?",
+        "description": "Door op Bevestigen te klikken wordt {{name}} verwijderd uit deze community en uit alle onderliggende subspaces waar zij lid van zijn. Hun bijdragen blijven wel zichtbaar. Deze actie kan niet ongedaan worden gemaakt."
+      },
+      "organization": {
+        "title": "Weet je zeker dat je deze organisatie wilt verwijderen?",
+        "description": "Door op Bevestigen te klikken wordt {{name}} verwijderd uit deze community en uit alle onderliggende subspaces waar zij lid van zijn. Hun bijdragen blijven wel zichtbaar. Deze actie kan niet ongedaan worden gemaakt."
+      },
+      "virtualContributor": {
+        "title": "Virtual Contributor verwijderen",
+        "description": "{{name}} uit deze Space verwijderen?"
+      },
+      "invitation": {
+        "title": "Uitnodiging intrekken",
+        "description": "De lopende uitnodiging voor {{name}} intrekken?"
+      },
+      "applicationReject": {
+        "title": "Aanvraag afwijzen",
+        "description": "De aanvraag van {{name}} om lid te worden van deze Space afwijzen?"
+      },
+      "applicationDelete": {
+        "title": "Aanvraag verwijderen",
+        "description": "De aanvraag van {{name}} uit de lijst verwijderen?"
+      }
+    },
+    "addDialog": {
+      "name": "Naam",
+      "action": "Actie",
+      "empty": "Geen kandidaten komen overeen met je zoekopdracht.",
+      "added": "Toegevoegd",
+      "addAriaLabel": "{{name}} toevoegen",
+      "add": "Toevoegen"
+    },
+    "invite": {
+      "email": {
+        "errors": {
+          "empty": "Voer een e-mailadres in.",
+          "invalid": "Voer een geldig e-mailadres in.",
+          "failed": "De uitnodiging kon niet worden verzonden."
+        },
+        "title": "Uitnodigen per e-mail",
+        "placeholder": "persoon@example.com",
+        "send": "Verzenden",
+        "sent": "Uitnodiging verzonden naar {{email}}"
+      },
+      "title": "Leden uitnodigen",
+      "description": "Nodig een bestaand Alkemio-lid uit door uit de lijst te kiezen, of nodig iemand nieuw uit per e-mail.",
+      "users": {
+        "title": "Bestaande leden uitnodigen",
+        "search": "Alkemio-leden zoeken…",
+        "empty": "Geen kandidaten komen overeen met je zoekopdracht.",
+        "invited": "Uitgenodigd",
+        "invite": "Uitnodigen"
+      }
+    }
+  },
+  "subspaces": {
+    "pageHeader": {
+      "title": "Subspaces",
+      "subtitle": "Bewerk de Subspaces in deze Space. Configureer standaardtemplates en bekijk alle bestaande subspaces."
+    },
+    "defaultTemplate": {
+      "title": "Standaard subspace-template",
+      "description": "Kies de standaardinstellingen die worden toegepast bij het maken van een nieuwe Subspace binnen deze Space.",
+      "change": "Standaardtemplate wijzigen",
+      "dialog": {
+        "title": "Standaard subspace-template wijzigen",
+        "intro": "Pas het standaardtemplate aan voor nieuw aangemaakte Subspaces.",
+        "description": "Hieronder kun je kiezen uit de Templates verzameld in de Space-templatebibliotheek. Als je nieuwe Templates wilt maken of meer Templates wilt verkennen, <library>klik dan hier</library> om naar deze bibliotheek te gaan.",
+        "fieldLabel": "Categorie",
+        "placeholder": "Selecteer een template",
+        "loading": "Templates laden…",
+        "empty": "Geen subspace-templates beschikbaar.",
+        "required": "Dit veld is verplicht!",
+        "cancel": "Annuleren",
+        "save": "Opslaan",
+        "saving": "Opslaan…"
+      }
+    },
+    "listTitle": "Subspaces",
+    "search": "Subspaces zoeken...",
+    "create": "Subspace maken",
+    "filterLabel": "Filter:",
+    "filter": {
+      "all": "Alle",
+      "active": "Actief",
+      "archived": "Gearchiveerd",
+      "activeOnly": "Alleen actieve",
+      "archivedOnly": "Alleen gearchiveerde"
+    },
+    "viewMode": {
+      "list": "Lijstweergave",
+      "grid": "Rasterweergave"
+    },
+    "noResults": "Geen subspaces gevonden",
+    "noResultsHint": "Probeer je zoekopdracht of filters aan te passen.",
+    "actions": "Subspace-acties",
+    "sortMode": {
+      "label": "Sorteren",
+      "alphabetical": "Alfabetisch",
+      "custom": "Aangepast"
+    },
+    "dragAriaLabel": "Sleep om {{name}} te herordenen",
+    "kebab": {
+      "pin": "Vastpinnen",
+      "unpin": "Losmaken",
+      "saveAsTemplate": "Opslaan als template",
+      "delete": "Verwijderen"
+    },
+    "deleteDialog": {
+      "title": "Subspace verwijderen",
+      "description": "Weet je zeker dat je \"{{name}}\" wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    },
+    "saveAsTemplate": {
+      "title": "Nieuw Space-template maken",
+      "profile": {
+        "title": "Templatebeschrijving",
+        "help": "Deze beschrijving is zichtbaar voor iedereen die door templates bladert. Het maakt geen deel uit van de inhoud van het template zelf."
+      },
+      "fields": {
+        "displayName": "Templatetitel",
+        "description": "Templatebeschrijving",
+        "tags": "Templatetags",
+        "tagsPlaceholder": "Voeg een tag toe en druk op Enter"
+      },
+      "spaceTemplate": {
+        "title": "Space-template",
+        "activeSource": "Inhoud opnemen van: {{name}}"
+      },
+      "urlLoader": {
+        "open": "Samenwerking bijwerken vanuit een andere Space",
+        "description": "Plak de URL van een Space of subspace om de samenwerkingsinhoud ervan als basis voor dit template te gebruiken.",
+        "placeholder": "https://…",
+        "use": "Deze Space gebruiken",
+        "cancel": "Annuleren",
+        "resolving": "Controleren…",
+        "errors": {
+          "required": "Plak de URL van de Space die je als template wilt kopiëren.",
+          "invalidUrl": "Deze URL verwijst niet naar een Space.",
+          "notFound": "Space niet gevonden.",
+          "noRights": "Je hebt admin-rechten nodig op de Space die je als template wilt kopiëren."
+        }
+      },
+      "recursive": "Neem ook de subspaces van de geselecteerde Space op in het template",
+      "preview": {
+        "info": "Altijd inbegrepen: Over-informatie en instellingen",
+        "states": "Fasen",
+        "callouts": "Callouts",
+        "noCalloutsInState": "Geen callouts in deze fase.",
+        "noCalloutDescription": "Geen beschrijving",
+        "subspaces": "Bevat deze subspaces"
+      },
+      "errors": {
+        "nameTooShort": "Templatenaam moet minimaal 3 tekens zijn"
+      },
+      "cancel": "Annuleren",
+      "save": "Maken",
+      "saving": "Maken…"
+    },
+    "createDialog": {
+      "dialog": {
+        "title": "Nieuwe Subspace maken",
+        "subtitle": "Stel een nieuwe werkruimte op binnen deze Space."
+      },
+      "template": {
+        "label": "Template",
+        "hint": "Optioneel — kies een subspace-template om inhoud vooraf in te vullen.",
+        "loading": "Templates laden…",
+        "placeholder": "Selecteer een template (optioneel)",
+        "none": "Geen template",
+        "choose": "Kies een template",
+        "change": "Wijzigen",
+        "clear": "Leeg gebruiken",
+        "selectedLabel": "Geselecteerd template",
+        "loadingPreview": "Templatevoorbeeld laden…",
+        "overwriteConfirm": {
+          "title": "Formulierinhoud vervangen?",
+          "description": "Door dit template toe te passen worden de naam, tagline, beschrijving en tags die je al hebt ingevuld overschreven.",
+          "confirm": "Template toepassen",
+          "cancel": "Mijn wijzigingen behouden"
+        }
+      },
+      "displayName": {
+        "label": "Naam",
+        "hint": "De naam van je subspace, zichtbaar voor leden.",
+        "placeholder": "bv. Q1 marketingcampagne"
+      },
+      "tagline": {
+        "label": "Ondertitel",
+        "hint": "Een korte ondertitel die de subspace beschrijft.",
+        "placeholder": "Een korte ondertitel…"
+      },
+      "description": {
+        "label": "Beschrijving",
+        "hint": "Leg uit waarover deze subspace gaat. Markdown wordt ondersteund.",
+        "placeholder": "Waarover gaat deze subspace?"
+      },
+      "tags": {
+        "label": "Tags",
+        "hint": "Tags helpen leden deze subspace te vinden.",
+        "placeholder": "Voeg een tag toe en druk op Enter"
+      },
+      "avatar": {
+        "label": "Avatar",
+        "upload": "Avatar uploaden"
+      },
+      "cardBanner": {
+        "label": "Kaartbanner",
+        "upload": "Kaartbanner uploaden"
+      },
+      "visuals": {
+        "remove": "Afbeelding verwijderen",
+        "resolutionHint": "Aanbevolen: {{width}} × {{height}} px",
+        "tooSmall": "Afbeelding is te klein. Minimaal {{width}} × {{height}} px vereist.",
+        "loadFailed": "Kon de afbeelding niet lezen."
+      },
+      "cancel": "Annuleren",
+      "submit": "Subspace maken",
+      "creating": "Maken…",
+      "validation": {
+        "min3": "Moet minimaal 3 tekens zijn",
+        "maxSmall": "Mag maximaal {{count}} tekens zijn",
+        "maxMarkdown": "Mag maximaal {{count}} tekens zijn",
+        "required": "Naam is verplicht"
+      },
+      "crop": {
+        "title": "Afbeelding bijsnijden",
+        "description": "Pas de uitsnede aan om je afbeelding te kadreren.",
+        "save": "Toepassen",
+        "saving": "Toepassen…",
+        "cancel": "Annuleren",
+        "altLabel": "Alt-tekst",
+        "altPlaceholder": "Beschrijf de afbeelding (optioneel)"
+      }
+    }
+  },
+  "updates": {
+    "pageHeader": {
+      "title": "Updates van de Leads",
+      "subtitle": "Plaats aankondigingen, mijlpalen en voortgangsupdates die zichtbaar zijn voor alle leden van de Space."
+    },
+    "composer": {
+      "new": "Nieuwe update",
+      "title": "Nieuwe update",
+      "placeholder": "Schrijf je update…",
+      "publish": "Publiceren",
+      "submitting": "Publiceren…",
+      "cancel": "Annuleren"
+    },
+    "empty": "Nog geen updates.",
+    "unknownAuthor": "Onbekende auteur",
+    "message": {
+      "actions": "Updateacties",
+      "delete": "Verwijderen"
+    },
+    "deleteDialog": {
+      "title": "Update verwijderen",
+      "description": "Weet je zeker dat je deze update wilt verwijderen? Dit kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    },
+    "loading": "Updates laden"
+  },
+  "templateLibrary": {
+    "title": "Selecteer een template",
+    "titleForType": "Selecteer een {{type}}-template",
+    "cancel": "Annuleren",
+    "loadPlatform": "Templates uit de platformbibliotheek laden",
+    "emptySection": "Geen templates in deze sectie.",
+    "selectAria": "Template {{name}} selecteren",
+    "sections": {
+      "space": "Deze Space",
+      "account": "Mijn innovatiepakketten",
+      "platform": "Platformbibliotheek"
+    }
+  },
+  "templates": {
+    "pageHeader": {
+      "title": "Templates",
+      "subtitle": "Beheer templates voor Spaces, samenwerkingstools, whiteboards, Posts en communityrichtlijnen."
+    },
+    "search": "Templates zoeken...",
+    "addNew": "Nieuwe toevoegen",
+    "createNew": "Een nieuw template maken",
+    "selectFromLibrary": "Selecteer een template uit de platformbibliotheek",
+    "noTemplates": "Geen templates gevonden",
+    "noTemplatesHint": "Probeer een andere zoekterm of maak een nieuw template.",
+    "duplicating": "Nieuw template maken…",
+    "noPreview": "Geen voorbeeld",
+    "custom": "Aangepast",
+    "actions": "Template-acties",
+    "categories": {
+      "space": "Space",
+      "collaborationTool": "Samenwerkingstool",
+      "whiteboard": "Whiteboard",
+      "post": "Post",
+      "communityGuidelines": "Communityrichtlijnen"
+    },
+    "kebab": {
+      "preview": "Voorbeeld",
+      "duplicate": "Dupliceren",
+      "edit": "Bewerken",
+      "delete": "Verwijderen"
+    },
+    "preview": {
+      "title": "Voorbeeld",
+      "name": "Naam",
+      "tagline": "Ondertitel",
+      "description": "Beschrijving",
+      "body": "Inhoud",
+      "noDescription": "Geen beschrijving opgegeven.",
+      "noBody": "Geen inhoud.",
+      "close": "Sluiten",
+      "edit": "Bewerken",
+      "duplicate": "Dupliceren",
+      "duplicating": "Dupliceren…"
+    },
+    "edit": {
+      "title": "Template bewerken",
+      "name": "Naam",
+      "tagline": "Ondertitel",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "Beschrijf dit template…",
+      "tags": "Tags",
+      "tagsPlaceholder": "Voeg een tag toe en druk op Enter",
+      "postDefault": "Standaard Post-beschrijving",
+      "postDefaultPlaceholder": "Vooraf ingevuld weergegeven wanneer leden een Post maken op basis van dit template…",
+      "cancel": "Annuleren",
+      "save": "Opslaan",
+      "saving": "Opslaan…"
+    },
+    "deleteDialog": {
+      "title": "Template verwijderen",
+      "description": "Weet je zeker dat je \"{{name}}\" wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    },
+    "library": {
+      "sections": {
+        "thisSpace": "Deze Space",
+        "myInnovationPacks": "Mijn innovatiepakketten",
+        "platformLibrary": "Platformbibliotheek"
+      },
+      "validation": {}
+    }
+  },
+  "settings": {
+    "pageHeader": {
+      "title": "Instellingen",
+      "subtitle": "Configureer de zichtbaarheid van je Space, lidmaatschapsbeleid en toegestane ledenacties."
+    },
+    "visibility": {
+      "title": "Zichtbaarheid",
+      "description": "Bepaal wie deze Space kan zien en openen",
+      "public": "Openbaar",
+      "publicDescription": "Deze Space en de inhoud ervan zijn zichtbaar voor iedereen op het platform. Gebruikers kunnen alleen bijdragen als ze lid zijn.",
+      "private": "Privé",
+      "privateDescription": "Deze Space is zichtbaar voor iedereen op het platform, maar de inhoud is alleen zichtbaar voor leden.",
+      "hint": "Houd rekening met het doel en het publiek van je Space bij het kiezen van de zichtbaarheid."
+    },
+    "membership": {
+      "title": "Lidmaatschap",
+      "description": "Kies hoe gebruikers lid worden van je Space",
+      "open": "Geen aanvraag vereist",
+      "openDescription": "Alle Space-leden kunnen direct lid worden, zonder dat je hun aanvragen hoeft te beoordelen.",
+      "openHint": "Het beste voor openbare, open samenwerkings-Spaces",
+      "application": "Aanvraag vereist",
+      "applicationDescription": "Als mensen lid willen worden, moeten ze het aanvraagformulier invullen. Je ontvangt hun aanvragen (zie het communitytabblad hier) en je kunt ze accepteren of afwijzen.",
+      "applicationHint": "Het beste voor gecureerde Spaces met specifieke vereisten",
+      "invitation": "Alleen op uitnodiging",
+      "invitationDescription": "Gebruikers kunnen alleen lid worden nadat je ze hebt uitgenodigd. Er is geen 'aanvragen'- of 'lid worden'-knop voor anderen om op te klikken.",
+      "invitationHint": "Het beste voor private, beperkte samenwerkingsteams",
+      "trustedApplicants": "Vertrouwde aanvragers",
+      "hostOrgTrust": "Sta leden van {{host}} toe lid te worden van deze Space zonder aanvraag."
+    },
+    "applicationForm": {
+      "title": "Aanvraagformulier",
+      "description": "In dit gedeelte kun je de vragen wijzigen voor gebruikers die lid willen worden van de Space. Houd er rekening mee dat deze vragen alleen worden weergegeven wanneer de lidmaatschapsopties (in het blok hierboven) zijn ingesteld op \"Aanvraag vereist\".",
+      "introductionLabel": "Introductie",
+      "questionsLabel": "Vragen",
+      "addQuestion": "Vraag toevoegen",
+      "noQuestions": "Nog geen vragen toegevoegd.",
+      "questionPlaceholder": "Voer vraag in…",
+      "required": "Verplicht",
+      "moveUp": "Naar boven",
+      "moveDown": "Naar beneden",
+      "questionRequired": "Vraagtekst is verplicht",
+      "deleteQuestion": "Vraag verwijderen",
+      "deleteConfirm": {
+        "title": "Vraag verwijderen",
+        "description": "Weet je zeker dat je deze vraag wilt verwijderen?",
+        "confirm": "Verwijderen"
+      },
+      "save": "Opslaan",
+      "export": "Exporteer alle ingediende aanvragen"
+    },
+    "allowedActions": {
+      "title": "Toegestane acties",
+      "description": "Kies welke acties leden in deze Space kunnen uitvoeren",
+      "subspaceAdminInvitations": "Subspace-lidmaatschap",
+      "memberCreatePosts": "Posts maken",
+      "videoCalls": "Videogesprekken",
+      "guestContributions": "Gastbijdragen",
+      "memberCreateSubspaces": "Subspaces maken",
+      "inheritMembershipRights": "Lidmaatschapsrechten overerven",
+      "inheritMembershipRightsDescription": "Leden van de bovenliggende Space krijgen automatisch toegang tot deze Subspace.",
+      "subspaceEvents": "Subspace-evenementen",
+      "alkemioSupportAccess": "Alkemio-ondersteuning",
+      "trustHostOrganization": "Vertrouw hostorganisatie",
+      "subspaceAdminInvitationsDescription": "Laat Subspaces hun eigen leden binnenhalen. Zij worden hier ook lid."
+    },
+    "saveAsTemplate": {
+      "title": "Opslaan als template",
+      "description": "Maak een herbruikbaar template van deze subspace, inclusief de layout en inhoud.",
+      "button": "Opslaan als template"
+    },
+    "dangerZone": {
+      "title": "Gevarenzone",
+      "description": "Verwijder deze subspace en alle inhoud ervan permanent.",
+      "delete": "Deze subspace verwijderen",
+      "deleteDialog": {
+        "title": "Subspace verwijderen",
+        "description": "Hierdoor wordt deze subspace en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+        "confirm": "Subspace verwijderen"
+      }
+    },
+    "userInfoVisibility": {
+      "title": "Zichtbaarheid van gebruikersinformatie",
+      "description": "Bepaal wie de gebruikersinformatie van leden in deze space kan zien. Organisaties en virtual contributors volgen de zichtbaarheid van de space.",
+      "followSpace": "Volg de space-zichtbaarheid",
+      "followSpaceDescription": "Gebruikersinformatie van leden is zichtbaar volgens de zichtbaarheid van de space.",
+      "membersOnly": "Alleen leden",
+      "membersOnlyDescription": "Alleen leden van deze space kunnen de gebruikersinformatie van leden zien."
+    }
+  },
+  "storage": {
+    "pageHeader": {
+      "title": "Opslag",
+      "subtitle": "Bekijk en beheer documenten die in deze Space zijn opgeslagen."
+    },
+    "empty": "Nog geen documenten opgeslagen.",
+    "columns": {
+      "name": "Naam",
+      "size": "Grootte",
+      "uploader": "Geüpload door",
+      "date": "Datum",
+      "actions": "Acties"
+    },
+    "openInNewTab": "Openen in nieuw tabblad",
+    "delete": "Document verwijderen",
+    "deleteDialog": {
+      "title": "Document verwijderen",
+      "description": "Weet je zeker dat je \"{{name}}\" wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "confirm": "Verwijderen"
+    }
+  },
+  "account": {
+    "pageHeader": {
+      "title": "Account",
+      "subtitle": "Hier vind je al je Spaces, Virtual Contributors en andere gehoste bronnen. Als je vragen hebt, neem dan gerust contact op met het Alkemio-team."
+    },
+    "url": {
+      "title": "URL",
+      "hint": "De unieke URL voor deze Space. Neem contact op met Alkemio om dit te wijzigen.",
+      "copy": "URL kopiëren",
+      "copied": "URL gekopieerd"
+    },
+    "visibility": {
+      "title": "Zichtbaarheidsstatus",
+      "prefix": "Deze Space staat momenteel in",
+      "suffix": "modus",
+      "contact": "Voor statuswijzigingen neem je contact op met het Alkemio-team."
+    },
+    "host": {
+      "title": "Hostinformatie",
+      "description": "De host is de persoon of organisatie die eigenaar is van deze Space."
+    },
+    "plan": {
+      "title": "Licentie",
+      "description": "Details van je huidige Space-abonnement",
+      "featuresHeading": "Inbegrepen functies",
+      "daysLeft": "Nog {{count}} dagen",
+      "changeLicense": "Licentie wijzigen"
+    },
+    "support": {
+      "title": "Ondersteuning",
+      "message": "Als je een van deze instellingen wilt wijzigen, neem dan contact op met het Alkemio-team.",
+      "contact": "Neem contact op met Alkemio-ondersteuning"
+    },
+    "dangerZone": {
+      "title": "Gevarenzone",
+      "description": "Verwijder deze Space en alle inhoud ervan permanent.",
+      "delete": "Deze Space verwijderen",
+      "deleteDialog": {
+        "title": "Space verwijderen",
+        "description": "Hierdoor wordt deze Space en alle inhoud ervan permanent verwijderd. Deze actie kan niet ongedaan worden gemaakt.",
+        "confirm": "Space verwijderen"
+      }
+    }
+  },
+  "about": {
+    "name": {
+      "title": "Naam van de Space",
+      "description": "De openbare naam van je Space.",
+      "ariaLabel": "Naam van de Space"
+    },
+    "tagline": {
+      "title": "Ondertitel",
+      "description": "Een korte ondertitel die naast de Space-naam wordt weergegeven.",
+      "ariaLabel": "Ondertitel"
+    },
+    "branding": {
+      "title": "Branding van de Space",
+      "description": "Upload een avatar, een paginabanner (3840px breed) en een kaartbanner (416×256).",
+      "noImage": "Geen afbeelding",
+      "upload": "Uploaden",
+      "avatar": {
+        "title": "Avatar",
+        "hint": "Het logo van de Space.",
+        "recrop": "Huidige avatar bijsnijden"
+      },
+      "pageBanner": {
+        "title": "Paginabanner",
+        "hint": "Wordt bovenaan de Space-pagina getoond. Gebruik een afbeelding van minimaal 1536 × 154px.",
+        "recrop": "Huidige paginabanner bijsnijden"
+      },
+      "cardBanner": {
+        "title": "Kaartbanner (416 × 256px)",
+        "hint": "Wordt weergegeven in zoekresultaten en Space-kaarten.",
+        "recrop": "Huidige kaartbanner bijsnijden"
+      },
+      "cropDialog": {
+        "save": "Opslaan",
+        "saving": "Opslaan…",
+        "cancel": "Annuleren",
+        "title": "Afbeelding bijsnijden",
+        "altText": "Beschrijving",
+        "altTextPlaceholder": "Beschrijf deze afbeelding…"
+      },
+      "recropConfirm": {
+        "title": "Originele afbeelding vervangen?",
+        "description": "Als je deze bijsnijding opslaat, wordt een nieuwe afbeelding geüpload en gaat het origineel definitief verloren. De weggesneden delen kunnen later niet worden hersteld.",
+        "confirm": "Afbeelding vervangen",
+        "cancel": "Annuleren"
+      },
+      "changeBanner": "Banner wijzigen",
+      "recropFailed": "Kan deze afbeelding niet laden om bij te snijden. Probeer het opnieuw."
+    },
+    "location": {
+      "title": "Locatie",
+      "description": "De stad en het land van deze Space.",
+      "city": "Stad",
+      "country": "Land (ISO-code)"
+    },
+    "what": {
+      "title": "Wat",
+      "description": "Beschrijf waarover deze Space gaat.",
+      "placeholder": "Waarover gaat deze Space…"
+    },
+    "why": {
+      "title": "Waarom",
+      "description": "Leg de motivatie of waarde van deze Space uit.",
+      "placeholder": "Waarom bestaat deze Space…"
+    },
+    "who": {
+      "title": "Wie",
+      "description": "Beschrijf het doelpubliek of de ideale leden.",
+      "placeholder": "Voor wie is deze Space…"
+    },
+    "tags": {
+      "title": "Tags",
+      "description": "Tags helpen leden je Space te ontdekken.",
+      "placeholder": "Voeg een tag toe en druk op Enter"
+    },
+    "references": {
+      "title": "Referenties en links",
+      "description": "Externe links die op deze Space-pagina worden weergegeven.",
+      "empty": "Nog geen referenties toegevoegd.",
+      "add": "Toevoegen",
+      "row": {
+        "title": "Titel van de referentie",
+        "titlePlaceholder": "Titel",
+        "uri": "Referentie-URL",
+        "uriPlaceholder": "https://…",
+        "description": "Beschrijving van de referentie",
+        "descriptionPlaceholder": "Beschrijving (optioneel)",
+        "remove": "Referentie verwijderen"
+      },
+      "deleteDialog": {
+        "title": "Referentie verwijderen",
+        "description": "Weet je zeker dat je \"{{name}}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt zodra je opslaat.",
+        "untitled": "deze referentie",
+        "confirm": "Verwijderen"
+      }
+    },
+    "preview": {
+      "title": "VOORBEELD",
+      "label": "VOORBEELD",
+      "livePreview": {
+        "title": "Live voorbeeld",
+        "description": "Dit voorbeeld toont hoe je Space-kaart wordt weergegeven in de \"Explore Spaces\"-directory."
+      }
+    },
+    "inlineSave": {
+      "save": "Opslaan",
+      "saving": "Opslaan…",
+      "saved": "Opgeslagen",
+      "retry": "Opnieuw proberen"
+    },
+    "pageHeader": {
+      "title": "Over",
+      "subtitle": "Definieer het doel, de motivatie en het doelpubliek van je Space."
+    }
+  },
+  "classifications": {
+    "sectionTitle": "Classificaties",
+    "sectionDescription": "Classificeer je Space met gestructureerde vocabulaires (bijv. SDG's, Sector) voor vindbaarheid en rapportage.",
+    "addButton": "Classificatie toevoegen",
+    "picker": {
+      "title": "Add a classification",
+      "description": "Pick a Classification Template to add to this Space. You'll select its values next.",
+      "platformSection": "Platform-wide",
+      "spaceSection": "This Space's library",
+      "emptyState": {
+        "title": "No Classification Templates yet",
+        "description": "Create one in a Template Pack or this Space's Template Library, then come back here to add it."
+      },
+      "conflict": {
+        "title": "That name is already in use",
+        "description": "This Space already has a classification labelled \"{{label}}\". Give the new one a different display label to tell them apart.",
+        "fieldLabel": "Display label",
+        "retry": "Add with this label"
+      },
+      "cancel": "Cancel",
+      "searchPlaceholder": "Templates zoeken…",
+      "noMatches": "Geen templates gevonden voor \"{{query}}\".",
+      "multiSelect": "Meer",
+      "singleSelect": "Eén"
+    },
+    "valueSelector": {
+      "noneSelected": "No values selected yet"
+    },
+    "display": {
+      "toggleLabel": "Show on the Space page",
+      "hiddenHint": "Not shown on the Space page"
+    },
+    "remove": {
+      "menuLabel": "Remove classification",
+      "confirmTitle": "Remove this classification?",
+      "confirmDescription": "This removes \"{{label}}\" from this Space, along with any values you selected. This cannot be undone — there is no undo and no way to restore it. To use it again, you'll need to add it and re-select values from scratch.",
+      "confirmButton": "Remove"
+    },
+    "removedEntryError": "This classification was removed — refreshing the page.",
+    "entry": {
+      "multiSelect": "Meerkeuze",
+      "singleSelect": "Eén keuze",
+      "selectedCount_one": "{{count}} geselecteerd",
+      "selectedCount_other": "{{count}} geselecteerd",
+      "actions": "Classificatie-acties: {{label}}",
+      "selectValues": "Waarden selecteren…",
+      "deselectValue": "{{label}} deselecteren"
+    },
+    "removedConcurrently": "Deze classificatie is door iemand anders verwijderd. De lijst is vernieuwd."
+  }
+}

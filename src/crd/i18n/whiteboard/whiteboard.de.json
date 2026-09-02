@@ -1,0 +1,108 @@
+{
+  "join": {
+    "welcome": "Willkommen bei",
+    "title": "Whiteboard beitreten",
+    "description": "Geben Sie Ihren Namen ein, um der Whiteboard-Sitzung beizutreten. Andere Teilnehmer sehen diesen Namen.",
+    "placeholder": "Ihr Name",
+    "guestNameLabel": "Anzeigename des Gastes",
+    "joinButton": "Als Gast beitreten",
+    "joiningButton": "Beitritt...",
+    "signInButton": "Bei Alkemio anmelden"
+  },
+  "error": {
+    "notFound": {
+      "title": "Whiteboard nicht gefunden",
+      "message": "Dieses Whiteboard existiert nicht oder ist nicht mehr verfügbar."
+    },
+    "serverError": {
+      "title": "Etwas ist schiefgelaufen",
+      "message": "Wir konnten dieses Whiteboard nicht laden. Bitte versuchen Sie es erneut."
+    },
+    "retry": "Erneut versuchen"
+  },
+  "editor": {
+    "editDisplayName": "Titel bearbeiten",
+    "saveDisplayName": "Titel speichern",
+    "cancelEdit": "Bearbeitung abbrechen",
+    "delete": "Whiteboard löschen",
+    "save": "Speichern",
+    "restart": "Zusammenarbeit neu starten",
+    "guestContributionsWarning": "Gastbeiträge sind aktiviert",
+    "closeWhiteboard": "Whiteboard schließen",
+    "saveStatus": {
+      "label": "Speicherstatus",
+      "close": "Schließen"
+    },
+    "loadingWhiteboard": "Whiteboard wird geladen",
+    "untitled": "Whiteboard",
+    "unsavedChanges": {
+      "title": "Ungespeicherte Änderungen verwerfen?",
+      "description": "Sie haben ungespeicherte Änderungen, die verloren gehen. Möchten Sie wirklich fortfahren?",
+      "confirm": "Verwerfen",
+      "cancel": "Weiter bearbeiten",
+      "wait": "Geöffnet lassen und warten",
+      "export": "Zuerst exportieren"
+    }
+  },
+  "footer": {
+    "saveStatus": {
+      "saved": "Gespeichert",
+      "saving": "Wird gespeichert…",
+      "finalizing": "Änderungen werden abgeschlossen…",
+      "offline": "Offline — wird automatisch synchronisiert",
+      "ended": "Nicht verfügbar"
+    },
+    "guestContributionsWarning": "Jeder mit dem Link kann bearbeiten",
+    "readonlyReason": {
+      "readonly": "<strong>Nur-Lese-Modus</strong> <learnwhy>klicken Sie hier, um zu erfahren, warum</learnwhy>",
+      "contentUpdatePolicy": "Sie sind nicht berechtigt, dieses Whiteboard zu bearbeiten. Bitten Sie den Besitzer <ownerlink>{{ownerName}}</ownerlink>, die Freigabeeinstellungen zu ändern, wenn Sie beitragen möchten.",
+      "contentUpdatePolicyNoOwner": "Sie sind nicht berechtigt, dieses Whiteboard zu bearbeiten. Der Besitzer ist nicht mehr verfügbar – bitten Sie einen Administrator des Bereichs, die Freigabeeinstellungen zu ändern, wenn Sie beitragen möchten.",
+      "noMembership": "Sie müssen Mitglied des {{spaceLevel}} sein, in dem sich dieses Whiteboard befindet, um es bearbeiten zu können. Klicken Sie hier, um <spacelink>beizutreten/sich zu bewerben</spacelink>",
+      "unauthenticated": "Sie müssen angemeldet und Mitglied des {{spaceLevel}} sein, in dem sich dieses Whiteboard befindet, um es bearbeiten zu können. Klicken Sie hier, um sich <signinlink>anzumelden</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "Nur-Lese-Modus",
+      "reason": {
+        "inactivity": "Sie können dieses Whiteboard nicht bearbeiten, weil Sie zu lange inaktiv waren. Bitte versuchen Sie, das Whiteboard erneut zu öffnen, um weiter zu bearbeiten.",
+        "multiUserNotAllowed": "Sie können dieses Whiteboard nicht bearbeiten, weil dieser Space nur einen Whiteboard-Bearbeiter gleichzeitig erlaubt",
+        "roomCapacityReached": "Sie können dieses Whiteboard nicht bearbeiten, weil dieser Space mehrere Bearbeiter gleichzeitig erlaubt, aber das Maximum erreicht ist",
+        "generic": "Sie können dieses Whiteboard aus einem der folgenden Gründe nicht bearbeiten:\n\n- Sie waren 2 Stunden oder länger inaktiv\n- Sie sind kein Mitglied des Space\n- Dieser Space erlaubt nur einen Whiteboard-Bearbeiter gleichzeitig\n- Dieser Space erlaubt mehr Bearbeiter, aber das Maximum ist erreicht"
+      }
+    }
+  },
+  "disconnected": {
+    "reconnect": "Erneut verbinden",
+    "reloadPage": "Seite neu laden",
+    "countdown": "({{seconds}}s)",
+    "close": "Schließen"
+  },
+  "preview": {
+    "editButton": "Vorschau-Einstellungen des Whiteboards bearbeiten",
+    "settings": {
+      "title": "Vorschau-Einstellungen",
+      "subtitle": "Wählen Sie, wie die Whiteboard-Miniaturansicht in Karten und Vorschauen aussieht"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Automatisch",
+        "description": "Automatisch die gesamte Leinwandansicht erfassen"
+      },
+      "CUSTOM": {
+        "title": "Benutzerdefiniert",
+        "description": "Wählen Sie Ihren eigenen Zuschneidebereich"
+      },
+      "FIXED": {
+        "title": "Fest",
+        "description": "Auf einen bestimmten Bereich der Leinwand fixieren"
+      }
+    },
+    "crop": {
+      "previewArea": "Whiteboard-Vorschaubereich",
+      "reset": "Zurücksetzen",
+      "cancel": "Abbrechen",
+      "confirm": "Bestätigen",
+      "loading": "Laden",
+      "zoom": "Zoom"
+    }
+  }
+}

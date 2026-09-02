@@ -1,0 +1,108 @@
+{
+  "join": {
+    "welcome": "Bienvenido a",
+    "title": "Unirse a la pizarra",
+    "description": "Introduce tu nombre para unirte a la sesión de pizarra. Los demás participantes verán este nombre.",
+    "placeholder": "Tu nombre",
+    "guestNameLabel": "Nombre de invitado",
+    "joinButton": "Unirse como invitado",
+    "joiningButton": "Uniéndose...",
+    "signInButton": "Iniciar sesión en Alkemio"
+  },
+  "error": {
+    "notFound": {
+      "title": "Pizarra no encontrada",
+      "message": "Esta pizarra no existe o ya no está disponible."
+    },
+    "serverError": {
+      "title": "Algo salió mal",
+      "message": "No pudimos cargar esta pizarra. Inténtalo de nuevo."
+    },
+    "retry": "Reintentar"
+  },
+  "editor": {
+    "editDisplayName": "Editar título",
+    "saveDisplayName": "Guardar título",
+    "cancelEdit": "Cancelar edición",
+    "delete": "Eliminar pizarra",
+    "save": "Guardar",
+    "restart": "Reiniciar colaboración",
+    "guestContributionsWarning": "Las contribuciones de invitados están habilitadas",
+    "closeWhiteboard": "Cerrar pizarra",
+    "saveStatus": {
+      "label": "Estado de guardado",
+      "close": "Cerrar"
+    },
+    "loadingWhiteboard": "Cargando pizarra",
+    "untitled": "Pizarra",
+    "unsavedChanges": {
+      "title": "¿Descartar cambios no guardados?",
+      "description": "Tienes cambios sin guardar que se perderán. ¿Seguro que quieres continuar?",
+      "confirm": "Descartar",
+      "cancel": "Seguir editando",
+      "wait": "Mantener abierto y esperar",
+      "export": "Exportar primero"
+    }
+  },
+  "footer": {
+    "saveStatus": {
+      "saved": "Guardado",
+      "saving": "Guardando…",
+      "finalizing": "Finalizando cambios…",
+      "offline": "Sin conexión — se sincronizará automáticamente",
+      "ended": "No disponible"
+    },
+    "guestContributionsWarning": "Cualquiera con el enlace puede editar",
+    "readonlyReason": {
+      "readonly": "<strong>Modo solo lectura</strong> <learnwhy>haz clic aquí para saber por qué</learnwhy>",
+      "contentUpdatePolicy": "No tienes derechos para editar esta pizarra. Pide al propietario, <ownerlink>{{ownerName}}</ownerlink>, que cambie la configuración de uso compartido si deseas contribuir.",
+      "contentUpdatePolicyNoOwner": "No tienes derechos para editar esta pizarra. El propietario ya no está disponible: pide a un administrador del espacio que cambie la configuración de uso compartido si deseas contribuir.",
+      "noMembership": "Debes ser miembro del {{spaceLevel}} en el que está esta pizarra para poder editar. Haz clic aquí para <spacelink>unirte/solicitar</spacelink>",
+      "unauthenticated": "Debes iniciar sesión y ser miembro del {{spaceLevel}} en el que está esta pizarra para poder editar. Haz clic aquí para <signinlink>iniciar sesión</signinlink>"
+    },
+    "readonlyDialog": {
+      "title": "Modo solo lectura",
+      "reason": {
+        "inactivity": "No puedes editar esta pizarra porque has estado inactivo durante demasiado tiempo. Por favor, intenta volver a abrir la pizarra para continuar editando.",
+        "multiUserNotAllowed": "No puedes editar esta pizarra porque este espacio solo permite un editor de pizarra a la vez.",
+        "roomCapacityReached": "No puedes editar esta pizarra porque este espacio permite múltiples editores simultáneamente, pero se ha alcanzado el máximo.",
+        "generic": "No puedes editar esta pizarra por alguna de las siguientes razones:\n\n- Has estado inactivo durante 2 horas o más\n- No eres miembro del espacio\n- Este espacio solo permite un editor de pizarra a la vez\n- Este espacio permite más editores, pero se ha alcanzado el máximo."
+      }
+    }
+  },
+  "disconnected": {
+    "reconnect": "Reconectar",
+    "reloadPage": "Recargar página",
+    "countdown": "({{seconds}}s)",
+    "close": "Cerrar"
+  },
+  "preview": {
+    "editButton": "Editar los ajustes de vista previa de la pizarra",
+    "settings": {
+      "title": "Ajustes de vista previa",
+      "subtitle": "Elige cómo se ve la miniatura de la pizarra en tarjetas y vistas previas"
+    },
+    "modes": {
+      "AUTO": {
+        "title": "Automático",
+        "description": "Capturar automáticamente la vista completa del lienzo"
+      },
+      "CUSTOM": {
+        "title": "Personalizado",
+        "description": "Elige tu propia área de recorte"
+      },
+      "FIXED": {
+        "title": "Fijo",
+        "description": "Fijar a un área específica del lienzo"
+      }
+    },
+    "crop": {
+      "previewArea": "Área de vista previa de la pizarra",
+      "reset": "Restablecer",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "loading": "Cargando",
+      "zoom": "Zoom"
+    }
+  }
+}

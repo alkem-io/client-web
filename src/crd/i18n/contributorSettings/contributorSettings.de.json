@@ -1,0 +1,1022 @@
+{
+  "wizard": {
+    "title": "Virtual Contributor erstellen",
+    "close": "Schließen",
+    "loading": "Wird bearbeitet…",
+    "next": "Weiter",
+    "back": "Zurück",
+    "create": "Erstellen",
+    "initial": {
+      "intro": "Gib deinem Virtual Contributor einen Namen und wähle, woher sein Wissen stammt.",
+      "uploadAvatar": "Avatar hochladen",
+      "name": "Name",
+      "tagline": "Slogan",
+      "description": "Beschreibung",
+      "pathTitle": "Woher stammt das Wissen?",
+      "paths": {
+        "writtenKnowledge": {
+          "title": "Geschriebenes Wissen",
+          "subtitle": "Posts und Dokumente hinzufügen"
+        },
+        "existingSpace": {
+          "title": "Bestehender Space",
+          "subtitle": "Verwende einen Space, auf den du Zugriff hast"
+        },
+        "external": {
+          "title": "Externe KI",
+          "subtitle": "Einen externen Anbieter verbinden"
+        }
+      }
+    },
+    "addKnowledge": {
+      "intro": "Welches Wissen soll dein Virtual Contributor haben? Schreibe es in posts oder lade es in Dokumenten hoch. Du kannst Inhalte später aktualisieren, hinzufügen und entfernen.",
+      "postsTitle": "Posts",
+      "postTitle": "Titel",
+      "postDescription": "Inhalt",
+      "removePost": "Post entfernen",
+      "addPost": "Post hinzufügen",
+      "documentsTitle": "Dokumente",
+      "documentName": "Name",
+      "documentUrl": "URL",
+      "attachDocument": "Datei anhängen",
+      "removeDocument": "Dokument entfernen",
+      "addDocument": "Dokument hinzufügen",
+      "exampleTitle": "Example: About Alkemio",
+      "exampleDescription": "Tip: Create a structured and specific text, for example:\n\n<strong>Background</strong>\n\nAlkemio, founded in 2020, was born out of frustration with slow progress on COVID-related challenges and a recognition of the numerous fast-moving challenges we face daily.\n\n<strong>Governance</strong>\n\nTo maintain trust and realize our long-term vision, we’ve adopted Steward Ownership as our core group structure. Steward ownership is...\n",
+      "initialDocuments": "Initial Links and Documents"
+    },
+    "existingSpace": {
+      "intro": "Wähle einen Space als Wissensbasis.",
+      "empty": "Keine Spaces verfügbar."
+    },
+    "external": {
+      "intro": "Verbinde einen externen KI-Anbieter.",
+      "engine": "Anbieter",
+      "apiKey": "API-Schlüssel",
+      "assistantId": "Assistenten-ID",
+      "engines": {
+        "genericOpenai": "OpenAI",
+        "openaiAssistant": "OpenAI Assistant"
+      }
+    },
+    "chooseCommunity": {
+      "intro": "Füge deinen Virtual Contributor zu einer Community hinzu oder überspringe dies vorerst.",
+      "skip": "Vorerst überspringen",
+      "errorMessage": "Konnte nicht zur Community hinzugefügt werden — bitte erneut versuchen."
+    },
+    "tryVc": {
+      "title": "{{name}} ist bereit!",
+      "description": "Dein Virtual Contributor wurde erstellt.",
+      "view": "Profil ansehen",
+      "done": "Fertig"
+    },
+    "createdVirtualContributor": {
+      "successMessage": "Virtual Contributor '{{name}}' created successfully",
+      "errorMessage": "Virtual Contributor konnte nicht erstellt werden — bitte erneut versuchen."
+    }
+  },
+  "breadcrumbs": {
+    "settings": "Einstellungen"
+  },
+  "shell": {
+    "tabs": {
+      "user": {
+        "profile": "Profil",
+        "account": "Konto",
+        "membership": "Mitgliedschaft",
+        "organizations": "Organisationen",
+        "notifications": "Benachrichtigungen",
+        "assistant": "Assistent",
+        "settings": "Einstellungen",
+        "security": "Sicherheit"
+      },
+      "org": {
+        "profile": "Profil",
+        "account": "Konto",
+        "community": "Gemeinschaft",
+        "authorization": "Autorisierung",
+        "settings": "Einstellungen"
+      },
+      "vc": {
+        "profile": "Profil",
+        "membership": "Mitgliedschaft",
+        "settings": "Einstellungen"
+      }
+    }
+  },
+  "user": {
+    "profile": {
+      "pageTitle": "Profil",
+      "identity": {
+        "title": "Identität",
+        "displayName": {
+          "label": "Anzeigename",
+          "hint": "So erscheinst du auf Alkemio.",
+          "required": "Anzeigename ist erforderlich"
+        },
+        "firstName": {
+          "label": "Vorname",
+          "hint": "Dein Vorname.",
+          "required": "Vorname ist erforderlich"
+        },
+        "lastName": {
+          "label": "Nachname",
+          "hint": "Dein Familienname.",
+          "required": "Nachname ist erforderlich"
+        },
+        "email": {
+          "label": "E-Mail",
+          "readOnlyCaption": "Wende dich an den Support, um deine E-Mail-Adresse zu ändern"
+        },
+        "phone": {
+          "label": "Telefon",
+          "hint": "Optional. Wir geben sie nicht weiter.",
+          "invalidFormat": "Telefonnummer in nicht unterstütztem Format"
+        }
+      },
+      "aboutYou": {
+        "title": "Über dich",
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Eine kurze Zeile, die in deinem Profil erscheint."
+        },
+        "location": {
+          "title": "Standort",
+          "city": "Stadt",
+          "country": "Land",
+          "countryPlaceholder": "Land auswählen"
+        },
+        "bio": {
+          "label": "Biografie",
+          "hint": "Markdown wird unterstützt."
+        },
+        "skills": {
+          "label": "Fähigkeiten",
+          "hint": "Fähigkeiten, die du anbieten kannst. Mit Enter hinzufügen.",
+          "placeholder": "z. B. UX-Forschung, TypeScript, Moderation"
+        },
+        "keywords": {
+          "label": "Schlüsselwörter",
+          "hint": "Schlüsselwörter, die deine Interessen beschreiben. Mit Enter hinzufügen.",
+          "placeholder": "z. B. Klima, Governance, Open Source"
+        }
+      },
+      "socialLinks": {
+        "title": "Soziale Profile",
+        "linkedinPlaceholder": "https://linkedin.com/in/dein-name",
+        "bskyPlaceholder": "https://bsky.app/profile/dein-name",
+        "githubPlaceholder": "https://github.com/dein-name",
+        "addAnother": "Weitere Referenz hinzufügen",
+        "namePlaceholder": "Name der Referenz",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Beschreibung (optional)",
+        "removeAriaLabel": "Referenz entfernen",
+        "deleteDialog": {
+          "title": "Referenz entfernen?",
+          "description": "Beim Entfernen wird die Referenz nach dem Speichern auch von deinem öffentlichen Profil entfernt.",
+          "confirm": "Referenz entfernen"
+        }
+      },
+      "avatar": {
+        "title": "Profilbild",
+        "changeButton": "Avatar ändern",
+        "helperText": "Empfohlen: 400×400 px. JPG, PNG oder GIF.",
+        "uploading": "Wird hochgeladen…"
+      }
+    },
+    "membership": {
+      "pageTitle": "Mitgliedschaft",
+      "homeSpace": {
+        "title": "Haupt-Space",
+        "description": "Wähle einen Space, der nach der Anmeldung geöffnet wird. Du kannst auch die automatische Weiterleitung aktivieren.",
+        "selectLabel": "Haupt-Space",
+        "noSelection": "Kein Haupt-Space",
+        "autoRedirectLabel": "Nach der Anmeldung automatisch zu meinem Haupt-Space weiterleiten",
+        "autoRedirectDisabledHint": "Wähle einen Haupt-Space, um die automatische Weiterleitung zu aktivieren."
+      },
+      "myMemberships": {
+        "title": "Meine Mitgliedschaften",
+        "searchPlaceholder": "Mitgliedschaften suchen...",
+        "empty": "Du bist noch in keinem Space Mitglied.",
+        "summary": "{{shown}} von {{total}} Mitgliedschaften angezeigt",
+        "filteredEmptyTitle": "Keine Mitgliedschaften gefunden",
+        "filteredEmptyDescription": "Passe die Filter oder die Suchanfrage an.",
+        "clearFilters": "Filter zurücksetzen"
+      },
+      "menu": {
+        "viewByType": "{{type}} ansehen"
+      },
+      "filter": {
+        "all": "Alle",
+        "spaces": "Spaces",
+        "subspaces": "Subspaces"
+      },
+      "type": {
+        "space": "Space",
+        "subspace": "Subspace"
+      },
+      "role": {
+        "admin": "Admin",
+        "lead": "Lead",
+        "member": "Mitglied"
+      },
+      "leave": {
+        "menuItem": "Verlassen",
+        "menuItemLabeled": "{{type}} verlassen",
+        "dialogTitle": "Diese Mitgliedschaft verlassen?",
+        "dialogDescription": "Du bist im Begriff, „{{spaceName}}“ zu verlassen. Du verlierst den Zugriff auf mitgliederexklusive Inhalte und musst dich erneut bewerben.",
+        "dialogConfirm": "Verlassen",
+        "success": "Mitgliedschaft verlassen",
+        "error": "Verlassen fehlgeschlagen — bitte erneut versuchen"
+      },
+      "pendingApplications": {
+        "title": "Ausstehende Bewerbungen",
+        "empty": "Du hast keine ausstehenden Bewerbungen.",
+        "statusPending": "Ausstehend"
+      },
+      "subspaceFallbackL1": "Subspace ({{id}}…)",
+      "subspaceFallbackL2": "Sub-subspace ({{id}}…)",
+      "ledBy": "Geleitet von:",
+      "ledByAria": "{{count}} Community-Leads",
+      "leadsMore": "und {{count}} weitere"
+    },
+    "security": {
+      "pageTitle": "Sicherheit",
+      "title": "Sicherheit",
+      "description": "Verwalte Passkeys und WebAuthn-Anmeldedaten für dein Konto.",
+      "notEnabled": "WebAuthn / Passkey ist für dieses Konto nicht aktiviert.",
+      "errorDescription": "Sicherheitseinstellungen konnten nicht geladen werden — bitte aktualisiere die Seite.",
+      "sessionExpired": {
+        "description": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können diese Einstellungen nicht geladen werden. Ein Neuladen hilft nicht — melde dich ab und wieder an, um sie wiederherzustellen. Der Rest von Alkemio funktioniert währenddessen weiter.",
+        "action": "Abmelden und erneut anmelden"
+      },
+      "password": {
+        "title": "Passwort ändern",
+        "description": "Aktualisiere das Passwort, mit dem du dich in deinem Konto anmeldest.",
+        "notEnabled": "Die Anmeldung mit Passwort ist für dieses Konto nicht aktiviert.",
+        "confirmLabel": "Neues Passwort bestätigen",
+        "mismatch": "Passwörter stimmen nicht überein."
+      },
+      "mcpApiKeys": {
+        "title": "MCP-API-Schlüssel",
+        "description": "Erstelle Schlüssel, damit externe MCP-Clients (wie Claude Desktop oder Claude Code) sich in deinem Namen mit Alkemio verbinden können.",
+        "empty": {
+          "title": "Noch keine API-Schlüssel",
+          "description": "Erstelle einen Schlüssel, um einen MCP-Client mit deinem Konto zu verbinden.",
+          "create": "API-Schlüssel erstellen"
+        },
+        "list": {
+          "name": "Name",
+          "operations": "Operationen",
+          "created": "Erstellt",
+          "expires": "Läuft ab",
+          "neverExpires": "Läuft nie ab",
+          "lastUsed": "Zuletzt verwendet",
+          "neverUsed": "Nie verwendet",
+          "lastUsedFrom": "von {{address}}",
+          "status": "Status",
+          "revoke": "Widerrufen"
+        },
+        "status": {
+          "active": "Aktiv",
+          "expired": "Abgelaufen",
+          "revoked": "Widerrufen"
+        },
+        "operations": {
+          "read": "Lesen",
+          "tools": "Tools"
+        },
+        "create": {
+          "trigger": "API-Schlüssel erstellen",
+          "title": "MCP-API-Schlüssel erstellen",
+          "description": "Wähle einen Namen, die zulässigen Operationen und optional ein Ablaufdatum.",
+          "nameLabel": "Name",
+          "namePlaceholder": "z. B. Claude Desktop",
+          "operationsLabel": "Operationen",
+          "operationsRequired": "Wähle mindestens eine Operation.",
+          "expiryLabel": "Ablaufdatum (optional)",
+          "expiryPlaceholder": "Läuft nie ab",
+          "expiryPastError": "Das Ablaufdatum muss in der Zukunft liegen.",
+          "cancel": "Abbrechen",
+          "submit": "Schlüssel erstellen",
+          "submitting": "Wird erstellt…",
+          "capReachedError": "Du hast das Limit von {{limit}} aktiven API-Schlüsseln erreicht. Widerrufe einen, um Platz zu schaffen.",
+          "genericError": "Der API-Schlüssel konnte nicht erstellt werden — versuche es erneut."
+        },
+        "reveal": {
+          "title": "API-Schlüssel erstellt",
+          "warning": "Kopiere diesen Schlüssel jetzt — du wirst ihn danach nicht mehr sehen können.",
+          "keyLabel": "API-Schlüssel",
+          "copy": "Kopieren",
+          "copied": "Kopiert",
+          "copyAnnouncement": "API-Schlüssel in die Zwischenablage kopiert.",
+          "manualCopyHint": "Zwischenablagenzugriff nicht verfügbar — wähle das Feld oben aus und kopiere manuell.",
+          "recipeTitle": "Verbindungsanleitung",
+          "recipeEndpointLabel": "Endpunkt",
+          "recipeHeaderLabel": "Header",
+          "close": "Fertig"
+        },
+        "interrupted": {
+          "title": "Schlüsselwert nicht mehr verfügbar",
+          "description": "Der Wert dieses Schlüssels kann nicht mehr angezeigt werden. Widerrufe ihn und erstelle einen neuen, falls du noch einen Client verbinden musst.",
+          "revokeAndRecreate": "Widerrufen und neuen Schlüssel erstellen"
+        },
+        "revoke": {
+          "title": "API-Schlüssel widerrufen",
+          "description": "Das Widerrufen von \"{{name}}\" beendet die Authentifizierung sofort. Dies kann nicht rückgängig gemacht werden.",
+          "cancel": "Abbrechen",
+          "confirm": "Schlüssel widerrufen",
+          "revoking": "Wird widerrufen…",
+          "success": "\"{{name}}\" wurde widerrufen.",
+          "error": "Der Schlüssel konnte nicht widerrufen werden — versuche es erneut."
+        },
+        "errors": {
+          "notFound": "Dieser API-Schlüssel konnte nicht gefunden werden.",
+          "loadError": "Deine API-Schlüssel konnten nicht geladen werden — bitte aktualisiere die Seite.",
+          "retry": "Erneut versuchen"
+        }
+      },
+      "connectedAccounts": {
+        "title": "Verbundene Konten",
+        "description": "Jede Möglichkeit, mit der du dich derzeit bei diesem Konto anmelden kannst.",
+        "provider": {
+          "notConnected": "Nicht verbunden",
+          "connected": "Verbunden"
+        },
+        "actions": {
+          "connect": "Verbinden",
+          "connectAria": "{{provider}} verbinden",
+          "disconnect": "Trennen",
+          "disconnectAria": "{{provider}} trennen"
+        },
+        "confirmDisconnect": {
+          "title": "{{provider}} trennen?",
+          "description": "Du kannst dich nicht mehr mit {{provider}} anmelden. Wenn du später erneut verbindest und der Anbieter seine Art der Identifizierung geändert hat, ist genau diese Verbindung möglicherweise nicht wiederherstellbar.",
+          "confirm": "Trennen"
+        },
+        "locked": {
+          "reason": "Dies ist derzeit deine einzige Möglichkeit, dich anzumelden — füge unten zuerst ein Passwort oder einen Passkey hinzu, bevor du die Verbindung trennen kannst."
+        },
+        "unavailable": {
+          "message": "Wir können deine Anmeldemethoden gerade nicht anzeigen. Versuche es gleich erneut - die Seite muss nicht neu geladen werden.",
+          "retry": "Erneut versuchen"
+        },
+        "sessionExpired": {
+          "message": "Deine Sitzung bei unserem Anmeldedienst ist abgelaufen, daher können deine Anmeldemethoden nicht geladen werden. Ein erneuter Versuch hilft nicht — melde dich über die Aktion unten ab, um sie wiederherzustellen."
+        },
+        "messages": {
+          "changesSaved": "Deine Änderungen wurden gespeichert!",
+          "identityAlreadyLinked": "Diese Identität ist bereits mit einem anderen Alkemio-Konto verbunden. An keinem der beiden Konten wurde etwas geändert.",
+          "linked": "{{provider}} verbunden.",
+          "unlinked": "{{provider}} getrennt.",
+          "connectFailed": "{{provider}} konnte nicht verbunden werden — versuche es erneut.",
+          "disconnectFailed": "{{provider}} konnte nicht getrennt werden — versuche es erneut.",
+          "reauthRequiredConnect": "Bestätige, dass du es bist, und versuche anschließend erneut, {{provider}} zu verbinden.",
+          "reauthRequiredDisconnect": "Bestätige, dass du es bist, und versuche anschließend erneut, {{provider}} zu trennen."
+        },
+        "credentials": {
+          "password": {
+            "label": "Passwort",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passwort ändern"
+          },
+          "passkey": {
+            "label": "Passkey",
+            "set": "Eingerichtet",
+            "notSet": "Nicht eingerichtet",
+            "manage": "Passkeys verwalten"
+          }
+        }
+      },
+      "deleteAccount": {
+        "title": "Konto löschen",
+        "description": "Löscht dein Alkemio-Konto dauerhaft.",
+        "cardBody": "Das Löschen deines Kontos ist sofort und endgültig. Dein Profil, deine Einstellungen, hochgeladene Dateien und Anmeldedaten werden entfernt und können nicht wiederhergestellt werden.",
+        "trigger": "Konto löschen",
+        "preflightError": "Es konnte nicht geprüft werden, ob dein Konto gelöscht werden kann - versuche es erneut.",
+        "reauthFailed": "Deine Sitzung konnte nicht aktualisiert werden. Melde dich ab und wieder an und versuche es dann erneut.",
+        "confirm": {
+          "title": "Konto löschen?",
+          "description": "Dies löscht dein Alkemio-Konto dauerhaft. Dies kann nicht rückgängig gemacht werden.",
+          "instructions": "Gib deinen Namen - {{name}} - ein, um zu bestätigen.",
+          "namePlaceholder": "Gib deinen Namen zur Bestätigung ein",
+          "subscriptionNotice": "Mit deinem Konto ist ein aktives Abonnement verknüpft. Die Löschung wird fortgesetzt; die Abrechnung erfolgt separat.",
+          "cancel": "Abbrechen",
+          "confirmLabel": "Mein Konto löschen",
+          "deleting": "Wird gelöscht…",
+          "genericError": "Dein Konto konnte nicht gelöscht werden - versuche es erneut."
+        },
+        "blocked": {
+          "title": "Du kannst dein Konto noch nicht löschen",
+          "description": "Dein Konto enthält noch Elemente, die zuerst aufgelöst werden müssen.",
+          "truncatedNotice": "Zeigt die ersten {{count}} von {{total}} Elementen.",
+          "resolveLink": "Meine Kontoressourcen verwalten",
+          "supportLink": "Support kontaktieren",
+          "close": "Schließen",
+          "soleOwner": {
+            "notice": "Du bist der einzige Eigentümer von {{name}}. Ernenne einen weiteren Eigentümer, bevor du dein Konto löschst, oder kontaktiere den Support."
+          },
+          "kinds": {
+            "ACCOUNT_SPACE": "Space",
+            "ACCOUNT_VIRTUAL_CONTRIBUTOR": "Virtual Contributor",
+            "ACCOUNT_INNOVATION_PACK": "Innovationspaket",
+            "ACCOUNT_INNOVATION_HUB": "Innovations-Hub",
+            "SOLE_ORGANIZATION_OWNER": "Organisation (einziger Eigentümer)"
+          }
+        }
+      }
+    },
+    "settings": {
+      "pageTitle": "Einstellungen",
+      "communication": {
+        "title": "Kommunikation und Datenschutz",
+        "allowMessagesLabel": "Andere Nutzer dürfen mir Direktnachrichten senden",
+        "allowMessagesDescription": "Wenn deaktiviert, können andere Nutzer kein Direktnachrichten-Gespräch mit dir starten.",
+        "allowEmailContactLabel": "Anderen erlauben, mich per E-Mail zu kontaktieren",
+        "allowEmailContactDescription": "Wenn aktiviert, können Personen, die dich nicht per Chat erreichen, dir eine E-Mail an deine Kontoadresse senden. Deine Adresse wird ihnen nie angezeigt.",
+        "error": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+      },
+      "designSystem": {
+        "title": "Design-System",
+        "description": "Wechsle zwischen dem neuen (CRD) und dem klassischen (MUI) Design. Diese Einstellung wird lokal auf diesem Gerät gespeichert.",
+        "toggleLabel": "Das neue Design (CRD) verwenden",
+        "reloadCaption": "Die Seite wird nach der Änderung neu geladen."
+      },
+      "language": {
+        "title": "Sprache",
+        "label": "Oberflächensprache",
+        "description": "Die in Alkemio verwendete Sprache. Änderungen gelten für alle deine Geräte.",
+        "error": "Spracheinstellung konnte nicht gespeichert werden — bitte erneut versuchen."
+      }
+    },
+    "notifications": {
+      "pageTitle": "Benachrichtigungen",
+      "helpBanner": "Bearbeite deine Benachrichtigungseinstellungen. Änderungen werden automatisch gespeichert.",
+      "toggleAria": "{{channel}}-Benachrichtigung umschalten für: {{label}}",
+      "toggleError": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen",
+      "inAppLockedChat": "Chatnachrichten erscheinen bereits live im Chat-Panel, daher werden für diese Zeile keine In-App-Benachrichtigungen gesendet",
+      "columns": {
+        "activity": "Aktivität",
+        "inApp": "In-App",
+        "email": "E-Mail",
+        "push": "Push"
+      },
+      "push": {
+        "masterToggle": "Push-Benachrichtigungen",
+        "masterToggleDescription": "Aktiviere Push-Benachrichtigungen auf diesem Gerät. Du kannst unten festlegen, welche Ereignisse sie auslösen.",
+        "permissionDenied": "Die Berechtigung für Benachrichtigungen wurde verweigert. Passe die Browsereinstellungen an, um Push zu aktivieren.",
+        "unavailable": "Push-Benachrichtigungen sind in diesem Browser nicht verfügbar.",
+        "requiresPwa": "Push-Benachrichtigungen erfordern, dass du diese App zum Startbildschirm hinzufügst.",
+        "error": "Push-Abonnement konnte nicht aktualisiert werden — bitte erneut versuchen"
+      },
+      "groups": {
+        "space": {
+          "title": "Space-Benachrichtigungen",
+          "description": "Verwalte Benachrichtigungen für Space-Ereignisse wie Beiträge, Kommentare und Community-Updates."
+        },
+        "spaceAdmin": {
+          "title": "Space-Admin-Benachrichtigungen",
+          "description": "Benachrichtigungen für Spaces, in denen du Admin oder Lead bist."
+        },
+        "user": {
+          "title": "Nutzer-Benachrichtigungen",
+          "description": "Personalisiere Hinweise zu Interaktionen wie Antworten, Erwähnungen und Einladungen."
+        },
+        "platform": {
+          "title": "Plattform-Benachrichtigungen",
+          "description": "Bleibe über plattformweite Diskussionen, neue Funktionen und Ankündigungen informiert."
+        },
+        "platformAdmin": {
+          "title": "Plattform-Admin-Benachrichtigungen",
+          "description": "Benachrichtigungen für Plattform-Administratoren (Nutzer-Lebenszyklus, Erstellen von Spaces)."
+        },
+        "organization": {
+          "title": "Organisations-Benachrichtigungen",
+          "description": "Steuere Hinweise zu Erwähnungen, Nachrichten und Team-Updates deiner Organisation."
+        },
+        "virtualContributor": {
+          "title": "Benachrichtigungen für virtuelle Mitwirkende",
+          "description": "Benachrichtigungen zu Aktivitäten und Zuweisungen virtueller Mitwirkender."
+        },
+        "sound": {
+          "title": "Benachrichtigungstöne",
+          "description": "Legen Sie fest, ob ein Ton abgespielt wird, wenn eine Chatnachricht oder eine In-App-Benachrichtigung eintrifft."
+        }
+      },
+      "rows": {
+        "space": {
+          "communicationUpdates": "Benachrichtigung erhalten, wenn eine neue Mitteilung in einer Community geteilt wird",
+          "collaborationCalloutPublished": "Benachrichtigung erhalten, wenn ein Callout in einer Community veröffentlicht wird, in der ich Mitglied bin",
+          "collaborationCalloutReaction": "Benachrichtigung erhalten, wenn jemand auf meinen Post mit einem Emoji reagiert",
+          "collaborationCalloutPostContributionComment": "Benachrichtigung erhalten, wenn ein Beitrag, dem ich folge, kommentiert wird",
+          "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
+          "collaborationCalloutComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einem Callout, dem ich folge, hinzugefügt wird",
+          "communityCalendarEvents": "Benachrichtigungen für Community-Kalenderereignisse erhalten",
+          "collaborationPollVoteCastOnOwnPoll": "Benachrichtigung erhalten, wenn jemand in meiner Umfrage abstimmt",
+          "collaborationPollVoteCastOnPollIVotedOn": "Benachrichtigung erhalten, wenn jemand in einer Umfrage abstimmt, in der ich abgestimmt habe",
+          "collaborationPollModifiedOnPollIVotedOn": "Benachrichtigung erhalten, wenn eine Umfrage, in der ich abgestimmt habe, geändert wird",
+          "collaborationPollVoteAffectedByOptionChange": "Benachrichtigung erhalten, wenn meine Stimme von einer Änderung einer Umfrageoption betroffen ist"
+        },
+        "spaceAdmin": {
+          "communityApplicationReceived": "Benachrichtigung erhalten, wenn eine neue Community-Bewerbung eingeht",
+          "communityNewMember": "Benachrichtigung erhalten, wenn ein neues Mitglied der Community beitritt",
+          "collaborationCalloutContributionCreated": "Benachrichtigung erhalten, wenn ein neuer Beitrag zu einem Callout erstellt wird",
+          "communicationMessageReceived": "Benachrichtigung erhalten, wenn eine Community-Nachricht empfangen wird",
+          "userEmailChanged": "Benachrichtigung erhalten, wenn die Anmelde-E-Mail-Adresse eines Mitglieds eines von dir verwalteten Space geändert wird"
+        },
+        "user": {
+          "commentReply": "Benachrichtigung erhalten, wenn jemand auf meinen Kommentar antwortet",
+          "mentioned": "Benachrichtigung erhalten, wenn ich erwähnt werde",
+          "messageReceived": "Benachrichtigung erhalten, wenn mir jemand eine direkte Nachricht sendet",
+          "conversationMessageDirect": "Benachrichtigung erhalten, wenn mir jemand eine direkte (1:1) Chatnachricht sendet",
+          "conversationMessageGroup": "Benachrichtigung erhalten, wenn jemand in einem Gruppenchat postet, dessen Mitglied ich bin",
+          "membershipInvitationReceived": "Benachrichtigung erhalten, wenn mich jemand in eine Community einlädt",
+          "membershipCommunityJoined": "Benachrichtigung erhalten, wenn ich einem neuen Space beitrete"
+        },
+        "platform": {
+          "forumDiscussionComment": "Benachrichtigung erhalten, wenn ein neuer Kommentar zu einer Diskussion, der ich folge, hinzugefügt wird",
+          "forumDiscussionCreated": "Benachrichtigung erhalten, wenn eine neue Plattform-Diskussion erstellt wird"
+        },
+        "platformAdmin": {
+          "userProfileCreated": "Benachrichtigung erhalten, wenn ein neues Nutzerprofil erstellt wird",
+          "userProfileRemoved": "Benachrichtigung erhalten, wenn ein Nutzerprofil entfernt wird",
+          "userGlobalRoleChanged": "Benachrichtigung erhalten, wenn sich die globale Rolle eines Nutzers ändert",
+          "userEmailChanged": "Benachrichtigung erhalten, wenn sich die E-Mail-Adresse eines Nutzers ändert",
+          "spaceCreated": "Benachrichtigung erhalten, wenn ein neuer Space erstellt wird"
+        },
+        "organization": {
+          "adminMentioned": "Benachrichtigung erhalten, wenn meine Organisation erwähnt wird",
+          "adminMessageReceived": "Direktnachrichten an meine Organisation erhalten"
+        },
+        "virtualContributor": {
+          "adminSpaceCommunityInvitation": "Benachrichtigung erhalten, wenn ein VC-Manager eingeladen wird, einer Community beizutreten"
+        },
+        "sound": {
+          "chatMessage": "Einen Ton abspielen, wenn eine Chatnachricht empfangen wird",
+          "inAppNotification": "Einen Ton abspielen, wenn eine In-App-Benachrichtigung empfangen wird"
+        }
+      }
+    },
+    "organizations": {
+      "pageTitle": "Organisationen",
+      "searchPlaceholder": "Organisationen suchen...",
+      "createButton": "Organisation erstellen",
+      "summary": "{{shown}} von {{total}} Organisationen angezeigt",
+      "empty": "Du bist noch keiner Organisation zugeordnet.",
+      "filteredEmptyTitle": "Keine Organisationen gefunden",
+      "filteredEmptyDescription": "Versuche es mit einem anderen Namen oder Standort.",
+      "clearSearch": "Suche zurücksetzen",
+      "verified": "Verifiziert",
+      "associates": "Mitglieder",
+      "associatesCount": "{{count}} Mitglieder",
+      "role": {
+        "admin": "Admin",
+        "associate": "Mitglied"
+      },
+      "menu": {
+        "viewProfile": "Profil ansehen",
+        "disassociate": "Verbindung lösen"
+      },
+      "disassociate": {
+        "dialogTitle": "Verbindung mit dieser Organisation lösen?",
+        "dialogDescription": "Du bist im Begriff, „{{name}}“ zu verlassen. Du verlierst deine Rolle und alle zugehörigen Rechte.",
+        "dialogConfirm": "Verbindung lösen",
+        "success": "Verbindung erfolgreich gelöst",
+        "error": "Verbindung lösen fehlgeschlagen — bitte erneut versuchen"
+      }
+    },
+    "account": {
+      "pageTitle": "Konto",
+      "helpBanner": "Hier kannst du deine aktiven Ressourcen einsehen und deine Kontolimits verwalten.",
+      "spaces": {
+        "title": "Gehostete Spaces",
+        "createButton": "Space erstellen"
+      },
+      "virtualContributors": {
+        "title": "Virtuelle Mitwirkende",
+        "createButton": "Mitwirkenden hinzufügen"
+      },
+      "innovationPacks": {
+        "title": "Vorlagenpakete",
+        "createButton": "Neues Paket"
+      },
+      "innovationHubs": {
+        "title": "Eigene Startseiten",
+        "createButton": "Neue Seite"
+      },
+      "actions": {
+        "view": "Anzeigen",
+        "manage": "Verwalten",
+        "transfer": "Übertragen",
+        "delete": "Löschen"
+      },
+      "deleteDialog": {
+        "title": "Diese Ressource löschen?",
+        "description": "Damit wird „{{name}}“ dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+        "confirm": "Löschen"
+      }
+    },
+    "assistant": {
+      "pageTitle": "Assistent",
+      "helpBanner": "Lege fest, was der Assistent in deinem Namen tun darf. Lesefunktionen sind standardmäßig aktiviert; Funktionen, die Inhalte ändern, sind deaktiviert, bis du sie aktivierst. Der Assistent kann nie mehr tun, als du selbst tun kannst.",
+      "empty": "Derzeit sind keine Assistentenfunktionen verfügbar.",
+      "destructiveBadge": "Kann vorhandene Inhalte ändern",
+      "toggleAria": "Funktion „{{capability}}“ ein- oder ausschalten",
+      "toggleError": "Diese Änderung konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "groups": {
+        "read": {
+          "title": "Lesen",
+          "description": "Lass den Assistenten Inhalte finden und zusammenfassen, auf die du bereits Zugriff hast."
+        },
+        "write": {
+          "title": "Inhalte ändern",
+          "description": "Lass den Assistenten Inhalte für dich erstellen oder ändern. Vor jeder Änderung bestätigst du sie."
+        }
+      }
+    }
+  },
+  "org": {
+    "profile": {
+      "pageTitle": "Profil",
+      "identity": {
+        "title": "Identität",
+        "displayName": {
+          "label": "Anzeigename",
+          "hint": "Wie deine Organisation auf Alkemio erscheint.",
+          "required": "Anzeigename ist erforderlich"
+        },
+        "nameID": {
+          "label": "Name ID",
+          "caption": "Kann nach der Erstellung nicht geändert werden."
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Eine kurze Zeile neben dem Namen deiner Organisation."
+        }
+      },
+      "about": {
+        "title": "Über",
+        "description": {
+          "label": "Beschreibung",
+          "hint": "Markdown wird unterstützt."
+        },
+        "location": {
+          "title": "Standort",
+          "city": "Stadt",
+          "country": "Land",
+          "countryPlaceholder": "Land auswählen"
+        },
+        "keywords": {
+          "label": "Schlüsselwörter",
+          "hint": "Themen, an denen deine Organisation arbeitet. Mit Enter hinzufügen.",
+          "placeholder": "z. B. Klima, Governance, Open Source"
+        },
+        "capabilities": {
+          "label": "Fähigkeiten",
+          "hint": "Was deine Organisation kann oder anbietet. Mit Enter hinzufügen.",
+          "placeholder": "z. B. Forschung, Finanzierung, Training"
+        }
+      },
+      "contactLegal": {
+        "title": "Kontakt und Rechtliches",
+        "contactEmail": {
+          "label": "Kontakt-E-Mail",
+          "hint": "Öffentliche Kontakt-E-Mail der Organisation.",
+          "invalidFormat": "Gib eine gültige E-Mail-Adresse ein"
+        },
+        "domain": {
+          "label": "Domain",
+          "hint": "Web-Domain deiner Organisation (ohne Protokoll)."
+        },
+        "legalEntityName": {
+          "label": "Rechtlicher Name",
+          "hint": "Der offiziell eingetragene Name."
+        },
+        "website": {
+          "label": "Website",
+          "hint": "Vollständige URL inklusive https://",
+          "invalidFormat": "Gib eine gültige URL ein"
+        }
+      },
+      "socialLinks": {
+        "title": "Soziale Links",
+        "linkedinPlaceholder": "https://linkedin.com/company/deine-org",
+        "bskyPlaceholder": "https://bsky.app/profile/dein-handle",
+        "githubPlaceholder": "https://github.com/deine-org",
+        "addAnother": "Weitere Referenz hinzufügen",
+        "namePlaceholder": "Name der Referenz",
+        "urlPlaceholder": "https://…",
+        "descriptionPlaceholder": "Beschreibung (optional)",
+        "removeAriaLabel": "Referenz entfernen",
+        "deleteDialog": {
+          "title": "Referenz entfernen?",
+          "description": "Das Entfernen dieser Referenz löscht sie nach dem Speichern auch aus dem öffentlichen Profil.",
+          "confirm": "Referenz entfernen"
+        }
+      },
+      "logo": {
+        "title": "Logo",
+        "changeButton": "Logo ändern",
+        "helperText": "Empfohlen: 400×400 px. JPG, PNG oder GIF.",
+        "uploading": "Wird hochgeladen…"
+      },
+      "verification": {
+        "verified": "Verifiziert",
+        "pending": "Verifizierung ausstehend",
+        "notVerified": "Nicht verifiziert"
+      }
+    },
+    "account": {
+      "pageTitle": "Konto",
+      "helpBanner": "Hier kannst du die aktiven Ressourcen deiner Organisation einsehen und Kontolimits verwalten.",
+      "spaces": {
+        "title": "Gehostete Spaces",
+        "createButton": "Space erstellen"
+      },
+      "virtualContributors": {
+        "title": "Virtuelle Mitwirkende",
+        "createButton": "Mitwirkenden hinzufügen"
+      },
+      "innovationPacks": {
+        "title": "Vorlagenpakete",
+        "createButton": "Neues Paket"
+      },
+      "innovationHubs": {
+        "title": "Eigene Startseiten",
+        "createButton": "Neue Seite"
+      },
+      "actions": {
+        "view": "Anzeigen",
+        "manage": "Verwalten",
+        "transfer": "Übertragen",
+        "delete": "Löschen"
+      },
+      "deleteDialog": {
+        "title": "Diese Ressource löschen?",
+        "description": "Damit wird „{{name}}“ dauerhaft entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
+        "confirm": "Löschen"
+      }
+    },
+    "community": {
+      "pageTitle": "Gemeinschaft",
+      "title": "Mitglieder",
+      "description": "Verwalte, wer mit dieser Organisation verbunden ist. Füge neue Mitglieder aus der Liste der verfügbaren Nutzer hinzu; das Entfernen eines Mitglieds entzieht die Organisationsrolle.",
+      "currentAssociatesTitle": "Aktuelle Mitglieder",
+      "availableUsersTitle": "Verfügbare Nutzer",
+      "searchPlaceholder": "Nutzer nach Namen suchen…",
+      "addAriaLabel": "{name} als Mitglied hinzufügen",
+      "removeAriaLabel": "{name} als Mitglied entfernen",
+      "loadMore": "Mehr laden",
+      "emptyCurrent": "Noch keine Mitglieder.",
+      "emptyAvailable": "Keine passenden Nutzer gefunden.",
+      "removeDialogTitle": "Dieses Mitglied entfernen?",
+      "removeDialogDescription": "{{name}} verliert die Mitgliedsrolle und alle zugehörigen Rechte.",
+      "removeConfirmAssociate": "{{name}} als Mitglied entfernen",
+      "removeSuccess": "Mitglied entfernt",
+      "removeError": "Entfernen fehlgeschlagen — bitte erneut versuchen"
+    },
+    "authorization": {
+      "pageTitle": "Autorisierung",
+      "title": "Autorisierung",
+      "description": "Weisen Sie die Rollen Administrator und Eigentümer für diese Organisation zu. Administratoren verwalten den täglichen Betrieb; Eigentümer haben volle Kontrolle.",
+      "adminTabLabel": "Administrator",
+      "ownerTabLabel": "Eigentümer",
+      "loadMore": "Mehr laden",
+      "admin": {
+        "currentTitle": "Aktuelle Administratoren",
+        "availableTitle": "Verfügbare Nutzer",
+        "searchPlaceholder": "Nutzer nach Name suchen…",
+        "addAriaLabel": "{name} als Administrator hinzufügen",
+        "removeAriaLabel": "{name} als Administrator entfernen",
+        "emptyCurrent": "Noch keine Administratoren.",
+        "emptyAvailable": "Keine passenden Nutzer gefunden."
+      },
+      "owner": {
+        "currentTitle": "Aktuelle Eigentümer",
+        "availableTitle": "Verfügbare Nutzer",
+        "searchPlaceholder": "Nutzer nach Name suchen…",
+        "addAriaLabel": "{name} als Eigentümer hinzufügen",
+        "removeAriaLabel": "{name} als Eigentümer entfernen",
+        "emptyCurrent": "Noch keine Eigentümer.",
+        "emptyAvailable": "Keine passenden Nutzer gefunden."
+      },
+      "removeDialogTitle": "Diese Rolle entfernen?",
+      "removeDialogDescription": "{{name}} verliert diese Rolle und alle zugehörigen Rechte.",
+      "removeConfirmAdmin": "{{name}} als Administrator entfernen",
+      "removeConfirmOwner": "{{name}} als Eigentümer entfernen",
+      "removeSuccessAdmin": "Administrator-Rolle entfernt",
+      "removeSuccessOwner": "Eigentümer-Rolle entfernt",
+      "removeError": "Rolle konnte nicht entfernt werden — bitte erneut versuchen"
+    },
+    "settings": {
+      "pageTitle": "Einstellungen",
+      "title": "Organisationseinstellungen",
+      "membership": {
+        "title": "Mitgliedschaft",
+        "allowDomainLabel": "Nutzer mit passender Domain dürfen beitreten",
+        "allowDomainCaption": "Wenn aktiviert, können Nutzer, deren E-Mail-Domain mit der Organisation übereinstimmt, ohne Einladung beitreten."
+      },
+      "privacy": {
+        "title": "Privatsphäre",
+        "contributionRolesLabel": "Beitragsrollen öffentlich anzeigen",
+        "contributionRolesCaption": "Wenn aktiviert, sind die Rollenzuweisungen der Organisation (Administrator, Eigentümer, Mitglied) im öffentlichen Profil sichtbar."
+      },
+      "errorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+    }
+  },
+  "vc": {
+    "promptGraph": {
+      "title": "Prompt-Graph",
+      "helper": "Bearbeite die Prompt-Zustandsmaschine. Systemknoten sind schreibgeschützt; Benutzerknoten bieten einen bearbeitbaren Prompt und Ausgabeeigenschaften.",
+      "disabled": "Die Bearbeitung des Prompt-Graphen ist für diesen Virtual Contributor deaktiviert.",
+      "empty": "Dieser Virtual Contributor hat keinen Prompt-Graphen.",
+      "editingEnabled": "Bearbeitung aktiviert",
+      "inputVariables": "Eingabevariablen",
+      "start": "Start",
+      "end": "Ende",
+      "prompt": "Prompt",
+      "reset": "Zurücksetzen",
+      "resetConfirm": {
+        "title": "Prompt-Graph zurücksetzen?",
+        "description": "Dies löscht den gesamten Prompt-Graphen und kann nicht rückgängig gemacht werden."
+      },
+      "properties": {
+        "title": "Ausgabeeigenschaften",
+        "empty": "Keine Ausgabeeigenschaften.",
+        "name": "Name",
+        "type": "Typ",
+        "optional": "Optional",
+        "description": "Beschreibung",
+        "add": "Eigenschaft hinzufügen",
+        "remove": "Eigenschaft entfernen"
+      }
+    },
+    "profile": {
+      "pageTitle": "Einstellungen",
+      "identity": {
+        "title": "Identität",
+        "displayName": {
+          "label": "Anzeigename",
+          "hint": "Wie dieser Virtuelle Mitwirkende auf Alkemio erscheint.",
+          "required": "Anzeigename ist erforderlich"
+        },
+        "tagline": {
+          "label": "Slogan",
+          "hint": "Eine kurze Zeile, die im Profil des Mitwirkenden angezeigt wird."
+        },
+        "description": {
+          "label": "Beschreibung",
+          "hint": "Erklären Sie, was dieser Virtuelle Mitwirkende tut und wie damit zu arbeiten ist."
+        }
+      },
+      "keywords": {
+        "label": "Schlüsselwörter",
+        "hint": "Fügen Sie Schlüsselwörter hinzu, damit Benutzer diesen Virtuellen Mitwirkenden entdecken können.",
+        "placeholder": "Schlüsselwort hinzufügen und Enter drücken"
+      },
+      "socialLinks": {
+        "title": "Referenzen",
+        "addAnother": "Weitere Referenz hinzufügen",
+        "namePlaceholder": "Name",
+        "urlPlaceholder": "https://beispiel.com",
+        "descriptionPlaceholder": "Beschreibung (optional)",
+        "removeAriaLabel": "Referenz entfernen",
+        "empty": "Noch keine Referenzen.",
+        "deleteDialog": {
+          "title": "Referenz entfernen?",
+          "description": "Diese Referenz wird beim Speichern des Abschnitts entfernt. Sie können den Vorgang vor dem Speichern rückgängig machen.",
+          "confirm": "Entfernen"
+        }
+      },
+      "metadata": {
+        "title": "Über diesen Virtuellen Mitwirkenden",
+        "hostLabel": "Gehostet von",
+        "bodyOfKnowledgeLabel": "Wissensbasis"
+      },
+      "avatar": {
+        "title": "Avatar",
+        "changeButton": "Avatar ändern",
+        "uploading": "Wird hochgeladen…",
+        "helperText": "Quadratisches JPEG oder PNG, bis zu 5 MB."
+      }
+    },
+    "membership": {
+      "confirmed": {
+        "title": "Mitgliedschaften"
+      },
+      "empty": "Dieser Virtuelle Mitwirkende ist noch kein Mitglied eines Bereichs.",
+      "spaceBadge": "Bereich",
+      "subspaceBadge": "Unterbereich",
+      "viewLabel": "Anzeigen",
+      "leaveLabel": "Verlassen",
+      "leaveSpaceConfirmTitle": "Diesen Bereich verlassen?",
+      "leaveSubspaceConfirmTitle": "Diesen Unterbereich verlassen?",
+      "leaveConfirmBody": "Diesen Virtuellen Mitwirkenden aus {{name}} entfernen? Dies kann durch erneutes Beantragen der Mitgliedschaft rückgängig gemacht werden.",
+      "leaveConfirmAction": "Verlassen",
+      "pendingInvitationsHeading": "Ausstehende Einladungen",
+      "acceptLabel": "Annehmen",
+      "declineLabel": "Ablehnen",
+      "acceptInvitationConfirmTitle": "Einladung annehmen?",
+      "acceptInvitationConfirmBody": "Möchten Sie die Einladung annehmen, {{name}} beizutreten?",
+      "acceptInvitationConfirmAction": "Annehmen"
+    },
+    "visibility": {
+      "title": "Sichtbarkeit",
+      "helper": "Steuert, wer diesen Virtuellen Mitwirkenden entdecken kann.",
+      "publicLabel": "Öffentlich",
+      "publicDescription": "Alle, einschließlich anonymer Besucher, können diesen Virtuellen Mitwirkenden finden.",
+      "accountLabel": "Konto",
+      "accountDescription": "Nur Mitglieder des Host-Kontos können diesen Virtuellen Mitwirkenden finden.",
+      "hiddenLabel": "Verborgen",
+      "hiddenDescription": "Dieser Virtuelle Mitwirkende ist in der Suche verborgen.",
+      "listedInStoreLabel": "Im Alkemio-Store gelistet",
+      "listedInStoreHelper": "Nur verfügbar, wenn die Sichtbarkeit auf Öffentlich gesetzt ist."
+    },
+    "bodyOfKnowledge": {
+      "title": "Wissensbasis",
+      "helper": "Verwalten Sie, wie die Wissensbasis dieses Virtuellen Mitwirkenden offengelegt wird.",
+      "privacyToggleLabel": "Wissensbasis-Inhalte für Nicht-Mitglieder verbergen",
+      "privacyToggleHelper": "Wenn aktiviert, werden die zugrunde liegenden Inhalte vor Benutzern ohne Zugriff verborgen.",
+      "refreshLabel": "Wissen aktualisieren",
+      "lastUpdated": "Zuletzt aktualisiert:",
+      "never": "nie"
+    },
+    "prompt": {
+      "title": "Prompt",
+      "helpText": "Verfügbare Variablen: duration, audience, workshop_type, role, purpose."
+    },
+    "externalConfig": {
+      "title": "Externe KI-Konfiguration",
+      "helper": "Verbinden Sie diesen Virtuellen Mitwirkenden mit einem externen KI-Anbieter.",
+      "apiKeyLabel": "API-Schlüssel",
+      "apiKeyPlaceholder": "Geben Sie einen neuen API-Schlüssel ein",
+      "apiKeyHelper": "Vorhandene Schlüssel werden nie zurückgegeben. Lassen Sie das Feld leer, um den aktuellen Schlüssel beizubehalten.",
+      "assistantIdLabel": "Assistant-ID",
+      "modelLabel": "Modell"
+    },
+    "settings": {
+      "commitErrorToast": "Einstellung konnte nicht gespeichert werden — bitte erneut versuchen"
+    }
+  },
+  "shared": {
+    "save": "Speichern",
+    "saving": "Speichern…",
+    "saved": "Gespeichert!",
+    "saveFailed": "Speichern fehlgeschlagen — bitte erneut versuchen",
+    "loading": "Lädt…",
+    "cancel": "Abbrechen",
+    "remove": "Entfernen",
+    "delete": "Löschen",
+    "yes": "Ja",
+    "no": "Nein",
+    "avatarCropDialog": {
+      "title": "Avatar zuschneiden",
+      "description": "Ziehe, um zu positionieren. Das Bild wird vor dem Hochladen zugeschnitten und verkleinert.",
+      "altTextLabel": "Alternativtext",
+      "altTextPlaceholder": "Beschreibe das Bild (optional)"
+    },
+    "account": {
+      "capacity": {
+        "label": "{{usage}}/{{limit}}",
+        "notAvailable": "Nicht verfügbar",
+        "notAvailableTooltip": "Wende dich an das Alkemio-Team, um diese Funktion für dein Konto zu aktivieren.",
+        "spacesTooltip": "Von den verfügbaren Spaces in deinem Konto hast du erstellt:\n{{freeUsage}} von {{freeLimit}} Free Spaces\n{{plusUsage}} von {{plusLimit}} Plus Spaces\n{{premiumUsage}} von {{premiumLimit}} Premium Spaces",
+        "virtualContributorsTooltip": "Du hast {{usage}} von {{limit}} verfügbaren Virtuellen Mitwirkenden in deinem Konto erstellt.",
+        "innovationPacksTooltip": "Du hast {{usage}} von {{limit}} verfügbaren Template Packs in deinem Konto erstellt.",
+        "innovationHubsTooltip": "Du hast {{usage}} von {{limit}} verfügbaren eigenen Startseiten in deinem Konto erstellt."
+      },
+      "kebabAriaLabel": "Weitere Aktionen",
+      "createNewSpace": {
+        "ariaLabel": "Neuen Space erstellen",
+        "heading": "Neuen Space erstellen",
+        "description": "Starte eine neue Kollaborationsumgebung für dein Team."
+      },
+      "createNewVc": {
+        "ariaLabel": "Neuen Mitwirkenden erstellen",
+        "heading": "Neuen Mitwirkenden erstellen"
+      },
+      "createNewPack": {
+        "ariaLabel": "Neues Pack erstellen",
+        "heading": "Neues Pack erstellen"
+      },
+      "createNewHub": {
+        "ariaLabel": "Neue eigene Startseite erstellen",
+        "heading": "Neue Startseite erstellen"
+      },
+      "deleteSuccess": "Ressource gelöscht",
+      "deleteError": "Löschen fehlgeschlagen — bitte erneut versuchen",
+      "noEntitlement": {
+        "title": "Kapazität erreicht",
+        "description": {
+          "spaces": "Du hast die Kapazität für Spaces erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "virtualContributors": "Du hast die Kapazität für Virtuelle Mitwirkende erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "innovationPacks": "Du hast die Kapazität für Template Packs erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern.",
+          "innovationHubs": "Du hast die Kapazität für eigene Startseiten erreicht. Wende dich an das Alkemio-Team, um mehr anzufordern."
+        },
+        "contactCta": "Kontakt aufnehmen",
+        "cancel": "Abbrechen"
+      }
+    }
+  }
+}

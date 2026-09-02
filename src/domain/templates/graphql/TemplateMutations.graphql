@@ -8,6 +8,7 @@ mutation CreateTemplate(
   $contentSpaceData: CreateTemplateContentSpaceInput
   $postDefaultDescription: Markdown
   $whiteboard: CreateWhiteboardInput
+  $classificationData: CreateClassificationTemplateContentInput
   $includeProfileVisuals: Boolean = false
 ) {
   createTemplate(
@@ -21,16 +22,20 @@ mutation CreateTemplate(
       postDefaultDescription: $postDefaultDescription
       contentSpaceData: $contentSpaceData
       whiteboard: $whiteboard
+      classificationData: $classificationData
     }
   ) {
     id
     nameID  # Used to name the files uploaded as whiteboard visuals
-    profile @include(if: $includeProfileVisuals) {
+    profile {
       id
-      cardVisual: visual(type: CARD) {
+      defaultTagset: tagset {
         id
       }
-      previewVisual: visual(type: BANNER) {
+      cardVisual: visual(type: CARD) @include(if: $includeProfileVisuals) {
+        id
+      }
+      previewVisual: visual(type: BANNER) @include(if: $includeProfileVisuals) {
         id
       }
     }
@@ -52,6 +57,9 @@ mutation CreateTemplate(
           id # Used to upload the images to the media gallery after creating the template
         }
       }
+    }
+    whiteboard {
+      id
     }
   }
 }
@@ -98,7 +106,8 @@ mutation UpdateTemplate(
   $templateId: UUID!
   $profile: UpdateProfileInput!
   $postDefaultDescription: Markdown
-  $whiteboardContent: WhiteboardContent
+  $sourceWhiteboardID: UUID
+  $classificationData: CreateClassificationTemplateContentInput
   $includeProfileVisuals: Boolean = false
 ) {
   updateTemplate(
@@ -106,7 +115,8 @@ mutation UpdateTemplate(
       ID: $templateId
       profile: $profile
       postDefaultDescription: $postDefaultDescription
-      whiteboardContent: $whiteboardContent
+      sourceWhiteboardID: $sourceWhiteboardID
+      classificationData: $classificationData
     }
   ) {
     id
@@ -122,7 +132,6 @@ mutation UpdateTemplate(
     }
     whiteboard {
       id
-      content
     }
   }
 }
@@ -149,7 +158,6 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
       type
       whiteboard {
         id
-        content
         nameID # Used to set an altImage to the visual
         profile {
           id
@@ -172,14 +180,10 @@ mutation UpdateCalloutTemplate($calloutData: UpdateCalloutEntityInput!) {
     contributionDefaults {
       id
       postDescription
-      whiteboardContent
+      whiteboardContentAvailable
     }
     settings {
-      contribution {
-        enabled
-        allowedTypes
-      }
-      visibility
+      ...CalloutSettingsFull
     }
   }
 }

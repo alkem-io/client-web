@@ -110,8 +110,9 @@ Callouts use a two-phase loading strategy that mirrors the existing MUI implemen
 **CRD integration pattern:**
 - `CalloutListConnector` receives light callout data and renders a `LazyCalloutItem` per callout
 - `LazyCalloutItem` (integration layer) calls `useCalloutInView`, renders `PostCardSkeleton` while loading, then maps detail data to `PostCardData` via `mapCalloutDetailsToPostCard` and renders `PostCard`
+- `LazyCalloutItem` renders a `ContributionsPreviewConnector` into PostCard's `contributionsPreview` slot — this connector decides how to render contribution previews using the appropriate CRD contribution components (`ContributionGrid`, `ContributionWhiteboardCard`, `ContributionPostCard`, `ContributionMemoCard`, `ContributionLinkList`)
 - `SpaceFeed` (CRD component) accepts a `children` slot for lazy-rendered items, keeping it unaware of the loading mechanism
-- The CRD `PostCard` component is pure — it receives complete props and renders, no loading state awareness needed
+- The CRD `PostCard` component is pure — it receives complete props and renders, no loading state awareness needed. Contribution rendering is entirely handled by the integration layer via slots.
 
 This approach avoids fetching detailed content for callouts the user never scrolls to, matching the performance characteristics of the MUI implementation.
 
@@ -194,6 +195,12 @@ Quick reference mapping new CRD components to their MUI and prototype counterpar
 - Q: Should CRD comments support real-time updates via WebSocket subscriptions? → A: Yes — reuse existing subscription infrastructure; new comments and reactions appear in real time without page refresh.
 - Q: Is the comment input visible when in collapsible mode (clipped at ~250px)? → A: Always visible — input shows at the bottom even when collapsed, within the 250px area.
 
+### Session 2026-05-20
+
+- Q: FR-086 / US11 AC-5 require that creating a callout in an Innovation-Flow state which has a configured default callout template auto-loads that template into the creation form. The legacy MUI L0 tab pages do this (each passes `defaultTemplateId={flowStateForNewCallouts?.defaultCalloutTemplate?.id}` and `useCalloutTemplateImport` auto-loads it on open), but the CRD create dialog opens blank. Why, and what is the rule? → A: **Regression during the CRD `TemplateImportConnector` rewrite.** The original auto-load (T076) was dropped when the connector was reimplemented for the manual "Find Template" path only (callout-dialog T080/T081); `CalloutFormConnector` never gained a `defaultTemplateId` prop and the CRD L0 tab pages never passed one. The rule (restating FR-086): **every CRD callout-creation entry point MUST pass the active flow state's `defaultCalloutTemplate.id` to the create form, and the form MUST auto-prefill from it once per dialog-open** — reusing the same template-content→form-values path the manual picker uses (incl. the D18 whiteboard-preview-image blob carry-through), guarded by a once-per-open ref that resets on close. The id comes from `flowStateForNewCallouts.defaultCalloutTemplate.id`, which is already in the SpaceTab query — no GraphQL/codegen change. A subsequent manual template pick or any user edit after auto-load is preserved (the guard does not re-apply). The same wiring applies to the subspace callouts page (spec 091, FR-013a) — its flow query already returns `defaultCalloutTemplate` via the `InnovationFlowStates` fragment, so it too is pure wiring.
+
+- Q: In the "Find Template" picker (FR-082..FR-084), after a user picks a template that triggers the overwrite confirmation and then cancels it, re-picking the **same** template does nothing — the confirmation never reappears. Why, and what is the rule? → A: **A template pick must be a one-shot, consume-once event.** The CRD picker (`useTemplatePicker`) keeps `selectedTemplateId` sticky after a pick, and `TemplateImportConnector` additionally guards re-fetch with a per-id ref; together they make re-selecting the **same** template a no-op once it has been picked, because `setSelectedTemplateId(sameId)` is not a state transition and the ref short-circuits the fetch. The rule (refining FR-084): once the connector has consumed a selection — whether it applied the template directly (clean form), the user confirmed the overwrite, or the user cancelled/dismissed the overwrite confirmation — it MUST clear the picker selection (`picker.clearSelection()`) and reset its fetched-for ref, so the same template can be picked again and re-run the apply/confirm flow. This is the established transient-pick pattern already used by the create-subspace and set-default flows. No data/GraphQL change.
+
 ## Scope
 
 ### In Scope
@@ -221,7 +228,7 @@ Quick reference mapping new CRD components to their MUI and prototype counterpar
 
 ### Out of Scope
 
-- **Whiteboard collaboration system**: The entire real-time collaboration stack remains untouched -- CollaborativeExcalidrawWrapper, Collab class (scene sync, mode management, element reconciliation), Portal class (WebSocket with binary encoding), file management pipeline (FileUploader/FileDownloader/WhiteboardFileCache), preview generation (Auto/Custom/Fixed modes with canvas export), and guest session management. These render inside WhiteboardDialog which portals outside `.crd-root`. Only the inline WhiteboardPreview thumbnail and WhiteboardCard (contribution) are CRD components.
+- **Whiteboard collaboration infrastructure**: The Excalidraw engine, real-time collaboration stack (Collab, Portal, WebSocket, Y.js), file management pipeline, and preview generation stay unchanged. The whiteboard **user-facing chrome** (editor shell, public page, join dialog) is being migrated to CRD in a dedicated sub-spec — see [whiteboard/spec.md](./whiteboard/spec.md).
 - **Memo editing dialog**: MemoDialog (Tiptap-based full editing experience) remains MUI, portals outside `.crd-root`. Only the inline MemoPreview (rendered markdown display) is a CRD component.
 - **Rich text editor internals**: The Tiptap editor engine used for callout descriptions and contributions; the integration layer wraps it for creation/editing forms
 - **Subspace pages (L1/L2)**: Different layout, migrated in a future spec
@@ -345,7 +352,7 @@ A user views the Community tab to see space members, leadership, and community r
 6. **Given** a user is not authenticated, **When** the member section renders, **Then** individual user cards are hidden (only organizations shown)
 7. **Given** the space has community guidelines configured, **When** the tab renders, **Then** a community guidelines block appears in the sidebar
 8. **Given** a user enters a search query or picks a role filter that returns no matches, **When** the grid renders, **Then** an empty state appears with a "Clear filters" action that restores the default view
-9. **Given** a user holds multiple roles (e.g. Admin AND Lead), **When** the viewer selects the Lead filter, **Then** that user appears in the filtered results (the Admin and Lead filters are overlapping sets, not mutually exclusive); the user's display badge still reflects the highest-precedence role (Admin)
+9. **Given** a user holds the Lead role (possibly alongside an administrative role), **When** the viewer selects the Lead filter, **Then** that user appears in the filtered results (the Lead filter matches against the user's full role list); the user's display badge shows "Lead". Administrative status is never surfaced — there is no Admin filter pill and no Admin badge on any card
 
 ---
 
@@ -430,7 +437,7 @@ The tab navigation bar includes action buttons for Activity (contribution histor
 
 ### User Story 10 - Callout Contributions (Priority: P2)
 
-Within a callout block, users see contribution cards displayed in an expandable grid. Contributions come in 4 types: Post (title, author, date, comment count), Whiteboard (preview thumbnail), Memo (markdown preview), and Link (URL with name). The grid shows up to 2 rows (10 cards) collapsed, with an expand button for more. Users with contribute access can create new contributions via type-specific forms. Selecting a contribution shows its preview inline or in an expanded view with navigation between contributions.
+Within a callout block, users see contribution previews rendered by the integration layer into a PostCard slot. Contributions come in 4 types: Post (title, author, date, comment count), Whiteboard (preview thumbnail), Memo (markdown preview), and Link (URL with name). Up to 4 contributions are shown inline; when there are more, the last slot shows a "+N more" button that opens the callout detail dialog where all contributions are displayed. Users with contribute access can create new contributions via type-specific forms. PostCard itself has zero knowledge of contribution types — all contribution rendering is handled by `ContributionsPreviewConnector` in the integration layer.
 
 **Why this priority**: Contributions are the interactive content within callouts. Displaying and creating them completes the core callout experience.
 
@@ -442,9 +449,9 @@ Within a callout block, users see contribution cards displayed in an expandable 
 2. **Given** a callout with Whiteboard contributions, **When** it renders, **Then** whiteboard cards show a preview thumbnail and title
 3. **Given** a callout with Memo contributions, **When** it renders, **Then** memo cards show a markdown preview and title
 4. **Given** a callout with Link contributions, **When** it renders, **Then** links display with name, URL, and optional description
-5. **Given** more than 10 contributions, **When** the grid renders collapsed, **Then** 2 rows of cards are visible with an "Expand" button showing the total count
+5. **Given** more than 4 contributions, **When** the preview renders, **Then** 3 contribution cards are visible plus a "+N more" button (N = total - 3) that opens the callout detail dialog showing all contributions
 6. **Given** a user with contribute access, **When** clicking the create button, **Then** a type-specific creation form opens (title, description, tags for posts; name for whiteboards)
-7. **Given** a user clicks a contribution card, **When** the preview loads, **Then** the contribution content displays inline with author info, creation date, and navigation controls to adjacent contributions
+7. **Given** a user clicks a contribution card, **When** the preview loads, **Then** the callout detail dialog opens showing the contribution with author info, creation date, and navigation controls to adjacent contributions
 8. **Given** a callout allows link contributions, **When** the link section renders, **Then** a list of link contributions displays with add capability for authorized users
 
 ---
@@ -483,10 +490,17 @@ The comment input is a multiline textarea that starts as a single line, auto-exp
 
 #### Display & Threading
 1. **Given** a callout with comments enabled, **When** no contribution is selected, **Then** callout-level comments display below the contributions section
-2. **Given** a post contribution is selected, **When** the preview loads, **Then** contribution-level comments display for that specific post
+2. **Given** a post contribution is selected, **When** the preview loads, **Then** contribution-level comments display for that specific post (and the callout-level comments are hidden — they don't stack)
 3. **Given** a comment exists, **When** it renders, **Then** it shows author avatar, name, timestamp, and message content
 4. **Given** a comment has replies, **When** the thread renders, **Then** replies display indented below the parent comment with a "Reply" action on each comment
 5. **Given** comments are disabled for a callout, **When** the callout renders, **Then** no comment section appears
+
+#### Post-contribution comment-swap (selected-post mode)
+The bottom of the detail dialog has exactly one comment surface at any time — either the **callout's** comments or the **selected post's** comments, never both. The swap is gated by `settings.contribution.commentsEnabled` (the *contribution*-level switch, distinct from the framing-level switch governing callout comments):
+2a. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === true`, **When** the dialog renders the post preview, **Then** the post's comment thread + a new-comment input are shown at the bottom; the callout's comments are hidden.
+2b. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === false` AND the post has at least one existing message (`post.comments.messagesCount > 0`), **When** the dialog renders, **Then** the post's existing comment thread is shown read-only (no new-comment input); the callout's comments are hidden.
+2c. **Given** a post contribution is selected AND `settings.contribution.commentsEnabled === false` AND the post has no messages, **When** the dialog renders, **Then** no comment section is shown at the bottom; the callout's comments stay hidden too.
+2d. **Given** the user closes the post preview (back to the contribution grid), **When** the dialog re-renders, **Then** the comment surface reverts to the callout-level thread (or stays hidden when the callout itself has `commentsEnabled === false` and no callout messages — per scenario 5 / the existing rule).
 
 #### Collapsible & Full-Height Modes
 6. **Given** the comment section is in collapsible mode and content exceeds ~250px, **When** it renders, **Then** a "Show more" / expand control appears and content is clipped
@@ -542,6 +556,8 @@ A user navigates to the About route (`/:spaceNameId/about`) and sees a full-page
 
 On mobile devices, the Space page adapts: the sidebar collapses (content flows into a single column), tab navigation moves to the bottom of the screen as a fixed bottom bar, and overflow actions (Activity, Video Call, Share, Settings) are accessible via a "More" drawer. The banner adapts to smaller viewports. Callout blocks, forms, and contribution grids adapt to single-column layouts.
 
+> **Amendment (as shipped; burger position + edge swipe updated 2026-08-21)**: the "More" overflow drawer was replaced during implementation by a hamburger button that opens the mobile **sidebar drawer** (`MobileSidebarDrawer`, sliding in from the left) — the header action icons cover Activity/Video Call/Share/Settings instead. The hamburger sits at the **left** end of the fixed bottom bar (moved from the right on 2026-08-21). The drawer can also be opened by a left-edge swipe gesture (`useEdgeSwipe`: touch starting ≤24px from the left edge, dragged right; armed below `lg` on non-settings pages) — a progressive enhancement alongside the button. The same pattern applies on subspace pages (`SubspaceFlowTabs`' bottom bar).
+
 **Why this priority**: Mobile responsiveness is essential for accessibility but can be polished after the desktop experience is solid. The structural patterns established in P0-P2 inform the responsive breakpoints.
 
 **Independent Test**: Open a Space page on a mobile viewport. Bottom navigation appears. All tabs are reachable. "More" drawer contains overflow actions. Callout blocks and contribution grids reflow to single-column. Content is readable without horizontal scrolling.
@@ -549,7 +565,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 **Acceptance Scenarios**:
 
 1. **Given** a mobile viewport, **When** a Space page loads, **Then** tab navigation renders as a fixed bottom bar
-2. **Given** more actions than can fit in the bottom bar, **When** the "More" button is tapped, **Then** a drawer slides up with Activity, Video Call, Share, and Settings options
+2. **Given** more actions than can fit in the bottom bar, **When** the hamburger at the bar's left end is tapped (or the user swipes right from the left screen edge), **Then** the sidebar drawer slides in from the left *(amended — originally: a "More" drawer sliding up with Activity, Video Call, Share, and Settings; those actions live in the header icon row instead)*
 3. **Given** a mobile viewport, **When** any tab content renders, **Then** the sidebar content is either hidden or integrated into the single-column flow
 4. **Given** a mobile viewport, **When** callout contribution grids render, **Then** cards display in a single column instead of 5-per-row
 5. **Given** a mobile viewport, **When** the callout creation form opens, **Then** it adapts to full-width layout with stacked form sections
@@ -620,16 +636,16 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 - **FR-022**: The sidebar MUST show an invite-contributors action when the user has invite privileges; the same action MUST be available in the members section header and MUST open the same dialog
 - **FR-023**: The sidebar MUST show a Virtual Contributors section ONLY when BOTH conditions are met: (a) the space has the virtual-contributor license entitlement AND (b) at least one visible (non-hidden) VC is assigned to the community. When either condition is false the section MUST be hidden entirely
 - **FR-024**: The sidebar MUST show a Community Guidelines block when guidelines are configured
-- **FR-025**: The main content area MUST open with a members section containing: a section header (title, subtitle showing "{users} members and {organizations} organizations in this space", and an Invite Member action button for users with invite privileges), a search input and role filter pills (All, Admin, Lead, Member, Organization), a paginated responsive grid of member cards differentiating users (circular avatar + color-coded role badge) from organizations (square avatar + Organization badge), and an empty state with a Clear filters action when no results match
+- **FR-025**: The main content area MUST open with a members section containing: a section header (title, subtitle showing "{users} members and {organizations} organizations in this space", and an Invite Member action button for users with invite privileges), a search input and role filter pills (All, Lead, Organization), a paginated responsive grid of member cards differentiating users (circular avatar + color-coded role badge) from organizations (square avatar + Organization badge), and an empty state with a Clear filters action when no results match
 - **FR-025a**: The Invite Member action in the members section header MUST trigger the same invite-contributors dialog as the sidebar action (FR-022); both entry points MUST be gated by the same permission flag
 - **FR-025b**: User cards in the members grid MUST be hidden for unauthenticated visitors (only organization cards shown)
-- **FR-025c**: Role filter pills MUST treat Admin and Lead as overlapping sets: a user who holds both roles MUST appear under both filters. The display badge MUST reflect the highest-precedence role (Admin > Lead > Member), but the filter MUST match against the user's full role list, not the display badge alone
+- **FR-025c**: Administrative status MUST NOT be surfaced in the members widget: there MUST be no Admin filter pill and no Admin badge on any card. The role filter pills MUST be All, Lead, and Organization. A user's display badge MUST show "Lead" when they hold the Lead role, otherwise "Member". The Lead filter MUST match against the user's full role list (so a user who is both a Lead and an administrator still appears under Lead), not the display badge alone
 - **FR-026**: The main content area MUST render callout content blocks in the CRD design system
 
 #### Subspaces Tab
 
 - **FR-027**: The sidebar MUST show the tab description and a create-subspace action (when the user has permission)
-- **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces)
+- **FR-028**: The sidebar MUST show a searchable list of subspace links (search field visible when >3 subspaces). Each row MUST show the subspace's real avatar image when one exists, falling back to grey initials (`AvatarFallback`, no `pickColorFromId` accent) when the subspace has no avatar
 - **FR-029**: The main content area MUST open with a subspaces section containing, in order: a section header (title, descriptive subtitle, and a Create Subspace action button for users with permission), a text search input, a wrapping row of tag chips aggregated from the subspaces themselves, and a responsive grid of subspace cards displaying banner image, name, tagline, tags, privacy indicator, membership indicator, and lead avatars. The grid MUST reuse the existing CRD `SpaceCard` component introduced in 039 (extended with an optional pin indicator — see FR-031)
 - **FR-029a**: The Create Subspace action in the subspaces section header MUST trigger the reused MUI Create Subspace dialog; the button MUST be gated by the `canCreateSubspaces` permission
 - **FR-029b**: The subspaces section MUST show an empty state with a Clear filters action when the current filter yields no results
@@ -716,22 +732,22 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 
 #### Callout Contributions
 
-- **FR-074**: Contributions MUST render as cards in an expandable grid: up to 2 rows (10 cards at 5 per row on desktop) when collapsed, with an expand button showing the remaining count
+- **FR-074**: Contributions MUST render via the integration layer's `ContributionsPreviewConnector` into PostCard's `contributionsPreview` slot — PostCard has zero knowledge of contribution types. Up to 4 contributions are shown inline; when there are more than 4, the 4th slot renders as a "+N more" button (N = total - 3) that opens the callout detail dialog where all contributions are shown
 - **FR-075**: Post contribution cards MUST show title, author avatar, creation date, description preview, tags, and comment count
 - **FR-076**: Whiteboard contribution cards MUST show a preview thumbnail (with fallback icon if unavailable) and title
 - **FR-077**: Memo contribution cards MUST show a markdown preview and title
 - **FR-078**: Link contributions MUST display as a list with link name, URL, and optional description; authorized users MUST be able to add new links
 - **FR-079**: Selecting a contribution card MUST display its content in a preview area with author info, timestamp, edit/share actions, and navigation controls to adjacent contributions
 - **FR-080**: Authorized users MUST be able to create contributions via type-specific forms: title + description + tags (Post/Memo), name (Whiteboard), or URL + name + description (Link)
-- **FR-081**: The contribution grid MUST be responsive: 5 columns on desktop, 3 on tablet, 1 on mobile
+- **FR-081**: The contribution preview MUST be responsive: 2 columns on sm+ screens, 1 column on mobile; up to 4 items shown (3 items + "+N more" button when total > 4)
 
 #### Callout Templates
 
 - **FR-082**: The template browser MUST display available callout templates with name, description, and framing type
 - **FR-083**: Selecting a template MUST pre-fill the creation form with the template's framing type, content, contribution settings, and profile data
-- **FR-084**: If the creation form contains existing data when importing a template, a confirmation dialog MUST warn about overwriting
+- **FR-084**: If the creation form contains existing data when importing a template, a confirmation dialog MUST warn about overwriting. A template pick is a one-shot, consume-once event: after the connector consumes a selection — applying it directly (clean form), confirming the overwrite, or cancelling/dismissing the overwrite confirmation — the picker selection MUST be cleared (`picker.clearSelection()` + fetched-for ref reset) so the user can re-select the **same** template and re-trigger the apply/confirm flow (Session 2026-05-20)
 - **FR-085**: "Save as Template" MUST open a form where the user names the template; the callout's full configuration MUST be saved as a reusable template
-- **FR-086**: When an Innovation Flow state has a default template, creating a callout in that tab MUST auto-load the default template
+- **FR-086**: When an Innovation Flow state has a default template, creating a callout in that tab MUST auto-load the default template. The creation form receives the state's `defaultCalloutTemplate.id` as a `defaultTemplateId` prop (sourced from `flowStateForNewCallouts.defaultCalloutTemplate.id`) and auto-prefills from it on open — once per dialog-open, reset on close — via the same template-content→form-values path the manual "Find Template" picker uses (including the whiteboard-preview-image carry-through). A subsequent manual template pick or user edit MUST NOT be overwritten by the auto-load (Session 2026-05-20).
 
 #### Callout Comments
 
@@ -777,7 +793,7 @@ On mobile devices, the Space page adapts: the sidebar collapses (content flows i
 #### Responsive Design
 
 - **FR-092**: On desktop (>960px), tab navigation MUST render above the content with a sidebar + content area layout
-- **FR-093**: On mobile (<=600px), tab navigation MUST render as a fixed bottom bar with a "More" drawer for overflow actions
+- **FR-093** *(amended — see US14 amendment)*: On mobile, tab navigation MUST render as a fixed bottom bar (shipped `lg:hidden`, i.e. < 1024px) with a hamburger at its **left** end opening the mobile sidebar drawer (no "More" drawer); a left-edge swipe also opens the drawer since 2026-08-21
 - **FR-094**: On mobile, the sidebar MUST collapse so content flows in a single column
 - **FR-095**: The banner MUST adapt to viewport width without horizontal overflow
 - **FR-096**: Responsive padding MUST follow CRD conventions (compact on mobile, spacious on desktop)

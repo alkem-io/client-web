@@ -63,7 +63,7 @@ export const EMPTY_MODEL_CARD: VirtualContributorModelCard = {
   ],
   aiEngine: {
     isExternal: false,
-    hostingLocation: 'unkown',
+    hostingLocation: 'unknown',
     areAnswersRestrictedToBodyOfKnowledge: 'unknown',
     isUsingOpenWeightsModel: false,
     isInteractionDataUsedForTraining: null,

@@ -1,4 +1,4 @@
-import type { ParseKeys } from 'i18next/typescript/t';
+import type { ParseKeys } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useRolesOrganizationQuery, useSendMessageToOrganizationMutation } from '@/core/apollo/generated/apollo-hooks';
 import {
@@ -13,7 +13,7 @@ import useRoleSetManager, { RELEVANT_ROLES } from '@/domain/access/RoleSetManage
 import { COUNTRIES_BY_CODE } from '@/domain/common/location/countries.constants';
 import { SocialNetworkEnum } from '@/domain/shared/components/SocialLinks/models/SocialNetworks';
 import type { SpaceHostedItem } from '@/domain/space/models/SpaceHostedItem.model';
-import type { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare';
+import type { ContributorCardSquareProps } from '../../contributor/ContributorCardSquare/ContributorCardSquare.model';
 import { useOrganizationContext } from '../hooks/useOrganizationContext';
 
 export interface UseOrganizationProvided {
@@ -52,6 +52,7 @@ const useOrganizationProvider = (): UseOrganizationProvided => {
 
   const { data: orgRolesData, loading: orgRolesLoading } = useRolesOrganizationQuery({
     variables: {
+      // biome-ignore lint/style/noNonNullAssertion: ensured by skip
       organizationId: organizationId!,
     },
     skip: !organizationId || !canReadUsers,

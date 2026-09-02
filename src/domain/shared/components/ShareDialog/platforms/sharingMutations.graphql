@@ -1,6 +1,0 @@
-# TODO: Proper mutation with $link, $entityType [space, ch, opp, callout, card ...], $message
-# For now it's just a direct message to a user
-mutation shareLinkWithUser($messageData: CommunicationSendMessageToUsersInput!) {
-  sendMessageToUsers(messageData: $messageData)
-}
-

@@ -1,0 +1,717 @@
+import type { TFunction } from 'i18next';
+import {
+  CalendarDays,
+  FileText,
+  LayoutGrid,
+  Link2,
+  Megaphone,
+  MessageSquare,
+  Mic,
+  Presentation,
+  StickyNote,
+  User,
+} from 'lucide-react';
+import type { ReactNode } from 'react';
+import { ActivityEventType, RoleName, SpaceLevel } from '@/core/apollo/generated/graphql-schema';
+import { markdownToPlainText } from '@/core/ui/markdown/utils/markdownToPlainText';
+import { InlineMarkdown } from '@/crd/components/common/InlineMarkdown';
+import type { ApplicationCardData } from '@/crd/components/dashboard/ApplicationsBlock';
+import type { MembershipItem } from '@/crd/components/dashboard/MyMemberships/types';
+import { getInitials } from '@/crd/lib/getInitials';
+import { pickColorFromId } from '@/crd/lib/pickColorFromId';
+import { formatTimeElapsed } from '@/domain/shared/utils/formatTimeElapsed';
+import { spaceTileImageUrl } from '@/domain/space/about/utils/spaceTileImageUrl';
+
+export type CompactSpaceCardData = {
+  id: string;
+  name: string;
+  href: string;
+  bannerUrl?: string;
+  isPrivate: boolean;
+  isHomeSpace: boolean;
+  initials: string;
+  color: string;
+};
+
+export type ActivityItemData = {
+  id: string;
+  avatarUrl?: string;
+  avatarInitials: string;
+  userName: string;
+  activityIcon: ReactNode;
+  activityIconLabel: string;
+  title: ReactNode;
+  titlePlain?: string;
+  titleHref?: string;
+  contextName?: string;
+  timestamp: string;
+  rawDate?: string;
+};
+
+export type SidebarResourceData = {
+  id: string;
+  name: string;
+  href: string;
+  avatarUrl?: string;
+  initials: string;
+  avatarColor?: string;
+};
+
+export type SubspaceCardData = {
+  id: string;
+  name: string;
+  href: string;
+  bannerUrl?: string;
+  isPrivate: boolean;
+};
+
+export type InvitationCardData = {
+  id: string;
+  spaceId: string;
+  spaceName: string;
+  spaceHref: string;
+  spaceAvatarUrl?: string;
+  inviterName?: string;
+  color: string;
+};
+
+export type RecentSpaceEntry = {
+  space: {
+    id: string;
+    about: {
+      profile: {
+        displayName: string;
+        url: string;
+        cardBanner?: { uri: string };
+      };
+      isContentPublic?: boolean;
+    };
+  };
+};
+
+export const mapRecentSpacesToCompactCards = (
+  spaces: RecentSpaceEntry[],
+  homeSpaceId?: string
+): CompactSpaceCardData[] => {
+  return spaces.map(({ space }) => ({
+    id: space.id,
+    name: space.about.profile.displayName,
+    href: space.about.profile.url,
+    // Leave undefined when the space has no real card banner — the component will
+    // render the deterministic gradient from `color` instead of a stock default.
+    bannerUrl: space.about.profile.cardBanner?.uri || undefined,
+    isPrivate: !space.about.isContentPublic,
+    isHomeSpace: space.id === homeSpaceId,
+    initials: getInitials(space.about.profile.displayName),
+    color: pickColorFromId(space.id),
+  }));
+};
+
+type ActivityEntry = {
+  id: string;
+  type?: string;
+  triggeredBy?: {
+    profile?: {
+      displayName?: string;
+      avatar?: { uri: string };
+    };
+  };
+  /** Present on comment-type entries (CalloutPostComment, DiscussionComment) as raw markdown. */
+  description?: string;
+  /** Present on UpdateSent as raw markdown. */
+  message?: string;
+  spaceDisplayName?: string;
+  createdDate?: string | Date;
+  space?: { about?: { profile?: { url?: string } } };
+  post?: { profile: { url?: string; displayName: string } };
+  callout?: { framing: { profile: { url?: string; displayName: string } } };
+  whiteboard?: { profile: { url?: string; displayName: string } };
+  subspace?: { about: { profile: { url?: string; displayName: string } } };
+  calendarEvent?: { profile: { url?: string; displayName: string } };
+  actor?: { profile?: { url?: string; displayName: string } };
+  link?: { profile: { url?: string; displayName: string } };
+  memo?: { profile: { url?: string; displayName: string } };
+};
+
+const ICON_CLASS = 'size-2.5';
+
+/**
+ * Per-activity-type visual & content mapping. Mirrors the legacy per-view layer
+ * (`src/domain/collaboration/activity/ActivityLog/views/*`): picks the badge icon,
+ * primary title content (entity name or markdown), parent context, and click target.
+ *
+ * For comment-type activities (`CalloutPostComment`, `DiscussionComment`, `UpdateSent`)
+ * the title is user-authored markdown — rendered via `InlineMarkdown` so markdown/HTML
+ * displays formatted instead of escaped (CRD markdown-preview rule, `src/crd/CLAUDE.md` §9).
+ * `titlePlain` is always plain-text (markdown stripped via `markdownToPlainText`) so
+ * screen readers don't announce markup syntax.
+ */
+type ResolvedActivity = {
+  icon: ReactNode;
+  iconLabel: string;
+  title: ReactNode;
+  titlePlain: string;
+  contextName?: string;
+  href?: string;
+};
+
+function resolveActivity(activity: ActivityEntry, t: TFunction): ResolvedActivity {
+  const typeKey = activity.type ?? '';
+  // Icon labels live in the crd-dashboard namespace (manually managed in src/crd/i18n/dashboard/,
+  // not Crowdin). The caller's `useTranslation('crd-dashboard')` ensures the namespace is loaded
+  // so passing `{ ns: 'crd-dashboard' }` here works even though `t` came from the default namespace.
+  const iconLabel = typeKey
+    ? (t(`activity.iconLabel.${typeKey}` as never, {
+        ns: 'crd-dashboard',
+        defaultValue: typeKey,
+      }) as string)
+    : '';
+
+  const spaceContext = activity.spaceDisplayName;
+  const calloutContext = activity.callout?.framing?.profile?.displayName;
+
+  switch (activity.type) {
+    case ActivityEventType.CalloutPublished: {
+      const name = activity.callout?.framing?.profile?.displayName ?? '';
+      return {
+        icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: spaceContext,
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutPostCreated: {
+      const name = activity.post?.profile?.displayName ?? '';
+      return {
+        icon: <FileText aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        href: activity.post?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutPostComment: {
+      const markdown = activity.description ?? '';
+      return {
+        icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
+        titlePlain: markdownToPlainText(markdown),
+        // Legacy shows the post displayName for post-comment context.
+        contextName: activity.post?.profile?.displayName,
+        href: activity.post?.profile?.url,
+      };
+    }
+    case ActivityEventType.DiscussionComment: {
+      const markdown = activity.description ?? '';
+      return {
+        icon: <MessageSquare aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
+        titlePlain: markdownToPlainText(markdown),
+        contextName: calloutContext,
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutWhiteboardCreated:
+    case ActivityEventType.CalloutWhiteboardContentModified: {
+      const name = activity.whiteboard?.profile?.displayName ?? '';
+      return {
+        icon: <Presentation aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        href: activity.whiteboard?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutMemoCreated: {
+      const name = activity.memo?.profile?.displayName ?? '';
+      return {
+        icon: <StickyNote aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        href: activity.memo?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalloutLinkCreated: {
+      const name = activity.link?.profile?.displayName ?? '';
+      return {
+        icon: <Link2 aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: calloutContext,
+        // Legacy links the whole row to the parent callout (links have no profile URL of their own).
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+    case ActivityEventType.MemberJoined: {
+      const name = activity.actor?.profile?.displayName ?? '';
+      // Legacy title is "{{subject}} joined" — the only type with a built-in verb.
+      const titleText = t('components.activityLogView.description.MEMBER_JOINED', { subject: name }) as string;
+      return {
+        icon: <User aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: titleText,
+        titlePlain: titleText,
+        contextName: spaceContext,
+        href: activity.actor?.profile?.url,
+      };
+    }
+    case ActivityEventType.SubspaceCreated: {
+      const name = activity.subspace?.about?.profile?.displayName ?? '';
+      return {
+        icon: <LayoutGrid aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: spaceContext,
+        href: activity.subspace?.about?.profile?.url,
+      };
+    }
+    case ActivityEventType.CalendarEventCreated: {
+      const name = activity.calendarEvent?.profile?.displayName ?? '';
+      return {
+        icon: <CalendarDays aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: name,
+        titlePlain: name,
+        contextName: spaceContext,
+        href: activity.calendarEvent?.profile?.url,
+      };
+    }
+    case ActivityEventType.UpdateSent: {
+      const markdown = activity.message ?? activity.description ?? '';
+      return {
+        icon: <Mic aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
+        titlePlain: markdownToPlainText(markdown),
+        contextName: spaceContext,
+        // Updates don't have their own URL; link to the space (legacy uses buildUpdatesUrl).
+        href: activity.space?.about?.profile?.url,
+      };
+    }
+    default: {
+      // Unknown/future activity type — best-effort fallback. Render description through
+      // InlineMarkdown to stay markdown-safe (CLAUDE.md §9) in case a new backend type
+      // carries markdown/HTML, and strip it for the plain-text a11y fallback.
+      const markdown = activity.description ?? '';
+      return {
+        icon: <Megaphone aria-hidden="true" className={ICON_CLASS} />,
+        iconLabel,
+        title: markdown ? (
+          <InlineMarkdown content={markdown} clampLines={2} disableLinks={true} className="text-body" />
+        ) : (
+          ''
+        ),
+        titlePlain: markdownToPlainText(markdown),
+        contextName: spaceContext,
+        href: activity.callout?.framing?.profile?.url,
+      };
+    }
+  }
+}
+
+export const mapActivityToFeedItems = (activities: ActivityEntry[], t: TFunction): ActivityItemData[] => {
+  return activities.map(activity => {
+    const displayName = activity.triggeredBy?.profile?.displayName ?? '';
+    const rawDate =
+      activity.createdDate instanceof Date ? activity.createdDate.toISOString() : (activity.createdDate ?? '');
+    const resolved = resolveActivity(activity, t);
+
+    return {
+      id: activity.id,
+      avatarUrl: activity.triggeredBy?.profile?.avatar?.uri,
+      avatarInitials: displayName ? getInitials(displayName) : '?',
+      userName: displayName,
+      activityIcon: resolved.icon,
+      activityIconLabel: resolved.iconLabel,
+      title: resolved.title,
+      titlePlain: resolved.titlePlain,
+      titleHref: resolved.href,
+      contextName: resolved.contextName,
+      timestamp: activity.createdDate ? formatTimeElapsed(activity.createdDate, t) : '',
+      rawDate,
+    };
+  });
+};
+
+type ProfileShape = {
+  displayName: string;
+  url: string;
+  avatar?: { uri: string };
+};
+
+type SpaceProfileShape = ProfileShape & {
+  cardBanner?: { uri: string };
+};
+
+type SpaceResourceEntry = {
+  id: string;
+  about: {
+    profile: SpaceProfileShape;
+  };
+};
+
+type ProfileResourceEntry = {
+  id: string;
+  profile?: ProfileShape;
+};
+
+type InnovationHubResourceEntry = ProfileResourceEntry & {
+  nameID?: string;
+};
+
+type SidebarResources = {
+  spaces: SidebarResourceData[];
+  virtualContributors: SidebarResourceData[];
+  innovationHubs: SidebarResourceData[];
+  innovationPacks: SidebarResourceData[];
+};
+
+// Sidebar items use the muted/prototype palette — they're small list rows where
+// per-space rainbow colours feel noisy. Spaces fall back from AVATAR → CARD banner
+// → grey AvatarFallback (L0 spaces rarely have an AVATAR visual but usually have a
+// card banner); hubs / packs fall back to the default grey AvatarFallback; virtual
+// contributors get the prototype's chart-2 accent so they stay distinct from spaces.
+const mapProfileToSidebarItem = (id: string, profile: ProfileShape): SidebarResourceData => ({
+  id,
+  name: profile.displayName,
+  href: profile.url,
+  avatarUrl: profile.avatar?.uri,
+  initials: getInitials(profile.displayName),
+});
+
+export const mapResourcesToSidebarItems = (resources: {
+  spaces?: SpaceResourceEntry[];
+  virtualContributors?: ProfileResourceEntry[];
+  innovationHubs?: InnovationHubResourceEntry[];
+  innovationPacks?: ProfileResourceEntry[];
+}): SidebarResources => ({
+  spaces: (resources.spaces ?? []).map(s => ({
+    ...mapProfileToSidebarItem(s.id, s.about.profile),
+    // `||` (not `??`): an unset Alkemio visual is `{ uri: '' }`, so empty strings
+    // must fall through to the card banner, then to undefined → grey fallback.
+    avatarUrl: s.about.profile.avatar?.uri || s.about.profile.cardBanner?.uri || undefined,
+  })),
+  virtualContributors: (resources.virtualContributors ?? [])
+    .filter(vc => vc.profile)
+    .map(vc => ({
+      // biome-ignore lint/style/noNonNullAssertion: Filtered before
+      ...mapProfileToSidebarItem(vc.id, vc.profile!),
+      avatarColor: 'var(--chart-2)',
+    })),
+  innovationHubs: (resources.innovationHubs ?? [])
+    .filter(hub => hub.profile)
+    .map(hub => ({
+      // biome-ignore lint/style/noNonNullAssertion: Filtered before
+      ...mapProfileToSidebarItem(hub.id, hub.profile!),
+      // Override the server-provided `profile.url` (legacy `/innovation-hub/<slug>`)
+      // with the canonical CRD `/hub/<nameID>` path. Falls back to the profile
+      // url when no nameID is available (defensive — every hub has one).
+      href: hub.nameID ? `/hub/${hub.nameID}` : (hub.profile?.url ?? ''),
+    })),
+  innovationPacks: (resources.innovationPacks ?? [])
+    .filter(pack => pack.profile)
+    // biome-ignore lint/style/noNonNullAssertion: Filtered before
+    .map(pack => mapProfileToSidebarItem(pack.id, pack.profile!)),
+});
+
+type MembershipEntry = {
+  space: {
+    id: string;
+    about: {
+      isContentPublic?: boolean;
+      profile: {
+        displayName: string;
+        tagline?: string;
+        url: string;
+        avatar?: { uri: string };
+        cardBanner?: { uri: string };
+      };
+    };
+    community?: {
+      roleSet?: {
+        myRoles?: string[];
+      };
+    };
+  };
+  childMemberships?: MembershipEntry[];
+};
+
+// Normalize raw GraphQL role strings (e.g. `'ADMIN'`, `'LEAD'`, `'MEMBER'` from the
+// `RoleName` enum) down to the subset the panel renders, preserving priority order
+// so the badges read consistently.
+const ROLE_ORDER = ['admin', 'lead', 'member'] as const;
+type PanelRole = (typeof ROLE_ORDER)[number];
+
+const extractPanelRoles = (rawRoles: string[]): PanelRole[] => {
+  const seen = new Set(rawRoles.map(r => r.toLowerCase()));
+  return ROLE_ORDER.filter(r => seen.has(r));
+};
+
+const mapEntryToPanelItem = (entry: MembershipEntry, depth = 0): MembershipItem => {
+  const { space } = entry;
+  const profile = space.about.profile;
+  const isPrivate = !space.about.isContentPublic;
+  const childEntries = entry.childMemberships ?? [];
+
+  // Root spaces (L0) show a banner thumbnail → prefer cardBanner; if missing, the
+  // component renders the deterministic gradient from `color`.
+  // Child spaces (L1/L2) show an avatar → prefer avatar URI; same gradient fallback.
+  const isRoot = depth === 0;
+  const image = isRoot ? profile.cardBanner?.uri || undefined : profile.avatar?.uri || undefined;
+
+  return {
+    id: space.id,
+    name: profile.displayName,
+    href: profile.url,
+    tagline: profile.tagline,
+    isPrivate,
+    roles: extractPanelRoles(space.community?.roleSet?.myRoles ?? []),
+    initials: getInitials(profile.displayName),
+    color: pickColorFromId(space.id),
+    image,
+    children: childEntries.length > 0 ? childEntries.map(c => mapEntryToPanelItem(c, depth + 1)) : undefined,
+  };
+};
+
+export const mapMembershipsToPanelItems = (memberships: MembershipEntry[]): MembershipItem[] => {
+  return memberships.map(mapEntryToPanelItem);
+};
+
+type InvitationEntry = {
+  id: string;
+  spacePendingMembershipInfo: {
+    id: string;
+    level: SpaceLevel;
+    about: {
+      profile: {
+        displayName: string;
+        url: string;
+        avatar?: { uri: string };
+        cardBanner?: { uri: string };
+      };
+    };
+  };
+  invitation: {
+    createdBy?: {
+      id: string;
+      profile: {
+        id: string;
+        displayName: string;
+      };
+    } | null;
+  };
+};
+
+export const mapInvitationsToCards = (invitations: InvitationEntry[]): InvitationCardData[] => {
+  return invitations.map(invitation => ({
+    id: invitation.id,
+    spaceId: invitation.spacePendingMembershipInfo.id,
+    spaceName: invitation.spacePendingMembershipInfo.about.profile.displayName,
+    spaceHref: invitation.spacePendingMembershipInfo.about.profile.url,
+    // Was `avatar` for every level, so an invitation to an L0 space — which has
+    // no avatar — never showed an image.
+    spaceAvatarUrl: spaceTileImageUrl(
+      invitation.spacePendingMembershipInfo.level,
+      invitation.spacePendingMembershipInfo.about.profile
+    ),
+    inviterName: invitation.invitation.createdBy?.profile.displayName,
+    color: pickColorFromId(invitation.spacePendingMembershipInfo.id),
+  }));
+};
+
+type ApplicationEntry = {
+  id: string;
+  spacePendingMembershipInfo: {
+    id: string;
+    level: SpaceLevel;
+    about: {
+      profile: {
+        displayName: string;
+        url: string;
+        avatar?: { uri: string };
+        cardBanner?: { uri: string };
+      };
+    };
+  };
+};
+
+export const mapApplicationsToCards = (applications: ApplicationEntry[]): ApplicationCardData[] => {
+  return applications.map(application => ({
+    id: application.id,
+    spaceName: application.spacePendingMembershipInfo.about.profile.displayName,
+    spaceHref: application.spacePendingMembershipInfo.about.profile.url,
+    spaceImageUrl: spaceTileImageUrl(
+      application.spacePendingMembershipInfo.level,
+      application.spacePendingMembershipInfo.about.profile
+    ),
+    color: pickColorFromId(application.spacePendingMembershipInfo.id),
+  }));
+};
+
+// ── Non-activity home sections (024) ────────────────────────────────────────
+
+/** A Space shape carrying the card-banner `about` block (SpaceAboutCardBanner). */
+type CardBannerSpace = {
+  id: string;
+  about: {
+    isContentPublic?: boolean;
+    profile: {
+      displayName: string;
+      url: string;
+      cardBanner?: { uri: string };
+    };
+  };
+};
+
+const spaceToCompactCard = (space: CardBannerSpace, homeSpaceId?: string): CompactSpaceCardData => ({
+  id: space.id,
+  name: space.about.profile.displayName,
+  href: space.about.profile.url,
+  bannerUrl: space.about.profile.cardBanner?.uri || undefined,
+  isPrivate: !space.about.isContentPublic,
+  isHomeSpace: space.id === homeSpaceId,
+  initials: getInitials(space.about.profile.displayName),
+  color: pickColorFromId(space.id),
+});
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+type LastActiveSpaceEntry = {
+  space: CardBannerSpace;
+  latestActivity?: { createdDate?: string | Date } | null;
+};
+
+/**
+ * Section 1 — Pinned & Last Active. The home Space (L0) is pinned first, followed by
+ * the Spaces the member has been personally active in within the last 30 days, ordered
+ * most-recent-first. The home Space is never duplicated among the recent items. The
+ * caller caps the visible count (the pin slot counts toward the cap).
+ */
+export const mapLastActiveSection = (
+  mySpaces: LastActiveSpaceEntry[],
+  homeSpace: CardBannerSpace | undefined,
+  homeSpaceId: string | undefined,
+  now: Date = new Date()
+): CompactSpaceCardData[] => {
+  const cutoff = now.getTime() - 30 * MS_PER_DAY;
+
+  const recent = mySpaces
+    .filter(entry => entry.space.id !== homeSpaceId)
+    .map(entry => {
+      const raw = entry.latestActivity?.createdDate;
+      const time = raw ? new Date(raw).getTime() : Number.NaN;
+      return { space: entry.space, time };
+    })
+    .filter(entry => !Number.isNaN(entry.time) && entry.time >= cutoff)
+    .sort((a, b) => b.time - a.time)
+    .map(entry => spaceToCompactCard(entry.space, homeSpaceId));
+
+  const homeCard = homeSpace ? [spaceToCompactCard(homeSpace, homeSpaceId)] : [];
+  return [...homeCard, ...recent];
+};
+
+/**
+ * Section 2 — Most Activity. Platform-wide discovery ranking (public Spaces + the
+ * member's private Spaces) already ordered and de-zeroed server-side by `exploreSpaces`.
+ */
+export const mapMostActivitySection = (spaces: CardBannerSpace[]): CompactSpaceCardData[] =>
+  spaces.map(space => spaceToCompactCard(space));
+
+type ActivityScoredSpace = CardBannerSpace & {
+  level: SpaceLevel;
+  activityScore: number;
+  community?: { roleSet?: { myRoles?: string[] } };
+};
+
+type HierarchicalMembershipEntry = {
+  space: ActivityScoredSpace;
+  childMemberships?: HierarchicalMembershipEntry[];
+};
+
+// Sections include L0 (top-level) and L1 (first-level subspaces) only — not deeper.
+const isL0OrL1 = (space: { level: SpaceLevel }): boolean =>
+  space.level === SpaceLevel.L0 || space.level === SpaceLevel.L1;
+
+const isLeadOrAdmin = (space: ActivityScoredSpace): boolean => {
+  const roles = space.community?.roleSet?.myRoles ?? [];
+  return roles.includes(RoleName.Lead) || roles.includes(RoleName.Admin);
+};
+
+// Highest activity first; zero-activity Spaces therefore sort last (0 is the lowest score).
+const byActivityScoreDesc = (a: ActivityScoredSpace, b: ActivityScoredSpace): number =>
+  b.activityScore - a.activityScore;
+
+// Account (hosted) Spaces restricted to L0/L1 and ordered by activity — the shared basis for
+// both the Section 4 cards and its "show more" panel items.
+const sortedHostedSpaces = (spaces: ActivityScoredSpace[]): ActivityScoredSpace[] =>
+  [...spaces].filter(isL0OrL1).sort(byActivityScoreDesc);
+
+/**
+ * Section 3 — I Lead & Administer. Flattens the membership hierarchy to L0 + L1 Spaces
+ * where the member's role includes Lead or Admin, ordered by all-actor activity score
+ * (highest first, zero-activity last).
+ */
+export const mapLeadAdminSection = (memberships: HierarchicalMembershipEntry[]): CompactSpaceCardData[] => {
+  const flattened: ActivityScoredSpace[] = [];
+  for (const entry of memberships) {
+    if (isL0OrL1(entry.space)) {
+      flattened.push(entry.space);
+    }
+    for (const child of entry.childMemberships ?? []) {
+      if (isL0OrL1(child.space)) {
+        flattened.push(child.space);
+      }
+    }
+  }
+
+  return flattened
+    .filter(isLeadOrAdmin)
+    .sort(byActivityScoreDesc)
+    .map(space => spaceToCompactCard(space));
+};
+
+/**
+ * Section 4 — I Host. The Spaces on the member's personal account, ordered by all-actor
+ * activity score (highest first, zero-activity last).
+ */
+export const mapHostSection = (spaces: ActivityScoredSpace[]): CompactSpaceCardData[] =>
+  sortedHostedSpaces(spaces).map(space => spaceToCompactCard(space));
+
+/**
+ * Hosted account Spaces mapped to flat memberships-panel items (no membership role), ordered
+ * by activity score — used by the Section 4 "show more" panel. Account Spaces are not
+ * memberships, so the panel is given a pre-scoped flat list rather than a role filter.
+ */
+export const mapHostedSpacesToPanelItems = (spaces: ActivityScoredSpace[]): MembershipItem[] =>
+  sortedHostedSpaces(spaces).map(space => ({
+    id: space.id,
+    name: space.about.profile.displayName,
+    href: space.about.profile.url,
+    isPrivate: !space.about.isContentPublic,
+    roles: [],
+    initials: getInitials(space.about.profile.displayName),
+    color: pickColorFromId(space.id),
+    image: space.about.profile.cardBanner?.uri || undefined,
+  }));

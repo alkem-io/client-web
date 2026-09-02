@@ -33,6 +33,23 @@ const getTranslationForUserMessage = (
   return undefined;
 };
 
+const UUID_REGEX = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
+
+/**
+ * Strips UUIDs from a raw server error message so it can be shown to the user, cleaning up the
+ * artefacts left behind (e.g. the now-empty `( )` around a removed id, doubled spaces, " ," ).
+ *
+ * "Unable to remove Space (6df9be66-…), with level 1, as it contains 6 subspaces"
+ *   → "Unable to remove Space, with level 1, as it contains 6 subspaces"
+ */
+export const stripIdsFromMessage = (message: string): string =>
+  message
+    .replace(UUID_REGEX, '')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\s+([,.;:])/g, '$1')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
 const getTranslationForCode = (error: GraphQLFormattedError, t: TFunction, i18n: i18n) => {
   const { message } = error;
   const code = error.extensions?.code as string;
@@ -88,6 +105,14 @@ export const useApolloErrorHandler = (severity: Severity = 'error') => {
       const translation = getTranslationForCode(graphqlError, t, i18n);
       const numericCode = graphqlError.extensions?.numericCode as number | undefined;
       notify(translation, severity, numericCode);
+
+      // Also surface the server's specific reason (IDs stripped) as a second notification when it
+      // adds detail beyond the generic translated message — e.g. the generic "Operation not allowed"
+      // is followed by "Unable to remove Space, with level 1, as it contains 6 subspaces".
+      const detail = stripIdsFromMessage(graphqlError.message);
+      if (detail && detail !== translation) {
+        notify(detail, severity, numericCode);
+      }
     });
   };
 

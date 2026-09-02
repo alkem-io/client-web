@@ -24,6 +24,8 @@
 - Iframe embedding: Unnecessary complexity, current portal pattern works
 - Wrapping WhiteboardPreview in MUI: Would bring MUI inline into `.crd-root` (preflight conflict)
 
+**Update (2026-04-15)**: This decision has been **revised** in [whiteboard/research.md](./whiteboard/research.md) (R-WB-1). The dialog **chrome** (header, footer, display name) is being migrated to CRD via a slot pattern, while the Excalidraw collaboration infrastructure stays unchanged. The inline previews remain CRD as originally decided.
+
 ## R3: Rich Text Rendering vs Editing
 
 **Decision**: Read-only markdown → CRD `MarkdownContent` component. Tiptap editor → integration layer wraps existing component.
@@ -74,7 +76,7 @@
 
 ## R8: Mobile Tab Navigation
 
-**Decision**: CRD bottom navigation with Radix-based overflow drawer.
+**Decision**: CRD bottom navigation with Radix-based overflow drawer. *(As shipped, the overflow drawer became the mobile sidebar drawer, triggered by a left-end hamburger or a left-edge swipe — see spec.md US14 amendment.)*
 
 **Rationale**: Current MUI uses `BottomNavigation` component with a custom drawer. CRD replaces this with a fixed-bottom flex container + Radix Sheet for the "More" menu. Tabs are `<button>` elements with `aria-selected`. Same UX, CRD-styled.
 

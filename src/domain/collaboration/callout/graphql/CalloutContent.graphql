@@ -27,7 +27,6 @@ query CalloutContent($calloutId: UUID!) {
               uri
             }
           }
-          content # Get the whiteboard content to be able to edit it in single user mode
           previewSettings {
             ...whiteboardPreviewSettings
           }
@@ -54,12 +53,23 @@ query CalloutContent($calloutId: UUID!) {
         poll {
           ...PollDetails
         }
+        collaboraDocument {
+          ...CollaboraDocumentGate
+        }
       }
       contributionDefaults {
         id
         defaultDisplayName
         postDescription
-        whiteboardContent
+        whiteboardContentAvailable
+      }
+      classification {
+        id
+        tagsets {
+          id
+          name
+          allowedValues
+        }
       }
       settings {
         ...CalloutSettingsFull

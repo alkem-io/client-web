@@ -6,10 +6,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/crd/primitives/avatar';
 import { Badge } from '@/crd/primitives/badge';
 import type { MembershipItem, MembershipRole } from './types';
 
-const ROLE_VARIANT: Record<MembershipRole, 'destructive' | 'default' | 'secondary'> = {
-  admin: 'destructive',
-  lead: 'default',
-  member: 'secondary',
+// Subtle role accent — a tiny dot keeps the visual cue (admin = destructive,
+// lead = primary) without filling a chip with that colour.
+const ROLE_DOT_COLOR: Record<MembershipRole, string> = {
+  admin: 'var(--destructive)',
+  lead: 'var(--primary)',
+  member: 'var(--muted-foreground)',
 };
 
 // Tailwind indent classes per depth — depth 0 is the base padding, deeper levels
@@ -19,17 +21,22 @@ function depthPadding(depth: number): string {
   return DEPTH_PADDING[Math.min(depth, DEPTH_PADDING.length - 1)];
 }
 
-function RoleBadges({ roles, t }: { roles: MembershipRole[]; t: TFunction<'crd-dashboard'> }) {
+function RoleLabels({ roles, t }: { roles: MembershipRole[]; t: TFunction<'crd-dashboard'> }) {
   // `member` is implicit — every space in this panel is a membership, so a "Member"
-  // badge would be redundant. Only highlight elevated roles (admin / lead).
+  // label would be redundant. Only highlight elevated roles (admin / lead).
   const visibleRoles = roles.filter(role => role !== 'member');
   if (visibleRoles.length === 0) return null;
   return (
-    <div className="flex gap-1 shrink-0">
+    <div className="flex items-center gap-3 shrink-0">
       {visibleRoles.map(role => (
-        <Badge key={role} variant={ROLE_VARIANT[role]} className="text-[11px] font-normal">
+        <span key={role} className="inline-flex items-center gap-1.5 text-caption text-muted-foreground">
+          <span
+            className="w-1.5 h-1.5 rounded-full shrink-0"
+            style={{ backgroundColor: ROLE_DOT_COLOR[role] }}
+            aria-hidden="true"
+          />
           {t(`myMembershipsPanel.role.${role}`)}
-        </Badge>
+        </span>
       ))}
     </div>
   );
@@ -55,7 +62,7 @@ function NodeAvatar({ item }: { item: MembershipItem }) {
   return (
     <Avatar className="w-8 h-8 shrink-0 rounded-md">
       {item.image ? <AvatarImage src={item.image} alt="" className="rounded-md" /> : null}
-      <AvatarFallback className={cn('rounded-md text-[10px]', item.color && 'text-white')} color={item.color}>
+      <AvatarFallback className={cn('rounded-md text-badge', item.color && 'text-white')} color={item.color}>
         {item.initials}
       </AvatarFallback>
     </Avatar>
@@ -130,17 +137,19 @@ export function TreeNode({
           {isRoot ? <BannerThumbnail image={item.image} color={item.color} /> : <NodeAvatar item={item} />}
 
           <div className="flex-1 min-w-0 text-left">
-            <div className="text-sm font-medium truncate">{item.name}</div>
-            {isRoot && item.tagline && <div className="text-xs text-muted-foreground truncate">{item.tagline}</div>}
+            <div className="text-body-emphasis truncate">{item.name}</div>
+            {isRoot && item.tagline && (
+              <div className="text-caption text-muted-foreground truncate">{item.tagline}</div>
+            )}
           </div>
 
           {hasChildren && (
-            <Badge variant="outline" className="text-[11px] font-normal shrink-0">
+            <Badge variant="outline" className="text-caption font-normal shrink-0">
               {t('myMembershipsPanel.subspaces', { count: children.length })}
             </Badge>
           )}
 
-          <RoleBadges roles={item.roles} t={t} />
+          <RoleLabels roles={item.roles} t={t} />
         </a>
       </div>
 

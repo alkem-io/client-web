@@ -94,8 +94,8 @@ type CalendarEventData = {
 
 ### MemberCardData (exported from `src/crd/components/space/SpaceMembers.tsx`)
 ```typescript
-type MemberRoleType = 'admin' | 'moderator' | 'member';
-type MemberRoleKey = 'admin' | 'lead' | 'member' | 'organization';
+type MemberRoleType = 'moderator' | 'member';
+type MemberRoleKey = 'lead' | 'member' | 'organization';
 
 type MemberCardData = {
   id: string;
@@ -104,14 +104,15 @@ type MemberCardData = {
   type: 'user' | 'organization';
   /**
    * Primary role used for the displayed badge label. Derived from
-   * the user's full role list with precedence Admin > Lead > Member.
-   * For organizations this is always `'organization'`.
+   * the user's full role list with precedence Lead > Member.
+   * Administrative status is never surfaced. For organizations this
+   * is always `'organization'`.
    */
   role?: MemberRoleKey;
   /**
    * Full list of roles the member holds. Used by the filter pills
-   * so a user who is both Admin and Lead appears under both filters.
-   * For organizations this is always `['organization']`.
+   * so a user who is both a Lead and a Member appears under both
+   * filters. For organizations this is always `['organization']`.
    */
   roles?: MemberRoleKey[];
   /** Drives the role badge colour — only set for users. */
@@ -124,10 +125,10 @@ type MemberCardData = {
 ```
 
 The integration layer derives `role` + `roleType` + `roles` from the user's full `RoleName[]`:
-- `role` + `roleType` follow precedence `Admin > Lead > Member` — they drive the single badge rendered on the card.
-- `roles` is the full inclusive list — filter pills match against it so overlapping sets (e.g. an Admin who is also a Lead) surface under every applicable filter.
+- `role` + `roleType` follow precedence `Lead > Member` — they drive the single badge rendered on the card. Administrative status is never surfaced (no Admin badge).
+- `roles` is the full inclusive list (Lead, Member) — filter pills match against it so overlapping sets (e.g. a Lead who is also a Member) surface under every applicable filter.
 
-`SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: admin → primary, moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
+`SpaceMembers` renders users via `UserCard` (circular avatar + color-coded role badge: moderator → chart-2, member → muted) and organizations via `OrganizationCard` (square avatar + "Organization" badge with Building2 icon).
 
 ### VirtualContributorData
 ```typescript
@@ -201,6 +202,50 @@ Callout data is loaded in two phases. CRD components receive `PostCardData` whic
 - **Light mapper** (`mapCalloutLightToPostCard`): produces a `PostCardData` with title and type only — `snippet` is `undefined`
 - **Detail mapper** (`mapCalloutDetailsToPostCard`): produces a complete `PostCardData` with description, content previews, author, comment count
 - **Source types**: `CalloutModelLightExtended` (light, from `useCalloutsSet`) and `CalloutDetailsModelExtended` (detail, from `useCalloutDetails`)
+
+### PostCardData (exported from `src/crd/components/space/PostCard.tsx`)
+```typescript
+type PostType = 'text' | 'whiteboard';
+
+type PostCardData = {
+  id: string;
+  type: PostType;
+  author?: {
+    name: string;
+    avatarUrl?: string;
+    role?: string;
+  };
+  title: string;
+  snippet?: string;
+  timestamp?: string;
+  isDraft?: boolean;
+  /** Framing-level preview image (whiteboard framing only) */
+  framingImageUrl?: string;
+  commentCount?: number;
+};
+```
+
+`PostType` describes the callout's **framing type**, not its contribution type:
+- `'text'` — Memo/None/Link/Media/Poll framing (content is in the description or a dedicated slot like polls)
+- `'whiteboard'` — Whiteboard framing (shows a preview image with "Open Whiteboard" overlay)
+
+Contribution previews are **not part of PostCardData**. They are rendered by the integration layer into a `ReactNode` slot on PostCard (see `contributionsPreview` prop below). This keeps PostCard unaware of contribution types and lets the integration layer use the appropriate CRD contribution components (`ContributionGrid`, `ContributionWhiteboardCard`, `ContributionPostCard`, `ContributionMemoCard`, `ContributionLinkList`).
+
+PostCard accepts these additional props (not part of PostCardData):
+```typescript
+type PostCardProps = {
+  post: PostCardData;
+  onClick?: () => void;
+  onCommentsClick?: () => void;
+  onSettingsClick?: () => void;
+  onExpandClick?: () => void;
+  /** Contribution preview rendered by the integration layer (ContributionsPreviewConnector) */
+  contributionsPreview?: ReactNode;
+  /** Content injected after the description/preview area (e.g. poll via CalloutPollConnector) */
+  children?: ReactNode;
+  className?: string;
+};
+```
 
 ### CalloutBlockData
 ```typescript

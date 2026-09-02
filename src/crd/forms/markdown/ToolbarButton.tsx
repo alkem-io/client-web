@@ -1,7 +1,7 @@
-import type { ChainedCommands, Editor } from '@tiptap/react';
+import { type ChainedCommands, type Editor, useEditorState } from '@tiptap/react';
 import type { LucideIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { cn } from '@/crd/lib/utils';
+import { isEditorReady } from './isEditorReady';
 
 type ToolbarButtonProps = {
   editor: Editor;
@@ -22,25 +22,47 @@ export function ToolbarButton({
   disabled: disabledProp,
   className,
 }: ToolbarButtonProps) {
-  const [, setTick] = useState(0);
+  const ready = isEditorReady(editor);
 
-  // Refresh state on every editor transaction
-  useEffect(() => {
-    const handler = () => setTick(t => t + 1);
-    editor.on('transaction', handler);
-    return () => {
-      editor.off('transaction', handler);
-    };
-  }, [editor]);
+  // Subscribe to selection/transaction changes so the active highlight and
+  // disabled state reflect the current cursor position.
+  const state = useEditorState({
+    editor: ready ? editor : null,
+    selector: ({ editor: ed }) => {
+      if (!ed) return { active: false, canRun: false };
+      const active = activeSpec
+        ? Array.isArray(activeSpec)
+          ? ed.isActive(activeSpec[0], activeSpec[1])
+          : ed.isActive(activeSpec)
+        : false;
+      let canRun = false;
+      try {
+        canRun = command(ed.can().chain().focus()).run();
+      } catch {
+        canRun = false;
+      }
+      return { active, canRun };
+    },
+  });
 
-  const active = activeSpec
-    ? Array.isArray(activeSpec)
-      ? editor.isActive(activeSpec[0], activeSpec[1])
-      : editor.isActive(activeSpec)
-    : false;
+  if (!ready) {
+    return (
+      <button
+        type="button"
+        className={cn(
+          'h-8 w-8 inline-flex items-center justify-center rounded-md opacity-40 pointer-events-none',
+          className
+        )}
+        disabled={true}
+        aria-label={label}
+      >
+        <Icon className="w-4 h-4" aria-hidden="true" />
+      </button>
+    );
+  }
 
-  const canRun = !disabledProp && command(editor.can().chain().focus()).run();
-  const isDisabled = disabledProp || !canRun;
+  const active = state?.active ?? false;
+  const isDisabled = disabledProp || !state?.canRun;
 
   return (
     <button

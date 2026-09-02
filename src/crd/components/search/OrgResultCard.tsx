@@ -40,17 +40,17 @@ export function OrgResultCard({ org, onClick }: OrgResultCardProps) {
         </div>
 
         {/* Name */}
-        <h4 className="text-sm font-semibold text-card-foreground group-hover:text-primary transition-colors duration-200">
+        <h4 className="text-card-title text-card-foreground group-hover:text-primary transition-colors duration-200">
           {org.name}
         </h4>
 
         {/* Type badge */}
-        <span className="mt-1 text-[10px] font-medium px-2 py-px rounded-full bg-secondary text-secondary-foreground">
+        <span className="mt-1 text-badge px-2 py-px rounded-full bg-secondary text-secondary-foreground">
           {org.type}
         </span>
 
         {/* Tagline */}
-        {org.tagline && <p className="mt-2 line-clamp-2 text-[12px] text-muted-foreground w-full">{org.tagline}</p>}
+        {org.tagline && <p className="mt-2 line-clamp-2 text-caption text-muted-foreground w-full">{org.tagline}</p>}
       </div>
     </button>
   );

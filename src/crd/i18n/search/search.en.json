@@ -2,20 +2,21 @@
   "search": {
     "placeholder": "Search\u2026",
     "emptyTitle": "Type a search term and press Enter",
-    "emptyDescription": "Search across Spaces, Posts, Responses, Users, and Organizations.",
+    "emptyDescription": "Search across Spaces, Posts, Responses, Users, and Organisations.",
     "noResultsTitle": "No results found for {{terms}}",
     "noResultsSuggestion": "Try different keywords or broaden your search.",
-    "searchAllSpaces": "Search all Spaces instead",
+    "searchAllSpaces": "Search the entire platform instead",
     "loading": "Searching\u2026",
     "disclaimer": "These results may not represent the up-to-date state of the platform. Search results are updated on an interval.",
     "loadMore": "Load more",
-    "scopeAll": "All Spaces",
+    "scopeAll": "Entire platform",
+    "scopeTriggerLabel": "Search In: {{option}}",
     "categories": {
       "spaces": "Spaces",
       "posts": "Posts",
       "responses": "Responses",
       "users": "Users",
-      "organizations": "Organizations"
+      "organizations": "Organisations"
     },
     "filters": {
       "all": "All",
@@ -23,18 +24,20 @@
       "subspacesOnly": "Subspaces only",
       "whiteboards": "Whiteboards",
       "memos": "Memos",
-      "posts": "Posts"
+      "posts": "Posts",
+      "documents": "Documents"
     },
     "postTypes": {
       "post": "Post",
       "whiteboard": "Whiteboard",
-      "memo": "Memo"
+      "memo": "Memo",
+      "collaboraDocument": "Document"
     },
     "responseTo": "Response to: {{title}}",
     "spaceContext": "in: {{spaceName}}",
     "fallback": {
       "unknown": "Unknown",
-      "organization": "Organization"
+      "organization": "Organisation"
     },
     "a11y": {
       "searchInput": "Search input",
@@ -47,7 +50,8 @@
       "platformSearch": "Platform Search",
       "filterBy": "Filter {{category}}",
       "resultsFound": "{{count}} results found",
-      "noResultsFound": "No results found"
+      "noResultsFound": "No results found",
+      "scopeTrigger": "Change search scope. Currently searching: {{option}}"
     }
   }
 }

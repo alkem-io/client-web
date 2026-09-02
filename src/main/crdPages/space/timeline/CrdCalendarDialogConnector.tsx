@@ -1,0 +1,267 @@
+import { isBefore, startOfDay } from 'date-fns';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { DeleteEventConfirmation } from '@/crd/components/space/timeline/DeleteEventConfirmation';
+import { EventForm } from '@/crd/components/space/timeline/EventForm';
+import { EventsCalendarView } from '@/crd/components/space/timeline/EventsCalendarView';
+import { TimelineDialog } from '@/crd/components/space/timeline/TimelineDialog';
+import { Button } from '@/crd/primitives/button';
+import useCalendarEvents from '@/domain/timeline/calendar/useCalendarEvents';
+import { useMarkdownEditorIntegration } from '@/main/crdPages/markdown/useMarkdownEditorIntegration';
+import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
+import { mapCalendarEventInfoToListItem } from '../dataMappers/calendarEventDataMapper';
+import { useCrdSpaceLocale } from '../hooks/useCrdSpaceLocale';
+import { AddToCalendarMenuConnector } from './AddToCalendarMenuConnector';
+import { EventDetailConnector } from './EventDetailConnector';
+import { ExportEventsToIcsConnector } from './ExportEventsToIcsConnector';
+import { useCrdCalendarUrlState } from './useCrdCalendarUrlState';
+import { useCrdEventFormDialog } from './useCrdEventFormDialog';
+
+type CrdCalendarDialogConnectorProps = {
+  /** Owned by the page; mirrors the dialog's open state. The connector also
+   *  reads URL state (calendarEventId, ?new=1) and force-opens accordingly. */
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  /** Mirrors the existing MUI temporaryLocation flag for subspace flows.
+   *  Currently unused at the connector level but kept for parity. */
+  temporaryLocation?: boolean;
+};
+
+type View = 'list' | 'detail' | 'create' | 'edit';
+
+/**
+ * Top-level orchestrator for the calendar dialog. Composes:
+ *   - useUrlResolver — spaceId / parentSpaceId / calendarEventId from the URL
+ *   - useCalendarEvents — events + privileges + create/update/delete actions
+ *   - useCrdCalendarUrlState — URL deeplink reads/writes
+ *   - local editingEventId state — drives the create vs edit path
+ *
+ * The create/edit/delete slice (form state, submit/delete handlers, payload
+ * normalisation) lives in useCrdEventFormDialog and is hosted by the
+ * <EventFormDialogBody> sub-component below. That sub-component is mounted
+ * with `key={editingEventId ?? 'create'}` so React remounts a fresh instance
+ * per event id — eliminating any need for manual refs to gate prefill.
+ */
+export function CrdCalendarDialogConnector({ open, onOpenChange }: CrdCalendarDialogConnectorProps) {
+  const { t } = useTranslation('crd-space');
+  const { spaceId, parentSpaceId, calendarEventId } = useUrlResolver();
+  const urlState = useCrdCalendarUrlState();
+  const locale = useCrdSpaceLocale();
+
+  // useCalendarEvents internally sets includeSubspace=!parentSpaceId, so at L0
+  // we receive parent events PLUS subspace events with visibleOnParentCalendar=true
+  // (FR-033/035); inside a subspace we get that subspace's own events only.
+  const { entities, actions, state } = useCalendarEvents({ spaceId, parentSpaceId });
+  const { events, privileges } = entities;
+  const { loading, creatingCalendarEvent, updatingCalendarEvent } = state;
+
+  const listItems = events.map(mapCalendarEventInfoToListItem);
+
+  // Future events only — drives the batch ICS export button visibility and
+  // payload (FR-032). `!isBefore(item.startDate, startOfToday)` keeps events
+  // starting exactly at midnight today; `isAfter(..., startOfToday)` would
+  // drop them because it's strict.
+  const startOfToday = startOfDay(new Date());
+  const futureListItems = listItems.filter(item => item.startDate && !isBefore(item.startDate, startOfToday));
+
+  const [editingEventId, setEditingEventId] = useState<string | undefined>(undefined);
+
+  // The dialog is open whenever the user opened it (local `open`) OR the URL is anywhere in
+  // the calendar tree (deep links + every in-dialog navigation, which always lands on a
+  // /calendar URL). Deriving it this way — rather than mirroring the URL into local state
+  // via an effect — is what makes a single close click work. On close we set `open` false
+  // AND navigate away; the three calendar URLs are separate routes whose elements remount
+  // the dashboard, so there are transient renders where `open` is already false but the URL
+  // hasn't left /calendar yet. An effect would re-open the dialog on those renders (the
+  // observed "back, back, close" bug); the OR keeps it open until the URL truly leaves the
+  // calendar, then closes it in one step.
+  const dialogOpen = open || urlState.isAnyCalendarRoute;
+
+  const view: View = (() => {
+    // Edit takes precedence over the URL-driven create/detail views; the
+    // delete confirmation is an overlay on top of edit (handled inside
+    // <EventFormDialogBody>), not a separate view.
+    if (editingEventId) return 'edit';
+    if (urlState.isCreatingFromUrl) return 'create';
+    if (calendarEventId) return 'detail';
+    return 'list';
+  })();
+
+  const handleOpenChange = (next: boolean) => {
+    onOpenChange(next);
+    if (!next) {
+      // Clear local state; clear URL params/path so reopening is bookmark-fresh.
+      setEditingEventId(undefined);
+      urlState.navigateAwayFromCalendar();
+    }
+  };
+
+  const title = (() => {
+    switch (view) {
+      case 'create':
+        return t('calendar.addEvent');
+      case 'edit':
+        return t('calendar.editEvent');
+      default:
+        // List and detail share the generic "Events" title — the body makes
+        // the specific event visible via EventCardHeader / list layout.
+        return t('calendar.title');
+    }
+  })();
+
+  const headerActions = (() => {
+    if (view === 'detail' && calendarEventId) {
+      return (
+        <>
+          <AddToCalendarMenuConnector eventId={calendarEventId} />
+          {privileges.canEditEvents && (
+            <Button variant="outline" size="sm" onClick={() => setEditingEventId(calendarEventId)}>
+              {t('calendar.edit')}
+            </Button>
+          )}
+          <Button variant="ghost" size="sm" onClick={urlState.navigateToList}>
+            {t('calendar.back')}
+          </Button>
+        </>
+      );
+    }
+    return null;
+  })();
+
+  const showFormBody = view === 'create' || view === 'edit';
+
+  return (
+    <TimelineDialog
+      open={dialogOpen}
+      onOpenChange={handleOpenChange}
+      title={title}
+      headerActions={headerActions}
+      wide={view === 'list' || view === 'detail'}
+    >
+      {view === 'list' && (
+        <EventsCalendarView
+          events={listItems}
+          highlightedDay={urlState.highlightedDay}
+          onHighlightDay={urlState.navigateToHighlight}
+          onEventClick={event => urlState.navigateToEvent(event.url)}
+          onCreateEvent={privileges.canCreateEvents ? urlState.navigateToCreate : undefined}
+          loading={loading}
+          exportSlot={<ExportEventsToIcsConnector events={futureListItems} />}
+          locale={locale}
+        />
+      )}
+      {view === 'detail' && calendarEventId && (
+        <EventDetailConnector eventId={calendarEventId} onBack={urlState.navigateToList} />
+      )}
+      {showFormBody && (
+        <EventFormDialogBody
+          // Remount per event id so the form state is freshly seeded from the
+          // right initialValues without manual ref gating.
+          key={editingEventId ?? 'create'}
+          mode={view === 'edit' ? 'edit' : 'create'}
+          editingEventId={editingEventId}
+          events={events}
+          actions={actions}
+          urlState={urlState}
+          parentSpaceId={parentSpaceId}
+          isCreating={creatingCalendarEvent}
+          isUpdating={updatingCalendarEvent}
+          canDeleteEvents={privileges.canDeleteEvents}
+          onExitEdit={() => setEditingEventId(undefined)}
+          locale={locale}
+        />
+      )}
+    </TimelineDialog>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// EventFormDialogBody — co-located sub-component. Hosts useCrdEventFormDialog
+// so the parent can remount it via `key` to reseed form state per event.
+// -----------------------------------------------------------------------------
+
+type EventFormDialogBodyProps = Omit<Parameters<typeof useCrdEventFormDialog>[0], 'isCreating' | 'isUpdating'> & {
+  isCreating: boolean;
+  isUpdating: boolean;
+  canDeleteEvents: boolean;
+  locale: ReturnType<typeof useCrdSpaceLocale>;
+};
+
+function EventFormDialogBody({
+  mode,
+  editingEventId,
+  events,
+  actions,
+  urlState,
+  parentSpaceId,
+  isCreating,
+  isUpdating,
+  canDeleteEvents,
+  onExitEdit,
+  locale,
+}: EventFormDialogBodyProps) {
+  const { t } = useTranslation('crd-space');
+  // Calendar events live under the ambient space `StorageConfigContextProvider`
+  // (mounted by CrdSpacePageLayout / CrdSubspacePageLayout). MUI uploads here
+  // are mode-independent (temporaryLocation: false) — only the subspace-creation
+  // entry point uses temporary storage, which is out of CRD scope.
+  const md = useMarkdownEditorIntegration();
+  const dialog = useCrdEventFormDialog({
+    mode,
+    editingEventId,
+    events,
+    actions,
+    urlState,
+    parentSpaceId,
+    isCreating,
+    isUpdating,
+    onExitEdit,
+  });
+
+  const cancelLabel = mode === 'edit' ? t('calendar.back') : t('calendar.cancel');
+
+  return (
+    <>
+      <EventForm
+        values={dialog.values}
+        errors={dialog.errors}
+        onChange={dialog.setField}
+        onSubmit={dialog.handleSubmit}
+        isSubmitting={dialog.isSubmitting}
+        isSubspace={dialog.isSubspace}
+        typeOptions={dialog.typeOptions}
+        locale={locale}
+        onImageUpload={md.onImageUpload}
+        iframeAllowedUrls={md.iframeAllowedUrls}
+        onError={md.onError}
+        footerActionsLeft={
+          <>
+            {mode === 'edit' && canDeleteEvents && (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={dialog.openDelete}
+                disabled={dialog.isSubmitting || dialog.isDeleting}
+              >
+                {t('calendar.deleteConfirm.title')}
+              </Button>
+            )}
+            <Button type="button" variant="ghost" onClick={dialog.handleCancel}>
+              {cancelLabel}
+            </Button>
+          </>
+        }
+      />
+      <DeleteEventConfirmation
+        open={dialog.isDeleteOpen}
+        onOpenChange={next => {
+          if (!next) dialog.closeDelete();
+        }}
+        eventTitle={dialog.editingEvent?.profile.displayName ?? ''}
+        entityLabel={t(dialog.isSubspace ? 'calendar.entity.subspace' : 'calendar.entity.space')}
+        onConfirm={dialog.handleConfirmDelete}
+        loading={dialog.isDeleting}
+      />
+    </>
+  );
+}

@@ -1,0 +1,57 @@
+query InnovationLibraryTemplatesPaginated($first: Int!, $after: UUID, $filter: LibraryTemplatesFilterInput) {
+  platform {
+    id
+    library {
+      id
+      templatesPaginated(first: $first, after: $after, filter: $filter) {
+        total
+        templateResults {
+          template {
+            ...TemplateProfileInfo
+            callout {
+              id
+            }
+            contentSpace {
+              id
+              about {
+                id
+                profile {
+                  id
+                  cardBanner: visual(type: CARD) {
+                    ...VisualModel
+                  }
+                }
+              }
+            }
+          }
+          innovationPack {
+            id
+            profile {
+              id
+              displayName
+              url
+            }
+            provider {
+              id
+              profile {
+                id
+                displayName
+                avatar: visual(type: AVATAR) {
+                  id
+                  uri
+                }
+                url
+              }
+            }
+          }
+        }
+        pageInfo {
+          startCursor
+          endCursor
+          hasNextPage
+          hasPreviousPage
+        }
+      }
+    }
+  }
+}

@@ -4,7 +4,7 @@ import {
   useAccountSearchUsersLazyQuery,
 } from '@/core/apollo/generated/apollo-hooks';
 import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
-import type { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete';
+import type { FormikSelectValue } from '@/core/ui/forms/FormikAutocomplete.model';
 
 type AccountSearchResult = FormikSelectValue & {
   accountId: string;
