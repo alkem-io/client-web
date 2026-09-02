@@ -28,7 +28,7 @@ The technical approach has three parts:
 - **i18n:** new strings go to a CRD namespace with all six locales (en, nl, es, bg, de, fr) edited in the same PR and key parity enforced (Arch Std #3). The legacy core file that standard calls frozen, `src/core/i18n/en/translation.en.json`, no longer exists — it went with the MUI app — so a CRD namespace is the only destination.
 - WCAG 2.1 AA: the control must be keyboard-focusable *and* non-activatable — this rules out the native `disabled` attribute (see research Decision 3).
 - No manual `useMemo`/`useCallback`/`React.memo` (React Compiler); no barrel exports.
-**Scale/Scope**: 4 surfaces, 4 existing CRD presentational components edited (`RoleMembersEditor`, `RoleAssignmentView` — shared by surfaces 2 and 3 — `AddCommunityMemberDialog`, `MemberSettingsDialog`), 8 mutations, 1 new domain hook, 1 new CRD component, 6 locale files. Order of magnitude: ~18 files.
+**Scale/Scope**: 4 surfaces, 4 existing CRD presentational components edited (`RoleMembersEditor`, `RoleAssignmentView` — shared by surfaces 2 and 3 — `AddCommunityMemberDialog`, `MemberSettingsDialog`), 8 mutations, 1 new domain hook, 1 new CRD component, 6 locale files, and 4 surface test files. Order of magnitude: ~26 files.
 
 ## Constitution Check
 
@@ -71,6 +71,9 @@ specs/085-authz-admin-guard/
 
 ```text
 src/
+├── domain/
+│   └── spaceAdmin/SpaceAdminCommunity/hooks/
+│       └── useCommunityAdmin.ts                 # TOUCH — expose raw myPrivileges + loading beside existing booleans
 ├── domain/access/
 │   ├── permissions/
 │   │   ├── useActionPermission.ts               # NEW — (privileges, required[], loading) => { allowed, reason }
@@ -86,8 +89,8 @@ src/
 │   ├── components/contributor/settings/
 │   │   └── RoleAssignmentView.tsx               # TOUCH — same two props (shared by both org tabs)
 │   ├── components/space/settings/
-│   │   ├── AddCommunityMemberDialog.tsx         # TOUCH — same
-│   │   └── MemberSettingsDialog.tsx             # TOUCH — same
+│   │   ├── AddCommunityMemberDialog.tsx         # TOUCH — addDisabledReason
+│   │   └── MemberSettingsDialog.tsx             # TOUCH — four separate reason props (see data-model.md)
 │   └── i18n/common/common.{en,nl,es,bg,de,fr}.json   # TOUCH — tooltip + error keys, all six locales
 └── main/crdPages/topLevelPages/
     ├── admin/authorization/CrdAdminGlobalRolesPage.tsx           # TOUCH — surface 1

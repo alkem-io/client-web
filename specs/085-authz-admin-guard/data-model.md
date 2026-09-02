@@ -118,13 +118,13 @@ Surface 4 therefore uses the **same** contract as surfaces 1–3 rather than a s
 
 `MemberSettingsDialog` needs more than one decision, because it exposes independently-gated controls (its `MemberSettingsLeadGate` already separates `canAddLead` from `canRemoveLead`, and `onAdminChange` is separate again). The required decisions are:
 
-| Control | Required privilege(s) | Prop |
-|---|---|---|
-| Add member | `ROLESET_ENTRY_ROLE_ASSIGN` | `addDisabledReason` |
-| Remove member | `ROLESET_ENTRY_ROLE_ASSIGN` | `removeDisabledReason` |
-| Lead toggle (add / remove) | `ROLESET_ENTRY_ROLE_ASSIGN` | `leadDisabledReason` |
-| Admin toggle | `ROLESET_ENTRY_ROLE_ASSIGN` | `adminDisabledReason` |
-| Organization rows (add / remove) | `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` **and** `GRANT` | `organizationDisabledReason` |
+| Control | Owning component | Required privilege(s) | Prop |
+|---|---|---|---|
+| Add member | `AddCommunityMemberDialog` | `ROLESET_ENTRY_ROLE_ASSIGN` | `addDisabledReason` |
+| Remove member | `MemberSettingsDialog` | `ROLESET_ENTRY_ROLE_ASSIGN` | `removeDisabledReason` |
+| Lead toggle (add / remove) | `MemberSettingsDialog` | `ROLESET_ENTRY_ROLE_ASSIGN` | `leadDisabledReason` |
+| Admin toggle | `MemberSettingsDialog` | `ROLESET_ENTRY_ROLE_ASSIGN` | `adminDisabledReason` |
+| Organization rows (add / remove) | `MemberSettingsDialog` | `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` **and** `GRANT` | `organizationDisabledReason` |
 
 ## State transitions
 

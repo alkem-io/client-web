@@ -29,7 +29,7 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 - [ ] T001 Resolve Open Risk R1 — determine, for each of surfaces 1–3, the `AuthorizationPrivilege` token the backend resolver actually enforces for role assign/remove, following the procedure in `specs/085-authz-admin-guard/quickstart.md` step 1 (read the resolver policy, or capture the `FORBIDDEN` payload in DevTools). Record one token (or token set) per surface in a new "Resolved privilege tokens" section of `specs/085-authz-admin-guard/research.md`, replacing Open Risk R1.
 - [ ] T002 Reproduce the defect on surface 1 per `specs/085-authz-admin-guard/quickstart.md` step 0 and note the observed behavior in the PR description, satisfying constitution Engineering Workflow #5 (root cause before fix).
 
-**Checkpoint**: The required privilege per surface is known and the bug is confirmed reproducible.
+**Checkpoint**: The required privilege per surface is known and the bug is confirmed reproducible. Note that only T001 is a hard gate, and only on US2 — US1 needs neither task's output and is unblocked by Phase 2 alone.
 
 ---
 
@@ -126,10 +126,14 @@ Single-project frontend SPA. All paths are relative to the repository root and u
 ## Dependencies
 
 ```text
-T002 (reproduce) ─────────────────────────┐
-                                          ├──►  Phase 2 (T003-T009)  ──┬──►  Phase 3: US1 (T010-T015)  ──┐
-                                          │                            │                                 ├──►  Phase 5 (T033-T038)
-T001 (resolve privilege tokens) ──────────┴────────────────────────────►  Phase 4: US2 (T016-T032)  ─────┘
+Edges — "A → B" means A must complete before B starts:
+
+  T002 (reproduce the defect)      →  Phase 2 (T003-T009)
+  Phase 2                          →  Phase 3: US1 (T010-T015)
+  Phase 2                          →  Phase 4: US2 (T016-T032)
+  T001 (resolve privilege tokens)  →  Phase 4: US2          ← this edge, and ONLY this edge
+  Phase 3: US1                     →  Phase 5 (T033-T038)
+  Phase 4: US2                     →  Phase 5 (T033-T038)
 ```
 
 T001 gates US2 only. US1 needs no privilege token, so it depends on Phase 2 alone and stays independently shippable as the MVP.
