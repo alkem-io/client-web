@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { usePlatformDiscussionsQuery } from '@/core/apollo/generated/apollo-hooks';
-import { AuthorizationPrivilege, ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema';
+import { AuthorizationPrivilege } from '@/core/apollo/generated/graphql-schema';
 import useNavigate from '@/core/routing/useNavigate';
 import { usePageTitle } from '@/core/routing/usePageTitle';
 import { ForumDiscussionList } from '@/crd/components/forum/ForumDiscussionList';
@@ -20,7 +20,11 @@ import {
   ForumDiscussionFormConnector,
   type ForumDiscussionFormState,
 } from '@/main/crdPages/topLevelPages/forum/ForumDiscussionFormConnector';
-import { buildMetaLine, mapDiscussionsToListData } from '@/main/crdPages/topLevelPages/forum/forumDataMapper';
+import {
+  buildMetaLine,
+  discussionCreationCategoriesFor,
+  mapDiscussionsToListData,
+} from '@/main/crdPages/topLevelPages/forum/forumDataMapper';
 import { ALL_SLUG, categoryFor } from '@/main/crdPages/topLevelPages/forum/useCategorySlug';
 import { useForumSubscription } from '@/main/crdPages/topLevelPages/forum/useForumSubscription';
 
@@ -46,12 +50,11 @@ const CrdForumPage = () => {
 
   const isPlatformAdmin = platformPrivilegeWrapper?.hasPlatformPrivilege(AuthorizationPrivilege.PlatformAdmin) ?? false;
 
-  // Non-admins can't create "Releases" discussions — that's reserved for the
-  // Alkemio team's release-notes posts. Matches the legacy MUI ForumPage logic.
+  // Non-admins can't create posts in the outbound editorial categories
+  // (Releases, Newsletter) — those speak in the platform's voice. The server
+  // is the actual control; this filter is UX only.
   const validCategories = data?.platform.forum.discussionCategories ?? [];
-  const discussionCreationCategories = isPlatformAdmin
-    ? validCategories
-    : validCategories.filter(category => category !== ForumDiscussionCategory.Releases);
+  const discussionCreationCategories = discussionCreationCategoriesFor(validCategories, isPlatformAdmin);
 
   const forumId = data?.platform.forum.id;
 

@@ -2,25 +2,16 @@ import { ForumDiscussionCategory } from '@/core/apollo/generated/graphql-schema'
 
 export const ALL_SLUG = 'all';
 
-const slugByCategory: Record<ForumDiscussionCategory, string> = {
-  [ForumDiscussionCategory.Releases]: 'releases',
-  [ForumDiscussionCategory.PlatformFunctionalities]: 'platform-functionalities',
-  [ForumDiscussionCategory.CommunityBuilding]: 'community-building',
-  [ForumDiscussionCategory.ChallengeCentric]: 'challenge-centric',
-  [ForumDiscussionCategory.Help]: 'help',
-  [ForumDiscussionCategory.Other]: 'other',
-};
-
-const categoryBySlug: Record<string, ForumDiscussionCategory> = Object.fromEntries(
-  Object.entries(slugByCategory).map(([cat, slug]) => [slug, cat as ForumDiscussionCategory])
-);
-
+// Slugs are derived from the wire enum value (kebab-case) rather than
+// enumerated in a hand-maintained map, so a category the client doesn't yet
+// know about (server ahead of client during a deploy) still gets a stable,
+// unique slug instead of collapsing onto ALL_SLUG.
 export const slugFor = (category: ForumDiscussionCategory | undefined): string => {
   if (!category) return ALL_SLUG;
-  return slugByCategory[category] ?? ALL_SLUG;
+  return category.toLowerCase().replace(/_/g, '-');
 };
 
 export const categoryFor = (slug: string | undefined): ForumDiscussionCategory | undefined => {
   if (!slug || slug === ALL_SLUG) return undefined;
-  return categoryBySlug[slug];
+  return Object.values(ForumDiscussionCategory).find(category => slugFor(category) === slug);
 };

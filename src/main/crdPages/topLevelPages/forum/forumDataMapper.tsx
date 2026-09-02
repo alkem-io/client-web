@@ -1,6 +1,16 @@
 import { format as formatDate, type Locale } from 'date-fns';
 import type { TFunction } from 'i18next';
-import { Building2, HelpCircle, MessageSquare, MoreHorizontal, Rocket, Settings, Users } from 'lucide-react';
+import {
+  Building2,
+  HelpCircle,
+  Lightbulb,
+  MessageSquare,
+  MoreHorizontal,
+  Newspaper,
+  Rocket,
+  Settings,
+  Users,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 import {
   ForumDiscussionCategory,
@@ -31,6 +41,10 @@ const renderCategoryIcon = (category: ForumDiscussionCategory | undefined): Reac
       return <HelpCircle className="size-4" />;
     case ForumDiscussionCategory.Other:
       return <MoreHorizontal className="size-4" />;
+    case ForumDiscussionCategory.Newsletter:
+      return <Newspaper className="size-4" />;
+    case ForumDiscussionCategory.TipsAndTricks:
+      return <Lightbulb className="size-4" />;
     default:
       return <MessageSquare className="size-4" />;
   }
@@ -51,6 +65,36 @@ type MapperContext = {
 
 const formatDiscussionDate = (timestamp: number | undefined, locale: Locale): string =>
   timestamp ? formatDate(new Date(timestamp), 'EEE, dd/MM/yyyy', { locale }) : '';
+
+// Client-side mirror of the server's admin-only editorial gate (Releases,
+// Newsletter). This is UX only — the server enforces the actual boundary on
+// both create and update, so hiding a category here never grants or denies
+// anything by itself.
+const ADMIN_ONLY_CATEGORIES: ForumDiscussionCategory[] = [
+  ForumDiscussionCategory.Releases,
+  ForumDiscussionCategory.Newsletter,
+];
+
+export const discussionCreationCategoriesFor = (
+  validCategories: ForumDiscussionCategory[],
+  isPlatformAdmin: boolean
+): ForumDiscussionCategory[] => {
+  if (isPlatformAdmin) return validCategories;
+  return validCategories.filter(category => !ADMIN_ONLY_CATEGORIES.includes(category));
+};
+
+// The edit dialog's category selector: the active list (minus admin-only
+// categories the viewer lacks), plus the post's own current category — so a
+// post already sitting in a retired or admin-only category can always be
+// moved, never trapping it.
+export const availableCategoriesFor = (
+  activeCategories: ForumDiscussionCategory[],
+  isPlatformAdmin: boolean,
+  currentCategory: ForumDiscussionCategory
+): ForumDiscussionCategory[] => {
+  const base = discussionCreationCategoriesFor(activeCategories, isPlatformAdmin);
+  return base.includes(currentCategory) ? base : [...base, currentCategory];
+};
 
 export const buildCategoryEntries = (
   validCategories: ForumDiscussionCategory[],
