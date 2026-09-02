@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { CollapsibleTagList } from '@/crd/components/common/CollapsibleTagList';
+import { SearchMatchSummary } from '@/crd/components/space/sidebar/SearchMatchSummary';
 import { SearchField } from '@/crd/forms/SearchField';
 import { cn } from '@/crd/lib/utils';
-import { SearchMatchSummary } from './SearchMatchSummary';
 
 export type SearchSectionProps = {
   /** The raw, controlled input value (not yet applied — the page debounces it). */
@@ -15,8 +15,10 @@ export type SearchSectionProps = {
   /** Currently-toggled tags, in the order they were selected. */
   selectedTags: string[];
   onToggleTag: (tag: string) => void;
-  /** Rendered result count (exact or "N+"). `undefined` while unknown (loading/error/no filter). */
-  matchCount?: string;
+  /** Number of result cards rendered so far. `undefined` while unknown (loading/error/no filter). */
+  matchCount?: number;
+  /** True while more result pages remain — the summary then reads the count as "N+". */
+  hasMore?: boolean;
   /** Clears both the text and every selected tag in one call. */
   onClear: () => void;
   className?: string;
@@ -37,6 +39,7 @@ export function SearchSection({
   selectedTags,
   onToggleTag,
   matchCount,
+  hasMore = false,
   onClear,
   className,
 }: SearchSectionProps) {
@@ -56,7 +59,13 @@ export function SearchSection({
         <CollapsibleTagList tags={allTags} selectedTags={selectedTags} onTagClick={onToggleTag} maxRows={2} />
       )}
       {matchCount !== undefined && hasActiveFilter && (
-        <SearchMatchSummary matchCount={matchCount} text={appliedText} tags={selectedTags} onClear={onClear} />
+        <SearchMatchSummary
+          count={matchCount}
+          hasMore={hasMore}
+          text={appliedText}
+          tags={selectedTags}
+          onClear={onClear}
+        />
       )}
     </div>
   );

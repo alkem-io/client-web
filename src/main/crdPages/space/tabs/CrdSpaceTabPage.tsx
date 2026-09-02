@@ -121,10 +121,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
     skip: !isSearching,
   });
   const searchCalloutIds = mapFlowStateSearchCalloutIds(search.results);
-  const matchCount =
-    search.status === 'results' || search.status === 'empty'
-      ? `${searchCalloutIds.length}${search.hasMore ? '+' : ''}`
-      : undefined;
+  const matchCount = search.status === 'results' || search.status === 'empty' ? searchCalloutIds.length : undefined;
   const clearSearch = () => {
     setSearchText('');
     setTagsFilter([]);
@@ -158,6 +155,7 @@ export default function CrdSpaceTabPage({ tabPosition, onOpenAbout }: CrdSpaceTa
           selectedTags: tagsFilter,
           onToggleTag: handleToggleTag,
           matchCount,
+          hasMore: search.hasMore,
           onClear: clearSearch,
         }}
       />
