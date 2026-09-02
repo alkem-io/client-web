@@ -328,11 +328,12 @@ export function useCreateSpace({
     clearSelectedTemplate();
   };
 
-  // The page banner opens on the 10:1 design default, not on the server's
-  // creation default (`c.aspectRatio`, the historic 6): a space created with a
-  // banner here must get the same shape as one whose banner is first cropped
-  // in Settings > About. Clamped into the server's range so the crop can never
-  // be cut to a ratio the upload would then reject.
+  // The page banner opens on the 10:1 design default rather than on whatever
+  // `c.aspectRatio` the platform config reports (10 today; 6 on a server that
+  // predates that default): a space created with a banner here must get the
+  // same shape as one whose banner is first cropped in Settings > About.
+  // Clamped into the server's range so the crop can never be cut to a ratio
+  // the upload would then reject.
   const bannerCropAspectRatio = (c: VisualConstraints) =>
     Math.min(
       Math.max(DEFAULT_BANNER_ASPECT_RATIO, c.minAspectRatio ?? MIN_BANNER_ASPECT_RATIO),
