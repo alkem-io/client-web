@@ -83,13 +83,16 @@ export function useFlowStateSearch({
 
   const [appending, setAppending] = useState(false);
 
-  // The cursor whose append last failed. While the sentinel stays in view, a
-  // failed `fetchMore` must not be retried immediately: its `.finally` flips
-  // `appending` back to false, which re-runs the sentinel effect, which — with
-  // `inView`, `cursor`, and `loading` all unchanged — would fire the same failed
-  // request again in a tight loop. We block that exact cursor until the sentinel
-  // leaves view (or the term/tag set changes), then allow a fresh attempt.
+  // The cursor whose append last failed. A failed `fetchMore` must not be
+  // retried immediately: its `.finally` flips `appending` back to false, which
+  // re-runs the paging effect, which — with `inView` and `cursor` unchanged —
+  // would fire the same failed request again in a tight loop. We block that
+  // exact cursor until the context moves on (see the clearing effect below).
   const failedCursorRef = useRef<string | null>(null);
+
+  // Whether the one eager short-page confirmation this request is allowed has
+  // been spent (see `lastPageWasShort` below). Reset per term/tag set.
+  const eagerConfirmationSpentRef = useRef(false);
 
   const { data, loading, error, fetchMore, refetch } = useFlowStateSearchQuery({
     variables: {
@@ -116,11 +119,11 @@ export function useFlowStateSearch({
   });
 
   // Reset the append flag whenever the term/tag set changes — a new page-1 load
-  // is a skeleton (FR-023), not an append. A new context also clears any failed
-  // cursor: the prior failure no longer applies to this request.
+  // is a skeleton (FR-023), not an append. A new request also gets a fresh eager
+  // confirmation allowance.
   useEffect(() => {
     setAppending(false);
-    failedCursorRef.current = null;
+    eagerConfirmationSpentRef.current = false;
   }, [requestKey]);
 
   const results = data?.search.calloutResults.results ?? [];
@@ -138,6 +141,11 @@ export function useFlowStateSearch({
   // results that were going to be needed anyway. A short page is never
   // treated as the end by itself — authorization can thin a page while more
   // readable results remain, and only the server may say "no more".
+  // Exactly ONE such confirmation is allowed per term/tag set: the server
+  // emits a cursor for every non-empty folded page and folding routinely thins
+  // pages below PAGE_SIZE, so an uncapped confirmation would chain sequential
+  // requests on a single keystroke until a full or empty page arrived. After
+  // the one confirmation, further pages are sentinel-driven only.
   const resultsLength = results.length;
   const previousResultsLengthRef = useRef(0);
   const [lastPageSize, setLastPageSize] = useState(0);
@@ -170,20 +178,31 @@ export function useFlowStateSearch({
   // React (and the React Compiler) hold without disabling any lint rule.
   const { ref: sentinelRef, inView } = useInView({ rootMargin: '200px', delay: 100 });
 
-  // Once the sentinel scrolls out of view, clear any failed-cursor block so the
-  // next time it re-enters a retry is allowed.
+  // Lift the failed-cursor block whenever the context moves on: a new term/tag
+  // set, a new cursor, or the sentinel crossing the viewport edge in either
+  // direction — so a page that failed while the sentinel was out of view (an
+  // eager confirmation) is retried on the sentinel's first entry, and a page
+  // that failed in view is retried once the user scrolls away and back.
+  // Declared before the paging effect so the clear is visible to it in the
+  // same commit.
   useEffect(() => {
-    if (!inView) {
-      failedCursorRef.current = null;
-    }
-  }, [inView]);
+    failedCursorRef.current = null;
+  }, [requestKey, cursor, inView]);
 
+  // Pages >= 2 gate on the hook's own `appending` flag — never on Apollo's
+  // `loading`: a rejected `fetchMore` leaves the query's networkStatus at
+  // `fetchMore` (and `loading` true) indefinitely, which would deadlock every
+  // later page after one transient failure. Page 1 in flight has no cursor
+  // (`data` is undefined while new variables load), so `!cursor` covers it.
   useEffect(() => {
-    if (shouldSkip || !cursor || appending || loading || failedCursorRef.current === cursor) {
+    if (shouldSkip || !cursor || appending || failedCursorRef.current === cursor) {
       return;
     }
-    if (!inView && !lastPageWasShort) {
-      return;
+    if (!inView) {
+      if (!lastPageWasShort || eagerConfirmationSpentRef.current) {
+        return;
+      }
+      eagerConfirmationSpentRef.current = true;
     }
     const keyAtRequest = requestKeyRef.current;
     setAppending(true);
@@ -224,7 +243,8 @@ export function useFlowStateSearch({
       .catch(() => {
         // Append failure keeps prior results; the footer spinner simply stops.
         // Record the cursor so the effect doesn't immediately retry the same
-        // failed page while the sentinel is still in view (avoids a tight loop).
+        // failed page (avoids a tight loop); the clearing effect above lifts
+        // the block once the context moves on.
         failedCursorRef.current = cursor;
       })
       .finally(() => {
@@ -232,7 +252,7 @@ export function useFlowStateSearch({
           setAppending(false);
         }
       });
-  }, [inView, lastPageWasShort, shouldSkip, cursor, appending, loading, terms, flowStateID, spaceID, fetchMore]);
+  }, [inView, lastPageWasShort, shouldSkip, cursor, appending, terms, flowStateID, spaceID, fetchMore]);
 
   const retry = () => {
     void refetch();
