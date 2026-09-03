@@ -31,6 +31,8 @@ const labels: InviteMembersDialogLabels = {
     alreadyMember: 'Already a member',
     alreadyHasApplication: 'Already has an open application',
     parentNotAuthorized: "Can't invite to parent",
+    notAcceptingInvitations: 'Not accepting invitations',
+    leadLimitReached: 'Lead limit reached',
     error: 'Failed',
   },
 };
@@ -210,6 +212,65 @@ describe('InviteMembersDialog', () => {
     // wires onValueChange correctly by checking the handler is passed with the right value:
     // render with suggestedLanguage=undefined and confirm placeholder shows.
     expect(onSuggestedLanguageChange).not.toHaveBeenCalled();
+  });
+
+  test('organization kind: hides email paste and suggested language controls', () => {
+    render(
+      <InviteMembersDialog
+        {...baseProps}
+        kind="organization"
+        extraRoles={['Member']}
+        searchQuery="acme"
+        onAddEmails={vi.fn()}
+        availableLanguages={[{ code: 'nl', label: 'Dutch' }]}
+        onSuggestedLanguageChange={vi.fn()}
+        labels={{
+          ...labels,
+          suggestedLanguageLabel: 'Invite language',
+          suggestedLanguagePlaceholder: 'Pick a language',
+        }}
+      />
+    );
+    // No "Add" button for email paste — kind='organization' forces allowEmailInvites off
+    // even though onAddEmails is provided and there's a non-empty query.
+    expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument();
+    // Suggested language control never renders for organization kind, even with eligible languages.
+    expect(screen.queryByLabelText('Invite language')).not.toBeInTheDocument();
+  });
+
+  test('organization kind: role selector offers only Member (locked) and Lead', async () => {
+    render(<InviteMembersDialog {...baseProps} kind="organization" extraRoles={['Member']} />);
+    await userEvent.click(screen.getByRole('button', { name: 'Choose roles' }));
+    expect(screen.getByText('Lead')).toBeInTheDocument();
+    expect(screen.queryByText('Admin')).not.toBeInTheDocument();
+  });
+
+  test('organization kind: renders the new outcome rows and an informational notice line', () => {
+    const results: InvitationResult[] = [
+      {
+        invitee: { kind: 'organization', id: 'o1', displayName: 'Acme Org' },
+        outcome: 'sent',
+        notice: 'noAdministrators',
+      },
+      { invitee: { kind: 'organization', id: 'o2', displayName: 'Beta Org' }, outcome: 'notAcceptingInvitations' },
+      { invitee: { kind: 'organization', id: 'o3', displayName: 'Gamma Org' }, outcome: 'leadLimitReached' },
+    ];
+    render(
+      <InviteMembersDialog
+        {...baseProps}
+        kind="organization"
+        extraRoles={['Member']}
+        results={results}
+        labels={{
+          ...labels,
+          resultNoticeLabels: { noAdministrators: 'This organisation currently has no administrators' },
+        }}
+      />
+    );
+    expect(screen.getByText('Acme Org')).toBeInTheDocument();
+    expect(screen.getByText('This organisation currently has no administrators')).toBeInTheDocument();
+    expect(screen.getByText('Not accepting invitations')).toBeInTheDocument();
+    expect(screen.getByText('Lead limit reached')).toBeInTheDocument();
   });
 
   test('Back button calls onBack and does not call welcome/role change handlers (preserves them)', async () => {
