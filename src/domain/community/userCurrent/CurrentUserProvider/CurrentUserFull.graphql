@@ -30,14 +30,29 @@ fragment InvitationData on CommunityInvitationResult {
     id
     welcomeMessage
     suggestedLanguage
+    extraRoles
+    invitedToParent
+    nextEvents
     createdBy {
       id
+      profile {
+        id
+        displayName
+      }
     }
     state
     createdDate
     actor {
       id
       type
+    }
+    spacesToJoinOnAccept {
+      id
+      profile {
+        id
+        displayName
+        url
+      }
     }
   }
 }
