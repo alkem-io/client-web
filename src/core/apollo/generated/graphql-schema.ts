@@ -11754,6 +11754,7 @@ export type InviteForEntryRoleOnRoleSetMutation = {
   inviteForEntryRoleOnRoleSet: Array<{
     __typename?: 'RoleSetInvitationResult';
     type: RoleSetInvitationResultType;
+    notice?: RoleSetInvitationResultNotice | undefined;
     invitation?:
       | {
           __typename?: 'Invitation';
