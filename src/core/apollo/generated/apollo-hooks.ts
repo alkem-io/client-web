@@ -5338,6 +5338,7 @@ export const InviteForEntryRoleOnRoleSetDocument = gql`
     invitationData: {invitedActorIDs: $invitedActorIds, invitedUserEmails: $invitedUserEmails, roleSetID: $roleSetId, welcomeMessage: $welcomeMessage, extraRoles: $extraRoles, suggestedLanguage: $suggestedLanguage}
   ) {
     type
+    notice
     invitation {
       id
       actor {

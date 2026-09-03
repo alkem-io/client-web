@@ -1,15 +1,24 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAvailableUsersForEntryRoleQuery, useInviteUsersDialogQuery } from '@/core/apollo/generated/apollo-hooks';
-import { RoleName, RoleSetInvitationResultType } from '@/core/apollo/generated/graphql-schema';
+import {
+  ActorType,
+  RoleName,
+  RoleSetInvitationResultNotice,
+  RoleSetInvitationResultType,
+} from '@/core/apollo/generated/graphql-schema';
 import { useNotification } from '@/core/ui/notifications/useNotification';
 import {
   type InvitationResult,
+  type InviteKind,
   InviteMembersDialog,
   type InviteRole,
 } from '@/crd/components/community/InviteMembersDialog';
 import type { ContributorSelectorInvitee, ContributorSelectorUserResult } from '@/crd/forms/ContributorSelector';
 import useRoleSetApplicationsAndInvitations from '@/domain/access/ApplicationsAndInvitations/useRoleSetApplicationsAndInvitations';
+import useRoleSetAvailableContributors from '@/domain/access/AvailableContributors/useRoleSetAvailableContributors';
+import type InvitationResultModel from '@/domain/access/model/InvitationResultModel';
+import { InvitationState } from '@/domain/community/invitations/InvitationApplicationConstants';
 import emailParser from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/emailParser';
 import { useContributors } from '@/domain/community/inviteContributors/components/FormikContributorsSelectorField/useContributors';
 import { useCurrentUserContext } from '@/domain/community/userCurrent/useCurrentUserContext';
@@ -19,10 +28,12 @@ import useUrlResolver from '@/main/routing/urlResolver/useUrlResolver';
 export type InviteMembersDialogConnectorProps = {
   open: boolean;
   onClose: () => void;
+  /** Who is being invited. Defaults to 'user' — the original behaviour of this connector. */
+  kind?: InviteKind;
   /**
    * When true, only existing parent-community members can be invited and the
    * email-paste path is hidden. Mirrors the legacy `InviteContributorsDialog`
-   * `onlyFromParentCommunity` behaviour.
+   * `onlyFromParentCommunity` behaviour. User kind only.
    */
   onlyFromParentCommunity?: boolean;
   /**
@@ -32,6 +43,64 @@ export type InviteMembersDialogConnectorProps = {
    * are then derived from this id via `useInviteUsersDialogQuery`.
    */
   spaceId?: string;
+};
+
+/**
+ * Correlates the mutation's per-invitee results back to what was submitted.
+ * Successful results carry the created `invitation`/`platformInvitation`, so
+ * those are matched by actor id (organization) / userId (user) / email
+ * (platform invite). Typed failures that create nothing (opt-out, Lead limit,
+ * already member, ...) come back with both null, so they can't be matched
+ * that way — each result is consumed once and unmatched invitees fall back to
+ * the next id-less result in submission order (the server returns one result
+ * per invitee, in input order). Exported for unit testing (T007).
+ */
+export const mapInvitationResults = (
+  submittedInvitees: ContributorSelectorInvitee[],
+  legacyResults: InvitationResultModel[]
+): InvitationResult[] => {
+  const remaining = [...legacyResults];
+  const take = (predicate: (r: InvitationResultModel) => boolean) => {
+    const idx = remaining.findIndex(predicate);
+    return idx === -1 ? undefined : remaining.splice(idx, 1)[0];
+  };
+  return submittedInvitees.map(invitee => {
+    const matched =
+      invitee.kind === 'organization'
+        ? take(r => r.invitation?.actor?.id === invitee.id)
+        : invitee.kind === 'user'
+          ? take(r => r.invitation?.actor?.id === invitee.userId)
+          : invitee.kind === 'email'
+            ? take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase())
+            : undefined;
+    const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
+    if (!legacyResult) {
+      return { invitee, outcome: 'error' as const };
+    }
+    const outcome: InvitationResult['outcome'] =
+      legacyResult.type === RoleSetInvitationResultType.InvitedToRoleSet ||
+      legacyResult.type === RoleSetInvitationResultType.InvitedToPlatformAndRoleSet
+        ? 'sent'
+        : legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToRoleSet ||
+            legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToPlatformAndRoleSet
+          ? 'alreadyInvited'
+          : legacyResult.type === RoleSetInvitationResultType.AlreadyMemberOfRoleSet
+            ? 'alreadyMember'
+            : legacyResult.type === RoleSetInvitationResultType.AlreadyHasOpenApplication
+              ? 'alreadyHasApplication'
+              : legacyResult.type === RoleSetInvitationResultType.InvitationToParentNotAuthorized
+                ? 'parentNotAuthorized'
+                : legacyResult.type === RoleSetInvitationResultType.OrganizationNotAcceptingInvitations
+                  ? 'notAcceptingInvitations'
+                  : legacyResult.type === RoleSetInvitationResultType.OrganizationLeadRoleLimitReached
+                    ? 'leadLimitReached'
+                    : 'error';
+    const notice: InvitationResult['notice'] =
+      legacyResult.notice === RoleSetInvitationResultNotice.OrganizationHasNoAdministrators
+        ? 'noAdministrators'
+        : undefined;
+    return notice ? { invitee, outcome, notice } : { invitee, outcome };
+  });
 };
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -58,6 +127,7 @@ const ROLE_TO_NAME: Record<InviteRole, RoleName> = {
 export function InviteMembersDialogConnector({
   open,
   onClose,
+  kind = 'user',
   onlyFromParentCommunity = false,
   spaceId: spaceIdOverride,
 }: InviteMembersDialogConnectorProps) {
@@ -101,12 +171,15 @@ export function InviteMembersDialogConnector({
   const [defaultMessage, setDefaultMessage] = useState('');
   useEffect(() => {
     if (!open || !spaceName) return;
-    const next = t('inviteMembers.dialog.defaultWelcomeMessage', { spaceName });
+    const next =
+      kind === 'organization'
+        ? t('inviteMembers.dialog.organization.defaultWelcomeMessage', { spaceName })
+        : t('inviteMembers.dialog.defaultWelcomeMessage', { spaceName });
     if (welcomeMessage === '' || welcomeMessage === defaultMessage) {
       setWelcomeMessage(next);
     }
     setDefaultMessage(next);
-  }, [open, spaceName, t, welcomeMessage, defaultMessage]);
+  }, [open, spaceName, kind, t, welcomeMessage, defaultMessage]);
 
   // Debounce the search query so we don't fire useContributors on every
   // keystroke. 300ms matches the legacy debounce.
@@ -189,7 +262,7 @@ export function InviteMembersDialogConnector({
       country: c.profile?.location?.country,
     }))
     .filter(c => !onlyFromParentCommunity || !query || c.displayName.toLowerCase().includes(query));
-  const searchResults: ContributorSelectorUserResult[] = rawCandidates
+  const userSearchResults: ContributorSelectorUserResult[] = rawCandidates
     .filter(c => c.id !== currentUser?.id)
     .filter(c => !selectedUserIds.has(c.id))
     .map(c => {
@@ -199,10 +272,63 @@ export function InviteMembersDialogConnector({
       return { userId: c.id, displayName: c.displayName, avatarUrl: c.avatarUrl, location };
     });
 
+  // ---------- organization candidates (D12) ----------
+  const { findAvailableOrganizationsForRoleSet } = useRoleSetAvailableContributors({ roleSetId });
+  const [orgCandidates, setOrgCandidates] = useState<ContributorSelectorUserResult[]>([]);
+  const [orgLoading, setOrgLoading] = useState(false);
+  // Organizations with an already-open invitation (`invited` state) are excluded — sending
+  // another invite would just hit ALREADY_INVITED_TO_ROLE_SET.
+  const {
+    invitations: existingInvitations,
+    inviteContributorsOnRoleSet,
+    loading: loadingRoleSet,
+  } = useRoleSetApplicationsAndInvitations({ roleSetId });
+  const openOrgInvitationIds = new Set(
+    existingInvitations
+      .filter(inv => inv.contributorType === ActorType.Organization && inv.state === InvitationState.INVITED)
+      .map(inv => inv.actor.id)
+  );
+  const selectedOrgIds = new Set(
+    selectedContributors.filter(c => c.kind === 'organization').map(c => (c as { kind: 'organization'; id: string }).id)
+  );
+  // `findAvailableOrganizationsForRoleSet` is intentionally excluded from deps — it returns a
+  // fresh function on every render, so including it would re-fetch on every render. Mirrors
+  // VirtualContributorInviteConnector's `lookup` exclusion.
+  useEffect(() => {
+    if (!open || kind !== 'organization' || !roleSetId) return;
+    let cancelled = false;
+    setOrgLoading(true);
+    void (async () => {
+      try {
+        const { organizations } = await findAvailableOrganizationsForRoleSet(trimmedQuery || undefined);
+        if (cancelled) return;
+        setOrgCandidates(organizations.map(org => ({ userId: org.id, displayName: org.profile?.displayName ?? '' })));
+      } finally {
+        if (!cancelled) setOrgLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [open, kind, roleSetId, trimmedQuery]);
+  const organizationSearchResults: ContributorSelectorUserResult[] = orgCandidates.filter(
+    c => !openOrgInvitationIds.has(c.userId) && !selectedOrgIds.has(c.userId)
+  );
+
+  const searchResults = kind === 'organization' ? organizationSearchResults : userSearchResults;
+
   // ---------- handlers ----------
-  const handleSelectUser = (userId: string) => {
-    const row = searchResults.find(r => r.userId === userId);
+  const handleSelectUser = (id: string) => {
+    const row = searchResults.find(r => r.userId === id);
     if (!row) return;
+    if (kind === 'organization') {
+      setSelectedContributors(prev => [
+        ...prev,
+        { kind: 'organization', id: row.userId, displayName: row.displayName, avatarUrl: row.avatarUrl },
+      ]);
+      setSearchQuery('');
+      return;
+    }
     setSelectedContributors(prev => [
       ...prev,
       {
@@ -252,8 +378,6 @@ export function InviteMembersDialogConnector({
     setSelectedContributors(prev => prev.filter((_, i) => i !== index));
   };
 
-  const { inviteContributorsOnRoleSet, loading: loadingRoleSet } = useRoleSetApplicationsAndInvitations({ roleSetId });
-
   // Each outcome's label is a complete sentence. Shared by the result rows and
   // the completion toast so the wording stays in one place.
   const resultOutcomeLabels = {
@@ -267,49 +391,6 @@ export function InviteMembersDialogConnector({
     error: t('inviteMembers.results.error'),
   } satisfies Record<InvitationResult['outcome'], string>;
 
-  const buildResults = (
-    submittedInvitees: ContributorSelectorInvitee[],
-    legacyResults: Awaited<ReturnType<typeof inviteContributorsOnRoleSet>>
-  ): InvitationResult[] => {
-    // The mutation returns one result per invitee. Successful results carry the
-    // created `invitation`/`platformInvitation`, so we correlate those by
-    // actor id / email. Failure results (e.g. INVITATION_TO_PARENT_NOT_AUTHORIZED)
-    // come back with BOTH null, so they can't be matched that way — consume each
-    // result once and fall back to the next id-less result for those invitees.
-    const remaining = [...legacyResults];
-    const take = (predicate: (r: (typeof legacyResults)[number]) => boolean) => {
-      const idx = remaining.findIndex(predicate);
-      return idx === -1 ? undefined : remaining.splice(idx, 1)[0];
-    };
-    return submittedInvitees.map(invitee => {
-      const matched =
-        invitee.kind === 'user'
-          ? take(r => r.invitation?.actor?.id === invitee.userId)
-          : invitee.kind === 'email'
-            ? take(r => r.platformInvitation?.email?.toLowerCase() === invitee.email.toLowerCase())
-            : undefined;
-      const legacyResult = matched ?? take(r => !r.invitation && !r.platformInvitation);
-      if (!legacyResult) {
-        return { invitee, outcome: 'error' as const };
-      }
-      const outcome: InvitationResult['outcome'] =
-        legacyResult.type === RoleSetInvitationResultType.InvitedToRoleSet ||
-        legacyResult.type === RoleSetInvitationResultType.InvitedToPlatformAndRoleSet
-          ? 'sent'
-          : legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToRoleSet ||
-              legacyResult.type === RoleSetInvitationResultType.AlreadyInvitedToPlatformAndRoleSet
-            ? 'alreadyInvited'
-            : legacyResult.type === RoleSetInvitationResultType.AlreadyMemberOfRoleSet
-              ? 'alreadyMember'
-              : legacyResult.type === RoleSetInvitationResultType.AlreadyHasOpenApplication
-                ? 'alreadyHasApplication'
-                : legacyResult.type === RoleSetInvitationResultType.InvitationToParentNotAuthorized
-                  ? 'parentNotAuthorized'
-                  : 'error';
-      return { invitee, outcome };
-    });
-  };
-
   const handleSend = () => {
     if (!roleSetId) return;
     // Defensive — RoleMultiSelect locks Member, but if a future regression
@@ -317,7 +398,7 @@ export function InviteMembersDialogConnector({
     // baseline Member role.
     if (!extraRoles.includes('Member')) return;
     const validInvitees = selectedContributors.filter(
-      c => c.kind === 'user' || (c.kind === 'email' && c.validationError === undefined)
+      c => c.kind === 'user' || c.kind === 'organization' || (c.kind === 'email' && c.validationError === undefined)
     );
     if (validInvitees.length === 0) return;
 
@@ -325,6 +406,7 @@ export function InviteMembersDialogConnector({
     const invitedUserEmails: string[] = [];
     for (const invitee of validInvitees) {
       if (invitee.kind === 'user') invitedContributorIds.push(invitee.userId);
+      else if (invitee.kind === 'organization') invitedContributorIds.push(invitee.id);
       else if (invitee.kind === 'email') invitedUserEmails.push(invitee.email);
     }
 
@@ -339,7 +421,7 @@ export function InviteMembersDialogConnector({
           // T013: only include when the host explicitly chose a language (FR-015).
           suggestedLanguage,
         });
-        const built = buildResults(validInvitees, legacyResults);
+        const built = mapInvitationResults(validInvitees, legacyResults);
         setResults(built);
         // The result rows show per-invitee detail, but a non-sent outcome is easy
         // to miss inside the dialog — surface a toast too. A single outcome shows
@@ -388,22 +470,34 @@ export function InviteMembersDialogConnector({
   // The dialog is hidden but mounted while the space query is loading — once
   // `roleSetId` resolves, Send becomes available. spaceName empty → title
   // shows the placeholder ("…").
+  const isOrganization = kind === 'organization';
+  const title = isOrganization
+    ? t('inviteMembers.dialog.organization.title', { spaceName: spaceName || '…' })
+    : t('inviteMembers.dialog.title', { spaceName: spaceName || '…' });
+  const searchHint = isOrganization
+    ? t('inviteMembers.dialog.organization.searchHint')
+    : t('inviteMembers.dialog.searchHint');
+  const searchPlaceholder = isOrganization
+    ? t('inviteMembers.dialog.organization.searchPlaceholder')
+    : t('inviteMembers.dialog.searchPlaceholder');
+
   return (
     <InviteMembersDialog
       open={open}
       onOpenChange={handleOpenChange}
+      kind={kind}
       spaceName={spaceName || '…'}
       selectedContributors={selectedContributors}
       searchResults={searchResults}
       searchQuery={searchQuery}
       onSearchChange={setSearchQuery}
       onSelectUser={handleSelectUser}
-      onAddEmails={onlyFromParentCommunity ? undefined : handleAddEmails}
+      onAddEmails={isOrganization || onlyFromParentCommunity ? undefined : handleAddEmails}
       onRemoveContributor={handleRemoveContributor}
-      searchLoading={contributorsLoading || loadingSpace || loadingRoleSet}
-      hasMoreSearchResults={hasMore}
-      onLoadMoreSearchResults={fetchMore}
-      allowEmailInvites={!onlyFromParentCommunity}
+      searchLoading={(isOrganization ? orgLoading : contributorsLoading) || loadingSpace || loadingRoleSet}
+      hasMoreSearchResults={isOrganization ? false : hasMore}
+      onLoadMoreSearchResults={isOrganization ? undefined : fetchMore}
+      allowEmailInvites={!isOrganization && !onlyFromParentCommunity}
       welcomeMessage={welcomeMessage}
       onWelcomeMessageChange={setWelcomeMessage}
       suggestedLanguage={suggestedLanguage}
@@ -416,16 +510,16 @@ export function InviteMembersDialogConnector({
       onSend={handleSend}
       onBack={handleBack}
       labels={{
-        title: t('inviteMembers.dialog.title', { spaceName: spaceName || '…' }),
-        searchHint: t('inviteMembers.dialog.searchHint'),
-        searchPlaceholder: t('inviteMembers.dialog.searchPlaceholder'),
+        title,
+        searchHint,
+        searchPlaceholder,
         searchAriaLabel: t('inviteMembers.dialog.searchAriaLabel'),
         noResultsLabel: t('inviteMembers.dialog.noResultsLabel'),
         loadingLabel: t('inviteMembers.dialog.loadingLabel'),
         loadMoreLabel: t('inviteMembers.dialog.loadMoreLabel'),
         removeAriaLabel: (label: string) => t('inviteMembers.dialog.removeAriaLabel', { label }),
-        validationErrorLabel: kind =>
-          kind === 'invalid' ? t('inviteMembers.errors.invalidEmail') : t('inviteMembers.errors.duplicateEmail'),
+        validationErrorLabel: errKind =>
+          errKind === 'invalid' ? t('inviteMembers.errors.invalidEmail') : t('inviteMembers.errors.duplicateEmail'),
         welcomeMessageLabel: t('inviteMembers.dialog.welcomeMessageLabel'),
         welcomeMessagePlaceholder: t('inviteMembers.dialog.welcomeMessagePlaceholder'),
         emailVisibilityNote: t('inviteMembers.dialog.emailVisibilityNote'),
@@ -443,6 +537,7 @@ export function InviteMembersDialogConnector({
         closeButtonLabel: t('inviteMembers.dialog.closeButtonLabel'),
         closeAriaLabel: t('inviteMembers.dialog.closeAriaLabel'),
         resultOutcomeLabels,
+        resultNoticeLabels: { noAdministrators: t('inviteMembers.results.sentNoAdministrators') },
         suggestedLanguageLabel: t('inviteMembers.dialog.suggestedLanguageLabel'),
         suggestedLanguagePlaceholder: t('inviteMembers.dialog.suggestedLanguagePlaceholder'),
         // Reuse the placeholder text ("No preference") for the explicit reset option in the Select.
