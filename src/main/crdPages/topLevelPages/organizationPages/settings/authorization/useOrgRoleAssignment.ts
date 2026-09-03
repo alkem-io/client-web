@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { ActorType, type RoleName } from '@/core/apollo/generated/graphql-schema';
 import useRoleSetAvailableUsers from '@/domain/access/AvailableContributors/useRoleSetAvailableUsers';
+import useActionPermission from '@/domain/access/permissions/useActionPermission';
 import useRoleSetManager from '@/domain/access/RoleSetManager/useRoleSetManager';
+import { ROLE_SET_ASSIGN_PRIVILEGES } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
+import usePermissionReasonText from '@/main/crdPages/permissions/usePermissionReasonText';
 
 export type AuthorizationRoleName = RoleName.Admin | RoleName.Owner;
 
@@ -11,6 +14,10 @@ export type PendingRoleRemove = {
 };
 
 export type UseOrgRoleAssignmentResult = {
+  /** Tooltip copy when the add controls are gated; undefined when permitted. */
+  addDisabledReason?: string;
+  /** Tooltip copy when the remove controls are gated; undefined when permitted. */
+  removeDisabledReason?: string;
   // Current
   current: ReturnType<typeof useRoleSetManager>['usersByRole'][RoleName];
   loadingCurrent: boolean;
@@ -57,12 +64,20 @@ export const useOrgRoleAssignment = (
     removeRoleFromUser,
     loading: loadingCurrent,
     updating,
+    myPrivileges,
   } = useRoleSetManager({
     roleSetId,
     relevantRoles: [role],
     contributorTypes: [ActorType.User],
     fetchContributors: true,
   });
+
+  // Gate add/remove on the privilege the backend enforces for assignRoleToUser /
+  // removeRoleFromUser, so the action is prevented rather than silently refused.
+  const reasonText = usePermissionReasonText();
+  const assignDisabledReason = reasonText(
+    useActionPermission(myPrivileges, ROLE_SET_ASSIGN_PRIVILEGES, loadingCurrent)
+  );
 
   const availableResponse = useRoleSetAvailableUsers({
     roleSetId,
@@ -86,6 +101,8 @@ export const useOrgRoleAssignment = (
   const onCancelRemove = () => setPendingRemove(null);
 
   return {
+    addDisabledReason: assignDisabledReason,
+    removeDisabledReason: assignDisabledReason,
     current: usersByRole[role] ?? [],
     loadingCurrent,
     available: availableResponse.users ?? [],
