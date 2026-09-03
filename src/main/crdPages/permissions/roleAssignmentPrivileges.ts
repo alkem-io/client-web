@@ -37,3 +37,14 @@ export const ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES = [
  * a control disabled for someone who is in fact permitted; correct it here.
  */
 export const PLATFORM_ROLE_ASSIGN_PRIVILEGES = [AuthorizationPrivilege.Grant];
+
+/**
+ * Adding a virtual contributor from the account, an alternative to
+ * `ROLE_SET_ASSIGN_PRIVILEGES` rather than an addition to it.
+ *
+ * Space admins may hold this without holding the role-set assign privilege, so the VC add
+ * control is permitted when EITHER is present — see `useCommunityAdmin.ts`, which unions
+ * the two for the same reason. Evaluate the two separately and combine; do not pass both
+ * to one `useActionPermission` call, which requires every listed privilege.
+ */
+export const VC_FROM_ACCOUNT_PRIVILEGES = [AuthorizationPrivilege.CommunityAssignVcFromAccount];

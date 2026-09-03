@@ -5,6 +5,7 @@ import useActionPermission from '@/domain/access/permissions/useActionPermission
 import {
   ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES,
   ROLE_SET_ASSIGN_PRIVILEGES,
+  VC_FROM_ACCOUNT_PRIVILEGES,
 } from '@/main/crdPages/permissions/roleAssignmentPrivileges';
 
 /**
@@ -78,5 +79,37 @@ describe('space settings community — organization rows need both tokens', () =
     const privileges = [ASSIGN];
     expect(useActionPermission(privileges, ROLE_SET_ASSIGN_PRIVILEGES, false).allowed).toBe(true);
     expect(useActionPermission(privileges, ROLE_SET_ASSIGN_ORGANIZATION_PRIVILEGES, false).allowed).toBe(false);
+  });
+});
+
+describe('space settings community — virtual contributors accept either privilege', () => {
+  const FROM_ACCOUNT = AuthorizationPrivilege.CommunityAssignVcFromAccount;
+
+  it('is permitted with the role-set assign privilege alone', () => {
+    const byAssign = useActionPermission([ASSIGN], ROLE_SET_ASSIGN_PRIVILEGES, false);
+    const byAccount = useActionPermission([ASSIGN], VC_FROM_ACCOUNT_PRIVILEGES, false);
+    expect(byAssign.allowed || byAccount.allowed).toBe(true);
+  });
+
+  // Regression guard: space admins may hold only the account-assign privilege. Gating on
+  // the role-set assign privilege alone would lock them out of the VC add controls.
+  it('is permitted with the account-assign privilege alone', () => {
+    const byAssign = useActionPermission([FROM_ACCOUNT], ROLE_SET_ASSIGN_PRIVILEGES, false);
+    const byAccount = useActionPermission([FROM_ACCOUNT], VC_FROM_ACCOUNT_PRIVILEGES, false);
+    expect(byAssign.allowed).toBe(false);
+    expect(byAssign.allowed || byAccount.allowed).toBe(true);
+  });
+
+  it('is denied when neither privilege is held', () => {
+    const byAssign = useActionPermission([GRANT], ROLE_SET_ASSIGN_PRIVILEGES, false);
+    const byAccount = useActionPermission([GRANT], VC_FROM_ACCOUNT_PRIVILEGES, false);
+    expect(byAssign.allowed || byAccount.allowed).toBe(false);
+  });
+
+  it('is denied while privileges load', () => {
+    const byAssign = useActionPermission([ASSIGN, FROM_ACCOUNT], ROLE_SET_ASSIGN_PRIVILEGES, true);
+    const byAccount = useActionPermission([ASSIGN, FROM_ACCOUNT], VC_FROM_ACCOUNT_PRIVILEGES, true);
+    expect(byAssign.allowed || byAccount.allowed).toBe(false);
+    expect(byAssign.reason).toBe('checking');
   });
 });

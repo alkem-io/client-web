@@ -38,18 +38,35 @@ const AUTHORIZATION_ERROR_CODES: string[] = [
 ];
 
 /**
- * True when the rejection carries a GraphQL authorization error.
+ * True when the rejection consists of NOTHING BUT authorization errors.
  *
- * These are the codes `useErrorHandlerLink` deliberately excludes from the global
- * toast pipeline (so that unreadable-content queries stay quiet), which is why a
- * rejected role-assignment mutation would otherwise fail silently.
+ * Deliberately whole-response, not "contains an authorization error". The global link
+ * (`useErrorHandlerLink`) strips the authorization codes and forwards whatever remains to
+ * `useApolloErrorHandler`, so it stays silent only when the filtered list is empty. If a
+ * response mixes, say, FORBIDDEN with ENTITY_NOT_FOUND, the global handler already
+ * notifies for the latter — notifying here as well would give the user two toasts for one
+ * failure, which spec FR-006 forbids.
+ *
+ * The precedence is therefore: any non-authorization content in the response (a GraphQL
+ * error with another code, a network error, or a client error) hands ownership to the
+ * global handler and this wrapper says nothing.
  */
-const isAuthorizationError = (error: unknown): boolean =>
-  Boolean(
-    (error as ApolloError | undefined)?.graphQLErrors?.some(graphqlError =>
-      AUTHORIZATION_ERROR_CODES.includes(graphqlError.extensions?.code as string)
-    )
+const isExclusivelyAuthorizationError = (error: unknown): boolean => {
+  const apolloError = error as ApolloError | undefined;
+  const graphQLErrors = apolloError?.graphQLErrors;
+
+  if (!graphQLErrors?.length) {
+    return false;
+  }
+
+  if (apolloError?.networkError || apolloError?.clientErrors?.length) {
+    return false;
+  }
+
+  return graphQLErrors.every(graphqlError =>
+    AUTHORIZATION_ERROR_CODES.includes(graphqlError.extensions?.code as string)
   );
+};
 
 /**
  * Do not use this hook directly, normally you should use useRoleSetManager instead
@@ -198,7 +215,7 @@ const useRoleSetManagerRolesAssignment = ({
       try {
         return await run(...args);
       } catch (error) {
-        if (isAuthorizationError(error)) {
+        if (isExclusivelyAuthorizationError(error)) {
           notify(t('permissions.errorDenied'), 'error');
         }
         throw error;
