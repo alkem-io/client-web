@@ -80,9 +80,31 @@ Surfaces 2 and 3 share one presentational component (`src/crd/components/contrib
 
 ---
 
+## Resolved privilege tokens (R1 outcome)
+
+Determined by mutation identity rather than guesswork, and centralized in
+`src/main/crdPages/permissions/roleAssignmentPrivileges.ts`:
+
+| Surface | Mutations | Token(s) | Basis |
+|---|---|---|---|
+| 2, 3 — Organization authorization / associates | `assignRoleToUser`, `removeRoleFromUser` | `ROLESET_ENTRY_ROLE_ASSIGN` | **Same mutation pair** as the space-community user path, which production code (`useCommunityAdmin.ts:206`) already gates on this token. Same resolver, same policy. |
+| 4 — Space community (users, VCs) | `assignRoleToUser`, `assignRoleToVirtualContributor` | `ROLESET_ENTRY_ROLE_ASSIGN` | Established in `useCommunityAdmin.ts`. |
+| 4 — Space community (organizations) | `assignRoleToOrganization`, `removeRoleFromOrganization` | `ROLESET_ENTRY_ROLE_ASSIGN_ORGANIZATION` **and** `GRANT` | Established in `useCommunityAdmin.ts:211-213`. |
+| 1 — Platform global roles | `assignPlatformRoleToUser`, `removePlatformRoleFromUser` | `GRANT` — **still unconfirmed** | A different mutation pair, so the inference above does not carry. `GRANT` is the value recorded during clarification. See R1 below. |
+
+**R2 — resolved.** `useCommunityAdmin` now exposes its raw `myPrivileges` alongside the
+existing booleans, `useCommunityTabData` forwards them plus the previously-dropped
+`canAddUsers`, and `CrdSpaceSettingsPage` derives one decision per control.
+
 ## Open Risks
 
-- **R1 — Privilege token unverified on surfaces 1–3.** Decision 2 establishes that the token is per-surface, but only surface 4's tokens are evidenced in-repo. The spec's clarification names `GRANT` for the platform role set; the analogous space-community operation uses `ROLESET_ENTRY_ROLE_ASSIGN`. Before implementation, each surface's token must be confirmed against the backend resolver (or empirically, per `quickstart.md` step 2). Getting this wrong reintroduces UI/backend disagreement in the opposite direction — a control disabled for someone who is in fact permitted. The design contains the blast radius: the token is one argument at one call site per surface.
+- **R1 (narrowed) — the platform surface's token is still unverified.** Surfaces 2–4 are
+  settled by the table above. Surface 1 uses `assignPlatformRoleToUser`, whose backend
+  policy has not been checked against a running server; the implementation uses `GRANT`
+  per the spec clarification. If it is wrong the symptom is a control gated for a user who
+  is in fact permitted — correct it in `PLATFORM_ROLE_ASSIGN_PRIVILEGES`, a one-line
+  change. Confirm via `quickstart.md` step 1 before release.
+- **R1 (original) — Privilege token unverified on surfaces 1–3.** Decision 2 establishes that the token is per-surface, but only surface 4's tokens are evidenced in-repo. The spec's clarification names `GRANT` for the platform role set; the analogous space-community operation uses `ROLESET_ENTRY_ROLE_ASSIGN`. Before implementation, each surface's token must be confirmed against the backend resolver (or empirically, per `quickstart.md` step 2). Getting this wrong reintroduces UI/backend disagreement in the opposite direction — a control disabled for someone who is in fact permitted. The design contains the blast radius: the token is one argument at one call site per surface.
 - **R2 — Surface 4 currently drops `canAddUsers`.** `useCommunityAdmin` computes it but `useCommunityTabData.ts:349-358` does not forward it, and `AddCommunityMemberDialog` accepts no permission prop. This is an existing ungated path, not merely a missing tooltip.
 
 ## Deferred to `/speckit.tasks`

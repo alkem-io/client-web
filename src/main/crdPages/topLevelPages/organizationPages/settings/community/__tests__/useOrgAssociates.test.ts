@@ -8,6 +8,9 @@ const mockAssignRoleToUser = vi.fn();
 const mockRemoveRoleFromUser = vi.fn();
 const mockFetchMore = vi.fn();
 const usersByRoleState: Record<string, Array<{ id: string; profile: { displayName: string } }>> = {};
+// Privileges the mocked role-set manager reports. Default is permitted, so the
+// existing specs exercise the happy path; the gating block overrides it.
+let mockMyPrivileges: string[] | undefined = ['ROLESET_ENTRY_ROLE_ASSIGN'];
 let mockManagerLoading = false;
 let mockManagerUpdating = false;
 let mockAvailableLoading = false;
@@ -22,6 +25,7 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', () => ({
     removeRoleFromUser: mockRemoveRoleFromUser,
     loading: mockManagerLoading,
     updating: mockManagerUpdating,
+    myPrivileges: mockMyPrivileges,
   })),
 }));
 
@@ -46,6 +50,7 @@ beforeEach(() => {
   mockRemoveRoleFromUser.mockReset().mockResolvedValue(undefined);
   mockFetchMore.mockReset().mockResolvedValue(undefined);
   for (const k of Object.keys(usersByRoleState)) delete usersByRoleState[k];
+  mockMyPrivileges = ['ROLESET_ENTRY_ROLE_ASSIGN'];
   mockManagerLoading = false;
   mockManagerUpdating = false;
   mockAvailableLoading = false;
@@ -117,5 +122,41 @@ describe('useOrgAssociates — search & pagination passthrough', () => {
       await result.current.onLoadMore();
     });
     expect(mockFetchMore).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('useOrgAssociates permission gating', () => {
+  // spec FR-002 — assignRoleToUser/removeRoleFromUser are gated on the privilege the
+  // backend enforces for those mutations.
+  it('reports no disabled reason when the assign privilege is held', () => {
+    mockMyPrivileges = ['ROLESET_ENTRY_ROLE_ASSIGN'];
+    const { result } = renderHook(() => useOrgAssociates('rs-1'));
+
+    expect(result.current.addDisabledReason).toBeUndefined();
+    expect(result.current.removeDisabledReason).toBeUndefined();
+  });
+
+  it('gates add and remove when the privilege is absent', () => {
+    mockMyPrivileges = ['READ'];
+    const { result } = renderHook(() => useOrgAssociates('rs-1'));
+
+    expect(result.current.addDisabledReason).toBe('permissions.denied');
+    expect(result.current.removeDisabledReason).toBe('permissions.denied');
+  });
+
+  // spec FR-008 / SC-006 — never interactive before privileges are known
+  it('gates with the checking reason while privileges load', () => {
+    mockManagerLoading = true;
+    const { result } = renderHook(() => useOrgAssociates('rs-1'));
+
+    expect(result.current.addDisabledReason).toBe('permissions.checking');
+  });
+
+  // spec Edge Case 3 — completed query that carried no privilege list
+  it('gates with the unverifiable reason when privileges are missing', () => {
+    mockMyPrivileges = undefined;
+    const { result } = renderHook(() => useOrgAssociates('rs-1'));
+
+    expect(result.current.addDisabledReason).toBe('permissions.unverifiable');
   });
 });

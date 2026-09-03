@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import CrdAdminGlobalRolesPage from '../CrdAdminGlobalRolesPage';
 
 vi.mock('react-i18next', () => ({
@@ -23,6 +23,9 @@ vi.mock('@/core/apollo/generated/apollo-hooks', () => ({
 
 const assignPlatformRoleToUser = vi.fn();
 const removePlatformRoleFromUser = vi.fn();
+/** Privileges the mocked role-set manager reports; per-test overridable. */
+const myPrivilegesMock = vi.fn<() => string[] | undefined>(() => ['GRANT']);
+
 vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', () => ({
   RELEVANT_ROLES: {
     Platform: [
@@ -45,6 +48,9 @@ vi.mock('@/domain/access/RoleSetManager/useRoleSetManager', () => ({
     removePlatformRoleFromUser,
     loading: false,
     updating: false,
+    // These specs exercise a privileged admin; the gated cases live in the
+    // "permission gating" block below.
+    myPrivileges: myPrivilegesMock(),
   }),
 }));
 
@@ -118,5 +124,44 @@ describe('CrdAdminGlobalRolesPage', () => {
     await userEvent.type(filter, 'zzz');
     expect(screen.queryByText('Alice (alice@x.io)')).toBeNull(); // filtered out
     expect(screen.getByText('roleMembers.noResults')).toBeInTheDocument();
+  });
+
+  describe('permission gating', () => {
+    const addButton = () => screen.getByRole('button', { name: 'roleMembers.add' });
+    const removeButton = () => screen.getByRole('button', { name: 'roleMembers.remove' });
+
+    afterEach(() => {
+      myPrivilegesMock.mockReturnValue(['GRANT']);
+    });
+
+    // spec FR-002 / SC-007
+    test('gates add and remove when the privilege is absent, and dispatches no mutation', async () => {
+      myPrivilegesMock.mockReturnValue(['READ']);
+      render(<CrdAdminGlobalRolesPage />);
+
+      expect(addButton()).toHaveAttribute('aria-disabled', 'true');
+      expect(removeButton()).toHaveAttribute('aria-disabled', 'true');
+
+      await userEvent.click(addButton());
+      await userEvent.click(removeButton());
+      expect(assignPlatformRoleToUser).not.toHaveBeenCalled();
+      expect(removePlatformRoleFromUser).not.toHaveBeenCalled();
+    });
+
+    test('leaves both controls interactive when the privilege is present', () => {
+      myPrivilegesMock.mockReturnValue(['GRANT']);
+      render(<CrdAdminGlobalRolesPage />);
+
+      expect(addButton()).not.toHaveAttribute('aria-disabled');
+      expect(removeButton()).not.toHaveAttribute('aria-disabled');
+    });
+
+    // spec Edge Case 3 — a completed query that carried no privilege list fails closed
+    test('gates when privileges are unavailable', () => {
+      myPrivilegesMock.mockReturnValue(undefined);
+      render(<CrdAdminGlobalRolesPage />);
+
+      expect(addButton()).toHaveAttribute('aria-disabled', 'true');
+    });
   });
 });
