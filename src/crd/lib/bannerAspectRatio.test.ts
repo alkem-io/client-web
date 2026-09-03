@@ -47,9 +47,10 @@ describe('resolveBannerAspectRatio', () => {
     expect(resolveBannerAspectRatio(withImage(12))).toBe(12);
   });
 
-  // The server stamps its row-creation default (6) on every banner visual it
-  // creates, image or not — a stored ratio only means anything once an image
-  // was actually cropped to it, so the no-image gradient keeps the default shape.
+  // The server stamps its row-creation default on every banner visual it
+  // creates, image or not (10 today, 6 on legacy rows) — a stored ratio only
+  // means anything once an image was actually cropped to it, so the no-image
+  // gradient keeps the design default regardless of what the row says.
   it('ignores the stored ratio when the visual has no image', () => {
     expect(resolveBannerAspectRatio({ uri: null, aspectRatio: 6 })).toBe(DEFAULT_BANNER_ASPECT_RATIO);
     expect(resolveBannerAspectRatio({ uri: '', aspectRatio: 7.5 })).toBe(DEFAULT_BANNER_ASPECT_RATIO);

@@ -310,9 +310,10 @@ export function useAboutTabData(spaceId: string, spaceUrl: string, level: SpaceS
 
     // A stored banner ratio describes an uploaded image's shape — the server
     // derives it from the pixels the crop dialog cut. With no image the row
-    // still carries the server's creation default (6), chosen by nobody;
-    // passing it through would open the first-ever crop on 6 instead of the
-    // dialog's own default (the bounds' max, 10).
+    // still carries the server's creation default (10 today, 6 on legacy
+    // rows), chosen by nobody; passing it through would open the first-ever
+    // crop on that value instead of the dialog's own default (the bounds'
+    // max, 10).
     const hasImage = Boolean(values?.[key]?.uri ?? visualRaw?.uri);
 
     return {

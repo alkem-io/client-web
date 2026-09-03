@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
-import { SearchSection } from './SearchSection';
+import { SearchSection } from '@/crd/components/space/sidebar/SearchSection';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -55,13 +55,13 @@ describe('SearchSection', () => {
   });
 
   test('renders no summary when nothing is active even with a matchCount', () => {
-    render(<SearchSection {...baseProps} matchCount="0" />);
+    render(<SearchSection {...baseProps} matchCount={0} />);
     expect(screen.queryByRole('button', { name: 'crd-common:filters.clear' })).not.toBeInTheDocument();
   });
 
   test('renders the summary once a filter is active and matchCount is known, and its clear button fires onClear', async () => {
     const onClear = vi.fn();
-    render(<SearchSection {...baseProps} appliedText="x" matchCount="3" onClear={onClear} />);
+    render(<SearchSection {...baseProps} appliedText="x" matchCount={3} onClear={onClear} />);
 
     const clearButton = screen.getByRole('button', { name: 'crd-common:filters.clear' });
     expect(clearButton).toBeInTheDocument();
